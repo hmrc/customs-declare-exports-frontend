@@ -17,6 +17,7 @@
 package connectors
 
 import config.AppConfig
+import connectors.CustomsDeclareExportsConnector.toXml
 import connectors.exchange.ExportsDeclarationExchange
 import javax.inject.{Inject, Singleton}
 import models.declaration.notifications.Notification
@@ -26,7 +27,6 @@ import models.{ExportsDeclaration, Page, Paginated}
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
-import services.WcoMetadataMapper
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import wco.datamodel.wco.documentmetadata_dms._2.MetaData
@@ -34,11 +34,7 @@ import wco.datamodel.wco.documentmetadata_dms._2.MetaData
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CustomsDeclareExportsConnector @Inject()(
-  appConfig: AppConfig,
-  httpClient: HttpClient,
-  wcoMetadataMapper: WcoMetadataMapper
-) {
+class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient) {
 
   private val logger = Logger(this.getClass)
 
@@ -63,10 +59,15 @@ class CustomsDeclareExportsConnector @Inject()(
       )
       .map(_.toExportsDeclaration(declaration.sessionId))
 
-  def find(sessionId: String, page: Page)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
+  def find(
+    sessionId: String,
+    page: Page
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
     val pagination = Page.bindable.unbind("page", page)
     httpClient
-      .GET[Paginated[ExportsDeclarationExchange]](s"${appConfig.customsDeclareExports}${appConfig.submitDeclarationV2}?$pagination")
+      .GET[Paginated[ExportsDeclarationExchange]](
+        s"${appConfig.customsDeclareExports}${appConfig.submitDeclarationV2}?$pagination"
+      )
       .map(_.map(_.toExportsDeclaration(sessionId)))
   }
 
@@ -104,7 +105,7 @@ class CustomsDeclareExportsConnector @Inject()(
     httpClient
       .POSTString[CancellationStatus](
         s"${appConfig.customsDeclareExports}${appConfig.cancelDeclaration}",
-        wcoMetadataMapper.toXml(metadata),
+        toXml(metadata),
         Seq(
           (HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8)),
           (HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8)),
@@ -115,5 +116,19 @@ class CustomsDeclareExportsConnector @Inject()(
         logger.debug(s"CUSTOMS_DECLARE_EXPORTS cancel declaration response is --> ${response.toString}")
         response
       }
+}
 
+object CustomsDeclareExportsConnector {
+  def toXml(metaData: MetaData): String = {
+    import java.io.StringWriter
+
+    import javax.xml.bind.{JAXBContext, Marshaller}
+
+    val jaxbMarshaller = JAXBContext.newInstance(classOf[MetaData]).createMarshaller
+    jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true)
+
+    val sw = new StringWriter
+    jaxbMarshaller.marshal(metaData, sw)
+    sw.toString
+  }
 }

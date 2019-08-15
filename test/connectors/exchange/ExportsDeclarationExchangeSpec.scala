@@ -23,6 +23,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.declaration.{Locations, Parties, TransportInformationContainerData}
 import models.{DeclarationStatus, ExportsDeclaration}
 import org.scalatest.mockito.MockitoSugar
+import org.mockito.Mockito.when
 import org.scalatest.{Matchers, WordSpec}
 import services.cache.{ExportItem, ExportsDeclarationBuilder}
 
@@ -36,7 +37,10 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
   private val sessionId = "session-id"
   private val dispatchLocation = mock[DispatchLocation]
   private val additionalDeclarationType = mock[AdditionalDeclarationType]
+
   private val consignmentReferences = mock[ConsignmentReferences]
+  when(consignmentReferences.ducr).thenReturn(None)
+
   private val borderTransport = mock[BorderTransport]
   private val transportDetails = mock[TransportDetails]
   private val containers = mock[TransportInformationContainerData]
@@ -100,5 +104,4 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
       ExportsDeclarationExchange(declaration) shouldBe request
     }
   }
-
 }

@@ -24,7 +24,6 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import play.api.http.Status
 import play.api.libs.json.{Json, Writes}
-import services.WcoMetadataMapper
 import services.cache.ExportsDeclarationBuilder
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -38,8 +37,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
   private val existingDeclaration = aDeclaration(withId(id), withSessionId(sessionId))
   private val newDeclarationExchange = ExportsDeclarationExchange(newDeclaration)
   private val existingDeclarationExchange = ExportsDeclarationExchange(existingDeclaration)
-  private val mapper = mock[WcoMetadataMapper]
-  private val connector = new CustomsDeclareExportsConnector(config, httpClient, mapper)
+  private val connector = new CustomsDeclareExportsConnector(config, httpClient)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

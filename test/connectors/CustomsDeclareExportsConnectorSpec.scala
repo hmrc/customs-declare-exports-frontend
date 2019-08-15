@@ -21,6 +21,7 @@ import java.util.UUID
 
 import base.TestHelper._
 import base.{CustomExportsBaseSpec, MockHttpClient, TestHelper}
+import connectors.CustomsDeclareExportsConnector.toXml
 import forms.CancelDeclaration
 import models.declaration.notifications.Notification
 import models.declaration.submissions.{Action, Submission, SubmissionRequest}
@@ -28,21 +29,18 @@ import models.requests.CancellationRequested
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
-import services.WcoMetadataMapper
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.Authorization
 
 class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec with GuiceOneAppPerSuite {
   import CustomsDeclareExportsConnectorSpec._
 
-  private val wcoMetadataMapper = app.injector.instanceOf[WcoMetadataMapper]
-
   "Customs Declare Exports Connector" should {
 
     "GET to Customs Declare Exports endpoint to fetch notifications" in {
       val http =
         new MockHttpClient(mockWSClient, expectedExportsUrl(appConfig.fetchNotifications), None, result = notifications)
-      val client = new CustomsDeclareExportsConnector(appConfig, http, wcoMetadataMapper)
+      val client = new CustomsDeclareExportsConnector(appConfig, http)
       val response = client.fetchNotifications()(hc, ec)
 
       response.futureValue must be(notifications)
@@ -51,7 +49,7 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec with Guic
     "GET to Customs Declare Exports endpoint to fetch notifications by conversationId" in {
       val http =
         new MockHttpClient(mockWSClient, expectedExportsUrl(appConfig.fetchNotifications), None, result = notifications)
-      val client = new CustomsDeclareExportsConnector(appConfig, http, wcoMetadataMapper)
+      val client = new CustomsDeclareExportsConnector(appConfig, http)
       val response = client.fetchNotificationsByMrn(conversationId)(hc, ec)
 
       response.futureValue must be(notifications)
@@ -60,7 +58,7 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec with Guic
     "GET to Customs Declare Exports endpoint to fetch submissions" in {
       val http =
         new MockHttpClient(mockWSClient, expectedExportsUrl(appConfig.fetchSubmissions), None, result = submissions)
-      val client = new CustomsDeclareExportsConnector(appConfig, http, wcoMetadataMapper)
+      val client = new CustomsDeclareExportsConnector(appConfig, http)
       val response = client.fetchSubmissions()(hc, ec)
 
       response.futureValue must be(submissions)
@@ -72,12 +70,12 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec with Guic
       val http = new MockHttpClient(
         mockWSClient,
         expectedExportsUrl(appConfig.cancelDeclaration),
-        wcoMetadataMapper.toXml(metadata),
+        toXml(metadata),
         cancellationHeaders,
         falseServerError,
         CancellationRequested
       )
-      val client = new CustomsDeclareExportsConnector(appConfig, http, wcoMetadataMapper)
+      val client = new CustomsDeclareExportsConnector(appConfig, http)
       val response = client.submitCancellation(mrn, metadata)(hc, ec)
 
       response.futureValue must be(CancellationRequested)
