@@ -19,12 +19,12 @@ package unit.tools
 import com.typesafe.config.ConfigFactory
 import config.AppConfig
 import play.api.Mode.Test
-import play.api.{Configuration, Environment}
 import play.api.http.{DefaultFileMimeTypes, FileMimeTypes, FileMimeTypesConfiguration}
 import play.api.i18n.{Langs, MessagesApi}
 import play.api.mvc._
 import play.api.test.Helpers._
 import play.api.test.NoMaterializer
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 import uk.gov.hmrc.play.config.{AssetsConfig, GTMConfig, OptimizelyConfig}
 import uk.gov.hmrc.play.views.html.layouts._

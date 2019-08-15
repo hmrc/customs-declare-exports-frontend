@@ -68,7 +68,7 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
     mockExportsCacheService,
     mockCustomsDeclareExportsConnector,
     mockAuditService,
-    metrics,
+    exportsMetricsMock,
     mapper
   )
 
@@ -78,8 +78,8 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
       val registry = app.injector.instanceOf[Metrics].defaultRegistry
 
       val metric = MetricIdentifiers.submissionMetric
-      val timerBefore = registry.getTimers.get(metrics.timerName(metric)).getCount
-      val counterBefore = registry.getCounters.get(metrics.counterName(metric)).getCount
+      val timerBefore = registry.getTimers.get(exportsMetricsMock.timerName(metric)).getCount
+      val counterBefore = registry.getCounters.get(exportsMetricsMock.counterName(metric)).getCount
 
       val model = createFullModel()
       val result = submissionService
@@ -95,8 +95,8 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
       verify(mockAuditService)
         .audit(ArgumentMatchers.eq(AuditTypes.Submission), ArgumentMatchers.eq[Map[String, String]](auditData))(any())
 
-      registry.getTimers.get(metrics.timerName(metric)).getCount mustBe >(timerBefore)
-      registry.getCounters.get(metrics.counterName(metric)).getCount mustBe >(counterBefore)
+      registry.getTimers.get(exportsMetricsMock.timerName(metric)).getCount mustBe >(timerBefore)
+      registry.getCounters.get(exportsMetricsMock.counterName(metric)).getCount mustBe >(counterBefore)
     }
 
   }
