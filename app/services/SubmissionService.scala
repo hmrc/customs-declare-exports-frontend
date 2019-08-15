@@ -25,12 +25,11 @@ import metrics.MetricIdentifiers.submissionMetric
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.Logger
-import play.api.http.Status.ACCEPTED
 import play.api.libs.json.{JsObject, Json}
 import services.audit.EventData._
 import services.audit.{AuditService, AuditTypes}
 import services.cache.ExportsCacheService
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -54,29 +53,23 @@ class SubmissionService @Inject()(
     val timerContext = exportsMetrics.startTimer(submissionMetric)
     val data = format(exportsDeclaration)
     auditService.auditAllPagesUserInput(getCachedData(exportsDeclaration))
-    (for {
+    for {
       _ <- exportsConnector.create(exportsDeclaration).recover {
-        case error =>
-          Logger.error("V2 Submission failed", error)
-          Future.successful((): Unit)
+        case error: Throwable =>
+          logger.error(s"Error response from backend ${error}")
+          auditService.audit(AuditTypes.Submission, auditData(data.lrn, data.ducr, Failure.toString))
       }
-      response <- exportsConnector.submitExportDeclaration(data.ducr, data.lrn, data.payload)
-    } yield response) flatMap {
-      case HttpResponse(ACCEPTED, _, _, _) =>
-        cacheService
-          .remove(sessionId)
-          .map { _ =>
-            auditService.audit(AuditTypes.Submission, auditData(data.lrn, data.ducr, Success.toString))
-            exportsMetrics.incrementCounter(submissionMetric)
-            timerContext.stop()
-            data.lrn
-          }
 
-      case error =>
-        logger.error(s"Error response from backend ${error.body}")
-        auditService.audit(AuditTypes.Submission, auditData(data.lrn, data.ducr, Failure.toString))
-        Future.successful(None)
-    }
+      lrn <- cacheService
+      .remove(sessionId)
+      .map { _ =>
+        auditService.audit(AuditTypes.Submission, auditData(data.lrn, data.ducr, Success.toString))
+        exportsMetrics.incrementCounter(submissionMetric)
+        timerContext.stop()
+        data.lrn
+      }
+
+    } yield lrn
   }
 
   private def format(exportsCacheModel: ExportsDeclaration): FormattedData = {

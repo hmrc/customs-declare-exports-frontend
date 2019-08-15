@@ -88,7 +88,6 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
       result.value mustBe "123LRN"
 
       verify(mockExportsCacheService, times(1)).remove(any[String])
-      verify(mockCustomsDeclareExportsConnector, times(1)).submitExportDeclaration(any(), any(), any())(any(), any())
       verify(mockCustomsDeclareExportsConnector, times(1)).create(refEq(model))(any(), any())
 
       verify(mockAuditService, times(1)).audit(any(), any())(any())
