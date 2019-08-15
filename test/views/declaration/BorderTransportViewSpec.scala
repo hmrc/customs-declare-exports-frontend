@@ -66,20 +66,22 @@ class BorderTransportViewSpec extends BorderTransportFields with CommonMessages 
 
     "have labels for all fields" in {
       val view = createView()
-      view.getElementById("borderModeOfTransportCode")
+      view
+        .getElementById("borderModeOfTransportCode")
         .getElementsByClass("form-hint")
         .text() mustBe messages("supplementary.transportInfo.borderTransportMode.header.hint")
 
-      view.getElementById("borderModeOfTransportCode")
+      view
+        .getElementById("borderModeOfTransportCode")
         .getElementsByTag("legend")
         .text()
         .startsWith(messages("supplementary.transportInfo.borderTransportMode.header")) mustBe true
 
       view.getElementById("Border_Sea-label").text() mustBe "Sea transport"
-      view.getElementById( "Border_Road-label").text() mustBe "Road transport"
-      view.getElementById( "Border_Rail-label").text() mustBe "Rail transport"
-      view.getElementById( "Border_Air-label").text() mustBe "Air transport"
-      view.getElementById( "Border_PostalOrMail-label").text() mustBe "Postal or Mail"
+      view.getElementById("Border_Road-label").text() mustBe "Road transport"
+      view.getElementById("Border_Rail-label").text() mustBe "Rail transport"
+      view.getElementById("Border_Air-label").text() mustBe "Air transport"
+      view.getElementById("Border_PostalOrMail-label").text() mustBe "Postal or Mail"
 
       view.body must include(expBorderModeOfTransportCode.body)
       view.body must include(expMeansOfTransportOnDepartureType.body)

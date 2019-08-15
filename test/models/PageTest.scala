@@ -23,7 +23,9 @@ class PageTest extends PlaySpec {
   "Page" should {
     "bind" when {
       "both params populated" in {
-        Page.bindable.bind("page", Map("page-index" -> Seq("10"), "page-size" -> Seq("20"))) mustBe Some(Right(Page(10, 20)))
+        Page.bindable.bind("page", Map("page-index" -> Seq("10"), "page-size" -> Seq("20"))) mustBe Some(
+          Right(Page(10, 20))
+        )
       }
 
       "index only populated" in {

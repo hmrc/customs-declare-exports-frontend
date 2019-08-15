@@ -32,7 +32,6 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
   private def createView(form: Form[CommodityMeasure] = form): Html =
     goodsMeasurePage(itemId, form)(fakeRequest, messages)
 
-
   "Commodity Measure View on empty page" should {
 
     "display page title" in {

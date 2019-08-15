@@ -20,7 +20,7 @@ import controllers.declaration.ExporterDetailsController
 import forms.common.Address
 import forms.declaration.ExporterDetails
 import org.mockito.ArgumentCaptor
-import org.mockito.Mockito.{verify, when, reset}
+import org.mockito.Mockito.{reset, verify, when}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.OptionValues
 import play.api.data.Form
