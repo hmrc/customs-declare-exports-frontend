@@ -31,24 +31,16 @@ import services.audit.{AuditService, AuditTypes, EventData}
 import services.cache.ExportsDeclarationBuilder
 
 import scala.concurrent.Future
-import scala.io.Source
 
 class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with ExportsDeclarationBuilder {
 
   val mockAuditService = mock[AuditService]
-  val mapper = mock[WcoMetadataMapper]
   val sessionId = "123456"
 
   override def beforeEach() {
-    reset(mockExportsCacheService, mockCustomsDeclareExportsConnector, mockAuditService, mapper)
+    reset(mockExportsCacheService, mockCustomsDeclareExportsConnector, mockAuditService)
     successfulCustomsDeclareExportsResponse()
 
-    when(mapper.toXml(any()))
-      .thenReturn(Source.fromURL(getClass.getResource("/wco_dec_metadata.xml")).mkString)
-    when(mapper.declarationUcr(any()))
-      .thenReturn(Some("8GB123456789012-1234567890QWERTYUIO"))
-    when(mapper.declarationLrn(any()))
-      .thenReturn(Some("123LRN"))
     val mockResult = mock[JSONBatchCommands.FindAndModifyCommand.FindAndModifyResult]
 
     when(mockExportsCacheService.remove(any[String])).thenReturn(Future.successful(mockResult))
@@ -68,8 +60,7 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
     mockExportsCacheService,
     mockCustomsDeclareExportsConnector,
     mockAuditService,
-    exportsMetricsMock,
-    mapper
+    exportsMetricsMock
   )
 
   "SubmissionService" should {
@@ -101,5 +92,6 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
 
   }
 
-  private def createFullModel(): ExportsDeclaration = aDeclaration()
+  private def createFullModel(): ExportsDeclaration =
+    aDeclaration(withConsignmentReferences(ducr = Some("8GB123456789012-1234567890QWERTYUIO"), lrn = "123LRN"))
 }
