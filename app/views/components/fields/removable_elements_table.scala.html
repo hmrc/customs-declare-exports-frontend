@@ -21,9 +21,9 @@
 
 @(id: String = "removable_elements", elements: Seq[LabelledValue], title: Option[String] = None, buttonMessagesKey: String = "site.remove")(implicit messages: Messages)
 
-<div class="field-group mb-2">
-    <table id="@{id}">
-      @if(elements.nonEmpty){
+@if(elements.nonEmpty){
+    <div class="field-group mb-2">
+        <table id="@{id}">
           @title.map { heading =>
               <thead>
                   <tr>
@@ -31,16 +31,16 @@
                   </tr>
               </thead>
           }
-      }
-      <tbody>
-        @for((elem, index) <- elements.zipWithIndex) {
-            <tr id="@{id}__row@index">
-                <th id="@{id}-row@index-label">@{elem.label}</th>
-                <th id="@{id}-row@index-remove_button">
-                    @remove_button(value = Some(elem.value))
-                </th>
-            </tr>
-        }
-      </tbody>
-    </table>
-</div>
+          <tbody>
+            @for((elem, index) <- elements.zipWithIndex) {
+                <tr id="@{id}__row@index">
+                    <th id="@{id}-row@index-label">@{elem.label}</th>
+                    <th id="@{id}-row@index-remove_button">
+                        @remove_button(value = Some(elem.value))
+                    </th>
+                </tr>
+            }
+          </tbody>
+        </table>
+    </div>
+}
