@@ -35,23 +35,6 @@ class DeclarationAdditionalActorsViewSpec
   private def createView(form: Form[DeclarationAdditionalActors] = form): Html =
     declarationAdditionalActorsPage(form, Seq())(fakeJourneyRequest(SupplementaryDec), messages)
 
-  "Declaration Additional Actors View" should {
-
-    "have proper messages for labels" in {
-
-      assertMessage(title, "3/37 Add other parties (Optional)")
-      assertMessage(actorsEori, "EORI number")
-      assertMessage(actorsPartyType, "Party type")
-    }
-
-    "have proper messages for error labels" in {
-
-      assertMessage(actorsEoriNotDefined, "Please enter a EORI number")
-      assertMessage(maximumActorsError, "You cannot have more than 99 actors")
-      assertMessage(duplicatedActorsError, "You cannot add the same actor")
-    }
-  }
-
   "Declaration Additional Actors View on empty page" should {
 
     "display page title" in {
@@ -68,37 +51,37 @@ class DeclarationAdditionalActorsViewSpec
 
       val view = createView()
 
-      getElementById(view, "eori-label").text() must be(messages(eori))
-      getElementById(view, "eori-hint").text() must be(messages(eoriHint))
-      getElementById(view, "eori").attr("value") must be("")
+      view.getElementById("eori-label").text() must be(messages("supplementary.additionalActors.eori"))
+      view.getElementById("eori-hint").text() must be(messages("supplementary.eori.hint"))
+      view.getElementById("eori").attr("value") must be("")
     }
 
     "display four radio buttons with description (not selected)" in {
 
       val view = createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some(""), Some(""))))
 
-      val optionOne = getElementById(view, consolidator)
+      val optionOne = view.getElementById(consolidator)
       optionOne.attr("checked") must be("")
 
-      val optionOneLabel = getElementById(view, "supplementary.partyType.CS-label")
+      val optionOneLabel = view.getElementById("supplementary.partyType.CS-label")
       optionOneLabel.text() must be(messages(consolidator))
 
-      val optionTwo = getElementById(view, manufacturer)
+      val optionTwo = view.getElementById(manufacturer)
       optionTwo.attr("checked") must be("")
 
-      val optionTwoLabel = getElementById(view, "supplementary.partyType.MF-label")
+      val optionTwoLabel = view.getElementById("supplementary.partyType.MF-label")
       optionTwoLabel.text() must be(messages(manufacturer))
 
-      val optionThree = getElementById(view, freightForwarder)
+      val optionThree = view.getElementById(freightForwarder)
       optionThree.attr("checked") must be("")
 
-      val optionThreeLabel = getElementById(view, "supplementary.partyType.FW-label")
+      val optionThreeLabel = view.getElementById("supplementary.partyType.FW-label")
       optionThreeLabel.text() must be(messages(freightForwarder))
 
-      val optionFour = getElementById(view, warehouseKeeper)
+      val optionFour = view.getElementById(warehouseKeeper)
       optionFour.attr("checked") must be("")
 
-      val optionFourLabel = getElementById(view, "supplementary.partyType.WH-label")
+      val optionFourLabel = view.getElementById("supplementary.partyType.WH-label")
       optionFourLabel.text() must be(messages(warehouseKeeper))
     }
 
@@ -113,7 +96,7 @@ class DeclarationAdditionalActorsViewSpec
     "display 'Back' button that links to 'Carrier Details' page if on Standard Journey" in {
 
       val view = declarationAdditionalActorsPage(form, Seq())(fakeJourneyRequest(StandardDec), messages)
-      val backButton = getElementById(view, "link-back")
+      val backButton = view.getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/carrier-details")
@@ -171,11 +154,11 @@ class DeclarationAdditionalActorsViewSpec
       val view =
         createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("CS"))))
 
-      getElementById(view, "eori").attr("value") must be("1234")
-      getElementById(view, consolidator).attr("checked") must be("checked")
-      getElementById(view, manufacturer).attr("checked") must be("")
-      getElementById(view, freightForwarder).attr("checked") must be("")
-      getElementById(view, warehouseKeeper).attr("checked") must be("")
+      view.getElementById("eori").attr("value") must be("1234")
+      view.getElementById(consolidator).attr("checked") must be("checked")
+      view.getElementById(manufacturer).attr("checked") must be("")
+      view.getElementById(freightForwarder).attr("checked") must be("")
+      view.getElementById(warehouseKeeper).attr("checked") must be("")
     }
 
     "display EORI with MF selected" in {
@@ -183,11 +166,11 @@ class DeclarationAdditionalActorsViewSpec
       val view =
         createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("MF"))))
 
-      getElementById(view, "eori").attr("value") must be("1234")
-      getElementById(view, consolidator).attr("checked") must be("")
-      getElementById(view, manufacturer).attr("checked") must be("checked")
-      getElementById(view, freightForwarder).attr("checked") must be("")
-      getElementById(view, warehouseKeeper).attr("checked") must be("")
+      view.getElementById("eori").attr("value") must be("1234")
+      view.getElementById(consolidator).attr("checked") must be("")
+      view.getElementById(manufacturer).attr("checked") must be("checked")
+      view.getElementById(freightForwarder).attr("checked") must be("")
+      view.getElementById(warehouseKeeper).attr("checked") must be("")
     }
 
     "display EORI with FW selected" in {
@@ -195,11 +178,11 @@ class DeclarationAdditionalActorsViewSpec
       val view =
         createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("FW"))))
 
-      getElementById(view, "eori").attr("value") must be("1234")
-      getElementById(view, consolidator).attr("checked") must be("")
-      getElementById(view, manufacturer).attr("checked") must be("")
-      getElementById(view, freightForwarder).attr("checked") must be("checked")
-      getElementById(view, warehouseKeeper).attr("checked") must be("")
+      view.getElementById("eori").attr("value") must be("1234")
+      view.getElementById(consolidator).attr("checked") must be("")
+      view.getElementById(manufacturer).attr("checked") must be("")
+      view.getElementById(freightForwarder).attr("checked") must be("checked")
+      view.getElementById(warehouseKeeper).attr("checked") must be("")
     }
 
     "display EORI with WH selected" in {
@@ -207,11 +190,11 @@ class DeclarationAdditionalActorsViewSpec
       val view =
         createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("WH"))))
 
-      getElementById(view, "eori").attr("value") must be("1234")
-      getElementById(view, consolidator).attr("checked") must be("")
-      getElementById(view, manufacturer).attr("checked") must be("")
-      getElementById(view, freightForwarder).attr("checked") must be("")
-      getElementById(view, warehouseKeeper).attr("checked") must be("checked")
+      view.getElementById("eori").attr("value") must be("1234")
+      view.getElementById(consolidator).attr("checked") must be("")
+      view.getElementById(manufacturer).attr("checked") must be("")
+      view.getElementById(freightForwarder).attr("checked") must be("")
+      view.getElementById(warehouseKeeper).attr("checked") must be("checked")
     }
 
     "display one row with data in table" in {
@@ -221,7 +204,7 @@ class DeclarationAdditionalActorsViewSpec
         messages
       )
 
-      getElementByCss(view, "table>thead>tr>th:nth-child(1)").text() must be("EORI number")
+      getElementByCss(view, "table>thead>tr>th:nth-child(1)").text() must be("Party’s EORI number")
       getElementByCss(view, "table>thead>tr>th:nth-child(2)").text() must be("Party type")
 
       getElementByCss(view, "table>tbody>tr>td:nth-child(1)").text() must be("12345")

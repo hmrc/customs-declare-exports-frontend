@@ -41,6 +41,7 @@
         @components.fields.field_autocomplete(
                   field = form("officeId"),
                   label = messages("declaration.officeOfExit"),
+                  labelClass = Some("form-label-bold"),
                   hintText = Some(messages("declaration.officeOfExit.hint")),
                   messages("standard.officeOfExit.empty"),
                   AutoCompleteItem.fromOfficeOfExit(OfficeOfExits.all)

@@ -43,6 +43,7 @@
         @components.fields.field_autocomplete(
             field = form("officeId"),
             label = messages("declaration.officeOfExit"),
+            labelClass = Some("form-label-bold"),
             hintText = Some(messages("declaration.officeOfExit.hint")),
             messages("declaration.officeOfExit.empty"),
             AutoCompleteItem.fromOfficeOfExit(OfficeOfExits.all)
@@ -51,6 +52,7 @@
         @components.fields.field_autocomplete(
             field = form("presentationOfficeId"),
             label = messages("standard.officeOfExit.presentationOffice"),
+            labelClass = Some("form-label-bold"),
             hintText = Some(messages("standard.officeOfExit.presentationOffice.hint")),
             emptySelectValue = messages("standard.officeOfExit.presentationOffice.empty"),
             items = AutoCompleteItem.fromOfficeOfPresentation(CustomsOffices.all)
@@ -59,6 +61,7 @@
         @components.fields.field_radio(
             field = form("circumstancesCode"),
             legend = messages("standard.officeOfExit.circumstancesCode"),
+            hint = Some(messages("standard.officeOfExit.circumstancesCode.hint")),
             inputs = Seq(
                 RadioOption("Yes", AllowedCircumstancesCodeAnswers.yes, messages("site.yes")),
                 RadioOption("No", AllowedCircumstancesCodeAnswers.no, messages("site.no"))

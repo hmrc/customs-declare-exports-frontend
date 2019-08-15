@@ -23,9 +23,6 @@
 
 @(form: Form[NatureOfTransaction])(implicit request: Request[_], messages: Messages)
 
-@displayOption(messageKey: String) = {
-  @Html(messages(messageKey, """<span class="font-bold">""", "</span>"))
-}
 
 
 @main_template(
@@ -46,15 +43,15 @@
             field = form("natureType"),
             legend = "",
             inputs = Seq(
-              RadioOption("Purchase", Purchase, displayOption("declaration.natureOfTransaction.purchase").toString),
-              RadioOption("Return", Return, displayOption("declaration.natureOfTransaction.return").toString),
-              RadioOption("Donation", Donation, displayOption("declaration.natureOfTransaction.donation").toString),
-              RadioOption("Processing", Processing, displayOption("declaration.natureOfTransaction.processing").toString),
-              RadioOption("Processed", Processed, displayOption("declaration.natureOfTransaction.processed").toString),
-              RadioOption("NationalPurposes", NationalPurposes, displayOption("declaration.natureOfTransaction.nationalPurposes").toString),
-              RadioOption("Military", Military, displayOption("declaration.natureOfTransaction.military").toString),
-              RadioOption("Construction", Construction, displayOption("declaration.natureOfTransaction.construction").toString),
-              RadioOption("Other", Other, displayOption("declaration.natureOfTransaction.other").toString)
+              RadioOption("Purchase", Purchase, "declaration.natureOfTransaction.purchase", Some(messages("declaration.natureOfTransaction.purchase.hint"))),
+              RadioOption("Return", Return, "declaration.natureOfTransaction.return", Some(messages("declaration.natureOfTransaction.return.hint"))),
+              RadioOption("Donation", Donation, "declaration.natureOfTransaction.donation", Some(messages("declaration.natureOfTransaction.donation.hint"))),
+              RadioOption("Processing", Processing, "declaration.natureOfTransaction.processing", Some(messages("declaration.natureOfTransaction.processing.hint"))),
+              RadioOption("Processed", Processed, "declaration.natureOfTransaction.processed", Some(messages("declaration.natureOfTransaction.processed.hint"))),
+              RadioOption("NationalPurposes", NationalPurposes, "declaration.natureOfTransaction.nationalPurposes", Some(messages("declaration.natureOfTransaction.nationalPurposes.hint"))),
+              RadioOption("Military", Military, "declaration.natureOfTransaction.military", Some(messages("declaration.natureOfTransaction.military.hint"))),
+              RadioOption("Construction", Construction, "declaration.natureOfTransaction.construction", Some(messages("declaration.natureOfTransaction.construction.hint"))),
+              RadioOption("Other", Other, "declaration.natureOfTransaction.other", None)
             )
         )
 

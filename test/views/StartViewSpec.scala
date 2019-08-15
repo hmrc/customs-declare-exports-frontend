@@ -28,46 +28,6 @@ class StartViewSpec extends ViewSpec with StartMessages {
   private val startPage = app.injector.instanceOf[start_page]
   private def createView(): Html = startPage()
 
-  "Start View" should {
-
-    "have proper messages for labels" in {
-
-      assertMessage(title, "Register for customs services")
-      assertMessage(heading, "Make an export declaration")
-      assertMessage(
-        description,
-        "An export declaration must be completed for any export leaving the UK. This includes goods being exported through the EU to a third (non-EU) country."
-      )
-      assertMessage(listHeading, "You will need:")
-      assertMessage(listItemOne, "your Government Gateway details")
-      assertMessage(listItemTwoPreUrl, "your")
-      assertMessage(listItemTwoPostUrl, "number")
-      assertMessage(listItemTwoUrl, "Economic Operator Registration and Identification (EORI)")
-      assertMessage(
-        listItemThree,
-        "any licences you may need, for example, for military controlled items and highly sensitive dual-use goods"
-      )
-      assertMessage(listItemFour, "details of where you’re sending the export")
-
-      // for some reason it does not pick up the ' in message - possibly some java/scala issue
-      assertMessage(
-        listItemFive,
-        "a description of the item, including the value, weight, size and type of package its in"
-      )
-      assertMessage(listItemSix, "your")
-      assertMessage(listItemSixUrl, "commodity code(s)")
-      assertMessage(listItemSeven, "for your item")
-      assertMessage(listItemSevenUrl, "customs procedure code(s)")
-      assertMessage(buttonName, "Start now")
-      assertMessage(additionalInformation, "Your information is saved automatically.")
-      assertMessage(referenceTitle, "Help and support")
-      assertMessage(reference, "If you are having problems registering, phone:")
-      assertMessage(referenceNumber, "0300 200 3700")
-      assertMessage(referenceText, "Open 8am to 6pm, Monday to Friday (closed bank holidays)")
-      assertMessage(enquiries, "General enquires help")
-    }
-  }
-
   "Start View on empty page" when {
 
     "display page title" in {

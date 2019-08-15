@@ -33,15 +33,22 @@
 
         @components.error_summary(form.errors)
 
+        @components.section_header(messages("supplementary.summary.parties.header"))
+
         @components.page_title(Some("supplementary.carrier.title"))
+
+        <p>@messages("supplementary.carrier.title.hint")</p>
 
         @components.form_fields_wrapper(field = form("details")) {
 
             @components.fields.field_text(
                 field = form("details.eori"),
                 label = messages("supplementary.carrier.eori.info"),
-                hint = Some(messages("supplementary.carrier.eori.hint"))
+                hint = Some(messages("supplementary.carrier.eori.hint")),
+                labelClass = Some("heading-24")
             )
+
+            <p class="mt-5">Or</p>
 
             @components.address(form, "details.address", Some(messages("supplementary.carrier.address.info")))
         }

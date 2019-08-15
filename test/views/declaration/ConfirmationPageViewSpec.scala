@@ -28,20 +28,6 @@ class ConfirmationPageViewSpec extends ViewSpec with ConfirmationMessages {
   private val confirmationPage = app.injector.instanceOf[confirmation_page]
   private def createView(): Html = confirmationPage()(fakeRequest, flash, messages)
 
-  "Confirmation Page View" should {
-
-    "have proper messages for labels" in {
-
-      assertMessage(title, "Supplementary Declaration submission confirmation")
-      assertMessage(header, "Your LRN is")
-      assertMessage(information, "You declaration has been received.")
-      assertMessage(whatHappensNext, "What happens next?")
-      assertMessage(explanation, "Your MRN will be provided in a notification.")
-      assertMessage(explanationLink, "Check your notification status in the dashboard.")
-      assertMessage(submitAnother, "Submit another declaration")
-    }
-  }
-
   "Confirmation Page View on empty page" should {
 
     "display page title" in {

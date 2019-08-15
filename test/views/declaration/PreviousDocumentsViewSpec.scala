@@ -31,38 +31,6 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
   private def createView(form: Form[Document] = form): Html =
     previousDocumentsPage(form, Seq())(fakeRequest, messages)
 
-  "Previous Documents View" should {
-
-    "have proper messages for labels" in {
-
-      assertMessage(previousDocuments, "Previous documents")
-      assertMessage(title, "2/1 Enter previous DUCR or MUCR references assigned to these goods")
-      assertMessage(hint, "For example, 8GB123456789101-SHIP1")
-      assertMessage(documentX, "Temporary storage")
-      assertMessage(documentY, "Simplified declaration")
-      assertMessage(documentZ, "Previous document")
-      assertMessage(documentType, "Enter the previous document code")
-      assertMessage(documentReference, "Enter the reference of the previous document")
-      assertMessage(documentGoodsIdentifier, "Enter the goods item this previous document relates to")
-      assertMessage(documentCategoryLabel, "Document Category")
-      assertMessage(documentTypeLabel, "Document Type")
-      assertMessage(documentReferenceLabel, "Document Reference")
-      assertMessage(documentGoodsIdentifierLabel, "Goods Item Identifier")
-      assertMessage(removePackageInformation, "Remove Packaging Information")
-    }
-
-    "have proper messages for error labels" in {
-
-      assertMessage(documentCategoryEmpty, "Document category cannot be empty")
-      assertMessage(documentCategoryError, "Document category is incorrect")
-      assertMessage(documentTypeEmpty, "Previous document code cannot be empty")
-      assertMessage(documentTypeError, "Previous document code is incorrect")
-      assertMessage(documentReferenceEmpty, "Reference for the DUCR or MUCR cannot be empty")
-      assertMessage(documentReferenceError, "Reference for the DUCR or MUCR is incorrect")
-      assertMessage(documentGoodsIdentifierError, "Goods item identifier is incorrect")
-    }
-  }
-
   "Previous Documents View on empty page" should {
 
     "display page title" in {

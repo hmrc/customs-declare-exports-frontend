@@ -33,35 +33,6 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
   private def createView(form: Form[GoodsLocation] = form): Html =
     goodsLocationPage(form)(fakeRequest, messages)
 
-  "Location View" should {
-
-    "have proper messages for labels" in {
-
-      assertMessage(locationOfGoods, "Location of goods")
-      assertMessage(title, "5/23 Where was the location of the goods?")
-      assertMessage(typeOfLocation, "Location Type")
-      assertMessage(qualifierOfIdent, "Qualifier code")
-      assertMessage(identOfLocation, "Identification of location")
-      assertMessage(additionalQualifier, "Location code and Additional Qualifier")
-      assertMessage(locationAddress, "Address Line 1")
-      assertMessage(logPostCode, "Postcode")
-      assertMessage(city, "City")
-    }
-
-    "have proper messages for error labels" in {
-
-      assertMessage(typeOfLocationEmpty, "Type of location cannot be empty")
-      assertMessage(typeOfLocationError, "Type of location is incorrect")
-      assertMessage(qualifierOfIdentEmpty, "Qualifier of location cannot be empty")
-      assertMessage(qualifierOfIdentError, "Qualifier of the identification is incorrect")
-      assertMessage(identOfLocationError, "Identification of location is incorrect")
-      assertMessage(additionalQualifierError, "Additional identifier is incorrect")
-      assertMessage(locationAddressError, "Address Line 1 is incorrect")
-      assertMessage(logPostCodeError, "Postcode is incorrect")
-      assertMessage(cityError, "City is incorrect")
-    }
-  }
-
   "Location View on empty page" should {
 
     "display page title" in {

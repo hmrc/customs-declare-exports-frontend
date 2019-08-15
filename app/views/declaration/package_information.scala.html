@@ -80,7 +80,8 @@
         @components.fields.field_autocomplete(
             field = form("typesOfPackages"),
             label = "supplementary.packageInformation.typesOfPackages",
-            None,
+            labelClass = Some("form-label-bold"),
+            hintText = None,
             emptySelectValue = messages("supplementary.packageInformation.typesOfPackages.empty"),
             items = AutoCompleteItem.fromPackageType(PackageTypes.all),
             'otherErrorFields -> Seq("typesOfPackages")

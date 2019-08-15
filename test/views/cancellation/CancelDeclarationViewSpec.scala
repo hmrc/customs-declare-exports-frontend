@@ -59,42 +59,6 @@ class CancelDeclarationViewSpec extends ViewSpec with CommonMessages {
     getElementById(view, idOfErrorElement).text() must be(expectedMessage)
   }
 
-  "Cancel Declaration View" should {
-
-    "have proper messages for labels" in {
-      assertMessage(messages("cancellation.title"), "Cancel Declaration")
-      assertMessage(messages("cancellation.functionalReferenceId"), "Enter the DUCR")
-      assertMessage(messages("cancellation.declarationId"), "Enter the MRN")
-      assertMessage(messages("cancellation.statementDescription"), "Enter the reason for cancellation")
-      assertMessage(messages("cancellation.confirmationPage.title"), "Cancellation confirmation page")
-    }
-
-    "have proper messages for error labels" in {
-      assertMessage(messages("cancellation.functionalReferenceId.empty"), "Enter the DUCR")
-      assertMessage(messages("cancellation.functionalReferenceId.tooLong"), "THE DUCR must be 35 digits or less")
-      assertMessage(messages("cancellation.functionalReferenceId.tooShort"), "The DUCR must be 23 digits or more")
-      assertMessage(messages("cancellation.functionalReferenceId.wrongFormat"), "Enter a DUCR in the correct format")
-
-      assertMessage(messages("cancellation.declarationId.empty"), "Enter the MRN")
-      assertMessage(messages("cancellation.declarationId.tooLong"), "The MRN must be 70 digits or less")
-      assertMessage(messages("cancellation.declarationId.tooShort"), "The MRN must be X digits or more")
-      assertMessage(messages("cancellation.declarationId.wrongFormat"), "Enter a MRN in the correct format")
-
-      assertMessage(messages("cancellation.statementDescription.empty"), "Enter a description")
-      assertMessage(messages("cancellation.statementDescription.tooLong"), "The description must be 512 digits or less")
-      assertMessage(messages("cancellation.statementDescription.tooShort"), "The description must be X digits or more")
-      assertMessage(
-        messages("cancellation.statementDescription.wrongFormat"),
-        "Enter a description in the correct format"
-      )
-
-      assertMessage(
-        messages("cancellation.changeReason.error.wrongValue"),
-        "Please, choose a valid cancellation reason"
-      )
-    }
-  }
-
   "Cancel DeclarationView on empty page" should {
 
     "display page title" in {

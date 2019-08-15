@@ -34,15 +34,6 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
   private def createView(form: Form[ExporterDetails] = form): Html =
     exporterDetailsPage(form)(fakeRequest, messages)
 
-  "Exporter Details View" should {
-
-    "have proper messages for labels" in {
-
-      assertMessage(title, "Who is the exporter?")
-      assertMessage(hint, "The exporter is the registered trader sending the goods")
-    }
-  }
-
   "Exporter Details View on empty page" should {
 
     "display page title" in {

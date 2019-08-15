@@ -43,26 +43,6 @@ class PartiesSectionViewSpec extends ViewSpec with PartiesMessages {
 
   private lazy val emptyView = createView()
 
-  "Parties Section View" should {
-
-    "have proper messages for labels" in {
-
-      assertMessage(header, "Parties")
-      assertMessage(exporterId, "Exporter ID")
-      assertMessage(exporterAddress, "Exporter address")
-      assertMessage(declarantId, "Declarant ID")
-      assertMessage(declarantAddress, "Declarant address")
-      assertMessage(representativeId, "Representative ID")
-      assertMessage(representativeAddress, "Representative address")
-      assertMessage(representationType, "Representation type")
-      assertMessage(authorizedPartyEori, "Authorised party EORI")
-      assertMessage(idStatusNumberAuthorisationCode, "ID status number authorisation code")
-      assertMessage(additionalPartiesHeader, "Additional parties")
-      assertMessage(additionalPartiesId, "Additional parties ID")
-      assertMessage(additionalPartiesType, "Additional parties type")
-    }
-  }
-
   "Parties Section View" when {
 
     "provided with empty Parties data" should {

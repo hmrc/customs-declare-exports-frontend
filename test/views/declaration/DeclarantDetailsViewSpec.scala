@@ -35,14 +35,6 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
   private def createView(form: Form[DeclarantDetails] = form): Html =
     declarantDetailsPage(form)(fakeJourneyRequest(SupplementaryDec), messages)
 
-  "Declarant Details View" should {
-
-    "have proper messages for labels" in {
-
-      assertMessage(title, "Who is the declarant?")
-    }
-  }
-
   "Declarant Details View on empty page" should {
 
     "display page title" in {

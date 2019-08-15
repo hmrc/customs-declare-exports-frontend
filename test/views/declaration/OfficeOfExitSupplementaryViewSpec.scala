@@ -32,22 +32,6 @@ class OfficeOfExitSupplementaryViewSpec extends ViewSpec with OfficeOfExitMessag
   private def createView(form: Form[OfficeOfExitSupplementary] = form): Html =
     officeOfExitSupplementary(form)(fakeRequest, messages)
 
-  "Office of Exit View for supplementary" should {
-
-    "have proper messages for labels" in {
-
-      assertMessage(officeOfExit, "5/12 Where is the office of exit?")
-      assertMessage(title, "Office of exit")
-      assertMessage(hint, "This is an 8 digit code")
-    }
-
-    "have proper messages for error labels" in {
-
-      assertMessage(officeOfExitEmpty, "Office of exit cannot be empty")
-      assertMessage(officeOfExitLength, "The code must be 8 characters")
-    }
-  }
-
   "Office of Exit View on empty page" should {
 
     "display page title" in {

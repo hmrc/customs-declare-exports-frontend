@@ -44,7 +44,8 @@
             @components.fields.field_autocomplete(
                 field = form("supervisingCustomsOffice"),
                 label = messages("supplementary.warehouse.supervisingCustomsOffice"),
-                hintText = Some(messages("supplementary.warehouse.supervisingCustomsOffice.hint")),
+                labelClass = Some("form-label-bold"),
+                hintText = None,
                 emptySelectValue = messages("supplementary.packageInformation.typesOfPackages.empty"),
                 items = AutoCompleteItem.fromSupervisingCustomsOffice(CustomsOffices.all))
 

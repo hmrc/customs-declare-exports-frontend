@@ -24,7 +24,7 @@
     labelClass: Option[String] = None
 )(implicit messages: Messages)
 
-<div class="form-field @if(field.hasErrors){form-field--error}">
+<div class="form-group @if(field.hasErrors){form-field--error}">
     <label class="form-label" for="@{field.id}">
         <span id="@{field.id}-label" class="@if(labelClass.nonEmpty){@labelClass}">@label</span>
         @if(hint.nonEmpty){

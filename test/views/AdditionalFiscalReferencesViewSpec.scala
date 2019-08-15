@@ -36,24 +36,6 @@ class AdditionalFiscalReferencesViewSpec extends ViewSpec with AdditionalFiscalR
   ): Html =
     additionalFiscalReferencesPage(itemId, form, references)(fakeRequest, messages)
 
-  "Additional Fiscal References View" should {
-
-    "have proper messages for labels" in {
-
-      assertMessage(title, "3/40 What are the exporter's VAT details?")
-      assertMessage(header, "VAT number")
-      assertMessage(fiscalReferenceCountry, "Country")
-      assertMessage(reference, "VAT number")
-    }
-
-    "have proper messages for error labels" in {
-
-      assertMessage(fiscalReferenceCountryEmpty, "Country cannot be empty")
-      assertMessage(fiscalReferenceCountryError, "Country is incorrect")
-      assertMessage(referenceEmpty, "VAT number cannot be empty")
-      assertMessage(referenceError, "VAT number is incorrect")
-    }
-  }
   "Additional Fiscal References View on empty page" should {
 
     "display page title" in {
