@@ -38,10 +38,9 @@ trait MockConnectors extends MockitoSugar {
 
   lazy val mockNrsConnector: NrsConnector = mock[NrsConnector]
 
-  def successfulCustomsDeclareExportsResponse(): Unit = {
+  def successfulCustomsDeclareExportsResponse(): Unit =
     when(mockCustomsDeclareExportsConnector.create(any[ExportsDeclaration])(any(), any()))
       .thenAnswer(withTheFirstArgument)
-  }
 
   private def withTheFirstArgument[T]: Answer[Future[T]] = new Answer[Future[T]] {
     override def answer(invocation: InvocationOnMock): Future[T] = Future.successful(invocation.getArgument(0))
