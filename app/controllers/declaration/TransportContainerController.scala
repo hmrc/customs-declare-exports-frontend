@@ -96,7 +96,9 @@ class TransportContainerController @Inject()(
     cache: TransportInformationContainerData,
     ids: Seq[String]
   )(implicit request: JourneyRequest[_]) = {
-    val updatedCache = remove(cache.containers, {container: TransportInformationContainer => ids.contains(container.id)})
+    val updatedCache = remove(cache.containers, { container: TransportInformationContainer =>
+      ids.contains(container.id)
+    })
     updateCache(journeySessionId, TransportInformationContainerData(updatedCache)).map { _ =>
       Ok(transportContainersPage(userInput.discardingErrors, updatedCache))
     }

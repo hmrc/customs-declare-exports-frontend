@@ -17,8 +17,31 @@
 package forms
 
 import base.CustomExportsBaseSpec
-import org.scalatest.matchers.{MatchResult, Matcher}
+import org.scalatest.matchers.{BePropertyMatchResult, BePropertyMatcher, MatchResult, Matcher}
 import play.api.data.{Form, FormError}
+
+trait LightFormMatchers {
+  import forms.LightFormMatchers._
+  def haveMessage(right: String) = new ErrorHasMessage(right)
+
+  val errorless: BePropertyMatcher[Form[_]] = new BePropertyMatcher[Form[_]] {
+
+    override def apply(form: Form[_]): BePropertyMatchResult =
+      BePropertyMatchResult(!form.hasErrors, "errorless")
+  }
+}
+
+object LightFormMatchers {
+  class ErrorHasMessage(right: String) extends Matcher[Option[FormError]] {
+
+    override def apply(left: Option[FormError]): MatchResult =
+      MatchResult(
+        left.exists(_.message == right),
+        s""""$left" does not contains message "$right"""",
+        s""""$left contains message "$right""""
+      )
+  }
+}
 
 //TODO Remove CustomsExportsBaseSpec from this trait or stop using this
 trait FormMatchers extends CustomExportsBaseSpec {
