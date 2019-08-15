@@ -16,6 +16,7 @@
 
 package services.cache
 
+import com.kenshoo.play.metrics.Metrics
 import config.AppConfig
 import javax.inject.Inject
 import models.ExportsDeclaration
@@ -31,7 +32,7 @@ import uk.gov.hmrc.mongo.json.ReactiveMongoFormats.objectIdFormats
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ExportsDeclarationRepository @Inject()(mc: ReactiveMongoComponent, appConfig: AppConfig)(
+class ExportsDeclarationRepository @Inject()(mc: ReactiveMongoComponent, appConfig: AppConfig, metrics: Metrics)(
   implicit ec: ExecutionContext
 ) extends ReactiveRepository[ExportsDeclaration, BSONObjectID](
       "exportsJourneyCache",
@@ -39,6 +40,10 @@ class ExportsDeclarationRepository @Inject()(mc: ReactiveMongoComponent, appConf
       ExportsDeclaration.format,
       objectIdFormats
     ) {
+
+  private val mongoFetchTimer = metrics.defaultRegistry.timer("declaration.fetch.timer")
+
+  private val mongoUpsertTimer = metrics.defaultRegistry.timer("declaration.upsert.timer")
 
   implicit val journeyFormats = ExportsDeclaration.format
 
@@ -50,10 +55,15 @@ class ExportsDeclarationRepository @Inject()(mc: ReactiveMongoComponent, appConf
     )
   )
 
-  def get(sessionId: String): Future[Option[ExportsDeclaration]] =
-    find("sessionId" -> sessionId).map(_.headOption)
+  def get(sessionId: String): Future[Option[ExportsDeclaration]] = {
+    val fetchTimer = mongoFetchTimer.time()
+    find("sessionId" -> sessionId).map(_.headOption).andThen {
+      case _ => fetchTimer.stop()
+    }
+  }
 
-  def upsert(sessionId: String, journeyCacheModel: ExportsDeclaration): Future[Option[ExportsDeclaration]] =
+  def upsert(sessionId: String, journeyCacheModel: ExportsDeclaration): Future[Option[ExportsDeclaration]] = {
+    val upsertTimer = mongoUpsertTimer.time()
     collection
       .findAndUpdate(
         selector = bySessionId(sessionId),
@@ -65,6 +75,10 @@ class ExportsDeclarationRepository @Inject()(mc: ReactiveMongoComponent, appConf
         if (updateResult.value.isEmpty) logDatabaseUpdateError(updateResult)
         updateResult.result[ExportsDeclaration]
       }
+      .andThen {
+        case _ => upsertTimer.stop()
+      }
+  }
 
   def remove(sessionId: String): Future[FindAndModifyCommand.FindAndModifyResult] =
     collection.findAndRemove(selector = bySessionId(sessionId))
