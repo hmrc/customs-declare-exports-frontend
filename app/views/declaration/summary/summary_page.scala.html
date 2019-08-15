@@ -74,10 +74,14 @@
 
     @items_section(suppDecData.items)
 
-    @helper.form(action = SummaryController.submitSupplementaryDeclaration()) {
+    @helper.form(action = SummaryController.submitSupplementaryDeclaration(), 'id -> "summary") {
         @helper.CSRF.formField
 
         @components.submit_button(messages("site.acceptAndSubmitDeclaration"))
     }
-
+    <script>
+        document.getElementById("summary").addEventListener("submit", function(event){
+            document.getElementById("submit").disabled = true;
+        });
+    </script>
 }
