@@ -25,6 +25,7 @@ import models.requests.CancellationStatus
 import models.{ExportsDeclaration, Page, Paginated}
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}
+import play.api.libs.json.{Json, Writes}
 import play.api.mvc.Codec
 import services.WcoMetadataMapper
 import uk.gov.hmrc.http.HeaderCarrier
@@ -44,29 +45,40 @@ class CustomsDeclareExportsConnector @Inject()(
 
   def create(
     declaration: ExportsDeclaration
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] =
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] = {
+    logPayload("Create Declaration Request", declaration)
     httpClient
       .POST[ExportsDeclarationExchange, ExportsDeclarationExchange](
         s"${appConfig.customsDeclareExports}${appConfig.submitDeclarationV2}",
         ExportsDeclarationExchange(declaration)
       )
+      .map(logPayload("Create Declaration Response", _))
       .map(_.toExportsDeclaration(declaration.sessionId))
+  }
 
   def update(
     declaration: ExportsDeclaration
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] =
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] = {
+    logPayload("Update Declaration Request", declaration)
     httpClient
       .PUT[ExportsDeclarationExchange, ExportsDeclarationExchange](
         s"${appConfig.customsDeclareExports}${appConfig.submitDeclarationV2}/${declaration.id
-          .getOrElse(throw new IllegalArgumentException("Cannot update a declaration which hasnt been created first"))}",
+          .getOrElse(throw new IllegalArgumentException("Cannot update a declaration which hasn't been created first"))}",
         ExportsDeclarationExchange(declaration)
       )
+      .map(logPayload("Update Declaration Response", _))
       .map(_.toExportsDeclaration(declaration.sessionId))
+  }
 
-  def find(sessionId: String, page: Page)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
+  def find(
+    sessionId: String,
+    page: Page
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
     val pagination = Page.bindable.unbind("page", page)
     httpClient
-      .GET[Paginated[ExportsDeclarationExchange]](s"${appConfig.customsDeclareExports}${appConfig.submitDeclarationV2}?$pagination")
+      .GET[Paginated[ExportsDeclarationExchange]](
+        s"${appConfig.customsDeclareExports}${appConfig.submitDeclarationV2}?$pagination"
+      )
       .map(_.map(_.toExportsDeclaration(sessionId)))
   }
 
@@ -115,5 +127,10 @@ class CustomsDeclareExportsConnector @Inject()(
         logger.debug(s"CUSTOMS_DECLARE_EXPORTS cancel declaration response is --> ${response.toString}")
         response
       }
+
+  private def logPayload[T](prefix: String, t: T)(implicit wts: Writes[T]): T = {
+    Logger.debug(s"$prefix: ${Json.toJson(t)}")
+    t
+  }
 
 }
