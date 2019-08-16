@@ -18,6 +18,7 @@ package models.declaration.notifications
 
 import java.time.LocalDateTime
 
+import models.declaration.submissions.SubmissionStatus
 import play.api.libs.json.Json
 
 case class Notification(
@@ -34,6 +35,8 @@ case class Notification(
     if (this.dateTimeIssued == that.dateTimeIssued) 0
     else if (this.dateTimeIssued.isAfter(that.dateTimeIssued)) 1
     else -1
+
+  val status: SubmissionStatus = SubmissionStatus.retrieve(this.functionCode, this.nameCode)
 }
 
 object Notification {

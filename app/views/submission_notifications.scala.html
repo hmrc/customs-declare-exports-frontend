@@ -17,11 +17,11 @@
 @import java.time.format.DateTimeFormatter
 
 @import models.declaration.notifications.Notification
-@import models.declaration.submissions.SubmissionStatus
+@import models.declaration.submissions.{Submission, SubmissionStatus}
 
 @this(main_template: views.html.main_template)
 
-@(notifications: Seq[Notification])(implicit request: Request[_], messages: Messages)
+@(submission: Submission, notifications: Seq[Notification])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("notifications.title")
@@ -31,19 +31,24 @@
 
     <h1>@messages("notifications.title")</h1>
 
-    <div>
-        <table>
-            <tr class="table-row table-head">
-                <th class="table-cell">@messages("notifications.status")</th>
-                <th class="table-cell">@messages("notifications.dateAndTime")</th>
-            </tr>
+    <table>
+        <tr class="table-row table-head">
+            <th class="table-cell">@messages("notifications.status")</th>
+            <th class="table-cell">@messages("notifications.dateAndTime")</th>
+            <th class="table-cell" colspan="2"></th>
+        </tr>
 
-            @for(notification <- notifications){
-                <tr class="table-row">
-                    <td class="table-cell">@SubmissionStatus.retrieve(notification.functionCode, notification.nameCode)</td>
-                    <td class="table-cell">@DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(notification.dateTimeIssued)</td>
-                </tr>
-            }
-        </table>
-    </div>
+        @for(notification <- notifications){
+            <tr class="table-row">
+                <td class="table-cell">@notification.status.toString</td>
+                <td class="table-cell">@DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(notification.dateTimeIssued)</td>
+                <td class="table-cell">@DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(notification.dateTimeIssued)</td>
+                <td class="table-cell">
+                @if(notification.status == SubmissionStatus.Rejected) {
+                    <a href="@routes.SubmissionsController.amend(submission.uuid)">@messages("notifications.amend")</a>
+                }
+                </td>
+            </tr>
+        }
+    </table>
 }

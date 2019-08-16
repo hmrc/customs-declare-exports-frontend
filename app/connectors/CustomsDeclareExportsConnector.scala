@@ -38,48 +38,56 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
 
   private val logger = Logger(this.getClass)
 
-  def create(
+  def createDeclaration(
     declaration: ExportsDeclaration
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] =
     httpClient
       .POST[ExportsDeclarationExchange, ExportsDeclarationExchange](
-        s"${appConfig.customsDeclareExports}${appConfig.submitDeclarationV2}",
+        s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}",
         ExportsDeclarationExchange(declaration)
       )
       .map(_.toExportsDeclaration(declaration.sessionId))
 
-  def update(
+  def updateDeclaration(
     declaration: ExportsDeclaration
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] =
     httpClient
       .PUT[ExportsDeclarationExchange, ExportsDeclarationExchange](
-        s"${appConfig.customsDeclareExports}${appConfig.submitDeclarationV2}/${declaration.id
+        s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}/${declaration.id
           .getOrElse(throw new IllegalArgumentException("Cannot update a declaration which hasnt been created first"))}",
         ExportsDeclarationExchange(declaration)
       )
       .map(_.toExportsDeclaration(declaration.sessionId))
 
-  def find(
+  def findDeclarations(
     sessionId: String,
     page: Page
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
     val pagination = Page.bindable.unbind("page", page)
     httpClient
       .GET[Paginated[ExportsDeclarationExchange]](
-        s"${appConfig.customsDeclareExports}${appConfig.submitDeclarationV2}?$pagination"
+        s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}?$pagination"
       )
       .map(_.map(_.toExportsDeclaration(sessionId)))
   }
 
-  def find(
+  def findDeclaration(
     sessionId: String,
     id: String
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ExportsDeclaration]] =
     httpClient
-      .GET[Option[ExportsDeclarationExchange]](
-        s"${appConfig.customsDeclareExports}${appConfig.submitDeclarationV2}/$id"
-      )
+      .GET[Option[ExportsDeclarationExchange]](s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}/$id")
       .map(_.map(_.toExportsDeclaration(sessionId)))
+
+  def findSubmission(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Submission]] =
+    httpClient
+      .GET[Option[Submission]](s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}/$id/submission")
+
+  def findNotifications(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
+    httpClient
+      .GET[Seq[Notification]](
+        s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}/$id/submission/notifications"
+      )
 
   def fetchNotifications()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
     httpClient.GET[Seq[Notification]](s"${appConfig.customsDeclareExports}${appConfig.fetchNotifications}")

@@ -52,7 +52,7 @@ class SubmissionService @Inject()(
     val timerContext = exportsMetrics.startTimer(submissionMetric)
     auditService.auditAllPagesUserInput(getCachedData(exportsDeclaration))
     for {
-      _ <- exportsConnector.create(exportsDeclaration).recover {
+      _ <- exportsConnector.createDeclaration(exportsDeclaration).recover {
         case error: Throwable =>
           logger.error(s"Error response from backend ${error}")
           auditService.audit(

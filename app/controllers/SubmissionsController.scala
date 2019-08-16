@@ -18,22 +18,26 @@ package controllers
 
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.AuthAction
+import controllers.declaration.SessionIdAware
 import controllers.util.SubmissionDisplayHelper
 import javax.inject.Inject
+import models.Mode
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.submissions
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class SubmissionsController @Inject()(
   authenticate: AuthAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
+  exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   submissionsPage: submissions
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport with SessionIdAware {
 
   def displayListOfSubmissions(): Action[AnyContent] = authenticate.async { implicit request =>
     for {
@@ -43,6 +47,17 @@ class SubmissionsController @Inject()(
       result = SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications)
 
     } yield Ok(submissionsPage(result.toSeq))
+  }
+
+  def amend(id: String): Action[AnyContent] = authenticate.async { implicit request =>
+    customsDeclareExportsConnector.findDeclaration(authenticatedSessionId, id) flatMap {
+      case Some(declaration) =>
+        exportsCacheService
+          .update(authenticatedSessionId, declaration)
+          .map(_ => Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.AmendMode)))
+      case _ => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
+    }
+
   }
 
 }
