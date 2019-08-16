@@ -16,10 +16,9 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.FiscalInformationController
+import controllers.declaration.LocationController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
-import forms.declaration.FiscalInformation
-import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers._
+import forms.declaration.GoodsLocation
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -29,50 +28,48 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import views.html.declaration.fiscal_information
+import views.html.declaration.goods_location
 
-class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
+class LocationControllerSpec extends ControllerSpec with OptionValues {
 
-  val mockFiscalInformationPage = mock[fiscal_information]
+  val mockGoodsLocationPage = mock[goods_location]
 
-  val controller = new FiscalInformationController(
+  val controller = new LocationController(
     mockAuthAction,
     mockJourneyAction,
-    mockExportsCacheService,
     stubMessagesControllerComponents(),
-    mockFiscalInformationPage
+    mockGoodsLocationPage,
+    mockExportsCacheService
   )(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
-    when(mockFiscalInformationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockGoodsLocationPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     super.afterEach()
-    reset(mockFiscalInformationPage)
+    reset(mockGoodsLocationPage)
   }
 
-  val itemId = "itemId"
-
   def checkViewInteractions(noOfInvocations: Int = 1): Unit =
-    verify(mockFiscalInformationPage, times(noOfInvocations)).apply(any(), any())(any(), any())
+    verify(mockGoodsLocationPage, times(noOfInvocations)).apply(any())(any(), any())
 
-  def theResponseForm: Form[FiscalInformation] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[FiscalInformation]])
-    verify(mockFiscalInformationPage).apply(any(), captor.capture())(any(), any())
+  def theResponseForm: Form[GoodsLocation] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[GoodsLocation]])
+    verify(mockGoodsLocationPage).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
-  "Fiscal Information controller" should {
+  "Location controller" should {
 
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in {
 
-        val result = controller.displayPage(itemId)(getRequest())
+        val result = controller.displayForm()(getRequest())
 
         status(result) mustBe OK
         checkViewInteractions()
@@ -81,15 +78,24 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
       }
 
       "display page method is invoked and cache contains data" in {
-        val item = anItem( withFiscalInformation(FiscalInformation(yes)))
-        withNewCaching(aDeclaration(withItems(item)))
 
-        val result = controller.displayPage(item.id)(getRequest())
+        val goodsLocation = GoodsLocation("PL", "A", "B", None, None, None, None, None)
+        withNewCaching(aDeclaration(withGoodsLocation(goodsLocation)))
+
+        val result = controller.displayForm()(getRequest())
 
         status(result) mustBe OK
         checkViewInteractions()
 
-        theResponseForm.value.value.onwardSupplyRelief mustBe yes
+        theResponseForm.value mustNot be(empty)
+        theResponseForm.value.value.country mustBe "PL"
+        theResponseForm.value.value.typeOfLocation mustBe "A"
+        theResponseForm.value.value.qualifierOfIdentification mustBe "B"
+        theResponseForm.value.value.identificationOfLocation mustBe empty
+        theResponseForm.value.value.additionalQualifier mustBe empty
+        theResponseForm.value.value.addressLine mustBe empty
+        theResponseForm.value.value.postCode mustBe empty
+        theResponseForm.value.value.city mustBe empty
       }
     }
 
@@ -97,9 +103,10 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
 
       "form is incorrect" in {
 
-        val incorrectForm = Json.toJson(FiscalInformation("IncorrectValue"))
+        val incorrectForm =
+          Json.toJson(GoodsLocation("incorrect", "incorrect", "incorrect", None, None, None, None, None))
 
-        val result = controller.saveFiscalInformation(itemId)(postRequest(incorrectForm))
+        val result = controller.saveLocation()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
         checkViewInteractions()
@@ -108,21 +115,11 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
 
     "return 303 (SEE_OTHER)" when {
 
-      "user answer yes" in {
+      "information provided by user are correct" in {
 
-        val correctForm = Json.toJson(FiscalInformation("Yes"))
+        val correctForm = Json.toJson(GoodsLocation("Poland", "A", "B", None, None, None, None, None))
 
-        val result = controller.saveFiscalInformation(itemId)(postRequest(correctForm))
-
-        status(result) mustBe SEE_OTHER
-        checkViewInteractions(0)
-      }
-
-      "user answer no" in {
-
-        val correctForm = Json.toJson(FiscalInformation("No"))
-
-        val result = controller.saveFiscalInformation(itemId)(postRequest(correctForm))
+        val result = controller.saveLocation()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
         checkViewInteractions(0)
