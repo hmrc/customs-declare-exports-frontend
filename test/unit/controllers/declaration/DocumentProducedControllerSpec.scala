@@ -25,7 +25,7 @@ import forms.declaration.additionaldocuments.DocumentWriteOffSpec.correctDocumen
 import forms.declaration.additionaldocuments.DocumentsProduced
 import models.declaration.DocumentsProducedData
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, reset, times, verify, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -34,7 +34,7 @@ import views.html.declaration.documents_produced
 
 class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
-  val documentProducedPage = mock[documents_produced]
+  val mockDocumentProducedPage = mock[documents_produced]
 
   val controller = new DocumentsProducedController(
     mockAuthAction,
@@ -42,7 +42,7 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
     mockErrorHandler,
     mockExportsCacheService,
     stubMessagesControllerComponents(),
-    documentProducedPage
+    mockDocumentProducedPage
   )(ec)
 
   val itemId = "itemId"
@@ -52,18 +52,18 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
     authorizedUser()
     setupErrorHandler()
     withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
-    when(documentProducedPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockDocumentProducedPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     super.afterEach()
-    reset(documentProducedPage)
+    reset(mockDocumentProducedPage)
   }
 
   val documentsProduced = DocumentsProduced(Some("1234"), None, None, None, None, None, None)
 
   def checkViewInteractions(noOfInvocations: Int = 1): Unit =
-    verify(documentProducedPage, times(noOfInvocations)).apply(any(), any(), any())(any(), any())
+    verify(mockDocumentProducedPage, times(noOfInvocations)).apply(any(), any(), any())(any(), any())
 
   "Document Produced controller" should {
 
@@ -79,9 +79,10 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
       "display page method is invoked with data in cache" in {
 
-        withNewCaching(aDeclaration(withItems(anItem(withDocumentsProduced(documentsProduced)))))
+        val item = anItem(withDocumentsProduced(documentsProduced))
+        withNewCaching(aDeclaration(withItems(item)))
 
-        val result = controller.displayPage(itemId)(getRequest())
+        val result = controller.displayPage(item.id)(getRequest())
 
         status(result) mustBe OK
         checkViewInteractions()

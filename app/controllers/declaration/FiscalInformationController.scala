@@ -24,7 +24,7 @@ import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.cache.ExportsCacheService
+import services.cache.{ExportItem, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.fiscal_information
 
@@ -41,11 +41,9 @@ class FiscalInformationController @Inject()(
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId) match {
-      case Some(data) =>
-        data.fiscalInformation.fold(Ok(fiscalInformationPage(itemId, form()))) { fiscalInformation =>
+      case Some(ExportItem(_, _, _, Some(fiscalInformation), _, _, _, _, _, _)) =>
           Ok(fiscalInformationPage(itemId, form().fill(fiscalInformation)))
-        }
-      case _ => Ok(fiscalInformationPage(itemId, form()))
+      case response => Ok(fiscalInformationPage(itemId, form()))
     }
   }
 
@@ -69,8 +67,8 @@ class FiscalInformationController @Inject()(
           }
         )
   }
-  //TODO Use one method instead of updateCacheForYes and updateCacheForNo
 
+  //TODO Use one method instead of updateCacheForYes and updateCacheForNo
   private def updateCacheForYes(itemId: String, sessionId: String, updatedFiscalInformation: FiscalInformation)(
     implicit req: JourneyRequest[_]
   ): Future[Unit] =
