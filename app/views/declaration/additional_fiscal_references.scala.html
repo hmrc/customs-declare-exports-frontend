@@ -14,6 +14,22 @@
  * limitations under the License.
  *@
 
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
 @import controllers.declaration.routes
 @import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 @import uk.gov.hmrc.play.views.html._
@@ -42,16 +58,16 @@
 
         @components.page_title(Some(messages("declaration.additionalFiscalReferences.title")))
 
-        <h3>@messages("declaration.additionalFiscalReferences.numbers.header")</h3>
-
         @components.fields.removable_elements_table(
-            elements = additionalReferences.map(_.asString).map(ref => LabelledValue(ref))
+          title = Some(messages("declaration.additionalFiscalReferences.numbers.header")),
+          elements = additionalReferences.map(_.asString).map(ref => LabelledValue(ref))
         )
 
-        <div id="country-of-dispatch-field" class="inline-block form-group">
+        <div id="country-of-dispatch-field">
             @components.fields.field_autocomplete(
                 form("country"),
                 messages("declaration.additionalFiscalReferences.country"),
+                Some("form-label-bold"),
                 None,
                 messages("declaration.additionalFiscalReferences.country.empty"),
                 AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)

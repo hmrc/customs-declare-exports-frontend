@@ -32,37 +32,6 @@ class NatureOfTransactionViewSpec extends ViewSpec with NatureOfTransactionMessa
   private def createView(form: Form[NatureOfTransaction] = form): Html =
     natureOfTransactionPage(form)(fakeRequest, messages)
 
-  "Nature Of Transaction View" should {
-
-    "have proper labels for messages" in {
-
-      assertMessage(pageTitle, "Nature of transaction")
-      assertMessage(header, "Consignment information")
-      assertMessage(title, "What was the nature of the transaction?")
-      assertMessage(purchaseOption, "{0}Purchase{1} - these goods were bought outright")
-      assertMessage(returnOption, "{0}Return{1} - these goods need to be returned to the sender")
-      assertMessage(donationOption, "{0}Donation{1} - these goods were donated with no payment involved")
-      assertMessage(processingOption, "{0}Processing{1} - these goods will be altered and returned")
-      assertMessage(processedOption, "{0}Processed{1} - these goods have been altered and returned")
-      assertMessage(
-        nationalPurposesOption,
-        "{0}National purposes{1} - these goods will be used for a specific national purpose"
-      )
-      assertMessage(militaryOption, "{0}Military{1} - these goods are for military or inter-governmental purposes")
-      assertMessage(
-        constructionOption,
-        "{0}Construction{1} - these goods are under a general construction or civil engineering contract"
-      )
-      assertMessage(otherOption, "{0}Other{1}")
-    }
-
-    "have proper labels for error messages" in {
-
-      assertMessage(natureOfTransactionEmpty, "Please choose nature of transaction")
-      assertMessage(natureOfTransactionError, "Nature of transaction is incorrect")
-    }
-  }
-
   "Nature Of Transaction View on empty page" should {
 
     "display page title" in {

@@ -33,23 +33,6 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
   private def createView(form: Form[DestinationCountries] = form): Html =
     destiantionCountriesSupplementaryPage(form)(fakeJourneyRequest("SMP"), messages)
 
-  "Destination Countries View" should {
-
-    "have proper messages for labels" in {
-
-      assertMessage(title, "Countries of dispatch and destination")
-      assertMessage(countryOfDestination, "5/8 What is the destination country?")
-      assertMessage(countryOfDispatch, "5/14 Enter the country of dispatch code")
-    }
-
-    "have proper messages for error labels" in {
-
-      assertMessage(countryOfDispatchError, "Country of dispatch is incorrect")
-      assertMessage(countryOfDispatchEmpty, "Country of dispatch cannot be empty")
-      assertMessage(countryOfDestinationError, "Country of destination is incorrect")
-    }
-  }
-
   "Destination Countries View on empty page" should {
 
     "display page title" in {

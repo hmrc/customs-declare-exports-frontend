@@ -46,13 +46,16 @@ case class ExportsDeclaration(
   natureOfTransaction: Option[NatureOfTransaction] = None,
   seals: Seq[Seal] = Seq.empty
 ) {
-  def itemBy(itemId: String): Option[ExportItem] = items.find(_.id.equalsIgnoreCase(itemId))
+  val lrn: Option[String] = this.consignmentReferences.map(_.lrn)
+  val ducr: Option[String] = this.consignmentReferences.flatMap(_.ducr.map(_.ducr))
 
   def updatedItem(itemId: String, update: ExportItem => ExportItem): ExportsDeclaration =
     itemBy(itemId).fold(this) { item =>
       val updated = update(item)
       copy(items = items.filterNot(_.id.equalsIgnoreCase(itemId)) + updated)
     }
+
+  def itemBy(itemId: String): Option[ExportItem] = items.find(_.id.equalsIgnoreCase(itemId))
 }
 
 object ExportsDeclaration {

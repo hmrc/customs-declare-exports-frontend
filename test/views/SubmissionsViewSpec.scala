@@ -34,18 +34,6 @@ class SubmissionsViewSpec extends ViewSpec with SubmissionsMessages with CommonM
   private val submissionsPage = app.injector.instanceOf[submissions]
   private def createView(data: Seq[(Submission, Seq[Notification])] = Seq.empty): Html = submissionsPage(data)
 
-  "submissions View" should {
-    "have message content" in {
-      assertMessage(title, "Submissions")
-      assertMessage(ducr, "DUCR")
-      assertMessage(lrn, "LRN")
-      assertMessage(mrn, "MRN")
-      assertMessage(submittedTimestamp, "Timestamp")
-      assertMessage(status, "Status")
-      assertMessage(notificationCount, "Number of notifications")
-    }
-  }
-
   "Submission View" should {
 
     "display page messages" in {

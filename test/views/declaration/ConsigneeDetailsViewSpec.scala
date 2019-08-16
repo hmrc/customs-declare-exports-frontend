@@ -33,15 +33,6 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
   val consigneeDetailsPage = app.injector.instanceOf[consignee_details]
   private def createView(form: Form[ConsigneeDetails] = form): Html = consigneeDetailsPage(form)
 
-  "Consignee Details View" should {
-
-    "have proper messages for labels" in {
-
-      assertMessage(title, messages("supplementary.consignee.title"))
-      assertMessage(hint, messages("supplementary.consignee.title.hint"))
-    }
-  }
-
   "Consignee Details View on empty page" should {
 
     "display page title" in {

@@ -41,7 +41,10 @@
     @components.error_summary(form.errors)
 
     @components.section_header(messages("supplementary.summary.parties.header"))
-    @components.page_title(Some("supplementary.additionalActors.title"), Some(""))
+
+    @components.page_title(Some("supplementary.additionalActors.title"))
+
+    <p>@messages("supplementary.additionalActors.title.hint")</p>
 
     @helper.form(DeclarationAdditionalActorsController.saveForm(), 'autoComplete -> "off") {
         @helper.CSRF.formField

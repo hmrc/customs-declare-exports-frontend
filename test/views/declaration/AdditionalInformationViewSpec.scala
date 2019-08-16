@@ -37,24 +37,6 @@ class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationM
    * as the logic depends on which button we will press (we can't emulate it
    * at view tests)
    */
-  "Additional Information View" should {
-
-    "have proper messages for labels" in {
-
-      assertMessage(additionalInformation, "Additional information")
-      assertMessage(title, "2/2 Enter additional information")
-      assertMessage(code, "Enter the union or national code")
-      assertMessage(description, "Enter the information required")
-    }
-
-    "have proper messages for error labels" in {
-
-      assertMessage(codeEmpty, "Code cannot be empty")
-      assertMessage(codeError, "Code is incorrect")
-      assertMessage(descriptionEmpty, "Information description cannot be empty")
-      assertMessage(descriptionError, "Information description is incorrect")
-    }
-  }
 
   "Additional Information View on empty page" should {
 

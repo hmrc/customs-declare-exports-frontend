@@ -31,24 +31,16 @@ import services.audit.{AuditService, AuditTypes, EventData}
 import services.cache.ExportsDeclarationBuilder
 
 import scala.concurrent.Future
-import scala.io.Source
 
 class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with ExportsDeclarationBuilder {
 
   val mockAuditService = mock[AuditService]
-  val mapper = mock[WcoMetadataMapper]
   val sessionId = "123456"
 
   override def beforeEach() {
-    reset(mockExportsCacheService, mockCustomsDeclareExportsConnector, mockAuditService, mapper)
+    reset(mockExportsCacheService, mockCustomsDeclareExportsConnector, mockAuditService)
     successfulCustomsDeclareExportsResponse()
 
-    when(mapper.toXml(any()))
-      .thenReturn(Source.fromURL(getClass.getResource("/wco_dec_metadata.xml")).mkString)
-    when(mapper.declarationUcr(any()))
-      .thenReturn(Some("8GB123456789012-1234567890QWERTYUIO"))
-    when(mapper.declarationLrn(any()))
-      .thenReturn(Some("123LRN"))
     val mockResult = mock[JSONBatchCommands.FindAndModifyCommand.FindAndModifyResult]
 
     when(mockExportsCacheService.remove(any[String])).thenReturn(Future.successful(mockResult))
@@ -68,8 +60,7 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
     mockExportsCacheService,
     mockCustomsDeclareExportsConnector,
     mockAuditService,
-    metrics,
-    mapper
+    exportsMetricsMock
   )
 
   "SubmissionService" should {
@@ -78,8 +69,8 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
       val registry = app.injector.instanceOf[Metrics].defaultRegistry
 
       val metric = MetricIdentifiers.submissionMetric
-      val timerBefore = registry.getTimers.get(metrics.timerName(metric)).getCount
-      val counterBefore = registry.getCounters.get(metrics.counterName(metric)).getCount
+      val timerBefore = registry.getTimers.get(exportsMetricsMock.timerName(metric)).getCount
+      val counterBefore = registry.getCounters.get(exportsMetricsMock.counterName(metric)).getCount
 
       val model = createFullModel()
       val result = submissionService
@@ -95,11 +86,12 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
       verify(mockAuditService)
         .audit(ArgumentMatchers.eq(AuditTypes.Submission), ArgumentMatchers.eq[Map[String, String]](auditData))(any())
 
-      registry.getTimers.get(metrics.timerName(metric)).getCount mustBe >(timerBefore)
-      registry.getCounters.get(metrics.counterName(metric)).getCount mustBe >(counterBefore)
+      registry.getTimers.get(exportsMetricsMock.timerName(metric)).getCount mustBe >(timerBefore)
+      registry.getCounters.get(exportsMetricsMock.counterName(metric)).getCount mustBe >(counterBefore)
     }
 
   }
 
-  private def createFullModel(): ExportsDeclaration = aDeclaration()
+  private def createFullModel(): ExportsDeclaration =
+    aDeclaration(withConsignmentReferences(ducr = Some("8GB123456789012-1234567890QWERTYUIO"), lrn = "123LRN"))
 }

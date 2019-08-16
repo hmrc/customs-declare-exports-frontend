@@ -17,6 +17,7 @@
 package connectors
 
 import config.AppConfig
+import connectors.CustomsDeclareExportsConnector.toXml
 import connectors.exchange.ExportsDeclarationExchange
 import javax.inject.{Inject, Singleton}
 import models.declaration.notifications.Notification
@@ -27,7 +28,6 @@ import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.libs.json.{Json, Writes}
 import play.api.mvc.Codec
-import services.WcoMetadataMapper
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import wco.datamodel.wco.documentmetadata_dms._2.MetaData
@@ -35,13 +35,14 @@ import wco.datamodel.wco.documentmetadata_dms._2.MetaData
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CustomsDeclareExportsConnector @Inject()(
-  appConfig: AppConfig,
-  httpClient: HttpClient,
-  wcoMetadataMapper: WcoMetadataMapper
-) {
+class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient) {
 
   private val logger = Logger(this.getClass)
+  
+  private def logPayload[T](prefix: String, t: T)(implicit wts: Writes[T]): T = {
+    Logger.debug(s"$prefix: ${Json.toJson(t)}")
+    t
+  }
 
   def create(
     declaration: ExportsDeclaration
@@ -116,7 +117,7 @@ class CustomsDeclareExportsConnector @Inject()(
     httpClient
       .POSTString[CancellationStatus](
         s"${appConfig.customsDeclareExports}${appConfig.cancelDeclaration}",
-        wcoMetadataMapper.toXml(metadata),
+        toXml(metadata),
         Seq(
           (HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8)),
           (HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8)),
@@ -127,10 +128,19 @@ class CustomsDeclareExportsConnector @Inject()(
         logger.debug(s"CUSTOMS_DECLARE_EXPORTS cancel declaration response is --> ${response.toString}")
         response
       }
+}
 
-  private def logPayload[T](prefix: String, t: T)(implicit wts: Writes[T]): T = {
-    Logger.debug(s"$prefix: ${Json.toJson(t)}")
-    t
+object CustomsDeclareExportsConnector {
+  def toXml(metaData: MetaData): String = {
+    import java.io.StringWriter
+
+    import javax.xml.bind.{JAXBContext, Marshaller}
+
+    val jaxbMarshaller = JAXBContext.newInstance(classOf[MetaData]).createMarshaller
+    jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true)
+
+    val sw = new StringWriter
+    jaxbMarshaller.marshal(metaData, sw)
+    sw.toString
   }
-
 }

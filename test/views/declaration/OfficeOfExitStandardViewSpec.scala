@@ -34,23 +34,6 @@ class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages wi
 
   "Office of Exit View for standard" should {
 
-    "have proper messages for labels" in {
-
-      assertMessage(officeOfExit, "5/12 Where is the office of exit?")
-      assertMessage(title, "Office of exit")
-      assertMessage(hint, "This is an 8 digit code")
-      assertMessage(presentationOffice, "5/26 Where is the office of presentation?")
-      assertMessage(presentationOfficeHint, "Enter the 8 digit reference")
-      assertMessage(circumstancesCode, "1/7 Does the declaration relate to an express consignment?")
-    }
-
-    "have proper messages for error labels" in {
-
-      assertMessage(presentationOfficeLength, "The code must be 8 characters")
-      assertMessage(presentationOfficeSpecialCharacters, "Enter a reference in the correct format")
-      assertMessage(circumstancesCodeEmpty, "Please provide an answer on this question")
-    }
-
     "Office of Exit View on empty page for standard" should {
 
       "display page title" in {

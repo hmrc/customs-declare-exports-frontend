@@ -17,6 +17,7 @@
 package controllers.actions
 
 import com.google.inject.{ImplementedBy, Inject}
+import com.kenshoo.play.metrics.Metrics
 import models.requests.AuthenticatedRequest
 import models.{IdentityData, SignedInUser}
 import play.api.Logger
@@ -29,26 +30,34 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionImpl @Inject()(override val authConnector: AuthConnector, mcc: MessagesControllerComponents)
-    extends AuthAction with AuthorisedFunctions {
+class AuthActionImpl @Inject()(
+  override val authConnector: AuthConnector,
+  mcc: MessagesControllerComponents,
+  metrics: Metrics
+) extends AuthAction with AuthorisedFunctions {
 
   implicit override val executionContext: ExecutionContext = mcc.executionContext
   override val parser: BodyParser[AnyContent] = mcc.parsers.defaultBodyParser
   private val logger = Logger(classOf[AuthActionImpl])
 
+  private val authTimer = metrics.defaultRegistry.timer("upstream.auth.timer")
+
+  private val authData = credentials and name and email and externalId and internalId and affinityGroup and allEnrolments and
+    agentCode and confidenceLevel and nino and saUtr and dateOfBirth and agentInformation and groupIdentifier and
+    credentialRole and mdtpInformation and itmpName and itmpDateOfBirth and itmpAddress and credentialStrength and loginTimes
+
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
+
     implicit val hc: HeaderCarrier =
       HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
+    val authorisation = authTimer.time()
     authorised(Enrolment("HMRC-CUS-ORG"))
-      .retrieve(
-        credentials and name and email and externalId and internalId and affinityGroup and allEnrolments and
-          agentCode and confidenceLevel and nino and saUtr and dateOfBirth and agentInformation and groupIdentifier and
-          credentialRole and mdtpInformation and itmpName and itmpDateOfBirth and itmpAddress and credentialStrength and loginTimes
-      ) {
+      .retrieve(authData) {
         case credentials ~ name ~ email ~ externalId ~ internalId ~ affinityGroup ~ allEnrolments ~ agentCode ~
               confidenceLevel ~ authNino ~ saUtr ~ dateOfBirth ~ agentInformation ~ groupIdentifier ~
               credentialRole ~ mdtpInformation ~ itmpName ~ itmpDateOfBirth ~ itmpAddress ~ credentialStrength ~ loginTimes =>
+          authorisation.stop()
           val eori = getEoriFromEnrolments(allEnrolments)
 
           validateEnrollments(eori, externalId)

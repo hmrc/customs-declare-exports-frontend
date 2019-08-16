@@ -43,6 +43,7 @@
             @components.fields.field_autocomplete(
                 form("countryOfDispatch"),
                 "declaration.destinationCountries.countryOfDispatch",
+                Some("form-label-bold"),
                 Some(messages("declaration.destinationCountries.countryOfDispatch.hint")),
                 messages("declaration.destinationCountries.countryOfDispatch.empty"),
                 AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
@@ -53,6 +54,7 @@
             @components.fields.field_autocomplete(
                 form("countryOfDestination"),
                 "declaration.destinationCountries.countryOfDestination",
+                Some("form-label-bold"),
                 Some(messages("declaration.destinationCountries.countryOfDestination.hint")),
                 messages("declaration.destinationCountries.countryOfDestination.empty"),
                 AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)

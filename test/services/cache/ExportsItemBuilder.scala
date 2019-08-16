@@ -50,6 +50,9 @@ trait ExportsItemBuilder {
   def withCommodityMeasure(commodityMeasure: CommodityMeasure): ItemModifier =
     _.copy(commodityMeasure = Some(commodityMeasure))
 
+  def withFiscalInformation(fiscalInformation: FiscalInformation): ItemModifier =
+    _.copy(fiscalInformation = Some(fiscalInformation))
+
   def withAdditionalFiscalReferenceData(data: AdditionalFiscalReferencesData): ItemModifier =
     _.copy(additionalFiscalReferencesData = Some(data))
 

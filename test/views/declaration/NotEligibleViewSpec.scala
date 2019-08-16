@@ -28,26 +28,6 @@ class NotEligibleViewSpec extends ViewSpec with NotEligibleMessages with CommonM
   private val notEligiblePage = app.injector.instanceOf[not_eligible]
   private def createView(): Html = notEligiblePage()(fakeRequest, messages)
 
-  "Not Eligible View" should {
-
-    "have proper messages for labels" in {
-
-      assertMessage(title, "You need to use a different")
-      assertMessage(titleLineTwo, "service")
-      assertMessage(
-        descriptionPreUrl,
-        "This service is only for exports being dispatched outside the EU. You will need to use"
-      )
-      assertMessage(descriptionUrl, "CHIEF")
-      assertMessage(descriptionPostUrl, "to make your declaration.")
-      assertMessage(referenceTitle, "Help and support")
-      assertMessage(
-        referenceText,
-        "If you are having problems with making a declaration, phone: 0300 333 3333. Open 8am to 6pm, Monday to Friday (closed bank holidays)."
-      )
-    }
-  }
-
   "Not Eligible View on empty page" should {
 
     "display page title" in {

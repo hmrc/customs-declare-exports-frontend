@@ -32,32 +32,6 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
   private def createView(form: Form[PackageInformation] = form): Html =
     packageInformationPage(itemId, form, Seq())(fakeRequest, messages)
 
-  "Package Information View" should {
-
-    "have proper messages for labels" in {
-
-      assertMessage(title, "Package Information")
-      assertMessage(remove, "Remove Packaging Information")
-      assertMessage(tableHeading, "1 Package added")
-      assertMessage(tableMultipleHeading, "{0} Packages added")
-      assertMessage(typesOfPackages, "6/9 Package Type")
-      assertMessage(numberOfPackages, "6/10 Number of this package type")
-      assertMessage(shippingMarks, "6/11 Shipping marks")
-      assertMessage(shippingMarksHint, "Any mark or numbers on transport units and packages which can help us find it")
-    }
-
-    "have proper messages for error labels" in {
-
-      assertMessage(typesOfPackagesEmpty, "Type of package can not be empty")
-      assertMessage(typesOfPackagesError, "Type of package should be a 2 character code")
-      assertMessage(numberOfPackagesEmpty, "Number of packages can not be empty")
-      assertMessage(numberOfPackagesError, "Number of packages must be greater than 0 and less than 99999")
-      assertMessage(shippingMarksEmpty, "Shipping marks can not be empty")
-      assertMessage(shippingMarksLengthError, "Shipping marks can only be up to 42 characters")
-      assertMessage(shippingMarksCharacterError, "Shipping marks can not accept invalid characters")
-    }
-  }
-
   "Package Information View on empty page" should {
 
     "display page title" in {

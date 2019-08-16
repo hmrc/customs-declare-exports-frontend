@@ -33,25 +33,6 @@ class TransportInformationContainersViewSpec
   private def createView(form: Form[TransportInformationContainer] = form): Html =
     transportContainersPage(form, Seq())(fakeRequest, messages)
 
-  "Transport Information Containers View" should {
-
-    "have proper labels for messages" in {
-
-      assertMessage(container, "7/2 Were the goods in a container?")
-      assertMessage(containersTitle, "7/10 Transport Information Containers")
-      assertMessage(transportContainerId, "7/10 Enter the container ID")
-      assertMessage(ticTitle, "Container ID")
-    }
-
-    "have proper labels for error messages" in {
-
-      assertMessage(ticEmpty, "Container ID cannot be empty")
-      assertMessage(ticError, "Container ID is incorrect")
-      assertMessage(ticErrorAlphaNumeric, "Only alphanumeric characters allowed")
-      assertMessage(ticErrorLength, "Only 17 alphanumeric characters are allowed")
-    }
-  }
-
   "Transport Information Containers View on empty page" should {
 
     "display page title" in {
@@ -68,13 +49,13 @@ class TransportInformationContainersViewSpec
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-field>label>span").text() must be(messages(transportContainerId))
-      getElementById(view, "id").attr("value") must be("")
+      view.getElementById("id").attr("value") must be("")
+      view.getElementById("id-label").text() must be(messages(transportContainerId))
     }
 
     "display 'Back' button that links to 'Transport Information' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/transport-details")
@@ -98,7 +79,7 @@ class TransportInformationContainersViewSpec
 
       val view = createView(TransportInformationContainer.form().fill(TransportInformationContainer("Test")))
 
-      getElementById(view, "id").attr("value") must be("Test")
+      view.getElementById("id").attr("value") must be("Test")
     }
 
     "display one row with data in table" in {

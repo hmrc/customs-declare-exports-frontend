@@ -40,7 +40,7 @@ class BorderTransportViewSpec extends BorderTransportFields with CommonMessages 
     "display page title" in {
       val view = createView()
 
-      getElementById(view, "title").text() must be(messages("supplementary.transportInfo.title"))
+      view.getElementById("title").text() must be(messages("supplementary.transportInfo.title"))
     }
 
     "display header" in {
@@ -51,7 +51,7 @@ class BorderTransportViewSpec extends BorderTransportFields with CommonMessages 
 
     "display 'Back' button that links to 'Warehouse' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/warehouse")
@@ -66,20 +66,22 @@ class BorderTransportViewSpec extends BorderTransportFields with CommonMessages 
 
     "have labels for all fields" in {
       val view = createView()
-      getElementById(view, "borderModeOfTransportCode")
+      view
+        .getElementById("borderModeOfTransportCode")
         .getElementsByClass("form-hint")
-        .text() mustBe "The transport that the goods were loaded on when they crossed the border"
+        .text() mustBe messages("supplementary.transportInfo.borderTransportMode.header.hint")
 
-      getElementById(view, "borderModeOfTransportCode")
+      view
+        .getElementById("borderModeOfTransportCode")
         .getElementsByTag("legend")
         .text()
-        .startsWith("7/4 What transport was used at the border?") mustBe true
+        .startsWith(messages("supplementary.transportInfo.borderTransportMode.header")) mustBe true
 
-      getElementById(view, "Border_Sea-label").text() mustBe "Sea transport"
-      getElementById(view, "Border_Road-label").text() mustBe "Road transport"
-      getElementById(view, "Border_Rail-label").text() mustBe "Rail transport"
-      getElementById(view, "Border_Air-label").text() mustBe "Air transport"
-      getElementById(view, "Border_PostalOrMail-label").text() mustBe "Postal or Mail"
+      view.getElementById("Border_Sea-label").text() mustBe "Sea transport"
+      view.getElementById("Border_Road-label").text() mustBe "Road transport"
+      view.getElementById("Border_Rail-label").text() mustBe "Rail transport"
+      view.getElementById("Border_Air-label").text() mustBe "Air transport"
+      view.getElementById("Border_PostalOrMail-label").text() mustBe "Postal or Mail"
 
       view.body must include(expBorderModeOfTransportCode.body)
       view.body must include(expMeansOfTransportOnDepartureType.body)

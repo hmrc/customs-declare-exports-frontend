@@ -33,59 +33,6 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
   private def createView(form: Form[ItemType] = form, journeyType: String): Html =
     itemTypePage(itemId, form, false)(fakeJourneyRequest(journeyType), messages)
 
-  /*
-   * Validation for the errors is done in ItemTypeController
-   */
-  "Item Type View" should {
-
-    "have proper labels for messages" in {
-
-      assertMessage(title, "Item type")
-      assertMessage(cncHeader, "6/14 What is the Combined Nomenclature Commodity Code for this item?")
-      assertMessage(cncHeaderHint, "Up to 8 digits")
-      assertMessage(taricHeader, "6/16 Do you need to enter any TARIC additional codes?")
-      assertMessage(taricHeaderHint, "Up to 4 digits. If no additional code is required, leave blank")
-      assertMessage(nacHeader, "6/17 Enter the National Additional Code")
-      assertMessage(nacHeaderHint, "This is a 4 character code. If no additional code is required, leave blank")
-      assertMessage(descriptionHeader, "6/8 Enter the trade description of the goods")
-      assertMessage(
-        descriptionHeaderHint,
-        "Include information on size, weight or other physical criteria where this is required by the commodity code"
-      )
-      assertMessage(cusCodeHeader, "6/13 What is the CUS Code for this item?")
-      assertMessage(cusCodeHeaderHint, "Up to 8 digits")
-      assertMessage(unDangerousGoodsCodeHeader, "6/12 Does the item have a UN Dangerous Goods Code?")
-      assertMessage(unDangerousGoodsCodeHeaderHint, "A 4 digit code.")
-      assertMessage(statisticalHeader, "8/6 What is the statistical value of the items?")
-      assertMessage(
-        statisticalHeaderHint,
-        "The approximate value of the goods at the time they leave the EU. It should be entered in GBP only."
-      )
-    }
-
-    "have proper labels for error messages" in {
-      assertMessage(cncErrorEmpty, "Combined Nomenclature Commodity Code cannot be empty")
-      assertMessage(cncErrorLength, "Combined Nomenclature Commodity Code cannot be longer than 8 characters")
-      assertMessage(cncErrorSpecialCharacters, "Combined Nomenclature Commodity Code cannot contain special characters")
-      assertMessage(taricErrorLength, "TARIC additional code must be exactly 4 characters long")
-      assertMessage(taricErrorSpecialCharacters, "TARIC additional code cannot contain specialCharacters")
-      assertMessage(taricErrorMaxAmount, "You cannot add more codes")
-      assertMessage(taricErrorDuplicate, "TARIC additional codes cannot contain duplicates")
-      assertMessage(nacErrorInvalid, "National Additional Code must be valid")
-      assertMessage(nacErrorMaxAmount, "You cannot add more codes")
-      assertMessage(nacErrorDuplicate, "National Additional Codes cannot contain duplicates")
-      assertMessage(descriptionErrorEmpty, "Description cannot be empty")
-      assertMessage(descriptionErrorLength, "Description cannot be longer than 280 characters")
-      assertMessage(cusCodeErrorLength, "CUS Code must be exactly 8 characters long")
-      assertMessage(cusCodeErrorSpecialCharacters, "CUS Code cannot contain special characters")
-      assertMessage(unDangerousGoodsCodeErrorLength, "The code must be 4 characters")
-      assertMessage(unDangerousGoodsCodeErrorSpecialCharacters, "Enter a UN Dangerous Goods Code in the correct format")
-      assertMessage(statisticalErrorEmpty, "The statistical value cannot be empty")
-      assertMessage(statisticalErrorLength, "Entered statistical value is too long")
-      assertMessage(statisticalErrorWrongFormat, "Format of this value is incorrect")
-    }
-  }
-
   "Item Type View on empty page" when {
 
     "used for Standard Declaration journey" should {

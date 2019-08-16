@@ -39,8 +39,7 @@ class SubmissionService @Inject()(
   cacheService: ExportsCacheService,
   exportsConnector: CustomsDeclareExportsConnector,
   auditService: AuditService,
-  exportsMetrics: ExportsMetrics,
-  mapper: WcoMetadataMapper
+  exportsMetrics: ExportsMetrics
 ) {
 
   private val logger = Logger(this.getClass())
@@ -51,35 +50,30 @@ class SubmissionService @Inject()(
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]] = {
 
     val timerContext = exportsMetrics.startTimer(submissionMetric)
-    val data = format(exportsDeclaration)
     auditService.auditAllPagesUserInput(getCachedData(exportsDeclaration))
     for {
       _ <- exportsConnector.create(exportsDeclaration).recover {
         case error: Throwable =>
           logger.error(s"Error response from backend ${error}")
-          auditService.audit(AuditTypes.Submission, auditData(data.lrn, data.ducr, Failure.toString))
+          auditService.audit(
+            AuditTypes.Submission,
+            auditData(exportsDeclaration.lrn, exportsDeclaration.ducr, Failure.toString)
+          )
       }
 
       lrn <- cacheService
-      .remove(sessionId)
-      .map { _ =>
-        auditService.audit(AuditTypes.Submission, auditData(data.lrn, data.ducr, Success.toString))
-        exportsMetrics.incrementCounter(submissionMetric)
-        timerContext.stop()
-        data.lrn
-      }
+        .remove(sessionId)
+        .map { _ =>
+          auditService.audit(
+            AuditTypes.Submission,
+            auditData(exportsDeclaration.lrn, exportsDeclaration.ducr, Success.toString)
+          )
+          exportsMetrics.incrementCounter(submissionMetric)
+          timerContext.stop()
+          exportsDeclaration.lrn
+        }
 
     } yield lrn
-  }
-
-  private def format(exportsCacheModel: ExportsDeclaration): FormattedData = {
-    val metaData = mapper.produceMetaData(exportsCacheModel)
-
-    val lrn = mapper.declarationLrn(metaData)
-    val ducr = mapper.declarationUcr(metaData)
-    val payload = mapper.toXml(metaData)
-
-    FormattedData(lrn, ducr, payload)
   }
 
   private def auditData(lrn: Option[String], ducr: Option[String], result: String)(
@@ -97,4 +91,5 @@ class SubmissionService @Inject()(
     Json.toJson(exportsCacheModel).as[JsObject]
 
   protected case class FormattedData(lrn: Option[String], ducr: Option[String], payload: String)
+
 }

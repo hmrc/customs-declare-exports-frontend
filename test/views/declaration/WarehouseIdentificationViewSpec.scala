@@ -36,41 +36,6 @@ class WarehouseIdentificationViewSpec extends ViewSpec with WarehouseIdentificat
 
   "Warehouse Identification View" should {
 
-    "have proper labels for messages" in {
-
-      assertMessage(title, "Enter more details about the warehouse")
-      assertMessage(titleHint, "Locations")
-      assertMessage(identificationType, "2/7 Warehouse type")
-      assertMessage(identificationNumber, "2/7 Enter the warehouse identification number")
-      assertMessage(identificationNumberHint, "For example, 1234567GB")
-      assertMessage(supervisingCustomsOffice, "5/27 Where is the supervising customs office?")
-      assertMessage(supervisingCustomsOfficeHint, "This is an 8 digit code")
-      assertMessage(inlandTransportMode, "7/5 What was the inland mode of transport?")
-      assertMessage(
-        inlandTransportModeHint,
-        "The transport that will move the goods from their inland supervision to the port of arrival"
-      )
-      assertMessage(sea, "Sea transport")
-      assertMessage(rail, "Rail transport")
-      assertMessage(road, "Road transport")
-      assertMessage(air, "Air transport")
-      assertMessage(postalOrMail, "Postal or Mail")
-      assertMessage(fixedTransportInstallations, "Fixed transport installations")
-      assertMessage(inlandWaterway, "Inland waterway transport")
-      assertMessage(unknown, "Mode unknown, for example own propulsion")
-    }
-
-    "have proper error labels for messages" in {
-
-      assertMessage(identificationNumberError, "Incorrect Identification Number")
-      assertMessage(identificationNumberEmpty, "Enter the warehouse identification number")
-      assertMessage(supervisingCustomsOfficeError, "Supervising customs office is incorrect")
-      assertMessage(inlandTransportModeError, "Please, choose valid inland mode of transport")
-    }
-  }
-
-  "Warehouse Identification View" should {
-
     "display page title" in {
 
       getElementByCss(createView(), "title").text() must be(messages(title))

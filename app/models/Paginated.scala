@@ -28,16 +28,21 @@ object Paginated {
   def empty[T](page: Page) = Paginated(Seq.empty[T], page, 0)
 
   implicit def reads[T](implicit fmt: Reads[T]): Reads[Paginated[T]] = new Reads[Paginated[T]] {
-    override def reads(json: JsValue): JsResult[Paginated[T]] = Try { new Paginated[T](
-      (json \ "results") match {
-        case JsDefined(JsArray(results)) => results.map(_.as[T])
-        case _ => throw new IllegalArgumentException("Invalid result set")
-      },
-      (json \ "page").as[Page],
-      (json \ "total").as[Long]
-    )}.map(JsSuccess(_)).recover {
-      case t: Throwable => JsError(t.getMessage)
-    }.get
+    override def reads(json: JsValue): JsResult[Paginated[T]] =
+      Try {
+        new Paginated[T](
+          (json \ "results") match {
+            case JsDefined(JsArray(results)) => results.map(_.as[T])
+            case _                           => throw new IllegalArgumentException("Invalid result set")
+          },
+          (json \ "page").as[Page],
+          (json \ "total").as[Long]
+        )
+      }.map(JsSuccess(_))
+        .recover {
+          case t: Throwable => JsError(t.getMessage)
+        }
+        .get
   }
 
   implicit def writes[T](implicit fmt: Writes[T]): Writes[Paginated[T]] = new Writes[Paginated[T]] {

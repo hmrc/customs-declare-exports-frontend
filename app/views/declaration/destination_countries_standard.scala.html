@@ -35,24 +35,26 @@
 
         @components.error_summary(form.errors)
 
+        @components.section_header(messages("declaration.summary.locations.header"))
+
         @components.page_title(Some("declaration.destinationCountries.title"))
 
-        <div id="country-of-dispatch-field" class="inline-block form-group">
+        <div id="country-of-dispatch-field">
             @components.fields.field_autocomplete(
                 form("countryOfDispatch"),
                 "declaration.destinationCountries.countryOfDispatch",
+                Some("form-label-bold"),
                 Some(messages("declaration.destinationCountries.countryOfDispatch.hint")),
                 messages("declaration.destinationCountries.countryOfDispatch.empty"),
                 AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
             )
         </div>
 
-        <h2>Countries of routing</h2>
-        <div id="country-of-routing-field" class="inline-block form-group">
+        <div id="country-of-routing-field">
             @components.fields.field_multiple_values(
                 field = form("countriesOfRouting"),
-                label = messages("declaration.itemType.nationalAdditionalCode.header"),
-                hint = None,
+                label = messages("declaration.destinationCountries.routing"),
+                hint = Some(messages("declaration.destinationCountries.routing.hint")),
                 elements = routingCountries,
                 labelClass = Some("bold-small"),
                 input = components.inputs.input_autocomplete(
@@ -63,11 +65,12 @@
             )
         </div>
 
-        <div id="country-of-destination-field" class="inline-block form-group">
+        <div id="country-of-destination-field">
             @components.fields.field_autocomplete(
                 form("countryOfDestination"),
                 "declaration.destinationCountries.countryOfDestination",
-                Some(messages("declaration.destinationCountries.countryOfDestination.hint")),
+                Some("form-label-bold"),
+                None,
                 messages("declaration.destinationCountries.countryOfDestination.empty"),
                 AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
             )

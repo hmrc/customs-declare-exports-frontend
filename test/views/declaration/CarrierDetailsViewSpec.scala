@@ -33,15 +33,6 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
   private val carrierDetailsPage = app.injector.instanceOf[carrier_details]
   private def createView(form: Form[CarrierDetails] = form): Html = carrierDetailsPage(form)
 
-  "Carrier Details View" should {
-
-    "have proper messages for labels" in {
-
-      assertMessage(title, messages("supplementary.carrier.title"))
-      assertMessage(hint, messages("supplementary.carrier.title.hint"))
-    }
-  }
-
   "Carrier Details View on empty page" should {
 
     "display page title" in {

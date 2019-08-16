@@ -33,11 +33,11 @@ import unit.tools.Stubs
 
 import scala.concurrent.Future
 
-trait MockAuthAction extends MockitoSugar with Stubs {
+trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks {
 
   val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
-  val mockAuthAction = new AuthActionImpl(mockAuthConnector, stubMessagesControllerComponents())
+  val mockAuthAction = new AuthActionImpl(mockAuthConnector, stubMessagesControllerComponents(), metricsMock)
 
   val exampleUser = newUser("12345", "external1")
 

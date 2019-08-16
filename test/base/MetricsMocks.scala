@@ -14,25 +14,18 @@
  * limitations under the License.
  */
 
-package models
+package base
 
-import org.scalatestplus.play.PlaySpec
-import play.api.libs.json.{JsSuccess, Json}
+import com.codahale.metrics.MetricRegistry
+import com.kenshoo.play.metrics.Metrics
 
-class PaginatedTest extends PlaySpec {
+trait MetricsMocks {
+  val metricsMock: Metrics = new Metrics {
+    override def defaultRegistry: MetricRegistry = metricRegistryMock
 
-  private val results = Paginated(results = Seq("value"), Page(index = 1, size = 2), total = 3)
-  private val json =
-    Json.obj("results" -> Json.arr("value"), "page" -> Json.obj("index" -> 1, "size" -> 2), "total" -> 3)
-
-  "Paginated" should {
-    "convert to JSON" in {
-      Json.toJson[Paginated[String]](results) mustBe json
-    }
-
-    "convert from JSON" in {
-      Json.fromJson[Paginated[String]](json) mustBe JsSuccess(results)
-    }
+    override def toJson: String = ""
   }
+
+  val metricRegistryMock = new MetricRegistry()
 
 }

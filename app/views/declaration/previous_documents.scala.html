@@ -81,11 +81,12 @@
             )
         )
 
-        <div id="document-type-field" class="inline-block form-group">
+        <div id="document-type-field">
             @components.fields.field_autocomplete(
                 form("documentType"),
                 "supplementary.previousDocuments.documentType",
-                Some(messages("supplementary.previousDocuments.documentType.hint")),
+                Some("form-label-bold"),
+                None,
                 messages("supplementary.previousDocuments.documentType.empty"),
                 AutoCompleteItem.fromDocumentType(DocumentType.allDocuments)
             )

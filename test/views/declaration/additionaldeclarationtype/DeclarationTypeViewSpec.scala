@@ -40,33 +40,6 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
   private def createView(form: Form[AdditionalDeclarationType], journeyType: String): Html =
     declarationTypePage(form)(fakeJourneyRequest(journeyType), messages)
 
-  "Declaration Type View" should {
-
-    "have proper messages for labels" in {
-
-      assertMessage(title, "Declaration Type")
-      assertMessage(headerSupplementaryDec, "1/2 Which of the following best describes you?")
-      assertMessage(headerStandardDec, "1/2 Which of the following best describes you?")
-      assertMessage(hint, "Hint text if needed here")
-      assertMessage(
-        simplified,
-        "I am completing a supplementary declaration for goods that have been under a Simplified Declaration procedure (SDP)"
-      )
-      assertMessage(
-        standard,
-        "I am completing a supplementary declaration for goods that have been under EIDR procedures"
-      )
-      assertMessage(preLodged, "Pre-lodged")
-      assertMessage(frontier, "Frontier")
-    }
-
-    "have proper messages for error labels" in {
-
-      assertMessage(errorMessageEmpty, "Please, choose declaration type")
-      assertMessage(errorMessageIncorrect, "Please, choose valid declaration type")
-    }
-  }
-
   "Declaration Type View on empty page" should {
 
     "display page title" when {
@@ -125,15 +98,14 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
 
         val view = createView(formStandard, StandardDec)
 
-        getElementByCss(view, "legend>h1").text() must be(messages(headerStandardDec))
-        getElementByCss(view, "legend>span").text() must be(messages(hint))
+        view.getElementById("title").text() must be(messages(headerStandardDec))
       }
 
       "used for Supplementary Declaration journey" in {
 
         val view = createView(formSupplementary, SupplementaryDec)
 
-        getElementByCss(view, "legend>h1").text() must be(messages(headerSupplementaryDec))
+        view.getElementById("title").text() must be(messages(headerSupplementaryDec))
       }
     }
 
@@ -143,16 +115,16 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
 
         val view = createView(formStandard.fill(AdditionalDeclarationType("")), StandardDec)
 
-        val optionOne = getElementById(view, "PreLodged")
+        val optionOne = view.getElementById("PreLodged")
         optionOne.attr("checked") must be("")
 
-        val optionOneLabel = getElementByCss(view, "#additionalDeclarationType>div:nth-child(2)>label")
+        val optionOneLabel = view.getElementById("PreLodged-label")
         optionOneLabel.text() must be(messages(preLodged))
 
-        val optionTwo = getElementById(view, "Frontier")
+        val optionTwo = view.getElementById("Frontier")
         optionTwo.attr("checked") must be("")
 
-        val optionTwoLabel = getElementByCss(view, "#additionalDeclarationType>div:nth-child(3)>label")
+        val optionTwoLabel = view.getElementById("Frontier-label")
         optionTwoLabel.text() must be(messages(frontier))
       }
 
@@ -160,13 +132,13 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
 
         val view = createView(formSupplementary.fill(AdditionalDeclarationType("")), SupplementaryDec)
 
-        val optionOne = getElementById(view, "Simplified")
+        val optionOne = view.getElementById("Simplified")
         optionOne.attr("checked") must be("")
 
         val optionOneLabel = getElementByCss(view, "#additionalDeclarationType>div:nth-child(2)>label")
         optionOneLabel.text() must be(messages(simplified))
 
-        val optionTwo = getElementById(view, "Standard")
+        val optionTwo = view.getElementById("Standard")
         optionTwo.attr("checked") must be("")
 
         val optionTwoLabel = getElementByCss(view, "#additionalDeclarationType>div:nth-child(3)>label")
@@ -242,10 +214,10 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
 
         val view = createView(formStandard.fill(AdditionalDeclarationType(PreLodged)), StandardDec)
 
-        val optionOne = getElementById(view, "PreLodged")
+        val optionOne = view.getElementById("PreLodged")
         optionOne.attr("checked") must be("checked")
 
-        val optionTwo = getElementById(view, "Frontier")
+        val optionTwo = view.getElementById("Frontier")
         optionTwo.attr("checked") must be("")
       }
 
@@ -253,10 +225,10 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
 
         val view = createView(formSupplementary.fill(AdditionalDeclarationType(Simplified)), SupplementaryDec)
 
-        val optionOne = getElementById(view, "Simplified")
+        val optionOne = view.getElementById("Simplified")
         optionOne.attr("checked") must be("checked")
 
-        val optionTwo = getElementById(view, "Standard")
+        val optionTwo = view.getElementById("Standard")
         optionTwo.attr("checked") must be("")
       }
     }
@@ -267,10 +239,10 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
 
         val view = createView(formStandard.fill(AdditionalDeclarationType(Frontier)), StandardDec)
 
-        val optionOne = getElementById(view, "PreLodged")
+        val optionOne = view.getElementById("PreLodged")
         optionOne.attr("checked") must be("")
 
-        val optionTwo = getElementById(view, "Frontier")
+        val optionTwo = view.getElementById("Frontier")
         optionTwo.attr("checked") must be("checked")
       }
 
@@ -278,10 +250,10 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
 
         val view = createView(formSupplementary.fill(AdditionalDeclarationType(Standard)), SupplementaryDec)
 
-        val optionOne = getElementById(view, "Simplified")
+        val optionOne = view.getElementById("Simplified")
         optionOne.attr("checked") must be("")
 
-        val optionTwo = getElementById(view, "Standard")
+        val optionTwo = view.getElementById("Standard")
         optionTwo.attr("checked") must be("checked")
       }
     }

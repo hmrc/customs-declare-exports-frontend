@@ -96,7 +96,7 @@ trait CustomExportsBaseSpec
 
   val messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
 
-  val metrics = app.injector.instanceOf[ExportsMetrics]
+  val exportsMetricsMock = app.injector.instanceOf[ExportsMetrics]
 
   val cfg: CSRFConfig = injector.instanceOf[CSRFConfigProvider].get
 
