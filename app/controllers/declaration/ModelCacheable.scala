@@ -17,9 +17,9 @@
 package controllers.declaration
 
 import models.ExportsDeclaration
-import models.requests.{AuthenticatedRequest, JourneyRequest}
-import play.api.mvc.AnyContent
+import models.requests.JourneyRequest
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,7 +30,7 @@ trait ModelCacheable {
   protected def getAndUpdateExportsDeclaration(
     sessionId: String,
     update: ExportsDeclaration => Future[Option[ExportsDeclaration]]
-  )(implicit ec: ExecutionContext): Future[Option[ExportsDeclaration]] =
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ExportsDeclaration]] =
     exportsCacheService.get(sessionId).flatMap {
       case Some(model) => update(model)
       case _           => Future.successful(None)
@@ -38,30 +38,22 @@ trait ModelCacheable {
 
   protected def updateExportsDeclarationSyncDirect(
     update: ExportsDeclaration => ExportsDeclaration
-  )(implicit ec: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    exportsCacheService.update(request.journeySessionId, update(request.cacheModel))
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    exportsCacheService.update(update(request.cacheModel))
 
   protected def updateExportsDeclarationSync(
     update: ExportsDeclaration => Option[ExportsDeclaration]
-  )(implicit ec: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+  )(implicit hc: HeaderCarrier, ex: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
     update(request.cacheModel)
-      .map(model => exportsCacheService.update(request.journeySessionId, model))
+      .map(model => exportsCacheService.update(model))
       .getOrElse(Future.successful(None))
 
   protected def updateExportsDeclaration(
     update: ExportsDeclaration => Future[Option[ExportsDeclaration]]
-  )(implicit ec: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
     update(request.cacheModel).flatMap { updatedModel =>
       updatedModel
-        .map(model => exportsCacheService.update(request.journeySessionId, model))
+        .map(model => exportsCacheService.update(model))
         .getOrElse(Future.successful(None))
     }
-}
-
-trait SessionIdAware {
-  def journeySessionId(implicit request: JourneyRequest[_]): String =
-    request.journeySessionId
-
-  def authenticatedSessionId(implicit request: AuthenticatedRequest[AnyContent]): String =
-    request.sessionId
 }

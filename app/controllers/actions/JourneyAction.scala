@@ -21,7 +21,7 @@ import controllers.declaration.SessionIdAware
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.Logger
 import play.api.mvc.Results.Conflict
-import play.api.mvc.{ActionRefiner, Result}
+import play.api.mvc.{ActionRefiner, Result, Results}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
@@ -32,19 +32,18 @@ class JourneyAction @Inject()(cacheService: ExportsCacheService)(
   implicit override val executionContext: ExecutionContext
 ) extends ActionRefiner[AuthenticatedRequest, JourneyRequest] with SessionIdAware {
 
-  private val logger = Logger(this.getClass())
+  private val logger = Logger(this.getClass)
 
   override def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] = {
-    implicit val hc: HeaderCarrier =
-      HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    cacheService.get(request.sessionId).map {
-      case Some(cacheModel) => Right(JourneyRequest(request, cacheModel))
+    cacheService.get(request.declarationId).map {
+      case Some(declaration) => Right(JourneyRequest(request, declaration))
       case _                =>
         // $COVERAGE-OFF$Trivial
-        logger.error(s"Could not obtain journey type for ${request.sessionId}")
+        logger.warn(s"Could not obtain journey type for ${request.sessionId}")
         // $COVERAGE-ON
-        Left(Conflict("Could not obtain information about journey type"))
+        Left(Results.Redirect(controllers.routes.StartController.displayStartPage()))
     }
   }
 }

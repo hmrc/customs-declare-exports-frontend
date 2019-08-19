@@ -43,7 +43,7 @@ class AdditionalFiscalReferencesController @Inject()(
   mcc: MessagesControllerComponents,
   additionalFiscalReferencesPage: additional_fiscal_references
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId) match {

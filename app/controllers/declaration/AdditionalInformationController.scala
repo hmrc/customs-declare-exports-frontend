@@ -60,8 +60,7 @@ class AdditionalInformationController @Inject()(
 
       val actionTypeOpt = FormAction.bindFromRequest()
 
-      val cachedData = exportsCacheService
-        .get(journeySessionId)
+      val cachedData = request.cacheModel
         .map(_.flatMap(_.itemBy(itemId)))
         .map(_.flatMap(_.additionalInformation).getOrElse(AdditionalInformationData(Seq())))
 

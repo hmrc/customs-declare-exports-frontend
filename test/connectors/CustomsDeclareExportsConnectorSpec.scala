@@ -46,15 +46,6 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec with Guic
       response.futureValue must be(notifications)
     }
 
-    "GET to Customs Declare Exports endpoint to fetch notifications by conversationId" in {
-      val http =
-        new MockHttpClient(mockWSClient, expectedExportsUrl(appConfig.fetchNotifications), None, result = notifications)
-      val client = new CustomsDeclareExportsConnector(appConfig, http)
-      val response = client.fetchNotificationsByMrn(conversationId)(hc, ec)
-
-      response.futureValue must be(notifications)
-    }
-
     "GET to Customs Declare Exports endpoint to fetch submissions" in {
       val http =
         new MockHttpClient(mockWSClient, expectedExportsUrl(appConfig.fetchSubmissions), None, result = submissions)

@@ -37,7 +37,7 @@ class AdditionalDeclarationTypeController @Inject()(
   mcc: MessagesControllerComponents,
   declarationTypePage: declaration_type
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val decType = extractFormType(request)
@@ -55,7 +55,7 @@ class AdditionalDeclarationTypeController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(declarationTypePage(formWithErrors))),
         validAdditionalDeclarationType =>
-          updateCache(journeySessionId, validAdditionalDeclarationType)
+          updateCache(validAdditionalDeclarationType)
             .map(_ => Redirect(controllers.declaration.routes.ConsignmentReferencesController.displayPage()))
       )
   }
@@ -66,11 +66,11 @@ class AdditionalDeclarationTypeController @Inject()(
       case StandardDec      => AdditionalDeclarationTypeStandardDec
     }
 
-  private def updateCache(sessionId: String, formData: AdditionalDeclarationType)(
+  private def updateCache(formData: AdditionalDeclarationType)(
     implicit request: JourneyRequest[_]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclaration(model => {
-      exportsCacheService.update(sessionId, model.copy(additionalDeclarationType = Some(formData)))
+      exportsCacheService.update(model.copy(additionalDeclarationType = Some(formData)))
     })
 
 }
