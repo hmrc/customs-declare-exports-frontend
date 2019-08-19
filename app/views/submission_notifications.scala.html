@@ -32,9 +32,9 @@
 
     <h1>@messages("notifications.title")</h1>
 
-    <table>
+    <table id="submission_notifications-table">
         <thead>
-            <tr class="table-row table-head">
+            <tr id="submission_notifications-table-header" class="table-row table-head">
                 <th class="table-cell">@messages("notifications.status")</th>
                 <th class="table-cell">@messages("notifications.dateAndTime")</th>
                 <th class="table-cell" colspan="2"></th>
@@ -42,13 +42,13 @@
         </thead>
 
         <tbody>
-        @for(notification <- notifications){
-            <tr class="table-row">
-                <td class="table-cell">@notification.status.toString</td>
-                <td class="table-cell">@DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(notification.dateTimeIssued)</td>
+        @for((notification, index) <- notifications.zipWithIndex){
+            <tr id="submission_notifications-table-row@index" class="table-row">
+                <td id="submission_notifications-table-row@index-status" class="table-cell">@notification.status.toString</td>
+                <td id="submission_notifications-table-row@index-date" class="table-cell">@DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(notification.dateTimeIssued)</td>
                 <td class="table-cell">
                 @if(notification.status == SubmissionStatus.Rejected) {
-                    <a href="@routes.SubmissionsController.amend(submission.uuid)">@messages("notifications.amend")</a>
+                    <a id="submission_notifications-table-row@index-amend_link" href="@routes.SubmissionsController.amend(submission.uuid)">@messages("notifications.amend")</a>
                 }
                 </td>
             </tr>
