@@ -23,8 +23,8 @@ import forms.declaration.Seal
 import forms.declaration.Seal._
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.ExportsDeclaration
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -75,9 +75,9 @@ class SealController @Inject()(
       updatedCache =>
         if (updatedCache != cachedSeals) {
           updateCache(journeySessionId, updatedCache).map { _ =>
-            Redirect(routes.SummaryController.displayPage())
+            Redirect(routes.SummaryController.displayPage(Mode.NormalMode))
           }
-        } else Future.successful(Redirect(routes.SummaryController.displayPage()))
+        } else Future.successful(Redirect(routes.SummaryController.displayPage(Mode.NormalMode)))
     )
 
   private def badRequest(formWithErrors: Form[Seal], cachedSeals: Seq[Seal])(implicit request: JourneyRequest[_]) = {

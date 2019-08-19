@@ -21,7 +21,7 @@ import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.SupplementaryDeclarationData
 import models.requests.JourneyRequest
-import models.{DeclarationStatus, ExportsDeclaration}
+import models.{DeclarationStatus, ExportsDeclaration, Mode}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc._
@@ -47,9 +47,9 @@ class SummaryController @Inject()(
 
   private val logger = Logger(this.getClass())
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (containsMandatoryData(request.cacheModel)) {
-      Ok(summaryPage(SupplementaryDeclarationData(request.cacheModel)))
+      Ok(summaryPage(mode, SupplementaryDeclarationData(request.cacheModel)))
     } else {
       Ok(summaryPageNoData())
     }

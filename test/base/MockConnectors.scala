@@ -39,7 +39,7 @@ trait MockConnectors extends MockitoSugar {
   lazy val mockNrsConnector: NrsConnector = mock[NrsConnector]
 
   def successfulCustomsDeclareExportsResponse(): Unit =
-    when(mockCustomsDeclareExportsConnector.create(any[ExportsDeclaration])(any(), any()))
+    when(mockCustomsDeclareExportsConnector.createDeclaration(any[ExportsDeclaration])(any(), any()))
       .thenAnswer(withTheFirstArgument)
 
   private def withTheFirstArgument[T]: Answer[Future[T]] = new Answer[Future[T]] {
@@ -47,7 +47,7 @@ trait MockConnectors extends MockitoSugar {
   }
 
   def customsDeclaration400Response(): Unit =
-    when(mockCustomsDeclareExportsConnector.create(any())(any[HeaderCarrier], any[ExecutionContext]))
+    when(mockCustomsDeclareExportsConnector.createDeclaration(any())(any[HeaderCarrier], any[ExecutionContext]))
       .thenReturn(Future.failed(new IllegalArgumentException("Bad Request")))
 
   def listOfNotifications(): OngoingStubbing[Future[Seq[Notification]]] =

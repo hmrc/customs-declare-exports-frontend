@@ -37,6 +37,7 @@ session_expired.heading = For your security, this service has been reset
 session_expired.guidance = The details you have given have been deleted because you did not continue the service for 1 hour.
 
 site.back = Back
+site.continue = Continue
 site.delete = Remove
 site.link.delete = Delete
 site.edit = Change
@@ -99,6 +100,7 @@ notifications.dateAndTime = Date and time
 notifications.reference = Reference
 notifications.status = Status
 notifications.additionalInformation = Additional information
+notifications.amend = Amend and resubmit
 
 arrivals.confirmation = Arrival confirmation
 arrivals.title = Arrivals
@@ -648,7 +650,8 @@ supplementary.commodityMeasure.supplementaryUnits.hint = Enter the quantity in t
 supplementary.commodityMeasure.supplementaryUnits.error = Supplementary units should be a decimal value and should be less than or equal to 99999999999999.99 with 2 decimals
 
 supplementary.summary.title = Summary
-supplementary.summary.header = Check your answers before making this declaration
+supplementary.summary.normal-header = Check your answers before making this declaration
+supplementary.summary.amend-header = Check your answers
 supplementary.summary.noData.header = No information for supplementary declaration found
 supplementary.summary.noData.header.secondary = Please, go back and provide necessary information before proceeding
 supplementary.summary.declarationType.header = Declaration type

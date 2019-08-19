@@ -16,8 +16,12 @@
 
 package connectors
 
+import java.time.LocalDateTime
+
 import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.exchange.ExportsDeclarationExchange
+import models.declaration.notifications.Notification
+import models.declaration.submissions.Submission
 import models.{Page, Paginated}
 import org.mockito.BDDMockito._
 import org.scalatest.BeforeAndAfterEach
@@ -37,14 +41,16 @@ class CustomsDeclareExportsConnectorIntegrationSpec
   private val existingDeclaration = aDeclaration(withId(id), withSessionId(sessionId))
   private val newDeclarationExchange = ExportsDeclarationExchange(newDeclaration)
   private val existingDeclarationExchange = ExportsDeclarationExchange(existingDeclaration)
+  private val submission = Submission(id, "eori", "lrn", Some("mrn"))
+  private val notification = Notification("conv-id", "mrn", LocalDateTime.now, "f-code", None, Seq.empty, "payload")
   private val connector = new CustomsDeclareExportsConnector(config, httpClient)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    given(config.submitDeclarationV2).willReturn("/v2/declaration")
+    given(config.declarationsV2).willReturn("/v2/declaration")
   }
 
-  "Create" should {
+  "Create Declaration" should {
     "return payload" in {
       stubFor(
         post("/v2/declaration")
@@ -55,7 +61,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
           )
       )
 
-      val response = await(connector.create(newDeclaration))
+      val response = await(connector.createDeclaration(newDeclaration))
 
       response shouldBe existingDeclaration
       verify(
@@ -65,7 +71,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
     }
   }
 
-  "Update" should {
+  "Update Declaration" should {
     "return payload" in {
       stubFor(
         put(s"/v2/declaration/$id")
@@ -76,7 +82,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
           )
       )
 
-      val response = await(connector.update(existingDeclaration))
+      val response = await(connector.updateDeclaration(existingDeclaration))
 
       response shouldBe existingDeclaration
       verify(
@@ -87,12 +93,12 @@ class CustomsDeclareExportsConnectorIntegrationSpec
 
     "throw IllegalArgument for missing ID" in {
       intercept[IllegalArgumentException] {
-        await(connector.update(newDeclaration))
+        await(connector.updateDeclaration(newDeclaration))
       }
     }
   }
 
-  "Find" should {
+  "Find Declarations" should {
     val pagination = Page(1, 10)
 
     "return Ok" in {
@@ -105,14 +111,14 @@ class CustomsDeclareExportsConnectorIntegrationSpec
           )
       )
 
-      val response = await(connector.find(sessionId, pagination))
+      val response = await(connector.findDeclarations(sessionId, pagination))
 
       response shouldBe Paginated(Seq(existingDeclaration), pagination, 1)
       verify(getRequestedFor(urlEqualTo("/v2/declaration?page-index=1&page-size=10")))
     }
   }
 
-  "Find by ID" should {
+  "Find Declaration" should {
     "return Ok" in {
       stubFor(
         get(s"/v2/declaration/$id")
@@ -123,10 +129,46 @@ class CustomsDeclareExportsConnectorIntegrationSpec
           )
       )
 
-      val response = await(connector.find(sessionId, id))
+      val response = await(connector.findDeclaration(sessionId, id))
 
       response shouldBe Some(existingDeclaration)
       verify(getRequestedFor(urlEqualTo(s"/v2/declaration/$id")))
+    }
+  }
+
+  "Find Submission" should {
+    "return Ok" in {
+      stubFor(
+        get(s"/v2/declaration/$id/submission")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.OK)
+              .withBody(json(submission))
+          )
+      )
+
+      val response = await(connector.findSubmission(id))
+
+      response shouldBe Some(submission)
+      verify(getRequestedFor(urlEqualTo(s"/v2/declaration/$id/submission")))
+    }
+  }
+
+  "Find Notifications" should {
+    "return Ok" in {
+      stubFor(
+        get(s"/v2/declaration/$id/submission/notifications")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.OK)
+              .withBody(json(Seq(notification)))
+          )
+      )
+
+      val response = await(connector.findNotifications(id))
+
+      response shouldBe Seq(notification)
+      verify(getRequestedFor(urlEqualTo(s"/v2/declaration/$id/submission/notifications")))
     }
   }
 

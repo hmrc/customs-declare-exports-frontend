@@ -61,90 +61,90 @@ object SubmissionStatus {
       case Some(status) => status
       case None         => UnknownStatus
     }
-}
 
-case object Pending extends SubmissionStatus {
-  val fullCode: String = "Pending"
-}
+  case object Pending extends SubmissionStatus {
+    val fullCode: String = "Pending"
+  }
 
-case object RequestedCancellation extends SubmissionStatus {
-  val fullCode: String = "Cancellation Requested"
+  case object RequestedCancellation extends SubmissionStatus {
+    val fullCode: String = "Cancellation Requested"
 
-  override def toString: String = "Cancellation Requested"
-}
+    override def toString: String = "Cancellation Requested"
+  }
 
-case object Accepted extends SubmissionStatus {
-  val fullCode: String = "01"
-}
+  case object Accepted extends SubmissionStatus {
+    val fullCode: String = "01"
+  }
 
-case object Received extends SubmissionStatus {
-  val fullCode: String = "02"
-}
+  case object Received extends SubmissionStatus {
+    val fullCode: String = "02"
+  }
 
-case object Rejected extends SubmissionStatus {
-  val fullCode: String = "03"
-}
+  case object Rejected extends SubmissionStatus {
+    val fullCode: String = "03"
+  }
 
-case object UndergoingPhysicalCheck extends SubmissionStatus {
-  val fullCode: String = "05"
+  case object UndergoingPhysicalCheck extends SubmissionStatus {
+    val fullCode: String = "05"
 
-  override def toString(): String = "Undergoing Physical Check"
-}
+    override def toString(): String = "Undergoing Physical Check"
+  }
 
-case object AdditionalDocumentsRequired extends SubmissionStatus {
-  val fullCode: String = "06"
+  case object AdditionalDocumentsRequired extends SubmissionStatus {
+    val fullCode: String = "06"
 
-  override def toString(): String = "Additional Documents Required"
-}
+    override def toString(): String = "Additional Documents Required"
+  }
 
-case object Amended extends SubmissionStatus {
-  val fullCode: String = "07"
-}
+  case object Amended extends SubmissionStatus {
+    val fullCode: String = "07"
+  }
 
-case object Released extends SubmissionStatus {
-  val fullCode: String = "08"
-}
+  case object Released extends SubmissionStatus {
+    val fullCode: String = "08"
+  }
 
-case object Cleared extends SubmissionStatus {
-  val fullCode: String = "09"
-}
+  case object Cleared extends SubmissionStatus {
+    val fullCode: String = "09"
+  }
 
-case object Cancelled extends SubmissionStatus {
-  val fullCode: String = "10"
-}
+  case object Cancelled extends SubmissionStatus {
+    val fullCode: String = "10"
+  }
 
-case object CustomsPositionGranted extends SubmissionStatus {
-  val fullCode: String = "1139"
+  case object CustomsPositionGranted extends SubmissionStatus {
+    val fullCode: String = "1139"
 
-  override def toString(): String = "Customs Position Granted"
-}
+    override def toString(): String = "Customs Position Granted"
+  }
 
-case object CustomsPositionDenied extends SubmissionStatus {
-  val fullCode: String = "1141"
+  case object CustomsPositionDenied extends SubmissionStatus {
+    val fullCode: String = "1141"
 
-  override def toString(): String = "Customs Position Denied"
-}
+    override def toString(): String = "Customs Position Denied"
+  }
 
-case object GoodsHaveExitedTheCommunity extends SubmissionStatus {
-  val fullCode: String = "16"
+  case object GoodsHaveExitedTheCommunity extends SubmissionStatus {
+    val fullCode: String = "16"
 
-  override def toString(): String = "Goods Have Exited The Community"
-}
+    override def toString(): String = "Goods Have Exited The Community"
+  }
 
-case object DeclarationHandledExternally extends SubmissionStatus {
-  val fullCode: String = "17"
+  case object DeclarationHandledExternally extends SubmissionStatus {
+    val fullCode: String = "17"
 
-  override def toString(): String = "Declaration Handled Externally"
-}
+    override def toString(): String = "Declaration Handled Externally"
+  }
 
-case object AwaitingExitResults extends SubmissionStatus {
-  val fullCode: String = "18"
+  case object AwaitingExitResults extends SubmissionStatus {
+    val fullCode: String = "18"
 
-  override def toString(): String = "Awaiting Exit Results"
-}
+    override def toString(): String = "Awaiting Exit Results"
+  }
 
-case object UnknownStatus extends SubmissionStatus {
-  val fullCode: String = "UnknownStatus"
+  case object UnknownStatus extends SubmissionStatus {
+    val fullCode: String = "UnknownStatus"
 
-  override def toString(): String = "Unknown status"
+    override def toString(): String = "Unknown status"
+  }
 }

@@ -18,8 +18,9 @@ package unit.controllers.declaration
 
 import controllers.declaration.TransportDetailsController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
-import forms.declaration.TransportCodes.{cash, IMOShipIDNumber}
+import forms.declaration.TransportCodes.{IMOShipIDNumber, cash}
 import forms.declaration.TransportDetails
+import models.Mode
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
@@ -83,6 +84,7 @@ class TransportDetailsControllerSpec extends ControllerSpec {
       val result = controller.submitForm()(postRequest(correctForm))
 
       status(result) must be(SEE_OTHER)
+      redirectLocation(result) must be(Some(controllers.declaration.routes.TransportContainerController.displayPage().url))
     }
   }
 }

@@ -138,7 +138,7 @@ class AppConfigSpec extends CustomExportsBaseSpec {
     }
 
     "have submit declaration v2 URL" in {
-      validConfigService.submitDeclarationV2 must be("/v2/declaration")
+      validConfigService.declarationsV2 must be("/v2/declaration")
     }
 
     "have cancel declaration URL" in {
@@ -229,7 +229,7 @@ class AppConfigSpec extends CustomExportsBaseSpec {
   }
 
   "throw an exception when submit declaration v2 uri is missing" in {
-    intercept[Exception](emptyConfigService.submitDeclarationV2).getMessage must be(
+    intercept[Exception](emptyConfigService.declarationsV2).getMessage must be(
       "Missing configuration for Customs Declarations Exports submit declaration URI"
     )
   }

@@ -193,7 +193,8 @@ POST        /add-seal                            controllers.declaration.SealCon
 
 # Summary
 
-GET         /summary                             controllers.declaration.SummaryController.displayPage()
+GET         /summary                             controllers.declaration.SummaryController.displayPage(mode: models.Mode = models.Mode.NormalMode)
+GET         /amend-summary                       controllers.declaration.SummaryController.displayPage(mode: models.Mode = models.Mode.AmendMode)
 
 POST        /summary                             controllers.declaration.SummaryController.submitSupplementaryDeclaration()
 

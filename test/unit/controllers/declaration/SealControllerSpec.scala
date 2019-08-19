@@ -17,17 +17,15 @@
 package unit.controllers.declaration
 
 import controllers.declaration.SealController
-import controllers.util.{Add, Remove, SaveAndContinue}
+import controllers.util.{Add, SaveAndContinue}
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.Seal
+import models.Mode
 import org.scalatest.concurrent.ScalaFutures
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.InternalServerException
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
 import views.html.declaration.seal
-
-import scala.concurrent.Await
 
 class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHandlerMocks {
 
@@ -131,6 +129,7 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
         val result = controller.submitForm()(postRequestAsFormUrlEncoded(body: _*))
 
         status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(Some(controllers.declaration.routes.SealController.displayForm().url))
       }
 
       "user clicked save and continue with data in form" in new SetUp {
@@ -140,6 +139,7 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
         val result = controller.submitForm()(postRequestAsFormUrlEncoded(body: _*))
 
         status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(Some(controllers.declaration.routes.SummaryController.displayPage(Mode.NormalMode).url))
       }
 
       "user clicked save and continue with item in a cache" in new SetUp {
@@ -151,6 +151,7 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
         val result = controller.submitForm()(postRequestAsFormUrlEncoded(body: _*))
 
         status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(Some(controllers.declaration.routes.SummaryController.displayPage(Mode.NormalMode).url))
       }
     }
   }

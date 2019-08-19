@@ -21,8 +21,8 @@ import forms.Choice.AllowedChoiceValues
 import forms.declaration.TransportDetails
 import forms.declaration.TransportDetails._
 import javax.inject.Inject
-import models.ExportsDeclaration
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -60,7 +60,7 @@ class TransportDetailsController @Inject()(
   private def redirect(transportDetails: TransportDetails)(implicit request: JourneyRequest[_]): Result =
     if (transportDetails.container) Redirect(routes.TransportContainerController.displayPage())
     else if (request.choice.value == AllowedChoiceValues.StandardDec) Redirect(routes.SealController.displayForm())
-    else Redirect(routes.SummaryController.displayPage())
+    else Redirect(routes.SummaryController.displayPage(Mode.NormalMode))
 
   private def updateCache(sessionId: String, formData: TransportDetails): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportsDeclaration(
