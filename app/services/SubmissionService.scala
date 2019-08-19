@@ -59,6 +59,7 @@ class SubmissionService @Inject()(
             AuditTypes.Submission,
             auditData(exportsDeclaration.lrn, exportsDeclaration.ducr, Failure.toString)
           )
+        throw error
       }
 
       lrn <- cacheService
