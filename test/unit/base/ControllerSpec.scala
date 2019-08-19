@@ -21,14 +21,17 @@ import controllers.util.{Add, SaveAndContinue}
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.libs.json.JsValue
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, AnyContentAsJson, Request}
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, AnyContentAsJson, Request, Result}
 import play.api.test.FakeRequest
+import play.api.test.Helpers.contentAsString
+import play.twirl.api.Html
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 import unit.mock.JourneyActionMocks
 import unit.tools.Stubs
+import play.api.test.Helpers._
 import utils.FakeRequestCSRFSupport._
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 trait ControllerSpec
     extends UnitSpec with Stubs with MockAuthAction with MockConnectors with MockExportCacheService
@@ -36,19 +39,21 @@ trait ControllerSpec
 
   implicit val ec: ExecutionContext = ExecutionContext.global
 
-  val addActionUrlEncoded: (String, String) = (Add.toString, "")
+  protected val addActionUrlEncoded: (String, String) = (Add.toString, "")
 
-  val saveAndContinueActionUrlEncoded: (String, String) = (SaveAndContinue.toString, "")
+  protected val saveAndContinueActionUrlEncoded: (String, String) = (SaveAndContinue.toString, "")
 
-  def getRequest(declaration: ExportsDeclaration): JourneyRequest[AnyContentAsEmpty.type] =
+  protected def viewOf(result: Future[Result]) = Html(contentAsString(result))
+
+  protected def getRequest(declaration: ExportsDeclaration): JourneyRequest[AnyContentAsEmpty.type] =
     JourneyRequest(getAuthenticatedRequest(sessionId = declaration.sessionId), declaration)
 
-  def postRequest(body: JsValue): Request[AnyContentAsJson] =
+  protected def postRequest(body: JsValue): Request[AnyContentAsJson] =
     FakeRequest("POST", "").withSession(("sessionId", "sessionId")).withJsonBody(body).withCSRFToken
 
-  def postRequest(body: JsValue, declaration: ExportsDeclaration): Request[AnyContentAsJson] =
+  protected def postRequest(body: JsValue, declaration: ExportsDeclaration): Request[AnyContentAsJson] =
     FakeRequest("POST", "").withSession("sessionId" -> declaration.sessionId).withJsonBody(body).withCSRFToken
 
-  def postRequestAsFormUrlEncoded(body: (String, String)*): Request[AnyContentAsFormUrlEncoded] =
+  protected def postRequestAsFormUrlEncoded(body: (String, String)*): Request[AnyContentAsFormUrlEncoded] =
     FakeRequest("POST", "").withSession(("sessionId", "sessionId")).withFormUrlEncodedBody(body: _*).withCSRFToken
 }

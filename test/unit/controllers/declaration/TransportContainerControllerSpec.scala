@@ -20,6 +20,7 @@ import controllers.declaration.TransportContainerController
 import controllers.util.Remove
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.TransportInformationContainer
+import models.Mode
 import models.declaration.TransportInformationContainerData
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
@@ -159,6 +160,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         val result = controller.submitForm()(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(Some(controllers.declaration.routes.TransportContainerController.displayPage().url))
       }
 
       "user save correct data" in new SetUp {
@@ -168,6 +170,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         val result = controller.submitForm()(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(Some(controllers.declaration.routes.SummaryController.displayPage(Mode.NormalMode).url))
       }
 
       "user save correct data without new item" in new SetUp {
@@ -177,6 +180,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         val result = controller.submitForm()(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
 
         status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(Some(controllers.declaration.routes.SealController.displayForm().url))
       }
 
       "user remove existing item" in new SetUp {

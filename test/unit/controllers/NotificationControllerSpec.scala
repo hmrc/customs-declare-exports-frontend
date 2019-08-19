@@ -16,12 +16,35 @@
 
 package unit.controllers
 
+import java.time.LocalDateTime
+import java.util.UUID
+
 import controllers.NotificationsController
+import models.declaration.notifications.Notification
+import models.declaration.submissions.{Action, Submission, SubmissionRequest}
+import org.mockito.ArgumentMatchers._
+import org.mockito.BDDMockito._
+import play.api.mvc.{AnyContentAsEmpty, Request, Result}
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import views.html.{notifications, submission_notifications}
 
+import scala.concurrent.Future
+import scala.concurrent.Future.successful
+
 class NotificationControllerSpec extends ControllerSpec {
+
+  private val notification = Notification("convId", "mrn", LocalDateTime.now(), "01", None, Seq.empty, "payload")
+  private val submission = Submission(
+    uuid = UUID.randomUUID().toString,
+    eori = "eori",
+    lrn = "lrn",
+    mrn = None,
+    ducr = None,
+    actions = Seq(
+      Action(requestType = SubmissionRequest, conversationId = "conversationID", requestTimestamp = LocalDateTime.now())
+    )
+  )
 
   trait SetUp {
     val notificationPage = new notifications(mainTemplate)
@@ -38,24 +61,43 @@ class NotificationControllerSpec extends ControllerSpec {
     authorizedUser()
   }
 
-  "Notification controller" should {
+  "List Notifications" should {
+    "return OK" in new SetUp {
+      given(mockCustomsDeclareExportsConnector.fetchNotifications()(any(), any()))
+        .willReturn(successful(Seq(notification)))
 
-    "return list of notifications" in new SetUp {
-
-      listOfNotifications()
-
-      val result = controller.listOfNotifications()(getRequest())
+      val result: Future[Result] = controller.listOfNotifications()(getRequest())
 
       status(result) must be(OK)
     }
+  }
 
-    "return list of notifications for specific submission" in new SetUp {
+  "List Submission Notifications" should {
+    "return OK" when {
+      "submission found" in new SetUp {
+        given(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .willReturn(successful(Some(submission)))
+        given(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any()))
+          .willReturn(successful(Seq(notification)))
 
-      listOfSubmissionNotifications()
+        private val request: Request[AnyContentAsEmpty.type] = getRequest()
+        val result: Future[Result] = controller.listOfNotificationsForSubmission("id")(request)
 
-      val result = controller.listOfNotificationsForSubmission("mrn")(getRequest())
+        status(result) must be(OK)
+        viewOf(result) must be(submissionNotificationsPage(submission, Seq(notification))(request, controller.messagesApi.preferred(request)))
+      }
+    }
 
-      status(result) must be(OK)
+    "redirect" when {
+      "submission not found" in new SetUp {
+        given(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .willReturn(successful(None))
+
+        val result: Future[Result] = controller.listOfNotificationsForSubmission("id")(getRequest())
+
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(Some(controllers.routes.SubmissionsController.displayListOfSubmissions().url))
+      }
     }
   }
 }

@@ -25,7 +25,8 @@
 @(submissions: Seq[(Submission, Seq[Notification])])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("submissions.title")
+    title = messages("submissions.title"),
+    fullWidth = true
 ) {
 
     @components.back_link(routes.ChoiceController.displayPage().url)
