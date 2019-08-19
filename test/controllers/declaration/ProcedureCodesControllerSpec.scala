@@ -30,7 +30,8 @@ class ProcedureCodesControllerSpec
   import ProcedureCodesControllerSpec.cacheWithMaximumAmountOfAdditionalCodes
 
   private val itemModel = aDeclaration(withChoice("SMP"), withItem())
-  private val uri = uriWithContextPath(s"/declaration/items/${itemModel.items.head.id}/procedure-codes")
+  private val itemId: String = itemModel.items.head.id
+  private val uri = uriWithContextPath(s"/declaration/items/${itemId}/procedure-codes")
   private val addActionUrlEncoded = (Add.toString, "")
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
 
@@ -102,7 +103,7 @@ class ProcedureCodesControllerSpec
       "procedureCode is empty but has additional procedure codes in cache, it should return a bad request" in {
 
         val cachedData = ProcedureCodesData(Some("1234"), Seq("123"))
-        val model = aDeclaration(withItem(ExportItem("id", procedureCodes = Some(cachedData))), withChoice("SMP"))
+        val model = aDeclaration(withItem(ExportItem(itemId, procedureCodes = Some(cachedData))), withChoice("SMP"))
         withNewCaching(model)
 
         val body = Seq(("procedureCode", ""), ("additionalProcedureCode", ""), saveAndContinueActionUrlEncoded)
@@ -115,7 +116,7 @@ class ProcedureCodesControllerSpec
       "maximum amount of codes are reached" in {
 
         val model = aDeclaration(
-          withItem(ExportItem("id", procedureCodes = Some(cacheWithMaximumAmountOfAdditionalCodes))),
+          withItem(ExportItem(itemId, procedureCodes = Some(cacheWithMaximumAmountOfAdditionalCodes))),
           withChoice("SMP")
         )
         withNewCaching(model)
@@ -130,7 +131,7 @@ class ProcedureCodesControllerSpec
       "code is duplicated" in {
 
         val cachedData = ProcedureCodesData(Some("1234"), Seq("123"))
-        val model = aDeclaration(withItem(ExportItem("id", procedureCodes = Some(cachedData))), withChoice("SMP"))
+        val model = aDeclaration(withItem(ExportItem(itemId, procedureCodes = Some(cachedData))), withChoice("SMP"))
 
         withNewCaching(model)
 
@@ -187,7 +188,7 @@ class ProcedureCodesControllerSpec
       "form is empty but cache contains at least one item" in {
 
         val cachedData = ProcedureCodesData(Some("1234"), Seq("123"))
-        val model = aDeclaration(withItem(ExportItem("id", procedureCodes = Some(cachedData))), withChoice("SMP"))
+        val model = aDeclaration(withItem(ExportItem(itemId, procedureCodes = Some(cachedData))), withChoice("SMP"))
         withNewCaching(model)
 
         val body = Seq(("procedureCode", "1234"), saveAndContinueActionUrlEncoded)

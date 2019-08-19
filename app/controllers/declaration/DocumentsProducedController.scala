@@ -57,18 +57,16 @@ class DocumentsProducedController @Inject()(
   def saveForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form().bindFromRequest()
     val actionTypeOpt = FormAction.bindFromRequest()
-    val cachedData: Future[DocumentsProducedData] = exportsCacheService
-      .get(journeySessionId)
-      .map(_.flatMap(_.itemBy(itemId)))
-      .map(_.flatMap(_.documentsProducedData).getOrElse(DocumentsProducedData(Seq())))
+    val cache =
+      request.cacheModel
+      .itemBy(itemId)
+      .flatMap(_.documentsProducedData).getOrElse(DocumentsProducedData(Seq()))
 
-    cachedData.flatMap { cache: DocumentsProducedData =>
-      actionTypeOpt match {
-        case Some(Add) if !boundForm.hasErrors             => addItem(itemId, boundForm.get, cache)
-        case Some(SaveAndContinue) if !boundForm.hasErrors => saveAndContinue(itemId, boundForm.get, cache)
-        case Some(Remove(keys))                            => removeItem(itemId, keys, boundForm, cache)
-        case _                                             => Future.successful(BadRequest(documentProducedPage(itemId, boundForm, cache.documents)))
-      }
+    actionTypeOpt match {
+      case Some(Add) if !boundForm.hasErrors             => addItem(itemId, boundForm.get, cache)
+      case Some(SaveAndContinue) if !boundForm.hasErrors => saveAndContinue(itemId, boundForm.get, cache)
+      case Some(Remove(keys))                            => removeItem(itemId, keys, boundForm, cache)
+      case _                                             => Future.successful(BadRequest(documentProducedPage(itemId, boundForm, cache.documents)))
     }
   }
 
