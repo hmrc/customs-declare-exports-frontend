@@ -92,7 +92,7 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
 
     "propagate errors from exports connector" in {
       val error = new RuntimeException("some error")
-      when(mockCustomsDeclareExportsConnector.create(any[ExportsDeclaration])(any(), any())).thenThrow(error)
+      when(mockCustomsDeclareExportsConnector.createDeclaration(any[ExportsDeclaration])(any(), any())).thenThrow(error)
       val model = createFullModel()
 
       val thrown = intercept[Exception] {
