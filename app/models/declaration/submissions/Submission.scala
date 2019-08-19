@@ -16,6 +16,7 @@
 
 package models.declaration.submissions
 
+import java.time.LocalDateTime
 import java.util.UUID
 
 import play.api.libs.json.Json
@@ -27,8 +28,18 @@ case class Submission(
   mrn: Option[String] = None,
   ducr: Option[String] = None,
   actions: Seq[Action] = Seq.empty
-)
+) {
+  val latestAction: Action = actions.minBy(_.requestTimestamp)(Submission.localDateTimeOrdering)
+}
 
 object Submission {
+  val localDateTimeOrdering: Ordering[LocalDateTime] = Ordering.fromLessThan[LocalDateTime]((a, b) => a.isBefore(b))
+
   implicit val formats = Json.format[Submission]
+
+  implicit val ordering: Ordering[Submission] = Ordering.by[Submission, LocalDateTime](
+    submission => submission.latestAction.requestTimestamp)(localDateTimeOrdering
+  )
+
+  val newestEarlierOrdering: Ordering[Submission] = ordering.reverse
 }
