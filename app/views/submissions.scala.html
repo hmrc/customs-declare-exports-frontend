@@ -15,7 +15,7 @@
  *@
 
 @import java.time.ZoneId
-@import java.time.format.DateTimeFormatter
+@import views.ViewDates
 
 @import models.declaration.notifications.Notification
 @import models.declaration.submissions.{Submission, SubmissionRequest, SubmissionStatus}
@@ -49,7 +49,7 @@
                     <td class="table-cell">@submission.ducr</td>
                     <td class="table-cell">@submission.lrn</td>
                     <td class="table-cell">@submission.mrn</td>
-                    <td class="table-cell">@{submission.actions.find(_.requestType == SubmissionRequest).map(_.requestTimestamp).map(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.systemDefault()).format(_))}</td>
+                    <td class="table-cell">@{submission.actions.find(_.requestType == SubmissionRequest).map(_.requestTimestamp).map(ViewDates.formatter.withZone(ZoneId.systemDefault()).format(_))}</td>
                     <td class="table-cell">@{notifications.headOption.map(n => n.status).getOrElse(SubmissionStatus.UnknownStatus)}</td>
                     <td class="table-cell">
                         <a href="@routes.NotificationsController.listOfNotificationsForSubmission(submission.uuid)">@{notifications.length}</a>

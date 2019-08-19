@@ -37,7 +37,7 @@ class SubmissionsController @Inject()(
   mcc: MessagesControllerComponents,
   submissionsPage: submissions
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport {
 
   def displayListOfSubmissions(): Action[AnyContent] = authenticate.async { implicit request =>
     for {
@@ -50,10 +50,10 @@ class SubmissionsController @Inject()(
   }
 
   def amend(id: String): Action[AnyContent] = authenticate.async { implicit request =>
-    customsDeclareExportsConnector.findDeclaration(authenticatedSessionId, id) flatMap {
+    customsDeclareExportsConnector.findDeclaration(request.sessionId, id) flatMap {
       case Some(declaration) =>
         exportsCacheService
-          .update(authenticatedSessionId, declaration)
+          .update(request.sessionId, declaration)
           .map(_ => Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.AmendMode)))
       case _ => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
     }
