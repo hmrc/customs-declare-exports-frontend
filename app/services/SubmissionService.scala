@@ -32,6 +32,7 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Failure
 
 @Singleton
 class SubmissionService @Inject()(
@@ -52,14 +53,13 @@ class SubmissionService @Inject()(
     val timerContext = exportsMetrics.startTimer(submissionMetric)
     auditService.auditAllPagesUserInput(getCachedData(exportsDeclaration))
     for {
-      _ <- exportsConnector.create(exportsDeclaration).recover {
-        case error: Throwable =>
-          logger.error(s"Error response from backend ${error}")
+      _ <- exportsConnector.create(exportsDeclaration) andThen {
+        case Failure(exception) =>
+          logger.error(s"Error response from backend $exception")
           auditService.audit(
             AuditTypes.Submission,
             auditData(exportsDeclaration.lrn, exportsDeclaration.ducr, Failure.toString)
           )
-        throw error
       }
 
       lrn <- cacheService
