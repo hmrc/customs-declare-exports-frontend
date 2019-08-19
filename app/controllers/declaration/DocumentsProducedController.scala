@@ -58,7 +58,8 @@ class DocumentsProducedController @Inject()(
     val boundForm = form().bindFromRequest()
     val actionTypeOpt = FormAction.bindFromRequest()
     val cachedData: Future[DocumentsProducedData] = exportsCacheService
-      .getItemByIdAndSession(itemId, journeySessionId)
+      .get(journeySessionId)
+      .map(_.flatMap(_.itemBy(itemId)))
       .map(_.flatMap(_.documentsProducedData).getOrElse(DocumentsProducedData(Seq())))
 
     cachedData.flatMap { cache: DocumentsProducedData =>

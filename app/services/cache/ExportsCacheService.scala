@@ -34,14 +34,7 @@ class ExportsCacheService @Inject()(journeyCacheModelRepo: ExportsDeclarationRep
   def update(sessionId: String, model: ExportsDeclaration): Future[Option[ExportsDeclaration]] =
     journeyCacheModelRepo.upsert(sessionId, model.copy(updatedDateTime = Instant.now()))
 
-  @deprecated("Please use `get` and `ExportCacheModel#itemBy` methods", since = "2019-08-08")
-  def getItemByIdAndSession(itemId: String, sessionId: String): Future[Option[ExportItem]] =
-    get(sessionId).map {
-      case Some(model) => model.itemBy(itemId)
-      case _           => None
-    }
-
-  def remove(sessionId: String): Future[FindAndModifyCommand.FindAndModifyResult] =
-    journeyCacheModelRepo.remove(sessionId)
+  def remove(sessionId: String): Future[Unit] =
+    journeyCacheModelRepo.remove(sessionId).map(_ => (): Unit)
 
 }

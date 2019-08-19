@@ -167,9 +167,6 @@ trait CustomExportsBaseSpec
 
   // FIXME should be promoted to MockExportsCacheService trait
   override def withNewCaching(dataToReturn: ExportsDeclaration) {
-    when(mockExportsCacheService.getItemByIdAndSession(any[String], eqRef(dataToReturn.sessionId)))
-      .thenReturn(Future.successful(dataToReturn.items.headOption))
-
     when(
       mockExportsCacheService
         .update(eqRef(dataToReturn.sessionId), any[ExportsDeclaration])
@@ -182,9 +179,6 @@ trait CustomExportsBaseSpec
   }
 
   def withNewCaching() {
-    when(mockExportsCacheService.getItemByIdAndSession(any[String], any[String]))
-      .thenReturn(Future.successful(None))
-
     when(
       mockExportsCacheService
         .update(any[String], any[ExportsDeclaration])
