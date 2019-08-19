@@ -43,35 +43,26 @@ class ItemsSummaryController @Inject()(
 
   def addItem(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val newItem = ExportItem(id = exportItemIdGeneratorService.generateItemId())
-    updateCache(journeySessionId, newItem)
+    exportsCacheService
+      .update(
+        journeySessionId,
+        request.cacheModel
+          .copy(items = request.cacheModel.items + newItem.copy(sequenceId = request.cacheModel.items.size + 1))
+      )
       .map(_ => Redirect(controllers.declaration.routes.ProcedureCodesController.displayPage(newItem.id)))
   }
 
   def removeItem(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.get(journeySessionId) flatMap {
-      case Some(model) =>
-        model.items.find(_.id == itemId) match {
-          case Some(itemToDelete) =>
-            val updatedItems = model.copy(items = model.items - itemToDelete).items.zipWithIndex.map {
-              case (item, index) => item.copy(sequenceId = index + 1)
-            }
-            exportsCacheService.update(journeySessionId, model.copy(items = updatedItems)).map { _ =>
-              Redirect(routes.ItemsSummaryController.displayPage())
-            }
-          case _ =>
-            Future.successful(Redirect(routes.ItemsSummaryController.displayPage()))
+    request.cacheModel.itemBy(itemId) match {
+      case Some(itemToDelete) =>
+        val updatedItems = request.cacheModel.copy(items = request.cacheModel.items - itemToDelete).items.zipWithIndex.map {
+          case (item, index) => item.copy(sequenceId = index + 1)
+        }
+        exportsCacheService.update(journeySessionId, request.cacheModel.copy(items = updatedItems)).map { _ =>
+          Redirect(routes.ItemsSummaryController.displayPage())
         }
       case _ =>
         Future.successful(Redirect(routes.ItemsSummaryController.displayPage()))
     }
   }
-
-  private def updateCache(sessionId: String, exportItem: ExportItem): Future[Option[ExportsDeclaration]] =
-    exportsCacheService.get(sessionId).flatMap {
-      case Some(model) => {
-        exportsCacheService
-          .update(sessionId, model.copy(items = model.items + exportItem.copy(sequenceId = model.items.size + 1)))
-      }
-      case None => Future.successful(None)
-    }
 }
