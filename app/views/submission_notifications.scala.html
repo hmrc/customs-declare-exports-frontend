@@ -24,7 +24,8 @@
 @(submission: Submission, notifications: Seq[Notification])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("notifications.title")
+    title = messages("notifications.title"),
+    fullWidth = true
 ) {
 
     @components.back_link("/customs-declare-exports/submissions")
@@ -32,16 +33,18 @@
     <h1>@messages("notifications.title")</h1>
 
     <table>
-        <tr class="table-row table-head">
-            <th class="table-cell">@messages("notifications.status")</th>
-            <th class="table-cell">@messages("notifications.dateAndTime")</th>
-            <th class="table-cell" colspan="2"></th>
-        </tr>
+        <thead>
+            <tr class="table-row table-head">
+                <th class="table-cell">@messages("notifications.status")</th>
+                <th class="table-cell">@messages("notifications.dateAndTime")</th>
+                <th class="table-cell" colspan="2"></th>
+            </tr>
+        </thead>
 
+        <tbody>
         @for(notification <- notifications){
             <tr class="table-row">
                 <td class="table-cell">@notification.status.toString</td>
-                <td class="table-cell">@DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(notification.dateTimeIssued)</td>
                 <td class="table-cell">@DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(notification.dateTimeIssued)</td>
                 <td class="table-cell">
                 @if(notification.status == SubmissionStatus.Rejected) {
@@ -50,5 +53,6 @@
                 </td>
             </tr>
         }
+        </tbody>
     </table>
 }
