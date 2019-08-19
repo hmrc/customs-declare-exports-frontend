@@ -42,7 +42,7 @@ class FiscalInformationController @Inject()(
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId) match {
       case Some(ExportItem(_, _, _, Some(fiscalInformation), _, _, _, _, _, _)) =>
-          Ok(fiscalInformationPage(itemId, form().fill(fiscalInformation)))
+        Ok(fiscalInformationPage(itemId, form().fill(fiscalInformation)))
       case response => Ok(fiscalInformationPage(itemId, form()))
     }
   }

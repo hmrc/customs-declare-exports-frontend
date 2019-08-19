@@ -46,7 +46,7 @@ case class ExportsDeclaration(
   seals: Seq[Seal] = Seq.empty
 ) {
   val lrn: Option[String] = this.consignmentReferences.map(_.lrn)
-  val ducr: Option[String] = this.consignmentReferences.flatMap(_.ducr.map(_.ducr))
+  val ducr: Option[String] = this.consignmentReferences.map(_.ducr.ducr)
 
   def updatedItem(itemId: String, update: ExportItem => ExportItem): ExportsDeclaration =
     itemBy(itemId).fold(this) { item =>
