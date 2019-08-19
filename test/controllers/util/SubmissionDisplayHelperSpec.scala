@@ -59,7 +59,8 @@ class SubmissionDisplayHelperSpec extends WordSpec with MustMatchers {
         val submissions = Seq(submission, submission_2)
         val notifications = Seq.empty[Notification]
 
-        val result = Map(SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications): _*)
+        val result =
+          Map(SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications): _*)
 
         val expectedKeySet = Set(submission, submission_2)
         result.size must equal(2)
@@ -74,7 +75,8 @@ class SubmissionDisplayHelperSpec extends WordSpec with MustMatchers {
         val submissions = Seq(submission, submission_2)
         val notifications = Seq(notification, notification_2, notification_3)
 
-        val result = Map(SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications): _*)
+        val result =
+          Map(SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications): _*)
 
         val expectedKeySet = Set(submission, submission_2)
         val expectedNotificationsForFirstSubmission = Seq(notification, notification_2)
@@ -95,7 +97,8 @@ class SubmissionDisplayHelperSpec extends WordSpec with MustMatchers {
         val additionalNotification = notification.copy(conversationId = "anything-different", mrn = "any-other-mrn")
         val notifications = Seq(notification, notification_2, notification_3, additionalNotification)
 
-        val result = Map(SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications): _*)
+        val result =
+          Map(SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications): _*)
 
         val expectedKeySet = Set(submission, submission_2)
         val expectedNotificationsForFirstSubmission = Seq(notification, notification_2)
@@ -119,7 +122,8 @@ class SubmissionDisplayHelperSpec extends WordSpec with MustMatchers {
           notification_3.copy(conversationId = "convId3", mrn = "mrn3")
         )
 
-        val result = Map(SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications): _*)
+        val result =
+          Map(SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications): _*)
 
         val expectedKeySet = Set(submission, submission_2)
         result.size must equal(2)
@@ -136,7 +140,8 @@ class SubmissionDisplayHelperSpec extends WordSpec with MustMatchers {
           notification_3.copy(conversationId = notification.conversationId, mrn = notification.mrn)
         val notifications = Seq(notification, newNotification_3, notification_2)
 
-        val result = Map(SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications): _*)
+        val result =
+          Map(SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications): _*)
 
         val expectedKeySet = Set(submission)
         val expectedNotificationsOrder = Seq(newNotification_3, notification_2, notification)
@@ -152,7 +157,7 @@ class SubmissionDisplayHelperSpec extends WordSpec with MustMatchers {
 
       val result = SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, Seq.empty)
 
-      result.map(_._1) must contain inOrder(submission_2, submission, submission_3)
+      result.map(_._1) must contain inOrder (submission_2, submission, submission_3)
     }
   }
 

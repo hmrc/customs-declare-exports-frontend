@@ -84,7 +84,9 @@ class NotificationControllerSpec extends ControllerSpec {
         val result: Future[Result] = controller.listOfNotificationsForSubmission("id")(request)
 
         status(result) must be(OK)
-        viewOf(result) must be(submissionNotificationsPage(submission, Seq(notification))(request, controller.messagesApi.preferred(request)))
+        viewOf(result) must be(
+          submissionNotificationsPage(submission, Seq(notification))(request, controller.messagesApi.preferred(request))
+        )
       }
     }
 

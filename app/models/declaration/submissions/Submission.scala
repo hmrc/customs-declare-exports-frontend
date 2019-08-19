@@ -38,8 +38,8 @@ object Submission {
   implicit val formats = Json.format[Submission]
 
   implicit val ordering: Ordering[Submission] = Ordering.by[Submission, LocalDateTime](
-    submission => submission.latestAction.requestTimestamp)(localDateTimeOrdering
-  )
+    submission => submission.latestAction.requestTimestamp
+  )(localDateTimeOrdering)
 
   val newestEarlierOrdering: Ordering[Submission] = ordering.reverse
 }

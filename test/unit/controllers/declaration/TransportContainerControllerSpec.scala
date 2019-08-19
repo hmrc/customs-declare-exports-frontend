@@ -160,7 +160,9 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         val result = controller.submitForm()(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.declaration.routes.TransportContainerController.displayPage().url))
+        redirectLocation(result) must be(
+          Some(controllers.declaration.routes.TransportContainerController.displayPage().url)
+        )
       }
 
       "user save correct data" in new SetUp {
@@ -170,7 +172,9 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         val result = controller.submitForm()(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.declaration.routes.SummaryController.displayPage(Mode.NormalMode).url))
+        redirectLocation(result) must be(
+          Some(controllers.declaration.routes.SummaryController.displayPage(Mode.NormalMode).url)
+        )
       }
 
       "user save correct data without new item" in new SetUp {
