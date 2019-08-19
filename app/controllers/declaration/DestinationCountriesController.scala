@@ -47,7 +47,7 @@ class DestinationCountriesController @Inject()(
   destinationCountriesSupplementaryPage: destination_countries_supplementary,
   destinationCountriesStandardPage: destination_countries_standard
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.choice.value match {
@@ -85,7 +85,7 @@ class DestinationCountriesController @Inject()(
         (formWithErrors: Form[DestinationCountries]) =>
           Future.successful(BadRequest(destinationCountriesSupplementaryPage(formWithErrors))),
         formData =>
-          updateCache(journeySessionId, formData)
+          updateCache(formData)
             .map(_ => Redirect(controllers.declaration.routes.LocationController.displayForm()))
       )
 
@@ -93,18 +93,14 @@ class DestinationCountriesController @Inject()(
     val actionTypeOpt = FormAction.bindFromRequest()
     val boundForm = Standard.form.bindFromRequest
 
-    val cachedData = exportsCacheService
-      .get(journeySessionId)
-      .map(_.flatMap(_.locations.destinationCountries))
-      .map(_.getOrElse(DestinationCountries.empty()))
+    val cache = request.cacheModel
+      .locations.destinationCountries.getOrElse(DestinationCountries.empty())
 
-    cachedData.flatMap { cache =>
-      actionTypeOpt match {
-        case Some(Add) if !boundForm.hasErrors             => addRoutingCountry(cache)
-        case Some(SaveAndContinue) if !boundForm.hasErrors => saveAndContinue(cache)
-        case Some(Remove(values))                          => removeRoutingCountry(values, boundForm, cache)
-        case _                                             => Future.successful(BadRequest(destinationCountriesStandardPage(boundForm)))
-      }
+    actionTypeOpt match {
+      case Some(Add) if !boundForm.hasErrors             => addRoutingCountry(cache)
+      case Some(SaveAndContinue) if !boundForm.hasErrors => saveAndContinue(cache)
+      case Some(Remove(values))                          => removeRoutingCountry(values, boundForm, cache)
+      case _                                             => Future.successful(BadRequest(destinationCountriesStandardPage(boundForm)))
     }
   }
 
@@ -118,7 +114,7 @@ class DestinationCountriesController @Inject()(
 
     DestinationCountriesValidator.validateOnAddition(countriesStandardUpdated) match {
       case Valid =>
-        updateCache(journeySessionId, countriesStandardUpdated).flatMap(_ => refreshPage(countriesStandardInput))
+        updateCache(countriesStandardUpdated).flatMap(_ => refreshPage(countriesStandardInput))
       case Invalid(errors) =>
         Future.successful(
           BadRequest(
@@ -142,7 +138,7 @@ class DestinationCountriesController @Inject()(
 
     DestinationCountriesValidator.validateOnSaveAndContinue(countriesStandardUpdated) match {
       case Valid =>
-        updateCache(journeySessionId, countriesStandardUpdated)
+        updateCache(countriesStandardUpdated)
           .map(_ => Redirect(controllers.declaration.routes.LocationController.displayForm()))
       case Invalid(errors) =>
         Future.successful(
@@ -177,14 +173,14 @@ class DestinationCountriesController @Inject()(
     val updatedCountries = remove(cachedData.countriesOfRouting, keys.contains(_: String))
     val updatedCache = cachedData.copy(countriesOfRouting = updatedCountries)
 
-    updateCache(journeySessionId, updatedCache)
+    updateCache(updatedCache)
       .map(_ => Ok(destinationCountriesStandardPage(userInput.discardingErrors, updatedCache.countriesOfRouting)))
   }
 
   private def refreshPage(
     inputDestinationCountries: DestinationCountries
   )(implicit request: JourneyRequest[_]): Future[Result] =
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.locations.destinationCountries)).map {
+    exportsCacheService.get(request.declarationId).map(_.flatMap(_.locations.destinationCountries)).map {
       case Some(cachedData) =>
         Ok(
           destinationCountriesStandardPage(Standard.form.fill(inputDestinationCountries), cachedData.countriesOfRouting)
@@ -193,12 +189,11 @@ class DestinationCountriesController @Inject()(
         Ok(destinationCountriesStandardPage(Standard.form))
     }
 
-  private def updateCache(sessionId: String, formData: DestinationCountries): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportsDeclaration(
-      sessionId,
+  private def updateCache(formData: DestinationCountries)(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclaration(
       model =>
         exportsCacheService
-          .update(sessionId, model.copy(locations = model.locations.copy(destinationCountries = Some(formData))))
+          .update(model.copy(locations = model.locations.copy(destinationCountries = Some(formData))))
     )
 
 }

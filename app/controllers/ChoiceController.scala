@@ -47,10 +47,15 @@ class ChoiceController @Inject()(
   val logger = Logger.apply(this.getClass)
 
   def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
-    exportsCacheService.get(request.declarationId).map(_.map(_.choice)).map {
-      case Some(data) => Ok(choicePage(Choice.form().fill(Choice(data))))
-      case _          => Ok(choicePage(Choice.form()))
+    request.declarationId match {
+      case Some(id) =>
+        exportsCacheService.get(id).map(_.map(_.choice)).map {
+          case Some(data) => Ok(choicePage(Choice.form().fill(Choice(data))))
+          case _          => Ok(choicePage(Choice.form()))
+        }
+      case None =>Future.successful(Ok(choicePage(Choice.form())))
     }
+
   }
 
   def submitChoice(): Action[AnyContent] = authenticate.async { implicit request =>
@@ -60,7 +65,7 @@ class ChoiceController @Inject()(
         (formWithErrors: Form[Choice]) => Future.successful(BadRequest(choicePage(formWithErrors))),
         validChoice => {
           exportsCacheService
-            .update(
+            .create(
               ExportsDeclaration(
                 None,
                 DeclarationStatus.DRAFT,
@@ -69,7 +74,7 @@ class ChoiceController @Inject()(
                 validChoice.value
               )
             )
-            .map(created => {
+            .map((created: ExportsDeclaration) => {
               (validChoice.value match {
                 case SupplementaryDec | StandardDec =>
                   Redirect(controllers.declaration.routes.DispatchLocationController.displayPage())
@@ -77,7 +82,7 @@ class ChoiceController @Inject()(
                   Redirect(controllers.routes.CancelDeclarationController.displayForm())
                 case Submissions =>
                   Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
-              }).addingToSession(SessionKeys.declarationId -> created.flatMap(_.id).getOrElse(""))
+              }).addingToSession(SessionKeys.declarationId -> created.id.getOrElse(""))
             })
         }
       )

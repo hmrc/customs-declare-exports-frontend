@@ -20,6 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import forms.declaration.ConsignmentReferences
 import javax.inject.Inject
 import models.ExportsDeclaration
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,7 +37,7 @@ class ConsignmentReferencesController @Inject()(
   mcc: MessagesControllerComponents,
   consignmentReferencesPage: consignment_references
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.consignmentReferences match {
@@ -52,14 +53,14 @@ class ConsignmentReferencesController @Inject()(
         (formWithErrors: Form[ConsignmentReferences]) =>
           Future.successful(BadRequest(consignmentReferencesPage(formWithErrors))),
         validConsignmentReferences =>
-          updateCache(journeySessionId, validConsignmentReferences)
+          updateCache(validConsignmentReferences)
             .map(_ => Redirect(controllers.declaration.routes.ExporterDetailsController.displayForm()))
       )
   }
 
-  private def updateCache(sessionId: String, formData: ConsignmentReferences): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportsDeclaration(sessionId, model => {
-      exportsCacheService.update(sessionId, model.copy(consignmentReferences = Some(formData)))
+  private def updateCache(formData: ConsignmentReferences)(implicit req: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclaration(model => {
+      exportsCacheService.update(model.copy(consignmentReferences = Some(formData)))
     })
 
 }

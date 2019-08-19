@@ -22,7 +22,7 @@ import connectors.CustomsDeclareExportsConnector
 import javax.inject.Singleton
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers.submissionMetric
-import models.ExportsDeclaration
+import models.{DeclarationStatus, ExportsDeclaration}
 import models.requests.JourneyRequest
 import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
@@ -43,17 +43,16 @@ class SubmissionService @Inject()(
   exportsMetrics: ExportsMetrics
 ) {
 
-  private val logger = Logger(this.getClass())
+  private val logger = Logger(this.getClass)
 
   def submit(
-    sessionId: String,
     exportsDeclaration: ExportsDeclaration
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]] = {
 
     val timerContext = exportsMetrics.startTimer(submissionMetric)
     auditService.auditAllPagesUserInput(getCachedData(exportsDeclaration))
     for {
-      _ <- exportsConnector.createDeclaration(exportsDeclaration) andThen {
+      _ <- exportsConnector.updateDeclaration(exportsDeclaration.copy(status = DeclarationStatus.COMPLETE)) andThen {
         case Failure(exception) =>
           logger.error(s"Error response from backend $exception")
           auditService.audit(
@@ -62,19 +61,10 @@ class SubmissionService @Inject()(
           )
       }
 
-      lrn <- cacheService
-        .remove(sessionId)
-        .map { _ =>
-          auditService.audit(
-            AuditTypes.Submission,
-            auditData(exportsDeclaration.lrn, exportsDeclaration.ducr, Success.toString)
-          )
-          exportsMetrics.incrementCounter(submissionMetric)
-          timerContext.stop()
-          exportsDeclaration.lrn
-        }
-
-    } yield lrn
+      _ = auditService.audit(AuditTypes.Submission, auditData(exportsDeclaration.lrn, exportsDeclaration.ducr, Success.toString))
+      _ = exportsMetrics.incrementCounter(submissionMetric)
+      _ = timerContext.stop()
+    } yield exportsDeclaration.lrn
   }
 
   private def auditData(lrn: Option[String], ducr: Option[String], result: String)(

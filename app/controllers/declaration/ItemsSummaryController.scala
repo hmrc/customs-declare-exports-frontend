@@ -35,7 +35,7 @@ class ItemsSummaryController @Inject()(
   mcc: MessagesControllerComponents,
   itemsSummaryPage: items_summary
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     Ok(itemsSummaryPage(request.cacheModel.items.toList))
@@ -45,7 +45,6 @@ class ItemsSummaryController @Inject()(
     val newItem = ExportItem(id = exportItemIdGeneratorService.generateItemId())
     exportsCacheService
       .update(
-        journeySessionId,
         request.cacheModel
           .copy(items = request.cacheModel.items + newItem.copy(sequenceId = request.cacheModel.items.size + 1))
       )
@@ -58,7 +57,7 @@ class ItemsSummaryController @Inject()(
         val updatedItems = request.cacheModel.copy(items = request.cacheModel.items - itemToDelete).items.zipWithIndex.map {
           case (item, index) => item.copy(sequenceId = index + 1)
         }
-        exportsCacheService.update(journeySessionId, request.cacheModel.copy(items = updatedItems)).map { _ =>
+        exportsCacheService.update(request.cacheModel.copy(items = updatedItems)).map { _ =>
           Redirect(routes.ItemsSummaryController.displayPage())
         }
       case _ =>

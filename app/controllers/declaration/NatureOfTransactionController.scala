@@ -21,6 +21,7 @@ import forms.declaration.NatureOfTransaction
 import forms.declaration.NatureOfTransaction._
 import javax.inject.Inject
 import models.ExportsDeclaration
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -37,12 +38,12 @@ class NatureOfTransactionController @Inject()(
   natureOfTransactionPage: nature_of_transaction,
   override val exportsCacheService: ExportsCacheService
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.natureOfTransaction match {
-      case Some(data) => Ok(natureOfTransactionPage(form.fill(data)))
-      case _          => Ok(natureOfTransactionPage(form))
+      case Some(data) => Ok(natureOfTransactionPage(form().fill(data)))
+      case _          => Ok(natureOfTransactionPage(form()))
     }
   }
 
@@ -52,15 +53,14 @@ class NatureOfTransactionController @Inject()(
         (formWithErrors: Form[NatureOfTransaction]) =>
           Future.successful(BadRequest(natureOfTransactionPage(adjustErrors(formWithErrors)))),
         form =>
-          updateCache(journeySessionId, form).map(
+          updateCache(form).map(
             _ => Redirect(controllers.declaration.routes.PreviousDocumentsController.displayForm())
         )
       )
   }
 
-  private def updateCache(sessionId: String, formData: NatureOfTransaction): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportsDeclaration(
-      sessionId,
-      model => exportsCacheService.update(sessionId, model.copy(natureOfTransaction = Some(formData)))
+  private def updateCache(formData: NatureOfTransaction)(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclaration(
+      model => exportsCacheService.update(model.copy(natureOfTransaction = Some(formData)))
     )
 }

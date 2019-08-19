@@ -39,21 +39,21 @@ class TransportDetailsController @Inject()(
   mcc: MessagesControllerComponents,
   transportDetailsPage: transport_details
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.transportDetails match {
-      case Some(data) => Ok(transportDetailsPage(form.fill(data)))
-      case _          => Ok(transportDetailsPage(form))
+      case Some(data) => Ok(transportDetailsPage(form().fill(data)))
+      case _          => Ok(transportDetailsPage(form()))
     }
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form
+    form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[TransportDetails]) => Future.successful(BadRequest(transportDetailsPage(formWithErrors))),
-        transportDetails => updateCache(journeySessionId, transportDetails).map(_ => redirect(transportDetails))
+        transportDetails => updateCache(transportDetails).map(_ => redirect(transportDetails))
       )
   }
 
@@ -62,9 +62,8 @@ class TransportDetailsController @Inject()(
     else if (request.choice.value == AllowedChoiceValues.StandardDec) Redirect(routes.SealController.displayForm())
     else Redirect(routes.SummaryController.displayPage(Mode.NormalMode))
 
-  private def updateCache(sessionId: String, formData: TransportDetails): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportsDeclaration(
-      sessionId,
-      model => exportsCacheService.update(sessionId, model.copy(transportDetails = Some(formData)))
+  private def updateCache(formData: TransportDetails)(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclaration(
+      model => exportsCacheService.update(model.copy(transportDetails = Some(formData)))
     )
 }

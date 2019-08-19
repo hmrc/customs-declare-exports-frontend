@@ -18,7 +18,6 @@ package services.cache
 
 import java.time.{Clock, Instant}
 
-import akka.http.scaladsl.model
 import connectors.CustomsDeclareExportsConnector
 import javax.inject.{Inject, Singleton}
 import models.ExportsDeclaration
@@ -27,14 +26,14 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ExportsCacheService @Inject()(connector: CustomsDeclareExportsConnector, clock: Clock)(
+class ExportsCacheService @Inject()(connector: CustomsDeclareExportsConnector)(
   implicit ec: ExecutionContext
 ) {
 
   def create(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] = connector.createDeclaration(declaration)
 
   def update(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[Option[ExportsDeclaration]] = {
-    val declarationWithUpdatedTimestamp = declaration.copy(updatedDateTime = Instant.now(clock))
+    val declarationWithUpdatedTimestamp = declaration.copy(updatedDateTime = Instant.now())
     connector.updateDeclaration(declarationWithUpdatedTimestamp).map(Some(_))
   }
 

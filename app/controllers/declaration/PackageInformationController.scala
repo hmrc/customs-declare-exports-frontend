@@ -42,7 +42,7 @@ class PackageInformationController @Inject()(
   mcc: MessagesControllerComponents,
   packageInformationPage: package_information
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   // TODO Future[Option[List[PackageInformation]]]...
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
@@ -50,22 +50,16 @@ class PackageInformationController @Inject()(
     Ok(packageInformationPage(itemId, form(), items))
   }
 
-  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
-    implicit authRequest =>
-      val actionTypeOpt = FormAction.bindFromRequest()
-      val boundForm = form().bindFromRequest()
-      exportsCacheService.get(journeySessionId)
-        .map(_.flatMap(_.itemBy(itemId))).map(_.map(_.packageInformation)).flatMap {
-        data =>
-          val packagings = data.getOrElse(Seq.empty)
-
-          actionTypeOpt match {
-            case Some(Add)             => addItem(itemId, boundForm, packagings)
-            case Some(Remove(values))  => removeItem(itemId, values, boundForm, packagings)
-            case Some(SaveAndContinue) => saveAndContinue(itemId, boundForm, packagings)
-            case _                     => errorHandler.displayErrorPage()
-          }
-      }
+  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit authRequest =>
+    val actionTypeOpt = FormAction.bindFromRequest()
+    val boundForm = form().bindFromRequest()
+    val packagings = authRequest.cacheModel.itemBy(itemId).map(_.packageInformation).getOrElse(Seq.empty)
+    actionTypeOpt match {
+      case Some(Add) => addItem(itemId, boundForm, packagings)
+      case Some(Remove(values)) => removeItem(itemId, values, boundForm, packagings)
+      case Some(SaveAndContinue) => saveAndContinue(itemId, boundForm, packagings)
+      case _ => errorHandler.displayErrorPage()
+    }
   }
 
   private def removeItem(
@@ -76,7 +70,7 @@ class PackageInformationController @Inject()(
   )(implicit request: JourneyRequest[_]): Future[Result] = {
     val itemToRemove = PackageInformation.fromJsonString(values.head)
     val updatedCache = remove(items, itemToRemove.contains(_: PackageInformation))
-    updateExportsCache(itemId, journeySessionId, updatedCache)
+    updateExportsCache(itemId, updatedCache)
       .map(_ => Ok(packageInformationPage(itemId, boundForm.discardingErrors, updatedCache)))
   }
 
@@ -89,7 +83,7 @@ class PackageInformationController @Inject()(
         formWithErrors => Future.successful(BadRequest(packageInformationPage(itemId, formWithErrors, cachedData))),
         updatedCache =>
           if (updatedCache != cachedData)
-            updateExportsCache(itemId, journeySessionId, updatedCache)
+            updateExportsCache(itemId, updatedCache)
               .map(_ => Redirect(controllers.declaration.routes.CommodityMeasureController.displayPage(itemId)))
           else
             Future.successful(Redirect(controllers.declaration.routes.CommodityMeasureController.displayPage(itemId)))
@@ -103,23 +97,21 @@ class PackageInformationController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(packageInformationPage(itemId, formWithErrors, cachedData))),
         updatedCache =>
-          updateExportsCache(itemId, journeySessionId, updatedCache)
+          updateExportsCache(itemId, updatedCache)
             .map(_ => Redirect(controllers.declaration.routes.PackageInformationController.displayPage(itemId)))
       )
 
   private def updateExportsCache(
     itemId: String,
-    sessionId: String,
     updatedCache: Seq[PackageInformation]
-  ): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportsDeclaration(
-      sessionId,
+  )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclaration(
       model => {
         val item: Option[ExportItem] = model.items
           .find(item => item.id.equals(itemId))
           .map(_.copy(packageInformation = updatedCache.toList))
         val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
-        exportsCacheService.update(sessionId, model.copy(items = itemList))
+        exportsCacheService.update(model.copy(items = itemList))
       }
     )
 }

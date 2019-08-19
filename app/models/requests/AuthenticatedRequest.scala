@@ -23,5 +23,5 @@ case class AuthenticatedRequest[A](request: Request[A], user: SignedInUser) exte
   @Deprecated
   def sessionId: String = request.session.data(SessionKeys.sessionId)
 
-  def declarationId: String = request.session.data(SessionKeys.declarationId)
+  def declarationId: Option[String] = request.session.data.get(SessionKeys.declarationId)
 }

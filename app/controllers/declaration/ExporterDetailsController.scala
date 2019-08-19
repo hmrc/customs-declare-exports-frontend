@@ -20,6 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import forms.declaration.ExporterDetails
 import javax.inject.Inject
 import models.ExportsDeclaration
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,7 +37,7 @@ class ExporterDetailsController @Inject()(
   mcc: MessagesControllerComponents,
   exporterDetailsPage: exporter_details
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.parties.exporterDetails match {
@@ -51,14 +52,14 @@ class ExporterDetailsController @Inject()(
       .fold(
         (formWithErrors: Form[ExporterDetails]) => Future.successful(BadRequest(exporterDetailsPage(formWithErrors))),
         form =>
-          updateCache(journeySessionId, form)
+          updateCache(form)
             .map(_ => Redirect(controllers.declaration.routes.ConsigneeDetailsController.displayPage()))
       )
   }
 
-  private def updateCache(sessionId: String, formData: ExporterDetails): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportsDeclaration(sessionId, model => {
+  private def updateCache(formData: ExporterDetails)(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclaration(model => {
       val updatedParties = model.parties.copy(exporterDetails = Some(formData))
-      exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
+      exportsCacheService.update(model.copy(parties = updatedParties))
     })
 }

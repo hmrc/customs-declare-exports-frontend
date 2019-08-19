@@ -21,6 +21,7 @@ import forms.declaration.CommodityMeasure
 import forms.declaration.CommodityMeasure.form
 import javax.inject.Inject
 import models.ExportsDeclaration
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -37,7 +38,7 @@ class CommodityMeasureController @Inject()(
   mcc: MessagesControllerComponents,
   goodsMeasurePage: goods_measure
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val item = request.cacheModel.itemBy(itemId)
@@ -59,26 +60,21 @@ class CommodityMeasureController @Inject()(
         (formWithErrors: Form[CommodityMeasure]) =>
           Future.successful(BadRequest(goodsMeasurePage(itemId, formWithErrors))),
         validForm =>
-          updateExportsCache(itemId, journeySessionId, validForm).map { _ =>
+          updateExportsCache(itemId, validForm).map { _ =>
             Redirect(controllers.declaration.routes.AdditionalInformationController.displayPage(itemId))
         }
       )
   }
 
-  private def updateExportsCache(
-    itemId: String,
-    sessionId: String,
-    updatedItem: CommodityMeasure
+  private def updateExportsCache(itemId: String, updatedItem: CommodityMeasure)(
+    implicit r: JourneyRequest[_]
   ): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportsDeclaration(
-      sessionId,
-      model => {
-        val itemList = model.items
-          .find(item => item.id.equals(itemId))
-          .map(_.copy(commodityMeasure = Some(updatedItem)))
-          .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
+    updateExportsDeclaration(model => {
+      val itemList = model.items
+        .find(item => item.id.equals(itemId))
+        .map(_.copy(commodityMeasure = Some(updatedItem)))
+        .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
 
-        exportsCacheService.update(sessionId, model.copy(items = itemList))
-      }
-    )
+      exportsCacheService.update(model.copy(items = itemList))
+    })
 }

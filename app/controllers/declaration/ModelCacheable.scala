@@ -26,16 +26,6 @@ import scala.concurrent.{ExecutionContext, Future}
 trait ModelCacheable {
   def exportsCacheService: ExportsCacheService
 
-  @deprecated("Please use updateExportCacheModel", since = "2019-08-07")
-  protected def getAndUpdateExportsDeclaration(
-    sessionId: String,
-    update: ExportsDeclaration => Future[Option[ExportsDeclaration]]
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ExportsDeclaration]] =
-    exportsCacheService.get(sessionId).flatMap {
-      case Some(model) => update(model)
-      case _           => Future.successful(None)
-    }
-
   protected def updateExportsDeclarationSyncDirect(
     update: ExportsDeclaration => ExportsDeclaration
   )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =

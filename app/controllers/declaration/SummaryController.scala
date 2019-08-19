@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.SupplementaryDeclarationData
-import models.requests.JourneyRequest
+import models.requests.{JourneyRequest, SessionKeys}
 import models.{DeclarationStatus, ExportsDeclaration, Mode}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, Messages}
@@ -43,9 +43,9 @@ class SummaryController @Inject()(
   summaryPage: summary_page,
   summaryPageNoData: summary_page_no_data
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  private val logger = Logger(this.getClass())
+  private val logger = Logger(this.getClass)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (containsMandatoryData(request.cacheModel)) {
@@ -67,10 +67,11 @@ class SummaryController @Inject()(
   private def handleDecSubmission(
     exportsCacheModel: ExportsDeclaration
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
-    submissionService.submit(journeySessionId, exportsCacheModel.copy(status = DeclarationStatus.COMPLETE)).map {
+    submissionService.submit(exportsCacheModel).map {
       case Some(lrn) =>
         Redirect(controllers.declaration.routes.ConfirmationController.displayPage())
           .flashing(Flash(Map("LRN" -> lrn)))
+          .removingFromSession(SessionKeys.declarationId)
       case _ => handleError(s"Error from Customs Declarations API")
     }
 

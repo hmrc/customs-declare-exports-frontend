@@ -17,10 +17,8 @@
 package controllers.actions
 
 import com.google.inject.Inject
-import controllers.declaration.SessionIdAware
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.Logger
-import play.api.mvc.Results.Conflict
 import play.api.mvc.{ActionRefiner, Result, Results}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -30,20 +28,27 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class JourneyAction @Inject()(cacheService: ExportsCacheService)(
   implicit override val executionContext: ExecutionContext
-) extends ActionRefiner[AuthenticatedRequest, JourneyRequest] with SessionIdAware {
+) extends ActionRefiner[AuthenticatedRequest, JourneyRequest] {
 
   private val logger = Logger(this.getClass)
 
   override def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    cacheService.get(request.declarationId).map {
-      case Some(declaration) => Right(JourneyRequest(request, declaration))
-      case _                =>
-        // $COVERAGE-OFF$Trivial
-        logger.warn(s"Could not obtain journey type for ${request.sessionId}")
-        // $COVERAGE-ON
-        Left(Results.Redirect(controllers.routes.StartController.displayStartPage()))
+    request.declarationId match {
+      case Some(id) =>
+        cacheService.get(id).map {
+          case Some(declaration) => Right(JourneyRequest(request, declaration))
+          case _ => whenMissing(request)
+        }
+      case None => Future.successful(whenMissing(request))
     }
+  }
+
+  private def whenMissing[A](request: AuthenticatedRequest[_]): Either[Result, JourneyRequest[A]] = {
+    // $COVERAGE-OFF$Trivial
+    logger.warn(s"Could not obtain journey type for declaration ${request.declarationId}")
+    // $COVERAGE-ON
+    Left(Results.Redirect(controllers.routes.StartController.displayStartPage()))
   }
 }

@@ -39,7 +39,7 @@ class CarrierDetailsController @Inject()(
   mcc: MessagesControllerComponents,
   carrierDetailsPage: carrier_details
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.parties.carrierDetails match {
@@ -49,21 +49,21 @@ class CarrierDetailsController @Inject()(
   }
 
   def saveAddress(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    CarrierDetails.form
+    CarrierDetails.form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[CarrierDetails]) => Future.successful(BadRequest(carrierDetailsPage(formWithErrors))),
         form =>
-          updateCache(journeySessionId, form).map { _ =>
+          updateCache(form).map { _ =>
             Redirect(routes.DeclarationAdditionalActorsController.displayForm())
         }
       )
   }
 
-  private def updateCache(sessionId: String, formData: CarrierDetails)(implicit req: JourneyRequest[_]) =
-    getAndUpdateExportsDeclaration(sessionId, model => {
+  private def updateCache(formData: CarrierDetails)(implicit req: JourneyRequest[_]) =
+    updateExportsDeclaration(model => {
       val updatedParties = model.parties.copy(carrierDetails = Some(formData))
-      exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
+      exportsCacheService.update(model.copy(parties = updatedParties))
     })
 
 }

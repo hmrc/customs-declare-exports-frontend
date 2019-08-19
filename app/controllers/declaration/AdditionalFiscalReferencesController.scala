@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.MultipleItemsHelper.remove
 import controllers.util.{MultipleItemsHelper, _}
 import forms.declaration.AdditionalFiscalReference.form
 import forms.declaration.AdditionalFiscalReferencesData._
@@ -47,11 +46,10 @@ class AdditionalFiscalReferencesController @Inject()(
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId) match {
-      case Some(model) => {
+      case Some(model) =>
         model.additionalFiscalReferencesData.fold(Ok(additionalFiscalReferencesPage(itemId, form()))) { data =>
           Ok(additionalFiscalReferencesPage(itemId, form(), data.references))
         }
-      }
       case _ => Ok(additionalFiscalReferencesPage(itemId, form()))
     }
   }
@@ -65,7 +63,7 @@ class AdditionalFiscalReferencesController @Inject()(
         .flatMap(_.additionalFiscalReferencesData)
         .getOrElse(AdditionalFiscalReferencesData(Seq.empty))
 
-      val boundForm = form.bindFromRequest()
+      val boundForm = form().bindFromRequest()
 
       actionTypeOpt match {
         case Some(Add)             => addReference(itemId, boundForm, cache)

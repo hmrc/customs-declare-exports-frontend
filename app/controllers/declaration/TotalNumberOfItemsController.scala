@@ -36,34 +36,33 @@ class TotalNumberOfItemsController @Inject()(
   totalNumberOfItemsPage: total_number_of_items,
   override val exportsCacheService: ExportsCacheService
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
   import forms.declaration.TotalNumberOfItems._
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.totalNumberOfItems match {
-      case Some(data) => Ok(totalNumberOfItemsPage(form.fill(data)))
-      case _          => Ok(totalNumberOfItemsPage(form))
+      case Some(data) => Ok(totalNumberOfItemsPage(form().fill(data)))
+      case _          => Ok(totalNumberOfItemsPage(form()))
     }
   }
 
   def saveNoOfItems(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form
+    form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[TotalNumberOfItems]) =>
           Future.successful(BadRequest(totalNumberOfItemsPage(formWithErrors))),
         formData =>
-          updateCache(journeySessionId, formData).map { _ =>
+          updateCache(formData).map { _ =>
             Redirect(routes.NatureOfTransactionController.displayForm())
         }
       )
   }
 
-  private def updateCache(sessionId: String, formData: TotalNumberOfItems)(implicit req: JourneyRequest[_]) =
-    getAndUpdateExportsDeclaration(
-      sessionId,
+  private def updateCache(formData: TotalNumberOfItems)(implicit req: JourneyRequest[_]) =
+    updateExportsDeclaration(
       model =>
         exportsCacheService
-          .update(sessionId, model.copy(totalNumberOfItems = Some(formData)))
+          .update(model.copy(totalNumberOfItems = Some(formData)))
     )
 }

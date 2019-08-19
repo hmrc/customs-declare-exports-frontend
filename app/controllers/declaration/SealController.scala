@@ -23,8 +23,8 @@ import forms.declaration.Seal
 import forms.declaration.Seal._
 import handlers.ErrorHandler
 import javax.inject.Inject
+import models.Mode
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -42,46 +42,43 @@ class SealController @Inject()(
   mcc: MessagesControllerComponents,
   sealPage: seal
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val declaration = request.cacheModel
-    Ok(sealPage(form, declaration.seals, declaration.transportDetails.exists(_.container)))
+    Ok(sealPage(form(), declaration.seals, declaration.transportDetails.exists(_.container)))
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val actionTypeOpt = FormAction.bindFromRequest()
     val boundForm = form().bindFromRequest()
 
-    exportsCacheService
-      .get(journeySessionId)
-      .flatMap { data: Option[ExportsDeclaration] =>
-        val seals = data.map(_.seals)
-        val hasContainers: Boolean = data.flatMap(_.transportDetails).fold(false)(_.container)
-        actionTypeOpt match {
-          case Some(Add)             => addSeal(boundForm, sealsAllowed, seals.getOrElse(Seq.empty))
-          case Some(Remove(ids))     => removeSeal(boundForm, seals.getOrElse(Seq.empty), hasContainers, ids)
-          case Some(SaveAndContinue) => saveSeal(boundForm, sealsAllowed, seals.getOrElse(Seq.empty))
-          case _                     => errorHandler.displayErrorPage()
-        }
-      }
+    val data = request.cacheModel
+    val seals = data.seals
+    val hasContainers: Boolean = data.transportDetails.fold(false)(_.container)
+    actionTypeOpt match {
+      case Some(Add)             => addSeal(boundForm, sealsAllowed, seals)
+      case Some(Remove(ids))     => removeSeal(boundForm, seals, hasContainers, ids)
+      case Some(SaveAndContinue) => saveSeal(boundForm, sealsAllowed, seals)
+      case _                     => errorHandler.displayErrorPage()
+    }
   }
 
   private def saveSeal(boundForm: Form[Seal], elementLimit: Int, cachedSeals: Seq[Seal])(
     implicit request: JourneyRequest[_]
   ): Future[Result] =
-    saveAndContinue(boundForm, cachedSeals, false, elementLimit).fold(
+    saveAndContinue(boundForm, cachedSeals, isMandatory = false, elementLimit).fold(
       formWithErrors => badRequest(formWithErrors, cachedSeals),
       updatedCache =>
         if (updatedCache != cachedSeals) {
-          updateCache(journeySessionId, updatedCache).map { _ =>
+          updateCache(updatedCache).map { _ =>
             Redirect(routes.SummaryController.displayPage(Mode.NormalMode))
           }
         } else Future.successful(Redirect(routes.SummaryController.displayPage(Mode.NormalMode)))
     )
 
   private def badRequest(formWithErrors: Form[Seal], cachedSeals: Seq[Seal])(implicit request: JourneyRequest[_]) = {
-    val declaration = exportsCacheService.get(journeySessionId)
+    val declaration = exportsCacheService.get(request.declarationId)
     declaration.map(_.flatMap(_.transportDetails)).flatMap { data =>
       declaration.map(_.map(_.seals)).map { seals =>
         BadRequest(sealPage(formWithErrors, seals.getOrElse(Seq.empty), data.fold(false)(_.container)))
@@ -95,17 +92,16 @@ class SealController @Inject()(
     val updatedSeals = remove(cachedSeals, { seal: Seal =>
       ids.contains(seal.id)
     })
-    updateCache(journeySessionId, updatedSeals).map { _ =>
+    updateCache(updatedSeals).map { _ =>
       Ok(sealPage(userInput.discardingErrors, updatedSeals, hasContainers))
     }
   }
 
-  private def updateCache(sessionId: String, formData: Seq[Seal])(implicit req: JourneyRequest[_]) =
-    getAndUpdateExportsDeclaration(
-      sessionId,
+  private def updateCache(formData: Seq[Seal])(implicit req: JourneyRequest[_]) =
+    updateExportsDeclaration(
       model =>
         exportsCacheService
-          .update(sessionId, model.copy(seals = formData))
+          .update(model.copy(seals = formData))
     )
 
   private def addSeal(boundForm: Form[Seal], elementLimit: Int, seals: Seq[Seal])(
@@ -115,7 +111,7 @@ class SealController @Inject()(
       .fold(
         formWithErrors => badRequest(formWithErrors, seals),
         updatedCache =>
-          updateCache(journeySessionId, updatedCache).map { _ =>
+          updateCache(updatedCache).map { _ =>
             Redirect(routes.SealController.displayForm())
         }
       )
