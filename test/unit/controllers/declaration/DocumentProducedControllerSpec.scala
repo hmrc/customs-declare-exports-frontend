@@ -113,7 +113,7 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
       "user put duplicated item" in {
 
-        withNewCaching(aDeclaration(withItems(anItem(withDocumentsProduced(documentsProduced)))))
+        withNewCaching(aDeclaration(withItems(anItem(withItemId("itemId"), withDocumentsProduced(documentsProduced)))))
 
         val duplicatedForm = Seq(("documentTypeCode", "1234"), addActionUrlEncoded)
 
@@ -129,6 +129,7 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
           aDeclaration(
             withItems(
               anItem(
+                withItemId("itemId"),
                 withDocumentsProducedData(
                   DocumentsProducedData(Seq.fill(DocumentsProducedData.maxNumberOfItems)(documentsProduced))
                 )
@@ -160,7 +161,7 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
       "user put duplicated item" in {
 
-        withNewCaching(aDeclaration(withItems(anItem(withDocumentsProduced(documentsProduced)))))
+        withNewCaching(aDeclaration(withItems(anItem(withItemId("itemId"), withDocumentsProduced(documentsProduced)))))
 
         val duplicatedForm = Seq(("documentTypeCode", "1234"), saveAndContinueActionUrlEncoded)
 
@@ -176,6 +177,7 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
           aDeclaration(
             withItems(
               anItem(
+                withItemId("itemId"),
                 withDocumentsProducedData(
                   DocumentsProducedData(Seq.fill(DocumentsProducedData.maxNumberOfItems)(documentsProduced))
                 )
