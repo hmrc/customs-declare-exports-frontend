@@ -22,9 +22,9 @@ import play.api.libs.json.{JsObject, JsString, JsValue}
 object ConsignmentReferencesSpec {
   val exemplaryDucr = "8GB123456789012-1234567890QWERTYUIO"
 
-  val correctConsignmentReferences = ConsignmentReferences(ducr = Some(Ducr(ducr = exemplaryDucr)), lrn = "123LRN")
-  val correctConsignmentReferencesNoDucr = ConsignmentReferences(ducr = None, lrn = "123LRN")
-  val emptyConsignmentReferences = ConsignmentReferences(ducr = None, lrn = "")
+  val correctConsignmentReferences = ConsignmentReferences(ducr = Ducr(ducr = exemplaryDucr), lrn = "123LRN")
+  val correctConsignmentReferencesNoDucr = ConsignmentReferences(ducr = Ducr(""), lrn = "123LRN", None)
+  val emptyConsignmentReferences = ConsignmentReferences(ducr = Ducr(""), lrn = "", None)
 
   val correctConsignmentReferencesJSON: JsValue = JsObject(
     Map("ducr" -> JsObject(Map("ducr" -> JsString(exemplaryDucr))), "lrn" -> JsString("123LRN"))

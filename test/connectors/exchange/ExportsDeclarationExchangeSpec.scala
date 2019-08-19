@@ -18,6 +18,7 @@ package connectors.exchange
 
 import java.time.Instant
 
+import forms.Ducr
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.declaration.{Locations, Parties, TransportInformationContainerData}
@@ -39,7 +40,7 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
   private val additionalDeclarationType = mock[AdditionalDeclarationType]
 
   private val consignmentReferences = mock[ConsignmentReferences]
-  when(consignmentReferences.ducr).thenReturn(None)
+  when(consignmentReferences.ducr).thenReturn(Ducr(""))
 
   private val borderTransport = mock[BorderTransport]
   private val transportDetails = mock[TransportDetails]

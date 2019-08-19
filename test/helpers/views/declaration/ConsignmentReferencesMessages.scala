@@ -27,6 +27,10 @@ trait ConsignmentReferencesMessages {
   val lrnEmpty: String = consignmentReferences + ".lrn.error.empty"
   val lrnLength: String = consignmentReferences + ".lrn.error.length"
   val lrnSpecialCharacter: String = consignmentReferences + ".lrn.error.specialCharacter"
+  val ucrLength: String = consignmentReferences + ".ucr.error.length"
+  val ucrSpecialCharacter: String = consignmentReferences + ".ucr.error.specialCharacter"
   val ucrInfo: String = consignmentReferences + ".ucr.info"
   val ucrHint: String = consignmentReferences + ".ucr.hint"
+  val ducrInfo: String = consignmentReferences + ".ducr.info"
+  val ducrHint: String = consignmentReferences + ".ducr.hint"
 }

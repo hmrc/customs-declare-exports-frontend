@@ -122,8 +122,7 @@ class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
 
           supplementaryDeclarationData.consignmentReferences must be(defined)
           supplementaryDeclarationData.consignmentReferences.get.lrn must equal(consignmentReferences.lrn)
-          supplementaryDeclarationData.consignmentReferences.get.ducr must be(defined)
-          supplementaryDeclarationData.consignmentReferences.get.ducr.get must equal(consignmentReferences.ducr.get)
+          supplementaryDeclarationData.consignmentReferences.get.ducr must equal(consignmentReferences.ducr)
         }
 
         "CacheMap contains 2 records" in {
@@ -139,8 +138,7 @@ class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
 
           supplementaryDeclarationData.consignmentReferences must be(defined)
           supplementaryDeclarationData.consignmentReferences.get.lrn must equal(consignmentReferences.lrn)
-          supplementaryDeclarationData.consignmentReferences.get.ducr must be(defined)
-          supplementaryDeclarationData.consignmentReferences.get.ducr.get must equal(consignmentReferences.ducr.get)
+          supplementaryDeclarationData.consignmentReferences.get.ducr must equal(consignmentReferences.ducr)
           supplementaryDeclarationData.parties must be(defined)
           supplementaryDeclarationData.parties.get.exporterDetails must be(defined)
           supplementaryDeclarationData.parties.get.exporterDetails.get must equal(exporterDetails)
