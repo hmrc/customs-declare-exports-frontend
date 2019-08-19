@@ -24,7 +24,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.{notifications, submission_notifications}
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class NotificationsController @Inject()(
   authenticate: AuthAction,
@@ -41,10 +41,13 @@ class NotificationsController @Inject()(
     }
   }
 
-  def listOfNotificationsForSubmission(mrn: String): Action[AnyContent] =
+  def listOfNotificationsForSubmission(id: String): Action[AnyContent] =
     authenticate.async { implicit request =>
-      customsDeclareExportsConnector.fetchNotificationsByMrn(mrn).map { results =>
-        Ok(submissionsNotificationPage(results.sorted.reverse))
+      customsDeclareExportsConnector.findSubmission(id) flatMap {
+        case Some(submission) => customsDeclareExportsConnector.findNotifications(id) map { notifications =>
+          Ok(submissionsNotificationPage(submission, notifications.sorted.reverse))
+        }
+        case None => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
       }
     }
 

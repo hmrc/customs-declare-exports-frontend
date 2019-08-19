@@ -62,9 +62,6 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
   val documentsProduced = DocumentsProduced(Some("1234"), None, None, None, None, None, None)
 
-  def checkViewInteractions(noOfInvocations: Int = 1): Unit =
-    verify(mockDocumentProducedPage, times(noOfInvocations)).apply(any(), any(), any())(any(), any())
-
   "Document Produced controller" should {
 
     "return 200 (OK)" when {
@@ -74,7 +71,7 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
         val result = controller.displayPage(itemId)(getRequest())
 
         status(result) mustBe OK
-        checkViewInteractions()
+        verify(mockDocumentProducedPage, times(1)).apply(any(), any(), any())(any(), any())
       }
 
       "display page method is invoked with data in cache" in {
@@ -85,7 +82,7 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
         val result = controller.displayPage(item.id)(getRequest())
 
         status(result) mustBe OK
-        checkViewInteractions()
+        verify(mockDocumentProducedPage, times(1)).apply(any(), any(), any())(any(), any())
       }
     }
 
@@ -98,7 +95,7 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
         val result = controller.saveForm(itemId)(postRequestAsFormUrlEncoded(wrongAction))
 
         status(result) mustBe BAD_REQUEST
-        checkViewInteractions()
+        verify(mockDocumentProducedPage, times(1)).apply(any(), any(), any())(any(), any())
       }
     }
 
@@ -111,19 +108,19 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
         val result = controller.saveForm(itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) mustBe BAD_REQUEST
-        checkViewInteractions()
+        verify(mockDocumentProducedPage, times(1)).apply(any(), any(), any())(any(), any())
       }
 
       "user put duplicated item" in {
 
-        withNewCaching(aDeclaration(withItems(anItem(withDocumentsProduced(documentsProduced)))))
+        withNewCaching(aDeclaration(withItems(anItem(withItemId("itemId"), withDocumentsProduced(documentsProduced)))))
 
         val duplicatedForm = Seq(("documentTypeCode", "1234"), addActionUrlEncoded)
 
         val result = controller.saveForm(itemId)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
         status(result) mustBe BAD_REQUEST
-        checkViewInteractions()
+        verify(mockDocumentProducedPage, times(1)).apply(any(), any(), any())(any(), any())
       }
 
       "user reach maximum amount of items" in {
@@ -132,6 +129,7 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
           aDeclaration(
             withItems(
               anItem(
+                withItemId("itemId"),
                 withDocumentsProducedData(
                   DocumentsProducedData(Seq.fill(DocumentsProducedData.maxNumberOfItems)(documentsProduced))
                 )
@@ -145,7 +143,7 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
         val result = controller.saveForm(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) mustBe BAD_REQUEST
-        checkViewInteractions()
+        verify(mockDocumentProducedPage, times(1)).apply(any(), any(), any())(any(), any())
       }
     }
 
@@ -158,19 +156,19 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
         val result = controller.saveForm(itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) mustBe BAD_REQUEST
-        checkViewInteractions()
+        verify(mockDocumentProducedPage, times(1)).apply(any(), any(), any())(any(), any())
       }
 
       "user put duplicated item" in {
 
-        withNewCaching(aDeclaration(withItems(anItem(withDocumentsProduced(documentsProduced)))))
+        withNewCaching(aDeclaration(withItems(anItem(withItemId("itemId"), withDocumentsProduced(documentsProduced)))))
 
         val duplicatedForm = Seq(("documentTypeCode", "1234"), saveAndContinueActionUrlEncoded)
 
         val result = controller.saveForm(itemId)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
         status(result) mustBe BAD_REQUEST
-        checkViewInteractions()
+        verify(mockDocumentProducedPage, times(1)).apply(any(), any(), any())(any(), any())
       }
 
       "user reach maximum amount of items" in {
@@ -179,6 +177,7 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
           aDeclaration(
             withItems(
               anItem(
+                withItemId("itemId"),
                 withDocumentsProducedData(
                   DocumentsProducedData(Seq.fill(DocumentsProducedData.maxNumberOfItems)(documentsProduced))
                 )
@@ -192,7 +191,7 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
         val result = controller.saveForm(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) mustBe BAD_REQUEST
-        checkViewInteractions()
+        verify(mockDocumentProducedPage, times(1)).apply(any(), any(), any())(any(), any())
       }
     }
 
@@ -205,7 +204,7 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
         val result = controller.saveForm(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) mustBe SEE_OTHER
-        checkViewInteractions(0)
+        verify(mockDocumentProducedPage, times(0)).apply(any(), any(), any())(any(), any())
       }
 
       "user save correct data" in {
@@ -215,7 +214,7 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
         val result = controller.saveForm(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) mustBe SEE_OTHER
-        checkViewInteractions(0)
+        verify(mockDocumentProducedPage, times(0)).apply(any(), any(), any())(any(), any())
       }
 
       "user save empty form without new item" in {
@@ -223,7 +222,7 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
         val result = controller.saveForm(itemId)(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
 
         status(result) mustBe SEE_OTHER
-        checkViewInteractions(0)
+        verify(mockDocumentProducedPage, times(0)).apply(any(), any(), any())(any(), any())
       }
 
       "user remove existing item" in {
@@ -235,7 +234,7 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
         val result = controller.saveForm(itemId)(postRequestAsFormUrlEncoded(removeAction))
 
         status(result) mustBe OK
-        checkViewInteractions()
+        verify(mockDocumentProducedPage, times(1)).apply(any(), any(), any())(any(), any())
       }
     }
   }

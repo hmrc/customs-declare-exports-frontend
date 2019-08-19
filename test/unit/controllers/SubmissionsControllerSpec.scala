@@ -29,6 +29,7 @@ class SubmissionsControllerSpec extends ControllerSpec {
     val controller = new SubmissionsController(
       mockAuthAction,
       mockCustomsDeclareExportsConnector,
+      mockExportsCacheService,
       stubMessagesControllerComponents(),
       submissionsPage
     )(ec)

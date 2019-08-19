@@ -32,9 +32,6 @@ trait MockExportCacheService extends MockitoSugar with ExportsDeclarationBuilder
   val mockExportsCacheService: ExportsCacheService = mock[ExportsCacheService]
 
   def withNewCaching(dataToReturn: ExportsDeclaration): Unit = {
-    when(mockExportsCacheService.getItemByIdAndSession(anyString, anyString))
-      .thenReturn(Future.successful(dataToReturn.items.headOption))
-
     when(mockExportsCacheService.update(anyString, any[ExportsDeclaration]))
       .thenReturn(Future.successful(Some(dataToReturn)))
 

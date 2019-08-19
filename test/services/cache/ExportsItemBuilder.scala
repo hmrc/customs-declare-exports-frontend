@@ -35,6 +35,8 @@ trait ExportsItemBuilder {
 
   // ************************************************* Builders ********************************************************
 
+  def withItemId(id: String): ItemModifier = _.copy(id = id)
+
   def withSequenceId(id: Int): ItemModifier = _.copy(sequenceId = id)
 
   def withoutProcedureCodes(): ItemModifier = _.copy(procedureCodes = None)

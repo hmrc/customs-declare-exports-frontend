@@ -41,9 +41,7 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
     reset(mockExportsCacheService, mockCustomsDeclareExportsConnector, mockAuditService)
     successfulCustomsDeclareExportsResponse()
 
-    val mockResult = mock[JSONBatchCommands.FindAndModifyCommand.FindAndModifyResult]
-
-    when(mockExportsCacheService.remove(any[String])).thenReturn(Future.successful(mockResult))
+    when(mockExportsCacheService.remove(any[String])).thenReturn(Future.successful((): Unit))
   }
 
   implicit val request = TestHelper.journeyRequest(FakeRequest("", ""), AllowedChoiceValues.SupplementaryDec)
@@ -79,7 +77,7 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
       result.value mustBe "123LRN"
 
       verify(mockExportsCacheService, times(1)).remove(any[String])
-      verify(mockCustomsDeclareExportsConnector, times(1)).create(refEq(model))(any(), any())
+      verify(mockCustomsDeclareExportsConnector, times(1)).createDeclaration(refEq(model))(any(), any())
 
       verify(mockAuditService, times(1)).audit(any(), any())(any())
       verify(mockAuditService, times(1)).auditAllPagesUserInput(any())(any())
@@ -92,7 +90,7 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
 
     "propagate errors from exports connector" in {
       val error = new RuntimeException("some error")
-      when(mockCustomsDeclareExportsConnector.create(any[ExportsDeclaration])(any(), any())).thenThrow(error)
+      when(mockCustomsDeclareExportsConnector.createDeclaration(any[ExportsDeclaration])(any(), any())).thenThrow(error)
       val model = createFullModel()
 
       val thrown = intercept[Exception] {

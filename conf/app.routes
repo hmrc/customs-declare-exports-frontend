@@ -10,11 +10,13 @@ GET        /unauthorised                                controllers.Unauthorised
 
 GET        /notifications                               controllers.NotificationsController.listOfNotifications()
 
-GET        /notifications/:mrn                          controllers.NotificationsController.listOfNotificationsForSubmission(mrn: String)
+GET        /submissions/:id/notifications               controllers.NotificationsController.listOfNotificationsForSubmission(id: String)
 
 # Submissions
 
 GET        /submissions                                 controllers.SubmissionsController.displayListOfSubmissions()
+
+GET        /submissions/:id                             controllers.SubmissionsController.amend(id: String)
 
 # Cancel declaration
 

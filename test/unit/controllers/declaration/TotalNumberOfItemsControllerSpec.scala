@@ -54,9 +54,6 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
     reset(mockTotalNumberOfItemsPage)
   }
 
-  def checkViewInteractions(noOfInvocations: Int = 1): Unit =
-    verify(mockTotalNumberOfItemsPage, times(noOfInvocations)).apply(any())(any(), any())
-
   def theResponseForm: Form[TotalNumberOfItems] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[TotalNumberOfItems]])
     verify(mockTotalNumberOfItemsPage).apply(captor.capture())(any(), any())
@@ -72,7 +69,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
         val result = controller.displayForm()(getRequest())
 
         status(result) mustBe OK
-        checkViewInteractions()
+        verify(mockTotalNumberOfItemsPage, times(1)).apply(any())(any(), any())
 
         theResponseForm.value mustBe empty
       }
@@ -86,7 +83,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
         val result = controller.displayForm()(getRequest())
 
         status(result) mustBe OK
-        checkViewInteractions()
+        verify(mockTotalNumberOfItemsPage, times(1)).apply(any())(any(), any())
 
         theResponseForm.value mustNot be(empty)
         theResponseForm.value.value.totalPackage mustBe totalPackage
@@ -102,7 +99,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
         val result = controller.saveNoOfItems()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
-        checkViewInteractions()
+        verify(mockTotalNumberOfItemsPage, times(1)).apply(any())(any(), any())
       }
     }
 
@@ -115,7 +112,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
         val result = controller.saveNoOfItems()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        checkViewInteractions(0)
+        verify(mockTotalNumberOfItemsPage, times(0)).apply(any())(any(), any())
       }
     }
   }

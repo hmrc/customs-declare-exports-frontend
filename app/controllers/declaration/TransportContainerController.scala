@@ -24,10 +24,10 @@ import forms.declaration.TransportInformationContainer
 import forms.declaration.TransportInformationContainer.form
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.ExportsDeclaration
 import models.declaration.TransportInformationContainerData
 import models.declaration.TransportInformationContainerData.maxNumberOfItems
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -89,7 +89,7 @@ class TransportContainerController @Inject()(
 
   private def redirect()(implicit request: JourneyRequest[_]) =
     if (request.choice.value == AllowedChoiceValues.StandardDec) Redirect(routes.SealController.displayForm())
-    else Redirect(routes.SummaryController.displayPage())
+    else Redirect(routes.SummaryController.displayPage(Mode.NormalMode))
 
   private def removeContainer(
     userInput: Form[TransportInformationContainer],

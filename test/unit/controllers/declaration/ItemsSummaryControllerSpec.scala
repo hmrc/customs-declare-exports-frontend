@@ -58,9 +58,6 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
     super.afterEach()
   }
 
-  def checkViewInteractions(noOfInvocations: Int = 1): Unit =
-    verify(mockItemsSummaryPage, times(noOfInvocations)).apply(any())(any(), any())
-
   def theResponseForm: List[ExportItem] = {
     val captor = ArgumentCaptor.forClass(classOf[List[ExportItem]])
     verify(mockItemsSummaryPage).apply(captor.capture())(any(), any())
@@ -76,7 +73,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.displayPage()(getRequest())
 
         status(result) mustBe OK
-        checkViewInteractions()
+        verify(mockItemsSummaryPage, times(1)).apply(any())(any(), any())
 
         theResponseForm mustBe empty
       }
@@ -89,7 +86,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.addItem()(getRequest())
 
         status(result) mustBe SEE_OTHER
-        checkViewInteractions(0)
+        verify(mockItemsSummaryPage, times(0)).apply(any())(any(), any())
         redirectLocation(result).value must include(s"/items/${itemId}/procedure-codes")
       }
     }
@@ -101,7 +98,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.removeItem(itemId)(getRequest())
 
         status(result) mustBe SEE_OTHER
-        checkViewInteractions(0)
+        verify(mockItemsSummaryPage, times(0)).apply(any())(any(), any())
       }
 
       "user successfully remove item" in {
@@ -113,7 +110,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.removeItem(itemId)(getRequest())
 
         status(result) mustBe SEE_OTHER
-        checkViewInteractions(0)
+        verify(mockItemsSummaryPage, times(0)).apply(any())(any(), any())
         verify(mockExportsCacheService, times(1)).update(any(), meq(aDeclaration(withItem(secondItem.copy(sequenceId = secondItem.sequenceId + 1)))))
       }
     }

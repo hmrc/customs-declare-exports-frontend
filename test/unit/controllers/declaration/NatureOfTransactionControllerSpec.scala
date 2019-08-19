@@ -54,9 +54,6 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
     reset(mockNatureOfTransactionPage)
   }
 
-  def checkViewInteractions(noOfInvocations: Int = 1): Unit =
-    verify(mockNatureOfTransactionPage, times(noOfInvocations)).apply(any())(any(), any())
-
   def theResponseForm: Form[NatureOfTransaction] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[NatureOfTransaction]])
     verify(mockNatureOfTransactionPage).apply(captor.capture())(any(), any())
@@ -72,7 +69,7 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
         val result = controller.displayForm()(getRequest())
 
         status(result) mustBe OK
-        checkViewInteractions()
+        verify(mockNatureOfTransactionPage, times(1)).apply(any())(any(), any())
 
         theResponseForm.value mustBe empty
       }
@@ -85,7 +82,7 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
         val result = controller.displayForm()(getRequest())
 
         status(result) mustBe OK
-        checkViewInteractions()
+        verify(mockNatureOfTransactionPage, times(1)).apply(any())(any(), any())
 
         theResponseForm.value.value.natureType mustBe natureType
       }
@@ -100,7 +97,7 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
         val result = controller.saveTransactionType()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
-        checkViewInteractions()
+        verify(mockNatureOfTransactionPage, times(1)).apply(any())(any(), any())
       }
     }
 
@@ -113,7 +110,7 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
         val result = controller.saveTransactionType()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        checkViewInteractions(0)
+        verify(mockNatureOfTransactionPage, times(0)).apply(any())(any(), any())
       }
     }
   }

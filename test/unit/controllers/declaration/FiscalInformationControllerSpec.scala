@@ -57,9 +57,6 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
 
   val itemId = "itemId"
 
-  def checkViewInteractions(noOfInvocations: Int = 1): Unit =
-    verify(mockFiscalInformationPage, times(noOfInvocations)).apply(any(), any())(any(), any())
-
   def theResponseForm: Form[FiscalInformation] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[FiscalInformation]])
     verify(mockFiscalInformationPage).apply(any(), captor.capture())(any(), any())
@@ -75,7 +72,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.displayPage(itemId)(getRequest())
 
         status(result) mustBe OK
-        checkViewInteractions()
+        verify(mockFiscalInformationPage, times(1)).apply(any(), any())(any(), any())
 
         theResponseForm.value mustBe empty
       }
@@ -87,7 +84,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.displayPage(item.id)(getRequest())
 
         status(result) mustBe OK
-        checkViewInteractions()
+        verify(mockFiscalInformationPage, times(1)).apply(any(), any())(any(), any())
 
         theResponseForm.value.value.onwardSupplyRelief mustBe yes
       }
@@ -102,7 +99,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.saveFiscalInformation(itemId)(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
-        checkViewInteractions()
+        verify(mockFiscalInformationPage, times(1)).apply(any(), any())(any(), any())
       }
     }
 
@@ -115,7 +112,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.saveFiscalInformation(itemId)(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        checkViewInteractions(0)
+        verify(mockFiscalInformationPage, times(0)).apply(any(), any())(any(), any())
       }
 
       "user answer no" in {
@@ -125,7 +122,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.saveFiscalInformation(itemId)(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        checkViewInteractions(0)
+        verify(mockFiscalInformationPage, times(0)).apply(any(), any())(any(), any())
       }
     }
   }

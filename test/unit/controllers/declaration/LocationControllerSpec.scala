@@ -54,9 +54,6 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
     reset(mockGoodsLocationPage)
   }
 
-  def checkViewInteractions(noOfInvocations: Int = 1): Unit =
-    verify(mockGoodsLocationPage, times(noOfInvocations)).apply(any())(any(), any())
-
   def theResponseForm: Form[GoodsLocation] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[GoodsLocation]])
     verify(mockGoodsLocationPage).apply(captor.capture())(any(), any())
@@ -72,7 +69,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.displayForm()(getRequest())
 
         status(result) mustBe OK
-        checkViewInteractions()
+        verify(mockGoodsLocationPage, times(1)).apply(any())(any(), any())
 
         theResponseForm.value mustBe empty
       }
@@ -85,7 +82,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.displayForm()(getRequest())
 
         status(result) mustBe OK
-        checkViewInteractions()
+        verify(mockGoodsLocationPage, times(1)).apply(any())(any(), any())
 
         theResponseForm.value mustNot be(empty)
         theResponseForm.value.value.country mustBe "PL"
@@ -109,7 +106,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.saveLocation()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
-        checkViewInteractions()
+        verify(mockGoodsLocationPage, times(1)).apply(any())(any(), any())
       }
     }
 
@@ -122,7 +119,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.saveLocation()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
-        checkViewInteractions(0)
+        verify(mockGoodsLocationPage, times(0)).apply(any())(any(), any())
       }
     }
   }

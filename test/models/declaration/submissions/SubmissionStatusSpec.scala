@@ -16,6 +16,7 @@
 
 package models.declaration.submissions
 
+import models.declaration.submissions.SubmissionStatus._
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json._
 

@@ -14,17 +14,17 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes._
-@import models.declaration.SupplementaryDeclarationData
-@import models.viewmodels.HtmlTableRow
-@import models.requests.JourneyRequest
-@import uk.gov.hmrc.play.views.html._
-@import views.html.declaration.summary._
+@import controllers.declaration.routes
 @import forms.Choice.AllowedChoiceValues._
+@import models.Mode
+@import models.declaration.SupplementaryDeclarationData
+@import models.requests.JourneyRequest
+@import models.viewmodels.HtmlTableRow
+@import views.html.declaration.summary._
 
 @this(main_template: views.html.main_template)
 
-@(suppDecData: SupplementaryDeclarationData)(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, suppDecData: SupplementaryDeclarationData)(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.summary.title")
@@ -34,15 +34,21 @@
             components.back_link("/customs-declare-exports/declaration/add-seal")
         else
             {
-                if (suppDecData.transportInformationContainerData.fold(false)(_.containers.size > 0))
+                if (suppDecData.transportInformationContainerData.fold(false)(_.containers.nonEmpty))
                     components.back_link("/customs-declare-exports/declaration/add-transport-containers")
                 else
                     components.back_link("/customs-declare-exports/declaration/transport-details")
             }
     }
 
-    @components.page_title(title = Some(messages("supplementary.summary.header")))
-
+    @components.page_title(
+        title = Some(
+            mode match {
+                case Mode.NormalMode => messages("supplementary.summary.normal-header")
+                case Mode.AmendMode => messages("supplementary.summary.amend-header")
+            }
+        )
+    )
 
     @components.summary_list(Some(messages("supplementary.summary.declarationType.header"))) {
         @components.table_row_no_change_link(HtmlTableRow(
@@ -74,14 +80,20 @@
 
     @items_section(suppDecData.items)
 
-    @helper.form(action = SummaryController.submitSupplementaryDeclaration(), 'id -> "summary") {
-        @helper.CSRF.formField
-
-        @components.submit_button(messages("site.acceptAndSubmitDeclaration"))
+    @if(mode == Mode.AmendMode) {
+        <a class="button mt-3" href="@routes.DispatchLocationController.displayPage()">@messages("site.continue")</a>
     }
-    <script>
-        document.getElementById("summary").addEventListener("submit", function(event){
-            document.getElementById("submit").disabled = true;
-        });
-    </script>
+
+    @if(mode == Mode.NormalMode) {
+        @helper.form(action = routes.SummaryController.submitSupplementaryDeclaration(), 'id -> "summary") {
+            @helper.CSRF.formField
+
+            @components.submit_button(messages("site.acceptAndSubmitDeclaration"))
+        }
+        <script>
+            document.getElementById("summary").addEventListener("submit", function(event){
+                document.getElementById("submit").disabled = true;
+            });
+        </script>
+    }
 }
