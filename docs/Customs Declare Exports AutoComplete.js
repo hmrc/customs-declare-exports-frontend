@@ -73,6 +73,7 @@ function completePage() {
     }
     if (currentPageIs("/customs-declare-exports/declaration/consignment-references")) {
         document.getElementById('lrn').value = 'JasTest4';
+        document.getElementById('ducr_ducr').value = '8GB12345' + Math.floor(Math.random() * 8999) + 1000 + '101SHIP1';
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs("/customs-declare-exports/declaration/exporter-details")) {
@@ -154,8 +155,8 @@ function completePage() {
     }
     if (currentPageIs('/customs-declare-exports/declaration/previous-documents')) {
         selectRadioOption(document.getElementById("documentCategory"), 1);
-        selectFromAutoPredict(document.getElementById('documentType-container'), "DCR");
-        document.getElementById('documentReference').value ='8GB12345' + Math.floor(Math.random() * 8999) + 1000 + '101SHIP1';
+        selectFromAutoPredict(document.getElementById('documentType-container'), "IF3");
+        document.getElementById('documentReference').value ='101SHIP2';
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/export-items')) {

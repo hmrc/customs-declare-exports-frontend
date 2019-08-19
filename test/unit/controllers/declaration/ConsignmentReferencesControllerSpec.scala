@@ -16,7 +16,6 @@
 
 package unit.controllers.declaration
 
-import base.TestHelper
 import controllers.declaration.ConsignmentReferencesController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.Ducr
@@ -64,56 +63,22 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
       }
     }
 
-    "return 400 (BAD_REQUEST)" when {
-      "no UCR is submitted" in new SetUp {
+    "return 400 (BAD_REQUEST)" in new SetUp {
 
-        val incorrectForm = Json.toJson(ConsignmentReferences(Ducr("1234"), ""))
+      val incorrectForm = Json.toJson(ConsignmentReferences(Ducr("1234"), ""))
 
-        val result = controller.submitConsignmentReferences()(postRequest(incorrectForm))
+      val result = controller.submitConsignmentReferences()(postRequest(incorrectForm))
 
-        status(result) must be(BAD_REQUEST)
-      }
-
-      "UCR length has been exceeded" in new SetUp {
-
-        val incorrectForm =
-          Json.toJson(ConsignmentReferences(Ducr("1234"), "", Some(TestHelper.createRandomAlphanumericString(36))))
-
-        val result = controller.submitConsignmentReferences()(postRequest(incorrectForm))
-
-        status(result) must be(BAD_REQUEST)
-      }
-
-      "UCR has special characters" in new SetUp {
-
-        val incorrectForm =
-          Json.toJson(ConsignmentReferences(Ducr("1234"), "", Some("special@&%")))
-
-        val result = controller.submitConsignmentReferences()(postRequest(incorrectForm))
-
-        status(result) must be(BAD_REQUEST)
-      }
+      status(result) must be(BAD_REQUEST)
     }
 
-    "return 303 (SEE_OTHER)" when {
-      "no UCR has been submitted" in new SetUp {
+    "return 303 (SEE_OTHER)" in new SetUp {
 
-        val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN))
+      val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN))
 
-        val result = controller.submitConsignmentReferences()(postRequest(correctForm))
+      val result = controller.submitConsignmentReferences()(postRequest(correctForm))
 
-        status(result) must be(SEE_OTHER)
-      }
-
-      "a correct UCR has been submitted" in new SetUp {
-
-        val correctForm =
-          Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN, Some(TestHelper.createRandomAlphanumericString(35))))
-
-        val result = controller.submitConsignmentReferences()(postRequest(correctForm))
-
-        status(result) must be(SEE_OTHER)
-      }
+      status(result) must be(SEE_OTHER)
     }
   }
 }
