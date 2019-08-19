@@ -23,7 +23,6 @@ import forms.declaration.{Document, PreviousDocumentsData}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
-import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -49,8 +48,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
-    when(mockPreviousDocumentsPage.apply(any(), any())(any(), any()))
-      .thenReturn(HtmlFormat.empty)
+    when(mockPreviousDocumentsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {

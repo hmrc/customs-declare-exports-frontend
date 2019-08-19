@@ -50,7 +50,7 @@ class ProcedureCodesController @Inject()(
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId) match {
       case Some(exportItem) =>
-        exportItem.procedureCodes.fold({ Ok(procedureCodesPage(itemId, form(), Seq())) }) { procedureCodesData =>
+        exportItem.procedureCodes.fold(Ok(procedureCodesPage(itemId, form(), Seq()))) { procedureCodesData =>
           Ok(
             procedureCodesPage(
               itemId,
