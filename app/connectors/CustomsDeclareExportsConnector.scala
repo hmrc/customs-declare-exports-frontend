@@ -26,6 +26,7 @@ import models.requests.CancellationStatus
 import models.{ExportsDeclaration, Page, Paginated}
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}
+import play.api.libs.json.{Json, Writes}
 import play.api.mvc.Codec
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -38,26 +39,37 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
 
   private val logger = Logger(this.getClass)
 
+  private def logPayload[T](prefix: String, payload: T)(implicit wts: Writes[T]): T = {
+    Logger.debug(s"$prefix: ${Json.toJson(payload)}")
+    payload
+  }
+
   def createDeclaration(
     declaration: ExportsDeclaration
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] =
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] = {
+    logPayload("Create Declaration Request", declaration)
     httpClient
       .POST[ExportsDeclarationExchange, ExportsDeclarationExchange](
         s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}",
         ExportsDeclarationExchange(declaration)
       )
+      .map(logPayload("Create Declaration Response", _))
       .map(_.toExportsDeclaration(declaration.sessionId))
+  }
 
   def updateDeclaration(
     declaration: ExportsDeclaration
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] =
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] = {
+    logPayload("Update Declaration Request", declaration)
     httpClient
       .PUT[ExportsDeclarationExchange, ExportsDeclarationExchange](
         s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}/${declaration.id
-          .getOrElse(throw new IllegalArgumentException("Cannot update a declaration which hasnt been created first"))}",
+          .getOrElse(throw new IllegalArgumentException("Cannot update a declaration which hasn't been created first"))}",
         ExportsDeclarationExchange(declaration)
       )
+      .map(logPayload("Update Declaration Response", _))
       .map(_.toExportsDeclaration(declaration.sessionId))
+  }
 
   def findDeclarations(
     sessionId: String,
