@@ -41,9 +41,7 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
     reset(mockExportsCacheService, mockCustomsDeclareExportsConnector, mockAuditService)
     successfulCustomsDeclareExportsResponse()
 
-    val mockResult = mock[JSONBatchCommands.FindAndModifyCommand.FindAndModifyResult]
-
-    when(mockExportsCacheService.remove(any[String])).thenReturn(Future.successful(mockResult))
+    when(mockExportsCacheService.remove(any[String])).thenReturn(Future.successful((): Unit))
   }
 
   implicit val request = TestHelper.journeyRequest(FakeRequest("", ""), AllowedChoiceValues.SupplementaryDec)

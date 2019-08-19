@@ -54,7 +54,8 @@ class PackageInformationController @Inject()(
     implicit authRequest =>
       val actionTypeOpt = FormAction.bindFromRequest()
       val boundForm = form().bindFromRequest()
-      exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map(_.map(_.packageInformation)).flatMap {
+      exportsCacheService.get(journeySessionId)
+        .map(_.flatMap(_.itemBy(itemId))).map(_.map(_.packageInformation)).flatMap {
         data =>
           val packagings = data.getOrElse(Seq.empty)
 

@@ -71,7 +71,8 @@ class ProcedureCodesController @Inject()(
       val actionTypeOpt = FormAction.bindFromRequest()
 
       val cachedData = exportsCacheService
-        .getItemByIdAndSession(itemId, journeySessionId)
+        .get(journeySessionId)
+        .map(_.flatMap(_.itemBy(itemId)))
         .map(_.flatMap(_.procedureCodes))
         .map(_.getOrElse(ProcedureCodesData(None, Seq())))
 
