@@ -90,6 +90,19 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
       registry.getCounters.get(exportsMetricsMock.counterName(metric)).getCount mustBe >(counterBefore)
     }
 
+    "propagate errors from exports connector" in {
+      val error = new RuntimeException("some error")
+      when(mockCustomsDeclareExportsConnector.create(any[ExportsDeclaration])(any(), any())).thenThrow(error)
+      val model = createFullModel()
+
+      val thrown = intercept[Exception] {
+        submissionService
+          .submit(sessionId, model)
+      }
+
+      thrown mustBe error
+    }
+
   }
 
   private def createFullModel(): ExportsDeclaration =
