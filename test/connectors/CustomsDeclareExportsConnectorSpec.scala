@@ -24,7 +24,8 @@ import base.{CustomExportsBaseSpec, MockHttpClient, TestHelper}
 import connectors.CustomsDeclareExportsConnector.toXml
 import forms.CancelDeclaration
 import models.declaration.notifications.Notification
-import models.declaration.submissions.{Action, Submission, SubmissionRequest}
+import models.declaration.submissions.{Action, Submission}
+import models.declaration.submissions.RequestType.SubmissionRequest
 import models.requests.CancellationRequested
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.{ContentTypes, HeaderNames}

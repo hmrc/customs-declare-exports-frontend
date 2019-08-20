@@ -39,8 +39,8 @@
 
     @components.fields.field_text(
       field = form("ducr.ducr"),
-      label = messages("supplementary.consignmentReferences.ucr.info"),
-      hint = Some(messages("supplementary.consignmentReferences.ucr.hint")),
+      label = messages("supplementary.consignmentReferences.ducr.info"),
+      hint = Some(messages("supplementary.consignmentReferences.ducr.hint")),
       labelClass = Some("heading-24")
     )
 
@@ -48,6 +48,13 @@
       field = form("lrn"),
       label = messages("supplementary.consignmentReferences.lrn.info"),
       hint = Some(messages("supplementary.consignmentReferences.lrn.hint")),
+      labelClass = Some("heading-24")
+    )
+
+      @components.fields.field_text(
+      field = form("ucr"),
+      label = messages("supplementary.consignmentReferences.ucr.info"),
+      hint = Some(messages("supplementary.consignmentReferences.ucr.hint")),
       labelClass = Some("heading-24")
     )
 

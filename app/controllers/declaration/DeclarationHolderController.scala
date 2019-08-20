@@ -112,7 +112,9 @@ class DeclarationHolderController @Inject()(
     Future.successful(BadRequest(declarationHolderPage(formWithError, holders)))
   }
 
-  private def updateCache(formData: DeclarationHoldersData)(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+  private def updateCache(
+    formData: DeclarationHoldersData
+  )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
       val updatedParties = model.parties.copy(declarationHoldersData = Some(formData))
       model.copy(parties = updatedParties)

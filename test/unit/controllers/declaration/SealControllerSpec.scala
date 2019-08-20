@@ -139,7 +139,9 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
         val result = controller.submitForm()(postRequestAsFormUrlEncoded(body: _*))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.declaration.routes.SummaryController.displayPage(Mode.NormalMode).url))
+        redirectLocation(result) must be(
+          Some(controllers.declaration.routes.SummaryController.displayPage(Mode.NormalMode).url)
+        )
       }
 
       "user clicked save and continue with item in a cache" in new SetUp {
@@ -151,7 +153,9 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
         val result = controller.submitForm()(postRequestAsFormUrlEncoded(body: _*))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.declaration.routes.SummaryController.displayPage(Mode.NormalMode).url))
+        redirectLocation(result) must be(
+          Some(controllers.declaration.routes.SummaryController.displayPage(Mode.NormalMode).url)
+        )
       }
     }
   }

@@ -31,7 +31,8 @@ trait CommonMessages {
   val partyType: String = common + ".partyType"
 
   val errorPrefix: String = "error"
-  val ucrError: String = errorPrefix + ".ducr"
+  val ducrError: String = errorPrefix + ".ducr"
+  val ucrError: String = errorPrefix + ".ucr"
   val errorSummaryTitle: String = errorPrefix + ".summary.title"
   val errorSummaryText: String = errorPrefix + ".summary.text"
 

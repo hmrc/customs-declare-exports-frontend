@@ -21,12 +21,11 @@ import com.kenshoo.play.metrics.Metrics
 import forms.Choice.AllowedChoiceValues
 import metrics.MetricIdentifiers
 import models.{DeclarationStatus, ExportsDeclaration}
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
-import org.mockito.ArgumentMatchers.{any, refEq}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.OptionValues
 import play.api.test.FakeRequest
-import reactivemongo.play.json.collection.JSONBatchCommands
 import services.audit.{AuditService, AuditTypes, EventData}
 import services.cache.ExportsDeclarationBuilder
 import uk.gov.hmrc.http.HeaderCarrier
@@ -71,12 +70,13 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
 
     "submit cached data to backend" in {
       // Given
-      when(mockCustomsDeclareExportsConnector.updateDeclaration(any[ExportsDeclaration])(any(), any())).thenReturn(Future.successful(submittedDeclaration))
+      when(mockCustomsDeclareExportsConnector.updateDeclaration(any[ExportsDeclaration])(any(), any()))
+        .thenReturn(Future.successful(submittedDeclaration))
       val registry = app.injector.instanceOf[Metrics].defaultRegistry
       val metric = MetricIdentifiers.submissionMetric
       val timerBefore = registry.getTimers.get(exportsMetricsMock.timerName(metric)).getCount
       val counterBefore = registry.getCounters.get(exportsMetricsMock.counterName(metric)).getCount
-      val model = aDeclaration(withConsignmentReferences(ducr = Some("ducr"), lrn = "123LRN"))
+      val model = aDeclaration(withConsignmentReferences(ducr = "ducr", lrn = "123LRN"))
 
       // When
       val result = submissionService
@@ -97,7 +97,7 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
     "propagate errors from exports connector" in {
       val error = new RuntimeException("some error")
       when(mockCustomsDeclareExportsConnector.updateDeclaration(any[ExportsDeclaration])(any(), any())).thenThrow(error)
-      val model = aDeclaration(withConsignmentReferences(ducr = Some("ducr"), lrn = "123LRN"))
+      val model = aDeclaration(withConsignmentReferences(ducr = "ducr", lrn = "123LRN"))
 
       val thrown = intercept[Exception] {
         submissionService

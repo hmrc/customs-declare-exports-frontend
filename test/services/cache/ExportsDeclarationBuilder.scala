@@ -146,8 +146,12 @@ trait ExportsDeclarationBuilder {
       )
     )
 
-  def withConsignmentReferences(ducr: Option[String] = Some(DUCR), lrn: String = LRN): ExportsDeclarationModifier =
-    withConsignmentReferences(ConsignmentReferences(ducr.map(Ducr(_)), lrn))
+  def withConsignmentReferences(
+    ducr: String = DUCR,
+    lrn: String = LRN,
+    ucr: Option[String] = None
+  ): ExportsDeclarationModifier =
+    withConsignmentReferences(ConsignmentReferences(Ducr(ducr), lrn, ucr))
 
   def withConsignmentReferences(consignmentReferences: ConsignmentReferences): ExportsDeclarationModifier =
     _.copy(consignmentReferences = Some(consignmentReferences))

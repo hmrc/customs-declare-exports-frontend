@@ -18,7 +18,8 @@
 @import views.ViewDates
 
 @import models.declaration.notifications.Notification
-@import models.declaration.submissions.{Submission, SubmissionRequest, SubmissionStatus}
+@import models.declaration.submissions.{Submission, SubmissionStatus}
+@import models.declaration.submissions.RequestType.SubmissionRequest
 
 @this(main_template: views.html.main_template)
 
@@ -52,7 +53,11 @@
                     <td class="table-cell">@{submission.actions.find(_.requestType == SubmissionRequest).map(_.requestTimestamp).map(ViewDates.formatter.withZone(ZoneId.systemDefault()).format(_))}</td>
                     <td class="table-cell">@{notifications.headOption.map(n => n.status).getOrElse(SubmissionStatus.UnknownStatus)}</td>
                     <td class="table-cell">
-                        <a href="@routes.NotificationsController.listOfNotificationsForSubmission(submission.uuid)">@{notifications.length}</a>
+                        @if(notifications.nonEmpty){
+                            <a href="@routes.NotificationsController.listOfNotificationsForSubmission(submission.uuid)">@{notifications.length}</a>
+                        } else {
+                            <span>@{notifications.length}</span>
+                        }
                     </td>
                 </tr>
             }

@@ -45,7 +45,7 @@ class SubmissionsController @Inject()(
 
       result = SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications)
 
-    } yield Ok(submissionsPage(result.toSeq))
+    } yield Ok(submissionsPage(result))
   }
 
   def amend(id: String): Action[AnyContent] = authenticate.async { implicit request =>

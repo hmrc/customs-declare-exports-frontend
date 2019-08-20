@@ -21,7 +21,8 @@ import java.time.LocalDateTime
 import controllers.routes
 import helpers.views.declaration.{CommonMessages, SubmissionsMessages}
 import models.declaration.notifications.Notification
-import models.declaration.submissions.{Action, CancellationRequest, Submission, SubmissionRequest}
+import models.declaration.submissions.{Action, Submission}
+import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
 import org.jsoup.nodes.Element
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec

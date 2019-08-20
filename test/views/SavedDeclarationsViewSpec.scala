@@ -36,7 +36,7 @@ class SavedDeclarationsViewSpec extends ViewSpec with SavedDeclarationsMessages 
   private val savedDeclarationsPage = app.injector.instanceOf[saved_declarations]
   private val decWithDucr = ExportsTestData.aDeclaration(
     withStatus(DeclarationStatus.DRAFT),
-    withConsignmentReferences(ConsignmentReferences(Some(Ducr("DUCR-12345")), "LRN-1234")),
+    withConsignmentReferences(ConsignmentReferences(Ducr("DUCR-12345"), "LRN-1234")),
     withUpdateTime(LocalDateTime.of(2019, 1, 1, 10, 0, 0).toInstant(ZoneOffset.UTC))
   )
   private val decWithoutDucr = ExportsTestData.aDeclaration(

@@ -20,10 +20,11 @@ import play.api.libs.json._
 
 sealed trait RequestType
 
-case object SubmissionRequest extends RequestType
-case object CancellationRequest extends RequestType
-
 object RequestType {
+
+  case object SubmissionRequest extends RequestType
+
+  case object CancellationRequest extends RequestType
 
   implicit object RequestTypeFormat extends Format[RequestType] {
     override def writes(requestType: RequestType): JsValue = JsString(requestType.toString)

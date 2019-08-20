@@ -20,7 +20,6 @@ import config.AppConfig
 import connectors.CustomsDeclareExportsConnector.toXml
 import connectors.exchange.ExportsDeclarationExchange
 import javax.inject.{Inject, Singleton}
-import models.DeclarationStatus.DeclarationStatus
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Submission
 import models.requests.CancellationStatus
@@ -84,13 +83,13 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
   }
 
   def findSavedDeclarations(
-                        page: Page
-                      )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
+    page: Page
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
     val pagination = Page.bindable.unbind("page", page)
     httpClient
       .GET[Paginated[ExportsDeclarationExchange]](
-      s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}?status=DRAFT&sortBy=updatedDateTime&sortDirection=des&$pagination"
-    )
+        s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}?status=DRAFT&sortBy=updatedDateTime&sortDirection=des&$pagination"
+      )
       .map(_.map(_.toExportsDeclaration))
   }
 

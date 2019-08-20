@@ -23,7 +23,7 @@ import org.mockito.Mockito.when
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatest.mockito.MockitoSugar
 import play.api.mvc.Results.BadRequest
-import play.twirl.api.Html
+import play.twirl.api.HtmlFormat
 
 import scala.concurrent.Future
 
@@ -32,10 +32,11 @@ trait ErrorHandlerMocks extends BeforeAndAfterEach { self: MockitoSugar with Sui
   val mockErrorHandler: ErrorHandler = mock[ErrorHandler]
 
   def setupErrorHandler(): Unit = {
-    when(mockErrorHandler.standardErrorTemplate(anyString, anyString, anyString)(any()))
-      .thenReturn(Html.apply(""))
+    when(mockErrorHandler.standardErrorTemplate(anyString, anyString, anyString)(any())).thenReturn(HtmlFormat.empty)
 
-    when(mockErrorHandler.displayErrorPage()(any())).thenReturn(Future.successful(BadRequest(Html.apply(""))))
+    when(mockErrorHandler.displayErrorPage()(any())).thenReturn(Future.successful(BadRequest(HtmlFormat.empty)))
+
+    when(mockErrorHandler.globalErrorPage()(any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {

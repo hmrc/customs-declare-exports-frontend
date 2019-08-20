@@ -50,16 +50,17 @@ class PackageInformationController @Inject()(
     Ok(packageInformationPage(itemId, form(), items))
   }
 
-  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit authRequest =>
-    val actionTypeOpt = FormAction.bindFromRequest()
-    val boundForm = form().bindFromRequest()
-    val packagings = authRequest.cacheModel.itemBy(itemId).map(_.packageInformation).getOrElse(Seq.empty)
-    actionTypeOpt match {
-      case Some(Add) => addItem(itemId, boundForm, packagings)
-      case Some(Remove(values)) => removeItem(itemId, values, boundForm, packagings)
-      case Some(SaveAndContinue) => saveAndContinue(itemId, boundForm, packagings)
-      case _ => errorHandler.displayErrorPage()
-    }
+  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
+    implicit authRequest =>
+      val actionTypeOpt = FormAction.bindFromRequest()
+      val boundForm = form().bindFromRequest()
+      val packagings = authRequest.cacheModel.itemBy(itemId).map(_.packageInformation).getOrElse(Seq.empty)
+      actionTypeOpt match {
+        case Some(Add)             => addItem(itemId, boundForm, packagings)
+        case Some(Remove(values))  => removeItem(itemId, values, boundForm, packagings)
+        case Some(SaveAndContinue) => saveAndContinue(itemId, boundForm, packagings)
+        case _                     => errorHandler.displayErrorPage()
+      }
   }
 
   private def removeItem(
@@ -101,17 +102,14 @@ class PackageInformationController @Inject()(
             .map(_ => Redirect(controllers.declaration.routes.PackageInformationController.displayPage(itemId)))
       )
 
-  private def updateExportsCache(
-    itemId: String,
-    updatedCache: Seq[PackageInformation]
-  )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(
-      model => {
-        val item: Option[ExportItem] = model.items
-          .find(item => item.id.equals(itemId))
-          .map(_.copy(packageInformation = updatedCache.toList))
-        val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
-        model.copy(items = itemList)
-      }
-    )
+  private def updateExportsCache(itemId: String, updatedCache: Seq[PackageInformation])(
+    implicit r: JourneyRequest[_]
+  ): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => {
+      val item: Option[ExportItem] = model.items
+        .find(item => item.id.equals(itemId))
+        .map(_.copy(packageInformation = updatedCache.toList))
+      val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
+      model.copy(items = itemList)
+    })
 }

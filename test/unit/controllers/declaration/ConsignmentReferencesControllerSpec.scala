@@ -65,7 +65,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
 
     "return 400 (BAD_REQUEST)" in new SetUp {
 
-      val incorrectForm = Json.toJson(ConsignmentReferences(Some(Ducr("1234")), ""))
+      val incorrectForm = Json.toJson(ConsignmentReferences(Ducr("1234"), ""))
 
       val result = controller.submitConsignmentReferences()(postRequest(incorrectForm))
 
@@ -74,7 +74,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
 
     "return 303 (SEE_OTHER)" in new SetUp {
 
-      val correctForm = Json.toJson(ConsignmentReferences(Some(Ducr(DUCR)), LRN))
+      val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN))
 
       val result = controller.submitConsignmentReferences()(postRequest(correctForm))
 

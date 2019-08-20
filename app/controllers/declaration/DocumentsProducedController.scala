@@ -59,8 +59,9 @@ class DocumentsProducedController @Inject()(
     val actionTypeOpt = FormAction.bindFromRequest()
     val cache =
       request.cacheModel
-      .itemBy(itemId)
-      .flatMap(_.documentsProducedData).getOrElse(DocumentsProducedData(Seq()))
+        .itemBy(itemId)
+        .flatMap(_.documentsProducedData)
+        .getOrElse(DocumentsProducedData(Seq()))
 
     actionTypeOpt match {
       case Some(Add) if !boundForm.hasErrors             => addItem(itemId, boundForm.get, cache)
@@ -169,17 +170,14 @@ class DocumentsProducedController @Inject()(
     Future.successful(BadRequest(documentProducedPage(itemId, formWithError, documents)))
   }
 
-  private def updateCache(
-    itemId: String,
-    updatedData: DocumentsProducedData
-  )(implicit req: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(
-      model => {
-        val item: Option[ExportItem] = model.items
-          .find(item => item.id.equals(itemId))
-          .map(_.copy(documentsProducedData = Some(updatedData)))
-        val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
-        model.copy(items = itemList)
-      }
-    )
+  private def updateCache(itemId: String, updatedData: DocumentsProducedData)(
+    implicit req: JourneyRequest[_]
+  ): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => {
+      val item: Option[ExportItem] = model.items
+        .find(item => item.id.equals(itemId))
+        .map(_.copy(documentsProducedData = Some(updatedData)))
+      val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
+      model.copy(items = itemList)
+    })
 }

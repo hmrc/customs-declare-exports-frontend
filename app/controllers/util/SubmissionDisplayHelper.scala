@@ -24,7 +24,7 @@ object SubmissionDisplayHelper {
   def createSubmissionsWithSortedNotificationsMap(
     allSubmissions: Seq[Submission],
     allNotifications: Seq[Notification]
-  ): Map[Submission, Seq[Notification]] =
+  ): Seq[(Submission, Seq[Notification])] =
     allSubmissions.map { submission =>
       val currentSubmissionConversationIds = submission.actions.map(_.conversationId)
       val currentSubmissionNotifications = allNotifications
@@ -33,6 +33,6 @@ object SubmissionDisplayHelper {
         .reverse
 
       (submission, currentSubmissionNotifications)
-    }.toMap
+    }.sortBy(_._1)(Submission.newestEarlierOrdering)
 
 }

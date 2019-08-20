@@ -31,7 +31,7 @@
 
     @components.back_link("/customs-declare-exports/declaration/declarant-details")
 
-    @helper.form(RepresentativeDetailsController.submitRepresentativeDetails(), 'autoComplete -> "off") {
+    @helper.form(RepresentativeDetailsController.submitForm(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         @components.error_summary(form.errors)

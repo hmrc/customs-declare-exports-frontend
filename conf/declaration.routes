@@ -32,9 +32,9 @@ POST        /declarant-details                   controllers.declaration.Declara
 
 # Representative details
 
-GET         /representative-details              controllers.declaration.RepresentativeDetailsController.displayRepresentativeDetailsPage()
+GET         /representative-details              controllers.declaration.RepresentativeDetailsController.displayPage()
 
-POST        /representative-details              controllers.declaration.RepresentativeDetailsController.submitRepresentativeDetails()
+POST        /representative-details              controllers.declaration.RepresentativeDetailsController.submitForm()
 
 # Consignee details
 
@@ -196,7 +196,7 @@ POST        /add-seal                            controllers.declaration.SealCon
 GET         /summary                             controllers.declaration.SummaryController.displayPage(mode: models.Mode = models.Mode.NormalMode)
 GET         /amend-summary                       controllers.declaration.SummaryController.displayPage(mode: models.Mode = models.Mode.AmendMode)
 
-POST        /summary                             controllers.declaration.SummaryController.submitSupplementaryDeclaration()
+POST        /summary                             controllers.declaration.SummaryController.submitDeclaration()
 
 # Confirmation
 

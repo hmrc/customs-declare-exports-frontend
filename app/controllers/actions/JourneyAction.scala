@@ -33,13 +33,14 @@ class JourneyAction @Inject()(cacheService: ExportsCacheService)(
   private val logger = Logger(this.getClass)
 
   override def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val hc: HeaderCarrier =
+      HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
     request.declarationId match {
       case Some(id) =>
         cacheService.get(id).map {
           case Some(declaration) => Right(JourneyRequest(request, declaration))
-          case _ => handleMissingDeclarationId(request)
+          case _                 => handleMissingDeclarationId(request)
         }
       case None => Future.successful(handleMissingDeclarationId(request))
     }

@@ -57,7 +57,9 @@ class ExporterDetailsController @Inject()(
       )
   }
 
-  private def updateCache(formData: ExporterDetails)(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+  private def updateCache(
+    formData: ExporterDetails
+  )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
       val updatedParties = model.parties.copy(exporterDetails = Some(formData))
       model.copy(parties = updatedParties)

@@ -66,9 +66,9 @@ class AdditionalDeclarationTypeController @Inject()(
       case StandardDec      => AdditionalDeclarationTypeStandardDec
     }
 
-  private def updateCache(formData: AdditionalDeclarationType)(
-    implicit request: JourneyRequest[_]
-  ): Future[Option[ExportsDeclaration]] =
+  private def updateCache(
+    formData: AdditionalDeclarationType
+  )(implicit request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
       model.copy(additionalDeclarationType = Some(formData))
     })

@@ -87,7 +87,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
 
         status(result) mustBe SEE_OTHER
         verify(mockItemsSummaryPage, times(0)).apply(any())(any(), any())
-        redirectLocation(result).value must include(s"/items/${itemId}/procedure-codes")
+        redirectLocation(result).value must endWith(s"/items/${itemId}/procedure-codes")
       }
     }
 
@@ -111,7 +111,8 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
 
         status(result) mustBe SEE_OTHER
         verify(mockItemsSummaryPage, times(0)).apply(any())(any(), any())
-        verify(mockExportsCacheService, times(1)).update(meq(aDeclaration(withItem(secondItem.copy(sequenceId = secondItem.sequenceId + 1)))))(any())
+        verify(mockExportsCacheService, times(1))
+          .update(meq(aDeclaration(withItem(secondItem.copy(sequenceId = secondItem.sequenceId + 1)))))(any())
       }
     }
   }
