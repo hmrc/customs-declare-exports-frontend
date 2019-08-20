@@ -47,8 +47,7 @@
             </thead>
             <tbody class="govuk-table__body">
 
-            @*TODO remove sorting once back-end is complete*@
-            @for( declaration <- declarations.results.sortBy(_.updatedDateTime)(Ordering[Instant].reverse) ) {
+            @for( declaration <- declarations.results ) {
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell" scope="row">
                         <a href="@routes.SavedDeclarationsController.continueDeclaration(declaration.id.getOrElse(""))" class="govuk-link">

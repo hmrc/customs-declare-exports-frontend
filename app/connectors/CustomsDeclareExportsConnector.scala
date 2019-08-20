@@ -73,14 +73,24 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
   }
 
   def findDeclarations(
-    status: DeclarationStatus,
     page: Page
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
     val pagination = Page.bindable.unbind("page", page)
     httpClient
       .GET[Paginated[ExportsDeclarationExchange]](
-        s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}?status=$status&$pagination"
+        s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}?$pagination"
       )
+      .map(_.map(_.toExportsDeclaration))
+  }
+
+  def findSavedDeclarations(
+                        page: Page
+                      )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
+    val pagination = Page.bindable.unbind("page", page)
+    httpClient
+      .GET[Paginated[ExportsDeclarationExchange]](
+      s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}?status=DRAFT&sortBy=updatedDateTime&sortDirection=des&$pagination"
+    )
       .map(_.map(_.toExportsDeclaration))
   }
 
