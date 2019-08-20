@@ -27,7 +27,7 @@ case class Submission(
   lrn: String,
   mrn: Option[String] = None,
   ducr: Option[String] = None,
-  actions: Seq[Action] = Seq.empty
+  actions: Seq[Action]
 ) {
   require(actions.nonEmpty, "Submission must have at least one action")
 
