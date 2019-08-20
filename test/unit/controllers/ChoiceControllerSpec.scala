@@ -137,6 +137,19 @@ class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
         verifyTheCacheIsUnchanged()
       }
     }
+
+    "redirect to Saved Declarations page" when {
+
+      "user chose continue a saved declaration" in new SetUp {
+        when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(None))
+
+        val result = controller.submitChoice()(postRequest(continueDeclarationChoice))
+
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(Some(controllers.routes.SavedDeclarationsController.displayDeclarations().url))
+        verifyTheCacheIsUnchanged()
+      }
+    }
   }
 }
 
@@ -146,4 +159,5 @@ object ChoiceControllerSpec {
   val standardChoice: JsValue = Json.toJson(Choice(Choice.AllowedChoiceValues.StandardDec))
   val cancelChoice: JsValue = Json.toJson(Choice(Choice.AllowedChoiceValues.CancelDec))
   val submissionsChoice: JsValue = Json.toJson(Choice(Choice.AllowedChoiceValues.Submissions))
+  val continueDeclarationChoice: JsValue = Json.toJson(Choice(Choice.AllowedChoiceValues.ContinueDec))
 }

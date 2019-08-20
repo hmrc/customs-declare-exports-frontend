@@ -15,6 +15,7 @@
  *@
 
 @import java.time.ZoneId
+@import java.time.Instant
 @import controllers.routes._
 @import forms.CancelDeclaration
 @import views.ViewDates
@@ -26,7 +27,7 @@
 
 @this(main_template: views.html.main_template)
 
-@(declarations: Seq[ExportsDeclaration])(implicit request: Request[_], messages: Messages)
+@(declarations: Paginated[ExportsDeclaration])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("saved.declarations.title")
@@ -46,7 +47,8 @@
             </thead>
             <tbody class="govuk-table__body">
 
-            @for( declaration <- declarations ) {
+            @*TODO remove sorting once back-end is complete*@
+            @for( declaration <- declarations.results.sortBy(_.updatedDateTime)(Ordering[Instant].reverse) ) {
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell" scope="row">
                         <a href="@routes.SavedDeclarationsController.continueDeclaration(declaration.id.getOrElse(""))" class="govuk-link">

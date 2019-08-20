@@ -18,35 +18,30 @@ package controllers
 
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.AuthAction
-import handlers.ErrorHandler
 import javax.inject.Inject
-import metrics.ExportsMetrics
 import models.requests.ExportsSessionKeys
 import models.{DeclarationStatus, Page}
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.{cancellation_confirmation_page, saved_declarations}
+import views.html.saved_declarations
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class SavedDeclarationsController @Inject()(
   authenticate: AuthAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
-  errorHandler: ErrorHandler,
-  exportsMetrics: ExportsMetrics,
   mcc: MessagesControllerComponents,
-  savedDeclarationsPage: saved_declarations,
-  cancelConfirmationPage: cancellation_confirmation_page
+  savedDeclarationsPage: saved_declarations
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   private val logger = Logger(this.getClass)
 
   def displayDeclarations(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsDeclareExportsConnector.findDeclarations(DeclarationStatus.DRAFT, Page(1, 10)).map { page =>
-      Ok(savedDeclarationsPage(page.results))
+    customsDeclareExportsConnector.findDeclarations(DeclarationStatus.DRAFT, Page()).map { page =>
+      Ok(savedDeclarationsPage(page))
     }
   }
 

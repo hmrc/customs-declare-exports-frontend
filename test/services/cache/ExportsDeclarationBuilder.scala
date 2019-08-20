@@ -16,7 +16,7 @@
 
 package services.cache
 
-import java.time.{LocalDateTime, ZoneOffset}
+import java.time.{Instant, LocalDateTime, ZoneOffset}
 import java.util.UUID
 
 import forms.common.Address
@@ -29,12 +29,7 @@ import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Choice, Ducr}
 import models.DeclarationStatus.DeclarationStatus
 import models.ExportsDeclaration
-import models.declaration.{
-  DeclarationAdditionalActorsData,
-  DeclarationHoldersData,
-  Locations,
-  TransportInformationContainerData
-}
+import models.declaration.{DeclarationAdditionalActorsData, DeclarationHoldersData, Locations, TransportInformationContainerData}
 
 //noinspection ScalaStyle
 trait ExportsDeclarationBuilder {
@@ -291,6 +286,8 @@ trait ExportsDeclarationBuilder {
         containerData =
           Some(TransportInformationContainerData(cache.containerData.map(_.containers).getOrElse(Seq.empty) ++ data))
     )
+
+  def withUpdateTime(updateDateTime: Instant): ExportsDeclarationModifier = _.copy(updatedDateTime = updateDateTime)
 
   def withoutContainerData(): ExportsDeclarationModifier = _.copy(containerData = None)
 

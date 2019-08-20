@@ -20,11 +20,12 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 import connectors.{CustomsDeclareExportsConnector, NrsConnector}
+import models.DeclarationStatus.DeclarationStatus
 import models._
 import models.declaration.notifications.Notification
 import models.declaration.submissions.{Action, Submission, SubmissionRequest}
 import models.requests.CancellationStatus
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.when
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.stubbing.{Answer, OngoingStubbing}
@@ -78,6 +79,17 @@ trait MockConnectors extends MockitoSugar {
           )
         )
       )
+
+  def listOfDraftDeclarations(): OngoingStubbing[Future[Paginated[ExportsDeclaration]]] =
+    when(mockCustomsDeclareExportsConnector.findDeclarations(any[DeclarationStatus], any[Page])(any(), any()))
+      .thenReturn(Future.successful(Paginated(draftDeclarations, Page(), 1)))
+
+  def getDeclaration(id: String): OngoingStubbing[Future[Option[ExportsDeclaration]]] =
+    when(mockCustomsDeclareExportsConnector.findDeclaration(refEq(id))(any(), any()))
+      .thenReturn(Future.successful(Some(ExportsTestData.aDeclaration())))
+
+  private def draftDeclarations: Seq[ExportsDeclaration] =
+    Seq(ExportsTestData.aDeclaration(ExportsTestData.withStatus(DeclarationStatus.DRAFT)))
 
   def submitNrsRequest(): OngoingStubbing[Future[NrsSubmissionResponse]] =
     when(mockNrsConnector.submitNonRepudiation(any())(any(), any()))
