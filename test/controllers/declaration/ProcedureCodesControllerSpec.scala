@@ -29,7 +29,7 @@ class ProcedureCodesControllerSpec
     extends CustomExportsBaseSpec with ViewValidator with ProcedureCodesMessages with CommonMessages {
   import ProcedureCodesControllerSpec.cacheWithMaximumAmountOfAdditionalCodes
 
-  private val itemModel = aDeclaration(withChoice("SMP"), withItem())
+  private val itemModel = aDeclaration(withId("declarationId"), withChoice("SMP"), withItem())
   private val itemId: String = itemModel.items.head.id
   private val uri = uriWithContextPath(s"/declaration/items/${itemId}/procedure-codes")
   private val addActionUrlEncoded = (Add.toString, "")
@@ -58,14 +58,14 @@ class ProcedureCodesControllerSpec
 
       status(result) must be(OK)
 
-      verify(mockExportsCacheService).get(any[String])
+      verify(mockExportsCacheService).get(any[String])(any())
     }
 
     "read item from cache and display it" in {
       val Some(result) = route(app, getRequest(uri))
 
       status(result) must be(OK)
-      verify(mockExportsCacheService).get(any[String])
+      verify(mockExportsCacheService).get(any[String])(any())
     }
   }
 
@@ -153,7 +153,7 @@ class ProcedureCodesControllerSpec
 
         status(result) must be(SEE_OTHER)
 
-        verify(mockExportsCacheService, times(1)).update(any())
+        verify(mockExportsCacheService, times(1)).update(any())(any())
       }
 
       "user remove existing code" in {
@@ -168,7 +168,7 @@ class ProcedureCodesControllerSpec
 
         status(result) must be(OK)
 
-        verify(mockExportsCacheService, times(1)).update(any())
+        verify(mockExportsCacheService, times(1)).update(any())(any())
       }
     }
 
@@ -182,7 +182,7 @@ class ProcedureCodesControllerSpec
 
         status(result) must be(SEE_OTHER)
 
-        verify(mockExportsCacheService, times(1)).update(any())
+        verify(mockExportsCacheService, times(1)).update(any())(any())
       }
 
       "form is empty but cache contains at least one item" in {
@@ -197,7 +197,7 @@ class ProcedureCodesControllerSpec
 
         status(result) must be(SEE_OTHER)
 
-        verify(mockExportsCacheService, times(1)).update(any())
+        verify(mockExportsCacheService, times(1)).update(any())(any())
       }
     }
   }

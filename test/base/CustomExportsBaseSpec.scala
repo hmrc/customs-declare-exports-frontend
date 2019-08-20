@@ -120,7 +120,7 @@ trait CustomExportsBaseSpec
   protected def getRequest(
     uri: String,
     headers: Map[String, String] = Map.empty,
-    declarationId: String = "declaration-id"
+    declarationId: String = "declarationId"
   ): Request[AnyContentAsEmpty.type] = {
     val session: Map[String, String] = Map(
       ExportsSessionKeys.declarationId -> declarationId,
@@ -136,11 +136,11 @@ trait CustomExportsBaseSpec
   protected def postRequest(
     uri: String,
     body: JsValue,
-    sessionId: String = s"session-${UUID.randomUUID()}",
+    declarationId: String = "declarationId",
     headers: Map[String, String] = Map.empty
   ): Request[AnyContentAsJson] = {
     val session: Map[String, String] = Map(
-      SessionKeys.sessionId -> sessionId,
+      ExportsSessionKeys.declarationId -> declarationId,
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
 
@@ -151,11 +151,11 @@ trait CustomExportsBaseSpec
       .withCSRFToken
   }
 
-  protected def postRequestFormUrlEncoded(uri: String, sessionId: String = s"session-${UUID.randomUUID()}".toString)(
+  protected def postRequestFormUrlEncoded(uri: String, declarationId: String = "declarationId")(
     body: (String, String)*
   ): Request[AnyContentAsFormUrlEncoded] = {
     val session: Map[String, String] = Map(
-      SessionKeys.sessionId -> sessionId,
+      ExportsSessionKeys.declarationId -> declarationId,
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
 
@@ -170,24 +170,24 @@ trait CustomExportsBaseSpec
   override def withNewCaching(dataToReturn: ExportsDeclaration) {
     when(
       mockExportsCacheService
-        .update(any[ExportsDeclaration])
+        .update(any[ExportsDeclaration])(any())
     ).thenReturn(Future.successful(Some(dataToReturn)))
 
     when(
       mockExportsCacheService
-        .get(eqRef(dataToReturn.id.getOrElse("")))
+        .get(any())(any())
     ).thenReturn(Future.successful(Some(dataToReturn)))
   }
 
   def withNewCaching() {
     when(
       mockExportsCacheService
-        .update(any[ExportsDeclaration])
+        .update(any[ExportsDeclaration])(any())
     ).thenReturn(Future.successful(None))
 
     when(
       mockExportsCacheService
-        .get(any[String])
+        .get(any[String])(any())
     ).thenReturn(Future.successful(None))
   }
 

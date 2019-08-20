@@ -35,6 +35,9 @@ trait MockExportCacheService extends MockitoSugar with ExportsDeclarationBuilder
     when(mockExportsCacheService.update(any[ExportsDeclaration])(any()))
       .thenReturn(Future.successful(Some(dataToReturn)))
 
+    when(mockExportsCacheService.create(any[ExportsDeclaration])(any()))
+      .thenReturn(Future.successful(dataToReturn.copy(id = Some("declarationId"))))
+
     when(mockExportsCacheService.get(anyString)(any()))
       .thenReturn(Future.successful(Some(dataToReturn)))
   }

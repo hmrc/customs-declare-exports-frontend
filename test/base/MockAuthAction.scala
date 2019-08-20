@@ -19,7 +19,7 @@ package base
 import base.ExportsTestData._
 import controllers.actions.AuthActionImpl
 import models.SignedInUser
-import models.requests.AuthenticatedRequest
+import models.requests.{AuthenticatedRequest, ExportsSessionKeys}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -260,19 +260,19 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks {
       )
     )
 
-  def getAuthenticatedRequest(sessionId: String = "sessionId"): AuthenticatedRequest[AnyContentAsEmpty.type] = {
+  def getAuthenticatedRequest(declarationId: String = "declarationId"): AuthenticatedRequest[AnyContentAsEmpty.type] = {
     import utils.FakeRequestCSRFSupport._
-    AuthenticatedRequest(FakeRequest("GET", "").withSession(("sessionId", sessionId)).withCSRFToken, exampleUser)
+    AuthenticatedRequest(FakeRequest("GET", "").withSession((ExportsSessionKeys.declarationId, declarationId)).withCSRFToken, exampleUser)
   }
 
   def getRequest(): Request[AnyContentAsEmpty.type] = {
     import utils.FakeRequestCSRFSupport._
-    FakeRequest("GET", "").withSession(("sessionId", "sessionId")).withCSRFToken
+    FakeRequest("GET", "").withSession((ExportsSessionKeys.declarationId, "declarationId")).withCSRFToken
   }
 
-  def getRequest(uri: String, sessionId: String): Request[AnyContentAsEmpty.type] = {
+  def getRequest(uri: String, declarationId: String): Request[AnyContentAsEmpty.type] = {
     import utils.FakeRequestCSRFSupport._
-    FakeRequest("GET", uri).withSession(("sessionId", sessionId)).withCSRFToken
+    FakeRequest("GET", uri).withSession((ExportsSessionKeys.declarationId, declarationId)).withCSRFToken
   }
 
 }

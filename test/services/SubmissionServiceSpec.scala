@@ -20,8 +20,8 @@ import base.{CustomExportsBaseSpec, TestHelper}
 import com.kenshoo.play.metrics.Metrics
 import forms.Choice.AllowedChoiceValues
 import metrics.MetricIdentifiers
-import models.ExportsDeclaration
-import org.mockito.ArgumentMatchers
+import models.{DeclarationStatus, ExportsDeclaration}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.mockito.ArgumentMatchers.{any, refEq}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
@@ -29,8 +29,9 @@ import play.api.test.FakeRequest
 import reactivemongo.play.json.collection.JSONBatchCommands
 import services.audit.{AuditService, AuditTypes, EventData}
 import services.cache.ExportsDeclarationBuilder
+import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with ExportsDeclarationBuilder {
 
@@ -39,7 +40,6 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
 
   override def beforeEach() {
     reset(mockExportsCacheService, mockCustomsDeclareExportsConnector, mockAuditService)
-    successfulCustomsDeclareExportsResponse()
   }
 
   implicit val request = TestHelper.journeyRequest(FakeRequest("", ""), AllowedChoiceValues.SupplementaryDec)
@@ -47,7 +47,7 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
   val auditData = Map(
     EventData.EORI.toString -> request.authenticatedRequest.user.eori,
     EventData.LRN.toString -> "123LRN",
-    EventData.DUCR.toString -> "8GB123456789012-1234567890QWERTYUIO",
+    EventData.DUCR.toString -> "ducr",
     EventData.DecType.toString -> "SMP",
     EventData.SubmissionResult.toString -> "Success"
   )
@@ -59,36 +59,45 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
     exportsMetricsMock
   )
 
+  def theExportsDeclarationSubmitted: ExportsDeclaration = {
+    val captor: ArgumentCaptor[ExportsDeclaration] = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
+    verify(mockCustomsDeclareExportsConnector)
+      .updateDeclaration(captor.capture())(any[HeaderCarrier], any[ExecutionContext])
+    captor.getValue
+  }
+
   "SubmissionService" should {
+    val submittedDeclaration = mock[ExportsDeclaration]
 
     "submit cached data to backend" in {
+      // Given
+      when(mockCustomsDeclareExportsConnector.updateDeclaration(any[ExportsDeclaration])(any(), any())).thenReturn(Future.successful(submittedDeclaration))
       val registry = app.injector.instanceOf[Metrics].defaultRegistry
-
       val metric = MetricIdentifiers.submissionMetric
       val timerBefore = registry.getTimers.get(exportsMetricsMock.timerName(metric)).getCount
       val counterBefore = registry.getCounters.get(exportsMetricsMock.counterName(metric)).getCount
+      val model = aDeclaration(withConsignmentReferences(ducr = Some("ducr"), lrn = "123LRN"))
 
-      val model = createFullModel()
+      // When
       val result = submissionService
         .submit(model)
         .futureValue
       result.value mustBe "123LRN"
 
-      verify(mockCustomsDeclareExportsConnector, times(1)).createDeclaration(refEq(model))(any(), any())
-
+      // Then
+      theExportsDeclarationSubmitted.status mustBe DeclarationStatus.COMPLETE
       verify(mockAuditService, times(1)).audit(any(), any())(any())
       verify(mockAuditService, times(1)).auditAllPagesUserInput(any())(any())
       verify(mockAuditService)
         .audit(ArgumentMatchers.eq(AuditTypes.Submission), ArgumentMatchers.eq[Map[String, String]](auditData))(any())
-
       registry.getTimers.get(exportsMetricsMock.timerName(metric)).getCount mustBe >(timerBefore)
       registry.getCounters.get(exportsMetricsMock.counterName(metric)).getCount mustBe >(counterBefore)
     }
 
     "propagate errors from exports connector" in {
       val error = new RuntimeException("some error")
-      when(mockCustomsDeclareExportsConnector.createDeclaration(any[ExportsDeclaration])(any(), any())).thenThrow(error)
-      val model = createFullModel()
+      when(mockCustomsDeclareExportsConnector.updateDeclaration(any[ExportsDeclaration])(any(), any())).thenThrow(error)
+      val model = aDeclaration(withConsignmentReferences(ducr = Some("ducr"), lrn = "123LRN"))
 
       val thrown = intercept[Exception] {
         submissionService
@@ -99,7 +108,4 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
     }
 
   }
-
-  private def createFullModel(): ExportsDeclaration =
-    aDeclaration(withConsignmentReferences(ducr = Some("8GB123456789012-1234567890QWERTYUIO"), lrn = "123LRN"))
 }

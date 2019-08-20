@@ -39,7 +39,7 @@ class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
     setupErrorHandler()
     authorizedUser()
-    withNewCaching(aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
+    withNewCaching(aDeclaration(withId("declarationId"), withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
   }
 
   "Choice controller" should {

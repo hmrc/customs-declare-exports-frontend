@@ -34,7 +34,7 @@ class ItemTypeControllerSpec
 
   private val exampleItem = anItem()
 
-  private val cacheModel = aDeclaration(withChoice("SMP"), withItem(exampleItem))
+  private val cacheModel = aDeclaration(withId("declarationId"), withChoice("SMP"), withItem(exampleItem))
 
   private def uri(item: ExportItem) = uriWithContextPath(s"/declaration/items/${item.id}/item-type")
 
@@ -458,7 +458,7 @@ class ItemTypeControllerSpec
         val userInput = addActionTypeToFormData(SaveAndContinue, correctItemTypeMap)
         route(app, postRequestFormUrlEncoded(uri(exampleItem))(userInput.toSeq: _*)).get.futureValue
 
-        verify(mockExportsCacheService).update(any[ExportsDeclaration])
+        verify(mockExportsCacheService).update(any[ExportsDeclaration])(any())
       }
 
       "return 303 code" in {
@@ -588,7 +588,7 @@ class ItemTypeControllerSpec
 
           val expectedUpdatedItemType =
             cachedItemType.copy(taricAdditionalCodes = cachedItemType.taricAdditionalCodes :+ taricToAdd)
-          verify(mockExportsCacheService).update(any[ExportsDeclaration])
+          verify(mockExportsCacheService).update(any[ExportsDeclaration])(any())
         }
 
         "provided with NAC" in {
@@ -606,7 +606,7 @@ class ItemTypeControllerSpec
 
           val expectedUpdatedItemType =
             cachedItemType.copy(nationalAdditionalCodes = cachedItemType.nationalAdditionalCodes :+ nacToAdd)
-          verify(mockExportsCacheService).update(any[ExportsDeclaration])
+          verify(mockExportsCacheService).update(any[ExportsDeclaration])(any())
         }
 
         "provided with both TARIC and NAC" in {
@@ -630,7 +630,7 @@ class ItemTypeControllerSpec
             taricAdditionalCodes = cachedItemType.taricAdditionalCodes :+ taricToAdd,
             nationalAdditionalCodes = cachedItemType.nationalAdditionalCodes :+ nacToAdd
           )
-          verify(mockExportsCacheService).update(any[ExportsDeclaration])
+          verify(mockExportsCacheService).update(any[ExportsDeclaration])(any())
         }
       }
 
@@ -676,7 +676,7 @@ class ItemTypeControllerSpec
 
           val expectedUpdatedItemType =
             cachedItemType.copy(taricAdditionalCodes = cachedItemType.taricAdditionalCodes.tail)
-          verify(mockExportsCacheService).update(any[ExportsDeclaration])
+          verify(mockExportsCacheService).update(any[ExportsDeclaration])(any())
         }
 
         "removing the last element" in {
@@ -691,7 +691,7 @@ class ItemTypeControllerSpec
 
           val expectedUpdatedItemType =
             cachedItemType.copy(taricAdditionalCodes = cachedItemType.taricAdditionalCodes.init)
-          verify(mockExportsCacheService).update(any[ExportsDeclaration])
+          verify(mockExportsCacheService).update(any[ExportsDeclaration])(any())
         }
 
         "removing an element in the middle" in {
@@ -707,7 +707,7 @@ class ItemTypeControllerSpec
 
           val expectedUpdatedItemType =
             cachedItemType.copy(taricAdditionalCodes = Seq("1111", "2222", "4444", "5555"))
-          verify(mockExportsCacheService).update(any[ExportsDeclaration])
+          verify(mockExportsCacheService).update(any[ExportsDeclaration])(any())
         }
       }
 
