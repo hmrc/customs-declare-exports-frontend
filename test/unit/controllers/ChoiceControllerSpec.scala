@@ -18,6 +18,7 @@ package unit.controllers
 
 import controllers.ChoiceController
 import forms.Choice
+import models.{DeclarationStatus, ExportsDeclaration}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.libs.json.{JsValue, Json}
@@ -31,18 +32,16 @@ import scala.concurrent.Future
 class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
   import ChoiceControllerSpec._
 
+  private val existingDeclaration = aDeclaration(withId("declarationId"), withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
+
   trait SetUp {
     val choicePage = new choice_page(mainTemplate, minimalAppConfig)
-
-    val controller =
-      new ChoiceController(mockAuthAction, mockExportsCacheService, stubMessagesControllerComponents(), choicePage)(ec)
-
+    val controller = new ChoiceController(mockAuthAction, mockExportsCacheService, stubMessagesControllerComponents(), choicePage)(ec)
     setupErrorHandler()
     authorizedUser()
-    withNewCaching(aDeclaration(withId("declarationId"), withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
   }
 
-  "Choice controller" should {
+  "Display" should {
 
     "return 200 (OK)" when {
 
@@ -55,29 +54,34 @@ class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
       }
 
       "display page method is invoked with data in cache" in new SetUp {
-        withNewCaching(
-          aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
-        )
+        when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(Some(existingDeclaration)))
 
         val result = controller.displayPage()(getRequest())
 
         status(result) must be(OK)
       }
     }
+  }
+
+  "Submit" should {
 
     "return 400 (BAD_REQUEST)" when {
 
       "form is incorrect" in new SetUp {
+        when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(None))
 
         val result = controller.submitChoice()(postRequest(incorrectChoice))
 
         status(result) must be(BAD_REQUEST)
+        verifyTheCacheIsUnchanged()
       }
     }
 
     "redirect to Dispatch Location page" when {
 
       "user chose Supplementary Dec" in new SetUp {
+        when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(None))
+        when(mockExportsCacheService.create(any[ExportsDeclaration])(any())).thenReturn(Future.successful(existingDeclaration))
 
         val result = controller.submitChoice()(postRequest(supplementaryChoice))
 
@@ -85,9 +89,15 @@ class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
         redirectLocation(result) must be(
           Some(controllers.declaration.routes.DispatchLocationController.displayPage().url)
         )
+        val created: ExportsDeclaration = theCacheModelCreated
+        created.id mustBe None
+        created.status mustBe DeclarationStatus.DRAFT
+        created.choice mustBe "SMP"
       }
 
       "user chose Standard Dec" in new SetUp {
+        when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(None))
+        when(mockExportsCacheService.create(any[ExportsDeclaration])(any())).thenReturn(Future.successful(existingDeclaration))
 
         val result = controller.submitChoice()(postRequest(standardChoice))
 
@@ -95,28 +105,36 @@ class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
         redirectLocation(result) must be(
           Some(controllers.declaration.routes.DispatchLocationController.displayPage().url)
         )
+        val created: ExportsDeclaration = theCacheModelCreated
+        created.id mustBe None
+        created.status mustBe DeclarationStatus.DRAFT
+        created.choice mustBe "STD"
       }
     }
 
     "redirect to Cancel Declaration page" when {
 
       "user chose Cancel Dec" in new SetUp {
+        when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(None))
 
         val result = controller.submitChoice()(postRequest(cancelChoice))
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some(controllers.routes.CancelDeclarationController.displayForm().url))
+        verifyTheCacheIsUnchanged()
       }
     }
 
     "redirect to Submissions page" when {
 
       "user chose submissions" in new SetUp {
+        when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(None))
 
         val result = controller.submitChoice()(postRequest(submissionsChoice))
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some(controllers.routes.SubmissionsController.displayListOfSubmissions().url))
+        verifyTheCacheIsUnchanged()
       }
     }
   }

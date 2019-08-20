@@ -63,28 +63,26 @@ class ChoiceController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[Choice]) => Future.successful(BadRequest(choicePage(formWithErrors))),
-        validChoice => {
-          exportsCacheService
-            .create(
-              ExportsDeclaration(
-                None,
-                DeclarationStatus.DRAFT,
-                createdDateTime = Instant.now,
-                updatedDateTime = Instant.now,
-                validChoice.value
-              )
-            )
-            .map {
-              created: ExportsDeclaration =>
-                (validChoice.value match {
-                  case SupplementaryDec | StandardDec =>
-                    Redirect(controllers.declaration.routes.DispatchLocationController.displayPage())
-                  case CancelDec =>
-                    Redirect(controllers.routes.CancelDeclarationController.displayForm())
-                  case Submissions =>
-                    Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
-                }).addingToSession(ExportsSessionKeys.declarationId -> created.id.getOrElse(""))
-            }
+        choice =>
+          choice.value match {
+            case SupplementaryDec | StandardDec =>
+              exportsCacheService
+                .create(
+                  ExportsDeclaration(
+                    None,
+                    DeclarationStatus.DRAFT,
+                    createdDateTime = Instant.now,
+                    updatedDateTime = Instant.now,
+                    choice.value
+                  )
+                ) map { created =>
+                Redirect(controllers.declaration.routes.DispatchLocationController.displayPage())
+                  .addingToSession(ExportsSessionKeys.declarationId -> created.id.get)
+              }
+            case CancelDec =>
+              Future.successful(Redirect(controllers.routes.CancelDeclarationController.displayForm()))
+            case Submissions =>
+              Future.successful(Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions()))
         }
       )
   }
