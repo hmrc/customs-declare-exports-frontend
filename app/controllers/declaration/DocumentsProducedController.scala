@@ -59,8 +59,9 @@ class DocumentsProducedController @Inject()(
     val actionTypeOpt = FormAction.bindFromRequest()
     val cache =
       request.cacheModel
-      .itemBy(itemId)
-      .flatMap(_.documentsProducedData).getOrElse(DocumentsProducedData(Seq()))
+        .itemBy(itemId)
+        .flatMap(_.documentsProducedData)
+        .getOrElse(DocumentsProducedData(Seq()))
 
     actionTypeOpt match {
       case Some(Add) if !boundForm.hasErrors             => addItem(itemId, boundForm.get, cache)

@@ -78,7 +78,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
       }
 
       "display page method is invoked and cache contains data" in {
-        val item = anItem( withFiscalInformation(FiscalInformation(yes)))
+        val item = anItem(withFiscalInformation(FiscalInformation(yes)))
         withNewCaching(aDeclaration(withItems(item)))
 
         val result = controller.displayPage(item.id)(getRequest())

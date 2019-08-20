@@ -17,11 +17,12 @@
 package connectors
 
 import java.time.LocalDateTime
+import java.util.UUID
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.exchange.ExportsDeclarationExchange
 import models.declaration.notifications.Notification
-import models.declaration.submissions.Submission
+import models.declaration.submissions.{Action, RequestType, Submission}
 import models.{Page, Paginated}
 import org.mockito.BDDMockito._
 import org.scalatest.BeforeAndAfterEach
@@ -40,7 +41,8 @@ class CustomsDeclareExportsConnectorIntegrationSpec
   private val existingDeclaration = aDeclaration(withId(id))
   private val newDeclarationExchange = ExportsDeclarationExchange(newDeclaration)
   private val existingDeclarationExchange = ExportsDeclarationExchange(existingDeclaration)
-  private val submission = Submission(id, "eori", "lrn", Some("mrn"))
+  private val action = Action(RequestType.SubmissionRequest, UUID.randomUUID().toString)
+  private val submission = Submission(id, "eori", "lrn", Some("mrn"), None, Seq(action))
   private val notification = Notification("conv-id", "mrn", LocalDateTime.now, "f-code", None, Seq.empty, "payload")
   private val connector = new CustomsDeclareExportsConnector(config, httpClient)
 
