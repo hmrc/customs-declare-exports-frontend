@@ -20,7 +20,7 @@ import base.{CustomExportsBaseSpec, TestHelper}
 import forms.Choice.AllowedChoiceValues
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import models.declaration.SupplementaryDeclarationTestData
-import models.requests.JourneyRequest
+import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.{DeclarationStatus, ExportsDeclaration}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString}
@@ -197,42 +197,8 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
   }
 
   "Summary Page Controller on submit" when {
-
     "everything is correct" should {
-      "get the whole supplementary declaration data from cache" in {
-        when(
-          mockSubmissionService.submit(any[ExportsDeclaration])(
-            any[JourneyRequest[_]],
-            any[HeaderCarrier],
-            any[ExecutionContext]
-          )
-        ).thenReturn(Future.successful(Some("123LRN")))
-
-        route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
-        verify(mockExportsCacheService).get(any())(any())
-        verify(mockSubmissionService).submit(any[ExportsDeclaration])(any[JourneyRequest[_]], any[HeaderCarrier], any[ExecutionContext])
-      }
-
-      "remove supplementary declaration data from cache" in {
-
-        when(
-          mockSubmissionService.submit(any[ExportsDeclaration])(
-            any[JourneyRequest[_]],
-            any[HeaderCarrier],
-            any[ExecutionContext]
-          )
-        ).thenReturn(Future.successful(Some("123LRN")))
-
-        route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
-
-        verify(mockSubmissionService, onlyOnce).submit(any[ExportsDeclaration])(
-          any[JourneyRequest[_]],
-          any[HeaderCarrier],
-          any[ExecutionContext]
-        )
-      }
-
-      "return 303 code" in {
+      "submit successfully" in {
         when(
           mockSubmissionService.submit(any[ExportsDeclaration])(
             any[JourneyRequest[_]],
@@ -242,40 +208,12 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
         ).thenReturn(Future.successful(Some("123LRN")))
 
         val result = route(app, postRequest(summaryPageUri, emptyForm)).get
+
         status(result) must be(SEE_OTHER)
-      }
-
-      "redirect to confirmation page" in {
-        when(
-          mockSubmissionService.submit(any[ExportsDeclaration])(
-            any[JourneyRequest[_]],
-            any[HeaderCarrier],
-            any[ExecutionContext]
-          )
-        ).thenReturn(Future.successful(Some("123LRN")))
-
-        val result =
-          route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
-        val header = result.header
-
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/confirmation"))
-      }
-
-      "add flash scope with lrn " in {
-        when(
-          mockSubmissionService.submit(any[ExportsDeclaration])(
-            any[JourneyRequest[_]],
-            any[HeaderCarrier],
-            any[ExecutionContext]
-          )
-        ).thenReturn(Future.successful(Some("123LRN")))
-        val model = aDeclaration(withChoice(SupplementaryDec))
-        withNewCaching(model)
-        val result = route(app, postRequest(summaryPageUri, emptyForm)).get
-
-        val f = flash(result)
-        f.get("LRN") must be(defined)
-        f("LRN") must equal("123LRN")
+        session(result).get(ExportsSessionKeys.declarationId) must be(None)
+        redirectLocation(result) must be(Some(controllers.declaration.routes.ConfirmationController.displayPage().url))
+        flash(result).get("LRN") must be(Some("123LRN"))
+        verify(mockSubmissionService).submit(any[ExportsDeclaration])(any[JourneyRequest[_]], any[HeaderCarrier], any[ExecutionContext])
       }
     }
 

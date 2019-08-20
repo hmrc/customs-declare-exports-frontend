@@ -18,6 +18,7 @@ package unit.controllers
 
 import controllers.ChoiceController
 import forms.Choice
+import models.requests.ExportsSessionKeys
 import models.{DeclarationStatus, ExportsDeclaration}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -79,7 +80,7 @@ class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
     "redirect to Dispatch Location page" when {
 
-      "user chose Supplementary Dec" in new SetUp {
+      "user chooses Supplementary Dec" in new SetUp {
         when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(None))
         when(mockExportsCacheService.create(any[ExportsDeclaration])(any())).thenReturn(Future.successful(existingDeclaration))
 
@@ -89,13 +90,14 @@ class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
         redirectLocation(result) must be(
           Some(controllers.declaration.routes.DispatchLocationController.displayPage().url)
         )
+        session(result).get(ExportsSessionKeys.declarationId) must be(Some("declarationId"))
         val created: ExportsDeclaration = theCacheModelCreated
         created.id mustBe None
         created.status mustBe DeclarationStatus.DRAFT
         created.choice mustBe "SMP"
       }
 
-      "user chose Standard Dec" in new SetUp {
+      "user chooses Standard Dec" in new SetUp {
         when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(None))
         when(mockExportsCacheService.create(any[ExportsDeclaration])(any())).thenReturn(Future.successful(existingDeclaration))
 
@@ -105,6 +107,7 @@ class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
         redirectLocation(result) must be(
           Some(controllers.declaration.routes.DispatchLocationController.displayPage().url)
         )
+        session(result).get(ExportsSessionKeys.declarationId) must be(Some("declarationId"))
         val created: ExportsDeclaration = theCacheModelCreated
         created.id mustBe None
         created.status mustBe DeclarationStatus.DRAFT
