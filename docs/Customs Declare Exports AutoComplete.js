@@ -73,7 +73,7 @@ function completePage() {
     }
     if (currentPageIs("/customs-declare-exports/declaration/consignment-references")) {
         document.getElementById('lrn').value = 'JasTest4';
-        document.getElementById('ducr_ducr').value = '8GB12345' + Math.floor(Math.random() * 8999) + 1000 + '101SHIP1';
+        document.getElementById('ducr_ducr').value = '8GB12345' + Math.floor(Math.random() * 8999) + 100 + '-101SHIP1';
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs("/customs-declare-exports/declaration/exporter-details")) {
