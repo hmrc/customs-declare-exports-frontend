@@ -38,12 +38,4 @@ trait ModelCacheable {
       .map(model => exportsCacheService.update(model))
       .getOrElse(Future.successful(None))
 
-  protected def updateExportsDeclaration(
-    update: ExportsDeclaration => Future[Option[ExportsDeclaration]]
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    update(request.cacheModel).flatMap { updatedModel =>
-      updatedModel
-        .map(model => exportsCacheService.update(model))
-        .getOrElse(Future.successful(None))
-    }
 }
