@@ -61,7 +61,8 @@ class DeclarationAdditionalActorsController @Inject()(
     val boundForm = form().bindFromRequest()
     val actionTypeOpt = FormAction.bindFromRequest()
 
-    val cache = request.cacheModel.parties.declarationAdditionalActorsData.getOrElse(DeclarationAdditionalActorsData(Seq()))
+    val cache =
+      request.cacheModel.parties.declarationAdditionalActorsData.getOrElse(DeclarationAdditionalActorsData(Seq()))
 
     actionTypeOpt match {
       case Some(Add) if !boundForm.hasErrors             => addItem(boundForm.get, cache)

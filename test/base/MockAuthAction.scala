@@ -262,7 +262,10 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks {
 
   def getAuthenticatedRequest(declarationId: String = "declarationId"): AuthenticatedRequest[AnyContentAsEmpty.type] = {
     import utils.FakeRequestCSRFSupport._
-    AuthenticatedRequest(FakeRequest("GET", "").withSession((ExportsSessionKeys.declarationId, declarationId)).withCSRFToken, exampleUser)
+    AuthenticatedRequest(
+      FakeRequest("GET", "").withSession((ExportsSessionKeys.declarationId, declarationId)).withCSRFToken,
+      exampleUser
+    )
   }
 
   def getRequest(): Request[AnyContentAsEmpty.type] = {

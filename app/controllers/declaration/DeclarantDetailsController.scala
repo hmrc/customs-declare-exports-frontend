@@ -47,22 +47,20 @@ class DeclarantDetailsController @Inject()(
   }
 
   def saveAddress(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    DeclarantDetails.form()
+    DeclarantDetails
+      .form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[DeclarantDetails]) => Future.successful(BadRequest(declarantDetailsPage(formWithErrors))),
         form =>
           updateCache(form)
-            .map(
-              _ =>
-                Redirect(
-                  controllers.declaration.routes.RepresentativeDetailsController.displayPage()
-              )
-          )
+            .map(_ => Redirect(controllers.declaration.routes.RepresentativeDetailsController.displayPage()))
       )
   }
 
-  private def updateCache(formData: DeclarantDetails)(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+  private def updateCache(
+    formData: DeclarantDetails
+  )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
       val updatedParties = model.parties.copy(declarantDetails = Some(formData))
       model.copy(parties = updatedParties)

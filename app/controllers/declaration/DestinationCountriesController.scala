@@ -93,8 +93,7 @@ class DestinationCountriesController @Inject()(
     val actionTypeOpt = FormAction.bindFromRequest()
     val boundForm = Standard.form.bindFromRequest
 
-    val cache = request.cacheModel
-      .locations.destinationCountries.getOrElse(DestinationCountries.empty())
+    val cache = request.cacheModel.locations.destinationCountries.getOrElse(DestinationCountries.empty())
 
     actionTypeOpt match {
       case Some(Add) if !boundForm.hasErrors             => addRoutingCountry(cache)
@@ -189,10 +188,11 @@ class DestinationCountriesController @Inject()(
         Ok(destinationCountriesStandardPage(Standard.form))
     }
 
-  private def updateCache(formData: DestinationCountries)(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+  private def updateCache(
+    formData: DestinationCountries
+  )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(
-      model =>
-        model.copy(locations = model.locations.copy(destinationCountries = Some(formData)))
+      model => model.copy(locations = model.locations.copy(destinationCountries = Some(formData)))
     )
 
 }

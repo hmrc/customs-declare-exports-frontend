@@ -72,28 +72,24 @@ class FiscalInformationController @Inject()(
   private def updateCacheForYes(itemId: String, updatedFiscalInformation: FiscalInformation)(
     implicit req: JourneyRequest[_]
   ): Future[Unit] =
-    updateExportsDeclarationSyncDirect(
-      model => {
-        val itemList = model.items
-          .find(item => item.id.equals(itemId))
-          .map(_.copy(fiscalInformation = Some(updatedFiscalInformation)))
-          .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
-        model.copy(items = itemList)
-      }
-    ).map(_ => ())
+    updateExportsDeclarationSyncDirect(model => {
+      val itemList = model.items
+        .find(item => item.id.equals(itemId))
+        .map(_.copy(fiscalInformation = Some(updatedFiscalInformation)))
+        .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
+      model.copy(items = itemList)
+    }).map(_ => ())
 
   private def updateCacheForNo(itemId: String, updatedFiscalInformation: FiscalInformation)(
     implicit req: JourneyRequest[_]
   ): Future[Unit] =
-    updateExportsDeclarationSyncDirect(
-      model => {
-        val itemList = model.items
-          .find(item => item.id.equals(itemId))
-          .map(_.copy(fiscalInformation = Some(updatedFiscalInformation), additionalFiscalReferencesData = None))
-          .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
+    updateExportsDeclarationSyncDirect(model => {
+      val itemList = model.items
+        .find(item => item.id.equals(itemId))
+        .map(_.copy(fiscalInformation = Some(updatedFiscalInformation), additionalFiscalReferencesData = None))
+        .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
 
-        model.copy(items = itemList)
-      }
-    ).map(_ => ())
+      model.copy(items = itemList)
+    }).map(_ => ())
 
 }

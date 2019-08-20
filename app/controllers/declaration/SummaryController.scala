@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.SupplementaryDeclarationData
-import models.requests.{JourneyRequest, ExportsSessionKeys}
+import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.{DeclarationStatus, ExportsDeclaration, Mode}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, Messages}
@@ -58,15 +58,14 @@ class SummaryController @Inject()(
   private def containsMandatoryData(data: ExportsDeclaration): Boolean =
     data.consignmentReferences.exists(references => references.lrn.nonEmpty)
 
-  def submitDeclaration(): Action[AnyContent] = (authenticate andThen journeyType).async {
-    implicit request =>
-      submissionService.submit(request.cacheModel).map {
-        case Some(lrn) =>
-          Redirect(controllers.declaration.routes.ConfirmationController.displayPage())
-            .flashing(Flash(Map("LRN" -> lrn)))
-            .removingFromSession(ExportsSessionKeys.declarationId)
-        case _ => handleError(s"Error from Customs Declarations API")
-      }
+  def submitDeclaration(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    submissionService.submit(request.cacheModel).map {
+      case Some(lrn) =>
+        Redirect(controllers.declaration.routes.ConfirmationController.displayPage())
+          .flashing(Flash(Map("LRN" -> lrn)))
+          .removingFromSession(ExportsSessionKeys.declarationId)
+      case _ => handleError(s"Error from Customs Declarations API")
+    }
   }
 
   private def handleError(logMessage: String)(implicit request: Request[_]): Result = {

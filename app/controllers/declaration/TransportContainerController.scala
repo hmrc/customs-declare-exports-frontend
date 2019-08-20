@@ -60,7 +60,7 @@ class TransportContainerController @Inject()(
 
     val cache = request.cacheModel.containerData.getOrElse(TransportInformationContainerData(Seq()))
 
-      actionTypeOpt match {
+    actionTypeOpt match {
       case Some(Add)             => addContainer(boundForm, maxNumberOfItems, cache)
       case Some(Remove(ids))     => removeContainer(boundForm, cache, ids)
       case Some(SaveAndContinue) => saveContainer(boundForm, maxNumberOfItems, cache)
@@ -114,7 +114,5 @@ class TransportContainerController @Inject()(
   private def updateCache(
     formData: TransportInformationContainerData
   )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(
-      model => model.copy(containerData = Some(formData))
-    )
+    updateExportsDeclarationSyncDirect(model => model.copy(containerData = Some(formData)))
 }

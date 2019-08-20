@@ -32,11 +32,13 @@ import scala.concurrent.Future
 class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
   import ChoiceControllerSpec._
 
-  private val existingDeclaration = aDeclaration(withId("declarationId"), withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
+  private val existingDeclaration =
+    aDeclaration(withId("declarationId"), withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
 
   trait SetUp {
     val choicePage = new choice_page(mainTemplate, minimalAppConfig)
-    val controller = new ChoiceController(mockAuthAction, mockExportsCacheService, stubMessagesControllerComponents(), choicePage)(ec)
+    val controller =
+      new ChoiceController(mockAuthAction, mockExportsCacheService, stubMessagesControllerComponents(), choicePage)(ec)
     setupErrorHandler()
     authorizedUser()
   }
@@ -81,7 +83,8 @@ class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
       "user chose Supplementary Dec" in new SetUp {
         when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(None))
-        when(mockExportsCacheService.create(any[ExportsDeclaration])(any())).thenReturn(Future.successful(existingDeclaration))
+        when(mockExportsCacheService.create(any[ExportsDeclaration])(any()))
+          .thenReturn(Future.successful(existingDeclaration))
 
         val result = controller.submitChoice()(postRequest(supplementaryChoice))
 
@@ -97,7 +100,8 @@ class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
       "user chose Standard Dec" in new SetUp {
         when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(None))
-        when(mockExportsCacheService.create(any[ExportsDeclaration])(any())).thenReturn(Future.successful(existingDeclaration))
+        when(mockExportsCacheService.create(any[ExportsDeclaration])(any()))
+          .thenReturn(Future.successful(existingDeclaration))
 
         val result = controller.submitChoice()(postRequest(standardChoice))
 

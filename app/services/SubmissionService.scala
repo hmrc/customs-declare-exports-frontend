@@ -61,7 +61,10 @@ class SubmissionService @Inject()(
           )
       }
 
-      _ = auditService.audit(AuditTypes.Submission, auditData(exportsDeclaration.lrn, exportsDeclaration.ducr, Success.toString))
+      _ = auditService.audit(
+        AuditTypes.Submission,
+        auditData(exportsDeclaration.lrn, exportsDeclaration.ducr, Success.toString)
+      )
       _ = exportsMetrics.incrementCounter(submissionMetric)
       _ = timerContext.stop()
     } yield exportsDeclaration.lrn

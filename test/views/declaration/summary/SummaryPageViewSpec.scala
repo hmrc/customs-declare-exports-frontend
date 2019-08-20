@@ -29,11 +29,25 @@ import unit.tools.Stubs
 import utils.FakeRequestCSRFSupport._
 import views.html.declaration.summary.{summary_page, summary_page_no_data}
 
-class SummaryPageViewSpec extends WordSpec with MustMatchers with ExportsDeclarationBuilder with ExportsItemBuilder with Stubs {
+class SummaryPageViewSpec
+    extends WordSpec with MustMatchers with ExportsDeclarationBuilder with ExportsItemBuilder with Stubs {
 
-  val declaration = aDeclaration(withConsignmentReferences(), withDestinationCountries(), withGoodsLocation(GoodsLocation("PL", "type", "id", Some("a"), Some("b"), Some("c"), Some("d"), Some("e"))), withWarehouseIdentification(Some("a"), Some("b"), Some("c"), Some("d")), withOfficeOfExit("id", Some("office"), Some("code")), withContainerData(TransportInformationContainer("id")), withTotalNumberOfItems(Some("123"), Some("123")), withNatureOfTransaction("nature"), withItem(anItem()))
-  val request = JourneyRequest(AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration)
-  val summaryPage = contentAsString(new summary_page(mainTemplate)(Mode.NormalMode, SupplementaryDeclarationData(declaration))(request, stubMessages()))
+  val declaration = aDeclaration(
+    withConsignmentReferences(),
+    withDestinationCountries(),
+    withGoodsLocation(GoodsLocation("PL", "type", "id", Some("a"), Some("b"), Some("c"), Some("d"), Some("e"))),
+    withWarehouseIdentification(Some("a"), Some("b"), Some("c"), Some("d")),
+    withOfficeOfExit("id", Some("office"), Some("code")),
+    withContainerData(TransportInformationContainer("id")),
+    withTotalNumberOfItems(Some("123"), Some("123")),
+    withNatureOfTransaction("nature"),
+    withItem(anItem())
+  )
+  val request =
+    JourneyRequest(AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration)
+  val summaryPage = contentAsString(
+    new summary_page(mainTemplate)(Mode.NormalMode, SupplementaryDeclarationData(declaration))(request, stubMessages())
+  )
   val summaryNoDataPage = contentAsString(new summary_page_no_data(mainTemplate)()(request, stubMessages()))
 
   "Summary page" should {

@@ -183,10 +183,7 @@ class RepresentativeDetailsControllerSpec
 
     "accept form with status and EORI if on supplementary journey" in {
       withNewCaching(supplementaryModel)
-      val result = route(
-        app,
-        postRequest(uri, correctRepresentativeDetailsEORIOnlyJSON)
-      ).get
+      val result = route(app, postRequest(uri, correctRepresentativeDetailsEORIOnlyJSON)).get
 
       status(result) must be(SEE_OTHER)
       redirectLocation(result) must be(Some("/customs-declare-exports/declaration/additional-actors"))
@@ -205,10 +202,7 @@ class RepresentativeDetailsControllerSpec
 
     "accept form with status and address if on supplementary journey" in {
       withNewCaching(supplementaryModel)
-      val result = route(
-        app,
-        postRequest(uri, correctRepresentativeDetailsAddressOnlyJSON)
-      ).get
+      val result = route(app, postRequest(uri, correctRepresentativeDetailsAddressOnlyJSON)).get
 
       status(result) must be(SEE_OTHER)
       redirectLocation(result) must be(Some("/customs-declare-exports/declaration/additional-actors"))
@@ -217,10 +211,7 @@ class RepresentativeDetailsControllerSpec
 
     "accept form with status and address only if on standard journey" in {
       withNewCaching(standardModel)
-      val result = route(
-        app,
-        postRequest(uri, correctRepresentativeDetailsAddressOnlyJSON)
-      ).get
+      val result = route(app, postRequest(uri, correctRepresentativeDetailsAddressOnlyJSON)).get
 
       status(result) must be(SEE_OTHER)
       redirectLocation(result) must be(Some("/customs-declare-exports/declaration/carrier-details"))

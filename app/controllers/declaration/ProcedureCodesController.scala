@@ -78,19 +78,16 @@ class ProcedureCodesController @Inject()(
       }
   }
 
-  private def updateCache(
-    itemId: String,
-    updatedProcedureCodes: ProcedureCodesData
-  )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(
-      model => {
-        val item: Option[ExportItem] = model.items
-          .find(item => item.id.equals(itemId))
-          .map(_.copy(procedureCodes = Some(updatedProcedureCodes)))
-        val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
-        model.copy(items = itemList)
-      }
-    )
+  private def updateCache(itemId: String, updatedProcedureCodes: ProcedureCodesData)(
+    implicit r: JourneyRequest[_]
+  ): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => {
+      val item: Option[ExportItem] = model.items
+        .find(item => item.id.equals(itemId))
+        .map(_.copy(procedureCodes = Some(updatedProcedureCodes)))
+      val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
+      model.copy(items = itemList)
+    })
 
   private def addAnotherCodeHandler(itemId: String, userInput: ProcedureCodes, cachedData: ProcedureCodesData)(
     implicit request: JourneyRequest[_],
