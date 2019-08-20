@@ -29,6 +29,8 @@ case class Submission(
   ducr: Option[String] = None,
   actions: Seq[Action] = Seq.empty
 ) {
+  require(actions.nonEmpty, "Submission must have at least one action")
+
   val latestAction: Action = actions.minBy(_.requestTimestamp)(Submission.localDateTimeOrdering)
 }
 

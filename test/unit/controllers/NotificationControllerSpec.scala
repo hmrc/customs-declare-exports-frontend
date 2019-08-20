@@ -21,7 +21,8 @@ import java.util.UUID
 
 import controllers.NotificationsController
 import models.declaration.notifications.Notification
-import models.declaration.submissions.{Action, Submission, SubmissionRequest}
+import models.declaration.submissions.{Action, Submission}
+import models.declaration.submissions.RequestType.SubmissionRequest
 import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
 import play.api.mvc.{AnyContentAsEmpty, Request, Result}

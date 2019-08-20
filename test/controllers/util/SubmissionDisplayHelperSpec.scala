@@ -21,7 +21,8 @@ import java.util.UUID
 
 import base.TestHelper.createRandomAlphanumericString
 import models.declaration.notifications.{ErrorPointer, Notification, NotificationError}
-import models.declaration.submissions.{Action, CancellationRequest, Submission, SubmissionRequest}
+import models.declaration.submissions.{Action, Submission}
+import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
 import org.scalatest.{MustMatchers, WordSpec}
 
 import scala.util.Random
@@ -176,7 +177,7 @@ object SubmissionDisplayHelperSpec {
   val mrn_3: String = "MRN12341235"
   val conversationId: String = "b1c09f1b-7c94-4e90-b754-7c5c71c44e11"
   val conversationId_2: String = "b1c09f1b-7c94-4e90-b754-7c5c71c55e22"
-  val conversationId_3: String = "b1c09f1b-7c94-4e90-b754-7c5c71c55e22"
+  val conversationId_3: String = "b1c09f1b-7c94-4e90-b754-7c5c71c55e23"
 
   lazy val action = Action(requestType = SubmissionRequest, conversationId = conversationId)
   lazy val action_2 = Action(

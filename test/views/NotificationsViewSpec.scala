@@ -17,10 +17,11 @@
 package views
 
 import java.time.LocalDateTime
+import java.util.UUID
 
 import controllers.routes
 import models.declaration.notifications.Notification
-import models.declaration.submissions.{Submission, SubmissionStatus}
+import models.declaration.submissions.{Action, RequestType, Submission, SubmissionStatus}
 import org.jsoup.nodes.Document
 import views.declaration.spec.ViewSpec
 import views.html.submission_notifications
@@ -30,7 +31,8 @@ import views.tags.ViewTest
 class NotificationsViewSpec extends ViewSpec {
 
   private val page = app.injector.instanceOf[submission_notifications]
-  private val submission = Submission("id", "eori", "lrn")
+  private val actions = Action(RequestType.SubmissionRequest, UUID.randomUUID().toString)
+  private val submission = Submission("id", "eori", "lrn", None, None, Seq(actions))
   private def notification(status: SubmissionStatus = SubmissionStatus.Accepted) =
     Notification("conv-id", "mrn", LocalDateTime.of(2019, 1, 1, 0, 0), status.fullCode, None, Seq.empty, "payload")
 

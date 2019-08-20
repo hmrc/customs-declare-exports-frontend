@@ -22,7 +22,8 @@ import java.util.UUID
 import connectors.{CustomsDeclareExportsConnector, NrsConnector}
 import models._
 import models.declaration.notifications.Notification
-import models.declaration.submissions.{Action, Submission, SubmissionRequest}
+import models.declaration.submissions.{Action, Submission}
+import models.declaration.submissions.RequestType.SubmissionRequest
 import models.requests.CancellationStatus
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
