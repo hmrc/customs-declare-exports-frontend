@@ -663,6 +663,7 @@ supplementary.commodityMeasure.supplementaryUnits.error = Supplementary units sh
 supplementary.summary.title = Summary
 supplementary.summary.normal-header = Check your answers before making this declaration
 supplementary.summary.amend-header = Check your answers
+supplementary.summary.saved-header = Continue saved declaration
 supplementary.summary.noData.header = No information for supplementary declaration found
 supplementary.summary.noData.header.secondary = Please, go back and provide necessary information before proceeding
 supplementary.summary.declarationType.header = Declaration type

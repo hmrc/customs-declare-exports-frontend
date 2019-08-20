@@ -20,7 +20,7 @@ import connectors.CustomsDeclareExportsConnector
 import controllers.actions.AuthAction
 import javax.inject.Inject
 import models.requests.ExportsSessionKeys
-import models.{DeclarationStatus, Page}
+import models.{Mode, Page}
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -50,7 +50,7 @@ class SavedDeclarationsController @Inject()(
     customsDeclareExportsConnector.findDeclaration(id) flatMap {
       case Some(declaration) =>
         Future.successful(
-          Redirect(controllers.declaration.routes.DispatchLocationController.displayPage())
+          Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.SavedMode))
             .addingToSession(ExportsSessionKeys.declarationId -> id)
         )
       case _ => Future.successful(Redirect(controllers.routes.SavedDeclarationsController.displayDeclarations()))

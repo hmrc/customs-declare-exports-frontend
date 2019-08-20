@@ -22,11 +22,13 @@ sealed trait Mode
 object Mode {
   case object NormalMode extends Mode
   case object AmendMode extends Mode
+  case object SavedMode extends Mode
 
   implicit val jsLiteral: JavascriptLiteral[Mode] = new JavascriptLiteral[Mode] {
     override def to(value: Mode): String = value match {
       case NormalMode => "NormalMode"
       case AmendMode  => "AmendMode"
+      case SavedMode  => "SavedMode"
     }
   }
 }

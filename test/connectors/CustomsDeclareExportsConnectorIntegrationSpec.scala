@@ -104,7 +104,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
 
     "return Ok" in {
       stubFor(
-        get("/v2/declaration?status=DRAFT&page-index=1&page-size=10")
+        get("/v2/declaration?page-index=1&page-size=10")
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
@@ -115,9 +115,30 @@ class CustomsDeclareExportsConnectorIntegrationSpec
       val response = await(connector.findDeclarations(pagination))
 
       response shouldBe Paginated(Seq(existingDeclaration), pagination, 1)
-      verify(getRequestedFor(urlEqualTo("/v2/declaration?status=DRAFT&page-index=1&page-size=10")))
+      verify(getRequestedFor(urlEqualTo("/v2/declaration?page-index=1&page-size=10")))
     }
   }
+
+  "Find Saved Draft Declarations" should {
+    val pagination = Page(1, 10)
+
+    "return Ok" in {
+      stubFor(
+        get("/v2/declaration?status=DRAFT&sortBy=updatedDateTime&sortDirection=des&page-index=1&page-size=10")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.OK)
+              .withBody(json(Paginated(Seq(existingDeclarationExchange), pagination, 1)))
+          )
+      )
+
+      val response = await(connector.findSavedDeclarations(pagination))
+
+      response shouldBe Paginated(Seq(existingDeclaration), pagination, 1)
+      verify(getRequestedFor(urlEqualTo("/v2/declaration?status=DRAFT&sortBy=updatedDateTime&sortDirection=des&page-index=1&page-size=10")))
+    }
+  }
+
 
   "Find Declaration" should {
     "return Ok" in {

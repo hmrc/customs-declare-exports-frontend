@@ -48,15 +48,15 @@ class SummaryController @Inject()(
   private val logger = Logger(this.getClass)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    if (containsMandatoryData(request.cacheModel)) {
+    if (containsMandatoryData(request.cacheModel, mode)) {
       Ok(summaryPage(mode, SupplementaryDeclarationData(request.cacheModel)))
     } else {
       Ok(summaryPageNoData())
     }
   }
 
-  private def containsMandatoryData(data: ExportsDeclaration): Boolean =
-    data.consignmentReferences.exists(references => references.lrn.nonEmpty)
+  private def containsMandatoryData(data: ExportsDeclaration, mode: Mode): Boolean =
+    mode.equals(Mode.SavedMode) || data.consignmentReferences.exists(references => references.lrn.nonEmpty)
 
   def submitDeclaration(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     submissionService.submit(request.cacheModel).map {
