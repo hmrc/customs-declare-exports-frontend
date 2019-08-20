@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.SupplementaryDeclarationData
-import models.requests.{JourneyRequest, SessionKeys}
+import models.requests.{JourneyRequest, ExportsSessionKeys}
 import models.{DeclarationStatus, ExportsDeclaration, Mode}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, Messages}
@@ -71,7 +71,7 @@ class SummaryController @Inject()(
       case Some(lrn) =>
         Redirect(controllers.declaration.routes.ConfirmationController.displayPage())
           .flashing(Flash(Map("LRN" -> lrn)))
-          .removingFromSession(SessionKeys.declarationId)
+          .removingFromSession(ExportsSessionKeys.declarationId)
       case _ => handleError(s"Error from Customs Declarations API")
     }
 

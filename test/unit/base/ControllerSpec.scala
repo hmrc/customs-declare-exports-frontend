@@ -19,7 +19,7 @@ package unit.base
 import base.{MockAuthAction, MockConnectors, MockExportCacheService}
 import controllers.util.{Add, SaveAndContinue}
 import models.ExportsDeclaration
-import models.requests.JourneyRequest
+import models.requests.{ExportsSessionKeys, JourneyRequest}
 import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, AnyContentAsJson, Request, Result}
 import play.api.test.FakeRequest
@@ -46,14 +46,14 @@ trait ControllerSpec
   protected def viewOf(result: Future[Result]) = Html(contentAsString(result))
 
   protected def getRequest(declaration: ExportsDeclaration): JourneyRequest[AnyContentAsEmpty.type] =
-    JourneyRequest(getAuthenticatedRequest(sessionId = declaration.sessionId), declaration)
+    JourneyRequest(getAuthenticatedRequest(), declaration)
 
   protected def postRequest(body: JsValue): Request[AnyContentAsJson] =
-    FakeRequest("POST", "").withSession(("sessionId", "sessionId")).withJsonBody(body).withCSRFToken
+    FakeRequest("POST", "").withSession(ExportsSessionKeys.declarationId -> "declaration-id").withJsonBody(body).withCSRFToken
 
   protected def postRequest(body: JsValue, declaration: ExportsDeclaration): Request[AnyContentAsJson] =
-    FakeRequest("POST", "").withSession("sessionId" -> declaration.sessionId).withJsonBody(body).withCSRFToken
+    FakeRequest("POST", "").withSession(ExportsSessionKeys.declarationId -> declaration.id.getOrElse("")).withJsonBody(body).withCSRFToken
 
   protected def postRequestAsFormUrlEncoded(body: (String, String)*): Request[AnyContentAsFormUrlEncoded] =
-    FakeRequest("POST", "").withSession(("sessionId", "sessionId")).withFormUrlEncodedBody(body: _*).withCSRFToken
+    FakeRequest("POST", "").withSession(ExportsSessionKeys.declarationId -> "declaration-id").withFormUrlEncodedBody(body: _*).withCSRFToken
 }

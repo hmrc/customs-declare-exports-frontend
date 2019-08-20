@@ -111,7 +111,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
 
         status(result) mustBe SEE_OTHER
         verify(mockItemsSummaryPage, times(0)).apply(any())(any(), any())
-        verify(mockExportsCacheService, times(1)).update(any(), meq(aDeclaration(withItem(secondItem.copy(sequenceId = secondItem.sequenceId + 1)))))
+        verify(mockExportsCacheService, times(1)).update(meq(aDeclaration(withItem(secondItem.copy(sequenceId = secondItem.sequenceId + 1)))))(any())
       }
     }
   }

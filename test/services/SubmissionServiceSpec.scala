@@ -40,8 +40,6 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
   override def beforeEach() {
     reset(mockExportsCacheService, mockCustomsDeclareExportsConnector, mockAuditService)
     successfulCustomsDeclareExportsResponse()
-
-    when(mockExportsCacheService.remove(any[String])).thenReturn(Future.successful((): Unit))
   }
 
   implicit val request = TestHelper.journeyRequest(FakeRequest("", ""), AllowedChoiceValues.SupplementaryDec)
@@ -72,11 +70,10 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
 
       val model = createFullModel()
       val result = submissionService
-        .submit(sessionId, model)
+        .submit(model)
         .futureValue
       result.value mustBe "123LRN"
 
-      verify(mockExportsCacheService, times(1)).remove(any[String])
       verify(mockCustomsDeclareExportsConnector, times(1)).createDeclaration(refEq(model))(any(), any())
 
       verify(mockAuditService, times(1)).audit(any(), any())(any())
@@ -95,7 +92,7 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
 
       val thrown = intercept[Exception] {
         submissionService
-          .submit(sessionId, model)
+          .submit(model)
       }
 
       thrown mustBe error

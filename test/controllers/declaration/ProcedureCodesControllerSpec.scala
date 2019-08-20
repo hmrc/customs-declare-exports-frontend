@@ -54,7 +54,7 @@ class ProcedureCodesControllerSpec
 
     "return 200 status code" in {
 
-      val Some(result) = route(app, getRequest(uri, sessionId = itemModel.sessionId))
+      val Some(result) = route(app, getRequest(uri))
 
       status(result) must be(OK)
 
@@ -62,7 +62,7 @@ class ProcedureCodesControllerSpec
     }
 
     "read item from cache and display it" in {
-      val Some(result) = route(app, getRequest(uri, sessionId = itemModel.sessionId))
+      val Some(result) = route(app, getRequest(uri))
 
       status(result) must be(OK)
       verify(mockExportsCacheService).get(any[String])
@@ -77,7 +77,7 @@ class ProcedureCodesControllerSpec
 
         val body = Seq(("procedureCode", "incorrect"), addActionUrlEncoded)
 
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, itemModel.sessionId)(body: _*))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri)(body: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -86,7 +86,7 @@ class ProcedureCodesControllerSpec
 
         val body = Seq(("procedureCode", "incorrect"), saveAndContinueActionUrlEncoded)
 
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, itemModel.sessionId)(body: _*))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri)(body: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -95,7 +95,7 @@ class ProcedureCodesControllerSpec
 
         val body = Seq(("procedureCode", ""), ("additionalProcedureCode", ""), saveAndContinueActionUrlEncoded)
 
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, itemModel.sessionId)(body: _*))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri)(body: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -108,7 +108,7 @@ class ProcedureCodesControllerSpec
 
         val body = Seq(("procedureCode", ""), ("additionalProcedureCode", ""), saveAndContinueActionUrlEncoded)
 
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(body: _*))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri)(body: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -123,7 +123,7 @@ class ProcedureCodesControllerSpec
 
         val body = Seq(("procedureCode", "1234"), ("additionalProcedureCode", "321"), addActionUrlEncoded)
 
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(body: _*))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri)(body: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -137,7 +137,7 @@ class ProcedureCodesControllerSpec
 
         val body = Seq(("procedureCode", "1234"), ("additionalProcedureCode", "123"), addActionUrlEncoded)
 
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(body: _*))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri)(body: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -149,11 +149,11 @@ class ProcedureCodesControllerSpec
 
         val body = Seq(("procedureCode", "1234"), ("additionalProcedureCode", "321"), addActionUrlEncoded)
 
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, itemModel.sessionId)(body: _*))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri)(body: _*))
 
         status(result) must be(SEE_OTHER)
 
-        verify(mockExportsCacheService, times(1)).update(any(), any())
+        verify(mockExportsCacheService, times(1)).update(any())
       }
 
       "user remove existing code" in {
@@ -164,11 +164,11 @@ class ProcedureCodesControllerSpec
 
         val body = removeActionUrlEncoded("123")
 
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(body))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri)(body))
 
         status(result) must be(OK)
 
-        verify(mockExportsCacheService, times(1)).update(any(), any())
+        verify(mockExportsCacheService, times(1)).update(any())
       }
     }
 
@@ -178,11 +178,11 @@ class ProcedureCodesControllerSpec
 
         val body = Seq(("procedureCode", "1234"), ("additionalProcedureCode", "123"), saveAndContinueActionUrlEncoded)
 
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, itemModel.sessionId)(body: _*))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri)(body: _*))
 
         status(result) must be(SEE_OTHER)
 
-        verify(mockExportsCacheService, times(1)).update(any(), any())
+        verify(mockExportsCacheService, times(1)).update(any())
       }
 
       "form is empty but cache contains at least one item" in {
@@ -193,11 +193,11 @@ class ProcedureCodesControllerSpec
 
         val body = Seq(("procedureCode", "1234"), saveAndContinueActionUrlEncoded)
 
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(body: _*))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri)(body: _*))
 
         status(result) must be(SEE_OTHER)
 
-        verify(mockExportsCacheService, times(1)).update(any(), any())
+        verify(mockExportsCacheService, times(1)).update(any())
       }
     }
   }

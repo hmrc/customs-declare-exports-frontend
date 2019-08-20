@@ -20,8 +20,5 @@ import models.SignedInUser
 import play.api.mvc.{Request, WrappedRequest}
 
 case class AuthenticatedRequest[A](request: Request[A], user: SignedInUser) extends WrappedRequest[A](request) {
-  @Deprecated
-  def sessionId: String = request.session.data(SessionKeys.sessionId)
-
-  def declarationId: Option[String] = request.session.data.get(SessionKeys.declarationId)
+  def declarationId: Option[String] = request.session.data.get(ExportsSessionKeys.declarationId)
 }

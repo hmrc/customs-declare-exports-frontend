@@ -24,9 +24,10 @@ import config.AppConfig
 import connectors.{CustomsDeclareExportsConnector, NrsConnector}
 import controllers.actions.FakeAuthAction
 import metrics.ExportsMetrics
+import models.requests.ExportsSessionKeys
 import models.{ExportsDeclaration, NrsSubmissionResponse}
 import org.joda.time.DateTime
-import org.mockito.ArgumentMatchers.{eq => eqRef, any}
+import org.mockito.ArgumentMatchers.{any, eq => eqRef}
 import org.mockito.Mockito.when
 import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.BeforeAndAfterEach
@@ -119,10 +120,10 @@ trait CustomExportsBaseSpec
   protected def getRequest(
     uri: String,
     headers: Map[String, String] = Map.empty,
-    sessionId: String = s"session-${UUID.randomUUID()}"
+    declarationId: String = "declaration-id"
   ): Request[AnyContentAsEmpty.type] = {
     val session: Map[String, String] = Map(
-      SessionKeys.sessionId -> sessionId,
+      ExportsSessionKeys.declarationId -> declarationId,
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
 
@@ -169,19 +170,19 @@ trait CustomExportsBaseSpec
   override def withNewCaching(dataToReturn: ExportsDeclaration) {
     when(
       mockExportsCacheService
-        .update(eqRef(dataToReturn.sessionId), any[ExportsDeclaration])
+        .update(any[ExportsDeclaration])
     ).thenReturn(Future.successful(Some(dataToReturn)))
 
     when(
       mockExportsCacheService
-        .get(eqRef(dataToReturn.sessionId))
+        .get(eqRef(dataToReturn.id.getOrElse("")))
     ).thenReturn(Future.successful(Some(dataToReturn)))
   }
 
   def withNewCaching() {
     when(
       mockExportsCacheService
-        .update(any[String], any[ExportsDeclaration])
+        .update(any[ExportsDeclaration])
     ).thenReturn(Future.successful(None))
 
     when(

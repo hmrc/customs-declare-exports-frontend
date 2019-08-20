@@ -72,7 +72,6 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
   }
 
   def findDeclarations(
-    sessionId: String,
     page: Page
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
     val pagination = Page.bindable.unbind("page", page)

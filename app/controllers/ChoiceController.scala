@@ -24,7 +24,7 @@ import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import forms.Choice._
 import javax.inject.Inject
-import models.requests.SessionKeys
+import models.requests.ExportsSessionKeys
 import models.{DeclarationStatus, ExportsDeclaration}
 import play.api.Logger
 import play.api.data.Form
@@ -82,7 +82,7 @@ class ChoiceController @Inject()(
                   Redirect(controllers.routes.CancelDeclarationController.displayForm())
                 case Submissions =>
                   Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
-              }).addingToSession(SessionKeys.declarationId -> created.id.getOrElse(""))
+              }).addingToSession(ExportsSessionKeys.declarationId -> created.id.getOrElse(""))
             })
         }
       )

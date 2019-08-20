@@ -36,9 +36,8 @@ class CustomsDeclareExportsConnectorIntegrationSpec
     extends ConnectorSpec with BeforeAndAfterEach with ExportsDeclarationBuilder with ScalaFutures {
 
   private val id = "id"
-  private val sessionId = "session-id"
-  private val newDeclaration = aDeclaration(withoutId(), withSessionId(sessionId))
-  private val existingDeclaration = aDeclaration(withId(id), withSessionId(sessionId))
+  private val newDeclaration = aDeclaration(withoutId())
+  private val existingDeclaration = aDeclaration(withId(id))
   private val newDeclarationExchange = ExportsDeclarationExchange(newDeclaration)
   private val existingDeclarationExchange = ExportsDeclarationExchange(existingDeclaration)
   private val submission = Submission(id, "eori", "lrn", Some("mrn"))
@@ -111,7 +110,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
           )
       )
 
-      val response = await(connector.findDeclarations(sessionId, pagination))
+      val response = await(connector.findDeclarations(pagination))
 
       response shouldBe Paginated(Seq(existingDeclaration), pagination, 1)
       verify(getRequestedFor(urlEqualTo("/v2/declaration?page-index=1&page-size=10")))
@@ -129,7 +128,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
           )
       )
 
-      val response = await(connector.findDeclaration(sessionId, id))
+      val response = await(connector.findDeclaration(id))
 
       response shouldBe Some(existingDeclaration)
       verify(getRequestedFor(urlEqualTo(s"/v2/declaration/$id")))

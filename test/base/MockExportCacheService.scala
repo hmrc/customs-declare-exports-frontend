@@ -32,21 +32,21 @@ trait MockExportCacheService extends MockitoSugar with ExportsDeclarationBuilder
   val mockExportsCacheService: ExportsCacheService = mock[ExportsCacheService]
 
   def withNewCaching(dataToReturn: ExportsDeclaration): Unit = {
-    when(mockExportsCacheService.update(anyString, any[ExportsDeclaration]))
+    when(mockExportsCacheService.update(any[ExportsDeclaration])(any()))
       .thenReturn(Future.successful(Some(dataToReturn)))
 
-    when(mockExportsCacheService.get(anyString))
+    when(mockExportsCacheService.get(anyString)(any()))
       .thenReturn(Future.successful(Some(dataToReturn)))
   }
 
   protected def theCacheModelUpdated: ExportsDeclaration = {
     val captor = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
-    verify(mockExportsCacheService).update(anyString, captor.capture())
+    verify(mockExportsCacheService).update(captor.capture())(any())
     captor.getValue
   }
 
   protected def verifyTheCacheIsUnchanged(): Unit =
-    verify(mockExportsCacheService, never()).update(anyString, any[ExportsDeclaration])
+    verify(mockExportsCacheService, never()).update(any[ExportsDeclaration])(any())
 
   override protected def afterEach(): Unit = {
     Mockito.reset(mockExportsCacheService)

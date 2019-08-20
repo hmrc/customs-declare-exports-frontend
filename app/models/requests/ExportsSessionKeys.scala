@@ -16,9 +16,8 @@
 
 package models.requests
 
-object SessionKeys {
+object ExportsSessionKeys {
 
-  val sessionId = "sessionId"
   val declarationId = "declarationId"
 
 }

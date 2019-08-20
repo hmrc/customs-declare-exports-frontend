@@ -47,7 +47,7 @@ class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
     "return 200 (OK)" when {
 
       "display page method is invoked with empty cache" in new SetUp {
-        when(mockExportsCacheService.get(any())).thenReturn(Future.successful(None))
+        when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(None))
 
         val result = controller.displayPage()(getRequest())
 
@@ -56,7 +56,7 @@ class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
       "display page method is invoked with data in cache" in new SetUp {
         withNewCaching(
-          aDeclaration(withSessionId("sessionId"), withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
+          aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
         )
 
         val result = controller.displayPage()(getRequest())
