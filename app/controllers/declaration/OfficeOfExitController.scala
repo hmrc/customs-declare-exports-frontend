@@ -96,18 +96,14 @@ class OfficeOfExitController @Inject()(
       )
 
   private def updateCache(formData: OfficeOfExitSupplementary)(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclaration(
+    updateExportsDeclarationSyncDirect(
       model =>
-        exportsCacheService.update(
-          model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData))))
-      )
+        model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData))))
     )
 
   private def updateCache(formData: OfficeOfExitStandard)(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclaration(
+    updateExportsDeclarationSyncDirect(
       model =>
-        exportsCacheService.update(
-          model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData))))
-      )
+        model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData))))
     )
 }

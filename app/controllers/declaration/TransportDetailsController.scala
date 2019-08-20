@@ -63,7 +63,7 @@ class TransportDetailsController @Inject()(
     else Redirect(routes.SummaryController.displayPage(Mode.NormalMode))
 
   private def updateCache(formData: TransportDetails)(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclaration(
-      model => exportsCacheService.update(model.copy(transportDetails = Some(formData)))
+    updateExportsDeclarationSyncDirect(
+      model => model.copy(transportDetails = Some(formData))
     )
 }

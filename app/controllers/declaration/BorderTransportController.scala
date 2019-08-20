@@ -59,7 +59,5 @@ class BorderTransportController @Inject()(
   }
 
   private def updateCache(formData: BorderTransport)(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclaration(
-      model => exportsCacheService.update(model.copy(borderTransport = Some(formData)))
-    )
+    updateExportsDeclarationSyncDirect(_.copy(borderTransport = Some(formData)))
 }

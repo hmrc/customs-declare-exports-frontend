@@ -51,10 +51,9 @@ class LocationController @Inject()(
       .fold(
         (formWithErrors: Form[GoodsLocation]) => Future.successful(BadRequest(goodsLocationPage(formWithErrors))),
         formData =>
-          updateExportsDeclaration(
+          updateExportsDeclarationSyncDirect(
             model =>
-              exportsCacheService
-                .update(model.copy(locations = model.locations.copy(goodsLocation = Some(formData))))
+              model.copy(locations = model.locations.copy(goodsLocation = Some(formData)))
           ).map { _ =>
             Redirect(controllers.declaration.routes.OfficeOfExitController.displayForm())
         }

@@ -190,10 +190,9 @@ class DestinationCountriesController @Inject()(
     }
 
   private def updateCache(formData: DestinationCountries)(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclaration(
+    updateExportsDeclarationSyncDirect(
       model =>
-        exportsCacheService
-          .update(model.copy(locations = model.locations.copy(destinationCountries = Some(formData))))
+        model.copy(locations = model.locations.copy(destinationCountries = Some(formData)))
     )
 
 }

@@ -98,10 +98,8 @@ class SealController @Inject()(
   }
 
   private def updateCache(formData: Seq[Seal])(implicit req: JourneyRequest[_]) =
-    updateExportsDeclaration(
-      model =>
-        exportsCacheService
-          .update(model.copy(seals = formData))
+    updateExportsDeclarationSyncDirect(
+      model => model.copy(seals = formData)
     )
 
   private def addSeal(boundForm: Form[Seal], elementLimit: Int, seals: Seq[Seal])(

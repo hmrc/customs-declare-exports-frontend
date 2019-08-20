@@ -114,7 +114,7 @@ class TransportContainerController @Inject()(
   private def updateCache(
     formData: TransportInformationContainerData
   )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclaration(
-      model => exportsCacheService.update(model.copy(containerData = Some(formData)))
+    updateExportsDeclarationSyncDirect(
+      model => model.copy(containerData = Some(formData))
     )
 }

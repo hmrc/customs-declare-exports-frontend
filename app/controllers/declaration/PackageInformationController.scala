@@ -105,13 +105,13 @@ class PackageInformationController @Inject()(
     itemId: String,
     updatedCache: Seq[PackageInformation]
   )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclaration(
+    updateExportsDeclarationSyncDirect(
       model => {
         val item: Option[ExportItem] = model.items
           .find(item => item.id.equals(itemId))
           .map(_.copy(packageInformation = updatedCache.toList))
         val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
-        exportsCacheService.update(model.copy(items = itemList))
+        model.copy(items = itemList)
       }
     )
 }

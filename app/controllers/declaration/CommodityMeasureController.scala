@@ -69,12 +69,11 @@ class CommodityMeasureController @Inject()(
   private def updateExportsCache(itemId: String, updatedItem: CommodityMeasure)(
     implicit r: JourneyRequest[_]
   ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclaration(model => {
+    updateExportsDeclarationSyncDirect(model => {
       val itemList = model.items
         .find(item => item.id.equals(itemId))
         .map(_.copy(commodityMeasure = Some(updatedItem)))
         .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
-
-      exportsCacheService.update(model.copy(items = itemList))
+      model.copy(items = itemList)
     })
 }

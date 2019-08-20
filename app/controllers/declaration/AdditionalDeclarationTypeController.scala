@@ -69,8 +69,8 @@ class AdditionalDeclarationTypeController @Inject()(
   private def updateCache(formData: AdditionalDeclarationType)(
     implicit request: JourneyRequest[_]
   ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclaration(model => {
-      exportsCacheService.update(model.copy(additionalDeclarationType = Some(formData)))
+    updateExportsDeclarationSyncDirect(model => {
+      model.copy(additionalDeclarationType = Some(formData))
     })
 
 }

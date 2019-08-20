@@ -114,14 +114,14 @@ class AdditionalInformationController @Inject()(
     itemId: String,
     updatedAdditionalInformation: AdditionalInformationData
   )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclaration(
+    updateExportsDeclarationSyncDirect(
       model => {
         val itemList = model.items
           .find(item => item.id.equals(itemId))
           .map(_.copy(additionalInformation = Some(updatedAdditionalInformation)))
           .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
 
-        exportsCacheService.update(model.copy(items = itemList))
+        model.copy(items = itemList)
       }
     )
 }

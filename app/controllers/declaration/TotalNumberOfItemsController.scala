@@ -60,9 +60,7 @@ class TotalNumberOfItemsController @Inject()(
   }
 
   private def updateCache(formData: TotalNumberOfItems)(implicit req: JourneyRequest[_]) =
-    updateExportsDeclaration(
-      model =>
-        exportsCacheService
-          .update(model.copy(totalNumberOfItems = Some(formData)))
+    updateExportsDeclarationSyncDirect(
+      _.copy(totalNumberOfItems = Some(formData))
     )
 }
