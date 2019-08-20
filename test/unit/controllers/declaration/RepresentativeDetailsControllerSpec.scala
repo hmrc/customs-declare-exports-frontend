@@ -90,7 +90,7 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
 
         val result = controller.displayPage()(getRequest())
 
-        status(result) mustBe(OK)
+        status(result) mustBe (OK)
         verify(mockRepresentativeDetailsPage, times(1)).apply(any())(any(), any())
 
         theResponseForm.value.value.details.value.eori.value mustBe eori

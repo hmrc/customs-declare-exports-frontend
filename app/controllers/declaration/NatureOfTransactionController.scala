@@ -53,14 +53,12 @@ class NatureOfTransactionController @Inject()(
         (formWithErrors: Form[NatureOfTransaction]) =>
           Future.successful(BadRequest(natureOfTransactionPage(adjustErrors(formWithErrors)))),
         form =>
-          updateCache(form).map(
-            _ => Redirect(controllers.declaration.routes.PreviousDocumentsController.displayForm())
-        )
+          updateCache(form).map(_ => Redirect(controllers.declaration.routes.PreviousDocumentsController.displayForm()))
       )
   }
 
-  private def updateCache(formData: NatureOfTransaction)(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(
-      model => model.copy(natureOfTransaction = Some(formData))
-    )
+  private def updateCache(
+    formData: NatureOfTransaction
+  )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => model.copy(natureOfTransaction = Some(formData)))
 }

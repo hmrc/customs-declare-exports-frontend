@@ -95,15 +95,17 @@ class OfficeOfExitController @Inject()(
             .map(_ => Redirect(controllers.declaration.routes.TotalNumberOfItemsController.displayForm()))
       )
 
-  private def updateCache(formData: OfficeOfExitSupplementary)(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+  private def updateCache(
+    formData: OfficeOfExitSupplementary
+  )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(
-      model =>
-        model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData))))
+      model => model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData))))
     )
 
-  private def updateCache(formData: OfficeOfExitStandard)(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+  private def updateCache(
+    formData: OfficeOfExitStandard
+  )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(
-      model =>
-        model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData))))
+      model => model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData))))
     )
 }
