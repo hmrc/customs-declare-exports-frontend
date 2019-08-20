@@ -58,14 +58,12 @@ object DestinationCountriesValidator extends Validator[DestinationCountries] {
       ),
     "countriesOfRouting" -> seq(
       text()
-        .verifying("declaration.destinationCountries.countriesOfRouting.empty", _.trim.nonEmpty)
         .verifying(
           "declaration.destinationCountries.countriesOfRouting.error",
           input => input.isEmpty || allCountries.exists(country => country.countryCode == input)
         )
     ).verifying("supplementary.duplication", areAllElementsUnique)
-      .verifying("supplementary.limit", countries => countries.size <= DestinationCountries.limit)
-      .verifying("declaration.destinationCountries.countriesOfRouting.empty", _.nonEmpty),
+      .verifying("supplementary.limit", countries => countries.size <= DestinationCountries.limit),
     "countryOfDestination" -> text()
       .verifying("declaration.destinationCountries.countryOfDestination.empty", _.trim.nonEmpty)
       .verifying(
