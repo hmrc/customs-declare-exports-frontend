@@ -58,31 +58,19 @@ class SummaryController @Inject()(
   private def containsMandatoryData(data: ExportsDeclaration): Boolean =
     data.consignmentReferences.exists(references => references.lrn.nonEmpty)
 
-  def submitSupplementaryDeclaration(): Action[AnyContent] = (authenticate andThen journeyType).async {
+  def submitDeclaration(): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
-      handleDecSubmission(request.cacheModel)
-
+      submissionService.submit(request.cacheModel).map {
+        case Some(lrn) =>
+          Redirect(controllers.declaration.routes.ConfirmationController.displayPage())
+            .flashing(Flash(Map("LRN" -> lrn)))
+            .removingFromSession(ExportsSessionKeys.declarationId)
+        case _ => handleError(s"Error from Customs Declarations API")
+      }
   }
-
-  private def handleDecSubmission(
-    exportsCacheModel: ExportsDeclaration
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
-    submissionService.submit(exportsCacheModel).map {
-      case Some(lrn) =>
-        Redirect(controllers.declaration.routes.ConfirmationController.displayPage())
-          .flashing(Flash(Map("LRN" -> lrn)))
-          .removingFromSession(ExportsSessionKeys.declarationId)
-      case _ => handleError(s"Error from Customs Declarations API")
-    }
 
   private def handleError(logMessage: String)(implicit request: Request[_]): Result = {
     logger.error(logMessage)
-    InternalServerError(
-      errorHandler.standardErrorTemplate(
-        pageTitle = Messages("global.error.title"),
-        heading = Messages("global.error.heading"),
-        message = Messages("global.error.message")
-      )
-    )
+    InternalServerError(errorHandler.globalErrorPage())
   }
 }

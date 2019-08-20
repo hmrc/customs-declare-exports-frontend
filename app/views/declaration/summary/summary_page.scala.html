@@ -89,7 +89,7 @@
     }
 
     @if(mode == Mode.NormalMode) {
-        @helper.form(action = routes.SummaryController.submitSupplementaryDeclaration(), 'id -> "summary") {
+        @helper.form(action = routes.SummaryController.submitDeclaration(), 'id -> "summary") {
             @helper.CSRF.formField
 
             @components.submit_button(messages("site.acceptAndSubmitDeclaration"))
