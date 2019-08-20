@@ -32,9 +32,9 @@ POST        /declarant-details                   controllers.declaration.Declara
 
 # Representative details
 
-GET         /representative-details              controllers.declaration.RepresentativeDetailsController.displayRepresentativeDetailsPage()
+GET         /representative-details              controllers.declaration.RepresentativeDetailsController.displayPage()
 
-POST        /representative-details              controllers.declaration.RepresentativeDetailsController.submitRepresentativeDetails()
+POST        /representative-details              controllers.declaration.RepresentativeDetailsController.submitForm()
 
 # Consignee details
 
