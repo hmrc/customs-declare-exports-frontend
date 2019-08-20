@@ -143,6 +143,7 @@ declaration.choice.description = What do you want to do?
 declaration.choice.SMP = Supplementary declaration
 declaration.choice.STD = Standard declaration
 declaration.choice.CAN = Cancel declaration
+declaration.choice.CON = Continue a saved declaration
 declaration.choice.SUB = View recent declarations
 
 startPage.title = Register for customs services
@@ -293,6 +294,8 @@ submissions.mrn = MRN
 submissions.submittedTimestamp = Timestamp
 submissions.status = Status
 submissions.noOfNotifications = Number of notifications
+
+saved.declarations.title = Your saved declarations
 
 supplementary.declarationHolder.title = What authorisation is required for this export?
 supplementary.declarationHolder.title.hint = This will depend on the type of procedure code used for this export. If no authorisation is needed, leave this page blank and continue.

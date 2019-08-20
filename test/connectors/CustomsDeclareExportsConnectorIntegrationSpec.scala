@@ -22,7 +22,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.exchange.ExportsDeclarationExchange
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Submission
-import models.{Page, Paginated}
+import models.{DeclarationStatus, Page, Paginated}
 import org.mockito.BDDMockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
@@ -103,7 +103,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
 
     "return Ok" in {
       stubFor(
-        get("/v2/declaration?page-index=1&page-size=10")
+        get("/v2/declaration?status=DRAFT&page-index=1&page-size=10")
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
@@ -111,10 +111,10 @@ class CustomsDeclareExportsConnectorIntegrationSpec
           )
       )
 
-      val response = await(connector.findDeclarations(sessionId, pagination))
+      val response = await(connector.findDeclarations(sessionId, DeclarationStatus.DRAFT, pagination))
 
       response shouldBe Paginated(Seq(existingDeclaration), pagination, 1)
-      verify(getRequestedFor(urlEqualTo("/v2/declaration?page-index=1&page-size=10")))
+      verify(getRequestedFor(urlEqualTo("/v2/declaration?status=DRAFT&page-index=1&page-size=10")))
     }
   }
 

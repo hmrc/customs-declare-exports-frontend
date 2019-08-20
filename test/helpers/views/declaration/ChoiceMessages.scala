@@ -28,6 +28,7 @@ trait ChoiceMessages {
   val arrivalDec: String = declarationChoice + ".EAL"
   val departureDec: String = declarationChoice + ".EDL"
   val cancelDec: String = "declaration.choice.CAN"
+  val continueDec: String = "declaration.choice.CON"
   val recentDec: String = "declaration.choice.SUB"
   val choiceEmpty: String = "choicePage.input.error.empty"
   val choiceError: String = "choicePage.input.error.incorrectValue"

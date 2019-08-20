@@ -74,6 +74,8 @@ class ChoiceController @Inject()(
               validChoice.value match {
                 case SupplementaryDec | StandardDec =>
                   Redirect(controllers.declaration.routes.DispatchLocationController.displayPage())
+                case ContinueDec =>
+                  Redirect(controllers.routes.SavedDeclarationsController.displayForm())
                 case CancelDec =>
                   Redirect(controllers.routes.CancelDeclarationController.displayForm())
                 case Submissions =>
