@@ -22,7 +22,7 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class ConsignmentReferences(ducr: Ducr, lrn: String, ucr: Option[String] = None)
+case class ConsignmentReferences(ducr: Ducr, lrn: String, personalUcr: Option[String] = None)
 
 object ConsignmentReferences {
   private val ucrFormat = "^\\d[A-Z]{2}\\d{12}-[0-9A-Z]{1,19}$"
@@ -35,7 +35,7 @@ object ConsignmentReferences {
       .verifying("supplementary.consignmentReferences.lrn.error.empty", _.trim.nonEmpty)
       .verifying("supplementary.consignmentReferences.lrn.error.length", noLongerThan(lrnMaxLength))
       .verifying("supplementary.consignmentReferences.lrn.error.specialCharacter", isAlphanumeric),
-    "ucr" -> optional(
+    "personalUcr" -> optional(
       text()
         .verifying("supplementary.consignmentReferences.ucr.error.length", noLongerThan(ucrMaxLength))
         .verifying("supplementary.consignmentReferences.ucr.error.specialCharacter", isAlphanumeric)
