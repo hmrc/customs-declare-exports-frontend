@@ -59,8 +59,7 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockSummaryPage)
-    reset(mockSummaryPageNoData)
+    reset(mockSummaryPage, mockSummaryPageNoData)
     super.afterEach()
   }
 
