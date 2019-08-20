@@ -56,7 +56,7 @@
                         @if(notifications.nonEmpty){
                             <a href="@routes.NotificationsController.listOfNotificationsForSubmission(submission.uuid)">@{notifications.length}</a>
                         } else {
-                            @{notifications.length}
+                            <span>@{notifications.length}</span>
                         }
                     </td>
                 </tr>
