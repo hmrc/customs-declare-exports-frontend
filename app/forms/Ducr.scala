@@ -26,7 +26,13 @@ case class Ducr(ducr: String)
 object Ducr {
   implicit val format = Json.format[Ducr]
 
-  private val ducrFormat = "^\\d[A-Z]{2}\\d{12}-[0-9A-Z]{1,19}$"
+  /**
+    * According to the CDS ILE completion matrix v2.1.xxx the allowed DUCR/MUCR value
+    * needs to match one of the three regex expressions below
+    */
+  private val ducrFormat = """^[0-9][A-Z][A-Z][0-9A-Z\(\)\-/]{6,32}|
+                                GB/[0-9A-Z]{3,4}-[0-9A-Z]{5,28}|
+                                GB/[0-9A-Z]{9,12}-[0-9A-Z]{1,23}"""
 
   val ducrMapping =
     mapping("ducr" -> text().verifying(pattern(ducrFormat.r, error = "error.ducr")))(Ducr.apply)(Ducr.unapply)
