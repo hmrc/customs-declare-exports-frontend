@@ -21,6 +21,7 @@ import forms.declaration.BorderTransport
 import forms.declaration.BorderTransport._
 import javax.inject.Inject
 import models.ExportsDeclaration
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -37,29 +38,26 @@ class BorderTransportController @Inject()(
   mcc: MessagesControllerComponents,
   borderTransportPage: border_transport
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.borderTransport match {
-      case Some(data) => Ok(borderTransportPage(form.fill(data)))
-      case _          => Ok(borderTransportPage(form))
+      case Some(data) => Ok(borderTransportPage(form().fill(data)))
+      case _          => Ok(borderTransportPage(form()))
     }
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form
+    form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[BorderTransport]) => Future.successful(BadRequest(borderTransportPage(formWithErrors))),
         borderTransport =>
-          updateCache(journeySessionId, borderTransport)
+          updateCache(borderTransport)
             .map(_ => Redirect(routes.TransportDetailsController.displayForm()))
       )
   }
 
-  private def updateCache(sessionId: String, formData: BorderTransport): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportsDeclaration(
-      sessionId,
-      model => exportsCacheService.update(sessionId, model.copy(borderTransport = Some(formData)))
-    )
+  private def updateCache(formData: BorderTransport)(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(_.copy(borderTransport = Some(formData)))
 }

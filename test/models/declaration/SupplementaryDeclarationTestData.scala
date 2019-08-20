@@ -319,7 +319,7 @@ object SupplementaryDeclarationTestData {
   val correctPackingJSON: JsValue = JsObject(
     Map("sequenceNumeric" -> JsString("0"), "marksNumbersId" -> JsString("wefdsf"), "typeCode" -> JsString("22"))
   )
-  val declaration = ExportsDeclaration(None, DeclarationStatus.DRAFT, "sessionId", Instant.now(), Instant.now(), "SMP")
+  val declaration = ExportsDeclaration(None, DeclarationStatus.DRAFT, Instant.now(), Instant.now(), "SMP")
 
   def createGovernmentAgencyGoodsItem(): GovernmentAgencyGoodsItem =
     GovernmentAgencyGoodsItem(

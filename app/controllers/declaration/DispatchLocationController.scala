@@ -38,7 +38,7 @@ class DispatchLocationController @Inject()(
   mcc: MessagesControllerComponents,
   dispatchLocationPage: dispatch_location
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.dispatchLocation match {

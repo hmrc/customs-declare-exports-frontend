@@ -79,7 +79,7 @@ class WarehouseIdentificationControllerSpec
     "read item from cache and display it" in {
       val result = controller.displayForm().apply(getRequest())
       await(result)
-      verify(mockExportsCacheService).get(any())
+      verify(mockExportsCacheService).get(any())(any())
       verify(warehouseIdentificationTemplate).apply(any())(any(), any())
     }
   }

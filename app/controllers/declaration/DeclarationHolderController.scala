@@ -44,7 +44,7 @@ class DeclarationHolderController @Inject()(
   mcc: MessagesControllerComponents,
   declarationHolderPage: declaration_holder
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   import forms.declaration.DeclarationHolder.form
 
@@ -60,17 +60,13 @@ class DeclarationHolderController @Inject()(
       val boundForm = form().bindFromRequest()
       val actionTypeOpt = FormAction.bindFromRequest()
 
-      val cachedData = exportsCacheService
-        .get(journeySessionId)
-        .map(_.flatMap(_.parties.declarationHoldersData).getOrElse(DeclarationHoldersData(Seq())))
+      val cache = request.cacheModel.parties.declarationHoldersData.getOrElse(DeclarationHoldersData(Seq()))
 
-      cachedData.flatMap { cache =>
-        actionTypeOpt match {
-          case Some(Add) if !boundForm.hasErrors             => addHolder(boundForm.get, cache)
-          case Some(SaveAndContinue) if !boundForm.hasErrors => saveAndContinue(boundForm.get, cache)
-          case Some(Remove(values))                          => removeHolder(retrieveHolder(values), boundForm, cache)
-          case _                                             => Future.successful(BadRequest(declarationHolderPage(boundForm, cache.holders)))
-        }
+      actionTypeOpt match {
+        case Some(Add) if !boundForm.hasErrors             => addHolder(boundForm.get, cache)
+        case Some(SaveAndContinue) if !boundForm.hasErrors => saveAndContinue(boundForm.get, cache)
+        case Some(Remove(values))                          => removeHolder(retrieveHolder(values), boundForm, cache)
+        case _                                             => Future.successful(BadRequest(declarationHolderPage(boundForm, cache.holders)))
       }
   }
 
@@ -91,7 +87,7 @@ class DeclarationHolderController @Inject()(
 
       case (holder, holders) if holder.authorisationTypeCode.isDefined && holder.eori.isDefined =>
         val updatedCache = DeclarationHoldersData(holders :+ holder)
-        updateCache(journeySessionId, updatedCache)
+        updateCache(updatedCache)
           .map(_ => Redirect(controllers.declaration.routes.DeclarationHolderController.displayForm()))
 
       case (DeclarationHolder(authCode, eori), _) =>
@@ -116,10 +112,10 @@ class DeclarationHolderController @Inject()(
     Future.successful(BadRequest(declarationHolderPage(formWithError, holders)))
   }
 
-  private def updateCache(sessionId: String, formData: DeclarationHoldersData): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportsDeclaration(sessionId, model => {
+  private def updateCache(formData: DeclarationHoldersData)(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => {
       val updatedParties = model.parties.copy(declarationHoldersData = Some(formData))
-      exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
+      model.copy(parties = updatedParties)
     })
 
   private def saveAndContinue(
@@ -134,7 +130,7 @@ class DeclarationHolderController @Inject()(
         holder match {
           case DeclarationHolder(Some(typeCode), Some(eori)) =>
             val updatedCache = DeclarationHoldersData(Seq(DeclarationHolder(Some(typeCode), Some(eori))))
-            updateCache(journeySessionId, updatedCache)
+            updateCache(updatedCache)
               .map(_ => Redirect(controllers.declaration.routes.DestinationCountriesController.displayForm()))
 
           case DeclarationHolder(maybeTypeCode, maybeEori) =>
@@ -158,7 +154,7 @@ class DeclarationHolderController @Inject()(
           case _ if holder.authorisationTypeCode.isDefined == holder.eori.isDefined =>
             val updatedHolders = if (holder.authorisationTypeCode.isDefined) holders :+ holder else holders
             val updatedCache = DeclarationHoldersData(updatedHolders)
-            updateCache(journeySessionId, updatedCache)
+            updateCache(updatedCache)
               .map(_ => Redirect(controllers.declaration.routes.DestinationCountriesController.displayForm()))
 
           case DeclarationHolder(maybeTypeCode, maybeEori) =>
@@ -179,7 +175,7 @@ class DeclarationHolderController @Inject()(
     cachedData: DeclarationHoldersData
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
     val updatedCache = cachedData.copy(holders = remove(cachedData.holders, (_: DeclarationHolder) == holderToRemove))
-    updateCache(journeySessionId, updatedCache)
+    updateCache(updatedCache)
       .map(_ => Ok(declarationHolderPage(userInput.discardingErrors, updatedCache.holders)))
   }
 

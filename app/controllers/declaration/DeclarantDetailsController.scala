@@ -20,6 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import forms.declaration.DeclarantDetails
 import javax.inject.Inject
 import models.ExportsDeclaration
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,7 +37,7 @@ class DeclarantDetailsController @Inject()(
   mcc: MessagesControllerComponents,
   declarantDetailsPage: declarant_details
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.parties.declarantDetails match {
@@ -46,12 +47,12 @@ class DeclarantDetailsController @Inject()(
   }
 
   def saveAddress(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    DeclarantDetails.form
+    DeclarantDetails.form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[DeclarantDetails]) => Future.successful(BadRequest(declarantDetailsPage(formWithErrors))),
         form =>
-          updateCache(journeySessionId, form)
+          updateCache(form)
             .map(
               _ =>
                 Redirect(
@@ -61,9 +62,9 @@ class DeclarantDetailsController @Inject()(
       )
   }
 
-  private def updateCache(sessionId: String, formData: DeclarantDetails): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportsDeclaration(sessionId, model => {
+  private def updateCache(formData: DeclarantDetails)(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => {
       val updatedParties = model.parties.copy(declarantDetails = Some(formData))
-      exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
+      model.copy(parties = updatedParties)
     })
 }

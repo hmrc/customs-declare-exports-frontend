@@ -45,7 +45,7 @@ class ProcedureCodesController @Inject()(
   mcc: MessagesControllerComponents,
   procedureCodesPage: procedure_codes
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId) match {
@@ -67,38 +67,28 @@ class ProcedureCodesController @Inject()(
   def submitProcedureCodes(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
       val boundForm = form().bindFromRequest()
-
       val actionTypeOpt = FormAction.bindFromRequest()
 
-      val cachedData = exportsCacheService
-        .get(journeySessionId)
-        .map(_.flatMap(_.itemBy(itemId)))
-        .map(_.flatMap(_.procedureCodes))
-        .map(_.getOrElse(ProcedureCodesData(None, Seq())))
-
-      cachedData.flatMap { cache =>
-        actionTypeOpt match {
-          case Some(Add) if !boundForm.hasErrors             => addAnotherCodeHandler(itemId, boundForm.get, cache)
-          case Some(SaveAndContinue) if !boundForm.hasErrors => saveAndContinueHandler(itemId, boundForm.get, cache)
-          case Some(Remove(values))                          => removeCodeHandler(itemId, retrieveProcedureCode(values), boundForm, cache)
-          case _                                             => Future.successful(BadRequest(procedureCodesPage(itemId, boundForm, cache.additionalProcedureCodes)))
-        }
+      val cache = request.cacheModel.itemBy(itemId).flatMap(_.procedureCodes).getOrElse(ProcedureCodesData(None, Seq()))
+      actionTypeOpt match {
+        case Some(Add) if !boundForm.hasErrors             => addAnotherCodeHandler(itemId, boundForm.get, cache)
+        case Some(SaveAndContinue) if !boundForm.hasErrors => saveAndContinueHandler(itemId, boundForm.get, cache)
+        case Some(Remove(values))                          => removeCodeHandler(itemId, retrieveProcedureCode(values), boundForm, cache)
+        case _                                             => Future.successful(BadRequest(procedureCodesPage(itemId, boundForm, cache.additionalProcedureCodes)))
       }
   }
 
   private def updateCache(
     itemId: String,
-    sessionId: String,
     updatedProcedureCodes: ProcedureCodesData
-  ): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportsDeclaration(
-      sessionId,
+  )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(
       model => {
         val item: Option[ExportItem] = model.items
           .find(item => item.id.equals(itemId))
           .map(_.copy(procedureCodes = Some(updatedProcedureCodes)))
         val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
-        exportsCacheService.update(sessionId, model.copy(items = itemList))
+        model.copy(items = itemList)
       }
     )
 
@@ -131,10 +121,9 @@ class ProcedureCodesController @Inject()(
           cachedData.additionalProcedureCodes
         )
 
-      case (Some(code), seq) => {
-        updateCache(itemId, journeySessionId, ProcedureCodesData(userInput.procedureCode, seq :+ code))
+      case (Some(code), seq) =>
+        updateCache(itemId, ProcedureCodesData(userInput.procedureCode, seq :+ code))
           .map(_ => Redirect(routes.ProcedureCodesController.displayPage(itemId)))
-      }
 
     }
 
@@ -146,7 +135,7 @@ class ProcedureCodesController @Inject()(
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
     val updatedCache =
       cachedData.copy(additionalProcedureCodes = remove(cachedData.additionalProcedureCodes, (_: String) == code))
-    updateCache(itemId, journeySessionId, updatedCache)
+    updateCache(itemId, updatedCache)
       .map(_ => Ok(procedureCodesPage(itemId, userInput.discardingErrors, updatedCache.additionalProcedureCodes)))
   }
 
@@ -159,7 +148,7 @@ class ProcedureCodesController @Inject()(
       case (procedureCode, Seq()) =>
         procedureCode match {
           case ProcedureCodes(Some(procedureCode), Some(additionalCode)) =>
-            updateCache(itemId, journeySessionId, ProcedureCodesData(Some(procedureCode), Seq(additionalCode)))
+            updateCache(itemId, ProcedureCodesData(Some(procedureCode), Seq(additionalCode)))
               .map(_ => Redirect(routes.FiscalInformationController.displayPage(itemId)))
           case ProcedureCodes(procedureCode, additionalCode) =>
             val procedureCodeError = procedureCode.fold(
@@ -210,7 +199,7 @@ class ProcedureCodesController @Inject()(
               cachedData.additionalProcedureCodes ++ additionalCode.fold(Seq[String]())(Seq(_))
             )
 
-            updateCache(itemId, journeySessionId, updatedCache)
+            updateCache(itemId, updatedCache)
               .map(_ => Redirect(routes.FiscalInformationController.displayPage(itemId)))
         }
     }
@@ -227,7 +216,7 @@ class ProcedureCodesController @Inject()(
   )(implicit request: Request[_]): Future[Result] = {
     val updatedErrors = fieldWithError.map((FormError.apply(_: String, _: String)).tupled)
 
-    val formWithError = form.fill(userInput).copy(errors = updatedErrors)
+    val formWithError = form().fill(userInput).copy(errors = updatedErrors)
 
     Future.successful(BadRequest(procedureCodesPage(itemId, formWithError, additionalProcedureCodes)))
   }

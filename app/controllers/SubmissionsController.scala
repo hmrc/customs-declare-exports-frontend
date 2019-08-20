@@ -18,7 +18,6 @@ package controllers
 
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.AuthAction
-import controllers.declaration.SessionIdAware
 import controllers.util.SubmissionDisplayHelper
 import javax.inject.Inject
 import models.Mode
@@ -50,10 +49,10 @@ class SubmissionsController @Inject()(
   }
 
   def amend(id: String): Action[AnyContent] = authenticate.async { implicit request =>
-    customsDeclareExportsConnector.findDeclaration(request.sessionId, id) flatMap {
+    customsDeclareExportsConnector.findDeclaration(id) flatMap {
       case Some(declaration) =>
         exportsCacheService
-          .update(request.sessionId, declaration)
+          .update(declaration)
           .map(_ => Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.AmendMode)))
       case _ => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
     }

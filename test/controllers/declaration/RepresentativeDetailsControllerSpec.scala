@@ -57,7 +57,7 @@ class RepresentativeDetailsControllerSpec
     "return 200 code" in {
       withNewCaching(supplementaryModel)
 
-      val result = route(app, getRequest(uri, sessionId = supplementaryModel.sessionId)).get
+      val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
       verifyTheCacheIsUnchanged()
@@ -66,7 +66,7 @@ class RepresentativeDetailsControllerSpec
     "not populate the form fields if cache is empty" in {
       withNewCaching(supplementaryModel)
 
-      val result = route(app, getRequest(uri, sessionId = supplementaryModel.sessionId)).get
+      val result = route(app, getRequest(uri)).get
 
       contentAsString(result) mustNot include("checked=\"checked\"")
       verifyTheCacheIsUnchanged()
@@ -79,7 +79,7 @@ class RepresentativeDetailsControllerSpec
       )
       withNewCaching(model)
 
-      val result = route(app, getRequest(uri, sessionId = model.sessionId)).get
+      val result = route(app, getRequest(uri)).get
 
       contentAsString(result) must include("checked=\"checked\"")
     }
@@ -93,7 +93,7 @@ class RepresentativeDetailsControllerSpec
         withNewCaching(supplementaryModel)
 
         val emptyForm = buildRepresentativeDetailsJsonInput(eori = "12345678")
-        val result = route(app, postRequest(uri, emptyForm, sessionId = supplementaryModel.sessionId)).get
+        val result = route(app, postRequest(uri, emptyForm)).get
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(repTypeErrorEmpty))
@@ -104,7 +104,7 @@ class RepresentativeDetailsControllerSpec
         withNewCaching(supplementaryModel)
 
         val emptyForm = buildRepresentativeDetailsJsonInput(status = "2")
-        val result = route(app, postRequest(uri, emptyForm, sessionId = supplementaryModel.sessionId)).get
+        val result = route(app, postRequest(uri, emptyForm)).get
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(eoriOrAddressEmpty))
@@ -118,7 +118,7 @@ class RepresentativeDetailsControllerSpec
         withNewCaching(supplementaryModel)
 
         val incorrectFormData = incorrectRepresentativeDetails
-        val result = route(app, postRequest(uri, incorrectFormData, sessionId = supplementaryModel.sessionId)).get
+        val result = route(app, postRequest(uri, incorrectFormData)).get
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(eoriError))
@@ -129,7 +129,7 @@ class RepresentativeDetailsControllerSpec
         withNewCaching(supplementaryModel)
 
         val incorrectFormData = incorrectRepresentativeDetails
-        val result = route(app, postRequest(uri, incorrectFormData, sessionId = supplementaryModel.sessionId)).get
+        val result = route(app, postRequest(uri, incorrectFormData)).get
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(fullNameError))
@@ -140,7 +140,7 @@ class RepresentativeDetailsControllerSpec
         withNewCaching(supplementaryModel)
 
         val incorrectFormData = incorrectRepresentativeDetails
-        val result = route(app, postRequest(uri, incorrectFormData, sessionId = supplementaryModel.sessionId)).get
+        val result = route(app, postRequest(uri, incorrectFormData)).get
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(addressLineError))
@@ -151,7 +151,7 @@ class RepresentativeDetailsControllerSpec
         withNewCaching(supplementaryModel)
 
         val incorrectFormData = incorrectRepresentativeDetails
-        val result = route(app, postRequest(uri, incorrectFormData, sessionId = supplementaryModel.sessionId)).get
+        val result = route(app, postRequest(uri, incorrectFormData)).get
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(townOrCityError))
@@ -162,7 +162,7 @@ class RepresentativeDetailsControllerSpec
         withNewCaching(supplementaryModel)
 
         val incorrectFormData = incorrectRepresentativeDetails
-        val result = route(app, postRequest(uri, incorrectFormData, sessionId = supplementaryModel.sessionId)).get
+        val result = route(app, postRequest(uri, incorrectFormData)).get
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(postCodeError))
@@ -173,7 +173,7 @@ class RepresentativeDetailsControllerSpec
         withNewCaching(supplementaryModel)
 
         val incorrectFormData = incorrectRepresentativeDetails
-        val result = route(app, postRequest(uri, incorrectFormData, sessionId = supplementaryModel.sessionId)).get
+        val result = route(app, postRequest(uri, incorrectFormData)).get
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(countryError))
@@ -185,7 +185,7 @@ class RepresentativeDetailsControllerSpec
       withNewCaching(supplementaryModel)
       val result = route(
         app,
-        postRequest(uri, correctRepresentativeDetailsEORIOnlyJSON, sessionId = supplementaryModel.sessionId)
+        postRequest(uri, correctRepresentativeDetailsEORIOnlyJSON)
       ).get
 
       status(result) must be(SEE_OTHER)
@@ -196,7 +196,7 @@ class RepresentativeDetailsControllerSpec
     "accept form with status and EORI if on standard journey" in {
       withNewCaching(standardModel)
       val result =
-        route(app, postRequest(uri, correctRepresentativeDetailsEORIOnlyJSON, sessionId = standardModel.sessionId)).get
+        route(app, postRequest(uri, correctRepresentativeDetailsEORIOnlyJSON)).get
 
       status(result) must be(SEE_OTHER)
       redirectLocation(result) must be(Some("/customs-declare-exports/declaration/carrier-details"))
@@ -207,7 +207,7 @@ class RepresentativeDetailsControllerSpec
       withNewCaching(supplementaryModel)
       val result = route(
         app,
-        postRequest(uri, correctRepresentativeDetailsAddressOnlyJSON, sessionId = supplementaryModel.sessionId)
+        postRequest(uri, correctRepresentativeDetailsAddressOnlyJSON)
       ).get
 
       status(result) must be(SEE_OTHER)
@@ -219,7 +219,7 @@ class RepresentativeDetailsControllerSpec
       withNewCaching(standardModel)
       val result = route(
         app,
-        postRequest(uri, correctRepresentativeDetailsAddressOnlyJSON, sessionId = standardModel.sessionId)
+        postRequest(uri, correctRepresentativeDetailsAddressOnlyJSON)
       ).get
 
       status(result) must be(SEE_OTHER)
@@ -234,7 +234,7 @@ class RepresentativeDetailsControllerSpec
       val model = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
       withNewCaching(model)
 
-      route(app, postRequest(uri, correctRepresentativeDetailsJSON, sessionId = model.sessionId)).get.futureValue
+      route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get.futureValue
 
       theCacheModelUpdated.parties.representativeDetails.value must be(correctRepresentativeDetails)
     }
@@ -243,7 +243,7 @@ class RepresentativeDetailsControllerSpec
       "data is correct" in {
         withNewCaching(supplementaryModel)
         val result =
-          route(app, postRequest(uri, correctRepresentativeDetailsJSON, sessionId = supplementaryModel.sessionId)).get
+          route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get
 
         status(result) must be(SEE_OTHER)
         theCacheModelUpdated.parties.representativeDetails must be(Some(correctRepresentativeDetails))
@@ -251,7 +251,7 @@ class RepresentativeDetailsControllerSpec
 
       "data is empty" in {
         withNewCaching(supplementaryModel)
-        val result = route(app, postRequest(uri, Json.obj(), sessionId = supplementaryModel.sessionId)).get
+        val result = route(app, postRequest(uri, Json.obj())).get
 
         status(result) must be(SEE_OTHER)
         theCacheModelUpdated.parties.representativeDetails must be(Some(RepresentativeDetails(None, None)))
@@ -262,7 +262,7 @@ class RepresentativeDetailsControllerSpec
       withNewCaching(supplementaryModel)
 
       val result =
-        route(app, postRequest(uri, correctRepresentativeDetailsJSON, sessionId = supplementaryModel.sessionId)).get
+        route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get
 
       redirectLocation(result) must be(Some("/customs-declare-exports/declaration/additional-actors"))
       theCacheModelUpdated.parties.representativeDetails must be(Some(correctRepresentativeDetails))
@@ -272,7 +272,7 @@ class RepresentativeDetailsControllerSpec
       withNewCaching(standardModel)
 
       val result =
-        route(app, postRequest(uri, correctRepresentativeDetailsJSON, sessionId = standardModel.sessionId)).get
+        route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get
 
       redirectLocation(result) must be(Some("/customs-declare-exports/declaration/carrier-details"))
       theCacheModelUpdated.parties.representativeDetails must be(Some(correctRepresentativeDetails))

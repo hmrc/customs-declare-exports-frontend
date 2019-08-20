@@ -46,7 +46,7 @@ trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator with
   implicit lazy val flash: Flash = new Flash()
 
   def fakeJourneyRequest(choice: String): JourneyRequest[AnyContentAsEmpty.type] = {
-    val cache = ExportsDeclaration(None, DeclarationStatus.COMPLETE, "sessionId", Instant.now(), Instant.now(), choice)
+    val cache = ExportsDeclaration(None, DeclarationStatus.COMPLETE, Instant.now(), Instant.now(), choice)
     JourneyRequest(AuthenticatedRequest(fakeRequest, ExportsTestData.newUser("", "")), cache)
   }
 

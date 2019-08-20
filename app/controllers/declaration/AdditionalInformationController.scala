@@ -43,7 +43,7 @@ class AdditionalInformationController @Inject()(
   mcc: MessagesControllerComponents,
   additionalInformationPage: additional_information
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   val elementLimit = 99
 
@@ -54,24 +54,19 @@ class AdditionalInformationController @Inject()(
     }
   }
 
-  def saveAdditionalInfo(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
-    implicit request =>
+  def saveAdditionalInfo(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
       val boundForm = form().bindFromRequest()
-
       val actionTypeOpt = FormAction.bindFromRequest()
 
-      val cachedData = exportsCacheService
-        .get(journeySessionId)
-        .map(_.flatMap(_.itemBy(itemId)))
-        .map(_.flatMap(_.additionalInformation).getOrElse(AdditionalInformationData(Seq())))
+      val cache = request.cacheModel
+        .itemBy(itemId)
+        .flatMap(_.additionalInformation).getOrElse(AdditionalInformationData(Seq()))
 
-      cachedData.flatMap { cache =>
-        actionTypeOpt match {
-          case Some(Add)             => handleAdd(itemId, boundForm, cache.items)
-          case Some(Remove(ids))     => handleRemove(itemId, ids, boundForm, cache.items)
-          case Some(SaveAndContinue) => handleSaveAndContinue(itemId, boundForm, cache.items)
-          case _                     => errorHandler.displayErrorPage()
-        }
+      actionTypeOpt match {
+        case Some(Add)             => handleAdd(itemId, boundForm, cache.items)
+        case Some(Remove(ids))     => handleRemove(itemId, ids, boundForm, cache.items)
+        case Some(SaveAndContinue) => handleSaveAndContinue(itemId, boundForm, cache.items)
+        case _                     => errorHandler.displayErrorPage()
       }
   }
 
@@ -83,7 +78,7 @@ class AdditionalInformationController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(additionalInformationPage(itemId, formWithErrors, cachedData))),
         updatedCache =>
-          updateCache(itemId, journeySessionId, AdditionalInformationData(updatedCache))
+          updateCache(itemId, AdditionalInformationData(updatedCache))
             .map(_ => Redirect(controllers.declaration.routes.AdditionalInformationController.displayPage(itemId)))
       )
 
@@ -98,7 +93,7 @@ class AdditionalInformationController @Inject()(
         formWithErrors => Future.successful(BadRequest(additionalInformationPage(itemId, formWithErrors, cachedData))),
         updatedCache =>
           if (updatedCache != cachedData)
-            updateCache(itemId, journeySessionId, AdditionalInformationData(updatedCache))
+            updateCache(itemId, AdditionalInformationData(updatedCache))
               .map(_ => Redirect(controllers.declaration.routes.DocumentsProducedController.displayPage(itemId)))
           else
             Future.successful(Redirect(controllers.declaration.routes.DocumentsProducedController.displayPage(itemId)))
@@ -111,24 +106,22 @@ class AdditionalInformationController @Inject()(
     items: Seq[AdditionalInformation]
   )(implicit request: JourneyRequest[_]): Future[Result] = {
     val updatedCache = remove(items, (addItem: AdditionalInformation) => addItem.toString == ids.head)
-    updateCache(itemId, journeySessionId, AdditionalInformationData(updatedCache))
+    updateCache(itemId, AdditionalInformationData(updatedCache))
       .map(_ => Ok(additionalInformationPage(itemId, boundForm.discardingErrors, updatedCache)))
   }
 
   private def updateCache(
     itemId: String,
-    sessionId: String,
     updatedAdditionalInformation: AdditionalInformationData
-  ): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportsDeclaration(
-      sessionId,
+  )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(
       model => {
         val itemList = model.items
           .find(item => item.id.equals(itemId))
           .map(_.copy(additionalInformation = Some(updatedAdditionalInformation)))
           .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
 
-        exportsCacheService.update(sessionId, model.copy(items = itemList))
+        model.copy(items = itemList)
       }
     )
 }

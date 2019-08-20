@@ -45,7 +45,7 @@ class DocumentsProducedController @Inject()(
   mcc: MessagesControllerComponents,
   documentProducedPage: documents_produced
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.documentsProducedData).map(_.documents) match {
@@ -106,7 +106,7 @@ class DocumentsProducedController @Inject()(
 
   private def updateModelInCache(itemId: String, document: DocumentsProduced, updatedDocs: DocumentsProducedData)(
     implicit journeyRequest: JourneyRequest[_]
-  ) = updateCache(itemId, journeySessionId, updatedDocs)
+  ) = updateCache(itemId, updatedDocs)
 
   private def addItem(itemId: String, userInput: DocumentsProduced, cachedData: DocumentsProducedData)(
     implicit request: JourneyRequest[_],
@@ -131,7 +131,7 @@ class DocumentsProducedController @Inject()(
 
       case (document, documents) =>
         if (document.isDefined) {
-          updateCache(itemId, journeySessionId, DocumentsProducedData(documents :+ document))
+          updateCache(itemId, DocumentsProducedData(documents :+ document))
             .map(_ => Redirect(routes.DocumentsProducedController.displayPage(itemId)))
         } else
           handleErrorPage(
@@ -151,7 +151,7 @@ class DocumentsProducedController @Inject()(
     val itemToRemove = DocumentsProduced.fromJsonString(values.head)
     val updatedCache =
       cachedData.copy(documents = remove(cachedData.documents, itemToRemove.contains(_: DocumentsProduced)))
-    updateCache(itemId, journeySessionId, updatedCache).map(
+    updateCache(itemId, updatedCache).map(
       _ => Ok(documentProducedPage(itemId, boundForm.discardingErrors, updatedCache.documents))
     )
   }
@@ -171,17 +171,15 @@ class DocumentsProducedController @Inject()(
 
   private def updateCache(
     itemId: String,
-    sessionId: String,
     updatedData: DocumentsProducedData
-  ): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportsDeclaration(
-      sessionId,
+  )(implicit req: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(
       model => {
         val item: Option[ExportItem] = model.items
           .find(item => item.id.equals(itemId))
           .map(_.copy(documentsProducedData = Some(updatedData)))
         val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
-        exportsCacheService.update(sessionId, model.copy(items = itemList))
+        model.copy(items = itemList)
       }
     )
 }

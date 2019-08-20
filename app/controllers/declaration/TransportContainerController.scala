@@ -45,12 +45,12 @@ class TransportContainerController @Inject()(
   mcc: MessagesControllerComponents,
   transportContainersPage: add_transport_containers
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.containerData match {
-      case Some(data) => Ok(transportContainersPage(form, data.containers))
-      case _          => Ok(transportContainersPage(form, Seq()))
+      case Some(data) => Ok(transportContainersPage(form(), data.containers))
+      case _          => Ok(transportContainersPage(form(), Seq()))
     }
   }
 
@@ -58,18 +58,13 @@ class TransportContainerController @Inject()(
     val boundForm = form().bindFromRequest()
     val actionTypeOpt = FormAction.bindFromRequest()
 
-    val cachedData = exportsCacheService
-      .get(journeySessionId)
-      .map(_.flatMap(_.containerData))
-      .map(_.getOrElse(TransportInformationContainerData(Seq())))
+    val cache = request.cacheModel.containerData.getOrElse(TransportInformationContainerData(Seq()))
 
-    cachedData.flatMap { cache =>
       actionTypeOpt match {
-        case Some(Add)             => addContainer(boundForm, maxNumberOfItems, cache)
-        case Some(Remove(ids))     => removeContainer(boundForm, cache, ids)
-        case Some(SaveAndContinue) => saveContainer(boundForm, maxNumberOfItems, cache)
-        case _                     => errorHandler.displayErrorPage()
-      }
+      case Some(Add)             => addContainer(boundForm, maxNumberOfItems, cache)
+      case Some(Remove(ids))     => removeContainer(boundForm, cache, ids)
+      case Some(SaveAndContinue) => saveContainer(boundForm, maxNumberOfItems, cache)
+      case _                     => errorHandler.displayErrorPage()
     }
   }
 
@@ -82,7 +77,7 @@ class TransportContainerController @Inject()(
       formWithErrors => Future.successful(BadRequest(transportContainersPage(formWithErrors, cache.containers))),
       updatedCache =>
         if (updatedCache != cache.containers)
-          updateCache(journeySessionId, TransportInformationContainerData(updatedCache))
+          updateCache(TransportInformationContainerData(updatedCache))
             .map(_ => redirect())
         else Future.successful(redirect())
     )
@@ -99,7 +94,7 @@ class TransportContainerController @Inject()(
     val updatedCache = remove(cache.containers, { container: TransportInformationContainer =>
       ids.contains(container.id)
     })
-    updateCache(journeySessionId, TransportInformationContainerData(updatedCache)).map { _ =>
+    updateCache(TransportInformationContainerData(updatedCache)).map { _ =>
       Ok(transportContainersPage(userInput.discardingErrors, updatedCache))
     }
   }
@@ -112,16 +107,14 @@ class TransportContainerController @Inject()(
     add(boundForm, cache.containers, elementLimit).fold(
       formWithErrors => Future.successful(BadRequest(transportContainersPage(formWithErrors, cache.containers))),
       updatedCache =>
-        updateCache(journeySessionId, TransportInformationContainerData(updatedCache))
+        updateCache(TransportInformationContainerData(updatedCache))
           .map(_ => Redirect(routes.TransportContainerController.displayPage()))
     )
 
   private def updateCache(
-    sessionId: String,
     formData: TransportInformationContainerData
-  ): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportsDeclaration(
-      sessionId,
-      model => exportsCacheService.update(sessionId, model.copy(containerData = Some(formData)))
+  )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(
+      model => model.copy(containerData = Some(formData))
     )
 }
