@@ -19,8 +19,8 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import forms.declaration.ConsigneeDetails
 import javax.inject.Inject
-import models.requests.JourneyRequest
 import models.ExportsDeclaration
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -40,7 +40,7 @@ class ConsigneeDetailsController @Inject()(
   mcc: MessagesControllerComponents,
   consigneeDetailsPage: consignee_details
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.parties.consigneeDetails match {
@@ -50,21 +50,22 @@ class ConsigneeDetailsController @Inject()(
   }
 
   def saveAddress(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    ConsigneeDetails.form
+    ConsigneeDetails
+      .form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ConsigneeDetails]) => Future.successful(BadRequest(consigneeDetailsPage(formWithErrors))),
         form =>
-          updateCache(journeySessionId, form)
+          updateCache(form)
             .map(_ => Redirect(controllers.declaration.routes.DeclarantDetailsController.displayForm()))
       )
   }
 
-  private def updateCache(sessionId: String, formData: ConsigneeDetails)(
-    implicit request: JourneyRequest[_]
-  ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclaration { model =>
+  private def updateCache(
+    formData: ConsigneeDetails
+  )(implicit request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect { model =>
       val updatedParties = model.parties.copy(consigneeDetails = Some(formData))
-      exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
+      model.copy(parties = updatedParties)
     }
 }

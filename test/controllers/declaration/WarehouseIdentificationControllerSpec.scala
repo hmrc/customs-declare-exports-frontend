@@ -37,7 +37,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
     "validate request and redirect - no answers" in {
 
       val result =
-        route(app, postRequest(uri, emptyWarehouseIdentificationJSON, sessionId = exampleModel.sessionId)).get
+        route(app, postRequest(uri, emptyWarehouseIdentificationJSON)).get
 
       status(result) must be(SEE_OTHER)
 
@@ -48,7 +48,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
     "validate request and redirect - correct values" in {
 
       val result =
-        route(app, postRequest(uri, correctWarehouseIdentificationJSON, sessionId = exampleModel.sessionId)).get
+        route(app, postRequest(uri, correctWarehouseIdentificationJSON)).get
 
       status(result) must be(SEE_OTHER)
 

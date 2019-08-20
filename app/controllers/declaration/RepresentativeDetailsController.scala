@@ -38,7 +38,7 @@ class RepresentativeDetailsController @Inject()(
   mcc: MessagesControllerComponents,
   representativeDetailsPage: representative_details
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayRepresentativeDetailsPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.parties.representativeDetails match {
@@ -48,7 +48,7 @@ class RepresentativeDetailsController @Inject()(
   }
 
   def submitRepresentativeDetails(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    RepresentativeDetails.form
+    RepresentativeDetails.form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[RepresentativeDetails]) =>

@@ -37,7 +37,7 @@ class FiscalInformationController @Inject()(
   mcc: MessagesControllerComponents,
   fiscalInformationPage: fiscal_information
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId) match {
@@ -57,11 +57,11 @@ class FiscalInformationController @Inject()(
           formData =>
             formData.onwardSupplyRelief match {
               case FiscalInformation.AllowedFiscalInformationAnswers.yes =>
-                updateCacheForYes(itemId, journeySessionId, formData) map { _ =>
+                updateCacheForYes(itemId, formData) map { _ =>
                   Redirect(routes.AdditionalFiscalReferencesController.displayPage(itemId))
                 }
               case FiscalInformation.AllowedFiscalInformationAnswers.no =>
-                updateCacheForNo(itemId, journeySessionId, formData) map { _ =>
+                updateCacheForNo(itemId, formData) map { _ =>
                   Redirect(routes.ItemTypeController.displayPage(itemId))
                 }
           }
@@ -69,33 +69,30 @@ class FiscalInformationController @Inject()(
   }
 
   //TODO Use one method instead of updateCacheForYes and updateCacheForNo
-  private def updateCacheForYes(itemId: String, sessionId: String, updatedFiscalInformation: FiscalInformation)(
+  private def updateCacheForYes(itemId: String, updatedFiscalInformation: FiscalInformation)(
     implicit req: JourneyRequest[_]
   ): Future[Unit] =
-    getAndUpdateExportsDeclaration(
-      sessionId,
+    updateExportsDeclarationSyncDirect(
       model => {
         val itemList = model.items
           .find(item => item.id.equals(itemId))
           .map(_.copy(fiscalInformation = Some(updatedFiscalInformation)))
           .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
-
-        exportsCacheService.update(sessionId, model.copy(items = itemList))
+        model.copy(items = itemList)
       }
     ).map(_ => ())
 
-  private def updateCacheForNo(itemId: String, sessionId: String, updatedFiscalInformation: FiscalInformation)(
+  private def updateCacheForNo(itemId: String, updatedFiscalInformation: FiscalInformation)(
     implicit req: JourneyRequest[_]
   ): Future[Unit] =
-    getAndUpdateExportsDeclaration(
-      sessionId,
+    updateExportsDeclarationSyncDirect(
       model => {
         val itemList = model.items
           .find(item => item.id.equals(itemId))
           .map(_.copy(fiscalInformation = Some(updatedFiscalInformation), additionalFiscalReferencesData = None))
           .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
 
-        exportsCacheService.update(sessionId, model.copy(items = itemList))
+        model.copy(items = itemList)
       }
     ).map(_ => ())
 

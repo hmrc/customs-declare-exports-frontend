@@ -24,5 +24,5 @@ case class JourneyRequest[A](authenticatedRequest: AuthenticatedRequest[A], cach
     extends WrappedRequest[A](authenticatedRequest) {
   val choice: Choice = Choice(cacheModel.choice)
 
-  def journeySessionId: String = authenticatedRequest.sessionId
+  def declarationId: String = authenticatedRequest.declarationId.getOrElse(throw new IllegalAccessError)
 }

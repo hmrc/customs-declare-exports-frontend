@@ -78,7 +78,6 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
     status = status,
     createdDateTime = createdDate,
     updatedDateTime = updatedDate,
-    sessionId = sessionId,
     choice = choice,
     dispatchLocation = Some(dispatchLocation),
     additionalDeclarationType = Some(additionalDeclarationType),
@@ -97,7 +96,7 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
 
   "Request" should {
     "map to ExportsDeclaration" in {
-      request.toExportsDeclaration(sessionId) shouldBe declaration
+      request.toExportsDeclaration shouldBe declaration
     }
 
     "map from ExportsDeclaration" in {

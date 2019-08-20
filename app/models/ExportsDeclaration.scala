@@ -28,7 +28,6 @@ import services.cache.ExportItem
 case class ExportsDeclaration(
   id: Option[String] = None,
   status: DeclarationStatus = DeclarationStatus.COMPLETE,
-  sessionId: String,
   createdDateTime: Instant,
   updatedDateTime: Instant,
   choice: String,

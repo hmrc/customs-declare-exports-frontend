@@ -54,7 +54,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
         ExportsDeclarationExchange(declaration)
       )
       .map(logPayload("Create Declaration Response", _))
-      .map(_.toExportsDeclaration(declaration.sessionId))
+      .map(_.toExportsDeclaration)
   }
 
   def updateDeclaration(
@@ -68,11 +68,10 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
         ExportsDeclarationExchange(declaration)
       )
       .map(logPayload("Update Declaration Response", _))
-      .map(_.toExportsDeclaration(declaration.sessionId))
+      .map(_.toExportsDeclaration)
   }
 
   def findDeclarations(
-    sessionId: String,
     page: Page
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
     val pagination = Page.bindable.unbind("page", page)
@@ -80,16 +79,15 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
       .GET[Paginated[ExportsDeclarationExchange]](
         s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}?$pagination"
       )
-      .map(_.map(_.toExportsDeclaration(sessionId)))
+      .map(_.map(_.toExportsDeclaration))
   }
 
   def findDeclaration(
-    sessionId: String,
     id: String
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ExportsDeclaration]] =
     httpClient
       .GET[Option[ExportsDeclarationExchange]](s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}/$id")
-      .map(_.map(_.toExportsDeclaration(sessionId)))
+      .map(_.map(_.toExportsDeclaration))
 
   def findSubmission(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Submission]] =
     httpClient
@@ -103,13 +101,6 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
 
   def fetchNotifications()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
     httpClient.GET[Seq[Notification]](s"${appConfig.customsDeclareExports}${appConfig.fetchNotifications}")
-
-  def fetchNotificationsByMrn(
-    mrn: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
-    httpClient.GET[Seq[Notification]](
-      s"${appConfig.customsDeclareExports}${appConfig.fetchSubmissionNotifications}/$mrn"
-    )
 
   def fetchSubmissions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Submission]] =
     httpClient.GET[Seq[Submission]](s"${appConfig.customsDeclareExports}${appConfig.fetchSubmissions}").map {

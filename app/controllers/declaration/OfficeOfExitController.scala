@@ -41,7 +41,7 @@ class OfficeOfExitController @Inject()(
   officeOfExitStandardPage: office_of_exit_standard,
   override val exportsCacheService: ExportsCacheService
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
   import forms.declaration.officeOfExit.OfficeOfExitForms._
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
@@ -53,14 +53,14 @@ class OfficeOfExitController @Inject()(
 
   private def supplementaryPage()(implicit request: JourneyRequest[_]): Html =
     request.cacheModel.locations.officeOfExit match {
-      case Some(data) => officeOfExitSupplementaryPage(supplementaryForm.fill(OfficeOfExitSupplementary(data)))
-      case _          => officeOfExitSupplementaryPage(supplementaryForm)
+      case Some(data) => officeOfExitSupplementaryPage(supplementaryForm().fill(OfficeOfExitSupplementary(data)))
+      case _          => officeOfExitSupplementaryPage(supplementaryForm())
     }
 
   private def standardPage()(implicit request: JourneyRequest[_], hc: HeaderCarrier): Html =
     request.cacheModel.locations.officeOfExit match {
-      case Some(data) => officeOfExitStandardPage(standardForm.fill(OfficeOfExitStandard(data)))
-      case _          => officeOfExitStandardPage(standardForm)
+      case Some(data) => officeOfExitStandardPage(standardForm().fill(OfficeOfExitStandard(data)))
+      case _          => officeOfExitStandardPage(standardForm())
     }
 
   def saveOffice(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -71,18 +71,18 @@ class OfficeOfExitController @Inject()(
   }
 
   private def saveSupplementaryOffice()(implicit request: JourneyRequest[_]): Future[Result] =
-    supplementaryForm
+    supplementaryForm()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[OfficeOfExitSupplementary]) =>
           Future.successful(BadRequest(officeOfExitSupplementaryPage(formWithErrors))),
         form =>
-          updateCache(journeySessionId, form)
+          updateCache(form)
             .map(_ => Redirect(controllers.declaration.routes.TotalNumberOfItemsController.displayForm()))
       )
 
   private def saveStandardOffice()(implicit request: JourneyRequest[_]): Future[Result] =
-    standardForm
+    standardForm()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[OfficeOfExitStandard]) => {
@@ -91,27 +91,19 @@ class OfficeOfExitController @Inject()(
           Future.successful(BadRequest(officeOfExitStandardPage(formWithAdjustedErrors)))
         },
         form =>
-          updateCache(journeySessionId, form)
+          updateCache(form)
             .map(_ => Redirect(controllers.declaration.routes.TotalNumberOfItemsController.displayForm()))
       )
 
-  private def updateCache(sessionId: String, formData: OfficeOfExitSupplementary): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportsDeclaration(
-      sessionId,
+  private def updateCache(formData: OfficeOfExitSupplementary)(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(
       model =>
-        exportsCacheService.update(
-          sessionId,
-          model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData))))
-      )
+        model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData))))
     )
 
-  private def updateCache(sessionId: String, formData: OfficeOfExitStandard): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportsDeclaration(
-      sessionId,
+  private def updateCache(formData: OfficeOfExitStandard)(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(
       model =>
-        exportsCacheService.update(
-          sessionId,
-          model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData))))
-      )
+        model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData))))
     )
 }

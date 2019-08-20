@@ -19,11 +19,12 @@ package controllers
 import java.time.Instant
 
 import controllers.actions.AuthAction
-import controllers.declaration.{ModelCacheable, SessionIdAware}
+import controllers.declaration.ModelCacheable
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import forms.Choice._
 import javax.inject.Inject
+import models.requests.ExportsSessionKeys
 import models.{DeclarationStatus, ExportsDeclaration}
 import play.api.Logger
 import play.api.data.Form
@@ -41,15 +42,20 @@ class ChoiceController @Inject()(
   mcc: MessagesControllerComponents,
   choicePage: choice_page
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   val logger = Logger.apply(this.getClass)
 
   def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
-    exportsCacheService.get(request.session.data("sessionId")).map(_.map(_.choice)).map {
-      case Some(data) => Ok(choicePage(Choice.form().fill(Choice(data))))
-      case _          => Ok(choicePage(Choice.form()))
+    request.declarationId match {
+      case Some(id) =>
+        exportsCacheService.get(id).map(_.map(_.choice)).map {
+          case Some(data) => Ok(choicePage(Choice.form().fill(Choice(data))))
+          case _          => Ok(choicePage(Choice.form()))
+        }
+      case None => Future.successful(Ok(choicePage(Choice.form())))
     }
+
   }
 
   def submitChoice(): Action[AnyContent] = authenticate.async { implicit request =>
@@ -57,29 +63,26 @@ class ChoiceController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[Choice]) => Future.successful(BadRequest(choicePage(formWithErrors))),
-        validChoice => {
-          exportsCacheService
-            .update(
-              authenticatedSessionId,
-              ExportsDeclaration(
-                None,
-                DeclarationStatus.DRAFT,
-                authenticatedSessionId,
-                createdDateTime = Instant.now,
-                updatedDateTime = Instant.now,
-                validChoice.value
-              )
-            )
-            .map(_ => {
-              validChoice.value match {
-                case SupplementaryDec | StandardDec =>
-                  Redirect(controllers.declaration.routes.DispatchLocationController.displayPage())
-                case CancelDec =>
-                  Redirect(controllers.routes.CancelDeclarationController.displayForm())
-                case Submissions =>
-                  Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
+        choice =>
+          choice.value match {
+            case SupplementaryDec | StandardDec =>
+              exportsCacheService
+                .create(
+                  ExportsDeclaration(
+                    None,
+                    DeclarationStatus.DRAFT,
+                    createdDateTime = Instant.now,
+                    updatedDateTime = Instant.now,
+                    choice.value
+                  )
+                ) map { created =>
+                Redirect(controllers.declaration.routes.DispatchLocationController.displayPage())
+                  .addingToSession(ExportsSessionKeys.declarationId -> created.id.get)
               }
-            })
+            case CancelDec =>
+              Future.successful(Redirect(controllers.routes.CancelDeclarationController.displayForm()))
+            case Submissions =>
+              Future.successful(Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions()))
         }
       )
   }

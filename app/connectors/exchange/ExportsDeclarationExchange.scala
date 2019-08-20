@@ -46,9 +46,8 @@ case class ExportsDeclarationExchange(
   natureOfTransaction: Option[NatureOfTransaction] = None,
   seals: Seq[Seal] = Seq.empty
 ) {
-  def toExportsDeclaration(sessionId: String): ExportsDeclaration = ExportsDeclaration(
+  def toExportsDeclaration: ExportsDeclaration = ExportsDeclaration(
     id = this.id,
-    sessionId = sessionId,
     status = this.status,
     createdDateTime = this.createdDateTime,
     updatedDateTime = this.updatedDateTime,

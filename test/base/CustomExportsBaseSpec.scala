@@ -24,9 +24,10 @@ import config.AppConfig
 import connectors.{CustomsDeclareExportsConnector, NrsConnector}
 import controllers.actions.FakeAuthAction
 import metrics.ExportsMetrics
+import models.requests.ExportsSessionKeys
 import models.{ExportsDeclaration, NrsSubmissionResponse}
 import org.joda.time.DateTime
-import org.mockito.ArgumentMatchers.{eq => eqRef, any}
+import org.mockito.ArgumentMatchers.{any, eq => eqRef}
 import org.mockito.Mockito.when
 import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.BeforeAndAfterEach
@@ -119,10 +120,10 @@ trait CustomExportsBaseSpec
   protected def getRequest(
     uri: String,
     headers: Map[String, String] = Map.empty,
-    sessionId: String = s"session-${UUID.randomUUID()}"
+    declarationId: String = "declarationId"
   ): Request[AnyContentAsEmpty.type] = {
     val session: Map[String, String] = Map(
-      SessionKeys.sessionId -> sessionId,
+      ExportsSessionKeys.declarationId -> declarationId,
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
 
@@ -135,11 +136,11 @@ trait CustomExportsBaseSpec
   protected def postRequest(
     uri: String,
     body: JsValue,
-    sessionId: String = s"session-${UUID.randomUUID()}",
+    declarationId: String = "declarationId",
     headers: Map[String, String] = Map.empty
   ): Request[AnyContentAsJson] = {
     val session: Map[String, String] = Map(
-      SessionKeys.sessionId -> sessionId,
+      ExportsSessionKeys.declarationId -> declarationId,
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
 
@@ -150,11 +151,11 @@ trait CustomExportsBaseSpec
       .withCSRFToken
   }
 
-  protected def postRequestFormUrlEncoded(uri: String, sessionId: String = s"session-${UUID.randomUUID()}".toString)(
+  protected def postRequestFormUrlEncoded(uri: String, declarationId: String = "declarationId")(
     body: (String, String)*
   ): Request[AnyContentAsFormUrlEncoded] = {
     val session: Map[String, String] = Map(
-      SessionKeys.sessionId -> sessionId,
+      ExportsSessionKeys.declarationId -> declarationId,
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
 
@@ -169,24 +170,24 @@ trait CustomExportsBaseSpec
   override def withNewCaching(dataToReturn: ExportsDeclaration) {
     when(
       mockExportsCacheService
-        .update(eqRef(dataToReturn.sessionId), any[ExportsDeclaration])
+        .update(any[ExportsDeclaration])(any())
     ).thenReturn(Future.successful(Some(dataToReturn)))
 
     when(
       mockExportsCacheService
-        .get(eqRef(dataToReturn.sessionId))
+        .get(any())(any())
     ).thenReturn(Future.successful(Some(dataToReturn)))
   }
 
   def withNewCaching() {
     when(
       mockExportsCacheService
-        .update(any[String], any[ExportsDeclaration])
+        .update(any[ExportsDeclaration])(any())
     ).thenReturn(Future.successful(None))
 
     when(
       mockExportsCacheService
-        .get(any[String])
+        .get(any[String])(any())
     ).thenReturn(Future.successful(None))
   }
 

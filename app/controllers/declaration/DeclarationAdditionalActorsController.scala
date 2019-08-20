@@ -45,7 +45,7 @@ class DeclarationAdditionalActorsController @Inject()(
   mcc: MessagesControllerComponents,
   declarationAdditionalActorsPage: declaration_additional_actors
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   private val exceedMaximumNumberError = "supplementary.additionalActors.maximumAmount.error"
   private val duplicateActorError = "supplementary.additionalActors.duplicated.error"
@@ -61,20 +61,13 @@ class DeclarationAdditionalActorsController @Inject()(
     val boundForm = form().bindFromRequest()
     val actionTypeOpt = FormAction.bindFromRequest()
 
-    val cachedData = exportsCacheService
-      .get(journeySessionId)
-      .map(
-        _.flatMap(_.parties.declarationAdditionalActorsData)
-          .getOrElse(DeclarationAdditionalActorsData(Seq()))
-      )
+    val cache = request.cacheModel.parties.declarationAdditionalActorsData.getOrElse(DeclarationAdditionalActorsData(Seq()))
 
-    cachedData.flatMap { cache =>
-      actionTypeOpt match {
-        case Some(Add) if !boundForm.hasErrors             => addItem(boundForm.get, cache)
-        case Some(SaveAndContinue) if !boundForm.hasErrors => saveAndContinue(boundForm.get, cache)
-        case Some(Remove(values))                          => removeItem(retrieveItem(values.headOption.get), boundForm, cache)
-        case _                                             => Future.successful(BadRequest(declarationAdditionalActorsPage(boundForm, cache.actors)))
-      }
+    actionTypeOpt match {
+      case Some(Add) if !boundForm.hasErrors             => addItem(boundForm.get, cache)
+      case Some(SaveAndContinue) if !boundForm.hasErrors => saveAndContinue(boundForm.get, cache)
+      case Some(Remove(values))                          => removeItem(retrieveItem(values.headOption.get), boundForm, cache)
+      case _                                             => Future.successful(BadRequest(declarationAdditionalActorsPage(boundForm, cache.actors)))
     }
   }
 
@@ -92,7 +85,7 @@ class DeclarationAdditionalActorsController @Inject()(
       case (actor, actors) =>
         if (actor.isDefined) {
           val updatedCache = DeclarationAdditionalActorsData(actors :+ actor)
-          updateCache(journeySessionId, updatedCache)
+          updateCache(updatedCache)
             .map(_ => Redirect(routes.DeclarationAdditionalActorsController.displayForm()))
         } else
           handleErrorPage(
@@ -115,12 +108,11 @@ class DeclarationAdditionalActorsController @Inject()(
   }
 
   private def updateCache(
-    sessionId: String,
     formData: DeclarationAdditionalActorsData
-  ): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportsDeclaration(sessionId, model => {
+  )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => {
       val updatedParties = model.parties.copy(declarationAdditionalActorsData = Some(formData))
-      exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
+      model.copy(parties = updatedParties)
     })
 
   private def retrieveItem(value: String): Option[DeclarationAdditionalActors] =
@@ -152,7 +144,7 @@ class DeclarationAdditionalActorsController @Inject()(
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     if (actor.isDefined) {
       val updatedCache = DeclarationAdditionalActorsData(actors :+ actor)
-      updateCache(journeySessionId, updatedCache).map(_ => Redirect(routes.DeclarationHolderController.displayForm()))
+      updateCache(updatedCache).map(_ => Redirect(routes.DeclarationHolderController.displayForm()))
     } else Future.successful(Redirect(routes.DeclarationHolderController.displayForm()))
 
   private def removeItem(
@@ -162,7 +154,7 @@ class DeclarationAdditionalActorsController @Inject()(
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
     val updatedCache =
       cachedData.copy(actors = remove(cachedData.actors, actorToRemove.contains(_: DeclarationAdditionalActors)))
-    updateCache(journeySessionId, updatedCache)
+    updateCache(updatedCache)
       .map(_ => Ok(declarationAdditionalActorsPage(formData.discardingErrors, updatedCache.actors)))
   }
 }

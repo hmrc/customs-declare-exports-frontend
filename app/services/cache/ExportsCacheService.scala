@@ -16,25 +16,27 @@
 
 package services.cache
 
-import java.time.Instant
+import java.time.{Clock, Instant}
 
+import connectors.CustomsDeclareExportsConnector
 import javax.inject.{Inject, Singleton}
 import models.ExportsDeclaration
-import reactivemongo.play.json.collection.JSONBatchCommands.FindAndModifyCommand
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ExportsCacheService @Inject()(journeyCacheModelRepo: ExportsDeclarationRepository)(
+class ExportsCacheService @Inject()(connector: CustomsDeclareExportsConnector)(
   implicit ec: ExecutionContext
 ) {
 
-  def get(sessionId: String): Future[Option[ExportsDeclaration]] = journeyCacheModelRepo.get(sessionId)
+  def create(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] = connector.createDeclaration(declaration)
 
-  def update(sessionId: String, model: ExportsDeclaration): Future[Option[ExportsDeclaration]] =
-    journeyCacheModelRepo.upsert(sessionId, model.copy(updatedDateTime = Instant.now()))
+  def update(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[Option[ExportsDeclaration]] = {
+    val declarationWithUpdatedTimestamp = declaration.copy(updatedDateTime = Instant.now())
+    connector.updateDeclaration(declarationWithUpdatedTimestamp).map(Some(_))
+  }
 
-  def remove(sessionId: String): Future[Unit] =
-    journeyCacheModelRepo.remove(sessionId).map(_ => (): Unit)
+  def get(id: String)(implicit hc: HeaderCarrier): Future[Option[ExportsDeclaration]] = connector.findDeclaration(id)
 
 }

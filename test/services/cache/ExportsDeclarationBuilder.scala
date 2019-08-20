@@ -45,7 +45,6 @@ trait ExportsDeclarationBuilder {
   private def uuid: String = UUID.randomUUID().toString
 
   private val modelWithDefaults: ExportsDeclaration = ExportsDeclaration(
-    sessionId = uuid,
     createdDateTime = LocalDateTime.of(2019, 1, 1, 0, 0, 0).toInstant(ZoneOffset.UTC),
     updatedDateTime = LocalDateTime.of(2019, 2, 2, 0, 0, 0).toInstant(ZoneOffset.UTC),
     choice = Choice.AllowedChoiceValues.StandardDec
@@ -63,8 +62,6 @@ trait ExportsDeclarationBuilder {
   def withoutId(): ExportsDeclarationModifier = _.copy(id = None)
 
   def withStatus(status: DeclarationStatus): ExportsDeclarationModifier = _.copy(status = status)
-
-  def withSessionId(id: String = uuid): ExportsDeclarationModifier = _.copy(sessionId = id)
 
   def withChoice(choice: String): ExportsDeclarationModifier = _.copy(choice = choice)
 

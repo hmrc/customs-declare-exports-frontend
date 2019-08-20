@@ -37,19 +37,19 @@ class WarehouseIdentificationController @Inject()(
   mcc: MessagesControllerComponents,
   warehouseIdentificationPage: warehouse_identification
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   import forms.declaration.WarehouseIdentification._
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.locations.warehouseIdentification match {
-      case Some(data) => Ok(warehouseIdentificationPage(form.fill(data)))
-      case _          => Ok(warehouseIdentificationPage(form))
+      case Some(data) => Ok(warehouseIdentificationPage(form().fill(data)))
+      case _          => Ok(warehouseIdentificationPage(form()))
     }
   }
 
   def saveWarehouse(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form
+    form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[WarehouseIdentification]) =>
