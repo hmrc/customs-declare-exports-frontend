@@ -56,7 +56,7 @@ class DeclarantDetailsController @Inject()(
             .map(
               _ =>
                 Redirect(
-                  controllers.declaration.routes.RepresentativeDetailsController.displayRepresentativeDetailsPage()
+                  controllers.declaration.routes.RepresentativeDetailsController.displayPage()
               )
           )
       )
