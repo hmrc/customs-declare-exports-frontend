@@ -14,8 +14,10 @@
  * limitations under the License.
  *@
 
+@import java.time.ZoneId
 @import controllers.routes._
 @import forms.CancelDeclaration
+@import views.ViewDates
 @import uk.gov.hmrc.play.views.html._
 
 @import views.components.inputs.RadioOption
@@ -34,10 +36,33 @@
 
     <h1>@messages("saved.declarations.title")</h1>
 
+    <div>
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="col">@messages("saved.declarations.ducr")</th>
+                    <th class="govuk-table__header" scope="col">@messages("saved.declarations.dateSaved")</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
 
+            @for( declaration <- declarations ) {
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell" scope="row">
+                        <a href="@routes.SavedDeclarationsController.continueDeclaration(declaration.id.getOrElse(""))" class="govuk-link">
+                            @declaration.ducr.getOrElse(messages("saved.declarations.noDucr"))
+                        </a>
+                    </td>
+                    <td class="govuk-table__cell">
+                      @ViewDates.formatDateAtTime(declaration.updatedDateTime)
+                    </td>
 
-    Continue a declaration....
-    @for( declaration <- declarations ){
-     declaration.status
-    }
+                </tr>
+            }
+
+            </tbody>
+
+        </table>
+    </div>
+
 }

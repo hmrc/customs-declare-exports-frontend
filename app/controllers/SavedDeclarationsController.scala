@@ -21,6 +21,7 @@ import controllers.actions.AuthAction
 import handlers.ErrorHandler
 import javax.inject.Inject
 import metrics.ExportsMetrics
+import models.requests.ExportsSessionKeys
 import models.{DeclarationStatus, Page}
 import play.api.Logger
 import play.api.i18n.I18nSupport
@@ -28,7 +29,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.{cancellation_confirmation_page, saved_declarations}
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class SavedDeclarationsController @Inject()(
   authenticate: AuthAction,
@@ -43,11 +44,21 @@ class SavedDeclarationsController @Inject()(
 
   private val logger = Logger(this.getClass)
 
-  def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsDeclareExportsConnector.findDeclarations("", DeclarationStatus.DRAFT, Page(1, 10)).map { page =>
+  def displayDeclarations(): Action[AnyContent] = authenticate.async { implicit request =>
+    customsDeclareExportsConnector.findDeclarations(DeclarationStatus.DRAFT, Page(1, 10)).map { page =>
       Ok(savedDeclarationsPage(page.results))
     }
   }
 
+  def continueDeclaration(id: String): Action[AnyContent] = authenticate.async { implicit request =>
+    customsDeclareExportsConnector.findDeclaration(id) flatMap {
+      case Some(declaration) =>
+        Future.successful(
+          Redirect(controllers.declaration.routes.DispatchLocationController.displayPage())
+            .addingToSession(ExportsSessionKeys.declarationId -> id)
+        )
+      case _ => Future.successful(Redirect(controllers.routes.SavedDeclarationsController.displayDeclarations()))
+    }
 
+  }
 }

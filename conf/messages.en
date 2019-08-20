@@ -296,6 +296,9 @@ submissions.status = Status
 submissions.noOfNotifications = Number of notifications
 
 saved.declarations.title = Your saved declarations
+saved.declarations.ducr = DUCR
+saved.declarations.noDucr = No DUCR added
+saved.declarations.dateSaved = Date and time saved
 
 supplementary.declarationHolder.title = What authorisation is required for this export?
 supplementary.declarationHolder.title.hint = This will depend on the type of procedure code used for this export. If no authorisation is needed, leave this page blank and continue.
