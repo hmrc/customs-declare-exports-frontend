@@ -38,7 +38,7 @@ class SavedDeclarationsController @Inject()(
     extends FrontendController(mcc) with I18nSupport {
 
   private val logger = Logger(this.getClass)
-  private val defaultPage = Page(size = Integer.MAX_VALUE)
+  private val defaultPage = Page()
 
   def displayDeclarations(): Action[AnyContent] = authenticate.async { implicit request =>
     customsDeclareExportsConnector.findSavedDeclarations(defaultPage).map { page =>
