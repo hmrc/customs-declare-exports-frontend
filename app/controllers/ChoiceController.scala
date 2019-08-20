@@ -53,7 +53,7 @@ class ChoiceController @Inject()(
           case Some(data) => Ok(choicePage(Choice.form().fill(Choice(data))))
           case _          => Ok(choicePage(Choice.form()))
         }
-      case None =>Future.successful(Ok(choicePage(Choice.form())))
+      case None => Future.successful(Ok(choicePage(Choice.form())))
     }
 
   }
@@ -74,16 +74,17 @@ class ChoiceController @Inject()(
                 validChoice.value
               )
             )
-            .map((created: ExportsDeclaration) => {
-              (validChoice.value match {
-                case SupplementaryDec | StandardDec =>
-                  Redirect(controllers.declaration.routes.DispatchLocationController.displayPage())
-                case CancelDec =>
-                  Redirect(controllers.routes.CancelDeclarationController.displayForm())
-                case Submissions =>
-                  Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
-              }).addingToSession(ExportsSessionKeys.declarationId -> created.id.getOrElse(""))
-            })
+            .map {
+              created: ExportsDeclaration =>
+                (validChoice.value match {
+                  case SupplementaryDec | StandardDec =>
+                    Redirect(controllers.declaration.routes.DispatchLocationController.displayPage())
+                  case CancelDec =>
+                    Redirect(controllers.routes.CancelDeclarationController.displayForm())
+                  case Submissions =>
+                    Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
+                }).addingToSession(ExportsSessionKeys.declarationId -> created.id.getOrElse(""))
+            }
         }
       )
   }

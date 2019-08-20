@@ -33,7 +33,7 @@ trait ModelCacheable {
 
   protected def updateExportsDeclarationSync(
     update: ExportsDeclaration => Option[ExportsDeclaration]
-  )(implicit hc: HeaderCarrier, ex: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
     update(request.cacheModel)
       .map(model => exportsCacheService.update(model))
       .getOrElse(Future.successful(None))

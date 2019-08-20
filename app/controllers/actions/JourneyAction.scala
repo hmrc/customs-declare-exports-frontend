@@ -39,13 +39,13 @@ class JourneyAction @Inject()(cacheService: ExportsCacheService)(
       case Some(id) =>
         cacheService.get(id).map {
           case Some(declaration) => Right(JourneyRequest(request, declaration))
-          case _ => whenMissing(request)
+          case _ => handleMissingDeclarationId(request)
         }
-      case None => Future.successful(whenMissing(request))
+      case None => Future.successful(handleMissingDeclarationId(request))
     }
   }
 
-  private def whenMissing[A](request: AuthenticatedRequest[_]): Either[Result, JourneyRequest[A]] = {
+  private def handleMissingDeclarationId[A](request: AuthenticatedRequest[_]): Either[Result, JourneyRequest[A]] = {
     // $COVERAGE-OFF$Trivial
     logger.warn(s"Could not obtain journey type for declaration ${request.declarationId}")
     // $COVERAGE-ON
