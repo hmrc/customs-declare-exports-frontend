@@ -80,5 +80,5 @@ object PreviousDocumentsData {
 
   val maxAmountOfItems = 99
 
-  val isScreenMandatory = true
+  val isScreenMandatory = false
 }
