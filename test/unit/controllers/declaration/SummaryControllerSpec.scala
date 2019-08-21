@@ -17,8 +17,9 @@
 package unit.controllers.declaration
 
 import controllers.declaration.SummaryController
-import models.Mode
 import models.declaration.SupplementaryDeclarationData
+import models.requests.{ExportsSessionKeys, JourneyRequest}
+import models.{ExportsDeclaration, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -27,11 +28,12 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.SubmissionService
+import uk.gov.hmrc.http.HeaderCarrier
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
 import views.html.declaration.summary.{summary_page, summary_page_no_data}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with OptionValues {
 
@@ -59,7 +61,7 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockSummaryPage, mockSummaryPageNoData)
+    reset(mockSummaryPage, mockSummaryPageNoData, mockSubmissionService)
     super.afterEach()
   }
 
@@ -69,7 +71,7 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
     captor.getValue
   }
 
-  "Summary controller" should {
+  "Display" should {
 
     "return 200 (OK)" when {
 
@@ -97,11 +99,11 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
         verify(mockSummaryPageNoData, times(1)).apply()(any(), any())
       }
     }
+  }
 
+  "Submit" should {
     "return 500 (INTERNAL_SERVER_ERROR) during submission" when {
-
       "lrn is not returned from submission service" in {
-
         val declaration = aDeclaration()
         withNewCaching(aDeclaration())
         when(mockSubmissionService.submit(any())(any(), any(), any())).thenReturn(Future.successful(None))
@@ -114,19 +116,25 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
       }
     }
 
-    "return 303 (SEE_OTHER) during submission" when {
-
-      "lrn is returned from submission service" in {
-
+    "Redirect to confirmation" when {
+      "valid submission" in {
         val declaration = aDeclaration()
         withNewCaching(aDeclaration())
-        when(mockSubmissionService.submit(any())(any(), any(), any())).thenReturn(Future.successful(Some(LRN)))
+        when(
+          mockSubmissionService.submit(any[ExportsDeclaration])(
+            any[JourneyRequest[_]],
+            any[HeaderCarrier],
+            any[ExecutionContext]
+          )
+        ).thenReturn(Future.successful(Some("123LRN")))
 
         val result = controller.submitDeclaration()(postRequest(Json.toJson(declaration)))
 
-        status(result) mustBe SEE_OTHER
-        verify(mockSummaryPage, times(0)).apply(any(), any())(any(), any())
-        verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+        status(result) must be(SEE_OTHER)
+        session(result).get(ExportsSessionKeys.declarationId) must be(None)
+        redirectLocation(result) must be(Some(controllers.declaration.routes.ConfirmationController.displayPage().url))
+        flash(result).get("LRN") must be(Some("123LRN"))
+        verify(mockSubmissionService).submit(any[ExportsDeclaration])(any[JourneyRequest[_]], any[HeaderCarrier], any[ExecutionContext])
       }
     }
   }
