@@ -38,29 +38,21 @@
     <h1>@messages("saved.declarations.title")</h1>
 
     <table class="govuk-table">
-        <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-                <th class="govuk-table__header" scope="col">@messages("saved.declarations.ducr")</th>
-                <th class="govuk-table__header" scope="col">@messages("saved.declarations.dateSaved")</th>
-            </tr>
-        </thead>
-        <tbody class="govuk-table__body">
+        <tr class="table-row table-head">
+            <th class="table-cell">@messages("saved.declarations.ducr")</th>
+            <th class="table-cell">@messages("saved.declarations.dateSaved")</th>
+        </tr>
 
         @for( declaration <- declarations.results ) {
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell" scope="row">
-                    <a href="@routes.SavedDeclarationsController.continueDeclaration(declaration.id.getOrElse(""))" class="govuk-link">
+            <tr class="table-row">
+                <td class="table-cell">
+                    <a href="@routes.SavedDeclarationsController.continueDeclaration(declaration.id.getOrElse(""))">
                     @declaration.ducr.getOrElse(messages("saved.declarations.noDucr"))
                     </a>
                 </td>
-                <td class="govuk-table__cell">
-                @ViewDates.formatDateAtTime(declaration.updatedDateTime)
-                </td>
-
+                <td class="table-cell">@ViewDates.formatDateAtTime(declaration.updatedDateTime)</td>
             </tr>
         }
-
-        </tbody>
 
     </table>
 

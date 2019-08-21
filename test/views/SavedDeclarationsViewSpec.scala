@@ -58,28 +58,20 @@ class SavedDeclarationsViewSpec extends ViewSpec with CommonMessages {
       val view = createView()
 
       getElementByCss(view, "title").text() must be(messages(title))
-      tableHeader(view)(0).text() must be(messages(ducr))
-      tableHeader(view)(1).text() must be(messages(dateSaved))
+      tableCell(view)(0, 0).text() must be(messages(ducr))
+      tableCell(view)(0, 1).text() must be(messages(dateSaved))
 
-      tableCell(view)(0, 0).text() must be("DUCR-12345")
-      tableCell(view)(0, 1).text() must be("1 Jan 2019 at 10:00")
-      tableCell(view)(1, 0).text() must be("No DUCR added")
-      tableCell(view)(1, 1).text() must be("1 Jan 2019 at 09:45")
+      tableCell(view)(1, 0).text() must be("DUCR-12345")
+      tableCell(view)(1, 1).text() must be("1 Jan 2019 at 10:00")
+      tableCell(view)(2, 0).text() must be("No DUCR added")
+      tableCell(view)(2, 1).text() must be("1 Jan 2019 at 09:45")
     }
 
   }
 
-  private def tableHeader(view: Html)(column: Int): Element =
-    getElementsByCss(view, ".govuk-table__head")
-      .get(0)
-      .getElementsByClass("govuk-table__header")
-      .get(column)
-
   private def tableCell(view: Html)(row: Int, column: Int): Element =
-    getElementsByCss(view, ".govuk-table__body")
-      .get(0)
-      .getElementsByClass("govuk-table__row")
+    getElementsByCss(view, ".table-row")
       .get(row)
-      .getElementsByClass("govuk-table__cell")
+      .getElementsByClass("table-cell")
       .get(column)
 }

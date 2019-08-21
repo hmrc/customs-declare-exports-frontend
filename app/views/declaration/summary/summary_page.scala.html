@@ -21,6 +21,7 @@
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 @import views.html.declaration.summary._
+@import views.ViewDates
 
 @this(main_template: views.html.main_template)
 
@@ -50,6 +51,26 @@
             }
         )
     )
+
+    @if(mode == Mode.Draft) {
+        <p>@messages("saved.declarations.summary.inProgress")</p>
+        <p>@messages("saved.declarations.summary.paragraph")</p>
+
+        @components.summary_list(None) {
+            @components.table_row_no_change_link(HtmlTableRow(
+                label = messages("supplementary.summary.yourReferences.ducr"),
+                value = Seq(suppDecData.consignmentReferences.map(_.ducr.ducr))
+            ))
+            @components.table_row_no_change_link(HtmlTableRow(
+                label = messages("saved.declarations.summary.createdDate"),
+                value = Seq(suppDecData.createDate.map(d => ViewDates.formatDateAtTime(d)))
+            ))
+            @components.table_row_no_change_link(HtmlTableRow(
+                label = messages("saved.declarations.summary.expireDate"),
+                value = Seq(suppDecData.expiryDate.map(d => ViewDates.formatDateAtTime(d)))
+            ))
+        }
+    }
 
     @components.summary_list(Some(messages("supplementary.summary.declarationType.header"))) {
         @components.table_row_no_change_link(HtmlTableRow(
