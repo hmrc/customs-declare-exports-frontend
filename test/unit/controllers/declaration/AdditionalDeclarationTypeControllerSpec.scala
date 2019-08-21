@@ -17,6 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.AdditionalDeclarationTypeController
+import controllers.util.{SaveAndContinue, SaveAndReturn}
 import forms.Choice
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import play.api.libs.json.Json
@@ -49,21 +50,33 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
     withNewCaching(aDeclaration(withChoice(Choice.AllowedChoiceValues.StandardDec)))
   }
 
-  "Additional declaration type page controller for supplementary" should {
-
+  "Display Page" should {
     "return 200 (OK)" when {
+      "cache is empty during supplementary journey" in new SupplementarySetUp {
+        val result = controller.displayPage()(getRequest())
 
-      "display page method is invoked without data in cache" in new SupplementarySetUp {
+        status(result) must be(OK)
+      }
+
+      "cache is populated during supplementary journey" in new SupplementarySetUp {
+        val cachedData = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
+          .copy(additionalDeclarationType = Some(AdditionalDeclarationType("Z")))
+        withNewCaching(cachedData)
 
         val result = controller.displayPage()(getRequest())
 
         status(result) must be(OK)
       }
 
-      "display page method is invoked with data in cache" in new SupplementarySetUp {
+      "cache is empty during standard journey" in new StandardSetUp {
+        val result = controller.displayPage()(getRequest())
 
+        status(result) must be(OK)
+      }
+
+      "cache is populated during standard journey" in new StandardSetUp {
         val cachedData = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
-          .copy(additionalDeclarationType = Some(AdditionalDeclarationType("Z")))
+          .copy(additionalDeclarationType = Some(AdditionalDeclarationType("D")))
         withNewCaching(cachedData)
 
         val result = controller.displayPage()(getRequest())
@@ -74,11 +87,16 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
   }
 
   "Submit" should {
-
     "return 400 (BAD_REQUEST)" when {
+      "form is incorrect during supplementary journey" in new SupplementarySetUp {
+        val incorrectForm = Json.toJson(AdditionalDeclarationType("Incorrect"))
 
-      "form is incorrect" in new SupplementarySetUp {
+        val result = controller.submitForm()(postRequest(incorrectForm))
 
+        status(result) must be(BAD_REQUEST)
+      }
+
+      "form is incorrect during standard journey" in new StandardSetUp {
         val incorrectForm = Json.toJson(AdditionalDeclarationType("Incorrect"))
 
         val result = controller.submitForm()(postRequest(incorrectForm))
@@ -88,12 +106,21 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
     }
 
     "return 303 (SEE_OTHER) and redirect to consignment references page" when {
+      "SaveAndContinue during supplementary journey" in new SupplementarySetUp {
+        val correctForm = Seq("additionalDeclarationType" -> "Z", SaveAndContinue.toString -> "")
 
-      "data is correct" in new SupplementarySetUp {
+        val result = controller.submitForm()(postRequestAsFormUrlEncoded(correctForm: _*))
 
-        val correctForm = Json.toJson(AdditionalDeclarationType("Z"))
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(
+          Some(controllers.declaration.routes.ConsignmentReferencesController.displayPage().url)
+        )
+      }
 
-        val result = controller.submitForm()(postRequest(correctForm))
+      "SaveAndContinue during standard journey" in new StandardSetUp {
+        val correctForm = Seq("additionalDeclarationType" -> "D", SaveAndContinue.toString -> "")
+
+        val result = controller.submitForm()(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(
@@ -101,55 +128,22 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
         )
       }
     }
-  }
 
-  "Additional declaration type page controller for standard" should {
+    "return 303 (SEE_OTHER) and redirect to draft confirmation page" when {
+      "SaveAndReturn during supplementary journey" in new SupplementarySetUp {
+        val correctForm = Seq("additionalDeclarationType" -> "Z", SaveAndReturn.toString -> "")
 
-    "return 200 (OK)" when {
+        val result = controller.submitForm()(postRequestAsFormUrlEncoded(correctForm: _*))
 
-      "display page method is invoked without data in cache" in new StandardSetUp {
-
-        val result = controller.displayPage()(getRequest())
-
-        status(result) must be(OK)
+        await(result) mustBe draftConfirmationResult
       }
 
-      "display page method is invoked with data in cache" in new StandardSetUp {
+      "SaveAndReturn during standard journey" in new StandardSetUp {
+        val correctForm = Seq("additionalDeclarationType" -> "D", SaveAndReturn.toString -> "")
 
-        val cachedData = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
-          .copy(additionalDeclarationType = Some(AdditionalDeclarationType("D")))
-        withNewCaching(cachedData)
+        val result = controller.submitForm()(postRequestAsFormUrlEncoded(correctForm: _*))
 
-        val result = controller.displayPage()(getRequest())
-
-        status(result) must be(OK)
-      }
-    }
-
-    "return 400 (BAD_REQUEST)" when {
-
-      "form is incorrect" in new StandardSetUp {
-
-        val incorrectForm = Json.toJson(AdditionalDeclarationType("Incorrect"))
-
-        val result = controller.submitForm()(postRequest(incorrectForm))
-
-        status(result) must be(BAD_REQUEST)
-      }
-    }
-
-    "return 303 (SEE_OTHER) and redirect to consignment references page" when {
-
-      "data is correct" in new StandardSetUp {
-
-        val correctForm = Json.toJson(AdditionalDeclarationType("D"))
-
-        val result = controller.submitForm()(postRequest(correctForm))
-
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(
-          Some(controllers.declaration.routes.ConsignmentReferencesController.displayPage().url)
-        )
+        await(result) mustBe draftConfirmationResult
       }
     }
   }

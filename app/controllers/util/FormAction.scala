@@ -33,7 +33,7 @@ object FormAction {
     input.flatMap {
       case (`addLabel`, _)             => Some(Add)
       case (`saveAndContinueLabel`, _) => Some(SaveAndContinue)
-      case (saveAndReturnLabel, _)     => Some(SaveAndReturn)
+      case (`saveAndReturnLabel`, _)     => Some(SaveAndReturn)
       case (`continueLabel`, _)        => Some(Continue)
       case (`removeLabel`, values)     => Some(Remove(values))
       case _                           => None
