@@ -56,7 +56,7 @@ class SummaryController @Inject()(
   }
 
   private def containsMandatoryData(data: ExportsDeclaration, mode: Mode): Boolean =
-    mode.equals(Mode.SavedMode) || data.consignmentReferences.exists(references => references.lrn.nonEmpty)
+    mode.equals(Mode.Draft) || data.consignmentReferences.exists(references => references.lrn.nonEmpty)
 
   def submitDeclaration(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     submissionService.submit(request.cacheModel).map {

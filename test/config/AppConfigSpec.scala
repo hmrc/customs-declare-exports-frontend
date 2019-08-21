@@ -51,7 +51,7 @@ class AppConfigSpec extends CustomExportsBaseSpec {
         |microservice.services.customs-declare-exports.host=localhoste
         |microservice.services.customs-declare-exports.port=9875
         |microservice.services.customs-declare-exports.submit-declaration=/declaration
-        |microservice.services.customs-declare-exports.submit-declaration-v2=/v2/declaration
+        |microservice.services.customs-declare-exports.declaration-v2=/v2/declaration
         |microservice.services.customs-declare-exports.cancel-declaration=/cancel-declaration
         |microservice.services.customs-declare-exports.fetch-notifications=/notifications
         |microservice.services.customs-declare-exports-movements.host=localhostm

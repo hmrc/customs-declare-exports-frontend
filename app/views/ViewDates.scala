@@ -23,10 +23,9 @@ import java.time.temporal.TemporalAccessor
 object ViewDates {
 
   val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-  val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMM uuu").withZone(ZoneId.systemDefault)
-  val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm").withZone(ZoneId.systemDefault)
+  val dateAtTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMM uuu 'at' HH:mm").withZone(ZoneId.systemDefault)
 
   def format(temporal: TemporalAccessor): String = formatter.format(temporal)
-  def formatDateAtTime(temporal: TemporalAccessor): String = s"${dateFormatter.format(temporal)} at ${timeFormatter.format(temporal)}"
+  def formatDateAtTime(temporal: TemporalAccessor): String = dateAtTimeFormatter.format(temporal)
 
 }

@@ -79,7 +79,7 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
 
         withNewCaching(aDeclaration(withConsignmentReferences()))
 
-        val result = controller.displayPage(Mode.NormalMode)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
         verify(mockSummaryPage, times(1)).apply(any(), any())(any(), any())
@@ -92,7 +92,7 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
 
         withNewCaching(aDeclaration())
 
-        val result = controller.displayPage(Mode.NormalMode)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
         verify(mockSummaryPage, times(0)).apply(any(), any())(any(), any())

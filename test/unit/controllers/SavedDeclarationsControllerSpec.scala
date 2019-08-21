@@ -17,6 +17,7 @@
 package unit.controllers
 
 import controllers.SavedDeclarationsController
+import models.requests.ExportsSessionKeys
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import views.html.saved_declarations
@@ -51,14 +52,24 @@ class SavedDeclarationsControllerSpec extends ControllerSpec {
     }
 
     "return 303 (SEE_OTHER)" when {
-       "continue declaration method is invoked" in new SetUp {
+       "continue declaration found" in new SetUp {
 
          getDeclaration("123")
 
          val result = controller.continueDeclaration("123")(getRequest())
 
          status(result) must be(SEE_OTHER)
+         session(result).get(ExportsSessionKeys.declarationId) must be(Some("123"))
        }
+
+      "continue declaration not found" in new SetUp {
+
+        declarationNotFound
+        val result = controller.continueDeclaration("123")(getRequest())
+
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(Some(controllers.routes.SavedDeclarationsController.displayDeclarations().url))
+      }
     }
   }
 }

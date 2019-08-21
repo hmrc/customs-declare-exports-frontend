@@ -20,15 +20,15 @@ import play.api.mvc.JavascriptLiteral
 
 sealed trait Mode
 object Mode {
-  case object NormalMode extends Mode
-  case object AmendMode extends Mode
-  case object SavedMode extends Mode
+  case object Normal extends Mode
+  case object Amend extends Mode
+  case object Draft extends Mode
 
   implicit val jsLiteral: JavascriptLiteral[Mode] = new JavascriptLiteral[Mode] {
     override def to(value: Mode): String = value match {
-      case NormalMode => "NormalMode"
-      case AmendMode  => "AmendMode"
-      case SavedMode  => "SavedMode"
+      case Normal => "NormalMode"
+      case Amend  => "AmendMode"
+      case Draft  => "SavedMode"
     }
   }
 }

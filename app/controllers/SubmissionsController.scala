@@ -54,7 +54,7 @@ class SubmissionsController @Inject()(
         customsDeclareExportsConnector
           .createDeclaration(declaration.copy(status = DeclarationStatus.DRAFT))
           .map { created =>
-            Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.AmendMode))
+            Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.Amend))
               .addingToSession(ExportsSessionKeys.declarationId -> created.id.get)
           }
       case _ => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))

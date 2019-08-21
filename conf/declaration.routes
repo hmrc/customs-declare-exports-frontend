@@ -193,9 +193,9 @@ POST        /add-seal                            controllers.declaration.SealCon
 
 # Summary
 
-GET         /summary                             controllers.declaration.SummaryController.displayPage(mode: models.Mode = models.Mode.NormalMode)
-GET         /amend-summary                       controllers.declaration.SummaryController.displayPage(mode: models.Mode = models.Mode.AmendMode)
-GET         /saved-summary                       controllers.declaration.SummaryController.displayPage(mode: models.Mode = models.Mode.SavedMode)
+GET         /summary                             controllers.declaration.SummaryController.displayPage(mode: models.Mode = models.Mode.Normal)
+GET         /amend-summary                       controllers.declaration.SummaryController.displayPage(mode: models.Mode = models.Mode.Amend)
+GET         /saved-summary                       controllers.declaration.SummaryController.displayPage(mode: models.Mode = models.Mode.Draft)
 
 POST        /summary                             controllers.declaration.SummaryController.submitDeclaration()
 

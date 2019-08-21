@@ -22,7 +22,7 @@ import base.ExportsTestData
 import base.ExportsTestData._
 import forms.Ducr
 import forms.declaration.ConsignmentReferences
-import helpers.views.declaration.{CommonMessages, SavedDeclarationsMessages}
+import helpers.views.declaration.CommonMessages
 import models.{DeclarationStatus, ExportsDeclaration, Page, Paginated}
 import org.jsoup.nodes.Element
 import play.twirl.api.Html
@@ -31,7 +31,11 @@ import views.html.saved_declarations
 import views.tags.ViewTest
 
 @ViewTest
-class SavedDeclarationsViewSpec extends ViewSpec with SavedDeclarationsMessages with CommonMessages {
+class SavedDeclarationsViewSpec extends ViewSpec with CommonMessages {
+
+  val title: String = "saved.declarations.title"
+  val ducr: String = "saved.declarations.ducr"
+  val dateSaved: String = "saved.declarations.dateSaved"
 
   private val savedDeclarationsPage = app.injector.instanceOf[saved_declarations]
   private val decWithDucr = ExportsTestData.aDeclaration(

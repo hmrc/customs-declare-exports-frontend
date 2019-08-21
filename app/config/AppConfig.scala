@@ -54,8 +54,7 @@ class AppConfig @Inject()(
   lazy val customsDeclareExports = servicesConfig.baseUrl("customs-declare-exports")
 
   lazy val declarationsV2 = servicesConfig.getConfString(
-    "customs-declare-exports.submit-declaration-v2",
-    // TODO - should that key be renamed as it is used to GET as well as POST/PUT?
+    "customs-declare-exports.declaration-v2",
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports submit declaration URI")
   )
 

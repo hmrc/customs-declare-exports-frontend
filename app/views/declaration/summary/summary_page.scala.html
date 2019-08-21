@@ -44,9 +44,9 @@
     @components.page_title(
         title = Some(
             mode match {
-                case Mode.NormalMode => messages("supplementary.summary.normal-header")
-                case Mode.AmendMode => messages("supplementary.summary.amend-header")
-                case Mode.SavedMode => messages("supplementary.summary.saved-header")
+                case Mode.Normal => messages("supplementary.summary.normal-header")
+                case Mode.Amend => messages("supplementary.summary.amend-header")
+                case Mode.Draft => messages("supplementary.summary.saved-header")
             }
         )
     )
@@ -85,7 +85,7 @@
 
     @items_section(suppDecData.items)
 
-    @if(mode == Mode.NormalMode) {
+    @if(mode == Mode.Normal) {
         @helper.form(action = routes.SummaryController.submitDeclaration(), 'id -> "summary") {
             @helper.CSRF.formField
 

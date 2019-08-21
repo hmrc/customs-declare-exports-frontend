@@ -50,7 +50,7 @@ class SavedDeclarationsController @Inject()(
     customsDeclareExportsConnector.findDeclaration(id) flatMap {
       case Some(declaration) =>
         Future.successful(
-          Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.SavedMode))
+          Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.Draft))
             .addingToSession(ExportsSessionKeys.declarationId -> id)
         )
       case _ => Future.successful(Redirect(controllers.routes.SavedDeclarationsController.displayDeclarations()))

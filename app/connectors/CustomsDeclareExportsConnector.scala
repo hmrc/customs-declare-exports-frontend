@@ -23,7 +23,7 @@ import javax.inject.{Inject, Singleton}
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Submission
 import models.requests.CancellationStatus
-import models.{ExportsDeclaration, Page, Paginated}
+import models._
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.libs.json.{Json, Writes}
@@ -86,9 +86,10 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
     page: Page
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
     val pagination = Page.bindable.unbind("page", page)
+    val sort = DeclarationSort.bindable.unbind("sort", DeclarationSort(SortBy.UPDATED, SortDirection.DES))
     httpClient
       .GET[Paginated[ExportsDeclarationExchange]](
-        s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}?status=DRAFT&sortBy=updatedDateTime&sortDirection=des&$pagination"
+        s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}?status=DRAFT&$pagination&$sort"
       )
       .map(_.map(_.toExportsDeclaration))
   }

@@ -89,6 +89,10 @@ trait MockConnectors extends MockitoSugar {
     when(mockCustomsDeclareExportsConnector.findDeclaration(refEq(id))(any(), any()))
       .thenReturn(Future.successful(Some(ExportsTestData.aDeclaration())))
 
+  def declarationNotFound: OngoingStubbing[Future[Option[ExportsDeclaration]]] =
+    when(mockCustomsDeclareExportsConnector.findDeclaration(anyString())(any(), any()))
+      .thenReturn(Future.successful(None))
+
   private def draftDeclarations: Seq[ExportsDeclaration] =
     Seq(ExportsTestData.aDeclaration(ExportsTestData.withStatus(DeclarationStatus.DRAFT)))
 
