@@ -30,10 +30,9 @@ case class SupplementaryDeclarationData(
   locations: Option[Locations] = None,
   transportInformationContainerData: Option[TransportInformationContainerData] = None,
   items: Option[Items] = None,
-  createDate: Option[Instant] = None
-) {
-  def expiryDate = createDate.map(_.plus(30, ChronoUnit.DAYS))
-}
+  createDate: Option[Instant] = None,
+  updatedDate: Option[Instant] = None
+)
 
 object SupplementaryDeclarationData {
 
@@ -45,7 +44,8 @@ object SupplementaryDeclarationData {
       locations = flattenIfEmpty(Locations(cacheData)),
       transportInformationContainerData = cacheData.containerData,
       items = flattenIfEmpty(Items(cacheData)),
-      createDate = Some(cacheData.createdDateTime)
+      createDate = Some(cacheData.createdDateTime),
+      updatedDate = Some(cacheData.updatedDateTime)
     )
 
   private def flattenIfEmpty[A <: SummaryContainer](container: A): Option[A] =

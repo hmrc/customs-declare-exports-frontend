@@ -102,6 +102,9 @@ class AppConfig @Inject()(
   lazy val cacheTimeToLive: FiniteDuration =
     servicesConfig.getDuration("mongodb.timeToLive").asInstanceOf[FiniteDuration]
 
+  lazy val draftTimeToLive: FiniteDuration =
+    servicesConfig.getDuration("draft.timeToLive").asInstanceOf[FiniteDuration]
+
   lazy val defaultFeatureStatus: features.FeatureStatus.Value =
     FeatureStatus.withName(loadConfig(feature2Key(Feature.default)))
 
