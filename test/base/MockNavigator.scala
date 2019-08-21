@@ -4,7 +4,7 @@ import controllers.navigation.Navigator
 import models.requests.JourneyRequest
 import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
-import org.mockito.{BDDMockito, Mockito}
+import org.mockito.Mockito
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import play.api.mvc.Result
