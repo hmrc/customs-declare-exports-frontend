@@ -58,14 +58,14 @@ class AdditionalDeclarationTypeController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(declarationTypePage(formWithErrors))),
         validAdditionalDeclarationType =>
-          action match {
-            case Some(SaveAndContinue) =>
-              updateCache(validAdditionalDeclarationType).map { _ =>
+          updateCache(validAdditionalDeclarationType).map { _ =>
+            action match {
+              case Some(SaveAndContinue) =>
                 Redirect(controllers.declaration.routes.ConsignmentReferencesController.displayPage())
-              }
-            case Some(SaveAndReturn) =>
-              Future.successful(navigator.goToDraftConfirmation())
-        }
+              case Some(SaveAndReturn) =>
+                navigator.goToDraftConfirmation()
+            }
+          }
       )
   }
 
