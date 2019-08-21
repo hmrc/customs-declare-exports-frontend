@@ -16,7 +16,7 @@
 
 package services.cache
 
-import java.time.{LocalDateTime, ZoneOffset}
+import java.time.{Instant, LocalDateTime, ZoneOffset}
 import java.util.UUID
 
 import forms.common.Address
@@ -295,6 +295,8 @@ trait ExportsDeclarationBuilder {
         containerData =
           Some(TransportInformationContainerData(cache.containerData.map(_.containers).getOrElse(Seq.empty) ++ data))
     )
+
+  def withUpdateTime(updateDateTime: Instant): ExportsDeclarationModifier = _.copy(updatedDateTime = updateDateTime)
 
   def withoutContainerData(): ExportsDeclarationModifier = _.copy(containerData = None)
 

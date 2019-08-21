@@ -14,21 +14,25 @@
  * limitations under the License.
  */
 
-package models
+package views
+import java.time.LocalDateTime
 
-import play.api.mvc.JavascriptLiteral
+import org.scalatest.{MustMatchers, WordSpec}
 
-sealed trait Mode
-object Mode {
-  case object Normal extends Mode
-  case object Amend extends Mode
-  case object Draft extends Mode
+class ViewDatesSpec extends WordSpec with MustMatchers {
 
-  implicit val jsLiteral: JavascriptLiteral[Mode] = new JavascriptLiteral[Mode] {
-    override def to(value: Mode): String = value match {
-      case Normal => "NormalMode"
-      case Amend  => "AmendMode"
-      case Draft  => "SavedMode"
+  "ViewDates" should {
+
+    "format basic date time correctly" in {
+
+      val date = LocalDateTime.of(2019, 8, 20, 13, 55, 15)
+      ViewDates.format(date) must equal("2019-08-20 13:55")
+    }
+
+    "format date at time correctly" in {
+
+      val date = LocalDateTime.of(2019, 8, 20, 13, 55, 15)
+      ViewDates.formatDateAtTime(date) must equal("20 Aug 2019 at 13:55")
     }
   }
 }

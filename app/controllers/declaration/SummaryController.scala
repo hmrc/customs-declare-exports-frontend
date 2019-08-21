@@ -16,22 +16,22 @@
 
 package controllers.declaration
 
+import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.SupplementaryDeclarationData
-import models.requests.{ExportsSessionKeys, JourneyRequest}
-import models.{DeclarationStatus, ExportsDeclaration, Mode}
+import models.requests.ExportsSessionKeys
+import models.{ExportsDeclaration, Mode}
 import play.api.Logger
-import play.api.i18n.{I18nSupport, Messages}
+import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services._
 import services.cache.ExportsCacheService
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.summary.{summary_page, summary_page_no_data}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class SummaryController @Inject()(
   authenticate: AuthAction,
@@ -42,21 +42,21 @@ class SummaryController @Inject()(
   mcc: MessagesControllerComponents,
   summaryPage: summary_page,
   summaryPageNoData: summary_page_no_data
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   private val logger = Logger(this.getClass)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    if (containsMandatoryData(request.cacheModel)) {
+    if (containsMandatoryData(request.cacheModel, mode)) {
       Ok(summaryPage(mode, SupplementaryDeclarationData(request.cacheModel)))
     } else {
       Ok(summaryPageNoData())
     }
   }
 
-  private def containsMandatoryData(data: ExportsDeclaration): Boolean =
-    data.consignmentReferences.exists(references => references.lrn.nonEmpty)
+  private def containsMandatoryData(data: ExportsDeclaration, mode: Mode): Boolean =
+    mode.equals(Mode.Draft) || data.consignmentReferences.exists(references => references.lrn.nonEmpty)
 
   def submitDeclaration(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     submissionService.submit(request.cacheModel).map {

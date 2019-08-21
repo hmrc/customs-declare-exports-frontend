@@ -24,6 +24,12 @@ GET        /cancel-declaration                          controllers.CancelDeclar
 
 POST       /cancel-declaration                          controllers.CancelDeclarationController.onSubmit()
 
+# Saved declaration
+
+GET        /saved-declarations                          controllers.SavedDeclarationsController.displayDeclarations()
+
+GET        /saved-declarations/:id                      controllers.SavedDeclarationsController.continueDeclaration(id: String)
+
 # Start Page
 
 GET        /start                                       controllers.StartController.displayStartPage()

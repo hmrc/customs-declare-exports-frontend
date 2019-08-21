@@ -41,6 +41,7 @@
                 inputs = Seq(
                     RadioOption("Supplementary declaration", SupplementaryDec, messages("declaration.choice.SMP")),
                     RadioOption("Standard declaration", StandardDec, messages("declaration.choice.STD")),
+                    RadioOption("Continue declaration", ContinueDec, messages("declaration.choice.CON")),
                     RadioOption("Cancel declaration", CancelDec, messages("declaration.choice.CAN")),
                     RadioOption("Submissions", Submissions, messages("declaration.choice.SUB"))
                 ).filter(radioOption => appConfig.availableJourneys().contains(radioOption.value))

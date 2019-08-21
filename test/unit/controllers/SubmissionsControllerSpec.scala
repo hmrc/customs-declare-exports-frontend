@@ -90,7 +90,7 @@ class SubmissionsControllerSpec extends ControllerSpec {
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(
-          Some(controllers.declaration.routes.SummaryController.displayPage(Mode.AmendMode).url)
+          Some(controllers.declaration.routes.SummaryController.displayPage(Mode.Amend).url)
         )
         session(result).get(ExportsSessionKeys.declarationId) must be(Some("new-id"))
         theDeclarationCreated.status mustBe DeclarationStatus.DRAFT

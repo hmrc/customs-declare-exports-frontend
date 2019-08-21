@@ -34,35 +34,33 @@
 
     <h1>@messages("submissions.title")</h1>
 
-    <div>
-        <table>
-            <tr class="table-row table-head">
-                <th class="table-cell">@messages("submissions.ducr")</th>
-                <th class="table-cell">@messages("submissions.lrn")</th>
-                <th class="table-cell">@messages("submissions.mrn")</th>
-                <th class="table-cell">@messages("submissions.submittedTimestamp")</th>
-                <th class="table-cell">@messages("submissions.status")</th>
-                <th class="table-cell">@messages("submissions.noOfNotifications")</th>
-            </tr>
+    <table>
+        <tr class="table-row table-head">
+            <th class="table-cell">@messages("submissions.ducr")</th>
+            <th class="table-cell">@messages("submissions.lrn")</th>
+            <th class="table-cell">@messages("submissions.mrn")</th>
+            <th class="table-cell">@messages("submissions.submittedTimestamp")</th>
+            <th class="table-cell">@messages("submissions.status")</th>
+            <th class="table-cell">@messages("submissions.noOfNotifications")</th>
+        </tr>
 
-            @for( (submission, notifications) <- submissions ){
-                <tr class="table-row">
-                    <td class="table-cell">@submission.ducr</td>
-                    <td class="table-cell">@submission.lrn</td>
-                    <td class="table-cell">@submission.mrn</td>
-                    <td class="table-cell">@{submission.actions.find(_.requestType == SubmissionRequest).map(_.requestTimestamp).map(ViewDates.formatter.withZone(ZoneId.systemDefault()).format(_))}</td>
-                    <td class="table-cell">@{notifications.headOption.map(n => n.status).getOrElse(SubmissionStatus.UnknownStatus)}</td>
-                    <td class="table-cell">
-                        @if(notifications.nonEmpty){
-                            <a href="@routes.NotificationsController.listOfNotificationsForSubmission(submission.uuid)">@{notifications.length}</a>
-                        } else {
-                            <span>@{notifications.length}</span>
-                        }
-                    </td>
-                </tr>
-            }
-        </table>
-    </div>
+        @for( (submission, notifications) <- submissions ){
+            <tr class="table-row">
+                <td class="table-cell">@submission.ducr</td>
+                <td class="table-cell">@submission.lrn</td>
+                <td class="table-cell">@submission.mrn</td>
+                <td class="table-cell">@{submission.actions.find(_.requestType == SubmissionRequest).map(_.requestTimestamp).map(ViewDates.formatter.withZone(ZoneId.systemDefault()).format(_))}</td>
+                <td class="table-cell">@{notifications.headOption.map(n => n.status).getOrElse(SubmissionStatus.UnknownStatus)}</td>
+                <td class="table-cell">
+                    @if(notifications.nonEmpty){
+                        <a href="@routes.NotificationsController.listOfNotificationsForSubmission(submission.uuid)">@{notifications.length}</a>
+                    } else {
+                        <span>@{notifications.length}</span>
+                    }
+                </td>
+            </tr>
+        }
+    </table>
 
     @components.button_link("supplementary.startNewDec", routes.ChoiceController.displayPage().url)
 }

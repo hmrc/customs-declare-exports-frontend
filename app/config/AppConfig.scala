@@ -54,7 +54,7 @@ class AppConfig @Inject()(
   lazy val customsDeclareExports = servicesConfig.baseUrl("customs-declare-exports")
 
   lazy val declarationsV2 = servicesConfig.getConfString(
-    "customs-declare-exports.submit-declaration-v2",
+    "customs-declare-exports.declaration-v2",
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports submit declaration URI")
   )
 
@@ -101,6 +101,9 @@ class AppConfig @Inject()(
 
   lazy val cacheTimeToLive: FiniteDuration =
     servicesConfig.getDuration("mongodb.timeToLive").asInstanceOf[FiniteDuration]
+
+  lazy val draftTimeToLive: FiniteDuration =
+    servicesConfig.getDuration("draft.timeToLive").asInstanceOf[FiniteDuration]
 
   lazy val defaultFeatureStatus: features.FeatureStatus.Value =
     FeatureStatus.withName(loadConfig(feature2Key(Feature.default)))

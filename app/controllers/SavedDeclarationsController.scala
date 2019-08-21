@@ -18,48 +18,43 @@ package controllers
 
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.AuthAction
-import controllers.util.SubmissionDisplayHelper
 import javax.inject.Inject
-import models.{DeclarationStatus, Mode}
 import models.requests.ExportsSessionKeys
+import models.{Mode, Page}
+import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.submissions
+import views.html.saved_declarations
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SubmissionsController @Inject()(
+class SavedDeclarationsController @Inject()(
   authenticate: AuthAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
-  submissionsPage: submissions
+  savedDeclarationsPage: saved_declarations
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayListOfSubmissions(): Action[AnyContent] = authenticate.async { implicit request =>
-    for {
-      submissions <- customsDeclareExportsConnector.fetchSubmissions()
-      notifications <- customsDeclareExportsConnector.fetchNotifications()
+  private val logger = Logger(this.getClass)
+  private val defaultPage = Page()
 
-      result = SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications)
-
-    } yield Ok(submissionsPage(result))
+  def displayDeclarations(): Action[AnyContent] = authenticate.async { implicit request =>
+    customsDeclareExportsConnector.findSavedDeclarations(defaultPage).map { page =>
+      Ok(savedDeclarationsPage(page))
+    }
   }
 
-  def amend(id: String): Action[AnyContent] = authenticate.async { implicit request =>
+  def continueDeclaration(id: String): Action[AnyContent] = authenticate.async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id) flatMap {
       case Some(declaration) =>
-        customsDeclareExportsConnector
-          .createDeclaration(declaration.copy(status = DeclarationStatus.DRAFT))
-          .map { created =>
-            Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.Amend))
-              .addingToSession(ExportsSessionKeys.declarationId -> created.id.get)
-          }
-      case _ => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
+        Future.successful(
+          Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.Draft))
+            .addingToSession(ExportsSessionKeys.declarationId -> id)
+        )
+      case _ => Future.successful(Redirect(controllers.routes.SavedDeclarationsController.displayDeclarations()))
     }
 
   }
-
 }
