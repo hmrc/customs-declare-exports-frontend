@@ -135,10 +135,15 @@ class CustomsDeclareExportsConnectorIntegrationSpec
       val response = await(connector.findSavedDeclarations(pagination))
 
       response shouldBe Paginated(Seq(existingDeclaration), pagination, 1)
-      verify(getRequestedFor(urlEqualTo("/v2/declaration?status=DRAFT&page-index=1&page-size=10&sort-by=updatedDateTime&sort-direction=des")))
+      verify(
+        getRequestedFor(
+          urlEqualTo(
+            "/v2/declaration?status=DRAFT&page-index=1&page-size=10&sort-by=updatedDateTime&sort-direction=des"
+          )
+        )
+      )
     }
   }
-
 
   "Find Declaration" should {
     "return Ok" in {

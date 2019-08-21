@@ -52,15 +52,15 @@ class SavedDeclarationsControllerSpec extends ControllerSpec {
     }
 
     "return 303 (SEE_OTHER)" when {
-       "continue declaration found" in new SetUp {
+      "continue declaration found" in new SetUp {
 
-         getDeclaration("123")
+        getDeclaration("123")
 
-         val result = controller.continueDeclaration("123")(getRequest())
+        val result = controller.continueDeclaration("123")(getRequest())
 
-         status(result) must be(SEE_OTHER)
-         session(result).get(ExportsSessionKeys.declarationId) must be(Some("123"))
-       }
+        status(result) must be(SEE_OTHER)
+        session(result).get(ExportsSessionKeys.declarationId) must be(Some("123"))
+      }
 
       "continue declaration not found" in new SetUp {
 

@@ -26,7 +26,7 @@
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, suppDecData: SupplementaryDeclarationData)(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, suppDecData: SupplementaryDeclarationData)(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(
     title = messages("supplementary.summary.title")
