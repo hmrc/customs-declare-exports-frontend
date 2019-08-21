@@ -54,13 +54,15 @@ class AdditionalInformationController @Inject()(
     }
   }
 
-  def saveAdditionalInfo(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def saveAdditionalInfo(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
+    implicit request =>
       val boundForm = form().bindFromRequest()
       val actionTypeOpt = FormAction.bindFromRequest()
 
       val cache = request.cacheModel
         .itemBy(itemId)
-        .flatMap(_.additionalInformation).getOrElse(AdditionalInformationData(Seq()))
+        .flatMap(_.additionalInformation)
+        .getOrElse(AdditionalInformationData(Seq()))
 
       actionTypeOpt match {
         case Some(Add)             => handleAdd(itemId, boundForm, cache.items)
@@ -110,18 +112,15 @@ class AdditionalInformationController @Inject()(
       .map(_ => Ok(additionalInformationPage(itemId, boundForm.discardingErrors, updatedCache)))
   }
 
-  private def updateCache(
-    itemId: String,
-    updatedAdditionalInformation: AdditionalInformationData
-  )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(
-      model => {
-        val itemList = model.items
-          .find(item => item.id.equals(itemId))
-          .map(_.copy(additionalInformation = Some(updatedAdditionalInformation)))
-          .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
+  private def updateCache(itemId: String, updatedAdditionalInformation: AdditionalInformationData)(
+    implicit r: JourneyRequest[_]
+  ): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => {
+      val itemList = model.items
+        .find(item => item.id.equals(itemId))
+        .map(_.copy(additionalInformation = Some(updatedAdditionalInformation)))
+        .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
 
-        model.copy(items = itemList)
-      }
-    )
+      model.copy(items = itemList)
+    })
 }

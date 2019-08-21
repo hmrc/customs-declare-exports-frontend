@@ -49,11 +49,20 @@ trait ControllerSpec
     JourneyRequest(getAuthenticatedRequest(), declaration)
 
   protected def postRequest(body: JsValue): Request[AnyContentAsJson] =
-    FakeRequest("POST", "").withSession(ExportsSessionKeys.declarationId -> "declaration-id").withJsonBody(body).withCSRFToken
+    FakeRequest("POST", "")
+      .withSession(ExportsSessionKeys.declarationId -> "declaration-id")
+      .withJsonBody(body)
+      .withCSRFToken
 
   protected def postRequest(body: JsValue, declaration: ExportsDeclaration): Request[AnyContentAsJson] =
-    FakeRequest("POST", "").withSession(ExportsSessionKeys.declarationId -> declaration.id.getOrElse("")).withJsonBody(body).withCSRFToken
+    FakeRequest("POST", "")
+      .withSession(ExportsSessionKeys.declarationId -> declaration.id.getOrElse(""))
+      .withJsonBody(body)
+      .withCSRFToken
 
   protected def postRequestAsFormUrlEncoded(body: (String, String)*): Request[AnyContentAsFormUrlEncoded] =
-    FakeRequest("POST", "").withSession(ExportsSessionKeys.declarationId -> "declaration-id").withFormUrlEncodedBody(body: _*).withCSRFToken
+    FakeRequest("POST", "")
+      .withSession(ExportsSessionKeys.declarationId -> "declaration-id")
+      .withFormUrlEncodedBody(body: _*)
+      .withCSRFToken
 }

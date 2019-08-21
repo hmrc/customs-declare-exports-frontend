@@ -48,7 +48,8 @@ class RepresentativeDetailsController @Inject()(
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    RepresentativeDetails.form()
+    RepresentativeDetails
+      .form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[RepresentativeDetails]) =>

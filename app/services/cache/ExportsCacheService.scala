@@ -26,11 +26,10 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ExportsCacheService @Inject()(connector: CustomsDeclareExportsConnector)(
-  implicit ec: ExecutionContext
-) {
+class ExportsCacheService @Inject()(connector: CustomsDeclareExportsConnector)(implicit ec: ExecutionContext) {
 
-  def create(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] = connector.createDeclaration(declaration)
+  def create(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] =
+    connector.createDeclaration(declaration)
 
   def update(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[Option[ExportsDeclaration]] = {
     val declarationWithUpdatedTimestamp = declaration.copy(updatedDateTime = Instant.now())

@@ -54,7 +54,6 @@ trait MockExportCacheService extends MockitoSugar with ExportsDeclarationBuilder
     captor.getValue
   }
 
-
   protected def verifyTheCacheIsUnchanged(): Unit = {
     verify(mockExportsCacheService, never()).update(any[ExportsDeclaration])(any())
     verify(mockExportsCacheService, never()).create(any[ExportsDeclaration])(any())

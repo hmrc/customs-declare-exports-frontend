@@ -62,8 +62,8 @@ class TransportDetailsController @Inject()(
     else if (request.choice.value == AllowedChoiceValues.StandardDec) Redirect(routes.SealController.displayForm())
     else Redirect(routes.SummaryController.displayPage(Mode.NormalMode))
 
-  private def updateCache(formData: TransportDetails)(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(
-      model => model.copy(transportDetails = Some(formData))
-    )
+  private def updateCache(
+    formData: TransportDetails
+  )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => model.copy(transportDetails = Some(formData)))
 }
