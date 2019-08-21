@@ -1,0 +1,59 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import java.time.ZoneId
+@import java.time.Instant
+@import controllers.routes._
+@import forms.CancelDeclaration
+@import views.ViewDates
+@import uk.gov.hmrc.play.views.html._
+
+@import views.components.inputs.RadioOption
+@import forms.cancellation.CancellationChangeReason
+@import forms.cancellation.CancellationChangeReason.{NoLongerRequired, Duplication, OtherReason}
+
+@this(main_template: views.html.main_template)
+
+@(declarations: Paginated[ExportsDeclaration])(implicit request: Request[_], messages: Messages)
+
+@main_template(
+    title = messages("saved.declarations.title")
+) {
+
+    @components.back_link(routes.ChoiceController.displayPage().url)
+
+    <h1>@messages("saved.declarations.title")</h1>
+
+    <table class="govuk-table">
+        <tr class="table-row table-head">
+            <th class="table-cell">@messages("saved.declarations.ducr")</th>
+            <th class="table-cell">@messages("saved.declarations.dateSaved")</th>
+        </tr>
+
+        @for( declaration <- declarations.results ) {
+            <tr class="table-row">
+                <td class="table-cell">
+                    <a href="@routes.SavedDeclarationsController.continueDeclaration(declaration.id.getOrElse(""))">
+                    @declaration.ducr.getOrElse(messages("saved.declarations.noDucr"))
+                    </a>
+                </td>
+                <td class="table-cell">@ViewDates.formatDateAtTime(declaration.updatedDateTime)</td>
+            </tr>
+        }
+
+    </table>
+
+}

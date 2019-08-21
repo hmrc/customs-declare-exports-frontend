@@ -16,6 +16,7 @@
 
 package unit.controllers.declaration
 
+import config.AppConfig
 import controllers.declaration.SummaryController
 import models.declaration.SupplementaryDeclarationData
 import models.requests.{ExportsSessionKeys, JourneyRequest}
@@ -40,6 +41,7 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
   val mockSummaryPage = mock[summary_page]
   val mockSummaryPageNoData = mock[summary_page_no_data]
   val mockSubmissionService = mock[SubmissionService]
+  val appConfig = mock[AppConfig]
 
   val controller = new SummaryController(
     mockAuthAction,
@@ -50,13 +52,13 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
     stubMessagesControllerComponents(),
     mockSummaryPage,
     mockSummaryPageNoData
-  )(ec)
+  )(ec, appConfig)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    when(mockSummaryPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockSummaryPage.apply(any(), any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
     when(mockSummaryPageNoData.apply()(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -67,7 +69,7 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
 
   def theResponseData: SupplementaryDeclarationData = {
     val captor = ArgumentCaptor.forClass(classOf[SupplementaryDeclarationData])
-    verify(mockSummaryPage).apply(any(), captor.capture())(any(), any())
+    verify(mockSummaryPage).apply(any(), captor.capture())(any(), any(), any())
     captor.getValue
   }
 
@@ -79,10 +81,10 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
 
         withNewCaching(aDeclaration(withConsignmentReferences()))
 
-        val result = controller.displayPage(Mode.NormalMode)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
-        verify(mockSummaryPage, times(1)).apply(any(), any())(any(), any())
+        verify(mockSummaryPage, times(1)).apply(any(), any())(any(), any(), any())
         verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
 
         theResponseData.consignmentReferences.value.lrn mustBe LRN
@@ -92,10 +94,10 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
 
         withNewCaching(aDeclaration())
 
-        val result = controller.displayPage(Mode.NormalMode)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
-        verify(mockSummaryPage, times(0)).apply(any(), any())(any(), any())
+        verify(mockSummaryPage, times(0)).apply(any(), any())(any(), any(), any())
         verify(mockSummaryPageNoData, times(1)).apply()(any(), any())
       }
     }
@@ -111,7 +113,7 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
         val result = controller.submitDeclaration()(postRequest(Json.toJson(declaration)))
 
         status(result) mustBe INTERNAL_SERVER_ERROR
-        verify(mockSummaryPage, times(0)).apply(any(), any())(any(), any())
+        verify(mockSummaryPage, times(0)).apply(any(), any())(any(), any(), any())
         verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
       }
     }
@@ -121,11 +123,8 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
         val declaration = aDeclaration()
         withNewCaching(aDeclaration())
         when(
-          mockSubmissionService.submit(any[ExportsDeclaration])(
-            any[JourneyRequest[_]],
-            any[HeaderCarrier],
-            any[ExecutionContext]
-          )
+          mockSubmissionService
+            .submit(any[ExportsDeclaration])(any[JourneyRequest[_]], any[HeaderCarrier], any[ExecutionContext])
         ).thenReturn(Future.successful(Some("123LRN")))
 
         val result = controller.submitDeclaration()(postRequest(Json.toJson(declaration)))
@@ -134,7 +133,11 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
         session(result).get(ExportsSessionKeys.declarationId) must be(None)
         redirectLocation(result) must be(Some(controllers.declaration.routes.ConfirmationController.displaySubmissionConfirmation().url))
         flash(result).get("LRN") must be(Some("123LRN"))
-        verify(mockSubmissionService).submit(any[ExportsDeclaration])(any[JourneyRequest[_]], any[HeaderCarrier], any[ExecutionContext])
+        verify(mockSubmissionService).submit(any[ExportsDeclaration])(
+          any[JourneyRequest[_]],
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
       }
     }
   }

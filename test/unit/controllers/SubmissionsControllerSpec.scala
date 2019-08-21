@@ -64,8 +64,10 @@ class SubmissionsControllerSpec extends ControllerSpec {
   "Display Submissions" should {
     "return 200 (OK)" when {
       "display page method is invoked" in new SetUp {
-        when(mockCustomsDeclareExportsConnector.fetchSubmissions()(any(), any())).thenReturn(successful(Seq(submission)))
-        when(mockCustomsDeclareExportsConnector.fetchNotifications()(any(), any())).thenReturn(successful(Seq(notification)))
+        when(mockCustomsDeclareExportsConnector.fetchSubmissions()(any(), any()))
+          .thenReturn(successful(Seq(submission)))
+        when(mockCustomsDeclareExportsConnector.fetchNotifications()(any(), any()))
+          .thenReturn(successful(Seq(notification)))
 
         val result = controller.displayListOfSubmissions()(getRequest())
 
@@ -79,13 +81,17 @@ class SubmissionsControllerSpec extends ControllerSpec {
       "declaration found" in new SetUp {
         val rejectedDeclaration: ExportsDeclaration = aDeclaration(withId("id"), withStatus(DeclarationStatus.COMPLETE))
         val newDeclaration: ExportsDeclaration = aDeclaration(withId("new-id"), withStatus(DeclarationStatus.DRAFT))
-        when(mockCustomsDeclareExportsConnector.findDeclaration(refEq("id"))(any(), any())).thenReturn(successful(Some(rejectedDeclaration)))
-        when(mockCustomsDeclareExportsConnector.createDeclaration(any[ExportsDeclaration])(any(), any())).thenReturn(successful(newDeclaration))
+        when(mockCustomsDeclareExportsConnector.findDeclaration(refEq("id"))(any(), any()))
+          .thenReturn(successful(Some(rejectedDeclaration)))
+        when(mockCustomsDeclareExportsConnector.createDeclaration(any[ExportsDeclaration])(any(), any()))
+          .thenReturn(successful(newDeclaration))
 
         val result = controller.amend("id")(getRequest())
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.declaration.routes.SummaryController.displayPage(Mode.AmendMode).url))
+        redirectLocation(result) must be(
+          Some(controllers.declaration.routes.SummaryController.displayPage(Mode.Amend).url)
+        )
         session(result).get(ExportsSessionKeys.declarationId) must be(Some("new-id"))
         theDeclarationCreated.status mustBe DeclarationStatus.DRAFT
       }

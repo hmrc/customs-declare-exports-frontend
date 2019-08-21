@@ -16,6 +16,9 @@
 
 package models.declaration
 
+import java.time.Instant
+import java.time.temporal.ChronoUnit
+
 import forms.declaration._
 import models.ExportsDeclaration
 import models.declaration.dectype.DeclarationTypeSupplementary
@@ -26,7 +29,9 @@ case class SupplementaryDeclarationData(
   parties: Option[Parties] = None,
   locations: Option[Locations] = None,
   transportInformationContainerData: Option[TransportInformationContainerData] = None,
-  items: Option[Items] = None
+  items: Option[Items] = None,
+  createDate: Option[Instant] = None,
+  updatedDate: Option[Instant] = None
 )
 
 object SupplementaryDeclarationData {
@@ -38,7 +43,9 @@ object SupplementaryDeclarationData {
       parties = flattenIfEmpty(Parties(cacheData)),
       locations = flattenIfEmpty(Locations(cacheData)),
       transportInformationContainerData = cacheData.containerData,
-      items = flattenIfEmpty(Items(cacheData))
+      items = flattenIfEmpty(Items(cacheData)),
+      createDate = Some(cacheData.createdDateTime),
+      updatedDate = Some(cacheData.updatedDateTime)
     )
 
   private def flattenIfEmpty[A <: SummaryContainer](container: A): Option[A] =

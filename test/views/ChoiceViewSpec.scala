@@ -60,6 +60,7 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
       ensureRadioIsUnChecked(view, "Standard declaration")
       ensureRadioIsUnChecked(view, "Cancel declaration")
       ensureRadioIsUnChecked(view, "Submissions")
+      ensureRadioIsUnChecked(view, "Continue declaration")
     }
 
     "display only Supplementary radio button with description" in {
@@ -122,7 +123,7 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
   "Choice View when filled" should {
 
-    "display selected first radio button - Supplementary (SMP)" in {
+    "display selected radio button - Supplementary (SMP)" in {
       val view = createView(Choice.form().fill(Choice("SMP")))
       ensureAllLabelTextIsCorrect(view)
 
@@ -130,10 +131,10 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
       ensureRadioIsUnChecked(view, "Standard declaration")
       ensureRadioIsUnChecked(view, "Cancel declaration")
       ensureRadioIsUnChecked(view, "Submissions")
-
+      ensureRadioIsUnChecked(view, "Continue declaration")
     }
 
-    "display selected second radio button - Standard (STD)" in {
+    "display selected radio button - Standard (STD)" in {
       val view = createView(Choice.form().fill(Choice("STD")))
       ensureAllLabelTextIsCorrect(view)
 
@@ -141,10 +142,10 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
       ensureRadioIsChecked(view, "Standard declaration")
       ensureRadioIsUnChecked(view, "Cancel declaration")
       ensureRadioIsUnChecked(view, "Submissions")
-
+      ensureRadioIsUnChecked(view, "Continue declaration")
     }
 
-    "display selected fifth radio button - Cancel declaration (CAN)" in {
+    "display selected radio button - Cancel declaration (CAN)" in {
       val view = createView(Choice.form().fill(Choice("CAN")))
       ensureAllLabelTextIsCorrect(view)
 
@@ -152,9 +153,10 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
       ensureRadioIsUnChecked(view, "Standard declaration")
       ensureRadioIsChecked(view, "Cancel declaration")
       ensureRadioIsUnChecked(view, "Submissions")
+      ensureRadioIsUnChecked(view, "Continue declaration")
     }
 
-    "display selected sixth radio button - View recent declarations (SUB)" in {
+    "display selected radio button - View recent declarations (SUB)" in {
       val view = createView(Choice.form().fill(Choice("SUB")))
 
       ensureAllLabelTextIsCorrect(view)
@@ -163,6 +165,19 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
       ensureRadioIsUnChecked(view, "Standard declaration")
       ensureRadioIsUnChecked(view, "Cancel declaration")
       ensureRadioIsChecked(view, "Submissions")
+      ensureRadioIsUnChecked(view, "Continue declaration")
+    }
+
+    "display selected radio button - Contimue saved declaration (Con)" in {
+      val view = createView(Choice.form().fill(Choice("CON")))
+
+      ensureAllLabelTextIsCorrect(view)
+
+      ensureRadioIsUnChecked(view, "Supplementary declaration")
+      ensureRadioIsUnChecked(view, "Standard declaration")
+      ensureRadioIsUnChecked(view, "Cancel declaration")
+      ensureRadioIsUnChecked(view, "Submissions")
+      ensureRadioIsChecked(view, "Continue declaration")
     }
   }
   private def ensureAllLabelTextIsCorrect(view: Html): Unit = {
@@ -171,6 +186,7 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
     labels.forall(elems => elems.getElementsContainingText(messages(standardDec)).isEmpty) must be(false)
     labels.forall(elems => elems.getElementsContainingText(messages(cancelDec)).isEmpty) must be(false)
     labels.forall(elems => elems.getElementsContainingText(messages(recentDec)).isEmpty) must be(false)
+    labels.forall(elems => elems.getElementsContainingText(messages(continueDec)).isEmpty) must be(false)
   }
 
   private def ensureSupplementaryLabelIsCorrect(view: Html): Unit = {

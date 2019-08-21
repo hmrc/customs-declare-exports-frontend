@@ -173,7 +173,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(
-          Some(controllers.declaration.routes.SummaryController.displayPage(Mode.NormalMode).url)
+          Some(controllers.declaration.routes.SummaryController.displayPage(Mode.Normal).url)
         )
       }
 

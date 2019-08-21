@@ -84,7 +84,7 @@ class TransportContainerController @Inject()(
 
   private def redirect()(implicit request: JourneyRequest[_]) =
     if (request.choice.value == AllowedChoiceValues.StandardDec) Redirect(routes.SealController.displayForm())
-    else Redirect(routes.SummaryController.displayPage(Mode.NormalMode))
+    else Redirect(routes.SummaryController.displayPage(Mode.Normal))
 
   private def removeContainer(
     userInput: Form[TransportInformationContainer],

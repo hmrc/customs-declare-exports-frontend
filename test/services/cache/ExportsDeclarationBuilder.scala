@@ -16,7 +16,7 @@
 
 package services.cache
 
-import java.time.{LocalDate, LocalDateTime, ZoneOffset}
+import java.time.{LocalDate, LocalDateTime, ZoneOffset, Instant}
 import java.util.UUID
 
 import forms.common.Address
@@ -63,6 +63,8 @@ trait ExportsDeclarationBuilder {
   def withUpdateDate(date: LocalDateTime): ExportsDeclarationModifier = _.copy(updatedDateTime = date.toInstant(ZoneOffset.UTC))
 
   def withUpdateDate(date: LocalDate): ExportsDeclarationModifier = _.copy(updatedDateTime = date.atStartOfDay().toInstant(ZoneOffset.UTC))
+
+  def withUpdateTime(updateDateTime: Instant): ExportsDeclarationModifier = _.copy(updatedDateTime = updateDateTime)
 
   def withoutTotalNumberOfItems(): ExportsDeclarationModifier = _.copy(totalNumberOfItems = None)
 

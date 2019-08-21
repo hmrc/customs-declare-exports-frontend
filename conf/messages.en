@@ -144,6 +144,7 @@ declaration.choice.description = What do you want to do?
 declaration.choice.SMP = Supplementary declaration
 declaration.choice.STD = Standard declaration
 declaration.choice.CAN = Cancel declaration
+declaration.choice.CON = Continue a saved declaration
 declaration.choice.SUB = View recent declarations
 
 startPage.title = Register for customs services
@@ -298,6 +299,15 @@ submissions.mrn = MRN
 submissions.submittedTimestamp = Timestamp
 submissions.status = Status
 submissions.noOfNotifications = Number of notifications
+
+saved.declarations.title = Your saved declarations
+saved.declarations.ducr = DUCR
+saved.declarations.noDucr = No DUCR added
+saved.declarations.dateSaved = Date and time saved
+saved.declarations.summary.inProgress = In progress
+saved.declarations.summary.paragraph = Click continue declaration to go back through the declaration from the begining.  You will need to continue through the declaration until you get to back to where you saved.
+saved.declarations.summary.createdDate = Date created
+saved.declarations.summary.expireDate = Expiry date
 
 supplementary.declarationHolder.title = What authorisation is required for this export?
 supplementary.declarationHolder.title.hint = This will depend on the type of procedure code used for this export. If no authorisation is needed, leave this page blank and continue.
@@ -657,6 +667,7 @@ supplementary.commodityMeasure.supplementaryUnits.error = Supplementary units sh
 supplementary.summary.title = Summary
 supplementary.summary.normal-header = Check your answers before making this declaration
 supplementary.summary.amend-header = Check your answers
+supplementary.summary.saved-header = Continue saved declaration
 supplementary.summary.noData.header = No information for supplementary declaration found
 supplementary.summary.noData.header.secondary = Please, go back and provide necessary information before proceeding
 supplementary.summary.declarationType.header = Declaration type

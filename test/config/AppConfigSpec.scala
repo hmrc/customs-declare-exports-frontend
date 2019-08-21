@@ -54,7 +54,7 @@ class AppConfigSpec extends CustomExportsBaseSpec {
         |microservice.services.customs-declare-exports.host=localhoste
         |microservice.services.customs-declare-exports.port=9875
         |microservice.services.customs-declare-exports.submit-declaration=/declaration
-        |microservice.services.customs-declare-exports.submit-declaration-v2=/v2/declaration
+        |microservice.services.customs-declare-exports.declaration-v2=/v2/declaration
         |microservice.services.customs-declare-exports.cancel-declaration=/cancel-declaration
         |microservice.services.customs-declare-exports.fetch-notifications=/notifications
         |microservice.services.customs-declare-exports-movements.host=localhostm
@@ -186,6 +186,9 @@ class AppConfigSpec extends CustomExportsBaseSpec {
 
   }
 
+  "have draft lifetime" in {
+    validConfigService.draftTimeToLive must be(FiniteDuration(30, TimeUnit.DAYS))
+  }
   "empty Choice options when list-of-available-journeys is not defined" in {
     emptyConfigService.availableJourneys().size must be(1)
     emptyConfigService.availableJourneys() must contain(Choice.AllowedChoiceValues.SupplementaryDec)

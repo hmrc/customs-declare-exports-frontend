@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import controllers.declaration.routes
 @import forms.Choice.AllowedChoiceValues._
 @import models.Mode
@@ -21,10 +22,11 @@
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 @import views.html.declaration.summary._
+@import views.ViewDates
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, suppDecData: SupplementaryDeclarationData)(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, suppDecData: SupplementaryDeclarationData)(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(
     title = messages("supplementary.summary.title")
@@ -44,11 +46,32 @@
     @components.page_title(
         title = Some(
             mode match {
-                case Mode.NormalMode => messages("supplementary.summary.normal-header")
-                case Mode.AmendMode => messages("supplementary.summary.amend-header")
+                case Mode.Normal => messages("supplementary.summary.normal-header")
+                case Mode.Amend => messages("supplementary.summary.amend-header")
+                case Mode.Draft => messages("supplementary.summary.saved-header")
             }
         )
     )
+
+    @if(mode == Mode.Draft) {
+        <p>@messages("saved.declarations.summary.inProgress")</p>
+        <p>@messages("saved.declarations.summary.paragraph")</p>
+
+        @components.summary_list(None) {
+            @components.table_row_no_change_link(HtmlTableRow(
+                label = messages("supplementary.summary.yourReferences.ducr"),
+                value = Seq(suppDecData.consignmentReferences.map(_.ducr.ducr))
+            ))
+            @components.table_row_no_change_link(HtmlTableRow(
+                label = messages("saved.declarations.summary.createdDate"),
+                value = Seq(suppDecData.createDate.map(ViewDates.formatDateAtTime(_)))
+            ))
+            @components.table_row_no_change_link(HtmlTableRow(
+                label = messages("saved.declarations.summary.expireDate"),
+                value = Seq(suppDecData.updatedDate.map(createDate => createDate.plusSeconds(appConfig.draftTimeToLive.toSeconds)).map(ViewDates.formatDateAtTime(_)))
+            ))
+        }
+    }
 
     @components.summary_list(Some(messages("supplementary.summary.declarationType.header"))) {
         @components.table_row_no_change_link(HtmlTableRow(
@@ -84,11 +107,7 @@
 
     @items_section(suppDecData.items)
 
-    @if(mode == Mode.AmendMode) {
-        <a class="button mt-3" href="@routes.DispatchLocationController.displayPage()">@messages("site.continue")</a>
-    }
-
-    @if(mode == Mode.NormalMode) {
+    @if(mode == Mode.Normal) {
         @helper.form(action = routes.SummaryController.submitDeclaration(), 'id -> "summary") {
             @helper.CSRF.formField
 
@@ -99,5 +118,7 @@
                 document.getElementById("submit").disabled = true;
             });
         </script>
+    } else {
+        <a class="button mt-3" href="@routes.DispatchLocationController.displayPage()">@messages("site.continue")</a>
     }
 }
