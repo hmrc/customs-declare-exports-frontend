@@ -69,7 +69,7 @@ object Document {
   object AllowedValues {
     val TemporaryStorage = "X"
     val SimplifiedDeclaration = "Y"
-    val PreviousDocument = "Z"
+    val RelatedDocument = "Z"
   }
 }
 
