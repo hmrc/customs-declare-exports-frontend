@@ -18,7 +18,7 @@ package controllers.navigation
 
 import config.AppConfig
 import javax.inject.Inject
-import models.requests.JourneyRequest
+import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
 import play.api.mvc.{Result, Results}
 
@@ -27,9 +27,10 @@ class Navigator @Inject()(appConfig: AppConfig) {
   def goToDraftConfirmation()(implicit req: JourneyRequest[_]): Result = {
     val updatedDateTime = req.cacheModel.updatedDateTime
     val expiry = updatedDateTime.plusSeconds(appConfig.draftTimeToLive.toSeconds)
-    Results.Redirect(
-      controllers.declaration.routes.ConfirmationController.displayDraftConfirmation()
-    ).flashing(FlashKeys.expiryDate -> expiry.toEpochMilli.toString)
+    Results
+      .Redirect(controllers.declaration.routes.ConfirmationController.displayDraftConfirmation())
+      .flashing(FlashKeys.expiryDate -> expiry.toEpochMilli.toString)
+      .removingFromSession(ExportsSessionKeys.declarationId)
   }
 
 }
