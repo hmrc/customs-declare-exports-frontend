@@ -121,11 +121,8 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
         val declaration = aDeclaration()
         withNewCaching(aDeclaration())
         when(
-          mockSubmissionService.submit(any[ExportsDeclaration])(
-            any[JourneyRequest[_]],
-            any[HeaderCarrier],
-            any[ExecutionContext]
-          )
+          mockSubmissionService
+            .submit(any[ExportsDeclaration])(any[JourneyRequest[_]], any[HeaderCarrier], any[ExecutionContext])
         ).thenReturn(Future.successful(Some("123LRN")))
 
         val result = controller.submitDeclaration()(postRequest(Json.toJson(declaration)))
@@ -134,7 +131,11 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
         session(result).get(ExportsSessionKeys.declarationId) must be(None)
         redirectLocation(result) must be(Some(controllers.declaration.routes.ConfirmationController.displayPage().url))
         flash(result).get("LRN") must be(Some("123LRN"))
-        verify(mockSubmissionService).submit(any[ExportsDeclaration])(any[JourneyRequest[_]], any[HeaderCarrier], any[ExecutionContext])
+        verify(mockSubmissionService).submit(any[ExportsDeclaration])(
+          any[JourneyRequest[_]],
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
       }
     }
   }
