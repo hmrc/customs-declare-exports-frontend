@@ -75,9 +75,9 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
       val view = createView()
 
-      getElementById(view, "ucr-label").text() must be(messages(ucrInfo))
-      getElementById(view, "ucr-hint").text() must be(messages(ucrHint))
-      getElementById(view, "ucr").attr("value") must be("")
+      getElementById(view, "personalUcr-label").text() must be(messages(ucrInfo))
+      getElementById(view, "personalUcr-hint").text() must be(messages(ucrHint))
+      getElementById(view, "personalUcr").attr("value") must be("")
     }
 
     "display 'Back' button that links to 'Declaration Type' page" in {
@@ -182,9 +182,10 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
     "display data in DUCR input" in {
 
-      val view = createView(ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("12345"), "")))
+      val view =
+        createView(ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("9GB12345678901234-SHIP1234-1"), "")))
 
-      getElementById(view, "ducr_ducr").attr("value") must be("12345")
+      getElementById(view, "ducr_ducr").attr("value") must be("9GB12345678901234-SHIP1234-1")
       getElementById(view, "lrn").attr("value") must be("")
     }
 
@@ -199,11 +200,13 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
     "display data in all inputs" in {
 
       val view =
-        createView(ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("12345"), "test1", Some("ucr"))))
+        createView(
+          ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("GB/ABC4-ASIUDYFAHSDJF"), "test1", Some("ucr")))
+        )
 
-      getElementById(view, "ducr_ducr").attr("value") must be("12345")
+      getElementById(view, "ducr_ducr").attr("value") must be("GB/ABC4-ASIUDYFAHSDJF")
       getElementById(view, "lrn").attr("value") must be("test1")
-      getElementById(view, "ucr").attr("value") must be("ucr")
+      getElementById(view, "personalUcr").attr("value") must be("ucr")
     }
 
     "display error when UCR is longer then 35 characters" in {
@@ -221,9 +224,9 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, ucrLength, "#ucr")
+      checkErrorLink(view, 1, ucrLength, "#personalUcr")
 
-      getElementByCss(view, "#error-message-ucr-input").text() must be(messages(ucrLength))
+      getElementByCss(view, "#error-message-personalUcr-input").text() must be(messages(ucrLength))
     }
 
     "display error when UCR contains special character" in {
@@ -234,9 +237,9 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
         )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, ucrSpecialCharacter, "#ucr")
+      checkErrorLink(view, 1, ucrSpecialCharacter, "#personalUcr")
 
-      getElementByCss(view, "#error-message-ucr-input").text() must be(messages(ucrSpecialCharacter))
+      getElementByCss(view, "#error-message-personalUcr-input").text() must be(messages(ucrSpecialCharacter))
     }
 
   }

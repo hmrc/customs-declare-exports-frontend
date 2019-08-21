@@ -65,10 +65,10 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
 
       getElementById(view, "Simplified declaration-label").text() must be(messages(documentY))
 
-      val optionThree = getElementById(view, "Previous document")
+      val optionThree = getElementById(view, "Related document")
       optionThree.attr("checked") must be("")
 
-      getElementById(view, "Previous document-label").text() must be(messages(documentZ))
+      getElementById(view, "Related document-label").text() must be(messages(documentZ))
     }
 
     "display empty input with label for Previous document code" in {
@@ -127,7 +127,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
       val optionTwo = getElementById(view, "Simplified declaration")
       optionTwo.attr("checked") must be("")
 
-      val optionThree = getElementById(view, "Previous document")
+      val optionThree = getElementById(view, "Related document")
       optionThree.attr("checked") must be("")
     }
 
@@ -141,7 +141,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
       val optionTwo = getElementById(view, "Simplified declaration")
       optionTwo.attr("checked") must be("checked")
 
-      val optionThree = getElementById(view, "Previous document")
+      val optionThree = getElementById(view, "Related document")
       optionThree.attr("checked") must be("")
     }
 
@@ -155,7 +155,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
       val optionTwo = getElementById(view, "Simplified declaration")
       optionTwo.attr("checked") must be("")
 
-      val optionThree = getElementById(view, "Previous document")
+      val optionThree = getElementById(view, "Related document")
       optionThree.attr("checked") must be("checked")
     }
 
@@ -196,7 +196,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
       val optionTwo = getElementById(view, "Simplified declaration")
       optionTwo.attr("checked") must be("")
 
-      val optionThree = getElementById(view, "Previous document")
+      val optionThree = getElementById(view, "Related document")
       optionThree.attr("checked") must be("")
 
       getElementById(view, "documentType").attr("value") must be("Test")

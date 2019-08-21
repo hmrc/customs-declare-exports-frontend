@@ -65,7 +65,7 @@
     @components.summary_list(Some(messages("supplementary.summary.yourReferences.header"))) {
         @components.table_row_no_change_link(HtmlTableRow(
             label = messages("supplementary.summary.yourReferences.ducr"),
-            value = Seq(suppDecData.consignmentReferences.map(_.ducr.ducr)))
+            value = Seq(suppDecData.consignmentReferences.map(_.ducr.ducr))
         ))
         @components.table_row_no_change_link(HtmlTableRow(
             label = messages("supplementary.summary.yourReferences.lrn"),
@@ -73,7 +73,7 @@
         ))
         @components.table_row_no_change_link(HtmlTableRow(
             label = messages("supplementary.summary.yourReferences.ucr"),
-            value = Seq(suppDecData.consignmentReferences.flatMap(_.ucr))
+            value = Seq(suppDecData.consignmentReferences.flatMap(_.personalUcr))
         ))
     }
 

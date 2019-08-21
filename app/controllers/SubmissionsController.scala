@@ -20,7 +20,8 @@ import connectors.CustomsDeclareExportsConnector
 import controllers.actions.AuthAction
 import controllers.util.SubmissionDisplayHelper
 import javax.inject.Inject
-import models.Mode
+import models.{DeclarationStatus, Mode}
+import models.requests.ExportsSessionKeys
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -32,7 +33,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class SubmissionsController @Inject()(
   authenticate: AuthAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
-  exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   submissionsPage: submissions
 )(implicit ec: ExecutionContext)
@@ -51,9 +51,12 @@ class SubmissionsController @Inject()(
   def amend(id: String): Action[AnyContent] = authenticate.async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id) flatMap {
       case Some(declaration) =>
-        exportsCacheService
-          .update(declaration)
-          .map(_ => Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.AmendMode)))
+        customsDeclareExportsConnector
+          .createDeclaration(declaration.copy(status = DeclarationStatus.DRAFT))
+          .map { created =>
+            Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.AmendMode))
+              .addingToSession(ExportsSessionKeys.declarationId -> created.id.get)
+          }
       case _ => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
     }
 

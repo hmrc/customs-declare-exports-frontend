@@ -69,7 +69,7 @@ object Document {
   object AllowedValues {
     val TemporaryStorage = "X"
     val SimplifiedDeclaration = "Y"
-    val PreviousDocument = "Z"
+    val RelatedDocument = "Z"
   }
 }
 
@@ -80,5 +80,5 @@ object PreviousDocumentsData {
 
   val maxAmountOfItems = 99
 
-  val isScreenMandatory = true
+  val isScreenMandatory = false
 }
