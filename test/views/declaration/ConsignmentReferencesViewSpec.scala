@@ -182,7 +182,8 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
     "display data in DUCR input" in {
 
-      val view = createView(ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("9GB12345678901234-SHIP1234-1"), "")))
+      val view =
+        createView(ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("9GB12345678901234-SHIP1234-1"), "")))
 
       getElementById(view, "ducr_ducr").attr("value") must be("9GB12345678901234-SHIP1234-1")
       getElementById(view, "lrn").attr("value") must be("")
@@ -199,7 +200,9 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
     "display data in all inputs" in {
 
       val view =
-        createView(ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("GB/ABC4-ASIUDYFAHSDJF"), "test1", Some("ucr"))))
+        createView(
+          ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("GB/ABC4-ASIUDYFAHSDJF"), "test1", Some("ucr")))
+        )
 
       getElementById(view, "ducr_ducr").attr("value") must be("GB/ABC4-ASIUDYFAHSDJF")
       getElementById(view, "lrn").attr("value") must be("test1")
