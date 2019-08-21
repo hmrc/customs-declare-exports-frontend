@@ -17,6 +17,8 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
+import controllers.util.{FormAction, SaveAndContinue, SaveAndReturn}
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.additionaldeclarationtype._
 import javax.inject.Inject
@@ -34,6 +36,7 @@ class AdditionalDeclarationTypeController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
+  navigator: Navigator,
   mcc: MessagesControllerComponents,
   declarationTypePage: declaration_type
 )(implicit ec: ExecutionContext)
@@ -48,16 +51,22 @@ class AdditionalDeclarationTypeController @Inject()(
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val decType = extractFormType(request)
-    decType
-      .form()
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(declarationTypePage(formWithErrors))),
-        validAdditionalDeclarationType =>
-          updateCache(validAdditionalDeclarationType)
-            .map(_ => Redirect(controllers.declaration.routes.ConsignmentReferencesController.displayPage()))
-      )
+    val action = FormAction.bindFromRequest
+    val decType = extractFormType(request).form().bindFromRequest()
+
+    action match {
+      case Some(SaveAndContinue) =>
+        decType
+          .fold(
+            formWithErrors => Future.successful(BadRequest(declarationTypePage(formWithErrors))),
+            validAdditionalDeclarationType =>
+              updateCache(validAdditionalDeclarationType).map { _ =>
+                Redirect(controllers.declaration.routes.ConsignmentReferencesController.displayPage())
+            }
+          )
+      case Some(SaveAndReturn) =>
+        Future.successful(navigator.goToDraftConfirmation())
+    }
   }
 
   private def extractFormType(journeyRequest: JourneyRequest[_]): AdditionalDeclarationTypeTrait =

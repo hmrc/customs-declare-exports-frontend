@@ -25,6 +25,7 @@ sealed trait FormAction {
 object FormAction {
   private val addLabel = "Add"
   private val saveAndContinueLabel = "SaveAndContinue"
+  private val saveAndReturnLabel = "SaveAndReturn"
   private val continueLabel = "Continue"
   private val removeLabel = "Remove"
 
@@ -32,6 +33,7 @@ object FormAction {
     input.flatMap {
       case (`addLabel`, _)             => Some(Add)
       case (`saveAndContinueLabel`, _) => Some(SaveAndContinue)
+      case (saveAndReturnLabel, _)     => Some(SaveAndReturn)
       case (`continueLabel`, _)        => Some(Continue)
       case (`removeLabel`, values)     => Some(Remove(values))
       case _                           => None
@@ -44,6 +46,7 @@ object FormAction {
 case object Unknown extends FormAction
 case object Add extends FormAction
 case object SaveAndContinue extends FormAction
+case object SaveAndReturn extends FormAction
 case object Continue extends FormAction
 
 case class Remove(keys: Seq[String]) extends FormAction

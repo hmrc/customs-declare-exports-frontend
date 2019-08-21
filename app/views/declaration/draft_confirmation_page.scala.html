@@ -1,0 +1,49 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.responses.FlashKeys
+
+@this(main_template: views.html.main_template)
+
+@()(implicit request: Request[_], flash: Flash, messages: Messages)
+
+@main_template(
+    title = messages("confirmation.draft.title")
+) {
+
+    <div class="govuk-box-highlight">
+        <h1 class="heading-xlarge">
+            @messages("confirmation.draft.title")
+        </h1>
+        <p class="font-large">@messages("confirmation.draft.info", flash.get(FlashKeys.expiryDate).getOrElse("-"))</p>
+    </div>
+
+    <p>
+
+    </p>
+
+    <h1 class="heading-medium">@messages("confirmation.draft.nextHeading")</h1>
+
+    <span>
+        @messages("confirmation.draft.nextText1")
+        @* TODO Requires Draft Declarations Page Link Below, not Submissions *@
+        <a href="@routes.SubmissionsController.displayListOfSubmissions()">@messages("confirmation.draft.nextContinueLink")</a>
+        @messages("confirmation.draft.nextText2")
+        <a href="@routes.ChoiceController.displayPage()">@messages("confirmation.draft.nextStartFreshLink")</a>
+    </span>
+
+    @components.button_link(messageKey = "supplementary.confirmation.submitAnotherDeclaration", href = routes.ChoiceController.displayPage().url)
+}

@@ -18,14 +18,14 @@ package views.declaration
 import helpers.views.declaration.ConfirmationMessages
 import play.api.mvc.Flash
 import play.twirl.api.Html
-import views.html.declaration.confirmation_page
+import views.html.declaration.submission_confirmation_page
 import views.declaration.spec.ViewSpec
 import views.tags.ViewTest
 
 @ViewTest
-class ConfirmationPageViewSpec extends ViewSpec with ConfirmationMessages {
+class SubmissionConfirmationPageViewSpec extends ViewSpec with ConfirmationMessages {
 
-  private val confirmationPage = app.injector.instanceOf[confirmation_page]
+  private val confirmationPage = app.injector.instanceOf[submission_confirmation_page]
   private def createView(): Html = confirmationPage()(fakeRequest, flash, messages)
 
   "Confirmation Page View on empty page" should {

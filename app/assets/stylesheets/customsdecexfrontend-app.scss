@@ -40,3 +40,23 @@ a.button--gray, button.button--gray, .button--gray:visited {
 .mt-5 {
   margin-top: 5rem;
 }
+
+.button-link {
+  background: none !important;
+  color: inherit;
+  border: none;
+  padding: 0 !important;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+
+  &:hover, &:focus {
+    color: #2e8aca;
+  }
+
+  &:visited {
+    color: #4c2c92;
+  }
+}

@@ -132,7 +132,7 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
 
         status(result) must be(SEE_OTHER)
         session(result).get(ExportsSessionKeys.declarationId) must be(None)
-        redirectLocation(result) must be(Some(controllers.declaration.routes.ConfirmationController.displayPage().url))
+        redirectLocation(result) must be(Some(controllers.declaration.routes.ConfirmationController.displaySubmissionConfirmation().url))
         flash(result).get("LRN") must be(Some("123LRN"))
         verify(mockSubmissionService).submit(any[ExportsDeclaration])(any[JourneyRequest[_]], any[HeaderCarrier], any[ExecutionContext])
       }

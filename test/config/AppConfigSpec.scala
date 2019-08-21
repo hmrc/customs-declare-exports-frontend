@@ -16,6 +16,8 @@
 
 package config
 
+import java.util.concurrent.TimeUnit
+
 import base.CustomExportsBaseSpec
 import com.typesafe.config.{Config, ConfigFactory}
 import features.{Feature, FeatureStatus}
@@ -42,6 +44,7 @@ class AppConfigSpec extends CustomExportsBaseSpec {
         |countryCodesCsvFilename=code-lists/mdg-country-codes.csv
         |countryCodesJsonFilename=code-lists/location-autocomplete-canonical-list.json
         |list-of-available-journeys="SMP,STD,CAN,SUB"
+        |draft.timeToLive=30d
         |microservice.services.nrs.host=localhostnrs
         |microservice.services.nrs.port=7654
         |microservice.services.nrs.apikey=cds-exports
@@ -175,6 +178,10 @@ class AppConfigSpec extends CustomExportsBaseSpec {
 
     "have ttl lifetime" in {
       validConfigService.cacheTimeToLive must be(FiniteDuration(24, "h"))
+    }
+
+    "have draft lifetime" in {
+      validConfigService.draftTimeToLive must be(FiniteDuration(30, TimeUnit.DAYS))
     }
 
   }

@@ -33,6 +33,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
       mockAuthAction,
       mockJourneyAction,
       mockExportsCacheService,
+      navigator,
       stubMessagesControllerComponents(),
       additionalDeclarationTypePage
     )(ec)
