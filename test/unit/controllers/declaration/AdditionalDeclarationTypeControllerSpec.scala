@@ -71,6 +71,9 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
         status(result) must be(OK)
       }
     }
+  }
+
+  "Submit" should {
 
     "return 400 (BAD_REQUEST)" when {
 

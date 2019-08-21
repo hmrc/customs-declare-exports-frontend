@@ -54,19 +54,19 @@ class AdditionalDeclarationTypeController @Inject()(
     val action = FormAction.bindFromRequest
     val decType = extractFormType(request).form().bindFromRequest()
 
-    action match {
-      case Some(SaveAndContinue) =>
-        decType
-          .fold(
-            formWithErrors => Future.successful(BadRequest(declarationTypePage(formWithErrors))),
-            validAdditionalDeclarationType =>
+    decType
+      .fold(
+        formWithErrors => Future.successful(BadRequest(declarationTypePage(formWithErrors))),
+        validAdditionalDeclarationType =>
+          action match {
+            case Some(SaveAndContinue) =>
               updateCache(validAdditionalDeclarationType).map { _ =>
                 Redirect(controllers.declaration.routes.ConsignmentReferencesController.displayPage())
-            }
-          )
-      case Some(SaveAndReturn) =>
-        Future.successful(navigator.goToDraftConfirmation())
-    }
+              }
+            case Some(SaveAndReturn) =>
+              Future.successful(navigator.goToDraftConfirmation())
+        }
+      )
   }
 
   private def extractFormType(journeyRequest: JourneyRequest[_]): AdditionalDeclarationTypeTrait =
