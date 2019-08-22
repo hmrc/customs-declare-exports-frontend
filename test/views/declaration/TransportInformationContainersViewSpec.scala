@@ -65,11 +65,19 @@ class TransportInformationContainersViewSpec
 
       val view = createView()
 
-      val addButton = getElementByCss(view, "#add")
+      val addButton = view.getElementById("add")
       addButton.text() must be(messages(addCaption))
 
-      val saveButton = getElementByCss(view, "#submit")
+      val saveButton = view.getElementById("submit")
       saveButton.text() must be(messages(saveAndContinueCaption))
+    }
+
+    "display 'Save and return' button on page" in {
+
+      val view = createView()
+
+      val saveAndReturnButton = view.getElementById("submit_and_return")
+      saveAndReturnButton.text() must be(messages(saveAndReturnCaption))
     }
   }
 

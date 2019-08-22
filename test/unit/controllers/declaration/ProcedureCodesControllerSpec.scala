@@ -41,6 +41,7 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
   val controller = new ProcedureCodesController(
     mockAuthAction,
     mockJourneyAction,
+    navigator,
     mockErrorHandler,
     mockExportsCacheService,
     stubMessagesControllerComponents(),
@@ -48,6 +49,13 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
   )(ec)
 
   val itemId = "itemId12345"
+
+  def theResponse: (Form[ProcedureCodes], Seq[String]) = {
+    val formCaptor = ArgumentCaptor.forClass(classOf[Form[ProcedureCodes]])
+    val dataCaptor = ArgumentCaptor.forClass(classOf[Seq[String]])
+    verify(mockProcedureCodesPage).apply(any(), formCaptor.capture(), dataCaptor.capture())(any(), any())
+    (formCaptor.getValue, dataCaptor.getValue)
+  }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -59,13 +67,6 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
   override protected def afterEach(): Unit = {
     reset(mockProcedureCodesPage)
     super.afterEach()
-  }
-
-  def theResponse: (Form[ProcedureCodes], Seq[String]) = {
-    val formCaptor = ArgumentCaptor.forClass(classOf[Form[ProcedureCodes]])
-    val dataCaptor = ArgumentCaptor.forClass(classOf[Seq[String]])
-    verify(mockProcedureCodesPage).apply(any(), formCaptor.capture(), dataCaptor.capture())(any(), any())
-    (formCaptor.getValue, dataCaptor.getValue)
   }
 
   "Procedure Codes controller" should {
@@ -218,7 +219,9 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
 
         val result = controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
-        status(result) mustBe SEE_OTHER
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.ProcedureCodesController.displayPage("itemId12345")
+
         verify(mockProcedureCodesPage, times(0)).apply(any(), any(), any())(any(), any())
       }
 
@@ -231,7 +234,9 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
 
         val result = controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
-        status(result) mustBe SEE_OTHER
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.FiscalInformationController.displayPage("itemId12345")
+
         verify(mockProcedureCodesPage, times(0)).apply(any(), any(), any())(any(), any())
       }
 
@@ -246,7 +251,9 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
 
         val result = controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
-        status(result) mustBe SEE_OTHER
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.FiscalInformationController.displayPage("itemId12345")
+
         verify(mockProcedureCodesPage, times(0)).apply(any(), any(), any())(any(), any())
       }
 

@@ -55,7 +55,7 @@ class TransportDetailsViewSpec extends TransportDetailsFields with CommonMessage
 
     "display 'Back' button that links to 'border-transport' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/border-transport")
@@ -64,8 +64,16 @@ class TransportDetailsViewSpec extends TransportDetailsFields with CommonMessage
     "display 'Save and continue' button on page" in {
       val view = createView()
 
-      val saveButton = getElementByCss(view, "#submit")
+      val saveButton = view.getElementById("submit")
       saveButton.text() must be(messages(saveAndContinueCaption))
+    }
+
+    "display 'Save and return' button on page" in {
+
+      val view = createView()
+
+      val saveAndReturnButton = view.getElementById("submit_and_return")
+      saveAndReturnButton.text() must be(messages(saveAndReturnCaption))
     }
 
     "have labels for all fields" in {

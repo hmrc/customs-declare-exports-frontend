@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.{add, remove, saveAndContinue}
 import controllers.util._
 import forms.declaration.Seal
@@ -37,6 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class SealController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
+  navigator: Navigator,
   errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
@@ -57,24 +59,24 @@ class SealController @Inject()(
     val seals = data.seals
     val hasContainers: Boolean = data.transportDetails.fold(false)(_.container)
     actionTypeOpt match {
-      case Some(Add)             => addSeal(boundForm, sealsAllowed, seals)
-      case Some(Remove(ids))     => removeSeal(boundForm, seals, hasContainers, ids)
-      case Some(SaveAndContinue) => saveSeal(boundForm, sealsAllowed, seals)
-      case _                     => errorHandler.displayErrorPage()
+      case Some(Add)                                   => addSeal(boundForm, sealsAllowed, seals)
+      case Some(Remove(ids))                           => removeSeal(boundForm, seals, hasContainers, ids)
+      case Some(SaveAndContinue) | Some(SaveAndReturn) => saveSeal(boundForm, sealsAllowed, seals)
+      case _                                           => errorHandler.displayErrorPage()
     }
   }
 
   private def saveSeal(boundForm: Form[Seal], elementLimit: Int, cachedSeals: Seq[Seal])(
-    implicit request: JourneyRequest[_]
+    implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     saveAndContinue(boundForm, cachedSeals, isMandatory = false, elementLimit).fold(
       formWithErrors => badRequest(formWithErrors, cachedSeals),
       updatedCache =>
         if (updatedCache != cachedSeals) {
           updateCache(updatedCache).map { _ =>
-            Redirect(routes.SummaryController.displayPage(Mode.Normal))
+            navigator.continueTo(routes.SummaryController.displayPage(Mode.Normal))
           }
-        } else Future.successful(Redirect(routes.SummaryController.displayPage(Mode.Normal)))
+        } else Future.successful(navigator.continueTo(routes.SummaryController.displayPage(Mode.Normal)))
     )
 
   private def badRequest(formWithErrors: Form[Seal], cachedSeals: Seq[Seal])(implicit request: JourneyRequest[_]) = {
@@ -101,14 +103,14 @@ class SealController @Inject()(
     updateExportsDeclarationSyncDirect(model => model.copy(seals = formData))
 
   private def addSeal(boundForm: Form[Seal], elementLimit: Int, seals: Seq[Seal])(
-    implicit request: JourneyRequest[_]
+    implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     add(boundForm, seals, elementLimit)
       .fold(
         formWithErrors => badRequest(formWithErrors, seals),
         updatedCache =>
           updateCache(updatedCache).map { _ =>
-            Redirect(routes.SealController.displayForm())
+            navigator.continueTo(routes.SealController.displayForm())
         }
       )
 }

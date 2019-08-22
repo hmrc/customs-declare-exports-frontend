@@ -20,8 +20,8 @@ import forms.declaration.officeOfExit.{OfficeOfExitForms, OfficeOfExitSupplement
 import helpers.views.declaration.{CommonMessages, OfficeOfExitMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.html.declaration.office_of_exit_supplementary
 import views.declaration.spec.ViewSpec
+import views.html.declaration.office_of_exit_supplementary
 import views.tags.ViewTest
 
 @ViewTest
@@ -61,9 +61,13 @@ class OfficeOfExitSupplementaryViewSpec extends ViewSpec with OfficeOfExitMessag
     }
 
     "display 'Save and continue' button" in {
-
-      val saveButton = getElementByCss(createView(), "#submit")
+      val saveButton = createView().getElementById("submit")
       saveButton.text() must be(messages(saveAndContinueCaption))
+    }
+
+    "display 'Save and return' button on page" in {
+      val saveAndReturnButton = createView().getElementById("submit_and_return")
+      saveAndReturnButton.text() must be(messages(saveAndReturnCaption))
     }
   }
 

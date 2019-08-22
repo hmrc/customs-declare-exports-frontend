@@ -38,6 +38,7 @@ class WarehouseIdentificationControllerSpec
   val controller = new WarehouseIdentificationController(
     authenticate = mockAuthAction,
     journeyType = mockJourneyAction,
+    navigator,
     exportsCacheService = mockExportsCacheService,
     mcc = stubMessagesControllerComponents(),
     warehouseIdentificationPage = warehouseIdentificationTemplate
@@ -94,7 +95,8 @@ class WarehouseIdentificationControllerSpec
 
       val result = controller.saveWarehouse().apply(postRequest(body))
 
-      await(result)
+      await(result) mustBe aRedirectToTheNextPage
+      thePageNavigatedTo mustBe controllers.declaration.routes.BorderTransportController.displayForm()
 
       val updatedWarehouse = theCacheModelUpdated.locations.warehouseIdentification.value
       updatedWarehouse.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier

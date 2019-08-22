@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.remove
 import controllers.util._
 import forms.declaration.PackageInformation
@@ -37,6 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PackageInformationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
+  navigator: Navigator,
   errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
@@ -56,10 +58,10 @@ class PackageInformationController @Inject()(
       val boundForm = form().bindFromRequest()
       val packagings = authRequest.cacheModel.itemBy(itemId).map(_.packageInformation).getOrElse(Seq.empty)
       actionTypeOpt match {
-        case Some(Add)             => addItem(itemId, boundForm, packagings)
-        case Some(Remove(values))  => removeItem(itemId, values, boundForm, packagings)
-        case Some(SaveAndContinue) => saveAndContinue(itemId, boundForm, packagings)
-        case _                     => errorHandler.displayErrorPage()
+        case Some(Add)                                   => addItem(itemId, boundForm, packagings)
+        case Some(Remove(values))                        => removeItem(itemId, values, boundForm, packagings)
+        case Some(SaveAndContinue) | Some(SaveAndReturn) => saveAndContinue(itemId, boundForm, packagings)
+        case _                                           => errorHandler.displayErrorPage()
       }
   }
 
@@ -76,7 +78,7 @@ class PackageInformationController @Inject()(
   }
 
   private def saveAndContinue(itemId: String, boundForm: Form[PackageInformation], cachedData: Seq[PackageInformation])(
-    implicit request: JourneyRequest[_]
+    implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
       .saveAndContinue(boundForm, cachedData, true, PackageInformation.limit)
@@ -85,13 +87,15 @@ class PackageInformationController @Inject()(
         updatedCache =>
           if (updatedCache != cachedData)
             updateExportsCache(itemId, updatedCache)
-              .map(_ => Redirect(controllers.declaration.routes.CommodityMeasureController.displayPage(itemId)))
+              .map(
+                _ => navigator.continueTo(controllers.declaration.routes.CommodityMeasureController.displayPage(itemId))
+              )
           else
             Future.successful(Redirect(controllers.declaration.routes.CommodityMeasureController.displayPage(itemId)))
       )
 
   private def addItem(itemId: String, boundForm: Form[PackageInformation], cachedData: Seq[PackageInformation])(
-    implicit request: JourneyRequest[_]
+    implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
       .add(boundForm, cachedData, PackageInformation.limit)
@@ -99,7 +103,9 @@ class PackageInformationController @Inject()(
         formWithErrors => Future.successful(BadRequest(packageInformationPage(itemId, formWithErrors, cachedData))),
         updatedCache =>
           updateExportsCache(itemId, updatedCache)
-            .map(_ => Redirect(controllers.declaration.routes.PackageInformationController.displayPage(itemId)))
+            .map(
+              _ => navigator.continueTo(controllers.declaration.routes.PackageInformationController.displayPage(itemId))
+          )
       )
 
   private def updateExportsCache(itemId: String, updatedCache: Seq[PackageInformation])(

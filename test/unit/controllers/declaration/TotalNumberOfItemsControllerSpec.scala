@@ -37,6 +37,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
   val controller = new TotalNumberOfItemsController(
     mockAuthAction,
     mockJourneyAction,
+    navigator,
     stubMessagesControllerComponents(),
     mockTotalNumberOfItemsPage,
     mockExportsCacheService
@@ -111,7 +112,8 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
 
         val result = controller.saveNoOfItems()(postRequest(correctForm))
 
-        status(result) mustBe SEE_OTHER
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.NatureOfTransactionController.displayForm()
         verify(mockTotalNumberOfItemsPage, times(0)).apply(any())(any(), any())
       }
     }

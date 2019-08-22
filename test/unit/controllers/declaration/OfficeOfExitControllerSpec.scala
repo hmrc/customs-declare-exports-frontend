@@ -38,6 +38,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
   val controller = new OfficeOfExitController(
     mockAuthAction,
     mockJourneyAction,
+    navigator,
     stubMessagesControllerComponents(),
     mockOfficeOfExitSupplementaryPage,
     mockOfficeOfExitStandardPage,
@@ -130,7 +131,8 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         val result = controller.saveOffice()(postRequest(correctForm))
 
-        status(result) mustBe SEE_OTHER
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.TotalNumberOfItemsController.displayForm()
         checkSupplementaryViewInteractions(0)
       }
     }
@@ -200,7 +202,8 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         val result = controller.saveOffice()(postRequest(correctForm))
 
-        status(result) mustBe SEE_OTHER
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.TotalNumberOfItemsController.displayForm()
         checkStandardViewInteractions(0)
       }
     }

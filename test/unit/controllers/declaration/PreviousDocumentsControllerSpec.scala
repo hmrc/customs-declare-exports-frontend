@@ -38,6 +38,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
   val controller = new PreviousDocumentsController(
     mockAuthAction,
     mockJourneyAction,
+    navigator,
     mockErrorHandler,
     stubMessagesControllerComponents(),
     mockPreviousDocumentsPage,
@@ -250,7 +251,9 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
 
         val result = controller.savePreviousDocuments()(postRequestAsFormUrlEncoded(correctForm: _*))
 
-        status(result) mustBe SEE_OTHER
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayForm()
+
         verify(mockPreviousDocumentsPage, times(0)).apply(any(), any())(any(), any())
       }
 
@@ -266,7 +269,9 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
 
         val result = controller.savePreviousDocuments()(postRequestAsFormUrlEncoded(correctForm: _*))
 
-        status(result) mustBe SEE_OTHER
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayPage()
+
         verify(mockPreviousDocumentsPage, times(0)).apply(any(), any())(any(), any())
       }
 
@@ -277,7 +282,8 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
 
         val result = controller.savePreviousDocuments()(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
 
-        status(result) mustBe SEE_OTHER
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayPage()
         verify(mockPreviousDocumentsPage, times(0)).apply(any(), any())(any(), any())
       }
 

@@ -38,10 +38,19 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
   val controller = new RepresentativeDetailsController(
     mockAuthAction,
     mockJourneyAction,
+    navigator,
     mockExportsCacheService,
     stubMessagesControllerComponents(),
     mockRepresentativeDetailsPage
   )(ec)
+  val exampleDeclaration = aDeclaration(withChoice(SupplementaryDec))
+  val eori = "GB1000200"
+
+  def theResponseForm: Form[RepresentativeDetails] = {
+    val formCaptor = ArgumentCaptor.forClass(classOf[Form[RepresentativeDetails]])
+    verify(mockRepresentativeDetailsPage).apply(formCaptor.capture())(any(), any())
+    formCaptor.getValue
+  }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -52,15 +61,6 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
   override protected def afterEach(): Unit = {
     reset(mockRepresentativeDetailsPage)
     super.afterEach()
-  }
-
-  val exampleDeclaration = aDeclaration(withChoice(SupplementaryDec))
-  val eori = "GB1000200"
-
-  def theResponseForm: Form[RepresentativeDetails] = {
-    val formCaptor = ArgumentCaptor.forClass(classOf[Form[RepresentativeDetails]])
-    verify(mockRepresentativeDetailsPage).apply(formCaptor.capture())(any(), any())
-    formCaptor.getValue
   }
 
   "Representative Details controller" should {
@@ -122,9 +122,10 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
 
         val result = controller.submitForm()(postRequest(correctForm))
 
-        status(result) mustBe SEE_OTHER
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationAdditionalActorsController.displayForm()
+
         verify(mockRepresentativeDetailsPage, times(0)).apply(any())(any(), any())
-        redirectLocation(result).value must endWith("/additional-actors")
       }
     }
 
@@ -138,9 +139,10 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
 
         val result = controller.submitForm()(postRequest(correctForm))
 
-        status(result) mustBe SEE_OTHER
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.CarrierDetailsController.displayForm()
+
         verify(mockRepresentativeDetailsPage, times(0)).apply(any())(any(), any())
-        redirectLocation(result).value must endWith("/carrier-details")
       }
     }
   }

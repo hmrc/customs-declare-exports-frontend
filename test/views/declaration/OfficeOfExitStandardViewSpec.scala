@@ -76,9 +76,13 @@ class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages wi
       }
 
       "display 'Save and continue' button" in {
-
-        val saveButton = getElementByCss(createView(), "#submit")
+        val saveButton = createView().getElementById("submit")
         saveButton.text() mustBe messages(saveAndContinueCaption)
+      }
+
+      "display 'Save and return' button on page" in {
+        val saveAndReturnButton = createView().getElementById("submit_and_return")
+        saveAndReturnButton.text() must be(messages(saveAndReturnCaption))
       }
     }
 

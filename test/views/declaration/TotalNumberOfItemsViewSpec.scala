@@ -84,11 +84,13 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
     }
 
     "display 'Save and continue' button on page" in {
-
-      val view = createView()
-
-      val saveButton = getElementByCss(view, "#submit")
+      val saveButton = createView().getElementById("submit")
       saveButton.text() must be(messages(saveAndContinueCaption))
+    }
+
+    "display 'Save and return' button on page" in {
+      val saveAndReturnButton = createView().getElementById("submit_and_return")
+      saveAndReturnButton.text() must be(messages(saveAndReturnCaption))
     }
   }
 

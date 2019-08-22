@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.TransportDetails
 import forms.declaration.TransportDetails._
@@ -35,6 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TransportDetailsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
+  navigator: Navigator,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   transportDetailsPage: transport_details
@@ -57,10 +59,10 @@ class TransportDetailsController @Inject()(
       )
   }
 
-  private def redirect(transportDetails: TransportDetails)(implicit request: JourneyRequest[_]): Result =
-    if (transportDetails.container) Redirect(routes.TransportContainerController.displayPage())
-    else if (request.choice.value == AllowedChoiceValues.StandardDec) Redirect(routes.SealController.displayForm())
-    else Redirect(routes.SummaryController.displayPage(Mode.Normal))
+  private def redirect(transportDetails: TransportDetails)(implicit request: JourneyRequest[AnyContent]): Result =
+    if (transportDetails.container) navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayPage())
+    else if (request.choice.value == AllowedChoiceValues.StandardDec) navigator.continueTo(controllers.declaration.routes.SealController.displayForm())
+    else navigator.continueTo(controllers.declaration.routes.SummaryController.displayPage(Mode.Normal))
 
   private def updateCache(
     formData: TransportDetails

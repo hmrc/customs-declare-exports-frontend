@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
 import forms.declaration.TotalNumberOfItems
 import javax.inject.Inject
 import models.requests.JourneyRequest
@@ -32,6 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TotalNumberOfItemsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
+  navigator: Navigator,
   mcc: MessagesControllerComponents,
   totalNumberOfItemsPage: total_number_of_items,
   override val exportsCacheService: ExportsCacheService
@@ -54,7 +56,7 @@ class TotalNumberOfItemsController @Inject()(
           Future.successful(BadRequest(totalNumberOfItemsPage(formWithErrors))),
         formData =>
           updateCache(formData).map { _ =>
-            Redirect(routes.NatureOfTransactionController.displayForm())
+            navigator.continueTo(controllers.declaration.routes.NatureOfTransactionController.displayForm())
         }
       )
   }
