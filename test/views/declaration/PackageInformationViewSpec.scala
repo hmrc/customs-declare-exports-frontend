@@ -86,11 +86,16 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
 
       val view = createView()
 
-      val addButton = getElementByCss(view, "#add")
+      val addButton = view.getElementById("add")
       addButton.text() must be(messages(addCaption))
 
-      val saveButton = getElementByCss(view, "#submit")
+      val saveButton = view.getElementById("submit")
       saveButton.text() must be(messages(saveAndContinueCaption))
+    }
+
+    "display 'Save and return' button on page" in {
+      val saveAndReturnButton = createView().getElementById("submit_and_return")
+      saveAndReturnButton.text() must be(messages(saveAndReturnCaption))
     }
   }
 

@@ -37,6 +37,7 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
   val controller = new NatureOfTransactionController(
     mockAuthAction,
     mockJourneyAction,
+    navigator,
     stubMessagesControllerComponents(),
     mockNatureOfTransactionPage,
     mockExportsCacheService
@@ -109,7 +110,9 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
 
         val result = controller.saveTransactionType()(postRequest(correctForm))
 
-        status(result) mustBe SEE_OTHER
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayForm()
+
         verify(mockNatureOfTransactionPage, times(0)).apply(any())(any(), any())
       }
     }

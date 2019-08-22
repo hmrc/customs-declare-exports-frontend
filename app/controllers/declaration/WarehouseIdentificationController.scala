@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
 import forms.declaration.WarehouseIdentification
 import javax.inject.Inject
 import models.ExportsDeclaration
@@ -33,6 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class WarehouseIdentificationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
+  navigator: Navigator,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   warehouseIdentificationPage: warehouse_identification
@@ -56,7 +58,7 @@ class WarehouseIdentificationController @Inject()(
           Future.successful(BadRequest(warehouseIdentificationPage(formWithErrors))),
         form =>
           updateCache(form)
-            .map(_ => Redirect(controllers.declaration.routes.BorderTransportController.displayForm()))
+            .map(_ => navigator.continueTo(controllers.declaration.routes.BorderTransportController.displayForm()))
       )
   }
 

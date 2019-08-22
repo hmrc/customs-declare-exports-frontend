@@ -35,6 +35,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
     val controller = new TransportContainerController(
       mockAuthAction,
       mockJourneyAction,
+      navigator,
       mockErrorHandler,
       mockExportsCacheService,
       stubMessagesControllerComponents(),
@@ -159,10 +160,8 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
         val result = controller.submitForm()(postRequestAsFormUrlEncoded(correctForm: _*))
 
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(
-          Some(controllers.declaration.routes.TransportContainerController.displayPage().url)
-        )
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController.displayPage()
       }
 
       "user save correct data" in new SetUp {
@@ -171,10 +170,8 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
         val result = controller.submitForm()(postRequestAsFormUrlEncoded(correctForm: _*))
 
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(
-          Some(controllers.declaration.routes.SummaryController.displayPage(Mode.Normal).url)
-        )
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
       }
 
       "user save correct data without new item" in new SetUp {
@@ -183,8 +180,8 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
         val result = controller.submitForm()(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
 
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.declaration.routes.SealController.displayForm().url))
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.SealController.displayForm()
       }
 
       "user remove existing item" in new SetUp {

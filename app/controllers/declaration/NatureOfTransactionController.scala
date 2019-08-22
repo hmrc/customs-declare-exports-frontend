@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
 import forms.declaration.NatureOfTransaction
 import forms.declaration.NatureOfTransaction._
 import javax.inject.Inject
@@ -34,6 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class NatureOfTransactionController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
+  navigator: Navigator,
   mcc: MessagesControllerComponents,
   natureOfTransactionPage: nature_of_transaction,
   override val exportsCacheService: ExportsCacheService
@@ -53,7 +55,7 @@ class NatureOfTransactionController @Inject()(
         (formWithErrors: Form[NatureOfTransaction]) =>
           Future.successful(BadRequest(natureOfTransactionPage(adjustErrors(formWithErrors)))),
         form =>
-          updateCache(form).map(_ => Redirect(controllers.declaration.routes.PreviousDocumentsController.displayForm()))
+          updateCache(form).map(_ => navigator.continueTo(controllers.declaration.routes.PreviousDocumentsController.displayForm()))
       )
   }
 

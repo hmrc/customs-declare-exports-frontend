@@ -34,6 +34,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
     val controller = new PackageInformationController(
       mockAuthAction,
       mockJourneyAction,
+      navigator,
       mockErrorHandler,
       mockExportsCacheService,
       stubMessagesControllerComponents(),
@@ -150,7 +151,8 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
         val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(body: _*))
 
-        status(result) must be(SEE_OTHER)
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationController.displayPage(itemId)
       }
 
       "user clicked continue with item in a cache" in new SetUp {

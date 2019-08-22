@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.{add, remove, saveAndContinue}
 import controllers.util._
 import forms.Choice.AllowedChoiceValues
@@ -40,6 +41,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TransportContainerController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
+  navigator: Navigator,
   errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
@@ -61,10 +63,10 @@ class TransportContainerController @Inject()(
     val cache = request.cacheModel.containerData.getOrElse(TransportInformationContainerData(Seq()))
 
     actionTypeOpt match {
-      case Some(Add)             => addContainer(boundForm, maxNumberOfItems, cache)
-      case Some(Remove(ids))     => removeContainer(boundForm, cache, ids)
-      case Some(SaveAndContinue) => saveContainer(boundForm, maxNumberOfItems, cache)
-      case _                     => errorHandler.displayErrorPage()
+      case Some(Add)                                   => addContainer(boundForm, maxNumberOfItems, cache)
+      case Some(Remove(ids))                           => removeContainer(boundForm, cache, ids)
+      case Some(SaveAndContinue) | Some(SaveAndReturn) => saveContainer(boundForm, maxNumberOfItems, cache)
+      case _                                           => errorHandler.displayErrorPage()
     }
   }
 
@@ -72,7 +74,7 @@ class TransportContainerController @Inject()(
     boundForm: Form[TransportInformationContainer],
     elementLimit: Int,
     cache: TransportInformationContainerData
-  )(implicit request: JourneyRequest[_]) =
+  )(implicit request: JourneyRequest[AnyContent]) =
     saveAndContinue(boundForm, cache.containers, isMandatory = true, elementLimit).fold(
       formWithErrors => Future.successful(BadRequest(transportContainersPage(formWithErrors, cache.containers))),
       updatedCache =>
@@ -82,9 +84,15 @@ class TransportContainerController @Inject()(
         else Future.successful(redirect())
     )
 
-  private def redirect()(implicit request: JourneyRequest[_]) =
-    if (request.choice.value == AllowedChoiceValues.StandardDec) Redirect(routes.SealController.displayForm())
-    else Redirect(routes.SummaryController.displayPage(Mode.Normal))
+  private def redirect()(implicit request: JourneyRequest[AnyContent]) =
+    if (request.choice.value == AllowedChoiceValues.StandardDec)
+      navigator.continueTo(controllers.declaration.routes.SealController.displayForm())
+    else navigator.continueTo(controllers.declaration.routes.SummaryController.displayPage(Mode.Normal))
+
+  private def updateCache(
+    formData: TransportInformationContainerData
+  )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => model.copy(containerData = Some(formData)))
 
   private def removeContainer(
     userInput: Form[TransportInformationContainer],
@@ -103,16 +111,11 @@ class TransportContainerController @Inject()(
     boundForm: Form[TransportInformationContainer],
     elementLimit: Int,
     cache: TransportInformationContainerData
-  )(implicit request: JourneyRequest[_]) =
+  )(implicit request: JourneyRequest[AnyContent]) =
     add(boundForm, cache.containers, elementLimit).fold(
       formWithErrors => Future.successful(BadRequest(transportContainersPage(formWithErrors, cache.containers))),
       updatedCache =>
         updateCache(TransportInformationContainerData(updatedCache))
-          .map(_ => Redirect(routes.TransportContainerController.displayPage()))
+          .map(_ => navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayPage()))
     )
-
-  private def updateCache(
-    formData: TransportInformationContainerData
-  )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.copy(containerData = Some(formData)))
 }

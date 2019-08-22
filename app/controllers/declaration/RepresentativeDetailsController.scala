@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
 import forms.Choice.AllowedChoiceValues._
 import forms.declaration.RepresentativeDetails
 import javax.inject.Inject
@@ -34,6 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class RepresentativeDetailsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
+  navigator: Navigator,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   representativeDetailsPage: representative_details
@@ -54,7 +56,7 @@ class RepresentativeDetailsController @Inject()(
       .fold(
         (formWithErrors: Form[RepresentativeDetails]) =>
           Future.successful(BadRequest(representativeDetailsPage(RepresentativeDetails.adjustErrors(formWithErrors)))),
-        validRepresentativeDetails => updateCache(validRepresentativeDetails).map(_ => Redirect(nextPage(request)))
+        validRepresentativeDetails => updateCache(validRepresentativeDetails).map(_ => navigator.continueTo(nextPage(request)))
       )
   }
 

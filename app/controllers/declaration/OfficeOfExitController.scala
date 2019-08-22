@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitStandard, OfficeOfExitSupplementary}
 import javax.inject.Inject
@@ -36,6 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class OfficeOfExitController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
+  navigator: Navigator,
   mcc: MessagesControllerComponents,
   officeOfExitSupplementaryPage: office_of_exit_supplementary,
   officeOfExitStandardPage: office_of_exit_standard,
@@ -70,7 +72,7 @@ class OfficeOfExitController @Inject()(
     }
   }
 
-  private def saveSupplementaryOffice()(implicit request: JourneyRequest[_]): Future[Result] =
+  private def saveSupplementaryOffice()(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     supplementaryForm()
       .bindFromRequest()
       .fold(
@@ -78,10 +80,10 @@ class OfficeOfExitController @Inject()(
           Future.successful(BadRequest(officeOfExitSupplementaryPage(formWithErrors))),
         form =>
           updateCache(form)
-            .map(_ => Redirect(controllers.declaration.routes.TotalNumberOfItemsController.displayForm()))
+            .map(_ => navigator.continueTo(controllers.declaration.routes.TotalNumberOfItemsController.displayForm()))
       )
 
-  private def saveStandardOffice()(implicit request: JourneyRequest[_]): Future[Result] =
+  private def saveStandardOffice()(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     standardForm()
       .bindFromRequest()
       .fold(
@@ -92,7 +94,7 @@ class OfficeOfExitController @Inject()(
         },
         form =>
           updateCache(form)
-            .map(_ => Redirect(controllers.declaration.routes.TotalNumberOfItemsController.displayForm()))
+            .map(_ => navigator.continueTo(controllers.declaration.routes.TotalNumberOfItemsController.displayForm()))
       )
 
   private def updateCache(

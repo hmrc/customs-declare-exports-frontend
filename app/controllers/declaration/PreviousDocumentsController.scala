@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
 import controllers.util._
 import forms.declaration.Document._
 import forms.declaration.PreviousDocumentsData._
@@ -36,6 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PreviousDocumentsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
+  navigator: Navigator,
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   previousDocumentsPage: previous_documents,
@@ -59,15 +61,17 @@ class PreviousDocumentsController @Inject()(
     val cache = request.cacheModel.previousDocuments.getOrElse(PreviousDocumentsData(Seq.empty))
 
     actionTypeOpt match {
-      case Some(SaveAndContinue) =>
+      case Some(SaveAndContinue) | Some(SaveAndReturn) =>
         saveAndContinue(boundForm, cache.documents, isScreenMandatory, maxAmountOfItems).fold(
           formWithErrors => Future.successful(BadRequest(previousDocumentsPage(formWithErrors, cache.documents))),
           updatedCache =>
             if (updatedCache != cache.documents)
               updateCache(PreviousDocumentsData(updatedCache))
-                .map(_ => Redirect(controllers.declaration.routes.ItemsSummaryController.displayPage()))
+                .map(_ => navigator.continueTo(controllers.declaration.routes.ItemsSummaryController.displayPage()))
             else
-              Future.successful(Redirect(controllers.declaration.routes.ItemsSummaryController.displayPage()))
+              Future.successful(
+                navigator.continueTo(controllers.declaration.routes.ItemsSummaryController.displayPage())
+            )
         )
 
       case Some(Add) =>
@@ -75,7 +79,7 @@ class PreviousDocumentsController @Inject()(
           formWithErrors => Future.successful(BadRequest(previousDocumentsPage(formWithErrors, cache.documents))),
           updatedCache =>
             updateCache(PreviousDocumentsData(updatedCache))
-              .map(_ => Redirect(controllers.declaration.routes.PreviousDocumentsController.displayForm()))
+              .map(_ => navigator.continueTo(controllers.declaration.routes.PreviousDocumentsController.displayForm()))
         )
 
       case Some(Remove(ids)) =>
