@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.remove
 import controllers.util._
 import forms.declaration.additionaldocuments.DocumentsProduced
@@ -42,6 +43,7 @@ class DocumentsProducedController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
+  navigator: Navigator,
   mcc: MessagesControllerComponents,
   documentProducedPage: documents_produced
 )(implicit ec: ExecutionContext)
@@ -65,14 +67,14 @@ class DocumentsProducedController @Inject()(
 
     actionTypeOpt match {
       case Some(Add) if !boundForm.hasErrors             => addItem(itemId, boundForm.get, cache)
-      case Some(SaveAndContinue) if !boundForm.hasErrors => saveAndContinue(itemId, boundForm.get, cache)
+      case Some(SaveAndContinue) |  Some(SaveAndReturn) if !boundForm.hasErrors => saveAndContinue(itemId, boundForm.get, cache)
       case Some(Remove(keys))                            => removeItem(itemId, keys, boundForm, cache)
       case _                                             => Future.successful(BadRequest(documentProducedPage(itemId, boundForm, cache.documents)))
     }
   }
 
   private def saveAndContinue(itemId: String, userInput: DocumentsProduced, cachedData: DocumentsProducedData)(
-    implicit request: JourneyRequest[_],
+    implicit request: JourneyRequest[AnyContent],
     hc: HeaderCarrier
   ): Future[Result] =
     (userInput, cachedData.documents) match {
@@ -84,7 +86,7 @@ class DocumentsProducedController @Inject()(
     itemId: String,
     document: DocumentsProduced,
     documents: Seq[DocumentsProduced]
-  )(implicit request: JourneyRequest[_]) =
+  )(implicit request: JourneyRequest[AnyContent]) =
     document match {
       case _ if documents.length >= maxNumberOfItems =>
         handleErrorPage(itemId, Seq(("", "supplementary.addDocument.error.maximumAmount")), document, documents)
@@ -96,14 +98,14 @@ class DocumentsProducedController @Inject()(
     }
 
   private def saveAndRedirect(itemId: String, document: DocumentsProduced, documents: Seq[DocumentsProduced])(
-    implicit request: JourneyRequest[_],
+    implicit request: JourneyRequest[AnyContent],
     hc: HeaderCarrier
   ): Future[Result] =
     if (document.isDefined) {
       val updateDocs = DocumentsProducedData(documents :+ document)
       updateModelInCache(itemId, document, updateDocs)
-        .map(_ => Redirect(routes.ItemsSummaryController.displayPage()))
-    } else Future.successful(Redirect(routes.ItemsSummaryController.displayPage()))
+        .map(_ => navigator.continueTo(routes.ItemsSummaryController.displayPage()))
+    } else Future.successful(navigator.continueTo(routes.ItemsSummaryController.displayPage()))
 
   private def updateModelInCache(itemId: String, document: DocumentsProduced, updatedDocs: DocumentsProducedData)(
     implicit journeyRequest: JourneyRequest[_]
