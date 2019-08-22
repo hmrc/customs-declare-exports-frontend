@@ -28,16 +28,16 @@
 @main_template(
     title = messages("declaration.destinationCountries.title")
 ) {
+    @components.back_link("/customs-declare-exports/declaration/holder-of-authorisation")
+
+    @components.error_summary(form.errors)
+
+    @components.section_header(messages("declaration.summary.locations.header"))
+
+    @components.page_title(Some("declaration.destinationCountries.title"))
+
     @helper.form(routes.DestinationCountriesController.saveCountries(), 'autoComplete -> "off") {
         @helper.CSRF.formField
-
-        @components.back_link("/customs-declare-exports/declaration/holder-of-authorisation")
-
-        @components.error_summary(form.errors)
-
-        @components.section_header(messages("declaration.summary.locations.header"))
-
-        @components.page_title(Some("declaration.destinationCountries.title"))
 
         <div id="country-of-dispatch-field" class="inline-block form-group">
             @components.fields.field_autocomplete(
@@ -62,5 +62,6 @@
         </div>
 
         @components.submit_button()
+        @components.buttons.save_and_return_later_button()
     }
 }
