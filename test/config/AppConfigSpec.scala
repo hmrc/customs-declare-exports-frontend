@@ -45,7 +45,7 @@ class AppConfigSpec extends CustomExportsBaseSpec {
         |countryCodesJsonFilename=code-lists/location-autocomplete-canonical-list.json
         |list-of-available-journeys="SMP,STD,CAN,SUB"
         |draft.timeToLive=30d
-        |draft.itemsPerPage=10
+        |pagination.itemsPerPage=10
         |microservice.services.nrs.host=localhostnrs
         |microservice.services.nrs.port=7654
         |microservice.services.nrs.apikey=cds-exports
@@ -185,8 +185,8 @@ class AppConfigSpec extends CustomExportsBaseSpec {
       validConfigService.draftTimeToLive must be(FiniteDuration(30, TimeUnit.DAYS))
     }
 
-    "have draft items per page" in {
-      validConfigService.draftItemPerPage must be(10)
+    "have pagination items per page" in {
+      validConfigService.paginationItemsPerPage must be(10)
     }
   }
 
