@@ -304,10 +304,13 @@ saved.declarations.title = Your saved declarations
 saved.declarations.ducr = DUCR
 saved.declarations.noDucr = No DUCR added
 saved.declarations.dateSaved = Date and time saved
-saved.declarations.summary.inProgress = In progress
-saved.declarations.summary.paragraph = Click continue declaration to go back through the declaration from the begining.  You will need to continue through the declaration until you get to back to where you saved.
+saved.declarations.summary.continue = Continue declaration
+saved.declarations.summary.intro = Review the information you entered so far.
+saved.declarations.summary.paragraph = Click continue declaration to go through your declaration from the beginning. Continue through the declaration until you reach the page where you saved.
 saved.declarations.summary.createdDate = Date created
 saved.declarations.summary.expireDate = Expiry date
+saved.declarations.pagination.singular = saved declaration
+saved.declarations.pagination.plural = saved declarations
 
 supplementary.declarationHolder.title = What authorisation is required for this export?
 supplementary.declarationHolder.title.hint = This will depend on the type of procedure code used for this export. If no authorisation is needed, leave this page blank and continue.

@@ -105,6 +105,8 @@ class AppConfig @Inject()(
   lazy val draftTimeToLive: FiniteDuration =
     servicesConfig.getDuration("draft.timeToLive").asInstanceOf[FiniteDuration]
 
+  lazy val draftItemPerPage: Int = servicesConfig.getInt("draft.itemsPerPage")
+
   lazy val defaultFeatureStatus: features.FeatureStatus.Value =
     FeatureStatus.withName(loadConfig(feature2Key(Feature.default)))
 

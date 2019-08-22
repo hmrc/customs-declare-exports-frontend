@@ -17,6 +17,7 @@
 package unit.base
 
 import base.{MockAuthAction, MockConnectors, MockExportCacheService}
+import config.AppConfig
 import controllers.util.{Add, SaveAndContinue}
 import models.ExportsDeclaration
 import models.requests.{ExportsSessionKeys, JourneyRequest}
@@ -38,6 +39,8 @@ trait ControllerSpec
     with ExportsDeclarationBuilder with ExportsItemBuilder with JourneyActionMocks {
 
   implicit val ec: ExecutionContext = ExecutionContext.global
+
+  protected val config: AppConfig = mock[AppConfig]
 
   protected val addActionUrlEncoded: (String, String) = (Add.toString, "")
 

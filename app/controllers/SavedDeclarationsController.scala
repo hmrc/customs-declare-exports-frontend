@@ -16,12 +16,12 @@
 
 package controllers
 
+import config.AppConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.AuthAction
 import javax.inject.Inject
 import models.requests.ExportsSessionKeys
 import models.{Mode, Page}
-import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -33,27 +33,25 @@ class SavedDeclarationsController @Inject()(
   authenticate: AuthAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
-  savedDeclarationsPage: saved_declarations
+  savedDeclarationsPage: saved_declarations,
+  appConfig: AppConfig
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  private val logger = Logger(this.getClass)
-  private val defaultPage = Page()
-
-  def displayDeclarations(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsDeclareExportsConnector.findSavedDeclarations(defaultPage).map { page =>
+  def displayDeclarations(pageNumber: Int = 1): Action[AnyContent] = authenticate.async { implicit request =>
+    customsDeclareExportsConnector.findSavedDeclarations(Page(pageNumber, appConfig.draftItemPerPage)).map { page =>
       Ok(savedDeclarationsPage(page))
     }
   }
 
   def continueDeclaration(id: String): Action[AnyContent] = authenticate.async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id) flatMap {
-      case Some(declaration) =>
+      case Some(_) =>
         Future.successful(
           Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.Draft))
             .addingToSession(ExportsSessionKeys.declarationId -> id)
         )
-      case _ => Future.successful(Redirect(controllers.routes.SavedDeclarationsController.displayDeclarations()))
+      case None => Future.successful(Redirect(controllers.routes.SavedDeclarationsController.displayDeclarations()))
     }
 
   }

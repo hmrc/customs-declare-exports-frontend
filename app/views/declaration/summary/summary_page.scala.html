@@ -32,15 +32,20 @@
     title = messages("supplementary.summary.title")
 ) {
 
-    @{if(request.choice.value == StandardDec)
-            components.back_link("/customs-declare-exports/declaration/add-seal")
-        else
-            {
-                if (suppDecData.transportInformationContainerData.fold(false)(_.containers.nonEmpty))
+    @if(mode == Mode.Draft) {
+        @components.back_link("/customs-declare-exports/saved-declarations")
+    } else {
+
+        @{
+            if(request.choice.value == StandardDec)
+                components.back_link("/customs-declare-exports/declaration/add-seal")
+            else {
+                if(suppDecData.transportInformationContainerData.fold(false)(_.containers.nonEmpty))
                     components.back_link("/customs-declare-exports/declaration/add-transport-containers")
                 else
                     components.back_link("/customs-declare-exports/declaration/transport-details")
             }
+        }
     }
 
     @components.page_title(
@@ -54,8 +59,7 @@
     )
 
     @if(mode == Mode.Draft) {
-        <p>@messages("saved.declarations.summary.inProgress")</p>
-        <p>@messages("saved.declarations.summary.paragraph")</p>
+        <p>@messages("saved.declarations.summary.intro")</p>
 
         @components.summary_list(None) {
             @components.table_row_no_change_link(HtmlTableRow(
@@ -107,6 +111,10 @@
 
     @items_section(suppDecData.items)
 
+    @if(mode == Mode.Amend) {
+        <a class="button mt-3" href="@routes.DispatchLocationController.displayPage()">@messages("site.continue")</a>
+    }
+
     @if(mode == Mode.Normal) {
         @helper.form(action = routes.SummaryController.submitDeclaration(), 'id -> "summary") {
             @helper.CSRF.formField
@@ -114,11 +122,15 @@
             @components.submit_button(messages("site.acceptAndSubmitDeclaration"))
         }
         <script>
-            document.getElementById("summary").addEventListener("submit", function(event){
+            document. <p>@messages("saved.declarations.summary.paragraph")</p>getElementById("summary").addEventListener("submit", function(event){
                 document.getElementById("submit").disabled = true;
             });
         </script>
-    } else {
-        <a class="button mt-3" href="@routes.DispatchLocationController.displayPage()">@messages("site.continue")</a>
+    }
+
+    @if(mode == Mode.Draft) {
+        <p class="mt-5">@messages("saved.declarations.summary.paragraph")</p>
+
+        <a class="button mt-3" href="@routes.DispatchLocationController.displayPage()">@messages("saved.declarations.summary.continue")</a>
     }
 }
