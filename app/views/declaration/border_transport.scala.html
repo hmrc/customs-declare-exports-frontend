@@ -29,15 +29,14 @@
     title = messages("supplementary.transportInfo.title")
 ) {
 
-@components.back_link("/customs-declare-exports/declaration/warehouse")
+    @components.back_link("/customs-declare-exports/declaration/warehouse")
+
+    @components.error_summary(form.errors)
+
+    @components.page_title(Some("supplementary.transportInfo.title"), None)
 
     @helper.form(BorderTransportController.submitForm(), 'autoComplete -> "off") {
         @helper.CSRF.formField
-
-        @components.error_summary(form.errors)
-
-        @components.page_title(Some("supplementary.transportInfo.title"), None)
-
 
         @components.fields.field_radio(
             field = form("borderModeOfTransportCode"),
@@ -76,6 +75,7 @@
         )
 
        @components.submit_button()
+       @components.buttons.save_and_return_later_button()
     }
 
 }
