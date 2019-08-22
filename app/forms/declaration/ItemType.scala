@@ -75,12 +75,5 @@ object ItemType {
 
   def form(): Form[ItemType] = Form(mapping)
 
-  object IdentificationTypeCodes {
-    val CombinedNomenclatureCode = "TSP"
-    val TARICAdditionalCode = "TRA"
-    val NationalAdditionalCode = "GN"
-    val CUSCode = "CV"
-  }
-
   val empty: ItemType = ItemType("", Nil, Nil, "", None, None, "")
 }

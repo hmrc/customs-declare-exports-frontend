@@ -61,7 +61,7 @@ class SummaryController @Inject()(
   def submitDeclaration(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     submissionService.submit(request.cacheModel).map {
       case Some(lrn) =>
-        Redirect(controllers.declaration.routes.ConfirmationController.displayPage())
+        Redirect(controllers.declaration.routes.ConfirmationController.displaySubmissionConfirmation())
           .flashing(Flash(Map("LRN" -> lrn)))
           .removingFromSession(ExportsSessionKeys.declarationId)
       case _ => handleError(s"Error from Customs Declarations API")

@@ -17,30 +17,44 @@
 package unit.controllers.declaration
 
 import controllers.declaration.ConfirmationController
-import forms.Choice
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
+import play.api.mvc.{AnyContentAsEmpty, Flash, Request, Result}
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
-import views.html.declaration.confirmation_page
+import views.html.declaration.{draft_confirmation_page, submission_confirmation_page}
+
+import scala.concurrent.Future
 
 class ConfirmationControllerSpec extends ControllerSpec {
 
   trait SetUp {
-    val confirmationPage = new confirmation_page(mainTemplate)
+    val submissionConfirmationPage = new submission_confirmation_page(mainTemplate)
+    val draftConfirmationPage = new draft_confirmation_page(mainTemplate)
 
     val controller =
-      new ConfirmationController(mockAuthAction, stubMessagesControllerComponents(), confirmationPage)(ec)
+      new ConfirmationController(mockAuthAction, stubMessagesControllerComponents(), submissionConfirmationPage, draftConfirmationPage)(ec)
 
     authorizedUser()
   }
 
-  "Confirmation Controller on GET" should {
-
+  "GET submission confirmation" should {
     "return 200 status code" in new SetUp {
 
-      val result = controller.displayPage()(getRequest())
+      val request: Request[AnyContentAsEmpty.type] = getRequest()
+      val result: Future[Result] = controller.displaySubmissionConfirmation()(request)
 
       status(result) must be(OK)
+      viewOf(result) must be(submissionConfirmationPage()(request, Flash(), stubMessagesControllerComponents().messagesApi.preferred(request)))
+    }
+  }
+
+  "GET draft confirmation" should {
+    "return 200 status code" in new SetUp {
+
+      val request: Request[AnyContentAsEmpty.type] = getRequest()
+      val result: Future[Result] = controller.displayDraftConfirmation()(request)
+
+      status(result) must be(OK)
+      viewOf(result) must be(draftConfirmationPage()(request, Flash(), stubMessagesControllerComponents().messagesApi.preferred(request)))
     }
   }
 }

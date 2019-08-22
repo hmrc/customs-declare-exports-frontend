@@ -181,14 +181,13 @@ class AppConfigSpec extends CustomExportsBaseSpec {
       validConfigService.cacheTimeToLive must be(FiniteDuration(24, "h"))
     }
 
-  }
+    "have draft lifetime" in {
+      validConfigService.draftTimeToLive must be(FiniteDuration(30, TimeUnit.DAYS))
+    }
 
-  "have draft lifetime" in {
-    validConfigService.draftTimeToLive must be(FiniteDuration(30, TimeUnit.DAYS))
-  }
-
-  "have draft items per page" in {
-    validConfigService.draftItemPerPage must be(10)
+    "have draft items per page" in {
+      validConfigService.draftItemPerPage must be(10)
+    }
   }
 
   "empty Choice options when list-of-available-journeys is not defined" in {
