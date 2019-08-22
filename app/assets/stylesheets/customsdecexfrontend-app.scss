@@ -51,6 +51,8 @@ a.button--gray, button.button--gray, .button--gray:visited {
   text-decoration: underline;
   -webkit-box-shadow: none;
   box-shadow: none;
+  // TODO - Remove this once all links are in place
+  display: none;
 
   &:hover, &:focus {
     color: #2e8aca;
