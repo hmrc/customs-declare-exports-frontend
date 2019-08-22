@@ -17,7 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.AdditionalDeclarationTypeController
-import controllers.util.{SaveAndContinue, SaveAndReturn}
+import controllers.util.SaveAndContinue
 import forms.Choice
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import play.api.libs.json.Json
@@ -105,45 +105,23 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
       }
     }
 
-    "return 303 (SEE_OTHER) and redirect to consignment references page" when {
-      "SaveAndContinue during supplementary journey" in new SupplementarySetUp {
+    "Continue to the next page" when {
+      "during supplementary journey" in new SupplementarySetUp {
         val correctForm = Seq("additionalDeclarationType" -> "Z", SaveAndContinue.toString -> "")
 
         val result = controller.submitForm()(postRequestAsFormUrlEncoded(correctForm: _*))
 
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(
-          Some(controllers.declaration.routes.ConsignmentReferencesController.displayPage().url)
-        )
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.ConsignmentReferencesController.displayPage()
       }
 
-      "SaveAndContinue during standard journey" in new StandardSetUp {
+      "during standard journey" in new StandardSetUp {
         val correctForm = Seq("additionalDeclarationType" -> "D", SaveAndContinue.toString -> "")
 
         val result = controller.submitForm()(postRequestAsFormUrlEncoded(correctForm: _*))
 
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(
-          Some(controllers.declaration.routes.ConsignmentReferencesController.displayPage().url)
-        )
-      }
-    }
-
-    "return 303 (SEE_OTHER) and redirect to draft confirmation page" when {
-      "SaveAndReturn during supplementary journey" in new SupplementarySetUp {
-        val correctForm = Seq("additionalDeclarationType" -> "Z", SaveAndReturn.toString -> "")
-
-        val result = controller.submitForm()(postRequestAsFormUrlEncoded(correctForm: _*))
-
-        await(result) mustBe draftConfirmationResult
-      }
-
-      "SaveAndReturn during standard journey" in new StandardSetUp {
-        val correctForm = Seq("additionalDeclarationType" -> "D", SaveAndReturn.toString -> "")
-
-        val result = controller.submitForm()(postRequestAsFormUrlEncoded(correctForm: _*))
-
-        await(result) mustBe draftConfirmationResult
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.ConsignmentReferencesController.displayPage()
       }
     }
   }
