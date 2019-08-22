@@ -20,24 +20,26 @@
 @import forms.CancelDeclaration
 @import views.ViewDates
 @import uk.gov.hmrc.play.views.html._
-
+@import views.html.components.pagination
 @import views.components.inputs.RadioOption
 @import forms.cancellation.CancellationChangeReason
 @import forms.cancellation.CancellationChangeReason.{NoLongerRequired, Duplication, OtherReason}
 
 @this(main_template: views.html.main_template)
 
+
 @(declarations: Paginated[ExportsDeclaration])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("saved.declarations.title")
+    title = messages("saved.declarations.title"),
+    fullWidth = true
 ) {
 
     @components.back_link(routes.ChoiceController.displayPage().url)
 
     <h1>@messages("saved.declarations.title")</h1>
 
-    <table class="govuk-table">
+    <table>
         <tr class="table-row table-head">
             <th class="table-cell">@messages("saved.declarations.ducr")</th>
             <th class="table-cell">@messages("saved.declarations.dateSaved")</th>
@@ -53,7 +55,14 @@
                 <td class="table-cell">@ViewDates.formatDateAtTime(declaration.updatedDateTime)</td>
             </tr>
         }
-
     </table>
 
+    @pagination(
+        singularName = messages("saved.declarations.pagination.singular"),
+        pluralName = messages("saved.declarations.pagination.plural"),
+        pager = declarations,
+        containerClass = Some("mt-2 mb-1"),
+        linksClass = Some("mt-2"),
+        onChange = page => controllers.routes.SavedDeclarationsController.displayDeclarations(page)
+    )
 }

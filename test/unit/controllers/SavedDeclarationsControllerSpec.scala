@@ -31,7 +31,8 @@ class SavedDeclarationsControllerSpec extends ControllerSpec {
       mockAuthAction,
       mockCustomsDeclareExportsConnector,
       stubMessagesControllerComponents(),
-      savedDeclarationsPage
+      savedDeclarationsPage,
+      config
     )(ec)
 
     authorizedUser()

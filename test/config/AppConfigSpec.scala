@@ -45,6 +45,7 @@ class AppConfigSpec extends CustomExportsBaseSpec {
         |countryCodesJsonFilename=code-lists/location-autocomplete-canonical-list.json
         |list-of-available-journeys="SMP,STD,CAN,SUB"
         |draft.timeToLive=30d
+        |pagination.itemsPerPage=10
         |microservice.services.nrs.host=localhostnrs
         |microservice.services.nrs.port=7654
         |microservice.services.nrs.apikey=cds-exports
@@ -184,11 +185,11 @@ class AppConfigSpec extends CustomExportsBaseSpec {
       validConfigService.draftTimeToLive must be(FiniteDuration(30, TimeUnit.DAYS))
     }
 
+    "have pagination items per page" in {
+      validConfigService.paginationItemsPerPage must be(10)
+    }
   }
 
-  "have draft lifetime" in {
-    validConfigService.draftTimeToLive must be(FiniteDuration(30, TimeUnit.DAYS))
-  }
   "empty Choice options when list-of-available-journeys is not defined" in {
     emptyConfigService.availableJourneys().size must be(1)
     emptyConfigService.availableJourneys() must contain(Choice.AllowedChoiceValues.SupplementaryDec)

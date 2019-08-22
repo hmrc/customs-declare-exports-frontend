@@ -22,6 +22,9 @@ import scala.util.Try
 
 case class Paginated[T](results: Seq[T], page: Page, total: Long) {
   def map[A](mapper: T => A): Paginated[A] = Paginated(results.map(mapper), page, total)
+  def nonEmpty: Boolean = results.nonEmpty
+  def pageCount: Int = Math.ceil(total.toDouble / page.size).toInt
+  def size: Int = results.size
 }
 object Paginated {
   def apply[T](results: T*): Paginated[T] = Paginated[T](results, Page(), results.size)
