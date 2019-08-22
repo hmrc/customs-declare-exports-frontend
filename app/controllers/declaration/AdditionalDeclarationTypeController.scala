@@ -51,7 +51,6 @@ class AdditionalDeclarationTypeController @Inject()(
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val action = FormAction.bindFromRequest
     val decType = extractFormType(request).form().bindFromRequest()
 
     decType
@@ -59,13 +58,8 @@ class AdditionalDeclarationTypeController @Inject()(
         formWithErrors => Future.successful(BadRequest(declarationTypePage(formWithErrors))),
         validAdditionalDeclarationType =>
           updateCache(validAdditionalDeclarationType).map { _ =>
-            action match {
-              case Some(SaveAndContinue) =>
-                Redirect(controllers.declaration.routes.ConsignmentReferencesController.displayPage())
-              case Some(SaveAndReturn) =>
-                navigator.goToDraftConfirmation()
-            }
-          }
+            navigator.continueTo(controllers.declaration.routes.ConsignmentReferencesController.displayPage())
+        }
       )
   }
 

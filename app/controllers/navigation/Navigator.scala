@@ -17,14 +17,22 @@
 package controllers.navigation
 
 import config.AppConfig
+import controllers.util.{FormAction, SaveAndContinue, SaveAndReturn, Unknown}
 import javax.inject.Inject
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
-import play.api.mvc.{Result, Results}
+import play.api.mvc.{AnyContent, Call, Result, Results}
 
 class Navigator @Inject()(appConfig: AppConfig) {
 
-  def goToDraftConfirmation()(implicit req: JourneyRequest[_]): Result = {
+  def continueTo(call: Call)(implicit req: JourneyRequest[AnyContent]): Result =
+    FormAction.bindFromRequest match {
+      case Some(SaveAndReturn)          => goToDraftConfirmation()
+      case Some(SaveAndContinue) | None | Some(Unknown) => Results.Redirect(call)
+      case Some(action)                 => throw new IllegalArgumentException(s"Cannot continue journey with action type ${action}")
+    }
+
+  private def goToDraftConfirmation()(implicit req: JourneyRequest[_]): Result = {
     val updatedDateTime = req.cacheModel.updatedDateTime
     val expiry = updatedDateTime.plusSeconds(appConfig.draftTimeToLive.toSeconds)
     Results
