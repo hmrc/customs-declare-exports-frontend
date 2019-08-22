@@ -38,6 +38,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
       mockJourneyAction,
       mockErrorHandler,
       mockExportsCacheService,
+      navigator,
       stubMessagesControllerComponents(),
       declarationAdditionalActorsPage
     )(ec)

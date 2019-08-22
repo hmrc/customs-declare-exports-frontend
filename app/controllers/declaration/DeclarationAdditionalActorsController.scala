@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.remove
 import controllers.util._
 import forms.declaration.DeclarationAdditionalActors
@@ -42,6 +43,7 @@ class DeclarationAdditionalActorsController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
+  navigator: Navigator,
   mcc: MessagesControllerComponents,
   declarationAdditionalActorsPage: declaration_additional_actors
 )(implicit ec: ExecutionContext)
@@ -66,7 +68,7 @@ class DeclarationAdditionalActorsController @Inject()(
 
     actionTypeOpt match {
       case Some(Add) if !boundForm.hasErrors             => addItem(boundForm.get, cache)
-      case Some(SaveAndContinue) if !boundForm.hasErrors => saveAndContinue(boundForm.get, cache)
+      case Some(SaveAndContinue) | Some(SaveAndReturn) if !boundForm.hasErrors => saveAndContinue(boundForm.get, cache)
       case Some(Remove(values))                          => removeItem(retrieveItem(values.headOption.get), boundForm, cache)
       case _                                             => Future.successful(BadRequest(declarationAdditionalActorsPage(boundForm, cache.actors)))
     }
