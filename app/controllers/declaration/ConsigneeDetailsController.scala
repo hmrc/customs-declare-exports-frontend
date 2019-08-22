@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
 import forms.declaration.ConsigneeDetails
 import javax.inject.Inject
 import models.ExportsDeclaration
@@ -37,6 +38,7 @@ class ConsigneeDetailsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
+  navigator: Navigator,
   mcc: MessagesControllerComponents,
   consigneeDetailsPage: consignee_details
 )(implicit ec: ExecutionContext)
@@ -57,7 +59,7 @@ class ConsigneeDetailsController @Inject()(
         (formWithErrors: Form[ConsigneeDetails]) => Future.successful(BadRequest(consigneeDetailsPage(formWithErrors))),
         form =>
           updateCache(form)
-            .map(_ => Redirect(controllers.declaration.routes.DeclarantDetailsController.displayForm()))
+            .map(_ => navigator.continueTo(controllers.declaration.routes.DeclarantDetailsController.displayForm()))
       )
   }
 

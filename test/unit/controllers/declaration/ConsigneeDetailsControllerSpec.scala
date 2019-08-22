@@ -33,6 +33,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
       mockAuthAction,
       mockJourneyAction,
       mockExportsCacheService,
+      navigator,
       stubMessagesControllerComponents(),
       consigneeDetailsPage
     )(ec)
@@ -84,10 +85,8 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
 
         val result = controller.saveAddress()(postRequest(correctForm))
 
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(
-          Some(controllers.declaration.routes.DeclarantDetailsController.displayForm().url)
-        )
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarantDetailsController.displayForm()
       }
     }
   }
