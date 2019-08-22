@@ -41,6 +41,7 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
     mockJourneyAction,
     mockErrorHandler,
     mockExportsCacheService,
+    navigator,
     stubMessagesControllerComponents(),
     mockDocumentProducedPage
   )(ec)
@@ -213,7 +214,8 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
         val result = controller.saveForm(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
-        status(result) mustBe SEE_OTHER
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayPage()
         verify(mockDocumentProducedPage, times(0)).apply(any(), any(), any())(any(), any())
       }
 
@@ -221,7 +223,8 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
         val result = controller.saveForm(itemId)(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
 
-        status(result) mustBe SEE_OTHER
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayPage()
         verify(mockDocumentProducedPage, times(0)).apply(any(), any(), any())(any(), any())
       }
 
