@@ -28,43 +28,43 @@
     title = messages("declaration.fiscalInformation.header")
 ) {
 
-    @helper.form(FiscalInformationController.saveFiscalInformation(itemId), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+    @components.back_link(ProcedureCodesController.displayPage(itemId).url)
 
-        @components.back_link(ProcedureCodesController.displayPage(itemId).url)
+    @components.error_summary(form.errors)
 
-        @components.error_summary(form.errors)
+    @components.section_header(messages("declaration.fiscalInformation.header"))
 
-        @components.section_header(messages("declaration.fiscalInformation.header"))
+    @components.page_title(Some("declaration.fiscalInformation.title"))
 
-        @components.page_title(Some("declaration.fiscalInformation.title"))
+    <p>
+        If you have entered a procedure code which starts ‘10 42’, please state whether you would like to claim for OSR.
+    </p><br>
 
-        <p>
-            If you have entered a procedure code which starts ‘10 42’, please state whether you would like to claim for OSR.
-        </p><br>
-
-        <style>
+    <style>
             .grey-border-left {
                 border-left: 5px solid #bfc1c3;
                 padding-left: 2.2em;
             }
-        </style>
+    </style>
 
-        <details class="govuk-details" role="group">
-            <summary class="govuk-details__summary" role="button" aria-controls="details-content-b789d1b8-fdb1-4d59-970d-d1d42eafa90f" aria-expanded="false">
-                <span class="govuk-details__summary-text">
-                    You can claim OSR if:
-                </span>
-            </summary>
-                <ul class="list list-bullet grey-border-left">
-                    <li>you are VAT registered in the UK</li>
-                    <li>you regularly import goods</li>
-                    <li>you are an agent registered for VAT in the UK and you have been appointed to act on behalf of an importer based in another country, who is not registered for VAT in the UK</li>
-                    <li>you imported the goods no more than one month ago</li>
-                    <li>the goods exported should be exactly the same as when they were imported</li>
-                </ul>
-        </details>
-        <br>
+    <details class="govuk-details" role="group">
+        <summary class="govuk-details__summary" role="button" aria-controls="details-content-b789d1b8-fdb1-4d59-970d-d1d42eafa90f" aria-expanded="false">
+            <span class="govuk-details__summary-text">
+                You can claim OSR if:
+            </span>
+        </summary>
+        <ul class="list list-bullet grey-border-left">
+            <li>you are VAT registered in the UK</li>
+            <li>you regularly import goods</li>
+            <li>you are an agent registered for VAT in the UK and you have been appointed to act on behalf of an importer based in another country, who is not registered for VAT in the UK</li>
+            <li>you imported the goods no more than one month ago</li>
+            <li>the goods exported should be exactly the same as when they were imported</li>
+        </ul>
+    </details>
+    <br>
+
+    @helper.form(FiscalInformationController.saveFiscalInformation(itemId), 'autoComplete -> "off") {
+        @helper.CSRF.formField
 
         @components.fields.field_radio(
             field = form("onwardSupplyRelief"),
@@ -76,5 +76,6 @@
         )
 
         @components.submit_button()
+        @components.buttons.save_and_return_later_button()
     }
 }
