@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
 import forms.declaration.CommodityMeasure
 import forms.declaration.CommodityMeasure.form
 import javax.inject.Inject
@@ -35,6 +36,7 @@ class CommodityMeasureController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
+  navigator: Navigator,
   mcc: MessagesControllerComponents,
   goodsMeasurePage: goods_measure
 )(implicit ec: ExecutionContext)
@@ -61,7 +63,7 @@ class CommodityMeasureController @Inject()(
           Future.successful(BadRequest(goodsMeasurePage(itemId, formWithErrors))),
         validForm =>
           updateExportsCache(itemId, validForm).map { _ =>
-            Redirect(controllers.declaration.routes.AdditionalInformationController.displayPage(itemId))
+            navigator.continueTo(controllers.declaration.routes.AdditionalInformationController.displayPage(itemId))
         }
       )
   }
