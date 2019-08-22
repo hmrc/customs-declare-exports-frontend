@@ -34,6 +34,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
       mockAuthAction,
       mockJourneyAction,
       mockExportsCacheService,
+      navigator,
       stubMessagesControllerComponents(),
       consignmentReferencesPage
     )(ec)
@@ -78,7 +79,8 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
 
       val result = controller.submitConsignmentReferences()(postRequest(correctForm))
 
-      status(result) must be(SEE_OTHER)
+      await(result) mustBe aRedirectToTheNextPage
+      thePageNavigatedTo mustBe controllers.declaration.routes.ExporterDetailsController.displayForm()
     }
   }
 }

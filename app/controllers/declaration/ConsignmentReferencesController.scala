@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
 import forms.declaration.ConsignmentReferences
 import javax.inject.Inject
 import models.ExportsDeclaration
@@ -34,6 +35,7 @@ class ConsignmentReferencesController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
+  navigator: Navigator,
   mcc: MessagesControllerComponents,
   consignmentReferencesPage: consignment_references
 )(implicit ec: ExecutionContext)
@@ -54,7 +56,7 @@ class ConsignmentReferencesController @Inject()(
           Future.successful(BadRequest(consignmentReferencesPage(formWithErrors))),
         validConsignmentReferences =>
           updateCache(validConsignmentReferences)
-            .map(_ => Redirect(controllers.declaration.routes.ExporterDetailsController.displayForm()))
+            .map(_ => navigator.continueTo(controllers.declaration.routes.ExporterDetailsController.displayForm()))
       )
   }
 
