@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
 import forms.declaration.ExporterDetails
 import javax.inject.Inject
 import models.ExportsDeclaration
@@ -34,6 +35,7 @@ class ExporterDetailsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
+  navigator: Navigator,
   mcc: MessagesControllerComponents,
   exporterDetailsPage: exporter_details
 )(implicit ec: ExecutionContext)
@@ -47,13 +49,13 @@ class ExporterDetailsController @Inject()(
   }
 
   def saveAddress(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    ExporterDetails.form
+    ExporterDetails.form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ExporterDetails]) => Future.successful(BadRequest(exporterDetailsPage(formWithErrors))),
         form =>
           updateCache(form)
-            .map(_ => Redirect(controllers.declaration.routes.ConsigneeDetailsController.displayPage()))
+            .map(_ => navigator.continueTo(controllers.declaration.routes.ConsigneeDetailsController.displayPage()))
       )
   }
 

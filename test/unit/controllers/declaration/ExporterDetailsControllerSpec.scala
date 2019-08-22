@@ -20,21 +20,19 @@ import controllers.declaration.ExporterDetailsController
 import forms.common.Address
 import forms.declaration.ExporterDetails
 import org.mockito.ArgumentCaptor
-import org.mockito.Mockito.{reset, verify, when}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.declaration.exporter_details
-import play.api.test.Helpers._
 
 import scala.concurrent.ExecutionContext
 
 class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
-
-  import forms.declaration.ExporterDetailsSpec._
 
   val exporter_details = mock[exporter_details]
 
@@ -42,6 +40,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
     mockAuthAction,
     mockJourneyAction,
     mockExportsCacheService,
+    navigator,
     stubMessagesControllerComponents(),
     exporter_details
   )(ExecutionContext.global)
@@ -100,8 +99,9 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
         withNewCaching(declaration)
         val body = Json.obj("details" -> Json.obj("eori" -> "PL213472539481923"))
         val response = controller.saveAddress()(postRequest(body, declaration))
-        status(response) mustBe SEE_OTHER
-        redirectLocation(response).value must endWith("consignee-details")
+
+        await(response) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.ConsigneeDetailsController.displayPage()
       }
     }
   }
