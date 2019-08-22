@@ -35,6 +35,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
       mockJourneyAction,
       mockErrorHandler,
       mockExportsCacheService,
+      navigator,
       stubMessagesControllerComponents(),
       declarationHolderPage
     )
@@ -171,7 +172,8 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
         val result = controller.submitHoldersOfAuthorisation()(postRequestAsFormUrlEncoded(correctForm: _*))
 
-        status(result) must be(SEE_OTHER)
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.DestinationCountriesController.displayForm()
       }
 
       "user save correct data without new item" in new SetUp {
@@ -181,7 +183,8 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
         val result =
           controller.submitHoldersOfAuthorisation()(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
 
-        status(result) must be(SEE_OTHER)
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.DestinationCountriesController.displayForm()
       }
 
       "user remove existing item" in new SetUp {
