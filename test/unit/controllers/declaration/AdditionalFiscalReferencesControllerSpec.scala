@@ -41,6 +41,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with Error
       mockJourneyAction,
       mockErrorHandler,
       mockExportsCacheService,
+      navigator,
       stubMessagesControllerComponents(),
       additionalFiscalReferencesPage
     )(ec)
@@ -219,8 +220,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with Error
 
         val result: Future[Result] = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(correctForm: _*))
 
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(routes.ItemTypeController.displayPage("itemId").url))
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe routes.ItemTypeController.displayPage("itemId")
       }
 
       "user save correct data without new item" in new SetUp {
@@ -237,8 +238,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with Error
 
         val result: Future[Result] = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(correctForm))
 
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(routes.ItemTypeController.displayPage("itemId").url))
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe routes.ItemTypeController.displayPage("itemId")
       }
 
       "user remove existing item" in new SetUp {
