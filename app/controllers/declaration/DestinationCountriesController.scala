@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.remove
 import controllers.util._
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
@@ -43,6 +44,7 @@ class DestinationCountriesController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
+  navigator: Navigator,
   mcc: MessagesControllerComponents,
   destinationCountriesSupplementaryPage: destination_countries_supplementary,
   destinationCountriesStandardPage: destination_countries_standard
@@ -86,7 +88,7 @@ class DestinationCountriesController @Inject()(
           Future.successful(BadRequest(destinationCountriesSupplementaryPage(formWithErrors))),
         formData =>
           updateCache(formData)
-            .map(_ => Redirect(controllers.declaration.routes.LocationController.displayForm()))
+            .map(_ => navigator.continueTo(controllers.declaration.routes.LocationController.displayForm()))
       )
 
   private def handleSubmitStandard()(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
@@ -97,7 +99,7 @@ class DestinationCountriesController @Inject()(
 
     actionTypeOpt match {
       case Some(Add) if !boundForm.hasErrors             => addRoutingCountry(cache)
-      case Some(SaveAndContinue) if !boundForm.hasErrors => saveAndContinue(cache)
+      case Some(SaveAndContinue) | Some(SaveAndReturn) if !boundForm.hasErrors => saveAndContinue(cache)
       case Some(Remove(values))                          => removeRoutingCountry(values, boundForm, cache)
       case _                                             => Future.successful(BadRequest(destinationCountriesStandardPage(boundForm)))
     }
@@ -128,7 +130,7 @@ class DestinationCountriesController @Inject()(
 
   private def saveAndContinue(
     cachedData: DestinationCountries
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
+  )(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] = {
     val countriesStandardForm = Standard.form.bindFromRequest()
     val countriesStandardInput = countriesStandardForm.value.getOrElse(DestinationCountries.empty())
     val countriesStandardUpdated = countriesStandardInput.copy(
@@ -138,7 +140,7 @@ class DestinationCountriesController @Inject()(
     DestinationCountriesValidator.validateOnSaveAndContinue(countriesStandardUpdated) match {
       case Valid =>
         updateCache(countriesStandardUpdated)
-          .map(_ => Redirect(controllers.declaration.routes.LocationController.displayForm()))
+          .map(_ => navigator.continueTo(controllers.declaration.routes.LocationController.displayForm()))
       case Invalid(errors) =>
         Future.successful(
           BadRequest(
