@@ -17,6 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.AdditionalDeclarationTypeController
+import controllers.util.{SaveAndContinue, SaveAndReturn}
 import forms.Choice
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import play.api.libs.json.Json
@@ -33,6 +34,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
       mockAuthAction,
       mockJourneyAction,
       mockExportsCacheService,
+      navigator,
       stubMessagesControllerComponents(),
       additionalDeclarationTypePage
     )(ec)
@@ -48,19 +50,15 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
     withNewCaching(aDeclaration(withChoice(Choice.AllowedChoiceValues.StandardDec)))
   }
 
-  "Additional declaration type page controller for supplementary" should {
-
+  "Display Page" should {
     "return 200 (OK)" when {
-
-      "display page method is invoked without data in cache" in new SupplementarySetUp {
-
+      "cache is empty during supplementary journey" in new SupplementarySetUp {
         val result = controller.displayPage()(getRequest())
 
         status(result) must be(OK)
       }
 
-      "display page method is invoked with data in cache" in new SupplementarySetUp {
-
+      "cache is populated during supplementary journey" in new SupplementarySetUp {
         val cachedData = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
           .copy(additionalDeclarationType = Some(AdditionalDeclarationType("Z")))
         withNewCaching(cachedData)
@@ -69,49 +67,14 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
 
         status(result) must be(OK)
       }
-    }
 
-    "return 400 (BAD_REQUEST)" when {
-
-      "form is incorrect" in new SupplementarySetUp {
-
-        val incorrectForm = Json.toJson(AdditionalDeclarationType("Incorrect"))
-
-        val result = controller.submitForm()(postRequest(incorrectForm))
-
-        status(result) must be(BAD_REQUEST)
-      }
-    }
-
-    "return 303 (SEE_OTHER) and redirect to consignment references page" when {
-
-      "data is correct" in new SupplementarySetUp {
-
-        val correctForm = Json.toJson(AdditionalDeclarationType("Z"))
-
-        val result = controller.submitForm()(postRequest(correctForm))
-
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(
-          Some(controllers.declaration.routes.ConsignmentReferencesController.displayPage().url)
-        )
-      }
-    }
-  }
-
-  "Additional declaration type page controller for standard" should {
-
-    "return 200 (OK)" when {
-
-      "display page method is invoked without data in cache" in new StandardSetUp {
-
+      "cache is empty during standard journey" in new StandardSetUp {
         val result = controller.displayPage()(getRequest())
 
         status(result) must be(OK)
       }
 
-      "display page method is invoked with data in cache" in new StandardSetUp {
-
+      "cache is populated during standard journey" in new StandardSetUp {
         val cachedData = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
           .copy(additionalDeclarationType = Some(AdditionalDeclarationType("D")))
         withNewCaching(cachedData)
@@ -121,11 +84,19 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
         status(result) must be(OK)
       }
     }
+  }
 
+  "Submit" should {
     "return 400 (BAD_REQUEST)" when {
+      "form is incorrect during supplementary journey" in new SupplementarySetUp {
+        val incorrectForm = Json.toJson(AdditionalDeclarationType("Incorrect"))
 
-      "form is incorrect" in new StandardSetUp {
+        val result = controller.submitForm()(postRequest(incorrectForm))
 
+        status(result) must be(BAD_REQUEST)
+      }
+
+      "form is incorrect during standard journey" in new StandardSetUp {
         val incorrectForm = Json.toJson(AdditionalDeclarationType("Incorrect"))
 
         val result = controller.submitForm()(postRequest(incorrectForm))
@@ -135,17 +106,44 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
     }
 
     "return 303 (SEE_OTHER) and redirect to consignment references page" when {
+      "SaveAndContinue during supplementary journey" in new SupplementarySetUp {
+        val correctForm = Seq("additionalDeclarationType" -> "Z", SaveAndContinue.toString -> "")
 
-      "data is correct" in new StandardSetUp {
-
-        val correctForm = Json.toJson(AdditionalDeclarationType("D"))
-
-        val result = controller.submitForm()(postRequest(correctForm))
+        val result = controller.submitForm()(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(
           Some(controllers.declaration.routes.ConsignmentReferencesController.displayPage().url)
         )
+      }
+
+      "SaveAndContinue during standard journey" in new StandardSetUp {
+        val correctForm = Seq("additionalDeclarationType" -> "D", SaveAndContinue.toString -> "")
+
+        val result = controller.submitForm()(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(
+          Some(controllers.declaration.routes.ConsignmentReferencesController.displayPage().url)
+        )
+      }
+    }
+
+    "return 303 (SEE_OTHER) and redirect to draft confirmation page" when {
+      "SaveAndReturn during supplementary journey" in new SupplementarySetUp {
+        val correctForm = Seq("additionalDeclarationType" -> "Z", SaveAndReturn.toString -> "")
+
+        val result = controller.submitForm()(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        await(result) mustBe draftConfirmationResult
+      }
+
+      "SaveAndReturn during standard journey" in new StandardSetUp {
+        val correctForm = Seq("additionalDeclarationType" -> "D", SaveAndReturn.toString -> "")
+
+        val result = controller.submitForm()(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        await(result) mustBe draftConfirmationResult
       }
     }
   }

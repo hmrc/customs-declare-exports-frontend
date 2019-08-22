@@ -16,7 +16,7 @@
 
 package services.cache
 
-import java.time.{Instant, LocalDateTime, ZoneOffset}
+import java.time.{LocalDate, LocalDateTime, ZoneOffset, Instant}
 import java.util.UUID
 
 import forms.common.Address
@@ -29,12 +29,7 @@ import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Choice, Ducr}
 import models.DeclarationStatus.DeclarationStatus
 import models.ExportsDeclaration
-import models.declaration.{
-  DeclarationAdditionalActorsData,
-  DeclarationHoldersData,
-  Locations,
-  TransportInformationContainerData
-}
+import models.declaration.{DeclarationAdditionalActorsData, DeclarationHoldersData, Locations, TransportInformationContainerData}
 
 //noinspection ScalaStyle
 trait ExportsDeclarationBuilder {
@@ -64,6 +59,12 @@ trait ExportsDeclarationBuilder {
   def withStatus(status: DeclarationStatus): ExportsDeclarationModifier = _.copy(status = status)
 
   def withChoice(choice: String): ExportsDeclarationModifier = _.copy(choice = choice)
+
+  def withUpdateDate(date: LocalDateTime): ExportsDeclarationModifier = _.copy(updatedDateTime = date.toInstant(ZoneOffset.UTC))
+
+  def withUpdateDate(date: LocalDate): ExportsDeclarationModifier = _.copy(updatedDateTime = date.atStartOfDay().toInstant(ZoneOffset.UTC))
+
+  def withUpdateTime(updateDateTime: Instant): ExportsDeclarationModifier = _.copy(updatedDateTime = updateDateTime)
 
   def withoutTotalNumberOfItems(): ExportsDeclarationModifier = _.copy(totalNumberOfItems = None)
 
@@ -295,8 +296,6 @@ trait ExportsDeclarationBuilder {
         containerData =
           Some(TransportInformationContainerData(cache.containerData.map(_.containers).getOrElse(Seq.empty) ++ data))
     )
-
-  def withUpdateTime(updateDateTime: Instant): ExportsDeclarationModifier = _.copy(updatedDateTime = updateDateTime)
 
   def withoutContainerData(): ExportsDeclarationModifier = _.copy(containerData = None)
 

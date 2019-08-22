@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
+@import models.responses.FlashKeys
+
 @this(main_template: views.html.main_template)
 
 @()(implicit request: Request[_], flash: Flash, messages: Messages)
@@ -26,7 +28,7 @@
         <h1 class="heading-xlarge">
             @messages("supplementary.confirmation.header")
         </h1>
-        <p class="font-large">@flash.get("LRN").getOrElse("-")</p>
+        <p class="font-large">@flash.get(FlashKeys.lrn).getOrElse("-")</p>
     </div>
 
     <p>@messages("supplementary.confirmation.info")</p>
@@ -35,10 +37,10 @@
 
     <p>
         @messages("supplementary.confirmation.explanation")
-        <a href="/customs-declare-exports/submissions">
+        <a href="@routes.SubmissionsController.displayListOfSubmissions()">
             @messages("supplementary.confirmation.explanation.linkText")
         </a>
     </p>
 
-    @components.button_link(messageKey = "supplementary.confirmation.submitAnotherDeclaration", href = "/customs-declare-exports/choice")
+    @components.button_link(messageKey = "supplementary.confirmation.submitAnotherDeclaration", href=routes.ChoiceController.displayPage().url)
 }

@@ -180,6 +180,10 @@ class AppConfigSpec extends CustomExportsBaseSpec {
       validConfigService.cacheTimeToLive must be(FiniteDuration(24, "h"))
     }
 
+    "have draft lifetime" in {
+      validConfigService.draftTimeToLive must be(FiniteDuration(30, TimeUnit.DAYS))
+    }
+
   }
 
   "have draft lifetime" in {

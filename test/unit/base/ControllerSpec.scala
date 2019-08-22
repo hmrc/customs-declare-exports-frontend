@@ -16,7 +16,7 @@
 
 package unit.base
 
-import base.{MockAuthAction, MockConnectors, MockExportCacheService}
+import base.{MockAuthAction, MockConnectors, MockExportCacheService, MockNavigator}
 import controllers.util.{Add, SaveAndContinue}
 import models.ExportsDeclaration
 import models.requests.{ExportsSessionKeys, JourneyRequest}
@@ -34,7 +34,7 @@ import utils.FakeRequestCSRFSupport._
 import scala.concurrent.{ExecutionContext, Future}
 
 trait ControllerSpec
-    extends UnitSpec with Stubs with MockAuthAction with MockConnectors with MockExportCacheService
+    extends UnitSpec with Stubs with MockAuthAction with MockConnectors with MockExportCacheService with MockNavigator
     with ExportsDeclarationBuilder with ExportsItemBuilder with JourneyActionMocks {
 
   implicit val ec: ExecutionContext = ExecutionContext.global

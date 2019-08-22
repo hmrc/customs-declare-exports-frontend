@@ -16,23 +16,28 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, JourneyAction}
+import controllers.actions.AuthAction
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.confirmation_page
+import views.html.declaration.{submission_confirmation_page, draft_confirmation_page}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class ConfirmationController @Inject()(
   authenticate: AuthAction,
   mcc: MessagesControllerComponents,
-  confirmationPage: confirmation_page
+  submissionConfirmationPage: submission_confirmation_page,
+  draftConfirmationPage: draft_confirmation_page
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = authenticate { implicit request =>
-    Ok(confirmationPage())
+  def displaySubmissionConfirmation(): Action[AnyContent] = authenticate { implicit request =>
+    Ok(submissionConfirmationPage())
+  }
+
+  def displayDraftConfirmation(): Action[AnyContent] = authenticate { implicit request =>
+    Ok(draftConfirmationPage())
   }
 }

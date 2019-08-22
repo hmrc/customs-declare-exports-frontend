@@ -201,4 +201,5 @@ POST        /summary                             controllers.declaration.Summary
 
 # Confirmation
 
-GET         /confirmation                        controllers.declaration.ConfirmationController.displayPage()
+GET         /confirmation                        controllers.declaration.ConfirmationController.displaySubmissionConfirmation()
+GET         /draft-saved                         controllers.declaration.ConfirmationController.displayDraftConfirmation()

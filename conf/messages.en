@@ -783,3 +783,11 @@ standard.seal.id= Seal identification number
 standard.transport.sealId.empty.error= Please provide seal Id
 standard.transport.sealId.alphaNumeric.error= Seal identification number must be 20 characters or less
 standard.transport.sealId.longer.error= Seal identification number must be 20 characters or less
+
+confirmation.draft.title=Your declaration has been saved
+confirmation.draft.info=Your information is held until {0}
+confirmation.draft.nextHeading=What you can do next
+confirmation.draft.nextText1=You can
+confirmation.draft.nextContinueLink=continue a saved declaration
+confirmation.draft.nextText2=or you can
+confirmation.draft.nextStartFreshLink=start a new one.
