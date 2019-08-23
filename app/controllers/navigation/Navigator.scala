@@ -17,7 +17,7 @@
 package controllers.navigation
 
 import config.AppConfig
-import controllers.util.{FormAction, SaveAndContinue, SaveAndReturn, Unknown}
+import controllers.util.{FormAction, SaveAndReturn}
 import javax.inject.Inject
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
@@ -27,9 +27,8 @@ class Navigator @Inject()(appConfig: AppConfig) {
 
   def continueTo(call: Call)(implicit req: JourneyRequest[AnyContent]): Result =
     FormAction.bindFromRequest match {
-      case Some(SaveAndReturn)          => goToDraftConfirmation()
-      case Some(SaveAndContinue) | None | Some(Unknown) => Results.Redirect(call)
-      case Some(action)                 => throw new IllegalArgumentException(s"Cannot continue journey with action type ${action}")
+      case Some(SaveAndReturn) => goToDraftConfirmation()
+      case _                   => Results.Redirect(call)
     }
 
   private def goToDraftConfirmation()(implicit req: JourneyRequest[_]): Result = {
