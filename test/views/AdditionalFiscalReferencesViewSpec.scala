@@ -16,8 +16,10 @@
 
 package views
 
+import controllers.util.{Add, SaveAndContinue, SaveAndReturn}
 import forms.declaration.AdditionalFiscalReference
 import helpers.views.declaration.{AdditionalFiscalReferencesMessages, CommonMessages}
+import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -72,18 +74,19 @@ class AdditionalFiscalReferencesViewSpec extends ViewSpec with AdditionalFiscalR
 
     }
 
-    "display 'Save and continue' button to Item Type page" in {
+    "display 'Save and continue' button" in {
+      val view: Document = createView()
+      view must containElement("button").withName(SaveAndContinue.toString)
+    }
 
-      val saveButton = getElementById(createView(), "submit")
-
-      saveButton.text() must be(messages(saveAndContinueCaption))
-
+    "display 'Save and return' button" in {
+      val view: Document = createView()
+      view must containElement("button").withName(SaveAndReturn.toString)
     }
 
     "display 'Add' button" in {
-
-      getElementById(createView(), "add").text() must be(messages("site.add"))
-
+      val view: Document = createView()
+      view must containElement("button").withName(Add.toString)
     }
 
   }

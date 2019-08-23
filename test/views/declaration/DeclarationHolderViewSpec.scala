@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.TestHelper
+import controllers.util.SaveAndReturn
 import forms.declaration.DeclarationHolder
 import helpers.views.declaration.{CommonMessages, DeclarationHolderMessages}
 import play.api.data.Form
@@ -72,14 +73,17 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
     }
 
     "display both 'Add' and 'Save and continue' button on page" in {
-
       val view = createView()
 
-      val addButton = getElementByCss(view, "#add")
+      val addButton = view.getElementById("add")
       addButton.text() must be(messages(addCaption))
 
-      val saveButton = getElementByCss(view, "#submit")
-      saveButton.text() must be(messages(saveAndContinueCaption))
+      val saveAndContinueButton = view.getElementById("submit")
+      saveAndContinueButton.text() must be(messages(saveAndContinueCaption))
+
+      val saveAndReturnButton = view.getElementById("submit_and_return")
+      saveAndReturnButton.text() must be(messages(saveAndReturnCaption))
+      saveAndReturnButton.attr("name") must be(SaveAndReturn.toString)
     }
   }
 

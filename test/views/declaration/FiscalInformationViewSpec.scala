@@ -16,6 +16,7 @@
 
 package views.declaration
 
+import controllers.util.SaveAndReturn
 import forms.declaration.FiscalInformation
 import helpers.views.declaration.{CommonMessages, FiscalInformationMessages}
 import play.api.data.Form
@@ -67,9 +68,14 @@ class FiscalInformationViewSpec extends ViewSpec with FiscalInformationMessages 
     }
 
     "display 'Save and continue' button" in {
-
-      val saveButton = getElementByCss(createView(), "#submit")
+      val saveButton = createView().getElementById("submit")
       saveButton.text() must be(messages(saveAndContinueCaption))
+    }
+
+    "display 'Save and return' button" in {
+      val saveButton = createView().getElementById("submit_and_return")
+      saveButton.text() must be(messages(saveAndReturnCaption))
+      saveButton.attr("name") must be(SaveAndReturn.toString)
     }
 
   }

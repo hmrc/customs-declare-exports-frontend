@@ -16,6 +16,7 @@
 
 package views.declaration
 
+import controllers.util.SaveAndReturn
 import forms.declaration.BorderTransport
 import helpers.views.declaration.CommonMessages
 import play.api.data.Form
@@ -26,6 +27,7 @@ import views.tags.ViewTest
 import views.html.components.fields.field_text
 import views.html.components.fields.field_radio
 import forms.declaration.TransportCodes._
+import org.jsoup.nodes.Document
 import views.components.inputs.RadioOption
 
 @ViewTest
@@ -58,10 +60,14 @@ class BorderTransportViewSpec extends BorderTransportFields with CommonMessages 
     }
 
     "display 'Save and continue' button on page" in {
-      val view = createView()
+      val view: Document = createView()
+      view.getElementById("submit").text() must be(messages(saveAndContinueCaption))
+    }
 
-      val saveButton = getElementByCss(view, "#submit")
-      saveButton.text() must be(messages(saveAndContinueCaption))
+    "display 'Save and return' button on page" in {
+      val view: Document = createView()
+      view.getElementById("submit_and_return").text() must be(messages(saveAndReturnCaption))
+      view.getElementById("submit_and_return").attr("name") must be(SaveAndReturn.toString)
     }
 
     "have labels for all fields" in {

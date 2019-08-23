@@ -16,8 +16,10 @@
 
 package views.declaration
 
+import controllers.util.{Add, SaveAndContinue, SaveAndReturn}
 import forms.declaration.AdditionalInformation
 import helpers.views.declaration.{AdditionalInformationMessages, CommonMessages}
+import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -74,15 +76,19 @@ class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationM
       backButton.attr("href") must be(s"/customs-declare-exports/declaration/items/$itemId/commodity-measure")
     }
 
-    "display both 'Add' and 'Save and continue' button on page" in {
+    "display 'Save and continue' button" in {
+      val view: Document = createView()
+      view must containElement("button").withName(SaveAndContinue.toString)
+    }
 
-      val view = createView()
+    "display 'Save and return' button" in {
+      val view: Document = createView()
+      view must containElement("button").withName(SaveAndReturn.toString)
+    }
 
-      val addButton = getElementByCss(view, "#add")
-      addButton.text() must be(messages(addCaption))
-
-      val saveButton = getElementByCss(view, "#submit")
-      saveButton.text() must be(messages(saveAndContinueCaption))
+    "display 'Add' button" in {
+      val view: Document = createView()
+      view must containElement("button").withName(Add.toString)
     }
   }
 

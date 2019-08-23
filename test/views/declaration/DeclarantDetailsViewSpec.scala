@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.TestHelper
+import controllers.util.SaveAndReturn
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.common.Address
 import forms.declaration.{DeclarantDetails, EntityDetails}
@@ -108,9 +109,14 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
     }
 
     "display 'Save and continue' button on page" in {
-
-      val saveButton = getElementByCss(createView(), "#submit")
+      val saveButton = createView().getElementById("submit")
       saveButton.text() must be(messages(saveAndContinueCaption))
+    }
+
+    "display 'Save and return' button on page" in {
+      val saveButton = createView().getElementById("submit_and_return")
+      saveButton.text() must be(messages(saveAndReturnCaption))
+      saveButton.attr("name") must be(SaveAndReturn.toString)
     }
   }
 

@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.TestHelper
+import controllers.util.SaveAndReturn
 import forms.common.Address
 import forms.declaration.{EntityDetails, ExporterDetails}
 import helpers.views.declaration.{CommonMessages, ExporterDetailsMessages}
@@ -102,10 +103,15 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
       backButton.attr("href") must be("/customs-declare-exports/declaration/consignment-references")
     }
 
-    "display 'Save and continue' button on page" in {
-
-      val saveButton = getElementByCss(createView(), "#submit")
+    "display 'Save and continue' button" in {
+      val saveButton = createView().getElementById("submit")
       saveButton.text() must be(messages(saveAndContinueCaption))
+    }
+
+    "display 'Save and return' button" in {
+      val saveButton = createView().getElementById("submit_and_return")
+      saveButton.text() must be(messages(saveAndReturnCaption))
+      saveButton.attr("name") must be(SaveAndReturn.toString)
     }
   }
 
