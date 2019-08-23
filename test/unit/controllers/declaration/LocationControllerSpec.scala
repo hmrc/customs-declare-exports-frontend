@@ -39,7 +39,8 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
     mockJourneyAction,
     stubMessagesControllerComponents(),
     mockGoodsLocationPage,
-    mockExportsCacheService
+    mockExportsCacheService,
+    navigator
   )(ec)
 
   override protected def beforeEach(): Unit = {
@@ -118,7 +119,8 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
 
         val result = controller.saveLocation()(postRequest(correctForm))
 
-        status(result) mustBe SEE_OTHER
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.OfficeOfExitController.displayForm()
         verify(mockGoodsLocationPage, times(0)).apply(any())(any(), any())
       }
     }
