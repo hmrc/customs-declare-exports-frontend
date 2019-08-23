@@ -17,6 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.ItemsSummaryController
+import controllers.util.{Add, SaveAndContinue, SaveAndReturn}
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
@@ -37,6 +38,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
     mockAuthAction,
     mockJourneyAction,
     mockExportsCacheService,
+    navigator,
     mockExportIdGeneratorService,
     stubMessagesControllerComponents(),
     mockItemsSummaryPage
@@ -64,7 +66,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
     captor.getValue
   }
 
-  "Items Summary controller" should {
+  "Display" should {
 
     "return 200 (OK)" when {
 
@@ -78,18 +80,38 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
         theResponseForm mustBe empty
       }
     }
+  }
+
+  "Submit" should {
 
     "return 303 (SEE_OTHER) and redirect to Procedure Codes page" when {
-
       "use add new item" in {
-
-        val result = controller.addItem()(getRequest())
+        val result = controller.submit()(postRequestAsFormUrlEncoded(Add.toString -> ""))
 
         status(result) mustBe SEE_OTHER
         verify(mockItemsSummaryPage, times(0)).apply(any())(any(), any())
         redirectLocation(result).value must endWith(s"/items/${itemId}/procedure-codes")
       }
     }
+
+    "return 303 (SEE_OTHER) and continue" when {
+      "user save and continues" in {
+        val result = controller.submit()(postRequestAsFormUrlEncoded(SaveAndContinue.toString -> ""))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController.displayForm()
+      }
+
+      "user save and returns" in {
+        val result = controller.submit()(postRequestAsFormUrlEncoded(SaveAndReturn.toString -> ""))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController.displayForm()
+      }
+    }
+  }
+
+  "Remove" should {
 
     "return 303 (SEE_OTHER) and redirect to the same page during removing" when {
 

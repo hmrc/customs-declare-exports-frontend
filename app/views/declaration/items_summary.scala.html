@@ -81,19 +81,20 @@
             </tbody>
         </table>
     }
+    @helper.form(routes.ItemsSummaryController.submit(), 'autocomplete -> "off") {
+        @helper.CSRF.formField
 
-    <div class="section">
-        <a id="link-add" class="link-add" href="@routes.ItemsSummaryController.addItem().url">
-        @if(items.isEmpty) {
-            @messages("site.add.item")
-        } else {
-            @messages("site.add.anotherItem")
-        }
-        </a><p></p>
+        <div class="section">
+            @components.buttons.add_button(if(items.isEmpty) "site.add.item" else "site.add.anotherItem")
 
+            @if(items.nonEmpty) {
+                @components.buttons.save_and_continue_button()
+            }
+        </div>
         @if(items.nonEmpty) {
-            <a href="@routes.WarehouseIdentificationController.displayForm().url" class="button" id="next">@messages("site.save_and_continue")</a>
+            <div class="section">
+                @components.buttons.save_and_return_later_button()
+            </div>
         }
-
-    </div>
+    }
 }

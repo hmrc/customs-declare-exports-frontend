@@ -17,6 +17,8 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
+import controllers.util.{Add, FormAction, SaveAndContinue, SaveAndReturn}
 import javax.inject.Inject
 import models.ExportsDeclaration
 import play.api.i18n.I18nSupport
@@ -31,6 +33,7 @@ class ItemsSummaryController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   exportsCacheService: ExportsCacheService,
+  navigator: Navigator,
   exportItemIdGeneratorService: ExportItemIdGeneratorService,
   mcc: MessagesControllerComponents,
   itemsSummaryPage: items_summary
@@ -41,14 +44,22 @@ class ItemsSummaryController @Inject()(
     Ok(itemsSummaryPage(request.cacheModel.items.toList))
   }
 
-  def addItem(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val newItem = ExportItem(id = exportItemIdGeneratorService.generateItemId())
-    exportsCacheService
-      .update(
-        request.cacheModel
-          .copy(items = request.cacheModel.items + newItem.copy(sequenceId = request.cacheModel.items.size + 1))
-      )
-      .map(_ => Redirect(controllers.declaration.routes.ProcedureCodesController.displayPage(newItem.id)))
+  def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    val action = FormAction.bindFromRequest()
+    action match {
+      case Some(Add) =>
+        val newItem = ExportItem(id = exportItemIdGeneratorService.generateItemId())
+        exportsCacheService
+          .update(
+            request.cacheModel
+              .copy(items = request.cacheModel.items + newItem.copy(sequenceId = request.cacheModel.items.size + 1))
+          )
+          .map(_ => Redirect(controllers.declaration.routes.ProcedureCodesController.displayPage(newItem.id)))
+      case Some(SaveAndContinue) | Some(SaveAndReturn) =>
+        Future.successful(
+          navigator.continueTo(controllers.declaration.routes.WarehouseIdentificationController.displayForm())
+        )
+    }
   }
 
   def removeItem(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>

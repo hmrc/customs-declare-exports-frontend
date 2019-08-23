@@ -132,25 +132,17 @@ class ItemSummaryViewSpec extends ViewSpec with ItemSummaryMessages {
       "no items" in {
         val doc = view(List.empty)
 
-        doc.getElementById("link-add") must (
-          haveHref(routes.ItemsSummaryController.addItem()) and containText(messages("site.add.item"))
-        )
-
-        doc must not(containElementWithID("next"))
+        doc.getElementById("add") must containText(messages("site.add.item"))
+        doc must not(containElementWithID("submit"))
+        doc must not(containElementWithID("submit_and_return"))
       }
 
       "some items" in {
         val doc = view(List(ExportItem("id")))
 
-        doc.getElementById("link-add") must (
-          haveHref(routes.ItemsSummaryController.addItem()) and containText(messages("site.add.anotherItem"))
-        )
-
-        doc.getElementById("next") must (
-          haveHref(routes.WarehouseIdentificationController.displayForm()) and containText(
-            messages("site.save_and_continue")
-          )
-        )
+        doc.getElementById("add") must containText(messages("site.add.anotherItem"))
+        doc must containElementWithID("submit")
+        doc must containElementWithID("submit_and_return")
       }
 
     }
