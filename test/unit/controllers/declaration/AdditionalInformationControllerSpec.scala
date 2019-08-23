@@ -38,6 +38,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
       mockJourneyAction,
       mockErrorHandler,
       mockExportsCacheService,
+      navigator,
       stubMessagesControllerComponents(),
       additionalInformationPage
     )(ec)
@@ -197,8 +198,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
         val result = controller.saveAdditionalInfo("itemId")(postRequestAsFormUrlEncoded(correctForm: _*))
 
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(routes.DocumentsProducedController.displayPage("itemId").url))
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe routes.DocumentsProducedController.displayPage("itemId")
       }
 
       "user save correct data without new item" in new SetUp {
@@ -216,8 +217,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
         val result = controller.saveAdditionalInfo("itemId")(postRequestAsFormUrlEncoded(correctForm))
 
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(routes.DocumentsProducedController.displayPage("itemId").url))
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe routes.DocumentsProducedController.displayPage("itemId")
       }
 
       "user remove existing item" in new SetUp {

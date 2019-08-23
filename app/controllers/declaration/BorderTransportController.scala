@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
 import forms.declaration.BorderTransport
 import forms.declaration.BorderTransport._
 import javax.inject.Inject
@@ -35,6 +36,7 @@ class BorderTransportController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
+  navigator: Navigator,
   mcc: MessagesControllerComponents,
   borderTransportPage: border_transport
 )(implicit ec: ExecutionContext)
@@ -54,7 +56,7 @@ class BorderTransportController @Inject()(
         (formWithErrors: Form[BorderTransport]) => Future.successful(BadRequest(borderTransportPage(formWithErrors))),
         borderTransport =>
           updateCache(borderTransport)
-            .map(_ => Redirect(routes.TransportDetailsController.displayForm()))
+            .map(_ => navigator.continueTo(routes.TransportDetailsController.displayForm()))
       )
   }
 

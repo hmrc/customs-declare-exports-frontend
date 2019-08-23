@@ -117,7 +117,7 @@ POST        /nature-of-transaction               controllers.declaration.NatureO
 
 GET         /export-items                        controllers.declaration.ItemsSummaryController.displayPage()
 
-GET         /export-items/add                    controllers.declaration.ItemsSummaryController.addItem()
+POST        /export-items                        controllers.declaration.ItemsSummaryController.submit()
 
 GET         /export-items/:itemId/remove         controllers.declaration.ItemsSummaryController.removeItem(itemId)
 

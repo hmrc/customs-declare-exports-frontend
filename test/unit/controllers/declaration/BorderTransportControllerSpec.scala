@@ -38,6 +38,7 @@ class BorderTransportControllerSpec extends ControllerSpec with ErrorHandlerMock
       mockAuthAction,
       mockJourneyAction,
       mockExportsCacheService,
+      navigator,
       stubMessagesControllerComponents(),
       borderTransportPage
     )(ec)
@@ -93,8 +94,8 @@ class BorderTransportControllerSpec extends ControllerSpec with ErrorHandlerMock
 
         val result: Future[Result] = controller.submitForm()(postRequest(correctForm))
 
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(routes.TransportDetailsController.displayForm().url))
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe routes.TransportDetailsController.displayForm()
       }
     }
   }

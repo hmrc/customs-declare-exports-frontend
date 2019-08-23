@@ -58,6 +58,7 @@ trait CommonMessages {
   val removeCaption: String = site + ".remove"
   val addCaption: String = site + ".add"
   val saveAndContinueCaption: String = site + ".save_and_continue"
+  val saveAndReturnCaption: String = site + ".save_and_come_back_later"
 
   val party: String = "supplementary.partyType"
   val consolidator: String = party + ".CS"

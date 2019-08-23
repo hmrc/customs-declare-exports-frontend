@@ -37,6 +37,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
       mockJourneyAction,
       mockErrorHandler,
       mockExportsCacheService,
+      navigator,
       stubMessagesControllerComponents(),
       destinationCountriesSupplementaryPage,
       destinationCountriesStandardPage
@@ -231,7 +232,8 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
         val result = controller.saveCountries()(postRequest(correctForm))
 
-        status(result) must be(SEE_OTHER)
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.LocationController.displayForm()
       }
     }
 
@@ -262,7 +264,8 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
         val result = controller.saveCountries()(postRequestAsFormUrlEncoded(correctForm: _*))
 
-        status(result) must be(SEE_OTHER)
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.LocationController.displayForm()
       }
 
       "user save correct data with item in cache and empty form" in new StandardSetUp {
@@ -278,7 +281,8 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
         val result = controller.saveCountries()(postRequestAsFormUrlEncoded(correctForm: _*))
 
-        status(result) must be(SEE_OTHER)
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.LocationController.displayForm()
       }
 
       "user remove existing item" in new StandardSetUp {

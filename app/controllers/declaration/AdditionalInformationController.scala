@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.remove
 import controllers.util._
 import forms.declaration.AdditionalInformation
@@ -40,6 +41,7 @@ class AdditionalInformationController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
+  navigator: Navigator,
   mcc: MessagesControllerComponents,
   additionalInformationPage: additional_information
 )(implicit ec: ExecutionContext)
@@ -65,10 +67,10 @@ class AdditionalInformationController @Inject()(
         .getOrElse(AdditionalInformationData(Seq()))
 
       actionTypeOpt match {
-        case Some(Add)             => handleAdd(itemId, boundForm, cache.items)
-        case Some(Remove(ids))     => handleRemove(itemId, ids, boundForm, cache.items)
-        case Some(SaveAndContinue) => handleSaveAndContinue(itemId, boundForm, cache.items)
-        case _                     => errorHandler.displayErrorPage()
+        case Some(Add)                                   => handleAdd(itemId, boundForm, cache.items)
+        case Some(Remove(ids))                           => handleRemove(itemId, ids, boundForm, cache.items)
+        case Some(SaveAndContinue) | Some(SaveAndReturn) => handleSaveAndContinue(itemId, boundForm, cache.items)
+        case _                                           => errorHandler.displayErrorPage()
       }
   }
 
@@ -88,7 +90,7 @@ class AdditionalInformationController @Inject()(
     itemId: String,
     boundForm: Form[AdditionalInformation],
     cachedData: Seq[AdditionalInformation]
-  )(implicit request: JourneyRequest[_]): Future[Result] =
+  )(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     MultipleItemsHelper
       .saveAndContinue(boundForm, cachedData, true, elementLimit)
       .fold(
@@ -96,9 +98,9 @@ class AdditionalInformationController @Inject()(
         updatedCache =>
           if (updatedCache != cachedData)
             updateCache(itemId, AdditionalInformationData(updatedCache))
-              .map(_ => Redirect(controllers.declaration.routes.DocumentsProducedController.displayPage(itemId)))
+              .map(_ => navigator.continueTo(controllers.declaration.routes.DocumentsProducedController.displayPage(itemId)))
           else
-            Future.successful(Redirect(controllers.declaration.routes.DocumentsProducedController.displayPage(itemId)))
+            Future.successful(navigator.continueTo(controllers.declaration.routes.DocumentsProducedController.displayPage(itemId)))
       )
 
   private def handleRemove(

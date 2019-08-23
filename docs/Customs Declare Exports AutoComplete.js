@@ -160,11 +160,11 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/export-items')) {
-        let nextLink = document.getElementById('next');
+        let nextLink = document.getElementById('submit');
         if(nextLink) {
             nextLink.click()
         } else {
-            document.getElementById('link-add').click()
+            document.getElementById('add').click()
         }
     }
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/procedure-codes')) {

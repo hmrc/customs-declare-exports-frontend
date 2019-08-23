@@ -33,6 +33,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
       mockAuthAction,
       mockJourneyAction,
       mockExportsCacheService,
+      navigator,
       stubMessagesControllerComponents(),
       carrierDetailsPage
     )(ec)
@@ -82,8 +83,8 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
         val result = controller.saveAddress()(postRequest(correctForm))
 
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(routes.DeclarationAdditionalActorsController.displayForm().url))
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe routes.DeclarationAdditionalActorsController.displayForm()
       }
     }
   }

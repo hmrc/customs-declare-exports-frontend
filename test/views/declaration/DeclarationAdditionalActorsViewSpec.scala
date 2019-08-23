@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.TestHelper
+import controllers.util.SaveAndReturn
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.DeclarationAdditionalActors
 import helpers.views.declaration.{CommonMessages, DeclarationAdditionalActorsMessages}
@@ -106,11 +107,15 @@ class DeclarationAdditionalActorsViewSpec
 
       val view = createView()
 
-      val addButton = getElementByCss(view, "#add")
+      val addButton = view.getElementById("add")
       addButton.text() must be(messages(addCaption))
 
-      val saveButton = getElementByCss(view, "#submit")
-      saveButton.text() must be(messages(saveAndContinueCaption))
+      val saveAndContinueButton = view.getElementById("submit")
+      saveAndContinueButton.text() must be(messages(saveAndContinueCaption))
+
+      val saveAndReturn = view.getElementById("submit_and_return")
+      saveAndReturn.text() must be(messages(saveAndReturnCaption))
+      saveAndReturn.attr("name") must be(SaveAndReturn.toString)
     }
   }
 

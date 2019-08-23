@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.TestHelper
+import controllers.util.SaveAndReturn
 import forms.common.Address
 import forms.declaration.{ConsigneeDetails, EntityDetails}
 import helpers.views.declaration.{CommonMessages, ConsigneeDetailsMessages}
@@ -113,9 +114,13 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
     }
 
     "display 'Save and continue' button on page" in {
+      createView().getElementById("submit").text() must be(messages(saveAndContinueCaption))
+    }
 
-      val saveButton = getElementByCss(createView(), "#submit")
-      saveButton.text() must be(messages(saveAndContinueCaption))
+    "display 'Save and return' button on page" in {
+      val button = createView().getElementById("submit_and_return")
+      button.text() must be(messages(saveAndReturnCaption))
+      button.attr("name") must be(SaveAndReturn.toString)
     }
   }
 

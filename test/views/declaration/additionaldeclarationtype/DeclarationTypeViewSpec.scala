@@ -16,15 +16,13 @@
 
 package views.declaration.additionaldeclarationtype
 
+import controllers.util.{SaveAndContinue, SaveAndReturn}
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeStandardDec.AllowedAdditionalDeclarationTypes._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes._
-import forms.declaration.additionaldeclarationtype.{
-  AdditionalDeclarationType,
-  AdditionalDeclarationTypeStandardDec,
-  AdditionalDeclarationTypeSupplementaryDec
-}
+import forms.declaration.additionaldeclarationtype.{AdditionalDeclarationType, AdditionalDeclarationTypeStandardDec, AdditionalDeclarationTypeSupplementaryDec}
 import helpers.views.declaration.{CommonMessages, DeclarationTypeMessages}
+import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -78,17 +76,30 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
     "display 'Save and continue' button" when {
 
       "used for Standard Declaration journey" in {
-
-        getElementByCss(createView(formStandard, StandardDec), "#submit").text() must be(
-          messages(saveAndContinueCaption)
-        )
+        val view: Document = createView(formStandard, StandardDec)
+        view.getElementById("submit").text() must be(messages(saveAndContinueCaption))
       }
 
       "used for Supplementary Declaration journey" in {
+        val view: Document = createView(formSupplementary, SupplementaryDec)
+        view.getElementById("submit").text() must be(messages(saveAndContinueCaption))
+      }
+    }
 
-        getElementByCss(createView(formSupplementary, SupplementaryDec), "#submit").text() must be(
-          messages(saveAndContinueCaption)
-        )
+    "display 'Save and return' button" when {
+
+      "used for Standard Declaration journey" in {
+        val view: Document = createView(formStandard, StandardDec)
+        val button = view.getElementById("submit_and_return")
+        button.text() must be(messages(saveAndReturnCaption))
+        button must haveAttribute("name", SaveAndReturn.toString)
+      }
+
+      "used for Supplementary Declaration journey" in {
+        val view: Document = createView(formSupplementary, SupplementaryDec)
+        val button = view.getElementById("submit_and_return")
+        button.text() must be(messages(saveAndReturnCaption))
+        button must haveAttribute("name", SaveAndReturn.toString)
       }
     }
 

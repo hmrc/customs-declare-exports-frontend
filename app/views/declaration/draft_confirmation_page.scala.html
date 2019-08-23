@@ -36,7 +36,7 @@
     <span>
         @messages("confirmation.draft.nextText1")
         @* TODO Requires Draft Declarations Page Link Below, not Submissions *@
-        <a href="@routes.SubmissionsController.displayListOfSubmissions()">@messages("confirmation.draft.nextContinueLink")</a>
+        <a href="@routes.SavedDeclarationsController.displayDeclarations()">@messages("confirmation.draft.nextContinueLink")</a>
         @messages("confirmation.draft.nextText2")
         <a href="@routes.ChoiceController.displayPage()">@messages("confirmation.draft.nextStartFreshLink")</a>
     </span>

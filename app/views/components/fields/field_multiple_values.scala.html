@@ -15,7 +15,7 @@
  *@
 
 @import controllers.util.{Add, Remove}
-@import views.html.components.add_button
+@import components.buttons.add_button
 @import views.components.fields.LabelledValue
 
 
@@ -56,6 +56,8 @@
     </div>
 
     @if(includeAddButton) {
+      <div class="section">
         @add_button()
+      </div>
     }
 </div>

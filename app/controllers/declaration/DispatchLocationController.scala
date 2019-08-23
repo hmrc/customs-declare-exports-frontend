@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
 import forms.declaration.DispatchLocation
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
 import javax.inject.Inject
@@ -35,6 +36,7 @@ class DispatchLocationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
+  navigator: Navigator,
   mcc: MessagesControllerComponents,
   dispatchLocationPage: dispatch_location
 )(implicit ec: ExecutionContext)
@@ -55,11 +57,11 @@ class DispatchLocationController @Inject()(
         (formWithErrors: Form[DispatchLocation]) => Future.successful(BadRequest(dispatchLocationPage(formWithErrors))),
         validDispatchLocation =>
           updateCache(validDispatchLocation)
-            .map(_ => Redirect(specifyNextPage(validDispatchLocation)))
+            .map(_ => navigator.continueTo(nextPage(validDispatchLocation)))
       )
   }
 
-  private def specifyNextPage(providedDispatchLocation: DispatchLocation): Call =
+  private def nextPage(providedDispatchLocation: DispatchLocation): Call =
     providedDispatchLocation.dispatchLocation match {
       case AllowedDispatchLocations.OutsideEU =>
         controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage()

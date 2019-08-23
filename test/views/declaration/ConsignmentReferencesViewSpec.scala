@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.TestHelper
+import controllers.util.SaveAndReturn
 import forms.Ducr
 import forms.declaration.ConsignmentReferences
 import helpers.views.declaration.{CommonMessages, ConsignmentReferencesMessages}
@@ -89,11 +90,16 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
     }
 
     "display 'Save and continue' button on page" in {
-
       val view = createView()
-
-      val saveButton = getElementByCss(view, "#submit")
+      val saveButton = view.getElementById("submit")
       saveButton.text() must be(messages(saveAndContinueCaption))
+    }
+
+    "display 'Save and return' button on page" in {
+      val view = createView()
+      val saveButton = view.getElementById("submit_and_return")
+      saveButton.text() must be(messages(saveAndReturnCaption))
+      saveButton.attr("name") must be(SaveAndReturn.toString)
     }
   }
 

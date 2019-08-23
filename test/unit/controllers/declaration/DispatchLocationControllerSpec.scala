@@ -34,6 +34,7 @@ class DispatchLocationControllerSpec extends ControllerSpec {
       mockAuthAction,
       mockJourneyAction,
       mockExportsCacheService,
+      navigator,
       stubMessagesControllerComponents(),
       dispatchLocationPage
     )(ec)
@@ -83,8 +84,8 @@ class DispatchLocationControllerSpec extends ControllerSpec {
 
         val result = controller.submitForm()(postRequest(correctForm))
 
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/type"))
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage()
       }
     }
 
@@ -96,8 +97,8 @@ class DispatchLocationControllerSpec extends ControllerSpec {
 
         val result = controller.submitForm()(postRequest(correctForm))
 
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/not-eligible"))
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.NotEligibleController.displayPage()
       }
     }
   }

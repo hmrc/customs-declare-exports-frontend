@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.TestHelper
+import controllers.util.SaveAndReturn
 import forms.common.Address
 import forms.declaration.{CarrierDetails, EntityDetails}
 import helpers.views.declaration.{CarrierDetailsMessages, CommonMessages}
@@ -106,9 +107,14 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
     }
 
     "display 'Save and continue' button on page" in {
+      val view = createView()
+      view.getElementById("submit").text() must be(messages(saveAndContinueCaption))
+    }
 
-      val saveButton = getElementByCss(createView(), "#submit")
-      saveButton.text() must be(messages(saveAndContinueCaption))
+    "display 'Save and return' button on page" in {
+      val view = createView()
+      view.getElementById("submit_and_return").text() must be(messages(saveAndReturnCaption))
+      view.getElementById("submit_and_return").attr("name") must be(SaveAndReturn.toString)
     }
   }
 

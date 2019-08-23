@@ -28,18 +28,19 @@
 @main_template(
     title = messages("supplementary.declarant.title")
 ) {
+
+    @components.back_link("/customs-declare-exports/declaration/consignee-details")
+
+    @components.error_summary(form.errors)
+
+    @components.section_header(messages("supplementary.summary.parties.header"))
+
+    @components.page_title(Some("supplementary.declarant.title"))
+
+    <p>@messages("supplementary.carrier.title.hint")</p>
+
     @helper.form(DeclarantDetailsController.saveAddress(), 'autoComplete -> "off") {
         @helper.CSRF.formField
-
-        @components.back_link("/customs-declare-exports/declaration/consignee-details")
-
-        @components.error_summary(form.errors)
-
-        @components.section_header(messages("supplementary.summary.parties.header"))
-
-        @components.page_title(Some("supplementary.declarant.title"))
-
-        <p>@messages("supplementary.carrier.title.hint")</p>
 
         @components.form_fields_wrapper(field = form("details")) {
 
@@ -56,5 +57,6 @@
         }
 
         @components.submit_button()
+        @components.buttons.save_and_return_later_button()
     }
 }

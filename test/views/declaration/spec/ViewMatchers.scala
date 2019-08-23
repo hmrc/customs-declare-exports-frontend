@@ -41,11 +41,14 @@ import play.api.test.Helpers.contentAsString
 import play.twirl.api.Html
 import play.api.test.Helpers._
 
+import scala.collection.JavaConverters
+import scala.collection.JavaConverters._
 import scala.concurrent.Future
 
 //noinspection ScalaStyle
 trait ViewMatchers {
 
+  implicit private def elements2Scala(elements: Elements): Iterator[Element] = elements.iterator().asScala
   implicit protected def htmlBodyOf(html: Html): Document = Jsoup.parse(html.toString())
   implicit protected def htmlBodyOf(page: String): Document = Jsoup.parse(page)
   implicit protected def htmlBodyOf(result: Future[Result]): Document = htmlBodyOf(contentAsString(result))
@@ -129,10 +132,11 @@ trait ViewMatchers {
 
   class ElementContainsChildWithTextMatcher(tag: String, content: String) extends Matcher[Element] {
     override def apply(left: Element): MatchResult = {
-      val elements = left.getElementsByTag(tag)
+
+      val matches = left != null && left.getElementsByTag(tag).exists(_.text().contains(content))
       MatchResult(
-        left != null && elements.text().contains(content),
-        s"Element did not contain text {$content}\n${actualContentWas(elements)}",
+        matches,
+        s"Element did not contain text {$content}\n${actualContentWas(left.getElementsByTag(tag))}",
         s"Element contained text {$content}"
       )
     }
@@ -141,7 +145,7 @@ trait ViewMatchers {
   class ElementContainsChildWithAttributeMatcher(tag: String, key: String, value: String) extends Matcher[Element] {
     override def apply(left: Element): MatchResult =
       MatchResult(
-        left != null && left.getElementsByTag(tag).attr(key) == value,
+        left != null && left.getElementsByTag(tag).exists(_.attr(key) == value),
         s"Element attribute {$key} had value {${left.attr(key)}}, expected {$value}",
         s"Element attribute {$key} had value {$value}"
       )
@@ -207,6 +211,7 @@ trait ViewMatchers {
   class ChildMatcherBuilder(tag: String) {
     def containingText(text: String) = new ElementContainsChildWithTextMatcher(tag, text)
     def withAttribute(key: String, value: String) = new ElementContainsChildWithAttributeMatcher(tag, key, value)
+    def withName(value: String) = new ElementContainsChildWithAttributeMatcher(tag, "name", value)
   }
 
   def containElementWithID(id: String): Matcher[Element] = new ContainElementWithIDMatcher(id)
@@ -225,7 +230,7 @@ trait ViewMatchers {
   def haveHref(value: Call): Matcher[Element] = new ElementHasAttributeValueMatcher("href", value.url)
   def haveTag(tag: String): Matcher[Element] = new ElementTagMatcher(tag)
   def haveChildCount(count: Int): Matcher[Element] = new ElementHasChildCountMatcher(count)
-  def haveChild(tag: String) = new ChildMatcherBuilder(tag)
+  def containElement(tag: String) = new ChildMatcherBuilder(tag)
 
   def haveFieldError(fieldName: String, content: String): Matcher[Element] =
     new ContainElementWithIDMatcher(s"error-message-$fieldName-input") and new ElementContainsFieldError(

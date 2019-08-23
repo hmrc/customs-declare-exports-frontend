@@ -33,6 +33,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
       mockAuthAction,
       mockJourneyAction,
       mockExportsCacheService,
+      navigator,
       stubMessagesControllerComponents(),
       declarantDetailsPage
     )(ec)
@@ -80,7 +81,8 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
       val result = controller.saveAddress()(postRequest(correctForm))
 
-      status(result) must be(SEE_OTHER)
+      await(result) mustBe aRedirectToTheNextPage
+      thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeDetailsController.displayPage()
     }
   }
 }

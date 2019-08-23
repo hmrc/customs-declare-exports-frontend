@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
 import forms.declaration.FiscalInformation
 import forms.declaration.FiscalInformation.form
 import javax.inject.Inject
@@ -34,6 +35,7 @@ class FiscalInformationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
+  navigator: Navigator,
   mcc: MessagesControllerComponents,
   fiscalInformationPage: fiscal_information
 )(implicit ec: ExecutionContext)
@@ -58,11 +60,11 @@ class FiscalInformationController @Inject()(
             formData.onwardSupplyRelief match {
               case FiscalInformation.AllowedFiscalInformationAnswers.yes =>
                 updateCacheForYes(itemId, formData) map { _ =>
-                  Redirect(routes.AdditionalFiscalReferencesController.displayPage(itemId))
+                  navigator.continueTo(routes.AdditionalFiscalReferencesController.displayPage(itemId))
                 }
               case FiscalInformation.AllowedFiscalInformationAnswers.no =>
                 updateCacheForNo(itemId, formData) map { _ =>
-                  Redirect(routes.ItemTypeController.displayPage(itemId))
+                  navigator.continueTo(routes.ItemTypeController.displayPage(itemId))
                 }
           }
         )

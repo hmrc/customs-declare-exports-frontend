@@ -28,36 +28,37 @@
 
   @components.back_link("/customs-declare-exports/declaration/type")
 
-  @helper.form(ConsignmentReferencesController.submitConsignmentReferences(), 'autoComplete -> "off") {
-      @helper.CSRF.formField
-
     @components.error_summary(form.errors)
 
     @components.section_header(messages("supplementary.consignmentReferences.heading"))
 
     @components.page_title(Some("supplementary.consignmentReferences.header"))
 
-    @components.fields.field_text(
-      field = form("ducr.ducr"),
-      label = messages("supplementary.consignmentReferences.ducr.info"),
-      hint = Some(messages("supplementary.consignmentReferences.ducr.hint")),
-      labelClass = Some("heading-24")
-    )
+    @helper.form(ConsignmentReferencesController.submitConsignmentReferences(), 'autoComplete -> "off") {
+      @helper.CSRF.formField
 
       @components.fields.field_text(
-      field = form("lrn"),
-      label = messages("supplementary.consignmentReferences.lrn.info"),
-      hint = Some(messages("supplementary.consignmentReferences.lrn.hint")),
-      labelClass = Some("heading-24")
-    )
+          field = form("ducr.ducr"),
+          label = messages("supplementary.consignmentReferences.ducr.info"),
+          hint = Some(messages("supplementary.consignmentReferences.ducr.hint")),
+          labelClass = Some("heading-24")
+      )
 
       @components.fields.field_text(
-      field = form("personalUcr"),
-      label = messages("supplementary.consignmentReferences.ucr.info"),
-      hint = Some(messages("supplementary.consignmentReferences.ucr.hint")),
-      labelClass = Some("heading-24")
-    )
+          field = form("lrn"),
+          label = messages("supplementary.consignmentReferences.lrn.info"),
+          hint = Some(messages("supplementary.consignmentReferences.lrn.hint")),
+          labelClass = Some("heading-24")
+      )
 
-    @components.submit_button()
+      @components.fields.field_text(
+          field = form("personalUcr"),
+          label = messages("supplementary.consignmentReferences.ucr.info"),
+          hint = Some(messages("supplementary.consignmentReferences.ucr.hint")),
+          labelClass = Some("heading-24")
+      )
+
+      @components.submit_button()
+      @components.buttons.save_and_return_later_button()
   }
 }

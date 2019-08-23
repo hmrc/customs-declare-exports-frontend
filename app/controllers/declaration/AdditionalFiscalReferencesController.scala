@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
 import controllers.util.{MultipleItemsHelper, _}
 import forms.declaration.AdditionalFiscalReference.form
 import forms.declaration.AdditionalFiscalReferencesData._
@@ -39,6 +40,7 @@ class AdditionalFiscalReferencesController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
+  navigator: Navigator,
   mcc: MessagesControllerComponents,
   additionalFiscalReferencesPage: additional_fiscal_references
 )(implicit ec: ExecutionContext)
@@ -67,7 +69,7 @@ class AdditionalFiscalReferencesController @Inject()(
 
       actionTypeOpt match {
         case Some(Add)             => addReference(itemId, boundForm, cache)
-        case Some(SaveAndContinue) => saveAndContinue(itemId, boundForm, cache)
+        case Some(SaveAndContinue) | Some(SaveAndReturn) => saveAndContinue(itemId, boundForm, cache)
         case Some(Remove(values))  => removeReference(itemId, values, boundForm, cache)
         case _                     => errorHandler.displayErrorPage()
       }
@@ -92,7 +94,7 @@ class AdditionalFiscalReferencesController @Inject()(
     itemId: String,
     form: Form[AdditionalFiscalReference],
     cachedData: AdditionalFiscalReferencesData
-  )(implicit request: JourneyRequest[_]): Future[Result] =
+  )(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     MultipleItemsHelper
       .saveAndContinue(form, cachedData.references, isMandatory = true, limit)
       .fold(
@@ -100,8 +102,8 @@ class AdditionalFiscalReferencesController @Inject()(
         updatedCache =>
           if (updatedCache != cachedData.references)
             updateExportsCache(itemId, AdditionalFiscalReferencesData(updatedCache))
-              .map(_ => Redirect(routes.ItemTypeController.displayPage(itemId)))
-          else Future.successful(Redirect(routes.ItemTypeController.displayPage(itemId)))
+              .map(_ => navigator.continueTo(routes.ItemTypeController.displayPage(itemId)))
+          else Future.successful(navigator.continueTo(routes.ItemTypeController.displayPage(itemId)))
       )
 
   private def removeReference(

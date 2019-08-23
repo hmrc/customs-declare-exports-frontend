@@ -34,6 +34,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
       mockAuthAction,
       mockJourneyAction,
       mockExportsCacheService,
+      navigator,
       stubMessagesControllerComponents(),
       goodsMeasurePage
     )(ec)
@@ -106,8 +107,8 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
 
         val result = controller.submitForm("itemId")(postRequest(correctForm))
 
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(routes.AdditionalInformationController.displayPage("itemId").url))
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe routes.AdditionalInformationController.displayPage("itemId")
       }
     }
   }
