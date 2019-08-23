@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
 import forms.declaration.GoodsLocation
 import javax.inject.Inject
 import play.api.data.Form
@@ -33,7 +34,8 @@ class LocationController @Inject()(
   journeyType: JourneyAction,
   mcc: MessagesControllerComponents,
   goodsLocationPage: goods_location,
-  override val exportsCacheService: ExportsCacheService
+  override val exportsCacheService: ExportsCacheService,
+  navigator: Navigator
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
   import forms.declaration.GoodsLocation._
@@ -54,7 +56,7 @@ class LocationController @Inject()(
           updateExportsDeclarationSyncDirect(
             model => model.copy(locations = model.locations.copy(goodsLocation = Some(formData)))
           ).map { _ =>
-            Redirect(controllers.declaration.routes.OfficeOfExitController.displayForm())
+            navigator.continueTo(controllers.declaration.routes.OfficeOfExitController.displayForm())
         }
       )
   }

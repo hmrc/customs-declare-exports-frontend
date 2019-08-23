@@ -114,7 +114,8 @@
         }
 
         <div class="section align='right'">
-            <button id="submit" class="button" name="@SaveAndContinue.toString">@messages("site.save_and_continue")</button>
+            @components.buttons.save_and_continue_button()
+            @components.buttons.save_and_return_later_button()
         </div>
     }
 

@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.navigation.Navigator
 import controllers.util._
 import forms.declaration.ItemType
 import forms.declaration.ItemType._
@@ -40,6 +41,7 @@ class ItemTypeController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
+  navigator: Navigator,
   mcc: MessagesControllerComponents,
   itemTypePage: item_type
 )(implicit ec: ExecutionContext)
@@ -81,7 +83,7 @@ class ItemTypeController @Inject()(
           formAction match {
             case Some(Add) =>
               handleAddition(itemId, itemTypeInput, itemTypeCache, hasFiscalReferences)
-            case Some(SaveAndContinue) =>
+            case Some(SaveAndContinue) | Some(SaveAndReturn) =>
               handleSaveAndContinue(itemId, itemTypeInput, itemTypeCache, hasFiscalReferences)
             case Some(Remove(keys)) =>
               handleRemoval(itemId, keys, itemTypeCache, hasFiscalReferences)
@@ -140,7 +142,7 @@ class ItemTypeController @Inject()(
     ItemTypeValidator.validateOnSaveAndContinue(itemTypeUpdated) match {
       case Valid =>
         updateExportsCache(itemId, itemTypeUpdated).map { _ =>
-          Redirect(controllers.declaration.routes.PackageInformationController.displayPage(itemId))
+          navigator.continueTo(controllers.declaration.routes.PackageInformationController.displayPage(itemId))
         }
       case Invalid(errors) =>
         val formWithErrors =

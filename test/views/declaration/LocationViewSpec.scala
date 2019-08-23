@@ -123,9 +123,15 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
     }
 
     "display 'Save and continue' button" in {
-
-      val saveButton = getElementByCss(createView(), "#submit")
+      val view = createView()
+      val saveButton = view.getElementById("submit")
       saveButton.text() must be(messages(saveAndContinueCaption))
+    }
+
+    "display 'Save and return' button" in {
+      val view = createView()
+      val saveButton = view.getElementById("submit_and_return")
+      saveButton.text() must be(messages(saveAndReturnCaption))
     }
   }
 
