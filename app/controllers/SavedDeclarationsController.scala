@@ -40,7 +40,7 @@ class SavedDeclarationsController @Inject()(
 
   def displayDeclarations(pageNumber: Int = 1): Action[AnyContent] = authenticate.async { implicit request =>
     customsDeclareExportsConnector.findSavedDeclarations(Page(pageNumber, appConfig.paginationItemsPerPage)).map { page =>
-      Ok(savedDeclarationsPage(page))
+      Ok(savedDeclarationsPage(page)).removingFromSession(ExportsSessionKeys.declarationId)
     }
   }
 

@@ -141,11 +141,11 @@ cancellation.reason.noLongerRequired = No longer required
 
 
 declaration.choice.description = What do you want to do?
-declaration.choice.SMP = Supplementary declaration
-declaration.choice.STD = Standard declaration
-declaration.choice.CAN = Cancel declaration
+declaration.choice.SMP = Make a supplementary declaration
+declaration.choice.STD = Make a standard declaration
+declaration.choice.CAN = Cancel a declaration
 declaration.choice.CON = Continue a saved declaration
-declaration.choice.SUB = View recent declarations
+declaration.choice.SUB = View declarations
 
 startPage.title = Register for customs services
 startPage.heading = Make an export declaration
