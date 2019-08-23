@@ -41,6 +41,7 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
     mockJourneyAction,
     mockErrorHandler,
     mockExportsCacheService,
+    navigator,
     stubMessagesControllerComponents(),
     mockItemTypePage
   )(ec)
@@ -220,7 +221,8 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
 
         val result = controller.submitItemType(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
-        status(result) mustBe SEE_OTHER
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationController.displayPage(itemId)
         verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any(), any())(any(), any())
       }
 

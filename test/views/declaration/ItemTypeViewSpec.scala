@@ -135,9 +135,15 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
       }
 
       "display 'Save and continue' button" in {
-
-        val saveButton = getElementByCss(createView(journeyType = AllowedChoiceValues.StandardDec), "#submit")
+        val view = createView(journeyType = AllowedChoiceValues.StandardDec)
+        val saveButton = view.getElementById("submit")
         saveButton.text() must be(messages(saveAndContinueCaption))
+      }
+
+      "display 'Save and return' button" in {
+        val view = createView(journeyType = AllowedChoiceValues.StandardDec)
+        val saveButton = view.getElementById("submit_and_return")
+        saveButton.text() must be(messages(saveAndReturnCaption))
       }
     }
 
@@ -218,9 +224,15 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
       }
 
       "display 'Save and continue' button" in {
-
-        val saveButton = getElementByCss(createView(journeyType = AllowedChoiceValues.SupplementaryDec), "#submit")
+        val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
+        val saveButton = view.getElementById("submit")
         saveButton.text() must be(messages(saveAndContinueCaption))
+      }
+
+      "display 'Save and return' button" in {
+        val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
+        val saveButton = view.getElementById("submit_and_return")
+        saveButton.text() must be(messages(saveAndReturnCaption))
       }
     }
 
