@@ -16,19 +16,45 @@
 
 package models
 
-import play.api.mvc.JavascriptLiteral
+import play.api.mvc.{JavascriptLiteral, QueryStringBindable}
 
-sealed trait Mode
+sealed trait Mode {
+  val name: String
+}
 object Mode {
-  case object Normal extends Mode
-  case object Amend extends Mode
-  case object Draft extends Mode
+
+  case object Normal extends Mode {
+    override val name: String = "Normal"
+  }
+
+  case object Amend extends Mode {
+    override val name: String = "Amend"
+  }
+
+  case object Draft extends Mode {
+    override val name: String = "Draft"
+  }
+
+  def withName(str: String): Option[Mode] = Set[Mode](Normal, Amend, Draft).find(_.name == str)
+
+  implicit val binder: QueryStringBindable[Mode] = new QueryStringBindable[Mode] {
+    private val strBinder: QueryStringBindable[String] = implicitly[QueryStringBindable[String]]
+
+    override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, Mode]] =
+      Some(
+        Right(
+          params
+            .get(key)
+            .flatMap(_.headOption)
+            .flatMap(mode => Mode.withName(mode))
+            .getOrElse(Mode.Normal)
+        )
+      )
+
+    override def unbind(key: String, value: Mode): String = strBinder.unbind(key, value.toString)
+  }
 
   implicit val jsLiteral: JavascriptLiteral[Mode] = new JavascriptLiteral[Mode] {
-    override def to(value: Mode): String = value match {
-      case Normal => "NormalMode"
-      case Amend  => "AmendMode"
-      case Draft  => "SavedMode"
-    }
+    override def to(value: Mode): String = value.toString
   }
 }
