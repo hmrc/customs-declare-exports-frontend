@@ -104,7 +104,7 @@ class PackageInformationController @Inject()(
         updatedCache =>
           updateExportsCache(itemId, updatedCache)
             .map(
-              _ => navigator.continueTo(controllers.declaration.routes.PackageInformationController.displayPage(itemId))
+              _ => Redirect(controllers.declaration.routes.PackageInformationController.displayPage(itemId))
           )
       )
 
