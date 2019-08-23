@@ -48,5 +48,4 @@ case object Add extends FormAction
 case object SaveAndContinue extends FormAction
 case object SaveAndReturn extends FormAction
 case object Continue extends FormAction
-
 case class Remove(keys: Seq[String]) extends FormAction
