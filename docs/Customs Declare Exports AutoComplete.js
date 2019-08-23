@@ -135,7 +135,9 @@ function completePage() {
         if(document.getElementById('presentationOfficeId-container')){
             selectFromAutoPredict(document.getElementById('presentationOfficeId-container'), "GBLBA003")
         }
-        selectRadioOption(document.getElementById("circumstancesCode"), 1);
+        if(document.getElementById("circumstancesCode")) {
+            selectRadioOption(document.getElementById("circumstancesCode"), 1);
+        }
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/total-numbers-of-items')) {
