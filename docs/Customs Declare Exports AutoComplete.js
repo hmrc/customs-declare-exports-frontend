@@ -164,7 +164,7 @@ function completePage() {
         if(nextLink) {
             nextLink.click()
         } else {
-            document.getElementById('link-add').click()
+            document.getElementById('add').click()
         }
     }
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/procedure-codes')) {
