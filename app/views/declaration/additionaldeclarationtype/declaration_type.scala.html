@@ -27,7 +27,7 @@
     title = messages("declaration.declarationType.title")
 ) {
 
-    @components.back_link(controllers.declaration.routes.DispatchLocationController.displayPage(mode).url)
+    @components.back_link(controllers.declaration.routes.DispatchLocationController.displayPage(mode), mode)
 
     @helper.form(controllers.declaration.routes.AdditionalDeclarationTypeController.submitForm(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField

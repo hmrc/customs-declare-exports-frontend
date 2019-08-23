@@ -21,7 +21,7 @@ import controllers.navigation.Navigator
 import forms.Choice.AllowedChoiceValues._
 import forms.declaration.RepresentativeDetails
 import javax.inject.Inject
-import models.ExportsDeclaration
+import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -42,30 +42,30 @@ class RepresentativeDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.parties.representativeDetails match {
-      case Some(data) => Ok(representativeDetailsPage(RepresentativeDetails.form().fill(data)))
-      case _          => Ok(representativeDetailsPage(RepresentativeDetails.form()))
+      case Some(data) => Ok(representativeDetailsPage(mode, RepresentativeDetails.form().fill(data)))
+      case _          => Ok(representativeDetailsPage(mode, RepresentativeDetails.form()))
     }
   }
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     RepresentativeDetails
       .form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[RepresentativeDetails]) =>
-          Future.successful(BadRequest(representativeDetailsPage(RepresentativeDetails.adjustErrors(formWithErrors)))),
-        validRepresentativeDetails => updateCache(validRepresentativeDetails).map(_ => navigator.continueTo(nextPage(request)))
+          Future.successful(BadRequest(representativeDetailsPage(mode, RepresentativeDetails.adjustErrors(formWithErrors)))),
+        validRepresentativeDetails => updateCache(validRepresentativeDetails).map(_ => navigator.continueTo(nextPage(mode, request)))
       )
   }
 
-  private def nextPage(request: JourneyRequest[AnyContent]) =
+  private def nextPage(mode: Mode, request: JourneyRequest[AnyContent]) =
     request.choice.value match {
       case SupplementaryDec =>
-        controllers.declaration.routes.DeclarationAdditionalActorsController.displayForm()
+        controllers.declaration.routes.DeclarationAdditionalActorsController.displayForm(mode)
       case StandardDec =>
-        controllers.declaration.routes.CarrierDetailsController.displayForm()
+        controllers.declaration.routes.CarrierDetailsController.displayForm(mode)
     }
 
   private def updateCache(

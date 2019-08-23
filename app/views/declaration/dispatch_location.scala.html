@@ -27,7 +27,7 @@
   title = messages("supplementary.dispatchLocation.title")
 ) {
 
-  @components.back_link(controllers.routes.ChoiceController.displayPage().url, mode)
+  @components.back_link(controllers.routes.ChoiceController.displayPage(), mode)
 
   @helper.form(controllers.declaration.routes.DispatchLocationController.submitForm(mode), 'autoComplete -> "off") {
       @helper.CSRF.formField

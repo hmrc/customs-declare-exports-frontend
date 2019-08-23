@@ -58,7 +58,7 @@ class AdditionalDeclarationTypeController @Inject()(
         formWithErrors => Future.successful(BadRequest(declarationTypePage(mode, formWithErrors))),
         validAdditionalDeclarationType =>
           updateCache(validAdditionalDeclarationType).map { _ =>
-            navigator.continueTo(controllers.declaration.routes.ConsignmentReferencesController.displayPage())
+            navigator.continueTo(controllers.declaration.routes.ConsignmentReferencesController.displayPage(mode))
         }
       )
   }

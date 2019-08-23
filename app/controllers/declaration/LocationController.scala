@@ -20,6 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.GoodsLocation
 import javax.inject.Inject
+import models.Mode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -40,23 +41,23 @@ class LocationController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
   import forms.declaration.GoodsLocation._
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.locations.goodsLocation match {
-      case Some(data) => Ok(goodsLocationPage(form().fill(data)))
-      case _          => Ok(goodsLocationPage(form()))
+      case Some(data) => Ok(goodsLocationPage(mode, form().fill(data)))
+      case _          => Ok(goodsLocationPage(mode, form()))
     }
   }
 
-  def saveLocation(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def saveLocation(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[GoodsLocation]) => Future.successful(BadRequest(goodsLocationPage(formWithErrors))),
+        (formWithErrors: Form[GoodsLocation]) => Future.successful(BadRequest(goodsLocationPage(mode, formWithErrors))),
         formData =>
           updateExportsDeclarationSyncDirect(
             model => model.copy(locations = model.locations.copy(goodsLocation = Some(formData)))
           ).map { _ =>
-            navigator.continueTo(controllers.declaration.routes.OfficeOfExitController.displayForm())
+            navigator.continueTo(controllers.declaration.routes.OfficeOfExitController.displayForm(mode))
         }
       )
   }

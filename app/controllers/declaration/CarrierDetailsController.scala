@@ -20,6 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.CarrierDetails
 import javax.inject.Inject
+import models.Mode
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -43,22 +44,22 @@ class CarrierDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.parties.carrierDetails match {
-      case Some(data) => Ok(carrierDetailsPage(CarrierDetails.form().fill(data)))
-      case _          => Ok(carrierDetailsPage(CarrierDetails.form()))
+      case Some(data) => Ok(carrierDetailsPage(mode, CarrierDetails.form().fill(data)))
+      case _          => Ok(carrierDetailsPage(mode, CarrierDetails.form()))
     }
   }
 
-  def saveAddress(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def saveAddress(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     CarrierDetails
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[CarrierDetails]) => Future.successful(BadRequest(carrierDetailsPage(formWithErrors))),
+        (formWithErrors: Form[CarrierDetails]) => Future.successful(BadRequest(carrierDetailsPage(mode, formWithErrors))),
         form =>
           updateCache(form).map { _ =>
-            navigator.continueTo(routes.DeclarationAdditionalActorsController.displayForm())
+            navigator.continueTo(routes.DeclarationAdditionalActorsController.displayForm(mode))
         }
       )
   }
