@@ -25,7 +25,7 @@ import forms.Choice.AllowedChoiceValues._
 import forms.Choice._
 import javax.inject.Inject
 import models.requests.ExportsSessionKeys
-import models.{DeclarationStatus, ExportsDeclaration}
+import models.{DeclarationStatus, ExportsDeclaration, Mode}
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -76,7 +76,7 @@ class ChoiceController @Inject()(
                     choice.value
                   )
                 ) map { created =>
-                Redirect(controllers.declaration.routes.DispatchLocationController.displayPage())
+                Redirect(controllers.declaration.routes.DispatchLocationController.displayPage(Mode.Normal))
                   .addingToSession(ExportsSessionKeys.declarationId -> created.id.get)
               }
             case CancelDec =>

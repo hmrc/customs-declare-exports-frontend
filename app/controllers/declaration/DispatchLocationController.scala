@@ -22,7 +22,7 @@ import forms.declaration.DispatchLocation
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
 import javax.inject.Inject
 import models.requests.JourneyRequest
-import models.ExportsDeclaration
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -42,29 +42,29 @@ class DispatchLocationController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.dispatchLocation match {
-      case Some(data) => Ok(dispatchLocationPage(DispatchLocation.form().fill(data)))
-      case _          => Ok(dispatchLocationPage(DispatchLocation.form()))
+      case Some(data) => Ok(dispatchLocationPage(mode, DispatchLocation.form().fill(data)))
+      case _          => Ok(dispatchLocationPage(mode, DispatchLocation.form()))
     }
   }
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     DispatchLocation
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[DispatchLocation]) => Future.successful(BadRequest(dispatchLocationPage(formWithErrors))),
+        (formWithErrors: Form[DispatchLocation]) => Future.successful(BadRequest(dispatchLocationPage(mode, formWithErrors))),
         validDispatchLocation =>
           updateCache(validDispatchLocation)
-            .map(_ => navigator.continueTo(nextPage(validDispatchLocation)))
+            .map(_ => navigator.continueTo(nextPage(mode, validDispatchLocation)))
       )
   }
 
-  private def nextPage(providedDispatchLocation: DispatchLocation): Call =
+  private def nextPage(mode: Mode, providedDispatchLocation: DispatchLocation): Call =
     providedDispatchLocation.dispatchLocation match {
       case AllowedDispatchLocations.OutsideEU =>
-        controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage()
+        controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage(mode)
       case AllowedDispatchLocations.SpecialFiscalTerritory =>
         controllers.declaration.routes.NotEligibleController.displayPage()
     }

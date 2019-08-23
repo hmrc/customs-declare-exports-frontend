@@ -22,7 +22,7 @@ import controllers.util.{FormAction, SaveAndContinue, SaveAndReturn}
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.additionaldeclarationtype._
 import javax.inject.Inject
-import models.ExportsDeclaration
+import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -42,20 +42,20 @@ class AdditionalDeclarationTypeController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val decType = extractFormType(request)
     request.cacheModel.additionalDeclarationType match {
-      case Some(data) => Ok(declarationTypePage(decType.form().fill(data)))
-      case _          => Ok(declarationTypePage(decType.form()))
+      case Some(data) => Ok(declarationTypePage(mode, decType.form().fill(data)))
+      case _          => Ok(declarationTypePage(mode, decType.form()))
     }
   }
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val decType = extractFormType(request).form().bindFromRequest()
 
     decType
       .fold(
-        formWithErrors => Future.successful(BadRequest(declarationTypePage(formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(declarationTypePage(mode, formWithErrors))),
         validAdditionalDeclarationType =>
           updateCache(validAdditionalDeclarationType).map { _ =>
             navigator.continueTo(controllers.declaration.routes.ConsignmentReferencesController.displayPage())

@@ -112,7 +112,7 @@
     @items_section(suppDecData.items)
 
     @if(mode == Mode.Amend) {
-        <a class="button mt-3" href="@routes.DispatchLocationController.displayPage()">@messages("site.continue")</a>
+        <a class="button mt-3" href="@routes.DispatchLocationController.displayPage(mode)">@messages("site.continue")</a>
     }
 
     @if(mode == Mode.Normal) {
@@ -131,6 +131,6 @@
     @if(mode == Mode.Draft) {
         <p class="mt-5">@messages("saved.declarations.summary.paragraph")</p>
 
-        <a class="button mt-3" href="@routes.DispatchLocationController.displayPage()">@messages("saved.declarations.summary.continue")</a>
+        <a class="button mt-3" href="@routes.DispatchLocationController.displayPage(mode)">@messages("saved.declarations.summary.continue")</a>
     }
 }
