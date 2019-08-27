@@ -55,7 +55,9 @@ class NatureOfTransactionController @Inject()(
         (formWithErrors: Form[NatureOfTransaction]) =>
           Future.successful(BadRequest(natureOfTransactionPage(adjustErrors(formWithErrors)))),
         form =>
-          updateCache(form).map(_ => navigator.continueTo(controllers.declaration.routes.PreviousDocumentsController.displayForm()))
+          updateCache(form).map(
+            _ => navigator.continueTo(controllers.declaration.routes.PreviousDocumentsController.displayForm())
+        )
       )
   }
 

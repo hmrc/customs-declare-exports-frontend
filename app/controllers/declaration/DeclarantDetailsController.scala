@@ -56,7 +56,9 @@ class DeclarantDetailsController @Inject()(
         (formWithErrors: Form[DeclarantDetails]) => Future.successful(BadRequest(declarantDetailsPage(formWithErrors))),
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(controllers.declaration.routes.RepresentativeDetailsController.displayPage()))
+            .map(
+              _ => navigator.continueTo(controllers.declaration.routes.RepresentativeDetailsController.displayPage())
+          )
       )
   }
 

@@ -60,8 +60,10 @@ class TransportDetailsController @Inject()(
   }
 
   private def redirect(transportDetails: TransportDetails)(implicit request: JourneyRequest[AnyContent]): Result =
-    if (transportDetails.container) navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayPage())
-    else if (request.choice.value == AllowedChoiceValues.StandardDec) navigator.continueTo(controllers.declaration.routes.SealController.displayForm())
+    if (transportDetails.container)
+      navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayPage())
+    else if (request.choice.value == AllowedChoiceValues.StandardDec)
+      navigator.continueTo(controllers.declaration.routes.SealController.displayForm())
     else navigator.continueTo(controllers.declaration.routes.SummaryController.displayPage(Mode.Normal))
 
   private def updateCache(

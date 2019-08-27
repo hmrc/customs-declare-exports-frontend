@@ -26,9 +26,7 @@ class AutoCompleteItemSpec extends UnitSpec {
 
     "map from Country" when {
       "value is default" in {
-        AutoCompleteItem.fromCountry(List(Country("name", "code"))) mustBe List(
-          AutoCompleteItem("name - code", "name")
-        )
+        AutoCompleteItem.fromCountry(List(Country("name", "code"))) mustBe List(AutoCompleteItem("name - code", "name"))
       }
 
       "value is specified" in {

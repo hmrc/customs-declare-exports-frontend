@@ -103,9 +103,7 @@ class PackageInformationController @Inject()(
         formWithErrors => Future.successful(BadRequest(packageInformationPage(itemId, formWithErrors, cachedData))),
         updatedCache =>
           updateExportsCache(itemId, updatedCache)
-            .map(
-              _ => Redirect(controllers.declaration.routes.PackageInformationController.displayPage(itemId))
-          )
+            .map(_ => Redirect(controllers.declaration.routes.PackageInformationController.displayPage(itemId)))
       )
 
   private def updateExportsCache(itemId: String, updatedCache: Seq[PackageInformation])(

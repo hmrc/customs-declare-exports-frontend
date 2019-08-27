@@ -49,7 +49,8 @@ class ExporterDetailsController @Inject()(
   }
 
   def saveAddress(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    ExporterDetails.form()
+    ExporterDetails
+      .form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ExporterDetails]) => Future.successful(BadRequest(exporterDetailsPage(formWithErrors))),

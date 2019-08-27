@@ -18,7 +18,6 @@ package services
 
 import unit.base.UnitSpec
 
-
 class HolderOfAuthorisationCodeSpec extends UnitSpec {
 
   "Holder of Authorisation Code" should {

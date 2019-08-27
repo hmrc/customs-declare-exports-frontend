@@ -48,11 +48,15 @@ class SavedDeclarationsViewSpec extends ViewSpec with CommonMessages {
     withUpdateTime(LocalDateTime.of(2019, 1, 1, 9, 45, 0).toInstant(ZoneOffset.UTC))
   )
 
-  private def createView(declarations: Seq[ExportsDeclaration] = Seq.empty, page: Int = 1, pageSize: Int = 10, total: Int = 0) = {
+  private def createView(
+    declarations: Seq[ExportsDeclaration] = Seq.empty,
+    page: Int = 1,
+    pageSize: Int = 10,
+    total: Int = 0
+  ) = {
     val data = Paginated(declarations, Page(page, pageSize), total)
     savedDeclarationsPage(data)
   }
-
 
   "Saved Declarations View" should {
 
@@ -65,7 +69,7 @@ class SavedDeclarationsViewSpec extends ViewSpec with CommonMessages {
       tableCell(view)(0, 0).text() must be(messages(ducr))
       tableCell(view)(0, 1).text() must be(messages(dateSaved))
 
-      numberOfTableRows(view) must be (0)
+      numberOfTableRows(view) must be(0)
 
       view.getElementById("pagination-none").text() must be("Showing no saved declarations")
     }
@@ -73,7 +77,7 @@ class SavedDeclarationsViewSpec extends ViewSpec with CommonMessages {
     "display declarations" in {
       val view = createView(declarations = Seq(decWithoutDucr), total = 1)
 
-      numberOfTableRows(view) must be (1)
+      numberOfTableRows(view) must be(1)
 
       tableCell(view)(1, 0).text() must be("No DUCR added")
       tableCell(view)(1, 1).text() must be("1 Jan 2019 at 09:45")
@@ -85,7 +89,7 @@ class SavedDeclarationsViewSpec extends ViewSpec with CommonMessages {
       val decs = (1 to 8).map(decWithDucr(_))
       val view = createView(declarations = decs, page = 2, pageSize = 10, total = 28)
 
-      numberOfTableRows(view) must be (8)
+      numberOfTableRows(view) must be(8)
 
       tableCell(view)(1, 0).text() must be("DUCR-XXXX-1")
       tableCell(view)(8, 0).text() must be("DUCR-XXXX-8")
@@ -95,8 +99,12 @@ class SavedDeclarationsViewSpec extends ViewSpec with CommonMessages {
       view.getElementById("pagination-page_back").attr("href") must be("/customs-declare-exports/saved-declarations")
       view.getElementById("pagination-page_1").attr("href") must be("/customs-declare-exports/saved-declarations")
       view.getElementById("pagination-page_current").text() must be("2")
-      view.getElementById("pagination-page_3").attr("href") must be("/customs-declare-exports/saved-declarations?page=3")
-      view.getElementById("pagination-page_next").attr("href") must be("/customs-declare-exports/saved-declarations?page=3")
+      view.getElementById("pagination-page_3").attr("href") must be(
+        "/customs-declare-exports/saved-declarations?page=3"
+      )
+      view.getElementById("pagination-page_next").attr("href") must be(
+        "/customs-declare-exports/saved-declarations?page=3"
+      )
     }
 
   }
