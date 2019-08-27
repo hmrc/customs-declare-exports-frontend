@@ -19,5 +19,4 @@ package models.requests
 import services.cache.ExportItem
 
 class ItemRequest[A](val item: ExportItem, journeyRequest: JourneyRequest[A])
-  extends JourneyRequest[A](journeyRequest.authenticatedRequest, journeyRequest.cacheModel){
-}
+    extends JourneyRequest[A](journeyRequest.authenticatedRequest, journeyRequest.cacheModel) {}

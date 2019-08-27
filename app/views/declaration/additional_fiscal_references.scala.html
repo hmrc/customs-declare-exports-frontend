@@ -43,11 +43,41 @@
 
 @(mode: Mode, itemId:String, form: Form[AdditionalFiscalReference], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: Request[_], messages: Messages)
 
+@referenceTable = {
+    <div class="field-group mb-2">
+        <table id="removable_elements">
+
+            <thead>
+                <tr>
+                    <th id="@messages("declaration.additionalFiscalReferences.numbers.header")-heading" colspan="2">@messages("declaration.additionalFiscalReferences.numbers.header")</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            @for((elem, index) <- additionalReferences.map(_.asString).zipWithIndex) {
+                <tr id="removable_elements__row@index">
+                    <td id="removable_elements-row@index-label">@{elem}</td>
+                    <td id="removable_elements-row@index-remove_button">
+                        <input
+                            type="submit"
+                            class="button--secondary"
+                            formmethod="post"
+                            formaction="@routes.AdditionalFiscalReferencesController.removeReference(mode, itemId, elem)"
+                            value="@messages("site.remove")"
+                        >
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+
 @main_template(
     title = messages("declaration.additionalFiscalReferences.title")
 ) {
 
-    @components.back_link(routes.FiscalInformationController.displayPage(mode, itemId), mode)
+    @components.back_link(routes.FiscalInformationController.displayPage(mode, itemId))
 
     @components.error_summary(form.errors)
 
@@ -55,39 +85,12 @@
 
     @components.page_title(Some(messages("declaration.additionalFiscalReferences.title")))
 
-
-
     @helper.form(routes.AdditionalFiscalReferencesController.saveReferences(mode, itemId), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
-        @defining(additionalReferences.map(_.asString).map(ref => LabelledValue(ref))){ labels =>
-            <div class="field-group mb-2">
-                <table id="removable_elements">
 
-                    <thead>
-                        <tr>
-                            <th id="@messages("declaration.additionalFiscalReferences.numbers.header")-heading" colspan="2">@messages("declaration.additionalFiscalReferences.numbers.header")</th>
-                        </tr>
-                    </thead>
+        @referenceTable
 
-                    <tbody>
-                    @for((elem, index) <- labels.zipWithIndex) {
-                        <tr id="removable_elements__row@index">
-                            <th id="removable_elements-row@index-label">@{elem.label}</th>
-                            <th id="removable_elements-row@index-remove_button">
-                                <input type="submit" formmethod="post" formaction="@routes.AdditionalFiscalReferencesController.removeReference(mode, itemId, elem.value)" value="Remove">
-                            </th>
-                        </tr>
-                    }
-                    </tbody>
-                </table>
-            </div>
-        }
-
-        @components.fields.removable_elements_table(
-            title = Some(messages("declaration.additionalFiscalReferences.numbers.header")),
-            elements = additionalReferences.map(_.asString).map(ref => LabelledValue(ref))
-        )
 
         <div id="country-of-dispatch-field">
             @components.fields.field_autocomplete(

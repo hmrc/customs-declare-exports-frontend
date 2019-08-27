@@ -22,21 +22,25 @@ import play.api.mvc.{ActionRefiner, Result}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class ItemAction(itemId: String)(implicit val executionContext: ExecutionContext) extends ActionRefiner[JourneyRequest, ItemRequest]  {
+case class ItemAction(itemId: String)(implicit val executionContext: ExecutionContext)
+    extends ActionRefiner[JourneyRequest, ItemRequest] {
 
   import play.api.mvc.Results._
 
   private val itemsController = controllers.declaration.routes.ItemsSummaryController
 
-  override protected def refine[A](request: JourneyRequest[A]): Future[Either[Result, ItemRequest[A]]] = Future.successful {
-    request.cacheModel
-      .itemBy(itemId)
-      .map(item => Right(new ItemRequest[A](item, request)))
-      .getOrElse(Left(Redirect(itemsController.displayPage())))
-  }
+  override protected def refine[A](request: JourneyRequest[A]): Future[Either[Result, ItemRequest[A]]] =
+    Future.successful {
+      request.cacheModel
+        .itemBy(itemId)
+        .map(item => Right(new ItemRequest[A](item, request)))
+        .getOrElse(Left(Redirect(itemsController.displayPage())))
+    }
 }
 
-class ItemActionBuilder @Inject()(authorized: AuthAction, journeyAction: JourneyAction)(implicit val executionContext: ExecutionContext) {
+class ItemActionBuilder @Inject()(authorized: AuthAction, journeyAction: JourneyAction)(
+  implicit val executionContext: ExecutionContext
+) {
 
   def apply(itemId: String) = authorized andThen journeyAction andThen ItemAction(itemId)
 }
