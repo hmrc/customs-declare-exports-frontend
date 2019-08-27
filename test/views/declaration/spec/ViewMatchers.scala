@@ -53,7 +53,7 @@ trait ViewMatchers {
   implicit protected def htmlBodyOf(page: String): Document = Jsoup.parse(page)
   implicit protected def htmlBodyOf(result: Future[Result]): Document = htmlBodyOf(contentAsString(result))
 
-  private def actualContentWas(node: Element): String =
+    private def actualContentWas(node: Element): String =
     if (node == null) {
       "Element did not exist"
     } else {

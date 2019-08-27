@@ -150,5 +150,4 @@ class AdditionalFiscalReferencesViewSpec extends AppViewSpec with AdditionalFisc
 
     }
   }
-
 }
