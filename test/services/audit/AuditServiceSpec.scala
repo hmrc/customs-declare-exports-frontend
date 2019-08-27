@@ -19,22 +19,21 @@ package services.audit
 import base.CustomExportsBaseSpec
 import models.declaration.SupplementaryDeclarationTestData.allRecordsXmlMarshallingTest
 import org.mockito.ArgumentMatchers
-import org.scalatest.OptionValues
-import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
-import org.mockito.Mockito.{verify, when}
-import services.audit.EventData.{DUCR, EORI, LRN, SubmissionResult}
-import uk.gov.hmrc.play.audit.AuditExtensions
-import uk.gov.hmrc.play.audit.model.{DataEvent, ExtendedDataEvent}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{verify, when}
 import play.api.libs.json.{JsObject, Json}
+import services.audit.EventData.{EORI, SubmissionResult}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.{Disabled, Failure, Success}
+import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
+import uk.gov.hmrc.play.audit.model.{DataEvent, ExtendedDataEvent}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuditServiceSpec extends AuditTestSupport with OptionValues {
+class AuditServiceSpec extends AuditTestSupport {
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     mockSendEvent()
     mockSendCompletePayload()
   }

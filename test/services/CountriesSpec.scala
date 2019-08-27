@@ -16,11 +16,11 @@
 
 package services
 
-import base.CustomExportsBaseSpec
 import services.Countries.allCountries
 import services.model.Country
+import unit.base.UnitSpec
 
-class CountriesSpec extends CustomExportsBaseSpec {
+class CountriesSpec extends UnitSpec {
 
   "Countries" should {
 

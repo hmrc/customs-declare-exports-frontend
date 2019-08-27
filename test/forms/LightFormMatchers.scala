@@ -16,7 +16,6 @@
 
 package forms
 
-import base.CustomExportsBaseSpec
 import org.scalatest.matchers.{BePropertyMatchResult, BePropertyMatcher, MatchResult, Matcher}
 import play.api.data.{Form, FormError}
 
@@ -41,32 +40,4 @@ object LightFormMatchers {
         s""""$left contains message "$right""""
       )
   }
-}
-
-//TODO Remove CustomsExportsBaseSpec from this trait or stop using this
-trait FormMatchers extends CustomExportsBaseSpec {
-
-  class ErrorHasMessage(right: String) extends Matcher[Option[FormError]] {
-
-    override def apply(left: Option[FormError]): MatchResult =
-      MatchResult(
-        left.exists(_.message == right),
-        s""""$left" does not contains message "$right"""",
-        s""""$left contains message "$right""""
-      )
-  }
-
-  class FormHasError(right: String) extends Matcher[Form[_]] {
-
-    override def apply(left: Form[_]): MatchResult =
-      MatchResult(
-        left.errors.exists(msg => messages(msg.message) == right),
-        s""""$left" does not contain message "$right"""",
-        s""""$left" does contain messages "$right""""
-      )
-  }
-
-  def haveMessage(right: String) = new ErrorHasMessage(right)
-
-  def haveErrorMessage(right: String) = new FormHasError(right)
 }
