@@ -98,9 +98,14 @@ class AdditionalInformationController @Inject()(
         updatedCache =>
           if (updatedCache != cachedData)
             updateCache(itemId, AdditionalInformationData(updatedCache))
-              .map(_ => navigator.continueTo(controllers.declaration.routes.DocumentsProducedController.displayPage(itemId)))
+              .map(
+                _ =>
+                  navigator.continueTo(controllers.declaration.routes.DocumentsProducedController.displayPage(itemId))
+              )
           else
-            Future.successful(navigator.continueTo(controllers.declaration.routes.DocumentsProducedController.displayPage(itemId)))
+            Future.successful(
+              navigator.continueTo(controllers.declaration.routes.DocumentsProducedController.displayPage(itemId))
+          )
       )
 
   private def handleRemove(

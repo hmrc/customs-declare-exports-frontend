@@ -136,7 +136,9 @@ class DeclarationHolderController @Inject()(
           case DeclarationHolder(Some(typeCode), Some(eori)) =>
             val updatedCache = DeclarationHoldersData(Seq(DeclarationHolder(Some(typeCode), Some(eori))))
             updateCache(updatedCache)
-              .map(_ => navigator.continueTo(controllers.declaration.routes.DestinationCountriesController.displayForm()))
+              .map(
+                _ => navigator.continueTo(controllers.declaration.routes.DestinationCountriesController.displayForm())
+              )
 
           case DeclarationHolder(maybeTypeCode, maybeEori) =>
             val typeCodeError = maybeTypeCode.fold(
@@ -160,7 +162,9 @@ class DeclarationHolderController @Inject()(
             val updatedHolders = if (holder.authorisationTypeCode.isDefined) holders :+ holder else holders
             val updatedCache = DeclarationHoldersData(updatedHolders)
             updateCache(updatedCache)
-              .map(_ => navigator.continueTo(controllers.declaration.routes.DestinationCountriesController.displayForm()))
+              .map(
+                _ => navigator.continueTo(controllers.declaration.routes.DestinationCountriesController.displayForm())
+              )
 
           case DeclarationHolder(maybeTypeCode, maybeEori) =>
             val typeCodeError = maybeTypeCode.fold(

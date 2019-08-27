@@ -46,7 +46,11 @@ class SummaryPageViewSpec
   val request =
     JourneyRequest(AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration)
   val summaryPage = contentAsString(
-    new summary_page(mainTemplate)(Mode.Normal, SupplementaryDeclarationData(declaration))(request, stubMessages(), minimalAppConfig)
+    new summary_page(mainTemplate)(Mode.Normal, SupplementaryDeclarationData(declaration))(
+      request,
+      stubMessages(),
+      minimalAppConfig
+    )
   )
   val summaryNoDataPage = contentAsString(new summary_page_no_data(mainTemplate)()(request, stubMessages()))
 

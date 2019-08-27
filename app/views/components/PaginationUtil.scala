@@ -33,12 +33,12 @@ object PaginationUtil {
   private def surround(list: Seq[Int], pageCount: Int): Seq[Int] = {
     val max = list.max
     val min = list.min
-    if (max+1 <= pageCount && min-1 >= 1) {
-      (min-1) +: list :+ (max+1)
-    } else if (max+1 <= pageCount) {
-      list :+ (max+1)
-    } else if (min-1 >= 1) {
-      (min-1) +: list
+    if (max + 1 <= pageCount && min - 1 >= 1) {
+      (min - 1) +: list :+ (max + 1)
+    } else if (max + 1 <= pageCount) {
+      list :+ (max + 1)
+    } else if (min - 1 >= 1) {
+      (min - 1) +: list
     } else {
       list
     }

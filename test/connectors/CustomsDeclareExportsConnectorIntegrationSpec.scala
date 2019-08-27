@@ -23,12 +23,14 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.exchange.ExportsDeclarationExchange
 import models.declaration.notifications.Notification
 import models.declaration.submissions.{Action, RequestType, Submission}
-import models.{DeclarationStatus, Page, Paginated}
+import models.{Page, Paginated}
 import org.mockito.BDDMockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.time.{Millis, Seconds, Span}
 import play.api.http.Status
 import play.api.libs.json.{Json, Writes}
+import play.api.test.Helpers._
 import services.cache.ExportsDeclarationBuilder
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -45,6 +47,9 @@ class CustomsDeclareExportsConnectorIntegrationSpec
   private val submission = Submission(id, "eori", "lrn", Some("mrn"), None, Seq(action))
   private val notification = Notification("conv-id", "mrn", LocalDateTime.now, "f-code", None, Seq.empty, "payload")
   private val connector = new CustomsDeclareExportsConnector(config, httpClient)
+
+  implicit val defaultPatience: PatienceConfig =
+    PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -64,7 +69,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
 
       val response = await(connector.createDeclaration(newDeclaration))
 
-      response shouldBe existingDeclaration
+      response mustBe existingDeclaration
       verify(
         postRequestedFor(urlEqualTo("/v2/declaration"))
           .withRequestBody(containing(json(newDeclarationExchange)))
@@ -85,7 +90,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
 
       val response = await(connector.updateDeclaration(existingDeclaration))
 
-      response shouldBe existingDeclaration
+      response mustBe existingDeclaration
       verify(
         putRequestedFor(urlEqualTo(s"/v2/declaration/id"))
           .withRequestBody(containing(json(existingDeclarationExchange)))
@@ -114,7 +119,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
 
       val response = await(connector.findDeclarations(pagination))
 
-      response shouldBe Paginated(Seq(existingDeclaration), pagination, 1)
+      response mustBe Paginated(Seq(existingDeclaration), pagination, 1)
       verify(getRequestedFor(urlEqualTo("/v2/declaration?page-index=1&page-size=10")))
     }
   }
@@ -134,7 +139,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
 
       val response = await(connector.findSavedDeclarations(pagination))
 
-      response shouldBe Paginated(Seq(existingDeclaration), pagination, 1)
+      response mustBe Paginated(Seq(existingDeclaration), pagination, 1)
       verify(
         getRequestedFor(
           urlEqualTo(
@@ -158,7 +163,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
 
       val response = await(connector.findDeclaration(id))
 
-      response shouldBe Some(existingDeclaration)
+      response mustBe Some(existingDeclaration)
       verify(getRequestedFor(urlEqualTo(s"/v2/declaration/$id")))
     }
   }
@@ -176,7 +181,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
 
       val response = await(connector.findSubmission(id))
 
-      response shouldBe Some(submission)
+      response mustBe Some(submission)
       verify(getRequestedFor(urlEqualTo(s"/v2/declaration/$id/submission")))
     }
   }
@@ -194,7 +199,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
 
       val response = await(connector.findNotifications(id))
 
-      response shouldBe Seq(notification)
+      response mustBe Seq(notification)
       verify(getRequestedFor(urlEqualTo(s"/v2/declaration/$id/submission/notifications")))
     }
   }
