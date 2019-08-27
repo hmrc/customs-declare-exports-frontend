@@ -51,8 +51,7 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    when(mockItemTypePage.apply(any(), any(), any(), any(), any())(any(), any()))
-      .thenReturn(HtmlFormat.empty)
+    when(mockItemTypePage.apply(any(), any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   val itemId = new ExportItemIdGeneratorService().generateItemId()
@@ -110,7 +109,7 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
         val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) mustBe OK
-        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any(), any())(any(), any())
+        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any(), any(), any())(any(), any())
       }
     }
 
@@ -126,7 +125,7 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
         val result = controller.submitItemType(Mode.Normal, itemId)(postRequest(correctForm))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any(), any())(any(), any())
+        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any(), any(), any())(any(), any())
       }
 
       "form action from user is incorrect" in {
@@ -147,7 +146,7 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
         val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(wrongAction: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any(), any())(any(), any())
+        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any(), any(), any())(any(), any())
       }
 
       "information from user is incorrect during adding" in {
@@ -168,7 +167,7 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
         val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any(), any())(any(), any())
+        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any(), any(), any())(any(), any())
       }
 
       "information from user is incorrect during saving" in {
@@ -189,7 +188,7 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
         val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any(), any())(any(), any())
+        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any(), any(), any())(any(), any())
       }
     }
 
@@ -202,7 +201,7 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
         val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
         status(result) mustBe SEE_OTHER
-        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any(), any())(any(), any())
+        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any(), any(), any())(any(), any())
       }
 
       "correct item type is added during saving" in {
@@ -224,7 +223,7 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, itemId)
-        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any(), any())(any(), any())
+        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any(), any(), any())(any(), any())
       }
 
       "item type has been removed and there is exisitng data in cache" in {
@@ -238,7 +237,7 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
         val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(removeAction))
 
         status(result) mustBe OK
-        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any(), any())(any(), any())
+        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any(), any(), any())(any(), any())
       }
     }
   }

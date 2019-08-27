@@ -92,7 +92,7 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("start")
+      backButton.attr("href") must be(controllers.routes.StartController.displayStartPage().url)
     }
 
     "display 'Save and continue' button on page" in {
