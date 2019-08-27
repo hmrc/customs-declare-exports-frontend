@@ -33,7 +33,7 @@
     @helper.form(action = CancelDeclarationController.onSubmit(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
-        @components.back_link(controllers.routes.ChoiceController.displayPage(), Mode.Normal)
+        @components.back_link(controllers.routes.ChoiceController.displayPage())
 
         @components.error_summary(form.errors)
 
