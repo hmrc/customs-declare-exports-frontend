@@ -101,7 +101,6 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs("/customs-declare-exports/declaration/carrier-details")) {
-        document.getElementById('details_eori').value = 'GB025115100002';
         document.getElementById('details_address_fullName').value = 'XYZ Carrier';
         document.getElementById('details_address_addressLine').value = 'School Road';
         document.getElementById('details_address_townOrCity').value = 'London';
@@ -170,7 +169,7 @@ function completePage() {
         }
     }
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/procedure-codes')) {
-        document.getElementById('procedureCode').value ='1042';
+        document.getElementById('procedureCode').value ='1040';
         document.getElementById('additionalProcedureCode').value ='000';
         document.getElementsByClassName('button')[0].click()
     }
