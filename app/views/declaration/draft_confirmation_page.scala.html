@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
+@import java.time.{Instant, ZoneOffset}
+@import views.ViewDates
 @import models.responses.FlashKeys
 
 @this(main_template: views.html.main_template)
@@ -28,17 +30,26 @@
         <h1 class="heading-xlarge">
             @messages("confirmation.draft.title")
         </h1>
-        <p class="font-large">@messages("confirmation.draft.info", flash.get(FlashKeys.expiryDate).getOrElse("-"))</p>
+        <p class="font-large">
+         @messages("confirmation.draft.info")
+        </p>
+        <p id="draft_confirmation-expiry" class="font-large">
+        @{
+            flash.get(FlashKeys.expiryDate)
+                .map(e => Instant.ofEpochMilli(e.toLong).atOffset(ZoneOffset.UTC))
+                .map(ViewDates.formatDate)
+                .getOrElse("-")
+         }
+         </p>
     </div>
 
     <h1 class="heading-medium">@messages("confirmation.draft.nextHeading")</h1>
 
     <span>
         @messages("confirmation.draft.nextText1")
-        @* TODO Requires Draft Declarations Page Link Below, not Submissions *@
-        <a href="@routes.SavedDeclarationsController.displayDeclarations()">@messages("confirmation.draft.nextContinueLink")</a>
+        <a id="draft_confirmation-continue_dec_link" href="@routes.SavedDeclarationsController.displayDeclarations()">@messages("confirmation.draft.nextContinueLink")</a>
         @messages("confirmation.draft.nextText2")
-        <a href="@routes.ChoiceController.displayPage()">@messages("confirmation.draft.nextStartFreshLink")</a>
+        <a id="draft_confirmation-create_dec_link" href="@routes.ChoiceController.displayPage()">@messages("confirmation.draft.nextStartFreshLink")</a>
     </span>
 
     @components.button_link(messageKey = "supplementary.confirmation.submitAnotherDeclaration", href = routes.ChoiceController.displayPage().url)

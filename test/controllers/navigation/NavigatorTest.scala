@@ -20,7 +20,7 @@ import java.time.{LocalDate, ZoneOffset}
 import java.util.concurrent.TimeUnit
 
 import config.AppConfig
-import controllers.util.{Add, FormAction, SaveAndContinue, SaveAndReturn, Unknown}
+import controllers.util.{Add, FormAction, Remove, SaveAndContinue, SaveAndReturn, Unknown}
 import models.SignedInUser
 import models.requests.{AuthenticatedRequest, ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
@@ -78,19 +78,25 @@ class NavigatorTest extends WordSpec with Matchers with MockitoSugar with Export
         redirectLocation(result) shouldBe Some("url")
       }
 
+      "Add" in {
+        val result = navigator.continueTo(call)(request(Some(Add)))
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) shouldBe Some("url")
+      }
+
+      "Remove" in {
+        val result = navigator.continueTo(call)(request(Some(Remove(Seq.empty))))
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) shouldBe Some("url")
+      }
+
       "Unknown Action" in {
         val result = navigator.continueTo(call)(request(Some(Unknown)))
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some("url")
-      }
-    }
-
-    "throw exception" when {
-      "unexpected action type" in {
-        intercept[IllegalArgumentException] {
-          navigator.continueTo(call)(request(Some(Add)))
-        }
       }
     }
   }

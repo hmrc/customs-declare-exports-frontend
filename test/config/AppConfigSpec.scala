@@ -104,7 +104,6 @@ class AppConfigSpec extends CustomExportsBaseSpec {
       choices must contain(Choice.AllowedChoiceValues.Submissions)
     }
 
-    // what is continue URL - redirect ?
     "have login continue URL" in {
       validConfigService.loginContinueUrl must be("http://localhost:9000/customs-declare-exports-frontend")
     }

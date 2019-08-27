@@ -16,20 +16,23 @@
 
 package services
 
+import base.CustomExportsBaseSpec
 import base.ExportsTestData.newUser
-import base.{CustomExportsBaseSpec, TestHelper}
-import org.joda.time.DateTime
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.logging.Authorization
 
 class NrsServiceSpec extends CustomExportsBaseSpec {
 
   val nrsService = new NRSService(appConfig, mockNrsConnector)
+
   implicit val signedInUser = newUser("12345", "external1")
+
   "NrsService " should {
-    " submit user submission to NRS service with a valid submissionId" in {
+
+    "submit user submission to NRS service with a valid submissionId" in {
+
       submitNrsRequest()
+
       val nrsResponse = nrsService.submit("conversationId1", "payload 1", "ducr1")
+
       nrsResponse.futureValue.nrSubmissionId must be("submissionId1")
     }
   }

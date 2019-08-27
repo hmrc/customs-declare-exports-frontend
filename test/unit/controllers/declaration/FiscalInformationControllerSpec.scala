@@ -16,7 +16,7 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.{FiscalInformationController, routes}
+import controllers.declaration.{routes, FiscalInformationController}
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.FiscalInformation
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers._
@@ -113,7 +113,8 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.saveFiscalInformation(itemId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(itemId)
+        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesController
+          .displayPage(itemId)
         verify(mockFiscalInformationPage, times(0)).apply(any(), any())(any(), any())
       }
 

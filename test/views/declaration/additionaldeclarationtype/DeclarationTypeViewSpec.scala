@@ -20,7 +20,11 @@ import controllers.util.{SaveAndContinue, SaveAndReturn}
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeStandardDec.AllowedAdditionalDeclarationTypes._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes._
-import forms.declaration.additionaldeclarationtype.{AdditionalDeclarationType, AdditionalDeclarationTypeStandardDec, AdditionalDeclarationTypeSupplementaryDec}
+import forms.declaration.additionaldeclarationtype.{
+  AdditionalDeclarationType,
+  AdditionalDeclarationTypeStandardDec,
+  AdditionalDeclarationTypeSupplementaryDec
+}
 import helpers.views.declaration.{CommonMessages, DeclarationTypeMessages}
 import org.jsoup.nodes.Document
 import play.api.data.Form

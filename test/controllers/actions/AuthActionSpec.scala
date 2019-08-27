@@ -25,7 +25,6 @@ class AuthActionSpec extends CustomExportsBaseSpec {
 
   val uri = uriWithContextPath("/choice")
 
-  // should we check other missing fields ?
   "Auth Action" should {
 
     "return InsufficientEnrolments when EORI number is missing" in {

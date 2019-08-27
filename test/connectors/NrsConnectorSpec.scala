@@ -18,7 +18,7 @@ package connectors
 
 import base.ExportsTestData._
 import base.{CustomExportsBaseSpec, MockHttpClient}
-import models._
+import models.{HeaderData, Metadata, NRSSubmission, NrsSubmissionResponse, SearchKeys}
 
 import scala.concurrent.Future
 
@@ -58,7 +58,7 @@ class NrsConnectorSpec extends CustomExportsBaseSpec {
         NrsSubmissionResponse("submissionId1")
       )
     val client = new NrsConnector(appConfig, http)
+
     test(client.submitNonRepudiation(nrsSubmission)(hc, ec))
   }
-
 }

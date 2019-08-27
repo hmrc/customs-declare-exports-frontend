@@ -16,8 +16,6 @@
 
 package base
 
-import java.util.UUID
-
 import akka.stream.Materializer
 import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
@@ -25,11 +23,7 @@ import connectors.{CustomsDeclareExportsConnector, NrsConnector}
 import controllers.actions.FakeAuthAction
 import metrics.ExportsMetrics
 import models.requests.ExportsSessionKeys
-import models.{ExportsDeclaration, NrsSubmissionResponse}
 import org.joda.time.DateTime
-import org.mockito.ArgumentMatchers.{any, eq => eqRef}
-import org.mockito.Mockito.when
-import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
@@ -52,8 +46,8 @@ import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import utils.FakeRequestCSRFSupport._
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.ExecutionContext.global
 
 trait CustomExportsBaseSpec
     extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures with MockAuthAction
@@ -89,26 +83,17 @@ trait CustomExportsBaseSpec
 
   implicit val ec: ExecutionContext = global
 
-  val injector: Injector = app.injector
+  val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
-  val appConfig: AppConfig = injector.instanceOf[AppConfig]
-
-  val mcc: MessagesControllerComponents = injector.instanceOf[MessagesControllerComponents]
-
-  val messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
+  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
   val exportsMetricsMock = app.injector.instanceOf[ExportsMetrics]
 
-  val cfg: CSRFConfig = injector.instanceOf[CSRFConfigProvider].get
+  val cfg: CSRFConfig = app.injector.instanceOf[CSRFConfigProvider].get
 
-  val token: String = injector.instanceOf[CSRFFilter].tokenProvider.generateToken
+  val token: String = app.injector.instanceOf[CSRFFilter].tokenProvider.generateToken
 
-  def fakeRequest = FakeRequest("", "")
-
-  // MockAuthAction has this value as default value... we need to use it to make cache working in tests
-  val eoriForCache = "12345"
-
-  implicit val messages: Messages = messagesApi.preferred(fakeRequest)
+  implicit val messages: Messages = messagesApi.preferred(FakeRequest("", ""))
 
   implicit val defaultPatience: PatienceConfig =
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
@@ -116,22 +101,6 @@ trait CustomExportsBaseSpec
   val mockWSClient = mock[WSClient]
 
   protected def uriWithContextPath(path: String): String = s"$contextPath$path"
-
-  protected def getRequest(
-    uri: String,
-    headers: Map[String, String] = Map.empty,
-    declarationId: String = "declarationId"
-  ): Request[AnyContentAsEmpty.type] = {
-    val session: Map[String, String] = Map(
-      ExportsSessionKeys.declarationId -> declarationId,
-      SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
-    )
-
-    FakeRequest("GET", uri)
-      .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
-      .withSession(session.toSeq: _*)
-      .withCSRFToken
-  }
 
   protected def postRequest(
     uri: String,
@@ -151,54 +120,4 @@ trait CustomExportsBaseSpec
       .withCSRFToken
   }
 
-  protected def postRequestFormUrlEncoded(uri: String, declarationId: String = "declarationId")(
-    body: (String, String)*
-  ): Request[AnyContentAsFormUrlEncoded] = {
-    val session: Map[String, String] = Map(
-      ExportsSessionKeys.declarationId -> declarationId,
-      SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
-    )
-
-    FakeRequest("POST", uri)
-      .withHeaders(Map(cfg.headerName -> token).toSeq: _*)
-      .withSession(session.toSeq: _*)
-      .withFormUrlEncodedBody(body: _*)
-      .withCSRFToken
-  }
-
-  // FIXME should be promoted to MockExportsCacheService trait
-  override def withNewCaching(dataToReturn: ExportsDeclaration) {
-    when(
-      mockExportsCacheService
-        .update(any[ExportsDeclaration])(any())
-    ).thenReturn(Future.successful(Some(dataToReturn)))
-
-    when(
-      mockExportsCacheService
-        .get(any())(any())
-    ).thenReturn(Future.successful(Some(dataToReturn)))
-  }
-
-  def withNewCaching() {
-    when(
-      mockExportsCacheService
-        .update(any[ExportsDeclaration])(any())
-    ).thenReturn(Future.successful(None))
-
-    when(
-      mockExportsCacheService
-        .get(any[String])(any())
-    ).thenReturn(Future.successful(None))
-  }
-
-  def withNrsSubmission(): OngoingStubbing[Future[NrsSubmissionResponse]] =
-    when(mockNrsService.submit(any(), any(), any())(any(), any(), any()))
-      .thenReturn(Future.successful(NrsSubmissionResponse("submissionid1")))
-
-}
-
-object CSRFUtil {
-  implicit class CSRFReplacer(str: String) {
-    def replaceCSRF(): String = str.replaceAll("name=\"csrfToken\" value=\".*\"/>", "csrfToken1")
-  }
 }

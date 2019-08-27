@@ -141,11 +141,11 @@ cancellation.reason.noLongerRequired = No longer required
 
 
 declaration.choice.description = What do you want to do?
-declaration.choice.SMP = Supplementary declaration
-declaration.choice.STD = Standard declaration
-declaration.choice.CAN = Cancel declaration
+declaration.choice.SMP = Make a supplementary declaration
+declaration.choice.STD = Make a standard declaration
+declaration.choice.CAN = Cancel a declaration
 declaration.choice.CON = Continue a saved declaration
-declaration.choice.SUB = View recent declarations
+declaration.choice.SUB = View declarations
 
 startPage.title = Register for customs services
 startPage.heading = Make an export declaration
@@ -788,7 +788,7 @@ standard.transport.sealId.alphaNumeric.error= Seal identification number must be
 standard.transport.sealId.longer.error= Seal identification number must be 20 characters or less
 
 confirmation.draft.title=Your declaration has been saved
-confirmation.draft.info=Your information is held until {0}
+confirmation.draft.info=Your information is held until
 confirmation.draft.nextHeading=What you can do next
 confirmation.draft.nextText1=You can
 confirmation.draft.nextContinueLink=continue a saved declaration

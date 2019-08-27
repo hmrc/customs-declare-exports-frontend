@@ -41,15 +41,13 @@ class NotificationsController @Inject()(
     }
   }
 
-  def listOfNotificationsForSubmission(id: String): Action[AnyContent] =
-    authenticate.async { implicit request =>
-      customsDeclareExportsConnector.findSubmission(id) flatMap {
-        case Some(submission) =>
-          customsDeclareExportsConnector.findNotifications(id) map { notifications =>
-            Ok(submissionsNotificationPage(submission, notifications.sorted.reverse))
-          }
-        case None => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
-      }
+  def listOfNotificationsForSubmission(id: String): Action[AnyContent] = authenticate.async { implicit request =>
+    customsDeclareExportsConnector.findSubmission(id) flatMap {
+      case Some(submission) =>
+        customsDeclareExportsConnector.findNotifications(id) map { notifications =>
+          Ok(submissionsNotificationPage(submission, notifications.sorted.reverse))
+        }
+      case None => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
     }
-
+  }
 }
