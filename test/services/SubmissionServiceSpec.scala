@@ -34,9 +34,8 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec {
 
   val mockAuditService = mock[AuditService]
 
-  override def beforeEach(): Unit = {
+  override def beforeEach(): Unit =
     reset(mockExportsCacheService, mockCustomsDeclareExportsConnector, mockAuditService)
-  }
 
   implicit val request = TestHelper.journeyRequest(FakeRequest("", ""), AllowedChoiceValues.SupplementaryDec)
 
