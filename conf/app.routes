@@ -30,6 +30,10 @@ GET        /saved-declarations                          controllers.SavedDeclara
 
 GET        /saved-declarations/:id                      controllers.SavedDeclarationsController.continueDeclaration(id: String)
 
+GET        /saved-declarations/:id/remove               controllers.RemoveSavedDeclarationsController.displayPage(id: String)
+
+POST       /saved-declarations/:id/remove               controllers.RemoveSavedDeclarationsController.removeDeclaration(id: String)
+
 # Start Page
 
 GET        /start                                       controllers.StartController.displayStartPage()
