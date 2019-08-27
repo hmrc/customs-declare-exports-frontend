@@ -20,12 +20,12 @@
 
 @this(main_template: views.html.main_template)
 
-@(itemId: String, form: Form[CommodityMeasure])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[CommodityMeasure])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.commodityMeasure.title")
 ) {
-    @components.back_link(PackageInformationController.displayPage(itemId).url)
+    @components.back_link(PackageInformationController.displayPage(mode, itemId), mode)
 
     @components.error_summary(form.errors)
 
@@ -33,7 +33,7 @@
 
     @components.page_title(Some("supplementary.commodityMeasure.title"))
 
-    @helper.form(CommodityMeasureController.submitForm(itemId), 'autoComplete -> "off") {
+    @helper.form(CommodityMeasureController.submitForm(mode, itemId), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         @components.fields.field_text(

@@ -49,45 +49,46 @@ class TransportContainerController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.containerData match {
-      case Some(data) => Ok(transportContainersPage(form(), data.containers))
-      case _          => Ok(transportContainersPage(form(), Seq()))
+      case Some(data) => Ok(transportContainersPage(mode, form(), data.containers))
+      case _          => Ok(transportContainersPage(mode, form(), Seq()))
     }
   }
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form().bindFromRequest()
     val actionTypeOpt = FormAction.bindFromRequest()
 
     val cache = request.cacheModel.containerData.getOrElse(TransportInformationContainerData(Seq()))
 
     actionTypeOpt match {
-      case Some(Add)                                   => addContainer(boundForm, maxNumberOfItems, cache)
-      case Some(Remove(ids))                           => removeContainer(boundForm, cache, ids)
-      case Some(SaveAndContinue) | Some(SaveAndReturn) => saveContainer(boundForm, maxNumberOfItems, cache)
+      case Some(Add)                                   => addContainer(mode, boundForm, maxNumberOfItems, cache)
+      case Some(Remove(ids))                           => removeContainer(mode, boundForm, cache, ids)
+      case Some(SaveAndContinue) | Some(SaveAndReturn) => saveContainer(mode, boundForm, maxNumberOfItems, cache)
       case _                                           => errorHandler.displayErrorPage()
     }
   }
 
   private def saveContainer(
+    mode: Mode,
     boundForm: Form[TransportInformationContainer],
     elementLimit: Int,
     cache: TransportInformationContainerData
   )(implicit request: JourneyRequest[AnyContent]) =
     saveAndContinue(boundForm, cache.containers, isMandatory = true, elementLimit).fold(
-      formWithErrors => Future.successful(BadRequest(transportContainersPage(formWithErrors, cache.containers))),
+      formWithErrors => Future.successful(BadRequest(transportContainersPage(mode, formWithErrors, cache.containers))),
       updatedCache =>
         if (updatedCache != cache.containers)
           updateCache(TransportInformationContainerData(updatedCache))
-            .map(_ => redirect())
-        else Future.successful(redirect())
+            .map(_ => redirect(mode))
+        else Future.successful(redirect(mode))
     )
 
-  private def redirect()(implicit request: JourneyRequest[AnyContent]) =
+  private def redirect(mode: Mode)(implicit request: JourneyRequest[AnyContent]) =
     if (request.choice.value == AllowedChoiceValues.StandardDec)
-      navigator.continueTo(controllers.declaration.routes.SealController.displayForm())
-    else navigator.continueTo(controllers.declaration.routes.SummaryController.displayPage(Mode.Normal))
+      navigator.continueTo(controllers.declaration.routes.SealController.displayForm(mode))
+    else navigator.continueTo(controllers.declaration.routes.SummaryController.displayPage(mode))
 
   private def updateCache(
     formData: TransportInformationContainerData
@@ -95,6 +96,7 @@ class TransportContainerController @Inject()(
     updateExportsDeclarationSyncDirect(model => model.copy(containerData = Some(formData)))
 
   private def removeContainer(
+    mode: Mode,
     userInput: Form[TransportInformationContainer],
     cache: TransportInformationContainerData,
     ids: Seq[String]
@@ -103,19 +105,20 @@ class TransportContainerController @Inject()(
       ids.contains(container.id)
     })
     updateCache(TransportInformationContainerData(updatedCache)).map { _ =>
-      Ok(transportContainersPage(userInput.discardingErrors, updatedCache))
+      Ok(transportContainersPage(mode, userInput.discardingErrors, updatedCache))
     }
   }
 
   private def addContainer(
+    mode: Mode,
     boundForm: Form[TransportInformationContainer],
     elementLimit: Int,
     cache: TransportInformationContainerData
   )(implicit request: JourneyRequest[AnyContent]) =
     add(boundForm, cache.containers, elementLimit).fold(
-      formWithErrors => Future.successful(BadRequest(transportContainersPage(formWithErrors, cache.containers))),
+      formWithErrors => Future.successful(BadRequest(transportContainersPage(mode, formWithErrors, cache.containers))),
       updatedCache =>
         updateCache(TransportInformationContainerData(updatedCache))
-          .map(_ => navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayPage()))
+          .map(_ => navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayPage(mode)))
     )
 }

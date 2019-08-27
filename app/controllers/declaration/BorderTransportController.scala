@@ -21,7 +21,7 @@ import controllers.navigation.Navigator
 import forms.declaration.BorderTransport
 import forms.declaration.BorderTransport._
 import javax.inject.Inject
-import models.ExportsDeclaration
+import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -42,21 +42,21 @@ class BorderTransportController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.borderTransport match {
-      case Some(data) => Ok(borderTransportPage(form().fill(data)))
-      case _          => Ok(borderTransportPage(form()))
+      case Some(data) => Ok(borderTransportPage(mode, form().fill(data)))
+      case _          => Ok(borderTransportPage(mode, form()))
     }
   }
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[BorderTransport]) => Future.successful(BadRequest(borderTransportPage(formWithErrors))),
+        (formWithErrors: Form[BorderTransport]) => Future.successful(BadRequest(borderTransportPage(mode, formWithErrors))),
         borderTransport =>
           updateCache(borderTransport)
-            .map(_ => navigator.continueTo(routes.TransportDetailsController.displayForm()))
+            .map(_ => navigator.continueTo(routes.TransportDetailsController.displayForm(mode)))
       )
   }
 

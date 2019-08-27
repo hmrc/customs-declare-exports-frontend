@@ -24,7 +24,7 @@ import forms.declaration.PreviousDocumentsData._
 import forms.declaration.{Document, PreviousDocumentsData}
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.ExportsDeclaration
+import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -45,14 +45,14 @@ class PreviousDocumentsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.previousDocuments match {
-      case Some(data) => Ok(previousDocumentsPage(form(), data.documents))
-      case _          => Ok(previousDocumentsPage(form(), Seq.empty))
+      case Some(data) => Ok(previousDocumentsPage(mode, form(), data.documents))
+      case _          => Ok(previousDocumentsPage(mode, form(), Seq.empty))
     }
   }
 
-  def savePreviousDocuments(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def savePreviousDocuments(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     import MultipleItemsHelper._
 
     val boundForm = form().bindFromRequest()
@@ -63,32 +63,32 @@ class PreviousDocumentsController @Inject()(
     actionTypeOpt match {
       case Some(SaveAndContinue) | Some(SaveAndReturn) =>
         saveAndContinue(boundForm, cache.documents, isScreenMandatory, maxAmountOfItems).fold(
-          formWithErrors => Future.successful(BadRequest(previousDocumentsPage(formWithErrors, cache.documents))),
+          formWithErrors => Future.successful(BadRequest(previousDocumentsPage(mode, formWithErrors, cache.documents))),
           updatedCache =>
             if (updatedCache != cache.documents)
               updateCache(PreviousDocumentsData(updatedCache))
-                .map(_ => navigator.continueTo(controllers.declaration.routes.ItemsSummaryController.displayPage()))
+                .map(_ => navigator.continueTo(controllers.declaration.routes.ItemsSummaryController.displayPage(mode)))
             else
               Future.successful(
-                navigator.continueTo(controllers.declaration.routes.ItemsSummaryController.displayPage())
+                navigator.continueTo(controllers.declaration.routes.ItemsSummaryController.displayPage(mode))
             )
         )
 
       case Some(Add) =>
         add(boundForm, cache.documents, PreviousDocumentsData.maxAmountOfItems).fold(
-          formWithErrors => Future.successful(BadRequest(previousDocumentsPage(formWithErrors, cache.documents))),
+          formWithErrors => Future.successful(BadRequest(previousDocumentsPage(mode, formWithErrors, cache.documents))),
           updatedCache =>
             updateCache(PreviousDocumentsData(updatedCache))
-              .map(_ => navigator.continueTo(controllers.declaration.routes.PreviousDocumentsController.displayForm()))
+              .map(_ => navigator.continueTo(controllers.declaration.routes.PreviousDocumentsController.displayForm(mode)))
         )
 
       case Some(Remove(ids)) =>
         val itemToRemove = Document.fromJsonString(ids.head)
         val updatedDocuments = MultipleItemsHelper.remove(cache.documents, itemToRemove.contains(_: Document))
         updateCache(PreviousDocumentsData(updatedDocuments))
-          .map(_ => Ok(previousDocumentsPage(boundForm.discardingErrors, updatedDocuments)))
+          .map(_ => Ok(previousDocumentsPage(mode, boundForm.discardingErrors, updatedDocuments)))
 
-      case _ => Future.successful(BadRequest(previousDocumentsPage(boundForm, cache.documents)))
+      case _ => Future.successful(BadRequest(previousDocumentsPage(mode, boundForm, cache.documents)))
     }
   }
 

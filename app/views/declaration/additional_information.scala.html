@@ -24,13 +24,13 @@
 
 @this(main_template: views.html.main_template)
 
-@(itemId: String, form: Form[AdditionalInformation], items: Seq[AdditionalInformation])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[AdditionalInformation], items: Seq[AdditionalInformation])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.additionalInformation")
 ) {
 
-    @components.back_link(CommodityMeasureController.displayPage(itemId).url)
+    @components.back_link(CommodityMeasureController.displayPage(mode, itemId), mode)
 
     @components.error_summary(form.errors)
 
@@ -38,7 +38,7 @@
 
     @components.page_title(Some("supplementary.additionalInformation.title"))
 
-    @helper.form(AdditionalInformationController.saveAdditionalInfo(itemId), 'autoComplete -> "off") {
+    @helper.form(AdditionalInformationController.saveAdditionalInfo(mode, itemId), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         @if(items.nonEmpty){

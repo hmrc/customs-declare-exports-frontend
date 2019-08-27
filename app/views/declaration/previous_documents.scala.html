@@ -24,19 +24,19 @@
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[Document], documents: Seq[Document])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, form: Form[Document], documents: Seq[Document])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.previousDocuments")
 ) {
 
-    @components.back_link(controllers.declaration.routes.NatureOfTransactionController.displayForm().url)
+    @components.back_link(controllers.declaration.routes.NatureOfTransactionController.displayForm(mode), mode)
 
     @components.error_summary(form.errors)
 
     @components.section_header(messages("supplementary.consignmentReferences.heading"))
 
-    @helper.form(PreviousDocumentsController.savePreviousDocuments(), 'autoComplete -> "off") {
+    @helper.form(PreviousDocumentsController.savePreviousDocuments(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         @if(documents.nonEmpty){

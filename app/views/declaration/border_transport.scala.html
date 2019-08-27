@@ -23,19 +23,19 @@
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[BorderTransport])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, form: Form[BorderTransport])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.transportInfo.title")
 ) {
 
-    @components.back_link("/customs-declare-exports/declaration/warehouse")
+    @components.back_link(controllers.declaration.routes.WarehouseIdentificationController.displayForm(mode), mode)
 
     @components.error_summary(form.errors)
 
     @components.page_title(Some("supplementary.transportInfo.title"), None)
 
-    @helper.form(BorderTransportController.submitForm(), 'autoComplete -> "off") {
+    @helper.form(BorderTransportController.submitForm(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         @components.fields.field_radio(

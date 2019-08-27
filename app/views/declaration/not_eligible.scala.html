@@ -25,7 +25,7 @@
 @main_template(
  title = messages("notEligible.pageTitle")
 ) {
-@components.back_link("/customs-declare-exports/start")
+@components.back_link(controllers.routes.StartController.displayStartPage(), Mode.Normal)
 
 <h1 style="margin-top: 5px;">@messages("notEligible.title")<br>@messages("notEligible.titleLineTwo")</h1>
 

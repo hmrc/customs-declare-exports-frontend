@@ -22,12 +22,12 @@
 @this(main_template: views.html.main_template)
 
 
-@(items: List[ExportItem])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, items: List[ExportItem])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.items")
 ) {
-    @components.back_link(routes.PreviousDocumentsController.displayForm().url)
+    @components.back_link(routes.PreviousDocumentsController.displayForm(mode), mode)
 
     @components.section_header(messages("supplementary.items"))
 
@@ -70,10 +70,10 @@
                         </ol>
                     </td>
                     <td scope="row">
-                        <a id="item_@index--change" href="@routes.ProcedureCodesController.displayPage(item.id)">@messages("site.change")</a>
+                        <a id="item_@index--change" href="@routes.ProcedureCodesController.displayPage(mode, item.id)">@messages("site.change")</a>
                     </td>
                     <td scope="row">
-                        <a id="item_@index--remove" class="button button--gray" href="@routes.ItemsSummaryController.removeItem(item.id)">@messages("site.remove")</a>
+                        <a id="item_@index--remove" class="button button--gray" href="@routes.ItemsSummaryController.removeItem(mode, item.id)">@messages("site.remove")</a>
                     </td>
                 </tr>
             }
@@ -81,7 +81,7 @@
             </tbody>
         </table>
     }
-    @helper.form(routes.ItemsSummaryController.submit(), 'autocomplete -> "off") {
+    @helper.form(routes.ItemsSummaryController.submit(mode), 'autocomplete -> "off") {
         @helper.CSRF.formField
 
         <div class="section">

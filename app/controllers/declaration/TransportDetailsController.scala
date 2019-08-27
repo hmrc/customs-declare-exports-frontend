@@ -43,26 +43,26 @@ class TransportDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.transportDetails match {
-      case Some(data) => Ok(transportDetailsPage(form().fill(data)))
-      case _          => Ok(transportDetailsPage(form()))
+      case Some(data) => Ok(transportDetailsPage(mode, form().fill(data)))
+      case _          => Ok(transportDetailsPage(mode, form()))
     }
   }
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[TransportDetails]) => Future.successful(BadRequest(transportDetailsPage(formWithErrors))),
-        transportDetails => updateCache(transportDetails).map(_ => redirect(transportDetails))
+        (formWithErrors: Form[TransportDetails]) => Future.successful(BadRequest(transportDetailsPage(mode, formWithErrors))),
+        transportDetails => updateCache(transportDetails).map(_ => redirect(mode, transportDetails))
       )
   }
 
-  private def redirect(transportDetails: TransportDetails)(implicit request: JourneyRequest[AnyContent]): Result =
-    if (transportDetails.container) navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayPage())
-    else if (request.choice.value == AllowedChoiceValues.StandardDec) navigator.continueTo(controllers.declaration.routes.SealController.displayForm())
-    else navigator.continueTo(controllers.declaration.routes.SummaryController.displayPage(Mode.Normal))
+  private def redirect(mode: Mode, transportDetails: TransportDetails)(implicit request: JourneyRequest[AnyContent]): Result =
+    if (transportDetails.container) navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayPage(mode))
+    else if (request.choice.value == AllowedChoiceValues.StandardDec) navigator.continueTo(controllers.declaration.routes.SealController.displayForm(mode))
+    else navigator.continueTo(controllers.declaration.routes.SummaryController.displayPage(mode))
 
   private def updateCache(
     formData: TransportDetails

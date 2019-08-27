@@ -17,7 +17,7 @@
 @import models.Mode
 @import models.Mode._
  
-@(href: Call, mode: Mode)(implicit messages: Messages)
+@(href: Call, mode: Mode = Mode.Normal)(implicit messages: Messages)
 
 @url() = @{
   mode match {

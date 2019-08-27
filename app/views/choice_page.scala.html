@@ -31,7 +31,7 @@
         @helper.form(ChoiceController.submitChoice(), 'autoComplete -> "off") {
             @helper.CSRF.formField
 
-            @components.back_link("start")
+            @components.back_link(controllers.routes.StartController.displayStartPage(), Mode.Normal)
 
             @components.heading("", "declaration.choice.description")
 

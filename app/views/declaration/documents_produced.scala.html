@@ -24,13 +24,13 @@
 
 @this(main_template: views.html.main_template)
 
-@(itemId: String, form: Form[DocumentsProduced], documents: Seq[DocumentsProduced])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[DocumentsProduced], documents: Seq[DocumentsProduced])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.addDocument.title")
 ) {
 
-    @components.back_link(AdditionalInformationController.displayPage(itemId).url)
+    @components.back_link(AdditionalInformationController.displayPage(mode, itemId), mode)
 
     @components.error_summary(form.errors)
 
@@ -38,7 +38,7 @@
 
     @components.page_title(Some("supplementary.addDocument.title"), Some("supplementary.addDocument.hint"))
 
-    @helper.form(DocumentsProducedController.saveForm(itemId), 'autoComplete -> "off") {
+    @helper.form(DocumentsProducedController.saveForm(mode, itemId), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         @if(documents.nonEmpty) {

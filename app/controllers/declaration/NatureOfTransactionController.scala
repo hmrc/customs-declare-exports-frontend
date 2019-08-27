@@ -21,7 +21,7 @@ import controllers.navigation.Navigator
 import forms.declaration.NatureOfTransaction
 import forms.declaration.NatureOfTransaction._
 import javax.inject.Inject
-import models.ExportsDeclaration
+import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -42,20 +42,20 @@ class NatureOfTransactionController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.natureOfTransaction match {
-      case Some(data) => Ok(natureOfTransactionPage(form().fill(data)))
-      case _          => Ok(natureOfTransactionPage(form()))
+      case Some(data) => Ok(natureOfTransactionPage(mode, form().fill(data)))
+      case _          => Ok(natureOfTransactionPage(mode, form()))
     }
   }
 
-  def saveTransactionType(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form.bindFromRequest
+  def saveTransactionType(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    form().bindFromRequest
       .fold(
         (formWithErrors: Form[NatureOfTransaction]) =>
-          Future.successful(BadRequest(natureOfTransactionPage(adjustErrors(formWithErrors)))),
+          Future.successful(BadRequest(natureOfTransactionPage(mode, adjustErrors(formWithErrors)))),
         form =>
-          updateCache(form).map(_ => navigator.continueTo(controllers.declaration.routes.PreviousDocumentsController.displayForm()))
+          updateCache(form).map(_ => navigator.continueTo(controllers.declaration.routes.PreviousDocumentsController.displayForm(mode)))
       )
   }
 

@@ -20,6 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.TotalNumberOfItems
 import javax.inject.Inject
+import models.Mode
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -41,22 +42,22 @@ class TotalNumberOfItemsController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
   import forms.declaration.TotalNumberOfItems._
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.totalNumberOfItems match {
-      case Some(data) => Ok(totalNumberOfItemsPage(form().fill(data)))
-      case _          => Ok(totalNumberOfItemsPage(form()))
+      case Some(data) => Ok(totalNumberOfItemsPage(mode, form().fill(data)))
+      case _          => Ok(totalNumberOfItemsPage(mode, form()))
     }
   }
 
-  def saveNoOfItems(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def saveNoOfItems(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[TotalNumberOfItems]) =>
-          Future.successful(BadRequest(totalNumberOfItemsPage(formWithErrors))),
+          Future.successful(BadRequest(totalNumberOfItemsPage(mode, formWithErrors))),
         formData =>
           updateCache(formData).map { _ =>
-            navigator.continueTo(controllers.declaration.routes.NatureOfTransactionController.displayForm())
+            navigator.continueTo(controllers.declaration.routes.NatureOfTransactionController.displayForm(mode))
         }
       )
   }
