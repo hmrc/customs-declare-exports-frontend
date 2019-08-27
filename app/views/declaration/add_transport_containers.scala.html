@@ -34,7 +34,7 @@
 
     @components.page_title(Some("supplementary.transportInfo.containers.title"), None)
 
-    @helper.form(TransportContainerController.submitForm(), 'autoComplete -> "off") {
+    @helper.form(TransportContainerController.submitForm(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         @if(containers.nonEmpty) {

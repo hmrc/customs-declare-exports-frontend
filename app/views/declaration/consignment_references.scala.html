@@ -34,7 +34,7 @@
 
     @components.page_title(Some("supplementary.consignmentReferences.header"))
 
-    @helper.form(ConsignmentReferencesController.submitConsignmentReferences(), 'autoComplete -> "off") {
+    @helper.form(ConsignmentReferencesController.submitConsignmentReferences(mode), 'autoComplete -> "off") {
       @helper.CSRF.formField
 
       @components.fields.field_text(
