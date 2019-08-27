@@ -68,4 +68,10 @@ trait ControllerSpec
       .withSession(ExportsSessionKeys.declarationId -> "declaration-id")
       .withFormUrlEncodedBody(body: _*)
       .withCSRFToken
+
+  protected def deleteRequest(body: JsValue): Request[AnyContentAsJson] =
+    FakeRequest("DELETE", "")
+      .withSession(ExportsSessionKeys.declarationId -> "declaration-id")
+      .withJsonBody(body)
+      .withCSRFToken
 }

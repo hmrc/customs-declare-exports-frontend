@@ -20,15 +20,15 @@ import config.AppConfig
 import connectors.CustomsDeclareExportsConnector.toXml
 import connectors.exchange.ExportsDeclarationExchange
 import javax.inject.{Inject, Singleton}
+import models._
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Submission
 import models.requests.CancellationStatus
-import models._
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.libs.json.{Json, Writes}
 import play.api.mvc.Codec
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import wco.datamodel.wco.documentmetadata_dms._2.MetaData
 
@@ -36,13 +36,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient) {
-
   private val logger = Logger(this.getClass)
 
-  private def logPayload[T](prefix: String, payload: T)(implicit wts: Writes[T]): T = {
-    logger.debug(s"$prefix: ${Json.toJson(payload)}")
-    payload
-  }
+  def deleteDraftDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    httpClient
+      .DELETE(s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}/$id")
 
   def createDeclaration(
     declaration: ExportsDeclaration
@@ -55,6 +53,11 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
       )
       .map(logPayload("Create Declaration Response", _))
       .map(_.toExportsDeclaration)
+  }
+
+  private def logPayload[T](prefix: String, payload: T)(implicit wts: Writes[T]): T = {
+    logger.debug(s"$prefix: ${Json.toJson(payload)}")
+    payload
   }
 
   def updateDeclaration(

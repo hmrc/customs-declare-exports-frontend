@@ -81,6 +81,7 @@ class SavedDeclarationsViewSpec extends ViewSpec with CommonMessages {
 
       tableCell(view)(1, 0).text() must be("No DUCR added")
       tableCell(view)(1, 1).text() must be("1 Jan 2019 at 09:45")
+      tableCell(view)(1, 2).text() must be("Remove")
 
       view.getElementById("pagination-one").text() must be("Showing 1 saved declaration")
     }
@@ -92,6 +93,8 @@ class SavedDeclarationsViewSpec extends ViewSpec with CommonMessages {
       numberOfTableRows(view) must be(8)
 
       tableCell(view)(1, 0).text() must be("DUCR-XXXX-1")
+      tableCell(view)(1, 2).text() must be("Remove")
+      tableCell(view)(8, 2).text() must be("Remove")
       tableCell(view)(8, 0).text() must be("DUCR-XXXX-8")
 
       view.getElementById("pagination-some").text() must be("Showing 11 - 18 of 28 saved declarations")
