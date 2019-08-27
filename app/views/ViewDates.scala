@@ -16,17 +16,18 @@
 
 package views
 
-import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAccessor
 
 object ViewDates {
 
   val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-  val dateAtTimeFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("d MMM uuu 'at' HH:mm").withZone(ZoneId.systemDefault)
+  val dateAtTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMM uuu 'at' HH:mm").withZone(ZoneOffset.UTC)
+  val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMM uuu").withZone(ZoneOffset.UTC)
 
   def format(temporal: TemporalAccessor): String = formatter.format(temporal)
   def formatDateAtTime(temporal: TemporalAccessor): String = dateAtTimeFormatter.format(temporal)
+  def formatDate(temporal: TemporalAccessor): String = dateFormatter.format(temporal)
 
 }
