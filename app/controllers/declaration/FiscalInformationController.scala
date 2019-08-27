@@ -42,12 +42,13 @@ class FiscalInformationController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.itemBy(itemId) match {
-      case Some(ExportItem(_, _, _, Some(fiscalInformation), _, _, _, _, _, _)) =>
-        Ok(fiscalInformationPage(mode, itemId, form().fill(fiscalInformation)))
-      case response => Ok(fiscalInformationPage(mode, itemId, form()))
-    }
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) {
+    implicit request =>
+      request.cacheModel.itemBy(itemId) match {
+        case Some(ExportItem(_, _, _, Some(fiscalInformation), _, _, _, _, _, _)) =>
+          Ok(fiscalInformationPage(mode, itemId, form().fill(fiscalInformation)))
+        case response => Ok(fiscalInformationPage(mode, itemId, form()))
+      }
   }
 
   def saveFiscalInformation(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {

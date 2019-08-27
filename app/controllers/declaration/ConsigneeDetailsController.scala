@@ -56,7 +56,8 @@ class ConsigneeDetailsController @Inject()(
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ConsigneeDetails]) => Future.successful(BadRequest(consigneeDetailsPage(mode, formWithErrors))),
+        (formWithErrors: Form[ConsigneeDetails]) =>
+          Future.successful(BadRequest(consigneeDetailsPage(mode, formWithErrors))),
         form =>
           updateCache(form)
             .map(_ => navigator.continueTo(controllers.declaration.routes.DeclarantDetailsController.displayForm(mode)))

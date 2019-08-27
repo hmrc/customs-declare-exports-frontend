@@ -62,18 +62,19 @@ class ItemsSummaryController @Inject()(
     }
   }
 
-  def removeItem(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    request.cacheModel.itemBy(itemId) match {
-      case Some(itemToDelete) =>
-        val updatedItems =
-          request.cacheModel.copy(items = request.cacheModel.items - itemToDelete).items.zipWithIndex.map {
-            case (item, index) => item.copy(sequenceId = index + 1)
+  def removeItem(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
+    implicit request =>
+      request.cacheModel.itemBy(itemId) match {
+        case Some(itemToDelete) =>
+          val updatedItems =
+            request.cacheModel.copy(items = request.cacheModel.items - itemToDelete).items.zipWithIndex.map {
+              case (item, index) => item.copy(sequenceId = index + 1)
+            }
+          exportsCacheService.update(request.cacheModel.copy(items = updatedItems)).map { _ =>
+            Redirect(routes.ItemsSummaryController.displayPage(mode))
           }
-        exportsCacheService.update(request.cacheModel.copy(items = updatedItems)).map { _ =>
-          Redirect(routes.ItemsSummaryController.displayPage(mode))
-        }
-      case _ =>
-        Future.successful(Redirect(routes.ItemsSummaryController.displayPage(mode)))
-    }
+        case _ =>
+          Future.successful(Redirect(routes.ItemsSummaryController.displayPage(mode)))
+      }
   }
 }

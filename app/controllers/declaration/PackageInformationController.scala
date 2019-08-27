@@ -47,9 +47,10 @@ class PackageInformationController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   // TODO Future[Option[List[PackageInformation]]]...
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val items = request.cacheModel.itemBy(itemId).map(_.packageInformation).getOrElse(Nil)
-    Ok(packageInformationPage(mode, itemId, form(), items))
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) {
+    implicit request =>
+      val items = request.cacheModel.itemBy(itemId).map(_.packageInformation).getOrElse(Nil)
+      Ok(packageInformationPage(mode, itemId, form(), items))
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
@@ -66,7 +67,7 @@ class PackageInformationController @Inject()(
   }
 
   private def removeItem(
-                          mode: Mode,
+    mode: Mode,
     itemId: String,
     values: Seq[String],
     boundForm: Form[PackageInformation],
@@ -78,35 +79,44 @@ class PackageInformationController @Inject()(
       .map(_ => Ok(packageInformationPage(mode, itemId, boundForm.discardingErrors, updatedCache)))
   }
 
-  private def saveAndContinue(mode: Mode, itemId: String, boundForm: Form[PackageInformation], cachedData: Seq[PackageInformation])(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] =
+  private def saveAndContinue(
+    mode: Mode,
+    itemId: String,
+    boundForm: Form[PackageInformation],
+    cachedData: Seq[PackageInformation]
+  )(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     MultipleItemsHelper
       .saveAndContinue(boundForm, cachedData, true, PackageInformation.limit)
       .fold(
-        formWithErrors => Future.successful(BadRequest(packageInformationPage(mode, itemId, formWithErrors, cachedData))),
+        formWithErrors =>
+          Future.successful(BadRequest(packageInformationPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
           if (updatedCache != cachedData)
             updateExportsCache(itemId, updatedCache)
               .map(
-                _ => navigator.continueTo(controllers.declaration.routes.CommodityMeasureController.displayPage(mode, itemId))
+                _ =>
+                  navigator
+                    .continueTo(controllers.declaration.routes.CommodityMeasureController.displayPage(mode, itemId))
               )
           else
-            Future.successful(Redirect(controllers.declaration.routes.CommodityMeasureController.displayPage(mode, itemId)))
+            Future
+              .successful(Redirect(controllers.declaration.routes.CommodityMeasureController.displayPage(mode, itemId)))
       )
 
-  private def addItem(mode: Mode, itemId: String, boundForm: Form[PackageInformation], cachedData: Seq[PackageInformation])(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] =
+  private def addItem(
+    mode: Mode,
+    itemId: String,
+    boundForm: Form[PackageInformation],
+    cachedData: Seq[PackageInformation]
+  )(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     MultipleItemsHelper
       .add(boundForm, cachedData, PackageInformation.limit)
       .fold(
-        formWithErrors => Future.successful(BadRequest(packageInformationPage(mode, itemId, formWithErrors, cachedData))),
+        formWithErrors =>
+          Future.successful(BadRequest(packageInformationPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
           updateExportsCache(itemId, updatedCache)
-            .map(
-              _ => Redirect(controllers.declaration.routes.PackageInformationController.displayPage(mode, itemId))
-          )
+            .map(_ => Redirect(controllers.declaration.routes.PackageInformationController.displayPage(mode, itemId)))
       )
 
   private def updateExportsCache(itemId: String, updatedCache: Seq[PackageInformation])(

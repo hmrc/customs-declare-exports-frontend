@@ -54,7 +54,8 @@ class DispatchLocationController @Inject()(
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[DispatchLocation]) => Future.successful(BadRequest(dispatchLocationPage(mode, formWithErrors))),
+        (formWithErrors: Form[DispatchLocation]) =>
+          Future.successful(BadRequest(dispatchLocationPage(mode, formWithErrors))),
         validDispatchLocation =>
           updateCache(validDispatchLocation)
             .map(_ => navigator.continueTo(nextPage(mode, validDispatchLocation)))

@@ -49,10 +49,12 @@ class ExporterDetailsController @Inject()(
   }
 
   def saveAddress(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    ExporterDetails.form()
+    ExporterDetails
+      .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ExporterDetails]) => Future.successful(BadRequest(exporterDetailsPage(mode, formWithErrors))),
+        (formWithErrors: Form[ExporterDetails]) =>
+          Future.successful(BadRequest(exporterDetailsPage(mode, formWithErrors))),
         form =>
           updateCache(form)
             .map(_ => navigator.continueTo(controllers.declaration.routes.ConsigneeDetailsController.displayPage(mode)))

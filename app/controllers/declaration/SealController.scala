@@ -79,7 +79,9 @@ class SealController @Inject()(
         } else Future.successful(navigator.continueTo(routes.SummaryController.displayPage(mode)))
     )
 
-  private def badRequest(mode: Mode, formWithErrors: Form[Seal], cachedSeals: Seq[Seal])(implicit request: JourneyRequest[_]) = {
+  private def badRequest(mode: Mode, formWithErrors: Form[Seal], cachedSeals: Seq[Seal])(
+    implicit request: JourneyRequest[_]
+  ) = {
     val declaration = exportsCacheService.get(request.declarationId)
     declaration.map(_.flatMap(_.transportDetails)).flatMap { data =>
       declaration.map(_.map(_.seals)).map { seals =>
@@ -88,9 +90,13 @@ class SealController @Inject()(
     }
   }
 
-  private def removeSeal(mode: Mode, userInput: Form[Seal], cachedSeals: Seq[Seal], hasContainers: Boolean, ids: Seq[String])(
-    implicit request: JourneyRequest[_]
-  ): Future[Result] = {
+  private def removeSeal(
+    mode: Mode,
+    userInput: Form[Seal],
+    cachedSeals: Seq[Seal],
+    hasContainers: Boolean,
+    ids: Seq[String]
+  )(implicit request: JourneyRequest[_]): Future[Result] = {
     val updatedSeals = remove(cachedSeals, { seal: Seal =>
       ids.contains(seal.id)
     })

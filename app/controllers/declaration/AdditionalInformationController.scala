@@ -49,11 +49,12 @@ class AdditionalInformationController @Inject()(
 
   val elementLimit = 99
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation) match {
-      case Some(data) => Ok(additionalInformationPage(mode, itemId, form(), data.items))
-      case _          => Ok(additionalInformationPage(mode, itemId, form(), Seq()))
-    }
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) {
+    implicit request =>
+      request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation) match {
+        case Some(data) => Ok(additionalInformationPage(mode, itemId, form(), data.items))
+        case _          => Ok(additionalInformationPage(mode, itemId, form(), Seq()))
+      }
   }
 
   def saveAdditionalInfo(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
@@ -74,19 +75,26 @@ class AdditionalInformationController @Inject()(
       }
   }
 
-  private def handleAdd(mode: Mode, itemId: String, boundForm: Form[AdditionalInformation], cachedData: Seq[AdditionalInformation])(
-    implicit request: JourneyRequest[_]
-  ): Future[Result] =
+  private def handleAdd(
+    mode: Mode,
+    itemId: String,
+    boundForm: Form[AdditionalInformation],
+    cachedData: Seq[AdditionalInformation]
+  )(implicit request: JourneyRequest[_]): Future[Result] =
     MultipleItemsHelper
       .add(boundForm, cachedData, elementLimit)
       .fold(
-        formWithErrors => Future.successful(BadRequest(additionalInformationPage(mode, itemId, formWithErrors, cachedData))),
+        formWithErrors =>
+          Future.successful(BadRequest(additionalInformationPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
           updateCache(itemId, AdditionalInformationData(updatedCache))
-            .map(_ => Redirect(controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId)))
+            .map(
+              _ => Redirect(controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId))
+          )
       )
 
-  private def handleSaveAndContinue(mode: Mode,
+  private def handleSaveAndContinue(
+    mode: Mode,
     itemId: String,
     boundForm: Form[AdditionalInformation],
     cachedData: Seq[AdditionalInformation]
@@ -94,17 +102,24 @@ class AdditionalInformationController @Inject()(
     MultipleItemsHelper
       .saveAndContinue(boundForm, cachedData, true, elementLimit)
       .fold(
-        formWithErrors => Future.successful(BadRequest(additionalInformationPage(mode: Mode, itemId, formWithErrors, cachedData))),
+        formWithErrors =>
+          Future.successful(BadRequest(additionalInformationPage(mode: Mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
           if (updatedCache != cachedData)
             updateCache(itemId, AdditionalInformationData(updatedCache))
-              .map(_ => navigator.continueTo(controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId)))
+              .map(
+                _ =>
+                  navigator
+                    .continueTo(controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId))
+              )
           else
-            Future.successful(navigator.continueTo(controllers.declaration.routes.DocumentsProducedController.displayPage(mode,  itemId)))
+            Future.successful(
+              navigator.continueTo(controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId))
+          )
       )
 
   private def handleRemove(
-                            mode: Mode,
+    mode: Mode,
     itemId: String,
     ids: Seq[String],
     boundForm: Form[AdditionalInformation],

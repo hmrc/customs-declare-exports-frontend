@@ -47,27 +47,28 @@ class ItemTypeController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel
-      .itemBy(itemId)
-      .map { item =>
-        item.itemType match {
-          case Some(itemType) =>
-            Ok(
-              itemTypePage(
-                mode,
-                itemId,
-                ItemType.form().fill(itemType),
-                item.hasFiscalReferences,
-                itemType.taricAdditionalCodes,
-                itemType.nationalAdditionalCodes
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) {
+    implicit request =>
+      request.cacheModel
+        .itemBy(itemId)
+        .map { item =>
+          item.itemType match {
+            case Some(itemType) =>
+              Ok(
+                itemTypePage(
+                  mode,
+                  itemId,
+                  ItemType.form().fill(itemType),
+                  item.hasFiscalReferences,
+                  itemType.taricAdditionalCodes,
+                  itemType.nationalAdditionalCodes
+                )
               )
-            )
-          case None =>
-            Ok(itemTypePage(mode, itemId, ItemType.form(), item.hasFiscalReferences))
+            case None =>
+              Ok(itemTypePage(mode, itemId, ItemType.form(), item.hasFiscalReferences))
+          }
         }
-      }
-      .getOrElse(Redirect(routes.ItemsSummaryController.displayPage()))
+        .getOrElse(Redirect(routes.ItemsSummaryController.displayPage()))
   }
 
   def submitItemType(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
@@ -95,7 +96,8 @@ class ItemTypeController @Inject()(
         .getOrElse(errorHandler.displayErrorPage())
   }
 
-  private def handleAddition(mode: Mode,
+  private def handleAddition(
+    mode: Mode,
     itemId: String,
     itemTypeInput: ItemType,
     itemTypeCache: ItemType,
@@ -106,7 +108,7 @@ class ItemTypeController @Inject()(
       case Valid =>
         updateExportsCache(itemId, itemTypeUpdated).map {
           case Some(model) =>
-            refreshPage(mode,itemId, itemTypeInput, model)
+            refreshPage(mode, itemId, itemTypeInput, model)
           case None =>
             Redirect(routes.ItemsSummaryController.displayPage(mode))
         }
@@ -135,7 +137,7 @@ class ItemTypeController @Inject()(
     )
 
   private def handleSaveAndContinue(
-                                     mode: Mode,
+    mode: Mode,
     itemId: String,
     itemTypeInput: ItemType,
     itemTypeCache: ItemType,
@@ -145,7 +147,7 @@ class ItemTypeController @Inject()(
     ItemTypeValidator.validateOnSaveAndContinue(itemTypeUpdated) match {
       case Valid =>
         updateExportsCache(itemId, itemTypeUpdated).map { _ =>
-          navigator.continueTo(controllers.declaration.routes.PackageInformationController.displayPage(mode,itemId))
+          navigator.continueTo(controllers.declaration.routes.PackageInformationController.displayPage(mode, itemId))
         }
       case Invalid(errors) =>
         val formWithErrors =
@@ -189,9 +191,13 @@ class ItemTypeController @Inject()(
       case (key, value)                                             => (key, value)
     })
 
-  private def handleRemoval(mode: Mode, itemId: String, keys: Seq[String], itemTypeCached: ItemType, hasFiscalReferences: Boolean)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] = {
+  private def handleRemoval(
+    mode: Mode,
+    itemId: String,
+    keys: Seq[String],
+    itemTypeCached: ItemType,
+    hasFiscalReferences: Boolean
+  )(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
     val key = keys.headOption.getOrElse("")
     val label = Label(key)
 

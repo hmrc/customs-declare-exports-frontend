@@ -139,7 +139,8 @@ class DeclarationHolderController @Inject()(
             val updatedCache = DeclarationHoldersData(Seq(DeclarationHolder(Some(typeCode), Some(eori))))
             updateCache(updatedCache)
               .map(
-                _ => navigator.continueTo(controllers.declaration.routes.DestinationCountriesController.displayForm(mode))
+                _ =>
+                  navigator.continueTo(controllers.declaration.routes.DestinationCountriesController.displayForm(mode))
               )
 
           case DeclarationHolder(maybeTypeCode, maybeEori) =>
@@ -165,7 +166,8 @@ class DeclarationHolderController @Inject()(
             val updatedCache = DeclarationHoldersData(updatedHolders)
             updateCache(updatedCache)
               .map(
-                _ => navigator.continueTo(controllers.declaration.routes.DestinationCountriesController.displayForm(mode))
+                _ =>
+                  navigator.continueTo(controllers.declaration.routes.DestinationCountriesController.displayForm(mode))
               )
 
           case DeclarationHolder(maybeTypeCode, maybeEori) =>

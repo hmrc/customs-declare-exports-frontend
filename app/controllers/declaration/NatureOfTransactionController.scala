@@ -49,14 +49,17 @@ class NatureOfTransactionController @Inject()(
     }
   }
 
-  def saveTransactionType(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form().bindFromRequest
-      .fold(
-        (formWithErrors: Form[NatureOfTransaction]) =>
-          Future.successful(BadRequest(natureOfTransactionPage(mode, adjustErrors(formWithErrors)))),
-        form =>
-          updateCache(form).map(_ => navigator.continueTo(controllers.declaration.routes.PreviousDocumentsController.displayForm(mode)))
-      )
+  def saveTransactionType(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async {
+    implicit request =>
+      form().bindFromRequest
+        .fold(
+          (formWithErrors: Form[NatureOfTransaction]) =>
+            Future.successful(BadRequest(natureOfTransactionPage(mode, adjustErrors(formWithErrors)))),
+          form =>
+            updateCache(form).map(
+              _ => navigator.continueTo(controllers.declaration.routes.PreviousDocumentsController.displayForm(mode))
+          )
+        )
   }
 
   private def updateCache(

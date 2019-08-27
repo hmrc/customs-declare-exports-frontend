@@ -53,10 +53,14 @@ class DeclarantDetailsController @Inject()(
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[DeclarantDetails]) => Future.successful(BadRequest(declarantDetailsPage(mode, formWithErrors))),
+        (formWithErrors: Form[DeclarantDetails]) =>
+          Future.successful(BadRequest(declarantDetailsPage(mode, formWithErrors))),
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(controllers.declaration.routes.RepresentativeDetailsController.displayPage(mode)))
+            .map(
+              _ =>
+                navigator.continueTo(controllers.declaration.routes.RepresentativeDetailsController.displayPage(mode))
+          )
       )
   }
 

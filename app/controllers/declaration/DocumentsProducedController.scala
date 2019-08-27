@@ -49,41 +49,46 @@ class DocumentsProducedController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.itemBy(itemId).flatMap(_.documentsProducedData).map(_.documents) match {
-      case Some(data) => Ok(documentProducedPage(mode, itemId, form(), data))
-      case _          => Ok(documentProducedPage(mode, itemId, form(), Seq()))
-    }
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) {
+    implicit request =>
+      request.cacheModel.itemBy(itemId).flatMap(_.documentsProducedData).map(_.documents) match {
+        case Some(data) => Ok(documentProducedPage(mode, itemId, form(), data))
+        case _          => Ok(documentProducedPage(mode, itemId, form(), Seq()))
+      }
   }
 
-  def saveForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = form().bindFromRequest()
-    val actionTypeOpt = FormAction.bindFromRequest()
-    val cache =
-      request.cacheModel
-        .itemBy(itemId)
-        .flatMap(_.documentsProducedData)
-        .getOrElse(DocumentsProducedData(Seq()))
+  def saveForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
+    implicit request =>
+      val boundForm = form().bindFromRequest()
+      val actionTypeOpt = FormAction.bindFromRequest()
+      val cache =
+        request.cacheModel
+          .itemBy(itemId)
+          .flatMap(_.documentsProducedData)
+          .getOrElse(DocumentsProducedData(Seq()))
 
-    actionTypeOpt match {
-      case Some(Add) if !boundForm.hasErrors             => addItem(mode, itemId, boundForm.get, cache)
-      case Some(SaveAndContinue) |  Some(SaveAndReturn) if !boundForm.hasErrors => saveAndContinue(mode, itemId, boundForm.get, cache)
-      case Some(Remove(keys))                            => removeItem(mode, itemId, keys, boundForm, cache)
-      case _                                             => Future.successful(BadRequest(documentProducedPage(mode, itemId, boundForm, cache.documents)))
-    }
+      actionTypeOpt match {
+        case Some(Add) if !boundForm.hasErrors => addItem(mode, itemId, boundForm.get, cache)
+        case Some(SaveAndContinue) | Some(SaveAndReturn) if !boundForm.hasErrors =>
+          saveAndContinue(mode, itemId, boundForm.get, cache)
+        case Some(Remove(keys)) => removeItem(mode, itemId, keys, boundForm, cache)
+        case _                  => Future.successful(BadRequest(documentProducedPage(mode, itemId, boundForm, cache.documents)))
+      }
   }
 
-  private def saveAndContinue(mode: Mode, itemId: String, userInput: DocumentsProduced, cachedData: DocumentsProducedData)(
-    implicit request: JourneyRequest[AnyContent],
-    hc: HeaderCarrier
-  ): Future[Result] =
+  private def saveAndContinue(
+    mode: Mode,
+    itemId: String,
+    userInput: DocumentsProduced,
+    cachedData: DocumentsProducedData
+  )(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] =
     (userInput, cachedData.documents) match {
       case (document, Seq())     => saveAndRedirect(mode, itemId, document, Seq())
       case (document, documents) => handleSaveAndContinueCache(mode, itemId, document, documents)
     }
 
   private def handleSaveAndContinueCache(
-                                          mode: Mode,
+    mode: Mode,
     itemId: String,
     document: DocumentsProduced,
     documents: Seq[DocumentsProduced]
@@ -98,10 +103,12 @@ class DocumentsProducedController @Inject()(
       case _ => saveAndRedirect(mode, itemId, document, documents)
     }
 
-  private def saveAndRedirect(mode: Mode, itemId: String, document: DocumentsProduced, documents: Seq[DocumentsProduced])(
-    implicit request: JourneyRequest[AnyContent],
-    hc: HeaderCarrier
-  ): Future[Result] =
+  private def saveAndRedirect(
+    mode: Mode,
+    itemId: String,
+    document: DocumentsProduced,
+    documents: Seq[DocumentsProduced]
+  )(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] =
     if (document.isDefined) {
       val updateDocs = DocumentsProducedData(documents :+ document)
       updateModelInCache(itemId, document, updateDocs)
@@ -150,7 +157,7 @@ class DocumentsProducedController @Inject()(
     }
 
   private def removeItem(
-                          mode: Mode,
+    mode: Mode,
     itemId: String,
     values: Seq[String],
     boundForm: Form[DocumentsProduced],
@@ -165,7 +172,7 @@ class DocumentsProducedController @Inject()(
   }
 
   private def handleErrorPage(
-                               mode: Mode,
+    mode: Mode,
     itemId: String,
     fieldWithError: Seq[(String, String)],
     userInput: DocumentsProduced,

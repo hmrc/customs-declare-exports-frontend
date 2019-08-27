@@ -80,7 +80,9 @@ class OfficeOfExitController @Inject()(
           Future.successful(BadRequest(officeOfExitSupplementaryPage(mode, formWithErrors))),
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(controllers.declaration.routes.TotalNumberOfItemsController.displayForm(mode)))
+            .map(
+              _ => navigator.continueTo(controllers.declaration.routes.TotalNumberOfItemsController.displayForm(mode))
+          )
       )
 
   private def saveStandardOffice(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
@@ -94,7 +96,9 @@ class OfficeOfExitController @Inject()(
         },
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(controllers.declaration.routes.TotalNumberOfItemsController.displayForm(mode)))
+            .map(
+              _ => navigator.continueTo(controllers.declaration.routes.TotalNumberOfItemsController.displayForm(mode))
+          )
       )
 
   private def updateCache(

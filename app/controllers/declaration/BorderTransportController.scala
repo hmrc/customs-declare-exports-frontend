@@ -53,7 +53,8 @@ class BorderTransportController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[BorderTransport]) => Future.successful(BadRequest(borderTransportPage(mode, formWithErrors))),
+        (formWithErrors: Form[BorderTransport]) =>
+          Future.successful(BadRequest(borderTransportPage(mode, formWithErrors))),
         borderTransport =>
           updateCache(borderTransport)
             .map(_ => navigator.continueTo(routes.TransportDetailsController.displayForm(mode)))

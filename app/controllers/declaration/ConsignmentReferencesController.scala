@@ -48,16 +48,20 @@ class ConsignmentReferencesController @Inject()(
     }
   }
 
-  def submitConsignmentReferences(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    ConsignmentReferences.form()
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[ConsignmentReferences]) =>
-          Future.successful(BadRequest(consignmentReferencesPage(mode, formWithErrors))),
-        validConsignmentReferences =>
-          updateCache(validConsignmentReferences)
-            .map(_ => navigator.continueTo(controllers.declaration.routes.ExporterDetailsController.displayForm(mode)))
-      )
+  def submitConsignmentReferences(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async {
+    implicit request =>
+      ConsignmentReferences
+        .form()
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[ConsignmentReferences]) =>
+            Future.successful(BadRequest(consignmentReferencesPage(mode, formWithErrors))),
+          validConsignmentReferences =>
+            updateCache(validConsignmentReferences)
+              .map(
+                _ => navigator.continueTo(controllers.declaration.routes.ExporterDetailsController.displayForm(mode))
+            )
+        )
   }
 
   private def updateCache(
