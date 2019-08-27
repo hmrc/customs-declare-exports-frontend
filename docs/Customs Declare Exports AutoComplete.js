@@ -60,7 +60,7 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if(currentPageIs("/customs-declare-exports/choice")){
-        selectRadioOption(document.getElementById("value"), 1);
+        selectRadioOption(document.getElementById("value"), 0);
         document.getElementsByClassName('button')[0].click()
     }
     if(currentPageIs("/customs-declare-exports/declaration/dispatch-location")){
