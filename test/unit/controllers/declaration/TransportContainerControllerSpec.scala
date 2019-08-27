@@ -57,7 +57,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
     "return 200 (OK)" when {
 
       "display page method is invoked with empty cache" in new SetUp {
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -66,7 +66,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
         withNewCaching(aDeclaration(withContainerData(containerData)))
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -78,7 +78,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
         val wrongAction = Seq(("id", "containerId"), ("WrongAction", ""))
 
-        val result = controller.submitForm()(postRequestAsFormUrlEncoded(wrongAction: _*))
+        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(wrongAction: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -90,7 +90,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
         val incorrectForm = Seq(("id", "!@#$"), addActionUrlEncoded)
 
-        val result = controller.submitForm()(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -101,7 +101,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
         val duplicatedForm = Seq(("id", "id"), addActionUrlEncoded)
 
-        val result = controller.submitForm()(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -112,7 +112,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
         val form = Seq(("id", "id2"), addActionUrlEncoded)
 
-        val result = controller.submitForm()(postRequestAsFormUrlEncoded(form: _*))
+        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(form: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -124,7 +124,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
         val incorrectForm = Seq(("id", "!@#$"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.submitForm()(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -135,7 +135,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
         val duplicatedForm = Seq(("id", "id"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.submitForm()(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -146,7 +146,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
         val form = Seq(("id", "id2"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.submitForm()(postRequestAsFormUrlEncoded(form: _*))
+        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(form: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -158,7 +158,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
         val correctForm = Seq(("id", "123abc"), addActionUrlEncoded)
 
-        val result = controller.submitForm()(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController.displayPage()
@@ -168,7 +168,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
         val correctForm = Seq(("id", "123abc"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.submitForm()(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
@@ -178,7 +178,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
         withNewCaching(aDeclaration(withContainerData(containerData)))
 
-        val result = controller.submitForm()(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
+        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.SealController.displayForm()
@@ -190,7 +190,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
         val removeForm = (Remove.toString, "0")
 
-        val result = controller.submitForm()(postRequestAsFormUrlEncoded(removeForm))
+        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(removeForm))
 
         status(result) must be(OK)
       }

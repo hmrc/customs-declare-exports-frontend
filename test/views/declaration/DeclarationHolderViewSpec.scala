@@ -20,6 +20,7 @@ import base.TestHelper
 import controllers.util.SaveAndReturn
 import forms.declaration.DeclarationHolder
 import helpers.views.declaration.{CommonMessages, DeclarationHolderMessages}
+import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -32,7 +33,7 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
   private val form: Form[DeclarationHolder] = DeclarationHolder.form()
   private val declarationHolderPage = app.injector.instanceOf[declaration_holder]
   private def createView(form: Form[DeclarationHolder] = form): Html =
-    declarationHolderPage(form, Seq())(fakeRequest, messages)
+    declarationHolderPage(Mode.Normal, form, Seq())(fakeRequest, messages)
 
   "Declaration Holder View on empty page" should {
 
@@ -176,7 +177,7 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
     "display one row with data in table" in {
 
       val view =
-        declarationHolderPage(form, Seq(DeclarationHolder(Some("1234"), Some("1234"))))(fakeRequest, messages)
+        declarationHolderPage(Mode.Normal, form, Seq(DeclarationHolder(Some("1234"), Some("1234"))))(fakeRequest, messages)
 
       getElementByCss(view, "tbody>tr>th:nth-child(1)").text() must be("1234-1234")
 

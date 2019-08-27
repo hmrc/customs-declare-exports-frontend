@@ -20,6 +20,7 @@ import controllers.declaration.DispatchLocationController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.DispatchLocation
 import forms.declaration.DispatchLocation.AllowedDispatchLocations._
+import models.Mode
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
@@ -49,7 +50,7 @@ class DispatchLocationControllerSpec extends ControllerSpec {
 
       "display page method is invoked and cache is empty" in new SetUp {
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -58,7 +59,7 @@ class DispatchLocationControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withDispatchLocation(OutsideEU)))
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -70,7 +71,7 @@ class DispatchLocationControllerSpec extends ControllerSpec {
 
         val incorrectForm = Json.toJson(DispatchLocation("incorrect"))
 
-        val result = controller.submitForm()(postRequest(incorrectForm))
+        val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -82,7 +83,7 @@ class DispatchLocationControllerSpec extends ControllerSpec {
 
         val correctForm = Json.toJson(DispatchLocation(OutsideEU))
 
-        val result = controller.submitForm()(postRequest(correctForm))
+        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage()
@@ -95,7 +96,7 @@ class DispatchLocationControllerSpec extends ControllerSpec {
 
         val correctForm = Json.toJson(DispatchLocation(SpecialFiscalTerritory))
 
-        val result = controller.submitForm()(postRequest(correctForm))
+        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.NotEligibleController.displayPage()

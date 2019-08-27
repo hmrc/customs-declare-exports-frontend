@@ -18,6 +18,7 @@ package views.declaration
 
 import forms.declaration.officeOfExit.{OfficeOfExitForms, OfficeOfExitStandard}
 import helpers.views.declaration.{CommonMessages, OfficeOfExitMessages}
+import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -30,7 +31,7 @@ class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages wi
   private val form: Form[OfficeOfExitStandard] = OfficeOfExitForms.standardForm()
   private val officeOfExitStandardPage = app.injector.instanceOf[office_of_exit_standard]
   private def createView(form: Form[OfficeOfExitStandard] = form): Html =
-    officeOfExitStandardPage(form)(fakeRequest, messages)
+    officeOfExitStandardPage(Mode.Normal, form)(fakeRequest, messages)
 
   "Office of Exit View for standard" should {
 

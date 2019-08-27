@@ -22,6 +22,7 @@ import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.common.Address
 import forms.declaration.{DeclarantDetails, EntityDetails}
 import helpers.views.declaration.{CommonMessages, DeclarantDetailsMessages}
+import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -34,7 +35,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
   private val form: Form[DeclarantDetails] = DeclarantDetails.form()
   private val declarantDetailsPage = app.injector.instanceOf[declarant_details]
   private def createView(form: Form[DeclarantDetails] = form): Html =
-    declarantDetailsPage(form)(fakeJourneyRequest(SupplementaryDec), messages)
+    declarantDetailsPage(Mode.Normal, form)(fakeJourneyRequest(SupplementaryDec), messages)
 
   "Declarant Details View on empty page" should {
 
@@ -101,7 +102,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
     "display 'Back' button that links to 'Consignee Details' page" in {
 
-      val view = declarantDetailsPage(form)(fakeJourneyRequest(StandardDec), messages)
+      val view = declarantDetailsPage(Mode.Normal, form)(fakeJourneyRequest(StandardDec), messages)
       val backButton = getElementById(view, "link-back")
 
       backButton.text() must be(messages(backCaption))

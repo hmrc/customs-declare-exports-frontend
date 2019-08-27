@@ -19,6 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.DeclarationHolderController
 import controllers.util.Remove
 import forms.declaration.DeclarationHolder
+import models.Mode
 import models.declaration.DeclarationHoldersData
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
@@ -58,7 +59,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
       "display page method is invoked with empty cache" in new SetUp {
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -67,7 +68,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
         withNewCaching(aDeclaration(withDeclarationHolders()))
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -79,7 +80,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
         val wrongAction = Seq(("authorisationTypeCode", "ACP"), ("eori", "GB123456"), ("WrongAction", ""))
 
-        val result = controller.submitHoldersOfAuthorisation()(postRequestAsFormUrlEncoded(wrongAction: _*))
+        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(wrongAction: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -91,7 +92,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
         val incorrectForm = Seq(("authorisationTypeCode", "incorrect"), ("eori", "GB123456"), addActionUrlEncoded)
 
-        val result = controller.submitHoldersOfAuthorisation()(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -102,7 +103,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
         val duplicatedForm = Seq(("authorisationTypeCode", "ACP"), ("eori", "GB123456"), addActionUrlEncoded)
 
-        val result = controller.submitHoldersOfAuthorisation()(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -113,7 +114,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
         val correctForm = Seq(("authorisationTypeCode", "ACT"), ("eori", "GB654321"), addActionUrlEncoded)
 
-        val result = controller.submitHoldersOfAuthorisation()(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -126,7 +127,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
         val incorrectForm =
           Seq(("authorisationTypeCode", "incorrect"), ("eori", "GB123456"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.submitHoldersOfAuthorisation()(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -138,7 +139,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
         val duplicatedForm =
           Seq(("authorisationTypeCode", "ACP"), ("eori", "GB123456"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.submitHoldersOfAuthorisation()(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -149,7 +150,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
         val correctForm = Seq(("authorisationTypeCode", "ACT"), ("eori", "GB654321"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.submitHoldersOfAuthorisation()(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -161,7 +162,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
         val correctForm = Seq(("authorisationTypeCode", "ACT"), ("eori", "GB654321"), addActionUrlEncoded)
 
-        val result = controller.submitHoldersOfAuthorisation()(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(SEE_OTHER)
       }
@@ -170,7 +171,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
         val correctForm = Seq(("authorisationTypeCode", "ACT"), ("eori", "GB654321"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.submitHoldersOfAuthorisation()(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.DestinationCountriesController.displayForm()
@@ -181,7 +182,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
         withNewCaching(declarationWithHolder)
 
         val result =
-          controller.submitHoldersOfAuthorisation()(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
+          controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.DestinationCountriesController.displayForm()
@@ -193,7 +194,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
         val removeAction = (Remove.toString, "ACT-GB123456")
 
-        val result = controller.submitHoldersOfAuthorisation()(postRequestAsFormUrlEncoded(removeAction))
+        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(removeAction))
 
         status(result) must be(OK)
       }

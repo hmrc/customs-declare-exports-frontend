@@ -21,6 +21,7 @@ import controllers.declaration.DeclarationAdditionalActorsController
 import controllers.util.Remove
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.DeclarationAdditionalActors
+import models.Mode
 import models.declaration.DeclarationAdditionalActorsData
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -65,7 +66,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
       "display page method is invoked with empty cache" in new SetUp {
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -74,7 +75,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
         withNewCaching(declarationWithActor)
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -86,7 +87,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
         val wrongAction = Seq(("eori", "GB123456"), ("partyType", "CS"), ("WrongAction", ""))
 
-        val result = controller.saveForm()(postRequestAsFormUrlEncoded(wrongAction: _*))
+        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(wrongAction: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -99,7 +100,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
         val longerEori = TestHelper.createRandomAlphanumericString(18)
         val wrongAction = Seq(("eori", longerEori), ("partyType", "CS"), addActionUrlEncoded)
 
-        val result = controller.saveForm()(postRequestAsFormUrlEncoded(wrongAction: _*))
+        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(wrongAction: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -110,7 +111,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
         val duplication = Seq(("eori", eori), ("partyType", "CS"), addActionUrlEncoded)
 
-        val result = controller.saveForm()(postRequestAsFormUrlEncoded(duplication: _*))
+        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(duplication: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -121,7 +122,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
         val correctForm = Seq(("eori", "GB123456"), ("partyType", "CS"), addActionUrlEncoded)
 
-        val result = controller.saveForm()(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -134,7 +135,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
         val longerEori = TestHelper.createRandomAlphanumericString(18)
         val wrongAction = Seq(("eori", longerEori), ("partyType", "CS"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.saveForm()(postRequestAsFormUrlEncoded(wrongAction: _*))
+        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(wrongAction: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -145,7 +146,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
         val duplication = Seq(("eori", eori), ("partyType", "CS"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.saveForm()(postRequestAsFormUrlEncoded(duplication: _*))
+        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(duplication: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -156,7 +157,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
         val correctForm = Seq(("eori", "GB123456"), ("partyType", "CS"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.saveForm()(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -168,7 +169,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
         val correctForm = Seq(("eori", eori), ("partyType", "CS"), addActionUrlEncoded)
 
-        val result = controller.saveForm()(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(SEE_OTHER)
       }
@@ -177,7 +178,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
         val correctForm = Seq(("eori", eori), ("partyType", "CS"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.saveForm()(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(SEE_OTHER)
       }
@@ -186,7 +187,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
         withNewCaching(declarationWithActor)
 
-        val result = controller.saveForm()(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
+        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
 
         status(result) must be(SEE_OTHER)
       }
@@ -197,7 +198,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
         val removeForm = (Remove.toString, Json.toJson(additionalActor).toString)
 
-        val result = controller.saveForm()(postRequestAsFormUrlEncoded(removeForm))
+        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(removeForm))
 
         status(result) must be(OK)
       }

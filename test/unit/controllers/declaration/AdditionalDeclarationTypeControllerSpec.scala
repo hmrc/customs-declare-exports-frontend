@@ -20,6 +20,7 @@ import controllers.declaration.AdditionalDeclarationTypeController
 import controllers.util.SaveAndContinue
 import forms.Choice
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
+import models.Mode
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
@@ -53,7 +54,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
   "Display Page" should {
     "return 200 (OK)" when {
       "cache is empty during supplementary journey" in new SupplementarySetUp {
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -63,13 +64,13 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
           .copy(additionalDeclarationType = Some(AdditionalDeclarationType("Z")))
         withNewCaching(cachedData)
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
 
       "cache is empty during standard journey" in new StandardSetUp {
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -79,7 +80,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
           .copy(additionalDeclarationType = Some(AdditionalDeclarationType("D")))
         withNewCaching(cachedData)
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -91,7 +92,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
       "form is incorrect during supplementary journey" in new SupplementarySetUp {
         val incorrectForm = Json.toJson(AdditionalDeclarationType("Incorrect"))
 
-        val result = controller.submitForm()(postRequest(incorrectForm))
+        val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -99,7 +100,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
       "form is incorrect during standard journey" in new StandardSetUp {
         val incorrectForm = Json.toJson(AdditionalDeclarationType("Incorrect"))
 
-        val result = controller.submitForm()(postRequest(incorrectForm))
+        val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -109,7 +110,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
       "during supplementary journey" in new SupplementarySetUp {
         val correctForm = Seq("additionalDeclarationType" -> "Z", SaveAndContinue.toString -> "")
 
-        val result = controller.submitForm()(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.ConsignmentReferencesController.displayPage()
@@ -118,7 +119,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
       "during standard journey" in new StandardSetUp {
         val correctForm = Seq("additionalDeclarationType" -> "D", SaveAndContinue.toString -> "")
 
-        val result = controller.submitForm()(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.ConsignmentReferencesController.displayPage()

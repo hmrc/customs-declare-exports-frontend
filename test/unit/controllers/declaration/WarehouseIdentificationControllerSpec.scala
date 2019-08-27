@@ -20,6 +20,7 @@ import controllers.declaration.WarehouseIdentificationController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.TransportCodes.Maritime
 import helpers.views.declaration.WarehouseIdentificationMessages
+import models.Mode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.mockito.Mockito.{times, verify, when}
@@ -63,7 +64,7 @@ class WarehouseIdentificationControllerSpec
     super.beforeEach()
     authorizedUser()
     withNewCaching(cacheModel)
-    when(warehouseIdentificationTemplate.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(warehouseIdentificationTemplate.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -73,15 +74,15 @@ class WarehouseIdentificationControllerSpec
 
   "WerehouseIdentificationController on GET request" should {
     "return 200 OK" in {
-      val response = controller.displayForm().apply(getRequest())
+      val response = controller.displayForm(Mode.Normal).apply(getRequest())
       status(response) must be(OK)
     }
 
     "read item from cache and display it" in {
-      val result = controller.displayForm().apply(getRequest())
+      val result = controller.displayForm(Mode.Normal).apply(getRequest())
       await(result)
       verify(mockExportsCacheService).get(any())(any())
-      verify(warehouseIdentificationTemplate).apply(any())(any(), any())
+      verify(warehouseIdentificationTemplate).apply(any(), any())(any(), any())
     }
   }
   "Warehouse Identification Controller on POST" should {
@@ -93,7 +94,7 @@ class WarehouseIdentificationControllerSpec
         "inlandModeOfTransportCode" -> exampleTransportMode
       )
 
-      val result = controller.saveWarehouse().apply(postRequest(body))
+      val result = controller.saveWarehouse(Mode.Normal).apply(postRequest(body))
 
       await(result) mustBe aRedirectToTheNextPage
       thePageNavigatedTo mustBe controllers.declaration.routes.BorderTransportController.displayForm()
@@ -107,7 +108,7 @@ class WarehouseIdentificationControllerSpec
 
     "return Bad Request if payload is not compatibile with model" in {
       val body = Json.obj("supervisingCustomsOffice" -> "A")
-      val result = controller.saveWarehouse().apply(postRequest(body))
+      val result = controller.saveWarehouse(Mode.Normal).apply(postRequest(body))
 
       status(result) mustBe BAD_REQUEST
     }

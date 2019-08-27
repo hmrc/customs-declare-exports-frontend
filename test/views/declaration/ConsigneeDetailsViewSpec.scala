@@ -21,6 +21,7 @@ import controllers.util.SaveAndReturn
 import forms.common.Address
 import forms.declaration.{ConsigneeDetails, EntityDetails}
 import helpers.views.declaration.{CommonMessages, ConsigneeDetailsMessages}
+import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -32,7 +33,7 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
 
   val form: Form[ConsigneeDetails] = ConsigneeDetails.form()
   val consigneeDetailsPage = app.injector.instanceOf[consignee_details]
-  private def createView(form: Form[ConsigneeDetails] = form): Html = consigneeDetailsPage(form)
+  private def createView(form: Form[ConsigneeDetails] = form): Html = consigneeDetailsPage(Mode.Normal, form)
 
   "Consignee Details View on empty page" should {
 

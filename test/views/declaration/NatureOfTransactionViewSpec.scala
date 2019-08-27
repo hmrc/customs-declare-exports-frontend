@@ -18,6 +18,7 @@ package views.declaration
 
 import forms.declaration.NatureOfTransaction
 import helpers.views.declaration.{CommonMessages, NatureOfTransactionMessages}
+import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -30,7 +31,7 @@ class NatureOfTransactionViewSpec extends ViewSpec with NatureOfTransactionMessa
   private val form: Form[NatureOfTransaction] = NatureOfTransaction.form()
   private val natureOfTransactionPage = app.injector.instanceOf[nature_of_transaction]
   private def createView(form: Form[NatureOfTransaction] = form): Html =
-    natureOfTransactionPage(form)(fakeRequest, messages)
+    natureOfTransactionPage(Mode.Normal, form)(fakeRequest, messages)
 
   "Nature Of Transaction View on empty page" should {
 

@@ -19,6 +19,7 @@ package views.declaration
 import base.TestHelper
 import forms.declaration.GoodsLocation
 import helpers.views.declaration.{CommonMessages, LocationOfGoodsMessages}
+import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -31,7 +32,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
   private val form: Form[GoodsLocation] = GoodsLocation.form()
   private val goodsLocationPage = app.injector.instanceOf[goods_location]
   private def createView(form: Form[GoodsLocation] = form): Html =
-    goodsLocationPage(form)(fakeRequest, messages)
+    goodsLocationPage(Mode.Normal, form)(fakeRequest, messages)
 
   "Location View on empty page" should {
 

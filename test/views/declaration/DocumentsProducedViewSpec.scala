@@ -28,6 +28,7 @@ import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.additionaldocuments.DocumentsProduced._
 import helpers.views.components.DateMessages
 import helpers.views.declaration.{CommonMessages, DocumentsProducedMessages}
+import models.Mode
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.twirl.api.Html
@@ -41,7 +42,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
   private val form: Form[DocumentsProduced] = DocumentsProduced.form()
   private val documentsProducedPage = app.injector.instanceOf[documents_produced]
   private def createView(form: Form[DocumentsProduced] = form, cachedDocuments: Seq[DocumentsProduced] = Seq()): Html =
-    documentsProducedPage(itemId, form, cachedDocuments)(fakeRequest, messages)
+    documentsProducedPage(Mode.Normal, itemId, form, cachedDocuments)(fakeRequest, messages)
 
   "Documents Produced View on empty page" should {
 

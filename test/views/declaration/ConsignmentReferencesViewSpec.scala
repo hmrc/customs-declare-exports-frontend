@@ -21,6 +21,7 @@ import controllers.util.SaveAndReturn
 import forms.Ducr
 import forms.declaration.ConsignmentReferences
 import helpers.views.declaration.{CommonMessages, ConsignmentReferencesMessages}
+import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -40,7 +41,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
   private val form: Form[ConsignmentReferences] = ConsignmentReferences.form()
   private val consignmentReferencesPage = app.injector.instanceOf[consignment_references]
   private def createView(form: Form[ConsignmentReferences] = form): Html =
-    consignmentReferencesPage(form)(fakeRequest, messages)
+    consignmentReferencesPage(Mode.Normal, form)(fakeRequest, messages)
 
   "Consignment References View on empty page" should {
 

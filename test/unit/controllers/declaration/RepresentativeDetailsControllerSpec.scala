@@ -20,6 +20,7 @@ import controllers.declaration.RepresentativeDetailsController
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import forms.declaration.{EntityDetails, RepresentativeDetails}
+import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -48,14 +49,14 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
 
   def theResponseForm: Form[RepresentativeDetails] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[RepresentativeDetails]])
-    verify(mockRepresentativeDetailsPage).apply(formCaptor.capture())(any(), any())
+    verify(mockRepresentativeDetailsPage).apply(any(), formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockRepresentativeDetailsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockRepresentativeDetailsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -71,10 +72,10 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
 
         withNewCaching(exampleDeclaration)
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
-        verify(mockRepresentativeDetailsPage, times(1)).apply(any())(any(), any())
+        verify(mockRepresentativeDetailsPage, times(1)).apply(any(), any())(any(), any())
 
         theResponseForm.value mustBe empty
       }
@@ -88,10 +89,10 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
           )
         )
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe (OK)
-        verify(mockRepresentativeDetailsPage, times(1)).apply(any())(any(), any())
+        verify(mockRepresentativeDetailsPage, times(1)).apply(any(), any())(any(), any())
 
         theResponseForm.value.value.details.value.eori.value mustBe eori
       }
@@ -105,10 +106,10 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
 
         val incorrectForm = Json.toJson(RepresentativeDetails(None, Some("incorrect")))
 
-        val result = controller.submitForm()(postRequest(incorrectForm))
+        val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockRepresentativeDetailsPage, times(1)).apply(any())(any(), any())
+        verify(mockRepresentativeDetailsPage, times(1)).apply(any(), any())(any(), any())
       }
     }
 
@@ -120,12 +121,12 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
 
         val correctForm = Json.toJson(RepresentativeDetails(Some(EntityDetails(Some(eori), None)), Some("2")))
 
-        val result = controller.submitForm()(postRequest(correctForm))
+        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationAdditionalActorsController.displayForm()
 
-        verify(mockRepresentativeDetailsPage, times(0)).apply(any())(any(), any())
+        verify(mockRepresentativeDetailsPage, times(0)).apply(any(), any())(any(), any())
       }
     }
 
@@ -137,12 +138,12 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
 
         val correctForm = Json.toJson(RepresentativeDetails(Some(EntityDetails(Some(eori), None)), Some("2")))
 
-        val result = controller.submitForm()(postRequest(correctForm))
+        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.CarrierDetailsController.displayForm()
 
-        verify(mockRepresentativeDetailsPage, times(0)).apply(any())(any(), any())
+        verify(mockRepresentativeDetailsPage, times(0)).apply(any(), any())(any(), any())
       }
     }
   }

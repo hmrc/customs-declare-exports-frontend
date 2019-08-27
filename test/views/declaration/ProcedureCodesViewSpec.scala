@@ -18,6 +18,7 @@ package views.declaration
 
 import forms.declaration.ProcedureCodes
 import helpers.views.declaration.{CommonMessages, ProcedureCodesMessages}
+import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import views.html.declaration.procedure_codes
@@ -30,7 +31,7 @@ class ProcedureCodesViewSpec extends ViewSpec with ProcedureCodesMessages with C
   private val form: Form[ProcedureCodes] = ProcedureCodes.form()
   private val procedureCodesPage = app.injector.instanceOf[procedure_codes]
   private def createView(form: Form[ProcedureCodes] = form): Html =
-    procedureCodesPage("1234", form, Seq())(fakeRequest, messages)
+    procedureCodesPage(Mode.Normal, "1234", form, Seq())(fakeRequest, messages)
 
   "Procedure Codes View on empty page" should {
 

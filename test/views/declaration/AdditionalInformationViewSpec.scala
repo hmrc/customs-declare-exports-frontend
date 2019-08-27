@@ -19,6 +19,7 @@ package views.declaration
 import controllers.util.{Add, SaveAndContinue, SaveAndReturn}
 import forms.declaration.AdditionalInformation
 import helpers.views.declaration.{AdditionalInformationMessages, CommonMessages}
+import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.twirl.api.Html
@@ -32,7 +33,7 @@ class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationM
   private val form: Form[AdditionalInformation] = AdditionalInformation.form()
   private val additionalInformationPage = app.injector.instanceOf[additional_information]
   private def createView(form: Form[AdditionalInformation] = form): Html =
-    additionalInformationPage(itemId, form, Seq())(fakeRequest, messages)
+    additionalInformationPage(Mode.Normal, itemId, form, Seq())(fakeRequest, messages)
 
   /*
    * Moved all errors tests to AdditionalInformationControllerSpec,
@@ -121,7 +122,7 @@ class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationM
 
     "display one row with data in table" in {
 
-      val view = additionalInformationPage(itemId, form, Seq(AdditionalInformation("12345", "12345")))
+      val view = additionalInformationPage(Mode.Normal, itemId, form, Seq(AdditionalInformation("12345", "12345")))
 
       getElementByCss(view, "table>tbody>tr>th:nth-child(1)").text() must be("12345-12345")
 

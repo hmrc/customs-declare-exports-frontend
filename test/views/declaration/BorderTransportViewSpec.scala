@@ -27,6 +27,7 @@ import views.tags.ViewTest
 import views.html.components.fields.field_text
 import views.html.components.fields.field_radio
 import forms.declaration.TransportCodes._
+import models.Mode
 import org.jsoup.nodes.Document
 import views.components.inputs.RadioOption
 
@@ -35,7 +36,7 @@ class BorderTransportViewSpec extends BorderTransportFields with CommonMessages 
 
   private val borderTransportPage = app.injector.instanceOf[border_transport]
   def createView(form: Form[BorderTransport] = form): Html =
-    borderTransportPage(form)(fakeRequest, messages)
+    borderTransportPage(Mode.Normal, form)(fakeRequest, messages)
 
   "BorderTransport View" should {
 

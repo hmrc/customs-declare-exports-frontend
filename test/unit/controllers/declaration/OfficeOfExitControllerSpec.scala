@@ -19,6 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.OfficeOfExitController
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.officeOfExit.{OfficeOfExitStandard, OfficeOfExitSupplementary}
+import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -48,8 +49,8 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockOfficeOfExitSupplementaryPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(mockOfficeOfExitStandardPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockOfficeOfExitSupplementaryPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockOfficeOfExitStandardPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -59,20 +60,20 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
   }
 
   def checkSupplementaryViewInteractions(noOfInvocations: Int = 1): Unit =
-    verify(mockOfficeOfExitSupplementaryPage, times(noOfInvocations)).apply(any())(any(), any())
+    verify(mockOfficeOfExitSupplementaryPage, times(noOfInvocations)).apply(any(), any())(any(), any())
 
   def checkStandardViewInteractions(noOfInvocations: Int = 1): Unit =
-    verify(mockOfficeOfExitStandardPage, times(noOfInvocations)).apply(any())(any(), any())
+    verify(mockOfficeOfExitStandardPage, times(noOfInvocations)).apply(any(), any())(any(), any())
 
   def theSupplementaryResponseForm: Form[OfficeOfExitSupplementary] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[OfficeOfExitSupplementary]])
-    verify(mockOfficeOfExitSupplementaryPage).apply(captor.capture())(any(), any())
+    verify(mockOfficeOfExitSupplementaryPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   def theStandardResponseForm: Form[OfficeOfExitStandard] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[OfficeOfExitStandard]])
-    verify(mockOfficeOfExitStandardPage).apply(captor.capture())(any(), any())
+    verify(mockOfficeOfExitStandardPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -84,7 +85,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
         checkSupplementaryViewInteractions()
@@ -97,7 +98,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
         val officeId = "officeId"
         withNewCaching(aDeclaration(withChoice(SupplementaryDec), withOfficeOfExit(officeId)))
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
         checkSupplementaryViewInteractions()
@@ -114,7 +115,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         val incorrectForm = Json.toJson(OfficeOfExitSupplementary("!@#$"))
 
-        val result = controller.saveOffice()(postRequest(incorrectForm))
+        val result = controller.saveOffice(Mode.Normal)(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
         checkSupplementaryViewInteractions()
@@ -129,7 +130,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         val correctForm = Json.toJson(OfficeOfExitSupplementary("officeId"))
 
-        val result = controller.saveOffice()(postRequest(correctForm))
+        val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.TotalNumberOfItemsController.displayForm()
@@ -146,7 +147,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         withNewCaching(aDeclaration(withChoice(StandardDec)))
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
         checkStandardViewInteractions()
@@ -166,7 +167,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
           )
         )
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
         checkStandardViewInteractions()
@@ -185,7 +186,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         val incorrectForm = Json.toJson(OfficeOfExitStandard("!@#$", None, "wrong"))
 
-        val result = controller.saveOffice()(postRequest(incorrectForm))
+        val result = controller.saveOffice(Mode.Normal)(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
         checkStandardViewInteractions()
@@ -200,7 +201,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         val correctForm = Json.toJson(OfficeOfExitStandard("officeId", None, "Yes"))
 
-        val result = controller.saveOffice()(postRequest(correctForm))
+        val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.TotalNumberOfItemsController.displayForm()

@@ -18,8 +18,9 @@ package unit.controllers.declaration
 
 import controllers.declaration.TransportDetailsController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
-import forms.declaration.TransportCodes.{cash, IMOShipIDNumber}
+import forms.declaration.TransportCodes.{IMOShipIDNumber, cash}
 import forms.declaration.TransportDetails
+import models.Mode
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
@@ -49,7 +50,7 @@ class TransportDetailsControllerSpec extends ControllerSpec {
 
       "display page method is invoked and cache is empty" in new SetUp {
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -58,7 +59,7 @@ class TransportDetailsControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withTransportDetails()))
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -70,7 +71,7 @@ class TransportDetailsControllerSpec extends ControllerSpec {
 
         val incorrectForm = Json.toJson(TransportDetails(Some("incorrect"), false, "", None, None))
 
-        val result = controller.submitForm()(postRequest(incorrectForm))
+        val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -81,7 +82,7 @@ class TransportDetailsControllerSpec extends ControllerSpec {
       val correctForm =
         Json.toJson(TransportDetails(Some("United Kingdom"), true, IMOShipIDNumber, Some("correct"), Some(cash)))
 
-      val result = controller.submitForm()(postRequest(correctForm))
+      val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
       await(result) mustBe aRedirectToTheNextPage
       thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController.displayPage()

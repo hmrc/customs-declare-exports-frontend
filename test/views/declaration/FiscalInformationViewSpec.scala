@@ -19,6 +19,7 @@ package views.declaration
 import controllers.util.SaveAndReturn
 import forms.declaration.FiscalInformation
 import helpers.views.declaration.{CommonMessages, FiscalInformationMessages}
+import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -31,7 +32,7 @@ class FiscalInformationViewSpec extends ViewSpec with FiscalInformationMessages 
   private val form: Form[FiscalInformation] = FiscalInformation.form()
   private val fiscalInformationPage = app.injector.instanceOf[fiscal_information]
   private def createView(form: Form[FiscalInformation] = form): Html =
-    fiscalInformationPage(itemId, form)(fakeRequest, messages)
+    fiscalInformationPage(Mode.Normal, itemId, form)(fakeRequest, messages)
 
   "Fiscal Information View on empty page" should {
 

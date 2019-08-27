@@ -19,6 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.DeclarantDetailsController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.{DeclarantDetails, EntityDetails}
+import models.Mode
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
@@ -48,7 +49,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
       "display page method is invoked and cache is empty" in new SetUp {
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -57,7 +58,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withDeclarantDetails()))
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -69,7 +70,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
         val incorrectForm = Json.toJson(DeclarantDetails(EntityDetails(None, None)))
 
-        val result = controller.saveAddress()(postRequest(incorrectForm))
+        val result = controller.saveAddress(Mode.Normal)(postRequest(incorrectForm))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -79,7 +80,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
       val correctForm = Json.toJson(DeclarantDetails(EntityDetails(Some("12345"), None)))
 
-      val result = controller.saveAddress()(postRequest(correctForm))
+      val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 
       await(result) mustBe aRedirectToTheNextPage
       thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeDetailsController.displayPage()
