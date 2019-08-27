@@ -18,7 +18,7 @@ package services.model
 
 import services.view.AutoCompleteItem
 import services.{DocumentType, HolderOfAuthorisationCode, NationalAdditionalCode}
-import uk.gov.hmrc.play.test.UnitSpec
+import unit.base.UnitSpec
 
 class AutoCompleteItemSpec extends UnitSpec {
 
@@ -26,56 +26,56 @@ class AutoCompleteItemSpec extends UnitSpec {
 
     "map from Country" when {
       "value is default" in {
-        AutoCompleteItem.fromCountry(List(Country("name", "code"))) shouldBe List(
+        AutoCompleteItem.fromCountry(List(Country("name", "code"))) mustBe List(
           AutoCompleteItem("name - code", "name")
         )
       }
 
       "value is specified" in {
-        AutoCompleteItem.fromCountry(List(Country("name", "code")), _.countryCode) shouldBe List(
+        AutoCompleteItem.fromCountry(List(Country("name", "code")), _.countryCode) mustBe List(
           AutoCompleteItem("name - code", "code")
         )
       }
     }
 
     "map from Package Type" in {
-      AutoCompleteItem.fromPackageType(List(PackageType("code", "description"))) shouldBe List(
+      AutoCompleteItem.fromPackageType(List(PackageType("code", "description"))) mustBe List(
         AutoCompleteItem("description - code", "code")
       )
     }
 
     "map from Office Of Exit" in {
-      AutoCompleteItem.fromOfficeOfExit(List(OfficeOfExit("code", "description"))) shouldBe List(
+      AutoCompleteItem.fromOfficeOfExit(List(OfficeOfExit("code", "description"))) mustBe List(
         AutoCompleteItem("description - code", "code")
       )
     }
 
     "map from document type" in {
-      AutoCompleteItem.fromDocumentType(List(DocumentType("description", "code"))) shouldBe List(
+      AutoCompleteItem.fromDocumentType(List(DocumentType("description", "code"))) mustBe List(
         AutoCompleteItem("description - code", "code")
       )
     }
 
     "map from national additional code" in {
-      AutoCompleteItem.fromNationalAdditionalCode(List(NationalAdditionalCode("code"))) shouldBe List(
+      AutoCompleteItem.fromNationalAdditionalCode(List(NationalAdditionalCode("code"))) mustBe List(
         AutoCompleteItem("code", "code")
       )
     }
 
     "map from holder of authorisation code" in {
-      AutoCompleteItem.fromHolderOfAuthorisationCode(List(HolderOfAuthorisationCode("code"))) shouldBe List(
+      AutoCompleteItem.fromHolderOfAuthorisationCode(List(HolderOfAuthorisationCode("code"))) mustBe List(
         AutoCompleteItem("code", "code")
       )
     }
 
     "map from supervising customs office for Warehouse using Description - CODE" in {
-      AutoCompleteItem.fromSupervisingCustomsOffice(List(CustomsOffice("code", "description"))) shouldBe List(
+      AutoCompleteItem.fromSupervisingCustomsOffice(List(CustomsOffice("code", "description"))) mustBe List(
         AutoCompleteItem("description - code", "code")
       )
     }
 
     "map from supervising customs office for Office Of Exit using Description (CODE)" in {
-      AutoCompleteItem.fromOfficeOfPresentation(List(CustomsOffice("code", "description"))) shouldBe List(
+      AutoCompleteItem.fromOfficeOfPresentation(List(CustomsOffice("code", "description"))) mustBe List(
         AutoCompleteItem("description (code)", "code")
       )
     }
