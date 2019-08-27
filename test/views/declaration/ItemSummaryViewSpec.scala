@@ -23,12 +23,12 @@ import models.Mode
 import models.declaration.ProcedureCodesData
 import org.jsoup.nodes.Document
 import services.cache.ExportItem
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.items_summary
 import views.tags.ViewTest
 
 @ViewTest
-class ItemSummaryViewSpec extends ViewSpec with ItemSummaryMessages {
+class ItemSummaryViewSpec extends AppViewSpec with ItemSummaryMessages {
 
   private val confirmationPage = app.injector.instanceOf[items_summary]
   private def view(items: List[ExportItem]): Document = confirmationPage(Mode.Normal, items)(fakeRequest, messages)

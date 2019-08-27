@@ -24,12 +24,12 @@ import helpers.views.declaration.{CommonMessages, ExporterDetailsMessages}
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.exporter_details
 import views.tags.ViewTest
 
 @ViewTest
-class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with CommonMessages {
+class ExporterDetailsViewSpec extends AppViewSpec with ExporterDetailsMessages with CommonMessages {
 
   private val form: Form[ExporterDetails] = ExporterDetails.form()
   private val exporterDetailsPage = app.injector.instanceOf[exporter_details]

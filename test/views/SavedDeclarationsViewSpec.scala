@@ -26,12 +26,12 @@ import helpers.views.declaration.CommonMessages
 import models.{DeclarationStatus, ExportsDeclaration, Page, Paginated}
 import org.jsoup.nodes.Element
 import play.twirl.api.{Html, HtmlFormat}
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.saved_declarations
 import views.tags.ViewTest
 
 @ViewTest
-class SavedDeclarationsViewSpec extends ViewSpec with CommonMessages {
+class SavedDeclarationsViewSpec extends AppViewSpec with CommonMessages {
 
   val title: String = "saved.declarations.title"
   val ducr: String = "saved.declarations.ducr"

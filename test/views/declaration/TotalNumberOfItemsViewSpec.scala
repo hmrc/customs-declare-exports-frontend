@@ -21,12 +21,12 @@ import helpers.views.declaration.{CommonMessages, TotalNumberOfItemsMessages}
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.total_number_of_items
 import views.tags.ViewTest
 
 @ViewTest
-class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessages with CommonMessages {
+class TotalNumberOfItemsViewSpec extends AppViewSpec with TotalNumberOfItemsMessages with CommonMessages {
 
   private val form: Form[TotalNumberOfItems] = TotalNumberOfItems.form()
   private val totalNumberOfItemsPage = app.injector.instanceOf[total_number_of_items]

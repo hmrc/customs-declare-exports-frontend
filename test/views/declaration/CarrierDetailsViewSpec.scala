@@ -24,12 +24,12 @@ import helpers.views.declaration.{CarrierDetailsMessages, CommonMessages}
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.carrier_details
 import views.tags.ViewTest
 
 @ViewTest
-class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with CommonMessages {
+class CarrierDetailsViewSpec extends AppViewSpec with CarrierDetailsMessages with CommonMessages {
 
   val form: Form[CarrierDetails] = CarrierDetails.form()
   private val carrierDetailsPage = app.injector.instanceOf[carrier_details]

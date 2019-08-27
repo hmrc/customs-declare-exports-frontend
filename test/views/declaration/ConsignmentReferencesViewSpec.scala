@@ -24,12 +24,12 @@ import helpers.views.declaration.{CommonMessages, ConsignmentReferencesMessages}
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.consignment_references
 import views.tags.ViewTest
 
 @ViewTest
-class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesMessages with CommonMessages {
+class ConsignmentReferencesViewSpec extends AppViewSpec with ConsignmentReferencesMessages with CommonMessages {
 
   /*
    * Seems like DUCR is Declaration UCR which is alphanumeric number up to 35 digits

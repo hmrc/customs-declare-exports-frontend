@@ -23,12 +23,12 @@ import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.additional_fiscal_references
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalFiscalReferencesViewSpec extends ViewSpec with AdditionalFiscalReferencesMessages with CommonMessages {
+class AdditionalFiscalReferencesViewSpec extends AppViewSpec with AdditionalFiscalReferencesMessages with CommonMessages {
 
   private val form: Form[AdditionalFiscalReference] = AdditionalFiscalReference.form()
   private val additionalFiscalReferencesPage = app.injector.instanceOf[additional_fiscal_references]

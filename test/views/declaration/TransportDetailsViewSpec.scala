@@ -27,7 +27,7 @@ import play.twirl.api.Html
 import services.Countries
 import services.view.AutoCompleteItem
 import views.components.inputs.RadioOption
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.components.fields.field_text
 import views.html.components.fields.{field_autocomplete, field_radio}
 import views.html.declaration.transport_details
@@ -90,7 +90,7 @@ class TransportDetailsViewSpec extends TransportDetailsFields with CommonMessage
 
 }
 
-trait TransportDetailsFields extends ViewSpec {
+trait TransportDetailsFields extends AppViewSpec {
   val form: Form[TransportDetails] = TransportDetails.form()
 
   val meansOfTransportCrossingTheBorderNationality = field_autocomplete(

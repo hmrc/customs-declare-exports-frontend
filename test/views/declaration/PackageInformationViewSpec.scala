@@ -21,12 +21,12 @@ import helpers.views.declaration.{CommonMessages, PackageInformationMessages}
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.package_information
 import views.tags.ViewTest
 
 @ViewTest
-class PackageInformationViewSpec extends ViewSpec with PackageInformationMessages with CommonMessages {
+class PackageInformationViewSpec extends AppViewSpec with PackageInformationMessages with CommonMessages {
 
   private val form: Form[PackageInformation] = PackageInformation.form()
   private val packageInformationPage = app.injector.instanceOf[package_information]

@@ -31,7 +31,7 @@ import play.api.mvc.{AnyContentAsEmpty, Flash, Request}
 import play.api.test.FakeRequest
 import utils.FakeRequestCSRFSupport._
 
-trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator with ViewMatchers {
+trait AppViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator with ViewMatchers {
 
   lazy val basePrefix = "supplementary."
   lazy val addressPrefix = "supplementary.address."

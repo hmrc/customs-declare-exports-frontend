@@ -30,12 +30,12 @@ import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.additionaldeclarationtype.declaration_type
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with CommonMessages {
+class DeclarationTypeViewSpec extends AppViewSpec with DeclarationTypeMessages with CommonMessages {
 
   private val formStandard: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeStandardDec.form()
   private val formSupplementary: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeSupplementaryDec.form()

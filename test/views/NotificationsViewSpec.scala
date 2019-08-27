@@ -23,12 +23,12 @@ import controllers.routes
 import models.declaration.notifications.Notification
 import models.declaration.submissions.{Action, RequestType, Submission, SubmissionStatus}
 import org.jsoup.nodes.Document
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.submission_notifications
 import views.tags.ViewTest
 
 @ViewTest
-class NotificationsViewSpec extends ViewSpec {
+class NotificationsViewSpec extends AppViewSpec {
 
   private val page = app.injector.instanceOf[submission_notifications]
   private val actions = Action(RequestType.SubmissionRequest, UUID.randomUUID().toString)

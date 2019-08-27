@@ -22,12 +22,12 @@ import helpers.views.declaration.{CommonMessages, ItemTypeMessages}
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.item_type
 import views.tags.ViewTest
 
 @ViewTest
-class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessages {
+class ItemTypeViewSpec extends AppViewSpec with ItemTypeMessages with CommonMessages {
 
   private val form: Form[ItemType] = ItemType.form()
   private val itemTypePage = app.injector.instanceOf[item_type]

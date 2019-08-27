@@ -22,12 +22,12 @@ import helpers.views.declaration.{CommonMessages, LocationOfGoodsMessages}
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.goods_location
 import views.tags.ViewTest
 
 @ViewTest
-class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with CommonMessages {
+class LocationViewSpec extends AppViewSpec with LocationOfGoodsMessages with CommonMessages {
 
   private val form: Form[GoodsLocation] = GoodsLocation.form()
   private val goodsLocationPage = app.injector.instanceOf[goods_location]

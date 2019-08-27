@@ -29,12 +29,12 @@ import helpers.views.declaration.summary.PartiesMessages
 import models.declaration.DeclarationAdditionalActorsDataSpec.correctAdditionalActorsData
 import models.declaration.{DeclarationHoldersData, Parties}
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.summary.parties_section
 import views.tags.ViewTest
 
 @ViewTest
-class PartiesSectionViewSpec extends ViewSpec with PartiesMessages {
+class PartiesSectionViewSpec extends AppViewSpec with PartiesMessages {
 
   private def createView(partiesOpt: Option[Parties] = None): Html = parties_section(partiesOpt)
 

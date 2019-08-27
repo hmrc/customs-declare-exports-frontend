@@ -22,12 +22,12 @@ import helpers.views.declaration.{CommonMessages, FiscalInformationMessages}
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.fiscal_information
 import views.tags.ViewTest
 
 @ViewTest
-class FiscalInformationViewSpec extends ViewSpec with FiscalInformationMessages with CommonMessages {
+class FiscalInformationViewSpec extends AppViewSpec with FiscalInformationMessages with CommonMessages {
 
   private val form: Form[FiscalInformation] = FiscalInformation.form()
   private val fiscalInformationPage = app.injector.instanceOf[fiscal_information]

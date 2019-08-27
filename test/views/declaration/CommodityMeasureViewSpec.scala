@@ -21,12 +21,12 @@ import helpers.views.declaration.{CommodityMeasureMessages, CommonMessages}
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.goods_measure
 import views.tags.ViewTest
 
 @ViewTest
-class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages with CommonMessages {
+class CommodityMeasureViewSpec extends AppViewSpec with CommodityMeasureMessages with CommonMessages {
 
   private val form: Form[CommodityMeasure] = CommodityMeasure.form()
   private val goodsMeasurePage = app.injector.instanceOf[goods_measure]

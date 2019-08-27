@@ -18,12 +18,12 @@ package views
 
 import helpers.views.declaration.StartMessages
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.start_page
 import views.tags.ViewTest
 
 @ViewTest
-class StartViewSpec extends ViewSpec with StartMessages {
+class StartViewSpec extends AppViewSpec with StartMessages {
 
   private val startPage = app.injector.instanceOf[start_page]
   private def createView(): Html = startPage()
