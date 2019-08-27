@@ -26,7 +26,7 @@ import views.html.error_template
 
 class ErrorHandlerSpec extends CustomExportsBaseSpec {
 
-  val errorPage = app.injector.instanceOf[error_template]
+  val errorPage = new error_template(govukWrapper)
   val errorHandler = new ErrorHandler(messagesApi, errorPage)(appConfig)
   val req = FakeRequest("GET", "/foo")
 
@@ -58,7 +58,5 @@ class ErrorHandlerSpec extends CustomExportsBaseSpec {
       res.header.status must be(Status.SEE_OTHER)
       res.header.headers.get(HeaderNames.LOCATION) must be(Some("/customs-declare-exports/unauthorised"))
     }
-
   }
-
 }

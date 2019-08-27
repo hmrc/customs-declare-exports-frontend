@@ -19,21 +19,17 @@ package connectors
 import java.time.{Instant, LocalDateTime}
 import java.util.UUID
 
-import base.TestHelper._
 import base.{CustomExportsBaseSpec, MockHttpClient, TestHelper}
 import connectors.CustomsDeclareExportsConnector.toXml
 import forms.CancelDeclaration
 import models.declaration.notifications.Notification
-import models.declaration.submissions.{Action, Submission}
 import models.declaration.submissions.RequestType.SubmissionRequest
+import models.declaration.submissions.{Action, Submission}
 import models.requests.CancellationRequested
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.logging.Authorization
 
-class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec with GuiceOneAppPerSuite {
+class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
   import CustomsDeclareExportsConnectorSpec._
 
   "Customs Declare Exports Connector" should {
@@ -79,13 +75,13 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec with Guic
 }
 
 object CustomsDeclareExportsConnectorSpec {
-  val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(createRandomAlphanumericString(255))))
   val mrn = TestHelper.createRandomAlphanumericString(10)
 
   val conversationId = TestHelper.createRandomAlphanumericString(10)
-  val eori = TestHelper.createRandomAlphanumericString(15)
+
   val exportNotification =
     Notification(conversationId, mrn, LocalDateTime.now, "01", None, Seq.empty, "payload")
+
   val notifications = Seq(exportNotification)
 
   val submissionData = Submission(
@@ -98,26 +94,15 @@ object CustomsDeclareExportsConnectorSpec {
       Action(requestType = SubmissionRequest, conversationId = "conversationID", requestTimestamp = LocalDateTime.now())
     )
   )
+
   val submissions = Seq(submissionData)
 
-  val expectedHeaders: Seq[(String, String)] = Seq.empty
-  val submissionHeaders: Seq[(String, String)] = Seq(
-    (HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8)),
-    (HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8)),
-    ("X-DUCR", ""),
-    ("X-LRN", "")
-  )
   val cancellationHeaders: Seq[(String, String)] = Seq(
-    (HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8)),
-    (HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8)),
-    ("X-MRN", mrn)
+    HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8),
+    HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8),
+    "X-MRN" -> mrn
   )
   val falseServerError: Boolean = false
-
-  private val instant = Instant.EPOCH
-
-  val exportCacheModel =
-    models.ExportsDeclaration(createdDateTime = instant, updatedDateTime = instant, choice = "SMP")
 
   val cancellationRequest =
     CancelDeclaration(functionalReferenceId = "", declarationId = "", statementDescription = "", changeReason = "")

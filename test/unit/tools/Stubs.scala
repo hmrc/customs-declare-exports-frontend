@@ -84,7 +84,7 @@ trait Stubs {
 
   private val footer: Footer = new Footer(new AssetsConfig(minimalConfiguration))
 
-  private val govukWrapper: govuk_wrapper = new govuk_wrapper(
+  val govukWrapper: govuk_wrapper = new govuk_wrapper(
     head,
     new HeaderNav(),
     footer,
