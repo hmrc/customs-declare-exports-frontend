@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
-package models.requests
+package unit.mock
 
-import models.SignedInUser
-import play.api.mvc.{Request, WrappedRequest}
+import base.MockAuthAction
+import controllers.actions.ItemActionBuilder
+import org.scalatest.{BeforeAndAfterEach, Suite}
+import org.scalatest.mockito.MockitoSugar
 
-class AuthenticatedRequest[A](request: Request[A], val user: SignedInUser) extends WrappedRequest[A](request) {
-  def declarationId: Option[String] = request.session.data.get(ExportsSessionKeys.declarationId)
+import scala.concurrent.ExecutionContext
+
+trait ItemActionMocks extends JourneyActionMocks with MockAuthAction { self: MockitoSugar with Suite with BeforeAndAfterEach =>
+
+  val mockItemAction = new ItemActionBuilder(mockAuthAction, mockJourneyAction)(ExecutionContext.global)
 }

@@ -57,6 +57,8 @@ object ExportsTestData extends ExportsDeclarationBuilder {
 
   val nrsLoginTimes = LoginTimes(currentLoginTime, Some(previousLoginTime))
 
+
+
   def newUser(eori: String, externalId: String): SignedInUser =
     SignedInUser(
       eori,

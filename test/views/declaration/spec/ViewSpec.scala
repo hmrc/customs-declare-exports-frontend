@@ -47,7 +47,7 @@ trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator with
 
   def fakeJourneyRequest(choice: String): JourneyRequest[AnyContentAsEmpty.type] = {
     val cache = ExportsDeclaration(None, DeclarationStatus.COMPLETE, Instant.now(), Instant.now(), choice)
-    JourneyRequest(AuthenticatedRequest(fakeRequest, ExportsTestData.newUser("", "")), cache)
+    new JourneyRequest(new AuthenticatedRequest(fakeRequest, ExportsTestData.newUser("", "")), cache)
   }
 
   SharedMetricRegistries.clear()

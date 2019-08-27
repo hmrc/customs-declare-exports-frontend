@@ -20,9 +20,7 @@ import forms.Choice
 import models.ExportsDeclaration
 import play.api.mvc.WrappedRequest
 
-case class JourneyRequest[A](authenticatedRequest: AuthenticatedRequest[A], cacheModel: ExportsDeclaration)
-    extends WrappedRequest[A](authenticatedRequest) {
+class JourneyRequest[A](val authenticatedRequest: AuthenticatedRequest[A], val cacheModel: ExportsDeclaration)
+    extends AuthenticatedRequest[A](authenticatedRequest, authenticatedRequest.user) {
   val choice: Choice = Choice(cacheModel.choice)
-
-  def declarationId: String = authenticatedRequest.declarationId.getOrElse(throw new IllegalAccessError)
 }

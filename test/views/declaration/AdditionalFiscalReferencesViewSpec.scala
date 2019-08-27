@@ -98,7 +98,7 @@ class AdditionalFiscalReferencesViewSpec extends ViewSpec with AdditionalFiscalR
       val view = createView(references = Seq(AdditionalFiscalReference("FR", "12345")))
 
       view.body must include("FR12345")
-    }
+    } 
   }
 
   "Additional Fiscal References for invalid input" should {

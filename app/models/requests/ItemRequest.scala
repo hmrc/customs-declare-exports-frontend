@@ -16,9 +16,8 @@
 
 package models.requests
 
-import models.SignedInUser
-import play.api.mvc.{Request, WrappedRequest}
+import services.cache.ExportItem
 
-class AuthenticatedRequest[A](request: Request[A], val user: SignedInUser) extends WrappedRequest[A](request) {
-  def declarationId: Option[String] = request.session.data.get(ExportsSessionKeys.declarationId)
+class ItemRequest[A](val item: ExportItem, journeyRequest: JourneyRequest[A])
+  extends JourneyRequest[A](journeyRequest.authenticatedRequest, journeyRequest.cacheModel){
 }

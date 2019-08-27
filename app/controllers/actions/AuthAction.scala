@@ -87,7 +87,7 @@ class AuthActionImpl @Inject()(
 
           val cdsLoggedInUser = SignedInUser(eori.get.value, allEnrolments, identityData)
 
-          block(AuthenticatedRequest(request, cdsLoggedInUser))
+          block(new AuthenticatedRequest(request, cdsLoggedInUser))
       }
   }
 

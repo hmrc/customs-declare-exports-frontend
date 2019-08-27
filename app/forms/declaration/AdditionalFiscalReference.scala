@@ -49,6 +49,10 @@ case class AdditionalFiscalReferencesData(references: Seq[AdditionalFiscalRefere
     val patterns = values.toSet
     copy(references = references.filterNot(reference => patterns.contains(reference.asString)))
   }
+
+  def removeReference(value: String): AdditionalFiscalReferencesData = {
+    removeReferences(Seq(value))
+  }
 }
 
 object AdditionalFiscalReferencesData {

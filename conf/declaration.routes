@@ -136,9 +136,11 @@ POST         /items/:itemId/fiscal-information   controllers.declaration.FiscalI
 
 # Additional Fiscal References
 
-GET         /items/:itemId/additional-fiscal-references        controllers.declaration.AdditionalFiscalReferencesController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/additional-fiscal-references             controllers.declaration.AdditionalFiscalReferencesController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
 
-POST        /items/:itemId/additional-fiscal-references        controllers.declaration.AdditionalFiscalReferencesController.saveReferences(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/additional-fiscal-references             controllers.declaration.AdditionalFiscalReferencesController.saveReferences(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+POST        /items/:itemId/additional-fiscal-references/:reference  controllers.declaration.AdditionalFiscalReferencesController.removeReference(mode: models.Mode ?= models.Mode.Normal, itemId, reference)
 
 # Item Type
 
