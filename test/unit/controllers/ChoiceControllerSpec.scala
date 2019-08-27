@@ -23,18 +23,24 @@ import models.{DeclarationStatus, ExportsDeclaration}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{AnyContentAsJson, Request}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
 import views.html.choice_page
+import utils.FakeRequestCSRFSupport._
 
 import scala.concurrent.Future
 
 class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
   import ChoiceControllerSpec._
 
-  private val existingDeclaration =
-    aDeclaration(withId("declarationId"), withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
+  private def existingDeclaration(choice: String = Choice.AllowedChoiceValues.SupplementaryDec) =
+    aDeclaration(withId("existingDeclarationId"), withChoice(choice))
+
+  private val newDeclaration =
+    aDeclaration(withId("newDeclarationId"), withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
 
   trait SetUp {
     val choicePage = new choice_page(mainTemplate, minimalAppConfig)
@@ -43,6 +49,11 @@ class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
     setupErrorHandler()
     authorizedUser()
   }
+
+  override def postRequest(body: JsValue): Request[AnyContentAsJson] =
+    FakeRequest("POST", "")
+      .withJsonBody(body)
+      .withCSRFToken
 
   "Display" should {
 
@@ -57,7 +68,7 @@ class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
       }
 
       "display page method is invoked with data in cache" in new SetUp {
-        when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(Some(existingDeclaration)))
+        when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(Some(existingDeclaration())))
 
         val result = controller.displayPage()(getRequest())
 
@@ -82,10 +93,10 @@ class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
     "redirect to Dispatch Location page" when {
 
-      "user chooses Supplementary Dec" in new SetUp {
+      "user chooses Supplementary Dec for new declaration" in new SetUp {
         when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(None))
         when(mockExportsCacheService.create(any[ExportsDeclaration])(any()))
-          .thenReturn(Future.successful(existingDeclaration))
+          .thenReturn(Future.successful(newDeclaration))
 
         val result = controller.submitChoice()(postRequest(supplementaryChoice))
 
@@ -93,17 +104,34 @@ class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
         redirectLocation(result) must be(
           Some(controllers.declaration.routes.DispatchLocationController.displayPage().url)
         )
-        session(result).get(ExportsSessionKeys.declarationId) must be(Some("declarationId"))
+        session(result).get(ExportsSessionKeys.declarationId) must be(newDeclaration.id)
         val created: ExportsDeclaration = theCacheModelCreated
         created.id mustBe None
         created.status mustBe DeclarationStatus.DRAFT
         created.choice mustBe "SMP"
       }
 
-      "user chooses Standard Dec" in new SetUp {
+      "user chooses Supplementary Dec for existing Standard Dec" in new SetUp {
+        val existingDec = existingDeclaration(Choice.AllowedChoiceValues.StandardDec)
+        when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(Some(existingDec)))
+        when(mockExportsCacheService.update(any())(any()))
+          .thenReturn(Future.successful(Some(existingDec)))
+
+        val result = controller.submitChoice()(postRequest(supplementaryChoice, existingDec))
+
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(
+          Some(controllers.declaration.routes.DispatchLocationController.displayPage().url)
+        )
+        val updated: ExportsDeclaration = theCacheModelUpdated
+        updated.id mustBe existingDec.id
+        updated.choice mustBe "SMP"
+      }
+
+      "user chooses Standard Dec for new declaration" in new SetUp {
         when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(None))
         when(mockExportsCacheService.create(any[ExportsDeclaration])(any()))
-          .thenReturn(Future.successful(existingDeclaration))
+          .thenReturn(Future.successful(newDeclaration))
 
         val result = controller.submitChoice()(postRequest(standardChoice))
 
@@ -111,11 +139,28 @@ class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
         redirectLocation(result) must be(
           Some(controllers.declaration.routes.DispatchLocationController.displayPage().url)
         )
-        session(result).get(ExportsSessionKeys.declarationId) must be(Some("declarationId"))
+        session(result).get(ExportsSessionKeys.declarationId) must be(newDeclaration.id)
         val created: ExportsDeclaration = theCacheModelCreated
         created.id mustBe None
         created.status mustBe DeclarationStatus.DRAFT
         created.choice mustBe "STD"
+      }
+
+      "user chooses Standard Dec for existing Supplementary Dec" in new SetUp {
+        val existingDec = existingDeclaration(Choice.AllowedChoiceValues.SupplementaryDec)
+        when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(Some(existingDec)))
+        when(mockExportsCacheService.update(any())(any()))
+          .thenReturn(Future.successful(Some(existingDec)))
+
+        val result = controller.submitChoice()(postRequest(standardChoice, existingDec))
+
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(
+          Some(controllers.declaration.routes.DispatchLocationController.displayPage().url)
+        )
+        val updated: ExportsDeclaration = theCacheModelUpdated
+        updated.id mustBe existingDec.id
+        updated.choice mustBe "STD"
       }
     }
 
