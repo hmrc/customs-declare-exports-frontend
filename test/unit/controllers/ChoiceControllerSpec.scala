@@ -34,7 +34,7 @@ import utils.FakeRequestCSRFSupport._
 
 import scala.concurrent.Future
 
-class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
+class ChoiceControllerSpec extends ControllerSpec {
   import ChoiceControllerSpec._
 
   private def existingDeclaration(choice: String = SupplementaryDec) =
@@ -47,7 +47,6 @@ class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
     val choicePage = new choice_page(mainTemplate, minimalAppConfig)
     val controller =
       new ChoiceController(mockAuthAction, mockExportsCacheService, stubMessagesControllerComponents(), choicePage)(ec)
-    setupErrorHandler()
     authorizedUser()
   }
 
