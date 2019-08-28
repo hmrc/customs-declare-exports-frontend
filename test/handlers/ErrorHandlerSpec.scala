@@ -18,45 +18,68 @@ package handlers
 
 import java.net.URLEncoder
 
-import base.CustomExportsBaseSpec
-import play.api.http.{HeaderNames, Status}
+import config.AppConfig
+import org.scalatest.OptionValues
+import play.api.http.Status
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession}
+import unit.base.UnitSpec
+import unit.tools.Stubs
 import views.html.error_template
 
-class ErrorHandlerSpec extends CustomExportsBaseSpec {
+import scala.concurrent.Future
+
+class ErrorHandlerSpec extends UnitSpec with Stubs with OptionValues {
 
   val errorPage = new error_template(govukWrapper)
-  val errorHandler = new ErrorHandler(messagesApi, errorPage)(appConfig)
-  val req = FakeRequest("GET", "/foo")
+
+  val injector = GuiceApplicationBuilder()
+    .configure(
+      "urls.login" -> "http://localhost:9949/auth-login-stub/gg-sign-in",
+      "urls.loginContinue" -> "http://localhost:6791/customs-declare-exports/start"
+    )
+    .injector()
+  val appConfig = injector.instanceOf[AppConfig]
+  val request = FakeRequest("GET", "/foo")
+
+  val errorHandler = new ErrorHandler(stubMessagesApi(), errorPage)(appConfig)
+
+  def urlEncode(value: String): String = URLEncoder.encode(value, "UTF-8")
 
   "ErrorHandlerSpec" should {
+
     "standardErrorTemplate" in {
-      val result = errorHandler.standardErrorTemplate("Page Title", "Heading", "Message")(FakeRequest()).body
+
+      val result = errorHandler.standardErrorTemplate("Page Title", "Heading", "Message")(request).body
 
       result must include("Page Title")
       result must include("Heading")
       result must include("Message")
     }
   }
+
   "resolve error" should {
 
-    def urlEncode(value: String): String = URLEncoder.encode(value, "UTF-8")
-
     "handle no active session authorisation exception" in {
-      val res = errorHandler.resolveError(req, new NoActiveSession("A user is not logged in") {})
-      res.header.status must be(Status.SEE_OTHER)
-      res.header.headers.get(HeaderNames.LOCATION) must be(
-        Some(
-          s"http://localhost:9949/auth-login-stub/gg-sign-in?continue=${urlEncode("http://localhost:6791/customs-declare-exports/start")}"
-        )
-      )
+
+      val error = new NoActiveSession("A user is not logged in") {}
+      val result = Future.successful(errorHandler.resolveError(request, error))
+      val expectedLocation =
+        s"http://localhost:9949/auth-login-stub/gg-sign-in?continue=${urlEncode("http://localhost:6791/customs-declare-exports/start")}"
+
+      status(result) mustBe Status.SEE_OTHER
+      redirectLocation(result) mustBe Some(expectedLocation)
     }
 
     "handle insufficient enrolments authorisation exception" in {
-      val res = errorHandler.resolveError(req, new InsufficientEnrolments("HMRC-CUS-ORG"))
-      res.header.status must be(Status.SEE_OTHER)
-      res.header.headers.get(HeaderNames.LOCATION) must be(Some("/customs-declare-exports/unauthorised"))
+
+      val error = InsufficientEnrolments("HMRC-CUS-ORG")
+      val result = Future.successful(errorHandler.resolveError(request, error))
+
+      status(result) mustBe Status.SEE_OTHER
+      redirectLocation(result).value must endWith("/unauthorised")
     }
   }
 }

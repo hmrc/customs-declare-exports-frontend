@@ -21,11 +21,13 @@ import com.kenshoo.play.metrics.Metrics
 import forms.CancelDeclarationSpec
 import metrics.MetricIdentifiers
 import models.requests.CancellationRequested
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import utils.FakeRequestCSRFSupport._
 
 class CancelDeclarationControllerSpec extends CustomExportsBaseSpec {
 
-  val uri = uriWithContextPath("/cancel-declaration")
+  val uri = "/customs-declare-exports/cancel-declaration"
 
   "Cancel Declaration Controller on POST" should {
 
@@ -44,7 +46,11 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec {
       successfulCustomsDeclareExportsResponse()
       successfulCancelDeclarationResponse(CancellationRequested)
 
-      val result = route(app, postRequest(uri, CancelDeclarationSpec.correctCancelDeclarationJSON)).get
+      val request = FakeRequest("POST", uri)
+        .withJsonBody(CancelDeclarationSpec.correctCancelDeclarationJSON)
+        .withCSRFToken
+
+      val result = route(app, request).get
 
       status(result) must be(OK)
 

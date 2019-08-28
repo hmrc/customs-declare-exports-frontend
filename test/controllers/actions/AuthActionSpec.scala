@@ -23,7 +23,7 @@ import uk.gov.hmrc.auth.core.InsufficientEnrolments
 
 class AuthActionSpec extends CustomExportsBaseSpec {
 
-  val uri = uriWithContextPath("/choice")
+  val uri = "/customs-declare-exports/choice"
 
   "Auth Action" should {
 

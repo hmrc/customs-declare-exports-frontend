@@ -18,19 +18,18 @@ package config
 
 import java.util.concurrent.TimeUnit
 
-import base.CustomExportsBaseSpec
 import com.typesafe.config.{Config, ConfigFactory}
 import features.{Feature, FeatureStatus}
 import forms.Choice
 import play.api.Mode.Test
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
+import unit.base.UnitSpec
 
 import scala.concurrent.duration.FiniteDuration
 
-class AppConfigSpec extends CustomExportsBaseSpec {
+class AppConfigSpec extends UnitSpec {
 
-  private val config = app.injector.instanceOf[AppConfig]
   private val environment = Environment.simple()
 
   private val validAppConfig: Config =
@@ -58,6 +57,8 @@ class AppConfigSpec extends CustomExportsBaseSpec {
         |microservice.services.customs-declare-exports.declaration-v2=/v2/declaration
         |microservice.services.customs-declare-exports.cancel-declaration=/cancel-declaration
         |microservice.services.customs-declare-exports.fetch-notifications=/notifications
+        |microservice.services.customs-declare-exports.fetch-submissions=/submissions
+        |microservice.services.customs-declare-exports.fetch-submission-notifications=/submission-notifications
         |microservice.services.customs-declare-exports-movements.host=localhostm
         |microservice.services.customs-declare-exports-movements.port=9876
         |microservice.services.customs-declare-exports-movements.save-movement-uri=/save-movement-submission
@@ -153,11 +154,11 @@ class AppConfigSpec extends CustomExportsBaseSpec {
     }
 
     "have fetch submission notification URL" in {
-      config.fetchSubmissionNotifications must be("/submission-notifications")
+      validConfigService.fetchSubmissionNotifications must be("/submission-notifications")
     }
 
     "have fetchSubmissions URL" in {
-      config.fetchSubmissions must be("/submissions")
+      validConfigService.fetchSubmissions must be("/submissions")
     }
 
     "have countryCodesJsonFilename" in {
