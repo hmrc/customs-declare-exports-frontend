@@ -79,7 +79,9 @@ class SealController @Inject()(
         } else Future.successful(navigator.continueTo(routes.SummaryController.displayPage(Mode.Normal)))
     )
 
-  private def badRequest(mode: Mode, formWithErrors: Form[Seal], cachedSeals: Seq[Seal])(implicit request: JourneyRequest[_]) = {
+  private def badRequest(mode: Mode, formWithErrors: Form[Seal], cachedSeals: Seq[Seal])(
+    implicit request: JourneyRequest[_]
+  ) = {
     val d = request.cacheModel.transportDetails
     val s = request.cacheModel.seals
     BadRequest(sealPage(mode, formWithErrors, s, d.fold(false)(_.container)))

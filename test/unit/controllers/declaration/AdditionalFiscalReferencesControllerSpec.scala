@@ -98,7 +98,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
 
         val wrongAction: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "12345"), ("WrongAction", ""))
 
-        val result: Future[Result] = controller.saveReferences(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(wrongAction: _*))
+        val result: Future[Result] =
+          controller.saveReferences(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(wrongAction: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -112,7 +113,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
 
         val incorrectForm: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "!@#$"), addActionUrlEncoded)
 
-        val result: Future[Result] = controller.saveReferences(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result: Future[Result] =
+          controller.saveReferences(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -149,7 +151,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
 
         val form: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "54321"), addActionUrlEncoded)
 
-        val result: Future[Result] = controller.saveReferences(Mode.Normal, itemCacheData.id)(postRequestAsFormUrlEncoded(form: _*))
+        val result: Future[Result] =
+          controller.saveReferences(Mode.Normal, itemCacheData.id)(postRequestAsFormUrlEncoded(form: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -164,7 +167,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
         val incorrectForm: Seq[(String, String)] =
           Seq(("country", "PL"), ("reference", "!@#$"), saveAndContinueActionUrlEncoded)
 
-        val result: Future[Result] = controller.saveReferences(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result: Future[Result] =
+          controller.saveReferences(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -203,7 +207,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
         val form: Seq[(String, String)] =
           Seq(("country", "PL"), ("reference", "54321"), saveAndContinueActionUrlEncoded)
 
-        val result: Future[Result] = controller.saveReferences(Mode.Normal, itemCacheData.id)(postRequestAsFormUrlEncoded(form: _*))
+        val result: Future[Result] =
+          controller.saveReferences(Mode.Normal, itemCacheData.id)(postRequestAsFormUrlEncoded(form: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -217,7 +222,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
 
         val correctForm: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "12345"), addActionUrlEncoded)
 
-        val result: Future[Result] = controller.saveReferences(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result: Future[Result] =
+          controller.saveReferences(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(SEE_OTHER)
       }
@@ -229,7 +235,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
         val correctForm: Seq[(String, String)] =
           Seq(("country", "PL"), ("reference", "12345"), saveAndContinueActionUrlEncoded)
 
-        val result: Future[Result] = controller.saveReferences(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result: Future[Result] =
+          controller.saveReferences(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.ItemTypeController.displayPage(Mode.Normal, item.id)
@@ -247,7 +254,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
 
         val correctForm: (String, String) = saveAndContinueActionUrlEncoded
 
-        val result: Future[Result] = controller.saveReferences(Mode.Normal, itemCacheData.id)(postRequestAsFormUrlEncoded(correctForm))
+        val result: Future[Result] =
+          controller.saveReferences(Mode.Normal, itemCacheData.id)(postRequestAsFormUrlEncoded(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.ItemTypeController.displayPage(Mode.Normal, "itemId")
@@ -266,7 +274,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
 
         val removeForm: (String, String) = (Remove.toString, "0")
 
-        val result: Future[Result] = controller.removeReference(Mode.Normal, itemCacheData.id, "12345")(postRequestAsFormUrlEncoded(removeForm))
+        val result: Future[Result] =
+          controller.removeReference(Mode.Normal, itemCacheData.id, "12345")(postRequestAsFormUrlEncoded(removeForm))
 
         status(result) must be(OK)
       }

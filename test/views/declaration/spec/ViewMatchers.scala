@@ -254,4 +254,19 @@ trait ViewMatchers {
     )
 
   def haveGlobalErrorSummary: Matcher[Document] = new ContainElementWithIDMatcher("error-summary-heading")
+
+  class FormSubmitTo(path: String) extends Matcher[Element] {
+    override def apply(left: Element): MatchResult = {
+      val action = left.attr("action")
+      val formaction = left.attr("formaction")
+      MatchResult(
+        action == path || formaction == path,
+        s"Element ${left} does not submit to {$path}",
+        s"Element ${left} does submit to {$path}"
+      )
+    }
+  }
+
+  def submitTo(path: String): Matcher[Element] = new FormSubmitTo(path)
+  def submitTo(call: Call): Matcher[Element] = new FormSubmitTo(call.url)
 }

@@ -29,7 +29,8 @@ import views.html.declaration.additional_fiscal_references
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with ViewMatchers with AdditionalFiscalReferencesMessages with CommonMessages {
+class AdditionalFiscalReferencesViewSpec
+    extends UnitViewSpec with Stubs with ViewMatchers with AdditionalFiscalReferencesMessages with CommonMessages {
 
   private val form: Form[AdditionalFiscalReference] = AdditionalFiscalReference.form()
 
@@ -67,10 +68,12 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Vi
 
     "display 'Back' button to Fiscal Information page" in {
 
-      val backButton = view.getElementById( "link-back")
+      val backButton = view.getElementById("link-back")
 
       backButton.text() must be(backCaption)
-      backButton must haveHref(controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId))
+      backButton must haveHref(
+        controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId)
+      )
     }
 
     "display 'Save and continue' button" in {
@@ -89,9 +92,18 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Vi
 
   "Additional Fiscal References" should {
 
+    val view = createView(references = Seq(AdditionalFiscalReference("FR", "12345")))
+
     "display references" in {
-      val view = createView(references = Seq(AdditionalFiscalReference("FR", "12345")))
       view.text() must include("FR12345")
+
+    }
+
+    "display remove button" in {
+      view.getElementsByAttributeValue("value", "site.remove").first() must submitTo(
+        controllers.declaration.routes.AdditionalFiscalReferencesController
+          .removeReference(Mode.Normal, itemId, "FR12345")
+      )
     }
   }
 

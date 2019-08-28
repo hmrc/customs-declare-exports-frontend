@@ -52,15 +52,15 @@ class AdditionalFiscalReferencesController @Inject()(
   }
 
   def saveReferences(mode: Mode, itemId: String): Action[AnyContent] = itemAction(itemId).async { implicit request =>
-      val actionTypeOpt = FormAction.bindFromRequest()
-      val cache = request.item.additionalFiscalReferencesData.getOrElse(AdditionalFiscalReferencesData(Seq.empty))
-      val boundForm = form().bindFromRequest()
+    val actionTypeOpt = FormAction.bindFromRequest()
+    val cache = request.item.additionalFiscalReferencesData.getOrElse(AdditionalFiscalReferencesData(Seq.empty))
+    val boundForm = form().bindFromRequest()
 
-      actionTypeOpt match {
-        case Some(Add)                                   => addReference(mode, itemId, boundForm, cache)
-        case Some(SaveAndContinue) | Some(SaveAndReturn) => saveAndContinue(mode, itemId, boundForm, cache)
-        case _                                           => errorHandler.displayErrorPage()
-      }
+    actionTypeOpt match {
+      case Some(Add)                                   => addReference(mode, itemId, boundForm, cache)
+      case Some(SaveAndContinue) | Some(SaveAndReturn) => saveAndContinue(mode, itemId, boundForm, cache)
+      case _                                           => errorHandler.displayErrorPage()
+    }
 
   }
 
@@ -96,18 +96,15 @@ class AdditionalFiscalReferencesController @Inject()(
           else Future.successful(navigator.continueTo(routes.ItemTypeController.displayPage(mode, itemId)))
       )
 
-  def removeReference(
-    mode: Mode,
-    itemId: String,
-    value: String
-  ) =  itemAction(itemId).async { implicit request =>
+  def removeReference(mode: Mode, itemId: String, value: String) = itemAction(itemId).async { implicit request =>
     val cacheModel = request.item.additionalFiscalReferencesData
       .getOrElse(AdditionalFiscalReferencesData(Seq.empty))
     val updatedCache = cacheModel.removeReference(value)
     val valueOnPage = form().bindFromRequest()
     updateExportsCache(itemId, updatedCache).map {
-      case Some(_) => Ok(additionalFiscalReferencesPage(mode, itemId, valueOnPage.discardingErrors, updatedCache.references))
-      case None    => Redirect(routes.ItemsSummaryController.displayPage())
+      case Some(_) =>
+        Ok(additionalFiscalReferencesPage(mode, itemId, valueOnPage.discardingErrors, updatedCache.references))
+      case None => Redirect(routes.ItemsSummaryController.displayPage())
     }
   }
 
