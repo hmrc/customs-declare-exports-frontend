@@ -79,7 +79,7 @@
     title = messages("declaration.additionalFiscalReferences.title")
 ) {
 
-    @components.back_link(routes.FiscalInformationController.displayPage(mode, itemId))
+    @components.back_link(routes.FiscalInformationController.displayPage(mode, itemId), mode)
 
     @components.error_summary(form.errors)
 
