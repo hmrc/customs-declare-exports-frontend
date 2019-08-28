@@ -164,14 +164,24 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController.displayPage()
       }
 
-      "user save correct data" in new SetUp {
+      "user save correct data" when {
+        "normal mode" in new SetUp {
+          val correctForm = Seq(("id", "123abc"), saveAndContinueActionUrlEncoded)
 
-        val correctForm = Seq(("id", "123abc"), saveAndContinueActionUrlEncoded)
+          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
-        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
+        }
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
+        "draft mode" in new SetUp {
+          val correctForm = Seq(("id", "123abc"), saveAndContinueActionUrlEncoded)
+
+          val result = controller.submitForm(Mode.Draft)(postRequestAsFormUrlEncoded(correctForm: _*))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
+        }
       }
 
       "user save correct data without new item" in new SetUp {
