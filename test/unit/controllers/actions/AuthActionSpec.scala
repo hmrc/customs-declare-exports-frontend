@@ -14,23 +14,27 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package unit.controllers.actions
 
-import base.CustomExportsBaseSpec
-import play.api.test.FakeRequest
+import controllers.ChoiceController
+import controllers.actions.NoExternalId
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
+import unit.base.ControllerSpec
+import views.html.choice_page
 
-class AuthActionSpec extends CustomExportsBaseSpec {
+class AuthActionSpec extends ControllerSpec {
 
-  val uri = "/customs-declare-exports/choice"
+  val choicePage = new choice_page(mainTemplate, minimalAppConfig)
+  val controller =
+    new ChoiceController(mockAuthAction, mockExportsCacheService, stubMessagesControllerComponents(), choicePage)(ec)
 
   "Auth Action" should {
 
     "return InsufficientEnrolments when EORI number is missing" in {
       userWithoutEori()
 
-      val result = route(app, FakeRequest("GET", uri)).get
+      val result = controller.displayPage()(getRequest())
 
       intercept[InsufficientEnrolments](status(result))
     }
@@ -38,7 +42,7 @@ class AuthActionSpec extends CustomExportsBaseSpec {
     "return NoExternalId when External Id is missing" in {
       userWithoutExternalId()
 
-      val result = route(app, FakeRequest("GET", uri)).get
+      val result = controller.displayPage()(getRequest())
 
       intercept[NoExternalId](status(result))
     }
