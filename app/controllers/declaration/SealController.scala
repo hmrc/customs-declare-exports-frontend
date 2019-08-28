@@ -82,9 +82,9 @@ class SealController @Inject()(
   private def badRequest(mode: Mode, formWithErrors: Form[Seal], cachedSeals: Seq[Seal])(
     implicit request: JourneyRequest[_]
   ) = {
-    val d = request.cacheModel.transportDetails
-    val s = request.cacheModel.seals
-    BadRequest(sealPage(mode, formWithErrors, s, d.fold(false)(_.container)))
+    val transportDetails = request.cacheModel.transportDetails
+    val seals = request.cacheModel.seals
+    BadRequest(sealPage(mode, formWithErrors, seals, transportDetails.fold(false)(_.container)))
   }
 
   private def removeSeal(

@@ -31,6 +31,7 @@ import play.api.mvc.{AnyContentAsEmpty, Flash, Request}
 import play.api.test.FakeRequest
 import utils.FakeRequestCSRFSupport._
 
+@deprecated("Please use unit UnitViewSpec", since = "2019-08-28")
 trait AppViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator with ViewMatchers {
 
   lazy val basePrefix = "supplementary."

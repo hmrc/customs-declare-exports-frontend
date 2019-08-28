@@ -21,7 +21,7 @@ import play.api.mvc.{AnyContent, Request}
 import play.api.test.{FakeRequest, Helpers}
 import unit.base.UnitSpec
 
-class UnitViewSpec extends UnitSpec {
+class UnitViewSpec extends UnitSpec with ViewMatchers {
 
   import utils.FakeRequestCSRFSupport._
 
