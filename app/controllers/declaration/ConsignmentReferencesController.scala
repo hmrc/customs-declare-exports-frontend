@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.ConsignmentReferences
 import javax.inject.Inject
-import models.ExportsDeclaration
+import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -41,23 +41,27 @@ class ConsignmentReferencesController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.consignmentReferences match {
-      case Some(data) => Ok(consignmentReferencesPage(ConsignmentReferences.form().fill(data)))
-      case _          => Ok(consignmentReferencesPage(ConsignmentReferences.form()))
+      case Some(data) => Ok(consignmentReferencesPage(mode, ConsignmentReferences.form().fill(data)))
+      case _          => Ok(consignmentReferencesPage(mode, ConsignmentReferences.form()))
     }
   }
 
-  def submitConsignmentReferences(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    ConsignmentReferences.form
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[ConsignmentReferences]) =>
-          Future.successful(BadRequest(consignmentReferencesPage(formWithErrors))),
-        validConsignmentReferences =>
-          updateCache(validConsignmentReferences)
-            .map(_ => navigator.continueTo(controllers.declaration.routes.ExporterDetailsController.displayForm()))
-      )
+  def submitConsignmentReferences(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async {
+    implicit request =>
+      ConsignmentReferences
+        .form()
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[ConsignmentReferences]) =>
+            Future.successful(BadRequest(consignmentReferencesPage(mode, formWithErrors))),
+          validConsignmentReferences =>
+            updateCache(validConsignmentReferences)
+              .map(
+                _ => navigator.continueTo(controllers.declaration.routes.ExporterDetailsController.displayForm(mode))
+            )
+        )
   }
 
   private def updateCache(

@@ -19,6 +19,7 @@ package views.declaration
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.ItemType
 import helpers.views.declaration.{CommonMessages, ItemTypeMessages}
+import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -31,7 +32,7 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
   private val form: Form[ItemType] = ItemType.form()
   private val itemTypePage = app.injector.instanceOf[item_type]
   private def createView(form: Form[ItemType] = form, journeyType: String): Html =
-    itemTypePage(itemId, form, false)(fakeJourneyRequest(journeyType), messages)
+    itemTypePage(Mode.Normal, itemId, form, false)(fakeJourneyRequest(journeyType), messages)
 
   "Item Type View on empty page" when {
 

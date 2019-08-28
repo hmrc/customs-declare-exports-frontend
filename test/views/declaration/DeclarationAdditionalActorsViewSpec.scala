@@ -21,6 +21,7 @@ import controllers.util.SaveAndReturn
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.DeclarationAdditionalActors
 import helpers.views.declaration.{CommonMessages, DeclarationAdditionalActorsMessages}
+import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -34,7 +35,7 @@ class DeclarationAdditionalActorsViewSpec
   private val form: Form[DeclarationAdditionalActors] = DeclarationAdditionalActors.form()
   private val declarationAdditionalActorsPage = app.injector.instanceOf[declaration_additional_actors]
   private def createView(form: Form[DeclarationAdditionalActors] = form): Html =
-    declarationAdditionalActorsPage(form, Seq())(fakeJourneyRequest(SupplementaryDec), messages)
+    declarationAdditionalActorsPage(Mode.Normal, form, Seq())(fakeJourneyRequest(SupplementaryDec), messages)
 
   "Declaration Additional Actors View on empty page" should {
 
@@ -96,7 +97,7 @@ class DeclarationAdditionalActorsViewSpec
 
     "display 'Back' button that links to 'Carrier Details' page if on Standard Journey" in {
 
-      val view = declarationAdditionalActorsPage(form, Seq())(fakeJourneyRequest(StandardDec), messages)
+      val view = declarationAdditionalActorsPage(Mode.Normal, form, Seq())(fakeJourneyRequest(StandardDec), messages)
       val backButton = view.getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
@@ -204,10 +205,11 @@ class DeclarationAdditionalActorsViewSpec
 
     "display one row with data in table" in {
 
-      val view = declarationAdditionalActorsPage(form, Seq(DeclarationAdditionalActors(Some("12345"), Some("CS"))))(
-        fakeJourneyRequest(StandardDec),
-        messages
-      )
+      val view = declarationAdditionalActorsPage(
+        Mode.Normal,
+        form,
+        Seq(DeclarationAdditionalActors(Some("12345"), Some("CS")))
+      )(fakeJourneyRequest(StandardDec), messages)
 
       getElementByCss(view, "table>thead>tr>th:nth-child(1)").text() must be("Party’s EORI number")
       getElementByCss(view, "table>thead>tr>th:nth-child(2)").text() must be("Party type")

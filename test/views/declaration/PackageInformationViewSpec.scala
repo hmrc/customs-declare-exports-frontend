@@ -18,6 +18,7 @@ package views.declaration
 
 import forms.declaration.PackageInformation
 import helpers.views.declaration.{CommonMessages, PackageInformationMessages}
+import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -30,7 +31,7 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
   private val form: Form[PackageInformation] = PackageInformation.form()
   private val packageInformationPage = app.injector.instanceOf[package_information]
   private def createView(form: Form[PackageInformation] = form): Html =
-    packageInformationPage(itemId, form, Seq())(fakeRequest, messages)
+    packageInformationPage(Mode.Normal, itemId, form, Seq())(fakeRequest, messages)
 
   "Package Information View on empty page" should {
 
@@ -140,7 +141,7 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
     "display one row with data in table" in {
 
       val packages = Seq(PackageInformation("PA", 100, "Shipping Mark"))
-      val view = packageInformationPage("12345", form, packages)(fakeRequest, messages)
+      val view = packageInformationPage(Mode.Normal, "12345", form, packages)(fakeRequest, messages)
 
       // check table header
       getElementByCss(view, "table>caption").text() must be(messages(tableHeading))
@@ -158,7 +159,7 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
     "display two rows with data in table" in {
 
       val packages = Seq(PackageInformation("PA", 100, "Shipping Mark"), PackageInformation("PB", 101, "Shipping Mark"))
-      val view = packageInformationPage("12345", form, packages)(fakeRequest, messages)
+      val view = packageInformationPage(Mode.Normal, "12345", form, packages)(fakeRequest, messages)
 
       // check table header
       getElementByCss(view, "table>caption").text() must be("2 Packages added")

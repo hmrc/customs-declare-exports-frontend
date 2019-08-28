@@ -18,6 +18,7 @@ package views.declaration
 
 import forms.declaration.WarehouseIdentification
 import helpers.views.declaration.{CommonMessages, WarehouseIdentificationMessages}
+import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -32,7 +33,7 @@ class WarehouseIdentificationViewSpec extends ViewSpec with WarehouseIdentificat
   private val warehouseIdentificationPage = app.injector.instanceOf[warehouse_identification]
 
   private def createView(form: Form[WarehouseIdentification] = form): Html =
-    warehouseIdentificationPage(form)(fakeRequest, messages)
+    warehouseIdentificationPage(Mode.Normal, form)(fakeRequest, messages)
 
   "Warehouse Identification View" should {
 

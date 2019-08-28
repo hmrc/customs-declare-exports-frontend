@@ -19,6 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.{routes, CarrierDetailsController}
 import forms.Choice
 import forms.declaration.{CarrierDetails, EntityDetails}
+import models.Mode
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
@@ -48,7 +49,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
       "display page method is invoked and cache is empty" in new SetUp {
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -57,7 +58,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withCarrierDetails(Some("1234"))))
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -69,7 +70,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
         val incorrectForm = Json.toJson(CarrierDetails(EntityDetails(None, None)))
 
-        val result = controller.saveAddress()(postRequest(incorrectForm))
+        val result = controller.saveAddress(Mode.Normal)(postRequest(incorrectForm))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -81,7 +82,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
         val correctForm = Json.toJson(CarrierDetails(EntityDetails(Some("12345678"), None)))
 
-        val result = controller.saveAddress()(postRequest(correctForm))
+        val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.DeclarationAdditionalActorsController.displayForm()

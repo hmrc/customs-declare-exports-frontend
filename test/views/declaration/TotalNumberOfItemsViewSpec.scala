@@ -18,6 +18,7 @@ package views.declaration
 
 import forms.declaration.TotalNumberOfItems
 import helpers.views.declaration.{CommonMessages, TotalNumberOfItemsMessages}
+import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -30,7 +31,7 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
   private val form: Form[TotalNumberOfItems] = TotalNumberOfItems.form()
   private val totalNumberOfItemsPage = app.injector.instanceOf[total_number_of_items]
   private def createView(form: Form[TotalNumberOfItems] = form): Html =
-    totalNumberOfItemsPage(form)(fakeRequest, messages)
+    totalNumberOfItemsPage(Mode.Normal, form)(fakeRequest, messages)
 
   "Total Number Of Items View on empty page" should {
 

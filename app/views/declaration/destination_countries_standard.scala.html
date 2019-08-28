@@ -23,13 +23,13 @@
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[DestinationCountries], routingCountries: Seq[String] = Seq.empty)(implicit request: Request[_], messages: Messages)
+@(mode: Mode, form: Form[DestinationCountries], routingCountries: Seq[String] = Seq.empty)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("declaration.destinationCountries.title")
 ) {
 
-    @components.back_link(routes.DeclarationHolderController.displayForm().url)
+    @components.back_link(routes.DeclarationHolderController.displayForm(), mode)
 
     @components.error_summary(form.errors)
 
@@ -37,7 +37,7 @@
 
     @components.page_title(Some("declaration.destinationCountries.title"))
 
-    @helper.form(routes.DestinationCountriesController.saveCountries(), 'autoComplete -> "off") {
+    @helper.form(routes.DestinationCountriesController.saveCountries(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         <div id="country-of-dispatch-field">

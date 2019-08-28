@@ -53,7 +53,7 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
 
       "display page method is invoked and cache is empty" in new SetUp {
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -62,7 +62,7 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
 
         withNewCaching(aDeclaration(withSeal(Seal("id"))))
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -74,7 +74,7 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
 
         val body = Seq(("id", "value"), ("wrongAction", ""))
 
-        val result = controller.submitForm()(postRequestAsFormUrlEncoded(body: _*))
+        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -83,7 +83,7 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
 
         val body = Seq(("id", "!@#$"), (SaveAndContinue.toString, ""))
 
-        val result = controller.submitForm()(postRequestAsFormUrlEncoded(body: _*))
+        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -92,7 +92,7 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
 
         val body = Seq(("id", "!@#$"), (Add.toString, ""))
 
-        val result = controller.submitForm()(postRequestAsFormUrlEncoded(body: _*))
+        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -104,7 +104,7 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
 
         val body = Seq(("id", "value"), (Add.toString, ""))
 
-        val result = controller.submitForm()(postRequestAsFormUrlEncoded(body: _*))
+        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -115,7 +115,7 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
 
         val body = Seq(("id", "value"), (Add.toString, ""))
 
-        val result = controller.submitForm()(postRequestAsFormUrlEncoded(body: _*))
+        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -127,7 +127,7 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
 
         val body = Seq(("id", "value"), (Add.toString, ""))
 
-        val result = controller.submitForm()(postRequestAsFormUrlEncoded(body: _*))
+        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.SealController.displayForm()
@@ -137,7 +137,7 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
 
         val body = Seq("id" -> "value", (SaveAndContinue.toString, ""))
 
-        val result = controller.submitForm()(postRequestAsFormUrlEncoded(body: _*))
+        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
@@ -149,7 +149,7 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
 
         val body = Seq((SaveAndContinue.toString, ""))
 
-        val result = controller.submitForm()(postRequestAsFormUrlEncoded(body: _*))
+        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)

@@ -19,6 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.ItemTypeController
 import controllers.util.Remove
 import forms.declaration.ItemType
+import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -50,8 +51,7 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    when(mockItemTypePage.apply(any(), any(), any(), any(), any())(any(), any()))
-      .thenReturn(HtmlFormat.empty)
+    when(mockItemTypePage.apply(any(), any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   val itemId = new ExportItemIdGeneratorService().generateItemId()
@@ -63,7 +63,7 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
 
   def theResponseForm: Form[ItemType] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[ItemType]])
-    verify(mockItemTypePage).apply(any(), captor.capture(), any(), any(), any())(any(), any())
+    verify(mockItemTypePage).apply(any(), any(), captor.capture(), any(), any(), any())(any(), any())
     captor.getValue
   }
 
@@ -75,7 +75,7 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
 
         withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId), withItemType()))))
 
-        val result = controller.displayPage(itemId)(getRequest())
+        val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
         status(result) mustBe OK
         theResponseForm.value mustNot be(empty)
@@ -85,7 +85,7 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
 
         withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
 
-        val result = controller.displayPage(itemId)(getRequest())
+        val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
         status(result) mustBe OK
         theResponseForm.value mustBe empty
@@ -106,10 +106,10 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
           addActionUrlEncoded
         )
 
-        val result = controller.submitItemType(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) mustBe OK
-        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any(), any())(any(), any())
+        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any(), any(), any())(any(), any())
       }
     }
 
@@ -122,10 +122,10 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
         val correctForm =
           Json.toJson(ItemType("code", Seq("code"), Seq("code"), "description", Some("code"), Some("code"), "1234"))
 
-        val result = controller.submitItemType(itemId)(postRequest(correctForm))
+        val result = controller.submitItemType(Mode.Normal, itemId)(postRequest(correctForm))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any(), any())(any(), any())
+        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any(), any(), any())(any(), any())
       }
 
       "form action from user is incorrect" in {
@@ -143,10 +143,10 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
           ("WrongAction", "")
         )
 
-        val result = controller.submitItemType(itemId)(postRequestAsFormUrlEncoded(wrongAction: _*))
+        val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(wrongAction: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any(), any())(any(), any())
+        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any(), any(), any())(any(), any())
       }
 
       "information from user is incorrect during adding" in {
@@ -164,10 +164,10 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
           addActionUrlEncoded
         )
 
-        val result = controller.submitItemType(itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any(), any())(any(), any())
+        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any(), any(), any())(any(), any())
       }
 
       "information from user is incorrect during saving" in {
@@ -185,10 +185,10 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
           saveAndContinueActionUrlEncoded
         )
 
-        val result = controller.submitItemType(itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any(), any())(any(), any())
+        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any(), any(), any())(any(), any())
       }
     }
 
@@ -198,10 +198,10 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
 
         withNewCaching(aDeclaration())
 
-        val result = controller.displayPage(itemId)(getRequest())
+        val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
         status(result) mustBe SEE_OTHER
-        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any(), any())(any(), any())
+        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any(), any(), any())(any(), any())
       }
 
       "correct item type is added during saving" in {
@@ -219,11 +219,12 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
           saveAndContinueActionUrlEncoded
         )
 
-        val result = controller.submitItemType(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationController.displayPage(itemId)
-        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any(), any())(any(), any())
+        thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationController
+          .displayPage(Mode.Normal, itemId)
+        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any(), any(), any())(any(), any())
       }
 
       "item type has been removed and there is exisitng data in cache" in {
@@ -234,10 +235,10 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
 
         val removeAction = (Remove.toString, "taricAdditionalCode_0")
 
-        val result = controller.submitItemType(itemId)(postRequestAsFormUrlEncoded(removeAction))
+        val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(removeAction))
 
         status(result) mustBe OK
-        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any(), any())(any(), any())
+        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any(), any(), any())(any(), any())
       }
     }
   }

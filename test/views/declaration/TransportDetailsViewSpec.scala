@@ -21,6 +21,7 @@ import forms.Choice.AllowedChoiceValues
 import forms.declaration.TransportCodes._
 import forms.declaration.TransportDetails
 import helpers.views.declaration.CommonMessages
+import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import services.Countries
@@ -37,7 +38,7 @@ class TransportDetailsViewSpec extends TransportDetailsFields with CommonMessage
 
   private val transportDetailsPage = app.injector.instanceOf[transport_details]
   def createView(form: Form[TransportDetails] = form): Html =
-    transportDetailsPage(form)(journeyRequest(fakeRequest, AllowedChoiceValues.StandardDec), messages)
+    transportDetailsPage(Mode.Normal, form)(journeyRequest(fakeRequest, AllowedChoiceValues.StandardDec), messages)
 
   "TransportDetails View" should {
 

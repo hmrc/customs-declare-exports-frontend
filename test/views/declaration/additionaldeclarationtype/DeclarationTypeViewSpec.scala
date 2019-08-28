@@ -26,6 +26,7 @@ import forms.declaration.additionaldeclarationtype.{
   AdditionalDeclarationTypeSupplementaryDec
 }
 import helpers.views.declaration.{CommonMessages, DeclarationTypeMessages}
+import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.twirl.api.Html
@@ -40,7 +41,7 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
   private val formSupplementary: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeSupplementaryDec.form()
   private val declarationTypePage = app.injector.instanceOf[declaration_type]
   private def createView(form: Form[AdditionalDeclarationType], journeyType: String): Html =
-    declarationTypePage(form)(fakeJourneyRequest(journeyType), messages)
+    declarationTypePage(Mode.Normal, form)(fakeJourneyRequest(journeyType), messages)
 
   "Declaration Type View on empty page" should {
 

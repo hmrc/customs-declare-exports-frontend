@@ -22,13 +22,13 @@
 
 @this(main_template: views.html.main_template)
 
-@(itemId: String, form: Form[FiscalInformation])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[FiscalInformation])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("declaration.fiscalInformation.header")
 ) {
 
-    @components.back_link(ProcedureCodesController.displayPage(itemId).url)
+    @components.back_link(ProcedureCodesController.displayPage(mode, itemId), mode)
 
     @components.error_summary(form.errors)
 
@@ -63,7 +63,7 @@
     </details>
     <br>
 
-    @helper.form(FiscalInformationController.saveFiscalInformation(itemId), 'autoComplete -> "off") {
+    @helper.form(FiscalInformationController.saveFiscalInformation(mode, itemId), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         @components.fields.field_radio(

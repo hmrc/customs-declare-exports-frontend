@@ -21,15 +21,15 @@
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[AdditionalDeclarationType])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[AdditionalDeclarationType])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
     title = messages("declaration.declarationType.title")
 ) {
 
-    @components.back_link(controllers.declaration.routes.DispatchLocationController.displayPage().url)
+    @components.back_link(controllers.declaration.routes.DispatchLocationController.displayPage(mode), mode)
 
-    @helper.form(controllers.declaration.routes.AdditionalDeclarationTypeController.submitForm(), 'autoComplete -> "off") {
+    @helper.form(controllers.declaration.routes.AdditionalDeclarationTypeController.submitForm(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         @components.error_summary(form.errors)

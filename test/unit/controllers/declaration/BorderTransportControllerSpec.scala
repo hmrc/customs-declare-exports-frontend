@@ -20,6 +20,7 @@ import controllers.declaration.{routes, BorderTransportController}
 import forms.Choice
 import forms.declaration.BorderTransport
 import forms.declaration.TransportCodes.{Maritime, WagonNumber}
+import models.Mode
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers._
@@ -54,7 +55,7 @@ class BorderTransportControllerSpec extends ControllerSpec with ErrorHandlerMock
 
       "display page method is invoked and cache is empty" in new SetUp {
 
-        val result: Future[Result] = controller.displayForm()(getRequest())
+        val result: Future[Result] = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -68,7 +69,7 @@ class BorderTransportControllerSpec extends ControllerSpec with ErrorHandlerMock
           )
         )
 
-        val result: Future[Result] = controller.displayForm()(getRequest())
+        val result: Future[Result] = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -80,7 +81,7 @@ class BorderTransportControllerSpec extends ControllerSpec with ErrorHandlerMock
 
         val incorrectForm: JsValue = Json.toJson(BorderTransport("wrongValue", "wrongValue", None))
 
-        val result: Future[Result] = controller.submitForm()(postRequest(incorrectForm))
+        val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -92,7 +93,7 @@ class BorderTransportControllerSpec extends ControllerSpec with ErrorHandlerMock
 
         val correctForm: JsValue = Json.toJson(BorderTransport(Maritime, WagonNumber, None))
 
-        val result: Future[Result] = controller.submitForm()(postRequest(correctForm))
+        val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.TransportDetailsController.displayForm()

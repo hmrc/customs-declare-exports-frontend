@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.ConsigneeDetails
 import javax.inject.Inject
-import models.ExportsDeclaration
+import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -44,22 +44,23 @@ class ConsigneeDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.parties.consigneeDetails match {
-      case Some(data) => Ok(consigneeDetailsPage(ConsigneeDetails.form().fill(data)))
-      case _          => Ok(consigneeDetailsPage(ConsigneeDetails.form()))
+      case Some(data) => Ok(consigneeDetailsPage(mode, ConsigneeDetails.form().fill(data)))
+      case _          => Ok(consigneeDetailsPage(mode, ConsigneeDetails.form()))
     }
   }
 
-  def saveAddress(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def saveAddress(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     ConsigneeDetails
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ConsigneeDetails]) => Future.successful(BadRequest(consigneeDetailsPage(formWithErrors))),
+        (formWithErrors: Form[ConsigneeDetails]) =>
+          Future.successful(BadRequest(consigneeDetailsPage(mode, formWithErrors))),
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(controllers.declaration.routes.DeclarantDetailsController.displayForm()))
+            .map(_ => navigator.continueTo(controllers.declaration.routes.DeclarantDetailsController.displayForm(mode)))
       )
   }
 

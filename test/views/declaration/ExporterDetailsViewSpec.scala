@@ -21,6 +21,7 @@ import controllers.util.SaveAndReturn
 import forms.common.Address
 import forms.declaration.{EntityDetails, ExporterDetails}
 import helpers.views.declaration.{CommonMessages, ExporterDetailsMessages}
+import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -33,7 +34,7 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
   private val form: Form[ExporterDetails] = ExporterDetails.form()
   private val exporterDetailsPage = app.injector.instanceOf[exporter_details]
   private def createView(form: Form[ExporterDetails] = form): Html =
-    exporterDetailsPage(form)(fakeRequest, messages)
+    exporterDetailsPage(Mode.Normal, form)(fakeRequest, messages)
 
   "Exporter Details View on empty page" should {
 

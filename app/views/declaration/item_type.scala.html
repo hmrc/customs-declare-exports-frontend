@@ -27,23 +27,25 @@
 
 @this(main_template: views.html.main_template)
 
-@(  itemId: String,
-    form: Form[ItemType],
-    hasAdditionalFiscalReferences: Boolean,
-    taricAdditionalCodes: Seq[String] = Seq.empty,
-    nationalAdditionalCodes: Seq[String] = Seq.empty
+@(
+        mode: Mode,
+        itemId: String,
+        form: Form[ItemType],
+        hasAdditionalFiscalReferences: Boolean,
+        taricAdditionalCodes: Seq[String] = Seq.empty,
+        nationalAdditionalCodes: Seq[String] = Seq.empty
 )(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
     title = messages("declaration.itemType.title")
 ) {
 
-    @helper.form(routes.ItemTypeController.submitItemType(itemId), 'autocomplete -> "off") {
+    @helper.form(routes.ItemTypeController.submitItemType(mode, itemId), 'autocomplete -> "off") {
         @helper.CSRF.formField
 
         @{
-          if(hasAdditionalFiscalReferences) components.back_link(routes.AdditionalFiscalReferencesController.displayPage(itemId).url)
-          else components.back_link(routes.FiscalInformationController.displayPage(itemId).url)
+          if(hasAdditionalFiscalReferences) components.back_link(routes.AdditionalFiscalReferencesController.displayPage(mode, itemId), mode)
+          else components.back_link(routes.FiscalInformationController.displayPage(mode, itemId), mode)
         }
 
 

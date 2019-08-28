@@ -17,6 +17,7 @@
 package views.declaration
 import forms.declaration.Document
 import helpers.views.declaration.{CommonMessages, PreviousDocumentsMessages}
+import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import views.html.declaration.previous_documents
@@ -29,7 +30,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
   private val form: Form[Document] = Document.form()
   private val previousDocumentsPage = app.injector.instanceOf[previous_documents]
   private def createView(form: Form[Document] = form): Html =
-    previousDocumentsPage(form, Seq())(fakeRequest, messages)
+    previousDocumentsPage(Mode.Normal, form, Seq())(fakeRequest, messages)
 
   "Previous Documents View on empty page" should {
 
@@ -211,7 +212,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
     "display one row with data in table" in {
 
       val prevDocuments = Seq(Document("X", "1", "A", Some("1")))
-      val view = previousDocumentsPage(form, prevDocuments)(fakeRequest, messages)
+      val view = previousDocumentsPage(Mode.Normal, form, prevDocuments)(fakeRequest, messages)
 
       // table header
       getElementByCss(view, "form>table>caption").text() must be(messages(previousDocuments))

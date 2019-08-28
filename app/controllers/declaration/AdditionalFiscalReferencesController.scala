@@ -24,7 +24,7 @@ import forms.declaration.AdditionalFiscalReferencesData._
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.ExportsDeclaration
+import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -46,17 +46,18 @@ class AdditionalFiscalReferencesController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.itemBy(itemId) match {
-      case Some(model) =>
-        model.additionalFiscalReferencesData.fold(Ok(additionalFiscalReferencesPage(itemId, form()))) { data =>
-          Ok(additionalFiscalReferencesPage(itemId, form(), data.references))
-        }
-      case _ => Ok(additionalFiscalReferencesPage(itemId, form()))
-    }
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) {
+    implicit request =>
+      request.cacheModel.itemBy(itemId) match {
+        case Some(model) =>
+          model.additionalFiscalReferencesData.fold(Ok(additionalFiscalReferencesPage(mode, itemId, form()))) { data =>
+            Ok(additionalFiscalReferencesPage(mode, itemId, form(), data.references))
+          }
+        case _ => Ok(additionalFiscalReferencesPage(mode, itemId, form()))
+      }
   }
 
-  def saveReferences(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
+  def saveReferences(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
       val actionTypeOpt = FormAction.bindFromRequest()
 
@@ -68,15 +69,16 @@ class AdditionalFiscalReferencesController @Inject()(
       val boundForm = form().bindFromRequest()
 
       actionTypeOpt match {
-        case Some(Add)                                   => addReference(itemId, boundForm, cache)
-        case Some(SaveAndContinue) | Some(SaveAndReturn) => saveAndContinue(itemId, boundForm, cache)
-        case Some(Remove(values))                        => removeReference(itemId, values, boundForm, cache)
+        case Some(Add)                                   => addReference(mode, itemId, boundForm, cache)
+        case Some(SaveAndContinue) | Some(SaveAndReturn) => saveAndContinue(mode, itemId, boundForm, cache)
+        case Some(Remove(values))                        => removeReference(mode, itemId, values, boundForm, cache)
         case _                                           => errorHandler.displayErrorPage()
       }
 
   }
 
   private def addReference(
+    mode: Mode,
     itemId: String,
     form: Form[AdditionalFiscalReference],
     cachedData: AdditionalFiscalReferencesData
@@ -84,13 +86,14 @@ class AdditionalFiscalReferencesController @Inject()(
     MultipleItemsHelper
       .add(form, cachedData.references, limit)
       .fold(
-        formWithErrors => Future.successful(badRequest(itemId, formWithErrors, cachedData.references)),
+        formWithErrors => Future.successful(badRequest(mode, itemId, formWithErrors, cachedData.references)),
         updatedCache =>
           updateExportsCache(itemId, AdditionalFiscalReferencesData(updatedCache))
-            .map(_ => Redirect(routes.AdditionalFiscalReferencesController.displayPage(itemId)))
+            .map(_ => Redirect(routes.AdditionalFiscalReferencesController.displayPage(mode, itemId)))
       )
 
   private def saveAndContinue(
+    mode: Mode,
     itemId: String,
     form: Form[AdditionalFiscalReference],
     cachedData: AdditionalFiscalReferencesData
@@ -98,15 +101,16 @@ class AdditionalFiscalReferencesController @Inject()(
     MultipleItemsHelper
       .saveAndContinue(form, cachedData.references, isMandatory = true, limit)
       .fold(
-        formWithErrors => Future.successful(badRequest(itemId, formWithErrors, cachedData.references)),
+        formWithErrors => Future.successful(badRequest(mode, itemId, formWithErrors, cachedData.references)),
         updatedCache =>
           if (updatedCache != cachedData.references)
             updateExportsCache(itemId, AdditionalFiscalReferencesData(updatedCache))
-              .map(_ => navigator.continueTo(routes.ItemTypeController.displayPage(itemId)))
-          else Future.successful(navigator.continueTo(routes.ItemTypeController.displayPage(itemId)))
+              .map(_ => navigator.continueTo(routes.ItemTypeController.displayPage(mode, itemId)))
+          else Future.successful(navigator.continueTo(routes.ItemTypeController.displayPage(mode, itemId)))
       )
 
   private def removeReference(
+    mode: Mode,
     itemId: String,
     values: Seq[String],
     form: Form[AdditionalFiscalReference],
@@ -114,17 +118,18 @@ class AdditionalFiscalReferencesController @Inject()(
   )(implicit request: JourneyRequest[_]): Future[Result] = {
     val updatedCache = cachedData.removeReferences(values)
     updateExportsCache(itemId, updatedCache).map {
-      case Some(_) => Ok(additionalFiscalReferencesPage(itemId, form.discardingErrors, updatedCache.references))
-      case None    => Redirect(routes.ItemsSummaryController.displayPage())
+      case Some(_) => Ok(additionalFiscalReferencesPage(mode, itemId, form.discardingErrors, updatedCache.references))
+      case None    => Redirect(routes.ItemsSummaryController.displayPage(mode))
     }
   }
 
   private def badRequest(
+    mode: Mode,
     itemId: String,
     formWithErrors: Form[AdditionalFiscalReference],
     references: Seq[AdditionalFiscalReference]
   )(implicit request: JourneyRequest[_]): Result =
-    BadRequest(additionalFiscalReferencesPage(itemId, formWithErrors, references))
+    BadRequest(additionalFiscalReferencesPage(mode, itemId, formWithErrors, references))
 
   private def updateExportsCache(itemId: String, updatedAdditionalFiscalReferencesData: AdditionalFiscalReferencesData)(
     implicit request: JourneyRequest[_]

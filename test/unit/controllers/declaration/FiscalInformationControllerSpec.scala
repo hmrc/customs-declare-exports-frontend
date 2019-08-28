@@ -20,6 +20,7 @@ import controllers.declaration.{routes, FiscalInformationController}
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.FiscalInformation
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers._
+import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -48,7 +49,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
-    when(mockFiscalInformationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockFiscalInformationPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -60,7 +61,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
 
   def theResponseForm: Form[FiscalInformation] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[FiscalInformation]])
-    verify(mockFiscalInformationPage).apply(any(), captor.capture())(any(), any())
+    verify(mockFiscalInformationPage).apply(any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -70,10 +71,10 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
 
       "display page method is invoked and cache is empty" in {
 
-        val result = controller.displayPage(itemId)(getRequest())
+        val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
         status(result) mustBe OK
-        verify(mockFiscalInformationPage, times(1)).apply(any(), any())(any(), any())
+        verify(mockFiscalInformationPage, times(1)).apply(any(), any(), any())(any(), any())
 
         theResponseForm.value mustBe empty
       }
@@ -82,10 +83,10 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         val item = anItem(withFiscalInformation(FiscalInformation(yes)))
         withNewCaching(aDeclaration(withItems(item)))
 
-        val result = controller.displayPage(item.id)(getRequest())
+        val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
 
         status(result) mustBe OK
-        verify(mockFiscalInformationPage, times(1)).apply(any(), any())(any(), any())
+        verify(mockFiscalInformationPage, times(1)).apply(any(), any(), any())(any(), any())
 
         theResponseForm.value.value.onwardSupplyRelief mustBe yes
       }
@@ -97,10 +98,10 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
 
         val incorrectForm = Json.toJson(FiscalInformation("IncorrectValue"))
 
-        val result = controller.saveFiscalInformation(itemId)(postRequest(incorrectForm))
+        val result = controller.saveFiscalInformation(Mode.Normal, itemId)(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockFiscalInformationPage, times(1)).apply(any(), any())(any(), any())
+        verify(mockFiscalInformationPage, times(1)).apply(any(), any(), any())(any(), any())
       }
     }
 
@@ -110,23 +111,23 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
 
         val correctForm = Json.toJson(FiscalInformation("Yes"))
 
-        val result = controller.saveFiscalInformation(itemId)(postRequest(correctForm))
+        val result = controller.saveFiscalInformation(Mode.Normal, itemId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesController
-          .displayPage(itemId)
-        verify(mockFiscalInformationPage, times(0)).apply(any(), any())(any(), any())
+          .displayPage(Mode.Normal, itemId)
+        verify(mockFiscalInformationPage, times(0)).apply(any(), any(), any())(any(), any())
       }
 
       "user answer no" in {
 
         val correctForm = Json.toJson(FiscalInformation("No"))
 
-        val result = controller.saveFiscalInformation(itemId)(postRequest(correctForm))
+        val result = controller.saveFiscalInformation(Mode.Normal, itemId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ItemTypeController.displayPage(itemId)
-        verify(mockFiscalInformationPage, times(0)).apply(any(), any())(any(), any())
+        thePageNavigatedTo mustBe controllers.declaration.routes.ItemTypeController.displayPage(Mode.Normal, itemId)
+        verify(mockFiscalInformationPage, times(0)).apply(any(), any(), any())(any(), any())
       }
     }
   }

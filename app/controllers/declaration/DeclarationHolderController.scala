@@ -23,7 +23,7 @@ import controllers.util._
 import forms.declaration.DeclarationHolder
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.ExportsDeclaration
+import models.{ExportsDeclaration, Mode}
 import models.declaration.DeclarationHoldersData
 import models.declaration.DeclarationHoldersData.limitOfHolders
 import models.requests.JourneyRequest
@@ -50,14 +50,14 @@ class DeclarationHolderController @Inject()(
 
   import forms.declaration.DeclarationHolder.form
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.parties.declarationHoldersData match {
-      case Some(data) => Ok(declarationHolderPage(form(), data.holders))
-      case _          => Ok(declarationHolderPage(form(), Seq()))
+      case Some(data) => Ok(declarationHolderPage(mode, form(), data.holders))
+      case _          => Ok(declarationHolderPage(mode, form(), Seq()))
     }
   }
 
-  def submitHoldersOfAuthorisation(): Action[AnyContent] = (authenticate andThen journeyType).async {
+  def submitHoldersOfAuthorisation(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
       val boundForm = form().bindFromRequest()
       val actionTypeOpt = FormAction.bindFromRequest()
@@ -65,33 +65,34 @@ class DeclarationHolderController @Inject()(
       val cache = request.cacheModel.parties.declarationHoldersData.getOrElse(DeclarationHoldersData(Seq()))
 
       actionTypeOpt match {
-        case Some(Add) if !boundForm.hasErrors => addHolder(boundForm.get, cache)
+        case Some(Add) if !boundForm.hasErrors => addHolder(mode, boundForm.get, cache)
         case Some(SaveAndContinue) | Some(SaveAndReturn) if !boundForm.hasErrors =>
-          saveAndContinue(boundForm.get, cache)
-        case Some(Remove(values)) => removeHolder(retrieveHolder(values), boundForm, cache)
-        case _                    => Future.successful(BadRequest(declarationHolderPage(boundForm, cache.holders)))
+          saveAndContinue(mode, boundForm.get, cache)
+        case Some(Remove(values)) => removeHolder(mode, retrieveHolder(values), boundForm, cache)
+        case _                    => Future.successful(BadRequest(declarationHolderPage(mode, boundForm, cache.holders)))
       }
   }
 
-  private def addHolder(
-    userInput: DeclarationHolder,
-    cachedData: DeclarationHoldersData
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
+  private def addHolder(mode: Mode, userInput: DeclarationHolder, cachedData: DeclarationHoldersData)(
+    implicit request: JourneyRequest[_],
+    hc: HeaderCarrier
+  ): Future[Result] =
     (userInput, cachedData.holders) match {
       case (_, holders) if holders.length >= limitOfHolders =>
         handleErrorPage(
+          mode,
           Seq(("", "supplementary.declarationHolders.maximumAmount.error")),
           userInput,
           cachedData.holders
         )
 
       case (holder, holders) if holders.contains(holder) =>
-        handleErrorPage(Seq(("", "supplementary.declarationHolders.duplicated")), userInput, cachedData.holders)
+        handleErrorPage(mode, Seq(("", "supplementary.declarationHolders.duplicated")), userInput, cachedData.holders)
 
       case (holder, holders) if holder.authorisationTypeCode.isDefined && holder.eori.isDefined =>
         val updatedCache = DeclarationHoldersData(holders :+ holder)
         updateCache(updatedCache)
-          .map(_ => Redirect(controllers.declaration.routes.DeclarationHolderController.displayForm()))
+          .map(_ => Redirect(controllers.declaration.routes.DeclarationHolderController.displayForm(mode)))
 
       case (DeclarationHolder(authCode, eori), _) =>
         val authCodeError = authCode.fold(
@@ -99,11 +100,12 @@ class DeclarationHolderController @Inject()(
         )(_ => Seq[(String, String)]())
         val eoriError = eori.fold(Seq(("eori", "supplementary.eori.empty")))(_ => Seq[(String, String)]())
 
-        handleErrorPage(authCodeError ++ eoriError, userInput, cachedData.holders)
+        handleErrorPage(mode, authCodeError ++ eoriError, userInput, cachedData.holders)
     }
 
   //scalastyle:off method.length
   private def handleErrorPage(
+    mode: Mode,
     fieldWithError: Seq[(String, String)],
     userInput: DeclarationHolder,
     holders: Seq[DeclarationHolder]
@@ -112,7 +114,7 @@ class DeclarationHolderController @Inject()(
 
     val formWithError = form().fill(userInput).copy(errors = updatedErrors)
 
-    Future.successful(BadRequest(declarationHolderPage(formWithError, holders)))
+    Future.successful(BadRequest(declarationHolderPage(mode, formWithError, holders)))
   }
 
   private def updateCache(
@@ -123,13 +125,13 @@ class DeclarationHolderController @Inject()(
       model.copy(parties = updatedParties)
     })
 
-  private def saveAndContinue(
-    userInput: DeclarationHolder,
-    cachedData: DeclarationHoldersData
-  )(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] =
+  private def saveAndContinue(mode: Mode, userInput: DeclarationHolder, cachedData: DeclarationHoldersData)(
+    implicit request: JourneyRequest[AnyContent],
+    hc: HeaderCarrier
+  ): Future[Result] =
     (userInput, cachedData.holders) match {
       case (DeclarationHolder(None, None), _) =>
-        Future.successful(navigator.continueTo(routes.DestinationCountriesController.displayForm()))
+        Future.successful(navigator.continueTo(routes.DestinationCountriesController.displayForm(mode)))
 
       case (holder, Seq()) =>
         holder match {
@@ -137,7 +139,8 @@ class DeclarationHolderController @Inject()(
             val updatedCache = DeclarationHoldersData(Seq(DeclarationHolder(Some(typeCode), Some(eori))))
             updateCache(updatedCache)
               .map(
-                _ => navigator.continueTo(controllers.declaration.routes.DestinationCountriesController.displayForm())
+                _ =>
+                  navigator.continueTo(controllers.declaration.routes.DestinationCountriesController.displayForm(mode))
               )
 
           case DeclarationHolder(maybeTypeCode, maybeEori) =>
@@ -147,23 +150,24 @@ class DeclarationHolderController @Inject()(
 
             val eoriError = maybeEori.fold(Seq(("eori", "supplementary.eori.empty")))(_ => Seq[(String, String)]())
 
-            handleErrorPage(typeCodeError ++ eoriError, userInput, Seq())
+            handleErrorPage(mode, typeCodeError ++ eoriError, userInput, Seq())
         }
 
       case (holder, holders) =>
         holder match {
           case _ if holders.length >= limitOfHolders =>
-            handleErrorPage(Seq(("", "supplementary.declarationHolders.maximumAmount.error")), userInput, holders)
+            handleErrorPage(mode, Seq(("", "supplementary.declarationHolders.maximumAmount.error")), userInput, holders)
 
           case _ if holders.contains(holder) =>
-            handleErrorPage(Seq(("", "supplementary.declarationHolders.duplicated")), userInput, holders)
+            handleErrorPage(mode, Seq(("", "supplementary.declarationHolders.duplicated")), userInput, holders)
 
           case _ if holder.authorisationTypeCode.isDefined == holder.eori.isDefined =>
             val updatedHolders = if (holder.authorisationTypeCode.isDefined) holders :+ holder else holders
             val updatedCache = DeclarationHoldersData(updatedHolders)
             updateCache(updatedCache)
               .map(
-                _ => navigator.continueTo(controllers.declaration.routes.DestinationCountriesController.displayForm())
+                _ =>
+                  navigator.continueTo(controllers.declaration.routes.DestinationCountriesController.displayForm(mode))
               )
 
           case DeclarationHolder(maybeTypeCode, maybeEori) =>
@@ -173,19 +177,20 @@ class DeclarationHolderController @Inject()(
 
             val eoriError = maybeEori.fold(Seq(("eori", "supplementary.eori.empty")))(_ => Seq[(String, String)]())
 
-            handleErrorPage(typeCodeError ++ eoriError, userInput, holders)
+            handleErrorPage(mode, typeCodeError ++ eoriError, userInput, holders)
         }
     }
   //scalastyle:on method.length
 
   private def removeHolder(
+    mode: Mode,
     holderToRemove: DeclarationHolder,
     userInput: Form[DeclarationHolder],
     cachedData: DeclarationHoldersData
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
     val updatedCache = cachedData.copy(holders = remove(cachedData.holders, (_: DeclarationHolder) == holderToRemove))
     updateCache(updatedCache)
-      .map(_ => Ok(declarationHolderPage(userInput.discardingErrors, updatedCache.holders)))
+      .map(_ => Ok(declarationHolderPage(mode, userInput.discardingErrors, updatedCache.holders)))
   }
 
   private def retrieveHolder(values: Seq[String]): DeclarationHolder =

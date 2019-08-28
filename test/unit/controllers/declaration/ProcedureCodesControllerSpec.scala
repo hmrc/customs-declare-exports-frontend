@@ -20,6 +20,7 @@ import controllers.declaration.ProcedureCodesController
 import controllers.util.Remove
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.ProcedureCodes
+import models.Mode
 import models.declaration.ProcedureCodesData
 import models.declaration.ProcedureCodesData.limitOfCodes
 import org.mockito.ArgumentCaptor
@@ -53,7 +54,7 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
   def theResponse: (Form[ProcedureCodes], Seq[String]) = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[ProcedureCodes]])
     val dataCaptor = ArgumentCaptor.forClass(classOf[Seq[String]])
-    verify(mockProcedureCodesPage).apply(any(), formCaptor.capture(), dataCaptor.capture())(any(), any())
+    verify(mockProcedureCodesPage).apply(any(), any(), formCaptor.capture(), dataCaptor.capture())(any(), any())
     (formCaptor.getValue, dataCaptor.getValue)
   }
 
@@ -61,7 +62,7 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    when(mockProcedureCodesPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockProcedureCodesPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -77,10 +78,10 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
 
         withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
 
-        val result = controller.displayPage(itemId)(getRequest())
+        val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
         status(result) mustBe OK
-        verify(mockProcedureCodesPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockProcedureCodesPage, times(1)).apply(any(), any(), any(), any())(any(), any())
 
         val (responseForm, responseSeq) = theResponse
         responseForm.value mustBe empty
@@ -92,10 +93,10 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         val item = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some("1234"), Seq("123"))))
         withNewCaching(aDeclaration(withItem(item)))
 
-        val result = controller.displayPage(itemId)(getRequest())
+        val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
         status(result) mustBe OK
-        verify(mockProcedureCodesPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockProcedureCodesPage, times(1)).apply(any(), any(), any(), any())(any(), any())
 
         val (responseForm, responseSeq) = theResponse
         responseForm.value.value.procedureCode.value mustBe "1234"
@@ -111,10 +112,10 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
 
         val wrongAction = Seq(("procedureCode", "1234"), ("additionalProcedureCode", "123"), ("WrongAction", ""))
 
-        val result = controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(wrongAction: _*))
+        val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(wrongAction: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockProcedureCodesPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockProcedureCodesPage, times(1)).apply(any(), any(), any(), any())(any(), any())
       }
     }
 
@@ -127,10 +128,11 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         val incorrectForm =
           Seq(("procedureCode", "1234"), ("additionalProcedureCode", "incorrect"), addActionUrlEncoded)
 
-        val result = controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result =
+          controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockProcedureCodesPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockProcedureCodesPage, times(1)).apply(any(), any(), any(), any())(any(), any())
       }
 
       "user put duplicated item" in {
@@ -141,10 +143,11 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         val duplicatedForm =
           Seq(("procedureCode", "1234"), ("additionalProcedureCode", "123"), addActionUrlEncoded)
 
-        val result = controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+        val result =
+          controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockProcedureCodesPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockProcedureCodesPage, times(1)).apply(any(), any(), any(), any())(any(), any())
       }
 
       "user reach maximum amount of items" in {
@@ -156,10 +159,10 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         val correctForm =
           Seq(("procedureCode", "1234"), ("additionalProcedureCode", "321"), addActionUrlEncoded)
 
-        val result = controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockProcedureCodesPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockProcedureCodesPage, times(1)).apply(any(), any(), any(), any())(any(), any())
       }
     }
 
@@ -172,10 +175,11 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         val incorrectForm =
           Seq(("procedureCode", "1234"), ("additionalProcedureCode", "incorrect"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result =
+          controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockProcedureCodesPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockProcedureCodesPage, times(1)).apply(any(), any(), any(), any())(any(), any())
       }
 
       "user put duplicated item" in {
@@ -186,10 +190,11 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         val duplicatedForm =
           Seq(("procedureCode", "1234"), ("additionalProcedureCode", "123"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+        val result =
+          controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockProcedureCodesPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockProcedureCodesPage, times(1)).apply(any(), any(), any(), any())(any(), any())
       }
 
       "user reach maximum amount of items" in {
@@ -201,10 +206,10 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         val correctForm =
           Seq(("procedureCode", "1234"), ("additionalProcedureCode", "321"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockProcedureCodesPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockProcedureCodesPage, times(1)).apply(any(), any(), any(), any())(any(), any())
       }
     }
 
@@ -217,12 +222,13 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         val correctForm =
           Seq(("procedureCode", "1234"), ("additionalProcedureCode", "321"), addActionUrlEncoded)
 
-        val result = controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ProcedureCodesController.displayPage("itemId12345")
+        thePageNavigatedTo mustBe controllers.declaration.routes.ProcedureCodesController
+          .displayPage(Mode.Normal, "itemId12345")
 
-        verify(mockProcedureCodesPage, times(0)).apply(any(), any(), any())(any(), any())
+        verify(mockProcedureCodesPage, times(0)).apply(any(), any(), any(), any())(any(), any())
       }
 
       "user save correct data" in {
@@ -232,12 +238,13 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         val correctForm =
           Seq(("procedureCode", "1234"), ("additionalProcedureCode", "321"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.FiscalInformationController.displayPage("itemId12345")
+        thePageNavigatedTo mustBe controllers.declaration.routes.FiscalInformationController
+          .displayPage(Mode.Normal, "itemId12345")
 
-        verify(mockProcedureCodesPage, times(0)).apply(any(), any(), any())(any(), any())
+        verify(mockProcedureCodesPage, times(0)).apply(any(), any(), any(), any())(any(), any())
       }
 
       "user save correct data without new item" in {
@@ -249,12 +256,13 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         val correctForm =
           Seq(("procedureCode", "1234"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.FiscalInformationController.displayPage("itemId12345")
+        thePageNavigatedTo mustBe controllers.declaration.routes.FiscalInformationController
+          .displayPage(Mode.Normal, "itemId12345")
 
-        verify(mockProcedureCodesPage, times(0)).apply(any(), any(), any())(any(), any())
+        verify(mockProcedureCodesPage, times(0)).apply(any(), any(), any(), any())(any(), any())
       }
 
       "user remove existing item" in {
@@ -265,10 +273,10 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
 
         val removeAction = (Remove.toString, "123")
 
-        val result = controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(removeAction))
+        val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(removeAction))
 
         status(result) mustBe OK
-        verify(mockProcedureCodesPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockProcedureCodesPage, times(1)).apply(any(), any(), any(), any())(any(), any())
       }
     }
   }

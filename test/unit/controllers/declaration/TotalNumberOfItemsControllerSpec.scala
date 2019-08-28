@@ -19,6 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.TotalNumberOfItemsController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.TotalNumberOfItems
+import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -47,7 +48,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
-    when(mockTotalNumberOfItemsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockTotalNumberOfItemsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -57,7 +58,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
 
   def theResponseForm: Form[TotalNumberOfItems] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[TotalNumberOfItems]])
-    verify(mockTotalNumberOfItemsPage).apply(captor.capture())(any(), any())
+    verify(mockTotalNumberOfItemsPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -67,10 +68,10 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
 
       "display page method is invoked and cache is empty" in {
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
-        verify(mockTotalNumberOfItemsPage, times(1)).apply(any())(any(), any())
+        verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any())(any(), any())
 
         theResponseForm.value mustBe empty
       }
@@ -81,10 +82,10 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
         val totalNumberOfItems = TotalNumberOfItems(None, None, totalPackage)
         withNewCaching(aDeclaration(withTotalNumberOfItems(totalNumberOfItems)))
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
-        verify(mockTotalNumberOfItemsPage, times(1)).apply(any())(any(), any())
+        verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any())(any(), any())
 
         theResponseForm.value mustNot be(empty)
         theResponseForm.value.value.totalPackage mustBe totalPackage
@@ -97,10 +98,10 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
 
         val incorrectForm = Json.toJson(TotalNumberOfItems(Some("abc"), None, "12"))
 
-        val result = controller.saveNoOfItems()(postRequest(incorrectForm))
+        val result = controller.saveNoOfItems(Mode.Normal)(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockTotalNumberOfItemsPage, times(1)).apply(any())(any(), any())
+        verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any())(any(), any())
       }
     }
 
@@ -110,11 +111,11 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
 
         val correctForm = Json.toJson(TotalNumberOfItems(None, None, "12"))
 
-        val result = controller.saveNoOfItems()(postRequest(correctForm))
+        val result = controller.saveNoOfItems(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.NatureOfTransactionController.displayForm()
-        verify(mockTotalNumberOfItemsPage, times(0)).apply(any())(any(), any())
+        verify(mockTotalNumberOfItemsPage, times(0)).apply(any(), any())(any(), any())
       }
     }
   }

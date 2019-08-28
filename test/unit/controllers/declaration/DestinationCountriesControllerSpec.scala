@@ -20,6 +20,7 @@ import controllers.declaration.DestinationCountriesController
 import controllers.util.Remove
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.destinationCountries.DestinationCountries
+import models.Mode
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
@@ -61,7 +62,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
       "display page method is invoked with empty cache" in new SupplementarySetUp {
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -70,7 +71,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
         withNewCaching(aDeclaration(withDestinationCountries()))
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -80,7 +81,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
       "display page method is invoked with empty cache" in new StandardSetUp {
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -89,7 +90,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
         withNewCaching(aDeclaration(withDestinationCountries()))
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -101,7 +102,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
         val incorrectForm = Json.toJson(DestinationCountries("incorrect", Seq.empty, "incorrect"))
 
-        val result = controller.saveCountries()(postRequest(incorrectForm))
+        val result = controller.saveCountries(Mode.Normal)(postRequest(incorrectForm))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -118,7 +119,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
           ("WrongAction", "")
         )
 
-        val result = controller.saveCountries()(postRequestAsFormUrlEncoded(wrongAction: _*))
+        val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(wrongAction: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -132,7 +133,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
           addActionUrlEncoded
         )
 
-        val result = controller.saveCountries()(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -146,7 +147,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
           saveAndContinueActionUrlEncoded
         )
 
-        val result = controller.saveCountries()(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -162,7 +163,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
           addActionUrlEncoded
         )
 
-        val result = controller.saveCountries()(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+        val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -178,7 +179,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
           saveAndContinueActionUrlEncoded
         )
 
-        val result = controller.saveCountries()(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+        val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -198,7 +199,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
           addActionUrlEncoded
         )
 
-        val result = controller.saveCountries()(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -218,7 +219,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
           saveAndContinueActionUrlEncoded
         )
 
-        val result = controller.saveCountries()(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -230,7 +231,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
         val correctForm = Json.toJson(DestinationCountries("GB", Seq.empty, "PL"))
 
-        val result = controller.saveCountries()(postRequest(correctForm))
+        val result = controller.saveCountries(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.LocationController.displayForm()
@@ -248,7 +249,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
           addActionUrlEncoded
         )
 
-        val result = controller.saveCountries()(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(OK)
       }
@@ -262,7 +263,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
           saveAndContinueActionUrlEncoded
         )
 
-        val result = controller.saveCountries()(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.LocationController.displayForm()
@@ -279,7 +280,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
           saveAndContinueActionUrlEncoded
         )
 
-        val result = controller.saveCountries()(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.LocationController.displayForm()
@@ -291,7 +292,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
         val removeAction = (Remove.toString, "countriesOfRouting_0")
 
-        val result = controller.saveCountries()(postRequestAsFormUrlEncoded(removeAction))
+        val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(removeAction))
 
         status(result) must be(OK)
       }

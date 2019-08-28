@@ -21,6 +21,7 @@ import controllers.util.SaveAndReturn
 import forms.common.Address
 import forms.declaration.{CarrierDetails, EntityDetails}
 import helpers.views.declaration.{CarrierDetailsMessages, CommonMessages}
+import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -32,7 +33,7 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
 
   val form: Form[CarrierDetails] = CarrierDetails.form()
   private val carrierDetailsPage = app.injector.instanceOf[carrier_details]
-  private def createView(form: Form[CarrierDetails] = form): Html = carrierDetailsPage(form)
+  private def createView(form: Form[CarrierDetails] = form): Html = carrierDetailsPage(Mode.Normal, form)
 
   "Carrier Details View on empty page" should {
 

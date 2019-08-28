@@ -19,6 +19,7 @@ package views.declaration
 import controllers.declaration.routes
 import forms.declaration.{ItemType, PackageInformation}
 import helpers.views.declaration.ItemSummaryMessages
+import models.Mode
 import models.declaration.ProcedureCodesData
 import org.jsoup.nodes.Document
 import services.cache.ExportItem
@@ -30,7 +31,7 @@ import views.tags.ViewTest
 class ItemSummaryViewSpec extends ViewSpec with ItemSummaryMessages {
 
   private val confirmationPage = app.injector.instanceOf[items_summary]
-  private def view(items: List[ExportItem]): Document = confirmationPage(items)(fakeRequest, messages)
+  private def view(items: List[ExportItem]): Document = confirmationPage(Mode.Normal, items)(fakeRequest, messages)
 
   "Item Summary Page View" should {
 
@@ -115,16 +116,24 @@ class ItemSummaryViewSpec extends ViewSpec with ItemSummaryMessages {
         rows.get(1).getElementById("item_0--procedure_code") must containText("procedure-code1")
         rows.get(1).getElementById("item_0--item_type") must containText("item-type1")
         rows.get(1).getElementById("item_0--package_count") must containText("1")
-        rows.get(1).getElementById("item_0--change") must haveHref(routes.ProcedureCodesController.displayPage("id1"))
-        rows.get(1).getElementById("item_0--remove") must haveHref(routes.ItemsSummaryController.removeItem("id1"))
+        rows.get(1).getElementById("item_0--change") must haveHref(
+          routes.ProcedureCodesController.displayPage(Mode.Normal, "id1")
+        )
+        rows.get(1).getElementById("item_0--remove") must haveHref(
+          routes.ItemsSummaryController.removeItem(Mode.Normal, "id1")
+        )
 
         rows.get(2) must haveId("item_1")
         rows.get(2).getElementById("item_1--sequence_id") must containText("2")
         rows.get(2).getElementById("item_1--procedure_code") must containText("procedure-code2")
         rows.get(2).getElementById("item_1--item_type") must containText("item-type2")
         rows.get(2).getElementById("item_1--package_count") must containText("2")
-        rows.get(2).getElementById("item_1--change") must haveHref(routes.ProcedureCodesController.displayPage("id2"))
-        rows.get(2).getElementById("item_1--remove") must haveHref(routes.ItemsSummaryController.removeItem("id2"))
+        rows.get(2).getElementById("item_1--change") must haveHref(
+          routes.ProcedureCodesController.displayPage(Mode.Normal, "id2")
+        )
+        rows.get(2).getElementById("item_1--remove") must haveHref(
+          routes.ItemsSummaryController.removeItem(Mode.Normal, "id2")
+        )
       }
     }
 

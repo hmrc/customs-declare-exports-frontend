@@ -19,6 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.ExporterDetailsController
 import forms.common.Address
 import forms.declaration.ExporterDetails
+import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -47,14 +48,14 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
 
   def theResponseForm: Form[ExporterDetails] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[ExporterDetails]])
-    verify(exporter_details).apply(captor.capture())(any(), any())
+    verify(exporter_details).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(exporter_details.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(exporter_details.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -67,7 +68,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
       "details are empty" in {
         val declaration = aDeclaration()
         withNewCaching(declaration)
-        val response = controller.displayForm()(getRequest(declaration))
+        val response = controller.displayForm(Mode.Normal)(getRequest(declaration))
         status(response) mustBe OK
       }
       "details are filled" in {
@@ -78,7 +79,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
           )
         )
         withNewCaching(declaration)
-        val response = controller.displayForm()(getRequest(declaration))
+        val response = controller.displayForm(Mode.Normal)(getRequest(declaration))
         status(response) mustBe OK
         val details = theResponseForm.value.value.details
         details.eori mustBe defined
@@ -89,7 +90,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
       "form contains erros" in {
         val declaration = aDeclaration()
         withNewCaching(declaration)
-        val response = controller.saveAddress()(postRequest(Json.obj(), declaration))
+        val response = controller.saveAddress(Mode.Normal)(postRequest(Json.obj(), declaration))
         status(response) mustBe BAD_REQUEST
       }
     }
@@ -98,7 +99,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
         val declaration = aDeclaration()
         withNewCaching(declaration)
         val body = Json.obj("details" -> Json.obj("eori" -> "PL213472539481923"))
-        val response = controller.saveAddress()(postRequest(body, declaration))
+        val response = controller.saveAddress(Mode.Normal)(postRequest(body, declaration))
 
         await(response) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.ConsigneeDetailsController.displayPage()

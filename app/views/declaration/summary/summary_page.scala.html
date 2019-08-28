@@ -33,17 +33,17 @@
 ) {
 
     @if(mode == Mode.Draft) {
-        @components.back_link("/customs-declare-exports/saved-declarations")
+        @components.back_link(controllers.routes.SavedDeclarationsController.displayDeclarations(), mode)
     } else {
 
         @{
             if(request.choice.value == StandardDec)
-                components.back_link("/customs-declare-exports/declaration/add-seal")
+                components.back_link(controllers.declaration.routes.SealController.displayForm(mode), mode)
             else {
                 if(suppDecData.transportInformationContainerData.fold(false)(_.containers.nonEmpty))
-                    components.back_link("/customs-declare-exports/declaration/add-transport-containers")
+                    components.back_link(controllers.declaration.routes.TransportContainerController.displayPage(mode), mode)
                 else
-                    components.back_link("/customs-declare-exports/declaration/transport-details")
+                    components.back_link(controllers.declaration.routes.TransportDetailsController.displayForm(mode), mode)
             }
         }
     }
@@ -112,7 +112,7 @@
     @items_section(suppDecData.items)
 
     @if(mode == Mode.Amend) {
-        <a class="button mt-3" href="@routes.DispatchLocationController.displayPage()">@messages("site.continue")</a>
+        <a class="button mt-3" href="@routes.DispatchLocationController.displayPage(mode)">@messages("site.continue")</a>
     }
 
     @if(mode == Mode.Normal) {
@@ -131,6 +131,6 @@
     @if(mode == Mode.Draft) {
         <p class="mt-5">@messages("saved.declarations.summary.paragraph")</p>
 
-        <a class="button mt-3" href="@routes.DispatchLocationController.displayPage()">@messages("saved.declarations.summary.continue")</a>
+        <a class="button mt-3" href="@routes.DispatchLocationController.displayPage(mode)">@messages("saved.declarations.summary.continue")</a>
     }
 }

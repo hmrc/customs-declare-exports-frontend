@@ -20,6 +20,7 @@ import base.TestHelper
 import controllers.util.SaveAndReturn
 import forms.declaration.destinationCountries.DestinationCountries
 import helpers.views.declaration.{CommonMessages, DestinationCountriesMessages}
+import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -32,7 +33,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
   private val form: Form[DestinationCountries] = DestinationCountries.Supplementary.form
   private val destiantionCountriesSupplementaryPage = app.injector.instanceOf[destination_countries_supplementary]
   private def createView(form: Form[DestinationCountries] = form): Html =
-    destiantionCountriesSupplementaryPage(form)(fakeJourneyRequest("SMP"), messages)
+    destiantionCountriesSupplementaryPage(Mode.Normal, form)(fakeJourneyRequest("SMP"), messages)
 
   "Destination Countries View on empty page" should {
 

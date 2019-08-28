@@ -19,6 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.NatureOfTransactionController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.NatureOfTransaction
+import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -47,7 +48,7 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
-    when(mockNatureOfTransactionPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockNatureOfTransactionPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -57,7 +58,7 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
 
   def theResponseForm: Form[NatureOfTransaction] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[NatureOfTransaction]])
-    verify(mockNatureOfTransactionPage).apply(captor.capture())(any(), any())
+    verify(mockNatureOfTransactionPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -67,10 +68,10 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
 
       "display page method is invoked and cache is empty" in {
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
-        verify(mockNatureOfTransactionPage, times(1)).apply(any())(any(), any())
+        verify(mockNatureOfTransactionPage, times(1)).apply(any(), any())(any(), any())
 
         theResponseForm.value mustBe empty
       }
@@ -80,10 +81,10 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
         val natureType = "1"
         withNewCaching(aDeclaration(withNatureOfTransaction(natureType)))
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayForm(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
-        verify(mockNatureOfTransactionPage, times(1)).apply(any())(any(), any())
+        verify(mockNatureOfTransactionPage, times(1)).apply(any(), any())(any(), any())
 
         theResponseForm.value.value.natureType mustBe natureType
       }
@@ -95,10 +96,10 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
 
         val incorrectForm = Json.toJson(NatureOfTransaction("incorrect"))
 
-        val result = controller.saveTransactionType()(postRequest(incorrectForm))
+        val result = controller.saveTransactionType(Mode.Normal)(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockNatureOfTransactionPage, times(1)).apply(any())(any(), any())
+        verify(mockNatureOfTransactionPage, times(1)).apply(any(), any())(any(), any())
       }
     }
 
@@ -108,12 +109,12 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
 
         val correctForm = Json.toJson(NatureOfTransaction("1"))
 
-        val result = controller.saveTransactionType()(postRequest(correctForm))
+        val result = controller.saveTransactionType(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayForm()
 
-        verify(mockNatureOfTransactionPage, times(0)).apply(any())(any(), any())
+        verify(mockNatureOfTransactionPage, times(0)).apply(any(), any())(any(), any())
       }
     }
   }

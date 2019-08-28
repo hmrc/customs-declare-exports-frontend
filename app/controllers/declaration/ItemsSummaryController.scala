@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.{Add, FormAction, SaveAndContinue, SaveAndReturn}
 import javax.inject.Inject
-import models.ExportsDeclaration
+import models.Mode
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.{ExportItem, ExportItemIdGeneratorService, ExportsCacheService}
@@ -40,11 +40,11 @@ class ItemsSummaryController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(itemsSummaryPage(request.cacheModel.items.toList))
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    Ok(itemsSummaryPage(mode, request.cacheModel.items.toList))
   }
 
-  def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val action = FormAction.bindFromRequest()
     action match {
       case Some(Add) =>
@@ -54,26 +54,27 @@ class ItemsSummaryController @Inject()(
             request.cacheModel
               .copy(items = request.cacheModel.items + newItem.copy(sequenceId = request.cacheModel.items.size + 1))
           )
-          .map(_ => Redirect(controllers.declaration.routes.ProcedureCodesController.displayPage(newItem.id)))
+          .map(_ => Redirect(controllers.declaration.routes.ProcedureCodesController.displayPage(mode, newItem.id)))
       case Some(SaveAndContinue) | Some(SaveAndReturn) =>
         Future.successful(
-          navigator.continueTo(controllers.declaration.routes.WarehouseIdentificationController.displayForm())
+          navigator.continueTo(controllers.declaration.routes.WarehouseIdentificationController.displayForm(mode))
         )
     }
   }
 
-  def removeItem(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    request.cacheModel.itemBy(itemId) match {
-      case Some(itemToDelete) =>
-        val updatedItems =
-          request.cacheModel.copy(items = request.cacheModel.items - itemToDelete).items.zipWithIndex.map {
-            case (item, index) => item.copy(sequenceId = index + 1)
+  def removeItem(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
+    implicit request =>
+      request.cacheModel.itemBy(itemId) match {
+        case Some(itemToDelete) =>
+          val updatedItems =
+            request.cacheModel.copy(items = request.cacheModel.items - itemToDelete).items.zipWithIndex.map {
+              case (item, index) => item.copy(sequenceId = index + 1)
+            }
+          exportsCacheService.update(request.cacheModel.copy(items = updatedItems)).map { _ =>
+            Redirect(routes.ItemsSummaryController.displayPage(mode))
           }
-        exportsCacheService.update(request.cacheModel.copy(items = updatedItems)).map { _ =>
-          Redirect(routes.ItemsSummaryController.displayPage())
-        }
-      case _ =>
-        Future.successful(Redirect(routes.ItemsSummaryController.displayPage()))
-    }
+        case _ =>
+          Future.successful(Redirect(routes.ItemsSummaryController.displayPage(mode)))
+      }
   }
 }

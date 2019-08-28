@@ -19,6 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.{routes, CommodityMeasureController}
 import forms.Choice
 import forms.declaration.{CommodityMeasure, PackageInformation}
+import models.Mode
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import services.cache.ExportItem
@@ -54,7 +55,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
 
       "display page method is invoked and commodity measure cache is empty" in new SetUp {
 
-        val result = controller.displayPage("itemId")(getRequest())
+        val result = controller.displayPage(Mode.Normal, "itemId")(getRequest())
 
         status(result) must be(OK)
       }
@@ -66,7 +67,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
           aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(item))
         withNewCaching(commodityCachedData)
 
-        val result = controller.displayPage("itemId")(getRequest())
+        val result = controller.displayPage(Mode.Normal, "itemId")(getRequest())
 
         status(result) must be(OK)
       }
@@ -78,7 +79,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
         val noPackageCache = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
         withNewCaching(noPackageCache)
 
-        val result = controller.displayPage("itemId")(getRequest())
+        val result = controller.displayPage(Mode.Normal, "itemId")(getRequest())
 
         status(result) must be(BAD_REQUEST)
       }
@@ -90,7 +91,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
 
         val incorrectForm = Json.toJson(CommodityMeasure(None, "", ""))
 
-        val result = controller.submitForm("itemId")(postRequest(incorrectForm))
+        val result = controller.submitForm(Mode.Normal, "itemId")(postRequest(incorrectForm))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -105,10 +106,10 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
 
         val correctForm = Json.toJson(CommodityMeasure(None, "1234.12", "1234.12"))
 
-        val result = controller.submitForm("itemId")(postRequest(correctForm))
+        val result = controller.submitForm(Mode.Normal, "itemId")(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.AdditionalInformationController.displayPage("itemId")
+        thePageNavigatedTo mustBe routes.AdditionalInformationController.displayPage(Mode.Normal, "itemId")
       }
     }
   }

@@ -18,6 +18,7 @@ package views.declaration
 
 import forms.declaration.Seal
 import helpers.views.declaration.CommonMessages
+import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -30,7 +31,7 @@ class SealViewSpec extends SealFields with CommonMessages {
 
   private val sealPage = app.injector.instanceOf[seal]
   def createView(form: Form[Seal] = form, container: Boolean = false): Html =
-    sealPage(form, Seq.empty, container)(fakeRequest, messages)
+    sealPage(Mode.Normal, form, Seq.empty, container)(fakeRequest, messages)
 
   "Seal View" should {
 

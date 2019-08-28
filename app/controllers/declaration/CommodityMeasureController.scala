@@ -21,7 +21,7 @@ import controllers.navigation.Navigator
 import forms.declaration.CommodityMeasure
 import forms.declaration.CommodityMeasure.form
 import javax.inject.Inject
-import models.ExportsDeclaration
+import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -42,30 +42,35 @@ class CommodityMeasureController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val item = request.cacheModel.itemBy(itemId)
-    val packageInformation = item.map(_.packageInformation)
-    val commodityMeasure = item.flatMap(_.commodityMeasure)
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) {
+    implicit request =>
+      val item = request.cacheModel.itemBy(itemId)
+      val packageInformation = item.map(_.packageInformation)
+      val commodityMeasure = item.flatMap(_.commodityMeasure)
 
-    (packageInformation, commodityMeasure) match {
-      case (Some(p), Some(data)) if p.nonEmpty => Ok(goodsMeasurePage(itemId, form().fill(data)))
-      case (Some(p), _) if p.nonEmpty          => Ok(goodsMeasurePage(itemId, form()))
-      case _ =>
-        BadRequest(goodsMeasurePage(itemId, form().withGlobalError("supplementary.commodityMeasure.global.addOne")))
-    }
+      (packageInformation, commodityMeasure) match {
+        case (Some(p), Some(data)) if p.nonEmpty => Ok(goodsMeasurePage(mode, itemId, form().fill(data)))
+        case (Some(p), _) if p.nonEmpty          => Ok(goodsMeasurePage(mode, itemId, form()))
+        case _ =>
+          BadRequest(
+            goodsMeasurePage(mode, itemId, form().withGlobalError("supplementary.commodityMeasure.global.addOne"))
+          )
+      }
   }
 
-  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form()
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[CommodityMeasure]) =>
-          Future.successful(BadRequest(goodsMeasurePage(itemId, formWithErrors))),
-        validForm =>
-          updateExportsCache(itemId, validForm).map { _ =>
-            navigator.continueTo(controllers.declaration.routes.AdditionalInformationController.displayPage(itemId))
-        }
-      )
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
+    implicit request =>
+      form()
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[CommodityMeasure]) =>
+            Future.successful(BadRequest(goodsMeasurePage(mode, itemId, formWithErrors))),
+          validForm =>
+            updateExportsCache(itemId, validForm).map { _ =>
+              navigator
+                .continueTo(controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId))
+          }
+        )
   }
 
   private def updateExportsCache(itemId: String, updatedItem: CommodityMeasure)(

@@ -21,15 +21,15 @@
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[DispatchLocation])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, form: Form[DispatchLocation])(implicit request: Request[_], messages: Messages)
 
 @main_template(
   title = messages("supplementary.dispatchLocation.title")
 ) {
 
-  @components.back_link("/customs-declare-exports/choice")
+  @components.back_link(controllers.routes.ChoiceController.displayPage(), mode)
 
-  @helper.form(controllers.declaration.routes.DispatchLocationController.submitForm(), 'autoComplete -> "off") {
+  @helper.form(controllers.declaration.routes.DispatchLocationController.submitForm(mode), 'autoComplete -> "off") {
       @helper.CSRF.formField
 
     @components.error_summary(form.errors)

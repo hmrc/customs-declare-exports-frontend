@@ -27,15 +27,15 @@
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[TransportDetails])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[TransportDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.transportInfo.active.title")
 ) {
 
-    @components.back_link("/customs-declare-exports/declaration/border-transport")
+    @components.back_link(controllers.declaration.routes.BorderTransportController.displayForm(mode), mode)
 
-    @helper.form(TransportDetailsController.submitForm(), 'autoComplete -> "off") {
+    @helper.form(TransportDetailsController.submitForm(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         @components.error_summary(form.errors)

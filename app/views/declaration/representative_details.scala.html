@@ -23,15 +23,15 @@
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[RepresentativeDetails])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, form: Form[RepresentativeDetails])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.representative.title")
 ) {
 
-    @components.back_link("/customs-declare-exports/declaration/declarant-details")
+    @components.back_link(controllers.declaration.routes.DeclarantDetailsController.displayForm(mode), mode)
 
-    @helper.form(RepresentativeDetailsController.submitForm(), 'autoComplete -> "off") {
+    @helper.form(RepresentativeDetailsController.submitForm(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         @components.error_summary(form.errors)

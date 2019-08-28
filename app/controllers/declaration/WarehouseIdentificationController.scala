@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.WarehouseIdentification
 import javax.inject.Inject
-import models.ExportsDeclaration
+import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -43,22 +43,22 @@ class WarehouseIdentificationController @Inject()(
 
   import forms.declaration.WarehouseIdentification._
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.locations.warehouseIdentification match {
-      case Some(data) => Ok(warehouseIdentificationPage(form().fill(data)))
-      case _          => Ok(warehouseIdentificationPage(form()))
+      case Some(data) => Ok(warehouseIdentificationPage(mode, form().fill(data)))
+      case _          => Ok(warehouseIdentificationPage(mode, form()))
     }
   }
 
-  def saveWarehouse(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def saveWarehouse(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[WarehouseIdentification]) =>
-          Future.successful(BadRequest(warehouseIdentificationPage(formWithErrors))),
+          Future.successful(BadRequest(warehouseIdentificationPage(mode, formWithErrors))),
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(controllers.declaration.routes.BorderTransportController.displayForm()))
+            .map(_ => navigator.continueTo(controllers.declaration.routes.BorderTransportController.displayForm(mode)))
       )
   }
 

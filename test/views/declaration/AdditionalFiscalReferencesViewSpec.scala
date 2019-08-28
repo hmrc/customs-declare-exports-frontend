@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package views
+package views.declaration
 
 import controllers.util.{Add, SaveAndContinue, SaveAndReturn}
 import forms.declaration.AdditionalFiscalReference
 import helpers.views.declaration.{AdditionalFiscalReferencesMessages, CommonMessages}
+import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.twirl.api.Html
@@ -36,7 +37,7 @@ class AdditionalFiscalReferencesViewSpec extends ViewSpec with AdditionalFiscalR
     form: Form[AdditionalFiscalReference] = form,
     references: Seq[AdditionalFiscalReference] = Seq.empty
   ): Html =
-    additionalFiscalReferencesPage(itemId, form, references)(fakeRequest, messages)
+    additionalFiscalReferencesPage(Mode.Normal, itemId, form, references)(fakeRequest, messages)
 
   "Additional Fiscal References View on empty page" should {
 

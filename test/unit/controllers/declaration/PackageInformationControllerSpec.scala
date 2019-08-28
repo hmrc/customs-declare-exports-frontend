@@ -20,6 +20,7 @@ import controllers.declaration.PackageInformationController
 import controllers.util.{Add, SaveAndContinue}
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.PackageInformation
+import models.Mode
 import play.api.test.Helpers._
 import services.cache.ExportsItemBuilder
 import unit.base.ControllerSpec
@@ -58,7 +59,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
         withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
 
-        val result = controller.displayPage(itemId)(getRequest())
+        val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
         status(result) must be(OK)
       }
@@ -69,7 +70,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
           anItem(withPackageInformation(typesOfPackages = "12", numberOfPackages = 10, shippingMarks = "123"))
         withNewCaching(aDeclaration(withItem(itemWithPackageInformation)))
 
-        val result = controller.displayPage(itemId)(getRequest())
+        val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
         status(result) must be(OK)
       }
@@ -84,7 +85,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
         val body =
           Seq(("typesOfPackages", "NT"), ("numberOfPackages", "123"), ("shippingMarks", "abc"), ("wrongAction", ""))
 
-        val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(body: _*))
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -95,7 +96,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
         val body = (SaveAndContinue.toString, "")
 
-        val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(body))
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -107,7 +108,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
         val body =
           Seq(("typesOfPackages", "wrongType"), ("numberOfPackages", ""), ("shippingMarks", ""), (Add.toString, ""))
 
-        val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(body: _*))
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -121,7 +122,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
         val body =
           Seq(("typesOfPackages", "NT"), ("numberOfPackages", "123"), ("shippingMarks", "abc"), (Add.toString, ""))
 
-        val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(body: _*))
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -134,7 +135,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
         val body =
           Seq(("typesOfPackages", "NT"), ("numberOfPackages", "1"), ("shippingMarks", "value"), (Add.toString, ""))
 
-        val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(body: _*))
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -149,11 +150,11 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
         val body =
           Seq(("typesOfPackages", "NT"), ("numberOfPackages", "1"), ("shippingMarks", "value"), (Add.toString, ""))
 
-        val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(body: _*))
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body: _*))
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(
-          Some(controllers.declaration.routes.PackageInformationController.displayPage(itemId).url)
+          Some(controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, itemId).url)
         )
       }
 
@@ -164,7 +165,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
         val body = (SaveAndContinue.toString, "")
 
-        val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(body))
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body))
 
         status(result) must be(SEE_OTHER)
       }

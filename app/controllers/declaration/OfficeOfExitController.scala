@@ -21,7 +21,7 @@ import controllers.navigation.Navigator
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitStandard, OfficeOfExitSupplementary}
 import javax.inject.Inject
-import models.ExportsDeclaration
+import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -46,55 +46,59 @@ class OfficeOfExitController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
   import forms.declaration.officeOfExit.OfficeOfExitForms._
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.choice.value match {
-      case SupplementaryDec => Ok(supplementaryPage())
-      case StandardDec      => Ok(standardPage())
+      case SupplementaryDec => Ok(supplementaryPage(mode))
+      case StandardDec      => Ok(standardPage(mode))
     }
   }
 
-  private def supplementaryPage()(implicit request: JourneyRequest[_]): Html =
+  private def supplementaryPage(mode: Mode)(implicit request: JourneyRequest[_]): Html =
     request.cacheModel.locations.officeOfExit match {
-      case Some(data) => officeOfExitSupplementaryPage(supplementaryForm().fill(OfficeOfExitSupplementary(data)))
-      case _          => officeOfExitSupplementaryPage(supplementaryForm())
+      case Some(data) => officeOfExitSupplementaryPage(mode, supplementaryForm().fill(OfficeOfExitSupplementary(data)))
+      case _          => officeOfExitSupplementaryPage(mode, supplementaryForm())
     }
 
-  private def standardPage()(implicit request: JourneyRequest[_], hc: HeaderCarrier): Html =
+  private def standardPage(mode: Mode)(implicit request: JourneyRequest[_], hc: HeaderCarrier): Html =
     request.cacheModel.locations.officeOfExit match {
-      case Some(data) => officeOfExitStandardPage(standardForm().fill(OfficeOfExitStandard(data)))
-      case _          => officeOfExitStandardPage(standardForm())
+      case Some(data) => officeOfExitStandardPage(mode, standardForm().fill(OfficeOfExitStandard(data)))
+      case _          => officeOfExitStandardPage(mode, standardForm())
     }
 
-  def saveOffice(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def saveOffice(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     request.choice.value match {
-      case SupplementaryDec => saveSupplementaryOffice()
-      case StandardDec      => saveStandardOffice()
+      case SupplementaryDec => saveSupplementaryOffice(mode)
+      case StandardDec      => saveStandardOffice(mode)
     }
   }
 
-  private def saveSupplementaryOffice()(implicit request: JourneyRequest[AnyContent]): Future[Result] =
+  private def saveSupplementaryOffice(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     supplementaryForm()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[OfficeOfExitSupplementary]) =>
-          Future.successful(BadRequest(officeOfExitSupplementaryPage(formWithErrors))),
+          Future.successful(BadRequest(officeOfExitSupplementaryPage(mode, formWithErrors))),
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(controllers.declaration.routes.TotalNumberOfItemsController.displayForm()))
+            .map(
+              _ => navigator.continueTo(controllers.declaration.routes.TotalNumberOfItemsController.displayForm(mode))
+          )
       )
 
-  private def saveStandardOffice()(implicit request: JourneyRequest[AnyContent]): Future[Result] =
+  private def saveStandardOffice(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     standardForm()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[OfficeOfExitStandard]) => {
           val formWithAdjustedErrors = OfficeOfExitStandard.adjustCircumstancesError(formWithErrors)
 
-          Future.successful(BadRequest(officeOfExitStandardPage(formWithAdjustedErrors)))
+          Future.successful(BadRequest(officeOfExitStandardPage(mode, formWithAdjustedErrors)))
         },
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(controllers.declaration.routes.TotalNumberOfItemsController.displayForm()))
+            .map(
+              _ => navigator.continueTo(controllers.declaration.routes.TotalNumberOfItemsController.displayForm(mode))
+          )
       )
 
   private def updateCache(

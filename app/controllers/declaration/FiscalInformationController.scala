@@ -21,6 +21,7 @@ import controllers.navigation.Navigator
 import forms.declaration.FiscalInformation
 import forms.declaration.FiscalInformation.form
 import javax.inject.Inject
+import models.Mode
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -41,30 +42,31 @@ class FiscalInformationController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.itemBy(itemId) match {
-      case Some(ExportItem(_, _, _, Some(fiscalInformation), _, _, _, _, _, _)) =>
-        Ok(fiscalInformationPage(itemId, form().fill(fiscalInformation)))
-      case response => Ok(fiscalInformationPage(itemId, form()))
-    }
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) {
+    implicit request =>
+      request.cacheModel.itemBy(itemId) match {
+        case Some(ExportItem(_, _, _, Some(fiscalInformation), _, _, _, _, _, _)) =>
+          Ok(fiscalInformationPage(mode, itemId, form().fill(fiscalInformation)))
+        case response => Ok(fiscalInformationPage(mode, itemId, form()))
+      }
   }
 
-  def saveFiscalInformation(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
+  def saveFiscalInformation(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
       form()
         .bindFromRequest()
         .fold(
           (formWithErrors: Form[FiscalInformation]) =>
-            Future.successful(BadRequest(fiscalInformationPage(itemId, formWithErrors))),
+            Future.successful(BadRequest(fiscalInformationPage(mode, itemId, formWithErrors))),
           formData =>
             formData.onwardSupplyRelief match {
               case FiscalInformation.AllowedFiscalInformationAnswers.yes =>
                 updateCacheForYes(itemId, formData) map { _ =>
-                  navigator.continueTo(routes.AdditionalFiscalReferencesController.displayPage(itemId))
+                  navigator.continueTo(routes.AdditionalFiscalReferencesController.displayPage(mode, itemId))
                 }
               case FiscalInformation.AllowedFiscalInformationAnswers.no =>
                 updateCacheForNo(itemId, formData) map { _ =>
-                  navigator.continueTo(routes.ItemTypeController.displayPage(itemId))
+                  navigator.continueTo(routes.ItemTypeController.displayPage(mode, itemId))
                 }
           }
         )

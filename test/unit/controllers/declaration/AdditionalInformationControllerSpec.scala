@@ -20,6 +20,7 @@ import controllers.declaration.{routes, AdditionalInformationController}
 import controllers.util.Remove
 import forms.Choice
 import forms.declaration.AdditionalInformation
+import models.Mode
 import models.declaration.AdditionalInformationData
 import play.api.test.Helpers._
 import services.cache.ExportItem
@@ -54,7 +55,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
       "display page method is invoked with empty cache" in new SetUp {
 
-        val result = controller.displayPage("itemId")(getRequest())
+        val result = controller.displayPage(Mode.Normal, "itemId")(getRequest())
 
         status(result) must be(OK)
       }
@@ -69,7 +70,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
           aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
-        val result = controller.displayPage("itemId")(getRequest())
+        val result = controller.displayPage(Mode.Normal, "itemId")(getRequest())
 
         status(result) must be(OK)
       }
@@ -81,7 +82,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
         val wrongAction = Seq(("code", "12345"), ("description", "text"), ("WrongAction", ""))
 
-        val result = controller.saveAdditionalInfo("itemId")(postRequestAsFormUrlEncoded(wrongAction: _*))
+        val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(wrongAction: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -93,7 +94,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
         val incorrectForm = Seq(("code", "12345"), ("description", ""), addActionUrlEncoded)
 
-        val result = controller.saveAdditionalInfo("itemId")(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result =
+          controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -110,7 +112,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
         val duplicatedForm = Seq(("code", "12345"), ("description", "description"), addActionUrlEncoded)
 
-        val result = controller.saveAdditionalInfo("itemId")(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+        val result =
+          controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -128,7 +131,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
         val form = Seq(("code", "12345"), ("description", "text"), addActionUrlEncoded)
 
-        val result = controller.saveAdditionalInfo("itemId")(postRequestAsFormUrlEncoded(form: _*))
+        val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(form: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -140,7 +143,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
         val incorrectForm = Seq(("code", "12345"), ("description", ""), saveAndContinueActionUrlEncoded)
 
-        val result = controller.saveAdditionalInfo("itemId")(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result =
+          controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -157,7 +161,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
         val duplicatedForm = Seq(("code", "12345"), ("description", "description"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.saveAdditionalInfo("itemId")(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+        val result =
+          controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -175,7 +180,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
         val form = Seq(("code", "12345"), ("description", "text"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.saveAdditionalInfo("itemId")(postRequestAsFormUrlEncoded(form: _*))
+        val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(form: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -187,7 +192,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
         val correctForm = Seq(("code", "12345"), ("description", "text"), addActionUrlEncoded)
 
-        val result = controller.saveAdditionalInfo("itemId")(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(SEE_OTHER)
       }
@@ -196,10 +201,10 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
         val correctForm = Seq(("code", "12345"), ("description", "text"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.saveAdditionalInfo("itemId")(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.DocumentsProducedController.displayPage("itemId")
+        thePageNavigatedTo mustBe routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId")
       }
 
       "user save correct data without new item" in new SetUp {
@@ -215,10 +220,10 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
         val correctForm = saveAndContinueActionUrlEncoded
 
-        val result = controller.saveAdditionalInfo("itemId")(postRequestAsFormUrlEncoded(correctForm))
+        val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.DocumentsProducedController.displayPage("itemId")
+        thePageNavigatedTo mustBe routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId")
       }
 
       "user remove existing item" in new SetUp {
@@ -233,7 +238,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
         val removeForm = (Remove.toString, "0")
 
-        val result = controller.saveAdditionalInfo("itemId")(postRequestAsFormUrlEncoded(removeForm))
+        val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(removeForm))
 
         status(result) must be(OK)
       }

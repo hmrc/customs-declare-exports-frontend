@@ -19,6 +19,7 @@ package views.declaration
 import base.TestHelper
 import forms.declaration.RepresentativeDetails
 import helpers.views.declaration.{CommonMessages, RepresentativeDetailsMessages}
+import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -31,7 +32,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
   private val form: Form[RepresentativeDetails] = RepresentativeDetails.form()
   private val representativeDetailsPage = app.injector.instanceOf[representative_details]
   private def createView(form: Form[RepresentativeDetails] = form): Html =
-    representativeDetailsPage(form)(fakeRequest, messages)
+    representativeDetailsPage(Mode.Normal, form)(fakeRequest, messages)
 
   "Representative Details View on empty page" should {
 

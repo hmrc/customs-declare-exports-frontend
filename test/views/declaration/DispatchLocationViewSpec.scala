@@ -19,6 +19,7 @@ package views.declaration
 import controllers.util.SaveAndReturn
 import forms.declaration.DispatchLocation
 import helpers.views.declaration.{CommonMessages, DispatchLocationMessages}
+import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -31,7 +32,7 @@ class DispatchLocationViewSpec extends ViewSpec with DispatchLocationMessages wi
   private val form: Form[DispatchLocation] = DispatchLocation.form()
   private val dispatchLocationPage = app.injector.instanceOf[dispatch_location]
   private def createView(form: Form[DispatchLocation] = form): Html =
-    dispatchLocationPage(form)(fakeRequest, messages)
+    dispatchLocationPage(Mode.Normal, form)(fakeRequest, messages)
 
   "Dispatch Location View on empty page" should {
 

@@ -19,6 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.ItemsSummaryController
 import controllers.util.{Add, SaveAndContinue, SaveAndReturn}
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
+import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -50,7 +51,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
-    when(mockItemsSummaryPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockItemsSummaryPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockExportIdGeneratorService.generateItemId()).thenReturn(itemId)
   }
 
@@ -62,7 +63,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
 
   def theResponseForm: List[ExportItem] = {
     val captor = ArgumentCaptor.forClass(classOf[List[ExportItem]])
-    verify(mockItemsSummaryPage).apply(captor.capture())(any(), any())
+    verify(mockItemsSummaryPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -72,10 +73,10 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
 
       "display page method is invoked" in {
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
-        verify(mockItemsSummaryPage, times(1)).apply(any())(any(), any())
+        verify(mockItemsSummaryPage, times(1)).apply(any(), any())(any(), any())
 
         theResponseForm mustBe empty
       }
@@ -86,27 +87,29 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
 
     "return 303 (SEE_OTHER) and redirect to Procedure Codes page" when {
       "use add new item" in {
-        val result = controller.submit()(postRequestAsFormUrlEncoded(Add.toString -> ""))
+        val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(Add.toString -> ""))
 
         status(result) mustBe SEE_OTHER
-        verify(mockItemsSummaryPage, times(0)).apply(any())(any(), any())
+        verify(mockItemsSummaryPage, times(0)).apply(any(), any())(any(), any())
         redirectLocation(result).value must endWith(s"/items/${itemId}/procedure-codes")
       }
     }
 
     "return 303 (SEE_OTHER) and continue" when {
       "user save and continues" in {
-        val result = controller.submit()(postRequestAsFormUrlEncoded(SaveAndContinue.toString -> ""))
+        val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(SaveAndContinue.toString -> ""))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController.displayForm()
+        thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController
+          .displayForm(Mode.Normal)
       }
 
       "user save and returns" in {
-        val result = controller.submit()(postRequestAsFormUrlEncoded(SaveAndReturn.toString -> ""))
+        val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(SaveAndReturn.toString -> ""))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController.displayForm()
+        thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController
+          .displayForm(Mode.Normal)
       }
     }
   }
@@ -117,10 +120,10 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
 
       "there is no item in declaration with requested Id" in {
 
-        val result = controller.removeItem(itemId)(getRequest())
+        val result = controller.removeItem(Mode.Normal, itemId)(getRequest())
 
         status(result) mustBe SEE_OTHER
-        verify(mockItemsSummaryPage, times(0)).apply(any())(any(), any())
+        verify(mockItemsSummaryPage, times(0)).apply(any(), any())(any(), any())
       }
 
       "user successfully remove item" in {
@@ -129,10 +132,10 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
         val secondItem = ExportItem("123654")
         withNewCaching(aDeclaration(withItem(cachedItem), withItem(secondItem)))
 
-        val result = controller.removeItem(itemId)(getRequest())
+        val result = controller.removeItem(Mode.Normal, itemId)(getRequest())
 
         status(result) mustBe SEE_OTHER
-        verify(mockItemsSummaryPage, times(0)).apply(any())(any(), any())
+        verify(mockItemsSummaryPage, times(0)).apply(any(), any())(any(), any())
         verify(mockExportsCacheService, times(1))
           .update(meq(aDeclaration(withItem(secondItem.copy(sequenceId = secondItem.sequenceId + 1)))))(any())
       }

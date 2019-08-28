@@ -20,6 +20,7 @@ import controllers.declaration.ConsignmentReferencesController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.Ducr
 import forms.declaration.ConsignmentReferences
+import models.Mode
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
@@ -49,7 +50,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
 
       "display page method is invoked and cache is empty" in new SetUp {
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -58,7 +59,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withConsignmentReferences()))
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -68,7 +69,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
 
       val incorrectForm = Json.toJson(ConsignmentReferences(Ducr("1234"), ""))
 
-      val result = controller.submitConsignmentReferences()(postRequest(incorrectForm))
+      val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(incorrectForm))
 
       status(result) must be(BAD_REQUEST)
     }
@@ -77,7 +78,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
 
       val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN))
 
-      val result = controller.submitConsignmentReferences()(postRequest(correctForm))
+      val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(correctForm))
 
       await(result) mustBe aRedirectToTheNextPage
       thePageNavigatedTo mustBe controllers.declaration.routes.ExporterDetailsController.displayForm()
