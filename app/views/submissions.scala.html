@@ -35,13 +35,13 @@
     <h1>@messages("submissions.title")</h1>
 
     <table>
-        <tr class="table-row table-head">
-            <th class="table-cell">@messages("submissions.ducr")</th>
-            <th class="table-cell">@messages("submissions.lrn")</th>
-            <th class="table-cell">@messages("submissions.mrn")</th>
-            <th class="table-cell">@messages("submissions.submittedTimestamp")</th>
-            <th class="table-cell">@messages("submissions.status")</th>
-            <th class="table-cell">@messages("submissions.noOfNotifications")</th>
+        <tr class="table-row">
+            <th class="table-cell table-head">@messages("submissions.ducr")</th>
+            <th class="table-cell table-head">@messages("submissions.lrn")</th>
+            <th class="table-cell table-head">@messages("submissions.mrn")</th>
+            <th class="table-cell table-head">@messages("submissions.submittedTimestamp")</th>
+            <th class="table-cell table-head">@messages("submissions.status")</th>
+            <th class="table-cell table-head">@messages("submissions.noOfNotifications")</th>
         </tr>
 
         @for( (submission, notifications) <- submissions ){
