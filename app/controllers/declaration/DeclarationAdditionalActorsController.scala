@@ -128,7 +128,7 @@ class DeclarationAdditionalActorsController @Inject()(
     mode: Mode,
     userInput: DeclarationAdditionalActors,
     cacheData: DeclarationAdditionalActorsData
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] =
     (userInput, cacheData.actors) match {
       case (actor, Seq())  => saveAndRedirect(mode, actor, Seq())
       case (actor, actors) => handleSaveAndContinueCache(mode, actor, actors)
@@ -138,7 +138,7 @@ class DeclarationAdditionalActorsController @Inject()(
     mode: Mode,
     actor: DeclarationAdditionalActors,
     actors: Seq[DeclarationAdditionalActors]
-  )(implicit request: JourneyRequest[_]) =
+  )(implicit request: JourneyRequest[AnyContent]) =
     if (actors.length >= maxNumberOfItems) {
       handleErrorPage(mode, Seq(("", exceedMaximumNumberError)), actor, actors)
     } else if (actors.contains(actor)) {
@@ -148,13 +148,13 @@ class DeclarationAdditionalActorsController @Inject()(
     }
 
   private def saveAndRedirect(mode: Mode, actor: DeclarationAdditionalActors, actors: Seq[DeclarationAdditionalActors])(
-    implicit request: JourneyRequest[_],
+    implicit request: JourneyRequest[AnyContent],
     hc: HeaderCarrier
   ): Future[Result] =
     if (actor.isDefined) {
       val updatedCache = DeclarationAdditionalActorsData(actors :+ actor)
-      updateCache(updatedCache).map(_ => Redirect(routes.DeclarationHolderController.displayForm(mode)))
-    } else Future.successful(Redirect(routes.DeclarationHolderController.displayForm(mode)))
+      updateCache(updatedCache).map(_ => navigator.continueTo(routes.DeclarationHolderController.displayForm(mode)))
+    } else Future.successful(navigator.continueTo(routes.DeclarationHolderController.displayForm(mode)))
 
   private def removeItem(
     mode: Mode,

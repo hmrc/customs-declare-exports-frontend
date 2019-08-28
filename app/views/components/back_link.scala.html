@@ -16,16 +16,10 @@
 
 @import models.Mode
 @import models.Mode._
- 
+
+@* mode is not currently used but will be once we add "change field" links to the summary page *@
 @(href: Call, mode: Mode = Mode.Normal)(implicit messages: Messages)
 
-@url() = @{
-  mode match {
-   case Draft | Amend => controllers.declaration.routes.SummaryController.displayPage(mode)
-   case Normal => href
-  }
-}
-
 <div class="js-visible">
-    <a id="link-back" class="link-back" href="@url()">@messages("site.back")</a>
+    <a id="link-back" class="link-back" href="@href">@messages("site.back")</a>
 </div>
