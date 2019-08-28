@@ -27,10 +27,13 @@ import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{Action, Submission}
 import models.requests.CancellationRequested
 import play.api.http.{ContentTypes, HeaderNames}
+import play.api.libs.ws.WSClient
 import play.api.mvc.Codec
 
 class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
   import CustomsDeclareExportsConnectorSpec._
+
+  val mockWSClient = mock[WSClient]
 
   "Customs Declare Exports Connector" should {
 
