@@ -17,6 +17,7 @@
 package services
 
 import base.{MockConnectors, MockExportCacheService, TestHelper}
+import com.codahale.metrics.SharedMetricRegistries
 import com.kenshoo.play.metrics.Metrics
 import config.AppConfig
 import forms.Choice.AllowedChoiceValues
@@ -40,6 +41,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SubmissionServiceSpec
     extends UnitSpec with MockExportCacheService with MockConnectors with ScalaFutures with OptionValues {
+
+  SharedMetricRegistries.clear()
 
   val mockAuditService = mock[AuditService]
 
