@@ -180,7 +180,8 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
         val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
-        status(result) must be(SEE_OTHER)
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderController.displayForm(Mode.Normal)
       }
 
       "user save correct data without new item" in new SetUp {
@@ -189,7 +190,8 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
         val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
 
-        status(result) must be(SEE_OTHER)
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderController.displayForm(Mode.Normal)
       }
 
       "user remove existing item" in new SetUp {

@@ -31,8 +31,8 @@ class DispatchLocationViewSpec extends ViewSpec with DispatchLocationMessages wi
 
   private val form: Form[DispatchLocation] = DispatchLocation.form()
   private val dispatchLocationPage = app.injector.instanceOf[dispatch_location]
-  private def createView(form: Form[DispatchLocation] = form): Html =
-    dispatchLocationPage(Mode.Normal, form)(fakeRequest, messages)
+  private def createView(form: Form[DispatchLocation] = form, mode: Mode = Mode.Normal): Html =
+    dispatchLocationPage(mode, form)(fakeRequest, messages)
 
   "Dispatch Location View on empty page" should {
 
@@ -63,12 +63,27 @@ class DispatchLocationViewSpec extends ViewSpec with DispatchLocationMessages wi
       optionTwoLabel.text() must be(messages(specialFiscalTerritory))
     }
 
-    "display 'Back' button that links to 'What do you want to do ?' page" in {
+    "display 'Back' button" when {
+      "normal mode" in {
+        val backButton = createView(mode = Mode.Normal).getElementById("link-back")
 
-      val backButton = getElementById(createView(), "link-back")
+        backButton.text() must be(messages(backCaption))
+        backButton.attr("href") must be(controllers.routes.ChoiceController.displayPage().url)
+      }
 
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/choice")
+      "draft mode" in {
+        val backButton = createView(mode = Mode.Draft).getElementById("link-back")
+
+        backButton.text() must be(messages(backCaption))
+        backButton.attr("href") must be(controllers.declaration.routes.SummaryController.displayPage(Mode.Draft).url)
+      }
+
+      "amend mode" in {
+        val backButton = createView(mode = Mode.Amend).getElementById("link-back")
+
+        backButton.text() must be(messages(backCaption))
+        backButton.attr("href") must be(controllers.declaration.routes.SummaryController.displayPage(Mode.Amend).url)
+      }
     }
 
     "display 'Save and continue' button" in {
