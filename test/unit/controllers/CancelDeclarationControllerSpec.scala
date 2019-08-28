@@ -16,7 +16,7 @@
 
 package unit.controllers
 
-import com.codahale.metrics.Timer
+import com.codahale.metrics.{SharedMetricRegistries, Timer}
 import com.kenshoo.play.metrics.Metrics
 import controllers.CancelDeclarationController
 import forms.CancelDeclaration
@@ -34,6 +34,8 @@ import views.html.{cancel_declaration, cancellation_confirmation_page}
 
 class CancelDeclarationControllerSpec extends ControllerSpec with ErrorHandlerMocks with ExportsMetricsMocks {
   import CancelDeclarationControllerSpec._
+
+  SharedMetricRegistries.clear()
 
   trait SetUp {
     val cancelDeclarationPage = new cancel_declaration(mainTemplate)

@@ -18,6 +18,7 @@ package connectors
 
 import base.ExportsTestData._
 import base.{MockHttpClient, TestHelper}
+import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
 import models._
 import org.joda.time.DateTime
@@ -32,6 +33,8 @@ import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
 class NrsConnectorSpec extends UnitSpec with ScalaFutures {
+
+  SharedMetricRegistries.clear()
 
   val mockWSClient = mock[WSClient]
 
