@@ -35,7 +35,9 @@ package views.declaration.spec
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
+import org.scalatest.MustMatchers
 import org.scalatest.matchers._
+import play.api.i18n.Messages
 import play.api.mvc.{Call, Result}
 import play.api.test.Helpers.contentAsString
 import play.twirl.api.Html
@@ -53,7 +55,14 @@ trait ViewMatchers {
   implicit protected def htmlBodyOf(page: String): Document = Jsoup.parse(page)
   implicit protected def htmlBodyOf(result: Future[Result]): Document = htmlBodyOf(contentAsString(result))
 
-    private def actualContentWas(node: Element): String =
+  implicit class PageComplexChecks(document: Document) extends MustMatchers {
+    def checkErrorsSummary(): Unit = {
+      document.getElementById("error-summary-heading").text() mustBe "error.summary.title"
+      document.select("div.error-summary.error-summary--show>p").text() must be("error.summary.text")
+    }
+  }
+
+  private def actualContentWas(node: Element): String =
     if (node == null) {
       "Element did not exist"
     } else {
@@ -244,5 +253,5 @@ trait ViewMatchers {
       link
     )
 
-  def haveGlobalErrorSummary: Matcher[Element] = new ContainElementWithIDMatcher("error-summary-heading")
+  def haveGlobalErrorSummary: Matcher[Document] = new ContainElementWithIDMatcher("error-summary-heading")
 }
