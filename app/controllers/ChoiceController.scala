@@ -31,6 +31,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.choice_page
 
@@ -66,18 +67,16 @@ class ChoiceController @Inject()(
         choice =>
           choice.value match {
             case SupplementaryDec | StandardDec =>
-              exportsCacheService
-                .create(
-                  ExportsDeclaration(
-                    None,
-                    DeclarationStatus.DRAFT,
-                    createdDateTime = Instant.now,
-                    updatedDateTime = Instant.now,
-                    choice.value
-                  )
-                ) map { created =>
-                Redirect(controllers.declaration.routes.DispatchLocationController.displayPage(Mode.Normal))
-                  .addingToSession(ExportsSessionKeys.declarationId -> created.id.get)
+              request.declarationId match {
+                case Some(id) =>
+                  updateChoice(id, choice).map { _ =>
+                    Redirect(controllers.declaration.routes.DispatchLocationController.displayPage(Mode.Normal))
+                  }
+                case _ =>
+                  create(choice) map { created =>
+                    Redirect(controllers.declaration.routes.DispatchLocationController.displayPage(Mode.Normal))
+                      .addingToSession(ExportsSessionKeys.declarationId -> created.id.get)
+                  }
               }
             case CancelDec =>
               Future.successful(Redirect(controllers.routes.CancelDeclarationController.displayForm()))
@@ -89,4 +88,23 @@ class ChoiceController @Inject()(
       )
   }
 
+  private def updateChoice(id: String, choice: Choice)(implicit hc: HeaderCarrier) =
+    exportsCacheService.get(id).map(_.map(_.copy(choice = choice.value))).flatMap {
+      case Some(declaration) => exportsCacheService.update(declaration)
+      case None =>
+        logger.error(s"Failed to find declaration for id $id")
+        Future.successful(None)
+    }
+
+  private def create(choice: Choice)(implicit hc: HeaderCarrier) =
+    exportsCacheService
+      .create(
+        ExportsDeclaration(
+          None,
+          DeclarationStatus.DRAFT,
+          createdDateTime = Instant.now,
+          updatedDateTime = Instant.now,
+          choice.value
+        )
+      )
 }

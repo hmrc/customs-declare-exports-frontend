@@ -17,12 +17,38 @@
 package connectors
 
 import base.ExportsTestData._
-import base.{CustomExportsBaseSpec, MockHttpClient}
-import models.{HeaderData, Metadata, NRSSubmission, NrsSubmissionResponse, SearchKeys}
+import base.{MockHttpClient, TestHelper}
+import config.AppConfig
+import models._
+import org.joda.time.DateTime
+import org.scalatest.concurrent.ScalaFutures
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.ws.WSClient
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.logging.Authorization
+import unit.base.UnitSpec
 
+import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
-class NrsConnectorSpec extends CustomExportsBaseSpec {
+class NrsConnectorSpec extends UnitSpec with ScalaFutures {
+
+  val mockWSClient = mock[WSClient]
+
+  val injector = GuiceApplicationBuilder()
+    .configure(
+      "microservice.services.nrs.host" -> "localhostnrs",
+      "microservice.services.nrs.port" -> "7654",
+      "microservice.services.nrs.apikey" -> "cds-exports"
+    )
+    .injector()
+  val appConfig = injector.instanceOf[AppConfig]
+
+  val hc: HeaderCarrier =
+    HeaderCarrier(
+      authorization = Some(Authorization(TestHelper.createRandomString(255))),
+      nsStamp = DateTime.now().getMillis
+    )
 
   val expectedHeaders: Seq[(String, String)] =
     Seq(("Content-Type", "application/json"), ("X-API-Key", appConfig.nrsApiKey))
@@ -59,6 +85,6 @@ class NrsConnectorSpec extends CustomExportsBaseSpec {
       )
     val client = new NrsConnector(appConfig, http)
 
-    test(client.submitNonRepudiation(nrsSubmission)(hc, ec))
+    test(client.submitNonRepudiation(nrsSubmission)(hc, global))
   }
 }

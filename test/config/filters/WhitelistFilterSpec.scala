@@ -16,6 +16,7 @@
 
 package config.filters
 
+import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
 import play.api.{Application, Configuration, Environment}
 import org.scalatestplus.play.PlaySpec
@@ -29,6 +30,8 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
 class WhitelistFilterSpec extends PlaySpec with GuiceOneServerPerSuite {
+
+  SharedMetricRegistries.clear()
 
   val runMode = new RunMode(app.configuration, Test)
   val servicesConfig = new ServicesConfig(app.configuration, runMode)
