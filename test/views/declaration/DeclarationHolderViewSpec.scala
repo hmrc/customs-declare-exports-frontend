@@ -177,7 +177,10 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
     "display one row with data in table" in {
 
       val view =
-        declarationHolderPage(Mode.Normal, form, Seq(DeclarationHolder(Some("1234"), Some("1234"))))(fakeRequest, messages)
+        declarationHolderPage(Mode.Normal, form, Seq(DeclarationHolder(Some("1234"), Some("1234"))))(
+          fakeRequest,
+          messages
+        )
 
       getElementByCss(view, "tbody>tr>th:nth-child(1)").text() must be("1234-1234")
 

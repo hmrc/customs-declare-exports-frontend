@@ -128,7 +128,8 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         val incorrectForm =
           Seq(("procedureCode", "1234"), ("additionalProcedureCode", "incorrect"), addActionUrlEncoded)
 
-        val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result =
+          controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) mustBe BAD_REQUEST
         verify(mockProcedureCodesPage, times(1)).apply(any(), any(), any(), any())(any(), any())
@@ -142,7 +143,8 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         val duplicatedForm =
           Seq(("procedureCode", "1234"), ("additionalProcedureCode", "123"), addActionUrlEncoded)
 
-        val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+        val result =
+          controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
         status(result) mustBe BAD_REQUEST
         verify(mockProcedureCodesPage, times(1)).apply(any(), any(), any(), any())(any(), any())
@@ -173,7 +175,8 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         val incorrectForm =
           Seq(("procedureCode", "1234"), ("additionalProcedureCode", "incorrect"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result =
+          controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) mustBe BAD_REQUEST
         verify(mockProcedureCodesPage, times(1)).apply(any(), any(), any(), any())(any(), any())
@@ -187,7 +190,8 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         val duplicatedForm =
           Seq(("procedureCode", "1234"), ("additionalProcedureCode", "123"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+        val result =
+          controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
         status(result) mustBe BAD_REQUEST
         verify(mockProcedureCodesPage, times(1)).apply(any(), any(), any(), any())(any(), any())
@@ -221,7 +225,8 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, "itemId12345")
+        thePageNavigatedTo mustBe controllers.declaration.routes.ProcedureCodesController
+          .displayPage(Mode.Normal, "itemId12345")
 
         verify(mockProcedureCodesPage, times(0)).apply(any(), any(), any(), any())(any(), any())
       }
@@ -236,7 +241,8 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, "itemId12345")
+        thePageNavigatedTo mustBe controllers.declaration.routes.FiscalInformationController
+          .displayPage(Mode.Normal, "itemId12345")
 
         verify(mockProcedureCodesPage, times(0)).apply(any(), any(), any(), any())(any(), any())
       }
@@ -253,7 +259,8 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, "itemId12345")
+        thePageNavigatedTo mustBe controllers.declaration.routes.FiscalInformationController
+          .displayPage(Mode.Normal, "itemId12345")
 
         verify(mockProcedureCodesPage, times(0)).apply(any(), any(), any(), any())(any(), any())
       }

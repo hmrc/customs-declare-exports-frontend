@@ -100,14 +100,16 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(SaveAndContinue.toString -> ""))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController.displayForm(Mode.Normal)
+        thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController
+          .displayForm(Mode.Normal)
       }
 
       "user save and returns" in {
         val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(SaveAndReturn.toString -> ""))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController.displayForm(Mode.Normal)
+        thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController
+          .displayForm(Mode.Normal)
       }
     }
   }

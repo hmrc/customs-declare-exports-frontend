@@ -16,7 +16,7 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.{CommodityMeasureController, routes}
+import controllers.declaration.{routes, CommodityMeasureController}
 import forms.Choice
 import forms.declaration.{CommodityMeasure, PackageInformation}
 import models.Mode

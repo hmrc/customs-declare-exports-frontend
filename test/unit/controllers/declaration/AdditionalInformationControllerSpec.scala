@@ -16,7 +16,7 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.{AdditionalInformationController, routes}
+import controllers.declaration.{routes, AdditionalInformationController}
 import controllers.util.Remove
 import forms.Choice
 import forms.declaration.AdditionalInformation
@@ -94,7 +94,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
         val incorrectForm = Seq(("code", "12345"), ("description", ""), addActionUrlEncoded)
 
-        val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result =
+          controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -111,7 +112,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
         val duplicatedForm = Seq(("code", "12345"), ("description", "description"), addActionUrlEncoded)
 
-        val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+        val result =
+          controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -141,7 +143,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
         val incorrectForm = Seq(("code", "12345"), ("description", ""), saveAndContinueActionUrlEncoded)
 
-        val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result =
+          controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -158,7 +161,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
         val duplicatedForm = Seq(("code", "12345"), ("description", "description"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+        val result =
+          controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }

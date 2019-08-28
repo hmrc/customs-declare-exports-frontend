@@ -91,7 +91,7 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
         val wrongAction = ("WrongAction", "")
 
-        val result = controller.saveForm(Mode.Normal,itemId)(postRequestAsFormUrlEncoded(wrongAction))
+        val result = controller.saveForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(wrongAction))
 
         status(result) mustBe BAD_REQUEST
         verify(mockDocumentProducedPage, times(1)).apply(refEq(Mode.Normal), any(), any(), any())(any(), any())
@@ -219,7 +219,8 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
       "user save empty form without new item" in {
 
-        val result = controller.saveForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
+        val result =
+          controller.saveForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayPage()

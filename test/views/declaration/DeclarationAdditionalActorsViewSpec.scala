@@ -205,10 +205,11 @@ class DeclarationAdditionalActorsViewSpec
 
     "display one row with data in table" in {
 
-      val view = declarationAdditionalActorsPage(Mode.Normal, form, Seq(DeclarationAdditionalActors(Some("12345"), Some("CS"))))(
-        fakeJourneyRequest(StandardDec),
-        messages
-      )
+      val view = declarationAdditionalActorsPage(
+        Mode.Normal,
+        form,
+        Seq(DeclarationAdditionalActors(Some("12345"), Some("CS")))
+      )(fakeJourneyRequest(StandardDec), messages)
 
       getElementByCss(view, "table>thead>tr>th:nth-child(1)").text() must be("Party’s EORI number")
       getElementByCss(view, "table>thead>tr>th:nth-child(2)").text() must be("Party type")

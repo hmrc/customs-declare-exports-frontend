@@ -92,7 +92,8 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
         val incorrectForm = Seq(("authorisationTypeCode", "incorrect"), ("eori", "GB123456"), addActionUrlEncoded)
 
-        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result =
+          controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -103,7 +104,8 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
         val duplicatedForm = Seq(("authorisationTypeCode", "ACP"), ("eori", "GB123456"), addActionUrlEncoded)
 
-        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+        val result =
+          controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -127,7 +129,8 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
         val incorrectForm =
           Seq(("authorisationTypeCode", "incorrect"), ("eori", "GB123456"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result =
+          controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -139,7 +142,8 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
         val duplicatedForm =
           Seq(("authorisationTypeCode", "ACP"), ("eori", "GB123456"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+        val result =
+          controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -182,7 +186,9 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
         withNewCaching(declarationWithHolder)
 
         val result =
-          controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
+          controller.submitHoldersOfAuthorisation(Mode.Normal)(
+            postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded)
+          )
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.DestinationCountriesController.displayForm()

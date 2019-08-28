@@ -281,7 +281,8 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
         val document = Document("X", "355", "reference", Some("123"))
         withNewCaching(aDeclaration(withPreviousDocuments(document)))
 
-        val result = controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
+        val result =
+          controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayPage()

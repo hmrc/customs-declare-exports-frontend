@@ -222,7 +222,8 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
         val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationController
+          .displayPage(Mode.Normal, itemId)
         verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any(), any(), any())(any(), any())
       }
 
