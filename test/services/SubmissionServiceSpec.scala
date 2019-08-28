@@ -23,7 +23,6 @@ import config.AppConfig
 import forms.Choice.AllowedChoiceValues
 import metrics.{ExportsMetrics, MetricIdentifiers}
 import models.{DeclarationStatus, ExportsDeclaration}
-import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
@@ -50,11 +49,7 @@ class SubmissionServiceSpec
   val appConfig = injector.instanceOf[AppConfig]
   val exportMetrics = injector.instanceOf[ExportsMetrics]
 
-  val hc: HeaderCarrier =
-    HeaderCarrier(
-      authorization = Some(Authorization(TestHelper.createRandomString(255))),
-      nsStamp = DateTime.now().getMillis
-    )
+  val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestHelper.createRandomString(255))))
 
   val request = TestHelper.journeyRequest(FakeRequest("", ""), AllowedChoiceValues.SupplementaryDec)
 

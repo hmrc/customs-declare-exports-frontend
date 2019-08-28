@@ -21,7 +21,6 @@ import base.{MockHttpClient, TestHelper}
 import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
 import models._
-import org.joda.time.DateTime
 import org.scalatest.concurrent.ScalaFutures
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.ws.WSClient
@@ -47,11 +46,7 @@ class NrsConnectorSpec extends UnitSpec with ScalaFutures {
     .injector()
   val appConfig = injector.instanceOf[AppConfig]
 
-  val hc: HeaderCarrier =
-    HeaderCarrier(
-      authorization = Some(Authorization(TestHelper.createRandomString(255))),
-      nsStamp = DateTime.now().getMillis
-    )
+  val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestHelper.createRandomString(255))))
 
   val expectedHeaders: Seq[(String, String)] =
     Seq(("Content-Type", "application/json"), ("X-API-Key", appConfig.nrsApiKey))
