@@ -16,28 +16,49 @@
 
 package services
 
-import base.{CustomExportsBaseSpec, TestHelper}
+import base.{MockConnectors, MockExportCacheService, TestHelper}
 import com.kenshoo.play.metrics.Metrics
+import config.AppConfig
 import forms.Choice.AllowedChoiceValues
-import metrics.MetricIdentifiers
+import metrics.{ExportsMetrics, MetricIdentifiers}
 import models.{DeclarationStatus, ExportsDeclaration}
+import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
+import org.scalatest.OptionValues
+import org.scalatest.concurrent.ScalaFutures
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import services.audit.{AuditService, AuditTypes, EventData}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.logging.Authorization
+import unit.base.UnitSpec
 
+import scala.concurrent.ExecutionContext.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class SubmissionServiceSpec extends CustomExportsBaseSpec {
+class SubmissionServiceSpec
+    extends UnitSpec with MockExportCacheService with MockConnectors with ScalaFutures with OptionValues {
 
   val mockAuditService = mock[AuditService]
 
-  override def beforeEach(): Unit =
-    reset(mockExportsCacheService, mockCustomsDeclareExportsConnector, mockAuditService)
+  val injector = GuiceApplicationBuilder().injector()
+  val appConfig = injector.instanceOf[AppConfig]
+  val exportMetrics = injector.instanceOf[ExportsMetrics]
 
-  implicit val request = TestHelper.journeyRequest(FakeRequest("", ""), AllowedChoiceValues.SupplementaryDec)
+  val hc: HeaderCarrier =
+    HeaderCarrier(
+      authorization = Some(Authorization(TestHelper.createRandomString(255))),
+      nsStamp = DateTime.now().getMillis
+    )
+
+  val request = TestHelper.journeyRequest(FakeRequest("", ""), AllowedChoiceValues.SupplementaryDec)
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockExportsCacheService, mockCustomsDeclareExportsConnector, mockAuditService)
+  }
 
   val auditData = Map(
     EventData.EORI.toString -> request.authenticatedRequest.user.eori,
@@ -51,7 +72,7 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec {
     mockExportsCacheService,
     mockCustomsDeclareExportsConnector,
     mockAuditService,
-    exportsMetricsMock
+    exportMetrics
   )
 
   def theExportsDeclarationSubmitted: ExportsDeclaration = {
@@ -69,13 +90,13 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec {
       when(mockCustomsDeclareExportsConnector.updateDeclaration(any[ExportsDeclaration])(any(), any()))
         .thenReturn(Future.successful(submittedDeclaration))
 
-      val registry = app.injector.instanceOf[Metrics].defaultRegistry
+      val registry = injector.instanceOf[Metrics].defaultRegistry
       val metric = MetricIdentifiers.submissionMetric
-      val timerBefore = registry.getTimers.get(exportsMetricsMock.timerName(metric)).getCount
-      val counterBefore = registry.getCounters.get(exportsMetricsMock.counterName(metric)).getCount
+      val timerBefore = registry.getTimers.get(exportMetrics.timerName(metric)).getCount
+      val counterBefore = registry.getCounters.get(exportMetrics.counterName(metric)).getCount
       val model = aDeclaration(withConsignmentReferences(ducr = "ducr", lrn = "123LRN"))
 
-      val result = submissionService.submit(model).futureValue
+      val result = submissionService.submit(model)(request, hc, global).futureValue
 
       result.value mustBe "123LRN"
 
@@ -84,8 +105,8 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec {
       verify(mockAuditService, times(1)).auditAllPagesUserInput(any())(any())
       verify(mockAuditService)
         .audit(ArgumentMatchers.eq(AuditTypes.Submission), ArgumentMatchers.eq[Map[String, String]](auditData))(any())
-      registry.getTimers.get(exportsMetricsMock.timerName(metric)).getCount mustBe >(timerBefore)
-      registry.getCounters.get(exportsMetricsMock.counterName(metric)).getCount mustBe >(counterBefore)
+      registry.getTimers.get(exportMetrics.timerName(metric)).getCount mustBe >(timerBefore)
+      registry.getCounters.get(exportMetrics.counterName(metric)).getCount mustBe >(counterBefore)
     }
 
     "propagate errors from exports connector" in {
@@ -95,7 +116,7 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec {
 
       val model = aDeclaration(withConsignmentReferences(ducr = "ducr", lrn = "123LRN"))
 
-      intercept[Exception](submissionService.submit(model)) mustBe error
+      intercept[Exception](submissionService.submit(model)(request, hc, global)) mustBe error
     }
   }
 }

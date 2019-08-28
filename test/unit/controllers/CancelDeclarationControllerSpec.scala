@@ -17,12 +17,15 @@
 package unit.controllers
 
 import com.codahale.metrics.Timer
+import com.kenshoo.play.metrics.Metrics
 import controllers.CancelDeclarationController
 import forms.CancelDeclaration
 import forms.cancellation.CancellationChangeReason.NoLongerRequired
+import metrics.{ExportsMetrics, MetricIdentifiers}
 import models.requests.{CancellationRequestExists, CancellationRequested, MissingDeclaration}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
@@ -99,6 +102,37 @@ class CancelDeclarationControllerSpec extends ControllerSpec with ErrorHandlerMo
 
         status(result) must be(BAD_REQUEST)
       }
+    }
+  }
+
+  "Cancel Declaration Controller on POST" should {
+
+    "record cancellation timing and increase the Success Counter when response is OK" in new SetUp {
+      authorizedUser()
+
+      val injector = GuiceApplicationBuilder().injector()
+      val exportMetrics = injector.instanceOf[ExportsMetrics]
+
+      val registry = injector.instanceOf[Metrics].defaultRegistry
+      val cancelMetric = MetricIdentifiers.cancelMetric
+
+      val cancelTimer = registry.getTimers().get(exportMetrics.timerName(cancelMetric))
+      val cancelCounter = registry.getCounters().get(exportMetrics.counterName(cancelMetric))
+
+      val timerBefore = cancelTimer.getCount
+      val counterBefore = cancelCounter.getCount
+
+      successfulCustomsDeclareExportsResponse()
+      successfulCancelDeclarationResponse(CancellationRequested)
+
+      val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
+
+      status(result) must be(OK)
+
+      val stringResult = contentAsString(result)
+      stringResult must include("cancellation.confirmationPage.message")
+      cancelTimer.getCount mustBe >=(timerBefore)
+      cancelCounter.getCount mustBe >=(counterBefore)
     }
   }
 }
