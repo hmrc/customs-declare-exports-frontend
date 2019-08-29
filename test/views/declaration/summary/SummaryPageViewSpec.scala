@@ -59,11 +59,12 @@ class SummaryPageViewSpec
   val summaryNoDataPage = contentAsString(new summary_page_no_data(mainTemplate)()(request, stubMessages()))
 
   "Summary page" should {
-    def view(mode: Mode, declaration: ExportsDeclaration = declaration): Document = new summary_page(mainTemplate)(mode, SupplementaryDeclarationData(declaration))(
-      JourneyRequest(AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration),
-      stubMessages(),
-      minimalAppConfig
-    )
+    def view(mode: Mode, declaration: ExportsDeclaration = declaration): Document =
+      new summary_page(mainTemplate)(mode, SupplementaryDeclarationData(declaration))(
+        JourneyRequest(AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration),
+        stubMessages(),
+        minimalAppConfig
+      )
 
     "contain back button" when {
       "Draft Mode" in {
@@ -93,7 +94,10 @@ class SummaryPageViewSpec
         }
 
         "supplementary declaration with containers" in {
-          val model = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withContainerData(TransportInformationContainer("id")))
+          val model = aDeclaration(
+            withChoice(Choice.AllowedChoiceValues.SupplementaryDec),
+            withContainerData(TransportInformationContainer("id"))
+          )
           val document = view(Mode.Normal, model)
           document must containElementWithID("link-back")
           document.getElementById("link-back") must haveHref(
