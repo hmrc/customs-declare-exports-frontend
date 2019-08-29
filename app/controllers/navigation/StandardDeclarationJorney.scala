@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package models.requests
+package controllers.navigation
 
-import forms.Choice
-import models.{ExportsDeclaration, Mode}
-import play.api.mvc.WrappedRequest
+import models.Mode
+import play.api.mvc.Result
 
-case class JourneyRequest[A](authenticatedRequest: AuthenticatedRequest[A], cacheModel: ExportsDeclaration, mode: Mode)
-    extends WrappedRequest[A](authenticatedRequest) {
-  val choice: Choice = Choice(cacheModel.choice)
+import play.api.mvc.Results._
 
-  def declarationId: String = authenticatedRequest.declarationId.getOrElse(throw new IllegalAccessError)
+object StandardDeclarationJorney {
+  def start: Result = Redirect(
+    controllers.declaration.routes.DispatchLocationController.displayPage().path(),
+    Map("mode" -> Seq(Mode.Normal.name))
+  )
 }

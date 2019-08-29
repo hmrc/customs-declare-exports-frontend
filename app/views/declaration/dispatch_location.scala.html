@@ -18,26 +18,30 @@
 @import forms.declaration.DispatchLocation.AllowedDispatchLocations._
 @import uk.gov.hmrc.play.views.html._
 @import views.components.inputs.RadioOption
+@import models.requests.JourneyRequest
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[DispatchLocation])(implicit request: Request[_], messages: Messages)
+@(form: Form[DispatchLocation])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
   title = messages("supplementary.dispatchLocation.title")
 ) {
 
-    @mode match {
+    @request.mode match {
         case Mode.Draft | Mode.Amend => {
-            @components.back_link(controllers.declaration.routes.SummaryController.displayPage(mode), mode)
+            @components.back_link(controllers.declaration.routes.SummaryController.displayPage(request.mode), request.mode)
         }
         case Mode.Normal => {
-            @components.back_link(controllers.routes.ChoiceController.displayPage(), mode)
+            @components.back_link(controllers.routes.ChoiceController.displayPage(), request.mode)
         }
     }
 
-  @helper.form(controllers.declaration.routes.DispatchLocationController.submitForm(mode), 'autoComplete -> "off") {
-      @helper.CSRF.formField
+  @defining(controllers.declaration.routes.DispatchLocationController.submitForm()){ call =>
+
+  <form method="@call.method" action="@call.url?mode=@request.mode.name" autocomplete="off">
+ @*   @helper.form(?mode=@request.mode.name, 'autoComplete -> "off") { *@
+    @helper.CSRF.formField
 
     @components.error_summary(form.errors)
 
@@ -49,20 +53,21 @@
       field = form("dispatchLocation"),
       legend = "",
       inputs = Seq(
-        RadioOption(
-          "OutsideEU",
-          OutsideEU,
-          messages("supplementary.dispatchLocation.inputText.outsideEU")
-        ),
-        RadioOption(
-          "SpecialFiscalTerritory",
-          SpecialFiscalTerritory,
-          messages("supplementary.dispatchLocation.inputText.specialFiscalTerritory")
-        )
+          RadioOption(
+              "OutsideEU",
+              OutsideEU,
+              messages("supplementary.dispatchLocation.inputText.outsideEU")
+          ),
+          RadioOption(
+              "SpecialFiscalTerritory",
+              SpecialFiscalTerritory,
+              messages("supplementary.dispatchLocation.inputText.specialFiscalTerritory")
+          )
       )
     )
 
     @components.submit_button()
     @components.buttons.save_and_return_later_button()
+  </form>
   }
 }

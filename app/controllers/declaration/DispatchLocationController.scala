@@ -42,30 +42,29 @@ class DispatchLocationController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.dispatchLocation match {
-      case Some(data) => Ok(dispatchLocationPage(mode, DispatchLocation.form().fill(data)))
-      case _          => Ok(dispatchLocationPage(mode, DispatchLocation.form()))
+      case Some(data) => Ok(dispatchLocationPage(DispatchLocation.form().fill(data)))
+      case _          => Ok(dispatchLocationPage(DispatchLocation.form()))
     }
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     DispatchLocation
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[DispatchLocation]) =>
-          Future.successful(BadRequest(dispatchLocationPage(mode, formWithErrors))),
+        (formWithErrors: Form[DispatchLocation]) => Future.successful(BadRequest(dispatchLocationPage(formWithErrors))),
         validDispatchLocation =>
           updateCache(validDispatchLocation)
-            .map(_ => navigator.continueTo(nextPage(mode, validDispatchLocation)))
+            .map(_ => navigator.continueTo(nextPage(validDispatchLocation)))
       )
   }
 
-  private def nextPage(mode: Mode, providedDispatchLocation: DispatchLocation): Call =
+  private def nextPage(providedDispatchLocation: DispatchLocation)(implicit request: JourneyRequest[_]): Call =
     providedDispatchLocation.dispatchLocation match {
       case AllowedDispatchLocations.OutsideEU =>
-        controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage(mode)
+        controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage(request.mode)
       case AllowedDispatchLocations.SpecialFiscalTerritory =>
         controllers.declaration.routes.NotEligibleController.displayPage()
     }

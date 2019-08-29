@@ -27,9 +27,10 @@
     title = messages("declaration.declarationType.title")
 ) {
 
-    @components.back_link(controllers.declaration.routes.DispatchLocationController.displayPage(mode), mode)
+    @components.back_link(controllers.declaration.routes.DispatchLocationController.displayPage(), request.mode)
 
-    @helper.form(controllers.declaration.routes.AdditionalDeclarationTypeController.submitForm(mode), 'autoComplete -> "off") {
+    @defining(controllers.declaration.routes.AdditionalDeclarationTypeController.submitForm()){ call =>
+        <form method="@call.method" action="@call.url?mode=@request.mode.name" autocomplete="off">
         @helper.CSRF.formField
 
         @components.error_summary(form.errors)

@@ -17,6 +17,7 @@
 package controllers.actions
 
 import com.google.inject.Inject
+import models.Mode
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.Logger
 import play.api.mvc.{ActionRefiner, Result, Results}
@@ -36,13 +37,18 @@ class JourneyAction @Inject()(cacheService: ExportsCacheService)(
     implicit val hc: HeaderCarrier =
       HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    request.declarationId match {
-      case Some(id) =>
-        cacheService.get(id).map {
-          case Some(declaration) => Right(JourneyRequest(request, declaration))
-          case _                 => handleMissingDeclarationId(request)
+    Mode.binder.bind("mode", request.queryString) match {
+      case Some(Right(mode)) =>
+        request.declarationId match {
+          case Some(id) =>
+            cacheService.get(id).map {
+              case Some(declaration) => Right(JourneyRequest(request, declaration, mode))
+              case _                 => handleMissingDeclarationId(request)
+            }
+          case None => Future.successful(handleMissingDeclarationId(request))
         }
-      case None => Future.successful(handleMissingDeclarationId(request))
+
+      case Some(Left(_)) | None => Future.successful(Left(Results.BadRequest("mode query parameter is required")))
     }
   }
 

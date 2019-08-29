@@ -20,6 +20,7 @@ import java.time.Instant
 
 import controllers.actions.AuthAction
 import controllers.declaration.ModelCacheable
+import controllers.navigation.StandardDeclarationJorney
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import forms.Choice._
@@ -70,11 +71,11 @@ class ChoiceController @Inject()(
               request.declarationId match {
                 case Some(id) =>
                   updateChoice(id, choice).map { _ =>
-                    Redirect(controllers.declaration.routes.DispatchLocationController.displayPage(Mode.Normal))
+                    StandardDeclarationJorney.start
                   }
                 case _ =>
                   create(choice) map { created =>
-                    Redirect(controllers.declaration.routes.DispatchLocationController.displayPage(Mode.Normal))
+                    StandardDeclarationJorney.start
                       .addingToSession(ExportsSessionKeys.declarationId -> created.id.get)
                   }
               }
