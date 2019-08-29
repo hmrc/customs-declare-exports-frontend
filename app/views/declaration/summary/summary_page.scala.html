@@ -36,9 +36,6 @@
       case Mode.Draft => {
           @components.back_link(controllers.routes.SavedDeclarationsController.displayDeclarations(), mode)
       }
-      case Mode.Amend => {
-          @components.back_link(controllers.routes.SavedDeclarationsController.displayDeclarations(), mode)
-      }
       case _ if request.choice.value == StandardDec => {
           @components.back_link(controllers.declaration.routes.SealController.displayPage(mode), mode)
       }

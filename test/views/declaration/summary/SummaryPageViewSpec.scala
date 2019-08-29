@@ -75,14 +75,6 @@ class SummaryPageViewSpec
         )
       }
 
-      "Amend Mode" in {
-        val document = view(Mode.Amend)
-        document must containElementWithID("link-back")
-        document.getElementById("link-back") must haveHref(
-          controllers.routes.SavedDeclarationsController.displayDeclarations()
-        )
-      }
-
       "Normal Mode" when {
         "standard declaration" in {
           val model = aDeclaration(withChoice(Choice.AllowedChoiceValues.StandardDec))
