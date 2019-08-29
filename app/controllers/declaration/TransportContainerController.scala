@@ -63,10 +63,10 @@ class TransportContainerController @Inject()(
     val cache = request.cacheModel.containerData.getOrElse(TransportInformationContainerData(Seq()))
 
     actionTypeOpt match {
-      case Some(Add)                                   => addContainer(mode, boundForm, maxNumberOfItems, cache)
-      case Some(Remove(ids))                           => removeContainer(mode, boundForm, cache, ids)
-      case Some(SaveAndContinue) | Some(SaveAndReturn) => saveContainer(mode, boundForm, maxNumberOfItems, cache)
-      case _                                           => errorHandler.displayErrorPage()
+      case Add                             => addContainer(mode, boundForm, maxNumberOfItems, cache)
+      case Remove(ids)                     => removeContainer(mode, boundForm, cache, ids)
+      case SaveAndContinue | SaveAndReturn => saveContainer(mode, boundForm, maxNumberOfItems, cache)
+      case _                               => errorHandler.displayErrorPage()
     }
   }
 

@@ -67,11 +67,11 @@ class DeclarationAdditionalActorsController @Inject()(
       request.cacheModel.parties.declarationAdditionalActorsData.getOrElse(DeclarationAdditionalActorsData(Seq()))
 
     actionTypeOpt match {
-      case Some(Add) if !boundForm.hasErrors => addItem(mode, boundForm.get, cache)
-      case Some(SaveAndContinue) | Some(SaveAndReturn) if !boundForm.hasErrors =>
+      case Add if !boundForm.hasErrors => addItem(mode, boundForm.get, cache)
+      case SaveAndContinue | SaveAndReturn if !boundForm.hasErrors =>
         saveAndContinue(mode, boundForm.get, cache)
-      case Some(Remove(values)) => removeItem(mode, retrieveItem(values.headOption.get), boundForm, cache)
-      case _                    => Future.successful(BadRequest(declarationAdditionalActorsPage(mode, boundForm, cache.actors)))
+      case Remove(values) => removeItem(mode, retrieveItem(values.headOption.get), boundForm, cache)
+      case _              => Future.successful(BadRequest(declarationAdditionalActorsPage(mode, boundForm, cache.actors)))
     }
   }
 

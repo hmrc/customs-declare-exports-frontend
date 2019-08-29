@@ -69,10 +69,10 @@ class AdditionalFiscalReferencesController @Inject()(
       val boundForm = form().bindFromRequest()
 
       actionTypeOpt match {
-        case Some(Add)                                   => addReference(mode, itemId, boundForm, cache)
-        case Some(SaveAndContinue) | Some(SaveAndReturn) => saveAndContinue(mode, itemId, boundForm, cache)
-        case Some(Remove(values))                        => removeReference(mode, itemId, values, boundForm, cache)
-        case _                                           => errorHandler.displayErrorPage()
+        case Add                             => addReference(mode, itemId, boundForm, cache)
+        case SaveAndContinue | SaveAndReturn => saveAndContinue(mode, itemId, boundForm, cache)
+        case Remove(values)                  => removeReference(mode, itemId, values, boundForm, cache)
+        case _                               => errorHandler.displayErrorPage()
       }
 
   }

@@ -59,10 +59,10 @@ class SealController @Inject()(
     val seals = data.seals
     val hasContainers: Boolean = data.transportDetails.fold(false)(_.container)
     actionTypeOpt match {
-      case Some(Add)                                   => addSeal(mode, boundForm, sealsAllowed, seals)
-      case Some(Remove(ids))                           => removeSeal(mode, boundForm, seals, hasContainers, ids)
-      case Some(SaveAndContinue) | Some(SaveAndReturn) => saveSeal(mode, boundForm, sealsAllowed, seals)
-      case _                                           => errorHandler.displayErrorPage()
+      case Add                             => addSeal(mode, boundForm, sealsAllowed, seals)
+      case Remove(ids)                     => removeSeal(mode, boundForm, seals, hasContainers, ids)
+      case SaveAndContinue | SaveAndReturn => saveSeal(mode, boundForm, sealsAllowed, seals)
+      case _                               => errorHandler.displayErrorPage()
     }
   }
 
