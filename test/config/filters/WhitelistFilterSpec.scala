@@ -16,6 +16,7 @@
 
 package config.filters
 
+import akka.stream.Materializer
 import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
 import play.api.{Application, Configuration, Environment}
@@ -23,11 +24,14 @@ import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.Mode.Test
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.BodyParsers.Default
 import play.api.mvc.Results.Ok
-import play.api.mvc.{Action, Call}
+import play.api.mvc.{Action, BodyParsers, Call, DefaultActionBuilder, PlayBodyParsers}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class WhitelistFilterSpec extends PlaySpec with GuiceOneServerPerSuite {
 
@@ -36,13 +40,15 @@ class WhitelistFilterSpec extends PlaySpec with GuiceOneServerPerSuite {
   val runMode = new RunMode(app.configuration, Test)
   val servicesConfig = new ServicesConfig(app.configuration, runMode)
   val mockConfig = new MockAppConfig(app.configuration, servicesConfig, "AppName")
+  implicit val materializer = app.injector.instanceOf[Materializer]
+  val defaultActionBuilder = DefaultActionBuilder(new Default(PlayBodyParsers.apply()))
 
   override implicit lazy val app: Application =
     new GuiceApplicationBuilder()
       .configure(Configuration("whitelist.enabled" -> true))
       .routes({
-        case ("GET", "/customs-declare-exports/start") => Action(Ok("success"))
-        case _                                         => Action(Ok("failure"))
+        case ("GET", "/customs-declare-exports/start") => defaultActionBuilder(Ok("success"))
+        case _                                         => defaultActionBuilder(Ok("failure"))
       })
       .build()
 

@@ -116,7 +116,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
 
       val response = await(connector.deleteDraftDeclaration(id))
 
-      response mustBe ()
+      response mustBe ((): Unit)
       verify(deleteRequestedFor(urlEqualTo(s"/v2/declarations/id")))
     }
   }
