@@ -36,35 +36,37 @@
 
     @components.back_link(routes.SavedDeclarationsController.displayDeclarations())
 
-    @components.error_summary(form.errors)
+    <div class="column-two-thirds">
+        @components.error_summary(form.errors)
 
-    <h1>@messages("saved.declarations.remove.title")</h1>
+        <h1>@messages("saved.declarations.remove.title")</h1>
 
-    <table>
-        <tr class="table-row table-head">
-            <th class="table-cell">@messages("saved.declarations.ducr")</th>
-            <th class="table-cell">@messages("saved.declarations.dateSaved")</th>
-        </tr>
+        <table>
+            <tr class="table-row table-head">
+                <th class="table-cell table-head">@messages("saved.declarations.ducr")</th>
+                <th class="table-cell table-head">@messages("saved.declarations.dateSaved")</th>
+            </tr>
 
-        <tr class="table-row">
-            <td class="table-cell">
-                @declaration.ducr.getOrElse(messages("saved.declarations.noDucr"))
-            </td>
-            <td class="table-cell">@ViewDates.formatDateAtTime(declaration.updatedDateTime)</td>
-        </tr>
-    </table>
+            <tr class="table-row">
+                <td class="table-cell">
+                    @declaration.ducr.getOrElse(messages("saved.declarations.noDucr"))
+                </td>
+                <td class="table-cell">@ViewDates.formatDateAtTime(declaration.updatedDateTime)</td>
+            </tr>
+        </table>
 
-    <br />
+        <br />
 
-    @helper.form(RemoveSavedDeclarationsController.removeDeclaration(declaration.id.getOrElse("")), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+        @helper.form(RemoveSavedDeclarationsController.removeDeclaration(declaration.id.getOrElse("")), 'autoComplete -> "off") {
+            @helper.CSRF.formField
 
-        @components.fields.field_radio(
-            field = form("remove"),
-            legend = "",
-            inputs = Seq(RadioOption("Yes", "true", messages("site.yes")), RadioOption("No", "false", messages("site.no")))
-        )
+            @components.fields.field_radio(
+                field = form("remove"),
+                legend = "",
+                inputs = Seq(RadioOption("Yes", "true", messages("site.yes")), RadioOption("No", "false", messages("site.no")))
+            )
 
-        @components.submit_button("saved.declarations.remove.submitButton")
-    }
+            @components.submit_button("saved.declarations.remove.submitButton")
+        }
+    </div>
 }
