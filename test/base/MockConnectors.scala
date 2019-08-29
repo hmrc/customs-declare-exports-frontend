@@ -89,7 +89,7 @@ trait MockConnectors extends MockitoSugar {
 
   def deleteDraftDeclaration(): OngoingStubbing[Future[Unit]] =
     when(mockCustomsDeclareExportsConnector.deleteDraftDeclaration(anyString())(any(), any()))
-      .thenReturn(Future.successful())
+      .thenReturn(Future.successful((): Unit))
 
   def getDeclaration(id: String): OngoingStubbing[Future[Option[ExportsDeclaration]]] =
     when(mockCustomsDeclareExportsConnector.findDeclaration(refEq(id))(any(), any()))

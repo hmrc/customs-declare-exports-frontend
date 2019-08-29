@@ -44,9 +44,6 @@ class MockHttpClient[A, B](
   override def GET[O](url: String)(implicit rds: HttpReads[O], hc: HeaderCarrier, ec: ExecutionContext): Future[O] =
     Future.successful(result.asInstanceOf[O])
 
-  override def DELETE[O](url: String)(implicit rds: HttpReads[O], hc: HeaderCarrier, ec: ExecutionContext): Future[O] =
-    Future.successful(result.asInstanceOf[O])
-
   override def POSTString[O](
     url: String,
     body: String,
