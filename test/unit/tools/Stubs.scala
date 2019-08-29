@@ -64,6 +64,7 @@ trait Stubs {
       |metrics.showSamples=false
       |metrics.jvm=false
       |metrics.logback=false
+      |draft.timeToLive=1d
     """.stripMargin)
 
   val minimalConfiguration = Configuration(minimalConfig)
