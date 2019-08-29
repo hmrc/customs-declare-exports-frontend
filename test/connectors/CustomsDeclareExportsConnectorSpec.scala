@@ -70,15 +70,6 @@ class CustomsDeclareExportsConnectorSpec extends UnitSpec with ScalaFutures {
       response.futureValue must be(submissions)
     }
 
-    "DELETE to Customs Declare Exports endpoint to delete a submission" in {
-      val http =
-        new MockHttpClient(mockWSClient, expectedExportsUrl(appConfig.declarationsV2 + "/123"), None, result = None)
-      val client = new CustomsDeclareExportsConnector(appConfig, http)
-      val response = client.deleteDraftDeclaration("123")(hc, ec)
-
-      response.futureValue must be(None)
-    }
-
     "POST to Customs Declare Exports endpoint to submit cancellation" in {
       val metadata = cancellationRequest.createCancellationMetadata("eori")
 
