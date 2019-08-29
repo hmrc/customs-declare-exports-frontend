@@ -38,7 +38,7 @@ class AuthActionImpl @Inject()(
 
   implicit override val executionContext: ExecutionContext = mcc.executionContext
   override val parser: BodyParser[AnyContent] = mcc.parsers.defaultBodyParser
-  private val logger = Logger(classOf[AuthActionImpl])
+  private val logger = Logger(this.getClass)
 
   private val authTimer = metrics.defaultRegistry.timer("upstream.auth.timer")
 

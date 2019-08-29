@@ -40,7 +40,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
   private val logger = Logger(this.getClass)
 
   private def logPayload[T](prefix: String, payload: T)(implicit wts: Writes[T]): T = {
-    Logger.debug(s"$prefix: ${Json.toJson(payload)}")
+    logger.debug(s"$prefix: ${Json.toJson(payload)}")
     payload
   }
 

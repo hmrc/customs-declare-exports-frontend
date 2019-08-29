@@ -25,6 +25,8 @@ import javax.xml.validation.{Schema, SchemaFactory}
 import play.api.Logger
 
 trait SchemaValidation {
+  private val logger = Logger(this.getClass)
+
   private val schemas =
     Seq(
       "/wco-declaration-schemas/declaration/DocumentMetaData_2_DMS.xsd",
@@ -47,9 +49,9 @@ trait SchemaValidation {
       validator.validate(new StreamSource(new StringReader(xml)))
     } catch {
       case e: Exception =>
-        Logger.error(s"Invalid XML: ${e.getMessage}\n$xml", e)
+        logger.error(s"Invalid XML: ${e.getMessage}\n$xml", e)
         throw e
     }
-    Logger.debug("schema validation passed")
+    logger.debug("schema validation passed")
   }
 }
