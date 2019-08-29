@@ -79,7 +79,8 @@ class TransportDetailsControllerSpec extends ControllerSpec {
 
     "return 303 (SEE_OTHER)" when {
       "Container is selected" in new SetUp {
-        val correctForm = Json.toJson(TransportDetails(Some("United Kingdom"), true, IMOShipIDNumber, Some("correct"), Some(cash)))
+        val correctForm =
+          Json.toJson(TransportDetails(Some("United Kingdom"), true, IMOShipIDNumber, Some("correct"), Some(cash)))
 
         val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
 
@@ -88,7 +89,8 @@ class TransportDetailsControllerSpec extends ControllerSpec {
       }
 
       "Container is not selected" in new SetUp {
-        val correctForm = Json.toJson(TransportDetails(Some("United Kingdom"), false, IMOShipIDNumber, Some("correct"), Some(cash)))
+        val correctForm =
+          Json.toJson(TransportDetails(Some("United Kingdom"), false, IMOShipIDNumber, Some("correct"), Some(cash)))
 
         val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
 
