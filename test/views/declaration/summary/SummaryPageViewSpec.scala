@@ -17,20 +17,24 @@
 package views.declaration.summary
 
 import base.ExportsTestData.newUser
+import forms.Choice
 import forms.declaration.{GoodsLocation, TransportInformationContainer}
-import models.Mode
+import models.{ExportsDeclaration, Mode}
 import models.declaration.{Items, SupplementaryDeclarationData}
 import models.requests.{AuthenticatedRequest, JourneyRequest}
+import org.jsoup.nodes.Document
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 import unit.tools.Stubs
 import utils.FakeRequestCSRFSupport._
+import views.declaration.spec.ViewMatchers
 import views.html.declaration.summary.{summary_page, summary_page_no_data}
 
 class SummaryPageViewSpec
-    extends WordSpec with MustMatchers with ExportsDeclarationBuilder with ExportsItemBuilder with Stubs {
+    extends WordSpec with MustMatchers with ExportsDeclarationBuilder with ExportsItemBuilder with Stubs
+    with ViewMatchers {
 
   val declaration = aDeclaration(
     withConsignmentReferences(),
@@ -55,6 +59,58 @@ class SummaryPageViewSpec
   val summaryNoDataPage = contentAsString(new summary_page_no_data(mainTemplate)()(request, stubMessages()))
 
   "Summary page" should {
+    def view(mode: Mode, declaration: ExportsDeclaration = declaration): Document = new summary_page(mainTemplate)(mode, SupplementaryDeclarationData(declaration))(
+      JourneyRequest(AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration),
+      stubMessages(),
+      minimalAppConfig
+    )
+
+    "contain back button" when {
+      "Draft Mode" in {
+        val document = view(Mode.Draft)
+        document must containElementWithID("link-back")
+        document.getElementById("link-back") must haveHref(
+          controllers.routes.SavedDeclarationsController.displayDeclarations()
+        )
+      }
+
+      "Amend Mode" in {
+        val document = view(Mode.Amend)
+        document must containElementWithID("link-back")
+        document.getElementById("link-back") must haveHref(
+          controllers.routes.SavedDeclarationsController.displayDeclarations()
+        )
+      }
+
+      "Normal Mode" when {
+        "standard declaration" in {
+          val model = aDeclaration(withChoice(Choice.AllowedChoiceValues.StandardDec))
+          val document = view(Mode.Normal, model)
+          document must containElementWithID("link-back")
+          document.getElementById("link-back") must haveHref(
+            controllers.declaration.routes.SealController.displayPage(Mode.Normal)
+          )
+        }
+
+        "supplementary declaration with containers" in {
+          val model = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withContainerData(TransportInformationContainer("id")))
+          val document = view(Mode.Normal, model)
+          document must containElementWithID("link-back")
+          document.getElementById("link-back") must haveHref(
+            controllers.declaration.routes.TransportContainerController.displayPage(Mode.Normal)
+          )
+        }
+
+        "supplementary declaration without containers" in {
+          val model = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withoutContainerData())
+          val document = view(Mode.Normal, model)
+          document must containElementWithID("link-back")
+          document.getElementById("link-back") must haveHref(
+            controllers.declaration.routes.TransportDetailsController.displayPage(Mode.Normal)
+          )
+        }
+      }
+    }
 
     "has correct main buttons" in {
 
