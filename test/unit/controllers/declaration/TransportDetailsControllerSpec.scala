@@ -77,15 +77,24 @@ class TransportDetailsControllerSpec extends ControllerSpec {
       }
     }
 
-    "return 303 (SEE_OTHER)" in new SetUp {
+    "return 303 (SEE_OTHER)" when {
+      "Container is selected" in new SetUp {
+        val correctForm = Json.toJson(TransportDetails(Some("United Kingdom"), true, IMOShipIDNumber, Some("correct"), Some(cash)))
 
-      val correctForm =
-        Json.toJson(TransportDetails(Some("United Kingdom"), true, IMOShipIDNumber, Some("correct"), Some(cash)))
+        val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
 
-      val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController.displayPage(Mode.Draft)
+      }
 
-      await(result) mustBe aRedirectToTheNextPage
-      thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController.displayPage()
+      "Container is not selected" in new SetUp {
+        val correctForm = Json.toJson(TransportDetails(Some("United Kingdom"), false, IMOShipIDNumber, Some("correct"), Some(cash)))
+
+        val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
+      }
     }
   }
 }

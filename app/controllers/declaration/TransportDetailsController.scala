@@ -67,7 +67,7 @@ class TransportDetailsController @Inject()(
       navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayPage(mode))
     else if (request.choice.value == AllowedChoiceValues.StandardDec)
       navigator.continueTo(controllers.declaration.routes.SealController.displayForm(mode))
-    else navigator.continueTo(controllers.declaration.routes.SummaryController.displayPage(mode))
+    else navigator.continueTo(controllers.declaration.routes.SummaryController.displayPage(Mode.Normal))
 
   private def updateCache(
     formData: TransportDetails
