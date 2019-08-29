@@ -74,9 +74,9 @@ class SealController @Inject()(
       updatedCache =>
         if (updatedCache != cachedSeals) {
           updateCache(updatedCache).map { _ =>
-            navigator.continueTo(routes.SummaryController.displayPage(mode))
+            navigator.continueTo(routes.SummaryController.displayPage(Mode.Normal))
           }
-        } else Future.successful(navigator.continueTo(routes.SummaryController.displayPage(mode)))
+        } else Future.successful(navigator.continueTo(routes.SummaryController.displayPage(Mode.Normal)))
     )
 
   private def badRequest(mode: Mode, formWithErrors: Form[Seal], cachedSeals: Seq[Seal])(

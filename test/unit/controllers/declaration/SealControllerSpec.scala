@@ -133,26 +133,48 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
         thePageNavigatedTo mustBe controllers.declaration.routes.SealController.displayForm()
       }
 
-      "user clicked save and continue with data in form" in new SetUp {
+      "user clicked save and continue with data in form" when {
+        "in Draft Mode" in new SetUp {
+          val body = Seq("id" -> "value", (SaveAndContinue.toString, ""))
 
-        val body = Seq("id" -> "value", (SaveAndContinue.toString, ""))
+          val result = controller.submitForm(Mode.Draft)(postRequestAsFormUrlEncoded(body: _*))
 
-        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
+        }
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
+        "in Normal Mode" in new SetUp {
+          val body = Seq("id" -> "value", (SaveAndContinue.toString, ""))
+
+          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
+        }
       }
 
-      "user clicked save and continue with item in a cache" in new SetUp {
+      "user clicked save and continue with item in a cache" when {
+        "in Draft Mode" in new SetUp {
+          withNewCaching(aDeclaration(withSeal(Seal("value"))))
 
-        withNewCaching(aDeclaration(withSeal(Seal("value"))))
+          val body = Seq((SaveAndContinue.toString, ""))
 
-        val body = Seq((SaveAndContinue.toString, ""))
+          val result = controller.submitForm(Mode.Draft)(postRequestAsFormUrlEncoded(body: _*))
 
-        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
+        }
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
+        "in Normal Mode" in new SetUp {
+          withNewCaching(aDeclaration(withSeal(Seal("value"))))
+
+          val body = Seq((SaveAndContinue.toString, ""))
+
+          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
+        }
       }
     }
   }
