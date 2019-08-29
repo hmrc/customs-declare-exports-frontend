@@ -32,7 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class NRSService @Inject()(appConfig: AppConfig, connector: NrsConnector) {
-  val logger: Logger = Logger(this.getClass)
+  private val logger: Logger = Logger(this.getClass)
 
   def submit(
     conversationId: String,

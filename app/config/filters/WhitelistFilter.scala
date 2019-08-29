@@ -19,7 +19,6 @@ package config.filters
 import akka.stream.Materializer
 import config.AppConfig
 import javax.inject.Inject
-import play.api.Logger
 import play.api.mvc.{Call, RequestHeader, Result}
 import uk.gov.hmrc.whitelist.AkamaiWhitelistFilter
 
