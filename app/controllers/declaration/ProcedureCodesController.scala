@@ -75,10 +75,10 @@ class ProcedureCodesController @Inject()(
 
       val cache = request.cacheModel.itemBy(itemId).flatMap(_.procedureCodes).getOrElse(ProcedureCodesData(None, Seq()))
       actionTypeOpt match {
-        case Some(Add) if !boundForm.hasErrors => addAnotherCodeHandler(mode, itemId, boundForm.get, cache)
-        case Some(SaveAndContinue) | Some(SaveAndReturn) if !boundForm.hasErrors =>
+        case Add if !boundForm.hasErrors => addAnotherCodeHandler(mode, itemId, boundForm.get, cache)
+        case SaveAndContinue | SaveAndReturn if !boundForm.hasErrors =>
           saveAndContinueHandler(mode, itemId, boundForm.get, cache)
-        case Some(Remove(values)) => removeCodeHandler(mode, itemId, retrieveProcedureCode(values), boundForm, cache)
+        case Remove(values) => removeCodeHandler(mode, itemId, retrieveProcedureCode(values), boundForm, cache)
         case _ =>
           Future.successful(BadRequest(procedureCodesPage(mode, itemId, boundForm, cache.additionalProcedureCodes)))
       }

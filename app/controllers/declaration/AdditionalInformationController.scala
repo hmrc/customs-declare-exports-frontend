@@ -68,10 +68,10 @@ class AdditionalInformationController @Inject()(
         .getOrElse(AdditionalInformationData(Seq()))
 
       actionTypeOpt match {
-        case Some(Add)                                   => handleAdd(mode, itemId, boundForm, cache.items)
-        case Some(Remove(ids))                           => handleRemove(mode, itemId, ids, boundForm, cache.items)
-        case Some(SaveAndContinue) | Some(SaveAndReturn) => handleSaveAndContinue(mode, itemId, boundForm, cache.items)
-        case _                                           => errorHandler.displayErrorPage()
+        case Add                             => handleAdd(mode, itemId, boundForm, cache.items)
+        case Remove(ids)                     => handleRemove(mode, itemId, ids, boundForm, cache.items)
+        case SaveAndContinue | SaveAndReturn => handleSaveAndContinue(mode, itemId, boundForm, cache.items)
+        case _                               => errorHandler.displayErrorPage()
       }
   }
 

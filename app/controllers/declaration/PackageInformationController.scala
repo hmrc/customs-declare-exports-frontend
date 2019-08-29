@@ -59,10 +59,10 @@ class PackageInformationController @Inject()(
       val boundForm = form().bindFromRequest()
       val packagings = authRequest.cacheModel.itemBy(itemId).map(_.packageInformation).getOrElse(Seq.empty)
       actionTypeOpt match {
-        case Some(Add)                                   => addItem(mode, itemId, boundForm, packagings)
-        case Some(Remove(values))                        => removeItem(mode, itemId, values, boundForm, packagings)
-        case Some(SaveAndContinue) | Some(SaveAndReturn) => saveAndContinue(mode, itemId, boundForm, packagings)
-        case _                                           => errorHandler.displayErrorPage()
+        case Add                             => addItem(mode, itemId, boundForm, packagings)
+        case Remove(values)                  => removeItem(mode, itemId, values, boundForm, packagings)
+        case SaveAndContinue | SaveAndReturn => saveAndContinue(mode, itemId, boundForm, packagings)
+        case _                               => errorHandler.displayErrorPage()
       }
   }
 

@@ -65,11 +65,11 @@ class DeclarationHolderController @Inject()(
       val cache = request.cacheModel.parties.declarationHoldersData.getOrElse(DeclarationHoldersData(Seq()))
 
       actionTypeOpt match {
-        case Some(Add) if !boundForm.hasErrors => addHolder(mode, boundForm.get, cache)
-        case Some(SaveAndContinue) | Some(SaveAndReturn) if !boundForm.hasErrors =>
+        case Add if !boundForm.hasErrors => addHolder(mode, boundForm.get, cache)
+        case SaveAndContinue | SaveAndReturn if !boundForm.hasErrors =>
           saveAndContinue(mode, boundForm.get, cache)
-        case Some(Remove(values)) => removeHolder(mode, retrieveHolder(values), boundForm, cache)
-        case _                    => Future.successful(BadRequest(declarationHolderPage(mode, boundForm, cache.holders)))
+        case Remove(values) => removeHolder(mode, retrieveHolder(values), boundForm, cache)
+        case _              => Future.successful(BadRequest(declarationHolderPage(mode, boundForm, cache.holders)))
       }
   }
 

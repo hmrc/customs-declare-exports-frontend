@@ -47,7 +47,7 @@ class ItemsSummaryController @Inject()(
   def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val action = FormAction.bindFromRequest()
     action match {
-      case Some(Add) =>
+      case Add =>
         val newItem = ExportItem(id = exportItemIdGeneratorService.generateItemId())
         exportsCacheService
           .update(
@@ -55,7 +55,7 @@ class ItemsSummaryController @Inject()(
               .copy(items = request.cacheModel.items + newItem.copy(sequenceId = request.cacheModel.items.size + 1))
           )
           .map(_ => Redirect(controllers.declaration.routes.ProcedureCodesController.displayPage(mode, newItem.id)))
-      case Some(SaveAndContinue) | Some(SaveAndReturn) =>
+      case SaveAndContinue | SaveAndReturn =>
         Future.successful(
           navigator.continueTo(controllers.declaration.routes.WarehouseIdentificationController.displayPage(mode))
         )

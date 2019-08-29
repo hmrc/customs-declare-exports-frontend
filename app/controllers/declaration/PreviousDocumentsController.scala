@@ -62,7 +62,7 @@ class PreviousDocumentsController @Inject()(
       val cache = request.cacheModel.previousDocuments.getOrElse(PreviousDocumentsData(Seq.empty))
 
       actionTypeOpt match {
-        case Some(SaveAndContinue) | Some(SaveAndReturn) =>
+        case SaveAndContinue | SaveAndReturn =>
           saveAndContinue(boundForm, cache.documents, isScreenMandatory, maxAmountOfItems).fold(
             formWithErrors =>
               Future.successful(BadRequest(previousDocumentsPage(mode, formWithErrors, cache.documents))),
@@ -78,7 +78,7 @@ class PreviousDocumentsController @Inject()(
               )
           )
 
-        case Some(Add) =>
+        case Add =>
           add(boundForm, cache.documents, PreviousDocumentsData.maxAmountOfItems).fold(
             formWithErrors =>
               Future.successful(BadRequest(previousDocumentsPage(mode, formWithErrors, cache.documents))),
@@ -90,7 +90,7 @@ class PreviousDocumentsController @Inject()(
               )
           )
 
-        case Some(Remove(ids)) =>
+        case Remove(ids) =>
           val itemToRemove = Document.fromJsonString(ids.head)
           val updatedDocuments = MultipleItemsHelper.remove(cache.documents, itemToRemove.contains(_: Document))
           updateCache(PreviousDocumentsData(updatedDocuments))
