@@ -16,14 +16,29 @@
 
 package services
 
-import base.CustomExportsBaseSpec
 import base.ExportsTestData.newUser
+import base.{MockConnectors, TestHelper}
+import com.codahale.metrics.SharedMetricRegistries
+import config.AppConfig
+import org.scalatest.concurrent.ScalaFutures
+import play.api.inject.guice.GuiceApplicationBuilder
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.logging.Authorization
+import unit.base.UnitSpec
 
-class NrsServiceSpec extends CustomExportsBaseSpec {
+import scala.concurrent.ExecutionContext.global
+
+class NrsServiceSpec extends UnitSpec with MockConnectors with ScalaFutures {
+
+  SharedMetricRegistries.clear()
+
+  val injector = GuiceApplicationBuilder().injector()
+  val appConfig = injector.instanceOf[AppConfig]
+  val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestHelper.createRandomString(255))))
 
   val nrsService = new NRSService(appConfig, mockNrsConnector)
 
-  implicit val signedInUser = newUser("12345", "external1")
+  val signedInUser = newUser("12345", "external1")
 
   "NrsService " should {
 
@@ -31,7 +46,7 @@ class NrsServiceSpec extends CustomExportsBaseSpec {
 
       submitNrsRequest()
 
-      val nrsResponse = nrsService.submit("conversationId1", "payload 1", "ducr1")
+      val nrsResponse = nrsService.submit("conversationId1", "payload 1", "ducr1")(hc, global, signedInUser)
 
       nrsResponse.futureValue.nrSubmissionId must be("submissionId1")
     }

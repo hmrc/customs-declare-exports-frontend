@@ -16,22 +16,37 @@
 
 package connectors
 
-import java.time.{Instant, LocalDateTime}
+import java.time.LocalDateTime
 import java.util.UUID
 
-import base.{CustomExportsBaseSpec, MockHttpClient, TestHelper}
+import base.{MockHttpClient, TestHelper}
+import com.codahale.metrics.SharedMetricRegistries
+import config.AppConfig
 import connectors.CustomsDeclareExportsConnector.toXml
 import forms.CancelDeclaration
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{Action, Submission}
 import models.requests.CancellationRequested
+import org.scalatest.concurrent.ScalaFutures
 import play.api.http.{ContentTypes, HeaderNames}
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.ws.WSClient
 import play.api.mvc.Codec
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.logging.Authorization
+import unit.base.UnitSpec
 
-class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
+import scala.concurrent.ExecutionContext.global
+
+class CustomsDeclareExportsConnectorSpec extends UnitSpec with ScalaFutures {
   import CustomsDeclareExportsConnectorSpec._
+
+  SharedMetricRegistries.clear()
+
+  val injector = GuiceApplicationBuilder().injector()
+  val appConfig = injector.instanceOf[AppConfig]
+  val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestHelper.createRandomString(255))))
 
   val mockWSClient = mock[WSClient]
 
@@ -41,7 +56,7 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
       val http =
         new MockHttpClient(mockWSClient, expectedExportsUrl(appConfig.fetchNotifications), None, result = notifications)
       val client = new CustomsDeclareExportsConnector(appConfig, http)
-      val response = client.fetchNotifications()(hc, ec)
+      val response = client.fetchNotifications()(hc, global)
 
       response.futureValue must be(notifications)
     }
@@ -50,7 +65,7 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
       val http =
         new MockHttpClient(mockWSClient, expectedExportsUrl(appConfig.fetchSubmissions), None, result = submissions)
       val client = new CustomsDeclareExportsConnector(appConfig, http)
-      val response = client.fetchSubmissions()(hc, ec)
+      val response = client.fetchSubmissions()(hc, global)
 
       response.futureValue must be(submissions)
     }
@@ -67,14 +82,13 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
         CancellationRequested
       )
       val client = new CustomsDeclareExportsConnector(appConfig, http)
-      val response = client.submitCancellation(mrn, metadata)(hc, ec)
+      val response = client.submitCancellation(mrn, metadata)(hc, global)
 
       response.futureValue must be(CancellationRequested)
     }
   }
 
   private def expectedExportsUrl(endpointUrl: String): String = s"${appConfig.customsDeclareExports}${endpointUrl}"
-
 }
 
 object CustomsDeclareExportsConnectorSpec {

@@ -16,68 +16,90 @@
 
 package services.audit
 
-import base.CustomExportsBaseSpec
+import base.TestHelper
+import config.AppConfig
 import models.declaration.SupplementaryDeclarationTestData.allRecordsXmlMarshallingTest
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
+import org.mockito.stubbing.OngoingStubbing
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.concurrent.ScalaFutures
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import services.audit.EventData.{EORI, SubmissionResult}
+import services.cache.ExportsDeclarationBuilder
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.{Disabled, Failure, Success}
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.{DataEvent, ExtendedDataEvent}
+import unit.base.UnitSpec
 
+import scala.concurrent.ExecutionContext.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class AuditServiceSpec extends AuditTestSupport {
 
   override def beforeEach(): Unit = {
+    super.beforeEach()
     mockSendEvent()
     mockSendCompletePayload()
   }
+
   "AuditService" should {
 
     "audit an event" in {
-      auditService.audit(AuditTypes.Submission, auditData)
+
+      auditService.audit(AuditTypes.Submission, auditData)(hc)
       verify(mockAuditConnector).sendEvent(ArgumentMatchers.refEq(event, "eventId", "generatedAt"))(any(), any())
     }
 
     "audit full payload" in {
-      auditService.auditAllPagesUserInput(Json.toJson(allRecordsXmlMarshallingTest).as[JsObject])
+
+      auditService.auditAllPagesUserInput(Json.toJson(allRecordsXmlMarshallingTest).as[JsObject])(hc)
       verify(mockAuditConnector).sendExtendedEvent(ArgumentMatchers.refEq(extendedEvent, "eventId", "generatedAt"))(
         any(),
         any()
       )
-
     }
+
     "audit full payload success" in {
-      val res = auditService.auditAllPagesUserInput(Json.toJson(allRecordsXmlMarshallingTest).as[JsObject]).futureValue
-      res mustBe AuditResult.Success
 
-    }
-    "audit with a success" in {
-      val res = auditService.audit(AuditTypes.Submission, auditData).futureValue
+      val res =
+        auditService.auditAllPagesUserInput(Json.toJson(allRecordsXmlMarshallingTest).as[JsObject])(hc).futureValue
+
       res mustBe AuditResult.Success
     }
+
+    "audit with a success" in {
+      val res = auditService.audit(AuditTypes.Submission, auditData)(hc).futureValue
+
+      res mustBe AuditResult.Success
+    }
+
     "handle audit failure" in {
+
       mockSendEvent(result = auditFailure)
-      val res = auditService.audit(AuditTypes.Submission, auditData).futureValue
+
+      val res = auditService.audit(AuditTypes.Submission, auditData)(hc).futureValue
+
       res mustBe auditFailure
     }
 
     "handled audit disabled" in {
+
       mockSendEvent(result = Disabled)
-      val res = auditService.audit(AuditTypes.Submission, auditData).futureValue
+
+      val res = auditService.audit(AuditTypes.Submission, auditData)(hc).futureValue
+
       res mustBe AuditResult.Disabled
     }
-
   }
-
 }
 
-trait AuditTestSupport extends CustomExportsBaseSpec {
+trait AuditTestSupport extends UnitSpec with ExportsDeclarationBuilder with ScalaFutures with BeforeAndAfterEach {
   val mockAuditConnector = mock[AuditConnector]
 
   val auditData = Map(
@@ -86,6 +108,10 @@ trait AuditTestSupport extends CustomExportsBaseSpec {
     DUCR.toString -> "ducr1",
     SubmissionResult.toString -> "Success"
   )
+
+  val injector = GuiceApplicationBuilder().injector()
+  val appConfig = injector.instanceOf[AppConfig]
+  val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestHelper.createRandomString(255))))
 
   val event = DataEvent(
     auditSource = appConfig.appName,
@@ -116,21 +142,24 @@ trait AuditTestSupport extends CustomExportsBaseSpec {
 
   val auditFailure = Failure("Event sending failed")
 
-  val auditService = new AuditService(mockAuditConnector, appConfig)
+  val auditService = new AuditService(mockAuditConnector, appConfig)(global)
 
-  def mockSendEvent(evenToAudit: DataEvent = event, result: AuditResult = Success) =
+  def mockSendEvent(
+    eventToAudit: DataEvent = event,
+    result: AuditResult = Success
+  ): OngoingStubbing[Future[AuditResult]] =
     when(
-      mockAuditConnector.sendEvent(ArgumentMatchers.refEq(evenToAudit, "eventId", "generatedAt"))(
+      mockAuditConnector.sendEvent(ArgumentMatchers.refEq(eventToAudit, "eventId", "generatedAt"))(
         ArgumentMatchers.any[HeaderCarrier],
         ArgumentMatchers.any[ExecutionContext]
       )
-    ) thenReturn Future.successful(result)
+    ).thenReturn(Future.successful(result))
 
-  def mockSendCompletePayload(result: AuditResult = Success) =
+  def mockSendCompletePayload(result: AuditResult = Success): OngoingStubbing[Future[AuditResult]] =
     when(
       mockAuditConnector.sendExtendedEvent(ArgumentMatchers.refEq(extendedEvent, "eventId", "generatedAt"))(
         ArgumentMatchers.any[HeaderCarrier],
         ArgumentMatchers.any[ExecutionContext]
       )
-    ) thenReturn Future.successful(result)
+    ).thenReturn(Future.successful(result))
 }
