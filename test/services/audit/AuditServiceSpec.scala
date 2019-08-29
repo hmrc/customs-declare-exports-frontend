@@ -16,7 +16,7 @@
 
 package services.audit
 
-import base.TestHelper
+import base.{Injector, TestHelper}
 import config.AppConfig
 import models.declaration.SupplementaryDeclarationTestData.allRecordsXmlMarshallingTest
 import org.mockito.ArgumentMatchers
@@ -25,7 +25,6 @@ import org.mockito.Mockito.{verify, when}
 import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import services.audit.EventData.{EORI, SubmissionResult}
 import services.cache.ExportsDeclarationBuilder
@@ -99,7 +98,8 @@ class AuditServiceSpec extends AuditTestSupport {
   }
 }
 
-trait AuditTestSupport extends UnitSpec with ExportsDeclarationBuilder with ScalaFutures with BeforeAndAfterEach {
+trait AuditTestSupport
+    extends UnitSpec with ExportsDeclarationBuilder with ScalaFutures with BeforeAndAfterEach with Injector {
   val mockAuditConnector = mock[AuditConnector]
 
   val auditData = Map(
@@ -109,8 +109,7 @@ trait AuditTestSupport extends UnitSpec with ExportsDeclarationBuilder with Scal
     SubmissionResult.toString -> "Success"
   )
 
-  val injector = GuiceApplicationBuilder().injector()
-  val appConfig = injector.instanceOf[AppConfig]
+  val appConfig = instanceOf[AppConfig]
   val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestHelper.createRandomString(255))))
 
   val event = DataEvent(
