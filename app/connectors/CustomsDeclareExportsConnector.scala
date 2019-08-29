@@ -28,7 +28,7 @@ import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.libs.json.{Json, Writes}
 import play.api.mvc.Codec
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import wco.datamodel.wco.documentmetadata_dms._2.MetaData
 
@@ -38,9 +38,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient) {
   private val logger = Logger(this.getClass)
 
-  def deleteDraftDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+  def deleteDraftDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] =
     httpClient
       .DELETE(s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}/$id")
+      .map(_ => ())
 
   def createDeclaration(
     declaration: ExportsDeclaration
