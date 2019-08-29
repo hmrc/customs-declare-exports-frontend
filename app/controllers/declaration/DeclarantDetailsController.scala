@@ -41,7 +41,7 @@ class DeclarantDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.parties.declarantDetails match {
       case Some(data) => Ok(declarantDetailsPage(mode, DeclarantDetails.form().fill(data)))
       case _          => Ok(declarantDetailsPage(mode, DeclarantDetails.form()))

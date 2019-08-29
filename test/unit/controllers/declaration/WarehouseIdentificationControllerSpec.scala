@@ -74,12 +74,12 @@ class WarehouseIdentificationControllerSpec
 
   "WerehouseIdentificationController on GET request" should {
     "return 200 OK" in {
-      val response = controller.displayForm(Mode.Normal).apply(getRequest())
+      val response = controller.displayPage(Mode.Normal).apply(getRequest())
       status(response) must be(OK)
     }
 
     "read item from cache and display it" in {
-      val result = controller.displayForm(Mode.Normal).apply(getRequest())
+      val result = controller.displayPage(Mode.Normal).apply(getRequest())
       await(result)
       verify(mockExportsCacheService).get(any())(any())
       verify(warehouseIdentificationTemplate).apply(any(), any())(any(), any())
@@ -97,7 +97,7 @@ class WarehouseIdentificationControllerSpec
       val result = controller.saveWarehouse(Mode.Normal).apply(postRequest(body))
 
       await(result) mustBe aRedirectToTheNextPage
-      thePageNavigatedTo mustBe controllers.declaration.routes.BorderTransportController.displayForm()
+      thePageNavigatedTo mustBe controllers.declaration.routes.BorderTransportController.displayPage()
 
       val updatedWarehouse = theCacheModelUpdated.locations.warehouseIdentification.value
       updatedWarehouse.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier

@@ -79,7 +79,7 @@ class ChoiceController @Inject()(
                   }
               }
             case CancelDec =>
-              Future.successful(Redirect(controllers.routes.CancelDeclarationController.displayForm()))
+              Future.successful(Redirect(controllers.routes.CancelDeclarationController.displayPage()))
             case ContinueDec =>
               Future.successful(Redirect(controllers.routes.SavedDeclarationsController.displayDeclarations()))
             case Submissions =>

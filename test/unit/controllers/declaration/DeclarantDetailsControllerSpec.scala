@@ -49,7 +49,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
       "display page method is invoked and cache is empty" in new SetUp {
 
-        val result = controller.displayForm(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -58,7 +58,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withDeclarantDetails()))
 
-        val result = controller.displayForm(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }

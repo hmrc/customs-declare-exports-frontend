@@ -46,7 +46,7 @@ class OfficeOfExitController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
   import forms.declaration.officeOfExit.OfficeOfExitForms._
 
-  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.choice.value match {
       case SupplementaryDec => Ok(supplementaryPage(mode))
       case StandardDec      => Ok(standardPage(mode))
@@ -81,7 +81,7 @@ class OfficeOfExitController @Inject()(
         form =>
           updateCache(form)
             .map(
-              _ => navigator.continueTo(controllers.declaration.routes.TotalNumberOfItemsController.displayForm(mode))
+              _ => navigator.continueTo(controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode))
           )
       )
 
@@ -97,7 +97,7 @@ class OfficeOfExitController @Inject()(
         form =>
           updateCache(form)
             .map(
-              _ => navigator.continueTo(controllers.declaration.routes.TotalNumberOfItemsController.displayForm(mode))
+              _ => navigator.continueTo(controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode))
           )
       )
 

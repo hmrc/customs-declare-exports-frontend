@@ -55,7 +55,7 @@ class BorderTransportControllerSpec extends ControllerSpec with ErrorHandlerMock
 
       "display page method is invoked and cache is empty" in new SetUp {
 
-        val result: Future[Result] = controller.displayForm(Mode.Normal)(getRequest())
+        val result: Future[Result] = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -69,7 +69,7 @@ class BorderTransportControllerSpec extends ControllerSpec with ErrorHandlerMock
           )
         )
 
-        val result: Future[Result] = controller.displayForm(Mode.Normal)(getRequest())
+        val result: Future[Result] = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -96,7 +96,7 @@ class BorderTransportControllerSpec extends ControllerSpec with ErrorHandlerMock
         val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.TransportDetailsController.displayForm()
+        thePageNavigatedTo mustBe routes.TransportDetailsController.displayPage()
       }
     }
   }

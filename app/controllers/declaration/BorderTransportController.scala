@@ -42,7 +42,7 @@ class BorderTransportController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.borderTransport match {
       case Some(data) => Ok(borderTransportPage(mode, form().fill(data)))
       case _          => Ok(borderTransportPage(mode, form()))
@@ -57,7 +57,7 @@ class BorderTransportController @Inject()(
           Future.successful(BadRequest(borderTransportPage(mode, formWithErrors))),
         borderTransport =>
           updateCache(borderTransport)
-            .map(_ => navigator.continueTo(routes.TransportDetailsController.displayForm(mode)))
+            .map(_ => navigator.continueTo(routes.TransportDetailsController.displayPage(mode)))
       )
   }
 

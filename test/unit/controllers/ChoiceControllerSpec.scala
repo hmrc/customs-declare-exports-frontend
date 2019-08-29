@@ -168,7 +168,7 @@ class ChoiceControllerSpec extends ControllerSpec {
         val result = controller.submitChoice()(postChoiceRequest(cancelChoice))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.routes.CancelDeclarationController.displayForm().url))
+        redirectLocation(result) must be(Some(controllers.routes.CancelDeclarationController.displayPage().url))
         verifyTheCacheIsUnchanged()
       }
     }

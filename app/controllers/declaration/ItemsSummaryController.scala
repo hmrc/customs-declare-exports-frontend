@@ -57,7 +57,7 @@ class ItemsSummaryController @Inject()(
           .map(_ => Redirect(controllers.declaration.routes.ProcedureCodesController.displayPage(mode, newItem.id)))
       case Some(SaveAndContinue) | Some(SaveAndReturn) =>
         Future.successful(
-          navigator.continueTo(controllers.declaration.routes.WarehouseIdentificationController.displayForm(mode))
+          navigator.continueTo(controllers.declaration.routes.WarehouseIdentificationController.displayPage(mode))
         )
     }
   }

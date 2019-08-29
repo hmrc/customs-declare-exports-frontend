@@ -191,7 +191,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.SealController.displayForm()
+        thePageNavigatedTo mustBe controllers.declaration.routes.SealController.displayPage()
       }
 
       "user remove existing item" in new SetUp {

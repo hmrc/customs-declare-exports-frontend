@@ -62,7 +62,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
       "display page method is invoked with empty cache" in new SupplementarySetUp {
 
-        val result = controller.displayForm(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -71,7 +71,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
         withNewCaching(aDeclaration(withDestinationCountries()))
 
-        val result = controller.displayForm(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -81,7 +81,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
       "display page method is invoked with empty cache" in new StandardSetUp {
 
-        val result = controller.displayForm(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -90,7 +90,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
         withNewCaching(aDeclaration(withDestinationCountries()))
 
-        val result = controller.displayForm(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -234,7 +234,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
         val result = controller.saveCountries(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.LocationController.displayForm()
+        thePageNavigatedTo mustBe controllers.declaration.routes.LocationController.displayPage()
       }
     }
 
@@ -266,7 +266,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
         val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.LocationController.displayForm()
+        thePageNavigatedTo mustBe controllers.declaration.routes.LocationController.displayPage()
       }
 
       "user save correct data with item in cache and empty form" in new StandardSetUp {
@@ -283,7 +283,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
         val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.LocationController.displayForm()
+        thePageNavigatedTo mustBe controllers.declaration.routes.LocationController.displayPage()
       }
 
       "user remove existing item" in new StandardSetUp {

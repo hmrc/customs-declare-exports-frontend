@@ -43,7 +43,7 @@ class TransportDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.transportDetails match {
       case Some(data) => Ok(transportDetailsPage(mode, form().fill(data)))
       case _          => Ok(transportDetailsPage(mode, form()))
@@ -66,7 +66,7 @@ class TransportDetailsController @Inject()(
     if (transportDetails.container)
       navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayPage(mode))
     else if (request.choice.value == AllowedChoiceValues.StandardDec)
-      navigator.continueTo(controllers.declaration.routes.SealController.displayForm(mode))
+      navigator.continueTo(controllers.declaration.routes.SealController.displayPage(mode))
     else navigator.continueTo(controllers.declaration.routes.SummaryController.displayPage(Mode.Normal))
 
   private def updateCache(

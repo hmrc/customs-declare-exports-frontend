@@ -63,7 +63,7 @@ class CancelDeclarationControllerSpec extends ControllerSpec with ErrorHandlerMo
 
       "display page method is invoked" in new SetUp {
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) must be(OK)
       }

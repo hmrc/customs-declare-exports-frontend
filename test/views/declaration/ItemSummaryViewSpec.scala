@@ -57,7 +57,7 @@ class ItemSummaryViewSpec extends ViewSpec with ItemSummaryMessages {
 
     "render back button" in {
       val doc = view(List.empty)
-      doc.getElementById("link-back") must haveAttribute("href", routes.PreviousDocumentsController.displayForm().url)
+      doc.getElementById("link-back") must haveAttribute("href", routes.PreviousDocumentsController.displayPage().url)
     }
 
     "render title" when {

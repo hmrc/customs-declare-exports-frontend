@@ -124,7 +124,7 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
         val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationAdditionalActorsController.displayForm()
+        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage()
 
         verify(mockRepresentativeDetailsPage, times(0)).apply(any(), any())(any(), any())
       }
@@ -141,7 +141,7 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
         val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.CarrierDetailsController.displayForm()
+        thePageNavigatedTo mustBe controllers.declaration.routes.CarrierDetailsController.displayPage()
 
         verify(mockRepresentativeDetailsPage, times(0)).apply(any(), any())(any(), any())
       }

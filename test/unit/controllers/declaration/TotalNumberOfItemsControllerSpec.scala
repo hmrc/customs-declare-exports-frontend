@@ -68,7 +68,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
 
       "display page method is invoked and cache is empty" in {
 
-        val result = controller.displayForm(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
         verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any())(any(), any())
@@ -82,7 +82,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
         val totalNumberOfItems = TotalNumberOfItems(None, None, totalPackage)
         withNewCaching(aDeclaration(withTotalNumberOfItems(totalNumberOfItems)))
 
-        val result = controller.displayForm(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
         verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any())(any(), any())
@@ -114,7 +114,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
         val result = controller.saveNoOfItems(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.NatureOfTransactionController.displayForm()
+        thePageNavigatedTo mustBe controllers.declaration.routes.NatureOfTransactionController.displayPage()
         verify(mockTotalNumberOfItemsPage, times(0)).apply(any(), any())(any(), any())
       }
     }
