@@ -34,7 +34,7 @@
     @{
         request.choice.value match {
             case SupplementaryDec => components.back_link(controllers.declaration.routes.RepresentativeDetailsController.displayPage(mode), mode)
-            case StandardDec      => components.back_link(controllers.declaration.routes.CarrierDetailsController.displayForm(mode), mode)
+            case StandardDec      => components.back_link(controllers.declaration.routes.CarrierDetailsController.displayPage(mode), mode)
         }
     }
 

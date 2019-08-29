@@ -87,7 +87,7 @@ class TransportContainerController @Inject()(
 
   private def redirect(mode: Mode)(implicit request: JourneyRequest[AnyContent]) =
     if (request.choice.value == AllowedChoiceValues.StandardDec)
-      navigator.continueTo(controllers.declaration.routes.SealController.displayForm(mode))
+      navigator.continueTo(controllers.declaration.routes.SealController.displayPage(mode))
     else navigator.continueTo(controllers.declaration.routes.SummaryController.displayPage(Mode.Normal))
 
   private def updateCache(

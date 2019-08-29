@@ -71,7 +71,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
 
       "display page method is invoked with empty cache" in {
 
-        val result = controller.displayForm(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
         verify(mockPreviousDocumentsPage, times(1)).apply(any(), any(), any())(any(), any())
@@ -86,7 +86,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
         val document = Document("X", "355", "reference", Some("123"))
         withNewCaching(aDeclaration(withPreviousDocuments(document)))
 
-        val result = controller.displayForm(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
         verify(mockPreviousDocumentsPage, times(1)).apply(any(), any(), any())(any(), any())
@@ -253,7 +253,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
         val result = controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayForm()
+        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
 
         verify(mockPreviousDocumentsPage, times(0)).apply(any(), any(), any())(any(), any())
       }

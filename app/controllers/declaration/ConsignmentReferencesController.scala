@@ -59,7 +59,7 @@ class ConsignmentReferencesController @Inject()(
           validConsignmentReferences =>
             updateCache(validConsignmentReferences)
               .map(
-                _ => navigator.continueTo(controllers.declaration.routes.ExporterDetailsController.displayForm(mode))
+                _ => navigator.continueTo(controllers.declaration.routes.ExporterDetailsController.displayPage(mode))
             )
         )
   }

@@ -29,7 +29,7 @@
     title = messages("supplementary.representative.title")
 ) {
 
-    @components.back_link(controllers.declaration.routes.DeclarantDetailsController.displayForm(mode), mode)
+    @components.back_link(controllers.declaration.routes.DeclarantDetailsController.displayPage(mode), mode)
 
     @helper.form(RepresentativeDetailsController.submitForm(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField

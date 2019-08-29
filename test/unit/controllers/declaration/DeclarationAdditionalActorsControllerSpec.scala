@@ -66,7 +66,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
       "display page method is invoked with empty cache" in new SetUp {
 
-        val result = controller.displayForm(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -75,7 +75,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
         withNewCaching(declarationWithActor)
 
-        val result = controller.displayForm(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -181,7 +181,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
         val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderController.displayForm(Mode.Normal)
+        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderController.displayPage(Mode.Normal)
       }
 
       "user save correct data without new item" in new SetUp {
@@ -191,7 +191,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
         val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderController.displayForm(Mode.Normal)
+        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderController.displayPage(Mode.Normal)
       }
 
       "user remove existing item" in new SetUp {

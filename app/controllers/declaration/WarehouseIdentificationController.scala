@@ -43,7 +43,7 @@ class WarehouseIdentificationController @Inject()(
 
   import forms.declaration.WarehouseIdentification._
 
-  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.locations.warehouseIdentification match {
       case Some(data) => Ok(warehouseIdentificationPage(mode, form().fill(data)))
       case _          => Ok(warehouseIdentificationPage(mode, form()))
@@ -58,7 +58,7 @@ class WarehouseIdentificationController @Inject()(
           Future.successful(BadRequest(warehouseIdentificationPage(mode, formWithErrors))),
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(controllers.declaration.routes.BorderTransportController.displayForm(mode)))
+            .map(_ => navigator.continueTo(controllers.declaration.routes.BorderTransportController.displayPage(mode)))
       )
   }
 

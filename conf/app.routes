@@ -20,7 +20,7 @@ GET        /submissions/:id                             controllers.SubmissionsC
 
 # Cancel declaration
 
-GET        /cancel-declaration                          controllers.CancelDeclarationController.displayForm()
+GET        /cancel-declaration                          controllers.CancelDeclarationController.displayPage()
 
 POST       /cancel-declaration                          controllers.CancelDeclarationController.onSubmit()
 

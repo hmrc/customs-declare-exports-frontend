@@ -47,7 +47,7 @@ class CancelDeclarationController @Inject()(
 
   private val logger = Logger(this.getClass)
 
-  def displayForm(): Action[AnyContent] = authenticate { implicit request =>
+  def displayPage(): Action[AnyContent] = authenticate { implicit request =>
     Ok(cancelDeclarationPage(CancelDeclaration.form))
   }
 

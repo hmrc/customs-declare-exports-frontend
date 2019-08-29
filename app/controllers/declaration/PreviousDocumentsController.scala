@@ -45,7 +45,7 @@ class PreviousDocumentsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.previousDocuments match {
       case Some(data) => Ok(previousDocumentsPage(mode, form(), data.documents))
       case _          => Ok(previousDocumentsPage(mode, form(), Seq.empty))
@@ -86,7 +86,7 @@ class PreviousDocumentsController @Inject()(
               updateCache(PreviousDocumentsData(updatedCache))
                 .map(
                   _ =>
-                    navigator.continueTo(controllers.declaration.routes.PreviousDocumentsController.displayForm(mode))
+                    navigator.continueTo(controllers.declaration.routes.PreviousDocumentsController.displayPage(mode))
               )
           )
 

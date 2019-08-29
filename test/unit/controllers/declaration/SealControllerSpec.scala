@@ -53,7 +53,7 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
 
       "display page method is invoked and cache is empty" in new SetUp {
 
-        val result = controller.displayForm(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -62,7 +62,7 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
 
         withNewCaching(aDeclaration(withSeal(Seal("id"))))
 
-        val result = controller.displayForm(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -130,7 +130,7 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
         val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.SealController.displayForm()
+        thePageNavigatedTo mustBe controllers.declaration.routes.SealController.displayPage()
       }
 
       "user clicked save and continue with data in form" when {

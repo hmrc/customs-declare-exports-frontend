@@ -46,7 +46,7 @@ class SealController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val declaration = request.cacheModel
     Ok(sealPage(mode, form(), declaration.seals, declaration.transportDetails.exists(_.container)))
   }
@@ -116,7 +116,7 @@ class SealController @Inject()(
         formWithErrors => badRequest(mode, formWithErrors, seals),
         updatedCache =>
           updateCache(updatedCache).map { _ =>
-            navigator.continueTo(routes.SealController.displayForm(mode))
+            navigator.continueTo(routes.SealController.displayPage(mode))
         }
       )
 }

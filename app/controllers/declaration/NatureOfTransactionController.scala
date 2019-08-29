@@ -42,7 +42,7 @@ class NatureOfTransactionController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.natureOfTransaction match {
       case Some(data) => Ok(natureOfTransactionPage(mode, form().fill(data)))
       case _          => Ok(natureOfTransactionPage(mode, form()))
@@ -57,7 +57,7 @@ class NatureOfTransactionController @Inject()(
             Future.successful(BadRequest(natureOfTransactionPage(mode, adjustErrors(formWithErrors)))),
           form =>
             updateCache(form).map(
-              _ => navigator.continueTo(controllers.declaration.routes.PreviousDocumentsController.displayForm(mode))
+              _ => navigator.continueTo(controllers.declaration.routes.PreviousDocumentsController.displayPage(mode))
           )
         )
   }

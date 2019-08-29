@@ -59,7 +59,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
       "display page method is invoked with empty cache" in new SetUp {
 
-        val result = controller.displayForm(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -68,7 +68,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
         withNewCaching(aDeclaration(withDeclarationHolders()))
 
-        val result = controller.displayForm(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -178,7 +178,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
         val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DestinationCountriesController.displayForm()
+        thePageNavigatedTo mustBe controllers.declaration.routes.DestinationCountriesController.displayPage()
       }
 
       "user save correct data without new item" in new SetUp {
@@ -191,7 +191,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
           )
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DestinationCountriesController.displayForm()
+        thePageNavigatedTo mustBe controllers.declaration.routes.DestinationCountriesController.displayPage()
       }
 
       "user remove existing item" in new SetUp {

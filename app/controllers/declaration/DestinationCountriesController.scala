@@ -51,20 +51,20 @@ class DestinationCountriesController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.choice.value match {
-      case SupplementaryDec => displayFormSupplementary(mode)
-      case StandardDec      => displayFormStandard(mode)
+      case SupplementaryDec => displayPageSupplementary(mode)
+      case StandardDec      => displayPageStandard(mode)
     }
   }
 
-  private def displayFormSupplementary(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
+  private def displayPageSupplementary(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
     request.cacheModel.locations.destinationCountries match {
       case Some(data) => Ok(destinationCountriesSupplementaryPage(mode, Supplementary.form.fill(data)))
       case _          => Ok(destinationCountriesSupplementaryPage(mode, Supplementary.form))
     }
 
-  private def displayFormStandard(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
+  private def displayPageStandard(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
     request.cacheModel.locations.destinationCountries match {
       case Some(data) => Ok(destinationCountriesStandardPage(mode, Standard.form.fill(data), data.countriesOfRouting))
       case _          => Ok(destinationCountriesStandardPage(mode, Standard.form, Seq.empty))
@@ -87,7 +87,7 @@ class DestinationCountriesController @Inject()(
           Future.successful(BadRequest(destinationCountriesSupplementaryPage(mode, formWithErrors))),
         formData =>
           updateCache(formData)
-            .map(_ => navigator.continueTo(controllers.declaration.routes.LocationController.displayForm(mode)))
+            .map(_ => navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode)))
       )
 
   private def handleSubmitStandard(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
@@ -142,7 +142,7 @@ class DestinationCountriesController @Inject()(
     DestinationCountriesValidator.validateOnSaveAndContinue(countriesStandardUpdated) match {
       case Valid =>
         updateCache(countriesStandardUpdated)
-          .map(_ => navigator.continueTo(controllers.declaration.routes.LocationController.displayForm(mode)))
+          .map(_ => navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode)))
       case Invalid(errors) =>
         Future.successful(
           BadRequest(

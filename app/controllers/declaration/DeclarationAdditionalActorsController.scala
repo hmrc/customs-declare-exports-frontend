@@ -52,7 +52,7 @@ class DeclarationAdditionalActorsController @Inject()(
   private val exceedMaximumNumberError = "supplementary.additionalActors.maximumAmount.error"
   private val duplicateActorError = "supplementary.additionalActors.duplicated.error"
 
-  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.parties.declarationAdditionalActorsData match {
       case Some(data) => Ok(declarationAdditionalActorsPage(mode, form(), data.actors))
       case _          => Ok(declarationAdditionalActorsPage(mode, form(), Seq()))
@@ -90,7 +90,7 @@ class DeclarationAdditionalActorsController @Inject()(
         if (actor.isDefined) {
           val updatedCache = DeclarationAdditionalActorsData(actors :+ actor)
           updateCache(updatedCache)
-            .map(_ => Redirect(routes.DeclarationAdditionalActorsController.displayForm(mode)))
+            .map(_ => Redirect(routes.DeclarationAdditionalActorsController.displayPage(mode)))
         } else
           handleErrorPage(
             mode,
@@ -153,8 +153,8 @@ class DeclarationAdditionalActorsController @Inject()(
   ): Future[Result] =
     if (actor.isDefined) {
       val updatedCache = DeclarationAdditionalActorsData(actors :+ actor)
-      updateCache(updatedCache).map(_ => navigator.continueTo(routes.DeclarationHolderController.displayForm(mode)))
-    } else Future.successful(navigator.continueTo(routes.DeclarationHolderController.displayForm(mode)))
+      updateCache(updatedCache).map(_ => navigator.continueTo(routes.DeclarationHolderController.displayPage(mode)))
+    } else Future.successful(navigator.continueTo(routes.DeclarationHolderController.displayPage(mode)))
 
   private def removeItem(
     mode: Mode,

@@ -33,7 +33,7 @@
     title = messages("supplementary.transportInfo.active.title")
 ) {
 
-    @components.back_link(controllers.declaration.routes.BorderTransportController.displayForm(mode), mode)
+    @components.back_link(controllers.declaration.routes.BorderTransportController.displayPage(mode), mode)
 
     @helper.form(TransportDetailsController.submitForm(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
