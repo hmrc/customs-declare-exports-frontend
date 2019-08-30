@@ -42,12 +42,12 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(title))
+      createView().select("title").text() must be(messages(title))
     }
 
     "display header with hint" in {
 
-      getElementByCss(createView(), "legend>h1").text() must be(messages(title))
+      createView().select("legend>h1").text() must be(messages(title))
     }
 
     "display four radio buttons with description (not selected)" in {
@@ -98,7 +98,7 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
       val view = createView()
 
-      val saveButton = getElementByCss(view, "#submit")
+      val saveButton = view.select("#submit")
       saveButton.text() must be(messages(saveAndContinueCaption))
     }
   }
@@ -109,14 +109,14 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
       val view = createView(Choice.form().bind(Map[String, String]()))
 
-      getElementByCss(view, "#error-message-value-input").text() must be(messages(choiceEmpty))
+      view.select("#error-message-value-input").text() must be(messages(choiceEmpty))
     }
 
     "display error when choice is incorrect" in {
 
       val view = createView(Choice.form().bind(Map("value" -> "incorrect")))
 
-      getElementByCss(view, "#error-message-value-input").text() must be(messages(choiceError))
+      view.select("#error-message-value-input").text() must be(messages(choiceError))
     }
   }
 

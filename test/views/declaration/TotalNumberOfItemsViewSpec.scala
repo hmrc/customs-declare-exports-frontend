@@ -37,7 +37,7 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(totalNoOfItemsTitle))
+      createView().select("title").text() must be(messages(totalNoOfItemsTitle))
     }
 
     "display section header" in {

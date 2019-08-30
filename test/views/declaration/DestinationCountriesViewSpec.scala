@@ -90,7 +90,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(countryOfDispatchEmpty), "#countryOfDispatch")
 
-      getElementByCss(view, "span.error-message").text() must be(messages(countryOfDispatchEmpty))
+      view.select("span.error-message").text() must be(messages(countryOfDispatchEmpty))
     }
 
     "display error when dispatch country is incorrect" in {
@@ -103,7 +103,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(countryOfDispatchError), "#countryOfDispatch")
 
-      getElementByCss(view, "span.error-message").text() must be(messages(countryOfDispatchError))
+      view.select("span.error-message").text() must be(messages(countryOfDispatchError))
     }
 
     "display error when destination country is empty" in {
@@ -114,7 +114,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(countryOfDestinationEmpty), "#countryOfDestination")
 
-      getElementByCss(view, "span.error-message").text() must be(messages(countryOfDestinationEmpty))
+      view.select("span.error-message").text() must be(messages(countryOfDestinationEmpty))
     }
 
     "display error when destination country is incorrect" in {
@@ -127,7 +127,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(countryOfDestinationError), "#countryOfDestination")
 
-      getElementByCss(view, "span.error-message").text() must be(messages(countryOfDestinationError))
+      view.select("span.error-message").text() must be(messages(countryOfDestinationError))
     }
 
     "display errors when both countries are incorrect" in {
@@ -146,7 +146,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
       checkErrorLink(view, 1, messages(countryOfDispatchError), "#countryOfDispatch")
       checkErrorLink(view, 2, messages(countryOfDestinationError), "#countryOfDestination")
 
-      val spanErrors = getElementsByCss(view, "span.error-message")
+      val spanErrors = view.select("span.error-message")
       spanErrors.size() must be(2)
 
       spanErrors.get(0).text() must be(messages(countryOfDispatchError))
@@ -162,7 +162,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
       checkErrorLink(view, 1, messages(countryOfDispatchEmpty), "#countryOfDispatch")
       checkErrorLink(view, 2, messages(countryOfDestinationEmpty), "#countryOfDestination")
 
-      val spanErrors = getElementsByCss(view, "span.error-message")
+      val spanErrors = view.select("span.error-message")
       spanErrors.size() must be(2)
 
       spanErrors.get(0).text() must be(messages(countryOfDispatchEmpty))
@@ -180,7 +180,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
       checkErrorLink(view, 1, messages(countryOfDispatchEmpty), "#countryOfDispatch")
       checkErrorLink(view, 2, messages(countryOfDestinationError), "#countryOfDestination")
 
-      val spanErrors = getElementsByCss(view, "span.error-message")
+      val spanErrors = view.select("span.error-message")
       spanErrors.size() must be(2)
 
       spanErrors.get(0).text() must be(messages(countryOfDispatchEmpty))

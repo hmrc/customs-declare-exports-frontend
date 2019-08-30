@@ -96,14 +96,14 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
       val optionDirect = view.getElementById("statusCode_direct")
       optionDirect.attr("checked") must be("")
 
-      val optionDirectLabel = getElementByCss(view, "#statusCode>div:nth-child(2)>label>span")
-      optionDirectLabel.text() must be(messages(repTypeDirect))
+      val optionDirectLabel = view.select("#statusCode>div:nth-child(2)>label>span")
+      optionDirectLabel.text() must include(messages(repTypeDirect))
 
       val optionIndirect = view.getElementById("statusCode_indirect")
       optionIndirect.attr("checked") must be("")
 
-      val optionIndirectLabel = getElementByCss(view, "#statusCode>div:nth-child(3)>label>span")
-      optionIndirectLabel.text() must be(messages(repTypeIndirect))
+      val optionIndirectLabel = view.select("#statusCode>div:nth-child(3)>label>span")
+      optionIndirectLabel.text() must include(messages(repTypeIndirect))
     }
 
     "display 'Back' button that links to 'Declarant Details' page" in {
@@ -422,7 +422,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.country-error", countryEmpty, "#details_address_country")
 
-        getElementByCss(view, "span.error-message").text() must be(messages(countryEmpty))
+        view.select("span.error-message").text() must be(messages(countryEmpty))
       }
 
       "display errors for incorrect Country" in {
@@ -446,7 +446,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.country-error", countryError, "#details_address_country")
 
-        getElementByCss(view, "span.error-message").text() must be(messages(countryError))
+        view.select("span.error-message").text() must be(messages(countryError))
       }
 
       "display errors when everything except Full name is empty" in {
@@ -478,7 +478,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
         view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
         view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
-        getElementByCss(view, "span.error-message").text() must be(messages(countryEmpty))
+        view.select("span.error-message").text() must be(messages(countryEmpty))
       }
 
       "display errors when everything except Country is empty" in {
@@ -542,7 +542,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
         view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
         view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeError))
-        getElementByCss(view, "span.error-message").text() must be(messages(countryError))
+        view.select("span.error-message").text() must be(messages(countryError))
       }
 
       "display errors when everything except Country is incorrect" in {
@@ -821,7 +821,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.country-error", countryEmpty, "#details_address_country")
 
-        getElementByCss(view, "span.error-message").text() must be(messages(countryEmpty))
+        view.select("span.error-message").text() must be(messages(countryEmpty))
       }
 
       "display errors for incorrect Country" in {
@@ -845,7 +845,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.country-error", countryError, "#details_address_country")
 
-        getElementByCss(view, "span.error-message").text() must be(messages(countryError))
+        view.select("span.error-message").text() must be(messages(countryError))
       }
 
       "display errors when everything except Full name is empty" in {
@@ -877,7 +877,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
         view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
         view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
-        getElementByCss(view, "span.error-message").text() must be(messages(countryEmpty))
+        view.select("span.error-message").text() must be(messages(countryEmpty))
       }
 
       "display errors when everything except Country is empty" in {
@@ -941,7 +941,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
         view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
         view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeError))
-        getElementByCss(view, "span.error-message").text() must be(messages(countryError))
+        view.select("span.error-message").text() must be(messages(countryError))
       }
 
       "display errors when everything except Country is incorrect" in {

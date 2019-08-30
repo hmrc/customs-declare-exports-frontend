@@ -124,9 +124,9 @@ class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationM
 
       val view = additionalInformationPage(Mode.Normal, itemId, form, Seq(AdditionalInformation("12345", "12345")))
 
-      getElementByCss(view, "table>tbody>tr>th:nth-child(1)").text() must be("12345-12345")
+      view.select("table>tbody>tr>th:nth-child(1)").text() must be("12345-12345")
 
-      val removeButton = getElementByCss(view, "table>tbody>tr>th:nth-child(2)>button")
+      val removeButton = view.select("table>tbody>tr>th:nth-child(2)>button")
       removeButton.text() must be(messages(removeCaption))
       removeButton.attr("name") must be(messages(removeCaption))
     }

@@ -17,8 +17,7 @@
 package base
 
 import org.jsoup.Jsoup
-import org.jsoup.nodes.{Document, Element}
-import org.jsoup.select.Elements
+import org.jsoup.nodes.Document
 import org.scalatest.MustMatchers
 import play.api.i18n.Messages
 import play.twirl.api.Html
@@ -29,34 +28,6 @@ import scala.collection.JavaConversions._
 trait ViewValidator extends MustMatchers with ViewMatchers {
 
   private def asDocument(html: Html): Document = Jsoup.parse(html.toString())
-  private def asDocument(page: String): Document = Jsoup.parse(page)
-
-  //TODO Remove methods based on the CSS, stay and use those based on the ID
-  @deprecated("Please use 'page.getElementsBySelector must ...'", since = "2019-08-07")
-  def getElementByCss(html: Html, selector: String): Element = {
-
-    val elements = asDocument(html).select(selector)
-
-    if (elements.isEmpty) throw new Exception(s"Can't find element $selector on page using CSS")
-
-    elements.first()
-  }
-
-  @deprecated("Please use 'page.getElementsBySelector must ...'", since = "2019-08-07")
-  def getElementByCss(page: String, selector: String): Element = {
-
-    val elements = asDocument(page).select(selector)
-
-    if (elements.isEmpty) throw new Exception(s"Can't find element $selector on page using CSS")
-
-    elements.first()
-  }
-
-  @deprecated("Please use 'page.getElementsBySelector must ...'", since = "2019-08-07")
-  def getElementsByCss(html: Html, selector: String): Elements = asDocument(html).select(selector)
-
-  @deprecated("Please use 'page.getElementsBySelector must ...'", since = "2019-08-07")
-  def getElementsByCss(page: String, selector: String): Elements = asDocument(page).select(selector)
 
   @deprecated("Please use 'page.getElementsByAttribute(name) must ...'", since = "2019-08-07")
   def getSelectedValue(html: Html, name: String): String =
@@ -66,27 +37,28 @@ trait ViewValidator extends MustMatchers with ViewMatchers {
       .map { option =>
         if (option.hasAttr("selected")) option.`val`()
         else ""
-      }.find(_.nonEmpty)
+      }
+      .find(_.nonEmpty)
       .getOrElse("")
 
   @deprecated("Please use 'page must haveGlobalErrorSummary'", since = "2019-08-07")
   def checkErrorsSummary(html: Html)(implicit messages: Messages): Unit = {
 
-    getElementByCss(html, "#error-summary-heading").text() must be(messages("error.summary.title"))
-    getElementByCss(html, "div.error-summary.error-summary--show>p").text() must be(messages("error.summary.text"))
+    html.select("#error-summary-heading").text() must be(messages("error.summary.title"))
+    html.select("div.error-summary.error-summary--show>p").text() must be(messages("error.summary.text"))
   }
 
   @deprecated("Please use 'page must haveGlobalErrorSummary'", since = "2019-08-07")
   def checkErrorsSummary(page: String)(implicit messages: Messages): Unit = {
 
-    getElementByCss(page, "#error-summary-heading").text() must be(messages("error.summary.title"))
-    getElementByCss(page, "div.error-summary.error-summary--show>p").text() must be(messages("error.summary.text"))
+    page.select("#error-summary-heading").text() must be(messages("error.summary.title"))
+    page.select("div.error-summary.error-summary--show>p").text() must be(messages("error.summary.text"))
   }
 
   @deprecated("Please use 'page must haveFieldErrorLink(...)'", since = "2019-08-07")
   def checkErrorLink(page: String, child: Int, error: String, href: String)(implicit messages: Messages): Unit = {
 
-    val errorLink = getElementByCss(page, "div.error-summary.error-summary--show>ul>li:nth-child(" + child + ")>a")
+    val errorLink = page.select("div.error-summary.error-summary--show>ul>li:nth-child(" + child + ")>a")
 
     errorLink.text() must be(messages(error))
     errorLink.attr("href") must be(href)
@@ -95,7 +67,7 @@ trait ViewValidator extends MustMatchers with ViewMatchers {
   @deprecated("Please use 'page must haveFieldErrorLink(...)'", since = "2019-08-07")
   def checkErrorLink(html: Html, child: Int, error: String, href: String)(implicit messages: Messages): Unit = {
 
-    val errorLink = getElementByCss(html, "div.error-summary.error-summary--show>ul>li:nth-child(" + child + ")>a")
+    val errorLink = html.select("div.error-summary.error-summary--show>ul>li:nth-child(" + child + ")>a")
 
     errorLink.text() must be(messages(error))
     errorLink.attr("href") must be(href)

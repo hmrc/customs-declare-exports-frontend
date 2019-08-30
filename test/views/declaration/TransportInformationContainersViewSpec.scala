@@ -38,12 +38,12 @@ class TransportInformationContainersViewSpec
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(containersTitle))
+      createView().select("title").text() must be(messages(containersTitle))
     }
 
     "display header" in {
 
-      getElementByCss(createView(), "legend>h1").text() must be(messages(containersTitle))
+      createView().select("legend>h1").text() must be(messages(containersTitle))
     }
 
     "display empty input with label for Container ID" in {

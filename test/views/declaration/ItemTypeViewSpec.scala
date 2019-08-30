@@ -40,9 +40,7 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
       "display page title" in {
 
-        getElementByCss(createView(journeyType = AllowedChoiceValues.StandardDec), "title").text() must be(
-          messages(title)
-        )
+        createView(journeyType = AllowedChoiceValues.StandardDec).select("title").text() must be(messages(title))
       }
 
       "display section header" in {
@@ -54,9 +52,7 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
       "display header" in {
 
-        getElementByCss(createView(journeyType = AllowedChoiceValues.StandardDec), "legend>h1").text() must be(
-          messages(title)
-        )
+        createView(journeyType = AllowedChoiceValues.StandardDec).select("legend>h1").text() must be(messages(title))
       }
 
       "display empty input with label for CNC" in {
@@ -124,7 +120,7 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
       "display two 'Add' buttons" in {
 
-        getElementsByCss(createView(journeyType = AllowedChoiceValues.StandardDec), "#add").size() must be(2)
+        createView(journeyType = AllowedChoiceValues.StandardDec).select("#add").size() must be(2)
       }
 
       "display 'Back' button that links to 'fiscal-information' page" in {
@@ -213,7 +209,7 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
       "display two 'Add' buttons" in {
 
-        getElementsByCss(createView(journeyType = AllowedChoiceValues.SupplementaryDec), "#add").size() must be(2)
+        createView(journeyType = AllowedChoiceValues.SupplementaryDec).select("#add").size() must be(2)
       }
 
       "display 'Back' button that links to 'fiscal-information' page" in {

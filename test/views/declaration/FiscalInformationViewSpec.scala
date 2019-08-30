@@ -90,7 +90,7 @@ class FiscalInformationViewSpec extends ViewSpec with FiscalInformationMessages 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(errorMessageEmpty), "#onwardSupplyRelief")
 
-      getElementByCss(view, "#error-message-onwardSupplyRelief-input").text() must be(messages(errorMessageEmpty))
+      view.select("#error-message-onwardSupplyRelief-input").text() must be(messages(errorMessageEmpty))
     }
 
     "display error if incorrect fiscal information is selected" in {
@@ -100,7 +100,7 @@ class FiscalInformationViewSpec extends ViewSpec with FiscalInformationMessages 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(errorMessageIncorrect), "#onwardSupplyRelief")
 
-      getElementByCss(view, "#error-message-onwardSupplyRelief-input").text() must be(messages(errorMessageIncorrect))
+      view.select("#error-message-onwardSupplyRelief-input").text() must be(messages(errorMessageIncorrect))
     }
 
   }

@@ -49,7 +49,7 @@ class BorderTransportViewSpec extends BorderTransportFields with CommonMessages 
     "display header" in {
       val view = createView()
 
-      getElementByCss(view, "legend>h1").text() must be(messages("supplementary.transportInfo.title"))
+      view.select("legend>h1").text() must be(messages("supplementary.transportInfo.title"))
     }
 
     "display 'Back' button that links to 'Warehouse' page" in {

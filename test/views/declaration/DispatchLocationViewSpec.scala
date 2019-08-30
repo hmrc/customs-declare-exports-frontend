@@ -107,7 +107,7 @@ class DispatchLocationViewSpec extends ViewSpec with DispatchLocationMessages wi
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(errorMessageEmpty), "#dispatchLocation")
 
-      getElementByCss(view, "#error-message-dispatchLocation-input").text() must be(messages(errorMessageEmpty))
+      view.select("#error-message-dispatchLocation-input").text() must be(messages(errorMessageEmpty))
     }
 
     "display error if incorrect dispatch is selected" in {
@@ -117,7 +117,7 @@ class DispatchLocationViewSpec extends ViewSpec with DispatchLocationMessages wi
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(errorMessageIncorrect), "#dispatchLocation")
 
-      getElementByCss(view, "#error-message-dispatchLocation-input").text() must be(messages(errorMessageIncorrect))
+      view.select("#error-message-dispatchLocation-input").text() must be(messages(errorMessageIncorrect))
     }
   }
 

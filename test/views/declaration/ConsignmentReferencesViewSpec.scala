@@ -114,7 +114,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       checkErrorsSummary(view)
       checkErrorLink(view, 1, lrnEmpty, "#lrn")
 
-      getElementByCss(view, "#error-message-lrn-input").text() must be(messages(lrnEmpty))
+      view.select("#error-message-lrn-input").text() must be(messages(lrnEmpty))
     }
 
     "display error when LRN is longer then 22 characters" in {
@@ -128,7 +128,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       checkErrorsSummary(view)
       checkErrorLink(view, 1, lrnLength, "#lrn")
 
-      getElementByCss(view, "#error-message-lrn-input").text() must be(messages(lrnLength))
+      view.select("#error-message-lrn-input").text() must be(messages(lrnLength))
     }
 
     "display error when LRN contains special character" in {
@@ -139,7 +139,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       checkErrorsSummary(view)
       checkErrorLink(view, 1, lrnSpecialCharacter, "#lrn")
 
-      getElementByCss(view, "#error-message-lrn-input").text() must be(messages(lrnSpecialCharacter))
+      view.select("#error-message-lrn-input").text() must be(messages(lrnSpecialCharacter))
     }
 
     "display error when DUCR is incorrect and LRN empty" in {
@@ -151,8 +151,8 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       checkErrorLink(view, 1, ducrError, "#ducr_ducr")
       checkErrorLink(view, 2, lrnEmpty, "#lrn")
 
-      getElementByCss(view, "#error-message-ducr_ducr-input").text() must be(messages(ducrError))
-      getElementByCss(view, "#error-message-lrn-input").text() must be(messages(lrnEmpty))
+      view.select("#error-message-ducr_ducr-input").text() must be(messages(ducrError))
+      view.select("#error-message-lrn-input").text() must be(messages(lrnEmpty))
     }
 
     "display error when DUCR is incorrect and LRN is longer then 22 characters" in {
@@ -167,8 +167,8 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       checkErrorLink(view, 1, ducrError, "#ducr_ducr")
       checkErrorLink(view, 2, lrnLength, "#lrn")
 
-      getElementByCss(view, "#error-message-ducr_ducr-input").text() must be(messages(ducrError))
-      getElementByCss(view, "#error-message-lrn-input").text() must be(messages(lrnLength))
+      view.select("#error-message-ducr_ducr-input").text() must be(messages(ducrError))
+      view.select("#error-message-lrn-input").text() must be(messages(lrnLength))
     }
 
     "display error when DUCR is incorrect and LRN contains special character" in {
@@ -180,8 +180,8 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       checkErrorLink(view, 1, ducrError, "#ducr_ducr")
       checkErrorLink(view, 2, lrnSpecialCharacter, "#lrn")
 
-      getElementByCss(view, "#error-message-ducr_ducr-input").text() must be(messages(ducrError))
-      getElementByCss(view, "#error-message-lrn-input").text() must be(messages(lrnSpecialCharacter))
+      view.select("#error-message-ducr_ducr-input").text() must be(messages(ducrError))
+      view.select("#error-message-lrn-input").text() must be(messages(lrnSpecialCharacter))
     }
   }
 
@@ -233,7 +233,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       checkErrorsSummary(view)
       checkErrorLink(view, 1, ucrLength, "#personalUcr")
 
-      getElementByCss(view, "#error-message-personalUcr-input").text() must be(messages(ucrLength))
+      view.select("#error-message-personalUcr-input").text() must be(messages(ucrLength))
     }
 
     "display error when UCR contains special character" in {
@@ -246,7 +246,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       checkErrorsSummary(view)
       checkErrorLink(view, 1, ucrSpecialCharacter, "#personalUcr")
 
-      getElementByCss(view, "#error-message-personalUcr-input").text() must be(messages(ucrSpecialCharacter))
+      view.select("#error-message-personalUcr-input").text() must be(messages(ucrSpecialCharacter))
     }
 
   }

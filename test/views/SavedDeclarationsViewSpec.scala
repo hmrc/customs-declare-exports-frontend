@@ -115,7 +115,8 @@ class SavedDeclarationsViewSpec extends ViewSpec with CommonMessages {
   private def numberOfTableRows(view: Html) = view.getElementsByClass("table-row").size() - 1
 
   private def tableCell(view: Html)(row: Int, column: Int): Element =
-    getElementsByCss(view, ".table-row")
+    view
+      .select(".table-row")
       .get(row)
       .getElementsByClass("table-cell")
       .get(column)

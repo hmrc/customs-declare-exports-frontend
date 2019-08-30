@@ -329,7 +329,7 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       checkErrorsSummary(view)
       checkErrorLink(view, "details.address.country-error", countryEmpty, "#details_address_country")
 
-      getElementByCss(view, "span.error-message").text() must be(messages(countryEmpty))
+      view.select("span.error-message").text() must be(messages(countryEmpty))
     }
 
     "display error for incorrect Country" in {
@@ -347,7 +347,7 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       checkErrorsSummary(view)
       checkErrorLink(view, "details.address.country-error", countryError, "#details_address_country")
 
-      getElementByCss(view, "span.error-message").text() must be(messages(countryError))
+      view.select("span.error-message").text() must be(messages(countryError))
     }
 
     "display errors when everything except Full name is empty" in {
@@ -367,7 +367,7 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       view.getElementById("error-message-details_address_addressLine-input").text() must be(messages(addressLineEmpty))
       view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
       view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
-      getElementByCss(view, "span.error-message").text() must be(messages(countryEmpty))
+      view.select("span.error-message").text() must be(messages(countryEmpty))
 
     }
 
@@ -423,7 +423,7 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       view.getElementById("error-message-details_address_addressLine-input").text() must be(messages(addressLineError))
       view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
       view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeError))
-      getElementByCss(view, "span.error-message").text() must be(messages(countryError))
+      view.select("span.error-message").text() must be(messages(countryError))
     }
 
     "display errors when everything except Country is incorrect" in {
