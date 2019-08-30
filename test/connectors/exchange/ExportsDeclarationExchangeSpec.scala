@@ -23,7 +23,7 @@ import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.declaration.{Locations, Parties, TransportInformationContainerData}
 import models.{DeclarationStatus, ExportsDeclaration}
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Mockito.when
 import org.scalatest.{Matchers, WordSpec}
 import services.cache.{ExportItem, ExportsDeclarationBuilder}

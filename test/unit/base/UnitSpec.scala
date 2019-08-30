@@ -16,7 +16,7 @@
 
 package unit.base
 
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{MustMatchers, WordSpec}
 
 trait UnitSpec extends WordSpec with MustMatchers with MockitoSugar

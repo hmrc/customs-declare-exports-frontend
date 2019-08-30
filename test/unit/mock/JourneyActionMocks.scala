@@ -19,7 +19,7 @@ package unit.mock
 import base.MockExportCacheService
 import controllers.actions.JourneyAction
 import org.scalatest.{BeforeAndAfterEach, Suite}
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import unit.tools.Stubs
 
 import scala.concurrent.ExecutionContext

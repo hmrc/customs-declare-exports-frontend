@@ -25,7 +25,7 @@ import models.SignedInUser
 import models.requests.{AuthenticatedRequest, ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
 import org.mockito.BDDMockito._
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import play.api.mvc.{AnyContent, Call, Result}
 import play.api.test.FakeRequest
