@@ -58,16 +58,6 @@ trait ViewValidator extends MustMatchers with ViewMatchers {
   @deprecated("Please use 'page.getElementsBySelector must ...'", since = "2019-08-07")
   def getElementsByCss(page: String, selector: String): Elements = asDocument(page).select(selector)
 
-  @deprecated("Please use 'page.getElementById must ...'", since = "2019-08-07")
-  def getElementById(html: Html, id: String): Element = {
-
-    val element = asDocument(html).getElementById(id)
-
-    if (element == null) throw new Exception(s"Can't find element $id on page by id")
-
-    element
-  }
-
   @deprecated("Please use 'page.getElementsByAttribute(name) must ...'", since = "2019-08-07")
   def getSelectedValue(html: Html, name: String): String =
     asDocument(html)
