@@ -16,66 +16,64 @@
 
 package views.declaration
 
+import base.Injector
 import forms.declaration.Seal
-import helpers.views.declaration.CommonMessages
 import models.Mode
+import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.twirl.api.Html
-import views.declaration.spec.AppViewSpec
+import play.api.i18n.MessagesApi
+import play.api.test.Helpers.stubMessages
+import services.cache.ExportsTestData
+import unit.tools.Stubs
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.seal
 import views.tags.ViewTest
-import views.html.components.fields.field_text
 
 @ViewTest
-class SealViewSpec extends SealFields with CommonMessages {
-
-  private val sealPage = app.injector.instanceOf[seal]
-  def createView(form: Form[Seal] = form, container: Boolean = false): Html =
-    sealPage(Mode.Normal, form, Seq.empty, container)(fakeRequest, messages)
+class SealViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+  private val form: Form[Seal] = Seal.form()
+  private def createView(mode: Mode = Mode.Normal, form: Form[Seal] = form, container: Boolean = false): Document =
+    new seal(mainTemplate)(mode, form, Seq.empty, container)(journeyRequest, stubMessages())
 
   "Seal View" should {
 
-    "display page title" in {
-      val view = createView()
+    "have proper messages for labels" in {
+      val messages = instanceOf[MessagesApi].preferred(journeyRequest)
+      messages("standard.seal.title") mustBe "Transport details - seals"
+      messages("standard.seal.id") mustBe "Seal identification number"
+    }
 
-      view.getElementById("title").text() must be(messages("standard.seal.title"))
+    "display page title" in {
+      createView().getElementById("title").text() must be("standard.seal.title")
     }
 
     "display header" in {
-      val view = createView()
-
-      view.select("legend>h1").text() must be(messages("standard.seal.title"))
+      createView().select("legend>h1").text() must be("standard.seal.title")
     }
 
     "display 'Back' button that links to 'add-transport-containers'  or 'transport-details' page" in {
-      val view = createView()
 
       val backLinkContainer = createView(container = true).getElementById("link-back")
 
-      backLinkContainer.text() must be(messages(backCaption))
-      backLinkContainer.attr("href") must be("/customs-declare-exports/declaration/add-transport-containers")
+      backLinkContainer.text() must be("site.back")
+      backLinkContainer.getElementById("link-back") must haveHref(
+        controllers.declaration.routes.TransportContainerController.displayPage(Mode.Normal)
+      )
 
       val backLinkTrader = createView().getElementById("link-back")
 
-      backLinkTrader.text() must be(messages(backCaption))
-      backLinkTrader.attr("href") must be("/customs-declare-exports/declaration/transport-details")
+      backLinkTrader.text() must be("site.back")
+      backLinkTrader.getElementById("link-back") must haveHref(
+        controllers.declaration.routes.TransportDetailsController.displayPage(Mode.Normal)
+      )
     }
 
     "display 'Save and continue' button on page" in {
-      val saveButton = createView().getElementById("submit")
-      saveButton.text() must be(messages(saveAndContinueCaption))
+      createView().getElementById("submit").text() must be("site.save_and_continue")
     }
 
     "display 'Save and return' button on page" in {
-      val saveAndReturnButton = createView().getElementById("submit_and_return")
-      saveAndReturnButton.text() must be(messages(saveAndReturnCaption))
+      createView().getElementById("submit_and_return").text() must be("site.save_and_come_back_later")
     }
   }
-}
-
-trait SealFields extends AppViewSpec {
-  val form: Form[Seal] = Seal.form()
-
-  val id = field_text(field = form("id"), label = "7/18 Seal identification number").body
-
 }

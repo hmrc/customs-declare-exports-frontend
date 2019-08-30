@@ -16,59 +16,57 @@
 
 package views.declaration
 
+import base.Injector
 import forms.declaration.WarehouseIdentification
-import helpers.views.declaration.{CommonMessages, WarehouseIdentificationMessages}
 import models.Mode
+import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.twirl.api.Html
-import views.declaration.spec.AppViewSpec
+import play.api.i18n.MessagesApi
+import play.api.test.Helpers.stubMessages
+import services.cache.ExportsTestData
+import unit.tools.Stubs
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.warehouse_identification
 import views.tags.ViewTest
 
 @ViewTest
-class WarehouseIdentificationViewSpec extends AppViewSpec with WarehouseIdentificationMessages with CommonMessages {
+class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val form: Form[WarehouseIdentification] = WarehouseIdentification.form()
 
-  private val warehouseIdentificationPage = app.injector.instanceOf[warehouse_identification]
-
-  private def createView(form: Form[WarehouseIdentification] = form): Html =
-    warehouseIdentificationPage(Mode.Normal, form)(fakeRequest, messages)
+  private def createView(mode: Mode = Mode.Normal, form: Form[WarehouseIdentification] = form): Document =
+    new warehouse_identification(mainTemplate)(mode, form)(journeyRequest, stubMessages())
 
   "Warehouse Identification View" should {
 
-    "display page title" in {
+    "have proper messages for labels" in {
+      val messages = instanceOf[MessagesApi].preferred(journeyRequest)
+      messages("supplementary.warehouse.title") mustBe "Enter more details about the warehouse"
+    }
 
-      createView().select("title").text() must be(messages(title))
+    "display page title" in {
+      createView().select("title").text() must be("supplementary.warehouse.title")
     }
 
     "display header" in {
-
-      createView().select("legend>h1").text() must be(messages(title))
+      createView().select("legend>h1").text() must be("supplementary.warehouse.title")
     }
 
     "display 'Back' button that links to 'Supervising Office' page" in {
-
       val backButton = createView().getElementById("link-back")
 
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/export-items")
+      backButton.text() mustBe "site.back"
+      backButton.getElementById("link-back") must haveHref(
+        controllers.declaration.routes.ItemsSummaryController.displayPage(Mode.Normal)
+      )
     }
 
     "display 'Save and continue' button on page" in {
-
-      val view = createView()
-
-      val saveButton = view.getElementById("submit")
-      saveButton.text() must be(messages(saveAndContinueCaption))
+      createView().getElementById("submit").text() mustBe "site.save_and_continue"
     }
 
     "display 'Save and return' button on page" in {
-
-      val view = createView()
-
-      val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton.text() must be(messages(saveAndReturnCaption))
+      createView().getElementById("submit_and_return").text() mustBe "site.save_and_come_back_later"
     }
   }
 }

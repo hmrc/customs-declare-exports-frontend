@@ -16,160 +16,145 @@
 
 package views.declaration
 
-import base.TestHelper._
-import forms.Choice.AllowedChoiceValues
-import forms.declaration.TransportCodes._
+import base.Injector
 import forms.declaration.TransportDetails
-import helpers.views.declaration.CommonMessages
 import models.Mode
+import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.twirl.api.Html
-import services.Countries
-import services.view.AutoCompleteItem
-import views.components.inputs.RadioOption
-import views.declaration.spec.AppViewSpec
-import views.html.components.fields.field_text
-import views.html.components.fields.{field_autocomplete, field_radio}
+import play.api.i18n.MessagesApi
+import play.api.test.Helpers.stubMessages
+import services.cache.ExportsTestData
+import unit.tools.Stubs
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.transport_details
 import views.tags.ViewTest
 
 @ViewTest
-class TransportDetailsViewSpec extends TransportDetailsFields with CommonMessages {
+class TransportDetailsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  private val transportDetailsPage = app.injector.instanceOf[transport_details]
-  def createView(form: Form[TransportDetails] = form): Html =
-    transportDetailsPage(Mode.Normal, form)(journeyRequest(fakeRequest, AllowedChoiceValues.StandardDec), messages)
+  val form: Form[TransportDetails] = TransportDetails.form()
+
+  private def createView(mode: Mode = Mode.Normal, form: Form[TransportDetails] = form): Document =
+    new transport_details(mainTemplate)(mode, form)(journeyRequest, stubMessages())
 
   "TransportDetails View" should {
+
+    "have proper messages for labels" in {
+      val messages = instanceOf[MessagesApi].preferred(journeyRequest)
+      messages("supplementary.transportInfo.active.title") mustBe "Active transport details"
+      messages("supplementary.transportInfo.meansOfTransport.crossingTheBorder.header") mustBe "What is the active means of transport"
+      messages("supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.header") mustBe "What nationality is the active means of transport?"
+      messages("supplementary.transportInfo.meansOfTransport.crossingTheBorder.header.hint") mustBe "Select the type of identification used for the chosen transport and enter the reference"
+      messages("supplementary.transportInfo.meansOfTransport.IMOShipIDNumber") mustBe "IMO Ship identification number"
+      messages("supplementary.transportInfo.meansOfTransport.nameOfVessel") mustBe "Name of the seagoing vessel"
+      messages("supplementary.transportInfo.meansOfTransport.wagonNumber") mustBe "Wagon number"
+      messages("supplementary.transportInfo.meansOfTransport.vehicleRegistrationNumber") mustBe "Vehicle registration number"
+      messages("supplementary.transportInfo.meansOfTransport.IATAFlightNumber") mustBe "IATA flight number"
+      messages("supplementary.transportInfo.meansOfTransport.aircraftRegistrationNumber") mustBe "Aircrafts registration number"
+      messages("supplementary.transportInfo.meansOfTransport.europeanVesselIDNumber") mustBe "European vessel identification number (ENI code)"
+      messages("supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel") mustBe "Name of the inland waterway’s vessel"
+      messages("supplementary.transportInfo.meansOfTransport.reference.header") mustBe "Reference"
+      messages("supplementary.transportInfo.container") mustBe "Were the goods in a container?"
+      messages("standard.transportDetails.paymentMethod.notPrePaid") mustBe "Not pre-paid"
+      messages("standard.transportDetails.paymentMethod.other") mustBe "Other (e.g. Direct debit to cash account)"
+      messages("standard.transportDetails.paymentMethod.accHolder") mustBe "Account holder with carrier"
+      messages("standard.transportDetails.paymentMethod.cash") mustBe "Payment in cash"
+      messages("standard.transportDetails.paymentMethod.creditCard") mustBe "Payment by credit card"
+      messages("standard.transportDetails.paymentMethod.cheque") mustBe "Payment by cheque"
+      messages("standard.transportDetails.paymentMethod.eFunds") mustBe "Electronic funds transfer"
+    }
 
     "display page title" in {
       val view = createView()
 
-      view.getElementById("title").text() must be(messages("supplementary.transportInfo.active.title"))
+      view.getElementById("title").text() mustBe "supplementary.transportInfo.active.title"
     }
 
     "display header" in {
       val view = createView()
 
-      view.select("legend>h1").text() must be(messages("supplementary.transportInfo.active.title"))
+      view.select("legend>h1").text() mustBe "supplementary.transportInfo.active.title"
     }
 
     "display 'Back' button that links to 'border-transport' page" in {
 
       val backButton = createView().getElementById("link-back")
 
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/border-transport")
+      backButton.text() mustBe "site.back"
+      backButton.getElementById("link-back") must haveHref(
+        controllers.declaration.routes.BorderTransportController.displayPage(Mode.Normal)
+      )
     }
 
     "display 'Save and continue' button on page" in {
-      val view = createView()
-
-      val saveButton = view.getElementById("submit")
-      saveButton.text() must be(messages(saveAndContinueCaption))
+      createView().getElementById("submit").text() mustBe "site.save_and_continue"
     }
 
     "display 'Save and return' button on page" in {
-
-      val view = createView()
-
-      val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton.text() must be(messages(saveAndReturnCaption))
+      createView().getElementById("submit_and_return").text() mustBe "site.save_and_come_back_later"
     }
 
     "have labels for all fields" in {
       val view = createView()
 
-      view.body must include(meansOfTransportCrossingTheBorderNationality)
-      view.body must include(meansOfTransportCrossingTheBorderType)
-      view.body must include(meansOfTransportCrossingTheBorderIDNumber)
-      view.body must include(container)
-      view.body must include(paymentMethod)
+      view
+        .getElementById("meansOfTransportCrossingTheBorderType-label")
+        .text() mustBe "supplementary.transportInfo.meansOfTransport.crossingTheBorder.header"
+      view
+        .getElementById("meansOfTransportCrossingTheBorderNationality-label")
+        .text() mustBe "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.header"
+      view
+        .getElementById("meansOfTransportCrossingTheBorderType-hint")
+        .text() mustBe "supplementary.transportInfo.meansOfTransport.crossingTheBorder.header.hint"
+      view
+        .getElementById("Border_IMOShipIDNumber-label")
+        .text() mustBe "supplementary.transportInfo.meansOfTransport.IMOShipIDNumber"
+      view
+        .getElementById("Border_NameOfVessel-label")
+        .text() mustBe "supplementary.transportInfo.meansOfTransport.nameOfVessel"
+      view
+        .getElementById("Border_WagonNumber-label")
+        .text() mustBe "supplementary.transportInfo.meansOfTransport.wagonNumber"
+      view
+        .getElementById("Border_VehicleRegistrationNumber-label")
+        .text() mustBe "supplementary.transportInfo.meansOfTransport.vehicleRegistrationNumber"
+      view
+        .getElementById("Border_IATAFlightNumber-label")
+        .text() mustBe "supplementary.transportInfo.meansOfTransport.IATAFlightNumber"
+      view
+        .getElementById("Border_AircraftRegistrationNumber-label")
+        .text() mustBe "supplementary.transportInfo.meansOfTransport.aircraftRegistrationNumber"
+      view
+        .getElementById("Border_EuropeanVesselIDNumber-label")
+        .text() mustBe "supplementary.transportInfo.meansOfTransport.europeanVesselIDNumber"
+      view
+        .getElementById("Border_NameOfInlandWaterwayVessel-label")
+        .text() mustBe "supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel"
+      view
+        .getElementById("meansOfTransportCrossingTheBorderIDNumber-label")
+        .text() mustBe "supplementary.transportInfo.meansOfTransport.reference.header"
+      view.getElementById("container-label").text() mustBe "supplementary.transportInfo.container"
+      view
+        .getElementById("standard.transportDetails.paymentMethod.notPrePaid-label")
+        .text() mustBe "standard.transportDetails.paymentMethod.notPrePaid"
+      view
+        .getElementById("standard.transportDetails.paymentMethod.other-label")
+        .text() mustBe "standard.transportDetails.paymentMethod.other"
+      view
+        .getElementById("standard.transportDetails.paymentMethod.accHolder-label")
+        .text() mustBe "standard.transportDetails.paymentMethod.accHolder"
+      view
+        .getElementById("standard.transportDetails.paymentMethod.cash-label")
+        .text() mustBe "standard.transportDetails.paymentMethod.cash"
+      view
+        .getElementById("standard.transportDetails.paymentMethod.creditCard-label")
+        .text() mustBe "standard.transportDetails.paymentMethod.creditCard"
+      view
+        .getElementById("standard.transportDetails.paymentMethod.cheque-label")
+        .text() mustBe "standard.transportDetails.paymentMethod.cheque"
+      view
+        .getElementById("standard.transportDetails.paymentMethod.eFunds-label")
+        .text() mustBe "standard.transportDetails.paymentMethod.eFunds"
     }
   }
-
-}
-
-trait TransportDetailsFields extends AppViewSpec {
-  val form: Form[TransportDetails] = TransportDetails.form()
-
-  val meansOfTransportCrossingTheBorderNationality = field_autocomplete(
-    form("meansOfTransportCrossingTheBorderNationality"),
-    "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.header",
-    Some("form-label-bold"),
-    None,
-    messages("declaration.destinationCountries.countriesOfRouting.empty"),
-    AutoCompleteItem.fromCountry(Countries.allCountries),
-    'autocomplete -> "off",
-    '_inputClass -> "form-control form-control--block",
-    'spellcheck -> "false",
-    'ariaautocomplete -> "list",
-    'ariahaspopup -> "true",
-    'ariaowns -> "suggestions-list",
-    'ariaactivedescendant -> "true",
-    'otherErrorFields -> Seq("countryCode")
-  ).body
-
-  val meansOfTransportCrossingTheBorderType = field_radio(
-    field = form("meansOfTransportCrossingTheBorderType"),
-    legend = messages("supplementary.transportInfo.meansOfTransport.crossingTheBorder.header"),
-    hint = Some(messages("supplementary.transportInfo.meansOfTransport.crossingTheBorder.header.hint")),
-    inputs = Seq(
-      RadioOption(
-        "Border_IMOShipIDNumber",
-        IMOShipIDNumber,
-        messages("supplementary.transportInfo.meansOfTransport.IMOShipIDNumber")
-      ),
-      RadioOption(
-        "Border_NameOfVessel",
-        NameOfVessel,
-        messages("supplementary.transportInfo.meansOfTransport.nameOfVessel")
-      ),
-      RadioOption(
-        "Border_WagonNumber",
-        WagonNumber,
-        messages("supplementary.transportInfo.meansOfTransport.wagonNumber")
-      ),
-      RadioOption(
-        "Border_VehicleRegistrationNumber",
-        VehicleRegistrationNumber,
-        messages("supplementary.transportInfo.meansOfTransport.vehicleRegistrationNumber")
-      ),
-      RadioOption(
-        "Border_IATAFlightNumber",
-        IATAFlightNumber,
-        messages("supplementary.transportInfo.meansOfTransport.IATAFlightNumber")
-      ),
-      RadioOption(
-        "Border_AircraftRegistrationNumber",
-        AircraftRegistrationNumber,
-        messages("supplementary.transportInfo.meansOfTransport.aircraftRegistrationNumber")
-      ),
-      RadioOption(
-        "Border_EuropeanVesselIDNumber",
-        EuropeanVesselIDNumber,
-        messages("supplementary.transportInfo.meansOfTransport.europeanVesselIDNumber")
-      ),
-      RadioOption(
-        "Border_NameOfInlandWaterwayVessel",
-        NameOfInlandWaterwayVessel,
-        messages("supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel")
-      )
-    )
-  ).body
-
-  val meansOfTransportCrossingTheBorderIDNumber =
-    field_text(field = form("meansOfTransportCrossingTheBorderIDNumber"), label = "Reference").body
-
-  val container = field_radio(
-    field = form("container"),
-    legend = messages("supplementary.transportInfo.container"),
-    inputs = Seq(RadioOption("Yes", "true", messages("site.yes")), RadioOption("No", "false", messages("site.no")))
-  ).body
-
-  val paymentMethod = field_radio(
-    field = form("paymentMethod"),
-    legend = messages("standard.transportDetails.paymentMethod"),
-    inputs = paymentMethods.toSeq.map { case (a, b) => RadioOption(messages(b), a, messages(b)) }
-  ).body
 }
