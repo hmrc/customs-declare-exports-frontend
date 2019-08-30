@@ -22,11 +22,11 @@ import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import views.html.declaration.procedure_codes
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.tags.ViewTest
 
 @ViewTest
-class ProcedureCodesViewSpec extends ViewSpec with ProcedureCodesMessages with CommonMessages {
+class ProcedureCodesViewSpec extends AppViewSpec with ProcedureCodesMessages with CommonMessages {
 
   private val form: Form[ProcedureCodes] = ProcedureCodes.form()
   private val procedureCodesPage = app.injector.instanceOf[procedure_codes]

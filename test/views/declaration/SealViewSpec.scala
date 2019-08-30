@@ -21,7 +21,7 @@ import helpers.views.declaration.CommonMessages
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.seal
 import views.tags.ViewTest
 import views.html.components.fields.field_text
@@ -73,7 +73,7 @@ class SealViewSpec extends SealFields with CommonMessages {
   }
 }
 
-trait SealFields extends ViewSpec {
+trait SealFields extends AppViewSpec {
   val form: Form[Seal] = Seal.form()
 
   val id = field_text(field = form("id"), label = "7/18 Seal identification number").body

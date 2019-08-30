@@ -21,13 +21,13 @@ import helpers.views.declaration.{CommonMessages, TransportInformationContainerM
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.add_transport_containers
 import views.tags.ViewTest
 
 @ViewTest
 class TransportInformationContainersViewSpec
-    extends ViewSpec with TransportInformationContainerMessages with CommonMessages {
+    extends AppViewSpec with TransportInformationContainerMessages with CommonMessages {
 
   private val form: Form[TransportInformationContainer] = TransportInformationContainer.form()
   private val transportContainersPage = app.injector.instanceOf[add_transport_containers]

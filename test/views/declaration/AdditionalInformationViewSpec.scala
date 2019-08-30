@@ -23,12 +23,12 @@ import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.additional_information
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationMessages with CommonMessages {
+class AdditionalInformationViewSpec extends AppViewSpec with AdditionalInformationMessages with CommonMessages {
 
   private val form: Form[AdditionalInformation] = AdditionalInformation.form()
   private val additionalInformationPage = app.injector.instanceOf[additional_information]

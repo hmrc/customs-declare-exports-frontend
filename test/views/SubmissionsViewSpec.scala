@@ -25,12 +25,12 @@ import models.declaration.submissions.{Action, Submission}
 import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
 import org.jsoup.nodes.Element
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.submissions
 import views.tags.ViewTest
 
 @ViewTest
-class SubmissionsViewSpec extends ViewSpec with SubmissionsMessages with CommonMessages {
+class SubmissionsViewSpec extends AppViewSpec with SubmissionsMessages with CommonMessages {
 
   private val submissionsPage = app.injector.instanceOf[submissions]
   private def createView(data: Seq[(Submission, Seq[Notification])] = Seq.empty): Html = submissionsPage(data)

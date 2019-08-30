@@ -23,12 +23,12 @@ import helpers.views.declaration.{CommonMessages, DeclarationHolderMessages}
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.declaration_holder
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages with CommonMessages {
+class DeclarationHolderViewSpec extends AppViewSpec with DeclarationHolderMessages with CommonMessages {
 
   private val form: Form[DeclarationHolder] = DeclarationHolder.form()
   private val declarationHolderPage = app.injector.instanceOf[declaration_holder]

@@ -23,12 +23,12 @@ import helpers.views.declaration.{CommonMessages, DestinationCountriesMessages}
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.destination_countries_supplementary
 import views.tags.ViewTest
 
 @ViewTest
-class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMessages with CommonMessages {
+class DestinationCountriesViewSpec extends AppViewSpec with DestinationCountriesMessages with CommonMessages {
 
   private val form: Form[DestinationCountries] = DestinationCountries.Supplementary.form
   private val destiantionCountriesSupplementaryPage = app.injector.instanceOf[destination_countries_supplementary]

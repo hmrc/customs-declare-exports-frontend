@@ -32,12 +32,13 @@ import models.Mode
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.documents_produced
 import views.tags.ViewTest
 
 @ViewTest
-class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages with DateMessages with CommonMessages {
+class DocumentsProducedViewSpec
+    extends AppViewSpec with DocumentsProducedMessages with DateMessages with CommonMessages {
 
   private val form: Form[DocumentsProduced] = DocumentsProduced.form()
   private val documentsProducedPage = app.injector.instanceOf[documents_produced]

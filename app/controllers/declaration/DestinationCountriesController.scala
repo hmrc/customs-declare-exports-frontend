@@ -115,7 +115,15 @@ class DestinationCountriesController @Inject()(
 
     DestinationCountriesValidator.validateOnAddition(countriesStandardUpdated) match {
       case Valid =>
-        updateCache(countriesStandardUpdated).flatMap(_ => refreshPage(mode, countriesStandardInput))
+        updateCache(countriesStandardUpdated).map {
+          _.flatMap(_.locations.destinationCountries) match {
+            case Some(model) =>
+              Ok(destinationCountriesStandardPage(mode, Standard.form.fill(model), cachedData.countriesOfRouting))
+            case _ =>
+              Ok(destinationCountriesStandardPage(mode, Standard.form))
+          }
+        }
+
       case Invalid(errors) =>
         Future.successful(
           BadRequest(
@@ -181,22 +189,6 @@ class DestinationCountriesController @Inject()(
     updateCache(updatedCache)
       .map(_ => Ok(destinationCountriesStandardPage(mode, userInput.discardingErrors, updatedCache.countriesOfRouting)))
   }
-
-  private def refreshPage(mode: Mode, inputDestinationCountries: DestinationCountries)(
-    implicit request: JourneyRequest[_]
-  ): Future[Result] =
-    exportsCacheService.get(request.declarationId).map(_.flatMap(_.locations.destinationCountries)).map {
-      case Some(cachedData) =>
-        Ok(
-          destinationCountriesStandardPage(
-            mode,
-            Standard.form.fill(inputDestinationCountries),
-            cachedData.countriesOfRouting
-          )
-        )
-      case _ =>
-        Ok(destinationCountriesStandardPage(mode, Standard.form))
-    }
 
   private def updateCache(
     formData: DestinationCountries

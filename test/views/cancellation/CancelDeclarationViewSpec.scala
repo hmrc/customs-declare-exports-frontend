@@ -22,12 +22,12 @@ import forms.cancellation.CancellationChangeReason.NoLongerRequired
 import helpers.views.declaration.CommonMessages
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.cancel_declaration
 import views.tags.ViewTest
 
 @ViewTest
-class CancelDeclarationViewSpec extends ViewSpec with CommonMessages {
+class CancelDeclarationViewSpec extends AppViewSpec with CommonMessages {
 
   private val form: Form[CancelDeclaration] = CancelDeclaration.form
   private val cancelDeclarationPage = app.injector.instanceOf[cancel_declaration]

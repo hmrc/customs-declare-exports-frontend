@@ -14,11 +14,18 @@
  * limitations under the License.
  */
 
-package models.requests
+package views.declaration.spec
 
-import models.SignedInUser
-import play.api.mvc.{Request, WrappedRequest}
+import play.api.i18n.Messages
+import play.api.mvc.{AnyContent, Request}
+import play.api.test.{FakeRequest, Helpers}
+import unit.base.UnitSpec
 
-class AuthenticatedRequest[A](request: Request[A], val user: SignedInUser) extends WrappedRequest[A](request) {
-  def declarationId: Option[String] = request.session.data.get(ExportsSessionKeys.declarationId)
+class UnitViewSpec extends UnitSpec with ViewMatchers {
+
+  import utils.FakeRequestCSRFSupport._
+
+  implicit val request: Request[AnyContent] = FakeRequest().withCSRFToken
+
+  implicit val messages: Messages = Helpers.stubMessages()
 }

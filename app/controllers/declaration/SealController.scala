@@ -70,7 +70,7 @@ class SealController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     saveAndContinue(boundForm, cachedSeals, isMandatory = false, elementLimit).fold(
-      formWithErrors => badRequest(mode, formWithErrors, cachedSeals),
+      formWithErrors => Future.successful(badRequest(mode, formWithErrors, cachedSeals)),
       updatedCache =>
         if (updatedCache != cachedSeals) {
           updateCache(updatedCache).map { _ =>
@@ -82,12 +82,9 @@ class SealController @Inject()(
   private def badRequest(mode: Mode, formWithErrors: Form[Seal], cachedSeals: Seq[Seal])(
     implicit request: JourneyRequest[_]
   ) = {
-    val declaration = exportsCacheService.get(request.declarationId)
-    declaration.map(_.flatMap(_.transportDetails)).flatMap { data =>
-      declaration.map(_.map(_.seals)).map { seals =>
-        BadRequest(sealPage(mode, formWithErrors, seals.getOrElse(Seq.empty), data.fold(false)(_.container)))
-      }
-    }
+    val transportDetails = request.cacheModel.transportDetails
+    val seals = request.cacheModel.seals
+    BadRequest(sealPage(mode, formWithErrors, seals, transportDetails.fold(false)(_.container)))
   }
 
   private def removeSeal(
@@ -113,7 +110,7 @@ class SealController @Inject()(
   ): Future[Result] =
     add(boundForm, seals, elementLimit)
       .fold(
-        formWithErrors => badRequest(mode, formWithErrors, seals),
+        formWithErrors => Future.successful(badRequest(mode, formWithErrors, seals)),
         updatedCache =>
           updateCache(updatedCache).map { _ =>
             navigator.continueTo(routes.SealController.displayPage(mode))

@@ -22,12 +22,12 @@ import helpers.views.declaration.{CommonMessages, RepresentativeDetailsMessages}
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.representative_details
 import views.tags.ViewTest
 
 @ViewTest
-class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsMessages with CommonMessages {
+class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetailsMessages with CommonMessages {
 
   private val form: Form[RepresentativeDetails] = RepresentativeDetails.form()
   private val representativeDetailsPage = app.injector.instanceOf[representative_details]

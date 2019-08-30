@@ -22,12 +22,12 @@ import helpers.views.declaration.{CommonMessages, DispatchLocationMessages}
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.dispatch_location
 import views.tags.ViewTest
 
 @ViewTest
-class DispatchLocationViewSpec extends ViewSpec with DispatchLocationMessages with CommonMessages {
+class DispatchLocationViewSpec extends AppViewSpec with DispatchLocationMessages with CommonMessages {
 
   private val form: Form[DispatchLocation] = DispatchLocation.form()
   private val dispatchLocationPage = app.injector.instanceOf[dispatch_location]

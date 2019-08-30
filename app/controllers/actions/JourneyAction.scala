@@ -39,7 +39,7 @@ class JourneyAction @Inject()(cacheService: ExportsCacheService)(
     request.declarationId match {
       case Some(id) =>
         cacheService.get(id).map {
-          case Some(declaration) => Right(JourneyRequest(request, declaration))
+          case Some(declaration) => Right(new JourneyRequest(request, declaration))
           case _                 => handleMissingDeclarationId(request)
         }
       case None => Future.successful(handleMissingDeclarationId(request))

@@ -24,13 +24,13 @@ import helpers.views.declaration.{CommonMessages, DeclarationAdditionalActorsMes
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.declaration_additional_actors
 import views.tags.ViewTest
 
 @ViewTest
 class DeclarationAdditionalActorsViewSpec
-    extends ViewSpec with DeclarationAdditionalActorsMessages with CommonMessages {
+    extends AppViewSpec with DeclarationAdditionalActorsMessages with CommonMessages {
 
   private val form: Form[DeclarationAdditionalActors] = DeclarationAdditionalActors.form()
   private val declarationAdditionalActorsPage = app.injector.instanceOf[declaration_additional_actors]

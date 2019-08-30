@@ -21,12 +21,12 @@ import helpers.views.declaration.{CommonMessages, OfficeOfExitMessages}
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.office_of_exit_standard
 import views.tags.ViewTest
 
 @ViewTest
-class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages with CommonMessages {
+class OfficeOfExitStandardViewSpec extends AppViewSpec with OfficeOfExitMessages with CommonMessages {
 
   private val form: Form[OfficeOfExitStandard] = OfficeOfExitForms.standardForm()
   private val officeOfExitStandardPage = app.injector.instanceOf[office_of_exit_standard]

@@ -43,16 +43,16 @@ object TestHelper {
 
   def journeyRequest(fakeRequest: FakeRequest[_], choice: String): JourneyRequest[_] = {
     val cache = ExportsDeclaration(None, DeclarationStatus.COMPLETE, Instant.now(), Instant.now(), choice)
-    JourneyRequest(
-      AuthenticatedRequest(fakeRequest, ExportsTestData.newUser(Random.nextString(10), Random.nextString(5))),
+    new JourneyRequest(
+      new AuthenticatedRequest(fakeRequest, ExportsTestData.newUser(Random.nextString(10), Random.nextString(5))),
       cache
     )
   }
 
   def journeyRequest(fakeRequest: Request[_], choice: String): JourneyRequest[_] = {
     val cache = ExportsDeclaration(None, DeclarationStatus.COMPLETE, Instant.now(), Instant.now(), choice)
-    JourneyRequest(
-      AuthenticatedRequest(fakeRequest, ExportsTestData.newUser(Random.nextString(10), Random.nextString(5))),
+    new JourneyRequest(
+      new AuthenticatedRequest(fakeRequest, ExportsTestData.newUser(Random.nextString(10), Random.nextString(5))),
       cache
     )
   }

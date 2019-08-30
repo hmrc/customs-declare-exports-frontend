@@ -21,12 +21,12 @@ import helpers.views.declaration.{CommonMessages, NatureOfTransactionMessages}
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.nature_of_transaction
 import views.tags.ViewTest
 
 @ViewTest
-class NatureOfTransactionViewSpec extends ViewSpec with NatureOfTransactionMessages with CommonMessages {
+class NatureOfTransactionViewSpec extends AppViewSpec with NatureOfTransactionMessages with CommonMessages {
 
   private val form: Form[NatureOfTransaction] = NatureOfTransaction.form()
   private val natureOfTransactionPage = app.injector.instanceOf[nature_of_transaction]

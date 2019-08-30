@@ -21,12 +21,12 @@ import helpers.views.declaration.{CommonMessages, WarehouseIdentificationMessage
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.warehouse_identification
 import views.tags.ViewTest
 
 @ViewTest
-class WarehouseIdentificationViewSpec extends ViewSpec with WarehouseIdentificationMessages with CommonMessages {
+class WarehouseIdentificationViewSpec extends AppViewSpec with WarehouseIdentificationMessages with CommonMessages {
 
   private val form: Form[WarehouseIdentification] = WarehouseIdentification.form()
 

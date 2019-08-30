@@ -19,11 +19,11 @@ import helpers.views.declaration.ConfirmationMessages
 import play.api.mvc.Flash
 import play.twirl.api.Html
 import views.html.declaration.submission_confirmation_page
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.tags.ViewTest
 
 @ViewTest
-class SubmissionConfirmationPageViewSpec extends ViewSpec with ConfirmationMessages {
+class SubmissionConfirmationPageViewSpec extends AppViewSpec with ConfirmationMessages {
 
   private val confirmationPage = app.injector.instanceOf[submission_confirmation_page]
   private def createView(): Html = confirmationPage()(fakeRequest, flash, messages)

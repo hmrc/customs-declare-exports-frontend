@@ -25,14 +25,14 @@ import play.api.data.Form
 import play.api.{Configuration, Environment}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.{choice_page, main_template}
 import views.tags.ViewTest
 
 import scala.collection.JavaConversions._
 
 @ViewTest
-class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
+class ChoiceViewSpec extends AppViewSpec with ChoiceMessages with CommonMessages {
 
   private val form: Form[Choice] = Choice.form()
   private val choicePage = app.injector.instanceOf[choice_page]

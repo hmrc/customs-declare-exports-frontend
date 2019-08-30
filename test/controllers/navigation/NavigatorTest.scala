@@ -46,14 +46,14 @@ class NavigatorTest extends WordSpec with Matchers with MockitoSugar with Export
     val expiryDate = LocalDate.of(2020, 1, 1).plusDays(10)
 
     val declaration = aDeclaration(withUpdateDate(updatedDate))
-    def authenticatedRequest(action: Option[FormAction]) = AuthenticatedRequest[AnyContent](
+    def authenticatedRequest(action: Option[FormAction]) = new AuthenticatedRequest[AnyContent](
       FakeRequest("GET", "uri")
         .withFormUrlEncodedBody(action.getOrElse("other-field").toString -> "")
         .withSession(ExportsSessionKeys.declarationId -> "declarationId"),
       mock[SignedInUser]
     )
     def request(action: Option[FormAction]): JourneyRequest[AnyContent] =
-      JourneyRequest[AnyContent](authenticatedRequest(action), declaration)
+      new JourneyRequest[AnyContent](authenticatedRequest(action), declaration)
 
     "Go to Save as Draft" in {
       given(config.draftTimeToLive).willReturn(FiniteDuration(10, TimeUnit.DAYS))

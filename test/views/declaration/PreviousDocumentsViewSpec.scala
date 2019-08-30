@@ -21,11 +21,11 @@ import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import views.html.declaration.previous_documents
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.tags.ViewTest
 
 @ViewTest
-class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages with CommonMessages {
+class PreviousDocumentsViewSpec extends AppViewSpec with PreviousDocumentsMessages with CommonMessages {
 
   private val form: Form[Document] = Document.form()
   private val previousDocumentsPage = app.injector.instanceOf[previous_documents]

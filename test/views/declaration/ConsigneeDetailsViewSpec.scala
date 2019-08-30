@@ -24,12 +24,12 @@ import helpers.views.declaration.{CommonMessages, ConsigneeDetailsMessages}
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.consignee_details
 import views.tags.ViewTest
 
 @ViewTest
-class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages with CommonMessages {
+class ConsigneeDetailsViewSpec extends AppViewSpec with ConsigneeDetailsMessages with CommonMessages {
 
   val form: Form[ConsigneeDetails] = ConsigneeDetails.form()
   val consigneeDetailsPage = app.injector.instanceOf[consignee_details]

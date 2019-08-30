@@ -35,7 +35,9 @@ package views.declaration.spec
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
+import org.scalatest.MustMatchers
 import org.scalatest.matchers._
+import play.api.i18n.Messages
 import play.api.mvc.{Call, Result}
 import play.api.test.Helpers.contentAsString
 import play.twirl.api.Html
@@ -52,6 +54,13 @@ trait ViewMatchers {
   implicit protected def htmlBodyOf(html: Html): Document = Jsoup.parse(html.toString())
   implicit protected def htmlBodyOf(page: String): Document = Jsoup.parse(page)
   implicit protected def htmlBodyOf(result: Future[Result]): Document = htmlBodyOf(contentAsString(result))
+
+  implicit class PageComplexChecks(document: Document) extends MustMatchers {
+    def checkErrorsSummary(): Unit = {
+      document.getElementById("error-summary-heading").text() mustBe "error.summary.title"
+      document.select("div.error-summary.error-summary--show>p").text() must be("error.summary.text")
+    }
+  }
 
   private def actualContentWas(node: Element): String =
     if (node == null) {
@@ -244,5 +253,20 @@ trait ViewMatchers {
       link
     )
 
-  def haveGlobalErrorSummary: Matcher[Element] = new ContainElementWithIDMatcher("error-summary-heading")
+  def haveGlobalErrorSummary: Matcher[Document] = new ContainElementWithIDMatcher("error-summary-heading")
+
+  class FormSubmitTo(path: String) extends Matcher[Element] {
+    override def apply(left: Element): MatchResult = {
+      val action = left.attr("action")
+      val formaction = left.attr("formaction")
+      MatchResult(
+        action == path || formaction == path,
+        s"Element ${left} does not submit to {$path}",
+        s"Element ${left} does submit to {$path}"
+      )
+    }
+  }
+
+  def submitTo(path: String): Matcher[Element] = new FormSubmitTo(path)
+  def submitTo(call: Call): Matcher[Element] = new FormSubmitTo(call.url)
 }
