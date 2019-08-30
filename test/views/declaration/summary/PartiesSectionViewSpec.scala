@@ -183,9 +183,7 @@ class PartiesSectionViewSpec extends ViewSpec with PartiesMessages {
 
       "not display data row in Additional Parties table" in {
 
-        emptyView.select(
-          ".form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(1)"
-        ).size() mustBe 0
+        emptyView.select(".form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(1)").size() mustBe 0
       }
 
     }

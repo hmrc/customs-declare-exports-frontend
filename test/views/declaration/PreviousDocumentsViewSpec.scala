@@ -49,7 +49,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
       val view = createView()
 
       view.select("legend>h1").text() must be(messages(title))
-      view.select("legend>span").text() must be(messages(hint))
+      view.select("legend>span").text() must include(messages(hint))
     }
 
     "display three radio buttons with description (not selected)" in {
