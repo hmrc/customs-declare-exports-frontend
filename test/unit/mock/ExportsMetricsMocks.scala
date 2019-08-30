@@ -19,7 +19,7 @@ package unit.mock
 import metrics.ExportsMetrics
 import org.mockito.Mockito
 import org.scalatest.{BeforeAndAfterEach, Suite}
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 
 trait ExportsMetricsMocks extends BeforeAndAfterEach { self: MockitoSugar with Suite =>
   val mockExportsMetrics: ExportsMetrics = mock[ExportsMetrics]

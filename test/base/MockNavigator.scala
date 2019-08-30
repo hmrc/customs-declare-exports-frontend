@@ -21,7 +21,7 @@ import models.requests.JourneyRequest
 import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
 import org.mockito.{ArgumentCaptor, Mockito}
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import play.api.mvc.{AnyContent, Call, Result}
 
