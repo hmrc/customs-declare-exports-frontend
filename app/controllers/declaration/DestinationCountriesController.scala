@@ -118,7 +118,7 @@ class DestinationCountriesController @Inject()(
         updateCache(countriesStandardUpdated).map {
           _.flatMap(_.locations.destinationCountries) match {
             case Some(model) =>
-              Ok(destinationCountriesStandardPage(mode, Standard.form.fill(model), cachedData.countriesOfRouting))
+              Ok(destinationCountriesStandardPage(mode, Standard.form.fill(model), model.countriesOfRouting))
             case _ =>
               Ok(destinationCountriesStandardPage(mode, Standard.form))
           }
