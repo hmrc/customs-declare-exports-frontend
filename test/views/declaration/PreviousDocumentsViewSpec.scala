@@ -36,7 +36,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(previousDocuments))
+      createView().select("title").text() must be(messages(previousDocuments))
     }
 
     "display section header" in {
@@ -48,8 +48,8 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
 
       val view = createView()
 
-      getElementByCss(view, "legend>h1").text() must be(messages(title))
-      getElementByCss(view, "legend>span").text() must be(messages(hint))
+      view.select("legend>h1").text() must be(messages(title))
+      view.select("legend>span").text() must include(messages(hint))
     }
 
     "display three radio buttons with description (not selected)" in {
@@ -215,21 +215,19 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
       val view = previousDocumentsPage(Mode.Normal, form, prevDocuments)(fakeRequest, messages)
 
       // table header
-      getElementByCss(view, "form>table>caption").text() must be(messages(previousDocuments))
-      getElementByCss(view, "form>table>thead>tr>th:nth-child(1)").text() must be(messages(documentCategoryLabel))
-      getElementByCss(view, "form>table>thead>tr>th:nth-child(2)").text() must be(messages(documentTypeLabel))
-      getElementByCss(view, "form>table>thead>tr>th:nth-child(3)").text() must be(messages(documentReferenceLabel))
-      getElementByCss(view, "form>table>thead>tr>th:nth-child(4)").text() must be(
-        messages(documentGoodsIdentifierLabel)
-      )
-      getElementByCss(view, "form>table>thead>tr>th:nth-child(5)").text() must be(messages(removePackageInformation))
+      view.select("form>table>caption").text() must be(messages(previousDocuments))
+      view.select("form>table>thead>tr>th:nth-child(1)").text() must be(messages(documentCategoryLabel))
+      view.select("form>table>thead>tr>th:nth-child(2)").text() must be(messages(documentTypeLabel))
+      view.select("form>table>thead>tr>th:nth-child(3)").text() must be(messages(documentReferenceLabel))
+      view.select("form>table>thead>tr>th:nth-child(4)").text() must be(messages(documentGoodsIdentifierLabel))
+      view.select("form>table>thead>tr>th:nth-child(5)").text() must be(messages(removePackageInformation))
 
       // row
-      getElementByCss(view, "form>table>tbody>tr>td:nth-child(1)").text() must be(messages(documentX))
-      getElementByCss(view, "form>table>tbody>tr>td:nth-child(2)").text() must be("1")
-      getElementByCss(view, "form>table>tbody>tr>td:nth-child(3)").text() must be("A")
-      getElementByCss(view, "form>table>tbody>tr>td:nth-child(4)").text() must be("1")
-      getElementByCss(view, "form>table>tbody>tr>td:nth-child(5)>button").text() must be(messages(removeCaption))
+      view.select("form>table>tbody>tr>td:nth-child(1)").text() must be(messages(documentX))
+      view.select("form>table>tbody>tr>td:nth-child(2)").text() must be("1")
+      view.select("form>table>tbody>tr>td:nth-child(3)").text() must be("A")
+      view.select("form>table>tbody>tr>td:nth-child(4)").text() must be("1")
+      view.select("form>table>tbody>tr>td:nth-child(5)>button").text() must be(messages(removeCaption))
     }
   }
 }

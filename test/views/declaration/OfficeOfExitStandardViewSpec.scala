@@ -65,7 +65,7 @@ class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages wi
       // TODO change below code to use getElementById, missing ID in radio input for legend
       "display circumstances code question" in {
         val view = createView()
-        getElementByCss(view, "#circumstancesCode>legend>span").text() must be(messages(circumstancesCode))
+        view.select("#circumstancesCode>legend>span").text() must include(messages(circumstancesCode))
       }
 
       "display 'Back' button that links to 'Location of Goods' page" in {

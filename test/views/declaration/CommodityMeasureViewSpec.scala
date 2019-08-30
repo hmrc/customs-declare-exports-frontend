@@ -82,7 +82,7 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
 
     "display 'Save and continue' button on page" in {
 
-      val saveButton = getElementByCss(createView(), "#submit")
+      val saveButton = createView().select("#submit")
       saveButton.text() must be(messages(saveAndContinueCaption))
     }
   }
@@ -97,8 +97,8 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
       checkErrorLink(view, 1, netMassEmpty, "#netMass")
       checkErrorLink(view, 2, grossMassEmpty, "#grossMass")
 
-      getElementByCss(view, "#error-message-netMass-input").text() must be(messages(netMassEmpty))
-      getElementByCss(view, "#error-message-grossMass-input").text() must be(messages(grossMassEmpty))
+      view.select("#error-message-netMass-input").text() must be(messages(netMassEmpty))
+      view.select("#error-message-grossMass-input").text() must be(messages(grossMassEmpty))
     }
 
     "display error when supplementary units are incorrect" in {
@@ -108,7 +108,7 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
       checkErrorsSummary(view)
       checkErrorLink(view, 1, supplementaryUnitsError, "#supplementaryUnits")
 
-      getElementByCss(view, "#error-message-supplementaryUnits-input").text() must be(messages(supplementaryUnitsError))
+      view.select("#error-message-supplementaryUnits-input").text() must be(messages(supplementaryUnitsError))
     }
 
     "display error when net mass is empty" in {
@@ -118,7 +118,7 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
       checkErrorsSummary(view)
       checkErrorLink(view, 1, netMassEmpty, "#netMass")
 
-      getElementByCss(view, "#error-message-netMass-input").text() must be(messages(netMassEmpty))
+      view.select("#error-message-netMass-input").text() must be(messages(netMassEmpty))
     }
 
     "display error when net mass is incorrect" in {
@@ -129,7 +129,7 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
       checkErrorsSummary(view)
       checkErrorLink(view, 1, netMassError, "#netMass")
 
-      getElementByCss(view, "#error-message-netMass-input").text() must be(messages(netMassError))
+      view.select("#error-message-netMass-input").text() must be(messages(netMassError))
     }
 
     "display error when gross mass is empty" in {
@@ -139,7 +139,7 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
       checkErrorsSummary(view)
       checkErrorLink(view, 1, grossMassEmpty, "#grossMass")
 
-      getElementByCss(view, "#error-message-grossMass-input").text() must be(messages(grossMassEmpty))
+      view.select("#error-message-grossMass-input").text() must be(messages(grossMassEmpty))
     }
 
     "display error when gross mass is incorrect" in {
@@ -149,7 +149,7 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
       checkErrorsSummary(view)
       checkErrorLink(view, 1, grossMassError, "#grossMass")
 
-      getElementByCss(view, "#error-message-grossMass-input").text() must be(messages(grossMassError))
+      view.select("#error-message-grossMass-input").text() must be(messages(grossMassError))
     }
   }
 

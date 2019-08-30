@@ -32,34 +32,32 @@ class NotEligibleViewSpec extends ViewSpec with NotEligibleMessages with CommonM
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(pageTitle))
+      createView().select("title").text() must be(messages(pageTitle))
     }
 
     "display header with hint" in {
 
-      getElementByCss(createView(), "h1").text() must be(messages(title) + " " + messages(titleLineTwo))
+      createView().select("h1").text() must be(messages(title) + " " + messages(titleLineTwo))
     }
 
     "display CHIEF information" in {
 
-      getElementsByCss(createView(), "p:nth-child(3)").text() must be(
+      createView().select("p:nth-child(3)").text() must be(
         messages(descriptionPreUrl) + " " + messages(descriptionUrl) + " " + messages(descriptionPostUrl)
       )
     }
 
     "display CHIEF link" in {
 
-      getElementByCss(createView(), "p:nth-child(3)>a").attr("href") must be(
-        "https://secure.hmce.gov.uk/ecom/login/index.html"
-      )
+      createView().select("p:nth-child(3)>a").attr("href") must be("https://secure.hmce.gov.uk/ecom/login/index.html")
     }
 
     "display Help and Support with description" in {
 
       val view = createView()
 
-      getElementsByCss(view, "h3").text() must be(messages(referenceTitle))
-      getElementsByCss(view, "p:nth-child(5)").text() must be(messages(referenceText))
+      view.select("h3").text() must be(messages(referenceTitle))
+      view.select("p:nth-child(5)").text() must be(messages(referenceText))
     }
 
     "display 'Back' button that links to 'Make declaration' page" in {

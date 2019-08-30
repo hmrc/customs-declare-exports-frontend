@@ -122,7 +122,7 @@ class CancelDeclarationViewSpec extends ViewSpec with CommonMessages {
 
       val view = createView()
 
-      val saveButton = getElementByCss(view, "#submit")
+      val saveButton = view.select("#submit")
       saveButton.text() must be(messages("cancellation.submitButton"))
     }
   }

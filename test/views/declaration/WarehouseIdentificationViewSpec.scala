@@ -39,12 +39,12 @@ class WarehouseIdentificationViewSpec extends ViewSpec with WarehouseIdentificat
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(title))
+      createView().select("title").text() must be(messages(title))
     }
 
     "display header" in {
 
-      getElementByCss(createView(), "legend>h1").text() must be(messages(title))
+      createView().select("legend>h1").text() must be(messages(title))
     }
 
     "display 'Back' button that links to 'Supervising Office' page" in {

@@ -134,8 +134,8 @@ class DeclarationAdditionalActorsViewSpec
       checkErrorLink(view, 1, eoriError, "#eori")
       checkErrorLink(view, 2, partyTypeError, "#partyType")
 
-      getElementByCss(view, "#error-message-eori-input").text() must be(messages(eoriError))
-      getElementByCss(view, "#error-message-partyType-input").text() must be(messages(partyTypeError))
+      view.select("#error-message-eori-input").text() must be(messages(eoriError))
+      view.select("#error-message-partyType-input").text() must be(messages(partyTypeError))
     }
 
     "display error when EORI is provided, but party is not selected" in {
@@ -149,7 +149,7 @@ class DeclarationAdditionalActorsViewSpec
       checkErrorsSummary(view)
       checkErrorLink(view, 1, partyTypeError, "#partyType")
 
-      getElementByCss(view, "#error-message-partyType-input").text() must be(messages(partyTypeError))
+      view.select("#error-message-partyType-input").text() must be(messages(partyTypeError))
     }
   }
 
@@ -211,13 +211,13 @@ class DeclarationAdditionalActorsViewSpec
         Seq(DeclarationAdditionalActors(Some("12345"), Some("CS")))
       )(fakeJourneyRequest(StandardDec), messages)
 
-      getElementByCss(view, "table>thead>tr>th:nth-child(1)").text() must be("Party’s EORI number")
-      getElementByCss(view, "table>thead>tr>th:nth-child(2)").text() must be("Party type")
+      view.select("table>thead>tr>th:nth-child(1)").text() must be("Party’s EORI number")
+      view.select("table>thead>tr>th:nth-child(2)").text() must be("Party type")
 
-      getElementByCss(view, "table>tbody>tr>td:nth-child(1)").text() must be("12345")
-      getElementByCss(view, "table>tbody>tr>td:nth-child(2)").text() must be("CS")
+      view.select("table>tbody>tr>td:nth-child(1)").text() must be("12345")
+      view.select("table>tbody>tr>td:nth-child(2)").text() must be("CS")
 
-      val removeButton = getElementByCss(view, "table>tbody>tr>td:nth-child(3)>button")
+      val removeButton = view.select("table>tbody>tr>td:nth-child(3)>button")
 
       removeButton.text() must be(messages(removeCaption))
       removeButton.attr("name") must be(messages(removeCaption))

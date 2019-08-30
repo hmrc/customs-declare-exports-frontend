@@ -40,7 +40,7 @@ class SubmissionsViewSpec extends ViewSpec with SubmissionsMessages with CommonM
     "display page messages" in {
       val view = createView()
 
-      getElementByCss(view, "title").text() must be(messages(title))
+      view.select("title").text() must be(messages(title))
       tableCell(view)(0, 0).text() must be(messages(ducr))
       tableCell(view)(0, 1).text() must be(messages(lrn))
       tableCell(view)(0, 2).text() must be(messages(mrn))
@@ -145,14 +145,15 @@ class SubmissionsViewSpec extends ViewSpec with SubmissionsMessages with CommonM
     "display 'Start a new declaration' link on page" in {
       val view = createView()
 
-      val startButton = getElementByCss(view, ".button")
+      val startButton = view.select(".button")
       startButton.text() must be(messages(startNewDeclaration))
       startButton.attr("href") must be(routes.ChoiceController.displayPage().url)
     }
   }
 
   private def tableCell(view: Html)(row: Int, column: Int): Element =
-    getElementsByCss(view, ".table-row")
+    view
+      .select(".table-row")
       .get(row)
       .getElementsByClass("table-cell")
       .get(column)

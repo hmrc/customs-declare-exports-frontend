@@ -44,7 +44,7 @@ class SealViewSpec extends SealFields with CommonMessages {
     "display header" in {
       val view = createView()
 
-      getElementByCss(view, "legend>h1").text() must be(messages("standard.seal.title"))
+      view.select("legend>h1").text() must be(messages("standard.seal.title"))
     }
 
     "display 'Back' button that links to 'add-transport-containers'  or 'transport-details' page" in {

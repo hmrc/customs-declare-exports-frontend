@@ -105,9 +105,7 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, authorisationCodeError, "#authorisationTypeCode")
 
-      getElementByCss(view, "#error-message-authorisationTypeCode-input").text() must be(
-        messages(authorisationCodeError)
-      )
+      view.select("#error-message-authorisationTypeCode-input").text() must be(messages(authorisationCodeError))
     }
 
     "display error for incorrect EORI" in {
@@ -121,7 +119,7 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, eoriError, "#eori")
 
-      getElementByCss(view, "#error-message-eori-input").text() must be(messages(eoriError))
+      view.select("#error-message-eori-input").text() must be(messages(eoriError))
     }
 
     "display error for both incorrect fields" in {
@@ -141,10 +139,8 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
       checkErrorLink(view, 1, authorisationCodeError, "#authorisationTypeCode")
       checkErrorLink(view, 2, eoriError, "#eori")
 
-      getElementByCss(view, "#error-message-authorisationTypeCode-input").text() must be(
-        messages(authorisationCodeError)
-      )
-      getElementByCss(view, "#error-message-eori-input").text() must be(messages(eoriError))
+      view.select("#error-message-authorisationTypeCode-input").text() must be(messages(authorisationCodeError))
+      view.select("#error-message-eori-input").text() must be(messages(eoriError))
     }
   }
 
@@ -182,9 +178,9 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
           messages
         )
 
-      getElementByCss(view, "tbody>tr>th:nth-child(1)").text() must be("1234-1234")
+      view.select("tbody>tr>th:nth-child(1)").text() must be("1234-1234")
 
-      val removeButton = getElementByCss(view, "tbody>tr>th:nth-child(2)>button")
+      val removeButton = view.select("tbody>tr>th:nth-child(2)>button")
 
       removeButton.text() must be(messages(removeCaption))
       removeButton.attr("value") must be("1234-1234")

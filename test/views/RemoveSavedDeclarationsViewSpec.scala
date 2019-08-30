@@ -24,7 +24,7 @@ import forms.declaration.ConsignmentReferences
 import forms.{Ducr, RemoveDraftDeclaration}
 import helpers.views.declaration.CommonMessages
 import models.{DeclarationStatus, ExportsDeclaration}
-import org.jsoup.nodes.Element
+import org.jsoup.nodes.{Document, Element}
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -81,8 +81,9 @@ class RemoveSavedDeclarationsViewSpec extends ViewSpec with CommonMessages {
 
   private def numberOfTableRows(view: Html) = view.getElementsByClass("table-row").size() - 1
 
-  private def tableCell(view: Html)(row: Int, column: Int): Element =
-    getElementsByCss(view, ".table-row")
+  private def tableCell(view: Document)(row: Int, column: Int): Element =
+    view
+      .select(".table-row")
       .get(row)
       .getElementsByClass("table-cell")
       .get(column)

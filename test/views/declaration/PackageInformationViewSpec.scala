@@ -37,7 +37,7 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(title))
+      createView().select("title").text() must be(messages(title))
     }
 
     "display section header" in {
@@ -47,7 +47,7 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
 
     "display header" in {
 
-      getElementByCss(createView(), "legend>h1").text() must be(messages(title))
+      createView().select("legend>h1").text() must be(messages(title))
     }
 
     "display empty input with label for Types of Packages" in {
@@ -144,16 +144,16 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
       val view = packageInformationPage(Mode.Normal, "12345", form, packages)(fakeRequest, messages)
 
       // check table header
-      getElementByCss(view, "table>caption").text() must be(messages(tableHeading))
-      getElementByCss(view, "table>thead>tr>th:nth-child(1)").text() must be(messages(typesOfPackages))
-      getElementByCss(view, "table>thead>tr>th:nth-child(2)").text() must be(messages(numberOfPackages))
-      getElementByCss(view, "table>thead>tr>th:nth-child(3)").text() must be(messages(shippingMarks))
-      getElementByCss(view, "table>thead>tr>th:nth-child(4)").text() must be(messages(remove))
+      view.select("table>caption").text() must be(messages(tableHeading))
+      view.select("table>thead>tr>th:nth-child(1)").text() must be(messages(typesOfPackages))
+      view.select("table>thead>tr>th:nth-child(2)").text() must be(messages(numberOfPackages))
+      view.select("table>thead>tr>th:nth-child(3)").text() must be(messages(shippingMarks))
+      view.select("table>thead>tr>th:nth-child(4)").text() must be(messages(remove))
 
       // check row
-      getElementByCss(view, "table>tbody>tr>td:nth-child(1)").text() must be("PA")
-      getElementByCss(view, "table>tbody>tr>td:nth-child(2)").text() must be("100")
-      getElementByCss(view, "table>tbody>tr>td:nth-child(3)").text() must be("Shipping Mark")
+      view.select("table>tbody>tr>td:nth-child(1)").text() must be("PA")
+      view.select("table>tbody>tr>td:nth-child(2)").text() must be("100")
+      view.select("table>tbody>tr>td:nth-child(3)").text() must be("Shipping Mark")
     }
 
     "display two rows with data in table" in {
@@ -162,20 +162,20 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
       val view = packageInformationPage(Mode.Normal, "12345", form, packages)(fakeRequest, messages)
 
       // check table header
-      getElementByCss(view, "table>caption").text() must be("2 Packages added")
-      getElementByCss(view, "table>thead>tr>th:nth-child(1)").text() must be(messages(typesOfPackages))
-      getElementByCss(view, "table>thead>tr>th:nth-child(2)").text() must be(messages(numberOfPackages))
-      getElementByCss(view, "table>thead>tr>th:nth-child(3)").text() must be(messages(shippingMarks))
-      getElementByCss(view, "table>thead>tr>th:nth-child(4)").text() must be(messages(remove))
+      view.select("table>caption").text() must be("2 Packages added")
+      view.select("table>thead>tr>th:nth-child(1)").text() must be(messages(typesOfPackages))
+      view.select("table>thead>tr>th:nth-child(2)").text() must be(messages(numberOfPackages))
+      view.select("table>thead>tr>th:nth-child(3)").text() must be(messages(shippingMarks))
+      view.select("table>thead>tr>th:nth-child(4)").text() must be(messages(remove))
 
       // check rows
-      getElementByCss(view, "table>tbody>tr>td:nth-child(1)").text() must be("PA")
-      getElementByCss(view, "table>tbody>tr>td:nth-child(2)").text() must be("100")
-      getElementByCss(view, "table>tbody>tr>td:nth-child(3)").text() must be("Shipping Mark")
+      view.select("table>tbody>tr>td:nth-child(1)").text() must include("PA")
+      view.select("table>tbody>tr>td:nth-child(2)").text() must include("100")
+      view.select("table>tbody>tr>td:nth-child(3)").text() must include("Shipping Mark")
 
-      getElementByCss(view, "table>tbody>tr:nth-child(2)>td:nth-child(1)").text() must be("PB")
-      getElementByCss(view, "table>tbody>tr:nth-child(2)>td:nth-child(2)").text() must be("101")
-      getElementByCss(view, "table>tbody>tr:nth-child(2)>td:nth-child(3)").text() must be("Shipping Mark")
+      view.select("table>tbody>tr:nth-child(2)>td:nth-child(1)").text() must include("PB")
+      view.select("table>tbody>tr:nth-child(2)>td:nth-child(2)").text() must include("101")
+      view.select("table>tbody>tr:nth-child(2)>td:nth-child(3)").text() must include("Shipping Mark")
     }
   }
 }

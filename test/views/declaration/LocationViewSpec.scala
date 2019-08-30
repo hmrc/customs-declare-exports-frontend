@@ -38,7 +38,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(locationOfGoods))
+      createView().select("title").text() must be(messages(locationOfGoods))
     }
 
     "display section header" in {
@@ -147,7 +147,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorsSummary(view)
       checkErrorLink(view, 1, countryEmpty, "#country")
 
-      getElementByCss(view, "span.error-message").text() must be(messages(countryEmpty))
+      view.select("span.error-message").text() must be(messages(countryEmpty))
     }
 
     "display error for incorrect Country" in {
@@ -159,7 +159,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorsSummary(view)
       checkErrorLink(view, 1, countryError, "#country")
 
-      getElementByCss(view, "span.error-message").text() must be(messages(countryError))
+      view.select("span.error-message").text() must be(messages(countryError))
     }
 
     "display error for empty Type of Location" in {
@@ -172,7 +172,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorsSummary(view)
       checkErrorLink(view, 1, typeOfLocationEmpty, "#typeOfLocation")
 
-      getElementByCss(view, "#error-message-typeOfLocation-input").text() must be(messages(typeOfLocationEmpty))
+      view.select("#error-message-typeOfLocation-input").text() must be(messages(typeOfLocationEmpty))
     }
 
     "display error for incorrect Type of Location" in {
@@ -185,7 +185,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorsSummary(view)
       checkErrorLink(view, 1, typeOfLocationError, "#typeOfLocation")
 
-      getElementByCss(view, "#error-message-typeOfLocation-input").text() must be(messages(typeOfLocationError))
+      view.select("#error-message-typeOfLocation-input").text() must be(messages(typeOfLocationError))
     }
 
     "display error for empty Qualifier of Identification" in {
@@ -198,9 +198,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorsSummary(view)
       checkErrorLink(view, 1, qualifierOfIdentEmpty, "#qualifierOfIdentification")
 
-      getElementByCss(view, "#error-message-qualifierOfIdentification-input").text() must be(
-        messages(qualifierOfIdentEmpty)
-      )
+      view.select("#error-message-qualifierOfIdentification-input").text() must be(messages(qualifierOfIdentEmpty))
     }
 
     "display error for incorrect Qualifier of Identification" in {
@@ -213,9 +211,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorsSummary(view)
       checkErrorLink(view, 1, qualifierOfIdentError, "#qualifierOfIdentification")
 
-      getElementByCss(view, "#error-message-qualifierOfIdentification-input").text() must be(
-        messages(qualifierOfIdentError)
-      )
+      view.select("#error-message-qualifierOfIdentification-input").text() must be(messages(qualifierOfIdentError))
     }
 
     "display error for incorrect Identification of Location" in {
@@ -227,9 +223,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorsSummary(view)
       checkErrorLink(view, 1, identOfLocationError, "#identificationOfLocation")
 
-      getElementByCss(view, "#error-message-identificationOfLocation-input").text() must be(
-        messages(identOfLocationError)
-      )
+      view.select("#error-message-identificationOfLocation-input").text() must be(messages(identOfLocationError))
     }
 
     "display error for incorrect Additional Identifier" in {
@@ -252,9 +246,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorsSummary(view)
       checkErrorLink(view, 1, additionalQualifierError, "#additionalQualifier")
 
-      getElementByCss(view, "#error-message-additionalQualifier-input").text() must be(
-        messages(additionalQualifierError)
-      )
+      view.select("#error-message-additionalQualifier-input").text() must be(messages(additionalQualifierError))
     }
 
     "display error for incorrect Street and Number" in {
@@ -277,7 +269,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorsSummary(view)
       checkErrorLink(view, 1, locationAddressError, "#addressLine")
 
-      getElementByCss(view, "#error-message-addressLine-input").text() must be(messages(locationAddressError))
+      view.select("#error-message-addressLine-input").text() must be(messages(locationAddressError))
     }
 
     "display error for incorrect Postcode" in {
@@ -300,7 +292,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorsSummary(view)
       checkErrorLink(view, 1, logPostCodeError, "#postCode")
 
-      getElementByCss(view, "#error-message-postCode-input").text() must be(messages(logPostCodeError))
+      view.select("#error-message-postCode-input").text() must be(messages(logPostCodeError))
     }
 
     "display error for incorrect City" in {
@@ -323,7 +315,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorsSummary(view)
       checkErrorLink(view, 1, cityError, "#city")
 
-      getElementByCss(view, "#error-message-city-input").text() must be(messages(cityError))
+      view.select("#error-message-city-input").text() must be(messages(cityError))
     }
 
     "display errors for everything incorrect" in {
@@ -353,19 +345,13 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorLink(view, 7, logPostCodeError, "#postCode")
       checkErrorLink(view, 8, cityError, "#city")
 
-      getElementByCss(view, "span.error-message").text() must be(messages(countryError))
-      getElementByCss(view, "#error-message-typeOfLocation-input").text() must be(messages(typeOfLocationError))
-      getElementByCss(view, "#error-message-qualifierOfIdentification-input").text() must be(
-        messages(qualifierOfIdentError)
-      )
-      getElementByCss(view, "#error-message-identificationOfLocation-input").text() must be(
-        messages(identOfLocationError)
-      )
-      getElementByCss(view, "#error-message-additionalQualifier-input").text() must be(
-        messages(additionalQualifierError)
-      )
-      getElementByCss(view, "#error-message-postCode-input").text() must be(messages(logPostCodeError))
-      getElementByCss(view, "#error-message-city-input").text() must be(messages(cityError))
+      view.select("span.error-message").text() must be(messages(countryError))
+      view.select("#error-message-typeOfLocation-input").text() must be(messages(typeOfLocationError))
+      view.select("#error-message-qualifierOfIdentification-input").text() must be(messages(qualifierOfIdentError))
+      view.select("#error-message-identificationOfLocation-input").text() must be(messages(identOfLocationError))
+      view.select("#error-message-additionalQualifier-input").text() must be(messages(additionalQualifierError))
+      view.select("#error-message-postCode-input").text() must be(messages(logPostCodeError))
+      view.select("#error-message-city-input").text() must be(messages(cityError))
     }
 
     "display errors for everything incorrect (except IoL which is empty)" in {
@@ -394,16 +380,12 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorLink(view, 6, logPostCodeError, "#postCode")
       checkErrorLink(view, 7, cityError, "#city")
 
-      getElementByCss(view, "span.error-message").text() must be(messages(countryError))
-      getElementByCss(view, "#error-message-typeOfLocation-input").text() must be(messages(typeOfLocationError))
-      getElementByCss(view, "#error-message-qualifierOfIdentification-input").text() must be(
-        messages(qualifierOfIdentError)
-      )
-      getElementByCss(view, "#error-message-additionalQualifier-input").text() must be(
-        messages(additionalQualifierError)
-      )
-      getElementByCss(view, "#error-message-postCode-input").text() must be(messages(logPostCodeError))
-      getElementByCss(view, "#error-message-city-input").text() must be(messages(cityError))
+      view.select("span.error-message").text() must be(messages(countryError))
+      view.select("#error-message-typeOfLocation-input").text() must be(messages(typeOfLocationError))
+      view.select("#error-message-qualifierOfIdentification-input").text() must be(messages(qualifierOfIdentError))
+      view.select("#error-message-additionalQualifier-input").text() must be(messages(additionalQualifierError))
+      view.select("#error-message-postCode-input").text() must be(messages(logPostCodeError))
+      view.select("#error-message-city-input").text() must be(messages(cityError))
     }
   }
 
