@@ -16,74 +16,93 @@
 
 package views.declaration
 
+import base.Injector
 import forms.declaration.ProcedureCodes
-import helpers.views.declaration.{CommonMessages, ProcedureCodesMessages}
 import models.Mode
+import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.twirl.api.Html
+import play.api.i18n.MessagesApi
+import play.api.test.Helpers.stubMessages
+import services.cache.ExportsTestData
+import unit.tools.Stubs
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.procedure_codes
-import views.declaration.spec.AppViewSpec
 import views.tags.ViewTest
 
 @ViewTest
-class ProcedureCodesViewSpec extends AppViewSpec with ProcedureCodesMessages with CommonMessages {
+class ProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val form: Form[ProcedureCodes] = ProcedureCodes.form()
-  private val procedureCodesPage = app.injector.instanceOf[procedure_codes]
-  private def createView(form: Form[ProcedureCodes] = form): Html =
-    procedureCodesPage(Mode.Normal, "1234", form, Seq())(fakeRequest, messages)
+  private def createView(
+    mode: Mode = Mode.Normal,
+    form: Form[ProcedureCodes] = form,
+    codes: Seq[String] = Seq.empty
+  ): Document =
+    new procedure_codes(mainTemplate)(mode, "itemId", form, codes)(journeyRequest, stubMessages())
 
   "Procedure Codes View on empty page" should {
+    "have proper messages for labels" in {
+      val messages = instanceOf[MessagesApi].preferred(journeyRequest)
+      messages("supplementary.procedureCodes.title") mustBe "Procedure Codes"
+      messages("supplementary.items") mustBe "Items"
+      messages("supplementary.procedureCodes.procedureCode.header") mustBe "Enter the procedure code"
+      messages("supplementary.procedureCodes.procedureCode.header.hint") mustBe "A 4 digit code, made up of the requested procedure and the previous procedure"
+      messages("supplementary.procedureCodes.additionalProcedureCode.header") mustBe "Do you need to enter additional procedure codes?"
+      messages("supplementary.procedureCodes.additionalProcedureCode.header.hint") mustBe "A 3 digit code. Up to 99 may be declared for each goods item."
+    }
 
     "display page title" in {
-
-      createView().getElementById("title").text() must be(messages(title))
+      createView().getElementById("title").text() mustBe "supplementary.procedureCodes.title"
     }
 
     "display section header" in {
-
-      createView().getElementById("section-header").text() must be("Items")
+      createView().getElementById("section-header").text() mustBe "supplementary.items"
     }
 
     "display empty input with label for Procedure Code" in {
-
       val view = createView()
 
-      view.getElementById("procedureCode-label").text() must be(messages(procCodeHeader))
-      view.getElementById("procedureCode-hint").text() must be(messages(procCodeHeaderHint))
-      view.getElementById("procedureCode").attr("value") must be("")
+      view.getElementById("procedureCode-label").text() mustBe "supplementary.procedureCodes.procedureCode.header"
+      view.getElementById("procedureCode-hint").text() mustBe "supplementary.procedureCodes.procedureCode.header.hint"
+      view.getElementById("procedureCode").attr("value") mustBe ""
     }
 
     "display empty input with label for Additional Procedure Codes" in {
 
       val view = createView()
 
-      view.getElementById("additionalProcedureCode-label").text() must be(messages(addProcCodeHeader))
-      view.getElementById("additionalProcedureCode-hint").text() must be(messages(addProcCodeHeaderHint))
-      view.getElementById("additionalProcedureCode").attr("value") must be("")
+      view
+        .getElementById("additionalProcedureCode-label")
+        .text() mustBe "supplementary.procedureCodes.additionalProcedureCode.header"
+      view
+        .getElementById("additionalProcedureCode-hint")
+        .text() mustBe "supplementary.procedureCodes.additionalProcedureCode.header.hint"
+      view.getElementById("additionalProcedureCode").attr("value") mustBe ""
     }
 
     "display 'Back' button that links to 'Export Items' page" in {
 
       val backButton = createView().getElementById("link-back")
 
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/export-items")
+      backButton.text() mustBe "site.back"
+      backButton.getElementById("link-back") must haveHref(
+        controllers.declaration.routes.ItemsSummaryController.displayPage(Mode.Normal)
+      )
     }
 
     "display both 'Add' and 'Save and continue' button on page" in {
       val view = createView()
 
       val addButton = view.getElementById("add")
-      addButton.text() must be(messages(addCaption))
+      addButton.text() mustBe "site.add"
 
       val saveButton = view.getElementById("submit")
-      saveButton.text() must be(messages(saveAndContinueCaption))
+      saveButton.text() mustBe "site.save_and_continue"
     }
 
     "display 'Save and return' button on page" in {
       val saveAndReturnButton = createView().getElementById("submit_and_return")
-      saveAndReturnButton.text() must be(messages(saveAndReturnCaption))
+      saveAndReturnButton.text() mustBe "site.save_and_come_back_later"
     }
   }
 
@@ -91,26 +110,26 @@ class ProcedureCodesViewSpec extends AppViewSpec with ProcedureCodesMessages wit
 
     "display data in Procedure Code input" in {
 
-      val view = createView(ProcedureCodes.form().fill(ProcedureCodes(Some("Test"), Some(""))))
+      val view = createView(form = ProcedureCodes.form().fill(ProcedureCodes(Some("Test"), Some(""))))
 
-      view.getElementById("procedureCode").attr("value") must be("Test")
-      view.getElementById("additionalProcedureCode").attr("value") must be("")
+      view.getElementById("procedureCode").attr("value") mustBe "Test"
+      view.getElementById("additionalProcedureCode").attr("value") mustBe ""
     }
 
     "display data in Additional Procedure Code input" in {
 
-      val view = createView(ProcedureCodes.form().fill(ProcedureCodes(Some(""), Some("Test"))))
+      val view = createView(form = ProcedureCodes.form().fill(ProcedureCodes(Some(""), Some("Test"))))
 
-      view.getElementById("procedureCode").attr("value") must be("")
-      view.getElementById("additionalProcedureCode").attr("value") must be("Test")
+      view.getElementById("procedureCode").attr("value") mustBe ""
+      view.getElementById("additionalProcedureCode").attr("value") mustBe "Test"
     }
 
     "display data in both inputs" in {
 
-      val view = createView(ProcedureCodes.form().fill(ProcedureCodes(Some("Test"), Some("Test"))))
+      val view = createView(form = ProcedureCodes.form().fill(ProcedureCodes(Some("Test"), Some("Test"))))
 
-      view.getElementById("procedureCode").attr("value") must be("Test")
-      view.getElementById("additionalProcedureCode").attr("value") must be("Test")
+      view.getElementById("procedureCode").attr("value") mustBe "Test"
+      view.getElementById("additionalProcedureCode").attr("value") mustBe "Test"
     }
   }
 }
