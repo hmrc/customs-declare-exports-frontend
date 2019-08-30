@@ -71,13 +71,6 @@ trait ViewValidator extends MustMatchers with ViewMatchers {
       .headOption
       .getOrElse("")
 
-  @deprecated("Please use 'page.getElementsByAttribute must ...'", since = "2019-08-07")
-  def getElementsByAttribute(html: Html, attributeName: String): List[Element] = {
-    val elements = asDocument(html).getElementsByAttribute(attributeName)
-    if (elements == null) throw new Exception(s"Can't find attribute $attributeName on page")
-    elements.toList
-  }
-
   @deprecated("Please use 'page.getElementsByTag must ...'", since = "2019-08-07")
   def getElementsByTag(html: Html, tag: String): List[Element] = {
     val elements = asDocument(html).getElementsByTag(tag)
