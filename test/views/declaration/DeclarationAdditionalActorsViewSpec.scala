@@ -41,12 +41,12 @@ class DeclarationAdditionalActorsViewSpec
 
     "display page title" in {
 
-      getElementById(createView(), "title").text() must be(messages(title))
+      createView().getElementById("title").text() must be(messages(title))
     }
 
     "display section header" in {
 
-      getElementById(createView(), "section-header").text() must be("Parties")
+      createView().getElementById("section-header").text() must be("Parties")
     }
 
     "display empty input with label for EORI" in {
@@ -89,7 +89,7 @@ class DeclarationAdditionalActorsViewSpec
 
     "display 'Back' button that links to 'Representative Details' page if on Supplementary journey" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/representative-details")

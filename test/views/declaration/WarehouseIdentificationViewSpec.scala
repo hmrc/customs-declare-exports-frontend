@@ -49,7 +49,7 @@ class WarehouseIdentificationViewSpec extends ViewSpec with WarehouseIdentificat
 
     "display 'Back' button that links to 'Supervising Office' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/export-items")

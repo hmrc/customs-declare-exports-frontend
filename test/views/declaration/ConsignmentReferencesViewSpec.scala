@@ -47,44 +47,44 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
     "display page title" in {
 
-      getElementById(createView(), "title").text() must be(messages(header))
+      createView().getElementById("title").text() must be(messages(header))
     }
 
     "display section header" in {
 
-      getElementById(createView(), "section-header").text() must be(messages("Your references"))
+      createView().getElementById("section-header").text() must be(messages("Your references"))
     }
 
     "display empty input with label for DUCR" in {
 
       val view = createView()
 
-      getElementById(view, "ducr_ducr-label").text() must be(messages(ducrInfo))
-      getElementById(view, "ducr_ducr-hint").text() must be(messages(ducrHint))
-      getElementById(view, "ducr_ducr").attr("value") must be("")
+      view.getElementById("ducr_ducr-label").text() must be(messages(ducrInfo))
+      view.getElementById("ducr_ducr-hint").text() must be(messages(ducrHint))
+      view.getElementById("ducr_ducr").attr("value") must be("")
     }
 
     "display empty input with label for LRN" in {
 
       val view = createView()
 
-      getElementById(view, "lrn-label").text() must be(messages(lrnInfo))
-      getElementById(view, "lrn-hint").text() must be(messages(lrnHint))
-      getElementById(view, "lrn").attr("value") must be("")
+      view.getElementById("lrn-label").text() must be(messages(lrnInfo))
+      view.getElementById("lrn-hint").text() must be(messages(lrnHint))
+      view.getElementById("lrn").attr("value") must be("")
     }
 
     "display empty input with label for UCR" in {
 
       val view = createView()
 
-      getElementById(view, "personalUcr-label").text() must be(messages(ucrInfo))
-      getElementById(view, "personalUcr-hint").text() must be(messages(ucrHint))
-      getElementById(view, "personalUcr").attr("value") must be("")
+      view.getElementById("personalUcr-label").text() must be(messages(ucrInfo))
+      view.getElementById("personalUcr-hint").text() must be(messages(ucrHint))
+      view.getElementById("personalUcr").attr("value") must be("")
     }
 
     "display 'Back' button that links to 'Declaration Type' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/type")
@@ -192,16 +192,16 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       val view =
         createView(ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("9GB12345678901234-SHIP1234-1"), "")))
 
-      getElementById(view, "ducr_ducr").attr("value") must be("9GB12345678901234-SHIP1234-1")
-      getElementById(view, "lrn").attr("value") must be("")
+      view.getElementById("ducr_ducr").attr("value") must be("9GB12345678901234-SHIP1234-1")
+      view.getElementById("lrn").attr("value") must be("")
     }
 
     "display data in LRN input" in {
 
       val view = createView(ConsignmentReferences.form().fill(ConsignmentReferences(Ducr(""), "test1")))
 
-      getElementById(view, "ducr_ducr").attr("value") must be("")
-      getElementById(view, "lrn").attr("value") must be("test1")
+      view.getElementById("ducr_ducr").attr("value") must be("")
+      view.getElementById("lrn").attr("value") must be("test1")
     }
 
     "display data in all inputs" in {
@@ -211,9 +211,9 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
           ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("GB/ABC4-ASIUDYFAHSDJF"), "test1", Some("ucr")))
         )
 
-      getElementById(view, "ducr_ducr").attr("value") must be("GB/ABC4-ASIUDYFAHSDJF")
-      getElementById(view, "lrn").attr("value") must be("test1")
-      getElementById(view, "personalUcr").attr("value") must be("ucr")
+      view.getElementById("ducr_ducr").attr("value") must be("GB/ABC4-ASIUDYFAHSDJF")
+      view.getElementById("lrn").attr("value") must be("test1")
+      view.getElementById("personalUcr").attr("value") must be("ucr")
     }
 
     "display error when UCR is longer then 35 characters" in {

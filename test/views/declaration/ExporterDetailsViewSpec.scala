@@ -45,60 +45,60 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
 
     "display section header" in {
 
-      getElementById(createView(), "section-header").text() must be(messages("Parties"))
+      createView().getElementById("section-header").text() must be(messages("Parties"))
     }
 
     "display empty input with label for EORI" in {
 
       val view = createView()
 
-      getElementById(view, "details_eori-label").text() must be(messages(consignorEori))
-      getElementById(view, "details_eori").attr("value") must be("")
+      view.getElementById("details_eori-label").text() must be(messages(consignorEori))
+      view.getElementById("details_eori").attr("value") must be("")
     }
 
     "display empty input with label for Full name" in {
 
       val view = createView()
 
-      getElementById(view, "details_address_fullName-label").text() must be(messages(fullName))
-      getElementById(view, "details_address_fullName").attr("value") must be("")
+      view.getElementById("details_address_fullName-label").text() must be(messages(fullName))
+      view.getElementById("details_address_fullName").attr("value") must be("")
     }
 
     "display empty input with label for Address" in {
 
       val view = createView()
 
-      getElementById(view, "details_address_addressLine-label").text() must be(messages(addressLine))
-      getElementById(view, "details_address_addressLine").attr("value") must be("")
+      view.getElementById("details_address_addressLine-label").text() must be(messages(addressLine))
+      view.getElementById("details_address_addressLine").attr("value") must be("")
     }
 
     "display empty input with label for Town or City" in {
 
       val view = createView()
 
-      getElementById(view, "details_address_townOrCity-label").text() must be(messages(townOrCity))
-      getElementById(view, "details_address_townOrCity").attr("value") must be("")
+      view.getElementById("details_address_townOrCity-label").text() must be(messages(townOrCity))
+      view.getElementById("details_address_townOrCity").attr("value") must be("")
     }
 
     "display empty input with label for Postcode" in {
 
       val view = createView()
 
-      getElementById(view, "details_address_postCode-label").text() must be(messages(postCode))
-      getElementById(view, "details_address_postCode").attr("value") must be("")
+      view.getElementById("details_address_postCode-label").text() must be(messages(postCode))
+      view.getElementById("details_address_postCode").attr("value") must be("")
     }
 
     "display empty input with label for Country" in {
 
       val view = createView()
 
-      getElementById(view, "details.address.country-label").text() mustBe "Country"
-      getElementById(view, "details.address.country").attr("value") mustBe ""
+      view.getElementById("details.address.country-label").text() mustBe "Country"
+      view.getElementById("details.address.country").attr("value") mustBe ""
     }
 
     "display 'Back' button that links to 'Consignment References' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/consignment-references")
@@ -471,12 +471,12 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
       val form = ExporterDetails.form().fill(ExporterDetails(EntityDetails(Some("1234"), None)))
       val view = createView(form)
 
-      getElementById(view, "details_eori").attr("value") must be("1234")
-      getElementById(view, "details_address_fullName").attr("value") must be("")
-      getElementById(view, "details_address_addressLine").attr("value") must be("")
-      getElementById(view, "details_address_townOrCity").attr("value") must be("")
-      getElementById(view, "details_address_postCode").attr("value") must be("")
-      getElementById(view, "details.address.country").attr("value") must be("")
+      view.getElementById("details_eori").attr("value") must be("1234")
+      view.getElementById("details_address_fullName").attr("value") must be("")
+      view.getElementById("details_address_addressLine").attr("value") must be("")
+      view.getElementById("details_address_townOrCity").attr("value") must be("")
+      view.getElementById("details_address_postCode").attr("value") must be("")
+      view.getElementById("details.address.country").attr("value") must be("")
     }
 
     "display data in Business address inputs" in {
@@ -486,12 +486,12 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
         .fill(ExporterDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "test4")))))
       val view = createView(form)
 
-      getElementById(view, "details_eori").attr("value") must be("")
-      getElementById(view, "details_address_fullName").attr("value") must be("test")
-      getElementById(view, "details_address_addressLine").attr("value") must be("test1")
-      getElementById(view, "details_address_townOrCity").attr("value") must be("test2")
-      getElementById(view, "details_address_postCode").attr("value") must be("test3")
-      getElementById(view, "details.address.country").attr("value") must be("test4")
+      view.getElementById("details_eori").attr("value") must be("")
+      view.getElementById("details_address_fullName").attr("value") must be("test")
+      view.getElementById("details_address_addressLine").attr("value") must be("test1")
+      view.getElementById("details_address_townOrCity").attr("value") must be("test2")
+      view.getElementById("details_address_postCode").attr("value") must be("test3")
+      view.getElementById("details.address.country").attr("value") must be("test4")
     }
 
     "display data in both EORI and Business address inputs" in {
@@ -501,12 +501,12 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
         .fill(ExporterDetails(EntityDetails(Some("1234"), Some(Address("test", "test1", "test2", "test3", "test4")))))
       val view = createView(form)
 
-      getElementById(view, "details_eori").attr("value") must be("1234")
-      getElementById(view, "details_address_fullName").attr("value") must be("test")
-      getElementById(view, "details_address_addressLine").attr("value") must be("test1")
-      getElementById(view, "details_address_townOrCity").attr("value") must be("test2")
-      getElementById(view, "details_address_postCode").attr("value") must be("test3")
-      getElementById(view, "details.address.country").attr("value") must be("test4")
+      view.getElementById("details_eori").attr("value") must be("1234")
+      view.getElementById("details_address_fullName").attr("value") must be("test")
+      view.getElementById("details_address_addressLine").attr("value") must be("test1")
+      view.getElementById("details_address_townOrCity").attr("value") must be("test2")
+      view.getElementById("details_address_postCode").attr("value") must be("test3")
+      view.getElementById("details.address.country").attr("value") must be("test4")
     }
   }
 }

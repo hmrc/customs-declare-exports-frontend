@@ -37,25 +37,25 @@ class OfficeOfExitSupplementaryViewSpec extends ViewSpec with OfficeOfExitMessag
 
     "display page title" in {
 
-      getElementById(createView(), "title").text() must be(messages(officeOfExit))
+      createView().getElementById("title").text() must be(messages(officeOfExit))
     }
 
     "display section header" in {
 
-      getElementById(createView(), "section-header").text() must be("Locations")
+      createView().getElementById("section-header").text() must be("Locations")
     }
 
     "display empty input with label for Country" in {
 
       val view = createView()
 
-      getElementById(view, "officeId-hint").text() must be(messages(hint))
-      getElementById(view, "officeId").attr("value") must be("")
+      view.getElementById("officeId-hint").text() must be(messages(hint))
+      view.getElementById("officeId").attr("value") must be("")
     }
 
     "display 'Back' button that links to 'Location of Goods' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/location-of-goods")
@@ -81,7 +81,7 @@ class OfficeOfExitSupplementaryViewSpec extends ViewSpec with OfficeOfExitMessag
       checkErrorsSummary(view)
       checkErrorLink(view, "officeId-error", officeOfExitLength, "#officeId")
 
-      getElementById(view, "error-message-officeId-input").text() must be(messages(officeOfExitLength))
+      view.getElementById("error-message-officeId-input").text() must be(messages(officeOfExitLength))
     }
 
     "display error when Office of Exit is empty" in {
@@ -91,7 +91,7 @@ class OfficeOfExitSupplementaryViewSpec extends ViewSpec with OfficeOfExitMessag
       checkErrorsSummary(view)
       checkErrorLink(view, "officeId-error", officeOfExitEmpty, "#officeId")
 
-      getElementById(view, "error-message-officeId-input").text() must be(messages(officeOfExitEmpty))
+      view.getElementById("error-message-officeId-input").text() must be(messages(officeOfExitEmpty))
     }
   }
 
@@ -101,7 +101,7 @@ class OfficeOfExitSupplementaryViewSpec extends ViewSpec with OfficeOfExitMessag
 
       val view = createView(OfficeOfExitForms.supplementaryForm.fill(OfficeOfExitSupplementary("12345678")))
 
-      getElementById(view, "officeId").attr("value") must be("12345678")
+      view.getElementById("officeId").attr("value") must be("12345678")
     }
   }
 }

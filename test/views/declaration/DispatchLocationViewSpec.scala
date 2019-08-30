@@ -38,28 +38,28 @@ class DispatchLocationViewSpec extends ViewSpec with DispatchLocationMessages wi
 
     "display page title" in {
 
-      getElementById(createView(), "title").text() must be(messages(header))
+      createView().getElementById("title").text() must be(messages(header))
     }
 
     "display section header" in {
 
-      getElementById(createView(), "section-header").text() must be("Locations")
+      createView().getElementById("section-header").text() must be("Locations")
     }
 
     "display two radio buttons with description (not selected)" in {
 
       val view = createView(DispatchLocation.form().fill(DispatchLocation("")))
 
-      val optionOne = getElementById(view, "OutsideEU")
+      val optionOne = view.getElementById("OutsideEU")
       optionOne.attr("checked") must be("")
 
-      val optionOneLabel = getElementById(view, "OutsideEU-label")
+      val optionOneLabel = view.getElementById("OutsideEU-label")
       optionOneLabel.text() must be(messages(outsideEu))
 
-      val optionTwo = getElementById(view, "SpecialFiscalTerritory")
+      val optionTwo = view.getElementById("SpecialFiscalTerritory")
       optionTwo.attr("checked") must be("")
 
-      val optionTwoLabel = getElementById(view, "SpecialFiscalTerritory-label")
+      val optionTwoLabel = view.getElementById("SpecialFiscalTerritory-label")
       optionTwoLabel.text() must be(messages(specialFiscalTerritory))
     }
 
@@ -127,10 +127,10 @@ class DispatchLocationViewSpec extends ViewSpec with DispatchLocationMessages wi
 
       val view = createView(DispatchLocation.form().fill(DispatchLocation("EX")))
 
-      val optionOne = getElementById(view, "OutsideEU")
+      val optionOne = view.getElementById("OutsideEU")
       optionOne.attr("checked") must be("checked")
 
-      val optionTwo = getElementById(view, "SpecialFiscalTerritory")
+      val optionTwo = view.getElementById("SpecialFiscalTerritory")
       optionTwo.attr("checked") must be("")
     }
 
@@ -138,10 +138,10 @@ class DispatchLocationViewSpec extends ViewSpec with DispatchLocationMessages wi
 
       val view = createView(DispatchLocation.form().fill(DispatchLocation("CO")))
 
-      val optionOne = getElementById(view, "OutsideEU")
+      val optionOne = view.getElementById("OutsideEU")
       optionOne.attr("checked") must be("")
 
-      val optionTwo = getElementById(view, "SpecialFiscalTerritory")
+      val optionTwo = view.getElementById("SpecialFiscalTerritory")
       optionTwo.attr("checked") must be("checked")
     }
   }

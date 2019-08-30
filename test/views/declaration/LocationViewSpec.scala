@@ -43,81 +43,81 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
     "display section header" in {
 
-      getElementById(createView(), "section-header").text() must be("Locations")
+      createView().getElementById("section-header").text() must be("Locations")
     }
 
     "display header" in {
 
-      getElementById(createView(), "title").text() must be(messages(title))
+      createView().getElementById("title").text() must be(messages(title))
     }
 
     "display empty input with label for Country" in {
 
       val view = createView()
 
-      getElementById(view, "country-label").text() must be(messages(country))
-      getElementById(view, "country").attr("value") must be("")
+      view.getElementById("country-label").text() must be(messages(country))
+      view.getElementById("country").attr("value") must be("")
     }
 
     "display empty input with label for Type of Location" in {
 
       val view = createView()
 
-      getElementById(view, "typeOfLocation-label").text() must be(messages(typeOfLocation))
-      getElementById(view, "typeOfLocation").attr("value") must be("")
+      view.getElementById("typeOfLocation-label").text() must be(messages(typeOfLocation))
+      view.getElementById("typeOfLocation").attr("value") must be("")
     }
 
     "display empty input with label for Qualifier of Identification" in {
 
       val view = createView()
 
-      getElementById(view, "qualifierOfIdentification-label").text() must be(messages(qualifierOfIdent))
-      getElementById(view, "qualifierOfIdentification").attr("value") must be("")
+      view.getElementById("qualifierOfIdentification-label").text() must be(messages(qualifierOfIdent))
+      view.getElementById("qualifierOfIdentification").attr("value") must be("")
     }
 
     "display empty input with label for Identification of Location" in {
 
       val view = createView()
 
-      getElementById(view, "identificationOfLocation-label").text() must be(messages(identOfLocation))
-      getElementById(view, "identificationOfLocation").attr("value") must be("")
+      view.getElementById("identificationOfLocation-label").text() must be(messages(identOfLocation))
+      view.getElementById("identificationOfLocation").attr("value") must be("")
     }
 
     "display empty input with label for Additional Identifier" in {
 
       val view = createView()
 
-      getElementById(view, "additionalQualifier-label").text() must be(messages(additionalQualifier))
-      getElementById(view, "additionalQualifier").attr("value") must be("")
+      view.getElementById("additionalQualifier-label").text() must be(messages(additionalQualifier))
+      view.getElementById("additionalQualifier").attr("value") must be("")
     }
 
     "display empty input with label for Street and Number" in {
 
       val view = createView()
 
-      getElementById(view, "addressLine-label").text() must be(messages(locationAddress))
-      getElementById(view, "addressLine").attr("value") must be("")
+      view.getElementById("addressLine-label").text() must be(messages(locationAddress))
+      view.getElementById("addressLine").attr("value") must be("")
     }
 
     "display empty input with label for Postcode" in {
 
       val view = createView()
 
-      getElementById(view, "postCode-label").text() must be(messages(logPostCode))
-      getElementById(view, "postCode").attr("value") must be("")
+      view.getElementById("postCode-label").text() must be(messages(logPostCode))
+      view.getElementById("postCode").attr("value") must be("")
     }
 
     "display empty input with label for City" in {
 
       val view = createView()
 
-      getElementById(view, "city-label").text() must be(messages(city))
-      getElementById(view, "city").attr("value") must be("")
+      view.getElementById("city-label").text() must be(messages(city))
+      view.getElementById("city").attr("value") must be("")
     }
 
     "display 'Back' button that links to 'Destination Countries' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/destination-countries")
@@ -430,14 +430,14 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
           )
         )
       val view = createView(form)
-      getElementById(view, "country").attr("value") must be("Poland")
-      getElementById(view, "typeOfLocation").attr("value") must be("AB")
-      getElementById(view, "qualifierOfIdentification").attr("value") must be("CD")
-      getElementById(view, "identificationOfLocation").attr("value") must be("TST")
-      getElementById(view, "additionalQualifier").attr("value") must be(ladditionalInformation)
-      getElementById(view, "addressLine").attr("value") must be(lstreetAndNumber)
-      getElementById(view, "postCode").attr("value") must be(lpostCode)
-      getElementById(view, "city").attr("value") must be(lcity)
+      view.getElementById("country").attr("value") must be("Poland")
+      view.getElementById("typeOfLocation").attr("value") must be("AB")
+      view.getElementById("qualifierOfIdentification").attr("value") must be("CD")
+      view.getElementById("identificationOfLocation").attr("value") must be("TST")
+      view.getElementById("additionalQualifier").attr("value") must be(ladditionalInformation)
+      view.getElementById("addressLine").attr("value") must be(lstreetAndNumber)
+      view.getElementById("postCode").attr("value") must be(lpostCode)
+      view.getElementById("city").attr("value") must be(lcity)
     }
   }
 }

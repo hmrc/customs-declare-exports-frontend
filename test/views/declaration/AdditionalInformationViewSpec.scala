@@ -45,33 +45,33 @@ class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationM
 
     "display page title" in {
 
-      getElementById(createView(), "title").text() must be(messages(title))
+      createView().getElementById("title").text() must be(messages(title))
     }
 
     "display section header" in {
 
-      getElementById(createView(), "section-header").text() must be("Your references")
+      createView().getElementById("section-header").text() must be("Your references")
     }
 
     "display empty input with label for Union code" in {
 
       val view = createView()
 
-      getElementById(view, "code-label").text() must be(messages(code))
-      getElementById(view, "code").attr("value") must be("")
+      view.getElementById("code-label").text() must be(messages(code))
+      view.getElementById("code").attr("value") must be("")
     }
 
     "display empty input with label for Description" in {
 
       val view = createView()
 
-      getElementById(view, "description-label").text() must be(messages(description))
-      getElementById(view, "description").attr("value") must be("")
+      view.getElementById("description-label").text() must be(messages(description))
+      view.getElementById("description").attr("value") must be("")
     }
 
     "display 'Back' button that links to 'Commodity measure' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be(s"/customs-declare-exports/declaration/items/$itemId/commodity-measure")
@@ -99,8 +99,8 @@ class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationM
 
       val view = createView(AdditionalInformation.form.fill(AdditionalInformation("12345", "12345")))
 
-      getElementById(view, "code").attr("value") must be("12345")
-      getElementById(view, "description").text() must be("12345")
+      view.getElementById("code").attr("value") must be("12345")
+      view.getElementById("description").text() must be("12345")
 
     }
 
@@ -108,16 +108,16 @@ class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationM
 
       val view = createView(AdditionalInformation.form.fill(AdditionalInformation("12345", "")))
 
-      getElementById(view, "code").attr("value") must be("12345")
-      getElementById(view, "description").text() must be("")
+      view.getElementById("code").attr("value") must be("12345")
+      view.getElementById("description").text() must be("")
     }
 
     "display data in description input" in {
 
       val view = createView(AdditionalInformation.form.fill(AdditionalInformation("", "12345")))
 
-      getElementById(view, "code").attr("value") must be("")
-      getElementById(view, "description").text() must be("12345")
+      view.getElementById("code").attr("value") must be("")
+      view.getElementById("description").text() must be("12345")
     }
 
     "display one row with data in table" in {

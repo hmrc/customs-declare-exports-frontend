@@ -95,16 +95,6 @@ trait ViewValidator extends MustMatchers with ViewMatchers {
     elements.toList
   }
 
-  @deprecated("Please use 'page.getElementById must ...'", since = "2019-08-07")
-  def getElementById(page: String, id: String): Element = {
-
-    val element = asDocument(page).getElementById(id)
-
-    if (element == null) throw new Exception(s"Can't find element $id on page by id")
-
-    element
-  }
-
   @deprecated("Please use 'page must haveGlobalErrorSummary'", since = "2019-08-07")
   def checkErrorsSummary(html: Html)(implicit messages: Messages): Unit = {
 
@@ -142,7 +132,7 @@ trait ViewValidator extends MustMatchers with ViewMatchers {
     implicit messages: Messages
   ): Unit = {
 
-    val errorLink = getElementById(page, elementId)
+    val errorLink = page.getElementById(elementId)
 
     errorLink.text() must be(messages(error))
     errorLink.attr("href") must be(href)
@@ -151,7 +141,7 @@ trait ViewValidator extends MustMatchers with ViewMatchers {
   @deprecated("Please use 'page must haveFieldErrorLink(...)'", since = "2019-08-07")
   def checkErrorLink(html: Html, elementId: String, error: String, href: String)(implicit messages: Messages): Unit = {
 
-    val errorLink = getElementById(html, elementId)
+    val errorLink = html.getElementById(elementId)
 
     errorLink.text() must be(messages(error))
     errorLink.attr("href") must be(href)

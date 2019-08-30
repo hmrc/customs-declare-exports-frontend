@@ -38,7 +38,7 @@ class SealViewSpec extends SealFields with CommonMessages {
     "display page title" in {
       val view = createView()
 
-      getElementById(view, "title").text() must be(messages("standard.seal.title"))
+      view.getElementById("title").text() must be(messages("standard.seal.title"))
     }
 
     "display header" in {
@@ -50,12 +50,12 @@ class SealViewSpec extends SealFields with CommonMessages {
     "display 'Back' button that links to 'add-transport-containers'  or 'transport-details' page" in {
       val view = createView()
 
-      val backLinkContainer = getElementById(createView(container = true), "link-back")
+      val backLinkContainer = createView(container = true).getElementById("link-back")
 
       backLinkContainer.text() must be(messages(backCaption))
       backLinkContainer.attr("href") must be("/customs-declare-exports/declaration/add-transport-containers")
 
-      val backLinkTrader = getElementById(createView(), "link-back")
+      val backLinkTrader = createView().getElementById("link-back")
 
       backLinkTrader.text() must be(messages(backCaption))
       backLinkTrader.attr("href") must be("/customs-declare-exports/declaration/transport-details")

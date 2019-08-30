@@ -37,32 +37,32 @@ class NatureOfTransactionViewSpec extends ViewSpec with NatureOfTransactionMessa
 
     "display page title" in {
 
-      getElementById(createView(), "title").text() must be(messages(title))
+      createView().getElementById("title").text() must be(messages(title))
     }
 
     "display section header" in {
 
-      getElementById(createView(), "section-header").text() must be(messages(header))
+      createView().getElementById("section-header").text() must be(messages(header))
     }
 
     "display radio button with all possible options" in {
 
       val view = createView()
 
-      getElementById(view, "Purchase-label").text() must be(messages(purchaseOption, "", ""))
-      getElementById(view, "Return-label").text() must be(messages(returnOption, "", ""))
-      getElementById(view, "Donation-label").text() must be(messages(donationOption, "", ""))
-      getElementById(view, "Processing-label").text() must be(messages(processingOption, "", ""))
-      getElementById(view, "Processed-label").text() must be(messages(processedOption, "", ""))
-      getElementById(view, "NationalPurposes-label").text() must be(messages(nationalPurposesOption, "", ""))
-      getElementById(view, "Military-label").text() must be(messages(militaryOption, "", ""))
-      getElementById(view, "Construction-label").text() must be(messages(constructionOption, "", ""))
-      getElementById(view, "Other-label").text() must be(messages(otherOption, "", ""))
+      view.getElementById("Purchase-label").text() must be(messages(purchaseOption, "", ""))
+      view.getElementById("Return-label").text() must be(messages(returnOption, "", ""))
+      view.getElementById("Donation-label").text() must be(messages(donationOption, "", ""))
+      view.getElementById("Processing-label").text() must be(messages(processingOption, "", ""))
+      view.getElementById("Processed-label").text() must be(messages(processedOption, "", ""))
+      view.getElementById("NationalPurposes-label").text() must be(messages(nationalPurposesOption, "", ""))
+      view.getElementById("Military-label").text() must be(messages(militaryOption, "", ""))
+      view.getElementById("Construction-label").text() must be(messages(constructionOption, "", ""))
+      view.getElementById("Other-label").text() must be(messages(otherOption, "", ""))
     }
 
     "display 'Back' button that links to 'Total Number Of Items' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/total-numbers-of-items")
@@ -88,7 +88,7 @@ class NatureOfTransactionViewSpec extends ViewSpec with NatureOfTransactionMessa
       checkErrorsSummary(view)
       checkErrorLink(view, "natureType-error", natureOfTransactionEmpty, "#natureType")
 
-      getElementById(view, "error-message-natureType-input").text() must be(messages(natureOfTransactionEmpty))
+      view.getElementById("error-message-natureType-input").text() must be(messages(natureOfTransactionEmpty))
     }
 
     "display error when nature of transaction is incorrect" in {
@@ -98,7 +98,7 @@ class NatureOfTransactionViewSpec extends ViewSpec with NatureOfTransactionMessa
       checkErrorsSummary(view)
       checkErrorLink(view, "natureType-error", natureOfTransactionError, "#natureType")
 
-      getElementById(view, "error-message-natureType-input").text() must be(messages(natureOfTransactionError))
+      view.getElementById("error-message-natureType-input").text() must be(messages(natureOfTransactionError))
     }
   }
 }

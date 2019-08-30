@@ -89,7 +89,7 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
     "display 'Back' button that links to 'Make an export declaration' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be(controllers.routes.StartController.displayStartPage().url)
@@ -198,12 +198,12 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
   }
 
   private def ensureRadioIsChecked(view: Html, elementId: String): Unit = {
-    val option = getElementById(view, elementId)
+    val option = view.getElementById(elementId)
     option.attr("checked") must be("checked")
   }
 
   private def ensureRadioIsUnChecked(view: Html, elementId: String): Unit = {
-    val option = getElementById(view, elementId)
+    val option = view.getElementById(elementId)
     option.attr("checked") must be("")
   }
 }

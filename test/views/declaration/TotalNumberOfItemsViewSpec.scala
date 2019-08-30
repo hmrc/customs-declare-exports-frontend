@@ -42,12 +42,12 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
     "display section header" in {
 
-      getElementById(createView(), "section-header").text() must be("Items")
+      createView().getElementById("section-header").text() must be("Items")
     }
 
     "display header" in {
 
-      getElementById(createView(), "title").text() must be(messages(valueOfItems))
+      createView().getElementById("title").text() must be(messages(valueOfItems))
     }
 
     "display empty input with label for Total Amount Invoiced" in {
