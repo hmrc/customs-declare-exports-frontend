@@ -19,8 +19,7 @@ package connectors
 import java.time.LocalDateTime
 import java.util.UUID
 
-import base.{MockHttpClient, TestHelper}
-import com.codahale.metrics.SharedMetricRegistries
+import base.{Injector, MockHttpClient, TestHelper}
 import config.AppConfig
 import connectors.CustomsDeclareExportsConnector.toXml
 import forms.CancelDeclaration
@@ -30,7 +29,6 @@ import models.declaration.submissions.{Action, Submission}
 import models.requests.CancellationRequested
 import org.scalatest.concurrent.ScalaFutures
 import play.api.http.{ContentTypes, HeaderNames}
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.ws.WSClient
 import play.api.mvc.Codec
 import uk.gov.hmrc.http.HeaderCarrier
@@ -39,13 +37,10 @@ import unit.base.UnitSpec
 
 import scala.concurrent.ExecutionContext.global
 
-class CustomsDeclareExportsConnectorSpec extends UnitSpec with ScalaFutures {
+class CustomsDeclareExportsConnectorSpec extends UnitSpec with ScalaFutures with Injector {
   import CustomsDeclareExportsConnectorSpec._
 
-  SharedMetricRegistries.clear()
-
-  val injector = GuiceApplicationBuilder().injector()
-  val appConfig = injector.instanceOf[AppConfig]
+  val appConfig = instanceOf[AppConfig]
   val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestHelper.createRandomString(255))))
 
   val mockWSClient = mock[WSClient]

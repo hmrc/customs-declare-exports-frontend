@@ -17,23 +17,18 @@
 package services
 
 import base.ExportsTestData.newUser
-import base.{MockConnectors, TestHelper}
-import com.codahale.metrics.SharedMetricRegistries
+import base.{Injector, MockConnectors, TestHelper}
 import config.AppConfig
 import org.scalatest.concurrent.ScalaFutures
-import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.Authorization
 import unit.base.UnitSpec
 
 import scala.concurrent.ExecutionContext.global
 
-class NrsServiceSpec extends UnitSpec with MockConnectors with ScalaFutures {
+class NrsServiceSpec extends UnitSpec with MockConnectors with ScalaFutures with Injector {
 
-  SharedMetricRegistries.clear()
-
-  val injector = GuiceApplicationBuilder().injector()
-  val appConfig = injector.instanceOf[AppConfig]
+  val appConfig = instanceOf[AppConfig]
   val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestHelper.createRandomString(255))))
 
   val nrsService = new NRSService(appConfig, mockNrsConnector)
