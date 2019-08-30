@@ -20,7 +20,6 @@ import com.typesafe.config.{Config, ConfigFactory}
 import config.AppConfig
 import forms.Choice
 import helpers.views.declaration.{ChoiceMessages, CommonMessages}
-import org.jsoup.nodes.Element
 import play.api.Mode.Test
 import play.api.data.Form
 import play.api.{Configuration, Environment}
@@ -30,7 +29,7 @@ import views.declaration.spec.ViewSpec
 import views.html.{choice_page, main_template}
 import views.tags.ViewTest
 
-import scala.collection.immutable
+import scala.collection.JavaConversions._
 
 @ViewTest
 class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
@@ -181,7 +180,7 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
     }
   }
   private def ensureAllLabelTextIsCorrect(view: Html): Unit = {
-    val labels: immutable.Seq[Element] = getElementsByTag(view, "label")
+    val labels = view.getElementsByTag("label").toList
     labels.forall(elems => elems.getElementsContainingText(messages(supplementaryDec)).isEmpty) must be(false)
     labels.forall(elems => elems.getElementsContainingText(messages(standardDec)).isEmpty) must be(false)
     labels.forall(elems => elems.getElementsContainingText(messages(cancelDec)).isEmpty) must be(false)
@@ -190,7 +189,7 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
   }
 
   private def ensureSupplementaryLabelIsCorrect(view: Html): Unit = {
-    val labels: immutable.Seq[Element] = getElementsByTag(view, "label")
+    val labels = view.getElementsByTag("label").toList
     labels.forall(elems => elems.getElementsContainingText(messages(supplementaryDec)).isEmpty) must be(false)
     labels.forall(elems => elems.getElementsContainingText(messages(standardDec)).isEmpty) must be(true)
     labels.forall(elems => elems.getElementsContainingText(messages(cancelDec)).isEmpty) must be(true)

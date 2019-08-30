@@ -66,17 +66,8 @@ trait ViewValidator extends MustMatchers with ViewMatchers {
       .map { option =>
         if (option.hasAttr("selected")) option.`val`()
         else ""
-      }
-      .filter(_.nonEmpty)
-      .headOption
+      }.find(_.nonEmpty)
       .getOrElse("")
-
-  @deprecated("Please use 'page.getElementsByTag must ...'", since = "2019-08-07")
-  def getElementsByTag(html: Html, tag: String): List[Element] = {
-    val elements = asDocument(html).getElementsByTag(tag)
-    if (elements == null) throw new Exception(s"Can't find tag $tag on page")
-    elements.toList
-  }
 
   @deprecated("Please use 'page must haveGlobalErrorSummary'", since = "2019-08-07")
   def checkErrorsSummary(html: Html)(implicit messages: Messages): Unit = {
