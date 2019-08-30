@@ -42,14 +42,14 @@ class DispatchLocationController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.dispatchLocation match {
       case Some(data) => Ok(dispatchLocationPage(DispatchLocation.form().fill(data)))
       case _          => Ok(dispatchLocationPage(DispatchLocation.form()))
     }
   }
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     DispatchLocation
       .form()
       .bindFromRequest()

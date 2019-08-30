@@ -19,7 +19,7 @@ package unit.base
 import base.{MockAuthAction, MockConnectors, MockExportCacheService, MockNavigator}
 import config.AppConfig
 import controllers.util.{Add, SaveAndContinue}
-import models.ExportsDeclaration
+import models.{ExportsDeclaration, Mode}
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, AnyContentAsJson, Request, Result}
@@ -49,7 +49,7 @@ trait ControllerSpec
   protected def viewOf(result: Future[Result]) = Html(contentAsString(result))
 
   protected def getRequest(declaration: ExportsDeclaration): JourneyRequest[AnyContentAsEmpty.type] =
-    JourneyRequest(getAuthenticatedRequest(), declaration)
+    JourneyRequest(getAuthenticatedRequest(), declaration, Mode.Normal)
 
   protected def postRequest(body: JsValue): Request[AnyContentAsJson] =
     FakeRequest("POST", "")

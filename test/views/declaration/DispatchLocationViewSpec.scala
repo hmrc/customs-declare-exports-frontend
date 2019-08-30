@@ -17,6 +17,7 @@
 package views.declaration
 
 import controllers.util.SaveAndReturn
+import forms.Choice
 import forms.declaration.DispatchLocation
 import helpers.views.declaration.{CommonMessages, DispatchLocationMessages}
 import models.Mode
@@ -32,7 +33,7 @@ class DispatchLocationViewSpec extends ViewSpec with DispatchLocationMessages wi
   private val form: Form[DispatchLocation] = DispatchLocation.form()
   private val dispatchLocationPage = app.injector.instanceOf[dispatch_location]
   private def createView(form: Form[DispatchLocation] = form, mode: Mode = Mode.Normal): Html =
-    dispatchLocationPage(mode, form)(fakeRequest, messages)
+    dispatchLocationPage(form)(fakeJourneyRequest(Choice.AllowedChoiceValues.StandardDec, mode), messages)
 
   "Dispatch Location View on empty page" should {
 

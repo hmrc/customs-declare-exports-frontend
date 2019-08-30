@@ -17,6 +17,7 @@
 package views.declaration
 
 import controllers.util.{Add, SaveAndContinue, SaveAndReturn}
+import forms.Choice
 import forms.declaration.AdditionalFiscalReference
 import helpers.views.declaration.{AdditionalFiscalReferencesMessages, CommonMessages}
 import models.Mode
@@ -37,7 +38,7 @@ class AdditionalFiscalReferencesViewSpec extends ViewSpec with AdditionalFiscalR
     form: Form[AdditionalFiscalReference] = form,
     references: Seq[AdditionalFiscalReference] = Seq.empty
   ): Html =
-    additionalFiscalReferencesPage(Mode.Normal, itemId, form, references)(fakeRequest, messages)
+    additionalFiscalReferencesPage(Mode.Normal, itemId, form, references)(fakeJourneyRequest(Choice.AllowedChoiceValues.StandardDec, Mode.Normal), messages)
 
   "Additional Fiscal References View on empty page" should {
 

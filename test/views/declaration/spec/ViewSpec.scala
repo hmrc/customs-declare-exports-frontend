@@ -22,7 +22,7 @@ import base.{ExportsTestData, ViewValidator}
 import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
 import models.requests.{AuthenticatedRequest, JourneyRequest}
-import models.{DeclarationStatus, ExportsDeclaration}
+import models.{DeclarationStatus, ExportsDeclaration, Mode}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{Messages, MessagesApi}
@@ -45,9 +45,9 @@ trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator with
   implicit lazy val messages: Messages = messagesApi.preferred(FakeRequest())
   implicit lazy val flash: Flash = new Flash()
 
-  def fakeJourneyRequest(choice: String): JourneyRequest[AnyContentAsEmpty.type] = {
+  def fakeJourneyRequest(choice: String, mode: Mode = Mode.Normal): JourneyRequest[AnyContentAsEmpty.type] = {
     val cache = ExportsDeclaration(None, DeclarationStatus.COMPLETE, Instant.now(), Instant.now(), choice)
-    JourneyRequest(AuthenticatedRequest(fakeRequest, ExportsTestData.newUser("", "")), cache)
+    JourneyRequest(AuthenticatedRequest(fakeRequest, ExportsTestData.newUser("", "")), cache, mode)
   }
 
   SharedMetricRegistries.clear()

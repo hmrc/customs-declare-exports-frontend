@@ -1,8 +1,8 @@
 # Declaration type
 
-GET         /dispatch-location                   controllers.declaration.DispatchLocationController.displayPage()
+GET         /dispatch-location                   controllers.declaration.DispatchLocationController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /dispatch-location                   controllers.declaration.DispatchLocationController.submitForm()
+POST        /dispatch-location                   controllers.declaration.DispatchLocationController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
 GET         /type                                controllers.declaration.AdditionalDeclarationTypeController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 

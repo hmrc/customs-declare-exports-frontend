@@ -20,7 +20,7 @@ import java.time.Instant
 
 import controllers.util.{Add, Remove, SaveAndContinue}
 import models.requests.{AuthenticatedRequest, JourneyRequest}
-import models.{DeclarationStatus, ExportsDeclaration}
+import models.{DeclarationStatus, ExportsDeclaration, Mode}
 import play.api.mvc.Request
 import play.api.test.FakeRequest
 
@@ -45,7 +45,8 @@ object TestHelper {
     val cache = ExportsDeclaration(None, DeclarationStatus.COMPLETE, Instant.now(), Instant.now(), choice)
     JourneyRequest(
       AuthenticatedRequest(fakeRequest, ExportsTestData.newUser(Random.nextString(10), Random.nextString(5))),
-      cache
+      cache,
+      Mode.Normal
     )
   }
 
@@ -53,7 +54,8 @@ object TestHelper {
     val cache = ExportsDeclaration(None, DeclarationStatus.COMPLETE, Instant.now(), Instant.now(), choice)
     JourneyRequest(
       AuthenticatedRequest(fakeRequest, ExportsTestData.newUser(Random.nextString(10), Random.nextString(5))),
-      cache
+      cache,
+      Mode.Normal
     )
   }
 

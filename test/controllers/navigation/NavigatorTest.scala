@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit
 
 import config.AppConfig
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue, SaveAndReturn, Unknown}
-import models.SignedInUser
+import models.{Mode, SignedInUser}
 import models.requests.{AuthenticatedRequest, ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
 import org.mockito.BDDMockito._
@@ -53,7 +53,7 @@ class NavigatorTest extends WordSpec with Matchers with MockitoSugar with Export
       mock[SignedInUser]
     )
     def request(action: Option[FormAction]): JourneyRequest[AnyContent] =
-      JourneyRequest[AnyContent](authenticatedRequest(action), declaration)
+      JourneyRequest[AnyContent](authenticatedRequest(action), declaration, Mode.Normal)
 
     "Go to Save as Draft" in {
       given(config.draftTimeToLive).willReturn(FiniteDuration(10, TimeUnit.DAYS))

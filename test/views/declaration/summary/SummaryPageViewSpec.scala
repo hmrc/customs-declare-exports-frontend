@@ -44,7 +44,7 @@ class SummaryPageViewSpec
     withItem(anItem())
   )
   val request =
-    JourneyRequest(AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration)
+    JourneyRequest(AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration, Mode.Normal)
   val summaryPage = contentAsString(
     new summary_page(mainTemplate)(Mode.Normal, SupplementaryDeclarationData(declaration))(
       request,

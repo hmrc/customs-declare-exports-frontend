@@ -38,16 +38,17 @@
 @import views.components.fields.LabelledValue
 
 @import services.view.AutoCompleteItem
+@import models.requests.JourneyRequest
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, itemId:String, form: Form[AdditionalFiscalReference], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: Request[_], messages: Messages)
+@(mode: Mode, itemId:String, form: Form[AdditionalFiscalReference], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
     title = messages("declaration.additionalFiscalReferences.title")
 ) {
 
-    @components.back_link(routes.FiscalInformationController.displayPage(mode, itemId), mode)
+    @components.journey_back(routes.FiscalInformationController.displayPage(_, itemId))
 
     @components.error_summary(form.errors)
 
@@ -60,7 +61,7 @@
         elements = additionalReferences.map(_.asString).map(ref => LabelledValue(ref))
     )
 
-    @helper.form(routes.AdditionalFiscalReferencesController.saveReferences(mode, itemId), 'autoComplete -> "off") {
+    @components.declaration_form(routes.AdditionalFiscalReferencesController.saveReferences(_, itemId)) {
         @helper.CSRF.formField
 
         <div id="country-of-dispatch-field">

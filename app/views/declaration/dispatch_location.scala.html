@@ -30,17 +30,14 @@
 
     @request.mode match {
         case Mode.Draft | Mode.Amend => {
-            @components.back_link(controllers.declaration.routes.SummaryController.displayPage(request.mode), request.mode)
+            @components.journey_back(controllers.declaration.routes.SummaryController.displayPage)
         }
         case Mode.Normal => {
-            @components.back_link(controllers.routes.ChoiceController.displayPage(), request.mode)
+            @components.back_link(controllers.routes.ChoiceController.displayPage())
         }
     }
 
-  @defining(controllers.declaration.routes.DispatchLocationController.submitForm()){ call =>
-
-  <form method="@call.method" action="@call.url?mode=@request.mode.name" autocomplete="off">
- @*   @helper.form(?mode=@request.mode.name, 'autoComplete -> "off") { *@
+  @components.declaration_form(controllers.declaration.routes.DispatchLocationController.submitForm){
     @helper.CSRF.formField
 
     @components.error_summary(form.errors)
@@ -68,6 +65,6 @@
 
     @components.submit_button()
     @components.buttons.save_and_return_later_button()
-  </form>
+
   }
 }
