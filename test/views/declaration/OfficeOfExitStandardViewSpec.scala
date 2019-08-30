@@ -114,9 +114,7 @@ class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages wi
         view.getElementById("error-message-officeId-input").text() mustBe messages(officeOfExitLength)
 
         view.getElementById("presentationOfficeId-error").text() mustBe messages(presentationOfficeLength)
-        view.getElementById("error-message-presentationOfficeId-input").text() mustBe messages(
-          presentationOfficeLength
-        )
+        view.getElementById("error-message-presentationOfficeId-input").text() mustBe messages(presentationOfficeLength)
       }
 
       "display errors when office of exit and presentation office contains special characters" in {

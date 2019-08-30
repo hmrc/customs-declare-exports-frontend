@@ -128,9 +128,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
       val view = createView()
 
-      view.getElementById(s"${documentWriteOffKey}_$measurementUnitKey-label").text() must be(
-        messages(measurementUnit)
-      )
+      view.getElementById(s"${documentWriteOffKey}_$measurementUnitKey-label").text() must be(messages(measurementUnit))
       view.getElementById(s"${documentWriteOffKey}_$measurementUnitKey").attr("value") must be("")
     }
 
