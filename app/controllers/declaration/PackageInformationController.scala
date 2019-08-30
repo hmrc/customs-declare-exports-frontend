@@ -100,7 +100,10 @@ class PackageInformationController @Inject()(
               )
           else
             Future
-              .successful(Redirect(controllers.declaration.routes.CommodityMeasureController.displayPage(mode, itemId)))
+              .successful(
+                navigator
+                  .continueTo(controllers.declaration.routes.CommodityMeasureController.displayPage(mode, itemId))
+            )
       )
 
   private def addItem(
