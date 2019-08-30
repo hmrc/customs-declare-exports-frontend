@@ -39,35 +39,35 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
 
     "display page title" in {
 
-      getElementById(createView(), "title").text() must be(messages(title))
+      createView().getElementById("title").text() must be(messages(title))
     }
 
     "display section header" in {
 
-      getElementById(createView(), "section-header").text() must be("Parties")
+      createView().getElementById("section-header").text() must be("Parties")
     }
 
     "display empty input with label for Authorisation Code" in {
 
       val view = createView()
 
-      getElementById(view, "authorisationTypeCode-label").text() must be(messages(authorisationCode))
-      getElementById(view, "authorisationTypeCode-hint").text() must be(messages(authorisationCodeHint))
-      getElementById(view, "authorisationTypeCode").attr("value") must be("")
+      view.getElementById("authorisationTypeCode-label").text() must be(messages(authorisationCode))
+      view.getElementById("authorisationTypeCode-hint").text() must be(messages(authorisationCodeHint))
+      view.getElementById("authorisationTypeCode").attr("value") must be("")
     }
 
     "display empty input with label for EORI" in {
 
       val view = createView()
 
-      getElementById(view, "eori-label").text() must be(messages(declarationHolderEori))
-      getElementById(view, "eori-hint").text() must be(messages(eoriHint))
-      getElementById(view, "eori").attr("value") must be("")
+      view.getElementById("eori-label").text() must be(messages(declarationHolderEori))
+      view.getElementById("eori-hint").text() must be(messages(eoriHint))
+      view.getElementById("eori").attr("value") must be("")
     }
 
     "display 'Back' button that links to 'Additional Information' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/additional-actors")
@@ -154,24 +154,24 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
 
       val view = createView(DeclarationHolder.form().fill(DeclarationHolder(Some("test"), None)))
 
-      getElementById(view, "authorisationTypeCode").attr("value") must be("test")
-      getElementById(view, "eori").attr("value") must be("")
+      view.getElementById("authorisationTypeCode").attr("value") must be("test")
+      view.getElementById("eori").attr("value") must be("")
     }
 
     "display data in EORI input" in {
 
       val view = createView(DeclarationHolder.form().fill(DeclarationHolder(None, Some("test"))))
 
-      getElementById(view, "authorisationTypeCode").attr("value") must be("")
-      getElementById(view, "eori").attr("value") must be("test")
+      view.getElementById("authorisationTypeCode").attr("value") must be("")
+      view.getElementById("eori").attr("value") must be("test")
     }
 
     "display data in both inputs" in {
 
       val view = createView(DeclarationHolder.form().fill(DeclarationHolder(Some("test"), Some("test1"))))
 
-      getElementById(view, "authorisationTypeCode").attr("value") must be("test")
-      getElementById(view, "eori").attr("value") must be("test1")
+      view.getElementById("authorisationTypeCode").attr("value") must be("test")
+      view.getElementById("eori").attr("value") must be("test1")
     }
 
     "display one row with data in table" in {

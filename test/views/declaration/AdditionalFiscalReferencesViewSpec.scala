@@ -43,32 +43,32 @@ class AdditionalFiscalReferencesViewSpec extends ViewSpec with AdditionalFiscalR
 
     "display page title" in {
 
-      getElementById(createView(), "title").text() must be(messages(title))
+      createView().getElementById("title").text() must be(messages(title))
 
     }
 
     "display header" in {
 
-      getElementById(createView(), "section-header").text() must be(messages("declaration.fiscalInformation.header"))
+      createView().getElementById("section-header").text() must be(messages("declaration.fiscalInformation.header"))
 
     }
 
     "display country input" in {
 
-      getElementById(createView(), "country-label").text() must be(messages(fiscalReferenceCountry))
-      getElementById(createView(), "country").attr("value") must be("")
+      createView().getElementById("country-label").text() must be(messages(fiscalReferenceCountry))
+      createView().getElementById("country").attr("value") must be("")
     }
 
     "display VAT number input" in {
 
-      getElementById(createView(), "reference-label").text() must be(messages(reference))
-      getElementById(createView(), "reference").attr("value") must be("")
+      createView().getElementById("reference-label").text() must be(messages(reference))
+      createView().getElementById("reference").attr("value") must be("")
 
     }
 
     "display 'Back' button to Fiscal Information page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be(s"/customs-declare-exports/declaration/items/$itemId/fiscal-information")

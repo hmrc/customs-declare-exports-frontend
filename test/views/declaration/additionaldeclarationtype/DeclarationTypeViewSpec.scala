@@ -61,7 +61,7 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
     "display 'Back' button that links to 'Dispatch Location' page" when {
 
       "used for Standard Declaration journey" in {
-        val backButton = getElementById(createView(formStandard, StandardDec), "link-back")
+        val backButton = createView(formStandard, StandardDec).getElementById("link-back")
 
         backButton.text() must be(messages(backCaption))
         backButton.attr("href") must be("/customs-declare-exports/declaration/dispatch-location")
@@ -70,7 +70,7 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
 
       "used for Supplementary Declaration journey" in {
 
-        val backButton = getElementById(createView(formSupplementary, SupplementaryDec), "link-back")
+        val backButton = createView(formSupplementary, SupplementaryDec).getElementById("link-back")
 
         backButton.text() must be(messages(backCaption))
         backButton.attr("href") must be("/customs-declare-exports/declaration/dispatch-location")

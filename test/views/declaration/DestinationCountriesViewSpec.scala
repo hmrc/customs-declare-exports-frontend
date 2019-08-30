@@ -39,30 +39,30 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
     "display page title" in {
 
-      getElementById(createView(), "title").text() must be(messages(title))
+      createView().getElementById("title").text() must be(messages(title))
     }
 
     "display empty input with label for Dispatch country" in {
 
       val view = createView()
 
-      getElementById(view, "countryOfDispatch-hint").text() must be(messages(countryOfDispatchHint))
-      getElementById(view, "countryOfDispatch-label").ownText() must be(messages(countryOfDispatch))
-      getElementById(view, "countryOfDispatch").attr("value") must be("")
+      view.getElementById("countryOfDispatch-hint").text() must be(messages(countryOfDispatchHint))
+      view.getElementById("countryOfDispatch-label").ownText() must be(messages(countryOfDispatch))
+      view.getElementById("countryOfDispatch").attr("value") must be("")
     }
 
     "display empty input with label for Destination country" in {
 
       val view = createView()
 
-      getElementById(view, "countryOfDestination-hint").text() must be(messages(countryOfDestinationHint))
-      getElementById(view, "countryOfDestination-label").ownText() must be(messages(countryOfDestination))
-      getElementById(view, "countryOfDestination").attr("value") must be("")
+      view.getElementById("countryOfDestination-hint").text() must be(messages(countryOfDestinationHint))
+      view.getElementById("countryOfDestination-label").ownText() must be(messages(countryOfDestination))
+      view.getElementById("countryOfDestination").attr("value") must be("")
     }
 
     "display 'Back' button that links to 'Declaration holder of authorisation' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/holder-of-authorisation")

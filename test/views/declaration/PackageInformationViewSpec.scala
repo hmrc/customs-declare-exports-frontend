@@ -42,7 +42,7 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
 
     "display section header" in {
 
-      getElementById(createView(), "section-header").text() must be("Items")
+      createView().getElementById("section-header").text() must be("Items")
     }
 
     "display header" in {
@@ -54,30 +54,30 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
 
       val view = createView()
 
-      getElementById(view, "typesOfPackages-label").text() must be(messages(typesOfPackages))
-      getElementById(view, "typesOfPackages").attr("value") must be("")
+      view.getElementById("typesOfPackages-label").text() must be(messages(typesOfPackages))
+      view.getElementById("typesOfPackages").attr("value") must be("")
     }
 
     "display empty input with label for Number of Packages" in {
 
       val view = createView()
 
-      getElementById(view, "numberOfPackages-label").text() must be(messages(numberOfPackages))
-      getElementById(view, "numberOfPackages").attr("value") must be("")
+      view.getElementById("numberOfPackages-label").text() must be(messages(numberOfPackages))
+      view.getElementById("numberOfPackages").attr("value") must be("")
     }
 
     "display empty input with label for Shipping Marks" in {
 
       val view = createView()
 
-      getElementById(view, "shippingMarks-label").text() must be(messages(shippingMarks))
-      getElementById(view, "shippingMarks-hint").text() must be(messages(shippingMarksHint))
-      getElementById(view, "shippingMarks").attr("value") must be("")
+      view.getElementById("shippingMarks-label").text() must be(messages(shippingMarks))
+      view.getElementById("shippingMarks-hint").text() must be(messages(shippingMarksHint))
+      view.getElementById("shippingMarks").attr("value") must be("")
     }
 
     "display 'Back' button that links to 'Item Type' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be(s"/customs-declare-exports/declaration/items/$itemId/item-type")
@@ -106,36 +106,36 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
 
       val view = createView(PackageInformation.form().fill(PackageInformation("PA", 0, "")))
 
-      getElementById(view, "typesOfPackages").attr("value") must be("PA")
-      getElementById(view, "numberOfPackages").attr("value") must be("0")
-      getElementById(view, "shippingMarks").attr("value") must be("")
+      view.getElementById("typesOfPackages").attr("value") must be("PA")
+      view.getElementById("numberOfPackages").attr("value") must be("0")
+      view.getElementById("shippingMarks").attr("value") must be("")
     }
 
     "display data in Number of Packages input" in {
 
       val view = createView(PackageInformation.form().fill(PackageInformation("", 100, "")))
 
-      getElementById(view, "typesOfPackages").attr("value") must be("")
-      getElementById(view, "numberOfPackages").attr("value") must be("100")
-      getElementById(view, "shippingMarks").attr("value") must be("")
+      view.getElementById("typesOfPackages").attr("value") must be("")
+      view.getElementById("numberOfPackages").attr("value") must be("100")
+      view.getElementById("shippingMarks").attr("value") must be("")
     }
 
     "display data in Shipping Marks" in {
 
       val view = createView(PackageInformation.form().fill(PackageInformation("", 0, "Test")))
 
-      getElementById(view, "typesOfPackages").attr("value") must be("")
-      getElementById(view, "numberOfPackages").attr("value") must be("0")
-      getElementById(view, "shippingMarks").attr("value") must be("Test")
+      view.getElementById("typesOfPackages").attr("value") must be("")
+      view.getElementById("numberOfPackages").attr("value") must be("0")
+      view.getElementById("shippingMarks").attr("value") must be("Test")
     }
 
     "display data in all inputs" in {
 
       val view = createView(PackageInformation.form().fill(PackageInformation("PA", 100, "Test")))
 
-      getElementById(view, "typesOfPackages").attr("value") must be("PA")
-      getElementById(view, "numberOfPackages").attr("value") must be("100")
-      getElementById(view, "shippingMarks").attr("value") must be("Test")
+      view.getElementById("typesOfPackages").attr("value") must be("PA")
+      view.getElementById("numberOfPackages").attr("value") must be("100")
+      view.getElementById("shippingMarks").attr("value") must be("Test")
     }
 
     "display one row with data in table" in {

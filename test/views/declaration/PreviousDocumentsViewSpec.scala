@@ -41,7 +41,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
 
     "display section header" in {
 
-      getElementById(createView(), "section-header").text() must be("Your references")
+      createView().getElementById("section-header").text() must be("Your references")
     }
 
     "display header with hint" in {
@@ -56,49 +56,49 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
 
       val view = createView(Document.form.fill(Document("", "", "", Some(""))))
 
-      val optionOne = getElementById(view, "Temporary storage")
+      val optionOne = view.getElementById("Temporary storage")
       optionOne.attr("checked") must be("")
 
-      getElementById(view, "Temporary storage-label").text() must be(messages(documentX))
+      view.getElementById("Temporary storage-label").text() must be(messages(documentX))
 
-      val optionTwo = getElementById(view, "Simplified declaration")
+      val optionTwo = view.getElementById("Simplified declaration")
       optionTwo.attr("checked") must be("")
 
-      getElementById(view, "Simplified declaration-label").text() must be(messages(documentY))
+      view.getElementById("Simplified declaration-label").text() must be(messages(documentY))
 
-      val optionThree = getElementById(view, "Related document")
+      val optionThree = view.getElementById("Related document")
       optionThree.attr("checked") must be("")
 
-      getElementById(view, "Related document-label").text() must be(messages(documentZ))
+      view.getElementById("Related document-label").text() must be(messages(documentZ))
     }
 
     "display empty input with label for Previous document code" in {
 
       val view = createView()
 
-      getElementById(view, "documentType-label").text() must be(messages(documentType))
-      getElementById(view, "documentType").attr("value") must be("")
+      view.getElementById("documentType-label").text() must be(messages(documentType))
+      view.getElementById("documentType").attr("value") must be("")
     }
 
     "display empty input with label for Previous DUCR or MUCR" in {
 
       val view = createView()
 
-      getElementById(view, "documentReference-label").text() must be(messages(documentReference))
-      getElementById(view, "documentReference").attr("value") must be("")
+      view.getElementById("documentReference-label").text() must be(messages(documentReference))
+      view.getElementById("documentReference").attr("value") must be("")
     }
 
     "display empty input with label for Previous Goods Identifier" in {
 
       val view = createView()
 
-      getElementById(view, "goodsItemIdentifier-label").text() must be(messages(documentGoodsIdentifier))
-      getElementById(view, "goodsItemIdentifier").attr("value") must be("")
+      view.getElementById("goodsItemIdentifier-label").text() must be(messages(documentGoodsIdentifier))
+      view.getElementById("goodsItemIdentifier").attr("value") must be("")
     }
 
     "display 'Back' button that links to 'Transaction Type' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/nature-of-transaction")
@@ -126,13 +126,13 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
 
       val view = createView(Document.form.fill(Document("X", "", "", Some(""))))
 
-      val optionOne = getElementById(view, "Temporary storage")
+      val optionOne = view.getElementById("Temporary storage")
       optionOne.attr("checked") must be("checked")
 
-      val optionTwo = getElementById(view, "Simplified declaration")
+      val optionTwo = view.getElementById("Simplified declaration")
       optionTwo.attr("checked") must be("")
 
-      val optionThree = getElementById(view, "Related document")
+      val optionThree = view.getElementById("Related document")
       optionThree.attr("checked") must be("")
     }
 
@@ -140,13 +140,13 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
 
       val view = createView(Document.form.fill(Document("Y", "", "", Some(""))))
 
-      val optionOne = getElementById(view, "Temporary storage")
+      val optionOne = view.getElementById("Temporary storage")
       optionOne.attr("checked") must be("")
 
-      val optionTwo = getElementById(view, "Simplified declaration")
+      val optionTwo = view.getElementById("Simplified declaration")
       optionTwo.attr("checked") must be("checked")
 
-      val optionThree = getElementById(view, "Related document")
+      val optionThree = view.getElementById("Related document")
       optionThree.attr("checked") must be("")
     }
 
@@ -154,13 +154,13 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
 
       val view = createView(Document.form.fill(Document("Z", "", "", Some(""))))
 
-      val optionOne = getElementById(view, "Temporary storage")
+      val optionOne = view.getElementById("Temporary storage")
       optionOne.attr("checked") must be("")
 
-      val optionTwo = getElementById(view, "Simplified declaration")
+      val optionTwo = view.getElementById("Simplified declaration")
       optionTwo.attr("checked") must be("")
 
-      val optionThree = getElementById(view, "Related document")
+      val optionThree = view.getElementById("Related document")
       optionThree.attr("checked") must be("checked")
     }
 
@@ -168,45 +168,45 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
 
       val view = createView(Document.form.fill(Document("", "Test", "", Some(""))))
 
-      getElementById(view, "documentType").attr("value") must be("Test")
-      getElementById(view, "documentReference").attr("value") must be("")
-      getElementById(view, "goodsItemIdentifier").attr("value") must be("")
+      view.getElementById("documentType").attr("value") must be("Test")
+      view.getElementById("documentReference").attr("value") must be("")
+      view.getElementById("goodsItemIdentifier").attr("value") must be("")
     }
 
     "display data in Previous DUCR or MUCR input" in {
 
       val view = createView(Document.form.fill(Document("", "", "Test", Some(""))))
 
-      getElementById(view, "documentType").attr("value") must be("")
-      getElementById(view, "documentReference").attr("value") must be("Test")
-      getElementById(view, "goodsItemIdentifier").attr("value") must be("")
+      view.getElementById("documentType").attr("value") must be("")
+      view.getElementById("documentReference").attr("value") must be("Test")
+      view.getElementById("goodsItemIdentifier").attr("value") must be("")
     }
 
     "display data in Previous Goods Identifier input" in {
 
       val view = createView(Document.form.fill(Document("", "", "", Some("Test"))))
 
-      getElementById(view, "documentType").attr("value") must be("")
-      getElementById(view, "documentReference").attr("value") must be("")
-      getElementById(view, "goodsItemIdentifier").attr("value") must be("Test")
+      view.getElementById("documentType").attr("value") must be("")
+      view.getElementById("documentReference").attr("value") must be("")
+      view.getElementById("goodsItemIdentifier").attr("value") must be("Test")
     }
 
     "display all data entered" in {
 
       val view = createView(Document.form.fill(Document("X", "Test", "Test", Some("Test"))))
 
-      val optionOne = getElementById(view, "Temporary storage")
+      val optionOne = view.getElementById("Temporary storage")
       optionOne.attr("checked") must be("checked")
 
-      val optionTwo = getElementById(view, "Simplified declaration")
+      val optionTwo = view.getElementById("Simplified declaration")
       optionTwo.attr("checked") must be("")
 
-      val optionThree = getElementById(view, "Related document")
+      val optionThree = view.getElementById("Related document")
       optionThree.attr("checked") must be("")
 
-      getElementById(view, "documentType").attr("value") must be("Test")
-      getElementById(view, "documentReference").attr("value") must be("Test")
-      getElementById(view, "goodsItemIdentifier").attr("value") must be("Test")
+      view.getElementById("documentType").attr("value") must be("Test")
+      view.getElementById("documentReference").attr("value") must be("Test")
+      view.getElementById("goodsItemIdentifier").attr("value") must be("Test")
     }
 
     "display one row with data in table" in {

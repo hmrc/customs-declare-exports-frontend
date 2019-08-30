@@ -136,7 +136,7 @@ class SubmissionsViewSpec extends ViewSpec with SubmissionsMessages with CommonM
     }
 
     "display 'Back' button that links to 'Choice' page" in {
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be(routes.ChoiceController.displayPage().url)

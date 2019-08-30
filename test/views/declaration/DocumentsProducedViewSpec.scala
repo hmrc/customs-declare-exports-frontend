@@ -48,12 +48,12 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
     "display page title" in {
 
-      getElementById(createView(), "title").text() must be(messages(title))
+      createView().getElementById("title").text() must be(messages(title))
     }
 
     "display section header" in {
 
-      getElementById(createView(), "section-header").text() must be("Your references")
+      createView().getElementById("section-header").text() must be("Your references")
     }
 
     "display header with hint" in {
@@ -68,85 +68,83 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
       val view = createView()
 
-      getElementById(view, s"$documentTypeCodeKey-label").text() must be(messages(documentTypeCode))
-      getElementById(view, s"$documentTypeCodeKey").attr("value") must be("")
+      view.getElementById(s"$documentTypeCodeKey-label").text() must be(messages(documentTypeCode))
+      view.getElementById(s"$documentTypeCodeKey").attr("value") must be("")
     }
 
     "display empty input with label for Document identifier" in {
 
       val view = createView()
 
-      getElementById(view, s"${documentIdentifierAndPartKey}_$documentIdentifierKey-label").text() must be(
+      view.getElementById(s"${documentIdentifierAndPartKey}_$documentIdentifierKey-label").text() must be(
         messages(documentIdentifier)
       )
-      getElementById(view, s"${documentIdentifierAndPartKey}_$documentIdentifierKey").attr("value") must be("")
+      view.getElementById(s"${documentIdentifierAndPartKey}_$documentIdentifierKey").attr("value") must be("")
     }
 
     "display empty input with label for Document part" in {
 
       val view = createView()
 
-      getElementById(view, s"${documentIdentifierAndPartKey}_$documentPartKey-label").text() must be(
+      view.getElementById(s"${documentIdentifierAndPartKey}_$documentPartKey-label").text() must be(
         messages(documentPart)
       )
-      getElementById(view, s"${documentIdentifierAndPartKey}_$documentPartKey").attr("value") must be("")
+      view.getElementById(s"${documentIdentifierAndPartKey}_$documentPartKey").attr("value") must be("")
     }
 
     "display empty input with label for Document status" in {
 
       val view = createView()
 
-      getElementById(view, s"$documentStatusKey-label").text() must be(messages(documentStatus))
-      getElementById(view, s"$documentStatusKey").attr("value") must be("")
+      view.getElementById(s"$documentStatusKey-label").text() must be(messages(documentStatus))
+      view.getElementById(s"$documentStatusKey").attr("value") must be("")
     }
 
     "display empty input with label for Document status reason" in {
 
       val view = createView()
 
-      getElementById(view, s"$documentStatusReasonKey-label").text() must be(messages(documentStatusReason))
-      getElementById(view, s"$documentStatusReasonKey").attr("value") must be("")
+      view.getElementById(s"$documentStatusReasonKey-label").text() must be(messages(documentStatusReason))
+      view.getElementById(s"$documentStatusReasonKey").attr("value") must be("")
     }
 
     "display empty input with label for Issuing Authority Name" in {
 
       val view = createView()
 
-      getElementById(view, s"$issuingAuthorityNameKey-label").text() must be(messages(issuingAuthorityName))
-      getElementById(view, issuingAuthorityNameKey).attr("value") must be("")
+      view.getElementById(s"$issuingAuthorityNameKey-label").text() must be(messages(issuingAuthorityName))
+      view.getElementById(issuingAuthorityNameKey).attr("value") must be("")
     }
 
     "display empty input with label for Date of Validity" in {
 
       val view = createView()
 
-      getElementById(view, s"$dateOfValidityKey-label").text() must be(messages(dateOfValidity))
-      getElementById(view, dateOfValidityKey).attr("value") must be("")
+      view.getElementById(s"$dateOfValidityKey-label").text() must be(messages(dateOfValidity))
+      view.getElementById(dateOfValidityKey).attr("value") must be("")
     }
 
     "display empty input with label for Measurement Unit" in {
 
       val view = createView()
 
-      getElementById(view, s"${documentWriteOffKey}_$measurementUnitKey-label").text() must be(
-        messages(measurementUnit)
-      )
-      getElementById(view, s"${documentWriteOffKey}_$measurementUnitKey").attr("value") must be("")
+      view.getElementById(s"${documentWriteOffKey}_$measurementUnitKey-label").text() must be(messages(measurementUnit))
+      view.getElementById(s"${documentWriteOffKey}_$measurementUnitKey").attr("value") must be("")
     }
 
     "display empty input with label for Document quantity" in {
 
       val view = createView()
 
-      getElementById(view, s"${documentWriteOffKey}_$documentQuantityKey-label").text() must be(
+      view.getElementById(s"${documentWriteOffKey}_$documentQuantityKey-label").text() must be(
         messages(documentQuantity)
       )
-      getElementById(view, s"${documentWriteOffKey}_$documentQuantityKey").attr("value") must be("")
+      view.getElementById(s"${documentWriteOffKey}_$documentQuantityKey").attr("value") must be("")
     }
 
     "display 'Back' button that links to 'Additional Information' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be(s"/customs-declare-exports/declaration/items/$itemId/additional-information")
@@ -472,29 +470,29 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       val form = DocumentsProduced.form.fill(data)
       val view = createView(form)
 
-      getElementById(view, documentTypeCodeKey).attr("value") must equal(data.documentTypeCode.value)
-      getElementById(view, s"${documentIdentifierAndPartKey}_$documentIdentifierKey").attr("value") must equal(
+      view.getElementById(documentTypeCodeKey).attr("value") must equal(data.documentTypeCode.value)
+      view.getElementById(s"${documentIdentifierAndPartKey}_$documentIdentifierKey").attr("value") must equal(
         data.documentIdentifierAndPart.value.documentIdentifier.value
       )
-      getElementById(view, s"${documentIdentifierAndPartKey}_$documentPartKey").attr("value") must equal(
+      view.getElementById(s"${documentIdentifierAndPartKey}_$documentPartKey").attr("value") must equal(
         data.documentIdentifierAndPart.value.documentPart.value
       )
-      getElementById(view, documentStatusKey).attr("value") must equal(data.documentStatus.value)
-      getElementById(view, documentStatusReasonKey).attr("value") must equal(data.documentStatusReason.value)
-      getElementById(view, issuingAuthorityNameKey).attr("value") must equal(data.issuingAuthorityName.value)
-      getElementById(view, s"${dateOfValidityKey}_$dayKey").attr("value") must equal(
+      view.getElementById(documentStatusKey).attr("value") must equal(data.documentStatus.value)
+      view.getElementById(documentStatusReasonKey).attr("value") must equal(data.documentStatusReason.value)
+      view.getElementById(issuingAuthorityNameKey).attr("value") must equal(data.issuingAuthorityName.value)
+      view.getElementById(s"${dateOfValidityKey}_$dayKey").attr("value") must equal(
         data.dateOfValidity.value.day.value.toString
       )
-      getElementById(view, s"${dateOfValidityKey}_$monthKey").attr("value") must equal(
+      view.getElementById(s"${dateOfValidityKey}_$monthKey").attr("value") must equal(
         data.dateOfValidity.value.month.value.toString
       )
-      getElementById(view, s"${dateOfValidityKey}_$yearKey").attr("value") must equal(
+      view.getElementById(s"${dateOfValidityKey}_$yearKey").attr("value") must equal(
         data.dateOfValidity.value.year.value.toString
       )
-      getElementById(view, s"${documentWriteOffKey}_$measurementUnitKey").attr("value") must equal(
+      view.getElementById(s"${documentWriteOffKey}_$measurementUnitKey").attr("value") must equal(
         data.documentWriteOff.get.measurementUnit.value
       )
-      getElementById(view, s"${documentWriteOffKey}_$documentQuantityKey").attr("value") must equal(
+      view.getElementById(s"${documentWriteOffKey}_$documentQuantityKey").attr("value") must equal(
         data.documentWriteOff.get.documentQuantity.value.toString
       )
     }

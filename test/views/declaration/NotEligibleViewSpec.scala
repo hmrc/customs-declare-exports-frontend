@@ -64,7 +64,7 @@ class NotEligibleViewSpec extends ViewSpec with NotEligibleMessages with CommonM
 
     "display 'Back' button that links to 'Make declaration' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/start")

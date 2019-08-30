@@ -37,32 +37,32 @@ class FiscalInformationViewSpec extends ViewSpec with FiscalInformationMessages 
   "Fiscal Information View on empty page" should {
 
     "display page title" in {
-      getElementById(createView(), "title").text() must be(messages(title))
+      createView().getElementById("title").text() must be(messages(title))
     }
 
     "display section header" in {
-      getElementById(createView(), "section-header").text() must be(messages(header))
+      createView().getElementById("section-header").text() must be(messages(header))
     }
 
     "display two radio buttons with description (not selected)" in {
       val view = createView(FiscalInformation.form().fill(FiscalInformation("")))
 
-      val optionOne = getElementById(view, "Yes")
+      val optionOne = view.getElementById("Yes")
       optionOne.attr("checked") must be("")
 
-      val optionOneLabel = getElementById(view, "Yes-label")
+      val optionOneLabel = view.getElementById("Yes-label")
       optionOneLabel.text() must be(messages(yes))
 
-      val optionTwo = getElementById(view, "No")
+      val optionTwo = view.getElementById("No")
       optionTwo.attr("checked") must be("")
 
-      val optionTwoLabel = getElementById(view, "No-label")
+      val optionTwoLabel = view.getElementById("No-label")
       optionTwoLabel.text() must be(messages(no))
     }
 
     "display 'Back' button that links to 'Warehouse' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be(s"/customs-declare-exports/declaration/items/$itemId/procedure-codes")
@@ -111,10 +111,10 @@ class FiscalInformationViewSpec extends ViewSpec with FiscalInformationMessages 
 
       val view = createView(FiscalInformation.form().fill(FiscalInformation("Yes")))
 
-      val optionOne = getElementById(view, "Yes")
+      val optionOne = view.getElementById("Yes")
       optionOne.attr("checked") must be("checked")
 
-      val optionTwo = getElementById(view, "No")
+      val optionTwo = view.getElementById("No")
       optionTwo.attr("checked") must be("")
     }
 
@@ -122,10 +122,10 @@ class FiscalInformationViewSpec extends ViewSpec with FiscalInformationMessages 
 
       val view = createView(FiscalInformation.form().fill(FiscalInformation("No")))
 
-      val optionOne = getElementById(view, "Yes")
+      val optionOne = view.getElementById("Yes")
       optionOne.attr("checked") must be("")
 
-      val optionTwo = getElementById(view, "No")
+      val optionTwo = view.getElementById("No")
       optionTwo.attr("checked") must be("checked")
     }
   }
