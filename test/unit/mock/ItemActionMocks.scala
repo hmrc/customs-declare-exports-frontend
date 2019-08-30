@@ -19,7 +19,7 @@ package unit.mock
 import base.MockAuthAction
 import controllers.actions.ItemActionBuilder
 import org.scalatest.{BeforeAndAfterEach, Suite}
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 
 import scala.concurrent.ExecutionContext
 

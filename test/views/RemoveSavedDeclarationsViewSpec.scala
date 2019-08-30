@@ -27,12 +27,12 @@ import models.{DeclarationStatus, ExportsDeclaration}
 import org.jsoup.nodes.{Document, Element}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
 import views.html.remove_declaration
 import views.tags.ViewTest
+import views.declaration.spec.AppViewSpec
 
 @ViewTest
-class RemoveSavedDeclarationsViewSpec extends ViewSpec with CommonMessages {
+class RemoveSavedDeclarationsViewSpec extends AppViewSpec with CommonMessages {
 
   val title: String = "saved.declarations.remove.title"
   val ducr: String = "saved.declarations.ducr"
@@ -81,9 +81,9 @@ class RemoveSavedDeclarationsViewSpec extends ViewSpec with CommonMessages {
 
   private def numberOfTableRows(view: Html) = view.getElementsByClass("table-row").size() - 1
 
-  private def tableCell(view: Document)(row: Int, column: Int): Element =
+  private def tableCell(view: Html)(row: Int, column: Int): Element =
     view
-      .select(".table-row")
+      .getElementsByClass("table-row")
       .get(row)
       .getElementsByClass("table-cell")
       .get(column)
