@@ -16,10 +16,9 @@
 
 package models.declaration
 
-import forms.declaration.TransportInformationContainer
 import play.api.libs.json.Json
 
-case class TransportInformationContainerData(containers: Seq[TransportInformationContainer])
+case class TransportInformationContainerData(containers: Seq[Container])
 
 object TransportInformationContainerData {
   implicit val format = Json.format[TransportInformationContainerData]

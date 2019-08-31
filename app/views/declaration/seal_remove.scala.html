@@ -1,0 +1,72 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.declaration.routes._
+@import forms.declaration.Choice
+@import forms.declaration.Choice.ChoiceAnswers._
+@import models.declaration.Container
+@import views.components.fields.LabelledValue
+@import views.components.inputs.RadioOption
+@import forms.declaration.Seal
+
+@this(main_template: views.html.main_template)
+
+@(mode: Mode, form: Form[Choice], containerId: String, sealId: String)(implicit request: Request[_], messages: Messages)
+
+
+@main_template(
+    title = messages("standard.seal.remove.title", containerId)
+) {
+
+    @components.back_link(controllers.declaration.routes.TransportContainerController.displayContainersSummary(mode), mode)
+
+    @components.error_summary(form.errors)
+
+    @components.page_title(Some(messages("standard.seal.remove.title", containerId)), None)
+
+
+    @helper.form(SealController.submitSealRemove(mode, containerId, sealId), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
+        <div class="field-group mb-2">
+            <table id="seal-table">
+                <thead>
+                    <tr>
+                        <th>@messages("standard.seal.remove.heading")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td >@sealId</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        @components.fields.field_radio(
+            field = form("choice"),
+            legend = "",
+            inputs = Seq(
+                RadioOption("Yes", yes, messages("site.yes")),
+                RadioOption("No", no, messages("site.no"))
+            )
+        )
+
+        @components.submit_button()
+        @components.buttons.save_and_return_later_button()
+    }
+}
+

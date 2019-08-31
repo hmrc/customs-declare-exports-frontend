@@ -23,8 +23,8 @@ import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.declaration.{Locations, Parties, TransportInformationContainerData}
 import models.{DeclarationStatus, ExportsDeclaration}
-import org.scalatest.mockito.MockitoSugar
 import org.mockito.Mockito.when
+import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import services.cache.{ExportItem, ExportsDeclarationBuilder}
 
@@ -35,7 +35,6 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
   private val choice = "choice"
   private val createdDate = Instant.MIN
   private val updatedDate = Instant.MAX
-  private val sessionId = "session-id"
   private val dispatchLocation = mock[DispatchLocation]
   private val additionalDeclarationType = mock[AdditionalDeclarationType]
 
@@ -51,7 +50,6 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
   private val totalNumberOfItems = mock[TotalNumberOfItems]
   private val previousDocuments = mock[PreviousDocumentsData]
   private val natureOfTransaction = mock[NatureOfTransaction]
-  private val seal = mock[Seal]
 
   private val request = ExportsDeclarationExchange(
     id = Some(id),
@@ -70,8 +68,7 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
     items = Set(item),
     totalNumberOfItems = Some(totalNumberOfItems),
     previousDocuments = Some(previousDocuments),
-    natureOfTransaction = Some(natureOfTransaction),
-    seals = Seq(seal)
+    natureOfTransaction = Some(natureOfTransaction)
   )
 
   private val declaration = ExportsDeclaration(
@@ -91,8 +88,7 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
     items = Set(item),
     totalNumberOfItems = Some(totalNumberOfItems),
     previousDocuments = Some(previousDocuments),
-    natureOfTransaction = Some(natureOfTransaction),
-    seals = Seq(seal)
+    natureOfTransaction = Some(natureOfTransaction)
   )
 
   "Request" should {

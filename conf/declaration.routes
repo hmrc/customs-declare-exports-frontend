@@ -85,12 +85,6 @@ GET         /office-of-exit                      controllers.declaration.OfficeO
 
 POST        /office-of-exit                      controllers.declaration.OfficeOfExitController.saveOffice(mode: models.Mode ?= models.Mode.Normal)
 
-# Transport Information Containers
-
-GET         /add-transport-containers            controllers.declaration.TransportContainerController.displayPage(mode: models.Mode ?= models.Mode.Normal)
-
-POST        /add-transport-containers            controllers.declaration.TransportContainerController.submitForm(mode: models.Mode ?= models.Mode.Normal)
-
 # Total number of items
 
 GET         /total-numbers-of-items              controllers.declaration.TotalNumberOfItemsController.displayForm(mode: models.Mode ?= models.Mode.Normal)
@@ -185,11 +179,31 @@ GET         /transport-details                   controllers.declaration.Transpo
 
 POST        /transport-details                   controllers.declaration.TransportDetailsController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
-# Seal
+# Transport Containers & Seals
 
-GET         /add-seal                            controllers.declaration.SealController.displayForm(mode: models.Mode ?= models.Mode.Normal)
+GET         /containers                          controllers.declaration.TransportContainerController.displayContainersSummary(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /add-seal                            controllers.declaration.SealController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /containers                          controllers.declaration.TransportContainerController.submitSummaryAction(mode: models.Mode ?= models.Mode.Normal)
+
+GET         /containers/add                      controllers.declaration.TransportContainerController.displayAddContainer(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /containers/add                      controllers.declaration.TransportContainerController.submitAddContainer(mode: models.Mode ?= models.Mode.Normal)
+
+GET         /containers/:containerId/remove      controllers.declaration.TransportContainerController.displayContainerRemove(mode: models.Mode ?= models.Mode.Normal, containerId)
+
+POST        /containers/:containerId/remove      controllers.declaration.TransportContainerController.submitContainerRemove(mode: models.Mode ?= models.Mode.Normal, containerId)
+
+GET         /containers/:containerId/seals       controllers.declaration.SealController.displaySealSummary(mode: models.Mode ?= models.Mode.Normal, containerId)
+
+POST        /containers/:containerId/seals       controllers.declaration.SealController.submitSummaryAction(mode: models.Mode ?= models.Mode.Normal, containerId)
+
+GET         /containers/:containerId/add-seal    controllers.declaration.SealController.displayAddSeal(mode: models.Mode ?= models.Mode.Normal, containerId)
+
+POST        /containers/:containerId/add-seal    controllers.declaration.SealController.submitAddSeal(mode: models.Mode ?= models.Mode.Normal, containerId)
+
+GET         /containers/:containerId/remove-seal/:sealId    controllers.declaration.SealController.displaySealRemove(mode: models.Mode ?= models.Mode.Normal, containerId, sealId)
+
+POST        /containers/:containerId/remove-seal/:sealId    controllers.declaration.SealController.submitSealRemove(mode: models.Mode ?= models.Mode.Normal, containerId, sealId)
 
 # Summary
 

@@ -22,7 +22,7 @@ import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
-import views.html.declaration.add_transport_containers
+import views.html.declaration.transport_container_add
 import views.tags.ViewTest
 
 @ViewTest
@@ -30,9 +30,9 @@ class TransportInformationContainersViewSpec
     extends ViewSpec with TransportInformationContainerMessages with CommonMessages {
 
   private val form: Form[TransportInformationContainer] = TransportInformationContainer.form()
-  private val transportContainersPage = app.injector.instanceOf[add_transport_containers]
+  private val transportContainersPage = app.injector.instanceOf[transport_container_add]
   private def createView(form: Form[TransportInformationContainer] = form): Html =
-    transportContainersPage(Mode.Normal, form, Seq())(fakeRequest, messages)
+    transportContainersPage(Mode.Normal, form)(fakeRequest, messages)
 
   "Transport Information Containers View on empty page" should {
 
@@ -94,7 +94,7 @@ class TransportInformationContainersViewSpec
     "display one row with data in table" in {
 
       val view =
-        transportContainersPage(Mode.Normal, form, Seq(TransportInformationContainer("Test")))(fakeRequest, messages)
+        transportContainersPage(Mode.Normal, form)(fakeRequest, messages)
 
       // table header
       view.getElementById("removable_elements-heading") must containText(messages(ticTitle))

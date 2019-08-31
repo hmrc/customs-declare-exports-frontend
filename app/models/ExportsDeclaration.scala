@@ -42,8 +42,7 @@ case class ExportsDeclaration(
   items: Set[ExportItem] = Set.empty,
   totalNumberOfItems: Option[TotalNumberOfItems] = None,
   previousDocuments: Option[PreviousDocumentsData] = None,
-  natureOfTransaction: Option[NatureOfTransaction] = None,
-  seals: Seq[Seal] = Seq.empty
+  natureOfTransaction: Option[NatureOfTransaction] = None
 ) {
   val lrn: Option[String] = this.consignmentReferences.map(_.lrn)
   val ducr: Option[String] = this.consignmentReferences.map(_.ducr.ducr)

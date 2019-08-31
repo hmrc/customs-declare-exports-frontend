@@ -17,9 +17,9 @@
 package views.declaration.summary
 
 import base.ExportsTestData.newUser
-import forms.declaration.{GoodsLocation, TransportInformationContainer}
+import forms.declaration.GoodsLocation
 import models.Mode
-import models.declaration.{Items, SupplementaryDeclarationData}
+import models.declaration.{Container, SupplementaryDeclarationData}
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.test.FakeRequest
@@ -38,7 +38,7 @@ class SummaryPageViewSpec
     withGoodsLocation(GoodsLocation("PL", "type", "id", Some("a"), Some("b"), Some("c"), Some("d"), Some("e"))),
     withWarehouseIdentification(Some("a"), Some("b"), Some("c"), Some("d")),
     withOfficeOfExit("id", Some("office"), Some("code")),
-    withContainerData(TransportInformationContainer("id")),
+    withContainerData(Container("id", Seq.empty)),
     withTotalNumberOfItems(Some("123"), Some("123")),
     withNatureOfTransaction("nature"),
     withItem(anItem())

@@ -22,16 +22,16 @@ import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
-import views.html.declaration.seal
+import views.html.declaration.seal_add
 import views.tags.ViewTest
 import views.html.components.fields.field_text
 
 @ViewTest
 class SealViewSpec extends SealFields with CommonMessages {
 
-  private val sealPage = app.injector.instanceOf[seal]
+  private val sealPage = app.injector.instanceOf[seal_add]
   def createView(form: Form[Seal] = form, container: Boolean = false): Html =
-    sealPage(Mode.Normal, form, Seq.empty, container)(fakeRequest, messages)
+    sealPage(Mode.Normal, form, "")(fakeRequest, messages)
 
   "Seal View" should {
 
