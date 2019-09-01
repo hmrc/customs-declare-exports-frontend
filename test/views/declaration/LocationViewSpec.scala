@@ -22,12 +22,12 @@ import helpers.views.declaration.{CommonMessages, LocationOfGoodsMessages}
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.goods_location
 import views.tags.ViewTest
 
 @ViewTest
-class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with CommonMessages {
+class LocationViewSpec extends AppViewSpec with LocationOfGoodsMessages with CommonMessages {
 
   private val form: Form[GoodsLocation] = GoodsLocation.form()
   private val goodsLocationPage = app.injector.instanceOf[goods_location]
@@ -38,86 +38,86 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(locationOfGoods))
+      createView().select("title").text() must be(messages(locationOfGoods))
     }
 
     "display section header" in {
 
-      getElementById(createView(), "section-header").text() must be("Locations")
+      createView().getElementById("section-header").text() must be("Locations")
     }
 
     "display header" in {
 
-      getElementById(createView(), "title").text() must be(messages(title))
+      createView().getElementById("title").text() must be(messages(title))
     }
 
     "display empty input with label for Country" in {
 
       val view = createView()
 
-      getElementById(view, "country-label").text() must be(messages(country))
-      getElementById(view, "country").attr("value") must be("")
+      view.getElementById("country-label").text() must be(messages(country))
+      view.getElementById("country").attr("value") must be("")
     }
 
     "display empty input with label for Type of Location" in {
 
       val view = createView()
 
-      getElementById(view, "typeOfLocation-label").text() must be(messages(typeOfLocation))
-      getElementById(view, "typeOfLocation").attr("value") must be("")
+      view.getElementById("typeOfLocation-label").text() must be(messages(typeOfLocation))
+      view.getElementById("typeOfLocation").attr("value") must be("")
     }
 
     "display empty input with label for Qualifier of Identification" in {
 
       val view = createView()
 
-      getElementById(view, "qualifierOfIdentification-label").text() must be(messages(qualifierOfIdent))
-      getElementById(view, "qualifierOfIdentification").attr("value") must be("")
+      view.getElementById("qualifierOfIdentification-label").text() must be(messages(qualifierOfIdent))
+      view.getElementById("qualifierOfIdentification").attr("value") must be("")
     }
 
     "display empty input with label for Identification of Location" in {
 
       val view = createView()
 
-      getElementById(view, "identificationOfLocation-label").text() must be(messages(identOfLocation))
-      getElementById(view, "identificationOfLocation").attr("value") must be("")
+      view.getElementById("identificationOfLocation-label").text() must be(messages(identOfLocation))
+      view.getElementById("identificationOfLocation").attr("value") must be("")
     }
 
     "display empty input with label for Additional Identifier" in {
 
       val view = createView()
 
-      getElementById(view, "additionalQualifier-label").text() must be(messages(additionalQualifier))
-      getElementById(view, "additionalQualifier").attr("value") must be("")
+      view.getElementById("additionalQualifier-label").text() must be(messages(additionalQualifier))
+      view.getElementById("additionalQualifier").attr("value") must be("")
     }
 
     "display empty input with label for Street and Number" in {
 
       val view = createView()
 
-      getElementById(view, "addressLine-label").text() must be(messages(locationAddress))
-      getElementById(view, "addressLine").attr("value") must be("")
+      view.getElementById("addressLine-label").text() must be(messages(locationAddress))
+      view.getElementById("addressLine").attr("value") must be("")
     }
 
     "display empty input with label for Postcode" in {
 
       val view = createView()
 
-      getElementById(view, "postCode-label").text() must be(messages(logPostCode))
-      getElementById(view, "postCode").attr("value") must be("")
+      view.getElementById("postCode-label").text() must be(messages(logPostCode))
+      view.getElementById("postCode").attr("value") must be("")
     }
 
     "display empty input with label for City" in {
 
       val view = createView()
 
-      getElementById(view, "city-label").text() must be(messages(city))
-      getElementById(view, "city").attr("value") must be("")
+      view.getElementById("city-label").text() must be(messages(city))
+      view.getElementById("city").attr("value") must be("")
     }
 
     "display 'Back' button that links to 'Destination Countries' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/destination-countries")
@@ -147,7 +147,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorsSummary(view)
       checkErrorLink(view, 1, countryEmpty, "#country")
 
-      getElementByCss(view, "span.error-message").text() must be(messages(countryEmpty))
+      view.select("span.error-message").text() must be(messages(countryEmpty))
     }
 
     "display error for incorrect Country" in {
@@ -159,7 +159,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorsSummary(view)
       checkErrorLink(view, 1, countryError, "#country")
 
-      getElementByCss(view, "span.error-message").text() must be(messages(countryError))
+      view.select("span.error-message").text() must be(messages(countryError))
     }
 
     "display error for empty Type of Location" in {
@@ -172,7 +172,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorsSummary(view)
       checkErrorLink(view, 1, typeOfLocationEmpty, "#typeOfLocation")
 
-      getElementByCss(view, "#error-message-typeOfLocation-input").text() must be(messages(typeOfLocationEmpty))
+      view.select("#error-message-typeOfLocation-input").text() must be(messages(typeOfLocationEmpty))
     }
 
     "display error for incorrect Type of Location" in {
@@ -185,7 +185,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorsSummary(view)
       checkErrorLink(view, 1, typeOfLocationError, "#typeOfLocation")
 
-      getElementByCss(view, "#error-message-typeOfLocation-input").text() must be(messages(typeOfLocationError))
+      view.select("#error-message-typeOfLocation-input").text() must be(messages(typeOfLocationError))
     }
 
     "display error for empty Qualifier of Identification" in {
@@ -198,9 +198,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorsSummary(view)
       checkErrorLink(view, 1, qualifierOfIdentEmpty, "#qualifierOfIdentification")
 
-      getElementByCss(view, "#error-message-qualifierOfIdentification-input").text() must be(
-        messages(qualifierOfIdentEmpty)
-      )
+      view.select("#error-message-qualifierOfIdentification-input").text() must be(messages(qualifierOfIdentEmpty))
     }
 
     "display error for incorrect Qualifier of Identification" in {
@@ -213,9 +211,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorsSummary(view)
       checkErrorLink(view, 1, qualifierOfIdentError, "#qualifierOfIdentification")
 
-      getElementByCss(view, "#error-message-qualifierOfIdentification-input").text() must be(
-        messages(qualifierOfIdentError)
-      )
+      view.select("#error-message-qualifierOfIdentification-input").text() must be(messages(qualifierOfIdentError))
     }
 
     "display error for incorrect Identification of Location" in {
@@ -227,9 +223,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorsSummary(view)
       checkErrorLink(view, 1, identOfLocationError, "#identificationOfLocation")
 
-      getElementByCss(view, "#error-message-identificationOfLocation-input").text() must be(
-        messages(identOfLocationError)
-      )
+      view.select("#error-message-identificationOfLocation-input").text() must be(messages(identOfLocationError))
     }
 
     "display error for incorrect Additional Identifier" in {
@@ -252,9 +246,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorsSummary(view)
       checkErrorLink(view, 1, additionalQualifierError, "#additionalQualifier")
 
-      getElementByCss(view, "#error-message-additionalQualifier-input").text() must be(
-        messages(additionalQualifierError)
-      )
+      view.select("#error-message-additionalQualifier-input").text() must be(messages(additionalQualifierError))
     }
 
     "display error for incorrect Street and Number" in {
@@ -277,7 +269,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorsSummary(view)
       checkErrorLink(view, 1, locationAddressError, "#addressLine")
 
-      getElementByCss(view, "#error-message-addressLine-input").text() must be(messages(locationAddressError))
+      view.select("#error-message-addressLine-input").text() must be(messages(locationAddressError))
     }
 
     "display error for incorrect Postcode" in {
@@ -300,7 +292,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorsSummary(view)
       checkErrorLink(view, 1, logPostCodeError, "#postCode")
 
-      getElementByCss(view, "#error-message-postCode-input").text() must be(messages(logPostCodeError))
+      view.select("#error-message-postCode-input").text() must be(messages(logPostCodeError))
     }
 
     "display error for incorrect City" in {
@@ -323,7 +315,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorsSummary(view)
       checkErrorLink(view, 1, cityError, "#city")
 
-      getElementByCss(view, "#error-message-city-input").text() must be(messages(cityError))
+      view.select("#error-message-city-input").text() must be(messages(cityError))
     }
 
     "display errors for everything incorrect" in {
@@ -353,19 +345,13 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorLink(view, 7, logPostCodeError, "#postCode")
       checkErrorLink(view, 8, cityError, "#city")
 
-      getElementByCss(view, "span.error-message").text() must be(messages(countryError))
-      getElementByCss(view, "#error-message-typeOfLocation-input").text() must be(messages(typeOfLocationError))
-      getElementByCss(view, "#error-message-qualifierOfIdentification-input").text() must be(
-        messages(qualifierOfIdentError)
-      )
-      getElementByCss(view, "#error-message-identificationOfLocation-input").text() must be(
-        messages(identOfLocationError)
-      )
-      getElementByCss(view, "#error-message-additionalQualifier-input").text() must be(
-        messages(additionalQualifierError)
-      )
-      getElementByCss(view, "#error-message-postCode-input").text() must be(messages(logPostCodeError))
-      getElementByCss(view, "#error-message-city-input").text() must be(messages(cityError))
+      view.select("span.error-message").text() must be(messages(countryError))
+      view.select("#error-message-typeOfLocation-input").text() must be(messages(typeOfLocationError))
+      view.select("#error-message-qualifierOfIdentification-input").text() must be(messages(qualifierOfIdentError))
+      view.select("#error-message-identificationOfLocation-input").text() must be(messages(identOfLocationError))
+      view.select("#error-message-additionalQualifier-input").text() must be(messages(additionalQualifierError))
+      view.select("#error-message-postCode-input").text() must be(messages(logPostCodeError))
+      view.select("#error-message-city-input").text() must be(messages(cityError))
     }
 
     "display errors for everything incorrect (except IoL which is empty)" in {
@@ -394,16 +380,12 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorLink(view, 6, logPostCodeError, "#postCode")
       checkErrorLink(view, 7, cityError, "#city")
 
-      getElementByCss(view, "span.error-message").text() must be(messages(countryError))
-      getElementByCss(view, "#error-message-typeOfLocation-input").text() must be(messages(typeOfLocationError))
-      getElementByCss(view, "#error-message-qualifierOfIdentification-input").text() must be(
-        messages(qualifierOfIdentError)
-      )
-      getElementByCss(view, "#error-message-additionalQualifier-input").text() must be(
-        messages(additionalQualifierError)
-      )
-      getElementByCss(view, "#error-message-postCode-input").text() must be(messages(logPostCodeError))
-      getElementByCss(view, "#error-message-city-input").text() must be(messages(cityError))
+      view.select("span.error-message").text() must be(messages(countryError))
+      view.select("#error-message-typeOfLocation-input").text() must be(messages(typeOfLocationError))
+      view.select("#error-message-qualifierOfIdentification-input").text() must be(messages(qualifierOfIdentError))
+      view.select("#error-message-additionalQualifier-input").text() must be(messages(additionalQualifierError))
+      view.select("#error-message-postCode-input").text() must be(messages(logPostCodeError))
+      view.select("#error-message-city-input").text() must be(messages(cityError))
     }
   }
 
@@ -430,14 +412,14 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
           )
         )
       val view = createView(form)
-      getElementById(view, "country").attr("value") must be("Poland")
-      getElementById(view, "typeOfLocation").attr("value") must be("AB")
-      getElementById(view, "qualifierOfIdentification").attr("value") must be("CD")
-      getElementById(view, "identificationOfLocation").attr("value") must be("TST")
-      getElementById(view, "additionalQualifier").attr("value") must be(ladditionalInformation)
-      getElementById(view, "addressLine").attr("value") must be(lstreetAndNumber)
-      getElementById(view, "postCode").attr("value") must be(lpostCode)
-      getElementById(view, "city").attr("value") must be(lcity)
+      view.getElementById("country").attr("value") must be("Poland")
+      view.getElementById("typeOfLocation").attr("value") must be("AB")
+      view.getElementById("qualifierOfIdentification").attr("value") must be("CD")
+      view.getElementById("identificationOfLocation").attr("value") must be("TST")
+      view.getElementById("additionalQualifier").attr("value") must be(ladditionalInformation)
+      view.getElementById("addressLine").attr("value") must be(lstreetAndNumber)
+      view.getElementById("postCode").attr("value") must be(lpostCode)
+      view.getElementById("city").attr("value") must be(lcity)
     }
   }
 }

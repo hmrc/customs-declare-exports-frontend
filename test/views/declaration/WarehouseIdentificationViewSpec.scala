@@ -21,12 +21,12 @@ import helpers.views.declaration.{CommonMessages, WarehouseIdentificationMessage
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.warehouse_identification
 import views.tags.ViewTest
 
 @ViewTest
-class WarehouseIdentificationViewSpec extends ViewSpec with WarehouseIdentificationMessages with CommonMessages {
+class WarehouseIdentificationViewSpec extends AppViewSpec with WarehouseIdentificationMessages with CommonMessages {
 
   private val form: Form[WarehouseIdentification] = WarehouseIdentification.form()
 
@@ -39,17 +39,17 @@ class WarehouseIdentificationViewSpec extends ViewSpec with WarehouseIdentificat
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(title))
+      createView().select("title").text() must be(messages(title))
     }
 
     "display header" in {
 
-      getElementByCss(createView(), "legend>h1").text() must be(messages(title))
+      createView().select("legend>h1").text() must be(messages(title))
     }
 
     "display 'Back' button that links to 'Supervising Office' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/export-items")

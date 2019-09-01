@@ -29,7 +29,7 @@
     title = messages("declaration.destinationCountries.title")
 ) {
 
-    @components.back_link(routes.DeclarationHolderController.displayForm(), mode)
+    @components.back_link(routes.DeclarationHolderController.displayPage(), mode)
 
     @components.error_summary(form.errors)
 
@@ -77,8 +77,10 @@
             )
         </div>
 
-        <div class="section align='right'">
+        <div class="section mb-0">
             @components.buttons.save_and_continue_button()
+        </div>
+        <div class="section">
             @components.buttons.save_and_return_later_button()
         </div>
     }

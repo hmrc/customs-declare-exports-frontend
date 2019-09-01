@@ -24,12 +24,12 @@ import helpers.views.declaration.{CommonMessages, ConsignmentReferencesMessages}
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.consignment_references
 import views.tags.ViewTest
 
 @ViewTest
-class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesMessages with CommonMessages {
+class ConsignmentReferencesViewSpec extends AppViewSpec with ConsignmentReferencesMessages with CommonMessages {
 
   /*
    * Seems like DUCR is Declaration UCR which is alphanumeric number up to 35 digits
@@ -47,44 +47,44 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
     "display page title" in {
 
-      getElementById(createView(), "title").text() must be(messages(header))
+      createView().getElementById("title").text() must be(messages(header))
     }
 
     "display section header" in {
 
-      getElementById(createView(), "section-header").text() must be(messages("Your references"))
+      createView().getElementById("section-header").text() must be(messages("Your references"))
     }
 
     "display empty input with label for DUCR" in {
 
       val view = createView()
 
-      getElementById(view, "ducr_ducr-label").text() must be(messages(ducrInfo))
-      getElementById(view, "ducr_ducr-hint").text() must be(messages(ducrHint))
-      getElementById(view, "ducr_ducr").attr("value") must be("")
+      view.getElementById("ducr_ducr-label").text() must be(messages(ducrInfo))
+      view.getElementById("ducr_ducr-hint").text() must be(messages(ducrHint))
+      view.getElementById("ducr_ducr").attr("value") must be("")
     }
 
     "display empty input with label for LRN" in {
 
       val view = createView()
 
-      getElementById(view, "lrn-label").text() must be(messages(lrnInfo))
-      getElementById(view, "lrn-hint").text() must be(messages(lrnHint))
-      getElementById(view, "lrn").attr("value") must be("")
+      view.getElementById("lrn-label").text() must be(messages(lrnInfo))
+      view.getElementById("lrn-hint").text() must be(messages(lrnHint))
+      view.getElementById("lrn").attr("value") must be("")
     }
 
     "display empty input with label for UCR" in {
 
       val view = createView()
 
-      getElementById(view, "personalUcr-label").text() must be(messages(ucrInfo))
-      getElementById(view, "personalUcr-hint").text() must be(messages(ucrHint))
-      getElementById(view, "personalUcr").attr("value") must be("")
+      view.getElementById("personalUcr-label").text() must be(messages(ucrInfo))
+      view.getElementById("personalUcr-hint").text() must be(messages(ucrHint))
+      view.getElementById("personalUcr").attr("value") must be("")
     }
 
     "display 'Back' button that links to 'Declaration Type' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/type")
@@ -114,7 +114,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       checkErrorsSummary(view)
       checkErrorLink(view, 1, lrnEmpty, "#lrn")
 
-      getElementByCss(view, "#error-message-lrn-input").text() must be(messages(lrnEmpty))
+      view.select("#error-message-lrn-input").text() must be(messages(lrnEmpty))
     }
 
     "display error when LRN is longer then 22 characters" in {
@@ -128,7 +128,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       checkErrorsSummary(view)
       checkErrorLink(view, 1, lrnLength, "#lrn")
 
-      getElementByCss(view, "#error-message-lrn-input").text() must be(messages(lrnLength))
+      view.select("#error-message-lrn-input").text() must be(messages(lrnLength))
     }
 
     "display error when LRN contains special character" in {
@@ -139,7 +139,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       checkErrorsSummary(view)
       checkErrorLink(view, 1, lrnSpecialCharacter, "#lrn")
 
-      getElementByCss(view, "#error-message-lrn-input").text() must be(messages(lrnSpecialCharacter))
+      view.select("#error-message-lrn-input").text() must be(messages(lrnSpecialCharacter))
     }
 
     "display error when DUCR is incorrect and LRN empty" in {
@@ -151,8 +151,8 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       checkErrorLink(view, 1, ducrError, "#ducr_ducr")
       checkErrorLink(view, 2, lrnEmpty, "#lrn")
 
-      getElementByCss(view, "#error-message-ducr_ducr-input").text() must be(messages(ducrError))
-      getElementByCss(view, "#error-message-lrn-input").text() must be(messages(lrnEmpty))
+      view.select("#error-message-ducr_ducr-input").text() must be(messages(ducrError))
+      view.select("#error-message-lrn-input").text() must be(messages(lrnEmpty))
     }
 
     "display error when DUCR is incorrect and LRN is longer then 22 characters" in {
@@ -167,8 +167,8 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       checkErrorLink(view, 1, ducrError, "#ducr_ducr")
       checkErrorLink(view, 2, lrnLength, "#lrn")
 
-      getElementByCss(view, "#error-message-ducr_ducr-input").text() must be(messages(ducrError))
-      getElementByCss(view, "#error-message-lrn-input").text() must be(messages(lrnLength))
+      view.select("#error-message-ducr_ducr-input").text() must be(messages(ducrError))
+      view.select("#error-message-lrn-input").text() must be(messages(lrnLength))
     }
 
     "display error when DUCR is incorrect and LRN contains special character" in {
@@ -180,8 +180,8 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       checkErrorLink(view, 1, ducrError, "#ducr_ducr")
       checkErrorLink(view, 2, lrnSpecialCharacter, "#lrn")
 
-      getElementByCss(view, "#error-message-ducr_ducr-input").text() must be(messages(ducrError))
-      getElementByCss(view, "#error-message-lrn-input").text() must be(messages(lrnSpecialCharacter))
+      view.select("#error-message-ducr_ducr-input").text() must be(messages(ducrError))
+      view.select("#error-message-lrn-input").text() must be(messages(lrnSpecialCharacter))
     }
   }
 
@@ -192,16 +192,16 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       val view =
         createView(ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("9GB12345678901234-SHIP1234-1"), "")))
 
-      getElementById(view, "ducr_ducr").attr("value") must be("9GB12345678901234-SHIP1234-1")
-      getElementById(view, "lrn").attr("value") must be("")
+      view.getElementById("ducr_ducr").attr("value") must be("9GB12345678901234-SHIP1234-1")
+      view.getElementById("lrn").attr("value") must be("")
     }
 
     "display data in LRN input" in {
 
       val view = createView(ConsignmentReferences.form().fill(ConsignmentReferences(Ducr(""), "test1")))
 
-      getElementById(view, "ducr_ducr").attr("value") must be("")
-      getElementById(view, "lrn").attr("value") must be("test1")
+      view.getElementById("ducr_ducr").attr("value") must be("")
+      view.getElementById("lrn").attr("value") must be("test1")
     }
 
     "display data in all inputs" in {
@@ -211,9 +211,9 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
           ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("GB/ABC4-ASIUDYFAHSDJF"), "test1", Some("ucr")))
         )
 
-      getElementById(view, "ducr_ducr").attr("value") must be("GB/ABC4-ASIUDYFAHSDJF")
-      getElementById(view, "lrn").attr("value") must be("test1")
-      getElementById(view, "personalUcr").attr("value") must be("ucr")
+      view.getElementById("ducr_ducr").attr("value") must be("GB/ABC4-ASIUDYFAHSDJF")
+      view.getElementById("lrn").attr("value") must be("test1")
+      view.getElementById("personalUcr").attr("value") must be("ucr")
     }
 
     "display error when UCR is longer then 35 characters" in {
@@ -233,7 +233,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       checkErrorsSummary(view)
       checkErrorLink(view, 1, ucrLength, "#personalUcr")
 
-      getElementByCss(view, "#error-message-personalUcr-input").text() must be(messages(ucrLength))
+      view.select("#error-message-personalUcr-input").text() must be(messages(ucrLength))
     }
 
     "display error when UCR contains special character" in {
@@ -246,7 +246,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       checkErrorsSummary(view)
       checkErrorLink(view, 1, ucrSpecialCharacter, "#personalUcr")
 
-      getElementByCss(view, "#error-message-personalUcr-input").text() must be(messages(ucrSpecialCharacter))
+      view.select("#error-message-personalUcr-input").text() must be(messages(ucrSpecialCharacter))
     }
 
   }

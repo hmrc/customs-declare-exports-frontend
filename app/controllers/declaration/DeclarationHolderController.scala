@@ -50,7 +50,7 @@ class DeclarationHolderController @Inject()(
 
   import forms.declaration.DeclarationHolder.form
 
-  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.parties.declarationHoldersData match {
       case Some(data) => Ok(declarationHolderPage(mode, form(), data.holders))
       case _          => Ok(declarationHolderPage(mode, form(), Seq()))
@@ -65,11 +65,11 @@ class DeclarationHolderController @Inject()(
       val cache = request.cacheModel.parties.declarationHoldersData.getOrElse(DeclarationHoldersData(Seq()))
 
       actionTypeOpt match {
-        case Some(Add) if !boundForm.hasErrors => addHolder(mode, boundForm.get, cache)
-        case Some(SaveAndContinue) | Some(SaveAndReturn) if !boundForm.hasErrors =>
+        case Add if !boundForm.hasErrors => addHolder(mode, boundForm.get, cache)
+        case SaveAndContinue | SaveAndReturn if !boundForm.hasErrors =>
           saveAndContinue(mode, boundForm.get, cache)
-        case Some(Remove(values)) => removeHolder(mode, retrieveHolder(values), boundForm, cache)
-        case _                    => Future.successful(BadRequest(declarationHolderPage(mode, boundForm, cache.holders)))
+        case Remove(values) => removeHolder(mode, retrieveHolder(values), boundForm, cache)
+        case _              => Future.successful(BadRequest(declarationHolderPage(mode, boundForm, cache.holders)))
       }
   }
 
@@ -92,7 +92,7 @@ class DeclarationHolderController @Inject()(
       case (holder, holders) if holder.authorisationTypeCode.isDefined && holder.eori.isDefined =>
         val updatedCache = DeclarationHoldersData(holders :+ holder)
         updateCache(updatedCache)
-          .map(_ => Redirect(controllers.declaration.routes.DeclarationHolderController.displayForm(mode)))
+          .map(_ => Redirect(controllers.declaration.routes.DeclarationHolderController.displayPage(mode)))
 
       case (DeclarationHolder(authCode, eori), _) =>
         val authCodeError = authCode.fold(
@@ -131,7 +131,7 @@ class DeclarationHolderController @Inject()(
   ): Future[Result] =
     (userInput, cachedData.holders) match {
       case (DeclarationHolder(None, None), _) =>
-        Future.successful(navigator.continueTo(routes.DestinationCountriesController.displayForm(mode)))
+        Future.successful(navigator.continueTo(routes.DestinationCountriesController.displayPage(mode)))
 
       case (holder, Seq()) =>
         holder match {
@@ -140,7 +140,7 @@ class DeclarationHolderController @Inject()(
             updateCache(updatedCache)
               .map(
                 _ =>
-                  navigator.continueTo(controllers.declaration.routes.DestinationCountriesController.displayForm(mode))
+                  navigator.continueTo(controllers.declaration.routes.DestinationCountriesController.displayPage(mode))
               )
 
           case DeclarationHolder(maybeTypeCode, maybeEori) =>
@@ -167,7 +167,7 @@ class DeclarationHolderController @Inject()(
             updateCache(updatedCache)
               .map(
                 _ =>
-                  navigator.continueTo(controllers.declaration.routes.DestinationCountriesController.displayForm(mode))
+                  navigator.continueTo(controllers.declaration.routes.DestinationCountriesController.displayPage(mode))
               )
 
           case DeclarationHolder(maybeTypeCode, maybeEori) =>

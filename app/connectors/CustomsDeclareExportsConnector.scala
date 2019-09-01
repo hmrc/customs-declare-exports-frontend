@@ -20,10 +20,10 @@ import config.AppConfig
 import connectors.CustomsDeclareExportsConnector.toXml
 import connectors.exchange.ExportsDeclarationExchange
 import javax.inject.{Inject, Singleton}
+import models._
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Submission
 import models.requests.CancellationStatus
-import models._
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.libs.json.{Json, Writes}
@@ -36,13 +36,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient) {
-
   private val logger = Logger(this.getClass)
 
-  private def logPayload[T](prefix: String, payload: T)(implicit wts: Writes[T]): T = {
-    Logger.debug(s"$prefix: ${Json.toJson(payload)}")
-    payload
-  }
+  def deleteDraftDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] =
+    httpClient
+      .DELETE(s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}/$id")
+      .map(_ => ())
 
   def createDeclaration(
     declaration: ExportsDeclaration
@@ -55,6 +54,11 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
       )
       .map(logPayload("Create Declaration Response", _))
       .map(_.toExportsDeclaration)
+  }
+
+  private def logPayload[T](prefix: String, payload: T)(implicit wts: Writes[T]): T = {
+    logger.debug(s"$prefix: ${Json.toJson(payload)}")
+    payload
   }
 
   def updateDeclaration(

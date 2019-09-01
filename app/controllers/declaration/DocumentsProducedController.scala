@@ -68,11 +68,11 @@ class DocumentsProducedController @Inject()(
           .getOrElse(DocumentsProducedData(Seq()))
 
       actionTypeOpt match {
-        case Some(Add) if !boundForm.hasErrors => addItem(mode, itemId, boundForm.get, cache)
-        case Some(SaveAndContinue) | Some(SaveAndReturn) if !boundForm.hasErrors =>
+        case Add if !boundForm.hasErrors => addItem(mode, itemId, boundForm.get, cache)
+        case SaveAndContinue | SaveAndReturn if !boundForm.hasErrors =>
           saveAndContinue(mode, itemId, boundForm.get, cache)
-        case Some(Remove(keys)) => removeItem(mode, itemId, keys, boundForm, cache)
-        case _                  => Future.successful(BadRequest(documentProducedPage(mode, itemId, boundForm, cache.documents)))
+        case Remove(keys) => removeItem(mode, itemId, keys, boundForm, cache)
+        case _            => Future.successful(BadRequest(documentProducedPage(mode, itemId, boundForm, cache.documents)))
       }
   }
 

@@ -25,12 +25,12 @@ import models.declaration.submissions.{Action, Submission}
 import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
 import org.jsoup.nodes.Element
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.submissions
 import views.tags.ViewTest
 
 @ViewTest
-class SubmissionsViewSpec extends ViewSpec with SubmissionsMessages with CommonMessages {
+class SubmissionsViewSpec extends AppViewSpec with SubmissionsMessages with CommonMessages {
 
   private val submissionsPage = app.injector.instanceOf[submissions]
   private def createView(data: Seq[(Submission, Seq[Notification])] = Seq.empty): Html = submissionsPage(data)
@@ -40,7 +40,7 @@ class SubmissionsViewSpec extends ViewSpec with SubmissionsMessages with CommonM
     "display page messages" in {
       val view = createView()
 
-      getElementByCss(view, "title").text() must be(messages(title))
+      view.select("title").text() must be(messages(title))
       tableCell(view)(0, 0).text() must be(messages(ducr))
       tableCell(view)(0, 1).text() must be(messages(lrn))
       tableCell(view)(0, 2).text() must be(messages(mrn))
@@ -136,7 +136,7 @@ class SubmissionsViewSpec extends ViewSpec with SubmissionsMessages with CommonM
     }
 
     "display 'Back' button that links to 'Choice' page" in {
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be(routes.ChoiceController.displayPage().url)
@@ -145,14 +145,15 @@ class SubmissionsViewSpec extends ViewSpec with SubmissionsMessages with CommonM
     "display 'Start a new declaration' link on page" in {
       val view = createView()
 
-      val startButton = getElementByCss(view, ".button")
+      val startButton = view.select(".button")
       startButton.text() must be(messages(startNewDeclaration))
       startButton.attr("href") must be(routes.ChoiceController.displayPage().url)
     }
   }
 
   private def tableCell(view: Html)(row: Int, column: Int): Element =
-    getElementsByCss(view, ".table-row")
+    view
+      .select(".table-row")
       .get(row)
       .getElementsByClass("table-cell")
       .get(column)

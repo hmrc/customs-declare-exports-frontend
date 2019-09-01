@@ -85,7 +85,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
 
-        val result = controller.displayForm(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
         checkSupplementaryViewInteractions()
@@ -98,7 +98,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
         val officeId = "officeId"
         withNewCaching(aDeclaration(withChoice(SupplementaryDec), withOfficeOfExit(officeId)))
 
-        val result = controller.displayForm(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
         checkSupplementaryViewInteractions()
@@ -133,7 +133,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.TotalNumberOfItemsController.displayForm()
+        thePageNavigatedTo mustBe controllers.declaration.routes.TotalNumberOfItemsController.displayPage()
         checkSupplementaryViewInteractions(0)
       }
     }
@@ -147,7 +147,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         withNewCaching(aDeclaration(withChoice(StandardDec)))
 
-        val result = controller.displayForm(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
         checkStandardViewInteractions()
@@ -167,7 +167,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
           )
         )
 
-        val result = controller.displayForm(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
         checkStandardViewInteractions()
@@ -204,7 +204,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.TotalNumberOfItemsController.displayForm()
+        thePageNavigatedTo mustBe controllers.declaration.routes.TotalNumberOfItemsController.displayPage()
         checkStandardViewInteractions(0)
       }
     }

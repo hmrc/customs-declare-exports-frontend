@@ -24,13 +24,13 @@ import helpers.views.declaration.{CommonMessages, DeclarationAdditionalActorsMes
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.declaration_additional_actors
 import views.tags.ViewTest
 
 @ViewTest
 class DeclarationAdditionalActorsViewSpec
-    extends ViewSpec with DeclarationAdditionalActorsMessages with CommonMessages {
+    extends AppViewSpec with DeclarationAdditionalActorsMessages with CommonMessages {
 
   private val form: Form[DeclarationAdditionalActors] = DeclarationAdditionalActors.form()
   private val declarationAdditionalActorsPage = app.injector.instanceOf[declaration_additional_actors]
@@ -41,12 +41,12 @@ class DeclarationAdditionalActorsViewSpec
 
     "display page title" in {
 
-      getElementById(createView(), "title").text() must be(messages(title))
+      createView().getElementById("title").text() must be(messages(title))
     }
 
     "display section header" in {
 
-      getElementById(createView(), "section-header").text() must be("Parties")
+      createView().getElementById("section-header").text() must be("Parties")
     }
 
     "display empty input with label for EORI" in {
@@ -89,7 +89,7 @@ class DeclarationAdditionalActorsViewSpec
 
     "display 'Back' button that links to 'Representative Details' page if on Supplementary journey" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/representative-details")
@@ -134,8 +134,8 @@ class DeclarationAdditionalActorsViewSpec
       checkErrorLink(view, 1, eoriError, "#eori")
       checkErrorLink(view, 2, partyTypeError, "#partyType")
 
-      getElementByCss(view, "#error-message-eori-input").text() must be(messages(eoriError))
-      getElementByCss(view, "#error-message-partyType-input").text() must be(messages(partyTypeError))
+      view.select("#error-message-eori-input").text() must be(messages(eoriError))
+      view.select("#error-message-partyType-input").text() must be(messages(partyTypeError))
     }
 
     "display error when EORI is provided, but party is not selected" in {
@@ -149,7 +149,7 @@ class DeclarationAdditionalActorsViewSpec
       checkErrorsSummary(view)
       checkErrorLink(view, 1, partyTypeError, "#partyType")
 
-      getElementByCss(view, "#error-message-partyType-input").text() must be(messages(partyTypeError))
+      view.select("#error-message-partyType-input").text() must be(messages(partyTypeError))
     }
   }
 
@@ -211,13 +211,13 @@ class DeclarationAdditionalActorsViewSpec
         Seq(DeclarationAdditionalActors(Some("12345"), Some("CS")))
       )(fakeJourneyRequest(StandardDec), messages)
 
-      getElementByCss(view, "table>thead>tr>th:nth-child(1)").text() must be("Party’s EORI number")
-      getElementByCss(view, "table>thead>tr>th:nth-child(2)").text() must be("Party type")
+      view.select("table>thead>tr>th:nth-child(1)").text() must be("Party’s EORI number")
+      view.select("table>thead>tr>th:nth-child(2)").text() must be("Party type")
 
-      getElementByCss(view, "table>tbody>tr>td:nth-child(1)").text() must be("12345")
-      getElementByCss(view, "table>tbody>tr>td:nth-child(2)").text() must be("CS")
+      view.select("table>tbody>tr>td:nth-child(1)").text() must be("12345")
+      view.select("table>tbody>tr>td:nth-child(2)").text() must be("CS")
 
-      val removeButton = getElementByCss(view, "table>tbody>tr>td:nth-child(3)>button")
+      val removeButton = view.select("table>tbody>tr>td:nth-child(3)>button")
 
       removeButton.text() must be(messages(removeCaption))
       removeButton.attr("name") must be(messages(removeCaption))

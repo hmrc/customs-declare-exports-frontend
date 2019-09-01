@@ -60,7 +60,7 @@ class ConsigneeDetailsController @Inject()(
           Future.successful(BadRequest(consigneeDetailsPage(mode, formWithErrors))),
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(controllers.declaration.routes.DeclarantDetailsController.displayForm(mode)))
+            .map(_ => navigator.continueTo(controllers.declaration.routes.DeclarantDetailsController.displayPage(mode)))
       )
   }
 

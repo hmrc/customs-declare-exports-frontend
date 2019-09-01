@@ -30,12 +30,12 @@ import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.additionaldeclarationtype.declaration_type
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with CommonMessages {
+class DeclarationTypeViewSpec extends AppViewSpec with DeclarationTypeMessages with CommonMessages {
 
   private val formStandard: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeStandardDec.form()
   private val formSupplementary: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeSupplementaryDec.form()
@@ -49,19 +49,19 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
 
       "used for Standard Declaration journey" in {
 
-        getElementByCss(createView(formStandard, StandardDec), "title").text() must be(messages(title))
+        createView(formStandard, StandardDec).select("title").text() must be(messages(title))
       }
 
       "used for Supplementary Declaration journey" in {
 
-        getElementByCss(createView(formSupplementary, SupplementaryDec), "title").text() must be(messages(title))
+        createView(formSupplementary, SupplementaryDec).select("title").text() must be(messages(title))
       }
     }
 
     "display 'Back' button that links to 'Dispatch Location' page" when {
 
       "used for Standard Declaration journey" in {
-        val backButton = getElementById(createView(formStandard, StandardDec), "link-back")
+        val backButton = createView(formStandard, StandardDec).getElementById("link-back")
 
         backButton.text() must be(messages(backCaption))
         backButton.attr("href") must be("/customs-declare-exports/declaration/dispatch-location")
@@ -70,7 +70,7 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
 
       "used for Supplementary Declaration journey" in {
 
-        val backButton = getElementById(createView(formSupplementary, SupplementaryDec), "link-back")
+        val backButton = createView(formSupplementary, SupplementaryDec).getElementById("link-back")
 
         backButton.text() must be(messages(backCaption))
         backButton.attr("href") must be("/customs-declare-exports/declaration/dispatch-location")
@@ -151,13 +151,13 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
         val optionOne = view.getElementById("Simplified")
         optionOne.attr("checked") must be("")
 
-        val optionOneLabel = getElementByCss(view, "#additionalDeclarationType>div:nth-child(2)>label")
+        val optionOneLabel = view.select("#additionalDeclarationType>div:nth-child(2)>label")
         optionOneLabel.text() must be(messages(simplified))
 
         val optionTwo = view.getElementById("Standard")
         optionTwo.attr("checked") must be("")
 
-        val optionTwoLabel = getElementByCss(view, "#additionalDeclarationType>div:nth-child(3)>label")
+        val optionTwoLabel = view.select("#additionalDeclarationType>div:nth-child(3)>label")
         optionTwoLabel.text() must be(messages(standard))
       }
     }
@@ -175,9 +175,7 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
         checkErrorsSummary(view)
         checkErrorLink(view, 1, messages(errorMessageEmpty), "#additionalDeclarationType")
 
-        getElementByCss(view, "#error-message-additionalDeclarationType-input").text() must be(
-          messages(errorMessageEmpty)
-        )
+        view.select("#error-message-additionalDeclarationType-input").text() must be(messages(errorMessageEmpty))
       }
 
       "used for Supplementary Declaration journey" in {
@@ -187,9 +185,7 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
         checkErrorsSummary(view)
         checkErrorLink(view, 1, messages(errorMessageEmpty), "#additionalDeclarationType")
 
-        getElementByCss(view, "#error-message-additionalDeclarationType-input").text() must be(
-          messages(errorMessageEmpty)
-        )
+        view.select("#error-message-additionalDeclarationType-input").text() must be(messages(errorMessageEmpty))
       }
     }
 
@@ -202,9 +198,7 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
         checkErrorsSummary(view)
         checkErrorLink(view, 1, messages(errorMessageIncorrect), "#additionalDeclarationType")
 
-        getElementByCss(view, "#error-message-additionalDeclarationType-input").text() must be(
-          messages(errorMessageIncorrect)
-        )
+        view.select("#error-message-additionalDeclarationType-input").text() must be(messages(errorMessageIncorrect))
       }
 
       "used for Supplementary Declaration journey" in {
@@ -214,9 +208,7 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
         checkErrorsSummary(view)
         checkErrorLink(view, 1, messages(errorMessageIncorrect), "#additionalDeclarationType")
 
-        getElementByCss(view, "#error-message-additionalDeclarationType-input").text() must be(
-          messages(errorMessageIncorrect)
-        )
+        view.select("#error-message-additionalDeclarationType-input").text() must be(messages(errorMessageIncorrect))
       }
     }
 

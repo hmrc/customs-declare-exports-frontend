@@ -41,7 +41,7 @@ class LocationController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
   import forms.declaration.GoodsLocation._
 
-  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.locations.goodsLocation match {
       case Some(data) => Ok(goodsLocationPage(mode, form().fill(data)))
       case _          => Ok(goodsLocationPage(mode, form()))
@@ -57,7 +57,7 @@ class LocationController @Inject()(
           updateExportsDeclarationSyncDirect(
             model => model.copy(locations = model.locations.copy(goodsLocation = Some(formData)))
           ).map { _ =>
-            navigator.continueTo(controllers.declaration.routes.OfficeOfExitController.displayForm(mode))
+            navigator.continueTo(controllers.declaration.routes.OfficeOfExitController.displayPage(mode))
         }
       )
   }

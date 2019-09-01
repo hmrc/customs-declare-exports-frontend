@@ -87,7 +87,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
         val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarantDetailsController.displayForm()
+        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarantDetailsController.displayPage()
       }
     }
   }

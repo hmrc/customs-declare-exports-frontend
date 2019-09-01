@@ -21,7 +21,7 @@ import helpers.views.declaration.CommonMessages
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.seal_add
 import views.tags.ViewTest
 import views.html.components.fields.field_text
@@ -38,24 +38,24 @@ class SealViewSpec extends SealFields with CommonMessages {
     "display page title" in {
       val view = createView()
 
-      getElementById(view, "title").text() must be(messages("standard.seal.title"))
+      view.getElementById("title").text() must be(messages("standard.seal.title"))
     }
 
     "display header" in {
       val view = createView()
 
-      getElementByCss(view, "legend>h1").text() must be(messages("standard.seal.title"))
+      view.select("legend>h1").text() must be(messages("standard.seal.title"))
     }
 
     "display 'Back' button that links to 'add-transport-containers'  or 'transport-details' page" in {
       val view = createView()
 
-      val backLinkContainer = getElementById(createView(container = true), "link-back")
+      val backLinkContainer = createView(container = true).getElementById("link-back")
 
       backLinkContainer.text() must be(messages(backCaption))
       backLinkContainer.attr("href") must be("/customs-declare-exports/declaration/add-transport-containers")
 
-      val backLinkTrader = getElementById(createView(), "link-back")
+      val backLinkTrader = createView().getElementById("link-back")
 
       backLinkTrader.text() must be(messages(backCaption))
       backLinkTrader.attr("href") must be("/customs-declare-exports/declaration/transport-details")
@@ -73,7 +73,7 @@ class SealViewSpec extends SealFields with CommonMessages {
   }
 }
 
-trait SealFields extends ViewSpec {
+trait SealFields extends AppViewSpec {
   val form: Form[Seal] = Seal.form()
 
   val id = field_text(field = form("id"), label = "7/18 Seal identification number").body

@@ -42,7 +42,7 @@ class TotalNumberOfItemsController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
   import forms.declaration.TotalNumberOfItems._
 
-  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.totalNumberOfItems match {
       case Some(data) => Ok(totalNumberOfItemsPage(mode, form().fill(data)))
       case _          => Ok(totalNumberOfItemsPage(mode, form()))
@@ -57,7 +57,7 @@ class TotalNumberOfItemsController @Inject()(
           Future.successful(BadRequest(totalNumberOfItemsPage(mode, formWithErrors))),
         formData =>
           updateCache(formData).map { _ =>
-            navigator.continueTo(controllers.declaration.routes.NatureOfTransactionController.displayForm(mode))
+            navigator.continueTo(controllers.declaration.routes.NatureOfTransactionController.displayPage(mode))
         }
       )
   }

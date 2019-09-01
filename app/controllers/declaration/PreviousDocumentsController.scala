@@ -45,7 +45,7 @@ class PreviousDocumentsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.previousDocuments match {
       case Some(data) => Ok(previousDocumentsPage(mode, form(), data.documents))
       case _          => Ok(previousDocumentsPage(mode, form(), Seq.empty))
@@ -62,7 +62,7 @@ class PreviousDocumentsController @Inject()(
       val cache = request.cacheModel.previousDocuments.getOrElse(PreviousDocumentsData(Seq.empty))
 
       actionTypeOpt match {
-        case Some(SaveAndContinue) | Some(SaveAndReturn) =>
+        case SaveAndContinue | SaveAndReturn =>
           saveAndContinue(boundForm, cache.documents, isScreenMandatory, maxAmountOfItems).fold(
             formWithErrors =>
               Future.successful(BadRequest(previousDocumentsPage(mode, formWithErrors, cache.documents))),
@@ -78,7 +78,7 @@ class PreviousDocumentsController @Inject()(
               )
           )
 
-        case Some(Add) =>
+        case Add =>
           add(boundForm, cache.documents, PreviousDocumentsData.maxAmountOfItems).fold(
             formWithErrors =>
               Future.successful(BadRequest(previousDocumentsPage(mode, formWithErrors, cache.documents))),
@@ -86,11 +86,11 @@ class PreviousDocumentsController @Inject()(
               updateCache(PreviousDocumentsData(updatedCache))
                 .map(
                   _ =>
-                    navigator.continueTo(controllers.declaration.routes.PreviousDocumentsController.displayForm(mode))
+                    navigator.continueTo(controllers.declaration.routes.PreviousDocumentsController.displayPage(mode))
               )
           )
 
-        case Some(Remove(ids)) =>
+        case Remove(ids) =>
           val itemToRemove = Document.fromJsonString(ids.head)
           val updatedDocuments = MultipleItemsHelper.remove(cache.documents, itemToRemove.contains(_: Document))
           updateCache(PreviousDocumentsData(updatedDocuments))

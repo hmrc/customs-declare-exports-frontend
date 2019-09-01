@@ -19,6 +19,6 @@ package models.requests
 import models.SignedInUser
 import play.api.mvc.{Request, WrappedRequest}
 
-case class AuthenticatedRequest[A](request: Request[A], user: SignedInUser) extends WrappedRequest[A](request) {
+class AuthenticatedRequest[A](request: Request[A], val user: SignedInUser) extends WrappedRequest[A](request) {
   def declarationId: Option[String] = request.session.data.get(ExportsSessionKeys.declarationId)
 }

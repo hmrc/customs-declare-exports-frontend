@@ -66,9 +66,9 @@ class RepresentativeDetailsController @Inject()(
   private def nextPage(mode: Mode, request: JourneyRequest[AnyContent]) =
     request.choice.value match {
       case SupplementaryDec =>
-        controllers.declaration.routes.DeclarationAdditionalActorsController.displayForm(mode)
+        controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage(mode)
       case StandardDec =>
-        controllers.declaration.routes.CarrierDetailsController.displayForm(mode)
+        controllers.declaration.routes.CarrierDetailsController.displayPage(mode)
     }
 
   private def updateCache(

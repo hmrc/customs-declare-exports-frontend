@@ -32,12 +32,13 @@ import models.Mode
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.documents_produced
 import views.tags.ViewTest
 
 @ViewTest
-class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages with DateMessages with CommonMessages {
+class DocumentsProducedViewSpec
+    extends AppViewSpec with DocumentsProducedMessages with DateMessages with CommonMessages {
 
   private val form: Form[DocumentsProduced] = DocumentsProduced.form()
   private val documentsProducedPage = app.injector.instanceOf[documents_produced]
@@ -48,105 +49,103 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
     "display page title" in {
 
-      getElementById(createView(), "title").text() must be(messages(title))
+      createView().getElementById("title").text() must be(messages(title))
     }
 
     "display section header" in {
 
-      getElementById(createView(), "section-header").text() must be("Your references")
+      createView().getElementById("section-header").text() must be("Your references")
     }
 
     "display header with hint" in {
 
       val view = createView()
 
-      getElementByCss(view, "legend>h1").text() must be(messages(title))
-      getElementByCss(view, "legend>span").text() must be(messages(hint))
+      view.select("legend>h1").text() must be(messages(title))
+      view.select("legend>span").text() must include(messages(hint))
     }
 
     "display empty input with label for Document type code" in {
 
       val view = createView()
 
-      getElementById(view, s"$documentTypeCodeKey-label").text() must be(messages(documentTypeCode))
-      getElementById(view, s"$documentTypeCodeKey").attr("value") must be("")
+      view.getElementById(s"$documentTypeCodeKey-label").text() must be(messages(documentTypeCode))
+      view.getElementById(s"$documentTypeCodeKey").attr("value") must be("")
     }
 
     "display empty input with label for Document identifier" in {
 
       val view = createView()
 
-      getElementById(view, s"${documentIdentifierAndPartKey}_$documentIdentifierKey-label").text() must be(
+      view.getElementById(s"${documentIdentifierAndPartKey}_$documentIdentifierKey-label").text() must be(
         messages(documentIdentifier)
       )
-      getElementById(view, s"${documentIdentifierAndPartKey}_$documentIdentifierKey").attr("value") must be("")
+      view.getElementById(s"${documentIdentifierAndPartKey}_$documentIdentifierKey").attr("value") must be("")
     }
 
     "display empty input with label for Document part" in {
 
       val view = createView()
 
-      getElementById(view, s"${documentIdentifierAndPartKey}_$documentPartKey-label").text() must be(
+      view.getElementById(s"${documentIdentifierAndPartKey}_$documentPartKey-label").text() must be(
         messages(documentPart)
       )
-      getElementById(view, s"${documentIdentifierAndPartKey}_$documentPartKey").attr("value") must be("")
+      view.getElementById(s"${documentIdentifierAndPartKey}_$documentPartKey").attr("value") must be("")
     }
 
     "display empty input with label for Document status" in {
 
       val view = createView()
 
-      getElementById(view, s"$documentStatusKey-label").text() must be(messages(documentStatus))
-      getElementById(view, s"$documentStatusKey").attr("value") must be("")
+      view.getElementById(s"$documentStatusKey-label").text() must be(messages(documentStatus))
+      view.getElementById(s"$documentStatusKey").attr("value") must be("")
     }
 
     "display empty input with label for Document status reason" in {
 
       val view = createView()
 
-      getElementById(view, s"$documentStatusReasonKey-label").text() must be(messages(documentStatusReason))
-      getElementById(view, s"$documentStatusReasonKey").attr("value") must be("")
+      view.getElementById(s"$documentStatusReasonKey-label").text() must be(messages(documentStatusReason))
+      view.getElementById(s"$documentStatusReasonKey").attr("value") must be("")
     }
 
     "display empty input with label for Issuing Authority Name" in {
 
       val view = createView()
 
-      getElementById(view, s"$issuingAuthorityNameKey-label").text() must be(messages(issuingAuthorityName))
-      getElementById(view, issuingAuthorityNameKey).attr("value") must be("")
+      view.getElementById(s"$issuingAuthorityNameKey-label").text() must be(messages(issuingAuthorityName))
+      view.getElementById(issuingAuthorityNameKey).attr("value") must be("")
     }
 
     "display empty input with label for Date of Validity" in {
 
       val view = createView()
 
-      getElementById(view, s"$dateOfValidityKey-label").text() must be(messages(dateOfValidity))
-      getElementById(view, dateOfValidityKey).attr("value") must be("")
+      view.getElementById(s"$dateOfValidityKey-label").text() must be(messages(dateOfValidity))
+      view.getElementById(dateOfValidityKey).attr("value") must be("")
     }
 
     "display empty input with label for Measurement Unit" in {
 
       val view = createView()
 
-      getElementById(view, s"${documentWriteOffKey}_$measurementUnitKey-label").text() must be(
-        messages(measurementUnit)
-      )
-      getElementById(view, s"${documentWriteOffKey}_$measurementUnitKey").attr("value") must be("")
+      view.getElementById(s"${documentWriteOffKey}_$measurementUnitKey-label").text() must be(messages(measurementUnit))
+      view.getElementById(s"${documentWriteOffKey}_$measurementUnitKey").attr("value") must be("")
     }
 
     "display empty input with label for Document quantity" in {
 
       val view = createView()
 
-      getElementById(view, s"${documentWriteOffKey}_$documentQuantityKey-label").text() must be(
+      view.getElementById(s"${documentWriteOffKey}_$documentQuantityKey-label").text() must be(
         messages(documentQuantity)
       )
-      getElementById(view, s"${documentWriteOffKey}_$documentQuantityKey").attr("value") must be("")
+      view.getElementById(s"${documentWriteOffKey}_$documentQuantityKey").attr("value") must be("")
     }
 
     "display 'Back' button that links to 'Additional Information' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be(s"/customs-declare-exports/declaration/items/$itemId/additional-information")
@@ -185,9 +184,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, documentTypeCodeError, s"#$documentTypeCodeKey")
 
-      getElementByCss(view, s"#error-message-$documentTypeCodeKey-input").text() must be(
-        messages(documentTypeCodeError)
-      )
+      view.select(s"#error-message-$documentTypeCodeKey-input").text() must be(messages(documentTypeCodeError))
     }
 
     "display error for Document identifier" in {
@@ -204,7 +201,8 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, documentIdentifierError, s"#${documentIdentifierAndPartKey}_$documentIdentifierKey")
 
-      getElementByCss(view, s"#error-message-${documentIdentifierAndPartKey}_$documentIdentifierKey-input")
+      view
+        .select(s"#error-message-${documentIdentifierAndPartKey}_$documentIdentifierKey-input")
         .text() must be(messages(documentIdentifierError))
     }
 
@@ -221,7 +219,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, documentPartError, s"#${documentIdentifierAndPartKey}_$documentPartKey")
 
-      getElementByCss(view, s"#error-message-${documentIdentifierAndPartKey}_$documentPartKey-input").text() must be(
+      view.select(s"#error-message-${documentIdentifierAndPartKey}_$documentPartKey-input").text() must be(
         messages(documentPartError)
       )
     }
@@ -242,7 +240,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
         checkErrorsSummary(view)
         checkErrorLink(view, 1, documentIdentifierAndPartError, s"#$documentIdentifierAndPartKey")
 
-        getElementByCss(view, s"#error-message-$documentIdentifierAndPartKey-input").text() must be(
+        view.select(s"#error-message-$documentIdentifierAndPartKey-input").text() must be(
           messages(documentIdentifierAndPartError)
         )
       }
@@ -261,7 +259,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
         checkErrorsSummary(view)
         checkErrorLink(view, 1, documentIdentifierAndPartError, s"#$documentIdentifierAndPartKey")
 
-        getElementByCss(view, s"#error-message-$documentIdentifierAndPartKey-input").text() must be(
+        view.select(s"#error-message-$documentIdentifierAndPartKey-input").text() must be(
           messages(documentIdentifierAndPartError)
         )
       }
@@ -277,7 +275,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, documentStatusError, s"#$documentStatusKey")
 
-      getElementByCss(view, s"#error-message-$documentStatusKey-input").text() must be(messages(documentStatusError))
+      view.select(s"#error-message-$documentStatusKey-input").text() must be(messages(documentStatusError))
     }
 
     "display error for Document status reason" in {
@@ -292,9 +290,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, documentStatusReasonError, s"#$documentStatusReasonKey")
 
-      getElementByCss(view, s"#error-message-$documentStatusReasonKey-input").text() must be(
-        messages(documentStatusReasonError)
-      )
+      view.select(s"#error-message-$documentStatusReasonKey-input").text() must be(messages(documentStatusReasonError))
     }
 
     "display error for Issuing Authority Name" in {
@@ -309,7 +305,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, issuingAuthorityNameLengthError, s"#$issuingAuthorityNameKey")
 
-      getElementByCss(view, s"#error-message-$issuingAuthorityNameKey-input").text() must be(
+      view.select(s"#error-message-$issuingAuthorityNameKey-input").text() must be(
         messages(issuingAuthorityNameLengthError)
       )
     }
@@ -332,7 +328,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
         checkErrorsSummary(view)
         checkErrorLink(view, 1, dateOutOfRangeError, s"#$dateOfValidityKey")
 
-        getElementByCss(view, s"#error-message-$dateOfValidityKey-input").text() must be(messages(dateOutOfRangeError))
+        view.select(s"#error-message-$dateOfValidityKey-input").text() must be(messages(dateOutOfRangeError))
       }
 
       "provided with non-existing month and day" in {
@@ -350,7 +346,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
         checkErrorsSummary(view)
         checkErrorLink(view, 1, dateFormatError, s"#$dateOfValidityKey")
 
-        getElementByCss(view, s"#error-message-$dateOfValidityKey-input").text() must be(messages(dateFormatError))
+        view.select(s"#error-message-$dateOfValidityKey-input").text() must be(messages(dateFormatError))
       }
     }
 
@@ -365,7 +361,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, measurementUnitLengthError, s"#${documentWriteOffKey}_$measurementUnitKey")
 
-      getElementByCss(view, s"#error-message-${documentWriteOffKey}_$measurementUnitKey-input").text() must be(
+      view.select(s"#error-message-${documentWriteOffKey}_$measurementUnitKey-input").text() must be(
         messages(measurementUnitLengthError)
       )
     }
@@ -381,7 +377,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, documentQuantityPrecisionError, s"#${documentWriteOffKey}_$documentQuantityKey")
 
-      getElementByCss(view, s"#error-message-${documentWriteOffKey}_$documentQuantityKey-input").text() must be(
+      view.select(s"#error-message-${documentWriteOffKey}_$documentQuantityKey-input").text() must be(
         messages(documentQuantityPrecisionError)
       )
     }
@@ -399,7 +395,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
         checkErrorsSummary(view)
         checkErrorLink(view, 1, measurementUnitAndQuantityError, s"#$documentWriteOffKey")
 
-        getElementByCss(view, s"#error-message-$documentWriteOffKey-input").text() must be(
+        view.select(s"#error-message-$documentWriteOffKey-input").text() must be(
           messages(measurementUnitAndQuantityError)
         )
       }
@@ -416,7 +412,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
         checkErrorsSummary(view)
         checkErrorLink(view, 1, measurementUnitAndQuantityError, s"#$documentWriteOffKey")
 
-        getElementByCss(view, s"#error-message-$documentWriteOffKey-input").text() must be(
+        view.select(s"#error-message-$documentWriteOffKey-input").text() must be(
           messages(measurementUnitAndQuantityError)
         )
       }
@@ -439,26 +435,23 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       checkErrorLink(view, 8, measurementUnitLengthError, s"#${documentWriteOffKey}_$measurementUnitKey")
       checkErrorLink(view, 9, documentQuantityPrecisionError, s"#${documentWriteOffKey}_$documentQuantityKey")
 
-      getElementByCss(view, s"#error-message-$documentTypeCodeKey-input").text() must be(
-        messages(documentTypeCodeError)
-      )
-      getElementByCss(view, s"#error-message-${documentIdentifierAndPartKey}_$documentIdentifierKey-input")
+      view.select(s"#error-message-$documentTypeCodeKey-input").text() must be(messages(documentTypeCodeError))
+      view
+        .select(s"#error-message-${documentIdentifierAndPartKey}_$documentIdentifierKey-input")
         .text() must be(messages(documentIdentifierError))
-      getElementByCss(view, s"#error-message-${documentIdentifierAndPartKey}_$documentPartKey-input").text() must be(
+      view.select(s"#error-message-${documentIdentifierAndPartKey}_$documentPartKey-input").text() must be(
         messages(documentPartError)
       )
-      getElementByCss(view, s"#error-message-$documentStatusKey-input").text() must be(messages(documentStatusError))
-      getElementByCss(view, s"#error-message-$documentStatusReasonKey-input").text() must be(
-        messages(documentStatusReasonError)
-      )
-      getElementByCss(view, s"#error-message-$issuingAuthorityNameKey-input").text() must be(
+      view.select(s"#error-message-$documentStatusKey-input").text() must be(messages(documentStatusError))
+      view.select(s"#error-message-$documentStatusReasonKey-input").text() must be(messages(documentStatusReasonError))
+      view.select(s"#error-message-$issuingAuthorityNameKey-input").text() must be(
         messages(issuingAuthorityNameLengthError)
       )
-      getElementByCss(view, s"#error-message-$dateOfValidityKey-input").text() must be(messages(dateFormatError))
-      getElementByCss(view, s"#error-message-${documentWriteOffKey}_$measurementUnitKey-input").text() must be(
+      view.select(s"#error-message-$dateOfValidityKey-input").text() must be(messages(dateFormatError))
+      view.select(s"#error-message-${documentWriteOffKey}_$measurementUnitKey-input").text() must be(
         messages(measurementUnitLengthError)
       )
-      getElementByCss(view, s"#error-message-${documentWriteOffKey}_$documentQuantityKey-input").text() must be(
+      view.select(s"#error-message-${documentWriteOffKey}_$documentQuantityKey-input").text() must be(
         messages(documentQuantityPrecisionError)
       )
     }
@@ -472,29 +465,29 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       val form = DocumentsProduced.form.fill(data)
       val view = createView(form)
 
-      getElementById(view, documentTypeCodeKey).attr("value") must equal(data.documentTypeCode.value)
-      getElementById(view, s"${documentIdentifierAndPartKey}_$documentIdentifierKey").attr("value") must equal(
+      view.getElementById(documentTypeCodeKey).attr("value") must equal(data.documentTypeCode.value)
+      view.getElementById(s"${documentIdentifierAndPartKey}_$documentIdentifierKey").attr("value") must equal(
         data.documentIdentifierAndPart.value.documentIdentifier.value
       )
-      getElementById(view, s"${documentIdentifierAndPartKey}_$documentPartKey").attr("value") must equal(
+      view.getElementById(s"${documentIdentifierAndPartKey}_$documentPartKey").attr("value") must equal(
         data.documentIdentifierAndPart.value.documentPart.value
       )
-      getElementById(view, documentStatusKey).attr("value") must equal(data.documentStatus.value)
-      getElementById(view, documentStatusReasonKey).attr("value") must equal(data.documentStatusReason.value)
-      getElementById(view, issuingAuthorityNameKey).attr("value") must equal(data.issuingAuthorityName.value)
-      getElementById(view, s"${dateOfValidityKey}_$dayKey").attr("value") must equal(
+      view.getElementById(documentStatusKey).attr("value") must equal(data.documentStatus.value)
+      view.getElementById(documentStatusReasonKey).attr("value") must equal(data.documentStatusReason.value)
+      view.getElementById(issuingAuthorityNameKey).attr("value") must equal(data.issuingAuthorityName.value)
+      view.getElementById(s"${dateOfValidityKey}_$dayKey").attr("value") must equal(
         data.dateOfValidity.value.day.value.toString
       )
-      getElementById(view, s"${dateOfValidityKey}_$monthKey").attr("value") must equal(
+      view.getElementById(s"${dateOfValidityKey}_$monthKey").attr("value") must equal(
         data.dateOfValidity.value.month.value.toString
       )
-      getElementById(view, s"${dateOfValidityKey}_$yearKey").attr("value") must equal(
+      view.getElementById(s"${dateOfValidityKey}_$yearKey").attr("value") must equal(
         data.dateOfValidity.value.year.value.toString
       )
-      getElementById(view, s"${documentWriteOffKey}_$measurementUnitKey").attr("value") must equal(
+      view.getElementById(s"${documentWriteOffKey}_$measurementUnitKey").attr("value") must equal(
         data.documentWriteOff.get.measurementUnit.value
       )
-      getElementById(view, s"${documentWriteOffKey}_$documentQuantityKey").attr("value") must equal(
+      view.getElementById(s"${documentWriteOffKey}_$documentQuantityKey").attr("value") must equal(
         data.documentWriteOff.get.documentQuantity.value.toString
       )
     }
@@ -503,63 +496,63 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
       val view = createView(cachedDocuments = Seq(correctDocumentsProduced))
 
-      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(1)").text() must equal(
+      view.select("table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(1)").text() must equal(
         messages(documentTypeCode)
       )
-      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(2)").text() must equal(
+      view.select("table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(2)").text() must equal(
         messages(documentIdentifier)
       )
-      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(3)").text() must equal(
+      view.select("table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(3)").text() must equal(
         messages(documentPart)
       )
-      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(4)").text() must equal(
+      view.select("table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(4)").text() must equal(
         messages(documentStatus)
       )
-      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(5)").text() must equal(
+      view.select("table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(5)").text() must equal(
         messages(documentStatusReason)
       )
-      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(6)").text() must equal(
+      view.select("table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(6)").text() must equal(
         messages(issuingAuthorityName)
       )
-      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(7)").text() must equal(
+      view.select("table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(7)").text() must equal(
         messages(dateOfValidity)
       )
-      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(8)").text() must equal(
+      view.select("table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(8)").text() must equal(
         messages(measurementUnit)
       )
-      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(9)").text() must equal(
+      view.select("table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(9)").text() must equal(
         messages(documentQuantity)
       )
 
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(1)").text() must equal(
+      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(1)").text() must equal(
         correctDocumentsProduced.documentTypeCode.get
       )
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(2)").text() must equal(
+      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(2)").text() must equal(
         correctDocumentsProduced.documentIdentifierAndPart.get.documentIdentifier.get
       )
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(3)").text() must equal(
+      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(3)").text() must equal(
         correctDocumentsProduced.documentIdentifierAndPart.get.documentPart.get
       )
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(4)").text() must equal(
+      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(4)").text() must equal(
         correctDocumentsProduced.documentStatus.get
       )
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(5)").text() must equal(
+      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(5)").text() must equal(
         correctDocumentsProduced.documentStatusReason.get
       )
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(6)").text() must equal(
+      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(6)").text() must equal(
         correctDocumentsProduced.issuingAuthorityName.get
       )
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(7)").text() must equal(
+      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(7)").text() must equal(
         correctDocumentsProduced.dateOfValidity.get.toString
       )
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(8)").text() must equal(
+      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(8)").text() must equal(
         correctDocumentsProduced.documentWriteOff.get.measurementUnit.get
       )
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(9)").text() must equal(
+      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(9)").text() must equal(
         correctDocumentsProduced.documentWriteOff.get.documentQuantity.get.toString
       )
 
-      val removeButton = getElementByCss(view, "tbody>tr>td:nth-child(10)>button")
+      val removeButton = view.select("tbody>tr>td:nth-child(10)>button")
       val firstItemIndex = "0"
 
       removeButton.text() must be("Remove")

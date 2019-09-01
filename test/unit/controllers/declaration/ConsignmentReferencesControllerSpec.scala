@@ -81,7 +81,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
       val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(correctForm))
 
       await(result) mustBe aRedirectToTheNextPage
-      thePageNavigatedTo mustBe controllers.declaration.routes.ExporterDetailsController.displayForm()
+      thePageNavigatedTo mustBe controllers.declaration.routes.ExporterDetailsController.displayPage()
     }
   }
 }

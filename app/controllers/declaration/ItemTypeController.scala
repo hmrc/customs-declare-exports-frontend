@@ -83,11 +83,11 @@ class ItemTypeController @Inject()(
           val hasFiscalReferences = item.hasFiscalReferences
           val formAction = FormAction.bindFromRequest()
           formAction match {
-            case Some(Add) =>
+            case Add =>
               handleAddition(mode, itemId, itemTypeInput, itemTypeCache, hasFiscalReferences)
-            case Some(SaveAndContinue) | Some(SaveAndReturn) =>
+            case SaveAndContinue | SaveAndReturn =>
               handleSaveAndContinue(mode, itemId, itemTypeInput, itemTypeCache, hasFiscalReferences)
-            case Some(Remove(keys)) =>
+            case Remove(keys) =>
               handleRemoval(mode, itemId, keys, itemTypeCache, hasFiscalReferences)
             case _ =>
               errorHandler.displayErrorPage()

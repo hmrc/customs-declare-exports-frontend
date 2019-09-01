@@ -21,12 +21,12 @@ import helpers.views.declaration.{CommonMessages, PackageInformationMessages}
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.package_information
 import views.tags.ViewTest
 
 @ViewTest
-class PackageInformationViewSpec extends ViewSpec with PackageInformationMessages with CommonMessages {
+class PackageInformationViewSpec extends AppViewSpec with PackageInformationMessages with CommonMessages {
 
   private val form: Form[PackageInformation] = PackageInformation.form()
   private val packageInformationPage = app.injector.instanceOf[package_information]
@@ -37,47 +37,47 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(title))
+      createView().select("title").text() must be(messages(title))
     }
 
     "display section header" in {
 
-      getElementById(createView(), "section-header").text() must be("Items")
+      createView().getElementById("section-header").text() must be("Items")
     }
 
     "display header" in {
 
-      getElementByCss(createView(), "legend>h1").text() must be(messages(title))
+      createView().select("legend>h1").text() must be(messages(title))
     }
 
     "display empty input with label for Types of Packages" in {
 
       val view = createView()
 
-      getElementById(view, "typesOfPackages-label").text() must be(messages(typesOfPackages))
-      getElementById(view, "typesOfPackages").attr("value") must be("")
+      view.getElementById("typesOfPackages-label").text() must be(messages(typesOfPackages))
+      view.getElementById("typesOfPackages").attr("value") must be("")
     }
 
     "display empty input with label for Number of Packages" in {
 
       val view = createView()
 
-      getElementById(view, "numberOfPackages-label").text() must be(messages(numberOfPackages))
-      getElementById(view, "numberOfPackages").attr("value") must be("")
+      view.getElementById("numberOfPackages-label").text() must be(messages(numberOfPackages))
+      view.getElementById("numberOfPackages").attr("value") must be("")
     }
 
     "display empty input with label for Shipping Marks" in {
 
       val view = createView()
 
-      getElementById(view, "shippingMarks-label").text() must be(messages(shippingMarks))
-      getElementById(view, "shippingMarks-hint").text() must be(messages(shippingMarksHint))
-      getElementById(view, "shippingMarks").attr("value") must be("")
+      view.getElementById("shippingMarks-label").text() must be(messages(shippingMarks))
+      view.getElementById("shippingMarks-hint").text() must be(messages(shippingMarksHint))
+      view.getElementById("shippingMarks").attr("value") must be("")
     }
 
     "display 'Back' button that links to 'Item Type' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be(s"/customs-declare-exports/declaration/items/$itemId/item-type")
@@ -106,36 +106,36 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
 
       val view = createView(PackageInformation.form().fill(PackageInformation("PA", 0, "")))
 
-      getElementById(view, "typesOfPackages").attr("value") must be("PA")
-      getElementById(view, "numberOfPackages").attr("value") must be("0")
-      getElementById(view, "shippingMarks").attr("value") must be("")
+      view.getElementById("typesOfPackages").attr("value") must be("PA")
+      view.getElementById("numberOfPackages").attr("value") must be("0")
+      view.getElementById("shippingMarks").attr("value") must be("")
     }
 
     "display data in Number of Packages input" in {
 
       val view = createView(PackageInformation.form().fill(PackageInformation("", 100, "")))
 
-      getElementById(view, "typesOfPackages").attr("value") must be("")
-      getElementById(view, "numberOfPackages").attr("value") must be("100")
-      getElementById(view, "shippingMarks").attr("value") must be("")
+      view.getElementById("typesOfPackages").attr("value") must be("")
+      view.getElementById("numberOfPackages").attr("value") must be("100")
+      view.getElementById("shippingMarks").attr("value") must be("")
     }
 
     "display data in Shipping Marks" in {
 
       val view = createView(PackageInformation.form().fill(PackageInformation("", 0, "Test")))
 
-      getElementById(view, "typesOfPackages").attr("value") must be("")
-      getElementById(view, "numberOfPackages").attr("value") must be("0")
-      getElementById(view, "shippingMarks").attr("value") must be("Test")
+      view.getElementById("typesOfPackages").attr("value") must be("")
+      view.getElementById("numberOfPackages").attr("value") must be("0")
+      view.getElementById("shippingMarks").attr("value") must be("Test")
     }
 
     "display data in all inputs" in {
 
       val view = createView(PackageInformation.form().fill(PackageInformation("PA", 100, "Test")))
 
-      getElementById(view, "typesOfPackages").attr("value") must be("PA")
-      getElementById(view, "numberOfPackages").attr("value") must be("100")
-      getElementById(view, "shippingMarks").attr("value") must be("Test")
+      view.getElementById("typesOfPackages").attr("value") must be("PA")
+      view.getElementById("numberOfPackages").attr("value") must be("100")
+      view.getElementById("shippingMarks").attr("value") must be("Test")
     }
 
     "display one row with data in table" in {
@@ -144,16 +144,16 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
       val view = packageInformationPage(Mode.Normal, "12345", form, packages)(fakeRequest, messages)
 
       // check table header
-      getElementByCss(view, "table>caption").text() must be(messages(tableHeading))
-      getElementByCss(view, "table>thead>tr>th:nth-child(1)").text() must be(messages(typesOfPackages))
-      getElementByCss(view, "table>thead>tr>th:nth-child(2)").text() must be(messages(numberOfPackages))
-      getElementByCss(view, "table>thead>tr>th:nth-child(3)").text() must be(messages(shippingMarks))
-      getElementByCss(view, "table>thead>tr>th:nth-child(4)").text() must be(messages(remove))
+      view.select("table>caption").text() must be(messages(tableHeading))
+      view.select("table>thead>tr>th:nth-child(1)").text() must be(messages(typesOfPackages))
+      view.select("table>thead>tr>th:nth-child(2)").text() must be(messages(numberOfPackages))
+      view.select("table>thead>tr>th:nth-child(3)").text() must be(messages(shippingMarks))
+      view.select("table>thead>tr>th:nth-child(4)").text() must be(messages(remove))
 
       // check row
-      getElementByCss(view, "table>tbody>tr>td:nth-child(1)").text() must be("PA")
-      getElementByCss(view, "table>tbody>tr>td:nth-child(2)").text() must be("100")
-      getElementByCss(view, "table>tbody>tr>td:nth-child(3)").text() must be("Shipping Mark")
+      view.select("table>tbody>tr>td:nth-child(1)").text() must be("PA")
+      view.select("table>tbody>tr>td:nth-child(2)").text() must be("100")
+      view.select("table>tbody>tr>td:nth-child(3)").text() must be("Shipping Mark")
     }
 
     "display two rows with data in table" in {
@@ -162,20 +162,20 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
       val view = packageInformationPage(Mode.Normal, "12345", form, packages)(fakeRequest, messages)
 
       // check table header
-      getElementByCss(view, "table>caption").text() must be("2 Packages added")
-      getElementByCss(view, "table>thead>tr>th:nth-child(1)").text() must be(messages(typesOfPackages))
-      getElementByCss(view, "table>thead>tr>th:nth-child(2)").text() must be(messages(numberOfPackages))
-      getElementByCss(view, "table>thead>tr>th:nth-child(3)").text() must be(messages(shippingMarks))
-      getElementByCss(view, "table>thead>tr>th:nth-child(4)").text() must be(messages(remove))
+      view.select("table>caption").text() must be("2 Packages added")
+      view.select("table>thead>tr>th:nth-child(1)").text() must be(messages(typesOfPackages))
+      view.select("table>thead>tr>th:nth-child(2)").text() must be(messages(numberOfPackages))
+      view.select("table>thead>tr>th:nth-child(3)").text() must be(messages(shippingMarks))
+      view.select("table>thead>tr>th:nth-child(4)").text() must be(messages(remove))
 
       // check rows
-      getElementByCss(view, "table>tbody>tr>td:nth-child(1)").text() must be("PA")
-      getElementByCss(view, "table>tbody>tr>td:nth-child(2)").text() must be("100")
-      getElementByCss(view, "table>tbody>tr>td:nth-child(3)").text() must be("Shipping Mark")
+      view.select("table>tbody>tr>td:nth-child(1)").text() must include("PA")
+      view.select("table>tbody>tr>td:nth-child(2)").text() must include("100")
+      view.select("table>tbody>tr>td:nth-child(3)").text() must include("Shipping Mark")
 
-      getElementByCss(view, "table>tbody>tr:nth-child(2)>td:nth-child(1)").text() must be("PB")
-      getElementByCss(view, "table>tbody>tr:nth-child(2)>td:nth-child(2)").text() must be("101")
-      getElementByCss(view, "table>tbody>tr:nth-child(2)>td:nth-child(3)").text() must be("Shipping Mark")
+      view.select("table>tbody>tr:nth-child(2)>td:nth-child(1)").text() must include("PB")
+      view.select("table>tbody>tr:nth-child(2)>td:nth-child(2)").text() must include("101")
+      view.select("table>tbody>tr:nth-child(2)>td:nth-child(3)").text() must include("Shipping Mark")
     }
   }
 }

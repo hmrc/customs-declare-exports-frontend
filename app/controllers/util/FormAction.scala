@@ -29,18 +29,17 @@ object FormAction {
   private val continueLabel = "Continue"
   private val removeLabel = "Remove"
 
-  private def fromUrlEncoded(input: Map[String, Seq[String]]): FormAction =
-    input.flatMap {
-      case (`addLabel`, _)             => Some(Add)
-      case (`saveAndContinueLabel`, _) => Some(SaveAndContinue)
-      case (`saveAndReturnLabel`, _)   => Some(SaveAndReturn)
-      case (`continueLabel`, _)        => Some(Continue)
-      case (`removeLabel`, values)     => Some(Remove(values))
-      case _                           => None
-    }.headOption.getOrElse(Unknown)
-
-  def bindFromRequest()(implicit request: Request[AnyContent]): Option[FormAction] =
-    request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
+  def bindFromRequest()(implicit request: Request[AnyContent]): FormAction =
+    request.body.asFormUrlEncoded.flatMap { body =>
+      body.flatMap {
+        case (`addLabel`, _)             => Some(Add)
+        case (`saveAndContinueLabel`, _) => Some(SaveAndContinue)
+        case (`saveAndReturnLabel`, _)   => Some(SaveAndReturn)
+        case (`continueLabel`, _)        => Some(Continue)
+        case (`removeLabel`, values)     => Some(Remove(values))
+        case _                           => None
+      }.headOption
+    }.getOrElse(Unknown)
 }
 
 case object Unknown extends FormAction

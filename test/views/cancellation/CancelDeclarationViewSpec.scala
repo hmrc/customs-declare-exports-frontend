@@ -22,12 +22,12 @@ import forms.cancellation.CancellationChangeReason.NoLongerRequired
 import helpers.views.declaration.CommonMessages
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.cancel_declaration
 import views.tags.ViewTest
 
 @ViewTest
-class CancelDeclarationViewSpec extends ViewSpec with CommonMessages {
+class CancelDeclarationViewSpec extends AppViewSpec with CommonMessages {
 
   private val form: Form[CancelDeclaration] = CancelDeclaration.form
   private val cancelDeclarationPage = app.injector.instanceOf[cancel_declaration]
@@ -56,65 +56,65 @@ class CancelDeclarationViewSpec extends ViewSpec with CommonMessages {
     checkErrorsSummary(view)
     checkErrorLink(view, elementId, errorMsg, hrefPageLink)
 
-    getElementById(view, idOfErrorElement).text() must be(expectedMessage)
+    view.getElementById(idOfErrorElement).text() must be(expectedMessage)
   }
 
   "Cancel DeclarationView on empty page" should {
 
     "display page title" in {
 
-      getElementById(createView(), "title").text() must be(messages("cancellation.title"))
+      createView().getElementById("title").text() must be(messages("cancellation.title"))
     }
 
     "display empty input with label for 'Functional Reference ID'" in {
 
       val view = createView()
 
-      getElementById(view, "functionalReferenceId-label").text() must be(messages("cancellation.functionalReferenceId"))
-      getElementById(view, "functionalReferenceId").attr("value") must be("")
+      view.getElementById("functionalReferenceId-label").text() must be(messages("cancellation.functionalReferenceId"))
+      view.getElementById("functionalReferenceId").attr("value") must be("")
     }
 
     "display empty input with label for 'declaration Id'" in {
 
       val view = createView()
 
-      getElementById(view, "declarationId-label").text() must be(messages("cancellation.declarationId"))
-      getElementById(view, "declarationId").attr("value") must be("")
+      view.getElementById("declarationId-label").text() must be(messages("cancellation.declarationId"))
+      view.getElementById("declarationId").attr("value") must be("")
     }
 
     "display empty input with label for 'statement Description'" in {
 
       val view = createView()
 
-      getElementById(view, "statementDescription-label").text() must be(messages("cancellation.statementDescription"))
-      getElementById(view, "statementDescription").attr("value") must be("")
+      view.getElementById("statementDescription-label").text() must be(messages("cancellation.statementDescription"))
+      view.getElementById("statementDescription").attr("value") must be("")
     }
 
     "display empty input with label for 'Country'" in {
 
       val view = createView()
 
-      getElementById(view, "changeReason-label").text() must be(messages("cancellation.changeReason"))
-      getElementById(view, "changeReason").attr("value") must be("")
+      view.getElementById("changeReason-label").text() must be(messages("cancellation.changeReason"))
+      view.getElementById("changeReason").attr("value") must be("")
     }
 
     "display three radio buttons with description (not selected)" in {
 
       val view = createView(CancelDeclaration.form.fill(CancelDeclaration("", "", "", "")))
 
-      val noLongerRequired = getElementById(view, "noLongerRequired")
+      val noLongerRequired = view.getElementById("noLongerRequired")
       noLongerRequired.attr("checked") must be("")
-      val noLongerRequiredLabel = getElementById(view, "noLongerRequired-label")
+      val noLongerRequiredLabel = view.getElementById("noLongerRequired-label")
       noLongerRequiredLabel.text() must be(messages("cancellation.reason.noLongerRequired"))
 
-      val otherReason = getElementById(view, "otherReason")
+      val otherReason = view.getElementById("otherReason")
       otherReason.attr("checked") must be("")
-      val otherReasonLabel = getElementById(view, "otherReason-label")
+      val otherReasonLabel = view.getElementById("otherReason-label")
       otherReasonLabel.text() must be(messages("cancellation.reason.otherReason"))
 
-      val duplication = getElementById(view, "duplication")
+      val duplication = view.getElementById("duplication")
       duplication.attr("checked") must be("")
-      val duplicationLabel = getElementById(view, "duplication-label")
+      val duplicationLabel = view.getElementById("duplication-label")
       duplicationLabel.text() must be(messages("cancellation.reason.duplication"))
     }
 
@@ -122,7 +122,7 @@ class CancelDeclarationViewSpec extends ViewSpec with CommonMessages {
 
       val view = createView()
 
-      val saveButton = getElementByCss(view, "#submit")
+      val saveButton = view.select("#submit")
       saveButton.text() must be(messages("cancellation.submitButton"))
     }
   }
@@ -139,10 +139,10 @@ class CancelDeclarationViewSpec extends ViewSpec with CommonMessages {
       checkErrorLink(view, "statementDescription-error", "error.required", "#statementDescription")
       checkErrorLink(view, "changeReason-error", "error.required", "#changeReason")
 
-      getElementById(view, "error-message-functionalReferenceId-input").text() must be(messages("error.required"))
-      getElementById(view, "error-message-declarationId-input").text() must be(messages("error.required"))
-      getElementById(view, "error-message-statementDescription-input").text() must be(messages("error.required"))
-      getElementById(view, "error-message-changeReason-input").text() must be(messages("error.required"))
+      view.getElementById("error-message-functionalReferenceId-input").text() must be(messages("error.required"))
+      view.getElementById("error-message-declarationId-input").text() must be(messages("error.required"))
+      view.getElementById("error-message-statementDescription-input").text() must be(messages("error.required"))
+      view.getElementById("error-message-changeReason-input").text() must be(messages("error.required"))
     }
 
     "display error when referenceId" when {
@@ -157,7 +157,7 @@ class CancelDeclarationViewSpec extends ViewSpec with CommonMessages {
         checkErrorLink(view, 1, "cancellation.functionalReferenceId.tooShort", "#functionalReferenceId")
         checkErrorLink(view, 2, "cancellation.functionalReferenceId.wrongFormat", "#functionalReferenceId")
 
-        getElementById(view, "error-message-functionalReferenceId-input").text() must be(
+        view.getElementById("error-message-functionalReferenceId-input").text() must be(
           messages("cancellation.functionalReferenceId.tooShort")
         )
       }
@@ -180,7 +180,7 @@ class CancelDeclarationViewSpec extends ViewSpec with CommonMessages {
         checkErrorLink(view, 1, "cancellation.functionalReferenceId.tooLong", "#functionalReferenceId")
         checkErrorLink(view, 2, "cancellation.functionalReferenceId.wrongFormat", "#functionalReferenceId")
 
-        getElementById(view, "error-message-functionalReferenceId-input").text() must be(
+        view.getElementById("error-message-functionalReferenceId-input").text() must be(
           messages("cancellation.functionalReferenceId.tooLong")
         )
       }
@@ -207,7 +207,7 @@ class CancelDeclarationViewSpec extends ViewSpec with CommonMessages {
           "#functionalReferenceId"
         )
 
-        getElementById(view, "error-message-functionalReferenceId-input").text() must be(
+        view.getElementById("error-message-functionalReferenceId-input").text() must be(
           messages("cancellation.functionalReferenceId.wrongFormat")
         )
       }
@@ -232,7 +232,7 @@ class CancelDeclarationViewSpec extends ViewSpec with CommonMessages {
         checkErrorsSummary(view)
         checkErrorLink(view, "declarationId-error", "cancellation.declarationId.tooLong", "#declarationId")
 
-        getElementById(view, "error-message-declarationId-input").text() must be(
+        view.getElementById("error-message-declarationId-input").text() must be(
           messages("cancellation.declarationId.tooLong")
         )
       }
@@ -269,7 +269,7 @@ class CancelDeclarationViewSpec extends ViewSpec with CommonMessages {
         checkErrorsSummary(view)
         checkErrorLink(view, "declarationId-error", "cancellation.declarationId.wrongFormat", "#declarationId")
 
-        getElementById(view, "error-message-declarationId-input").text() must be(
+        view.getElementById("error-message-declarationId-input").text() must be(
           messages("cancellation.declarationId.wrongFormat")
         )
       }
@@ -330,7 +330,7 @@ class CancelDeclarationViewSpec extends ViewSpec with CommonMessages {
           "#statementDescription"
         )
 
-        getElementById(view, "error-message-statementDescription-input").text() must be(
+        view.getElementById("error-message-statementDescription-input").text() must be(
           messages("cancellation.statementDescription.wrongFormat")
         )
       }
@@ -349,7 +349,7 @@ class CancelDeclarationViewSpec extends ViewSpec with CommonMessages {
         checkErrorsSummary(view)
         checkErrorLink(view, "changeReason-error", "cancellation.changeReason.error.wrongValue", "#changeReason")
 
-        getElementById(view, "error-message-changeReason-input").text() must be(
+        view.getElementById("error-message-changeReason-input").text() must be(
           messages("cancellation.changeReason.error.wrongValue")
         )
       }

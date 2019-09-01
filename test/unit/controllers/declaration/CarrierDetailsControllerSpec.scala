@@ -49,7 +49,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
       "display page method is invoked and cache is empty" in new SetUp {
 
-        val result = controller.displayForm(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -58,7 +58,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withCarrierDetails(Some("1234"))))
 
-        val result = controller.displayForm(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -85,7 +85,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
         val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.DeclarationAdditionalActorsController.displayForm()
+        thePageNavigatedTo mustBe routes.DeclarationAdditionalActorsController.displayPage()
       }
     }
   }

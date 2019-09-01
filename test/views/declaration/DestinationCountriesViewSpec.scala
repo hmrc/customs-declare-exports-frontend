@@ -23,12 +23,12 @@ import helpers.views.declaration.{CommonMessages, DestinationCountriesMessages}
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.destination_countries_supplementary
 import views.tags.ViewTest
 
 @ViewTest
-class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMessages with CommonMessages {
+class DestinationCountriesViewSpec extends AppViewSpec with DestinationCountriesMessages with CommonMessages {
 
   private val form: Form[DestinationCountries] = DestinationCountries.Supplementary.form
   private val destiantionCountriesSupplementaryPage = app.injector.instanceOf[destination_countries_supplementary]
@@ -39,30 +39,30 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
     "display page title" in {
 
-      getElementById(createView(), "title").text() must be(messages(title))
+      createView().getElementById("title").text() must be(messages(title))
     }
 
     "display empty input with label for Dispatch country" in {
 
       val view = createView()
 
-      getElementById(view, "countryOfDispatch-hint").text() must be(messages(countryOfDispatchHint))
-      getElementById(view, "countryOfDispatch-label").ownText() must be(messages(countryOfDispatch))
-      getElementById(view, "countryOfDispatch").attr("value") must be("")
+      view.getElementById("countryOfDispatch-hint").text() must be(messages(countryOfDispatchHint))
+      view.getElementById("countryOfDispatch-label").ownText() must be(messages(countryOfDispatch))
+      view.getElementById("countryOfDispatch").attr("value") must be("")
     }
 
     "display empty input with label for Destination country" in {
 
       val view = createView()
 
-      getElementById(view, "countryOfDestination-hint").text() must be(messages(countryOfDestinationHint))
-      getElementById(view, "countryOfDestination-label").ownText() must be(messages(countryOfDestination))
-      getElementById(view, "countryOfDestination").attr("value") must be("")
+      view.getElementById("countryOfDestination-hint").text() must be(messages(countryOfDestinationHint))
+      view.getElementById("countryOfDestination-label").ownText() must be(messages(countryOfDestination))
+      view.getElementById("countryOfDestination").attr("value") must be("")
     }
 
     "display 'Back' button that links to 'Declaration holder of authorisation' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/holder-of-authorisation")
@@ -90,7 +90,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(countryOfDispatchEmpty), "#countryOfDispatch")
 
-      getElementByCss(view, "span.error-message").text() must be(messages(countryOfDispatchEmpty))
+      view.select("span.error-message").text() must be(messages(countryOfDispatchEmpty))
     }
 
     "display error when dispatch country is incorrect" in {
@@ -103,7 +103,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(countryOfDispatchError), "#countryOfDispatch")
 
-      getElementByCss(view, "span.error-message").text() must be(messages(countryOfDispatchError))
+      view.select("span.error-message").text() must be(messages(countryOfDispatchError))
     }
 
     "display error when destination country is empty" in {
@@ -114,7 +114,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(countryOfDestinationEmpty), "#countryOfDestination")
 
-      getElementByCss(view, "span.error-message").text() must be(messages(countryOfDestinationEmpty))
+      view.select("span.error-message").text() must be(messages(countryOfDestinationEmpty))
     }
 
     "display error when destination country is incorrect" in {
@@ -127,7 +127,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(countryOfDestinationError), "#countryOfDestination")
 
-      getElementByCss(view, "span.error-message").text() must be(messages(countryOfDestinationError))
+      view.select("span.error-message").text() must be(messages(countryOfDestinationError))
     }
 
     "display errors when both countries are incorrect" in {
@@ -146,7 +146,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
       checkErrorLink(view, 1, messages(countryOfDispatchError), "#countryOfDispatch")
       checkErrorLink(view, 2, messages(countryOfDestinationError), "#countryOfDestination")
 
-      val spanErrors = getElementsByCss(view, "span.error-message")
+      val spanErrors = view.select("span.error-message")
       spanErrors.size() must be(2)
 
       spanErrors.get(0).text() must be(messages(countryOfDispatchError))
@@ -162,7 +162,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
       checkErrorLink(view, 1, messages(countryOfDispatchEmpty), "#countryOfDispatch")
       checkErrorLink(view, 2, messages(countryOfDestinationEmpty), "#countryOfDestination")
 
-      val spanErrors = getElementsByCss(view, "span.error-message")
+      val spanErrors = view.select("span.error-message")
       spanErrors.size() must be(2)
 
       spanErrors.get(0).text() must be(messages(countryOfDispatchEmpty))
@@ -180,7 +180,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
       checkErrorLink(view, 1, messages(countryOfDispatchEmpty), "#countryOfDispatch")
       checkErrorLink(view, 2, messages(countryOfDestinationError), "#countryOfDestination")
 
-      val spanErrors = getElementsByCss(view, "span.error-message")
+      val spanErrors = view.select("span.error-message")
       spanErrors.size() must be(2)
 
       spanErrors.get(0).text() must be(messages(countryOfDispatchEmpty))

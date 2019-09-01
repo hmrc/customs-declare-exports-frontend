@@ -32,17 +32,16 @@
     title = messages("supplementary.summary.title")
 ) {
 
-    @if(mode == Mode.Draft) {
-        @components.back_link(controllers.routes.SavedDeclarationsController.displayDeclarations(), mode)
-    } else {
-
-        @{
-            if(suppDecData.transportInformationContainerData.fold(false)(_.containers.nonEmpty))
-                components.back_link(controllers.declaration.routes.TransportContainerController.displayContainersSummary(mode), mode)
-            else
-                components.back_link(controllers.declaration.routes.TransportDetailsController.displayForm(mode), mode)
-            }
-        }
+  @mode match {
+      case Mode.Draft => {
+          @components.back_link(controllers.routes.SavedDeclarationsController.displayDeclarations(), mode)
+      }
+      case _ if suppDecData.transportInformationContainerData.fold(false)(_.containers.nonEmpty) => {
+          @components.back_link(controllers.declaration.routes.TransportContainerController.displayContainersSummary(mode), mode)
+      }
+      case _ => {
+          @components.back_link(controllers.declaration.routes.TransportDetailsController.displayPage(mode), mode)
+      }
     }
 
     @components.page_title(

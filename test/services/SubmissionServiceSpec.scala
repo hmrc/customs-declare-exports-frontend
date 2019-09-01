@@ -16,20 +16,17 @@
 
 package services
 
-import base.{MockConnectors, MockExportCacheService, TestHelper}
-import com.codahale.metrics.SharedMetricRegistries
+import base.{Injector, MockConnectors, MockExportCacheService, TestHelper}
 import com.kenshoo.play.metrics.Metrics
 import config.AppConfig
 import forms.Choice.AllowedChoiceValues
 import metrics.{ExportsMetrics, MetricIdentifiers}
 import models.{DeclarationStatus, ExportsDeclaration}
-import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import services.audit.{AuditService, AuditTypes, EventData}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -40,21 +37,14 @@ import scala.concurrent.ExecutionContext.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class SubmissionServiceSpec
-    extends UnitSpec with MockExportCacheService with MockConnectors with ScalaFutures with OptionValues {
-
-  SharedMetricRegistries.clear()
+    extends UnitSpec with MockExportCacheService with MockConnectors with ScalaFutures with OptionValues with Injector {
 
   val mockAuditService = mock[AuditService]
 
-  val injector = GuiceApplicationBuilder().injector()
-  val appConfig = injector.instanceOf[AppConfig]
-  val exportMetrics = injector.instanceOf[ExportsMetrics]
+  val appConfig = instanceOf[AppConfig]
+  val exportMetrics = instanceOf[ExportsMetrics]
 
-  val hc: HeaderCarrier =
-    HeaderCarrier(
-      authorization = Some(Authorization(TestHelper.createRandomString(255))),
-      nsStamp = DateTime.now().getMillis
-    )
+  val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestHelper.createRandomString(255))))
 
   val request = TestHelper.journeyRequest(FakeRequest("", ""), AllowedChoiceValues.SupplementaryDec)
 
@@ -93,7 +83,7 @@ class SubmissionServiceSpec
       when(mockCustomsDeclareExportsConnector.updateDeclaration(any[ExportsDeclaration])(any(), any()))
         .thenReturn(Future.successful(submittedDeclaration))
 
-      val registry = injector.instanceOf[Metrics].defaultRegistry
+      val registry = instanceOf[Metrics].defaultRegistry
       val metric = MetricIdentifiers.submissionMetric
       val timerBefore = registry.getTimers.get(exportMetrics.timerName(metric)).getCount
       val counterBefore = registry.getCounters.get(exportMetrics.counterName(metric)).getCount

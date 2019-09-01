@@ -167,7 +167,9 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
         val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body))
 
-        status(result) must be(SEE_OTHER)
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.CommodityMeasureController
+          .displayPage(Mode.Normal, itemId)
       }
     }
   }

@@ -21,7 +21,7 @@ import forms.declaration.BorderTransport
 import helpers.views.declaration.CommonMessages
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.border_transport
 import views.tags.ViewTest
 import views.html.components.fields.field_text
@@ -49,7 +49,7 @@ class BorderTransportViewSpec extends BorderTransportFields with CommonMessages 
     "display header" in {
       val view = createView()
 
-      getElementByCss(view, "legend>h1").text() must be(messages("supplementary.transportInfo.title"))
+      view.select("legend>h1").text() must be(messages("supplementary.transportInfo.title"))
     }
 
     "display 'Back' button that links to 'Warehouse' page" in {
@@ -98,7 +98,7 @@ class BorderTransportViewSpec extends BorderTransportFields with CommonMessages 
 
 }
 
-trait BorderTransportFields extends ViewSpec {
+trait BorderTransportFields extends AppViewSpec {
   val form: Form[BorderTransport] = BorderTransport.form()
 
   val expBorderModeOfTransportCode = field_radio(

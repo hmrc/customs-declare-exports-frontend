@@ -41,7 +41,7 @@ class ExporterDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.parties.exporterDetails match {
       case Some(data) => Ok(exporterDetailsPage(mode, ExporterDetails.form().fill(data)))
       case _          => Ok(exporterDetailsPage(mode, ExporterDetails.form()))

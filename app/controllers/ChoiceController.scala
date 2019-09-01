@@ -45,7 +45,7 @@ class ChoiceController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  val logger = Logger.apply(this.getClass)
+  private val logger = Logger(this.getClass)
 
   def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
     request.declarationId match {
@@ -79,7 +79,7 @@ class ChoiceController @Inject()(
                   }
               }
             case CancelDec =>
-              Future.successful(Redirect(controllers.routes.CancelDeclarationController.displayForm()))
+              Future.successful(Redirect(controllers.routes.CancelDeclarationController.displayPage()))
             case ContinueDec =>
               Future.successful(Redirect(controllers.routes.SavedDeclarationsController.displayDeclarations()))
             case Submissions =>

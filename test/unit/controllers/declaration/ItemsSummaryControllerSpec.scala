@@ -101,7 +101,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController
-          .displayForm(Mode.Normal)
+          .displayPage(Mode.Normal)
       }
 
       "user save and returns" in {
@@ -109,7 +109,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController
-          .displayForm(Mode.Normal)
+          .displayPage(Mode.Normal)
       }
     }
   }

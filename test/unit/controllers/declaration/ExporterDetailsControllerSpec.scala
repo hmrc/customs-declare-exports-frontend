@@ -68,7 +68,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
       "details are empty" in {
         val declaration = aDeclaration()
         withNewCaching(declaration)
-        val response = controller.displayForm(Mode.Normal)(getRequest(declaration))
+        val response = controller.displayPage(Mode.Normal)(getRequest(declaration))
         status(response) mustBe OK
       }
       "details are filled" in {
@@ -79,7 +79,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
           )
         )
         withNewCaching(declaration)
-        val response = controller.displayForm(Mode.Normal)(getRequest(declaration))
+        val response = controller.displayPage(Mode.Normal)(getRequest(declaration))
         status(response) mustBe OK
         val details = theResponseForm.value.value.details
         details.eori mustBe defined

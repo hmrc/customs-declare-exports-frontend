@@ -49,7 +49,7 @@ trait ControllerSpec
   protected def viewOf(result: Future[Result]) = Html(contentAsString(result))
 
   protected def getRequest(declaration: ExportsDeclaration): JourneyRequest[AnyContentAsEmpty.type] =
-    JourneyRequest(getAuthenticatedRequest(), declaration)
+    new JourneyRequest(getAuthenticatedRequest(), declaration)
 
   protected def postRequest(body: JsValue): Request[AnyContentAsJson] =
     FakeRequest("POST", "")
@@ -67,5 +67,11 @@ trait ControllerSpec
     FakeRequest("POST", "")
       .withSession(ExportsSessionKeys.declarationId -> "declaration-id")
       .withFormUrlEncodedBody(body: _*)
+      .withCSRFToken
+
+  protected def deleteRequest(body: JsValue): Request[AnyContentAsJson] =
+    FakeRequest("DELETE", "")
+      .withSession(ExportsSessionKeys.declarationId -> "declaration-id")
+      .withJsonBody(body)
       .withCSRFToken
 }

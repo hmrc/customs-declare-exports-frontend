@@ -22,12 +22,12 @@ import helpers.views.declaration.{CommonMessages, RepresentativeDetailsMessages}
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.representative_details
 import views.tags.ViewTest
 
 @ViewTest
-class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsMessages with CommonMessages {
+class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetailsMessages with CommonMessages {
 
   private val form: Form[RepresentativeDetails] = RepresentativeDetails.form()
   private val representativeDetailsPage = app.injector.instanceOf[representative_details]
@@ -38,77 +38,77 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
 
     "display page title" in {
 
-      getElementById(createView(), "title").text() must be(messages(header))
+      createView().getElementById("title").text() must be(messages(header))
     }
 
     "display empty input with label for EORI" in {
 
       val view = createView()
 
-      getElementById(view, "details_eori-label").text() must be(messages(eoriInfo))
-      getElementById(view, "details_eori").attr("value") must be("")
+      view.getElementById("details_eori-label").text() must be(messages(eoriInfo))
+      view.getElementById("details_eori").attr("value") must be("")
     }
 
     "display empty input with label for Full name" in {
 
       val view = createView()
 
-      getElementById(view, "details_address_fullName-label").text() must be(messages(fullName))
-      getElementById(view, "details_address_fullName").attr("value") must be("")
+      view.getElementById("details_address_fullName-label").text() must be(messages(fullName))
+      view.getElementById("details_address_fullName").attr("value") must be("")
     }
 
     "display empty input with label for Address" in {
 
       val view = createView()
 
-      getElementById(view, "details_address_addressLine-label").text() must be(messages(addressLine))
-      getElementById(view, "details_address_addressLine").attr("value") must be("")
+      view.getElementById("details_address_addressLine-label").text() must be(messages(addressLine))
+      view.getElementById("details_address_addressLine").attr("value") must be("")
     }
 
     "display empty input with label for Town or City" in {
 
       val view = createView()
 
-      getElementById(view, "details_address_townOrCity-label").text() must be(messages(townOrCity))
-      getElementById(view, "details_address_townOrCity").attr("value") must be("")
+      view.getElementById("details_address_townOrCity-label").text() must be(messages(townOrCity))
+      view.getElementById("details_address_townOrCity").attr("value") must be("")
     }
 
     "display empty input with label for Postcode" in {
 
       val view = createView()
 
-      getElementById(view, "details_address_postCode-label").text() must be(messages(postCode))
-      getElementById(view, "details_address_postCode").attr("value") must be("")
+      view.getElementById("details_address_postCode-label").text() must be(messages(postCode))
+      view.getElementById("details_address_postCode").attr("value") must be("")
     }
 
     "display empty input with label for Country" in {
 
       val view = createView()
 
-      getElementById(view, "details.address.country-label").text() mustBe "Country"
-      getElementById(view, "details.address.country").attr("value") mustBe ""
+      view.getElementById("details.address.country-label").text() mustBe "Country"
+      view.getElementById("details.address.country").attr("value") mustBe ""
     }
 
     "display three radio buttons with description (not selected)" in {
 
       val view = createView(RepresentativeDetails.form().fill(RepresentativeDetails(None, None)))
 
-      val optionDirect = getElementById(view, "statusCode_direct")
+      val optionDirect = view.getElementById("statusCode_direct")
       optionDirect.attr("checked") must be("")
 
-      val optionDirectLabel = getElementByCss(view, "#statusCode>div:nth-child(2)>label>span")
-      optionDirectLabel.text() must be(messages(repTypeDirect))
+      val optionDirectLabel = view.select("#statusCode>div:nth-child(2)>label>span")
+      optionDirectLabel.text() must include(messages(repTypeDirect))
 
-      val optionIndirect = getElementById(view, "statusCode_indirect")
+      val optionIndirect = view.getElementById("statusCode_indirect")
       optionIndirect.attr("checked") must be("")
 
-      val optionIndirectLabel = getElementByCss(view, "#statusCode>div:nth-child(3)>label>span")
-      optionIndirectLabel.text() must be(messages(repTypeIndirect))
+      val optionIndirectLabel = view.select("#statusCode>div:nth-child(3)>label>span")
+      optionIndirectLabel.text() must include(messages(repTypeIndirect))
     }
 
     "display 'Back' button that links to 'Declarant Details' page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = createView().getElementById("link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/declarant-details")
@@ -152,7 +152,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "statusCode-error", repTypeErrorEmpty, "#statusCode")
 
-        getElementById(view, "error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
+        view.getElementById("error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
       }
 
       "display errors when only address is entered" in {
@@ -178,7 +178,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "statusCode-error", repTypeErrorEmpty, "#statusCode")
 
-        getElementById(view, "error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
+        view.getElementById("error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
       }
 
       "display errors when EORI is incorrect" in {
@@ -202,7 +202,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.eori-error", eoriError, "#details_eori")
 
-        getElementById(view, "error-message-details_eori-input").text() must be(messages(eoriError))
+        view.getElementById("error-message-details_eori-input").text() must be(messages(eoriError))
       }
 
       "display errors for empty Full name" in {
@@ -226,7 +226,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.fullName-error", fullNameEmpty, "#details_address_fullName")
 
-        getElementById(view, "error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
+        view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
       }
 
       "display errors for incorrect Full name" in {
@@ -250,7 +250,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.fullName-error", fullNameError, "#details_address_fullName")
 
-        getElementById(view, "error-message-details_address_fullName-input").text() must be(messages(fullNameError))
+        view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameError))
       }
 
       "display errors for empty Address" in {
@@ -274,7 +274,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
 
-        getElementById(view, "error-message-details_address_addressLine-input").text() must be(
+        view.getElementById("error-message-details_address_addressLine-input").text() must be(
           messages(addressLineEmpty)
         )
       }
@@ -300,7 +300,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
 
-        getElementById(view, "error-message-details_address_addressLine-input").text() must be(
+        view.getElementById("error-message-details_address_addressLine-input").text() must be(
           messages(addressLineError)
         )
       }
@@ -326,7 +326,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
 
-        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
       }
 
       "display errors for incorrect Town or city" in {
@@ -350,7 +350,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
 
-        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
       }
 
       "display errors for empty Postcode" in {
@@ -374,7 +374,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
 
-        getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
+        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
       }
 
       "display errors for incorrect Postcode" in {
@@ -398,7 +398,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
 
-        getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeError))
+        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeError))
       }
 
       "display errors for empty Country" in {
@@ -422,7 +422,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.country-error", countryEmpty, "#details_address_country")
 
-        getElementByCss(view, "span.error-message").text() must be(messages(countryEmpty))
+        view.select("span.error-message").text() must be(messages(countryEmpty))
       }
 
       "display errors for incorrect Country" in {
@@ -446,7 +446,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.country-error", countryError, "#details_address_country")
 
-        getElementByCss(view, "span.error-message").text() must be(messages(countryError))
+        view.select("span.error-message").text() must be(messages(countryError))
       }
 
       "display errors when everything except Full name is empty" in {
@@ -473,12 +473,12 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
         checkErrorLink(view, "details.address.country-error", countryEmpty, "#details_address_country")
 
-        getElementById(view, "error-message-details_address_addressLine-input").text() must be(
+        view.getElementById("error-message-details_address_addressLine-input").text() must be(
           messages(addressLineEmpty)
         )
-        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
-        getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
-        getElementByCss(view, "span.error-message").text() must be(messages(countryEmpty))
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
+        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
+        view.select("span.error-message").text() must be(messages(countryEmpty))
       }
 
       "display errors when everything except Country is empty" in {
@@ -505,12 +505,12 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
         checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
 
-        getElementById(view, "error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
-        getElementById(view, "error-message-details_address_addressLine-input").text() must be(
+        view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
+        view.getElementById("error-message-details_address_addressLine-input").text() must be(
           messages(addressLineEmpty)
         )
-        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
-        getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
+        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
       }
 
       "display errors when everything except Full name is incorrect" in {
@@ -537,12 +537,12 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
         checkErrorLink(view, "details.address.country-error", countryError, "#details_address_country")
 
-        getElementById(view, "error-message-details_address_addressLine-input").text() must be(
+        view.getElementById("error-message-details_address_addressLine-input").text() must be(
           messages(addressLineError)
         )
-        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
-        getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeError))
-        getElementByCss(view, "span.error-message").text() must be(messages(countryError))
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
+        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeError))
+        view.select("span.error-message").text() must be(messages(countryError))
       }
 
       "display errors when everything except Country is incorrect" in {
@@ -569,12 +569,12 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
         checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
 
-        getElementById(view, "error-message-details_address_fullName-input").text() must be(messages(fullNameError))
-        getElementById(view, "error-message-details_address_addressLine-input").text() must be(
+        view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameError))
+        view.getElementById("error-message-details_address_addressLine-input").text() must be(
           messages(addressLineError)
         )
-        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
-        getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeError))
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
+        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeError))
       }
     }
 
@@ -601,7 +601,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.eori-error", eoriError, "#details_eori")
 
-        getElementById(view, "error-message-details_eori-input").text() must be(messages(eoriError))
+        view.getElementById("error-message-details_eori-input").text() must be(messages(eoriError))
       }
 
       "display errors for empty Full name" in {
@@ -625,7 +625,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.fullName-error", fullNameEmpty, "#details_address_fullName")
 
-        getElementById(view, "error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
+        view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
       }
 
       "display errors for incorrect Full name" in {
@@ -649,7 +649,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.fullName-error", fullNameError, "#details_address_fullName")
 
-        getElementById(view, "error-message-details_address_fullName-input").text() must be(messages(fullNameError))
+        view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameError))
       }
 
       "display errors for empty Address" in {
@@ -673,7 +673,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
 
-        getElementById(view, "error-message-details_address_addressLine-input").text() must be(
+        view.getElementById("error-message-details_address_addressLine-input").text() must be(
           messages(addressLineEmpty)
         )
       }
@@ -699,7 +699,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
 
-        getElementById(view, "error-message-details_address_addressLine-input").text() must be(
+        view.getElementById("error-message-details_address_addressLine-input").text() must be(
           messages(addressLineError)
         )
       }
@@ -725,7 +725,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
 
-        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
       }
 
       "display errors for incorrect Town or city" in {
@@ -749,7 +749,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
 
-        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
       }
 
       "display errors for empty Postcode" in {
@@ -773,7 +773,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
 
-        getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
+        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
       }
 
       "display errors for incorrect Postcode" in {
@@ -797,7 +797,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
 
-        getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeError))
+        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeError))
       }
 
       "display errors for empty Country" in {
@@ -821,7 +821,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.country-error", countryEmpty, "#details_address_country")
 
-        getElementByCss(view, "span.error-message").text() must be(messages(countryEmpty))
+        view.select("span.error-message").text() must be(messages(countryEmpty))
       }
 
       "display errors for incorrect Country" in {
@@ -845,7 +845,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.country-error", countryError, "#details_address_country")
 
-        getElementByCss(view, "span.error-message").text() must be(messages(countryError))
+        view.select("span.error-message").text() must be(messages(countryError))
       }
 
       "display errors when everything except Full name is empty" in {
@@ -872,12 +872,12 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
         checkErrorLink(view, "details.address.country-error", countryEmpty, "#details_address_country")
 
-        getElementById(view, "error-message-details_address_addressLine-input").text() must be(
+        view.getElementById("error-message-details_address_addressLine-input").text() must be(
           messages(addressLineEmpty)
         )
-        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
-        getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
-        getElementByCss(view, "span.error-message").text() must be(messages(countryEmpty))
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
+        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
+        view.select("span.error-message").text() must be(messages(countryEmpty))
       }
 
       "display errors when everything except Country is empty" in {
@@ -904,12 +904,12 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
         checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
 
-        getElementById(view, "error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
-        getElementById(view, "error-message-details_address_addressLine-input").text() must be(
+        view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
+        view.getElementById("error-message-details_address_addressLine-input").text() must be(
           messages(addressLineEmpty)
         )
-        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
-        getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
+        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
       }
 
       "display errors when everything except Full name is incorrect" in {
@@ -936,12 +936,12 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
         checkErrorLink(view, "details.address.country-error", countryError, "#details_address_country")
 
-        getElementById(view, "error-message-details_address_addressLine-input").text() must be(
+        view.getElementById("error-message-details_address_addressLine-input").text() must be(
           messages(addressLineError)
         )
-        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
-        getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeError))
-        getElementByCss(view, "span.error-message").text() must be(messages(countryError))
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
+        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeError))
+        view.select("span.error-message").text() must be(messages(countryError))
       }
 
       "display errors when everything except Country is incorrect" in {
@@ -968,12 +968,12 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
         checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
 
-        getElementById(view, "error-message-details_address_fullName-input").text() must be(messages(fullNameError))
-        getElementById(view, "error-message-details_address_addressLine-input").text() must be(
+        view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameError))
+        view.getElementById("error-message-details_address_addressLine-input").text() must be(
           messages(addressLineError)
         )
-        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
-        getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeError))
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
+        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeError))
       }
     }
   }
@@ -999,7 +999,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
           )
         val view = createView(form)
 
-        getElementById(view, "details_eori").attr("value") must be("1234")
+        view.getElementById("details_eori").attr("value") must be("1234")
       }
 
       "display data in Business address inputs" in {
@@ -1019,11 +1019,11 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
           )
         val view = createView(form)
 
-        getElementById(view, "details_address_fullName").attr("value") must be("test")
-        getElementById(view, "details_address_addressLine").attr("value") must be("test1")
-        getElementById(view, "details_address_townOrCity").attr("value") must be("test2")
-        getElementById(view, "details_address_postCode").attr("value") must be("test3")
-        getElementById(view, "details.address.country").attr("value") must be("test4")
+        view.getElementById("details_address_fullName").attr("value") must be("test")
+        view.getElementById("details_address_addressLine").attr("value") must be("test1")
+        view.getElementById("details_address_townOrCity").attr("value") must be("test2")
+        view.getElementById("details_address_postCode").attr("value") must be("test3")
+        view.getElementById("details.address.country").attr("value") must be("test4")
       }
     }
 
@@ -1046,8 +1046,8 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
           )
         val view = createView(form)
 
-        getElementById(view, "details_eori").attr("value") must be("1234")
-        getElementById(view, "statusCode_direct").attr("checked") must be("checked")
+        view.getElementById("details_eori").attr("value") must be("1234")
+        view.getElementById("statusCode_direct").attr("checked") must be("checked")
       }
 
       "display data in Business address inputs" in {
@@ -1067,12 +1067,12 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
           )
         val view = createView(form)
 
-        getElementById(view, "details_address_fullName").attr("value") must be("test")
-        getElementById(view, "details_address_addressLine").attr("value") must be("test1")
-        getElementById(view, "details_address_townOrCity").attr("value") must be("test2")
-        getElementById(view, "details_address_postCode").attr("value") must be("test3")
-        getElementById(view, "details.address.country").attr("value") must be("test4")
-        getElementById(view, "statusCode_direct").attr("checked") must be("checked")
+        view.getElementById("details_address_fullName").attr("value") must be("test")
+        view.getElementById("details_address_addressLine").attr("value") must be("test1")
+        view.getElementById("details_address_townOrCity").attr("value") must be("test2")
+        view.getElementById("details_address_postCode").attr("value") must be("test3")
+        view.getElementById("details.address.country").attr("value") must be("test4")
+        view.getElementById("statusCode_direct").attr("checked") must be("checked")
       }
     }
 
@@ -1095,8 +1095,8 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
           )
         val view = createView(form)
 
-        getElementById(view, "details_eori").attr("value") must be("1234")
-        getElementById(view, "statusCode_indirect").attr("checked") must be("checked")
+        view.getElementById("details_eori").attr("value") must be("1234")
+        view.getElementById("statusCode_indirect").attr("checked") must be("checked")
       }
 
       "display data in Business address inputs" in {
@@ -1116,12 +1116,12 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
           )
         val view = createView(form)
 
-        getElementById(view, "details_address_fullName").attr("value") must be("test")
-        getElementById(view, "details_address_addressLine").attr("value") must be("test1")
-        getElementById(view, "details_address_townOrCity").attr("value") must be("test2")
-        getElementById(view, "details_address_postCode").attr("value") must be("test3")
-        getElementById(view, "details.address.country").attr("value") must be("test4")
-        getElementById(view, "statusCode_indirect").attr("checked") must be("checked")
+        view.getElementById("details_address_fullName").attr("value") must be("test")
+        view.getElementById("details_address_addressLine").attr("value") must be("test1")
+        view.getElementById("details_address_townOrCity").attr("value") must be("test2")
+        view.getElementById("details_address_postCode").attr("value") must be("test3")
+        view.getElementById("details.address.country").attr("value") must be("test4")
+        view.getElementById("statusCode_indirect").attr("checked") must be("checked")
       }
     }
   }

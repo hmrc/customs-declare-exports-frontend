@@ -27,8 +27,8 @@ class Navigator @Inject()(appConfig: AppConfig) {
 
   def continueTo(call: Call)(implicit req: JourneyRequest[AnyContent]): Result =
     FormAction.bindFromRequest match {
-      case Some(SaveAndReturn) => goToDraftConfirmation()
-      case _                   => Results.Redirect(call)
+      case SaveAndReturn => goToDraftConfirmation()
+      case _             => Results.Redirect(call)
     }
 
   private def goToDraftConfirmation()(implicit req: JourneyRequest[_]): Result = {

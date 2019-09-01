@@ -21,12 +21,12 @@ import helpers.views.declaration.{CommonMessages, OfficeOfExitMessages}
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.office_of_exit_standard
 import views.tags.ViewTest
 
 @ViewTest
-class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages with CommonMessages {
+class OfficeOfExitStandardViewSpec extends AppViewSpec with OfficeOfExitMessages with CommonMessages {
 
   private val form: Form[OfficeOfExitStandard] = OfficeOfExitForms.standardForm()
   private val officeOfExitStandardPage = app.injector.instanceOf[office_of_exit_standard]
@@ -39,38 +39,38 @@ class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages wi
 
       "display page title" in {
 
-        getElementById(createView(), "title").text() mustBe messages(title)
+        createView().getElementById("title").text() mustBe messages(title)
       }
 
       "display section header" in {
 
-        getElementById(createView(), "section-header").text() mustBe "Locations"
+        createView().getElementById("section-header").text() mustBe "Locations"
       }
 
       "display office of exit question" in {
         val view = createView()
 
-        getElementById(view, "officeId-label").text() mustBe messages(officeOfExit)
-        getElementById(view, "officeId-hint").text() mustBe messages(hint)
-        getElementById(view, "officeId").attr("value") mustBe ""
+        view.getElementById("officeId-label").text() mustBe messages(officeOfExit)
+        view.getElementById("officeId-hint").text() mustBe messages(hint)
+        view.getElementById("officeId").attr("value") mustBe ""
       }
 
       "display presentation office question" in {
         val view = createView()
-        getElementById(view, "presentationOfficeId-label").text() mustBe messages(presentationOffice)
-        getElementById(view, "presentationOfficeId-hint").text() mustBe messages(presentationOfficeHint)
-        getElementById(view, "presentationOfficeId").attr("value") mustBe ""
+        view.getElementById("presentationOfficeId-label").text() mustBe messages(presentationOffice)
+        view.getElementById("presentationOfficeId-hint").text() mustBe messages(presentationOfficeHint)
+        view.getElementById("presentationOfficeId").attr("value") mustBe ""
       }
 
       // TODO change below code to use getElementById, missing ID in radio input for legend
       "display circumstances code question" in {
         val view = createView()
-        getElementByCss(view, "#circumstancesCode>legend>span").text() must be(messages(circumstancesCode))
+        view.select("#circumstancesCode>legend>span").text() must include(messages(circumstancesCode))
       }
 
       "display 'Back' button that links to 'Location of Goods' page" in {
 
-        val backButton = getElementById(createView(), "link-back")
+        val backButton = createView().getElementById("link-back")
 
         backButton.text() mustBe messages(backCaption)
         backButton.attr("href") mustBe "/customs-declare-exports/declaration/location-of-goods"
@@ -96,11 +96,11 @@ class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages wi
 
         checkErrorsSummary(view)
 
-        getElementById(view, "officeId-error").text() mustBe messages(officeOfExitEmpty)
-        getElementById(view, "error-message-officeId-input").text() mustBe messages(officeOfExitEmpty)
+        view.getElementById("officeId-error").text() mustBe messages(officeOfExitEmpty)
+        view.getElementById("error-message-officeId-input").text() mustBe messages(officeOfExitEmpty)
 
-        getElementById(view, "circumstancesCode-error").text() must be(messages(circumstancesCodeEmpty))
-        getElementById(view, "error-message-circumstancesCode-input").text() mustBe messages(circumstancesCodeEmpty)
+        view.getElementById("circumstancesCode-error").text() must be(messages(circumstancesCodeEmpty))
+        view.getElementById("error-message-circumstancesCode-input").text() mustBe messages(circumstancesCodeEmpty)
       }
 
       "display errors when all inputs are incorrect" in {
@@ -110,13 +110,11 @@ class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages wi
 
         checkErrorsSummary(view)
 
-        getElementById(view, "officeId-error").text() mustBe messages(officeOfExitLength)
-        getElementById(view, "error-message-officeId-input").text() mustBe messages(officeOfExitLength)
+        view.getElementById("officeId-error").text() mustBe messages(officeOfExitLength)
+        view.getElementById("error-message-officeId-input").text() mustBe messages(officeOfExitLength)
 
-        getElementById(view, "presentationOfficeId-error").text() mustBe messages(presentationOfficeLength)
-        getElementById(view, "error-message-presentationOfficeId-input").text() mustBe messages(
-          presentationOfficeLength
-        )
+        view.getElementById("presentationOfficeId-error").text() mustBe messages(presentationOfficeLength)
+        view.getElementById("error-message-presentationOfficeId-input").text() mustBe messages(presentationOfficeLength)
       }
 
       "display errors when office of exit and presentation office contains special characters" in {
@@ -126,11 +124,11 @@ class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages wi
 
         checkErrorsSummary(view)
 
-        getElementById(view, "officeId-error").text() mustBe messages(officeOfExitSpecialCharacters)
-        getElementById(view, "error-message-officeId-input").text() mustBe messages(officeOfExitSpecialCharacters)
+        view.getElementById("officeId-error").text() mustBe messages(officeOfExitSpecialCharacters)
+        view.getElementById("error-message-officeId-input").text() mustBe messages(officeOfExitSpecialCharacters)
 
-        getElementById(view, "presentationOfficeId-error").text() mustBe messages(presentationOfficeSpecialCharacters)
-        getElementById(view, "error-message-presentationOfficeId-input").text() mustBe messages(
+        view.getElementById("presentationOfficeId-error").text() mustBe messages(presentationOfficeSpecialCharacters)
+        view.getElementById("error-message-presentationOfficeId-input").text() mustBe messages(
           presentationOfficeSpecialCharacters
         )
       }

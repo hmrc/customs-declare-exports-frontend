@@ -26,12 +26,12 @@ import helpers.views.declaration.CommonMessages
 import models.{DeclarationStatus, ExportsDeclaration, Page, Paginated}
 import org.jsoup.nodes.Element
 import play.twirl.api.{Html, HtmlFormat}
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.saved_declarations
 import views.tags.ViewTest
 
 @ViewTest
-class SavedDeclarationsViewSpec extends ViewSpec with CommonMessages {
+class SavedDeclarationsViewSpec extends AppViewSpec with CommonMessages {
 
   val title: String = "saved.declarations.title"
   val ducr: String = "saved.declarations.ducr"
@@ -81,6 +81,7 @@ class SavedDeclarationsViewSpec extends ViewSpec with CommonMessages {
 
       tableCell(view)(1, 0).text() must be("No DUCR added")
       tableCell(view)(1, 1).text() must be("1 Jan 2019 at 09:45")
+      tableCell(view)(1, 2).text() must be("Remove")
 
       view.getElementById("pagination-one").text() must be("Showing 1 saved declaration")
     }
@@ -92,6 +93,8 @@ class SavedDeclarationsViewSpec extends ViewSpec with CommonMessages {
       numberOfTableRows(view) must be(8)
 
       tableCell(view)(1, 0).text() must be("DUCR-XXXX-1")
+      tableCell(view)(1, 2).text() must be("Remove")
+      tableCell(view)(8, 2).text() must be("Remove")
       tableCell(view)(8, 0).text() must be("DUCR-XXXX-8")
 
       view.getElementById("pagination-some").text() must be("Showing 11 - 18 of 28 saved declarations")
@@ -112,7 +115,8 @@ class SavedDeclarationsViewSpec extends ViewSpec with CommonMessages {
   private def numberOfTableRows(view: Html) = view.getElementsByClass("table-row").size() - 1
 
   private def tableCell(view: Html)(row: Int, column: Int): Element =
-    getElementsByCss(view, ".table-row")
+    view
+      .select(".table-row")
       .get(row)
       .getElementsByClass("table-cell")
       .get(column)

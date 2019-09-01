@@ -22,12 +22,12 @@ import helpers.views.declaration.CommonMessages
 import models.responses.FlashKeys
 import play.api.mvc.Flash
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.draft_confirmation_page
 import views.tags.ViewTest
 
 @ViewTest
-class DraftConfirmationViewSpec extends ViewSpec with CommonMessages {
+class DraftConfirmationViewSpec extends AppViewSpec with CommonMessages {
 
   private val page = app.injector.instanceOf[draft_confirmation_page]
   private def createView(flash: (String, String)*): Html = page()(fakeRequest, Flash(Map(flash: _*)), messages)

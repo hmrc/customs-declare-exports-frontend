@@ -23,12 +23,12 @@ import models.Mode
 import models.declaration.ProcedureCodesData
 import org.jsoup.nodes.Document
 import services.cache.ExportItem
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.items_summary
 import views.tags.ViewTest
 
 @ViewTest
-class ItemSummaryViewSpec extends ViewSpec with ItemSummaryMessages {
+class ItemSummaryViewSpec extends AppViewSpec with ItemSummaryMessages {
 
   private val confirmationPage = app.injector.instanceOf[items_summary]
   private def view(items: List[ExportItem]): Document = confirmationPage(Mode.Normal, items)(fakeRequest, messages)
@@ -57,7 +57,7 @@ class ItemSummaryViewSpec extends ViewSpec with ItemSummaryMessages {
 
     "render back button" in {
       val doc = view(List.empty)
-      doc.getElementById("link-back") must haveAttribute("href", routes.PreviousDocumentsController.displayForm().url)
+      doc.getElementById("link-back") must haveAttribute("href", routes.PreviousDocumentsController.displayPage().url)
     }
 
     "render title" when {

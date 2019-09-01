@@ -20,7 +20,7 @@ GET        /submissions/:id                             controllers.SubmissionsC
 
 # Cancel declaration
 
-GET        /cancel-declaration                          controllers.CancelDeclarationController.displayForm()
+GET        /cancel-declaration                          controllers.CancelDeclarationController.displayPage()
 
 POST       /cancel-declaration                          controllers.CancelDeclarationController.onSubmit()
 
@@ -29,6 +29,10 @@ POST       /cancel-declaration                          controllers.CancelDeclar
 GET        /saved-declarations                          controllers.SavedDeclarationsController.displayDeclarations(page: Int ?= 1)
 
 GET        /saved-declarations/:id                      controllers.SavedDeclarationsController.continueDeclaration(id: String)
+
+GET        /saved-declarations/:id/remove               controllers.RemoveSavedDeclarationsController.displayPage(id: String)
+
+POST       /saved-declarations/:id/remove               controllers.RemoveSavedDeclarationsController.removeDeclaration(id: String)
 
 # Start Page
 

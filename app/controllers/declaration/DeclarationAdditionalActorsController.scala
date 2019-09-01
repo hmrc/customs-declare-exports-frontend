@@ -52,7 +52,7 @@ class DeclarationAdditionalActorsController @Inject()(
   private val exceedMaximumNumberError = "supplementary.additionalActors.maximumAmount.error"
   private val duplicateActorError = "supplementary.additionalActors.duplicated.error"
 
-  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.parties.declarationAdditionalActorsData match {
       case Some(data) => Ok(declarationAdditionalActorsPage(mode, form(), data.actors))
       case _          => Ok(declarationAdditionalActorsPage(mode, form(), Seq()))
@@ -67,11 +67,11 @@ class DeclarationAdditionalActorsController @Inject()(
       request.cacheModel.parties.declarationAdditionalActorsData.getOrElse(DeclarationAdditionalActorsData(Seq()))
 
     actionTypeOpt match {
-      case Some(Add) if !boundForm.hasErrors => addItem(mode, boundForm.get, cache)
-      case Some(SaveAndContinue) | Some(SaveAndReturn) if !boundForm.hasErrors =>
+      case Add if !boundForm.hasErrors => addItem(mode, boundForm.get, cache)
+      case SaveAndContinue | SaveAndReturn if !boundForm.hasErrors =>
         saveAndContinue(mode, boundForm.get, cache)
-      case Some(Remove(values)) => removeItem(mode, retrieveItem(values.headOption.get), boundForm, cache)
-      case _                    => Future.successful(BadRequest(declarationAdditionalActorsPage(mode, boundForm, cache.actors)))
+      case Remove(values) => removeItem(mode, retrieveItem(values.headOption.get), boundForm, cache)
+      case _              => Future.successful(BadRequest(declarationAdditionalActorsPage(mode, boundForm, cache.actors)))
     }
   }
 
@@ -90,7 +90,7 @@ class DeclarationAdditionalActorsController @Inject()(
         if (actor.isDefined) {
           val updatedCache = DeclarationAdditionalActorsData(actors :+ actor)
           updateCache(updatedCache)
-            .map(_ => Redirect(routes.DeclarationAdditionalActorsController.displayForm(mode)))
+            .map(_ => Redirect(routes.DeclarationAdditionalActorsController.displayPage(mode)))
         } else
           handleErrorPage(
             mode,
@@ -153,8 +153,8 @@ class DeclarationAdditionalActorsController @Inject()(
   ): Future[Result] =
     if (actor.isDefined) {
       val updatedCache = DeclarationAdditionalActorsData(actors :+ actor)
-      updateCache(updatedCache).map(_ => navigator.continueTo(routes.DeclarationHolderController.displayForm(mode)))
-    } else Future.successful(navigator.continueTo(routes.DeclarationHolderController.displayForm(mode)))
+      updateCache(updatedCache).map(_ => navigator.continueTo(routes.DeclarationHolderController.displayPage(mode)))
+    } else Future.successful(navigator.continueTo(routes.DeclarationHolderController.displayPage(mode)))
 
   private def removeItem(
     mode: Mode,

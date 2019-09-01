@@ -16,7 +16,8 @@
 
 package unit.controllers
 
-import com.codahale.metrics.{SharedMetricRegistries, Timer}
+import base.Injector
+import com.codahale.metrics.Timer
 import com.kenshoo.play.metrics.Metrics
 import controllers.CancelDeclarationController
 import forms.CancelDeclaration
@@ -25,17 +26,15 @@ import metrics.{ExportsMetrics, MetricIdentifiers}
 import models.requests.{CancellationRequestExists, CancellationRequested, MissingDeclaration}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import unit.mock.{ErrorHandlerMocks, ExportsMetricsMocks}
 import views.html.{cancel_declaration, cancellation_confirmation_page}
 
-class CancelDeclarationControllerSpec extends ControllerSpec with ErrorHandlerMocks with ExportsMetricsMocks {
+class CancelDeclarationControllerSpec
+    extends ControllerSpec with ErrorHandlerMocks with ExportsMetricsMocks with Injector {
   import CancelDeclarationControllerSpec._
-
-  SharedMetricRegistries.clear()
 
   trait SetUp {
     val cancelDeclarationPage = new cancel_declaration(mainTemplate)
@@ -63,7 +62,7 @@ class CancelDeclarationControllerSpec extends ControllerSpec with ErrorHandlerMo
 
       "display page method is invoked" in new SetUp {
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) must be(OK)
       }
@@ -112,10 +111,9 @@ class CancelDeclarationControllerSpec extends ControllerSpec with ErrorHandlerMo
     "record cancellation timing and increase the Success Counter when response is OK" in new SetUp {
       authorizedUser()
 
-      val injector = GuiceApplicationBuilder().injector()
-      val exportMetrics = injector.instanceOf[ExportsMetrics]
+      val exportMetrics = instanceOf[ExportsMetrics]
 
-      val registry = injector.instanceOf[Metrics].defaultRegistry
+      val registry = instanceOf[Metrics].defaultRegistry
       val cancelMetric = MetricIdentifiers.cancelMetric
 
       val cancelTimer = registry.getTimers().get(exportMetrics.timerName(cancelMetric))

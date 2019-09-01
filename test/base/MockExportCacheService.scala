@@ -20,7 +20,7 @@ import models.ExportsDeclaration
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{never, verify, when}
 import org.mockito.{ArgumentCaptor, Mockito}
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import services.cache.{ExportsCacheService, ExportsDeclarationBuilder}
 

@@ -31,7 +31,8 @@ import play.api.mvc.{AnyContentAsEmpty, Flash, Request}
 import play.api.test.FakeRequest
 import utils.FakeRequestCSRFSupport._
 
-trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator with ViewMatchers {
+@deprecated("Please use unit UnitViewSpec", since = "2019-08-28")
+trait AppViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator with ViewMatchers {
 
   lazy val basePrefix = "supplementary."
   lazy val addressPrefix = "supplementary.address."
@@ -47,7 +48,7 @@ trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator with
 
   def fakeJourneyRequest(choice: String): JourneyRequest[AnyContentAsEmpty.type] = {
     val cache = ExportsDeclaration(None, DeclarationStatus.COMPLETE, Instant.now(), Instant.now(), choice)
-    JourneyRequest(AuthenticatedRequest(fakeRequest, ExportsTestData.newUser("", "")), cache)
+    new JourneyRequest(new AuthenticatedRequest(fakeRequest, ExportsTestData.newUser("", "")), cache)
   }
 
   SharedMetricRegistries.clear()

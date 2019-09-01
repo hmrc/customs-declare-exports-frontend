@@ -68,7 +68,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
 
       "display page method is invoked and cache is empty" in {
 
-        val result = controller.displayForm(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
         verify(mockGoodsLocationPage, times(1)).apply(any(), any())(any(), any())
@@ -81,7 +81,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
         val goodsLocation = GoodsLocation("PL", "A", "B", None, None, None, None, None)
         withNewCaching(aDeclaration(withGoodsLocation(goodsLocation)))
 
-        val result = controller.displayForm(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
         verify(mockGoodsLocationPage, times(1)).apply(any(), any())(any(), any())
@@ -121,7 +121,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.saveLocation(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.OfficeOfExitController.displayForm()
+        thePageNavigatedTo mustBe controllers.declaration.routes.OfficeOfExitController.displayPage()
         verify(mockGoodsLocationPage, times(0)).apply(any(), any())(any(), any())
       }
     }

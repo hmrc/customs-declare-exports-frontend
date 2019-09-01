@@ -44,7 +44,7 @@ class CarrierDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.parties.carrierDetails match {
       case Some(data) => Ok(carrierDetailsPage(mode, CarrierDetails.form().fill(data)))
       case _          => Ok(carrierDetailsPage(mode, CarrierDetails.form()))
@@ -60,7 +60,7 @@ class CarrierDetailsController @Inject()(
           Future.successful(BadRequest(carrierDetailsPage(mode, formWithErrors))),
         form =>
           updateCache(form).map { _ =>
-            navigator.continueTo(routes.DeclarationAdditionalActorsController.displayForm(mode))
+            navigator.continueTo(routes.DeclarationAdditionalActorsController.displayPage(mode))
         }
       )
   }

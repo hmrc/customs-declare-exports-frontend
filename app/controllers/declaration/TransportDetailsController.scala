@@ -42,7 +42,7 @@ class TransportDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.transportDetails match {
       case Some(data) => Ok(transportDetailsPage(mode, form().fill(data)))
       case _          => Ok(transportDetailsPage(mode, form()))

@@ -21,13 +21,13 @@ import helpers.views.declaration.{CommonMessages, TransportInformationContainerM
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
+import views.declaration.spec.AppViewSpec
 import views.html.declaration.transport_container_add
 import views.tags.ViewTest
 
 @ViewTest
 class TransportInformationContainersViewSpec
-    extends ViewSpec with TransportInformationContainerMessages with CommonMessages {
+    extends AppViewSpec with TransportInformationContainerMessages with CommonMessages {
 
   private val form: Form[TransportInformationContainer] = TransportInformationContainer.form()
   private val transportContainersPage = app.injector.instanceOf[transport_container_add]
@@ -38,12 +38,12 @@ class TransportInformationContainersViewSpec
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(containersTitle))
+      createView().select("title").text() must be(messages(containersTitle))
     }
 
     "display header" in {
 
-      getElementByCss(createView(), "legend>h1").text() must be(messages(containersTitle))
+      createView().select("legend>h1").text() must be(messages(containersTitle))
     }
 
     "display empty input with label for Container ID" in {
