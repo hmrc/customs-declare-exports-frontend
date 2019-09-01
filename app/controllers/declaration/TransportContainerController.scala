@@ -67,14 +67,14 @@ class TransportContainerController @Inject()(
       if (containers.isEmpty)
         navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayAddContainer(mode))
       else
-        Ok(summaryPage(mode, Choice.form(), containers, allowSeals ))
+        Ok(summaryPage(mode, Choice.form(), containers, allowSeals))
   }
 
   def submitSummaryAction(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
       FormAction.bindFromRequest() match {
-        case Some(Remove(values)) => confirmRemoveContainer(containerId(values), mode)
-        case _                    => addContainerAnswer(mode)
+        case Remove(values) => confirmRemoveContainer(containerId(values), mode)
+        case _              => addContainerAnswer(mode)
       }
   }
 
@@ -133,7 +133,8 @@ class TransportContainerController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[Choice]) => Future.successful(BadRequest(summaryPage(mode, formWithErrors, containers, allowSeals))),
+        (formWithErrors: Form[Choice]) =>
+          Future.successful(BadRequest(summaryPage(mode, formWithErrors, containers, allowSeals))),
         formData =>
           formData.addItem match {
             case ChoiceAnswers.yes =>
@@ -188,5 +189,6 @@ class TransportContainerController @Inject()(
     Future
       .successful(navigator.continueTo(page))
 
-  private def allowSeals(implicit request: JourneyRequest[AnyContent]) = request.choice.value == AllowedChoiceValues.StandardDec
+  private def allowSeals(implicit request: JourneyRequest[AnyContent]) =
+    request.choice.value == AllowedChoiceValues.StandardDec
 }

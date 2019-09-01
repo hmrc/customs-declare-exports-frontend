@@ -72,8 +72,8 @@ class SealController @Inject()(
   def submitSummaryAction(mode: Mode, containerId: String): Action[AnyContent] =
     (authenticate andThen journeyType).async { implicit request =>
       FormAction.bindFromRequest() match {
-        case Some(Remove(values)) => confirmRemoveSeal(containerId, sealId(values), mode)
-        case _                    => addSealAnswer(mode, containerId)
+        case Remove(values) => confirmRemoveSeal(containerId, sealId(values), mode)
+        case _              => addSealAnswer(mode, containerId)
       }
     }
 
@@ -109,7 +109,9 @@ class SealController @Inject()(
         }
       )
 
-  private def removeSealAnswer(mode: Mode, containerId: String, sealId: String)(implicit request: JourneyRequest[AnyContent]) =
+  private def removeSealAnswer(mode: Mode, containerId: String, sealId: String)(
+    implicit request: JourneyRequest[AnyContent]
+  ) =
     form()
       .bindFromRequest()
       .fold(

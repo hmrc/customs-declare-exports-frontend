@@ -87,19 +87,20 @@ class SummaryPageViewSpec
           val document = view(Mode.Normal, model)
           document must containElementWithID("link-back")
           document.getElementById("link-back") must haveHref(
-            controllers.declaration.routes.SealController.displayPage(Mode.Normal)
+            controllers.declaration.routes.SealController.displaySealSummary(Mode.Normal, "")
           )
         }
 
         "supplementary declaration with containers" in {
           val model = aDeclaration(
-            withChoice(Choice.AllowedChoiceValues.SupplementaryDec),
-            withContainerData(TransportInformationContainer("id"))
+            withChoice(Choice.AllowedChoiceValues.SupplementaryDec)
+            //,
+//            withContainerData(TransportInformationContainer("id"))
           )
           val document = view(Mode.Normal, model)
           document must containElementWithID("link-back")
           document.getElementById("link-back") must haveHref(
-            controllers.declaration.routes.TransportContainerController.displayPage(Mode.Normal)
+            controllers.declaration.routes.TransportContainerController.displayContainersSummary(Mode.Normal)
           )
         }
 
