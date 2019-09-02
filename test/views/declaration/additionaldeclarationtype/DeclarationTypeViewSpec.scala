@@ -172,9 +172,8 @@ class DeclarationTypeViewSpec extends AppViewSpec with DeclarationTypeMessages w
 
         val view = createView(formStandard.bind(Map[String, String]()), StandardDec)
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, 1, messages(errorMessageEmpty), "#additionalDeclarationType")
-
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("additionalDeclarationType-error").attr("href") mustBe "#additionalDeclarationType"
         view.select("#error-message-additionalDeclarationType-input").text() must be(messages(errorMessageEmpty))
       }
 
@@ -182,9 +181,8 @@ class DeclarationTypeViewSpec extends AppViewSpec with DeclarationTypeMessages w
 
         val view = createView(formSupplementary.bind(Map[String, String]()), SupplementaryDec)
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, 1, messages(errorMessageEmpty), "#additionalDeclarationType")
-
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("additionalDeclarationType-error").attr("href") mustBe "#additionalDeclarationType"
         view.select("#error-message-additionalDeclarationType-input").text() must be(messages(errorMessageEmpty))
       }
     }
@@ -195,9 +193,8 @@ class DeclarationTypeViewSpec extends AppViewSpec with DeclarationTypeMessages w
 
         val view = createView(formStandard.fillAndValidate(AdditionalDeclarationType("#")), StandardDec)
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, 1, messages(errorMessageIncorrect), "#additionalDeclarationType")
-
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("additionalDeclarationType-error").attr("href") mustBe "#additionalDeclarationType"
         view.select("#error-message-additionalDeclarationType-input").text() must be(messages(errorMessageIncorrect))
       }
 
@@ -205,9 +202,8 @@ class DeclarationTypeViewSpec extends AppViewSpec with DeclarationTypeMessages w
 
         val view = createView(formSupplementary.fillAndValidate(AdditionalDeclarationType("#")), SupplementaryDec)
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, 1, messages(errorMessageIncorrect), "#additionalDeclarationType")
-
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("additionalDeclarationType-error").attr("href") mustBe "#additionalDeclarationType"
         view.select("#error-message-additionalDeclarationType-input").text() must be(messages(errorMessageIncorrect))
       }
     }

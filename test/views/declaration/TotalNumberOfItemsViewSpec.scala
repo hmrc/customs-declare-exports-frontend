@@ -101,7 +101,7 @@ class TotalNumberOfItemsViewSpec extends AppViewSpec with TotalNumberOfItemsMess
 
       val view = createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(None, None, "")))
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, "totalPackage-error", totalPackageQuantityEmpty, "#totalPackage")
 
       view.getElementById("error-message-totalPackage-input").text() must be(messages(totalPackageQuantityEmpty))
@@ -112,7 +112,7 @@ class TotalNumberOfItemsViewSpec extends AppViewSpec with TotalNumberOfItemsMess
       val view =
         createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("abcd"), Some("abcd"), "abcd")))
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, "totalAmountInvoiced-error", totalAmountInvoicedError, "#totalAmountInvoiced")
       checkErrorLink(view, "exchangeRate-error", exchangeRateError, "#exchangeRate")
       checkErrorLink(view, "totalPackage-error", totalPackageQuantityError, "#totalPackage")
@@ -127,7 +127,7 @@ class TotalNumberOfItemsViewSpec extends AppViewSpec with TotalNumberOfItemsMess
       val view =
         createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("abcd"), Some("123.12345"), "1")))
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, "totalAmountInvoiced-error", totalAmountInvoicedError, "#totalAmountInvoiced")
 
       view.getElementById("error-message-totalAmountInvoiced-input").text() must be(messages(totalAmountInvoicedError))
@@ -138,7 +138,7 @@ class TotalNumberOfItemsViewSpec extends AppViewSpec with TotalNumberOfItemsMess
       val view =
         createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("123.12"), Some("abcd"), "1")))
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, "exchangeRate-error", exchangeRateError, "#exchangeRate")
 
       view.getElementById("error-message-exchangeRate-input").text() must be(messages(exchangeRateError))
@@ -149,7 +149,7 @@ class TotalNumberOfItemsViewSpec extends AppViewSpec with TotalNumberOfItemsMess
       val view =
         createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("123.12"), Some("123.12345"), "")))
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, "totalPackage-error", totalPackageQuantityEmpty, "#totalPackage")
 
       view.getElementById("error-message-totalPackage-input").text() must be(messages(totalPackageQuantityEmpty))
@@ -162,7 +162,7 @@ class TotalNumberOfItemsViewSpec extends AppViewSpec with TotalNumberOfItemsMess
           TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("123.12"), Some("123.12345"), "abcd"))
         )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, "totalPackage-error", totalPackageQuantityError, "#totalPackage")
 
       view.getElementById("error-message-totalPackage-input").text() must be(messages(totalPackageQuantityError))

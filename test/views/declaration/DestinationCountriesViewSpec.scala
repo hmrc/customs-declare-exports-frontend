@@ -31,9 +31,9 @@ import views.tags.ViewTest
 class DestinationCountriesViewSpec extends AppViewSpec with DestinationCountriesMessages with CommonMessages {
 
   private val form: Form[DestinationCountries] = DestinationCountries.Supplementary.form
-  private val destiantionCountriesSupplementaryPage = app.injector.instanceOf[destination_countries_supplementary]
+  private val destinationCountriesSupplementaryPage = app.injector.instanceOf[destination_countries_supplementary]
   private def createView(form: Form[DestinationCountries] = form): Html =
-    destiantionCountriesSupplementaryPage(Mode.Normal, form)(fakeJourneyRequest("SMP"), messages)
+    destinationCountriesSupplementaryPage(Mode.Normal, form)(fakeJourneyRequest("SMP"), messages)
 
   "Destination Countries View on empty page" should {
 
@@ -87,7 +87,7 @@ class DestinationCountriesViewSpec extends AppViewSpec with DestinationCountries
       val view =
         createView(DestinationCountries.Supplementary.form.fillAndValidate(DestinationCountries("", "DE")))
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, messages(countryOfDispatchEmpty), "#countryOfDispatch")
 
       view.select("span.error-message").text() must be(messages(countryOfDispatchEmpty))
@@ -100,7 +100,7 @@ class DestinationCountriesViewSpec extends AppViewSpec with DestinationCountries
           .fillAndValidate(DestinationCountries(TestHelper.createRandomAlphanumericString(10), "DE"))
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, messages(countryOfDispatchError), "#countryOfDispatch")
 
       view.select("span.error-message").text() must be(messages(countryOfDispatchError))
@@ -111,7 +111,7 @@ class DestinationCountriesViewSpec extends AppViewSpec with DestinationCountries
       val view =
         createView(DestinationCountries.Supplementary.form.fillAndValidate(DestinationCountries("DE", "")))
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, messages(countryOfDestinationEmpty), "#countryOfDestination")
 
       view.select("span.error-message").text() must be(messages(countryOfDestinationEmpty))
@@ -124,7 +124,7 @@ class DestinationCountriesViewSpec extends AppViewSpec with DestinationCountries
           .fillAndValidate(DestinationCountries("DE", TestHelper.createRandomAlphanumericString(10)))
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, messages(countryOfDestinationError), "#countryOfDestination")
 
       view.select("span.error-message").text() must be(messages(countryOfDestinationError))
@@ -142,7 +142,7 @@ class DestinationCountriesViewSpec extends AppViewSpec with DestinationCountries
           )
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, messages(countryOfDispatchError), "#countryOfDispatch")
       checkErrorLink(view, 2, messages(countryOfDestinationError), "#countryOfDestination")
 
@@ -158,7 +158,7 @@ class DestinationCountriesViewSpec extends AppViewSpec with DestinationCountries
       val view =
         createView(DestinationCountries.Supplementary.form.fillAndValidate(DestinationCountries("", "")))
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, messages(countryOfDispatchEmpty), "#countryOfDispatch")
       checkErrorLink(view, 2, messages(countryOfDestinationEmpty), "#countryOfDestination")
 
@@ -176,7 +176,7 @@ class DestinationCountriesViewSpec extends AppViewSpec with DestinationCountries
           .fillAndValidate(DestinationCountries("", TestHelper.createRandomAlphanumericString(10)))
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, messages(countryOfDispatchEmpty), "#countryOfDispatch")
       checkErrorLink(view, 2, messages(countryOfDestinationError), "#countryOfDestination")
 
@@ -195,8 +195,8 @@ class DestinationCountriesViewSpec extends AppViewSpec with DestinationCountries
       val view =
         createView(DestinationCountries.Supplementary.form.fill(DestinationCountries("GB", "PL")))
 
-      getSelectedValue(view, "countryOfDispatch") mustBe "GB"
-      getSelectedValue(view, "countryOfDestination") mustBe "PL"
+      view.getElementById("countryOfDispatch").attr("value") mustBe "GB"
+      view.getElementById("countryOfDestination").attr("value") mustBe "PL"
     }
 
     "display data only for dispatch country input" in {
@@ -204,8 +204,8 @@ class DestinationCountriesViewSpec extends AppViewSpec with DestinationCountries
       val view =
         createView(DestinationCountries.Supplementary.form.fill(DestinationCountries("GB", "")))
 
-      getSelectedValue(view, "countryOfDispatch") mustBe "GB"
-      getSelectedValue(view, "countryOfDestination") mustBe ""
+      view.getElementById("countryOfDispatch").attr("value") mustBe "GB"
+      view.getElementById("countryOfDestination").attr("value") mustBe ""
     }
 
     "display data only for destination country input" in {
@@ -213,8 +213,8 @@ class DestinationCountriesViewSpec extends AppViewSpec with DestinationCountries
       val view =
         createView(DestinationCountries.Supplementary.form.fill(DestinationCountries("", "PL")))
 
-      getSelectedValue(view, "countryOfDispatch") mustBe ""
-      getSelectedValue(view, "countryOfDestination") mustBe "PL"
+      view.getElementById("countryOfDispatch").attr("value") mustBe ""
+      view.getElementById("countryOfDestination").attr("value") mustBe "PL"
     }
   }
 }

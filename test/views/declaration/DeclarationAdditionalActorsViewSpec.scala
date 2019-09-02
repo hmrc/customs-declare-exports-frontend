@@ -130,7 +130,7 @@ class DeclarationAdditionalActorsViewSpec
           .fillAndValidate(DeclarationAdditionalActors(Some(TestHelper.createRandomAlphanumericString(18)), Some("")))
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, eoriError, "#eori")
       checkErrorLink(view, 2, partyTypeError, "#partyType")
 
@@ -146,7 +146,7 @@ class DeclarationAdditionalActorsViewSpec
           .fillAndValidate(DeclarationAdditionalActors(Some(TestHelper.createRandomAlphanumericString(17)), Some("")))
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, partyTypeError, "#partyType")
 
       view.select("#error-message-partyType-input").text() must be(messages(partyTypeError))

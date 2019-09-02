@@ -181,7 +181,7 @@ class DocumentsProducedViewSpec
           )
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, documentTypeCodeError, s"#$documentTypeCodeKey")
 
       view.select(s"#error-message-$documentTypeCodeKey-input").text() must be(messages(documentTypeCodeError))
@@ -198,7 +198,7 @@ class DocumentsProducedViewSpec
       val view =
         createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentIdentifier)))
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, documentIdentifierError, s"#${documentIdentifierAndPartKey}_$documentIdentifierKey")
 
       view
@@ -216,7 +216,7 @@ class DocumentsProducedViewSpec
       )
       val view = createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentPart)))
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, documentPartError, s"#${documentIdentifierAndPartKey}_$documentPartKey")
 
       view.select(s"#error-message-${documentIdentifierAndPartKey}_$documentPartKey-input").text() must be(
@@ -237,7 +237,7 @@ class DocumentsProducedViewSpec
         val view =
           createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentIdentifierAndPart)))
 
-        checkErrorsSummary(view)
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
         checkErrorLink(view, 1, documentIdentifierAndPartError, s"#$documentIdentifierAndPartKey")
 
         view.select(s"#error-message-$documentIdentifierAndPartKey-input").text() must be(
@@ -256,7 +256,7 @@ class DocumentsProducedViewSpec
         val view =
           createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentIdentifierAndPart)))
 
-        checkErrorsSummary(view)
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
         checkErrorLink(view, 1, documentIdentifierAndPartError, s"#$documentIdentifierAndPartKey")
 
         view.select(s"#error-message-$documentIdentifierAndPartKey-input").text() must be(
@@ -272,7 +272,7 @@ class DocumentsProducedViewSpec
           .fillAndValidate(correctDocumentsProduced.copy(documentStatus = Some("ABC")))
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, documentStatusError, s"#$documentStatusKey")
 
       view.select(s"#error-message-$documentStatusKey-input").text() must be(messages(documentStatusError))
@@ -287,7 +287,7 @@ class DocumentsProducedViewSpec
           )
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, documentStatusReasonError, s"#$documentStatusReasonKey")
 
       view.select(s"#error-message-$documentStatusReasonKey-input").text() must be(messages(documentStatusReasonError))
@@ -302,7 +302,7 @@ class DocumentsProducedViewSpec
           )
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, issuingAuthorityNameLengthError, s"#$issuingAuthorityNameKey")
 
       view.select(s"#error-message-$issuingAuthorityNameKey-input").text() must be(
@@ -325,7 +325,7 @@ class DocumentsProducedViewSpec
             )
         )
 
-        checkErrorsSummary(view)
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
         checkErrorLink(view, 1, dateOutOfRangeError, s"#$dateOfValidityKey")
 
         view.select(s"#error-message-$dateOfValidityKey-input").text() must be(messages(dateOutOfRangeError))
@@ -343,7 +343,7 @@ class DocumentsProducedViewSpec
             )
         )
 
-        checkErrorsSummary(view)
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
         checkErrorLink(view, 1, dateFormatError, s"#$dateOfValidityKey")
 
         view.select(s"#error-message-$dateOfValidityKey-input").text() must be(messages(dateFormatError))
@@ -358,7 +358,7 @@ class DocumentsProducedViewSpec
       )
       val view = createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectMeasurementUnit)))
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, measurementUnitLengthError, s"#${documentWriteOffKey}_$measurementUnitKey")
 
       view.select(s"#error-message-${documentWriteOffKey}_$measurementUnitKey-input").text() must be(
@@ -374,7 +374,7 @@ class DocumentsProducedViewSpec
       )
       val view = createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentQuantity)))
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, documentQuantityPrecisionError, s"#${documentWriteOffKey}_$documentQuantityKey")
 
       view.select(s"#error-message-${documentWriteOffKey}_$documentQuantityKey-input").text() must be(
@@ -392,7 +392,7 @@ class DocumentsProducedViewSpec
         val view =
           createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentWriteOff)))
 
-        checkErrorsSummary(view)
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
         checkErrorLink(view, 1, measurementUnitAndQuantityError, s"#$documentWriteOffKey")
 
         view.select(s"#error-message-$documentWriteOffKey-input").text() must be(
@@ -409,7 +409,7 @@ class DocumentsProducedViewSpec
         val view =
           createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentWriteOff)))
 
-        checkErrorsSummary(view)
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
         checkErrorLink(view, 1, measurementUnitAndQuantityError, s"#$documentWriteOffKey")
 
         view.select(s"#error-message-$documentWriteOffKey-input").text() must be(
@@ -424,7 +424,7 @@ class DocumentsProducedViewSpec
 
       val view = createView(form)
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, documentTypeCodeError, s"#$documentTypeCodeKey")
       checkErrorLink(view, 2, documentIdentifierError, s"#${documentIdentifierAndPartKey}_$documentIdentifierKey")
       checkErrorLink(view, 3, documentPartError, s"#${documentIdentifierAndPartKey}_$documentPartKey")

@@ -93,9 +93,9 @@ class CommodityMeasureViewSpec extends AppViewSpec with CommodityMeasureMessages
 
       val view = createView(CommodityMeasure.form().fillAndValidate(CommodityMeasure(Some(""), "", "")))
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, netMassEmpty, "#netMass")
-      checkErrorLink(view, 2, grossMassEmpty, "#grossMass")
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
+      view.getElementById("netMass-error").attr("href") mustBe "#netMass"
+      view.getElementById("grossMass-error").attr("href") mustBe "#grossMass"
 
       view.select("#error-message-netMass-input").text() must be(messages(netMassEmpty))
       view.select("#error-message-grossMass-input").text() must be(messages(grossMassEmpty))
@@ -105,8 +105,8 @@ class CommodityMeasureViewSpec extends AppViewSpec with CommodityMeasureMessages
 
       val view = createView(CommodityMeasure.form().fillAndValidate(CommodityMeasure(Some("99.123"), "", "")))
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, supplementaryUnitsError, "#supplementaryUnits")
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
+      view.getElementById("supplementaryUnits-error").attr("href") mustBe "#supplementaryUnits"
 
       view.select("#error-message-supplementaryUnits-input").text() must be(messages(supplementaryUnitsError))
     }
@@ -115,8 +115,8 @@ class CommodityMeasureViewSpec extends AppViewSpec with CommodityMeasureMessages
 
       val view = createView(CommodityMeasure.form().fillAndValidate(CommodityMeasure(Some("99.99"), "", "10.00")))
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, netMassEmpty, "#netMass")
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
+      view.getElementById("netMass-error").attr("href") mustBe "#netMass"
 
       view.select("#error-message-netMass-input").text() must be(messages(netMassEmpty))
     }
@@ -126,8 +126,8 @@ class CommodityMeasureViewSpec extends AppViewSpec with CommodityMeasureMessages
       val view =
         createView(CommodityMeasure.form().fillAndValidate(CommodityMeasure(Some("99.99"), "20.9999", "10.00")))
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, netMassError, "#netMass")
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
+      view.getElementById("netMass-error").attr("href") mustBe "#netMass"
 
       view.select("#error-message-netMass-input").text() must be(messages(netMassError))
     }
@@ -136,8 +136,8 @@ class CommodityMeasureViewSpec extends AppViewSpec with CommodityMeasureMessages
 
       val view = createView(CommodityMeasure.form().fillAndValidate(CommodityMeasure(Some("99.99"), "10.00", "")))
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, grossMassEmpty, "#grossMass")
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
+      view.getElementById("grossMass-error").attr("href") mustBe "#grossMass"
 
       view.select("#error-message-grossMass-input").text() must be(messages(grossMassEmpty))
     }
@@ -146,8 +146,8 @@ class CommodityMeasureViewSpec extends AppViewSpec with CommodityMeasureMessages
 
       val view = createView(CommodityMeasure.form().fillAndValidate(CommodityMeasure(Some("99.99"), "5.00", "100.100")))
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, grossMassError, "#grossMass")
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
+      view.getElementById("grossMass-error").attr("href") mustBe "#grossMass"
 
       view.select("#error-message-grossMass-input").text() must be(messages(grossMassError))
     }

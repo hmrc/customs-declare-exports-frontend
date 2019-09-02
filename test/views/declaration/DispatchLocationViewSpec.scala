@@ -104,7 +104,7 @@ class DispatchLocationViewSpec extends AppViewSpec with DispatchLocationMessages
 
       val view = createView(DispatchLocation.form().bind(Map[String, String]()))
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, messages(errorMessageEmpty), "#dispatchLocation")
 
       view.select("#error-message-dispatchLocation-input").text() must be(messages(errorMessageEmpty))
@@ -114,7 +114,7 @@ class DispatchLocationViewSpec extends AppViewSpec with DispatchLocationMessages
 
       val view = createView(DispatchLocation.form().fillAndValidate(DispatchLocation("12")))
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, messages(errorMessageIncorrect), "#dispatchLocation")
 
       view.select("#error-message-dispatchLocation-input").text() must be(messages(errorMessageIncorrect))

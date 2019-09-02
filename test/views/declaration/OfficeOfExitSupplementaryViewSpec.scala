@@ -78,7 +78,7 @@ class OfficeOfExitSupplementaryViewSpec extends AppViewSpec with OfficeOfExitMes
 
       val view = createView(OfficeOfExitForms.supplementaryForm.fillAndValidate(OfficeOfExitSupplementary("123456789")))
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, "officeId-error", officeOfExitLength, "#officeId")
 
       view.getElementById("error-message-officeId-input").text() must be(messages(officeOfExitLength))
@@ -88,7 +88,7 @@ class OfficeOfExitSupplementaryViewSpec extends AppViewSpec with OfficeOfExitMes
 
       val view = createView(OfficeOfExitForms.supplementaryForm.fillAndValidate(OfficeOfExitSupplementary("")))
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, "officeId-error", officeOfExitEmpty, "#officeId")
 
       view.getElementById("error-message-officeId-input").text() must be(messages(officeOfExitEmpty))

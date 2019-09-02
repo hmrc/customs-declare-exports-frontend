@@ -94,7 +94,7 @@ class OfficeOfExitStandardViewSpec extends AppViewSpec with OfficeOfExitMessages
         val form = OfficeOfExitForms.standardForm.fillAndValidate(data)
         val view = createView(form)
 
-        checkErrorsSummary(view)
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
 
         view.getElementById("officeId-error").text() mustBe messages(officeOfExitEmpty)
         view.getElementById("error-message-officeId-input").text() mustBe messages(officeOfExitEmpty)
@@ -108,7 +108,7 @@ class OfficeOfExitStandardViewSpec extends AppViewSpec with OfficeOfExitMessages
         val form = OfficeOfExitForms.standardForm.fillAndValidate(data)
         val view = createView(form)
 
-        checkErrorsSummary(view)
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
 
         view.getElementById("officeId-error").text() mustBe messages(officeOfExitLength)
         view.getElementById("error-message-officeId-input").text() mustBe messages(officeOfExitLength)
@@ -122,7 +122,7 @@ class OfficeOfExitStandardViewSpec extends AppViewSpec with OfficeOfExitMessages
         val form = OfficeOfExitForms.standardForm.fillAndValidate(data)
         val view = createView(form)
 
-        checkErrorsSummary(view)
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
 
         view.getElementById("officeId-error").text() mustBe messages(officeOfExitSpecialCharacters)
         view.getElementById("error-message-officeId-input").text() mustBe messages(officeOfExitSpecialCharacters)

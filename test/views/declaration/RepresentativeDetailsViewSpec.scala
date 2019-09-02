@@ -149,10 +149,9 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
           )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "statusCode-error", repTypeErrorEmpty, "#statusCode")
-
-        view.getElementById("error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("statusCode-error").attr("href") mustBe "#statusCode"
+        view.getElementById("error-message-statusCode-input").text() mustBe messages(repTypeErrorEmpty)
       }
 
       "display errors when only address is entered" in {
@@ -175,10 +174,9 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
           )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "statusCode-error", repTypeErrorEmpty, "#statusCode")
-
-        view.getElementById("error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("statusCode-error").attr("href") mustBe "#statusCode"
+        view.getElementById("error-message-statusCode-input").text() mustBe messages(repTypeErrorEmpty)
       }
 
       "display errors when EORI is incorrect" in {
@@ -199,10 +197,9 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.eori-error", eoriError, "#details_eori")
-
-        view.getElementById("error-message-details_eori-input").text() must be(messages(eoriError))
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.eori-error").attr("href") mustBe "#details_eori"
+        view.getElementById("error-message-details_eori-input").text() mustBe messages(eoriError)
       }
 
       "display errors for empty Full name" in {
@@ -223,10 +220,9 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.fullName-error", fullNameEmpty, "#details_address_fullName")
-
-        view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.fullName-error").attr("href") mustBe "#details_address_fullName"
+        view.getElementById("error-message-details_address_fullName-input").text() mustBe messages(fullNameEmpty)
       }
 
       "display errors for incorrect Full name" in {
@@ -247,10 +243,9 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.fullName-error", fullNameError, "#details_address_fullName")
-
-        view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameError))
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.fullName-error").attr("href") mustBe "#details_address_fullName"
+        view.getElementById("error-message-details_address_fullName-input").text() mustBe messages(fullNameError)
       }
 
       "display errors for empty Address" in {
@@ -271,12 +266,9 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
-
-        view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          messages(addressLineEmpty)
-        )
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.addressLine-error").attr("href") mustBe "#details_address_addressLine"
+        view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages(addressLineEmpty)
       }
 
       "display errors for incorrect Address" in {
@@ -297,12 +289,9 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
-
-        view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          messages(addressLineError)
-        )
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.addressLine-error").attr("href") mustBe "#details_address_addressLine"
+        view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages(addressLineError)
       }
 
       "display errors for empty Town or city" in {
@@ -323,10 +312,9 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
-
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.townOrCity-error").attr("href") mustBe "#details_address_townOrCity"
+        view.getElementById("error-message-details_address_townOrCity-input").text() mustBe messages(townOrCityEmpty)
       }
 
       "display errors for incorrect Town or city" in {
@@ -347,10 +335,9 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
-
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.townOrCity-error").attr("href") mustBe "#details_address_townOrCity"
+        view.getElementById("error-message-details_address_townOrCity-input").text() mustBe messages(townOrCityError)
       }
 
       "display errors for empty Postcode" in {
@@ -371,10 +358,9 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
-
-        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.postCode-error").attr("href") mustBe "#details_address_postCode"
+        view.getElementById("error-message-details_address_postCode-input").text() mustBe messages(postCodeEmpty)
       }
 
       "display errors for incorrect Postcode" in {
@@ -395,10 +381,9 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
-
-        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeError))
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.postCode-error").attr("href") mustBe "#details_address_postCode"
+        view.getElementById("error-message-details_address_postCode-input").text() mustBe messages(postCodeError)
       }
 
       "display errors for empty Country" in {
@@ -419,10 +404,9 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.country-error", countryEmpty, "#details_address_country")
-
-        view.select("span.error-message").text() must be(messages(countryEmpty))
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.country-error").attr("href") mustBe "#details_address_country"
+        view.select("span.error-message").text() mustBe messages(countryEmpty)
       }
 
       "display errors for incorrect Country" in {
@@ -443,10 +427,9 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.country-error", countryError, "#details_address_country")
-
-        view.select("span.error-message").text() must be(messages(countryError))
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.country-error").attr("href") mustBe "#details_address_country"
+        view.select("span.error-message").text() mustBe messages(countryError)
       }
 
       "display errors when everything except Full name is empty" in {
@@ -467,12 +450,11 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
-        checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
-        checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
-        checkErrorLink(view, "details.address.country-error", countryEmpty, "#details_address_country")
-
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.addressLine-error").attr("href") mustBe "#details_address_addressLine"
+        view.getElementById("details.address.townOrCity-error").attr("href") mustBe "#details_address_townOrCity"
+        view.getElementById("details.address.postCode-error").attr("href") mustBe "#details_address_postCode"
+        view.getElementById("details.address.country-error").attr("href") mustBe "#details_address_country"
         view.getElementById("error-message-details_address_addressLine-input").text() must be(
           messages(addressLineEmpty)
         )
@@ -499,11 +481,11 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.fullName-error", fullNameEmpty, "#details_address_fullName")
-        checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
-        checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
-        checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.fullName-error").attr("href") mustBe "#details_address_fullName"
+        view.getElementById("details.address.addressLine-error").attr("href") mustBe "#details_address_addressLine"
+        view.getElementById("details.address.townOrCity-error").attr("href") mustBe "#details_address_townOrCity"
+        view.getElementById("details.address.postCode-error").attr("href") mustBe "#details_address_postCode"
 
         view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
         view.getElementById("error-message-details_address_addressLine-input").text() must be(
@@ -531,11 +513,11 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
-        checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
-        checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
-        checkErrorLink(view, "details.address.country-error", countryError, "#details_address_country")
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.addressLine-error").attr("href") mustBe "#details_address_addressLine"
+        view.getElementById("details.address.townOrCity-error").attr("href") mustBe "#details_address_townOrCity"
+        view.getElementById("details.address.postCode-error").attr("href") mustBe "#details_address_postCode"
+        view.getElementById("details.address.country-error").attr("href") mustBe "#details_address_country"
 
         view.getElementById("error-message-details_address_addressLine-input").text() must be(
           messages(addressLineError)
@@ -563,11 +545,11 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.fullName-error", fullNameError, "#details_address_fullName")
-        checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
-        checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
-        checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.fullName-error").attr("href") mustBe "#details_address_fullName"
+        view.getElementById("details.address.addressLine-error").attr("href") mustBe "#details_address_addressLine"
+        view.getElementById("details.address.townOrCity-error").attr("href") mustBe "#details_address_townOrCity"
+        view.getElementById("details.address.postCode-error").attr("href") mustBe "#details_address_postCode"
 
         view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameError))
         view.getElementById("error-message-details_address_addressLine-input").text() must be(
@@ -598,9 +580,8 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.eori-error", eoriError, "#details_eori")
-
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.eori-error").attr("href") mustBe "#details_eori"
         view.getElementById("error-message-details_eori-input").text() must be(messages(eoriError))
       }
 
@@ -622,9 +603,8 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.fullName-error", fullNameEmpty, "#details_address_fullName")
-
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.fullName-error").attr("href") mustBe "#details_address_fullName"
         view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
       }
 
@@ -646,9 +626,8 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.fullName-error", fullNameError, "#details_address_fullName")
-
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.fullName-error").attr("href") mustBe "#details_address_fullName"
         view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameError))
       }
 
@@ -670,9 +649,8 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
-
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.addressLine-error").attr("href") mustBe "#details_address_addressLine"
         view.getElementById("error-message-details_address_addressLine-input").text() must be(
           messages(addressLineEmpty)
         )
@@ -696,9 +674,8 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
-
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.addressLine-error").attr("href") mustBe "#details_address_addressLine"
         view.getElementById("error-message-details_address_addressLine-input").text() must be(
           messages(addressLineError)
         )
@@ -722,9 +699,8 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
-
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.townOrCity-error").attr("href") mustBe "#details_address_townOrCity"
         view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
       }
 
@@ -746,9 +722,8 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
-
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.townOrCity-error").attr("href") mustBe "#details_address_townOrCity"
         view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
       }
 
@@ -770,9 +745,8 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
-
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.postCode-error").attr("href") mustBe "#details_address_postCode"
         view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
       }
 
@@ -794,9 +768,8 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
-
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.postCode-error").attr("href") mustBe "#details_address_postCode"
         view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeError))
       }
 
@@ -818,9 +791,8 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.country-error", countryEmpty, "#details_address_country")
-
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.country-error").attr("href") mustBe "#details_address_country"
         view.select("span.error-message").text() must be(messages(countryEmpty))
       }
 
@@ -842,9 +814,8 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.country-error", countryError, "#details_address_country")
-
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.country-error").attr("href") mustBe "#details_address_country"
         view.select("span.error-message").text() must be(messages(countryError))
       }
 
@@ -866,11 +837,11 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
-        checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
-        checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
-        checkErrorLink(view, "details.address.country-error", countryEmpty, "#details_address_country")
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.addressLine-error").attr("href") mustBe "#details_address_addressLine"
+        view.getElementById("details.address.townOrCity-error").attr("href") mustBe "#details_address_townOrCity"
+        view.getElementById("details.address.postCode-error").attr("href") mustBe "#details_address_postCode"
+        view.getElementById("details.address.country-error").attr("href") mustBe "#details_address_country"
 
         view.getElementById("error-message-details_address_addressLine-input").text() must be(
           messages(addressLineEmpty)
@@ -898,11 +869,11 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.fullName-error", fullNameEmpty, "#details_address_fullName")
-        checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
-        checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
-        checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.fullName-error").attr("href") mustBe "#details_address_fullName"
+        view.getElementById("details.address.addressLine-error").attr("href") mustBe "#details_address_addressLine"
+        view.getElementById("details.address.townOrCity-error").attr("href") mustBe "#details_address_townOrCity"
+        view.getElementById("details.address.postCode-error").attr("href") mustBe "#details_address_postCode"
 
         view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
         view.getElementById("error-message-details_address_addressLine-input").text() must be(
@@ -930,11 +901,11 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
-        checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
-        checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
-        checkErrorLink(view, "details.address.country-error", countryError, "#details_address_country")
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.addressLine-error").attr("href") mustBe "#details_address_addressLine"
+        view.getElementById("details.address.townOrCity-error").attr("href") mustBe "#details_address_townOrCity"
+        view.getElementById("details.address.postCode-error").attr("href") mustBe "#details_address_postCode"
+        view.getElementById("details.address.country-error").attr("href") mustBe "#details_address_country"
 
         view.getElementById("error-message-details_address_addressLine-input").text() must be(
           messages(addressLineError)
@@ -962,11 +933,11 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
             )
         )
 
-        checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.fullName-error", fullNameError, "#details_address_fullName")
-        checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
-        checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
-        checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
+        view.getElementById("details.address.fullName-error").attr("href") mustBe "#details_address_fullName"
+        view.getElementById("details.address.addressLine-error").attr("href") mustBe "#details_address_addressLine"
+        view.getElementById("details.address.townOrCity-error").attr("href") mustBe "#details_address_townOrCity"
+        view.getElementById("details.address.postCode-error").attr("href") mustBe "#details_address_postCode"
 
         view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameError))
         view.getElementById("error-message-details_address_addressLine-input").text() must be(

@@ -102,7 +102,7 @@ class DeclarationHolderViewSpec extends AppViewSpec with DeclarationHolderMessag
           .fillAndValidate(DeclarationHolder(Some("12345"), Some(TestHelper.createRandomAlphanumericString(17))))
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, authorisationCodeError, "#authorisationTypeCode")
 
       view.select("#error-message-authorisationTypeCode-input").text() must be(messages(authorisationCodeError))
@@ -116,7 +116,7 @@ class DeclarationHolderViewSpec extends AppViewSpec with DeclarationHolderMessag
           .fillAndValidate(DeclarationHolder(Some("ACE"), Some(TestHelper.createRandomAlphanumericString(18))))
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, eoriError, "#eori")
 
       view.select("#error-message-eori-input").text() must be(messages(eoriError))
@@ -135,7 +135,7 @@ class DeclarationHolderViewSpec extends AppViewSpec with DeclarationHolderMessag
           )
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, authorisationCodeError, "#authorisationTypeCode")
       checkErrorLink(view, 2, eoriError, "#eori")
 

@@ -87,7 +87,7 @@ class FiscalInformationViewSpec extends AppViewSpec with FiscalInformationMessag
 
       val view = createView(FiscalInformation.form().bind(Map[String, String]()))
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, messages(errorMessageEmpty), "#onwardSupplyRelief")
 
       view.select("#error-message-onwardSupplyRelief-input").text() must be(messages(errorMessageEmpty))
@@ -97,7 +97,7 @@ class FiscalInformationViewSpec extends AppViewSpec with FiscalInformationMessag
 
       val view = createView(FiscalInformation.form().fillAndValidate(FiscalInformation("Incorrect")))
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, messages(errorMessageIncorrect), "#onwardSupplyRelief")
 
       view.select("#error-message-onwardSupplyRelief-input").text() must be(messages(errorMessageIncorrect))

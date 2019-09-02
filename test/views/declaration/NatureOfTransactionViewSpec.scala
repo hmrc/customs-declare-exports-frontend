@@ -85,7 +85,7 @@ class NatureOfTransactionViewSpec extends AppViewSpec with NatureOfTransactionMe
 
       val view = createView(NatureOfTransaction.form().fillAndValidate(NatureOfTransaction("")))
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, "natureType-error", natureOfTransactionEmpty, "#natureType")
 
       view.getElementById("error-message-natureType-input").text() must be(messages(natureOfTransactionEmpty))
@@ -95,7 +95,7 @@ class NatureOfTransactionViewSpec extends AppViewSpec with NatureOfTransactionMe
 
       val view = createView(NatureOfTransaction.form().fillAndValidate(NatureOfTransaction("ABC")))
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, "natureType-error", natureOfTransactionError, "#natureType")
 
       view.getElementById("error-message-natureType-input").text() must be(messages(natureOfTransactionError))

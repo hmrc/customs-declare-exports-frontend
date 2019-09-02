@@ -144,7 +144,7 @@ class LocationViewSpec extends AppViewSpec with LocationOfGoodsMessages with Com
         GoodsLocation.form.fillAndValidate(GoodsLocation("", "t", "t", Some("TST"), Some("TST"), None, None, None))
       val view = createView(form)
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, countryEmpty, "#country")
 
       view.select("span.error-message").text() must be(messages(countryEmpty))
@@ -156,7 +156,7 @@ class LocationViewSpec extends AppViewSpec with LocationOfGoodsMessages with Com
         GoodsLocation.form.fillAndValidate(GoodsLocation("TST", "t", "t", Some("TST"), Some("TST"), None, None, None))
       val view = createView(form)
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, countryError, "#country")
 
       view.select("span.error-message").text() must be(messages(countryError))
@@ -169,7 +169,7 @@ class LocationViewSpec extends AppViewSpec with LocationOfGoodsMessages with Com
           .fillAndValidate(GoodsLocation("Poland", "", "t", Some("TST"), Some("TST"), None, None, None))
       val view = createView(form)
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, typeOfLocationEmpty, "#typeOfLocation")
 
       view.select("#error-message-typeOfLocation-input").text() must be(messages(typeOfLocationEmpty))
@@ -182,7 +182,7 @@ class LocationViewSpec extends AppViewSpec with LocationOfGoodsMessages with Com
           .fillAndValidate(GoodsLocation("Poland", "TST", "t", Some("TST"), Some("TST"), None, None, None))
       val view = createView(form)
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, typeOfLocationError, "#typeOfLocation")
 
       view.select("#error-message-typeOfLocation-input").text() must be(messages(typeOfLocationError))
@@ -195,7 +195,7 @@ class LocationViewSpec extends AppViewSpec with LocationOfGoodsMessages with Com
           .fillAndValidate(GoodsLocation("Poland", "t", "", Some("TST"), Some("TST"), None, None, None))
       val view = createView(form)
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, qualifierOfIdentEmpty, "#qualifierOfIdentification")
 
       view.select("#error-message-qualifierOfIdentification-input").text() must be(messages(qualifierOfIdentEmpty))
@@ -208,7 +208,7 @@ class LocationViewSpec extends AppViewSpec with LocationOfGoodsMessages with Com
           .fillAndValidate(GoodsLocation("Poland", "t", "@@!", Some("TST"), Some("TST"), None, None, None))
       val view = createView(form)
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, qualifierOfIdentError, "#qualifierOfIdentification")
 
       view.select("#error-message-qualifierOfIdentification-input").text() must be(messages(qualifierOfIdentError))
@@ -220,7 +220,7 @@ class LocationViewSpec extends AppViewSpec with LocationOfGoodsMessages with Com
         .fillAndValidate(GoodsLocation("Poland", "t", "t", Some("@@!"), Some("TST"), None, None, None))
       val view = createView(form)
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, identOfLocationError, "#identificationOfLocation")
 
       view.select("#error-message-identificationOfLocation-input").text() must be(messages(identOfLocationError))
@@ -243,7 +243,7 @@ class LocationViewSpec extends AppViewSpec with LocationOfGoodsMessages with Com
         )
       val view = createView(form)
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, additionalQualifierError, "#additionalQualifier")
 
       view.select("#error-message-additionalQualifier-input").text() must be(messages(additionalQualifierError))
@@ -266,7 +266,7 @@ class LocationViewSpec extends AppViewSpec with LocationOfGoodsMessages with Com
         )
       val view = createView(form)
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, locationAddressError, "#addressLine")
 
       view.select("#error-message-addressLine-input").text() must be(messages(locationAddressError))
@@ -289,7 +289,7 @@ class LocationViewSpec extends AppViewSpec with LocationOfGoodsMessages with Com
         )
       val view = createView(form)
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, logPostCodeError, "#postCode")
 
       view.select("#error-message-postCode-input").text() must be(messages(logPostCodeError))
@@ -312,7 +312,7 @@ class LocationViewSpec extends AppViewSpec with LocationOfGoodsMessages with Com
         )
       val view = createView(form)
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, cityError, "#city")
 
       view.select("#error-message-city-input").text() must be(messages(cityError))
@@ -335,7 +335,7 @@ class LocationViewSpec extends AppViewSpec with LocationOfGoodsMessages with Com
         )
       val view = createView(form)
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, countryError, "#country")
       checkErrorLink(view, 2, typeOfLocationError, "#typeOfLocation")
       checkErrorLink(view, 3, qualifierOfIdentError, "#qualifierOfIdentification")
@@ -371,7 +371,7 @@ class LocationViewSpec extends AppViewSpec with LocationOfGoodsMessages with Com
         )
       val view = createView(form)
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, countryError, "#country")
       checkErrorLink(view, 2, typeOfLocationError, "#typeOfLocation")
       checkErrorLink(view, 3, qualifierOfIdentError, "#qualifierOfIdentification")

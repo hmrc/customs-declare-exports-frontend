@@ -53,7 +53,7 @@ class CancelDeclarationViewSpec extends AppViewSpec with CommonMessages {
         )
     )
 
-    checkErrorsSummary(view)
+    view.getElementById("error-summary-heading").text() mustNot be(empty)
     checkErrorLink(view, elementId, errorMsg, hrefPageLink)
 
     view.getElementById(idOfErrorElement).text() must be(expectedMessage)
@@ -133,7 +133,7 @@ class CancelDeclarationViewSpec extends AppViewSpec with CommonMessages {
 
       val view = createView(CancelDeclaration.form.bind(Map[String, String]()))
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, "functionalReferenceId-error", "error.required", "#functionalReferenceId")
       checkErrorLink(view, "declarationId-error", "error.required", "#declarationId")
       checkErrorLink(view, "statementDescription-error", "error.required", "#statementDescription")
@@ -153,7 +153,7 @@ class CancelDeclarationViewSpec extends AppViewSpec with CommonMessages {
             .fillAndValidate(CancelDeclaration("123", "123456789", "Some Description", NoLongerRequired.toString))
         )
 
-        checkErrorsSummary(view)
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
         checkErrorLink(view, 1, "cancellation.functionalReferenceId.tooShort", "#functionalReferenceId")
         checkErrorLink(view, 2, "cancellation.functionalReferenceId.wrongFormat", "#functionalReferenceId")
 
@@ -176,7 +176,7 @@ class CancelDeclarationViewSpec extends AppViewSpec with CommonMessages {
             )
         )
 
-        checkErrorsSummary(view)
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
         checkErrorLink(view, 1, "cancellation.functionalReferenceId.tooLong", "#functionalReferenceId")
         checkErrorLink(view, 2, "cancellation.functionalReferenceId.wrongFormat", "#functionalReferenceId")
 
@@ -199,7 +199,7 @@ class CancelDeclarationViewSpec extends AppViewSpec with CommonMessages {
             )
         )
 
-        checkErrorsSummary(view)
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
         checkErrorLink(
           view,
           "functionalReferenceId-error",
@@ -229,7 +229,7 @@ class CancelDeclarationViewSpec extends AppViewSpec with CommonMessages {
             )
         )
 
-        checkErrorsSummary(view)
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
         checkErrorLink(view, "declarationId-error", "cancellation.declarationId.tooLong", "#declarationId")
 
         view.getElementById("error-message-declarationId-input").text() must be(
@@ -266,7 +266,7 @@ class CancelDeclarationViewSpec extends AppViewSpec with CommonMessages {
             )
         )
 
-        checkErrorsSummary(view)
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
         checkErrorLink(view, "declarationId-error", "cancellation.declarationId.wrongFormat", "#declarationId")
 
         view.getElementById("error-message-declarationId-input").text() must be(
@@ -322,7 +322,7 @@ class CancelDeclarationViewSpec extends AppViewSpec with CommonMessages {
             )
         )
 
-        checkErrorsSummary(view)
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
         checkErrorLink(
           view,
           "statementDescription-error",
@@ -346,7 +346,7 @@ class CancelDeclarationViewSpec extends AppViewSpec with CommonMessages {
             )
         )
 
-        checkErrorsSummary(view)
+        view.getElementById("error-summary-heading").text() mustNot be(empty)
         checkErrorLink(view, "changeReason-error", "cancellation.changeReason.error.wrongValue", "#changeReason")
 
         view.getElementById("error-message-changeReason-input").text() must be(

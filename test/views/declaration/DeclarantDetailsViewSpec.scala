@@ -127,7 +127,7 @@ class DeclarantDetailsViewSpec extends AppViewSpec with DeclarantDetailsMessages
 
       val view = createView(DeclarantDetails.form().bind(Map[String, String]()))
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, eoriOrAddressEmpty, "#details")
 
       view.select("#error-message-details-input").text() must be(messages(eoriOrAddressEmpty))
@@ -141,7 +141,7 @@ class DeclarantDetailsViewSpec extends AppViewSpec with DeclarantDetailsMessages
           .fillAndValidate(DeclarantDetails(EntityDetails(Some(TestHelper.createRandomAlphanumericString(19)), None)))
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, eoriError, "#details_eori")
 
       view.select("#error-message-details_eori-input").text() must be(messages(eoriError))
@@ -157,7 +157,7 @@ class DeclarantDetailsViewSpec extends AppViewSpec with DeclarantDetailsMessages
           )
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, fullNameEmpty, "#details_address_fullName")
 
       view.select("#error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
@@ -180,7 +180,7 @@ class DeclarantDetailsViewSpec extends AppViewSpec with DeclarantDetailsMessages
           )
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, fullNameError, "#details_address_fullName")
 
       view.select("#error-message-details_address_fullName-input").text() must be(messages(fullNameError))
@@ -196,7 +196,7 @@ class DeclarantDetailsViewSpec extends AppViewSpec with DeclarantDetailsMessages
           )
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, addressLineEmpty, "#details_address_addressLine")
 
       view.select("#error-message-details_address_addressLine-input").text() must be(messages(addressLineEmpty))
@@ -217,7 +217,7 @@ class DeclarantDetailsViewSpec extends AppViewSpec with DeclarantDetailsMessages
           )
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, addressLineError, "#details_address_addressLine")
 
       view.select("#error-message-details_address_addressLine-input").text() must be(messages(addressLineError))
@@ -233,7 +233,7 @@ class DeclarantDetailsViewSpec extends AppViewSpec with DeclarantDetailsMessages
           )
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, townOrCityEmpty, "#details_address_townOrCity")
 
       view.select("#error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
@@ -262,7 +262,7 @@ class DeclarantDetailsViewSpec extends AppViewSpec with DeclarantDetailsMessages
           )
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, townOrCityError, "#details_address_townOrCity")
 
       view.select("#error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
@@ -277,7 +277,7 @@ class DeclarantDetailsViewSpec extends AppViewSpec with DeclarantDetailsMessages
             DeclarantDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "", "England"))))
           )
       )
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, postCodeEmpty, "#details_address_postCode")
 
       view.select("#error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
@@ -306,7 +306,7 @@ class DeclarantDetailsViewSpec extends AppViewSpec with DeclarantDetailsMessages
           )
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, postCodeError, "#details_address_postCode")
 
       view.select("#error-message-details_address_postCode-input").text() must be(messages(postCodeError))
@@ -322,7 +322,7 @@ class DeclarantDetailsViewSpec extends AppViewSpec with DeclarantDetailsMessages
           )
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, countryEmpty, "#details_address_country")
 
       view.select("span.error-message").text() must be(messages(countryEmpty))
@@ -340,7 +340,7 @@ class DeclarantDetailsViewSpec extends AppViewSpec with DeclarantDetailsMessages
           )
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, countryError, "#details_address_country")
 
       view.select("span.error-message").text() must be(messages(countryError))
@@ -354,7 +354,7 @@ class DeclarantDetailsViewSpec extends AppViewSpec with DeclarantDetailsMessages
           .fillAndValidate(DeclarantDetails(EntityDetails(None, Some(Address("Marco Polo", "", "", "", "")))))
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, addressLineEmpty, "#details_address_addressLine")
       checkErrorLink(view, 2, townOrCityEmpty, "#details_address_townOrCity")
       checkErrorLink(view, 3, postCodeEmpty, "#details_address_postCode")
@@ -375,7 +375,7 @@ class DeclarantDetailsViewSpec extends AppViewSpec with DeclarantDetailsMessages
           .fillAndValidate(DeclarantDetails(EntityDetails(None, Some(Address("", "", "", "", "Ukraine")))))
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, fullNameEmpty, "#details_address_fullName")
       checkErrorLink(view, 2, addressLineEmpty, "#details_address_addressLine")
       checkErrorLink(view, 3, townOrCityEmpty, "#details_address_townOrCity")
@@ -410,7 +410,7 @@ class DeclarantDetailsViewSpec extends AppViewSpec with DeclarantDetailsMessages
           )
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, addressLineError, "#details_address_addressLine")
       checkErrorLink(view, 2, townOrCityError, "#details_address_townOrCity")
       checkErrorLink(view, 3, postCodeError, "#details_address_postCode")
@@ -445,7 +445,7 @@ class DeclarantDetailsViewSpec extends AppViewSpec with DeclarantDetailsMessages
           )
       )
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-heading").text() mustNot be(empty)
       checkErrorLink(view, 1, fullNameError, "#details_address_fullName")
       checkErrorLink(view, 2, addressLineError, "#details_address_addressLine")
       checkErrorLink(view, 3, townOrCityError, "#details_address_townOrCity")
