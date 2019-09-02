@@ -96,7 +96,7 @@ class TransportDetailsControllerSpec extends ControllerSpec {
         val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController.displayAddContainer()
+        thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Draft)
       }
     }
   }
