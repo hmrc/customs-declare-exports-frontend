@@ -19,8 +19,8 @@ package views.declaration
 import forms.declaration.CommodityMeasure
 import helpers.views.declaration.{CommodityMeasureMessages, CommonMessages}
 import models.Mode
+import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.twirl.api.Html
 import views.declaration.spec.AppViewSpec
 import views.html.declaration.goods_measure
 import views.tags.ViewTest
@@ -30,7 +30,7 @@ class CommodityMeasureViewSpec extends AppViewSpec with CommodityMeasureMessages
 
   private val form: Form[CommodityMeasure] = CommodityMeasure.form()
   private val goodsMeasurePage = app.injector.instanceOf[goods_measure]
-  private def createView(form: Form[CommodityMeasure] = form): Html =
+  private def createView(form: Form[CommodityMeasure] = form): Document =
     goodsMeasurePage(Mode.Normal, itemId, form)(fakeRequest, messages)
 
   "Commodity Measure View on empty page" should {
@@ -93,9 +93,9 @@ class CommodityMeasureViewSpec extends AppViewSpec with CommodityMeasureMessages
 
       val view = createView(CommodityMeasure.form().fillAndValidate(CommodityMeasure(Some(""), "", "")))
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, netMassEmpty, "#netMass")
-      checkErrorLink(view, 2, grossMassEmpty, "#grossMass")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("netMass", "#netMass")
+      view must haveFieldErrorLink("grossMass", "#grossMass")
 
       view.select("#error-message-netMass-input").text() must be(messages(netMassEmpty))
       view.select("#error-message-grossMass-input").text() must be(messages(grossMassEmpty))
@@ -105,8 +105,8 @@ class CommodityMeasureViewSpec extends AppViewSpec with CommodityMeasureMessages
 
       val view = createView(CommodityMeasure.form().fillAndValidate(CommodityMeasure(Some("99.123"), "", "")))
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, supplementaryUnitsError, "#supplementaryUnits")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("supplementaryUnits", "#supplementaryUnits")
 
       view.select("#error-message-supplementaryUnits-input").text() must be(messages(supplementaryUnitsError))
     }
@@ -115,8 +115,8 @@ class CommodityMeasureViewSpec extends AppViewSpec with CommodityMeasureMessages
 
       val view = createView(CommodityMeasure.form().fillAndValidate(CommodityMeasure(Some("99.99"), "", "10.00")))
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, netMassEmpty, "#netMass")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("netMass", "#netMass")
 
       view.select("#error-message-netMass-input").text() must be(messages(netMassEmpty))
     }
@@ -126,8 +126,8 @@ class CommodityMeasureViewSpec extends AppViewSpec with CommodityMeasureMessages
       val view =
         createView(CommodityMeasure.form().fillAndValidate(CommodityMeasure(Some("99.99"), "20.9999", "10.00")))
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, netMassError, "#netMass")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("netMass", "#netMass")
 
       view.select("#error-message-netMass-input").text() must be(messages(netMassError))
     }
@@ -136,8 +136,8 @@ class CommodityMeasureViewSpec extends AppViewSpec with CommodityMeasureMessages
 
       val view = createView(CommodityMeasure.form().fillAndValidate(CommodityMeasure(Some("99.99"), "10.00", "")))
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, grossMassEmpty, "#grossMass")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("grossMass", "#grossMass")
 
       view.select("#error-message-grossMass-input").text() must be(messages(grossMassEmpty))
     }
@@ -146,8 +146,8 @@ class CommodityMeasureViewSpec extends AppViewSpec with CommodityMeasureMessages
 
       val view = createView(CommodityMeasure.form().fillAndValidate(CommodityMeasure(Some("99.99"), "5.00", "100.100")))
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, grossMassError, "#grossMass")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("grossMass", "#grossMass")
 
       view.select("#error-message-grossMass-input").text() must be(messages(grossMassError))
     }

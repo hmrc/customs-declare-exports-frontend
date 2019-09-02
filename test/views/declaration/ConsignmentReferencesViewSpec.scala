@@ -22,8 +22,8 @@ import forms.Ducr
 import forms.declaration.ConsignmentReferences
 import helpers.views.declaration.{CommonMessages, ConsignmentReferencesMessages}
 import models.Mode
+import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.twirl.api.Html
 import views.declaration.spec.AppViewSpec
 import views.html.declaration.consignment_references
 import views.tags.ViewTest
@@ -40,7 +40,7 @@ class ConsignmentReferencesViewSpec extends AppViewSpec with ConsignmentReferenc
 
   private val form: Form[ConsignmentReferences] = ConsignmentReferences.form()
   private val consignmentReferencesPage = app.injector.instanceOf[consignment_references]
-  private def createView(form: Form[ConsignmentReferences] = form): Html =
+  private def createView(form: Form[ConsignmentReferences] = form): Document =
     consignmentReferencesPage(Mode.Normal, form)(fakeRequest, messages)
 
   "Consignment References View on empty page" should {
@@ -111,8 +111,8 @@ class ConsignmentReferencesViewSpec extends AppViewSpec with ConsignmentReferenc
       val view =
         createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Ducr(properDUCR), "")))
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, lrnEmpty, "#lrn")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("lrn", "#lrn")
 
       view.select("#error-message-lrn-input").text() must be(messages(lrnEmpty))
     }
@@ -125,8 +125,8 @@ class ConsignmentReferencesViewSpec extends AppViewSpec with ConsignmentReferenc
           .fillAndValidate(ConsignmentReferences(Ducr(properDUCR), TestHelper.createRandomAlphanumericString(23)))
       )
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, lrnLength, "#lrn")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("lrn", "#lrn")
 
       view.select("#error-message-lrn-input").text() must be(messages(lrnLength))
     }
@@ -136,8 +136,8 @@ class ConsignmentReferencesViewSpec extends AppViewSpec with ConsignmentReferenc
       val view =
         createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Ducr(properDUCR), "#@#$")))
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, lrnSpecialCharacter, "#lrn")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("lrn", "#lrn")
 
       view.select("#error-message-lrn-input").text() must be(messages(lrnSpecialCharacter))
     }
@@ -147,9 +147,9 @@ class ConsignmentReferencesViewSpec extends AppViewSpec with ConsignmentReferenc
       val view =
         createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Ducr(incorrectDUCR), "")))
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, ducrError, "#ducr_ducr")
-      checkErrorLink(view, 2, lrnEmpty, "#lrn")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("ducr.ducr", "#ducr_ducr")
+      view must haveFieldErrorLink("lrn", "#lrn")
 
       view.select("#error-message-ducr_ducr-input").text() must be(messages(ducrError))
       view.select("#error-message-lrn-input").text() must be(messages(lrnEmpty))
@@ -163,9 +163,9 @@ class ConsignmentReferencesViewSpec extends AppViewSpec with ConsignmentReferenc
           .fillAndValidate(ConsignmentReferences(Ducr(incorrectDUCR), TestHelper.createRandomAlphanumericString(23)))
       )
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, ducrError, "#ducr_ducr")
-      checkErrorLink(view, 2, lrnLength, "#lrn")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("ducr.ducr", "#ducr_ducr")
+      view must haveFieldErrorLink("lrn", "#lrn")
 
       view.select("#error-message-ducr_ducr-input").text() must be(messages(ducrError))
       view.select("#error-message-lrn-input").text() must be(messages(lrnLength))
@@ -176,9 +176,9 @@ class ConsignmentReferencesViewSpec extends AppViewSpec with ConsignmentReferenc
       val view =
         createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Ducr(incorrectDUCR), "$$%")))
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, ducrError, "#ducr_ducr")
-      checkErrorLink(view, 2, lrnSpecialCharacter, "#lrn")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("ducr.ducr", "#ducr_ducr")
+      view must haveFieldErrorLink("lrn", "#lrn")
 
       view.select("#error-message-ducr_ducr-input").text() must be(messages(ducrError))
       view.select("#error-message-lrn-input").text() must be(messages(lrnSpecialCharacter))
@@ -230,8 +230,8 @@ class ConsignmentReferencesViewSpec extends AppViewSpec with ConsignmentReferenc
           )
       )
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, ucrLength, "#personalUcr")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("personalUcr", "#personalUcr")
 
       view.select("#error-message-personalUcr-input").text() must be(messages(ucrLength))
     }
@@ -243,8 +243,8 @@ class ConsignmentReferencesViewSpec extends AppViewSpec with ConsignmentReferenc
           ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Ducr(properDUCR), "test2", Some("#@#$")))
         )
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, ucrSpecialCharacter, "#personalUcr")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("personalUcr", "#personalUcr")
 
       view.select("#error-message-personalUcr-input").text() must be(messages(ucrSpecialCharacter))
     }
