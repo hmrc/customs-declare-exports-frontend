@@ -15,8 +15,8 @@
  *@
 
 @import controllers.declaration.routes._
-@import forms.declaration.Choice
-@import forms.declaration.Choice.ChoiceAnswers._
+@import forms.common.YesNoAnswer
+@import forms.common.YesNoAnswer.YesNoAnswers._
 @import models.declaration.Container
 @import views.components.fields.LabelledValue
 @import views.components.inputs.RadioOption
@@ -24,7 +24,7 @@
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[Choice], containerId: String, sealId: String)(implicit request: Request[_], messages: Messages)
+@(mode: Mode, form: Form[YesNoAnswer], containerId: String, sealId: String)(implicit request: Request[_], messages: Messages)
 
 
 @main_template(
@@ -57,7 +57,7 @@
         </div>
 
         @components.fields.field_radio(
-            field = form("choice"),
+            field = form("yesNo"),
             legend = "",
             inputs = Seq(
                 RadioOption("Yes", yes, messages("site.yes")),

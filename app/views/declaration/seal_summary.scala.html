@@ -15,8 +15,8 @@
  *@
 
 @import controllers.declaration.routes._
-@import forms.declaration.Choice
-@import forms.declaration.Choice.ChoiceAnswers._
+@import forms.common.YesNoAnswer
+@import forms.common.YesNoAnswer.YesNoAnswers._
 @import models.declaration.Container
 @import views.components.fields.LabelledValue
 @import views.components.inputs.RadioOption
@@ -24,7 +24,7 @@
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[Choice], container: Option[Container])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, form: Form[YesNoAnswer], container: Option[Container])(implicit request: Request[_], messages: Messages)
 
 @defining(container.map(_.id).getOrElse("")) { containerId =>
 
@@ -36,9 +36,14 @@
 
         @components.error_summary(form.errors)
 
-        @components.page_title(Some(messages("standard.seal.title", containerId)), None)
-
         @defining(container.map(_.seals).getOrElse(Seq.empty)) { seals: Seq[Seal] =>
+
+            @if(seals.nonEmpty) {
+                @components.page_title(Some(messages("standard.seal.title", containerId)), None)
+            }
+            @if(seals.isEmpty) {
+                @components.page_title(Some(messages("standard.seal.add.first", containerId)), None)
+            }
 
             @helper.form(SealController.submitSummaryAction(mode, containerId), 'autoComplete -> "off") {
                 @helper.CSRF.formField
@@ -46,13 +51,14 @@
                 @if(seals.nonEmpty) {
                     @components.fields.removable_elements_table(
                         title = Some(messages("standard.seal.summary.heading")),
-                        elements = seals.map(seal => LabelledValue(seal.id))
+                        elements = seals.map(seal => LabelledValue(seal.id)),
+                        removeButtonClass = "button-link"
                     )
                 }
 
                 @components.fields.field_radio(
-                    field = form("choice"),
-                    legend = messages(if(seals.nonEmpty) "standard.seal.add.another" else "standard.seal.add.first"),
+                    field = form("yesNo"),
+                    legend = if(seals.nonEmpty) messages("standard.seal.add.another") else "",
                     inputs = Seq(
                         RadioOption("Yes", yes, messages("site.yes")),
                         RadioOption("No", no, messages("site.no"))

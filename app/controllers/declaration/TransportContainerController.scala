@@ -20,8 +20,9 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.{FormAction, Remove}
 import forms.Choice.AllowedChoiceValues
-import forms.declaration.Choice.{form, ChoiceAnswers}
-import forms.declaration.{Choice, TransportInformationContainer}
+import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.{form, YesNoAnswers}
+import forms.declaration.TransportInformationContainer
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.TransportInformationContainerData.maxNumberOfItems
@@ -57,17 +58,16 @@ class TransportContainerController @Inject()(
   def submitAddContainer(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
       val boundForm = TransportInformationContainer.form().bindFromRequest()
-      val containers = request.cacheModel.containerData.map(_.containers).getOrElse(Seq.empty)
-
-      saveContainer(mode, boundForm, maxNumberOfItems, containers)
+      saveContainer(mode, boundForm, maxNumberOfItems, request.cacheModel.containers)
   }
 
   def displayContainersSummary(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) {
     implicit request =>
-      if (containers.isEmpty)
-        navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayAddContainer(mode))
-      else
-        Ok(summaryPage(mode, Choice.form(), containers, allowSeals))
+      request.cacheModel.containers match {
+        case containers if (containers.nonEmpty) => Ok(summaryPage(mode, YesNoAnswer.form(), containers, allowSeals))
+        case _ =>
+          navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayAddContainer(mode))
+      }
   }
 
   def submitSummaryAction(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async {
@@ -80,8 +80,8 @@ class TransportContainerController @Inject()(
 
   def displayContainerRemove(mode: Mode, containerId: String): Action[AnyContent] =
     (authenticate andThen journeyType) { implicit request =>
-      containers.find(_.id == containerId) match {
-        case Some(container) => Ok(removePage(mode, Choice.form(), container))
+      request.cacheModel.containerBy(containerId) match {
+        case Some(container) => Ok(removePage(mode, YesNoAnswer.form(), container))
         case _               => navigator.continueTo(routes.TransportContainerController.displayContainersSummary(mode))
       }
     }
@@ -133,13 +133,13 @@ class TransportContainerController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[Choice]) =>
-          Future.successful(BadRequest(summaryPage(mode, formWithErrors, containers, allowSeals))),
+        (formWithErrors: Form[YesNoAnswer]) =>
+          Future.successful(BadRequest(summaryPage(mode, formWithErrors, request.cacheModel.containers, allowSeals))),
         formData =>
-          formData.addItem match {
-            case ChoiceAnswers.yes =>
+          formData.answer match {
+            case YesNoAnswers.yes =>
               goto(routes.TransportContainerController.displayAddContainer(mode))
-            case ChoiceAnswers.no =>
+            case YesNoAnswers.no =>
               goto(controllers.declaration.routes.SummaryController.displayPage(mode))
         }
       )
@@ -151,20 +151,22 @@ class TransportContainerController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[Choice]) =>
-          Future.successful(BadRequest(removePage(mode, formWithErrors, containers.filter(_.id == containerId).head))),
+        (formWithErrors: Form[YesNoAnswer]) =>
+          Future.successful(
+            BadRequest(removePage(mode, formWithErrors, request.cacheModel.containers.filter(_.id == containerId).head))
+        ),
         formData => {
-          formData.addItem match {
-            case ChoiceAnswers.yes =>
+          formData.answer match {
+            case YesNoAnswers.yes =>
               removeContainer(containerId, mode)
-            case ChoiceAnswers.no =>
+            case YesNoAnswers.no =>
               goto(routes.TransportContainerController.displayContainersSummary(mode))
           }
         }
       )
 
   private def removeContainer(containerId: String, mode: Mode)(implicit request: JourneyRequest[AnyContent]) =
-    updateCache(containers.filterNot(_.id == containerId))
+    updateCache(request.cacheModel.containers.filterNot(_.id == containerId))
       .map(_ => navigator.continueTo(routes.TransportContainerController.displayContainersSummary(mode)))
 
   private def containerId(values: Seq[String]): String = values.headOption.getOrElse("")
@@ -182,13 +184,11 @@ class TransportContainerController @Inject()(
     else
       navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayContainersSummary(mode))
 
-  private def containers(implicit request: JourneyRequest[AnyContent]) =
-    request.cacheModel.containerData.map(_.containers).getOrElse(Seq.empty)
-
   private def goto(page: Call)(implicit request: JourneyRequest[AnyContent]) =
     Future
       .successful(navigator.continueTo(page))
 
   private def allowSeals(implicit request: JourneyRequest[AnyContent]) =
     request.choice.value == AllowedChoiceValues.StandardDec
+
 }

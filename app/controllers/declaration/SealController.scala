@@ -20,8 +20,9 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.saveAndContinue
 import controllers.util.{FormAction, Remove}
-import forms.declaration.Choice.{form, ChoiceAnswers}
-import forms.declaration.{Choice, Seal}
+import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.{form, YesNoAnswers}
+import forms.declaration.Seal
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.Mode
@@ -57,7 +58,8 @@ class SealController @Inject()(
   def submitAddSeal(mode: Mode, containerId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
       val boundForm = Seal.form().bindFromRequest()
-      request.cacheModel.containerData.flatMap(_.containers.find(_.id == containerId)) match {
+
+      request.cacheModel.containers.find(_.id == containerId) match {
         case Some(container) =>
           saveSeal(mode, boundForm, container)
         case _ => errorHandler.displayErrorPage()
@@ -66,7 +68,7 @@ class SealController @Inject()(
 
   def displaySealSummary(mode: Mode, containerId: String): Action[AnyContent] = (authenticate andThen journeyType) {
     implicit request =>
-      Ok(summaryPage(mode, Choice.form(), container(containerId)))
+      Ok(summaryPage(mode, YesNoAnswer.form(), request.cacheModel.containerBy(containerId)))
   }
 
   def submitSummaryAction(mode: Mode, containerId: String): Action[AnyContent] =
@@ -79,7 +81,7 @@ class SealController @Inject()(
 
   def displaySealRemove(mode: Mode, containerId: String, sealId: String): Action[AnyContent] =
     (authenticate andThen journeyType) { implicit request =>
-      Ok(removePage(mode, Choice.form(), containerId, sealId))
+      Ok(removePage(mode, YesNoAnswer.form(), containerId, sealId))
     }
 
   def submitSealRemove(mode: Mode, containerId: String, sealId: String): Action[AnyContent] =
@@ -87,22 +89,19 @@ class SealController @Inject()(
       removeSealAnswer(mode, containerId, sealId)
     }
 
-  private def container(containerId: String)(implicit request: JourneyRequest[AnyContent]) =
-    request.cacheModel.containerData.flatMap(data => data.containers.find(_.id == containerId))
-
   private def sealId(values: Seq[String]): String = values.headOption.getOrElse("")
 
   private def addSealAnswer(mode: Mode, containerId: String)(implicit request: JourneyRequest[AnyContent]) =
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[Choice]) =>
-          Future.successful(BadRequest(summaryPage(mode, formWithErrors, container(containerId)))),
+        (formWithErrors: Form[YesNoAnswer]) =>
+          Future.successful(BadRequest(summaryPage(mode, formWithErrors, request.cacheModel.containerBy(containerId)))),
         formData => {
-          formData.addItem match {
-            case ChoiceAnswers.yes =>
+          formData.answer match {
+            case YesNoAnswers.yes =>
               Future.successful(navigator.continueTo(routes.SealController.displayAddSeal(mode, containerId)))
-            case ChoiceAnswers.no =>
+            case YesNoAnswers.no =>
               Future
                 .successful(navigator.continueTo(routes.TransportContainerController.displayContainersSummary(mode)))
           }
@@ -115,13 +114,13 @@ class SealController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[Choice]) =>
+        (formWithErrors: Form[YesNoAnswer]) =>
           Future.successful(BadRequest(removePage(mode, formWithErrors, containerId, sealId))),
         formData => {
-          formData.addItem match {
-            case ChoiceAnswers.yes =>
+          formData.answer match {
+            case YesNoAnswers.yes =>
               removeSeal(containerId, sealId, mode)
-            case ChoiceAnswers.no =>
+            case YesNoAnswers.no =>
               Future
                 .successful(navigator.continueTo(routes.SealController.displaySealSummary(mode, containerId)))
           }
@@ -136,10 +135,11 @@ class SealController @Inject()(
   private def removeSeal(containerId: String, sealId: String, mode: Mode)(
     implicit request: JourneyRequest[AnyContent]
   ) = {
-    val result = container(containerId).map(c => c.copy(seals = c.seals.filterNot(_.id == sealId))) match {
-      case Some(container) => updateCache(container)
-      case _               => Future.successful(None)
-    }
+    val result =
+      request.cacheModel.containerBy(containerId).map(c => c.copy(seals = c.seals.filterNot(_.id == sealId))) match {
+        case Some(container) => updateCache(container)
+        case _               => Future.successful(None)
+      }
     result.map(_ => navigator.continueTo(routes.SealController.displaySealSummary(mode, containerId)))
   }
 

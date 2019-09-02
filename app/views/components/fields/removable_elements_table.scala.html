@@ -19,7 +19,12 @@
 @import views.components.fields.LabelledValue
 @import views.html.components.buttons.remove_button
 
-@(id: String = "removable_elements", elements: Seq[LabelledValue], title: Option[String] = None, buttonMessagesKey: String = "site.remove")(implicit messages: Messages)
+@(id: String = "removable_elements",
+        elements: Seq[LabelledValue],
+        title: Option[String] = None,
+        buttonMessagesKey: String = "site.remove",
+        removeButtonClass: String = "button--secondary"
+)(implicit messages: Messages)
 
 @if(elements.nonEmpty){
     <div class="field-group mb-2">
@@ -36,7 +41,7 @@
                 <tr id="@{id}__row@index">
                     <th id="@{id}-row@index-label">@{elem.label}</th>
                     <th id="@{id}-row@index-remove_button">
-                        @remove_button(value = Some(elem.value))
+                        @remove_button(value = Some(elem.value), buttonClass = removeButtonClass)
                     </th>
                 </tr>
             }

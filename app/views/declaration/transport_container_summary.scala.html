@@ -16,8 +16,8 @@
 
 @import controllers.declaration.routes._
 @import controllers.util.Remove
-@import forms.declaration.Choice
-@import forms.declaration.Choice.ChoiceAnswers._
+@import forms.common.YesNoAnswer
+@import forms.common.YesNoAnswer.YesNoAnswers._
 @import models.declaration.Container
 @import uk.gov.hmrc.play.views.html._
 @import views.components.fields.LabelledValue
@@ -26,7 +26,7 @@
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[Choice], containers: Seq[Container], showSeals: Boolean)(implicit request: Request[_], messages: Messages)
+@(mode: Mode, form: Form[YesNoAnswer], containers: Seq[Container], showSeals: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.transportInfo.containers.title")
@@ -59,12 +59,13 @@
                     <tr id="containers-row@index">
                         <td >@{container.id}</td>
                         @if(showSeals) {
-                            <td >@Html(container.seals.map(_.id).mkString("<br/>"))</td>
+                            @if(container.seals.isEmpty){
+                                <td>@messages("standard.seal.summary.noSeals")</td>
+                            }
+                            @if(container.seals.nonEmpty){
+                                <td >@Html(container.seals.map(_.id).mkString("<br/>"))</td>
+                            }
                         }
-                        <td>
-                          <a class="button-link" href="@SealController.displaySealSummary(mode, container.id)">Change</a>
-                        </td>
-
                         <td id="containers-row@index-remove_button">
                             @remove_button(value = Some(container.id), buttonClass="button-link")
                         </td>
@@ -76,7 +77,7 @@
         }
 
         @components.fields.field_radio(
-            field = form("choice"),
+            field = form("yesNo"),
             legend = messages("supplementary.transportInfo.containers.add"),
             inputs = Seq(
                 RadioOption("Yes", yes, messages("site.yes")),

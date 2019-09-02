@@ -23,6 +23,7 @@ error.ducr.empty = DUCR number can not be empty
 error.ducr.format = DUCR number is in incorrect format
 error.mucr.format = MUCR number is in incorrect format
 error.removeAction.incorrectFormat = Data format for removal request is incorrect
+error.yesNo.required = Please select either yes or no
 
 index.title =Export Declarations
 index.heading=Customs Export Declarations
@@ -789,7 +790,8 @@ supplementary.addgoodsitems.addallpages.error = Date of validity cannot be empty
 standard.seal.title=Security seals for container {0}
 standard.seal.question= What is the security seal?
 standard.seal.summary.heading= Security seals
-standard.seal.add.first= Do you need to add a security seal?
+standard.seal.summary.noSeals= No seals
+standard.seal.add.first= Does container {0} have any security seals?
 standard.seal.add.another= Do you need to add another security seal?
 standard.seal.remove.title=Are you sure you want to remove this security seal for container {0}?
 standard.seal.remove.heading=Security seal

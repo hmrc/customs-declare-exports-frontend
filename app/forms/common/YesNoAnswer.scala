@@ -14,34 +14,37 @@
  * limitations under the License.
  */
 
-package forms.declaration
-import play.api.data.Forms.text
-import play.api.data.{Form, Forms}
+package forms.common
+
+import play.api.data.Forms.{optional, text}
+import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
-import utils.validators.forms.FieldValidator.{isContainedIn, isEmpty, nonEmpty, _}
+import utils.validators.forms.FieldValidator.isContainedIn
 
-case class Choice(addItem: String)
+case class YesNoAnswer(answer: String)
 
-object Choice {
+object YesNoAnswer {
 
-  implicit val format = Json.format[Choice]
+  implicit val format = Json.format[YesNoAnswer]
 
-  object ChoiceAnswers {
+  object YesNoAnswers {
     val yes = "Yes"
     val no = "No"
   }
 
-  import ChoiceAnswers._
+  import YesNoAnswers._
 
   val allowedValues: Seq[String] = Seq(yes, no)
 
-  val mapping = Forms.mapping(
-    "choice" -> text()
-      .verifying("error.required", nonEmpty)
-      .verifying("error.required", isEmpty or isContainedIn(allowedValues))
-  )(Choice.apply)(Choice.unapply)
+  val mapping: Mapping[YesNoAnswer] = Forms.single(
+    "yesNo" -> optional(
+      text()
+        .verifying("error.yesNo.required", isContainedIn(allowedValues))
+    ).verifying("error.yesNo.required", _.isDefined)
+      .transform[YesNoAnswer](answer => YesNoAnswer(answer.getOrElse("")), yesNoAnswer => Some(yesNoAnswer.answer))
+  )
 
-  val formId = "AddItem"
+  val formId = "YesNo"
 
-  def form(): Form[Choice] = Form(mapping)
+  def form(): Form[YesNoAnswer] = Form(mapping)
 }
