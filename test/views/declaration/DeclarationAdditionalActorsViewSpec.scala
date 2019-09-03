@@ -22,8 +22,8 @@ import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.DeclarationAdditionalActors
 import helpers.views.declaration.{CommonMessages, DeclarationAdditionalActorsMessages}
 import models.Mode
+import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.twirl.api.Html
 import views.declaration.spec.AppViewSpec
 import views.html.declaration.declaration_additional_actors
 import views.tags.ViewTest
@@ -34,7 +34,7 @@ class DeclarationAdditionalActorsViewSpec
 
   private val form: Form[DeclarationAdditionalActors] = DeclarationAdditionalActors.form()
   private val declarationAdditionalActorsPage = app.injector.instanceOf[declaration_additional_actors]
-  private def createView(form: Form[DeclarationAdditionalActors] = form): Html =
+  private def createView(form: Form[DeclarationAdditionalActors] = form): Document =
     declarationAdditionalActorsPage(Mode.Normal, form, Seq())(fakeJourneyRequest(SupplementaryDec), messages)
 
   "Declaration Additional Actors View on empty page" should {
@@ -130,9 +130,9 @@ class DeclarationAdditionalActorsViewSpec
           .fillAndValidate(DeclarationAdditionalActors(Some(TestHelper.createRandomAlphanumericString(18)), Some("")))
       )
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, eoriError, "#eori")
-      checkErrorLink(view, 2, partyTypeError, "#partyType")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("eori", "#eori")
+      view must haveFieldErrorLink("partyType", "#partyType")
 
       view.select("#error-message-eori-input").text() must be(messages(eoriError))
       view.select("#error-message-partyType-input").text() must be(messages(partyTypeError))
@@ -146,8 +146,8 @@ class DeclarationAdditionalActorsViewSpec
           .fillAndValidate(DeclarationAdditionalActors(Some(TestHelper.createRandomAlphanumericString(17)), Some("")))
       )
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, partyTypeError, "#partyType")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("partyType", "#partyType")
 
       view.select("#error-message-partyType-input").text() must be(messages(partyTypeError))
     }

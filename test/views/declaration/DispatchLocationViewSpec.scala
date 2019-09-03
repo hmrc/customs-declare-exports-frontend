@@ -20,8 +20,8 @@ import controllers.util.SaveAndReturn
 import forms.declaration.DispatchLocation
 import helpers.views.declaration.{CommonMessages, DispatchLocationMessages}
 import models.Mode
+import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.twirl.api.Html
 import views.declaration.spec.AppViewSpec
 import views.html.declaration.dispatch_location
 import views.tags.ViewTest
@@ -31,7 +31,7 @@ class DispatchLocationViewSpec extends AppViewSpec with DispatchLocationMessages
 
   private val form: Form[DispatchLocation] = DispatchLocation.form()
   private val dispatchLocationPage = app.injector.instanceOf[dispatch_location]
-  private def createView(form: Form[DispatchLocation] = form, mode: Mode = Mode.Normal): Html =
+  private def createView(form: Form[DispatchLocation] = form, mode: Mode = Mode.Normal): Document =
     dispatchLocationPage(mode, form)(fakeRequest, messages)
 
   "Dispatch Location View on empty page" should {
@@ -104,8 +104,8 @@ class DispatchLocationViewSpec extends AppViewSpec with DispatchLocationMessages
 
       val view = createView(DispatchLocation.form().bind(Map[String, String]()))
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, messages(errorMessageEmpty), "#dispatchLocation")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("dispatchLocation", "#dispatchLocation")
 
       view.select("#error-message-dispatchLocation-input").text() must be(messages(errorMessageEmpty))
     }
@@ -114,8 +114,8 @@ class DispatchLocationViewSpec extends AppViewSpec with DispatchLocationMessages
 
       val view = createView(DispatchLocation.form().fillAndValidate(DispatchLocation("12")))
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, messages(errorMessageIncorrect), "#dispatchLocation")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("dispatchLocation", "#dispatchLocation")
 
       view.select("#error-message-dispatchLocation-input").text() must be(messages(errorMessageIncorrect))
     }

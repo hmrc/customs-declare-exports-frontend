@@ -16,34 +16,16 @@
 
 package views.declaration.spec
 
-/*
- * Copyright 2019 HM Revenue & Customs
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import org.scalatest.MustMatchers
 import org.scalatest.matchers._
-import play.api.i18n.Messages
 import play.api.mvc.{Call, Result}
 import play.api.test.Helpers.contentAsString
 import play.twirl.api.Html
 import play.api.test.Helpers._
 
-import scala.collection.JavaConverters
 import scala.collection.JavaConverters._
 import scala.concurrent.Future
 
@@ -217,6 +199,17 @@ trait ViewMatchers {
     }
   }
 
+  class ElementContainsFieldErrorLink(fieldName: String, link: String) extends Matcher[Element] {
+    override def apply(left: Element): MatchResult = {
+      val element = left.getElementById(s"$fieldName-error")
+      MatchResult(
+        element != null && element.attr("href") == link,
+        s"View not contains $fieldName with $link",
+        s"View contains $fieldName with $link"
+      )
+    }
+  }
+
   class ChildMatcherBuilder(tag: String) {
     def containingText(text: String) = new ElementContainsChildWithTextMatcher(tag, text)
     def withAttribute(key: String, value: String) = new ElementContainsChildWithAttributeMatcher(tag, key, value)
@@ -248,10 +241,7 @@ trait ViewMatchers {
     )
 
   def haveFieldErrorLink(fieldName: String, link: String): Matcher[Element] =
-    new ContainElementWithIDMatcher(s"error-message-$fieldName-input") and new ElementHasAttributeValueMatcher(
-      "href",
-      link
-    )
+    new ElementContainsFieldErrorLink(fieldName, link)
 
   def haveGlobalErrorSummary: Matcher[Document] = new ContainElementWithIDMatcher("error-summary-heading")
 

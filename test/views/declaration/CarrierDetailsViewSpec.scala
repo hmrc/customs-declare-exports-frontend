@@ -22,8 +22,8 @@ import forms.common.Address
 import forms.declaration.{CarrierDetails, EntityDetails}
 import helpers.views.declaration.{CarrierDetailsMessages, CommonMessages}
 import models.Mode
+import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.twirl.api.Html
 import views.declaration.spec.AppViewSpec
 import views.html.declaration.carrier_details
 import views.tags.ViewTest
@@ -33,7 +33,7 @@ class CarrierDetailsViewSpec extends AppViewSpec with CarrierDetailsMessages wit
 
   val form: Form[CarrierDetails] = CarrierDetails.form()
   private val carrierDetailsPage = app.injector.instanceOf[carrier_details]
-  private def createView(form: Form[CarrierDetails] = form): Html = carrierDetailsPage(Mode.Normal, form)
+  private def createView(form: Form[CarrierDetails] = form): Document = carrierDetailsPage(Mode.Normal, form)
 
   "Carrier Details View on empty page" should {
 
@@ -125,8 +125,8 @@ class CarrierDetailsViewSpec extends AppViewSpec with CarrierDetailsMessages wit
 
       val view = createView(CarrierDetails.form().bind(Map[String, String]()))
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, "details-error", eoriOrAddressEmpty, "#details")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("details", "#details")
 
       view.getElementById("error-message-details-input").text() must be(messages(eoriOrAddressEmpty))
     }
@@ -139,8 +139,8 @@ class CarrierDetailsViewSpec extends AppViewSpec with CarrierDetailsMessages wit
           .fillAndValidate(CarrierDetails(EntityDetails(Some(TestHelper.createRandomAlphanumericString(18)), None)))
       )
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, "details.eori-error", eoriError, "#details_eori")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("details.eori", "#details_eori")
 
       view.getElementById("error-message-details_eori-input").text() must be(messages(eoriError))
     }
@@ -155,8 +155,8 @@ class CarrierDetailsViewSpec extends AppViewSpec with CarrierDetailsMessages wit
           )
       )
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, "details.address.fullName-error", fullNameEmpty, "#details_address_fullName")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
 
       view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
     }
@@ -178,8 +178,8 @@ class CarrierDetailsViewSpec extends AppViewSpec with CarrierDetailsMessages wit
           )
       )
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, "details.address.fullName-error", fullNameError, "#details_address_fullName")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
 
       view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameError))
     }
@@ -194,8 +194,8 @@ class CarrierDetailsViewSpec extends AppViewSpec with CarrierDetailsMessages wit
           )
       )
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
 
       view.getElementById("error-message-details_address_addressLine-input").text() must be(messages(addressLineEmpty))
     }
@@ -215,8 +215,8 @@ class CarrierDetailsViewSpec extends AppViewSpec with CarrierDetailsMessages wit
           )
       )
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
 
       view.getElementById("error-message-details_address_addressLine-input").text() must be(messages(addressLineError))
     }
@@ -231,8 +231,8 @@ class CarrierDetailsViewSpec extends AppViewSpec with CarrierDetailsMessages wit
           )
       )
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
 
       view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
     }
@@ -260,8 +260,8 @@ class CarrierDetailsViewSpec extends AppViewSpec with CarrierDetailsMessages wit
           )
       )
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
 
       view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
     }
@@ -275,8 +275,9 @@ class CarrierDetailsViewSpec extends AppViewSpec with CarrierDetailsMessages wit
             CarrierDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "", "England"))))
           )
       )
-      checkErrorsSummary(view)
-      checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
+
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
 
       view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
     }
@@ -304,8 +305,8 @@ class CarrierDetailsViewSpec extends AppViewSpec with CarrierDetailsMessages wit
           )
       )
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
 
       view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeError))
     }
@@ -320,8 +321,8 @@ class CarrierDetailsViewSpec extends AppViewSpec with CarrierDetailsMessages wit
           )
       )
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, "details.address.country-error", countryEmpty, "#details_address_country")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("details.address.country", "#details_address_country")
 
       view.select("span.error-message").text() must be(messages(countryEmpty))
     }
@@ -338,8 +339,8 @@ class CarrierDetailsViewSpec extends AppViewSpec with CarrierDetailsMessages wit
           )
       )
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, "details.address.country-error", countryError, "#details_address_country")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("details.address.country", "#details_address_country")
 
       view.select("span.error-message").text() must be(messages(countryError))
     }
@@ -352,17 +353,16 @@ class CarrierDetailsViewSpec extends AppViewSpec with CarrierDetailsMessages wit
           .fillAndValidate(CarrierDetails(EntityDetails(None, Some(Address("Marco Polo", "", "", "", "")))))
       )
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
-      checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
-      checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
-      checkErrorLink(view, "details.address.country-error", countryEmpty, "#details_address_country")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
+      view must haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
+      view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
+      view must haveFieldErrorLink("details.address.country", "#details_address_country")
 
       view.getElementById("error-message-details_address_addressLine-input").text() must be(messages(addressLineEmpty))
       view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
       view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
       view.select("span.error-message").text() must be(messages(countryEmpty))
-
     }
 
     "display errors when everything except Country is empty" in {
@@ -373,11 +373,11 @@ class CarrierDetailsViewSpec extends AppViewSpec with CarrierDetailsMessages wit
           .fillAndValidate(CarrierDetails(EntityDetails(None, Some(Address("", "", "", "", "Ukraine")))))
       )
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, "details.address.fullName-error", fullNameEmpty, "#details_address_fullName")
-      checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
-      checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
-      checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
+      view must haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
+      view must haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
+      view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
 
       view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
       view.getElementById("error-message-details_address_addressLine-input").text() must be(messages(addressLineEmpty))
@@ -408,11 +408,11 @@ class CarrierDetailsViewSpec extends AppViewSpec with CarrierDetailsMessages wit
           )
       )
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
-      checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
-      checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
-      checkErrorLink(view, "details.address.country-error", countryError, "#details_address_country")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
+      view must haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
+      view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
+      view must haveFieldErrorLink("details.address.country", "#details_address_country")
 
       view.getElementById("error-message-details_address_addressLine-input").text() must be(messages(addressLineError))
       view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
@@ -443,11 +443,11 @@ class CarrierDetailsViewSpec extends AppViewSpec with CarrierDetailsMessages wit
           )
       )
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, "details.address.fullName-error", fullNameError, "#details_address_fullName")
-      checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
-      checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
-      checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
+      view must haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
+      view must haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
+      view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
 
       view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameError))
       view.getElementById("error-message-details_address_addressLine-input").text() must be(messages(addressLineError))

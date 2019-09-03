@@ -21,8 +21,8 @@ import controllers.util.SaveAndReturn
 import forms.declaration.DeclarationHolder
 import helpers.views.declaration.{CommonMessages, DeclarationHolderMessages}
 import models.Mode
+import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.twirl.api.Html
 import views.declaration.spec.AppViewSpec
 import views.html.declaration.declaration_holder
 import views.tags.ViewTest
@@ -32,7 +32,7 @@ class DeclarationHolderViewSpec extends AppViewSpec with DeclarationHolderMessag
 
   private val form: Form[DeclarationHolder] = DeclarationHolder.form()
   private val declarationHolderPage = app.injector.instanceOf[declaration_holder]
-  private def createView(form: Form[DeclarationHolder] = form): Html =
+  private def createView(form: Form[DeclarationHolder] = form): Document =
     declarationHolderPage(Mode.Normal, form, Seq())(fakeRequest, messages)
 
   "Declaration Holder View on empty page" should {
@@ -102,8 +102,8 @@ class DeclarationHolderViewSpec extends AppViewSpec with DeclarationHolderMessag
           .fillAndValidate(DeclarationHolder(Some("12345"), Some(TestHelper.createRandomAlphanumericString(17))))
       )
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, authorisationCodeError, "#authorisationTypeCode")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("authorisationTypeCode", "#authorisationTypeCode")
 
       view.select("#error-message-authorisationTypeCode-input").text() must be(messages(authorisationCodeError))
     }
@@ -116,8 +116,8 @@ class DeclarationHolderViewSpec extends AppViewSpec with DeclarationHolderMessag
           .fillAndValidate(DeclarationHolder(Some("ACE"), Some(TestHelper.createRandomAlphanumericString(18))))
       )
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, eoriError, "#eori")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("eori", "#eori")
 
       view.select("#error-message-eori-input").text() must be(messages(eoriError))
     }
@@ -135,9 +135,9 @@ class DeclarationHolderViewSpec extends AppViewSpec with DeclarationHolderMessag
           )
       )
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, authorisationCodeError, "#authorisationTypeCode")
-      checkErrorLink(view, 2, eoriError, "#eori")
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("authorisationTypeCode", "#authorisationTypeCode")
+      view must haveFieldErrorLink("eori", "#eori")
 
       view.select("#error-message-authorisationTypeCode-input").text() must be(messages(authorisationCodeError))
       view.select("#error-message-eori-input").text() must be(messages(eoriError))
