@@ -59,7 +59,7 @@ class SealController @Inject()(
     implicit request =>
       val boundForm = Seal.form().bindFromRequest()
 
-      request.cacheModel.containers.find(_.id == containerId) match {
+      request.cacheModel.containerBy(containerId) match {
         case Some(container) =>
           saveSeal(mode, boundForm, container)
         case _ => errorHandler.displayErrorPage()
