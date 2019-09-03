@@ -32,50 +32,45 @@ import views.tags.ViewTest
 @ViewTest
 class TransportContainerRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers with CommonMessages {
 
-  private val form: Form[YesNoAnswer] = YesNoAnswer.form()
-
-  private val containerRemovePage = new transport_container_remove(mainTemplate)
-
   val containerId = "434732435324"
   val sealId = "934545754"
   val container = Container(containerId, Seq(Seal(sealId)))
+  private val form: Form[YesNoAnswer] = YesNoAnswer.form()
+  private val page = new transport_container_remove(mainTemplate)
 
   private def createView(form: Form[YesNoAnswer] = form, container: Container = container): Document =
-    containerRemovePage(Mode.Normal, form, container)
+    page(Mode.Normal, form, container)
 
   "Transport Containers Remove View" should {
+    val view = createView()
 
     "display page title" in {
-      createView().getElementById("title").text() must be(
-        messages("supplementary.transportInfo.container.remove.title")
-      )
+      view.getElementById("title").text() must be(messages("supplementary.transportInfo.container.remove.title"))
     }
 
     "display header" in {
-      createView().select("legend>h1").text() must be(messages("supplementary.transportInfo.container.remove.title"))
+      view.select("legend>h1").text() must be(messages("supplementary.transportInfo.container.remove.title"))
     }
 
     "display container and seal to remove" in {
-      val view = createView()
-
       view.getElementById("container-table").text() must include(containerId)
       view.getElementById("container-table").text() must include(sealId)
     }
 
     "display 'Back' button that links to 'container summary' page" in {
-      val backLinkContainer = createView().getElementById("link-back")
+      val backLinkContainer = view.getElementById("link-back")
 
       backLinkContainer.text() must be(messages(backCaption))
-      backLinkContainer.attr("href") must be(s"/customs-declare-exports/declaration/containers")
+      backLinkContainer.attr("href") must be("/customs-declare-exports/declaration/containers")
     }
 
     "display 'Save and continue' button on page" in {
-      val saveButton = createView().getElementById("submit")
+      val saveButton = view.getElementById("submit")
       saveButton.text() must be(messages(saveAndContinueCaption))
     }
 
     "display 'Save and return' button on page" in {
-      val saveAndReturnButton = createView().getElementById("submit_and_return")
+      val saveAndReturnButton = view.getElementById("submit_and_return")
       saveAndReturnButton.text() must be(messages(saveAndReturnCaption))
     }
   }

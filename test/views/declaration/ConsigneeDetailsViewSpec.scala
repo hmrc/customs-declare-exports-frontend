@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.TestHelper
+import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.Address
 import forms.declaration.{ConsigneeDetails, EntityDetails}
@@ -24,85 +25,86 @@ import helpers.views.declaration.{CommonMessages, ConsigneeDetailsMessages}
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import views.declaration.spec.AppViewSpec
+import unit.tools.Stubs
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.consignee_details
 import views.tags.ViewTest
 
 @ViewTest
-class ConsigneeDetailsViewSpec extends AppViewSpec with ConsigneeDetailsMessages with CommonMessages {
+class ConsigneeDetailsViewSpec extends UnitViewSpec with ConsigneeDetailsMessages with CommonMessages with Stubs {
 
   val form: Form[ConsigneeDetails] = ConsigneeDetails.form()
-  val consigneeDetailsPage = app.injector.instanceOf[consignee_details]
+  val consigneeDetailsPage = new consignee_details(mainTemplate)
   private def createView(form: Form[ConsigneeDetails] = form): Document = consigneeDetailsPage(Mode.Normal, form)
 
   "Consignee Details View on empty page" should {
 
     "display page title" in {
 
-      createView().getElementById("title").text() must be(messages(title))
+      createView().getElementById("title").text() mustBe messages(title)
     }
 
     "display section header" in {
 
       val view = createView()
 
-      view.getElementById("section-header").text() must be(messages("Parties"))
+      view.getElementById("section-header").text() mustBe messages("supplementary.summary.parties.header")
     }
 
     "display empty input with label for EORI" in {
 
       val view = createView()
 
-      view.getElementById("details_eori-label").text() must be(messages(eoriInfo))
-      view.getElementById("details_eori-hint").text() must be(messages(consigneeEoriHint))
-      view.getElementById("details_eori").attr("value") must be("")
+      view.getElementById("details_eori-label").text() mustBe messages(eoriInfo)
+      view.getElementById("details_eori-hint").text() mustBe messages(consigneeEoriHint)
+      view.getElementById("details_eori").attr("value") mustBe ""
     }
 
     "display empty input with label for Full name" in {
 
       val view = createView()
 
-      view.getElementById("details_address_fullName-label").text() must be(messages(fullName))
-      view.getElementById("details_address_fullName").attr("value") must be("")
+      view.getElementById("details_address_fullName-label").text() mustBe messages(fullName)
+      view.getElementById("details_address_fullName").attr("value") mustBe ""
     }
 
     "display address label" in {
 
       val view = createView()
 
-      view.getElementById("address-header").text() must be(messages(addressInfo))
-      view.getElementById("details_address_fullName").attr("value") must be("")
+      view.getElementById("address-header").text() mustBe messages(addressInfo)
+      view.getElementById("details_address_fullName").attr("value") mustBe ""
     }
 
     "display empty input with label for Address" in {
 
       val view = createView()
 
-      view.getElementById("details_address_addressLine-label").text() must be(messages(addressLine))
-      view.getElementById("details_address_addressLine").attr("value") must be("")
+      view.getElementById("details_address_addressLine-label").text() mustBe messages(addressLine)
+      view.getElementById("details_address_addressLine").attr("value") mustBe ""
     }
 
     "display empty input with label for Town or City" in {
 
       val view = createView()
 
-      view.getElementById("details_address_townOrCity-label").text() must be(messages(townOrCity))
-      view.getElementById("details_address_townOrCity").attr("value") must be("")
+      view.getElementById("details_address_townOrCity-label").text() mustBe messages(townOrCity)
+      view.getElementById("details_address_townOrCity").attr("value") mustBe ""
     }
 
     "display empty input with label for Postcode" in {
 
       val view = createView()
 
-      view.getElementById("details_address_postCode-label").text() must be(messages(postCode))
-      view.getElementById("details_address_postCode").attr("value") must be("")
+      view.getElementById("details_address_postCode-label").text() mustBe messages(postCode)
+      view.getElementById("details_address_postCode").attr("value") mustBe ""
     }
 
     "display empty input with label for Country" in {
 
       val view = createView()
 
-      view.getElementById("details.address.country-label").text() mustBe "Country"
+      view.getElementById("details.address.country-label").text() mustBe messages("supplementary.address.country")
       view.getElementById("details.address.country").attr("value") mustBe ""
     }
 
@@ -110,18 +112,18 @@ class ConsigneeDetailsViewSpec extends AppViewSpec with ConsigneeDetailsMessages
 
       val backButton = createView().getElementById("link-back")
 
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/exporter-details")
+      backButton.text() mustBe messages(backCaption)
+      backButton.attr("href") mustBe routes.ExporterDetailsController.displayPage().url
     }
 
     "display 'Save and continue' button on page" in {
-      createView().getElementById("submit").text() must be(messages(saveAndContinueCaption))
+      createView().getElementById("submit").text() mustBe messages(saveAndContinueCaption)
     }
 
     "display 'Save and return' button on page" in {
       val button = createView().getElementById("submit_and_return")
-      button.text() must be(messages(saveAndReturnCaption))
-      button.attr("name") must be(SaveAndReturn.toString)
+      button.text() mustBe messages(saveAndReturnCaption)
+      button.attr("name") mustBe SaveAndReturn.toString
     }
   }
 
@@ -134,7 +136,7 @@ class ConsigneeDetailsViewSpec extends AppViewSpec with ConsigneeDetailsMessages
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("details", "#details")
 
-      view.getElementById("error-message-details-input").text() must be(messages(eoriOrAddressEmpty))
+      view.getElementById("error-message-details-input").text() mustBe messages(eoriOrAddressEmpty)
     }
 
     "display error when EORI is provided, but is incorrect" in {
@@ -148,7 +150,7 @@ class ConsigneeDetailsViewSpec extends AppViewSpec with ConsigneeDetailsMessages
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("details.eori", "#details_eori")
 
-      view.getElementById("error-message-details_eori-input").text() must be(messages(eoriError))
+      view.getElementById("error-message-details_eori-input").text() mustBe messages(eoriError)
     }
 
     "display error for empty Full name" in {
@@ -164,7 +166,7 @@ class ConsigneeDetailsViewSpec extends AppViewSpec with ConsigneeDetailsMessages
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
 
-      view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
+      view.getElementById("error-message-details_address_fullName-input").text() mustBe messages(fullNameEmpty)
     }
 
     "display error for incorrect Full name" in {
@@ -187,7 +189,7 @@ class ConsigneeDetailsViewSpec extends AppViewSpec with ConsigneeDetailsMessages
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
 
-      view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameError))
+      view.getElementById("error-message-details_address_fullName-input").text() mustBe messages(fullNameError)
     }
 
     "display error for empty Address" in {
@@ -203,7 +205,7 @@ class ConsigneeDetailsViewSpec extends AppViewSpec with ConsigneeDetailsMessages
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
 
-      view.getElementById("error-message-details_address_addressLine-input").text() must be(messages(addressLineEmpty))
+      view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages(addressLineEmpty)
     }
 
     "display error for incorrect Address" in {
@@ -224,7 +226,7 @@ class ConsigneeDetailsViewSpec extends AppViewSpec with ConsigneeDetailsMessages
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
 
-      view.getElementById("error-message-details_address_addressLine-input").text() must be(messages(addressLineError))
+      view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages(addressLineError)
     }
 
     "display error for empty Town or city" in {
@@ -240,7 +242,7 @@ class ConsigneeDetailsViewSpec extends AppViewSpec with ConsigneeDetailsMessages
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
 
-      view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
+      view.getElementById("error-message-details_address_townOrCity-input").text() mustBe messages(townOrCityEmpty)
     }
 
     "display error for incorrect Town or city" in {
@@ -269,7 +271,7 @@ class ConsigneeDetailsViewSpec extends AppViewSpec with ConsigneeDetailsMessages
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
 
-      view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
+      view.getElementById("error-message-details_address_townOrCity-input").text() mustBe messages(townOrCityError)
     }
 
     "display error for empty Postcode" in {
@@ -284,7 +286,7 @@ class ConsigneeDetailsViewSpec extends AppViewSpec with ConsigneeDetailsMessages
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
 
-      view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
+      view.getElementById("error-message-details_address_postCode-input").text() mustBe messages(postCodeEmpty)
     }
 
     "display error for incorrect Postcode" in {
@@ -313,7 +315,7 @@ class ConsigneeDetailsViewSpec extends AppViewSpec with ConsigneeDetailsMessages
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
 
-      view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeError))
+      view.getElementById("error-message-details_address_postCode-input").text() mustBe messages(postCodeError)
     }
 
     "display error for empty Country" in {
@@ -329,7 +331,7 @@ class ConsigneeDetailsViewSpec extends AppViewSpec with ConsigneeDetailsMessages
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("details.address.country", "#details_address_country")
 
-      view.select("span.error-message").text() must be(messages(countryEmpty))
+      view.select("span.error-message").text() mustBe messages(countryEmpty)
     }
 
     "display error for incorrect Country" in {
@@ -347,7 +349,7 @@ class ConsigneeDetailsViewSpec extends AppViewSpec with ConsigneeDetailsMessages
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("details.address.country", "#details_address_country")
 
-      view.select("span.error-message").text() must be(messages(countryError))
+      view.select("span.error-message").text() mustBe messages(countryError)
     }
 
     "display errors when everything except Full name is empty" in {
@@ -364,11 +366,10 @@ class ConsigneeDetailsViewSpec extends AppViewSpec with ConsigneeDetailsMessages
       view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
       view must haveFieldErrorLink("details.address.country", "#details_address_country")
 
-      view.getElementById("error-message-details_address_addressLine-input").text() must be(messages(addressLineEmpty))
-      view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
-      view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
-      view.select("span.error-message").text() must be(messages(countryEmpty))
-
+      view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages(addressLineEmpty)
+      view.getElementById("error-message-details_address_townOrCity-input").text() mustBe messages(townOrCityEmpty)
+      view.getElementById("error-message-details_address_postCode-input").text() mustBe messages(postCodeEmpty)
+      view.select("span.error-message").text() mustBe messages(countryEmpty)
     }
 
     "display errors when everything except Country is empty" in {
@@ -385,10 +386,10 @@ class ConsigneeDetailsViewSpec extends AppViewSpec with ConsigneeDetailsMessages
       view must haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
       view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
 
-      view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
-      view.getElementById("error-message-details_address_addressLine-input").text() must be(messages(addressLineEmpty))
-      view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
-      view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
+      view.getElementById("error-message-details_address_fullName-input").text() mustBe messages(fullNameEmpty)
+      view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages(addressLineEmpty)
+      view.getElementById("error-message-details_address_townOrCity-input").text() mustBe messages(townOrCityEmpty)
+      view.getElementById("error-message-details_address_postCode-input").text() mustBe messages(postCodeEmpty)
     }
 
     "display errors when everything except Full name is incorrect" in {
@@ -420,10 +421,10 @@ class ConsigneeDetailsViewSpec extends AppViewSpec with ConsigneeDetailsMessages
       view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
       view must haveFieldErrorLink("details.address.country", "#details_address_country")
 
-      view.getElementById("error-message-details_address_addressLine-input").text() must be(messages(addressLineError))
-      view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
-      view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeError))
-      view.select("span.error-message").text() must be(messages(countryError))
+      view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages(addressLineError)
+      view.getElementById("error-message-details_address_townOrCity-input").text() mustBe messages(townOrCityError)
+      view.getElementById("error-message-details_address_postCode-input").text() mustBe messages(postCodeError)
+      view.select("span.error-message").text() mustBe messages(countryError)
     }
 
     "display errors when everything except Country is incorrect" in {
@@ -455,10 +456,10 @@ class ConsigneeDetailsViewSpec extends AppViewSpec with ConsigneeDetailsMessages
       view must haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
       view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
 
-      view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameError))
-      view.getElementById("error-message-details_address_addressLine-input").text() must be(messages(addressLineError))
-      view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
-      view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeError))
+      view.getElementById("error-message-details_address_fullName-input").text() mustBe messages(fullNameError)
+      view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages(addressLineError)
+      view.getElementById("error-message-details_address_townOrCity-input").text() mustBe messages(townOrCityError)
+      view.getElementById("error-message-details_address_postCode-input").text() mustBe messages(postCodeError)
     }
   }
 
@@ -469,12 +470,12 @@ class ConsigneeDetailsViewSpec extends AppViewSpec with ConsigneeDetailsMessages
       val form = ConsigneeDetails.form().fill(ConsigneeDetails(EntityDetails(Some("1234"), None)))
       val view = createView(form)
 
-      view.getElementById("details_eori").attr("value") must be("1234")
-      view.getElementById("details_address_fullName").attr("value") must be("")
-      view.getElementById("details_address_addressLine").attr("value") must be("")
-      view.getElementById("details_address_townOrCity").attr("value") must be("")
-      view.getElementById("details_address_postCode").attr("value") must be("")
-      view.getElementById("details.address.country").attr("value") must be("")
+      view.getElementById("details_eori").attr("value") mustBe "1234"
+      view.getElementById("details_address_fullName").attr("value") mustBe ""
+      view.getElementById("details_address_addressLine").attr("value") mustBe ""
+      view.getElementById("details_address_townOrCity").attr("value") mustBe ""
+      view.getElementById("details_address_postCode").attr("value") mustBe ""
+      view.getElementById("details.address.country").attr("value") mustBe ""
     }
 
     "display data in Business address inputs" in {
@@ -484,12 +485,12 @@ class ConsigneeDetailsViewSpec extends AppViewSpec with ConsigneeDetailsMessages
         .fill(ConsigneeDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "Ukraine")))))
       val view = createView(form)
 
-      view.getElementById("details_eori").attr("value") must be("")
-      view.getElementById("details_address_fullName").attr("value") must be("test")
-      view.getElementById("details_address_addressLine").attr("value") must be("test1")
-      view.getElementById("details_address_townOrCity").attr("value") must be("test2")
-      view.getElementById("details_address_postCode").attr("value") must be("test3")
-      view.getElementById("details.address.country").attr("value") must be("Ukraine")
+      view.getElementById("details_eori").attr("value") mustBe ""
+      view.getElementById("details_address_fullName").attr("value") mustBe "test"
+      view.getElementById("details_address_addressLine").attr("value") mustBe "test1"
+      view.getElementById("details_address_townOrCity").attr("value") mustBe "test2"
+      view.getElementById("details_address_postCode").attr("value") mustBe "test3"
+      view.getElementById("details.address.country").attr("value") mustBe "Ukraine"
     }
 
     "display data in both EORI and Business address inputs" in {
@@ -499,12 +500,12 @@ class ConsigneeDetailsViewSpec extends AppViewSpec with ConsigneeDetailsMessages
         .fill(ConsigneeDetails(EntityDetails(Some("1234"), Some(Address("test", "test1", "test2", "test3", "test4")))))
       val view = createView(form)
 
-      view.getElementById("details_eori").attr("value") must be("1234")
-      view.getElementById("details_address_fullName").attr("value") must be("test")
-      view.getElementById("details_address_addressLine").attr("value") must be("test1")
-      view.getElementById("details_address_townOrCity").attr("value") must be("test2")
-      view.getElementById("details_address_postCode").attr("value") must be("test3")
-      view.getElementById("details.address.country").attr("value") must be("test4")
+      view.getElementById("details_eori").attr("value") mustBe "1234"
+      view.getElementById("details_address_fullName").attr("value") mustBe "test"
+      view.getElementById("details_address_addressLine").attr("value") mustBe "test1"
+      view.getElementById("details_address_townOrCity").attr("value") mustBe "test2"
+      view.getElementById("details_address_postCode").attr("value") mustBe "test3"
+      view.getElementById("details.address.country").attr("value") mustBe "test4"
     }
   }
 }

@@ -32,34 +32,30 @@ import views.tags.ViewTest
 @ViewTest
 class TransportContainerSummaryViewSpec extends UnitViewSpec with Stubs with MustMatchers with CommonMessages {
 
-  private val form: Form[YesNoAnswer] = YesNoAnswer.form()
-
-  private val containerSummaryPage = new transport_container_summary(mainTemplate)
-
   val containerId = "212374"
   val sealId = "76434574"
   val container = Container(containerId, Seq(Seal(sealId)))
+  private val form: Form[YesNoAnswer] = YesNoAnswer.form()
+  private val page = new transport_container_summary(mainTemplate)
 
   private def createView(
     form: Form[YesNoAnswer] = form,
     containers: Seq[Container] = Seq(container),
     showSeals: Boolean = true
-  ): Document =
-    containerSummaryPage(Mode.Normal, form, containers, showSeals)
+  ): Document = page(Mode.Normal, form, containers, showSeals)
 
   "Transport Containers Summary View" should {
+    val view = createView()
 
     "display page title" in {
-      createView().getElementById("title").text() must be(messages("supplementary.transportInfo.containers.title"))
+      view.getElementById("title").text() must be(messages("supplementary.transportInfo.containers.title"))
     }
 
     "display header" in {
-      createView().select("legend>h1").text() must be(messages("supplementary.transportInfo.containers.title"))
+      view.select("legend>h1").text() must be(messages("supplementary.transportInfo.containers.title"))
     }
 
     "display summary of container with seals" in {
-      val view = createView()
-
       view.getElementById("containers-row0-container").text() must be(containerId)
       view.getElementById("containers-row0-seals").text() must be(sealId)
     }
@@ -79,19 +75,19 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with Stubs with Mus
     }
 
     "display 'Back' button that links to 'transport details' page" in {
-      val backLinkContainer = createView().getElementById("link-back")
+      val backLinkContainer = view.getElementById("link-back")
 
       backLinkContainer.text() must be(messages(backCaption))
       backLinkContainer.attr("href") must be(s"/customs-declare-exports/declaration/transport-details")
     }
 
     "display 'Save and continue' button on page" in {
-      val saveButton = createView().getElementById("submit")
+      val saveButton = view.getElementById("submit")
       saveButton.text() must be(messages(saveAndContinueCaption))
     }
 
     "display 'Save and return' button on page" in {
-      val saveAndReturnButton = createView().getElementById("submit_and_return")
+      val saveAndReturnButton = view.getElementById("submit_and_return")
       saveAndReturnButton.text() must be(messages(saveAndReturnCaption))
     }
   }

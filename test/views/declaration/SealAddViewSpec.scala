@@ -30,39 +30,37 @@ import views.tags.ViewTest
 @ViewTest
 class SealAddViewSpec extends UnitViewSpec with Stubs with MustMatchers with CommonMessages {
 
-  private val form: Form[Seal] = Seal.form()
-
-  private val sealAddPage = new seal_add(mainTemplate)
-
   val containerId = "867126538"
+  private val form: Form[Seal] = Seal.form()
+  private val page = new seal_add(mainTemplate)
 
-  private def createView(form: Form[Seal] = form): Document =
-    sealAddPage(Mode.Normal, form, containerId)
+  private def createView(form: Form[Seal] = form): Document = page(Mode.Normal, form, containerId)
 
   "Seal Add View" should {
+    val view = createView()
 
     "display page title" in {
-      createView().getElementById("title").text() must be(messages("standard.seal.title"))
+      view.getElementById("title").text() must be(messages("standard.seal.title"))
     }
 
     "display header" in {
-      createView().select("legend>h1").text() must be(messages("standard.seal.title"))
+      view.select("legend>h1").text() must be(messages("standard.seal.title"))
     }
 
     "display 'Back' button that links to 'seals summary' page" in {
-      val backLinkContainer = createView().getElementById("link-back")
+      val backLinkContainer = view.getElementById("link-back")
 
       backLinkContainer.text() must be(messages(backCaption))
       backLinkContainer.attr("href") must be(s"/customs-declare-exports/declaration/containers/$containerId/seals")
     }
 
     "display 'Save and continue' button on page" in {
-      val saveButton = createView().getElementById("submit")
+      val saveButton = view.getElementById("submit")
       saveButton.text() must be(messages(saveAndContinueCaption))
     }
 
     "display 'Save and return' button on page" in {
-      val saveAndReturnButton = createView().getElementById("submit_and_return")
+      val saveAndReturnButton = view.getElementById("submit_and_return")
       saveAndReturnButton.text() must be(messages(saveAndReturnCaption))
     }
   }
