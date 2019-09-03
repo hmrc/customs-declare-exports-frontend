@@ -103,7 +103,7 @@ class SealController @Inject()(
               Future.successful(navigator.continueTo(routes.SealController.displayAddSeal(mode, containerId)))
             case YesNoAnswers.no =>
               Future
-                .successful(navigator.continueTo(routes.TransportContainerController.displayContainersSummary(mode)))
+                .successful(navigator.continueTo(routes.TransportContainerController.displayContainerSummary(mode)))
           }
         }
       )

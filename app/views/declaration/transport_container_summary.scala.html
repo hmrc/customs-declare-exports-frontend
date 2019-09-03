@@ -57,13 +57,13 @@
                   <tbody>
                   @for((container, index) <- containers.zipWithIndex) {
                     <tr id="containers-row@index">
-                        <td >@{container.id}</td>
+                        <td id="containers-row@index-container">@{container.id}</td>
                         @if(showSeals) {
                             @if(container.seals.isEmpty){
-                                <td>@messages("standard.seal.summary.noSeals")</td>
+                                <td id="containers-row@index-seals">@messages("standard.seal.summary.noSeals")</td>
                             }
                             @if(container.seals.nonEmpty){
-                                <td >@Html(container.seals.map(_.id).mkString("<br/>"))</td>
+                                <td id="containers-row@index-seals">@Html(container.seals.map(_.id).mkString("<br/>"))</td>
                             }
                         }
                         <td id="containers-row@index-remove_button">

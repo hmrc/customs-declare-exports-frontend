@@ -63,7 +63,7 @@ class TransportDetailsController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Result =
     if (transportDetails.container)
-      navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayContainersSummary(mode))
+      navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode))
     else navigator.continueTo(controllers.declaration.routes.SummaryController.displayPage(mode))
 
   private def updateCache(

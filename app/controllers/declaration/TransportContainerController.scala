@@ -61,7 +61,7 @@ class TransportContainerController @Inject()(
       saveContainer(mode, boundForm, maxNumberOfItems, request.cacheModel.containers)
   }
 
-  def displayContainersSummary(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) {
+  def displayContainerSummary(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) {
     implicit request =>
       request.cacheModel.containers match {
         case containers if (containers.nonEmpty) => Ok(summaryPage(mode, YesNoAnswer.form(), containers, allowSeals))
@@ -82,7 +82,7 @@ class TransportContainerController @Inject()(
     (authenticate andThen journeyType) { implicit request =>
       request.cacheModel.containerBy(containerId) match {
         case Some(container) => Ok(removePage(mode, YesNoAnswer.form(), container))
-        case _               => navigator.continueTo(routes.TransportContainerController.displayContainersSummary(mode))
+        case _               => navigator.continueTo(routes.TransportContainerController.displayContainerSummary(mode))
       }
     }
 
@@ -104,7 +104,7 @@ class TransportContainerController @Inject()(
           updateCache(updatedCache)
             .map(_ => redirectAfterAdd(mode, updatedCache.last.id))
         else
-          goto(controllers.declaration.routes.TransportContainerController.displayContainersSummary(mode))
+          goto(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode))
     )
 
   private def prepare(
@@ -160,14 +160,14 @@ class TransportContainerController @Inject()(
             case YesNoAnswers.yes =>
               removeContainer(containerId, mode)
             case YesNoAnswers.no =>
-              goto(routes.TransportContainerController.displayContainersSummary(mode))
+              goto(routes.TransportContainerController.displayContainerSummary(mode))
           }
         }
       )
 
   private def removeContainer(containerId: String, mode: Mode)(implicit request: JourneyRequest[AnyContent]) =
     updateCache(request.cacheModel.containers.filterNot(_.id == containerId))
-      .map(_ => navigator.continueTo(routes.TransportContainerController.displayContainersSummary(mode)))
+      .map(_ => navigator.continueTo(routes.TransportContainerController.displayContainerSummary(mode)))
 
   private def containerId(values: Seq[String]): String = values.headOption.getOrElse("")
 
@@ -182,7 +182,7 @@ class TransportContainerController @Inject()(
     if (allowSeals)
       navigator.continueTo(controllers.declaration.routes.SealController.displaySealSummary(mode, containerId))
     else
-      navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayContainersSummary(mode))
+      navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode))
 
   private def goto(page: Call)(implicit request: JourneyRequest[AnyContent]) =
     Future

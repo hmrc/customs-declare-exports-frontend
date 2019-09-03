@@ -183,7 +183,7 @@ POST        /transport-details                   controllers.declaration.Transpo
 
 # Transport Containers & Seals
 
-GET         /containers                          controllers.declaration.TransportContainerController.displayContainersSummary(mode: models.Mode ?= models.Mode.Normal)
+GET         /containers                          controllers.declaration.TransportContainerController.displayContainerSummary(mode: models.Mode ?= models.Mode.Normal)
 
 POST        /containers                          controllers.declaration.TransportContainerController.submitSummaryAction(mode: models.Mode ?= models.Mode.Normal)
 

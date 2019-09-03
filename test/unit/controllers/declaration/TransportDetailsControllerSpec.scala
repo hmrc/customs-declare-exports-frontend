@@ -86,7 +86,7 @@ class TransportDetailsControllerSpec extends ControllerSpec {
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
-          .displayContainersSummary(Mode.Draft)
+          .displayContainerSummary(Mode.Draft)
       }
 
       "Container is not selected" in new SetUp {

@@ -31,7 +31,7 @@
     title = messages("standard.seal.remove.title", containerId)
 ) {
 
-    @components.back_link(controllers.declaration.routes.TransportContainerController.displayContainersSummary(mode), mode)
+    @components.back_link(controllers.declaration.routes.SealController.displaySealSummary(mode, containerId), mode)
 
     @components.error_summary(form.errors)
 
