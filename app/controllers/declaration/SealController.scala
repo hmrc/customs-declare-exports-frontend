@@ -97,14 +97,13 @@ class SealController @Inject()(
       .fold(
         (formWithErrors: Form[YesNoAnswer]) =>
           Future.successful(BadRequest(summaryPage(mode, formWithErrors, request.cacheModel.containerBy(containerId)))),
-        formData => {
+        formData =>
           formData.answer match {
             case YesNoAnswers.yes =>
               Future.successful(navigator.continueTo(routes.SealController.displayAddSeal(mode, containerId)))
             case YesNoAnswers.no =>
               Future
                 .successful(navigator.continueTo(routes.TransportContainerController.displayContainerSummary(mode)))
-          }
         }
       )
 
@@ -116,14 +115,13 @@ class SealController @Inject()(
       .fold(
         (formWithErrors: Form[YesNoAnswer]) =>
           Future.successful(BadRequest(removePage(mode, formWithErrors, containerId, sealId))),
-        formData => {
+        formData =>
           formData.answer match {
             case YesNoAnswers.yes =>
               removeSeal(containerId, sealId, mode)
             case YesNoAnswers.no =>
               Future
                 .successful(navigator.continueTo(routes.SealController.displaySealSummary(mode, containerId)))
-          }
         }
       )
 
@@ -149,11 +147,9 @@ class SealController @Inject()(
     saveAndContinue(boundForm, cachedContainer.seals, isMandatory = true, Seal.sealsAllowed).fold(
       formWithErrors => Future.successful(BadRequest(addPage(mode, formWithErrors, cachedContainer.id))),
       updatedCache =>
-        if (updatedCache != cachedContainer.seals) {
-          updateCache(cachedContainer.copy(seals = updatedCache)).map { _ =>
+        if (updatedCache != cachedContainer.seals) updateCache(cachedContainer.copy(seals = updatedCache)).map { _ =>
             navigator.continueTo(routes.SealController.displaySealSummary(mode, cachedContainer.id))
-          }
-        } else
+          } else
           Future.successful(navigator.continueTo(routes.SealController.displaySealSummary(mode, cachedContainer.id)))
     )
 

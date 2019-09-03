@@ -31,7 +31,7 @@ import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.{transport_container_add, transport_container_remove, transport_container_summary}
@@ -63,7 +63,7 @@ class TransportContainerController @Inject()(
 
   def displayContainerSummary(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.containers match {
-      case containers if (containers.nonEmpty) => Ok(summaryPage(mode, YesNoAnswer.form(), containers, allowSeals))
+      case containers if containers.nonEmpty => Ok(summaryPage(mode, YesNoAnswer.form(), containers, allowSeals))
       case _ =>
         navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayAddContainer(mode))
     }
@@ -72,8 +72,11 @@ class TransportContainerController @Inject()(
   def submitSummaryAction(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
       FormAction.bindFromRequest() match {
-        case Remove(values) => confirmRemoveContainer(containerId(values), mode)
-        case _              => addContainerAnswer(mode)
+        case Remove(values) =>
+          Future.successful(
+            navigator.continueTo(routes.TransportContainerController.displayContainerRemove(mode, containerId(values)))
+          )
+        case _ => addContainerAnswer(mode)
       }
   }
 
@@ -103,7 +106,10 @@ class TransportContainerController @Inject()(
           updateCache(updatedCache)
             .map(_ => redirectAfterAdd(mode, updatedCache.last.id))
         else
-          goto(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode))
+          Future.successful(
+            navigator
+              .continueTo(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode))
+        )
     )
 
   private def prepare(
@@ -137,14 +143,12 @@ class TransportContainerController @Inject()(
         formData =>
           formData.answer match {
             case YesNoAnswers.yes =>
-              goto(routes.TransportContainerController.displayAddContainer(mode))
+              Future.successful(navigator.continueTo(routes.TransportContainerController.displayAddContainer(mode)))
             case YesNoAnswers.no =>
-              goto(controllers.declaration.routes.SummaryController.displayPage(mode))
+              Future
+                .successful(navigator.continueTo(controllers.declaration.routes.SummaryController.displayPage(mode)))
         }
       )
-
-  private def confirmRemoveContainer(containerId: String, mode: Mode)(implicit request: JourneyRequest[AnyContent]) =
-    goto(routes.TransportContainerController.displayContainerRemove(mode, containerId))
 
   private def removeContainerAnswer(mode: Mode, containerId: String)(implicit request: JourneyRequest[AnyContent]) =
     form()
@@ -159,7 +163,7 @@ class TransportContainerController @Inject()(
             case YesNoAnswers.yes =>
               removeContainer(containerId, mode)
             case YesNoAnswers.no =>
-              goto(routes.TransportContainerController.displayContainerSummary(mode))
+              Future.successful(navigator.continueTo(routes.TransportContainerController.displayContainerSummary(mode)))
           }
         }
       )
@@ -182,10 +186,6 @@ class TransportContainerController @Inject()(
       navigator.continueTo(controllers.declaration.routes.SealController.displaySealSummary(mode, containerId))
     else
       navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode))
-
-  private def goto(page: Call)(implicit request: JourneyRequest[AnyContent]) =
-    Future
-      .successful(navigator.continueTo(page))
 
   private def allowSeals(implicit request: JourneyRequest[AnyContent]) =
     request.choice.value == AllowedChoiceValues.StandardDec
