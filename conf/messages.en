@@ -511,7 +511,7 @@ supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.heade
 supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.error.incorrect = Please, choose valid active means of transport
 supplementary.transportInfo.meansOfTransport.idNumber.error.length = Reference should be less than 28 alpha numeric characters
 supplementary.meansOfTransportCrossingTheBorderIDNumber.error.length = Reference should be less than 35 alpha numeric characters
-supplementary.transportInfo.meansOfTransport.idNumber.error.specialCharacters = Reference cannot contain special characters
+supplementary.transportInfo.meansOfTransport.idNumber.invalid = Reference cannot contain invalid characters
 supplementary.transportInfo.container = Were the goods in a container?
 supplementary.transportInfo.container.error.empty = Please select an option
 supplementary.transportInfo.containers.title = Container information 

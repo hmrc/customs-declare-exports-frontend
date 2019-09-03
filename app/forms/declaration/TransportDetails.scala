@@ -15,14 +15,12 @@
  */
 
 package forms.declaration
-import play.api.data.Forms.mapping
-import play.api.data.Forms.{boolean, optional, text}
+import forms.declaration.TransportCodes._
+import play.api.data.Forms.{boolean, mapping, optional, text}
+import play.api.data.{Form, Mapping}
 import play.api.libs.json.Json
 import services.Countries.allCountries
-import utils.validators.forms.FieldValidator.{isAlphanumeric, isContainedIn, isEmpty, noLongerThan}
-import forms.declaration.TransportCodes._
-import play.api.data.{Form, FormError, Mapping}
-import utils.validators.forms.FieldValidator._
+import utils.validators.forms.FieldValidator.{isContainedIn, isEmpty, noLongerThan, _}
 
 case class TransportDetails(
   meansOfTransportCrossingTheBorderNationality: Option[String],
@@ -77,7 +75,10 @@ object TransportDetails {
     "meansOfTransportCrossingTheBorderIDNumber" -> optional(
       text()
         .verifying("supplementary.meansOfTransportCrossingTheBorderIDNumber.error.length", noLongerThan(35))
-        .verifying("supplementary.transportInfo.meansOfTransport.idNumber.error.specialCharacters", isAlphanumeric)
+        .verifying(
+          "supplementary.transportInfo.meansOfTransport.idNumber.invalid",
+          isAlphanumericWithAllowedSpecialCharacters
+        )
     ),
     "paymentMethod" -> optional(
       text()

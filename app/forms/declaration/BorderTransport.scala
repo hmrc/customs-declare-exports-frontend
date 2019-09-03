@@ -16,12 +16,11 @@
 
 package forms.declaration
 
-import play.api.data.Forms.{mapping, optional, text}
-import utils.validators.forms.FieldValidator.{isAlphanumeric, isContainedIn, isEmpty, noLongerThan}
-import TransportCodes._
+import forms.declaration.TransportCodes._
 import play.api.data.Form
+import play.api.data.Forms.{mapping, optional, text}
 import play.api.libs.json.Json
-import utils.validators.forms.FieldValidator._
+import utils.validators.forms.FieldValidator.{isContainedIn, isEmpty, noLongerThan, _}
 
 case class BorderTransport(
   borderModeOfTransportCode: String,
@@ -59,7 +58,10 @@ object BorderTransport {
     "meansOfTransportOnDepartureIDNumber" -> optional(
       text()
         .verifying("supplementary.transportInfo.meansOfTransport.idNumber.error.length", noLongerThan(27))
-        .verifying("supplementary.transportInfo.meansOfTransport.idNumber.error.specialCharacters", isAlphanumeric)
+        .verifying(
+          "supplementary.transportInfo.meansOfTransport.idNumber.invalid",
+          isAlphanumericWithAllowedSpecialCharacters
+        )
     )
   )(BorderTransport.apply)(BorderTransport.unapply)
 
