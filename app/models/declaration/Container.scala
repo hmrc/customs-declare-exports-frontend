@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import controllers.util.Remove
+package models.declaration
+import play.api.libs.json.{Json, OFormat}
 
-@(value: Option[Any] = None, label: String = "site.remove", buttonClass: String = "button--secondary")(implicit messages: Messages)
+case class Container(id: String, seals: Seq[forms.declaration.Seal])
 
-<button id="remove" class="@buttonClass" name="@Remove.toString" @value.map{v => value="@{v.toString}"}>@messages(label)</button>
+object Container {
+  implicit val format: OFormat[Container] = Json.format[Container]
+}

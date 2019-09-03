@@ -22,38 +22,28 @@
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[Seal], seals: Seq[Seal], hasContainers:Boolean)(implicit request: Request[_], messages: Messages)
+@(mode: Mode, form: Form[Seal], containerId: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("standard.seal.title")
+    title = messages("standard.seal.title", containerId)
 ) {
 
-    @{
-        if(hasContainers)   components.back_link(controllers.declaration.routes.TransportContainerController.displayPage(mode), mode)
-        else                components.back_link(controllers.declaration.routes.TransportDetailsController.displayPage(mode), mode)
-    }
+    @components.back_link(controllers.declaration.routes.SealController.displaySealSummary(mode, containerId), mode)
 
     @components.error_summary(form.errors)
 
-    @components.page_title(Some("standard.seal.title"), None)
+    @components.page_title(Some(messages("standard.seal.title", containerId)), None)
 
-    @helper.form(SealController.submitForm(), 'autoComplete -> "off") {
+    @helper.form(SealController.submitAddSeal(mode, containerId), 'autoComplete -> "off") {
         @helper.CSRF.formField
-
-        @if(seals.nonEmpty) {
-            @components.fields.removable_elements_table(
-                title = Some(messages("standard.seal.id")),
-                elements = seals.map(seal => LabelledValue(seal.id))
-            )
-        }
 
         @components.fields.field_text(
             field = form("id"),
-            label = messages("standard.seal.id"),
+            label = messages("standard.seal.question"),
             labelClass = Some("bold-small")
         )
 
-        @components.add_save_button()
+        @components.submit_button()
         @components.buttons.save_and_return_later_button()
     }
 

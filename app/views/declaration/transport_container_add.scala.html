@@ -22,7 +22,7 @@
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[TransportInformationContainer], containers: Seq[TransportInformationContainer])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, form: Form[TransportInformationContainer])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.transportInfo.containers.title")
@@ -34,15 +34,8 @@
 
     @components.page_title(Some("supplementary.transportInfo.containers.title"), None)
 
-    @helper.form(TransportContainerController.submitForm(mode), 'autoComplete -> "off") {
+    @helper.form(TransportContainerController.submitAddContainer(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
-
-        @if(containers.nonEmpty) {
-            @components.fields.removable_elements_table(
-                title = Some(messages("supplementary.transportInfo.containerId.title")),
-                elements = containers.map(container => LabelledValue(container.id))
-            )
-        }
 
         @components.fields.field_text(
             field = form("id"),
@@ -50,7 +43,7 @@
             labelClass = Some("bold-small")
         )
 
-        @components.add_save_button()
+        @components.submit_button()
         @components.buttons.save_and_return_later_button()
     }
 

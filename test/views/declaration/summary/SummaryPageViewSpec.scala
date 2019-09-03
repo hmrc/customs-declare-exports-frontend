@@ -18,10 +18,10 @@ package views.declaration.summary
 
 import base.ExportsTestData.newUser
 import forms.Choice
-import forms.declaration.{GoodsLocation, TransportInformationContainer}
-import models.{ExportsDeclaration, Mode}
-import models.declaration.{Items, SupplementaryDeclarationData}
+import forms.declaration.GoodsLocation
+import models.declaration.{Container, SupplementaryDeclarationData}
 import models.requests.{AuthenticatedRequest, JourneyRequest}
+import models.{ExportsDeclaration, Mode}
 import org.jsoup.nodes.Document
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.test.FakeRequest
@@ -42,7 +42,7 @@ class SummaryPageViewSpec
     withGoodsLocation(GoodsLocation("PL", "type", "id", Some("a"), Some("b"), Some("c"), Some("d"), Some("e"))),
     withWarehouseIdentification(Some("a"), Some("b"), Some("c"), Some("d")),
     withOfficeOfExit("id", Some("office"), Some("code")),
-    withContainerData(TransportInformationContainer("id")),
+    withContainerData(Container("id", Seq.empty)),
     withTotalNumberOfItems(Some("123"), Some("123")),
     withNatureOfTransaction("nature"),
     withItem(anItem())
@@ -82,24 +82,36 @@ class SummaryPageViewSpec
       }
 
       "Normal Mode" when {
-        "standard declaration" in {
+        "standard declaration with containers" in {
+          val model = aDeclaration(
+            withChoice(Choice.AllowedChoiceValues.StandardDec),
+            withContainerData(Container("1234", Seq.empty))
+          )
+          val document = view(Mode.Normal, model)
+          document must containElementWithID("link-back")
+          document.getElementById("link-back") must haveHref(
+            controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
+          )
+        }
+
+        "standard declaration without containers" in {
           val model = aDeclaration(withChoice(Choice.AllowedChoiceValues.StandardDec))
           val document = view(Mode.Normal, model)
           document must containElementWithID("link-back")
           document.getElementById("link-back") must haveHref(
-            controllers.declaration.routes.SealController.displayPage(Mode.Normal)
+            controllers.declaration.routes.TransportDetailsController.displayPage(Mode.Normal)
           )
         }
 
         "supplementary declaration with containers" in {
           val model = aDeclaration(
             withChoice(Choice.AllowedChoiceValues.SupplementaryDec),
-            withContainerData(TransportInformationContainer("id"))
+            withContainerData(Container("1234", Seq.empty))
           )
           val document = view(Mode.Normal, model)
           document must containElementWithID("link-back")
           document.getElementById("link-back") must haveHref(
-            controllers.declaration.routes.TransportContainerController.displayPage(Mode.Normal)
+            controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
           )
         }
 

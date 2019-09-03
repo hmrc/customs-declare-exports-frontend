@@ -29,12 +29,7 @@ import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Choice, Ducr}
 import models.DeclarationStatus.DeclarationStatus
 import models.ExportsDeclaration
-import models.declaration.{
-  DeclarationAdditionalActorsData,
-  DeclarationHoldersData,
-  Locations,
-  TransportInformationContainerData
-}
+import models.declaration._
 
 //noinspection ScalaStyle
 trait ExportsDeclarationBuilder {
@@ -297,7 +292,7 @@ trait ExportsDeclarationBuilder {
   def withContainerData(data: TransportInformationContainerData): ExportsDeclarationModifier =
     _.copy(containerData = Some(data))
 
-  def withContainerData(data: TransportInformationContainer*): ExportsDeclarationModifier =
+  def withContainerData(data: Container*): ExportsDeclarationModifier =
     cache =>
       cache.copy(
         containerData =
@@ -306,10 +301,4 @@ trait ExportsDeclarationBuilder {
 
   def withoutContainerData(): ExportsDeclarationModifier = _.copy(containerData = None)
 
-  def withoutSeal(): ExportsDeclarationModifier = _.copy(seals = Seq.empty)
-
-  def withSeal(seal1: Seal, others: Seal*): ExportsDeclarationModifier =
-    cache => cache.copy(seals = cache.seals ++ Seq(seal1) ++ others)
-
-  def withSeals(seals: Seq[Seal]): ExportsDeclarationModifier = _.copy(seals = seals)
 }

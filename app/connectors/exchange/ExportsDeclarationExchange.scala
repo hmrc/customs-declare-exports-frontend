@@ -43,8 +43,7 @@ case class ExportsDeclarationExchange(
   items: Set[ExportItem] = Set.empty[ExportItem],
   totalNumberOfItems: Option[TotalNumberOfItems] = None,
   previousDocuments: Option[PreviousDocumentsData] = None,
-  natureOfTransaction: Option[NatureOfTransaction] = None,
-  seals: Seq[Seal] = Seq.empty
+  natureOfTransaction: Option[NatureOfTransaction] = None
 ) {
   def toExportsDeclaration: ExportsDeclaration = ExportsDeclaration(
     id = this.id,
@@ -63,8 +62,7 @@ case class ExportsDeclarationExchange(
     items = this.items,
     totalNumberOfItems = this.totalNumberOfItems,
     previousDocuments = this.previousDocuments,
-    natureOfTransaction = this.natureOfTransaction,
-    seals = this.seals
+    natureOfTransaction = this.natureOfTransaction
   )
 }
 
@@ -88,7 +86,6 @@ object ExportsDeclarationExchange {
     items = declaration.items,
     totalNumberOfItems = declaration.totalNumberOfItems,
     previousDocuments = declaration.previousDocuments,
-    natureOfTransaction = declaration.natureOfTransaction,
-    seals = declaration.seals
+    natureOfTransaction = declaration.natureOfTransaction
   )
 }

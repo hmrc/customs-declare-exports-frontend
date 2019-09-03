@@ -18,7 +18,6 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.Choice.AllowedChoiceValues
 import forms.declaration.TransportDetails
 import forms.declaration.TransportDetails._
 import javax.inject.Inject
@@ -64,10 +63,8 @@ class TransportDetailsController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Result =
     if (transportDetails.container)
-      navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayPage(mode))
-    else if (request.choice.value == AllowedChoiceValues.StandardDec)
-      navigator.continueTo(controllers.declaration.routes.SealController.displayPage(mode))
-    else navigator.continueTo(controllers.declaration.routes.SummaryController.displayPage(Mode.Normal))
+      navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode))
+    else navigator.continueTo(controllers.declaration.routes.SummaryController.displayPage(mode))
 
   private def updateCache(
     formData: TransportDetails

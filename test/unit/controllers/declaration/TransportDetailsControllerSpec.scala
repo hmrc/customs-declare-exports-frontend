@@ -85,7 +85,8 @@ class TransportDetailsControllerSpec extends ControllerSpec {
         val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController.displayPage(Mode.Draft)
+        thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
+          .displayContainerSummary(Mode.Draft)
       }
 
       "Container is not selected" in new SetUp {
@@ -95,7 +96,7 @@ class TransportDetailsControllerSpec extends ControllerSpec {
         val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
+        thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Draft)
       }
     }
   }

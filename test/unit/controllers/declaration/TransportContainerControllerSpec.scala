@@ -18,19 +18,21 @@ package unit.controllers.declaration
 
 import controllers.declaration.TransportContainerController
 import controllers.util.Remove
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
-import forms.declaration.TransportInformationContainer
+import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
+import forms.declaration.Seal
 import models.Mode
-import models.declaration.TransportInformationContainerData
+import models.declaration.{Container, TransportInformationContainerData}
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
-import views.html.declaration.add_transport_containers
+import views.html.declaration.{transport_container_add, transport_container_remove, transport_container_summary}
 
 class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
   trait SetUp {
-    val transportContainersPage = new add_transport_containers(mainTemplate)
+    val transportContainersAddPage = new transport_container_add(mainTemplate)
+    val transportContainersRemovePage = new transport_container_remove(mainTemplate)
+    val transportContainersSummaryPage = new transport_container_summary(mainTemplate)
 
     val controller = new TransportContainerController(
       mockAuthAction,
@@ -39,171 +41,219 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
       mockErrorHandler,
       mockExportsCacheService,
       stubMessagesControllerComponents(),
-      transportContainersPage
+      transportContainersAddPage,
+      transportContainersSummaryPage,
+      transportContainersRemovePage
     )(ec)
 
     authorizedUser()
     setupErrorHandler()
-    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withChoice(StandardDec)))
   }
 
-  val containerData = TransportInformationContainerData(Seq(TransportInformationContainer("id")))
+  val containerId = "434335468"
+  val sealId = "287345"
+
+  val containerData = TransportInformationContainerData(Seq(Container(containerId, Seq(Seal(sealId)))))
   val maxContainerData = TransportInformationContainerData(
-    Seq.fill(TransportInformationContainerData.maxNumberOfItems)(TransportInformationContainer("id"))
+    Seq.fill(TransportInformationContainerData.maxNumberOfItems)(Container("id", Seq.empty))
   )
 
-  "Transport Container controller" should {
+  "Transport Container controller display add page" should {
 
     "return 200 (OK)" when {
-
-      "display page method is invoked with empty cache" in new SetUp {
-        val result = controller.displayPage(Mode.Normal)(getRequest())
-
-        status(result) must be(OK)
-      }
-
-      "display page method is invoked with data in cache" in new SetUp {
-
-        withNewCaching(aDeclaration(withContainerData(containerData)))
-
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+      "cache is empty" in new SetUp {
+        val result = controller.displayAddContainer(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
-    }
 
-    "return 400 (BAD_REQUEST)" when {
-
-      "user provide wrong action" in new SetUp {
-
-        val wrongAction = Seq(("id", "containerId"), ("WrongAction", ""))
-
-        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(wrongAction: _*))
-
-        status(result) must be(BAD_REQUEST)
-      }
-    }
-
-    "return 400 (BAD_REQUEST) during adding" when {
-
-      "user put incorrect data" in new SetUp {
-
-        val incorrectForm = Seq(("id", "!@#$"), addActionUrlEncoded)
-
-        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(incorrectForm: _*))
-
-        status(result) must be(BAD_REQUEST)
-      }
-
-      "user put duplicated item" in new SetUp {
-
+      "cache contains some data" in new SetUp {
         withNewCaching(aDeclaration(withContainerData(containerData)))
 
-        val duplicatedForm = Seq(("id", "id"), addActionUrlEncoded)
-
-        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
-
-        status(result) must be(BAD_REQUEST)
-      }
-
-      "user reach maximum amount of items" in new SetUp {
-
-        withNewCaching(aDeclaration(withContainerData(maxContainerData)))
-
-        val form = Seq(("id", "id2"), addActionUrlEncoded)
-
-        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(form: _*))
-
-        status(result) must be(BAD_REQUEST)
-      }
-    }
-
-    "return 400 (BAD_REQUEST) during saving" when {
-
-      "user put incorrect data" in new SetUp {
-
-        val incorrectForm = Seq(("id", "!@#$"), saveAndContinueActionUrlEncoded)
-
-        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(incorrectForm: _*))
-
-        status(result) must be(BAD_REQUEST)
-      }
-
-      "user put duplicated item" in new SetUp {
-
-        withNewCaching(aDeclaration(withContainerData(containerData)))
-
-        val duplicatedForm = Seq(("id", "id"), saveAndContinueActionUrlEncoded)
-
-        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
-
-        status(result) must be(BAD_REQUEST)
-      }
-
-      "user reach maximum amount of items" in new SetUp {
-
-        withNewCaching(aDeclaration(withContainerData(maxContainerData)))
-
-        val form = Seq(("id", "id2"), saveAndContinueActionUrlEncoded)
-
-        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(form: _*))
-
-        status(result) must be(BAD_REQUEST)
-      }
-    }
-
-    "return 303 (SEE_OTHER)" when {
-
-      "user correctly add new item" in new SetUp {
-
-        val correctForm = Seq(("id", "123abc"), addActionUrlEncoded)
-
-        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController.displayPage()
-      }
-
-      "user save correct data" when {
-        "normal mode" in new SetUp {
-          val correctForm = Seq(("id", "123abc"), saveAndContinueActionUrlEncoded)
-
-          val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
-        }
-
-        "draft mode" in new SetUp {
-          val correctForm = Seq(("id", "123abc"), saveAndContinueActionUrlEncoded)
-
-          val result = controller.submitForm(Mode.Draft)(postRequestAsFormUrlEncoded(correctForm: _*))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
-        }
-      }
-
-      "user save correct data without new item" in new SetUp {
-
-        withNewCaching(aDeclaration(withContainerData(containerData)))
-
-        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.SealController.displayPage()
-      }
-
-      "user remove existing item" in new SetUp {
-
-        withNewCaching(aDeclaration(withContainerData(containerData)))
-
-        val removeForm = (Remove.toString, "0")
-
-        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(removeForm))
-
+        val result = controller.displayAddContainer(Mode.Normal)(getRequest())
         status(result) must be(OK)
       }
     }
   }
+
+  "Transport Container controller display container summary page" should {
+
+    "return 200 (OK)" when {
+      "cache contains some data" in new SetUp {
+        withNewCaching(aDeclaration(withContainerData(containerData)))
+
+        val result = controller.displayContainerSummary(Mode.Normal)(getRequest())
+        status(result) must be(OK)
+      }
+    }
+
+    "redirect to add container page" when {
+      "cache is empty" in new SetUp {
+        val result = controller.displayContainerSummary(Mode.Normal)(getRequest())
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
+          .displayAddContainer(Mode.Normal)
+      }
+    }
+  }
+
+  "Transport Container controller display container remove page" should {
+
+    "return 200 (OK)" when {
+      "cache contains some data" in new SetUp {
+        withNewCaching(aDeclaration(withContainerData(containerData)))
+
+        val result = controller.displayContainerRemove(Mode.Normal, containerId)(getRequest())
+        status(result) must be(OK)
+      }
+    }
+
+    "redirect to container summary page" when {
+      "cache is empty" in new SetUp {
+        val result = controller.displayContainerRemove(Mode.Normal, containerId)(getRequest())
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
+          .displayContainerSummary(Mode.Normal)
+      }
+    }
+  }
+
+  "Transport Container submit add page" should {
+
+    "add new container and redirect to add seal page" when {
+      "working on standard declaration with cache empty" in new SetUp {
+        withNewCaching(aDeclaration(withChoice(StandardDec)))
+        val body = Seq("id" -> "value")
+
+        val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.SealController
+          .displaySealSummary(Mode.Normal, "value")
+
+        theCacheModelUpdated.containers mustBe Seq(Container("value", Seq.empty))
+      }
+    }
+
+    "add new container and redirect to container summary page" when {
+      "working on supplementary declaration with cache empty" in new SetUp {
+        withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+        val body = Seq("id" -> "value")
+
+        val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
+          .displayContainerSummary(Mode.Normal)
+
+        theCacheModelUpdated.containers mustBe Seq(Container("value", Seq.empty))
+      }
+    }
+  }
+
+  "Transport Container submit summary page" should {
+
+    "redirect to confirmation page" when {
+      "user clicks on remove container" in new SetUp {
+        val removeAction = (Remove.toString, "value")
+
+        val result = controller.submitSummaryAction(Mode.Normal)(postRequestAsFormUrlEncoded(removeAction))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
+          .displayContainerRemove(Mode.Normal, "value")
+      }
+    }
+
+    "redirect to add container page" when {
+      "user indicates they want to add another container" in new SetUp {
+        val body = Seq(("yesNo", "Yes"))
+
+        val result = controller.submitSummaryAction(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
+          .displayAddContainer(Mode.Normal)
+      }
+    }
+
+    "redirect to summary page" when {
+      "user indicates they do not want to add another container" in new SetUp {
+        val body = Seq(("yesNo", "No"))
+
+        val result = controller.submitSummaryAction(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
+      }
+    }
+  }
+
+  "Transport Container submit remove page" should {
+
+    "remove container and redirect" when {
+      "user confirms that they want to remove" in new SetUp {
+        withNewCaching(aDeclaration(withContainerData(containerData)))
+        val body = Seq(("yesNo", "Yes"))
+
+        val result = controller.submitContainerRemove(Mode.Normal, containerId)(postRequestAsFormUrlEncoded(body: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
+          .displayContainerSummary(Mode.Normal)
+
+        theCacheModelUpdated.containers mustBe Seq.empty
+      }
+    }
+
+    "not remove container and redirect" when {
+      "user confirms that they do not want to remove" in new SetUp {
+        withNewCaching(aDeclaration(withContainerData(containerData)))
+        val body = Seq(("yesNo", "No"))
+
+        val result = controller.submitContainerRemove(Mode.Normal, containerId)(postRequestAsFormUrlEncoded(body: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
+          .displayContainerSummary(Mode.Normal)
+
+        verifyTheCacheIsUnchanged
+      }
+    }
+  }
+
+  "return 400 (BAD_REQUEST)" when {
+    "user adds container with incorrect item" in new SetUp {
+
+      val body = Seq(("id", "!@#$"))
+
+      val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
+
+      status(result) must be(BAD_REQUEST)
+    }
+
+    "user adds seal and reached limit of items" in new SetUp {
+      withNewCaching(aDeclaration(withContainerData(maxContainerData)))
+
+      val body = Seq(("id", "value"))
+
+      val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
+
+      status(result) must be(BAD_REQUEST)
+    }
+
+    "user adds seal with duplicated value" in new SetUp {
+      withNewCaching(aDeclaration(withContainerData(containerData)))
+
+      val body = Seq(("id", containerId))
+
+      val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
+
+      status(result) must be(BAD_REQUEST)
+    }
+  }
+
 }

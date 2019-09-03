@@ -17,7 +17,8 @@
 package services.cache
 
 import base.ExportsTestData.newUser
-import forms.declaration.{GoodsLocation, TransportInformationContainer}
+import forms.declaration.GoodsLocation
+import models.declaration.Container
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.test.FakeRequest
 import utils.FakeRequestCSRFSupport._
@@ -30,7 +31,7 @@ trait ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder 
     withGoodsLocation(GoodsLocation("PL", "type", "id", Some("a"), Some("b"), Some("c"), Some("d"), Some("e"))),
     withWarehouseIdentification(Some("a"), Some("b"), Some("c"), Some("d")),
     withOfficeOfExit("id", Some("office"), Some("code")),
-    withContainerData(TransportInformationContainer("id")),
+    withContainerData(Container("id", Seq.empty)),
     withTotalNumberOfItems(Some("123"), Some("123")),
     withNatureOfTransaction("nature"),
     withItem(anItem())

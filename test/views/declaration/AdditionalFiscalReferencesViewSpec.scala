@@ -30,7 +30,7 @@ import views.tags.ViewTest
 
 @ViewTest
 class AdditionalFiscalReferencesViewSpec
-    extends UnitViewSpec with Stubs with ViewMatchers with AdditionalFiscalReferencesMessages with CommonMessages {
+    extends UnitViewSpec with Stubs with AdditionalFiscalReferencesMessages with CommonMessages {
 
   private val form: Form[AdditionalFiscalReference] = AdditionalFiscalReference.form()
 

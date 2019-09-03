@@ -172,7 +172,7 @@ class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
 object TransportInformationContainerSpec {
   private val containerId = "id"
   val correctTransportInformationContainerData =
-    TransportInformationContainerData(Seq(TransportInformationContainer(id = "M1l3s")))
+    TransportInformationContainerData(Seq(Container(id = "M1l3s", Seq.empty)))
   val emptyTransportInformationContainerData = TransportInformationContainer("")
   val correctTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("container-M1l3s")))
   val incorrectTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("123456789012345678")))
@@ -191,7 +191,6 @@ object SupplementaryDeclarationTestData {
     natureOfTransaction = Some(correctNatureOfTransaction),
     totalNumberOfItems = Some(correctTotalNumberOfItemsDecimalValues),
     borderTransport = Some(BorderTransport("3", "10", Some("123112yu78"))),
-    seals = Seq(Seal("123"), Seal("4321")),
     parties = Parties(
       exporterDetails = Some(correctExporterDetails),
       declarantDetails = Some(correctDeclarantDetailsEORIOnly),

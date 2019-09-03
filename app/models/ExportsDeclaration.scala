@@ -21,7 +21,7 @@ import java.time.Instant
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.DeclarationStatus.DeclarationStatus
-import models.declaration.{Locations, Parties, TransportInformationContainerData}
+import models.declaration.{Container, Locations, Parties, TransportInformationContainerData}
 import play.api.libs.json._
 import services.cache.ExportItem
 
@@ -42,8 +42,7 @@ case class ExportsDeclaration(
   items: Set[ExportItem] = Set.empty,
   totalNumberOfItems: Option[TotalNumberOfItems] = None,
   previousDocuments: Option[PreviousDocumentsData] = None,
-  natureOfTransaction: Option[NatureOfTransaction] = None,
-  seals: Seq[Seal] = Seq.empty
+  natureOfTransaction: Option[NatureOfTransaction] = None
 ) {
   val lrn: Option[String] = this.consignmentReferences.map(_.lrn)
   val ducr: Option[String] = this.consignmentReferences.map(_.ducr.ducr)
@@ -55,6 +54,10 @@ case class ExportsDeclaration(
     }
 
   def itemBy(itemId: String): Option[ExportItem] = items.find(_.id.equalsIgnoreCase(itemId))
+
+  def containers: Seq[Container] = containerData.map(_.containers).getOrElse(Seq.empty)
+
+  def containerBy(containerId: String): Option[Container] = containers.find(_.id.equalsIgnoreCase(containerId))
 }
 
 object ExportsDeclaration {

@@ -18,20 +18,22 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import controllers.util.MultipleItemsHelper.{add, remove, saveAndContinue}
-import controllers.util._
+import controllers.util.MultipleItemsHelper.saveAndContinue
+import controllers.util.{FormAction, Remove}
+import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.{form, YesNoAnswers}
 import forms.declaration.Seal
-import forms.declaration.Seal._
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.Mode
+import models.declaration.{Container, TransportInformationContainerData}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.seal
+import views.html.declaration.{seal_add, seal_remove, seal_summary}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -42,78 +44,124 @@ class SealController @Inject()(
   errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
-  sealPage: seal
+  addPage: seal_add,
+  removePage: seal_remove,
+  summaryPage: seal_summary
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val declaration = request.cacheModel
-    Ok(sealPage(mode, form(), declaration.seals, declaration.transportDetails.exists(_.container)))
+  def displayAddSeal(mode: Mode, containerId: String): Action[AnyContent] = (authenticate andThen journeyType) {
+    implicit request =>
+      Ok(addPage(mode, Seal.form(), containerId))
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val actionTypeOpt = FormAction.bindFromRequest()
-    val boundForm = form().bindFromRequest()
+  def submitAddSeal(mode: Mode, containerId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
+    implicit request =>
+      val boundForm = Seal.form().bindFromRequest()
 
-    val data = request.cacheModel
-    val seals = data.seals
-    val hasContainers: Boolean = data.transportDetails.fold(false)(_.container)
-    actionTypeOpt match {
-      case Add                             => addSeal(mode, boundForm, sealsAllowed, seals)
-      case Remove(ids)                     => removeSeal(mode, boundForm, seals, hasContainers, ids)
-      case SaveAndContinue | SaveAndReturn => saveSeal(mode, boundForm, sealsAllowed, seals)
-      case _                               => errorHandler.displayErrorPage()
+      request.cacheModel.containerBy(containerId) match {
+        case Some(container) =>
+          saveSeal(mode, boundForm, container)
+        case _ => errorHandler.displayErrorPage()
+      }
+  }
+
+  def displaySealSummary(mode: Mode, containerId: String): Action[AnyContent] = (authenticate andThen journeyType) {
+    implicit request =>
+      Ok(summaryPage(mode, YesNoAnswer.form(), request.cacheModel.containerBy(containerId)))
+  }
+
+  def submitSummaryAction(mode: Mode, containerId: String): Action[AnyContent] =
+    (authenticate andThen journeyType).async { implicit request =>
+      FormAction.bindFromRequest() match {
+        case Remove(values) => confirmRemoveSeal(containerId, sealId(values), mode)
+        case _              => addSealAnswer(mode, containerId)
+      }
     }
-  }
 
-  private def saveSeal(mode: Mode, boundForm: Form[Seal], elementLimit: Int, cachedSeals: Seq[Seal])(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] =
-    saveAndContinue(boundForm, cachedSeals, isMandatory = false, elementLimit).fold(
-      formWithErrors => Future.successful(badRequest(mode, formWithErrors, cachedSeals)),
-      updatedCache =>
-        if (updatedCache != cachedSeals) {
-          updateCache(updatedCache).map { _ =>
-            navigator.continueTo(routes.SummaryController.displayPage(Mode.Normal))
-          }
-        } else Future.successful(navigator.continueTo(routes.SummaryController.displayPage(Mode.Normal)))
-    )
-
-  private def badRequest(mode: Mode, formWithErrors: Form[Seal], cachedSeals: Seq[Seal])(
-    implicit request: JourneyRequest[_]
-  ) = {
-    val transportDetails = request.cacheModel.transportDetails
-    val seals = request.cacheModel.seals
-    BadRequest(sealPage(mode, formWithErrors, seals, transportDetails.fold(false)(_.container)))
-  }
-
-  private def removeSeal(
-    mode: Mode,
-    userInput: Form[Seal],
-    cachedSeals: Seq[Seal],
-    hasContainers: Boolean,
-    ids: Seq[String]
-  )(implicit request: JourneyRequest[_]): Future[Result] = {
-    val updatedSeals = remove(cachedSeals, { seal: Seal =>
-      ids.contains(seal.id)
-    })
-    updateCache(updatedSeals).map { _ =>
-      Ok(sealPage(mode, userInput.discardingErrors, updatedSeals, hasContainers))
+  def displaySealRemove(mode: Mode, containerId: String, sealId: String): Action[AnyContent] =
+    (authenticate andThen journeyType) { implicit request =>
+      Ok(removePage(mode, YesNoAnswer.form(), containerId, sealId))
     }
-  }
 
-  private def updateCache(formData: Seq[Seal])(implicit req: JourneyRequest[_]) =
-    updateExportsDeclarationSyncDirect(model => model.copy(seals = formData))
+  def submitSealRemove(mode: Mode, containerId: String, sealId: String): Action[AnyContent] =
+    (authenticate andThen journeyType).async { implicit request =>
+      removeSealAnswer(mode, containerId, sealId)
+    }
 
-  private def addSeal(mode: Mode, boundForm: Form[Seal], elementLimit: Int, seals: Seq[Seal])(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] =
-    add(boundForm, seals, elementLimit)
+  private def sealId(values: Seq[String]): String = values.headOption.getOrElse("")
+
+  private def addSealAnswer(mode: Mode, containerId: String)(implicit request: JourneyRequest[AnyContent]) =
+    form()
+      .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(badRequest(mode, formWithErrors, seals)),
-        updatedCache =>
-          updateCache(updatedCache).map { _ =>
-            navigator.continueTo(routes.SealController.displayPage(mode))
+        (formWithErrors: Form[YesNoAnswer]) =>
+          Future.successful(BadRequest(summaryPage(mode, formWithErrors, request.cacheModel.containerBy(containerId)))),
+        formData =>
+          formData.answer match {
+            case YesNoAnswers.yes =>
+              Future.successful(navigator.continueTo(routes.SealController.displayAddSeal(mode, containerId)))
+            case YesNoAnswers.no =>
+              Future
+                .successful(navigator.continueTo(routes.TransportContainerController.displayContainerSummary(mode)))
         }
       )
+
+  private def removeSealAnswer(mode: Mode, containerId: String, sealId: String)(
+    implicit request: JourneyRequest[AnyContent]
+  ) =
+    form()
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[YesNoAnswer]) =>
+          Future.successful(BadRequest(removePage(mode, formWithErrors, containerId, sealId))),
+        formData =>
+          formData.answer match {
+            case YesNoAnswers.yes =>
+              removeSeal(containerId, sealId, mode)
+            case YesNoAnswers.no =>
+              Future
+                .successful(navigator.continueTo(routes.SealController.displaySealSummary(mode, containerId)))
+        }
+      )
+
+  private def confirmRemoveSeal(containerId: String, sealId: String, mode: Mode)(
+    implicit request: JourneyRequest[AnyContent]
+  ) =
+    Future.successful(navigator.continueTo(routes.SealController.displaySealRemove(mode, containerId, sealId)))
+
+  private def removeSeal(containerId: String, sealId: String, mode: Mode)(
+    implicit request: JourneyRequest[AnyContent]
+  ) = {
+    val result =
+      request.cacheModel.containerBy(containerId).map(c => c.copy(seals = c.seals.filterNot(_.id == sealId))) match {
+        case Some(container) => updateCache(container)
+        case _               => Future.successful(None)
+      }
+    result.map(_ => navigator.continueTo(routes.SealController.displaySealSummary(mode, containerId)))
+  }
+
+  private def saveSeal(mode: Mode, boundForm: Form[Seal], cachedContainer: Container)(
+    implicit request: JourneyRequest[AnyContent]
+  ): Future[Result] =
+    saveAndContinue(boundForm, cachedContainer.seals, isMandatory = true, Seal.sealsAllowed).fold(
+      formWithErrors => Future.successful(BadRequest(addPage(mode, formWithErrors, cachedContainer.id))),
+      updatedCache =>
+        if (updatedCache != cachedContainer.seals) updateCache(cachedContainer.copy(seals = updatedCache)).map { _ =>
+          navigator.continueTo(routes.SealController.displaySealSummary(mode, cachedContainer.id))
+        } else
+          Future.successful(navigator.continueTo(routes.SealController.displaySealSummary(mode, cachedContainer.id)))
+    )
+
+  private def updateCache(container: Container)(implicit req: JourneyRequest[_]) =
+    updateExportsDeclarationSyncDirect(model => {
+
+      val updatedContainers =
+        model.containerData
+          .map(_.containers)
+          .fold(Seq(container))(_.filterNot(_.id == container.id) :+ container)
+
+      model.copy(containerData = Some(TransportInformationContainerData(updatedContainers)))
+    })
+
 }

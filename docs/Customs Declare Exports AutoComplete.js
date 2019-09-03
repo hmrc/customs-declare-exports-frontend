@@ -1,12 +1,11 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*/customs-declare-exports*
 // @grant        none
-// @updateURL    https://raw.githubusercontent.com/hmrc/customs-declare-exports-frontend/master/docs/Customs%20Declare%20Exports%20AutoComplete.js
 // ==/UserScript==
 
 (function() {
@@ -247,12 +246,16 @@ function completePage() {
         }
         document.getElementsByClassName('button')[0].click()
     }
-    if (currentPageIs('/customs-declare-exports/declaration/add-transport-containers')) {
+    if (currentPageIs('/customs-declare-exports/declaration/containers/add')) {
         document.getElementById('id').value = '123456';
         document.getElementsByClassName('button')[0].click()
     }
-    if (currentPageIs('/customs-declare-exports/declaration/add-seal')) {
-        document.getElementById('id').value = 'SIN123';
+    if (currentPageIs('/customs-declare-exports/declaration/containers/123456/seals')) {
+        selectRadioOption(document.getElementById('yesNo'), 1);
+        document.getElementsByClassName('button')[0].click()
+    }
+    if (currentPageIs('/customs-declare-exports/declaration/containers')) {
+        selectRadioOption(document.getElementById('yesNo'), 1);
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/summary')) {
