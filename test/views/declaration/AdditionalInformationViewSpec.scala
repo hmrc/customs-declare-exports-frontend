@@ -16,65 +16,83 @@
 
 package views.declaration
 
+import base.Injector
 import controllers.util.{Add, SaveAndContinue, SaveAndReturn}
 import forms.declaration.AdditionalInformation
 import helpers.views.declaration.{AdditionalInformationMessages, CommonMessages}
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
+import play.api.i18n.MessagesApi
 import play.twirl.api.Html
-import views.declaration.spec.AppViewSpec
+import unit.tools.Stubs
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.additional_information
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalInformationViewSpec extends AppViewSpec with AdditionalInformationMessages with CommonMessages {
+class AdditionalInformationViewSpec
+    extends UnitViewSpec with AdditionalInformationMessages with CommonMessages with Stubs with Injector {
 
+  val itemId = "a7sc78"
   private val form: Form[AdditionalInformation] = AdditionalInformation.form()
-  private val additionalInformationPage = app.injector.instanceOf[additional_information]
+  private val additionalInformationPage = new additional_information(mainTemplate)
   private def createView(form: Form[AdditionalInformation] = form): Html =
-    additionalInformationPage(Mode.Normal, itemId, form, Seq())(fakeRequest, messages)
+    additionalInformationPage(Mode.Normal, itemId, form, Seq())(request, messages)
 
-  /*
-   * Moved all errors tests to AdditionalInformationControllerSpec,
-   * as the logic depends on which button we will press (we can't emulate it
-   * at view tests)
-   */
+  "Additional Information View" should {
+
+    "have a proper messages" in {
+
+      val messages = instanceOf[MessagesApi].preferred(request)
+
+      messages must haveTranslationFor("supplementary.additionalInformation")
+      messages must haveTranslationFor("supplementary.additionalInformation.title")
+      messages must haveTranslationFor("supplementary.additionalInformation.code")
+      messages must haveTranslationFor("supplementary.additionalInformation.item.code")
+      messages must haveTranslationFor("supplementary.additionalInformation.code.error")
+      messages must haveTranslationFor("supplementary.additionalInformation.code.empty")
+      messages must haveTranslationFor("supplementary.additionalInformation.description")
+      messages must haveTranslationFor("supplementary.additionalInformation.item.description")
+      messages must haveTranslationFor("supplementary.additionalInformation.description.error")
+      messages must haveTranslationFor("supplementary.additionalInformation.description.empty")
+    }
+  }
 
   "Additional Information View on empty page" should {
 
     "display page title" in {
 
-      createView().getElementById("title").text() must be(messages(title))
+      createView().getElementById("title").text() mustBe messages(title)
     }
 
     "display section header" in {
 
-      createView().getElementById("section-header").text() must be("Your references")
+      createView().getElementById("section-header").text() mustBe "supplementary.summary.yourReferences.header"
     }
 
     "display empty input with label for Union code" in {
 
       val view = createView()
 
-      view.getElementById("code-label").text() must be(messages(code))
-      view.getElementById("code").attr("value") must be("")
+      view.getElementById("code-label").text() mustBe messages(code)
+      view.getElementById("code").attr("value") mustBe ""
     }
 
     "display empty input with label for Description" in {
 
       val view = createView()
 
-      view.getElementById("description-label").text() must be(messages(description))
-      view.getElementById("description").attr("value") must be("")
+      view.getElementById("description-label").text() mustBe messages(description)
+      view.getElementById("description").attr("value") mustBe ""
     }
 
     "display 'Back' button that links to 'Commodity measure' page" in {
 
       val backButton = createView().getElementById("link-back")
 
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be(s"/customs-declare-exports/declaration/items/$itemId/commodity-measure")
+      backButton.text() mustBe messages(backCaption)
+      backButton.attr("href") must endWith(s"/items/$itemId/commodity-measure")
     }
 
     "display 'Save and continue' button" in {
@@ -99,8 +117,8 @@ class AdditionalInformationViewSpec extends AppViewSpec with AdditionalInformati
 
       val view = createView(AdditionalInformation.form.fill(AdditionalInformation("12345", "12345")))
 
-      view.getElementById("code").attr("value") must be("12345")
-      view.getElementById("description").text() must be("12345")
+      view.getElementById("code").attr("value") mustBe "12345"
+      view.getElementById("description").text() mustBe "12345"
 
     }
 
@@ -108,27 +126,27 @@ class AdditionalInformationViewSpec extends AppViewSpec with AdditionalInformati
 
       val view = createView(AdditionalInformation.form.fill(AdditionalInformation("12345", "")))
 
-      view.getElementById("code").attr("value") must be("12345")
-      view.getElementById("description").text() must be("")
+      view.getElementById("code").attr("value") mustBe "12345"
+      view.getElementById("description").text() mustBe ""
     }
 
     "display data in description input" in {
 
       val view = createView(AdditionalInformation.form.fill(AdditionalInformation("", "12345")))
 
-      view.getElementById("code").attr("value") must be("")
-      view.getElementById("description").text() must be("12345")
+      view.getElementById("code").attr("value") mustBe ""
+      view.getElementById("description").text() mustBe "12345"
     }
 
     "display one row with data in table" in {
 
       val view = additionalInformationPage(Mode.Normal, itemId, form, Seq(AdditionalInformation("12345", "12345")))
 
-      view.select("table>tbody>tr>th:nth-child(1)").text() must be("12345-12345")
+      view.select("table>tbody>tr>th:nth-child(1)").text() mustBe "12345-12345"
 
       val removeButton = view.select("table>tbody>tr>th:nth-child(2)>button")
-      removeButton.text() must be(messages(removeCaption))
-      removeButton.attr("name") must be(messages(removeCaption))
+      removeButton.text() mustBe messages(removeCaption)
+      removeButton.attr("name") mustBe "Remove"
     }
   }
 }

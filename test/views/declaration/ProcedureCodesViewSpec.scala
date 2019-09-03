@@ -32,45 +32,42 @@ import views.tags.ViewTest
 @ViewTest
 class ProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
+  private val page = new procedure_codes(mainTemplate)
   private val form: Form[ProcedureCodes] = ProcedureCodes.form()
   private def createView(
     mode: Mode = Mode.Normal,
     form: Form[ProcedureCodes] = form,
     codes: Seq[String] = Seq.empty
-  ): Document =
-    new procedure_codes(mainTemplate)(mode, "itemId", form, codes)(journeyRequest, stubMessages())
+  ): Document = page(mode, "itemId", form, codes)(journeyRequest(), stubMessages())
 
   "Procedure Codes View on empty page" should {
+    val view = createView()
+
     "have proper messages for labels" in {
-      val messages = instanceOf[MessagesApi].preferred(journeyRequest)
-      messages("supplementary.procedureCodes.title") mustBe "Procedure Codes"
-      messages("supplementary.items") mustBe "Items"
-      messages("supplementary.procedureCodes.procedureCode.header") mustBe "Enter the procedure code"
-      messages("supplementary.procedureCodes.procedureCode.header.hint") mustBe "A 4 digit code, made up of the requested procedure and the previous procedure"
-      messages("supplementary.procedureCodes.additionalProcedureCode.header") mustBe "Do you need to enter additional procedure codes?"
-      messages("supplementary.procedureCodes.additionalProcedureCode.header.hint") mustBe "A 3 digit code. Up to 99 may be declared for each goods item."
+      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
+      messages must haveTranslationFor("supplementary.procedureCodes.title")
+      messages must haveTranslationFor("supplementary.items")
+      messages must haveTranslationFor("supplementary.procedureCodes.procedureCode.header")
+      messages must haveTranslationFor("supplementary.procedureCodes.procedureCode.header.hint")
+      messages must haveTranslationFor("supplementary.procedureCodes.additionalProcedureCode.header")
+      messages must haveTranslationFor("supplementary.procedureCodes.additionalProcedureCode.header.hint")
     }
 
     "display page title" in {
-      createView().getElementById("title").text() mustBe "supplementary.procedureCodes.title"
+      view.getElementById("title").text() mustBe "supplementary.procedureCodes.title"
     }
 
     "display section header" in {
-      createView().getElementById("section-header").text() mustBe "supplementary.items"
+      view.getElementById("section-header").text() mustBe "supplementary.items"
     }
 
     "display empty input with label for Procedure Code" in {
-      val view = createView()
-
       view.getElementById("procedureCode-label").text() mustBe "supplementary.procedureCodes.procedureCode.header"
       view.getElementById("procedureCode-hint").text() mustBe "supplementary.procedureCodes.procedureCode.header.hint"
       view.getElementById("procedureCode").attr("value") mustBe ""
     }
 
     "display empty input with label for Additional Procedure Codes" in {
-
-      val view = createView()
-
       view
         .getElementById("additionalProcedureCode-label")
         .text() mustBe "supplementary.procedureCodes.additionalProcedureCode.header"
@@ -82,7 +79,7 @@ class ProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData with Stub
 
     "display 'Back' button that links to 'Export Items' page" in {
 
-      val backButton = createView().getElementById("link-back")
+      val backButton = view.getElementById("link-back")
 
       backButton.text() mustBe "site.back"
       backButton.getElementById("link-back") must haveHref(
@@ -91,8 +88,6 @@ class ProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData with Stub
     }
 
     "display both 'Add' and 'Save and continue' button on page" in {
-      val view = createView()
-
       val addButton = view.getElementById("add")
       addButton.text() mustBe "site.add"
 
@@ -101,7 +96,7 @@ class ProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData with Stub
     }
 
     "display 'Save and return' button on page" in {
-      val saveAndReturnButton = createView().getElementById("submit_and_return")
+      val saveAndReturnButton = view.getElementById("submit_and_return")
       saveAndReturnButton.text() mustBe "site.save_and_come_back_later"
     }
   }

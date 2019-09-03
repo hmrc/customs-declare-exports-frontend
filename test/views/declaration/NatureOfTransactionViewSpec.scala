@@ -16,89 +16,123 @@
 
 package views.declaration
 
+import base.Injector
 import forms.declaration.NatureOfTransaction
-import helpers.views.declaration.{CommonMessages, NatureOfTransactionMessages}
 import models.Mode
+import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.twirl.api.Html
-import views.declaration.spec.AppViewSpec
+import play.api.i18n.MessagesApi
+import play.api.test.Helpers.stubMessages
+import services.cache.ExportsTestData
+import unit.tools.Stubs
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.nature_of_transaction
 import views.tags.ViewTest
 
 @ViewTest
-class NatureOfTransactionViewSpec extends AppViewSpec with NatureOfTransactionMessages with CommonMessages {
+class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
+  private val page = new nature_of_transaction(mainTemplate)
   private val form: Form[NatureOfTransaction] = NatureOfTransaction.form()
-  private val natureOfTransactionPage = app.injector.instanceOf[nature_of_transaction]
-  private def createView(form: Form[NatureOfTransaction] = form): Html =
-    natureOfTransactionPage(Mode.Normal, form)(fakeRequest, messages)
+
+  private def createView(mode: Mode = Mode.Normal, form: Form[NatureOfTransaction] = form): Document =
+    page(mode, form)(journeyRequest(), stubMessages())
 
   "Nature Of Transaction View on empty page" should {
 
-    "display page title" in {
+    "have proper messages for labels" in {
+      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
+      messages must haveTranslationFor("declaration.natureOfTransaction.title")
+      messages must haveTranslationFor("declaration.natureOfTransaction.header")
+      messages must haveTranslationFor("declaration.natureOfTransaction.purchase")
+      messages must haveTranslationFor("declaration.natureOfTransaction.return")
+      messages must haveTranslationFor("declaration.natureOfTransaction.donation")
+      messages must haveTranslationFor("declaration.natureOfTransaction.processing")
+      messages must haveTranslationFor("declaration.natureOfTransaction.processed")
+      messages must haveTranslationFor("declaration.natureOfTransaction.nationalPurposes")
+      messages must haveTranslationFor("declaration.natureOfTransaction.military")
+      messages must haveTranslationFor("declaration.natureOfTransaction.construction")
+      messages must haveTranslationFor("declaration.natureOfTransaction.other")
+      messages must haveTranslationFor("declaration.natureOfTransaction.empty")
+      messages must haveTranslationFor("declaration.natureOfTransaction.error")
+    }
 
-      createView().getElementById("title").text() must be(messages(title))
+    val view = createView()
+    "display page title" in {
+      view.getElementById("title").text() must be("declaration.natureOfTransaction.title")
     }
 
     "display section header" in {
-
-      createView().getElementById("section-header").text() must be(messages(header))
+      view.getElementById("section-header").text() must be("declaration.natureOfTransaction.header")
     }
 
-    "display radio button with all possible options" in {
-
-      val view = createView()
-
-      view.getElementById("Purchase-label").text() must be(messages(purchaseOption, "", ""))
-      view.getElementById("Return-label").text() must be(messages(returnOption, "", ""))
-      view.getElementById("Donation-label").text() must be(messages(donationOption, "", ""))
-      view.getElementById("Processing-label").text() must be(messages(processingOption, "", ""))
-      view.getElementById("Processed-label").text() must be(messages(processedOption, "", ""))
-      view.getElementById("NationalPurposes-label").text() must be(messages(nationalPurposesOption, "", ""))
-      view.getElementById("Military-label").text() must be(messages(militaryOption, "", ""))
-      view.getElementById("Construction-label").text() must be(messages(constructionOption, "", ""))
-      view.getElementById("Other-label").text() must be(messages(otherOption, "", ""))
+    "display radio button with Purchase option" in {
+      view.getElementById("Purchase-label").text() must be("declaration.natureOfTransaction.purchase")
+    }
+    "display radio button with Return option" in {
+      view.getElementById("Return-label").text() must be("declaration.natureOfTransaction.return")
+    }
+    "display radio button with Donation option" in {
+      view.getElementById("Donation-label").text() must be("declaration.natureOfTransaction.donation")
+    }
+    "display radio button with Processing option" in {
+      view.getElementById("Processing-label").text() must be("declaration.natureOfTransaction.processing")
+    }
+    "display radio button with Processed option" in {
+      view.getElementById("Processed-label").text() must be("declaration.natureOfTransaction.processed")
+    }
+    "display radio button with National Purposes option" in {
+      view.getElementById("NationalPurposes-label").text() must be("declaration.natureOfTransaction.nationalPurposes")
+    }
+    "display radio button with Military option" in {
+      view.getElementById("Military-label").text() must be("declaration.natureOfTransaction.military")
+    }
+    "display radio button with Construction option" in {
+      view.getElementById("Construction-label").text() must be("declaration.natureOfTransaction.construction")
+    }
+    "display radio button with Other option" in {
+      view.getElementById("Other-label").text() must be("declaration.natureOfTransaction.other")
     }
 
     "display 'Back' button that links to 'Total Number Of Items' page" in {
 
-      val backButton = createView().getElementById("link-back")
+      val backButton = view.getElementById("link-back")
 
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/total-numbers-of-items")
+      backButton.text() must be("site.back")
+      backButton.getElementById("link-back") must haveHref(
+        controllers.declaration.routes.TotalNumberOfItemsController.displayPage(Mode.Normal)
+      )
     }
 
     "display 'Save and continue' button on page" in {
-      val saveButton = createView().getElementById("submit")
-      saveButton.text() must be(messages(saveAndContinueCaption))
+      val saveButton = view.getElementById("submit")
+      saveButton.text() must be("site.save_and_continue")
     }
 
     "display 'Save and return' button on page" in {
-      val saveAndReturnButton = createView().getElementById("submit_and_return")
-      saveAndReturnButton.text() must be(messages(saveAndReturnCaption))
+      val saveAndReturnButton = view.getElementById("submit_and_return")
+      saveAndReturnButton.text() must be("site.save_and_come_back_later")
     }
   }
 
   "Nature Of Transaction View for invalid input" should {
 
     "display error when nature of transaction is empty" in {
-
-      val view = createView(NatureOfTransaction.form().fillAndValidate(NatureOfTransaction("")))
+      val view = createView(form = NatureOfTransaction.form().fillAndValidate(NatureOfTransaction("")))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, "natureType-error", natureOfTransactionEmpty, "#natureType")
+      haveFieldErrorLink("natureType", "#natureType")
 
-      view.getElementById("error-message-natureType-input").text() must be(messages(natureOfTransactionEmpty))
+      view.getElementById("error-message-natureType-input").text() must be("declaration.natureOfTransaction.empty")
     }
 
     "display error when nature of transaction is incorrect" in {
-
-      val view = createView(NatureOfTransaction.form().fillAndValidate(NatureOfTransaction("ABC")))
+      val view = createView(form = NatureOfTransaction.form().fillAndValidate(NatureOfTransaction("ABC")))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, "natureType-error", natureOfTransactionError, "#natureType")
+      haveFieldErrorLink("natureType", "#natureType")
 
-      view.getElementById("error-message-natureType-input").text() must be(messages(natureOfTransactionError))
+      view.getElementById("error-message-natureType-input").text() must be("declaration.natureOfTransaction.error")
     }
   }
 }

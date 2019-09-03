@@ -31,36 +31,36 @@ import views.tags.ViewTest
 class TransportContainerAddViewSpec extends UnitViewSpec with Stubs with MustMatchers with CommonMessages {
 
   private val form: Form[TransportInformationContainer] = TransportInformationContainer.form()
-
-  private val containerAddPage = new transport_container_add(mainTemplate)
+  private val page = new transport_container_add(mainTemplate)
 
   private def createView(form: Form[TransportInformationContainer] = form): Document =
-    containerAddPage(Mode.Normal, form)
+    page(Mode.Normal, form)
 
   "Transport Containers Add View" should {
+    val view = createView()
 
     "display page title" in {
-      createView().getElementById("title").text() must be(messages("supplementary.transportInfo.containers.title"))
+      view.getElementById("title").text() must be(messages("supplementary.transportInfo.containers.title"))
     }
 
     "display header" in {
-      createView().select("legend>h1").text() must be(messages("supplementary.transportInfo.containers.title"))
+      view.select("legend>h1").text() must be(messages("supplementary.transportInfo.containers.title"))
     }
 
     "display 'Back' button that links to 'transport details' page" in {
-      val backLinkContainer = createView().getElementById("link-back")
+      val backLinkContainer = view.getElementById("link-back")
 
       backLinkContainer.text() must be(messages(backCaption))
       backLinkContainer.attr("href") must be(s"/customs-declare-exports/declaration/transport-details")
     }
 
     "display 'Save and continue' button on page" in {
-      val saveButton = createView().getElementById("submit")
+      val saveButton = view.getElementById("submit")
       saveButton.text() must be(messages(saveAndContinueCaption))
     }
 
     "display 'Save and return' button on page" in {
-      val saveAndReturnButton = createView().getElementById("submit_and_return")
+      val saveAndReturnButton = view.getElementById("submit_and_return")
       saveAndReturnButton.text() must be(messages(saveAndReturnCaption))
     }
   }

@@ -16,112 +16,122 @@
 
 package views.declaration
 
-import base.TestHelper
+import base.{Injector, TestHelper}
 import forms.declaration.RepresentativeDetails
-import helpers.views.declaration.{CommonMessages, RepresentativeDetailsMessages}
 import models.Mode
+import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.twirl.api.Html
-import views.declaration.spec.AppViewSpec
+import play.api.i18n.MessagesApi
+import play.api.test.Helpers.stubMessages
+import services.cache.ExportsTestData
+import unit.tools.Stubs
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.representative_details
 import views.tags.ViewTest
 
 @ViewTest
-class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetailsMessages with CommonMessages {
+class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
+  private val page = new representative_details(mainTemplate)
   private val form: Form[RepresentativeDetails] = RepresentativeDetails.form()
-  private val representativeDetailsPage = app.injector.instanceOf[representative_details]
-  private def createView(form: Form[RepresentativeDetails] = form): Html =
-    representativeDetailsPage(Mode.Normal, form)(fakeRequest, messages)
+  private def createView(mode: Mode = Mode.Normal, form: Form[RepresentativeDetails] = form): Document =
+    page(mode, form)(journeyRequest(), stubMessages())
 
   "Representative Details View on empty page" should {
+    val view = createView()
+
+    "have proper messages for labels" in {
+      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
+      messages must haveTranslationFor("supplementary.representative.header")
+      messages must haveTranslationFor("supplementary.representative.eori.info")
+      messages must haveTranslationFor("supplementary.address.fullName")
+      messages must haveTranslationFor("supplementary.address.addressLine")
+      messages must haveTranslationFor("supplementary.address.postCode")
+      messages must haveTranslationFor("supplementary.address.townOrCity")
+      messages must haveTranslationFor("supplementary.representative.representationType.error.empty")
+      messages must haveTranslationFor("supplementary.eori.error")
+      messages must haveTranslationFor("supplementary.address.fullName.empty")
+      messages must haveTranslationFor("supplementary.address.fullName.error")
+      messages must haveTranslationFor("supplementary.address.addressLine.empty")
+      messages must haveTranslationFor("supplementary.address.addressLine.error")
+      messages must haveTranslationFor("supplementary.address.townOrCity.empty")
+      messages must haveTranslationFor("supplementary.address.townOrCity.error")
+      messages must haveTranslationFor("supplementary.address.postCode.empty")
+      messages must haveTranslationFor("supplementary.address.postCode.error")
+      messages must haveTranslationFor("supplementary.address.country.empty")
+      messages must haveTranslationFor("supplementary.address.country.error")
+      messages must haveTranslationFor("supplementary.address.townOrCity.empty")
+    }
 
     "display page title" in {
-
-      createView().getElementById("title").text() must be(messages(header))
+      view.getElementById("title").text() must be("supplementary.representative.header")
     }
 
     "display empty input with label for EORI" in {
-
-      val view = createView()
-
-      view.getElementById("details_eori-label").text() must be(messages(eoriInfo))
+      view.getElementById("details_eori-label").text() must be("supplementary.representative.eori.info")
       view.getElementById("details_eori").attr("value") must be("")
     }
 
     "display empty input with label for Full name" in {
-
-      val view = createView()
-
-      view.getElementById("details_address_fullName-label").text() must be(messages(fullName))
+      view.getElementById("details_address_fullName-label").text() must be("supplementary.address.fullName")
       view.getElementById("details_address_fullName").attr("value") must be("")
     }
 
     "display empty input with label for Address" in {
-
-      val view = createView()
-
-      view.getElementById("details_address_addressLine-label").text() must be(messages(addressLine))
+      view.getElementById("details_address_addressLine-label").text() must be("supplementary.address.addressLine")
       view.getElementById("details_address_addressLine").attr("value") must be("")
     }
 
     "display empty input with label for Town or City" in {
-
-      val view = createView()
-
-      view.getElementById("details_address_townOrCity-label").text() must be(messages(townOrCity))
+      view.getElementById("details_address_townOrCity-label").text() must be("supplementary.address.townOrCity")
       view.getElementById("details_address_townOrCity").attr("value") must be("")
     }
 
     "display empty input with label for Postcode" in {
-
-      val view = createView()
-
-      view.getElementById("details_address_postCode-label").text() must be(messages(postCode))
+      view.getElementById("details_address_postCode-label").text() must be("supplementary.address.postCode")
       view.getElementById("details_address_postCode").attr("value") must be("")
     }
 
     "display empty input with label for Country" in {
-
-      val view = createView()
-
-      view.getElementById("details.address.country-label").text() mustBe "Country"
+      view.getElementById("details.address.country-label").text() mustBe "supplementary.address.country"
       view.getElementById("details.address.country").attr("value") mustBe ""
     }
 
     "display three radio buttons with description (not selected)" in {
 
-      val view = createView(RepresentativeDetails.form().fill(RepresentativeDetails(None, None)))
+      val view = createView(form = RepresentativeDetails.form().fill(RepresentativeDetails(None, None)))
 
       val optionDirect = view.getElementById("statusCode_direct")
       optionDirect.attr("checked") must be("")
 
       val optionDirectLabel = view.select("#statusCode>div:nth-child(2)>label>span")
-      optionDirectLabel.text() must include(messages(repTypeDirect))
+      optionDirectLabel.text() must include("")
 
       val optionIndirect = view.getElementById("statusCode_indirect")
       optionIndirect.attr("checked") must be("")
 
       val optionIndirectLabel = view.select("#statusCode>div:nth-child(3)>label>span")
-      optionIndirectLabel.text() must include(messages(repTypeIndirect))
+      optionIndirectLabel.text() must include("")
     }
 
     "display 'Back' button that links to 'Declarant Details' page" in {
 
-      val backButton = createView().getElementById("link-back")
+      val backButton = view.getElementById("link-back")
 
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/declarant-details")
+      backButton.text() must be("site.back")
+      backButton.getElementById("link-back") must haveHref(
+        controllers.declaration.routes.DeclarantDetailsController.displayPage(Mode.Normal)
+      )
     }
 
     "display 'Save and continue' button on page" in {
-      val saveButton = createView().getElementById("submit")
-      saveButton.text() must be(messages(saveAndContinueCaption))
+      val saveButton = view.getElementById("submit")
+      saveButton.text() must be("site.save_and_continue")
     }
 
     "display 'Save and return' button on page" in {
-      val saveAndReturnButton = createView().getElementById("submit_and_return")
-      saveAndReturnButton.text() must be(messages(saveAndReturnCaption))
+      val saveAndReturnButton = view.getElementById("submit_and_return")
+      saveAndReturnButton.text() must be("site.save_and_come_back_later")
     }
   }
 
@@ -132,7 +142,7 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
       "display errors when only EORI is entered" in {
 
         val view = createView(
-          RepresentativeDetails.adjustErrors(
+          form = RepresentativeDetails.adjustErrors(
             RepresentativeDetails
               .form()
               .bind(
@@ -150,15 +160,17 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "statusCode-error", repTypeErrorEmpty, "#statusCode")
+        haveFieldErrorLink("statusCode", "#statusCode")
 
-        view.getElementById("error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
+        view.getElementById("error-message-statusCode-input").text() must be(
+          "supplementary.representative.representationType.error.empty"
+        )
       }
 
       "display errors when only address is entered" in {
 
         val view = createView(
-          RepresentativeDetails.adjustErrors(
+          form = RepresentativeDetails.adjustErrors(
             RepresentativeDetails
               .form()
               .bind(
@@ -176,15 +188,17 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "statusCode-error", repTypeErrorEmpty, "#statusCode")
+        haveFieldErrorLink("statusCode", "#statusCode")
 
-        view.getElementById("error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
+        view.getElementById("error-message-statusCode-input").text() must be(
+          "supplementary.representative.representationType.error.empty"
+        )
       }
 
       "display errors when EORI is incorrect" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -200,15 +214,15 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.eori-error", eoriError, "#details_eori")
+        haveFieldErrorLink("details", "#details_eori")
 
-        view.getElementById("error-message-details_eori-input").text() must be(messages(eoriError))
+        view.getElementById("error-message-details_eori-input").text() must be("supplementary.eori.error")
       }
 
       "display errors for empty Full name" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -224,15 +238,17 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.fullName-error", fullNameEmpty, "#details_address_fullName")
+        haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
 
-        view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
+        view.getElementById("error-message-details_address_fullName-input").text() must be(
+          "supplementary.address.fullName.empty"
+        )
       }
 
       "display errors for incorrect Full name" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -248,15 +264,17 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.fullName-error", fullNameError, "#details_address_fullName")
+        haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
 
-        view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameError))
+        view.getElementById("error-message-details_address_fullName-input").text() must be(
+          "supplementary.address.fullName.error"
+        )
       }
 
       "display errors for empty Address" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -272,17 +290,17 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
+        haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
 
         view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          messages(addressLineEmpty)
+          "supplementary.address.addressLine.empty"
         )
       }
 
       "display errors for incorrect Address" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -298,17 +316,17 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
+        haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
 
         view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          messages(addressLineError)
+          "supplementary.address.addressLine.error"
         )
       }
 
       "display errors for empty Town or city" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -324,15 +342,17 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
+        haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
 
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be(
+          "supplementary.address.townOrCity.empty"
+        )
       }
 
       "display errors for incorrect Town or city" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -348,15 +368,17 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
+        haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
 
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be(
+          "supplementary.address.townOrCity.error"
+        )
       }
 
       "display errors for empty Postcode" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -372,15 +394,17 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
+        haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
 
-        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
+        view.getElementById("error-message-details_address_postCode-input").text() must be(
+          "supplementary.address.postCode.empty"
+        )
       }
 
       "display errors for incorrect Postcode" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -396,15 +420,17 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
+        haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
 
-        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeError))
+        view.getElementById("error-message-details_address_postCode-input").text() must be(
+          "supplementary.address.postCode.error"
+        )
       }
 
       "display errors for empty Country" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -420,15 +446,15 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.country-error", countryEmpty, "#details_address_country")
+        haveFieldErrorLink("details.address.country", "#details_address_country")
 
-        view.select("span.error-message").text() must be(messages(countryEmpty))
+        view.select("span.error-message").text() must be("supplementary.address.country.empty")
       }
 
       "display errors for incorrect Country" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -444,15 +470,15 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.country-error", countryError, "#details_address_country")
+        haveFieldErrorLink("details.address.country", "#details_address_country")
 
-        view.select("span.error-message").text() must be(messages(countryError))
+        view.select("span.error-message").text() must be("supplementary.address.country.error")
       }
 
       "display errors when everything except Full name is empty" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -468,23 +494,27 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
-        checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
-        checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
-        checkErrorLink(view, "details.address.country-error", countryEmpty, "#details_address_country")
+        haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
+        haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
+        haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
+        haveFieldErrorLink("details.address.country", "#details_address_country")
 
         view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          messages(addressLineEmpty)
+          "supplementary.address.addressLine.empty"
         )
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
-        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
-        view.select("span.error-message").text() must be(messages(countryEmpty))
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be(
+          "supplementary.address.townOrCity.empty"
+        )
+        view.getElementById("error-message-details_address_postCode-input").text() must be(
+          "supplementary.address.postCode.empty"
+        )
+        view.select("span.error-message").text() must be("supplementary.address.country.empty")
       }
 
       "display errors when everything except Country is empty" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -500,23 +530,29 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.fullName-error", fullNameEmpty, "#details_address_fullName")
-        checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
-        checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
-        checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
+        haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
+        haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
+        haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
+        haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
 
-        view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
-        view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          messages(addressLineEmpty)
+        view.getElementById("error-message-details_address_fullName-input").text() must be(
+          "supplementary.address.fullName.empty"
         )
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
-        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
+        view.getElementById("error-message-details_address_addressLine-input").text() must be(
+          "supplementary.address.addressLine.empty"
+        )
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be(
+          "supplementary.address.townOrCity.empty"
+        )
+        view.getElementById("error-message-details_address_postCode-input").text() must be(
+          "supplementary.address.postCode.empty"
+        )
       }
 
       "display errors when everything except Full name is incorrect" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -532,23 +568,27 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
-        checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
-        checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
-        checkErrorLink(view, "details.address.country-error", countryError, "#details_address_country")
+        haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
+        haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
+        haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
+        haveFieldErrorLink("details.address.country", "#details_address_country")
 
         view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          messages(addressLineError)
+          "supplementary.address.addressLine.error"
         )
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
-        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeError))
-        view.select("span.error-message").text() must be(messages(countryError))
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be(
+          "supplementary.address.townOrCity.error"
+        )
+        view.getElementById("error-message-details_address_postCode-input").text() must be(
+          "supplementary.address.postCode.error"
+        )
+        view.select("span.error-message").text() must be("supplementary.address.country.error")
       }
 
       "display errors when everything except Country is incorrect" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -564,17 +604,23 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.fullName-error", fullNameError, "#details_address_fullName")
-        checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
-        checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
-        checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
+        haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
+        haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
+        haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
+        haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
 
-        view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameError))
-        view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          messages(addressLineError)
+        view.getElementById("error-message-details_address_fullName-input").text() must be(
+          "supplementary.address.fullName.error"
         )
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
-        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeError))
+        view.getElementById("error-message-details_address_addressLine-input").text() must be(
+          "supplementary.address.addressLine.error"
+        )
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be(
+          "supplementary.address.townOrCity.error"
+        )
+        view.getElementById("error-message-details_address_postCode-input").text() must be(
+          "supplementary.address.postCode.error"
+        )
       }
     }
 
@@ -583,7 +629,7 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
       "display errors when EORI is incorrect" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -599,15 +645,15 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.eori-error", eoriError, "#details_eori")
+        haveFieldErrorLink("details.eori", "#details_eori")
 
-        view.getElementById("error-message-details_eori-input").text() must be(messages(eoriError))
+        view.getElementById("error-message-details_eori-input").text() must be("supplementary.eori.error")
       }
 
       "display errors for empty Full name" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -623,15 +669,17 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.fullName-error", fullNameEmpty, "#details_address_fullName")
+        haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
 
-        view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
+        view.getElementById("error-message-details_address_fullName-input").text() must be(
+          "supplementary.address.fullName.empty"
+        )
       }
 
       "display errors for incorrect Full name" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -647,15 +695,17 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.fullName-error", fullNameError, "#details_address_fullName")
+        haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
 
-        view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameError))
+        view.getElementById("error-message-details_address_fullName-input").text() must be(
+          "supplementary.address.fullName.error"
+        )
       }
 
       "display errors for empty Address" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -671,17 +721,17 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
+        haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
 
         view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          messages(addressLineEmpty)
+          "supplementary.address.addressLine.empty"
         )
       }
 
       "display errors for incorrect Address" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -697,17 +747,17 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
+        haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
 
         view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          messages(addressLineError)
+          "supplementary.address.addressLine.error"
         )
       }
 
       "display errors for empty Town or city" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -723,15 +773,17 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
+        haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
 
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be(
+          "supplementary.address.townOrCity.empty"
+        )
       }
 
       "display errors for incorrect Town or city" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -747,15 +799,17 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
+        haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
 
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be(
+          "supplementary.address.townOrCity.error"
+        )
       }
 
       "display errors for empty Postcode" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -771,15 +825,17 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
+        haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
 
-        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
+        view.getElementById("error-message-details_address_postCode-input").text() must be(
+          "supplementary.address.postCode.empty"
+        )
       }
 
       "display errors for incorrect Postcode" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -795,15 +851,17 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
+        haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
 
-        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeError))
+        view.getElementById("error-message-details_address_postCode-input").text() must be(
+          "supplementary.address.postCode.error"
+        )
       }
 
       "display errors for empty Country" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -819,15 +877,15 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.country-error", countryEmpty, "#details_address_country")
+        haveFieldErrorLink("details.address.country", "#details_address_country")
 
-        view.select("span.error-message").text() must be(messages(countryEmpty))
+        view.select("span.error-message").text() must be("supplementary.address.country.empty")
       }
 
       "display errors for incorrect Country" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -843,15 +901,15 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.country-error", countryError, "#details_address_country")
+        haveFieldErrorLink("details.address.country", "#details_address_country")
 
-        view.select("span.error-message").text() must be(messages(countryError))
+        view.select("span.error-message").text() must be("supplementary.address.country.error")
       }
 
       "display errors when everything except Full name is empty" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -867,23 +925,27 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
-        checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
-        checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
-        checkErrorLink(view, "details.address.country-error", countryEmpty, "#details_address_country")
+        haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
+        haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
+        haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
+        haveFieldErrorLink("details.address.country", "#details_address_country")
 
         view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          messages(addressLineEmpty)
+          "supplementary.address.addressLine.empty"
         )
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
-        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
-        view.select("span.error-message").text() must be(messages(countryEmpty))
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be(
+          "supplementary.address.townOrCity.empty"
+        )
+        view.getElementById("error-message-details_address_postCode-input").text() must be(
+          "supplementary.address.postCode.empty"
+        )
+        view.select("span.error-message").text() must be("supplementary.address.country.empty")
       }
 
       "display errors when everything except Country is empty" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -899,23 +961,29 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.fullName-error", fullNameEmpty, "#details_address_fullName")
-        checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
-        checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
-        checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
+        haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
+        haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
+        haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
+        haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
 
-        view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
-        view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          messages(addressLineEmpty)
+        view.getElementById("error-message-details_address_fullName-input").text() must be(
+          "supplementary.address.fullName.empty"
         )
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
-        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
+        view.getElementById("error-message-details_address_addressLine-input").text() must be(
+          "supplementary.address.addressLine.empty"
+        )
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be(
+          "supplementary.address.townOrCity.empty"
+        )
+        view.getElementById("error-message-details_address_postCode-input").text() must be(
+          "supplementary.address.postCode.empty"
+        )
       }
 
       "display errors when everything except Full name is incorrect" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -931,23 +999,27 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
-        checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
-        checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
-        checkErrorLink(view, "details.address.country-error", countryError, "#details_address_country")
+        haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
+        haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
+        haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
+        haveFieldErrorLink("details.address.country", "#details_address_country")
 
         view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          messages(addressLineError)
+          "supplementary.address.addressLine.error"
         )
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
-        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeError))
-        view.select("span.error-message").text() must be(messages(countryError))
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be(
+          "supplementary.address.townOrCity.error"
+        )
+        view.getElementById("error-message-details_address_postCode-input").text() must be(
+          "supplementary.address.postCode.error"
+        )
+        view.select("span.error-message").text() must be("supplementary.address.country.error")
       }
 
       "display errors when everything except Country is incorrect" in {
 
         val view = createView(
-          RepresentativeDetails
+          form = RepresentativeDetails
             .form()
             .bind(
               Map(
@@ -963,17 +1035,23 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "details.address.fullName-error", fullNameError, "#details_address_fullName")
-        checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
-        checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
-        checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
+        haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
+        haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
+        haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
+        haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
 
-        view.getElementById("error-message-details_address_fullName-input").text() must be(messages(fullNameError))
-        view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          messages(addressLineError)
+        view.getElementById("error-message-details_address_fullName-input").text() must be(
+          "supplementary.address.fullName.error"
         )
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
-        view.getElementById("error-message-details_address_postCode-input").text() must be(messages(postCodeError))
+        view.getElementById("error-message-details_address_addressLine-input").text() must be(
+          "supplementary.address.addressLine.error"
+        )
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be(
+          "supplementary.address.townOrCity.error"
+        )
+        view.getElementById("error-message-details_address_postCode-input").text() must be(
+          "supplementary.address.postCode.error"
+        )
       }
     }
   }
@@ -997,7 +1075,7 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
               "statusCode" -> "1"
             )
           )
-        val view = createView(form)
+        val view = createView(form = form)
 
         view.getElementById("details_eori").attr("value") must be("1234")
       }
@@ -1017,7 +1095,7 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
               "statusCode" -> "1"
             )
           )
-        val view = createView(form)
+        val view = createView(form = form)
 
         view.getElementById("details_address_fullName").attr("value") must be("test")
         view.getElementById("details_address_addressLine").attr("value") must be("test1")
@@ -1044,7 +1122,7 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
               "statusCode" -> "2"
             )
           )
-        val view = createView(form)
+        val view = createView(form = form)
 
         view.getElementById("details_eori").attr("value") must be("1234")
         view.getElementById("statusCode_direct").attr("checked") must be("checked")
@@ -1065,7 +1143,7 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
               "statusCode" -> "2"
             )
           )
-        val view = createView(form)
+        val view = createView(form = form)
 
         view.getElementById("details_address_fullName").attr("value") must be("test")
         view.getElementById("details_address_addressLine").attr("value") must be("test1")
@@ -1093,7 +1171,7 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
               "statusCode" -> "3"
             )
           )
-        val view = createView(form)
+        val view = createView(form = form)
 
         view.getElementById("details_eori").attr("value") must be("1234")
         view.getElementById("statusCode_indirect").attr("checked") must be("checked")
@@ -1114,7 +1192,7 @@ class RepresentativeDetailsViewSpec extends AppViewSpec with RepresentativeDetai
               "statusCode" -> "3"
             )
           )
-        val view = createView(form)
+        val view = createView(form = form)
 
         view.getElementById("details_address_fullName").attr("value") must be("test")
         view.getElementById("details_address_addressLine").attr("value") must be("test1")

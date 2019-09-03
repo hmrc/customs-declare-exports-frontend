@@ -16,131 +16,160 @@
 
 package views.declaration
 
+import base.Injector
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.ItemType
-import helpers.views.declaration.{CommonMessages, ItemTypeMessages}
 import models.Mode
+import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.twirl.api.Html
-import views.declaration.spec.AppViewSpec
+import play.api.i18n.MessagesApi
+import play.api.test.Helpers.stubMessages
+import services.cache.ExportsTestData
+import unit.tools.Stubs
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.item_type
 import views.tags.ViewTest
 
 @ViewTest
-class ItemTypeViewSpec extends AppViewSpec with ItemTypeMessages with CommonMessages {
+class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
+  private val page = new item_type(mainTemplate)
   private val form: Form[ItemType] = ItemType.form()
-  private val itemTypePage = app.injector.instanceOf[item_type]
-  private def createView(form: Form[ItemType] = form, journeyType: String): Html =
-    itemTypePage(Mode.Normal, itemId, form, false)(fakeJourneyRequest(journeyType), messages)
+  private def createView(
+    journeyType: String = AllowedChoiceValues.StandardDec,
+    mode: Mode = Mode.Normal,
+    itemId: String = "itemId",
+    form: Form[ItemType] = form,
+    hasAdditionalFiscalReferences: Boolean = false,
+    taricAdditionalCodes: Seq[String] = Seq.empty,
+    nationalAdditionalCodes: Seq[String] = Seq.empty
+  ): Document =
+    page(mode, itemId, form, hasAdditionalFiscalReferences, taricAdditionalCodes, nationalAdditionalCodes)(
+      journeyRequest(),
+      stubMessages()
+    )
 
   "Item Type View on empty page" when {
+
+    "have proper messages for labels" in {
+      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
+      messages must haveTranslationFor("declaration.itemType.title")
+      messages must haveTranslationFor("supplementary.items")
+      messages must haveTranslationFor("declaration.itemType.title")
+      messages must haveTranslationFor("declaration.itemType.combinedNomenclatureCode.header")
+      messages must haveTranslationFor("declaration.itemType.combinedNomenclatureCode.header.hint")
+      messages must haveTranslationFor("declaration.itemType.taricAdditionalCodes.header")
+      messages must haveTranslationFor("declaration.itemType.taricAdditionalCodes.header.hint")
+      messages must haveTranslationFor("declaration.itemType.nationalAdditionalCode.header")
+      messages must haveTranslationFor("declaration.itemType.nationalAdditionalCode.header.hint")
+      messages must haveTranslationFor("declaration.itemType.statisticalValue.header")
+      messages must haveTranslationFor("declaration.itemType.statisticalValue.header.hint")
+      messages must haveTranslationFor("declaration.itemType.description.header")
+      messages must haveTranslationFor("declaration.itemType.description.header.hint")
+      messages must haveTranslationFor("declaration.itemType.cusCode.header")
+      messages must haveTranslationFor("declaration.itemType.unDangerousGoodsCode.header")
+      messages must haveTranslationFor("declaration.itemType.unDangerousGoodsCode.header.hint")
+    }
+
+    val view = createView()
 
     "used for Standard Declaration journey" should {
 
       "display page title" in {
-
-        createView(journeyType = AllowedChoiceValues.StandardDec).select("title").text() must be(messages(title))
+        view.select("title").text() mustBe "declaration.itemType.title"
       }
 
       "display section header" in {
-
-        createView(journeyType = AllowedChoiceValues.StandardDec).getElementById("section-header").text() must be(
-          "Items"
-        )
+        view.getElementById("section-header").text() mustBe "supplementary.items"
       }
 
       "display header" in {
-
-        createView(journeyType = AllowedChoiceValues.StandardDec).select("legend>h1").text() must be(messages(title))
+        view.select("legend>h1").text() mustBe "declaration.itemType.title"
       }
 
       "display empty input with label for CNC" in {
-
-        val view = createView(journeyType = AllowedChoiceValues.StandardDec)
-
-        view.getElementById("combinedNomenclatureCode-label").text() must be(messages(cncHeader))
-        view.getElementById("combinedNomenclatureCode-hint").text() must be(messages(cncHeaderHint))
-        view.getElementById("combinedNomenclatureCode").attr("value") must be("")
+        view
+          .getElementById("combinedNomenclatureCode-label")
+          .text() mustBe "declaration.itemType.combinedNomenclatureCode.header"
+        view
+          .getElementById("combinedNomenclatureCode-hint")
+          .text() mustBe "declaration.itemType.combinedNomenclatureCode.header.hint"
+        view.getElementById("combinedNomenclatureCode").attr("value") mustBe ""
       }
 
       "display empty input with label for TARIC" in {
-
-        val view = createView(journeyType = AllowedChoiceValues.StandardDec)
-
-        view.getElementById("taricAdditionalCode_-label").text() must be(messages(taricHeader))
-        view.getElementById("taricAdditionalCode_-hint").text() must be(messages(taricHeaderHint))
-        view.getElementById("taricAdditionalCode_").attr("value") must be("")
+        view
+          .getElementById("taricAdditionalCode_-label")
+          .text() mustBe "declaration.itemType.taricAdditionalCodes.header"
+        view
+          .getElementById("taricAdditionalCode_-hint")
+          .text() mustBe "declaration.itemType.taricAdditionalCodes.header.hint"
+        view.getElementById("taricAdditionalCode_").attr("value") mustBe ""
       }
 
       "display empty input with label for NAC" in {
-
-        val view = createView(journeyType = AllowedChoiceValues.StandardDec)
-
-        view.getElementById("nationalAdditionalCode_-label").text() must be(messages(nacHeader))
-        view.getElementById("nationalAdditionalCode_-hint").text() must be(messages(nacHeaderHint))
-        view.getElementById("nationalAdditionalCode").attr("value") must be("")
+        view
+          .getElementById("nationalAdditionalCode_-label")
+          .text() mustBe "declaration.itemType.nationalAdditionalCode.header"
+        view
+          .getElementById("nationalAdditionalCode_-hint")
+          .text() mustBe "declaration.itemType.nationalAdditionalCode.header.hint"
+        view.getElementById("nationalAdditionalCode").attr("value") mustBe ""
       }
 
       "display empty input with label for Statistical Value" in {
-
-        val view = createView(journeyType = AllowedChoiceValues.StandardDec)
-
-        view.getElementById("statisticalValue-label").text() must be(messages(statisticalHeader))
-        view.getElementById("statisticalValue-hint").text() must be(messages(statisticalHeaderHint))
-        view.getElementById("statisticalValue").attr("value") must be("")
+        view.getElementById("statisticalValue-label").text() mustBe "declaration.itemType.statisticalValue.header"
+        view.getElementById("statisticalValue-hint").text() mustBe "declaration.itemType.statisticalValue.header.hint"
+        view.getElementById("statisticalValue").attr("value") mustBe ""
       }
 
       "display empty input with label for Description" in {
-
-        val view = createView(journeyType = AllowedChoiceValues.StandardDec)
-
-        view.getElementById("descriptionOfGoods-label").ownText() must be(messages(descriptionHeader))
-        view.getElementById("descriptionOfGoods-hint").text() must be(messages(descriptionHeaderHint))
-        view.getElementById("descriptionOfGoods").text() must be("")
+        view.getElementById("descriptionOfGoods-label").ownText() mustBe "declaration.itemType.description.header"
+        view.getElementById("descriptionOfGoods-hint").text() mustBe "declaration.itemType.description.header.hint"
+        view.getElementById("descriptionOfGoods").text() mustBe ""
       }
 
       "display empty input with label for CUS" in {
-
-        val view = createView(journeyType = AllowedChoiceValues.StandardDec)
-
-        view.getElementById("cusCode-label").text() must be(messages(cusCodeHeader))
-        view.getElementById("cusCode-hint").text() must be(messages(cusCodeHeaderHint))
-        view.getElementById("cusCode").attr("value") must be("")
+        view.getElementById("cusCode-label").text() mustBe "declaration.itemType.cusCode.header"
+        view.getElementById("cusCode-hint").text() mustBe "declaration.itemType.cusCode.header.hint"
+        view.getElementById("cusCode").attr("value") mustBe ""
       }
 
       "display empty input with label for UN Dangerous Goods Code" in {
-
-        val view = createView(journeyType = AllowedChoiceValues.StandardDec)
-
-        view.getElementById("unDangerousGoodsCode-label").text() must be(messages(unDangerousGoodsCodeHeader))
-        view.getElementById("unDangerousGoodsCode-hint").text() must be(messages(unDangerousGoodsCodeHeaderHint))
-        view.getElementById("unDangerousGoodsCode").attr("value") must be("")
+        view
+          .getElementById("unDangerousGoodsCode-label")
+          .text() mustBe "declaration.itemType.unDangerousGoodsCode.header"
+        view
+          .getElementById("unDangerousGoodsCode-hint")
+          .text() mustBe "declaration.itemType.unDangerousGoodsCode.header.hint"
+        view.getElementById("unDangerousGoodsCode").attr("value") mustBe ""
       }
 
       "display two 'Add' buttons" in {
 
-        createView(journeyType = AllowedChoiceValues.StandardDec).select("#add").size() must be(2)
+        view.select("#add").size() must be(2)
       }
 
       "display 'Back' button that links to 'fiscal-information' page" in {
 
         val backButton = createView(journeyType = AllowedChoiceValues.StandardDec).getElementById("link-back")
 
-        backButton.text() must be(messages(backCaption))
-        backButton.attr("href") must be(s"/customs-declare-exports/declaration/items/$itemId/fiscal-information")
+        backButton.text() mustBe "site.back"
+        backButton.getElementById("link-back") must haveHref(
+          controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId = "itemId")
+        )
       }
 
       "display 'Save and continue' button" in {
         val view = createView(journeyType = AllowedChoiceValues.StandardDec)
         val saveButton = view.getElementById("submit")
-        saveButton.text() must be(messages(saveAndContinueCaption))
+        saveButton.text() mustBe "site.save_and_continue"
       }
 
       "display 'Save and return' button" in {
         val view = createView(journeyType = AllowedChoiceValues.StandardDec)
         val saveButton = view.getElementById("submit_and_return")
-        saveButton.text() must be(messages(saveAndReturnCaption))
+        saveButton.text() mustBe "site.save_and_come_back_later"
       }
     }
 
@@ -148,63 +177,75 @@ class ItemTypeViewSpec extends AppViewSpec with ItemTypeMessages with CommonMess
 
       "display page title" in {
 
-        createView(journeyType = AllowedChoiceValues.SupplementaryDec).getElementById("title").text() must be(
-          messages(title)
-        )
+        createView(journeyType = AllowedChoiceValues.SupplementaryDec)
+          .getElementById("title")
+          .text() mustBe "declaration.itemType.title"
       }
 
       "display empty input with label for CNC" in {
 
         val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
 
-        view.getElementById("combinedNomenclatureCode-label").text() must be(messages(cncHeader))
-        view.getElementById("combinedNomenclatureCode-hint").text() must be(messages(cncHeaderHint))
-        view.getElementById("combinedNomenclatureCode").attr("value") must be("")
+        view
+          .getElementById("combinedNomenclatureCode-label")
+          .text() mustBe "declaration.itemType.combinedNomenclatureCode.header"
+        view
+          .getElementById("combinedNomenclatureCode-hint")
+          .text() mustBe "declaration.itemType.combinedNomenclatureCode.header.hint"
+        view.getElementById("combinedNomenclatureCode").attr("value") mustBe ""
       }
 
       "display empty input with label for TARIC" in {
 
         val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
 
-        view.getElementById("taricAdditionalCode_-label").text() must be(messages(taricHeader))
-        view.getElementById("taricAdditionalCode_-hint").text() must be(messages(taricHeaderHint))
-        view.getElementById("taricAdditionalCode_").attr("value") must be("")
+        view
+          .getElementById("taricAdditionalCode_-label")
+          .text() mustBe "declaration.itemType.taricAdditionalCodes.header"
+        view
+          .getElementById("taricAdditionalCode_-hint")
+          .text() mustBe "declaration.itemType.taricAdditionalCodes.header.hint"
+        view.getElementById("taricAdditionalCode_").attr("value") mustBe ""
       }
 
       "display empty input with label for NAC" in {
 
         val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
 
-        view.getElementById("nationalAdditionalCode_-label").text() must be(messages(nacHeader))
-        view.getElementById("nationalAdditionalCode_-hint").text() must be(messages(nacHeaderHint))
-        view.getElementById("nationalAdditionalCode").attr("value") must be("")
+        view
+          .getElementById("nationalAdditionalCode_-label")
+          .text() mustBe "declaration.itemType.nationalAdditionalCode.header"
+        view
+          .getElementById("nationalAdditionalCode_-hint")
+          .text() mustBe "declaration.itemType.nationalAdditionalCode.header.hint"
+        view.getElementById("nationalAdditionalCode").attr("value") mustBe ""
       }
 
       "display empty input with label for Description" in {
 
         val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
 
-        view.getElementById("descriptionOfGoods-label").text() must be(messages(descriptionHeader))
-        view.getElementById("descriptionOfGoods-hint").text() must be(messages(descriptionHeaderHint))
-        view.getElementById("descriptionOfGoods").text() must be("")
+        view.getElementById("descriptionOfGoods-label").text() mustBe "declaration.itemType.description.header"
+        view.getElementById("descriptionOfGoods-hint").text() mustBe "declaration.itemType.description.header.hint"
+        view.getElementById("descriptionOfGoods").text() mustBe ""
       }
 
       "display empty input with label for CUS" in {
 
         val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
 
-        view.getElementById("cusCode-label").text() must be(messages(cusCodeHeader))
-        view.getElementById("cusCode-hint").text() must be(messages(cusCodeHeaderHint))
-        view.getElementById("cusCode").attr("value") must be("")
+        view.getElementById("cusCode-label").text() mustBe "declaration.itemType.cusCode.header"
+        view.getElementById("cusCode-hint").text() mustBe "declaration.itemType.cusCode.header.hint"
+        view.getElementById("cusCode").attr("value") mustBe ""
       }
 
       "display empty input with label for Statistical Value" in {
 
         val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
 
-        view.getElementById("statisticalValue-label").text() must be(messages(statisticalHeader))
-        view.getElementById("statisticalValue-hint").text() must be(messages(statisticalHeaderHint))
-        view.getElementById("statisticalValue").attr("value") must be("")
+        view.getElementById("statisticalValue-label").text() mustBe "declaration.itemType.statisticalValue.header"
+        view.getElementById("statisticalValue-hint").text() mustBe "declaration.itemType.statisticalValue.header.hint"
+        view.getElementById("statisticalValue").attr("value") mustBe ""
       }
 
       "display two 'Add' buttons" in {
@@ -214,25 +255,27 @@ class ItemTypeViewSpec extends AppViewSpec with ItemTypeMessages with CommonMess
 
       "display 'Back' button that links to 'fiscal-information' page" in {
 
-        val backButton = createView(journeyType = AllowedChoiceValues.SupplementaryDec).getElementById("link-back")
+        val backButton =
+          createView(journeyType = AllowedChoiceValues.SupplementaryDec).getElementById("link-back")
 
-        backButton.text() must be(messages(backCaption))
-        backButton.attr("href") must be(s"/customs-declare-exports/declaration/items/$itemId/fiscal-information")
+        backButton.text() mustBe "site.back"
+        backButton.getElementById("link-back") must haveHref(
+          controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId = "itemId")
+        )
       }
 
       "display 'Save and continue' button" in {
         val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
         val saveButton = view.getElementById("submit")
-        saveButton.text() must be(messages(saveAndContinueCaption))
+        saveButton.text() mustBe "site.save_and_continue"
       }
 
       "display 'Save and return' button" in {
         val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
         val saveButton = view.getElementById("submit_and_return")
-        saveButton.text() must be(messages(saveAndReturnCaption))
+        saveButton.text() mustBe "site.save_and_come_back_later"
       }
     }
-
   }
 
   "Item Type View with entered data" should {
@@ -242,7 +285,7 @@ class ItemTypeViewSpec extends AppViewSpec with ItemTypeMessages with CommonMess
       "display data in CNC input" in {
 
         val itemType = ItemType("12345", Seq(), Seq(), "", None, None, "")
-        val view = createView(ItemType.form().fill(itemType), AllowedChoiceValues.StandardDec)
+        val view = createView(form = ItemType.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
@@ -250,7 +293,7 @@ class ItemTypeViewSpec extends AppViewSpec with ItemTypeMessages with CommonMess
       "display data in Description input" in {
 
         val itemType = ItemType("", Seq(), Seq(""), "Description", None, None, "")
-        val view = createView(ItemType.form().fill(itemType), AllowedChoiceValues.StandardDec)
+        val view = createView(form = ItemType.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
@@ -258,7 +301,7 @@ class ItemTypeViewSpec extends AppViewSpec with ItemTypeMessages with CommonMess
       "display data in CUS input" in {
 
         val itemType = ItemType("", Seq(), Seq(""), "", Some("1234"), None, "")
-        val view = createView(ItemType.form().fill(itemType), AllowedChoiceValues.StandardDec)
+        val view = createView(form = ItemType.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
@@ -266,7 +309,7 @@ class ItemTypeViewSpec extends AppViewSpec with ItemTypeMessages with CommonMess
       "display data in UN Dangerous Goods Code input" in {
 
         val itemType = ItemType("", Seq(), Seq(""), "", None, Some("1234"), "12345")
-        val view = createView(ItemType.form().fill(itemType), AllowedChoiceValues.StandardDec)
+        val view = createView(form = ItemType.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
@@ -274,12 +317,12 @@ class ItemTypeViewSpec extends AppViewSpec with ItemTypeMessages with CommonMess
       "display data in Statistical Value input" in {
 
         val itemType = ItemType("", Seq(), Seq(""), "", None, None, "12345")
-        val view = createView(ItemType.form().fill(itemType), AllowedChoiceValues.StandardDec)
+        val view = createView(form = ItemType.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
 
-      def assertViewDataEntered(view: Html, itemType: ItemType): Unit = {
+      def assertViewDataEntered(view: Document, itemType: ItemType): Unit = {
         view.getElementById("combinedNomenclatureCode").attr("value") must equal(itemType.combinedNomenclatureCode)
         view.getElementById("descriptionOfGoods").text() must equal(itemType.descriptionOfGoods)
         view.getElementById("cusCode").attr("value") must equal(itemType.cusCode.getOrElse(""))
@@ -295,7 +338,7 @@ class ItemTypeViewSpec extends AppViewSpec with ItemTypeMessages with CommonMess
       "display data in CNC input" in {
 
         val itemType = ItemType("12345", Seq(), Seq(), "", None, None, "")
-        val view = createView(ItemType.form().fill(itemType), AllowedChoiceValues.SupplementaryDec)
+        val view = createView(form = ItemType.form().fill(itemType), journeyType = AllowedChoiceValues.SupplementaryDec)
 
         assertViewDataEntered(view, itemType)
       }
@@ -303,7 +346,7 @@ class ItemTypeViewSpec extends AppViewSpec with ItemTypeMessages with CommonMess
       "display data in Description input" in {
 
         val itemType = ItemType("", Seq(), Seq(""), "Description", None, None, "")
-        val view = createView(ItemType.form().fill(itemType), AllowedChoiceValues.SupplementaryDec)
+        val view = createView(form = ItemType.form().fill(itemType), journeyType = AllowedChoiceValues.SupplementaryDec)
 
         assertViewDataEntered(view, itemType)
       }
@@ -311,7 +354,7 @@ class ItemTypeViewSpec extends AppViewSpec with ItemTypeMessages with CommonMess
       "display data in CUS input" in {
 
         val itemType = ItemType("", Seq(), Seq(""), "", Some("1234"), None, "")
-        val view = createView(ItemType.form().fill(itemType), AllowedChoiceValues.SupplementaryDec)
+        val view = createView(form = ItemType.form().fill(itemType), journeyType = AllowedChoiceValues.SupplementaryDec)
 
         assertViewDataEntered(view, itemType)
       }
@@ -319,12 +362,12 @@ class ItemTypeViewSpec extends AppViewSpec with ItemTypeMessages with CommonMess
       "display data in Statistical Value input" in {
 
         val itemType = ItemType("", Seq(), Seq(""), "", None, None, "12345")
-        val view = createView(ItemType.form().fill(itemType), AllowedChoiceValues.SupplementaryDec)
+        val view = createView(form = ItemType.form().fill(itemType), journeyType = AllowedChoiceValues.SupplementaryDec)
 
         assertViewDataEntered(view, itemType)
       }
 
-      def assertViewDataEntered(view: Html, itemType: ItemType): Unit = {
+      def assertViewDataEntered(view: Document, itemType: ItemType): Unit = {
         view.getElementById("combinedNomenclatureCode").attr("value") must equal(itemType.combinedNomenclatureCode)
         view.getElementById("descriptionOfGoods").text() must equal(itemType.descriptionOfGoods)
         view.getElementById("cusCode").attr("value") must equal(itemType.cusCode.getOrElse(""))

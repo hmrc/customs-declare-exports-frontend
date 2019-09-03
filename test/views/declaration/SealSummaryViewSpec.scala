@@ -32,45 +32,44 @@ import views.tags.ViewTest
 @ViewTest
 class SealSummaryViewSpec extends UnitViewSpec with Stubs with MustMatchers with CommonMessages {
 
-  private val form: Form[YesNoAnswer] = YesNoAnswer.form()
-
-  private val sealSummaryPage = new seal_summary(mainTemplate)
-
   val containerId = "212374"
   val sealId = "76434574"
   val container = Some(Container(containerId, Seq(Seal(sealId))))
+  private val form: Form[YesNoAnswer] = YesNoAnswer.form()
+  private val page = new seal_summary(mainTemplate)
 
   private def createView(form: Form[YesNoAnswer] = form, container: Option[Container] = container): Document =
-    sealSummaryPage(Mode.Normal, form, container)
+    page(Mode.Normal, form, container)
 
   "Seal Summary View" should {
+    val view = createView()
 
     "display page title" in {
-      createView().getElementById("title").text() must be(messages("standard.seal.title"))
+      view.getElementById("title").text() must be(messages("standard.seal.title"))
     }
 
     "display header" in {
-      createView().select("legend>h1").text() must be(messages("standard.seal.title"))
+      view.select("legend>h1").text() must be(messages("standard.seal.title"))
     }
 
     "display summary of seals" in {
-      createView().getElementById("removable_elements-row0-label").text() must be(sealId)
+      view.getElementById("removable_elements-row0-label").text() must be(sealId)
     }
 
     "display 'Back' button that links to 'containers summary' page" in {
-      val backLinkContainer = createView().getElementById("link-back")
+      val backLinkContainer = view.getElementById("link-back")
 
       backLinkContainer.text() must be(messages(backCaption))
       backLinkContainer.attr("href") must be("/customs-declare-exports/declaration/containers")
     }
 
     "display 'Save and continue' button on page" in {
-      val saveButton = createView().getElementById("submit")
+      val saveButton = view.getElementById("submit")
       saveButton.text() must be(messages(saveAndContinueCaption))
     }
 
     "display 'Save and return' button on page" in {
-      val saveAndReturnButton = createView().getElementById("submit_and_return")
+      val saveAndReturnButton = view.getElementById("submit_and_return")
       saveAndReturnButton.text() must be(messages(saveAndReturnCaption))
     }
   }

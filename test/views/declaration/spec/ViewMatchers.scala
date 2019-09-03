@@ -21,10 +21,10 @@ import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import org.scalatest.MustMatchers
 import org.scalatest.matchers._
+import play.api.i18n.Messages
 import play.api.mvc.{Call, Result}
-import play.api.test.Helpers.contentAsString
+import play.api.test.Helpers.{contentAsString, _}
 import play.twirl.api.Html
-import play.api.test.Helpers._
 
 import scala.collection.JavaConverters._
 import scala.concurrent.Future
@@ -44,6 +44,56 @@ trait ViewMatchers {
     }
   }
 
+  def containElementWithID(id: String): Matcher[Element] = new ContainElementWithIDMatcher(id)
+
+  def containElementWithClass(name: String): Matcher[Element] = new ContainElementWithClassMatcher(name)
+
+  def containElementWithAttribute(key: String, value: String): Matcher[Element] =
+    new ContainElementWithAttribute(key, value)
+
+  def containElementWithTag(tag: String): Matcher[Element] = new ContainElementWithTagMatcher(tag)
+
+  def containText(text: String): Matcher[Element] = new ElementContainsTextMatcher(text)
+
+  def haveClass(text: String): Matcher[Element] = new ElementHasClassMatcher(text)
+
+  def containHtml(text: String): Matcher[Element] = new ElementContainsHtmlMatcher(text)
+
+  def haveSize(size: Int): Matcher[Elements] = new ElementsHasSizeMatcher(size)
+
+  def haveAttribute(key: String, value: String): Matcher[Element] = new ElementHasAttributeValueMatcher(key, value)
+
+  def haveAttribute(key: String): Matcher[Element] = new ElementHasAttributeMatcher(key)
+
+  def haveId(value: String): Matcher[Element] = new ElementHasAttributeValueMatcher("id", value)
+
+  def haveHref(value: String): Matcher[Element] = new ElementHasAttributeValueMatcher("href", value)
+
+  def haveHref(value: Call): Matcher[Element] = new ElementHasAttributeValueMatcher("href", value.url)
+
+  def haveTag(tag: String): Matcher[Element] = new ElementTagMatcher(tag)
+
+  def haveChildCount(count: Int): Matcher[Element] = new ElementHasChildCountMatcher(count)
+
+  def containElement(tag: String) = new ChildMatcherBuilder(tag)
+
+  def haveFieldError(fieldName: String, content: String): Matcher[Element] =
+    new ContainElementWithIDMatcher(s"error-message-$fieldName-input") and new ElementContainsFieldError(
+      fieldName,
+      content
+    )
+
+  def haveFieldErrorLink(fieldName: String, link: String): Matcher[Element] =
+    new ElementContainsFieldErrorLink(fieldName, link)
+
+  def haveGlobalErrorSummary: Matcher[Document] = new ContainElementWithIDMatcher("error-summary-heading")
+
+  def haveTranslationFor(key: String): Matcher[Messages] = new TranslationKeyMatcher(key)
+
+  def submitTo(path: String): Matcher[Element] = new FormSubmitTo(path)
+
+  def submitTo(call: Call): Matcher[Element] = new FormSubmitTo(call.url)
+
   private def actualContentWas(node: Element): String =
     if (node == null) {
       "Element did not exist"
@@ -57,6 +107,14 @@ trait ViewMatchers {
     } else {
       s"\nActual content was:\n${node.html}\n"
     }
+
+  class TranslationKeyMatcher(key: String) extends Matcher[Messages] {
+    override def apply(left: Messages): MatchResult = MatchResult(
+      matches = left.isDefinedAt(key),
+      rawFailureMessage = s"$key is not defined in Messages",
+      rawNegatedFailureMessage = s"$key is defined in Messages"
+    )
+  }
 
   class ContainElementWithIDMatcher(id: String) extends Matcher[Element] {
     override def apply(left: Element): MatchResult =
@@ -216,35 +274,6 @@ trait ViewMatchers {
     def withName(value: String) = new ElementContainsChildWithAttributeMatcher(tag, "name", value)
   }
 
-  def containElementWithID(id: String): Matcher[Element] = new ContainElementWithIDMatcher(id)
-  def containElementWithClass(name: String): Matcher[Element] = new ContainElementWithClassMatcher(name)
-  def containElementWithAttribute(key: String, value: String): Matcher[Element] =
-    new ContainElementWithAttribute(key, value)
-  def containElementWithTag(tag: String): Matcher[Element] = new ContainElementWithTagMatcher(tag)
-  def containText(text: String): Matcher[Element] = new ElementContainsTextMatcher(text)
-  def haveClass(text: String): Matcher[Element] = new ElementHasClassMatcher(text)
-  def containHtml(text: String): Matcher[Element] = new ElementContainsHtmlMatcher(text)
-  def haveSize(size: Int): Matcher[Elements] = new ElementsHasSizeMatcher(size)
-  def haveAttribute(key: String, value: String): Matcher[Element] = new ElementHasAttributeValueMatcher(key, value)
-  def haveAttribute(key: String): Matcher[Element] = new ElementHasAttributeMatcher(key)
-  def haveId(value: String): Matcher[Element] = new ElementHasAttributeValueMatcher("id", value)
-  def haveHref(value: String): Matcher[Element] = new ElementHasAttributeValueMatcher("href", value)
-  def haveHref(value: Call): Matcher[Element] = new ElementHasAttributeValueMatcher("href", value.url)
-  def haveTag(tag: String): Matcher[Element] = new ElementTagMatcher(tag)
-  def haveChildCount(count: Int): Matcher[Element] = new ElementHasChildCountMatcher(count)
-  def containElement(tag: String) = new ChildMatcherBuilder(tag)
-
-  def haveFieldError(fieldName: String, content: String): Matcher[Element] =
-    new ContainElementWithIDMatcher(s"error-message-$fieldName-input") and new ElementContainsFieldError(
-      fieldName,
-      content
-    )
-
-  def haveFieldErrorLink(fieldName: String, link: String): Matcher[Element] =
-    new ElementContainsFieldErrorLink(fieldName, link)
-
-  def haveGlobalErrorSummary: Matcher[Document] = new ContainElementWithIDMatcher("error-summary-heading")
-
   class FormSubmitTo(path: String) extends Matcher[Element] {
     override def apply(left: Element): MatchResult = {
       val action = left.attr("action")
@@ -256,7 +285,4 @@ trait ViewMatchers {
       )
     }
   }
-
-  def submitTo(path: String): Matcher[Element] = new FormSubmitTo(path)
-  def submitTo(call: Call): Matcher[Element] = new FormSubmitTo(call.url)
 }
