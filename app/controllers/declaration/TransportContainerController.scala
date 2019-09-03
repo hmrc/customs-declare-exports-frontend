@@ -61,13 +61,12 @@ class TransportContainerController @Inject()(
       saveContainer(mode, boundForm, maxNumberOfItems, request.cacheModel.containers)
   }
 
-  def displayContainerSummary(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) {
-    implicit request =>
-      request.cacheModel.containers match {
-        case containers if (containers.nonEmpty) => Ok(summaryPage(mode, YesNoAnswer.form(), containers, allowSeals))
-        case _ =>
-          navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayAddContainer(mode))
-      }
+  def displayContainerSummary(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.containers match {
+      case containers if (containers.nonEmpty) => Ok(summaryPage(mode, YesNoAnswer.form(), containers, allowSeals))
+      case _ =>
+        navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayAddContainer(mode))
+    }
   }
 
   def submitSummaryAction(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async {
