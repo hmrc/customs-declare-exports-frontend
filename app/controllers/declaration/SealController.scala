@@ -148,8 +148,8 @@ class SealController @Inject()(
       formWithErrors => Future.successful(BadRequest(addPage(mode, formWithErrors, cachedContainer.id))),
       updatedCache =>
         if (updatedCache != cachedContainer.seals) updateCache(cachedContainer.copy(seals = updatedCache)).map { _ =>
-            navigator.continueTo(routes.SealController.displaySealSummary(mode, cachedContainer.id))
-          } else
+          navigator.continueTo(routes.SealController.displaySealSummary(mode, cachedContainer.id))
+        } else
           Future.successful(navigator.continueTo(routes.SealController.displaySealSummary(mode, cachedContainer.id)))
     )
 
