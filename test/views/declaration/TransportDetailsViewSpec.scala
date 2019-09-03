@@ -32,53 +32,53 @@ import views.tags.ViewTest
 @ViewTest
 class TransportDetailsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  val form: Form[TransportDetails] = TransportDetails.form()
+  private val page = new transport_details(mainTemplate)
+  private val form: Form[TransportDetails] = TransportDetails.form()
 
   private def createView(mode: Mode = Mode.Normal, form: Form[TransportDetails] = form): Document =
-    new transport_details(mainTemplate)(mode, form)(journeyRequest, stubMessages())
+    page(mode, form)(journeyRequest(), stubMessages())
 
   "TransportDetails View" should {
+    val view = createView()
 
     "have proper messages for labels" in {
-      val messages = instanceOf[MessagesApi].preferred(journeyRequest)
-      messages("supplementary.transportInfo.active.title") mustBe "Active transport details"
-      messages("supplementary.transportInfo.meansOfTransport.crossingTheBorder.header") mustBe "What is the active means of transport"
-      messages("supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.header") mustBe "What nationality is the active means of transport?"
-      messages("supplementary.transportInfo.meansOfTransport.crossingTheBorder.header.hint") mustBe "Select the type of identification used for the chosen transport and enter the reference"
-      messages("supplementary.transportInfo.meansOfTransport.IMOShipIDNumber") mustBe "IMO Ship identification number"
-      messages("supplementary.transportInfo.meansOfTransport.nameOfVessel") mustBe "Name of the seagoing vessel"
-      messages("supplementary.transportInfo.meansOfTransport.wagonNumber") mustBe "Wagon number"
-      messages("supplementary.transportInfo.meansOfTransport.vehicleRegistrationNumber") mustBe "Vehicle registration number"
-      messages("supplementary.transportInfo.meansOfTransport.IATAFlightNumber") mustBe "IATA flight number"
-      messages("supplementary.transportInfo.meansOfTransport.aircraftRegistrationNumber") mustBe "Aircrafts registration number"
-      messages("supplementary.transportInfo.meansOfTransport.europeanVesselIDNumber") mustBe "European vessel identification number (ENI code)"
-      messages("supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel") mustBe "Name of the inland waterway’s vessel"
-      messages("supplementary.transportInfo.meansOfTransport.reference.header") mustBe "Reference"
-      messages("supplementary.transportInfo.container") mustBe "Were the goods in a container?"
-      messages("standard.transportDetails.paymentMethod.notPrePaid") mustBe "Not pre-paid"
-      messages("standard.transportDetails.paymentMethod.other") mustBe "Other (e.g. Direct debit to cash account)"
-      messages("standard.transportDetails.paymentMethod.accHolder") mustBe "Account holder with carrier"
-      messages("standard.transportDetails.paymentMethod.cash") mustBe "Payment in cash"
-      messages("standard.transportDetails.paymentMethod.creditCard") mustBe "Payment by credit card"
-      messages("standard.transportDetails.paymentMethod.cheque") mustBe "Payment by cheque"
-      messages("standard.transportDetails.paymentMethod.eFunds") mustBe "Electronic funds transfer"
+      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
+      messages must haveTranslationFor("supplementary.transportInfo.active.title")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.crossingTheBorder.header")
+      messages must haveTranslationFor(
+        "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.header"
+      )
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.crossingTheBorder.header.hint")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.IMOShipIDNumber")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.nameOfVessel")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.wagonNumber")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.vehicleRegistrationNumber")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.IATAFlightNumber")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.aircraftRegistrationNumber")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.europeanVesselIDNumber")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.reference.header")
+      messages must haveTranslationFor("supplementary.transportInfo.container")
+      messages must haveTranslationFor("standard.transportDetails.paymentMethod.notPrePaid")
+      messages must haveTranslationFor("standard.transportDetails.paymentMethod.other")
+      messages must haveTranslationFor("standard.transportDetails.paymentMethod.accHolder")
+      messages must haveTranslationFor("standard.transportDetails.paymentMethod.cash")
+      messages must haveTranslationFor("standard.transportDetails.paymentMethod.creditCard")
+      messages must haveTranslationFor("standard.transportDetails.paymentMethod.cheque")
+      messages must haveTranslationFor("standard.transportDetails.paymentMethod.eFunds")
     }
 
     "display page title" in {
-      val view = createView()
-
       view.getElementById("title").text() mustBe "supplementary.transportInfo.active.title"
     }
 
     "display header" in {
-      val view = createView()
-
       view.select("legend>h1").text() mustBe "supplementary.transportInfo.active.title"
     }
 
     "display 'Back' button that links to 'border-transport' page" in {
 
-      val backButton = createView().getElementById("link-back")
+      val backButton = view.getElementById("link-back")
 
       backButton.text() mustBe "site.back"
       backButton.getElementById("link-back") must haveHref(
@@ -87,16 +87,14 @@ class TransportDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
     }
 
     "display 'Save and continue' button on page" in {
-      createView().getElementById("submit").text() mustBe "site.save_and_continue"
+      view.getElementById("submit").text() mustBe "site.save_and_continue"
     }
 
     "display 'Save and return' button on page" in {
-      createView().getElementById("submit_and_return").text() mustBe "site.save_and_come_back_later"
+      view.getElementById("submit_and_return").text() mustBe "site.save_and_come_back_later"
     }
 
     "have labels for all fields" in {
-      val view = createView()
-
       view
         .getElementById("meansOfTransportCrossingTheBorderType-label")
         .text() mustBe "supplementary.transportInfo.meansOfTransport.crossingTheBorder.header"

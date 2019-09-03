@@ -32,28 +32,30 @@ import views.tags.ViewTest
 @ViewTest
 class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
+  private val page = new warehouse_identification(mainTemplate)
   private val form: Form[WarehouseIdentification] = WarehouseIdentification.form()
 
   private def createView(mode: Mode = Mode.Normal, form: Form[WarehouseIdentification] = form): Document =
-    new warehouse_identification(mainTemplate)(mode, form)(journeyRequest, stubMessages())
+    page(mode, form)(journeyRequest(), stubMessages())
 
   "Warehouse Identification View" should {
+    val view = createView()
 
     "have proper messages for labels" in {
-      val messages = instanceOf[MessagesApi].preferred(journeyRequest)
-      messages("supplementary.warehouse.title") mustBe "Enter more details about the warehouse"
+      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
+      messages must haveTranslationFor("supplementary.warehouse.title")
     }
 
     "display page title" in {
-      createView().select("title").text() must be("supplementary.warehouse.title")
+      view.select("title").text() must be("supplementary.warehouse.title")
     }
 
     "display header" in {
-      createView().select("legend>h1").text() must be("supplementary.warehouse.title")
+      view.select("legend>h1").text() must be("supplementary.warehouse.title")
     }
 
     "display 'Back' button that links to 'Supervising Office' page" in {
-      val backButton = createView().getElementById("link-back")
+      val backButton = view.getElementById("link-back")
 
       backButton.text() mustBe "site.back"
       backButton.getElementById("link-back") must haveHref(
@@ -62,11 +64,11 @@ class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestData 
     }
 
     "display 'Save and continue' button on page" in {
-      createView().getElementById("submit").text() mustBe "site.save_and_continue"
+      view.getElementById("submit").text() mustBe "site.save_and_continue"
     }
 
     "display 'Save and return' button on page" in {
-      createView().getElementById("submit_and_return").text() mustBe "site.save_and_come_back_later"
+      view.getElementById("submit_and_return").text() mustBe "site.save_and_come_back_later"
     }
   }
 }

@@ -31,72 +31,62 @@ import views.tags.ViewTest
 
 @ViewTest
 class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+  private val page = new total_number_of_items(mainTemplate)
   private val form: Form[TotalNumberOfItems] = TotalNumberOfItems.form()
   private def createView(mode: Mode = Mode.Normal, form: Form[TotalNumberOfItems] = form): Document =
-    new total_number_of_items(mainTemplate)(mode, form)(journeyRequest, stubMessages())
+    page(mode, form)(journeyRequest(), stubMessages())
 
   "Total Number Of Items View on empty page" should {
+    val view = createView()
 
     "have proper messages for labels" in {
-      val messages = instanceOf[MessagesApi].preferred(journeyRequest)
-      messages("supplementary.totalNumberOfItems.title") mustBe "Total number of items"
-      messages("supplementary.items") mustBe "Items"
-      messages("supplementary.valueOfItems") mustBe "Enter item information"
-      messages("supplementary.totalAmountInvoiced") mustBe "Total amount invoiced"
-      messages("supplementary.totalAmountInvoiced.hint") mustBe "This is the total amount of all items on the invoice. Declare in GBP."
-      messages("supplementary.totalAmountInvoiced.error") mustBe "Total amount of invoiced items is incorrect"
-      messages("supplementary.exchangeRate") mustBe "Agreed fixed rate of exchange"
-      messages("supplementary.exchangeRate.error") mustBe "Exchange rate is incorrect"
-      messages("supplementary.exchangeRate.hint") mustBe "This is a set price contractually agreed based on a specific currency exchange rate. If one wasn’t agreed, leave this question blank and continue."
-      messages("supplementary.totalPackageQuantity") mustBe "Total number of packages"
-      messages("supplementary.totalPackageQuantity.empty") mustBe "Total number of packages cannot be empty"
-      messages("supplementary.totalPackageQuantity.error") mustBe "Total number of packages is incorrect"
-      messages("error.summary.title") mustBe "There’s been a problem"
+      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
+      messages must haveTranslationFor("supplementary.totalNumberOfItems.title")
+      messages must haveTranslationFor("supplementary.items")
+      messages must haveTranslationFor("supplementary.valueOfItems")
+      messages must haveTranslationFor("supplementary.totalAmountInvoiced")
+      messages must haveTranslationFor("supplementary.totalAmountInvoiced.hint")
+      messages must haveTranslationFor("supplementary.totalAmountInvoiced.error")
+      messages must haveTranslationFor("supplementary.exchangeRate")
+      messages must haveTranslationFor("supplementary.exchangeRate.error")
+      messages must haveTranslationFor("supplementary.exchangeRate.hint")
+      messages must haveTranslationFor("supplementary.totalPackageQuantity")
+      messages must haveTranslationFor("supplementary.totalPackageQuantity.empty")
+      messages must haveTranslationFor("supplementary.totalPackageQuantity.error")
+      messages must haveTranslationFor("error.summary.title")
     }
 
     "display page title" in {
-      createView().select("title").text() must be("supplementary.totalNumberOfItems.title")
+      view.select("title").text() must be("supplementary.totalNumberOfItems.title")
     }
 
     "display section header" in {
-
-      createView().getElementById("section-header").text() must be("supplementary.items")
+      view.getElementById("section-header").text() must be("supplementary.items")
     }
 
     "display header" in {
-
-      createView().getElementById("title").text() must be("supplementary.valueOfItems")
+      view.getElementById("title").text() must be("supplementary.valueOfItems")
     }
 
     "display empty input with label for Total Amount Invoiced" in {
-
-      val view = createView()
-
       view.getElementById("totalAmountInvoiced-label").text() must be("supplementary.totalAmountInvoiced")
       view.getElementById("totalAmountInvoiced-hint").text() must be("supplementary.totalAmountInvoiced.hint")
       view.getElementById("totalAmountInvoiced").attr("value") must be("")
     }
 
     "display empty input with label for Exchange Rate" in {
-
-      val view = createView()
-
       view.getElementById("exchangeRate-label").text() must be("supplementary.exchangeRate")
       view.getElementById("exchangeRate-hint").text() must be("supplementary.exchangeRate.hint")
       view.getElementById("exchangeRate").attr("value") must be("")
     }
 
     "display empty input with label for Total Package" in {
-
-      val view = createView()
-
       view.getElementById("totalPackage-label").text() must be("supplementary.totalPackageQuantity")
       view.getElementById("totalPackage").attr("value") must be("")
     }
 
     "display 'Back' button that links to 'Transport Information' page" in {
-
-      val backButton = createView().getElementById("link-back")
+      val backButton = view.getElementById("link-back")
 
       backButton.text() must be("site.back")
       backButton.getElementById("link-back") must haveHref(
@@ -105,12 +95,12 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
     }
 
     "display 'Save and continue' button on page" in {
-      val saveButton = createView().getElementById("submit")
+      val saveButton = view.getElementById("submit")
       saveButton.text() must be("site.save_and_continue")
     }
 
     "display 'Save and return' button on page" in {
-      val saveAndReturnButton = createView().getElementById("submit_and_return")
+      val saveAndReturnButton = view.getElementById("submit_and_return")
       saveAndReturnButton.text() must be("site.save_and_come_back_later")
     }
   }
@@ -240,12 +230,5 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
       view.getElementById("exchangeRate").attr("value") must be("123.12345")
       view.getElementById("totalPackage").attr("value") must be("1")
     }
-  }
-
-  private def checkErrorsSummary(view: Document) = {
-    view.getElementById("error-summary-heading").text() must be("error.summary.title")
-    view.getElementsByClass("error-summary error-summary--show").get(0).getElementsByTag("p").text() must be(
-      "error.summary.text"
-    )
   }
 }

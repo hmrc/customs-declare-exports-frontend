@@ -32,55 +32,54 @@ import views.tags.ViewTest
 @ViewTest
 class SealRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers with CommonMessages {
 
-  private val form: Form[YesNoAnswer] = YesNoAnswer.form()
-
-  private val sealRemovePage = new seal_remove(mainTemplate)
-
   val containerId = "42354542"
   val sealId = "SealToRemove54214"
   val container = Some(Container(containerId, Seq(Seal(sealId))))
+  private val form: Form[YesNoAnswer] = YesNoAnswer.form()
+  private val page = new seal_remove(mainTemplate)
 
   private def createView(
     form: Form[YesNoAnswer] = form,
     containerId: String = containerId,
     sealId: String = sealId
   ): Document =
-    sealRemovePage(Mode.Normal, form, containerId, sealId)
+    page(Mode.Normal, form, containerId, sealId)
 
   "Seal Remove View" should {
 
+    val view = createView()
+
     "display page title" in {
-      createView().getElementById("title").text() must be(messages("standard.seal.remove.title"))
+      view.getElementById("title").text() must be(messages("standard.seal.remove.title"))
     }
 
     "display header" in {
-      createView().select("legend>h1").text() must be(messages("standard.seal.remove.title"))
+      view.select("legend>h1").text() must be(messages("standard.seal.remove.title"))
     }
 
     "display seal to remove" in {
-      createView().getElementById("seal-table").text() must include(sealId)
+      view.getElementById("seal-table").text() must include(sealId)
     }
 
     "display 'Back' button that links to 'seal summary' page" in {
-      val backLinkContainer = createView().getElementById("link-back")
+      val backLinkContainer = view.getElementById("link-back")
 
       backLinkContainer.text() must be(messages(backCaption))
       backLinkContainer.attr("href") must be(s"/customs-declare-exports/declaration/containers/$containerId/seals")
     }
 
     "display 'Save and continue' button on page" in {
-      val saveButton = createView().getElementById("submit")
+      val saveButton = view.getElementById("submit")
       saveButton.text() must be(messages(saveAndContinueCaption))
     }
 
     "display 'Save and return' button on page" in {
-      val saveAndReturnButton = createView().getElementById("submit_and_return")
+      val saveAndReturnButton = view.getElementById("submit_and_return")
       saveAndReturnButton.text() must be(messages(saveAndReturnCaption))
     }
   }
 
   "Seal Remove View for invalid input" should {
-
     "display error if nothing is entered" in {
       val view = createView(YesNoAnswer.form().bind(Map[String, String]()))
 

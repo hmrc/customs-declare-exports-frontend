@@ -29,44 +29,38 @@ import views.tags.ViewTest
 @ViewTest
 class SubmissionConfirmationPageViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
+  private val page = new submission_confirmation_page(mainTemplate)
   private def createView(flash: Flash = new Flash(Map.empty)): Document =
-    new submission_confirmation_page(mainTemplate)()(journeyRequest, flash, stubMessages())
+    page()(journeyRequest(), flash, stubMessages())
 
   "Confirmation Page View on empty page" should {
+    val view = createView()
 
     "have proper messages for labels" in {
-      val messages = instanceOf[MessagesApi].preferred(journeyRequest)
-      messages("supplementary.confirmation.title") mustBe "Supplementary Declaration submission confirmation"
-      messages("supplementary.confirmation.info") mustBe "You declaration has been received."
-      messages("supplementary.confirmation.whatHappensNext") mustBe "What happens next?"
-      messages("supplementary.confirmation.explanation") mustBe "Your MRN will be provided in a notification."
-      messages("supplementary.confirmation.explanation.linkText") mustBe "Check your notification status in the dashboard."
-      messages("supplementary.confirmation.submitAnotherDeclaration") mustBe "Submit another declaration"
-      messages("supplementary.confirmation.rejection.header") mustBe "Your declaration has been rejected"
+      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
+      messages must haveTranslationFor("supplementary.confirmation.title")
+      messages must haveTranslationFor("supplementary.confirmation.info")
+      messages must haveTranslationFor("supplementary.confirmation.whatHappensNext")
+      messages must haveTranslationFor("supplementary.confirmation.explanation")
+      messages must haveTranslationFor("supplementary.confirmation.explanation.linkText")
+      messages must haveTranslationFor("supplementary.confirmation.submitAnotherDeclaration")
+      messages must haveTranslationFor("supplementary.confirmation.rejection.header")
     }
 
     "display page title" in {
-
-      createView().select("title").text() mustBe "supplementary.confirmation.title"
+      view.select("title").text() mustBe "supplementary.confirmation.title"
     }
 
     "display header" in {
-
-      val view = createView()
-
       view.select("article>div.govuk-box-highlight>h1").text() mustBe "supplementary.confirmation.header"
       view.select("article>div.govuk-box-highlight>p").text() mustBe "-"
     }
 
     "display declaration status" in {
-
-      createView().select("article>p:nth-child(2)").text() mustBe "supplementary.confirmation.info"
+      view.select("article>p:nth-child(2)").text() mustBe "supplementary.confirmation.info"
     }
 
     "display information about future steps" in {
-
-      val view = createView()
-
       view.select("article>h1").text() mustBe "supplementary.confirmation.whatHappensNext"
       view
         .select("article>p:nth-child(4)")
@@ -74,16 +68,12 @@ class SubmissionConfirmationPageViewSpec extends UnitViewSpec with ExportsTestDa
     }
 
     "display an 'Check your notification status in the dashboard' empty link without conversationId" in {
-      val view = createView()
-
       val link = view.select("article>p:nth-child(4)>a")
       link.text() mustBe "supplementary.confirmation.explanation.linkText"
       view.getElementsByClass("button").get(0) must haveHref(controllers.routes.ChoiceController.displayPage())
     }
 
     "display a 'Submit another declaration' button that links to 'What do you want to do ?' page" in {
-      val view = createView()
-
       val button = view.select("article>div.section>a")
       button.text() mustBe "supplementary.confirmation.submitAnotherDeclaration"
 

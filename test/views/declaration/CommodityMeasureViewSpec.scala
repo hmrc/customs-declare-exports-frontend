@@ -16,74 +16,102 @@
 
 package views.declaration
 
+import base.Injector
 import forms.declaration.CommodityMeasure
 import helpers.views.declaration.{CommodityMeasureMessages, CommonMessages}
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import views.declaration.spec.AppViewSpec
+import play.api.i18n.MessagesApi
+import unit.tools.Stubs
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.goods_measure
 import views.tags.ViewTest
 
 @ViewTest
-class CommodityMeasureViewSpec extends AppViewSpec with CommodityMeasureMessages with CommonMessages {
+class CommodityMeasureViewSpec
+    extends UnitViewSpec with CommodityMeasureMessages with CommonMessages with Stubs with Injector {
 
+  val itemId = "a7sc78"
   private val form: Form[CommodityMeasure] = CommodityMeasure.form()
-  private val goodsMeasurePage = app.injector.instanceOf[goods_measure]
+  private val goodsMeasurePage = new goods_measure(mainTemplate)
   private def createView(form: Form[CommodityMeasure] = form): Document =
-    goodsMeasurePage(Mode.Normal, itemId, form)(fakeRequest, messages)
+    goodsMeasurePage(Mode.Normal, itemId, form)(request, messages)
+
+  "Commodity Measure" should {
+
+    "have correct message keys" in {
+
+      val messages = instanceOf[MessagesApi].preferred(request)
+
+      messages must haveTranslationFor("supplementary.commodityMeasure.title")
+      messages must haveTranslationFor("supplementary.commodityMeasure.netMass")
+      messages must haveTranslationFor("supplementary.commodityMeasure.netMass.hint")
+      messages must haveTranslationFor("supplementary.commodityMeasure.netMass.empty")
+      messages must haveTranslationFor("supplementary.commodityMeasure.netMass.error")
+      messages must haveTranslationFor("supplementary.commodityMeasure.grossMass")
+      messages must haveTranslationFor("supplementary.commodityMeasure.grossMass.hint")
+      messages must haveTranslationFor("supplementary.commodityMeasure.grossMass.empty")
+      messages must haveTranslationFor("supplementary.commodityMeasure.grossMass.error")
+      messages must haveTranslationFor("supplementary.commodityMeasure.global.addOne")
+      messages must haveTranslationFor("supplementary.commodityMeasure.supplementaryUnits")
+      messages must haveTranslationFor("supplementary.commodityMeasure.supplementaryUnits.item")
+      messages must haveTranslationFor("supplementary.commodityMeasure.supplementaryUnits.hint")
+      messages must haveTranslationFor("supplementary.commodityMeasure.supplementaryUnits.error")
+    }
+  }
 
   "Commodity Measure View on empty page" should {
 
     "display page title" in {
 
-      createView().getElementById("title").text() must be(messages(title))
+      createView().getElementById("title").text() mustBe messages(title)
     }
 
     "display section header" in {
 
-      createView().getElementById("section-header").text() must be("Items")
+      createView().getElementById("section-header").text() mustBe messages("supplementary.items")
     }
 
     "display empty input with label for supplementary units" in {
 
       val view = createView()
 
-      view.getElementById("supplementaryUnits-label").text() must be(messages(supplementaryUnits))
-      view.getElementById("supplementaryUnits-hint").text() must be(messages(supplementaryUnitsHint))
-      view.getElementById("supplementaryUnits").attr("value") must be("")
+      view.getElementById("supplementaryUnits-label").text() mustBe messages(supplementaryUnits)
+      view.getElementById("supplementaryUnits-hint").text() mustBe messages(supplementaryUnitsHint)
+      view.getElementById("supplementaryUnits").attr("value") mustBe ""
     }
 
     "display empty input with label for net mass" in {
 
       val view = createView()
 
-      view.getElementById("netMass-label").text() must be(messages(netMass))
-      view.getElementById("netMass-hint").text() must be(messages(netMassHint))
-      view.getElementById("netMass").attr("value") must be("")
+      view.getElementById("netMass-label").text() mustBe messages(netMass)
+      view.getElementById("netMass-hint").text() mustBe messages(netMassHint)
+      view.getElementById("netMass").attr("value") mustBe ""
     }
 
     "display empty input with label for gross mass" in {
 
       val view = createView()
 
-      view.getElementById("grossMass-label").text() must be(messages(grossMass))
-      view.getElementById("grossMass-hint").text() must be(messages(grossMassHint))
-      view.getElementById("grossMass").attr("value") must be("")
+      view.getElementById("grossMass-label").text() mustBe messages(grossMass)
+      view.getElementById("grossMass-hint").text() mustBe messages(grossMassHint)
+      view.getElementById("grossMass").attr("value") mustBe ""
     }
 
     "display 'Back' button that links to 'Package Information' page" in {
 
       val backButton = createView().getElementById("link-back")
 
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be(s"/customs-declare-exports/declaration/items/$itemId/package-information")
+      backButton.text() mustBe messages(backCaption)
+      backButton.attr("href") must endWith(s"/items/$itemId/package-information")
     }
 
     "display 'Save and continue' button on page" in {
 
       val saveButton = createView().select("#submit")
-      saveButton.text() must be(messages(saveAndContinueCaption))
+      saveButton.text() mustBe messages(saveAndContinueCaption)
     }
   }
 
@@ -97,8 +125,8 @@ class CommodityMeasureViewSpec extends AppViewSpec with CommodityMeasureMessages
       view must haveFieldErrorLink("netMass", "#netMass")
       view must haveFieldErrorLink("grossMass", "#grossMass")
 
-      view.select("#error-message-netMass-input").text() must be(messages(netMassEmpty))
-      view.select("#error-message-grossMass-input").text() must be(messages(grossMassEmpty))
+      view.select("#error-message-netMass-input").text() mustBe messages(netMassEmpty)
+      view.select("#error-message-grossMass-input").text() mustBe messages(grossMassEmpty)
     }
 
     "display error when supplementary units are incorrect" in {
@@ -108,7 +136,7 @@ class CommodityMeasureViewSpec extends AppViewSpec with CommodityMeasureMessages
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("supplementaryUnits", "#supplementaryUnits")
 
-      view.select("#error-message-supplementaryUnits-input").text() must be(messages(supplementaryUnitsError))
+      view.select("#error-message-supplementaryUnits-input").text() mustBe messages(supplementaryUnitsError)
     }
 
     "display error when net mass is empty" in {
@@ -118,7 +146,7 @@ class CommodityMeasureViewSpec extends AppViewSpec with CommodityMeasureMessages
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("netMass", "#netMass")
 
-      view.select("#error-message-netMass-input").text() must be(messages(netMassEmpty))
+      view.select("#error-message-netMass-input").text() mustBe messages(netMassEmpty)
     }
 
     "display error when net mass is incorrect" in {
@@ -129,7 +157,7 @@ class CommodityMeasureViewSpec extends AppViewSpec with CommodityMeasureMessages
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("netMass", "#netMass")
 
-      view.select("#error-message-netMass-input").text() must be(messages(netMassError))
+      view.select("#error-message-netMass-input").text() mustBe messages(netMassError)
     }
 
     "display error when gross mass is empty" in {
@@ -139,7 +167,7 @@ class CommodityMeasureViewSpec extends AppViewSpec with CommodityMeasureMessages
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("grossMass", "#grossMass")
 
-      view.select("#error-message-grossMass-input").text() must be(messages(grossMassEmpty))
+      view.select("#error-message-grossMass-input").text() mustBe messages(grossMassEmpty)
     }
 
     "display error when gross mass is incorrect" in {
@@ -149,7 +177,7 @@ class CommodityMeasureViewSpec extends AppViewSpec with CommodityMeasureMessages
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("grossMass", "#grossMass")
 
-      view.select("#error-message-grossMass-input").text() must be(messages(grossMassError))
+      view.select("#error-message-grossMass-input").text() mustBe messages(grossMassError)
     }
   }
 
@@ -160,9 +188,9 @@ class CommodityMeasureViewSpec extends AppViewSpec with CommodityMeasureMessages
       val form = CommodityMeasure.form().fill(CommodityMeasure(Some("123"), "", ""))
       val view = createView(form)
 
-      view.getElementById("supplementaryUnits").attr("value") must be("123")
-      view.getElementById("netMass").attr("value") must be("")
-      view.getElementById("grossMass").attr("value") must be("")
+      view.getElementById("supplementaryUnits").attr("value") mustBe "123"
+      view.getElementById("netMass").attr("value") mustBe ""
+      view.getElementById("grossMass").attr("value") mustBe ""
     }
 
     "display data in net mass input" in {
@@ -170,9 +198,9 @@ class CommodityMeasureViewSpec extends AppViewSpec with CommodityMeasureMessages
       val form = CommodityMeasure.form().fill(CommodityMeasure(Some(""), "123", ""))
       val view = createView(form)
 
-      view.getElementById("supplementaryUnits").attr("value") must be("")
-      view.getElementById("netMass").attr("value") must be("123")
-      view.getElementById("grossMass").attr("value") must be("")
+      view.getElementById("supplementaryUnits").attr("value") mustBe ""
+      view.getElementById("netMass").attr("value") mustBe "123"
+      view.getElementById("grossMass").attr("value") mustBe ""
     }
 
     "display data in gross mass input" in {
@@ -180,9 +208,9 @@ class CommodityMeasureViewSpec extends AppViewSpec with CommodityMeasureMessages
       val form = CommodityMeasure.form().fill(CommodityMeasure(Some(""), "", "123"))
       val view = createView(form)
 
-      view.getElementById("supplementaryUnits").attr("value") must be("")
-      view.getElementById("netMass").attr("value") must be("")
-      view.getElementById("grossMass").attr("value") must be("123")
+      view.getElementById("supplementaryUnits").attr("value") mustBe ""
+      view.getElementById("netMass").attr("value") mustBe ""
+      view.getElementById("grossMass").attr("value") mustBe "123"
     }
 
     "display every input filled" in {
@@ -190,9 +218,9 @@ class CommodityMeasureViewSpec extends AppViewSpec with CommodityMeasureMessages
       val form = CommodityMeasure.form().fill(CommodityMeasure(Some("123"), "123", "123"))
       val view = createView(form)
 
-      view.getElementById("supplementaryUnits").attr("value") must be("123")
-      view.getElementById("netMass").attr("value") must be("123")
-      view.getElementById("grossMass").attr("value") must be("123")
+      view.getElementById("supplementaryUnits").attr("value") mustBe "123"
+      view.getElementById("netMass").attr("value") mustBe "123"
+      view.getElementById("grossMass").attr("value") mustBe "123"
     }
   }
 }

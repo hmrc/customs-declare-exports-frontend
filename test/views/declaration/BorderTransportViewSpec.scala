@@ -16,59 +16,60 @@
 
 package views.declaration
 
+import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.declaration.BorderTransport
-import helpers.views.declaration.CommonMessages
-import play.api.data.Form
-import play.twirl.api.Html
-import views.declaration.spec.AppViewSpec
-import views.html.declaration.border_transport
-import views.tags.ViewTest
-import views.html.components.fields.field_text
-import views.html.components.fields.field_radio
 import forms.declaration.TransportCodes._
+import helpers.views.declaration.CommonMessages
 import models.Mode
 import org.jsoup.nodes.Document
+import play.api.data.Form
+import play.twirl.api.Html
+import unit.tools.Stubs
 import views.components.inputs.RadioOption
+import views.declaration.spec.UnitViewSpec
+import views.html.components.fields.{field_radio, field_text}
+import views.html.declaration.border_transport
+import views.tags.ViewTest
 
 @ViewTest
-class BorderTransportViewSpec extends BorderTransportFields with CommonMessages {
+class BorderTransportViewSpec extends BorderTransportFields with CommonMessages with Stubs {
 
-  private val borderTransportPage = app.injector.instanceOf[border_transport]
+  private val borderTransportPage = new border_transport(mainTemplate)
   def createView(form: Form[BorderTransport] = form): Html =
-    borderTransportPage(Mode.Normal, form)(fakeRequest, messages)
+    borderTransportPage(Mode.Normal, form)(request, messages)
 
   "BorderTransport View" should {
 
     "display page title" in {
       val view = createView()
 
-      view.getElementById("title").text() must be(messages("supplementary.transportInfo.title"))
+      view.getElementById("title").text() mustBe messages("supplementary.transportInfo.title")
     }
 
     "display header" in {
       val view = createView()
 
-      view.select("legend>h1").text() must be(messages("supplementary.transportInfo.title"))
+      view.select("legend>h1").text() mustBe messages("supplementary.transportInfo.title")
     }
 
     "display 'Back' button that links to 'Warehouse' page" in {
 
       val backButton = createView().getElementById("link-back")
 
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/warehouse")
+      backButton.text() mustBe messages(backCaption)
+      backButton.attr("href") mustBe routes.WarehouseIdentificationController.displayPage().url
     }
 
     "display 'Save and continue' button on page" in {
       val view: Document = createView()
-      view.getElementById("submit").text() must be(messages(saveAndContinueCaption))
+      view.getElementById("submit").text() mustBe messages(saveAndContinueCaption)
     }
 
     "display 'Save and return' button on page" in {
       val view: Document = createView()
-      view.getElementById("submit_and_return").text() must be(messages(saveAndReturnCaption))
-      view.getElementById("submit_and_return").attr("name") must be(SaveAndReturn.toString)
+      view.getElementById("submit_and_return").text() mustBe messages(saveAndReturnCaption)
+      view.getElementById("submit_and_return").attr("name") mustBe SaveAndReturn.toString
     }
 
     "have labels for all fields" in {
@@ -84,21 +85,22 @@ class BorderTransportViewSpec extends BorderTransportFields with CommonMessages 
         .text()
         .startsWith(messages("supplementary.transportInfo.borderTransportMode.header")) mustBe true
 
-      view.getElementById("Border_Sea-label").text() mustBe "Sea transport"
-      view.getElementById("Border_Road-label").text() mustBe "Road transport"
-      view.getElementById("Border_Rail-label").text() mustBe "Rail transport"
-      view.getElementById("Border_Air-label").text() mustBe "Air transport"
-      view.getElementById("Border_PostalOrMail-label").text() mustBe "Postal or Mail"
+      view.getElementById("Border_Sea-label").text() mustBe "supplementary.transportInfo.transportMode.sea"
+      view.getElementById("Border_Road-label").text() mustBe "supplementary.transportInfo.transportMode.road"
+      view.getElementById("Border_Rail-label").text() mustBe "supplementary.transportInfo.transportMode.rail"
+      view.getElementById("Border_Air-label").text() mustBe "supplementary.transportInfo.transportMode.air"
+      view
+        .getElementById("Border_PostalOrMail-label")
+        .text() mustBe "supplementary.transportInfo.transportMode.postalOrMail"
 
       view.body must include(expBorderModeOfTransportCode.body)
       view.body must include(expMeansOfTransportOnDepartureType.body)
       view.body must include(expMeansOfTransportOnDepartureIDNumber.body)
     }
   }
-
 }
 
-trait BorderTransportFields extends AppViewSpec {
+trait BorderTransportFields extends UnitViewSpec {
   val form: Form[BorderTransport] = BorderTransport.form()
 
   val expBorderModeOfTransportCode = field_radio(

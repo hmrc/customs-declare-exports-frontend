@@ -24,7 +24,7 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportItemIdGeneratorService
 import unit.tools.Stubs
-import views.declaration.spec.{UnitViewSpec, ViewMatchers}
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.additional_fiscal_references
 import views.tags.ViewTest
 
@@ -49,20 +49,20 @@ class AdditionalFiscalReferencesViewSpec
     val view = createView()
 
     "display page title" in {
-      view.getElementById("title").text() must be(title)
+      view.getElementById("title").text() mustBe title
     }
 
     "display header" in {
-      view.getElementById("section-header").text() must be("declaration.fiscalInformation.header")
+      view.getElementById("section-header").text() mustBe "declaration.fiscalInformation.header"
     }
 
     "display country input" in {
-      view.getElementById("country-label").text() must be(fiscalReferenceCountry)
+      view.getElementById("country-label").text() mustBe fiscalReferenceCountry
       view.getElementById("country").attr("value") mustBe empty
     }
 
     "display VAT number input" in {
-      view.getElementById("reference-label").text() must be(reference)
+      view.getElementById("reference-label").text() mustBe reference
       view.getElementById("reference").attr("value") mustBe empty
     }
 
@@ -70,7 +70,7 @@ class AdditionalFiscalReferencesViewSpec
 
       val backButton = view.getElementById("link-back")
 
-      backButton.text() must be(backCaption)
+      backButton.text() mustBe backCaption
       backButton must haveHref(
         controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId)
       )

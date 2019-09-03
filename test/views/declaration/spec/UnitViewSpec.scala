@@ -16,6 +16,7 @@
 
 package views.declaration.spec
 
+import org.jsoup.nodes.Document
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.{FakeRequest, Helpers}
@@ -28,4 +29,11 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
   implicit val request: Request[AnyContent] = FakeRequest().withCSRFToken
 
   implicit val messages: Messages = Helpers.stubMessages()
+
+  def checkErrorsSummary(view: Document) = {
+    view.getElementById("error-summary-heading").text() must be("error.summary.title")
+    view.getElementsByClass("error-summary error-summary--show").get(0).getElementsByTag("p").text() must be(
+      "error.summary.text"
+    )
+  }
 }

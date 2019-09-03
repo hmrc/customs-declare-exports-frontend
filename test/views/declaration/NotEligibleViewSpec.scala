@@ -16,56 +16,62 @@
 
 package views.declaration
 
-import helpers.views.declaration.{CommonMessages, NotEligibleMessages}
-import play.twirl.api.Html
+import base.Injector
+import play.api.i18n.MessagesApi
+import play.api.test.Helpers.stubMessages
+import services.cache.ExportsTestData
+import unit.tools.Stubs
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.not_eligible
-import views.declaration.spec.AppViewSpec
 import views.tags.ViewTest
 
 @ViewTest
-class NotEligibleViewSpec extends AppViewSpec with NotEligibleMessages with CommonMessages {
-
-  private val notEligiblePage = app.injector.instanceOf[not_eligible]
-  private def createView(): Html = notEligiblePage()(fakeRequest, messages)
+class NotEligibleViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+  private val view = new not_eligible(mainTemplate)()(journeyRequest(), stubMessages())
 
   "Not Eligible View on empty page" should {
+    "have proper messages for labels" in {
+      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
+      messages must haveTranslationFor("declaration.natureOfTransaction.title")
+      messages must haveTranslationFor("notEligible.pageTitle")
+      messages must haveTranslationFor("notEligible.title")
+      messages must haveTranslationFor("notEligible.titleLineTwo")
+      messages must haveTranslationFor("notEligible.descriptionPreUrl")
+      messages must haveTranslationFor("notEligible.descriptionUrl")
+      messages must haveTranslationFor("notEligible.descriptionPostUrl")
+      messages must haveTranslationFor("notEligible.referenceTitle")
+      messages must haveTranslationFor("notEligible.reference.text")
+    }
 
     "display page title" in {
-
-      createView().select("title").text() must be(messages(pageTitle))
+      view.select("title").text() mustBe "notEligible.pageTitle"
     }
 
     "display header with hint" in {
-
-      createView().select("h1").text() must be(messages(title) + " " + messages(titleLineTwo))
+      view.select("h1").text() mustBe "notEligible.title notEligible.titleLineTwo"
     }
 
     "display CHIEF information" in {
-
-      createView().select("p:nth-child(3)").text() must be(
-        messages(descriptionPreUrl) + " " + messages(descriptionUrl) + " " + messages(descriptionPostUrl)
-      )
+      view.select("p:nth-child(3)").text() mustBe
+        "notEligible.descriptionPreUrl " +
+          "notEligible.descriptionUrl " +
+          "notEligible.descriptionPostUrl"
     }
 
     "display CHIEF link" in {
-
-      createView().select("p:nth-child(3)>a").attr("href") must be("https://secure.hmce.gov.uk/ecom/login/index.html")
+      view.select("p:nth-child(3)>a").attr("href") mustBe "https://secure.hmce.gov.uk/ecom/login/index.html"
     }
 
     "display Help and Support with description" in {
-
-      val view = createView()
-
-      view.select("h3").text() must be(messages(referenceTitle))
-      view.select("p:nth-child(5)").text() must be(messages(referenceText))
+      view.select("h3").text() mustBe "notEligible.referenceTitle"
+      view.select("p:nth-child(5)").text() mustBe "notEligible.reference.text"
     }
 
     "display 'Back' button that links to 'Make declaration' page" in {
+      val backButton = view.getElementById("link-back")
 
-      val backButton = createView().getElementById("link-back")
-
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/start")
+      backButton.text() mustBe "site.back"
+      backButton must haveHref(controllers.routes.StartController.displayStartPage())
     }
   }
 }

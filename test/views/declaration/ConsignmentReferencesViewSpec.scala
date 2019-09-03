@@ -16,7 +16,8 @@
 
 package views.declaration
 
-import base.TestHelper
+import base.{Injector, TestHelper}
+import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.Ducr
 import forms.declaration.ConsignmentReferences
@@ -24,83 +25,107 @@ import helpers.views.declaration.{CommonMessages, ConsignmentReferencesMessages}
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import views.declaration.spec.AppViewSpec
+import play.api.i18n.MessagesApi
+import unit.tools.Stubs
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.consignment_references
 import views.tags.ViewTest
 
 @ViewTest
-class ConsignmentReferencesViewSpec extends AppViewSpec with ConsignmentReferencesMessages with CommonMessages {
-
-  /*
-   * Seems like DUCR is Declaration UCR which is alphanumeric number up to 35 digits
-   */
+class ConsignmentReferencesViewSpec
+    extends UnitViewSpec with ConsignmentReferencesMessages with CommonMessages with Stubs with Injector {
 
   private val properDUCR = "7GB000000000000-12345"
   private val incorrectDUCR = "7GB000000000000-1234512345123451234512345"
 
   private val form: Form[ConsignmentReferences] = ConsignmentReferences.form()
-  private val consignmentReferencesPage = app.injector.instanceOf[consignment_references]
+  private val consignmentReferencesPage = new consignment_references(mainTemplate)
   private def createView(form: Form[ConsignmentReferences] = form): Document =
-    consignmentReferencesPage(Mode.Normal, form)(fakeRequest, messages)
+    consignmentReferencesPage(Mode.Normal, form)(request, messages)
+
+  "Consignment References" should {
+
+    "have correct message keys" in {
+
+      val messages = instanceOf[MessagesApi].preferred(request)
+
+      messages must haveTranslationFor("supplementary.consignmentReferences.title")
+      messages must haveTranslationFor("supplementary.consignmentReferences.heading")
+      messages must haveTranslationFor("supplementary.consignmentReferences.header")
+      messages must haveTranslationFor("supplementary.consignmentReferences.ducr.info")
+      messages must haveTranslationFor("supplementary.consignmentReferences.ducr.hint")
+      messages must haveTranslationFor("supplementary.consignmentReferences.ucr.info")
+      messages must haveTranslationFor("supplementary.consignmentReferences.ucr.hint")
+      messages must haveTranslationFor("supplementary.consignmentReferences.ucr.error.length")
+      messages must haveTranslationFor("supplementary.consignmentReferences.ucr.error.specialCharacter")
+      messages must haveTranslationFor("supplementary.consignmentReferences.lrn.info")
+      messages must haveTranslationFor("supplementary.consignmentReferences.lrn.hint")
+      messages must haveTranslationFor("supplementary.consignmentReferences.lrn.error.empty")
+      messages must haveTranslationFor("supplementary.consignmentReferences.lrn.error.length")
+      messages must haveTranslationFor("supplementary.consignmentReferences.lrn.error.specialCharacter")
+    }
+  }
 
   "Consignment References View on empty page" should {
 
     "display page title" in {
 
-      createView().getElementById("title").text() must be(messages(header))
+      createView().getElementById("title").text() mustBe messages(header)
     }
 
     "display section header" in {
 
-      createView().getElementById("section-header").text() must be(messages("Your references"))
+      createView().getElementById("section-header").text() mustBe messages(
+        "supplementary.consignmentReferences.heading"
+      )
     }
 
     "display empty input with label for DUCR" in {
 
       val view = createView()
 
-      view.getElementById("ducr_ducr-label").text() must be(messages(ducrInfo))
-      view.getElementById("ducr_ducr-hint").text() must be(messages(ducrHint))
-      view.getElementById("ducr_ducr").attr("value") must be("")
+      view.getElementById("ducr_ducr-label").text() mustBe messages(ducrInfo)
+      view.getElementById("ducr_ducr-hint").text() mustBe messages(ducrHint)
+      view.getElementById("ducr_ducr").attr("value") mustBe ""
     }
 
     "display empty input with label for LRN" in {
 
       val view = createView()
 
-      view.getElementById("lrn-label").text() must be(messages(lrnInfo))
-      view.getElementById("lrn-hint").text() must be(messages(lrnHint))
-      view.getElementById("lrn").attr("value") must be("")
+      view.getElementById("lrn-label").text() mustBe messages(lrnInfo)
+      view.getElementById("lrn-hint").text() mustBe messages(lrnHint)
+      view.getElementById("lrn").attr("value") mustBe ""
     }
 
     "display empty input with label for UCR" in {
 
       val view = createView()
 
-      view.getElementById("personalUcr-label").text() must be(messages(ucrInfo))
-      view.getElementById("personalUcr-hint").text() must be(messages(ucrHint))
-      view.getElementById("personalUcr").attr("value") must be("")
+      view.getElementById("personalUcr-label").text() mustBe messages(ucrInfo)
+      view.getElementById("personalUcr-hint").text() mustBe messages(ucrHint)
+      view.getElementById("personalUcr").attr("value") mustBe ""
     }
 
     "display 'Back' button that links to 'Declaration Type' page" in {
 
       val backButton = createView().getElementById("link-back")
 
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/type")
+      backButton.text() mustBe messages(backCaption)
+      backButton.attr("href") mustBe routes.AdditionalDeclarationTypeController.displayPage().url
     }
 
     "display 'Save and continue' button on page" in {
       val view = createView()
       val saveButton = view.getElementById("submit")
-      saveButton.text() must be(messages(saveAndContinueCaption))
+      saveButton.text() mustBe messages(saveAndContinueCaption)
     }
 
     "display 'Save and return' button on page" in {
       val view = createView()
       val saveButton = view.getElementById("submit_and_return")
-      saveButton.text() must be(messages(saveAndReturnCaption))
-      saveButton.attr("name") must be(SaveAndReturn.toString)
+      saveButton.text() mustBe messages(saveAndReturnCaption)
+      saveButton.attr("name") mustBe SaveAndReturn.toString
     }
   }
 
@@ -114,7 +139,7 @@ class ConsignmentReferencesViewSpec extends AppViewSpec with ConsignmentReferenc
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("lrn", "#lrn")
 
-      view.select("#error-message-lrn-input").text() must be(messages(lrnEmpty))
+      view.select("#error-message-lrn-input").text() mustBe messages(lrnEmpty)
     }
 
     "display error when LRN is longer then 22 characters" in {
@@ -128,7 +153,7 @@ class ConsignmentReferencesViewSpec extends AppViewSpec with ConsignmentReferenc
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("lrn", "#lrn")
 
-      view.select("#error-message-lrn-input").text() must be(messages(lrnLength))
+      view.select("#error-message-lrn-input").text() mustBe messages(lrnLength)
     }
 
     "display error when LRN contains special character" in {
@@ -139,7 +164,7 @@ class ConsignmentReferencesViewSpec extends AppViewSpec with ConsignmentReferenc
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("lrn", "#lrn")
 
-      view.select("#error-message-lrn-input").text() must be(messages(lrnSpecialCharacter))
+      view.select("#error-message-lrn-input").text() mustBe messages(lrnSpecialCharacter)
     }
 
     "display error when DUCR is incorrect and LRN empty" in {
@@ -151,8 +176,8 @@ class ConsignmentReferencesViewSpec extends AppViewSpec with ConsignmentReferenc
       view must haveFieldErrorLink("ducr.ducr", "#ducr_ducr")
       view must haveFieldErrorLink("lrn", "#lrn")
 
-      view.select("#error-message-ducr_ducr-input").text() must be(messages(ducrError))
-      view.select("#error-message-lrn-input").text() must be(messages(lrnEmpty))
+      view.select("#error-message-ducr_ducr-input").text() mustBe messages(ducrError)
+      view.select("#error-message-lrn-input").text() mustBe messages(lrnEmpty)
     }
 
     "display error when DUCR is incorrect and LRN is longer then 22 characters" in {
@@ -167,8 +192,8 @@ class ConsignmentReferencesViewSpec extends AppViewSpec with ConsignmentReferenc
       view must haveFieldErrorLink("ducr.ducr", "#ducr_ducr")
       view must haveFieldErrorLink("lrn", "#lrn")
 
-      view.select("#error-message-ducr_ducr-input").text() must be(messages(ducrError))
-      view.select("#error-message-lrn-input").text() must be(messages(lrnLength))
+      view.select("#error-message-ducr_ducr-input").text() mustBe messages(ducrError)
+      view.select("#error-message-lrn-input").text() mustBe messages(lrnLength)
     }
 
     "display error when DUCR is incorrect and LRN contains special character" in {
@@ -180,8 +205,8 @@ class ConsignmentReferencesViewSpec extends AppViewSpec with ConsignmentReferenc
       view must haveFieldErrorLink("ducr.ducr", "#ducr_ducr")
       view must haveFieldErrorLink("lrn", "#lrn")
 
-      view.select("#error-message-ducr_ducr-input").text() must be(messages(ducrError))
-      view.select("#error-message-lrn-input").text() must be(messages(lrnSpecialCharacter))
+      view.select("#error-message-ducr_ducr-input").text() mustBe messages(ducrError)
+      view.select("#error-message-lrn-input").text() mustBe messages(lrnSpecialCharacter)
     }
   }
 
@@ -192,16 +217,16 @@ class ConsignmentReferencesViewSpec extends AppViewSpec with ConsignmentReferenc
       val view =
         createView(ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("9GB12345678901234-SHIP1234-1"), "")))
 
-      view.getElementById("ducr_ducr").attr("value") must be("9GB12345678901234-SHIP1234-1")
-      view.getElementById("lrn").attr("value") must be("")
+      view.getElementById("ducr_ducr").attr("value") mustBe "9GB12345678901234-SHIP1234-1"
+      view.getElementById("lrn").attr("value") mustBe ""
     }
 
     "display data in LRN input" in {
 
       val view = createView(ConsignmentReferences.form().fill(ConsignmentReferences(Ducr(""), "test1")))
 
-      view.getElementById("ducr_ducr").attr("value") must be("")
-      view.getElementById("lrn").attr("value") must be("test1")
+      view.getElementById("ducr_ducr").attr("value") mustBe ""
+      view.getElementById("lrn").attr("value") mustBe "test1"
     }
 
     "display data in all inputs" in {
@@ -211,9 +236,9 @@ class ConsignmentReferencesViewSpec extends AppViewSpec with ConsignmentReferenc
           ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("GB/ABC4-ASIUDYFAHSDJF"), "test1", Some("ucr")))
         )
 
-      view.getElementById("ducr_ducr").attr("value") must be("GB/ABC4-ASIUDYFAHSDJF")
-      view.getElementById("lrn").attr("value") must be("test1")
-      view.getElementById("personalUcr").attr("value") must be("ucr")
+      view.getElementById("ducr_ducr").attr("value") mustBe "GB/ABC4-ASIUDYFAHSDJF"
+      view.getElementById("lrn").attr("value") mustBe "test1"
+      view.getElementById("personalUcr").attr("value") mustBe "ucr"
     }
 
     "display error when UCR is longer then 35 characters" in {
@@ -233,7 +258,7 @@ class ConsignmentReferencesViewSpec extends AppViewSpec with ConsignmentReferenc
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("personalUcr", "#personalUcr")
 
-      view.select("#error-message-personalUcr-input").text() must be(messages(ucrLength))
+      view.select("#error-message-personalUcr-input").text() mustBe messages(ucrLength)
     }
 
     "display error when UCR contains special character" in {
@@ -246,8 +271,7 @@ class ConsignmentReferencesViewSpec extends AppViewSpec with ConsignmentReferenc
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("personalUcr", "#personalUcr")
 
-      view.select("#error-message-personalUcr-input").text() must be(messages(ucrSpecialCharacter))
+      view.select("#error-message-personalUcr-input").text() mustBe messages(ucrSpecialCharacter)
     }
-
   }
 }
