@@ -29,7 +29,7 @@ class TransportDetailsSpec extends WordSpec with MustMatchers {
 
       "only mandatory fields are provided with correct data" in {
 
-        val correctForm = TransportDetails("Poland", false, "40", None, None)
+        val correctForm = TransportDetails(None, false, "40", None, None)
 
         val result = form.fillAndValidate(correctForm)
 
@@ -39,7 +39,7 @@ class TransportDetailsSpec extends WordSpec with MustMatchers {
       "all fields contains correct data" in {
 
         val correctForm =
-          TransportDetails("United Kingdom", false, "40", Some("Id.Number"), Some(TransportCodes.cash))
+          TransportDetails(Some("United Kingdom"), false, "40", Some("Id.Number"), Some(TransportCodes.cash))
 
         val result = form.fillAndValidate(correctForm)
 
@@ -64,12 +64,9 @@ class TransportDetailsSpec extends WordSpec with MustMatchers {
         val errorKeys = result.errors.map(_.key)
         val errorMessages = result.errors.map(_.messages.head)
 
-        errorKeys must be(
-          List("meansOfTransportCrossingTheBorderNationality", "container", "meansOfTransportCrossingTheBorderType")
-        )
+        errorKeys must be(List("container", "meansOfTransportCrossingTheBorderType"))
         errorMessages must be(
           List(
-            "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.error.empty",
             "supplementary.transportInfo.container.error.empty",
             "supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty"
           )

@@ -186,7 +186,7 @@ object SupplementaryDeclarationTestData {
     dispatchLocation = Some(correctDispatchLocation),
     additionalDeclarationType = Some(correctAdditionalDeclarationTypeSupplementaryDec),
     consignmentReferences = Some(correctConsignmentReferences),
-    transportDetails = Some(TransportDetails("Portugal", true, "40", Some("1234567878ui"), Some("A"))),
+    transportDetails = Some(TransportDetails(Some("Portugal"), true, "40", Some("1234567878ui"), Some("A"))),
     containerData = Some(correctTransportInformationContainerData),
     natureOfTransaction = Some(correctNatureOfTransaction),
     totalNumberOfItems = Some(correctTotalNumberOfItemsDecimalValues),

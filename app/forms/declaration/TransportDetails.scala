@@ -24,7 +24,7 @@ import services.Countries.allCountries
 import utils.validators.forms.FieldValidator.{isContainedIn, noLongerThan, _}
 
 case class TransportDetails(
-  meansOfTransportCrossingTheBorderNationality: String,
+  meansOfTransportCrossingTheBorderNationality: Option[String],
   container: Boolean,
   meansOfTransportCrossingTheBorderType: String,
   meansOfTransportCrossingTheBorderIDNumber: Option[String],
@@ -38,11 +38,12 @@ object TransportDetails {
   implicit val formats: OFormat[TransportDetails] = Json.format[TransportDetails]
 
   val formMapping: Mapping[TransportDetails] = mapping(
-    "meansOfTransportCrossingTheBorderNationality" -> requiredRadio(
-      "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.error.empty"
-    ).verifying(
-      "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.error.incorrect",
-      isContainedIn(allCountries.map(_.countryName))
+    "meansOfTransportCrossingTheBorderNationality" -> optional(
+      text()
+        .verifying(
+          "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.error.incorrect",
+          isContainedIn(allCountries.map(_.countryName))
+        )
     ),
     "container" -> optional(boolean)
       .verifying("supplementary.transportInfo.container.error.empty", _.isDefined)
