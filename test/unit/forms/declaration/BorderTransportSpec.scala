@@ -66,7 +66,7 @@ class BorderTransportSpec extends WordSpec with MustMatchers {
 
       "user filled all inputs with correct data" in {
 
-        val correctForm = BorderTransport(Rail, NameOfVessel, Some("correctValue"))
+        val correctForm = BorderTransport(Rail, NameOfVessel, Some("correct value."))
 
         val result = form.fillAndValidate(correctForm)
 
@@ -136,7 +136,7 @@ class BorderTransportSpec extends WordSpec with MustMatchers {
         error.message must be("supplementary.transportInfo.meansOfTransport.idNumber.error.length")
       }
 
-      "means of transport on departure id number contains special characters" in {
+      "means of transport on departure id number contains invalid special characters" in {
 
         val incorrectForm = Map(
           "borderModeOfTransportCode" -> Maritime,
@@ -151,7 +151,7 @@ class BorderTransportSpec extends WordSpec with MustMatchers {
         val error = result.errors.head
 
         error.key must be("meansOfTransportOnDepartureIDNumber")
-        error.message must be("supplementary.transportInfo.meansOfTransport.idNumber.error.specialCharacters")
+        error.message must be("supplementary.transportInfo.meansOfTransport.idNumber.invalid")
       }
     }
   }
