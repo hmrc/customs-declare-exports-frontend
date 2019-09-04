@@ -38,7 +38,7 @@ To avoid problems, we need to remove [] from field.
     }
 }
 
-<div id="@fieldNameWithoutBrackets-autocomplete-outer" class="form-group @if(allErrors.nonEmpty) {form-group-error}">
+<div id="@fieldNameWithoutBrackets-autocomplete-outer" class="form-group @if(allErrors.nonEmpty) {form-field--error}">
     <label id="@(fieldNameWithoutBrackets)-label" for="@fieldNameWithoutBrackets" class="@if(labelClass.nonEmpty){@labelClass}" >
         @messages(label)
     </label>
