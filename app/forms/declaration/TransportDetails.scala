@@ -15,14 +15,13 @@
  */
 
 package forms.declaration
-import forms.Mapping
 import forms.Mapping.requiredRadio
 import forms.declaration.TransportCodes._
 import play.api.data.Forms.{boolean, mapping, optional, text}
 import play.api.data.{Form, Mapping}
 import play.api.libs.json.Json
 import services.Countries.allCountries
-import utils.validators.forms.FieldValidator.{isContainedIn, isEmpty, noLongerThan, _}
+import utils.validators.forms.FieldValidator.{isContainedIn, noLongerThan, _}
 
 case class TransportDetails(
   meansOfTransportCrossingTheBorderNationality: Option[String],
@@ -49,7 +48,12 @@ object TransportDetails {
     "container" -> optional(boolean)
       .verifying("supplementary.transportInfo.container.error.empty", _.isDefined)
       .transform(_.get, (b: Boolean) => Some(b)),
-    "meansOfTransportCrossingTheBorderType" -> requiredRadio("supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty"),
+    "meansOfTransportCrossingTheBorderType" -> requiredRadio(
+      "supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty"
+    ).verifying(
+      "supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.incorrect",
+      isContainedIn(allowedMeansOfTransportTypeCodes)
+    ),
     "meansOfTransportCrossingTheBorderIDNumber" -> optional(
       text()
         .verifying("supplementary.meansOfTransportCrossingTheBorderIDNumber.error.length", noLongerThan(35))
