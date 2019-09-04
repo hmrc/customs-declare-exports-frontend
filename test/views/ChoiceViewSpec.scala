@@ -16,6 +16,7 @@
 
 package views
 
+import base.Injector
 import com.typesafe.config.{Config, ConfigFactory}
 import config.AppConfig
 import forms.Choice
@@ -25,29 +26,30 @@ import play.api.data.Form
 import play.api.{Configuration, Environment}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
-import views.declaration.spec.AppViewSpec
-import views.html.{choice_page, main_template}
+import unit.tools.Stubs
+import views.declaration.spec.UnitViewSpec
+import views.html.choice_page
 import views.tags.ViewTest
 
 import scala.collection.JavaConversions._
 
 @ViewTest
-class ChoiceViewSpec extends AppViewSpec with ChoiceMessages with CommonMessages {
+class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessages with Stubs with Injector {
 
   private val form: Form[Choice] = Choice.form()
-  private val choicePage = app.injector.instanceOf[choice_page]
+  private val choicePage = new choice_page(mainTemplate, instanceOf[AppConfig])
   private def createView(form: Form[Choice] = form): Html = choicePage(form)
 
   "Choice View on empty page" should {
 
     "display page title" in {
 
-      createView().select("title").text() must be(messages(title))
+      createView().select("title").text() mustBe messages(title)
     }
 
     "display header with hint" in {
 
-      createView().select("legend>h1").text() must be(messages(title))
+      createView().select("legend>h1").text() mustBe messages(title)
     }
 
     "display four radio buttons with description (not selected)" in {
@@ -76,11 +78,9 @@ class ChoiceViewSpec extends AppViewSpec with ChoiceMessages with CommonMessages
       val servicesConfig = new ServicesConfig(conf, runMode)
       val supplementaryAppConfig = new AppConfig(conf, Environment.simple(), servicesConfig, "AppName")
 
-      val mainTemplate = app.injector.instanceOf[main_template]
-
       val page = new choice_page(mainTemplate, supplementaryAppConfig)
 
-      val view = page(Choice.form().fill(Choice("SMP")))(messages = messages, request = fakeRequest)
+      val view = page(Choice.form().fill(Choice("SMP")))(request, messages)
       ensureSupplementaryLabelIsCorrect(view)
 
       ensureRadioIsChecked(view, "Supplementary declaration")
@@ -90,8 +90,8 @@ class ChoiceViewSpec extends AppViewSpec with ChoiceMessages with CommonMessages
 
       val backButton = createView().getElementById("link-back")
 
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be(controllers.routes.StartController.displayStartPage().url)
+      backButton.text() mustBe messages(backCaption)
+      backButton.attr("href") mustBe controllers.routes.StartController.displayStartPage().url
     }
 
     "display 'Save and continue' button on page" in {
@@ -99,7 +99,7 @@ class ChoiceViewSpec extends AppViewSpec with ChoiceMessages with CommonMessages
       val view = createView()
 
       val saveButton = view.select("#submit")
-      saveButton.text() must be(messages(saveAndContinueCaption))
+      saveButton.text() mustBe messages(saveAndContinueCaption)
     }
   }
 
@@ -109,14 +109,14 @@ class ChoiceViewSpec extends AppViewSpec with ChoiceMessages with CommonMessages
 
       val view = createView(Choice.form().bind(Map[String, String]()))
 
-      view.select("#error-message-value-input").text() must be(messages(choiceEmpty))
+      view.select("#error-message-value-input").text() mustBe messages(choiceEmpty)
     }
 
     "display error when choice is incorrect" in {
 
       val view = createView(Choice.form().bind(Map("value" -> "incorrect")))
 
-      view.select("#error-message-value-input").text() must be(messages(choiceError))
+      view.select("#error-message-value-input").text() mustBe messages(choiceError)
     }
   }
 
@@ -181,28 +181,28 @@ class ChoiceViewSpec extends AppViewSpec with ChoiceMessages with CommonMessages
   }
   private def ensureAllLabelTextIsCorrect(view: Html): Unit = {
     val labels = view.getElementsByTag("label").toList
-    labels.forall(elems => elems.getElementsContainingText(messages(supplementaryDec)).isEmpty) must be(false)
-    labels.forall(elems => elems.getElementsContainingText(messages(standardDec)).isEmpty) must be(false)
-    labels.forall(elems => elems.getElementsContainingText(messages(cancelDec)).isEmpty) must be(false)
-    labels.forall(elems => elems.getElementsContainingText(messages(recentDec)).isEmpty) must be(false)
-    labels.forall(elems => elems.getElementsContainingText(messages(continueDec)).isEmpty) must be(false)
+    labels.forall(elems => elems.getElementsContainingText(messages(supplementaryDec)).isEmpty) mustBe false
+    labels.forall(elems => elems.getElementsContainingText(messages(standardDec)).isEmpty) mustBe false
+    labels.forall(elems => elems.getElementsContainingText(messages(cancelDec)).isEmpty) mustBe false
+    labels.forall(elems => elems.getElementsContainingText(messages(recentDec)).isEmpty) mustBe false
+    labels.forall(elems => elems.getElementsContainingText(messages(continueDec)).isEmpty) mustBe false
   }
 
   private def ensureSupplementaryLabelIsCorrect(view: Html): Unit = {
     val labels = view.getElementsByTag("label").toList
-    labels.forall(elems => elems.getElementsContainingText(messages(supplementaryDec)).isEmpty) must be(false)
-    labels.forall(elems => elems.getElementsContainingText(messages(standardDec)).isEmpty) must be(true)
-    labels.forall(elems => elems.getElementsContainingText(messages(cancelDec)).isEmpty) must be(true)
-    labels.forall(elems => elems.getElementsContainingText(messages(recentDec)).isEmpty) must be(true)
+    labels.forall(elems => elems.getElementsContainingText(messages(supplementaryDec)).isEmpty) mustBe false
+    labels.forall(elems => elems.getElementsContainingText(messages(standardDec)).isEmpty) mustBe true
+    labels.forall(elems => elems.getElementsContainingText(messages(cancelDec)).isEmpty) mustBe true
+    labels.forall(elems => elems.getElementsContainingText(messages(recentDec)).isEmpty) mustBe true
   }
 
   private def ensureRadioIsChecked(view: Html, elementId: String): Unit = {
     val option = view.getElementById(elementId)
-    option.attr("checked") must be("checked")
+    option.attr("checked") mustBe "checked"
   }
 
   private def ensureRadioIsUnChecked(view: Html, elementId: String): Unit = {
     val option = view.getElementById(elementId)
-    option.attr("checked") must be("")
+    option.attr("checked") mustBe ""
   }
 }

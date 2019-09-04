@@ -24,21 +24,22 @@ import forms.declaration.ConsignmentReferences
 import forms.{Ducr, RemoveDraftDeclaration}
 import helpers.views.declaration.CommonMessages
 import models.{DeclarationStatus, ExportsDeclaration}
-import org.jsoup.nodes.{Document, Element}
+import org.jsoup.nodes.Element
 import play.api.data.Form
 import play.twirl.api.Html
+import unit.tools.Stubs
+import views.declaration.spec.UnitViewSpec
 import views.html.remove_declaration
 import views.tags.ViewTest
-import views.declaration.spec.AppViewSpec
 
 @ViewTest
-class RemoveSavedDeclarationsViewSpec extends AppViewSpec with CommonMessages {
+class RemoveSavedDeclarationsViewSpec extends UnitViewSpec with CommonMessages with Stubs {
 
   val title: String = "saved.declarations.remove.title"
   val ducr: String = "saved.declarations.ducr"
   val dateSaved: String = "saved.declarations.dateSaved"
 
-  private val removeSavedDeclarationsPage = app.injector.instanceOf[remove_declaration]
+  private val removeSavedDeclarationsPage = new remove_declaration(mainTemplate)
 
   private def decWithDucr(index: Int = 1) = ExportsTestData.aDeclaration(
     withStatus(DeclarationStatus.DRAFT),
@@ -54,28 +55,27 @@ class RemoveSavedDeclarationsViewSpec extends AppViewSpec with CommonMessages {
     "display declaration about to be removed" in {
       val view = createView(decWithDucr())
 
-      view.title() must be(messages(title))
-      view.getElementsByTag("h1").text() must be(messages(title))
+      view.title() mustBe messages(title)
+      view.getElementsByTag("h1").text() mustBe messages(title)
 
-      tableCell(view)(0, 0).text() must be(messages(ducr))
-      tableCell(view)(0, 1).text() must be(messages(dateSaved))
-      tableCell(view)(1, 0).text() must be(messages("DUCR-XXXX-1"))
-      tableCell(view)(1, 1).text() must be(messages("1 Jan 2019 at 10:00"))
+      tableCell(view)(0, 0).text() mustBe messages(ducr)
+      tableCell(view)(0, 1).text() mustBe messages(dateSaved)
+      tableCell(view)(1, 0).text() mustBe messages("DUCR-XXXX-1")
+      tableCell(view)(1, 1).text() mustBe messages("1 Jan 2019 at 10:00")
 
-      numberOfTableRows(view) must be(1)
+      numberOfTableRows(view) mustBe 1
 
-      view.getElementById("submit").text() must be("Continue")
+      view.getElementById("submit").text() mustBe messages("saved.declarations.remove.submitButton")
     }
 
     "display errors if no option has been chosen" in {
 
       val view = createView(decWithDucr(), RemoveDraftDeclaration.form.bind(Map[String, String]()))
 
-      view.getElementById("error-summary-heading").text() must be(messages("error.summary.title"))
+      view.getElementById("error-summary-heading").text() mustBe messages("error.summary.title")
 
-      view.getElementById("error-message-remove-input").text() must be(
+      view.getElementById("error-message-remove-input").text() mustBe
         messages("saved.declarations.remove.option.error.empty")
-      )
     }
   }
 

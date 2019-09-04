@@ -16,67 +16,97 @@
 
 package views.declaration
 
-import base.TestHelper
+import base.{Injector, TestHelper}
+import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.declaration.destinationCountries.DestinationCountries
 import helpers.views.declaration.{CommonMessages, DestinationCountriesMessages}
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import views.declaration.spec.AppViewSpec
+import play.api.i18n.MessagesApi
+import services.cache.ExportsTestData
+import unit.tools.Stubs
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.destination_countries_supplementary
 import views.tags.ViewTest
 
 @ViewTest
-class DestinationCountriesViewSpec extends AppViewSpec with DestinationCountriesMessages with CommonMessages {
+class DestinationCountriesViewSpec
+    extends UnitViewSpec with ExportsTestData with DestinationCountriesMessages with CommonMessages with Stubs
+    with Injector {
 
   private val form: Form[DestinationCountries] = DestinationCountries.Supplementary.form
-  private val destiantionCountriesSupplementaryPage = app.injector.instanceOf[destination_countries_supplementary]
+  private val destiantionCountriesSupplementaryPage = new destination_countries_supplementary(mainTemplate)
   private def createView(form: Form[DestinationCountries] = form): Document =
-    destiantionCountriesSupplementaryPage(Mode.Normal, form)(fakeJourneyRequest("SMP"), messages)
+    destiantionCountriesSupplementaryPage(Mode.Normal, form)(journeyRequest(), messages)
+
+  "Destination countries" should {
+
+    "have correct message keys" in {
+
+      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
+
+      messages must haveTranslationFor("declaration.destinationCountries.title")
+      messages must haveTranslationFor("declaration.destinationCountries.countryOfDestination")
+      messages must haveTranslationFor("declaration.destinationCountries.countryOfDestination.hint")
+      messages must haveTranslationFor("declaration.destinationCountries.countryOfDestination.error")
+      messages must haveTranslationFor("declaration.destinationCountries.countryOfDestination.empty")
+      messages must haveTranslationFor("declaration.destinationCountries.countryOfDispatch")
+      messages must haveTranslationFor("declaration.destinationCountries.countryOfDispatch.hint")
+      messages must haveTranslationFor("declaration.destinationCountries.routing")
+      messages must haveTranslationFor("declaration.destinationCountries.routing.hint")
+      messages must haveTranslationFor("declaration.destinationCountries.countryOfDispatch.empty")
+      messages must haveTranslationFor("declaration.destinationCountries.countryOfDispatch.error")
+      messages must haveTranslationFor("declaration.destinationCountries.countriesOfRouting")
+      messages must haveTranslationFor("declaration.destinationCountries.countriesOfRouting.hint")
+      messages must haveTranslationFor("declaration.destinationCountries.countriesOfRouting.error")
+      messages must haveTranslationFor("declaration.destinationCountries.countriesOfRouting.empty")
+    }
+  }
 
   "Destination Countries View on empty page" should {
 
     "display page title" in {
 
-      createView().getElementById("title").text() must be(messages(title))
+      createView().getElementById("title").text() mustBe messages(title)
     }
 
     "display empty input with label for Dispatch country" in {
 
       val view = createView()
 
-      view.getElementById("countryOfDispatch-hint").text() must be(messages(countryOfDispatchHint))
-      view.getElementById("countryOfDispatch-label").ownText() must be(messages(countryOfDispatch))
-      view.getElementById("countryOfDispatch").attr("value") must be("")
+      view.getElementById("countryOfDispatch-hint").text() mustBe messages(countryOfDispatchHint)
+      view.getElementById("countryOfDispatch-label").ownText() mustBe messages(countryOfDispatch)
+      view.getElementById("countryOfDispatch").attr("value") mustBe ""
     }
 
     "display empty input with label for Destination country" in {
 
       val view = createView()
 
-      view.getElementById("countryOfDestination-hint").text() must be(messages(countryOfDestinationHint))
-      view.getElementById("countryOfDestination-label").ownText() must be(messages(countryOfDestination))
-      view.getElementById("countryOfDestination").attr("value") must be("")
+      view.getElementById("countryOfDestination-hint").text() mustBe messages(countryOfDestinationHint)
+      view.getElementById("countryOfDestination-label").ownText() mustBe messages(countryOfDestination)
+      view.getElementById("countryOfDestination").attr("value") mustBe ""
     }
 
     "display 'Back' button that links to 'Declaration holder of authorisation' page" in {
 
       val backButton = createView().getElementById("link-back")
 
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/holder-of-authorisation")
+      backButton.text() mustBe messages(backCaption)
+      backButton.attr("href") mustBe routes.DeclarationHolderController.displayPage().url
     }
 
     "display 'Save and continue' button" in {
       val saveButton = createView().getElementById("submit")
-      saveButton.text() must be(messages(saveAndContinueCaption))
+      saveButton.text() mustBe messages(saveAndContinueCaption)
     }
 
     "display 'Save and return' button" in {
       val saveButton = createView().getElementById("submit_and_return")
-      saveButton.text() must be(messages(saveAndReturnCaption))
-      saveButton.attr("name") must be(SaveAndReturn.toString)
+      saveButton.text() mustBe messages(saveAndReturnCaption)
+      saveButton.attr("name") mustBe SaveAndReturn.toString
     }
   }
 
@@ -90,7 +120,7 @@ class DestinationCountriesViewSpec extends AppViewSpec with DestinationCountries
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("countryOfDispatch", "#countryOfDispatch")
 
-      view.select("span.error-message").text() must be(messages(countryOfDispatchEmpty))
+      view.select("span.error-message").text() mustBe messages(countryOfDispatchEmpty)
     }
 
     "display error when dispatch country is incorrect" in {
@@ -103,7 +133,7 @@ class DestinationCountriesViewSpec extends AppViewSpec with DestinationCountries
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("countryOfDispatch", "#countryOfDispatch")
 
-      view.select("span.error-message").text() must be(messages(countryOfDispatchError))
+      view.select("span.error-message").text() mustBe messages(countryOfDispatchError)
     }
 
     "display error when destination country is empty" in {
@@ -114,7 +144,7 @@ class DestinationCountriesViewSpec extends AppViewSpec with DestinationCountries
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("countryOfDestination", "#countryOfDestination")
 
-      view.select("span.error-message").text() must be(messages(countryOfDestinationEmpty))
+      view.select("span.error-message").text() mustBe messages(countryOfDestinationEmpty)
     }
 
     "display error when destination country is incorrect" in {
@@ -127,7 +157,7 @@ class DestinationCountriesViewSpec extends AppViewSpec with DestinationCountries
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("countryOfDestination", "#countryOfDestination")
 
-      view.select("span.error-message").text() must be(messages(countryOfDestinationError))
+      view.select("span.error-message").text() mustBe messages(countryOfDestinationError)
     }
 
     "display errors when both countries are incorrect" in {
@@ -147,10 +177,10 @@ class DestinationCountriesViewSpec extends AppViewSpec with DestinationCountries
       view must haveFieldErrorLink("countryOfDestination", "#countryOfDestination")
 
       val spanErrors = view.select("span.error-message")
-      spanErrors.size() must be(2)
+      spanErrors.size() mustBe 2
 
-      spanErrors.get(0).text() must be(messages(countryOfDispatchError))
-      spanErrors.get(1).text() must be(messages(countryOfDestinationError))
+      spanErrors.get(0).text() mustBe messages(countryOfDispatchError)
+      spanErrors.get(1).text() mustBe messages(countryOfDestinationError)
     }
 
     "display errors when both countries are empty" in {
@@ -163,10 +193,10 @@ class DestinationCountriesViewSpec extends AppViewSpec with DestinationCountries
       view must haveFieldErrorLink("countryOfDestination", "#countryOfDestination")
 
       val spanErrors = view.select("span.error-message")
-      spanErrors.size() must be(2)
+      spanErrors.size() mustBe 2
 
-      spanErrors.get(0).text() must be(messages(countryOfDispatchEmpty))
-      spanErrors.get(1).text() must be(messages(countryOfDestinationEmpty))
+      spanErrors.get(0).text() mustBe messages(countryOfDispatchEmpty)
+      spanErrors.get(1).text() mustBe messages(countryOfDestinationEmpty)
     }
 
     "display errors when dispatch country is empty and destination is incorrect" in {
@@ -181,10 +211,10 @@ class DestinationCountriesViewSpec extends AppViewSpec with DestinationCountries
       view must haveFieldErrorLink("countryOfDestination", "#countryOfDestination")
 
       val spanErrors = view.select("span.error-message")
-      spanErrors.size() must be(2)
+      spanErrors.size() mustBe 2
 
-      spanErrors.get(0).text() must be(messages(countryOfDispatchEmpty))
-      spanErrors.get(1).text() must be(messages(countryOfDestinationError))
+      spanErrors.get(0).text() mustBe messages(countryOfDispatchEmpty)
+      spanErrors.get(1).text() mustBe messages(countryOfDestinationError)
     }
   }
 
