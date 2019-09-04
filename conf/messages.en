@@ -508,7 +508,6 @@ supplementary.transportInfo.meansOfTransport.aircraftRegistrationNumber = Aircra
 supplementary.transportInfo.meansOfTransport.europeanVesselIDNumber = European vessel identification number (ENI code)
 supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel = Name of the inland waterway’s vessel
 supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.header = What nationality is the active means of transport?
-supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.error.empty = Please, choose active means of transport
 supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.error.incorrect = Please, choose valid active means of transport
 supplementary.transportInfo.meansOfTransport.idNumber.error.length = Reference should be less than 28 alpha numeric characters
 supplementary.meansOfTransportCrossingTheBorderIDNumber.error.length = Reference should be less than 35 alpha numeric characters
