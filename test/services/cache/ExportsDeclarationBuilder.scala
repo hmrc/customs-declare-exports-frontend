@@ -215,7 +215,7 @@ trait ExportsDeclarationBuilder {
     _.copy(transportDetails = Some(details))
 
   def withTransportDetails(
-    meansOfTransportCrossingTheBorderNationality: Option[String] = None,
+    meansOfTransportCrossingTheBorderNationality: String = "",
     container: Boolean = false,
     meansOfTransportCrossingTheBorderType: String = "",
     meansOfTransportCrossingTheBorderIDNumber: Option[String] = None,
