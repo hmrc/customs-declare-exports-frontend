@@ -19,12 +19,12 @@ import forms.Mapping.requiredRadio
 import forms.declaration.TransportCodes._
 import play.api.data.Forms.{boolean, mapping, optional, text}
 import play.api.data.{Form, Mapping}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.Countries.allCountries
 import utils.validators.forms.FieldValidator.{isContainedIn, noLongerThan, _}
 
 case class TransportDetails(
-  meansOfTransportCrossingTheBorderNationality: Option[String],
+  meansOfTransportCrossingTheBorderNationality: String,
   container: Boolean,
   meansOfTransportCrossingTheBorderType: String,
   meansOfTransportCrossingTheBorderIDNumber: Option[String],
@@ -35,15 +35,14 @@ object TransportDetails {
 
   val formId = "TransportDetails"
 
-  implicit val formats = Json.format[TransportDetails]
+  implicit val formats: OFormat[TransportDetails] = Json.format[TransportDetails]
 
   val formMapping: Mapping[TransportDetails] = mapping(
-    "meansOfTransportCrossingTheBorderNationality" -> optional(
-      text()
-        .verifying(
-          "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.error.incorrect",
-          isContainedIn(allCountries.map(_.countryName))
-        )
+    "meansOfTransportCrossingTheBorderNationality" -> requiredRadio(
+      "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.error.empty"
+    ).verifying(
+      "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.error.incorrect",
+      isContainedIn(allCountries.map(_.countryName))
     ),
     "container" -> optional(boolean)
       .verifying("supplementary.transportInfo.container.error.empty", _.isDefined)

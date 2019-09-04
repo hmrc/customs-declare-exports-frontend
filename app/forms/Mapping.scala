@@ -15,9 +15,9 @@
  */
 
 package forms
-import play.api.data.{FieldMapping, FormError}
 import play.api.data.Forms.of
 import play.api.data.format.Formatter
+import play.api.data.{FieldMapping, FormError}
 
 object Mapping {
 
@@ -25,12 +25,11 @@ object Mapping {
     of(radioFormatter(requiredKey))
 
   private def radioFormatter(requiredKey: String): Formatter[String] = new Formatter[String] {
-    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] = {
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
       data.get(key) match {
         case None | Some("") => Left(Seq(FormError(key, requiredKey)))
-        case Some(s) => Right(s)
+        case Some(s)         => Right(s)
       }
-    }
     override def unbind(key: String, value: String): Map[String, String] = Map(key -> value)
   }
 }
