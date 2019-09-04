@@ -16,34 +16,54 @@
 
 package views.declaration
 
+import base.Injector
 import controllers.util.SaveAndReturn
 import forms.declaration.DispatchLocation
 import helpers.views.declaration.{CommonMessages, DispatchLocationMessages}
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import views.declaration.spec.AppViewSpec
+import play.api.i18n.MessagesApi
+import unit.tools.Stubs
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.dispatch_location
 import views.tags.ViewTest
 
 @ViewTest
-class DispatchLocationViewSpec extends AppViewSpec with DispatchLocationMessages with CommonMessages {
+class DispatchLocationViewSpec
+    extends UnitViewSpec with DispatchLocationMessages with CommonMessages with Stubs with Injector {
 
   private val form: Form[DispatchLocation] = DispatchLocation.form()
-  private val dispatchLocationPage = app.injector.instanceOf[dispatch_location]
+  private val dispatchLocationPage = new dispatch_location(mainTemplate)
   private def createView(form: Form[DispatchLocation] = form, mode: Mode = Mode.Normal): Document =
-    dispatchLocationPage(mode, form)(fakeRequest, messages)
+    dispatchLocationPage(mode, form)(request, messages)
+
+  "Dispatch Location" should {
+
+    "have correct message keys" in {
+
+      val messages = instanceOf[MessagesApi].preferred(request)
+
+      messages must haveTranslationFor("supplementary.dispatchLocation.title")
+      messages must haveTranslationFor("supplementary.dispatchLocation.header")
+      messages must haveTranslationFor("supplementary.dispatchLocation.header.hint")
+      messages must haveTranslationFor("supplementary.dispatchLocation.inputText.outsideEU")
+      messages must haveTranslationFor("supplementary.dispatchLocation.inputText.specialFiscalTerritory")
+      messages must haveTranslationFor("supplementary.dispatchLocation.inputText.error.empty")
+      messages must haveTranslationFor("supplementary.dispatchLocation.inputText.error.incorrect")
+    }
+  }
 
   "Dispatch Location View on empty page" should {
 
     "display page title" in {
 
-      createView().getElementById("title").text() must be(messages(header))
+      createView().getElementById("title").text() mustBe messages(header)
     }
 
     "display section header" in {
 
-      createView().getElementById("section-header").text() must be("Locations")
+      createView().getElementById("section-header").text() mustBe messages("declaration.summary.locations.header")
     }
 
     "display two radio buttons with description (not selected)" in {
@@ -51,50 +71,50 @@ class DispatchLocationViewSpec extends AppViewSpec with DispatchLocationMessages
       val view = createView(DispatchLocation.form().fill(DispatchLocation("")))
 
       val optionOne = view.getElementById("OutsideEU")
-      optionOne.attr("checked") must be("")
+      optionOne.attr("checked") mustBe ""
 
       val optionOneLabel = view.getElementById("OutsideEU-label")
-      optionOneLabel.text() must be(messages(outsideEu))
+      optionOneLabel.text() mustBe messages(outsideEu)
 
       val optionTwo = view.getElementById("SpecialFiscalTerritory")
-      optionTwo.attr("checked") must be("")
+      optionTwo.attr("checked") mustBe ""
 
       val optionTwoLabel = view.getElementById("SpecialFiscalTerritory-label")
-      optionTwoLabel.text() must be(messages(specialFiscalTerritory))
+      optionTwoLabel.text() mustBe messages(specialFiscalTerritory)
     }
 
     "display 'Back' button" when {
       "normal mode" in {
         val backButton = createView(mode = Mode.Normal).getElementById("link-back")
 
-        backButton.text() must be(messages(backCaption))
-        backButton.attr("href") must be(controllers.routes.ChoiceController.displayPage().url)
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe controllers.routes.ChoiceController.displayPage().url
       }
 
       "draft mode" in {
         val backButton = createView(mode = Mode.Draft).getElementById("link-back")
 
-        backButton.text() must be(messages(backCaption))
-        backButton.attr("href") must be(controllers.declaration.routes.SummaryController.displayPage(Mode.Draft).url)
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Draft).url
       }
 
       "amend mode" in {
         val backButton = createView(mode = Mode.Amend).getElementById("link-back")
 
-        backButton.text() must be(messages(backCaption))
-        backButton.attr("href") must be(controllers.declaration.routes.SummaryController.displayPage(Mode.Amend).url)
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Amend).url
       }
     }
 
     "display 'Save and continue' button" in {
       val saveButton = createView().getElementById("submit")
-      saveButton.text() must be(messages(saveAndContinueCaption))
+      saveButton.text() mustBe messages(saveAndContinueCaption)
     }
 
     "display 'Save and return' button" in {
       val saveButton = createView().getElementById("submit_and_return")
-      saveButton.text() must be(messages(saveAndReturnCaption))
-      saveButton.attr("name") must be(SaveAndReturn.toString)
+      saveButton.text() mustBe messages(saveAndReturnCaption)
+      saveButton.attr("name") mustBe SaveAndReturn.toString
     }
   }
 
@@ -107,7 +127,7 @@ class DispatchLocationViewSpec extends AppViewSpec with DispatchLocationMessages
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("dispatchLocation", "#dispatchLocation")
 
-      view.select("#error-message-dispatchLocation-input").text() must be(messages(errorMessageEmpty))
+      view.select("#error-message-dispatchLocation-input").text() mustBe messages(errorMessageEmpty)
     }
 
     "display error if incorrect dispatch is selected" in {
@@ -117,7 +137,7 @@ class DispatchLocationViewSpec extends AppViewSpec with DispatchLocationMessages
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("dispatchLocation", "#dispatchLocation")
 
-      view.select("#error-message-dispatchLocation-input").text() must be(messages(errorMessageIncorrect))
+      view.select("#error-message-dispatchLocation-input").text() mustBe messages(errorMessageIncorrect)
     }
   }
 
@@ -128,10 +148,10 @@ class DispatchLocationViewSpec extends AppViewSpec with DispatchLocationMessages
       val view = createView(DispatchLocation.form().fill(DispatchLocation("EX")))
 
       val optionOne = view.getElementById("OutsideEU")
-      optionOne.attr("checked") must be("checked")
+      optionOne.attr("checked") mustBe "checked"
 
       val optionTwo = view.getElementById("SpecialFiscalTerritory")
-      optionTwo.attr("checked") must be("")
+      optionTwo.attr("checked") mustBe ""
     }
 
     "display selected second radio button - Fiscal Territory (CO)" in {
@@ -139,10 +159,10 @@ class DispatchLocationViewSpec extends AppViewSpec with DispatchLocationMessages
       val view = createView(DispatchLocation.form().fill(DispatchLocation("CO")))
 
       val optionOne = view.getElementById("OutsideEU")
-      optionOne.attr("checked") must be("")
+      optionOne.attr("checked") mustBe ""
 
       val optionTwo = view.getElementById("SpecialFiscalTerritory")
-      optionTwo.attr("checked") must be("checked")
+      optionTwo.attr("checked") mustBe "checked"
     }
   }
 }

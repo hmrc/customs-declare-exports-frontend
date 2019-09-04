@@ -16,75 +16,97 @@
 
 package views.declaration
 
-import base.TestHelper
+import base.{Injector, TestHelper}
+import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.declaration.DeclarationHolder
 import helpers.views.declaration.{CommonMessages, DeclarationHolderMessages}
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import views.declaration.spec.AppViewSpec
+import play.api.i18n.MessagesApi
+import unit.tools.Stubs
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.declaration_holder
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarationHolderViewSpec extends AppViewSpec with DeclarationHolderMessages with CommonMessages {
+class DeclarationHolderViewSpec
+    extends UnitViewSpec with DeclarationHolderMessages with CommonMessages with Stubs with Injector {
 
   private val form: Form[DeclarationHolder] = DeclarationHolder.form()
-  private val declarationHolderPage = app.injector.instanceOf[declaration_holder]
+  private val declarationHolderPage = new declaration_holder(mainTemplate)
   private def createView(form: Form[DeclarationHolder] = form): Document =
-    declarationHolderPage(Mode.Normal, form, Seq())(fakeRequest, messages)
+    declarationHolderPage(Mode.Normal, form, Seq())(request, messages)
+
+  "Declaration holder" should {
+
+    "have correct message keys" in {
+
+      val messages = instanceOf[MessagesApi].preferred(request)
+
+      messages must haveTranslationFor("supplementary.declarationHolder.title")
+      messages must haveTranslationFor("supplementary.declarationHolder.title.hint")
+      messages must haveTranslationFor("supplementary.declarationHolder.eori")
+      messages must haveTranslationFor("supplementary.declarationHolder.authorisationCode")
+      messages must haveTranslationFor("supplementary.declarationHolder.authorisationCode.hint")
+      messages must haveTranslationFor("supplementary.declarationHolder.authorisationCode.invalid")
+      messages must haveTranslationFor("supplementary.declarationHolder.authorisationCode.empty")
+      messages must haveTranslationFor("supplementary.declarationHolders.maximumAmount.error")
+      messages must haveTranslationFor("supplementary.declarationHolders.duplicated")
+    }
+  }
 
   "Declaration Holder View on empty page" should {
 
     "display page title" in {
 
-      createView().getElementById("title").text() must be(messages(title))
+      createView().getElementById("title").text() mustBe messages(title)
     }
 
     "display section header" in {
 
-      createView().getElementById("section-header").text() must be("Parties")
+      createView().getElementById("section-header").text() mustBe messages("supplementary.summary.parties.header")
     }
 
     "display empty input with label for Authorisation Code" in {
 
       val view = createView()
 
-      view.getElementById("authorisationTypeCode-label").text() must be(messages(authorisationCode))
-      view.getElementById("authorisationTypeCode-hint").text() must be(messages(authorisationCodeHint))
-      view.getElementById("authorisationTypeCode").attr("value") must be("")
+      view.getElementById("authorisationTypeCode-label").text() mustBe messages(authorisationCode)
+      view.getElementById("authorisationTypeCode-hint").text() mustBe messages(authorisationCodeHint)
+      view.getElementById("authorisationTypeCode").attr("value") mustBe ""
     }
 
     "display empty input with label for EORI" in {
 
       val view = createView()
 
-      view.getElementById("eori-label").text() must be(messages(declarationHolderEori))
-      view.getElementById("eori-hint").text() must be(messages(eoriHint))
-      view.getElementById("eori").attr("value") must be("")
+      view.getElementById("eori-label").text() mustBe messages(declarationHolderEori)
+      view.getElementById("eori-hint").text() mustBe messages(eoriHint)
+      view.getElementById("eori").attr("value") mustBe ""
     }
 
     "display 'Back' button that links to 'Additional Information' page" in {
 
       val backButton = createView().getElementById("link-back")
 
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/additional-actors")
+      backButton.text() mustBe messages(backCaption)
+      backButton.attr("href") mustBe routes.DeclarationAdditionalActorsController.displayPage().url
     }
 
     "display both 'Add' and 'Save and continue' button on page" in {
       val view = createView()
 
       val addButton = view.getElementById("add")
-      addButton.text() must be(messages(addCaption))
+      addButton.text() mustBe messages(addCaption)
 
       val saveAndContinueButton = view.getElementById("submit")
-      saveAndContinueButton.text() must be(messages(saveAndContinueCaption))
+      saveAndContinueButton.text() mustBe messages(saveAndContinueCaption)
 
       val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton.text() must be(messages(saveAndReturnCaption))
-      saveAndReturnButton.attr("name") must be(SaveAndReturn.toString)
+      saveAndReturnButton.text() mustBe messages(saveAndReturnCaption)
+      saveAndReturnButton.attr("name") mustBe SaveAndReturn.toString
     }
   }
 
@@ -105,7 +127,7 @@ class DeclarationHolderViewSpec extends AppViewSpec with DeclarationHolderMessag
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("authorisationTypeCode", "#authorisationTypeCode")
 
-      view.select("#error-message-authorisationTypeCode-input").text() must be(messages(authorisationCodeError))
+      view.select("#error-message-authorisationTypeCode-input").text() mustBe messages(authorisationCodeError)
     }
 
     "display error for incorrect EORI" in {
@@ -119,7 +141,7 @@ class DeclarationHolderViewSpec extends AppViewSpec with DeclarationHolderMessag
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("eori", "#eori")
 
-      view.select("#error-message-eori-input").text() must be(messages(eoriError))
+      view.select("#error-message-eori-input").text() mustBe messages(eoriError)
     }
 
     "display error for both incorrect fields" in {
@@ -139,8 +161,8 @@ class DeclarationHolderViewSpec extends AppViewSpec with DeclarationHolderMessag
       view must haveFieldErrorLink("authorisationTypeCode", "#authorisationTypeCode")
       view must haveFieldErrorLink("eori", "#eori")
 
-      view.select("#error-message-authorisationTypeCode-input").text() must be(messages(authorisationCodeError))
-      view.select("#error-message-eori-input").text() must be(messages(eoriError))
+      view.select("#error-message-authorisationTypeCode-input").text() mustBe messages(authorisationCodeError)
+      view.select("#error-message-eori-input").text() mustBe messages(eoriError)
     }
   }
 
@@ -150,40 +172,37 @@ class DeclarationHolderViewSpec extends AppViewSpec with DeclarationHolderMessag
 
       val view = createView(DeclarationHolder.form().fill(DeclarationHolder(Some("test"), None)))
 
-      view.getElementById("authorisationTypeCode").attr("value") must be("test")
-      view.getElementById("eori").attr("value") must be("")
+      view.getElementById("authorisationTypeCode").attr("value") mustBe "test"
+      view.getElementById("eori").attr("value") mustBe ""
     }
 
     "display data in EORI input" in {
 
       val view = createView(DeclarationHolder.form().fill(DeclarationHolder(None, Some("test"))))
 
-      view.getElementById("authorisationTypeCode").attr("value") must be("")
-      view.getElementById("eori").attr("value") must be("test")
+      view.getElementById("authorisationTypeCode").attr("value") mustBe ""
+      view.getElementById("eori").attr("value") mustBe "test"
     }
 
     "display data in both inputs" in {
 
       val view = createView(DeclarationHolder.form().fill(DeclarationHolder(Some("test"), Some("test1"))))
 
-      view.getElementById("authorisationTypeCode").attr("value") must be("test")
-      view.getElementById("eori").attr("value") must be("test1")
+      view.getElementById("authorisationTypeCode").attr("value") mustBe "test"
+      view.getElementById("eori").attr("value") mustBe "test1"
     }
 
     "display one row with data in table" in {
 
       val view =
-        declarationHolderPage(Mode.Normal, form, Seq(DeclarationHolder(Some("1234"), Some("1234"))))(
-          fakeRequest,
-          messages
-        )
+        declarationHolderPage(Mode.Normal, form, Seq(DeclarationHolder(Some("1234"), Some("1234"))))(request, messages)
 
-      view.select("tbody>tr>th:nth-child(1)").text() must be("1234-1234")
+      view.select("tbody>tr>th:nth-child(1)").text() mustBe "1234-1234"
 
       val removeButton = view.select("tbody>tr>th:nth-child(2)>button")
 
-      removeButton.text() must be(messages(removeCaption))
-      removeButton.attr("value") must be("1234-1234")
+      removeButton.text() mustBe messages(removeCaption)
+      removeButton.attr("value") mustBe "1234-1234"
     }
   }
 }

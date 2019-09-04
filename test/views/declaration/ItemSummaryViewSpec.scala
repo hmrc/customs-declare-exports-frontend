@@ -16,79 +16,69 @@
 
 package views.declaration
 
+import base.Injector
 import controllers.declaration.routes
 import forms.declaration.{ItemType, PackageInformation}
-import helpers.views.declaration.ItemSummaryMessages
 import models.Mode
 import models.declaration.ProcedureCodesData
 import org.jsoup.nodes.Document
-import services.cache.ExportItem
-import views.declaration.spec.AppViewSpec
+import play.api.i18n.MessagesApi
+import play.api.test.Helpers.stubMessages
+import services.cache.{ExportItem, ExportsTestData}
+import unit.tools.Stubs
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.items_summary
 import views.tags.ViewTest
 
 @ViewTest
-class ItemSummaryViewSpec extends AppViewSpec with ItemSummaryMessages {
+class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  private val confirmationPage = app.injector.instanceOf[items_summary]
-  private def view(items: List[ExportItem]): Document = confirmationPage(Mode.Normal, items)(fakeRequest, messages)
+  private val page = new items_summary(mainTemplate)
+  private def createView(mode: Mode = Mode.Normal, items: List[ExportItem] = List.empty): Document =
+    page(mode, items)(journeyRequest(), stubMessages())
 
   "Item Summary Page View" should {
 
     "have proper messages for labels" in {
-      messages(title) must be("Items")
-      messages(header) must be("Items")
-      messages(noItemsAddedHeader) must be("Declare all items involved in this export")
-      messages(oneItemAddedHeader) must be("You have added 1 item")
-      messages(manyItemsAddedHeader, 2) must be("You have added 2 items")
-      messages(hint) must be(
-        "An item is an individual goods type that is identified by a commodity code, for example a computer or an aluminium pipe"
-      )
-      messages(tableItemNumber) must be("Item number")
-      messages(tableProcedureCode) must be("Procedure code")
-      messages(tableCommodityCode) must be("Commodity code")
-      messages(tablePackageCount) must be("Number of packages")
-      messages(changeItem) must be("Change")
-      messages(removeItem) must be("Remove")
-      messages(addItem) must be("Add item")
-      messages(addAnotherItem) must be("Add another item")
-      messages(continue) must be("Save and continue")
+      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
+      messages must haveTranslationFor("supplementary.itemsAdd.title")
+      messages must haveTranslationFor("supplementary.itemsAdd.titleWithItems")
+      messages must haveTranslationFor("site.add.item")
+      messages must haveTranslationFor("site.add.anotherItem")
     }
 
+    val view = createView()
+
     "render back button" in {
-      val doc = view(List.empty)
-      doc.getElementById("link-back") must haveAttribute("href", routes.PreviousDocumentsController.displayPage().url)
+
+      view.getElementById("link-back") must haveAttribute("href", routes.PreviousDocumentsController.displayPage().url)
     }
 
     "render title" when {
       "no items" in {
-        val doc = view(List.empty)
-        doc.getElementById("title") must containText(messages(noItemsAddedHeader))
+        view.getElementById("title").text() mustBe "supplementary.itemsAdd.title"
       }
 
       "one item" in {
-        val doc = view(List(ExportItem("id")))
-        doc.getElementById("title") must containText(messages(oneItemAddedHeader))
+        view.getElementById("title").text() mustBe "supplementary.itemsAdd.title"
       }
 
       "many items" in {
-        val doc = view(List(ExportItem("id1"), ExportItem("id2")))
-        doc.getElementById("title") must containText(messages(manyItemsAddedHeader, 2))
+        val view = createView(items = List(ExportItem("id1"), ExportItem("id2")))
+        view.getElementById("title").text() mustBe "supplementary.itemsAdd.titleWithItems"
       }
     }
 
     "not render item table" when {
       "no items" in {
-        val doc = view(List.empty)
-
-        doc must not(containElementWithID("item_table"))
+        view must not(containElementWithID("item_table"))
       }
     }
 
     "render item table sorted by sequenceId" when {
       "some items" in {
-        val doc = view(
-          List(
+        val view = createView(
+          items = List(
             ExportItem(
               "id2",
               sequenceId = 2,
@@ -106,9 +96,9 @@ class ItemSummaryViewSpec extends AppViewSpec with ItemSummaryMessages {
           )
         )
 
-        doc must containElementWithID("item_table")
+        view must containElementWithID("item_table")
 
-        val rows = doc.getElementsByTag("tr")
+        val rows = view.getElementsByTag("tr")
         rows must have(size(3))
 
         rows.get(1) must haveId("item_0")
@@ -139,22 +129,19 @@ class ItemSummaryViewSpec extends AppViewSpec with ItemSummaryMessages {
 
     "render actions section" when {
       "no items" in {
-        val doc = view(List.empty)
-
-        doc.getElementById("add") must containText(messages("site.add.item"))
-        doc must not(containElementWithID("submit"))
-        doc must not(containElementWithID("submit_and_return"))
+        view.getElementById("add").text() mustBe "site.add.item"
+        view must not(containElementWithID("submit"))
+        view must not(containElementWithID("submit_and_return"))
       }
 
       "some items" in {
-        val doc = view(List(ExportItem("id")))
+        val view = createView(items = List(ExportItem("id")))
 
-        doc.getElementById("add") must containText(messages("site.add.anotherItem"))
-        doc must containElementWithID("submit")
-        doc must containElementWithID("submit_and_return")
+        view.getElementById("add").text() mustBe "site.add.anotherItem"
+        view must containElementWithID("submit")
+        view must containElementWithID("submit_and_return")
       }
 
     }
   }
-
 }

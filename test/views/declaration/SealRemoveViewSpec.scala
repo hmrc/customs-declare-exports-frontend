@@ -65,7 +65,9 @@ class SealRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers with 
       val backLinkContainer = view.getElementById("link-back")
 
       backLinkContainer.text() must be(messages(backCaption))
-      backLinkContainer.attr("href") must be(s"/customs-declare-exports/declaration/containers/$containerId/seals")
+      backLinkContainer.getElementById("link-back") must haveHref(
+        controllers.declaration.routes.SealController.displaySealSummary(Mode.Normal, containerId)
+      )
     }
 
     "display 'Save and continue' button on page" in {

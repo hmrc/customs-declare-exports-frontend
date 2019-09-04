@@ -78,7 +78,9 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with Stubs with Mus
       val backLinkContainer = view.getElementById("link-back")
 
       backLinkContainer.text() must be(messages(backCaption))
-      backLinkContainer.attr("href") must be(s"/customs-declare-exports/declaration/transport-details")
+      backLinkContainer.getElementById("link-back") must haveHref(
+        controllers.declaration.routes.TransportDetailsController.displayPage(Mode.Normal)
+      )
     }
 
     "display 'Save and continue' button on page" in {

@@ -16,66 +16,90 @@
 
 package views.declaration
 
+import base.Injector
 import controllers.util.SaveAndReturn
 import forms.declaration.FiscalInformation
-import helpers.views.declaration.{CommonMessages, FiscalInformationMessages}
 import models.Mode
 import play.api.data.Form
+import play.api.i18n.MessagesApi
+import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
-import views.declaration.spec.AppViewSpec
+import services.cache.ExportsTestData
+import unit.tools.Stubs
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.fiscal_information
 import views.tags.ViewTest
 
 @ViewTest
-class FiscalInformationViewSpec extends AppViewSpec with FiscalInformationMessages with CommonMessages {
+class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val form: Form[FiscalInformation] = FiscalInformation.form()
-  private val fiscalInformationPage = app.injector.instanceOf[fiscal_information]
-  private def createView(form: Form[FiscalInformation] = form): Html =
-    fiscalInformationPage(Mode.Normal, itemId, form)(fakeRequest, messages)
+  private val page = new fiscal_information(mainTemplate)
+  private def createView(itemId: String = "itemId", form: Form[FiscalInformation] = form): Html =
+    page(Mode.Normal, itemId, form)(request, stubMessages())
 
   "Fiscal Information View on empty page" should {
 
+    "have proper messages for labels" in {
+      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
+      messages must haveTranslationFor("declaration.fiscalInformation.title")
+      messages must haveTranslationFor("declaration.fiscalInformation.question")
+      messages must haveTranslationFor("declaration.fiscalInformation.onwardSupplyRelief.error")
+      messages must haveTranslationFor("declaration.fiscalInformation.header")
+      messages must haveTranslationFor("declaration.additionalFiscalReferences.title")
+      messages must haveTranslationFor("declaration.additionalFiscalReferences.numbers.header")
+      messages must haveTranslationFor("declaration.additionalFiscalReferences.country")
+      messages must haveTranslationFor("declaration.additionalFiscalReferences.country.empty")
+      messages must haveTranslationFor("declaration.additionalFiscalReferences.country.error")
+      messages must haveTranslationFor("declaration.additionalFiscalReferences.reference")
+      messages must haveTranslationFor("declaration.additionalFiscalReferences.reference.empty")
+      messages must haveTranslationFor("declaration.additionalFiscalReferences.reference.error")
+    }
+
+    val view = createView()
+
     "display page title" in {
-      createView().getElementById("title").text() must be(messages(title))
+      view.getElementById("title").text() mustBe "declaration.fiscalInformation.title"
     }
 
     "display section header" in {
-      createView().getElementById("section-header").text() must be(messages(header))
+      view.getElementById("section-header").text() mustBe "declaration.fiscalInformation.header"
     }
 
     "display two radio buttons with description (not selected)" in {
-      val view = createView(FiscalInformation.form().fill(FiscalInformation("")))
+      val view = createView(form = FiscalInformation.form().fill(FiscalInformation("")))
 
       val optionOne = view.getElementById("Yes")
-      optionOne.attr("checked") must be("")
+      optionOne.attr("checked") mustBe ""
 
       val optionOneLabel = view.getElementById("Yes-label")
-      optionOneLabel.text() must be(messages(yes))
+      optionOneLabel.text() mustBe "site.yes"
 
       val optionTwo = view.getElementById("No")
-      optionTwo.attr("checked") must be("")
+      optionTwo.attr("checked") mustBe ""
 
       val optionTwoLabel = view.getElementById("No-label")
-      optionTwoLabel.text() must be(messages(no))
+      optionTwoLabel.text() mustBe "site.no"
     }
 
     "display 'Back' button that links to 'Warehouse' page" in {
 
-      val backButton = createView().getElementById("link-back")
+      val backButton = view.getElementById("link-back")
 
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be(s"/customs-declare-exports/declaration/items/$itemId/procedure-codes")
+      backButton.text() mustBe "site.back"
+      backButton.getElementById("link-back") must haveHref(
+        controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, "itemId")
+      )
     }
 
     "display 'Save and continue' button" in {
-      val saveButton = createView().getElementById("submit")
-      saveButton.text() must be(messages(saveAndContinueCaption))
+      val saveButton = view.getElementById("submit")
+      saveButton.text() mustBe "site.save_and_continue"
     }
 
     "display 'Save and return' button" in {
-      val saveButton = createView().getElementById("submit_and_return")
-      saveButton.text() must be(messages(saveAndReturnCaption))
+      val saveButton = view.getElementById("submit_and_return")
+      saveButton.text() mustBe "site.save_and_come_back_later"
       saveButton.attr("name") must be(SaveAndReturn.toString)
     }
 
@@ -85,22 +109,24 @@ class FiscalInformationViewSpec extends AppViewSpec with FiscalInformationMessag
 
     "display error if nothing is selected" in {
 
-      val view = createView(FiscalInformation.form().bind(Map[String, String]()))
+      val view = createView(form = FiscalInformation.form().bind(Map[String, String]()))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, messages(errorMessageEmpty), "#onwardSupplyRelief")
+      haveFieldErrorLink("onwardSupplyRelief", "#onwardSupplyRelief")
 
-      view.select("#error-message-onwardSupplyRelief-input").text() must be(messages(errorMessageEmpty))
+      view.select("#error-message-onwardSupplyRelief-input").text() mustBe "error.required"
     }
 
     "display error if incorrect fiscal information is selected" in {
 
-      val view = createView(FiscalInformation.form().fillAndValidate(FiscalInformation("Incorrect")))
+      val view = createView(form = FiscalInformation.form().fillAndValidate(FiscalInformation("Incorrect")))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, messages(errorMessageIncorrect), "#onwardSupplyRelief")
+      haveFieldErrorLink("onwardSupplyRelief", "#onwardSupplyRelief")
 
-      view.select("#error-message-onwardSupplyRelief-input").text() must be(messages(errorMessageIncorrect))
+      view
+        .select("#error-message-onwardSupplyRelief-input")
+        .text() mustBe "declaration.fiscalInformation.onwardSupplyRelief.error"
     }
 
   }
@@ -109,21 +135,21 @@ class FiscalInformationViewSpec extends AppViewSpec with FiscalInformationMessag
 
     "display selected first radio button - Yes" in {
 
-      val view = createView(FiscalInformation.form().fill(FiscalInformation("Yes")))
+      val view = createView(form = FiscalInformation.form().fill(FiscalInformation("Yes")))
 
       val optionOne = view.getElementById("Yes")
       optionOne.attr("checked") must be("checked")
 
       val optionTwo = view.getElementById("No")
-      optionTwo.attr("checked") must be("")
+      optionTwo.attr("checked") mustBe ""
     }
 
     "display selected second radio button - No" in {
 
-      val view = createView(FiscalInformation.form().fill(FiscalInformation("No")))
+      val view = createView(form = FiscalInformation.form().fill(FiscalInformation("No")))
 
       val optionOne = view.getElementById("Yes")
-      optionOne.attr("checked") must be("")
+      optionOne.attr("checked") mustBe ""
 
       val optionTwo = view.getElementById("No")
       optionTwo.attr("checked") must be("checked")

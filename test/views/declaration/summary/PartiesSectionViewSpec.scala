@@ -16,6 +16,7 @@
 
 package views.declaration.summary
 
+import base.Injector
 import forms.common.Address
 import forms.declaration.ConsigneeDetailsSpec.{correctConsigneeDetailsAddressOnly, correctConsigneeDetailsEORIOnly}
 import forms.declaration.DeclarantDetailsSpec.{correctDeclarantDetailsAddressOnly, correctDeclarantDetailsEORIOnly}
@@ -25,160 +26,183 @@ import forms.declaration.RepresentativeDetailsSpec.{
   correctRepresentativeDetailsAddressOnly,
   correctRepresentativeDetailsEORIOnly
 }
-import helpers.views.declaration.summary.PartiesMessages
 import models.declaration.DeclarationAdditionalActorsDataSpec.correctAdditionalActorsData
 import models.declaration.{DeclarationHoldersData, Parties}
+import play.api.i18n.MessagesApi
 import play.twirl.api.Html
-import views.declaration.spec.AppViewSpec
+import services.cache.ExportsTestData
+import unit.tools.Stubs
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.parties_section
 import views.tags.ViewTest
 
 @ViewTest
-class PartiesSectionViewSpec extends AppViewSpec with PartiesMessages {
+class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+
+  private lazy val emptyView = createView()
 
   private def createView(partiesOpt: Option[Parties] = None): Html = parties_section(partiesOpt)
 
   private def extractAddress(address: Address): String =
     Seq(address.fullName, address.addressLine, address.townOrCity, address.postCode, address.country).mkString(" ")
 
-  private lazy val emptyView = createView()
-
   "Parties Section View" when {
+
+    "have correct message keys" in {
+      val messages = instanceOf[MessagesApi].preferred(request)
+
+      messages must haveTranslationFor("supplementary.summary.parties.header")
+      messages must haveTranslationFor("supplementary.summary.parties.exporterId")
+      messages must haveTranslationFor("supplementary.summary.parties.exporterAddress")
+      messages must haveTranslationFor("supplementary.summary.parties.consigneeId")
+      messages must haveTranslationFor("supplementary.summary.parties.consigneeAddress")
+      messages must haveTranslationFor("supplementary.summary.parties.declarantId")
+      messages must haveTranslationFor("supplementary.summary.parties.declarantAddress")
+      messages must haveTranslationFor("supplementary.summary.parties.representativeId")
+      messages must haveTranslationFor("supplementary.summary.parties.representativeAddress")
+      messages must haveTranslationFor("supplementary.summary.parties.representationType")
+      messages must haveTranslationFor("supplementary.summary.parties.idStatusNumberAuthorisationCode")
+      messages must haveTranslationFor("supplementary.summary.parties.authorizedPartyEori")
+      messages must haveTranslationFor("supplementary.summary.parties.additionalParties.header")
+      messages must haveTranslationFor("supplementary.summary.parties.additionalParties.id")
+      messages must haveTranslationFor("supplementary.summary.parties.additionalParties.type")
+    }
 
     "provided with empty Parties data" should {
 
       "display Parties header" in {
-
-        emptyView.select("table:nth-child(1)>caption").text() must equal(messages(header))
+        emptyView.select("table:nth-child(1)>caption").text() mustBe "supplementary.summary.parties.header"
       }
 
       "display 'Exporter ID' table row with no value" in {
 
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(1)")
-          .text() must equal(messages(exporterId))
+          .text() mustBe "supplementary.summary.parties.exporterId"
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(2)")
-          .text() must equal("")
+          .text() mustBe ""
       }
 
       "display 'Exporter address' table row with no value" in {
 
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(2)>td:nth-child(1)")
-          .text() must equal(messages(exporterAddress))
+          .text() mustBe "supplementary.summary.parties.exporterAddress"
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(2)>td:nth-child(2)")
-          .text() must equal("")
+          .text() mustBe ""
       }
 
       "display 'Consignee ID' table row with no value" in {
 
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(3)>td:nth-child(1)")
-          .text() must equal(messages(consigneeId))
+          .text() mustBe "supplementary.summary.parties.consigneeId"
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(3)>td:nth-child(2)")
-          .text() must equal("")
+          .text() mustBe ""
       }
 
       "display 'Consignee address' table row with no value" in {
 
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(4)>td:nth-child(1)")
-          .text() must equal(messages(consigneeAddress))
+          .text() mustBe "supplementary.summary.parties.consigneeAddress"
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(4)>td:nth-child(2)")
-          .text() must equal("")
+          .text() mustBe ""
       }
 
       "display 'Declarant ID' table row with no value" in {
 
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(5)>td:nth-child(1)")
-          .text() must equal(messages(declarantId))
+          .text() mustBe "supplementary.summary.parties.declarantId"
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(5)>td:nth-child(2)")
-          .text() must equal("")
+          .text() mustBe ""
       }
 
       "display 'Declarant address' table row with no value" in {
 
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(6)>td:nth-child(1)")
-          .text() must equal(messages(declarantAddress))
+          .text() mustBe "supplementary.summary.parties.declarantAddress"
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(6)>td:nth-child(2)")
-          .text() must equal("")
+          .text() mustBe ""
       }
 
       "display 'Representative ID' table row with no value" in {
 
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(1)")
-          .text() must equal(messages(representativeId))
+          .text() mustBe "supplementary.summary.parties.representativeId"
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(2)")
-          .text() must equal("")
+          .text() mustBe ""
       }
 
       "display 'Representative address' table row with no value" in {
 
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(1)")
-          .text() must equal(messages(representativeAddress))
+          .text() mustBe "supplementary.summary.parties.representativeAddress"
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(2)")
-          .text() must equal("")
+          .text() mustBe ""
       }
 
       "display 'Representation type' table row with no value" in {
 
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(1)")
-          .text() must equal(messages(representationType))
+          .text() mustBe "supplementary.summary.parties.representationType"
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(2)")
-          .text() must equal("")
+          .text() mustBe ""
       }
 
       "display 'Authorised party EORI' table row with no value" in {
 
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(10)>td:nth-child(1)")
-          .text() must equal(messages(authorizedPartyEori))
+          .text() mustBe "supplementary.summary.parties.authorizedPartyEori"
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(10)>td:nth-child(2)")
-          .text() must equal("")
+          .text() mustBe ""
       }
 
       "display 'ID status number authorisation code' table row with no value" in {
 
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(11)>td:nth-child(1)")
-          .text() must equal(messages(idStatusNumberAuthorisationCode))
+          .text() mustBe "supplementary.summary.parties.idStatusNumberAuthorisationCode"
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(11)>td:nth-child(2)")
-          .text() must equal("")
+          .text() mustBe ""
       }
 
       "display Additional Parties header" in {
 
-        emptyView.select("table:nth-child(2)>caption:nth-child(1)").text() must equal(messages(additionalPartiesHeader))
+        emptyView
+          .select("table:nth-child(2)>caption:nth-child(1)")
+          .text() mustBe "supplementary.summary.parties.additionalParties.header"
       }
 
       "display 'Additional parties ID' table header" in {
 
         emptyView
           .select(".form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(1)")
-          .text() must equal(messages(additionalPartiesId))
+          .text() mustBe "supplementary.summary.parties.additionalParties.id"
       }
 
       "display 'Additional parties type' table header" in {
 
         emptyView
           .select(".form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(2)")
-          .text() must equal(messages(additionalPartiesType))
+          .text() mustBe "supplementary.summary.parties.additionalParties.type"
       }
 
       "not display data row in Additional Parties table" in {
@@ -197,10 +221,10 @@ class PartiesSectionViewSpec extends AppViewSpec with PartiesMessages {
 
         view
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(1)")
-          .text() must equal(messages(exporterId))
+          .text() mustBe "supplementary.summary.parties.exporterId"
         view
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(2)")
-          .text() must equal(exporterDetails.details.eori.get)
+          .text() mustBe exporterDetails.details.eori.get
       }
 
       "display 'Exporter address' table row with proper value" in {
@@ -210,7 +234,7 @@ class PartiesSectionViewSpec extends AppViewSpec with PartiesMessages {
 
         view
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(2)>td:nth-child(1)")
-          .text() must equal(messages(exporterAddress))
+          .text() mustBe "supplementary.summary.parties.exporterAddress"
         view
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(2)>td:nth-child(2)")
           .text() must equal(extractAddress(exporterDetails.details.address.get))
@@ -223,7 +247,7 @@ class PartiesSectionViewSpec extends AppViewSpec with PartiesMessages {
 
         view
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(3)>td:nth-child(1)")
-          .text() must equal(messages(consigneeId))
+          .text() mustBe "supplementary.summary.parties.consigneeId"
         view
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(3)>td:nth-child(2)")
           .text() must equal(consigneeDetails.details.eori.get)
@@ -236,7 +260,7 @@ class PartiesSectionViewSpec extends AppViewSpec with PartiesMessages {
 
         view
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(4)>td:nth-child(1)")
-          .text() must equal(messages(consigneeAddress))
+          .text() mustBe "supplementary.summary.parties.consigneeAddress"
         view
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(4)>td:nth-child(2)")
           .text() must equal(extractAddress(consigneeDetails.details.address.get))
@@ -249,7 +273,7 @@ class PartiesSectionViewSpec extends AppViewSpec with PartiesMessages {
 
         view
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(5)>td:nth-child(1)")
-          .text() must equal(messages(declarantId))
+          .text() mustBe "supplementary.summary.parties.declarantId"
         view
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(5)>td:nth-child(2)")
           .text() must equal(declarantDetails.details.eori.get)
@@ -262,7 +286,7 @@ class PartiesSectionViewSpec extends AppViewSpec with PartiesMessages {
 
         view
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(6)>td:nth-child(1)")
-          .text() must equal(messages(declarantAddress))
+          .text() mustBe "supplementary.summary.parties.declarantAddress"
         view
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(6)>td:nth-child(2)")
           .text() must equal(extractAddress(declarantDetails.details.address.get))
@@ -275,7 +299,7 @@ class PartiesSectionViewSpec extends AppViewSpec with PartiesMessages {
 
         view
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(1)")
-          .text() must equal(messages(representativeId))
+          .text() mustBe "supplementary.summary.parties.representativeId"
         view
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(2)")
           .text() must equal(representativeDetails.details.flatMap(_.eori).get)
@@ -288,7 +312,7 @@ class PartiesSectionViewSpec extends AppViewSpec with PartiesMessages {
 
         view
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(1)")
-          .text() must equal(messages(representativeAddress))
+          .text() mustBe "supplementary.summary.parties.representativeAddress"
         view
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(2)")
           .text() must equal(extractAddress(representativeDetails.details.flatMap(_.address).get))
@@ -301,7 +325,7 @@ class PartiesSectionViewSpec extends AppViewSpec with PartiesMessages {
 
         view
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(1)")
-          .text() must equal(messages(representationType))
+          .text() mustBe "supplementary.summary.parties.representationType"
         view
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(2)")
           .text() must equal(representativeDetails.statusCode.get)
@@ -315,7 +339,7 @@ class PartiesSectionViewSpec extends AppViewSpec with PartiesMessages {
 
         view
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(10)>td:nth-child(1)")
-          .text() must equal(messages(authorizedPartyEori))
+          .text() mustBe "supplementary.summary.parties.authorizedPartyEori"
         view
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(10)>td:nth-child(2)")
           .text() must equal(declarationHoldersData.holders.head.eori.get)
@@ -329,10 +353,10 @@ class PartiesSectionViewSpec extends AppViewSpec with PartiesMessages {
 
         view
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(11)>td:nth-child(1)")
-          .text() must equal(messages(idStatusNumberAuthorisationCode))
+          .text() mustBe "supplementary.summary.parties.idStatusNumberAuthorisationCode"
         view
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(11)>td:nth-child(2)")
-          .text() must equal(declarationHoldersData.holders.head.authorisationTypeCode.get)
+          .text() mustBe declarationHoldersData.holders.head.authorisationTypeCode.get
       }
 
       "display 2 data rows in Additional Parties table" in {
@@ -342,16 +366,16 @@ class PartiesSectionViewSpec extends AppViewSpec with PartiesMessages {
 
         view
           .select(".form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(1)")
-          .text() must equal(additionalActorsData.actors.head.eori.get)
+          .text() mustBe additionalActorsData.actors.head.eori.get
         view
           .select(".form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(2)")
-          .text() must equal(additionalActorsData.actors.head.partyType.get)
+          .text() mustBe additionalActorsData.actors.head.partyType.get
         view
           .select(".form-group>tbody:nth-child(2)>tr:nth-child(2)>td:nth-child(1)")
-          .text() must equal(additionalActorsData.actors(1).eori.get)
+          .text() mustBe additionalActorsData.actors(1).eori.get
         view
           .select(".form-group>tbody:nth-child(2)>tr:nth-child(2)>td:nth-child(2)")
-          .text() must equal(additionalActorsData.actors(1).partyType.get)
+          .text() mustBe additionalActorsData.actors(1).partyType.get
       }
     }
   }

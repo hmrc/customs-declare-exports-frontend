@@ -18,35 +18,52 @@ package views
 
 import java.time.LocalDateTime
 
+import base.Injector
 import controllers.routes
-import helpers.views.declaration.{CommonMessages, SubmissionsMessages}
 import models.declaration.notifications.Notification
-import models.declaration.submissions.{Action, Submission}
 import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
+import models.declaration.submissions.{Action, Submission}
 import org.jsoup.nodes.Element
+import play.api.i18n.MessagesApi
 import play.twirl.api.Html
-import views.declaration.spec.AppViewSpec
+import services.cache.ExportsTestData
+import unit.tools.Stubs
+import views.declaration.spec.UnitViewSpec
 import views.html.submissions
 import views.tags.ViewTest
 
 @ViewTest
-class SubmissionsViewSpec extends AppViewSpec with SubmissionsMessages with CommonMessages {
+class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  private val submissionsPage = app.injector.instanceOf[submissions]
-  private def createView(data: Seq[(Submission, Seq[Notification])] = Seq.empty): Html = submissionsPage(data)
+  private val page = new submissions(mainTemplate)
+  private def createView(data: Seq[(Submission, Seq[Notification])] = Seq.empty): Html = page(data)
 
   "Submission View" should {
 
-    "display page messages" in {
-      val view = createView()
+    "have proper messages for labels" in {
+      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
+      messages must haveTranslationFor("supplementary.totalNumberOfItems.title")
+      messages must haveTranslationFor("submissions.title")
+      messages must haveTranslationFor("submissions.eori")
+      messages must haveTranslationFor("submissions.conversationId")
+      messages must haveTranslationFor("submissions.ducr")
+      messages must haveTranslationFor("submissions.lrn")
+      messages must haveTranslationFor("submissions.mrn")
+      messages must haveTranslationFor("submissions.submittedTimestamp")
+      messages must haveTranslationFor("submissions.status")
+      messages must haveTranslationFor("submissions.noOfNotifications")
+    }
 
-      view.select("title").text() must be(messages(title))
-      tableCell(view)(0, 0).text() must be(messages(ducr))
-      tableCell(view)(0, 1).text() must be(messages(lrn))
-      tableCell(view)(0, 2).text() must be(messages(mrn))
-      tableCell(view)(0, 3).text() must be(messages(submittedTimestamp))
-      tableCell(view)(0, 4).text() must be(messages(status))
-      tableCell(view)(0, 5).text() must be(messages(notificationCount))
+    val view = createView()
+
+    "display page messages" in {
+      view.select("title").text() mustBe "submissions.title"
+      tableCell(view)(0, 0).text() mustBe "submissions.ducr"
+      tableCell(view)(0, 1).text() mustBe "submissions.lrn"
+      tableCell(view)(0, 2).text() mustBe "submissions.mrn"
+      tableCell(view)(0, 3).text() mustBe "submissions.submittedTimestamp"
+      tableCell(view)(0, 4).text() mustBe "submissions.status"
+      tableCell(view)(0, 5).text() mustBe "submissions.noOfNotifications"
     }
 
     "display page submissions" when {
@@ -136,18 +153,16 @@ class SubmissionsViewSpec extends AppViewSpec with SubmissionsMessages with Comm
     }
 
     "display 'Back' button that links to 'Choice' page" in {
-      val backButton = createView().getElementById("link-back")
+      val backButton = view.getElementById("link-back")
 
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be(routes.ChoiceController.displayPage().url)
+      backButton.text() mustBe "site.back"
+      backButton.attr("href") mustBe routes.ChoiceController.displayPage().url
     }
 
     "display 'Start a new declaration' link on page" in {
-      val view = createView()
-
       val startButton = view.select(".button")
-      startButton.text() must be(messages(startNewDeclaration))
-      startButton.attr("href") must be(routes.ChoiceController.displayPage().url)
+      startButton.text() mustBe "supplementary.startNewDec"
+      startButton.attr("href") mustBe routes.ChoiceController.displayPage().url
     }
   }
 

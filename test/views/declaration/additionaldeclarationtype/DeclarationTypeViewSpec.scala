@@ -16,7 +16,9 @@
 
 package views.declaration.additionaldeclarationtype
 
-import controllers.util.{SaveAndContinue, SaveAndReturn}
+import base.Injector
+import controllers.declaration.routes
+import controllers.util.SaveAndReturn
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeStandardDec.AllowedAdditionalDeclarationTypes._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes._
@@ -29,19 +31,22 @@ import helpers.views.declaration.{CommonMessages, DeclarationTypeMessages}
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.twirl.api.Html
-import views.declaration.spec.AppViewSpec
+import services.cache.ExportsTestData
+import unit.tools.Stubs
+import views.declaration.spec.UnitViewSpec
 import views.html.declaration.additionaldeclarationtype.declaration_type
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarationTypeViewSpec extends AppViewSpec with DeclarationTypeMessages with CommonMessages {
+class DeclarationTypeViewSpec
+    extends UnitViewSpec with ExportsTestData with DeclarationTypeMessages with CommonMessages with Stubs
+    with Injector {
 
   private val formStandard: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeStandardDec.form()
   private val formSupplementary: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeSupplementaryDec.form()
-  private val declarationTypePage = app.injector.instanceOf[declaration_type]
-  private def createView(form: Form[AdditionalDeclarationType], journeyType: String): Html =
-    declarationTypePage(Mode.Normal, form)(fakeJourneyRequest(journeyType), messages)
+  private val declarationTypePage = new declaration_type(mainTemplate)
+  private def createView(form: Form[AdditionalDeclarationType], journeyType: String): Document =
+    declarationTypePage(Mode.Normal, form)(journeyRequest(journeyType), messages)
 
   "Declaration Type View on empty page" should {
 
@@ -49,12 +54,12 @@ class DeclarationTypeViewSpec extends AppViewSpec with DeclarationTypeMessages w
 
       "used for Standard Declaration journey" in {
 
-        createView(formStandard, StandardDec).select("title").text() must be(messages(title))
+        createView(formStandard, StandardDec).select("title").text() mustBe messages(title)
       }
 
       "used for Supplementary Declaration journey" in {
 
-        createView(formSupplementary, SupplementaryDec).select("title").text() must be(messages(title))
+        createView(formSupplementary, SupplementaryDec).select("title").text() mustBe messages(title)
       }
     }
 
@@ -63,18 +68,16 @@ class DeclarationTypeViewSpec extends AppViewSpec with DeclarationTypeMessages w
       "used for Standard Declaration journey" in {
         val backButton = createView(formStandard, StandardDec).getElementById("link-back")
 
-        backButton.text() must be(messages(backCaption))
-        backButton.attr("href") must be("/customs-declare-exports/declaration/dispatch-location")
-
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.DispatchLocationController.displayPage().url
       }
 
       "used for Supplementary Declaration journey" in {
 
         val backButton = createView(formSupplementary, SupplementaryDec).getElementById("link-back")
 
-        backButton.text() must be(messages(backCaption))
-        backButton.attr("href") must be("/customs-declare-exports/declaration/dispatch-location")
-
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.DispatchLocationController.displayPage().url
       }
     }
 
@@ -82,12 +85,12 @@ class DeclarationTypeViewSpec extends AppViewSpec with DeclarationTypeMessages w
 
       "used for Standard Declaration journey" in {
         val view: Document = createView(formStandard, StandardDec)
-        view.getElementById("submit").text() must be(messages(saveAndContinueCaption))
+        view.getElementById("submit").text() mustBe messages(saveAndContinueCaption)
       }
 
       "used for Supplementary Declaration journey" in {
         val view: Document = createView(formSupplementary, SupplementaryDec)
-        view.getElementById("submit").text() must be(messages(saveAndContinueCaption))
+        view.getElementById("submit").text() mustBe messages(saveAndContinueCaption)
       }
     }
 
@@ -96,14 +99,14 @@ class DeclarationTypeViewSpec extends AppViewSpec with DeclarationTypeMessages w
       "used for Standard Declaration journey" in {
         val view: Document = createView(formStandard, StandardDec)
         val button = view.getElementById("submit_and_return")
-        button.text() must be(messages(saveAndReturnCaption))
+        button.text() mustBe messages(saveAndReturnCaption)
         button must haveAttribute("name", SaveAndReturn.toString)
       }
 
       "used for Supplementary Declaration journey" in {
         val view: Document = createView(formSupplementary, SupplementaryDec)
         val button = view.getElementById("submit_and_return")
-        button.text() must be(messages(saveAndReturnCaption))
+        button.text() mustBe messages(saveAndReturnCaption)
         button must haveAttribute("name", SaveAndReturn.toString)
       }
     }
@@ -114,14 +117,14 @@ class DeclarationTypeViewSpec extends AppViewSpec with DeclarationTypeMessages w
 
         val view = createView(formStandard, StandardDec)
 
-        view.getElementById("title").text() must be(messages(headerStandardDec))
+        view.getElementById("title").text() mustBe messages(headerStandardDec)
       }
 
       "used for Supplementary Declaration journey" in {
 
         val view = createView(formSupplementary, SupplementaryDec)
 
-        view.getElementById("title").text() must be(messages(headerSupplementaryDec))
+        view.getElementById("title").text() mustBe messages(headerSupplementaryDec)
       }
     }
 
@@ -132,16 +135,16 @@ class DeclarationTypeViewSpec extends AppViewSpec with DeclarationTypeMessages w
         val view = createView(formStandard.fill(AdditionalDeclarationType("")), StandardDec)
 
         val optionOne = view.getElementById("PreLodged")
-        optionOne.attr("checked") must be("")
+        optionOne.attr("checked") mustBe ""
 
         val optionOneLabel = view.getElementById("PreLodged-label")
-        optionOneLabel.text() must be(messages(preLodged))
+        optionOneLabel.text() mustBe messages(preLodged)
 
         val optionTwo = view.getElementById("Frontier")
-        optionTwo.attr("checked") must be("")
+        optionTwo.attr("checked") mustBe ""
 
         val optionTwoLabel = view.getElementById("Frontier-label")
-        optionTwoLabel.text() must be(messages(frontier))
+        optionTwoLabel.text() mustBe messages(frontier)
       }
 
       "used for Supplementary Declaration journey" in {
@@ -149,16 +152,16 @@ class DeclarationTypeViewSpec extends AppViewSpec with DeclarationTypeMessages w
         val view = createView(formSupplementary.fill(AdditionalDeclarationType("")), SupplementaryDec)
 
         val optionOne = view.getElementById("Simplified")
-        optionOne.attr("checked") must be("")
+        optionOne.attr("checked") mustBe ""
 
         val optionOneLabel = view.select("#additionalDeclarationType>div:nth-child(2)>label")
-        optionOneLabel.text() must be(messages(simplified))
+        optionOneLabel.text() mustBe messages(simplified)
 
         val optionTwo = view.getElementById("Standard")
-        optionTwo.attr("checked") must be("")
+        optionTwo.attr("checked") mustBe ""
 
         val optionTwoLabel = view.select("#additionalDeclarationType>div:nth-child(3)>label")
-        optionTwoLabel.text() must be(messages(standard))
+        optionTwoLabel.text() mustBe messages(standard)
       }
     }
 
@@ -173,9 +176,9 @@ class DeclarationTypeViewSpec extends AppViewSpec with DeclarationTypeMessages w
         val view = createView(formStandard.bind(Map[String, String]()), StandardDec)
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, messages(errorMessageEmpty), "#additionalDeclarationType")
+        view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
 
-        view.select("#error-message-additionalDeclarationType-input").text() must be(messages(errorMessageEmpty))
+        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages(errorMessageEmpty)
       }
 
       "used for Supplementary Declaration journey" in {
@@ -183,9 +186,9 @@ class DeclarationTypeViewSpec extends AppViewSpec with DeclarationTypeMessages w
         val view = createView(formSupplementary.bind(Map[String, String]()), SupplementaryDec)
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, messages(errorMessageEmpty), "#additionalDeclarationType")
+        view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
 
-        view.select("#error-message-additionalDeclarationType-input").text() must be(messages(errorMessageEmpty))
+        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages(errorMessageEmpty)
       }
     }
 
@@ -196,9 +199,9 @@ class DeclarationTypeViewSpec extends AppViewSpec with DeclarationTypeMessages w
         val view = createView(formStandard.fillAndValidate(AdditionalDeclarationType("#")), StandardDec)
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, messages(errorMessageIncorrect), "#additionalDeclarationType")
+        view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
 
-        view.select("#error-message-additionalDeclarationType-input").text() must be(messages(errorMessageIncorrect))
+        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages(errorMessageIncorrect)
       }
 
       "used for Supplementary Declaration journey" in {
@@ -206,9 +209,9 @@ class DeclarationTypeViewSpec extends AppViewSpec with DeclarationTypeMessages w
         val view = createView(formSupplementary.fillAndValidate(AdditionalDeclarationType("#")), SupplementaryDec)
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, messages(errorMessageIncorrect), "#additionalDeclarationType")
+        view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
 
-        view.select("#error-message-additionalDeclarationType-input").text() must be(messages(errorMessageIncorrect))
+        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages(errorMessageIncorrect)
       }
     }
 
@@ -223,10 +226,10 @@ class DeclarationTypeViewSpec extends AppViewSpec with DeclarationTypeMessages w
         val view = createView(formStandard.fill(AdditionalDeclarationType(PreLodged)), StandardDec)
 
         val optionOne = view.getElementById("PreLodged")
-        optionOne.attr("checked") must be("checked")
+        optionOne.attr("checked") mustBe "checked"
 
         val optionTwo = view.getElementById("Frontier")
-        optionTwo.attr("checked") must be("")
+        optionTwo.attr("checked") mustBe ""
       }
 
       "used for Supplementary Declaration journey - Simplified (Y)" in {
@@ -234,10 +237,10 @@ class DeclarationTypeViewSpec extends AppViewSpec with DeclarationTypeMessages w
         val view = createView(formSupplementary.fill(AdditionalDeclarationType(Simplified)), SupplementaryDec)
 
         val optionOne = view.getElementById("Simplified")
-        optionOne.attr("checked") must be("checked")
+        optionOne.attr("checked") mustBe "checked"
 
         val optionTwo = view.getElementById("Standard")
-        optionTwo.attr("checked") must be("")
+        optionTwo.attr("checked") mustBe ""
       }
     }
 
@@ -248,10 +251,10 @@ class DeclarationTypeViewSpec extends AppViewSpec with DeclarationTypeMessages w
         val view = createView(formStandard.fill(AdditionalDeclarationType(Frontier)), StandardDec)
 
         val optionOne = view.getElementById("PreLodged")
-        optionOne.attr("checked") must be("")
+        optionOne.attr("checked") mustBe ""
 
         val optionTwo = view.getElementById("Frontier")
-        optionTwo.attr("checked") must be("checked")
+        optionTwo.attr("checked") mustBe "checked"
       }
 
       "used for Supplementary Declaration journey - Standard (Z)" in {
@@ -259,10 +262,10 @@ class DeclarationTypeViewSpec extends AppViewSpec with DeclarationTypeMessages w
         val view = createView(formSupplementary.fill(AdditionalDeclarationType(Standard)), SupplementaryDec)
 
         val optionOne = view.getElementById("Simplified")
-        optionOne.attr("checked") must be("")
+        optionOne.attr("checked") mustBe ""
 
         val optionTwo = view.getElementById("Standard")
-        optionTwo.attr("checked") must be("checked")
+        optionTwo.attr("checked") mustBe "checked"
       }
     }
 
