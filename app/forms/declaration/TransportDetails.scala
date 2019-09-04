@@ -15,6 +15,8 @@
  */
 
 package forms.declaration
+import forms.Mapping
+import forms.Mapping.requiredRadio
 import forms.declaration.TransportCodes._
 import play.api.data.Forms.{boolean, mapping, optional, text}
 import play.api.data.{Form, Mapping}
@@ -36,20 +38,6 @@ object TransportDetails {
 
   implicit val formats = Json.format[TransportDetails]
 
-  /*
-  TODO Refactor this field to not use mandatory optional
-  "meansOfTransportCrossingTheBorderType" -> optional(
-      text()
-        .verifying(
-          "supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.incorrect",
-          isEmpty or isContainedIn(allowedMeansOfTransportTypeCodes)
-        )
-    ).verifying("supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty", _.isDefined)
-      .transform[String](
-        value => value.getOrElse(""),
-        meansOfTransportCrossingTheBorderType => Some(meansOfTransportCrossingTheBorderType)
-      )
-   */
   val formMapping: Mapping[TransportDetails] = mapping(
     "meansOfTransportCrossingTheBorderNationality" -> optional(
       text()
@@ -61,17 +49,7 @@ object TransportDetails {
     "container" -> optional(boolean)
       .verifying("supplementary.transportInfo.container.error.empty", _.isDefined)
       .transform(_.get, (b: Boolean) => Some(b)),
-    "meansOfTransportCrossingTheBorderType" -> optional(
-      text()
-        .verifying(
-          "supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.incorrect",
-          isEmpty or isContainedIn(allowedMeansOfTransportTypeCodes)
-        )
-    ).verifying("supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty", _.isDefined)
-      .transform[String](
-        value => value.getOrElse(""),
-        meansOfTransportCrossingTheBorderType => Some(meansOfTransportCrossingTheBorderType)
-      ),
+    "meansOfTransportCrossingTheBorderType" -> requiredRadio("supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty"),
     "meansOfTransportCrossingTheBorderIDNumber" -> optional(
       text()
         .verifying("supplementary.meansOfTransportCrossingTheBorderIDNumber.error.length", noLongerThan(35))
