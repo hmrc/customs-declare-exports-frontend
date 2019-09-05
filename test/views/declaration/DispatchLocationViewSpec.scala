@@ -71,13 +71,13 @@ class DispatchLocationViewSpec
       val view = createView(DispatchLocation.form().fill(DispatchLocation("")))
 
       val optionOne = view.getElementById("OutsideEU")
-      optionOne.attr("checked") mustBe ""
+      optionOne.attr("checked") mustBe empty
 
       val optionOneLabel = view.getElementById("OutsideEU-label")
       optionOneLabel.text() mustBe messages(outsideEu)
 
       val optionTwo = view.getElementById("SpecialFiscalTerritory")
-      optionTwo.attr("checked") mustBe ""
+      optionTwo.attr("checked") mustBe empty
 
       val optionTwoLabel = view.getElementById("SpecialFiscalTerritory-label")
       optionTwoLabel.text() mustBe messages(specialFiscalTerritory)
@@ -151,7 +151,7 @@ class DispatchLocationViewSpec
       optionOne.attr("checked") mustBe "checked"
 
       val optionTwo = view.getElementById("SpecialFiscalTerritory")
-      optionTwo.attr("checked") mustBe ""
+      optionTwo.attr("checked") mustBe empty
     }
 
     "display selected second radio button - Fiscal Territory (CO)" in {
@@ -159,7 +159,7 @@ class DispatchLocationViewSpec
       val view = createView(DispatchLocation.form().fill(DispatchLocation("CO")))
 
       val optionOne = view.getElementById("OutsideEU")
-      optionOne.attr("checked") mustBe ""
+      optionOne.attr("checked") mustBe empty
 
       val optionTwo = view.getElementById("SpecialFiscalTerritory")
       optionTwo.attr("checked") mustBe "checked"

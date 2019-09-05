@@ -76,7 +76,7 @@ class AdditionalInformationViewSpec
       val view = createView()
 
       view.getElementById("code-label").text() mustBe messages(code)
-      view.getElementById("code").attr("value") mustBe ""
+      view.getElementById("code").attr("value") mustBe empty
     }
 
     "display empty input with label for Description" in {
@@ -84,7 +84,7 @@ class AdditionalInformationViewSpec
       val view = createView()
 
       view.getElementById("description-label").text() mustBe messages(description)
-      view.getElementById("description").attr("value") mustBe ""
+      view.getElementById("description").attr("value") mustBe empty
     }
 
     "display 'Back' button that links to 'Commodity measure' page" in {
@@ -127,14 +127,14 @@ class AdditionalInformationViewSpec
       val view = createView(AdditionalInformation.form.fill(AdditionalInformation("12345", "")))
 
       view.getElementById("code").attr("value") mustBe "12345"
-      view.getElementById("description").text() mustBe ""
+      view.getElementById("description").text() mustBe empty
     }
 
     "display data in description input" in {
 
       val view = createView(AdditionalInformation.form.fill(AdditionalInformation("", "12345")))
 
-      view.getElementById("code").attr("value") mustBe ""
+      view.getElementById("code").attr("value") mustBe empty
       view.getElementById("description").text() mustBe "12345"
     }
 

@@ -81,7 +81,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Stub
           .text() mustBe "supplementary.summary.parties.exporterId"
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(2)")
-          .text() mustBe ""
+          .text() mustBe empty
       }
 
       "display 'Exporter address' table row with no value" in {
@@ -91,7 +91,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Stub
           .text() mustBe "supplementary.summary.parties.exporterAddress"
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(2)>td:nth-child(2)")
-          .text() mustBe ""
+          .text() mustBe empty
       }
 
       "display 'Consignee ID' table row with no value" in {
@@ -101,7 +101,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Stub
           .text() mustBe "supplementary.summary.parties.consigneeId"
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(3)>td:nth-child(2)")
-          .text() mustBe ""
+          .text() mustBe empty
       }
 
       "display 'Consignee address' table row with no value" in {
@@ -111,7 +111,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Stub
           .text() mustBe "supplementary.summary.parties.consigneeAddress"
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(4)>td:nth-child(2)")
-          .text() mustBe ""
+          .text() mustBe empty
       }
 
       "display 'Declarant ID' table row with no value" in {
@@ -121,7 +121,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Stub
           .text() mustBe "supplementary.summary.parties.declarantId"
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(5)>td:nth-child(2)")
-          .text() mustBe ""
+          .text() mustBe empty
       }
 
       "display 'Declarant address' table row with no value" in {
@@ -131,7 +131,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Stub
           .text() mustBe "supplementary.summary.parties.declarantAddress"
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(6)>td:nth-child(2)")
-          .text() mustBe ""
+          .text() mustBe empty
       }
 
       "display 'Representative ID' table row with no value" in {
@@ -141,7 +141,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Stub
           .text() mustBe "supplementary.summary.parties.representativeId"
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(2)")
-          .text() mustBe ""
+          .text() mustBe empty
       }
 
       "display 'Representative address' table row with no value" in {
@@ -151,7 +151,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Stub
           .text() mustBe "supplementary.summary.parties.representativeAddress"
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(2)")
-          .text() mustBe ""
+          .text() mustBe empty
       }
 
       "display 'Representation type' table row with no value" in {
@@ -161,7 +161,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Stub
           .text() mustBe "supplementary.summary.parties.representationType"
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(2)")
-          .text() mustBe ""
+          .text() mustBe empty
       }
 
       "display 'Authorised party EORI' table row with no value" in {
@@ -171,7 +171,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Stub
           .text() mustBe "supplementary.summary.parties.authorizedPartyEori"
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(10)>td:nth-child(2)")
-          .text() mustBe ""
+          .text() mustBe empty
       }
 
       "display 'ID status number authorisation code' table row with no value" in {
@@ -181,7 +181,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Stub
           .text() mustBe "supplementary.summary.parties.idStatusNumberAuthorisationCode"
         emptyView
           .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(11)>td:nth-child(2)")
-          .text() mustBe ""
+          .text() mustBe empty
       }
 
       "display Additional Parties header" in {

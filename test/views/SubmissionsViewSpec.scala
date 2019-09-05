@@ -115,9 +115,9 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
         val submissionWithOptionalFieldsEmpty = submission.copy(ducr = None, mrn = None)
         val view = createView(Seq(submissionWithOptionalFieldsEmpty -> Seq(notification)))
 
-        tableCell(view)(1, 0).text() mustBe ""
+        tableCell(view)(1, 0).text() mustBe empty
         tableCell(view)(1, 1).text() mustBe "lrn"
-        tableCell(view)(1, 2).text() mustBe ""
+        tableCell(view)(1, 2).text() mustBe empty
         tableCell(view)(1, 3).text() mustBe "2019-01-01 00:00"
         tableCell(view)(1, 4).text() mustBe "Accepted"
         tableCell(view)(1, 5).text() mustBe "1"
@@ -148,7 +148,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
         val submissionWithMissingSubmitAction = submission.copy(actions = Seq(actionCancellation))
         val view = createView(Seq(submissionWithMissingSubmitAction -> Seq(notification)))
 
-        tableCell(view)(1, 3).text() mustBe ""
+        tableCell(view)(1, 3).text() mustBe empty
       }
     }
 

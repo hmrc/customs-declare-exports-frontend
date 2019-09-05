@@ -65,7 +65,7 @@ class CarrierDetailsViewSpec
 
       view.getElementById("details_eori-label").text() mustBe messages(eoriInfo)
       view.getElementById("details_eori-hint").text() mustBe messages(carrierEoriHint)
-      view.getElementById("details_eori").attr("value") mustBe ""
+      view.getElementById("details_eori").attr("value") mustBe empty
     }
 
     "display empty input with label for Full name" in {
@@ -73,7 +73,7 @@ class CarrierDetailsViewSpec
       val view = createView()
 
       view.getElementById("details_address_fullName-label").text() mustBe messages(fullName)
-      view.getElementById("details_address_fullName").attr("value") mustBe ""
+      view.getElementById("details_address_fullName").attr("value") mustBe empty
     }
 
     "display address label" in {
@@ -81,7 +81,7 @@ class CarrierDetailsViewSpec
       val view = createView()
 
       view.getElementById("address-header").text() mustBe messages(addressInfo)
-      view.getElementById("details_address_fullName").attr("value") mustBe ""
+      view.getElementById("details_address_fullName").attr("value") mustBe empty
     }
 
     "display empty input with label for Address" in {
@@ -89,7 +89,7 @@ class CarrierDetailsViewSpec
       val view = createView()
 
       view.getElementById("details_address_addressLine-label").text() mustBe messages(addressLine)
-      view.getElementById("details_address_addressLine").attr("value") mustBe ""
+      view.getElementById("details_address_addressLine").attr("value") mustBe empty
     }
 
     "display empty input with label for Town or City" in {
@@ -97,7 +97,7 @@ class CarrierDetailsViewSpec
       val view = createView()
 
       view.getElementById("details_address_townOrCity-label").text() mustBe messages(townOrCity)
-      view.getElementById("details_address_townOrCity").attr("value") mustBe ""
+      view.getElementById("details_address_townOrCity").attr("value") mustBe empty
     }
 
     "display empty input with label for Postcode" in {
@@ -105,7 +105,7 @@ class CarrierDetailsViewSpec
       val view = createView()
 
       view.getElementById("details_address_postCode-label").text() mustBe messages(postCode)
-      view.getElementById("details_address_postCode").attr("value") mustBe ""
+      view.getElementById("details_address_postCode").attr("value") mustBe empty
     }
 
     "display empty input with label for Country" in {
@@ -113,7 +113,7 @@ class CarrierDetailsViewSpec
       val view = createView()
 
       view.getElementById("details.address.country-label").text() mustBe "supplementary.address.country"
-      view.getElementById("details.address.country").attr("value") mustBe ""
+      view.getElementById("details.address.country").attr("value") mustBe empty
     }
 
     "display 'Back' button that links to 'Representative Details' page" in {
@@ -481,11 +481,11 @@ class CarrierDetailsViewSpec
       val view = createView(form)
 
       view.getElementById("details_eori").attr("value") mustBe "1234"
-      view.getElementById("details_address_fullName").attr("value") mustBe ""
-      view.getElementById("details_address_addressLine").attr("value") mustBe ""
-      view.getElementById("details_address_townOrCity").attr("value") mustBe ""
-      view.getElementById("details_address_postCode").attr("value") mustBe ""
-      view.getElementById("details.address.country").attr("value") mustBe ""
+      view.getElementById("details_address_fullName").attr("value") mustBe empty
+      view.getElementById("details_address_addressLine").attr("value") mustBe empty
+      view.getElementById("details_address_townOrCity").attr("value") mustBe empty
+      view.getElementById("details_address_postCode").attr("value") mustBe empty
+      view.getElementById("details.address.country").attr("value") mustBe empty
     }
 
     "display data in Business address inputs" in {
@@ -495,7 +495,7 @@ class CarrierDetailsViewSpec
         .fill(CarrierDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "test4")))))
       val view = createView(form)
 
-      view.getElementById("details_eori").attr("value") mustBe ""
+      view.getElementById("details_eori").attr("value") mustBe empty
       view.getElementById("details_address_fullName").attr("value") mustBe "test"
       view.getElementById("details_address_addressLine").attr("value") mustBe "test1"
       view.getElementById("details_address_townOrCity").attr("value") mustBe "test2"

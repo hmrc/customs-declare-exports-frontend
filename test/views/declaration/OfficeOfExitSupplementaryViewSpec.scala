@@ -59,7 +59,7 @@ class OfficeOfExitSupplementaryViewSpec extends UnitViewSpec with ExportsTestDat
 
     "display empty input with label for Country" in {
       view.getElementById("officeId-hint").text() mustBe "declaration.officeOfExit.hint"
-      view.getElementById("officeId").attr("value") mustBe ""
+      view.getElementById("officeId").attr("value") mustBe empty
     }
 
     "display 'Back' button that links to 'Location of Goods' page" in {

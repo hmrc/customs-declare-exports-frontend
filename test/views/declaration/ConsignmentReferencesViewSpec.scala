@@ -86,7 +86,7 @@ class ConsignmentReferencesViewSpec
 
       view.getElementById("ducr_ducr-label").text() mustBe messages(ducrInfo)
       view.getElementById("ducr_ducr-hint").text() mustBe messages(ducrHint)
-      view.getElementById("ducr_ducr").attr("value") mustBe ""
+      view.getElementById("ducr_ducr").attr("value") mustBe empty
     }
 
     "display empty input with label for LRN" in {
@@ -95,7 +95,7 @@ class ConsignmentReferencesViewSpec
 
       view.getElementById("lrn-label").text() mustBe messages(lrnInfo)
       view.getElementById("lrn-hint").text() mustBe messages(lrnHint)
-      view.getElementById("lrn").attr("value") mustBe ""
+      view.getElementById("lrn").attr("value") mustBe empty
     }
 
     "display empty input with label for UCR" in {
@@ -104,7 +104,7 @@ class ConsignmentReferencesViewSpec
 
       view.getElementById("personalUcr-label").text() mustBe messages(ucrInfo)
       view.getElementById("personalUcr-hint").text() mustBe messages(ucrHint)
-      view.getElementById("personalUcr").attr("value") mustBe ""
+      view.getElementById("personalUcr").attr("value") mustBe empty
     }
 
     "display 'Back' button that links to 'Declaration Type' page" in {
@@ -218,14 +218,14 @@ class ConsignmentReferencesViewSpec
         createView(ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("9GB12345678901234-SHIP1234-1"), "")))
 
       view.getElementById("ducr_ducr").attr("value") mustBe "9GB12345678901234-SHIP1234-1"
-      view.getElementById("lrn").attr("value") mustBe ""
+      view.getElementById("lrn").attr("value") mustBe empty
     }
 
     "display data in LRN input" in {
 
       val view = createView(ConsignmentReferences.form().fill(ConsignmentReferences(Ducr(""), "test1")))
 
-      view.getElementById("ducr_ducr").attr("value") mustBe ""
+      view.getElementById("ducr_ducr").attr("value") mustBe empty
       view.getElementById("lrn").attr("value") mustBe "test1"
     }
 

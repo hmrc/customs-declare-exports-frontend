@@ -64,7 +64,7 @@ class ProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData with Stub
     "display empty input with label for Procedure Code" in {
       view.getElementById("procedureCode-label").text() mustBe "supplementary.procedureCodes.procedureCode.header"
       view.getElementById("procedureCode-hint").text() mustBe "supplementary.procedureCodes.procedureCode.header.hint"
-      view.getElementById("procedureCode").attr("value") mustBe ""
+      view.getElementById("procedureCode").attr("value") mustBe empty
     }
 
     "display empty input with label for Additional Procedure Codes" in {
@@ -74,7 +74,7 @@ class ProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData with Stub
       view
         .getElementById("additionalProcedureCode-hint")
         .text() mustBe "supplementary.procedureCodes.additionalProcedureCode.header.hint"
-      view.getElementById("additionalProcedureCode").attr("value") mustBe ""
+      view.getElementById("additionalProcedureCode").attr("value") mustBe empty
     }
 
     "display 'Back' button that links to 'Export Items' page" in {
@@ -108,14 +108,14 @@ class ProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData with Stub
       val view = createView(form = ProcedureCodes.form().fill(ProcedureCodes(Some("Test"), Some(""))))
 
       view.getElementById("procedureCode").attr("value") mustBe "Test"
-      view.getElementById("additionalProcedureCode").attr("value") mustBe ""
+      view.getElementById("additionalProcedureCode").attr("value") mustBe empty
     }
 
     "display data in Additional Procedure Code input" in {
 
       val view = createView(form = ProcedureCodes.form().fill(ProcedureCodes(Some(""), Some("Test"))))
 
-      view.getElementById("procedureCode").attr("value") mustBe ""
+      view.getElementById("procedureCode").attr("value") mustBe empty
       view.getElementById("additionalProcedureCode").attr("value") mustBe "Test"
     }
 

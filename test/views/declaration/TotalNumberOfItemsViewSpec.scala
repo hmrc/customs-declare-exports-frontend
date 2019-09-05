@@ -71,18 +71,18 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
     "display empty input with label for Total Amount Invoiced" in {
       view.getElementById("totalAmountInvoiced-label").text() must be("supplementary.totalAmountInvoiced")
       view.getElementById("totalAmountInvoiced-hint").text() must be("supplementary.totalAmountInvoiced.hint")
-      view.getElementById("totalAmountInvoiced").attr("value") must be("")
+      view.getElementById("totalAmountInvoiced").attr("value") mustBe empty
     }
 
     "display empty input with label for Exchange Rate" in {
       view.getElementById("exchangeRate-label").text() must be("supplementary.exchangeRate")
       view.getElementById("exchangeRate-hint").text() must be("supplementary.exchangeRate.hint")
-      view.getElementById("exchangeRate").attr("value") must be("")
+      view.getElementById("exchangeRate").attr("value") mustBe empty
     }
 
     "display empty input with label for Total Package" in {
       view.getElementById("totalPackage-label").text() must be("supplementary.totalPackageQuantity")
-      view.getElementById("totalPackage").attr("value") must be("")
+      view.getElementById("totalPackage").attr("value") mustBe empty
     }
 
     "display 'Back' button that links to 'Transport Information' page" in {
@@ -199,25 +199,25 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
       val view = createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(Some("123.123"), None, "")))
 
       view.getElementById("totalAmountInvoiced").attr("value") must be("123.123")
-      view.getElementById("exchangeRate").attr("value") must be("")
-      view.getElementById("totalPackage").attr("value") must be("")
+      view.getElementById("exchangeRate").attr("value") mustBe empty
+      view.getElementById("totalPackage").attr("value") mustBe empty
     }
 
     "display data in Exchange Rate input" in {
 
       val view = createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(None, Some("123.12345"), "")))
 
-      view.getElementById("totalAmountInvoiced").attr("value") must be("")
+      view.getElementById("totalAmountInvoiced").attr("value") mustBe empty
       view.getElementById("exchangeRate").attr("value") must be("123.12345")
-      view.getElementById("totalPackage").attr("value") must be("")
+      view.getElementById("totalPackage").attr("value") mustBe empty
     }
 
     "display data in Total Package input" in {
 
       val view = createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(None, None, "1")))
 
-      view.getElementById("totalAmountInvoiced").attr("value") must be("")
-      view.getElementById("exchangeRate").attr("value") must be("")
+      view.getElementById("totalAmountInvoiced").attr("value") mustBe empty
+      view.getElementById("exchangeRate").attr("value") mustBe empty
       view.getElementById("totalPackage").attr("value") must be("1")
     }
 

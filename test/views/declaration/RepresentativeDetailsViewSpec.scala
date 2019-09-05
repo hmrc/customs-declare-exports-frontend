@@ -69,32 +69,32 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
 
     "display empty input with label for EORI" in {
       view.getElementById("details_eori-label").text() must be("supplementary.representative.eori.info")
-      view.getElementById("details_eori").attr("value") must be("")
+      view.getElementById("details_eori").attr("value") mustBe empty
     }
 
     "display empty input with label for Full name" in {
       view.getElementById("details_address_fullName-label").text() must be("supplementary.address.fullName")
-      view.getElementById("details_address_fullName").attr("value") must be("")
+      view.getElementById("details_address_fullName").attr("value") mustBe empty
     }
 
     "display empty input with label for Address" in {
       view.getElementById("details_address_addressLine-label").text() must be("supplementary.address.addressLine")
-      view.getElementById("details_address_addressLine").attr("value") must be("")
+      view.getElementById("details_address_addressLine").attr("value") mustBe empty
     }
 
     "display empty input with label for Town or City" in {
       view.getElementById("details_address_townOrCity-label").text() must be("supplementary.address.townOrCity")
-      view.getElementById("details_address_townOrCity").attr("value") must be("")
+      view.getElementById("details_address_townOrCity").attr("value") mustBe empty
     }
 
     "display empty input with label for Postcode" in {
       view.getElementById("details_address_postCode-label").text() must be("supplementary.address.postCode")
-      view.getElementById("details_address_postCode").attr("value") must be("")
+      view.getElementById("details_address_postCode").attr("value") mustBe empty
     }
 
     "display empty input with label for Country" in {
       view.getElementById("details.address.country-label").text() mustBe "supplementary.address.country"
-      view.getElementById("details.address.country").attr("value") mustBe ""
+      view.getElementById("details.address.country").attr("value") mustBe empty
     }
 
     "display three radio buttons with description (not selected)" in {
@@ -102,13 +102,13 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
       val view = createView(form = RepresentativeDetails.form().fill(RepresentativeDetails(None, None)))
 
       val optionDirect = view.getElementById("statusCode_direct")
-      optionDirect.attr("checked") must be("")
+      optionDirect.attr("checked") mustBe empty
 
       val optionDirectLabel = view.select("#statusCode>div:nth-child(2)>label>span")
       optionDirectLabel.text() must include("")
 
       val optionIndirect = view.getElementById("statusCode_indirect")
-      optionIndirect.attr("checked") must be("")
+      optionIndirect.attr("checked") mustBe empty
 
       val optionIndirectLabel = view.select("#statusCode>div:nth-child(3)>label>span")
       optionIndirectLabel.text() must include("")

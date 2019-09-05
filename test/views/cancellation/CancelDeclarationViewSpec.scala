@@ -72,7 +72,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
       val view = createView()
 
       view.getElementById("functionalReferenceId-label").text() mustBe messages("cancellation.functionalReferenceId")
-      view.getElementById("functionalReferenceId").attr("value") mustBe ""
+      view.getElementById("functionalReferenceId").attr("value") mustBe empty
     }
 
     "display empty input with label for 'declaration Id'" in {
@@ -80,7 +80,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
       val view = createView()
 
       view.getElementById("declarationId-label").text() mustBe messages("cancellation.declarationId")
-      view.getElementById("declarationId").attr("value") mustBe ""
+      view.getElementById("declarationId").attr("value") mustBe empty
     }
 
     "display empty input with label for 'statement Description'" in {
@@ -88,7 +88,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
       val view = createView()
 
       view.getElementById("statementDescription-label").text() mustBe messages("cancellation.statementDescription")
-      view.getElementById("statementDescription").attr("value") mustBe ""
+      view.getElementById("statementDescription").attr("value") mustBe empty
     }
 
     "display empty input with label for 'Country'" in {
@@ -96,7 +96,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
       val view = createView()
 
       view.getElementById("changeReason-label").text() mustBe messages("cancellation.changeReason")
-      view.getElementById("changeReason").attr("value") mustBe ""
+      view.getElementById("changeReason").attr("value") mustBe empty
     }
 
     "display three radio buttons with description (not selected)" in {
@@ -104,17 +104,17 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
       val view = createView(CancelDeclaration.form.fill(CancelDeclaration("", "", "", "")))
 
       val noLongerRequired = view.getElementById("noLongerRequired")
-      noLongerRequired.attr("checked") mustBe ""
+      noLongerRequired.attr("checked") mustBe empty
       val noLongerRequiredLabel = view.getElementById("noLongerRequired-label")
       noLongerRequiredLabel.text() mustBe messages("cancellation.reason.noLongerRequired")
 
       val otherReason = view.getElementById("otherReason")
-      otherReason.attr("checked") mustBe ""
+      otherReason.attr("checked") mustBe empty
       val otherReasonLabel = view.getElementById("otherReason-label")
       otherReasonLabel.text() mustBe messages("cancellation.reason.otherReason")
 
       val duplication = view.getElementById("duplication")
-      duplication.attr("checked") mustBe ""
+      duplication.attr("checked") mustBe empty
       val duplicationLabel = view.getElementById("duplication-label")
       duplicationLabel.text() mustBe messages("cancellation.reason.duplication")
     }

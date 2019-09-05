@@ -135,13 +135,13 @@ class DeclarationTypeViewSpec
         val view = createView(formStandard.fill(AdditionalDeclarationType("")), StandardDec)
 
         val optionOne = view.getElementById("PreLodged")
-        optionOne.attr("checked") mustBe ""
+        optionOne.attr("checked") mustBe empty
 
         val optionOneLabel = view.getElementById("PreLodged-label")
         optionOneLabel.text() mustBe messages(preLodged)
 
         val optionTwo = view.getElementById("Frontier")
-        optionTwo.attr("checked") mustBe ""
+        optionTwo.attr("checked") mustBe empty
 
         val optionTwoLabel = view.getElementById("Frontier-label")
         optionTwoLabel.text() mustBe messages(frontier)
@@ -152,13 +152,13 @@ class DeclarationTypeViewSpec
         val view = createView(formSupplementary.fill(AdditionalDeclarationType("")), SupplementaryDec)
 
         val optionOne = view.getElementById("Simplified")
-        optionOne.attr("checked") mustBe ""
+        optionOne.attr("checked") mustBe empty
 
         val optionOneLabel = view.select("#additionalDeclarationType>div:nth-child(2)>label")
         optionOneLabel.text() mustBe messages(simplified)
 
         val optionTwo = view.getElementById("Standard")
-        optionTwo.attr("checked") mustBe ""
+        optionTwo.attr("checked") mustBe empty
 
         val optionTwoLabel = view.select("#additionalDeclarationType>div:nth-child(3)>label")
         optionTwoLabel.text() mustBe messages(standard)
@@ -229,7 +229,7 @@ class DeclarationTypeViewSpec
         optionOne.attr("checked") mustBe "checked"
 
         val optionTwo = view.getElementById("Frontier")
-        optionTwo.attr("checked") mustBe ""
+        optionTwo.attr("checked") mustBe empty
       }
 
       "used for Supplementary Declaration journey - Simplified (Y)" in {
@@ -240,7 +240,7 @@ class DeclarationTypeViewSpec
         optionOne.attr("checked") mustBe "checked"
 
         val optionTwo = view.getElementById("Standard")
-        optionTwo.attr("checked") mustBe ""
+        optionTwo.attr("checked") mustBe empty
       }
     }
 
@@ -251,7 +251,7 @@ class DeclarationTypeViewSpec
         val view = createView(formStandard.fill(AdditionalDeclarationType(Frontier)), StandardDec)
 
         val optionOne = view.getElementById("PreLodged")
-        optionOne.attr("checked") mustBe ""
+        optionOne.attr("checked") mustBe empty
 
         val optionTwo = view.getElementById("Frontier")
         optionTwo.attr("checked") mustBe "checked"
@@ -262,7 +262,7 @@ class DeclarationTypeViewSpec
         val view = createView(formSupplementary.fill(AdditionalDeclarationType(Standard)), SupplementaryDec)
 
         val optionOne = view.getElementById("Simplified")
-        optionOne.attr("checked") mustBe ""
+        optionOne.attr("checked") mustBe empty
 
         val optionTwo = view.getElementById("Standard")
         optionTwo.attr("checked") mustBe "checked"

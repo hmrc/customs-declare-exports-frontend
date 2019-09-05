@@ -70,13 +70,13 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
       val view = createView(form = FiscalInformation.form().fill(FiscalInformation("")))
 
       val optionOne = view.getElementById("Yes")
-      optionOne.attr("checked") mustBe ""
+      optionOne.attr("checked") mustBe empty
 
       val optionOneLabel = view.getElementById("Yes-label")
       optionOneLabel.text() mustBe "site.yes"
 
       val optionTwo = view.getElementById("No")
-      optionTwo.attr("checked") mustBe ""
+      optionTwo.attr("checked") mustBe empty
 
       val optionTwoLabel = view.getElementById("No-label")
       optionTwoLabel.text() mustBe "site.no"
@@ -141,7 +141,7 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
       optionOne.attr("checked") must be("checked")
 
       val optionTwo = view.getElementById("No")
-      optionTwo.attr("checked") mustBe ""
+      optionTwo.attr("checked") mustBe empty
     }
 
     "display selected second radio button - No" in {
@@ -149,7 +149,7 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
       val view = createView(form = FiscalInformation.form().fill(FiscalInformation("No")))
 
       val optionOne = view.getElementById("Yes")
-      optionOne.attr("checked") mustBe ""
+      optionOne.attr("checked") mustBe empty
 
       val optionTwo = view.getElementById("No")
       optionTwo.attr("checked") must be("checked")

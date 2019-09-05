@@ -83,46 +83,46 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
     "display empty input with label for Country" in {
       view.getElementById("country-label").text() mustBe "supplementary.address.country"
-      view.getElementById("country").attr("value") mustBe ""
+      view.getElementById("country").attr("value") mustBe empty
     }
 
     "display empty input with label for Type of Location" in {
       view.getElementById("typeOfLocation-label").text() mustBe "supplementary.goodsLocation.typeOfLocation"
-      view.getElementById("typeOfLocation").attr("value") mustBe ""
+      view.getElementById("typeOfLocation").attr("value") mustBe empty
     }
 
     "display empty input with label for Qualifier of Identification" in {
       view
         .getElementById("qualifierOfIdentification-label")
         .text() mustBe "supplementary.goodsLocation.qualifierOfIdentification"
-      view.getElementById("qualifierOfIdentification").attr("value") mustBe ""
+      view.getElementById("qualifierOfIdentification").attr("value") mustBe empty
     }
 
     "display empty input with label for Identification of Location" in {
       view
         .getElementById("identificationOfLocation-label")
         .text() mustBe "supplementary.goodsLocation.identificationOfLocation"
-      view.getElementById("identificationOfLocation").attr("value") mustBe ""
+      view.getElementById("identificationOfLocation").attr("value") mustBe empty
     }
 
     "display empty input with label for Additional Identifier" in {
       view.getElementById("additionalQualifier-label").text() mustBe "supplementary.goodsLocation.additionalQualifier"
-      view.getElementById("additionalQualifier").attr("value") mustBe ""
+      view.getElementById("additionalQualifier").attr("value") mustBe empty
     }
 
     "display empty input with label for Street and Number" in {
       view.getElementById("addressLine-label").text() mustBe "supplementary.goodsLocation.addressLine"
-      view.getElementById("addressLine").attr("value") mustBe ""
+      view.getElementById("addressLine").attr("value") mustBe empty
     }
 
     "display empty input with label for Postcode" in {
       view.getElementById("postCode-label").text() mustBe "supplementary.goodsLocation.postCode"
-      view.getElementById("postCode").attr("value") mustBe ""
+      view.getElementById("postCode").attr("value") mustBe empty
     }
 
     "display empty input with label for City" in {
       view.getElementById("city-label").text() mustBe "supplementary.goodsLocation.city"
-      view.getElementById("city").attr("value") mustBe ""
+      view.getElementById("city").attr("value") mustBe empty
     }
 
     "display 'Back' button that links to 'Destination Countries' page" in {

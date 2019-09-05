@@ -78,7 +78,7 @@ class DestinationCountriesViewSpec
 
       view.getElementById("countryOfDispatch-hint").text() mustBe messages(countryOfDispatchHint)
       view.getElementById("countryOfDispatch-label").ownText() mustBe messages(countryOfDispatch)
-      view.getElementById("countryOfDispatch").attr("value") mustBe ""
+      view.getElementById("countryOfDispatch").attr("value") mustBe empty
     }
 
     "display empty input with label for Destination country" in {
@@ -87,7 +87,7 @@ class DestinationCountriesViewSpec
 
       view.getElementById("countryOfDestination-hint").text() mustBe messages(countryOfDestinationHint)
       view.getElementById("countryOfDestination-label").ownText() mustBe messages(countryOfDestination)
-      view.getElementById("countryOfDestination").attr("value") mustBe ""
+      view.getElementById("countryOfDestination").attr("value") mustBe empty
     }
 
     "display 'Back' button that links to 'Declaration holder of authorisation' page" in {
@@ -235,7 +235,7 @@ class DestinationCountriesViewSpec
         createView(DestinationCountries.Supplementary.form.fill(DestinationCountries("GB", "")))
 
       view.getElementById("countryOfDispatch").attr("value") mustBe "GB"
-      view.getElementById("countryOfDestination").attr("value") mustBe ""
+      view.getElementById("countryOfDestination").attr("value") mustBe empty
     }
 
     "display data only for destination country input" in {
@@ -243,7 +243,7 @@ class DestinationCountriesViewSpec
       val view =
         createView(DestinationCountries.Supplementary.form.fill(DestinationCountries("", "PL")))
 
-      view.getElementById("countryOfDispatch").attr("value") mustBe ""
+      view.getElementById("countryOfDispatch").attr("value") mustBe empty
       view.getElementById("countryOfDestination").attr("value") mustBe "PL"
     }
   }

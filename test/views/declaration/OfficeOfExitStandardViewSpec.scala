@@ -71,13 +71,13 @@ class OfficeOfExitStandardViewSpec extends UnitViewSpec with ExportsTestData wit
       "display office of exit question" in {
         view.getElementById("officeId-label").text() mustBe "declaration.officeOfExit"
         view.getElementById("officeId-hint").text() mustBe "declaration.officeOfExit.hint"
-        view.getElementById("officeId").attr("value") mustBe ""
+        view.getElementById("officeId").attr("value") mustBe empty
       }
 
       "display presentation office question" in {
         view.getElementById("presentationOfficeId-label").text() mustBe "standard.officeOfExit.presentationOffice"
         view.getElementById("presentationOfficeId-hint").text() mustBe "standard.officeOfExit.presentationOffice.hint"
-        view.getElementById("presentationOfficeId").attr("value") mustBe ""
+        view.getElementById("presentationOfficeId").attr("value") mustBe empty
       }
 
       // TODO change below code to use getElementById, missing ID in radio input for legend

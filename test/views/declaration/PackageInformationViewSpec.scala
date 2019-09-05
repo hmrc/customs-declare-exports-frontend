@@ -80,18 +80,18 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
 
     "display empty input with label for Types of Packages" in {
       view.getElementById("typesOfPackages-label").text() mustBe "supplementary.packageInformation.typesOfPackages"
-      view.getElementById("typesOfPackages").attr("value") mustBe ""
+      view.getElementById("typesOfPackages").attr("value") mustBe empty
     }
 
     "display empty input with label for Number of Packages" in {
       view.getElementById("numberOfPackages-label").text() mustBe "supplementary.packageInformation.numberOfPackages"
-      view.getElementById("numberOfPackages").attr("value") mustBe ""
+      view.getElementById("numberOfPackages").attr("value") mustBe empty
     }
 
     "display empty input with label for Shipping Marks" in {
       view.getElementById("shippingMarks-label").text() mustBe "supplementary.packageInformation.shippingMarks"
       view.getElementById("shippingMarks-hint").text() mustBe "supplementary.packageInformation.shippingMarks.hint"
-      view.getElementById("shippingMarks").attr("value") mustBe ""
+      view.getElementById("shippingMarks").attr("value") mustBe empty
     }
 
     "display both 'Add' and 'Save and continue' button on page" in {
@@ -112,23 +112,23 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
 
       view.getElementById("typesOfPackages").attr("value") mustBe "PA"
       view.getElementById("numberOfPackages").attr("value") mustBe "0"
-      view.getElementById("shippingMarks").attr("value") mustBe ""
+      view.getElementById("shippingMarks").attr("value") mustBe empty
     }
 
     "display data in Number of Packages input" in {
 
       val view = createView(form = PackageInformation.form().fill(PackageInformation("", 100, "")))
 
-      view.getElementById("typesOfPackages").attr("value") mustBe ""
+      view.getElementById("typesOfPackages").attr("value") mustBe empty
       view.getElementById("numberOfPackages").attr("value") mustBe "100"
-      view.getElementById("shippingMarks").attr("value") mustBe ""
+      view.getElementById("shippingMarks").attr("value") mustBe empty
     }
 
     "display data in Shipping Marks" in {
 
       val view = createView(form = PackageInformation.form().fill(PackageInformation("", 0, "Test")))
 
-      view.getElementById("typesOfPackages").attr("value") mustBe ""
+      view.getElementById("typesOfPackages").attr("value") mustBe empty
       view.getElementById("numberOfPackages").attr("value") mustBe "0"
       view.getElementById("shippingMarks").attr("value") mustBe "Test"
     }
