@@ -146,7 +146,9 @@ class TransportContainerController @Inject()(
               Future.successful(navigator.continueTo(routes.TransportContainerController.displayAddContainer(mode)))
             case YesNoAnswers.no =>
               Future
-                .successful(navigator.continueTo(controllers.declaration.routes.SummaryController.displayPage(mode)))
+                .successful(
+                  navigator.continueTo(controllers.declaration.routes.SummaryController.displayPage(Mode.Normal))
+                )
         }
       )
 

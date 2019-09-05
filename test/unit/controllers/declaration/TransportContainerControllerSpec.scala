@@ -189,7 +189,18 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
       }
+
+      "user indicates they do not want to add another container and they are in draft mode" in new SetUp {
+        val body = Seq(("yesNo", "No"))
+
+        val result = controller.submitSummaryAction(Mode.Draft)(postRequestAsFormUrlEncoded(body: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
+      }
     }
+
+
   }
 
   "Transport Container submit remove page" should {
