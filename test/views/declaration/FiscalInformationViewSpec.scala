@@ -114,7 +114,9 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
       checkErrorsSummary(view)
       haveFieldErrorLink("onwardSupplyRelief", "#onwardSupplyRelief")
 
-      view.select("#error-message-onwardSupplyRelief-input").text() mustBe "error.required"
+      view
+        .select("#error-message-onwardSupplyRelief-input")
+        .text() mustBe "declaration.fiscalInformation.onwardSupplyRelief.empty"
     }
 
     "display error if incorrect fiscal information is selected" in {

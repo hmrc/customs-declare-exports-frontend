@@ -16,15 +16,15 @@
 
 package forms.declaration
 
-import play.api.data.Forms._
-import play.api.data.{Form, Forms}
-import play.api.libs.json.Json
+import forms.Mapping.requiredRadio
+import play.api.data.{Form, Forms, Mapping}
+import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
 
 case class NatureOfTransaction(natureType: String)
 
 object NatureOfTransaction {
-  implicit val format = Json.format[NatureOfTransaction]
+  implicit val format: OFormat[NatureOfTransaction] = Json.format[NatureOfTransaction]
 
   val formId = "TransactionType"
 
@@ -38,23 +38,13 @@ object NatureOfTransaction {
   val Construction = "8"
   val Other = "9"
 
-  val allowedTypes =
+  val allowedTypes: Set[String] =
     Set(Purchase, Return, Donation, Processing, Processed, NationalPurposes, Military, Construction, Other)
 
-  val mapping = Forms.mapping(
-    "natureType" -> text()
-      .verifying("declaration.natureOfTransaction.empty", nonEmpty)
-      .verifying("declaration.natureOfTransaction.error", isEmpty or isContainedIn(allowedTypes))
+  val mapping: Mapping[NatureOfTransaction] = Forms.mapping(
+    "natureType" -> requiredRadio("declaration.natureOfTransaction.empty")
+      .verifying("declaration.natureOfTransaction.error", isContainedIn(allowedTypes))
   )(NatureOfTransaction.apply)(NatureOfTransaction.unapply)
-
-  def adjustErrors(form: Form[NatureOfTransaction]): Form[NatureOfTransaction] = {
-    val newErrors = form.errors.map { error =>
-      if (error.message == "error.required") error.copy(messages = Seq("declaration.natureOfTransaction.empty"))
-      else error
-    }
-
-    form.copy(errors = newErrors)
-  }
 
   def form(): Form[NatureOfTransaction] = Form(mapping)
 }

@@ -90,7 +90,7 @@ class OfficeOfExitController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[OfficeOfExitStandard]) => {
-          val formWithAdjustedErrors = OfficeOfExitStandard.adjustCircumstancesError(formWithErrors)
+          val formWithAdjustedErrors = formWithErrors
 
           Future.successful(BadRequest(officeOfExitStandardPage(mode, formWithAdjustedErrors)))
         },

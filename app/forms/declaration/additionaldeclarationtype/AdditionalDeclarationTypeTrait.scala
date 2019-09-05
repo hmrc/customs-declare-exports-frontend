@@ -16,23 +16,18 @@
 
 package forms.declaration.additionaldeclarationtype
 
-import play.api.data.Forms.{optional, text}
+import forms.Mapping.requiredRadio
 import play.api.data.{Form, Forms, Mapping}
 import utils.validators.forms.FieldValidator.isContainedIn
 
 trait AdditionalDeclarationTypeTrait {
   def allowedValues: Set[String]
 
-  val formMapping: Mapping[AdditionalDeclarationType] = Forms.single(
-    "additionalDeclarationType" -> optional(
-      text(maxLength = 1)
+  val formMapping: Mapping[AdditionalDeclarationType] = Forms
+    .mapping(
+      "additionalDeclarationType" -> requiredRadio("declaration.declarationType.inputText.error.empty")
         .verifying("declaration.declarationType.inputText.error.incorrect", isContainedIn(allowedValues))
-    ).verifying("declaration.declarationType.inputText.error.empty", _.isDefined)
-      .transform[AdditionalDeclarationType](
-        value => AdditionalDeclarationType(value.getOrElse("")),
-        additionalDeclarationType => Some(additionalDeclarationType.additionalDeclarationType)
-      )
-  )
+    )(AdditionalDeclarationType.apply)(AdditionalDeclarationType.unapply)
 
   val formId = "AdditionalDeclarationType"
 

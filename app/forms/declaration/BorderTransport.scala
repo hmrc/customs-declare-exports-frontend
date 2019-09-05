@@ -16,11 +16,12 @@
 
 package forms.declaration
 
+import forms.Mapping.requiredRadio
 import forms.declaration.TransportCodes._
 import play.api.data.Form
 import play.api.data.Forms.{mapping, optional, text}
 import play.api.libs.json.Json
-import utils.validators.forms.FieldValidator.{isContainedIn, isEmpty, noLongerThan, _}
+import utils.validators.forms.FieldValidator.{isContainedIn, noLongerThan, _}
 
 case class BorderTransport(
   borderModeOfTransportCode: String,
@@ -33,28 +34,17 @@ object BorderTransport {
   implicit val formats = Json.format[BorderTransport]
 
   val formMapping = mapping(
-    "borderModeOfTransportCode" -> optional(
-      text()
-        .verifying(
-          "supplementary.transportInfo.borderTransportMode.error.incorrect",
-          isEmpty or isContainedIn(allowedModeOfTransportCodes)
-        )
-    ).verifying("supplementary.transportInfo.borderTransportMode.error.empty", _.isDefined)
-      .transform[String](
-        optValue => optValue.getOrElse(""),
-        borderModeOfTransportCode => Some(borderModeOfTransportCode)
+    "borderModeOfTransportCode" -> requiredRadio("supplementary.transportInfo.borderTransportMode.error.empty")
+      .verifying(
+        "supplementary.transportInfo.borderTransportMode.error.incorrect",
+        isContainedIn(allowedModeOfTransportCodes)
       ),
-    "meansOfTransportOnDepartureType" -> optional(
-      text()
-        .verifying(
-          "supplementary.transportInfo.meansOfTransport.departure.error.incorrect",
-          isEmpty or isContainedIn(allowedMeansOfTransportTypeCodes)
-        )
-    ).verifying("supplementary.transportInfo.meansOfTransport.departure.error.empty", _.isDefined)
-      .transform[String](
-        optValue => optValue.getOrElse(""),
-        meansOfTransportOnDepartureType => Some(meansOfTransportOnDepartureType)
-      ),
+    "meansOfTransportOnDepartureType" -> requiredRadio(
+      "supplementary.transportInfo.meansOfTransport.departure.error.empty"
+    ).verifying(
+      "supplementary.transportInfo.meansOfTransport.departure.error.incorrect",
+      isContainedIn(allowedMeansOfTransportTypeCodes)
+    ),
     "meansOfTransportOnDepartureIDNumber" -> optional(
       text()
         .verifying("supplementary.transportInfo.meansOfTransport.idNumber.error.length", noLongerThan(27))

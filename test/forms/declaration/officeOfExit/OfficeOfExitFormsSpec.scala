@@ -101,7 +101,7 @@ class OfficeOfExitFormsSpec extends WordSpec with MustMatchers with OfficeOfExit
 
         errors.length must be(2)
         errors(0) must be(FormError(officeFieldId, officeOfExitEmpty))
-        errors(1) must be(FormError(circumstancesCodeFieldId, circumstancesCodeEmpty))
+        errors(1) must be(FormError(circumstancesCodeFieldId, circumstancesCodeError))
       }
 
       "office of exit and presentation office are too short" in new StandardSetUp {

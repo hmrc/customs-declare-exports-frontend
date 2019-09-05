@@ -16,7 +16,7 @@
 
 package forms.common
 
-import play.api.data.Forms.{optional, text}
+import forms.Mapping.requiredRadio
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator.isContainedIn
@@ -36,13 +36,10 @@ object YesNoAnswer {
 
   val allowedValues: Seq[String] = Seq(yes, no)
 
-  val mapping: Mapping[YesNoAnswer] = Forms.single(
-    "yesNo" -> optional(
-      text()
-        .verifying("error.yesNo.required", isContainedIn(allowedValues))
-    ).verifying("error.yesNo.required", _.isDefined)
-      .transform[YesNoAnswer](answer => YesNoAnswer(answer.getOrElse("")), yesNoAnswer => Some(yesNoAnswer.answer))
-  )
+  val mapping: Mapping[YesNoAnswer] = Forms.mapping(
+    "yesNo" -> requiredRadio("error.yesNo.required")
+      .verifying("error.yesNo.required", isContainedIn(allowedValues))
+  )(YesNoAnswer.apply)(YesNoAnswer.unapply)
 
   val formId = "YesNo"
 

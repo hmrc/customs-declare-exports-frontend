@@ -123,7 +123,7 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestData with
       checkErrorsSummary(view)
       haveFieldErrorLink("natureType", "#natureType")
 
-      view.getElementById("error-message-natureType-input").text() must be("declaration.natureOfTransaction.empty")
+      view.getElementById("error-message-natureType-input").text() must be("declaration.natureOfTransaction.error")
     }
 
     "display error when nature of transaction is incorrect" in {

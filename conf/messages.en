@@ -420,7 +420,8 @@ supplementary.warehouse.inlandTransportMode.error.incorrect = Please, choose val
 
 declaration.fiscalInformation.title = Onward Supply Relief (OSR)
 declaration.fiscalInformation.question = Do you want to claim OSR?
-declaration.fiscalInformation.onwardSupplyRelief.error = Please enter a value
+declaration.fiscalInformation.onwardSupplyRelief.empty = Please select yes or no
+declaration.fiscalInformation.onwardSupplyRelief.error = Please enter a valid value
 declaration.fiscalInformation.header = Items
 declaration.additionalFiscalReferences.title = What are the exporter’s VAT details?
 declaration.additionalFiscalReferences.numbers.header = VAT number
