@@ -200,7 +200,6 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
       }
     }
 
-
   }
 
   "Transport Container submit remove page" should {
