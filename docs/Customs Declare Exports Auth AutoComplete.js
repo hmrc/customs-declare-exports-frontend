@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name     CDS Exports Authorisation
 // @namespace  http://tampermonkey.net/
-// @version   0.2
+// @version   0.3
 // @description Authenticates with CDS Declare
 // @author    You
 // @match     http*://*/auth-login-stub/gg-sign-in?continue=*customs-declare-exports*
 // @grant     none
-// @updateURL https://github.com/hmrc/customs-declare-exports-frontend/blob/master/docs/Customs%20Declare%20Exports%20Auth%20AutoComplete.js
+// @updateURL https://raw.githubusercontent.com/hmrc/customs-declare-exports-frontend/master/docs/Customs%20Declare%20Exports%20Auth%20AutoComplete.js
 // ==/UserScript==
 
 (function() {
