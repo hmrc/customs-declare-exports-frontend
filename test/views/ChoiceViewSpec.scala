@@ -21,6 +21,7 @@ import com.typesafe.config.{Config, ConfigFactory}
 import config.AppConfig
 import forms.Choice
 import helpers.views.declaration.{ChoiceMessages, CommonMessages}
+import org.scalatest.Matchers._
 import play.api.Mode.Test
 import play.api.data.Form
 import play.api.{Configuration, Environment}
@@ -30,8 +31,6 @@ import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.choice_page
 import views.tags.ViewTest
-
-import scala.collection.JavaConversions._
 
 @ViewTest
 class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessages with Stubs with Injector {
@@ -91,7 +90,7 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
       val backButton = createView().getElementById("link-back")
 
       backButton.text() mustBe messages(backCaption)
-      backButton.attr("href") mustBe controllers.routes.StartController.displayStartPage().url
+      backButton.getElementById("link-back") must haveHref(controllers.routes.StartController.displayStartPage())
     }
 
     "display 'Save and continue' button on page" in {
@@ -167,7 +166,7 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
       ensureRadioIsUnChecked(view, "Continue declaration")
     }
 
-    "display selected radio button - Contimue saved declaration (Con)" in {
+    "display selected radio button - Continue saved declaration (Con)" in {
       val view = createView(Choice.form().fill(Choice("CON")))
 
       ensureAllLabelTextIsCorrect(view)
@@ -180,20 +179,17 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
     }
   }
   private def ensureAllLabelTextIsCorrect(view: Html): Unit = {
-    val labels = view.getElementsByTag("label").toList
-    labels.forall(elems => elems.getElementsContainingText(messages(supplementaryDec)).isEmpty) mustBe false
-    labels.forall(elems => elems.getElementsContainingText(messages(standardDec)).isEmpty) mustBe false
-    labels.forall(elems => elems.getElementsContainingText(messages(cancelDec)).isEmpty) mustBe false
-    labels.forall(elems => elems.getElementsContainingText(messages(recentDec)).isEmpty) mustBe false
-    labels.forall(elems => elems.getElementsContainingText(messages(continueDec)).isEmpty) mustBe false
+    view.getElementsByTag("label").size mustBe 5
+    view.getElementById("Standard declaration-label").text() mustBe standardDec
+    view.getElementById("Supplementary declaration-label").text() mustBe supplementaryDec
+    view.getElementById("Submissions-label").text() mustBe recentDec
+    view.getElementById("Continue declaration-label").text() mustBe continueDec
+    view.getElementById("Cancel declaration-label").text() mustBe cancelDec
   }
 
   private def ensureSupplementaryLabelIsCorrect(view: Html): Unit = {
-    val labels = view.getElementsByTag("label").toList
-    labels.forall(elems => elems.getElementsContainingText(messages(supplementaryDec)).isEmpty) mustBe false
-    labels.forall(elems => elems.getElementsContainingText(messages(standardDec)).isEmpty) mustBe true
-    labels.forall(elems => elems.getElementsContainingText(messages(cancelDec)).isEmpty) mustBe true
-    labels.forall(elems => elems.getElementsContainingText(messages(recentDec)).isEmpty) mustBe true
+    view.getElementsByTag("label").size mustBe 1
+    view.getElementById("Supplementary declaration-label").text() mustBe supplementaryDec
   }
 
   private def ensureRadioIsChecked(view: Html, elementId: String): Unit = {
@@ -203,6 +199,6 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
 
   private def ensureRadioIsUnChecked(view: Html, elementId: String): Unit = {
     val option = view.getElementById(elementId)
-    option.attr("checked") mustBe ""
+    option.attr("checked") mustBe empty
   }
 }

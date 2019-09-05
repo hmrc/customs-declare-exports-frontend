@@ -122,7 +122,7 @@ class DocumentsProducedViewSpec
       val view = createView()
 
       view.getElementById(s"$documentTypeCodeKey-label").text() mustBe messages(documentTypeCode)
-      view.getElementById(s"$documentTypeCodeKey").attr("value") mustBe ""
+      view.getElementById(s"$documentTypeCodeKey").attr("value") mustBe empty
     }
 
     "display empty input with label for Document identifier" in {
@@ -132,7 +132,7 @@ class DocumentsProducedViewSpec
       view.getElementById(s"${documentIdentifierAndPartKey}_$documentIdentifierKey-label").text() mustBe
         messages(documentIdentifier)
 
-      view.getElementById(s"${documentIdentifierAndPartKey}_$documentIdentifierKey").attr("value") mustBe ""
+      view.getElementById(s"${documentIdentifierAndPartKey}_$documentIdentifierKey").attr("value") mustBe empty
     }
 
     "display empty input with label for Document part" in {
@@ -142,7 +142,7 @@ class DocumentsProducedViewSpec
       view.getElementById(s"${documentIdentifierAndPartKey}_$documentPartKey-label").text() mustBe
         messages(documentPart)
 
-      view.getElementById(s"${documentIdentifierAndPartKey}_$documentPartKey").attr("value") mustBe ""
+      view.getElementById(s"${documentIdentifierAndPartKey}_$documentPartKey").attr("value") mustBe empty
     }
 
     "display empty input with label for Document status" in {
@@ -150,7 +150,7 @@ class DocumentsProducedViewSpec
       val view = createView()
 
       view.getElementById(s"$documentStatusKey-label").text() mustBe messages(documentStatus)
-      view.getElementById(s"$documentStatusKey").attr("value") mustBe ""
+      view.getElementById(s"$documentStatusKey").attr("value") mustBe empty
     }
 
     "display empty input with label for Document status reason" in {
@@ -158,7 +158,7 @@ class DocumentsProducedViewSpec
       val view = createView()
 
       view.getElementById(s"$documentStatusReasonKey-label").text() mustBe messages(documentStatusReason)
-      view.getElementById(s"$documentStatusReasonKey").attr("value") mustBe ""
+      view.getElementById(s"$documentStatusReasonKey").attr("value") mustBe empty
     }
 
     "display empty input with label for Issuing Authority Name" in {
@@ -166,7 +166,7 @@ class DocumentsProducedViewSpec
       val view = createView()
 
       view.getElementById(s"$issuingAuthorityNameKey-label").text() mustBe messages(issuingAuthorityName)
-      view.getElementById(issuingAuthorityNameKey).attr("value") mustBe ""
+      view.getElementById(issuingAuthorityNameKey).attr("value") mustBe empty
     }
 
     "display empty input with label for Date of Validity" in {
@@ -174,7 +174,7 @@ class DocumentsProducedViewSpec
       val view = createView()
 
       view.getElementById(s"$dateOfValidityKey-label").text() mustBe messages(dateOfValidity)
-      view.getElementById(dateOfValidityKey).attr("value") mustBe ""
+      view.getElementById(dateOfValidityKey).attr("value") mustBe empty
     }
 
     "display empty input with label for Measurement Unit" in {
@@ -182,7 +182,7 @@ class DocumentsProducedViewSpec
       val view = createView()
 
       view.getElementById(s"${documentWriteOffKey}_$measurementUnitKey-label").text() mustBe messages(measurementUnit)
-      view.getElementById(s"${documentWriteOffKey}_$measurementUnitKey").attr("value") mustBe ""
+      view.getElementById(s"${documentWriteOffKey}_$measurementUnitKey").attr("value") mustBe empty
     }
 
     "display empty input with label for Document quantity" in {
@@ -192,7 +192,7 @@ class DocumentsProducedViewSpec
       view.getElementById(s"${documentWriteOffKey}_$documentQuantityKey-label").text() mustBe
         messages(documentQuantity)
 
-      view.getElementById(s"${documentWriteOffKey}_$documentQuantityKey").attr("value") mustBe ""
+      view.getElementById(s"${documentWriteOffKey}_$documentQuantityKey").attr("value") mustBe empty
     }
 
     "display 'Back' button that links to 'Additional Information' page" in {

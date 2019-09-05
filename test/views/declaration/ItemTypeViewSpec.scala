@@ -94,7 +94,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         view
           .getElementById("combinedNomenclatureCode-hint")
           .text() mustBe "declaration.itemType.combinedNomenclatureCode.header.hint"
-        view.getElementById("combinedNomenclatureCode").attr("value") mustBe ""
+        view.getElementById("combinedNomenclatureCode").attr("value") mustBe empty
       }
 
       "display empty input with label for TARIC" in {
@@ -104,7 +104,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         view
           .getElementById("taricAdditionalCode_-hint")
           .text() mustBe "declaration.itemType.taricAdditionalCodes.header.hint"
-        view.getElementById("taricAdditionalCode_").attr("value") mustBe ""
+        view.getElementById("taricAdditionalCode_").attr("value") mustBe empty
       }
 
       "display empty input with label for NAC" in {
@@ -114,25 +114,25 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         view
           .getElementById("nationalAdditionalCode_-hint")
           .text() mustBe "declaration.itemType.nationalAdditionalCode.header.hint"
-        view.getElementById("nationalAdditionalCode").attr("value") mustBe ""
+        view.getElementById("nationalAdditionalCode").attr("value") mustBe empty
       }
 
       "display empty input with label for Statistical Value" in {
         view.getElementById("statisticalValue-label").text() mustBe "declaration.itemType.statisticalValue.header"
         view.getElementById("statisticalValue-hint").text() mustBe "declaration.itemType.statisticalValue.header.hint"
-        view.getElementById("statisticalValue").attr("value") mustBe ""
+        view.getElementById("statisticalValue").attr("value") mustBe empty
       }
 
       "display empty input with label for Description" in {
         view.getElementById("descriptionOfGoods-label").ownText() mustBe "declaration.itemType.description.header"
         view.getElementById("descriptionOfGoods-hint").text() mustBe "declaration.itemType.description.header.hint"
-        view.getElementById("descriptionOfGoods").text() mustBe ""
+        view.getElementById("descriptionOfGoods").text() mustBe empty
       }
 
       "display empty input with label for CUS" in {
         view.getElementById("cusCode-label").text() mustBe "declaration.itemType.cusCode.header"
         view.getElementById("cusCode-hint").text() mustBe "declaration.itemType.cusCode.header.hint"
-        view.getElementById("cusCode").attr("value") mustBe ""
+        view.getElementById("cusCode").attr("value") mustBe empty
       }
 
       "display empty input with label for UN Dangerous Goods Code" in {
@@ -142,7 +142,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         view
           .getElementById("unDangerousGoodsCode-hint")
           .text() mustBe "declaration.itemType.unDangerousGoodsCode.header.hint"
-        view.getElementById("unDangerousGoodsCode").attr("value") mustBe ""
+        view.getElementById("unDangerousGoodsCode").attr("value") mustBe empty
       }
 
       "display two 'Add' buttons" in {
@@ -192,7 +192,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         view
           .getElementById("combinedNomenclatureCode-hint")
           .text() mustBe "declaration.itemType.combinedNomenclatureCode.header.hint"
-        view.getElementById("combinedNomenclatureCode").attr("value") mustBe ""
+        view.getElementById("combinedNomenclatureCode").attr("value") mustBe empty
       }
 
       "display empty input with label for TARIC" in {
@@ -205,7 +205,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         view
           .getElementById("taricAdditionalCode_-hint")
           .text() mustBe "declaration.itemType.taricAdditionalCodes.header.hint"
-        view.getElementById("taricAdditionalCode_").attr("value") mustBe ""
+        view.getElementById("taricAdditionalCode_").attr("value") mustBe empty
       }
 
       "display empty input with label for NAC" in {
@@ -218,7 +218,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         view
           .getElementById("nationalAdditionalCode_-hint")
           .text() mustBe "declaration.itemType.nationalAdditionalCode.header.hint"
-        view.getElementById("nationalAdditionalCode").attr("value") mustBe ""
+        view.getElementById("nationalAdditionalCode").attr("value") mustBe empty
       }
 
       "display empty input with label for Description" in {
@@ -227,7 +227,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
         view.getElementById("descriptionOfGoods-label").text() mustBe "declaration.itemType.description.header"
         view.getElementById("descriptionOfGoods-hint").text() mustBe "declaration.itemType.description.header.hint"
-        view.getElementById("descriptionOfGoods").text() mustBe ""
+        view.getElementById("descriptionOfGoods").text() mustBe empty
       }
 
       "display empty input with label for CUS" in {
@@ -236,7 +236,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
         view.getElementById("cusCode-label").text() mustBe "declaration.itemType.cusCode.header"
         view.getElementById("cusCode-hint").text() mustBe "declaration.itemType.cusCode.header.hint"
-        view.getElementById("cusCode").attr("value") mustBe ""
+        view.getElementById("cusCode").attr("value") mustBe empty
       }
 
       "display empty input with label for Statistical Value" in {
@@ -245,7 +245,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
         view.getElementById("statisticalValue-label").text() mustBe "declaration.itemType.statisticalValue.header"
         view.getElementById("statisticalValue-hint").text() mustBe "declaration.itemType.statisticalValue.header.hint"
-        view.getElementById("statisticalValue").attr("value") mustBe ""
+        view.getElementById("statisticalValue").attr("value") mustBe empty
       }
 
       "display two 'Add' buttons" in {

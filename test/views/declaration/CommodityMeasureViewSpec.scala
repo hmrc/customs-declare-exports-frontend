@@ -79,7 +79,7 @@ class CommodityMeasureViewSpec
 
       view.getElementById("supplementaryUnits-label").text() mustBe messages(supplementaryUnits)
       view.getElementById("supplementaryUnits-hint").text() mustBe messages(supplementaryUnitsHint)
-      view.getElementById("supplementaryUnits").attr("value") mustBe ""
+      view.getElementById("supplementaryUnits").attr("value") mustBe empty
     }
 
     "display empty input with label for net mass" in {
@@ -88,7 +88,7 @@ class CommodityMeasureViewSpec
 
       view.getElementById("netMass-label").text() mustBe messages(netMass)
       view.getElementById("netMass-hint").text() mustBe messages(netMassHint)
-      view.getElementById("netMass").attr("value") mustBe ""
+      view.getElementById("netMass").attr("value") mustBe empty
     }
 
     "display empty input with label for gross mass" in {
@@ -97,7 +97,7 @@ class CommodityMeasureViewSpec
 
       view.getElementById("grossMass-label").text() mustBe messages(grossMass)
       view.getElementById("grossMass-hint").text() mustBe messages(grossMassHint)
-      view.getElementById("grossMass").attr("value") mustBe ""
+      view.getElementById("grossMass").attr("value") mustBe empty
     }
 
     "display 'Back' button that links to 'Package Information' page" in {
@@ -189,8 +189,8 @@ class CommodityMeasureViewSpec
       val view = createView(form)
 
       view.getElementById("supplementaryUnits").attr("value") mustBe "123"
-      view.getElementById("netMass").attr("value") mustBe ""
-      view.getElementById("grossMass").attr("value") mustBe ""
+      view.getElementById("netMass").attr("value") mustBe empty
+      view.getElementById("grossMass").attr("value") mustBe empty
     }
 
     "display data in net mass input" in {
@@ -198,9 +198,9 @@ class CommodityMeasureViewSpec
       val form = CommodityMeasure.form().fill(CommodityMeasure(Some(""), "123", ""))
       val view = createView(form)
 
-      view.getElementById("supplementaryUnits").attr("value") mustBe ""
+      view.getElementById("supplementaryUnits").attr("value") mustBe empty
       view.getElementById("netMass").attr("value") mustBe "123"
-      view.getElementById("grossMass").attr("value") mustBe ""
+      view.getElementById("grossMass").attr("value") mustBe empty
     }
 
     "display data in gross mass input" in {
@@ -208,8 +208,8 @@ class CommodityMeasureViewSpec
       val form = CommodityMeasure.form().fill(CommodityMeasure(Some(""), "", "123"))
       val view = createView(form)
 
-      view.getElementById("supplementaryUnits").attr("value") mustBe ""
-      view.getElementById("netMass").attr("value") mustBe ""
+      view.getElementById("supplementaryUnits").attr("value") mustBe empty
+      view.getElementById("netMass").attr("value") mustBe empty
       view.getElementById("grossMass").attr("value") mustBe "123"
     }
 

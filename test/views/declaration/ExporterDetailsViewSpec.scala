@@ -56,7 +56,7 @@ class ExporterDetailsViewSpec
       val view = createView()
 
       view.getElementById("details_eori-label").text() mustBe messages(consignorEori)
-      view.getElementById("details_eori").attr("value") mustBe ""
+      view.getElementById("details_eori").attr("value") mustBe empty
     }
 
     "display empty input with label for Full name" in {
@@ -64,7 +64,7 @@ class ExporterDetailsViewSpec
       val view = createView()
 
       view.getElementById("details_address_fullName-label").text() mustBe messages(fullName)
-      view.getElementById("details_address_fullName").attr("value") mustBe ""
+      view.getElementById("details_address_fullName").attr("value") mustBe empty
     }
 
     "display empty input with label for Address" in {
@@ -72,7 +72,7 @@ class ExporterDetailsViewSpec
       val view = createView()
 
       view.getElementById("details_address_addressLine-label").text() mustBe messages(addressLine)
-      view.getElementById("details_address_addressLine").attr("value") mustBe ""
+      view.getElementById("details_address_addressLine").attr("value") mustBe empty
     }
 
     "display empty input with label for Town or City" in {
@@ -80,7 +80,7 @@ class ExporterDetailsViewSpec
       val view = createView()
 
       view.getElementById("details_address_townOrCity-label").text() mustBe messages(townOrCity)
-      view.getElementById("details_address_townOrCity").attr("value") mustBe ""
+      view.getElementById("details_address_townOrCity").attr("value") mustBe empty
     }
 
     "display empty input with label for Postcode" in {
@@ -88,7 +88,7 @@ class ExporterDetailsViewSpec
       val view = createView()
 
       view.getElementById("details_address_postCode-label").text() mustBe messages(postCode)
-      view.getElementById("details_address_postCode").attr("value") mustBe ""
+      view.getElementById("details_address_postCode").attr("value") mustBe empty
     }
 
     "display empty input with label for Country" in {
@@ -96,7 +96,7 @@ class ExporterDetailsViewSpec
       val view = createView()
 
       view.getElementById("details.address.country-label").text() mustBe messages("supplementary.address.country")
-      view.getElementById("details.address.country").attr("value") mustBe ""
+      view.getElementById("details.address.country").attr("value") mustBe empty
     }
 
     "display 'Back' button that links to 'Consignment References' page" in {
@@ -463,11 +463,11 @@ class ExporterDetailsViewSpec
       val view = createView(form)
 
       view.getElementById("details_eori").attr("value") mustBe "1234"
-      view.getElementById("details_address_fullName").attr("value") mustBe ""
-      view.getElementById("details_address_addressLine").attr("value") mustBe ""
-      view.getElementById("details_address_townOrCity").attr("value") mustBe ""
-      view.getElementById("details_address_postCode").attr("value") mustBe ""
-      view.getElementById("details.address.country").attr("value") mustBe ""
+      view.getElementById("details_address_fullName").attr("value") mustBe empty
+      view.getElementById("details_address_addressLine").attr("value") mustBe empty
+      view.getElementById("details_address_townOrCity").attr("value") mustBe empty
+      view.getElementById("details_address_postCode").attr("value") mustBe empty
+      view.getElementById("details.address.country").attr("value") mustBe empty
     }
 
     "display data in Business address inputs" in {
@@ -477,7 +477,7 @@ class ExporterDetailsViewSpec
         .fill(ExporterDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "test4")))))
       val view = createView(form)
 
-      view.getElementById("details_eori").attr("value") mustBe ""
+      view.getElementById("details_eori").attr("value") mustBe empty
       view.getElementById("details_address_fullName").attr("value") mustBe "test"
       view.getElementById("details_address_addressLine").attr("value") mustBe "test1"
       view.getElementById("details_address_townOrCity").attr("value") mustBe "test2"

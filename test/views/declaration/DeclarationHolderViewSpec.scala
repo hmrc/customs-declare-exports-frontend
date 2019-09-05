@@ -75,7 +75,7 @@ class DeclarationHolderViewSpec
 
       view.getElementById("authorisationTypeCode-label").text() mustBe messages(authorisationCode)
       view.getElementById("authorisationTypeCode-hint").text() mustBe messages(authorisationCodeHint)
-      view.getElementById("authorisationTypeCode").attr("value") mustBe ""
+      view.getElementById("authorisationTypeCode").attr("value") mustBe empty
     }
 
     "display empty input with label for EORI" in {
@@ -84,7 +84,7 @@ class DeclarationHolderViewSpec
 
       view.getElementById("eori-label").text() mustBe messages(declarationHolderEori)
       view.getElementById("eori-hint").text() mustBe messages(eoriHint)
-      view.getElementById("eori").attr("value") mustBe ""
+      view.getElementById("eori").attr("value") mustBe empty
     }
 
     "display 'Back' button that links to 'Additional Information' page" in {
@@ -173,14 +173,14 @@ class DeclarationHolderViewSpec
       val view = createView(DeclarationHolder.form().fill(DeclarationHolder(Some("test"), None)))
 
       view.getElementById("authorisationTypeCode").attr("value") mustBe "test"
-      view.getElementById("eori").attr("value") mustBe ""
+      view.getElementById("eori").attr("value") mustBe empty
     }
 
     "display data in EORI input" in {
 
       val view = createView(DeclarationHolder.form().fill(DeclarationHolder(None, Some("test"))))
 
-      view.getElementById("authorisationTypeCode").attr("value") mustBe ""
+      view.getElementById("authorisationTypeCode").attr("value") mustBe empty
       view.getElementById("eori").attr("value") mustBe "test"
     }
 

@@ -83,7 +83,7 @@ class DeclarationAdditionalActorsViewSpec
 
       view.getElementById("eori-label").text() mustBe messages("supplementary.additionalActors.eori")
       view.getElementById("eori-hint").text() mustBe messages("supplementary.eori.hint")
-      view.getElementById("eori").attr("value") mustBe ""
+      view.getElementById("eori").attr("value") mustBe empty
     }
 
     "display four radio buttons with description (not selected)" in {
@@ -91,25 +91,25 @@ class DeclarationAdditionalActorsViewSpec
       val view = createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some(""), Some(""))))
 
       val optionOne = view.getElementById(consolidator)
-      optionOne.attr("checked") mustBe ""
+      optionOne.attr("checked") mustBe empty
 
       val optionOneLabel = view.getElementById("supplementary.partyType.CS-label")
       optionOneLabel.text() mustBe messages(consolidator)
 
       val optionTwo = view.getElementById(manufacturer)
-      optionTwo.attr("checked") mustBe ""
+      optionTwo.attr("checked") mustBe empty
 
       val optionTwoLabel = view.getElementById("supplementary.partyType.MF-label")
       optionTwoLabel.text() mustBe messages(manufacturer)
 
       val optionThree = view.getElementById(freightForwarder)
-      optionThree.attr("checked") mustBe ""
+      optionThree.attr("checked") mustBe empty
 
       val optionThreeLabel = view.getElementById("supplementary.partyType.FW-label")
       optionThreeLabel.text() mustBe messages(freightForwarder)
 
       val optionFour = view.getElementById(warehouseKeeper)
-      optionFour.attr("checked") mustBe ""
+      optionFour.attr("checked") mustBe empty
 
       val optionFourLabel = view.getElementById("supplementary.partyType.WH-label")
       optionFourLabel.text() mustBe messages(warehouseKeeper)
@@ -192,9 +192,9 @@ class DeclarationAdditionalActorsViewSpec
 
       view.getElementById("eori").attr("value") mustBe "1234"
       view.getElementById(consolidator).attr("checked") mustBe "checked"
-      view.getElementById(manufacturer).attr("checked") mustBe ""
-      view.getElementById(freightForwarder).attr("checked") mustBe ""
-      view.getElementById(warehouseKeeper).attr("checked") mustBe ""
+      view.getElementById(manufacturer).attr("checked") mustBe empty
+      view.getElementById(freightForwarder).attr("checked") mustBe empty
+      view.getElementById(warehouseKeeper).attr("checked") mustBe empty
     }
 
     "display EORI with MF selected" in {
@@ -203,10 +203,10 @@ class DeclarationAdditionalActorsViewSpec
         createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("MF"))))
 
       view.getElementById("eori").attr("value") mustBe "1234"
-      view.getElementById(consolidator).attr("checked") mustBe ""
+      view.getElementById(consolidator).attr("checked") mustBe empty
       view.getElementById(manufacturer).attr("checked") mustBe "checked"
-      view.getElementById(freightForwarder).attr("checked") mustBe ""
-      view.getElementById(warehouseKeeper).attr("checked") mustBe ""
+      view.getElementById(freightForwarder).attr("checked") mustBe empty
+      view.getElementById(warehouseKeeper).attr("checked") mustBe empty
     }
 
     "display EORI with FW selected" in {
@@ -215,10 +215,10 @@ class DeclarationAdditionalActorsViewSpec
         createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("FW"))))
 
       view.getElementById("eori").attr("value") mustBe "1234"
-      view.getElementById(consolidator).attr("checked") mustBe ""
-      view.getElementById(manufacturer).attr("checked") mustBe ""
+      view.getElementById(consolidator).attr("checked") mustBe empty
+      view.getElementById(manufacturer).attr("checked") mustBe empty
       view.getElementById(freightForwarder).attr("checked") mustBe "checked"
-      view.getElementById(warehouseKeeper).attr("checked") mustBe ""
+      view.getElementById(warehouseKeeper).attr("checked") mustBe empty
     }
 
     "display EORI with WH selected" in {
@@ -227,9 +227,9 @@ class DeclarationAdditionalActorsViewSpec
         createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("WH"))))
 
       view.getElementById("eori").attr("value") mustBe "1234"
-      view.getElementById(consolidator).attr("checked") mustBe ""
-      view.getElementById(manufacturer).attr("checked") mustBe ""
-      view.getElementById(freightForwarder).attr("checked") mustBe ""
+      view.getElementById(consolidator).attr("checked") mustBe empty
+      view.getElementById(manufacturer).attr("checked") mustBe empty
+      view.getElementById(freightForwarder).attr("checked") mustBe empty
       view.getElementById(warehouseKeeper).attr("checked") mustBe "checked"
     }
 

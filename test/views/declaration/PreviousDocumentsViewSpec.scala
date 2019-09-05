@@ -82,36 +82,36 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
       val view = createView(form = Document.form.fill(Document("", "", "", Some(""))))
 
       val optionOne = view.getElementById("Temporary storage")
-      optionOne.attr("checked") must be("")
+      optionOne.attr("checked") mustBe empty
 
       view.getElementById("Temporary storage-label").text() must be("supplementary.previousDocuments.X")
 
       val optionTwo = view.getElementById("Simplified declaration")
-      optionTwo.attr("checked") must be("")
+      optionTwo.attr("checked") mustBe empty
 
       view.getElementById("Simplified declaration-label").text() must be("supplementary.previousDocuments.Y")
 
       val optionThree = view.getElementById("Related document")
-      optionThree.attr("checked") must be("")
+      optionThree.attr("checked") mustBe empty
 
       view.getElementById("Related document-label").text() must be("supplementary.previousDocuments.Z")
     }
 
     "display empty input with label for Previous document code" in {
       view.getElementById("documentType-label").text() must be("supplementary.previousDocuments.documentType")
-      view.getElementById("documentType").attr("value") must be("")
+      view.getElementById("documentType").attr("value") mustBe empty
     }
 
     "display empty input with label for Previous DUCR or MUCR" in {
       view.getElementById("documentReference-label").text() must be("supplementary.previousDocuments.documentReference")
-      view.getElementById("documentReference").attr("value") must be("")
+      view.getElementById("documentReference").attr("value") mustBe empty
     }
 
     "display empty input with label for Previous Goods Identifier" in {
       view.getElementById("goodsItemIdentifier-label").text() must be(
         "supplementary.previousDocuments.goodsItemIdentifier"
       )
-      view.getElementById("goodsItemIdentifier").attr("value") must be("")
+      view.getElementById("goodsItemIdentifier").attr("value") mustBe empty
     }
 
     "display 'Back' button that links to 'Transaction Type' page" in {
@@ -148,10 +148,10 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
       optionOne.attr("checked") must be("checked")
 
       val optionTwo = view.getElementById("Simplified declaration")
-      optionTwo.attr("checked") must be("")
+      optionTwo.attr("checked") mustBe empty
 
       val optionThree = view.getElementById("Related document")
-      optionThree.attr("checked") must be("")
+      optionThree.attr("checked") mustBe empty
     }
 
     "display selected second radio button - Simplified Declaration (Y)" in {
@@ -159,13 +159,13 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
       val view = createView(form = Document.form.fill(Document("Y", "", "", Some(""))))
 
       val optionOne = view.getElementById("Temporary storage")
-      optionOne.attr("checked") must be("")
+      optionOne.attr("checked") mustBe empty
 
       val optionTwo = view.getElementById("Simplified declaration")
       optionTwo.attr("checked") must be("checked")
 
       val optionThree = view.getElementById("Related document")
-      optionThree.attr("checked") must be("")
+      optionThree.attr("checked") mustBe empty
     }
 
     "display selected third radio button - Previous Documents (Z)" in {
@@ -173,10 +173,10 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
       val view = createView(form = Document.form.fill(Document("Z", "", "", Some(""))))
 
       val optionOne = view.getElementById("Temporary storage")
-      optionOne.attr("checked") must be("")
+      optionOne.attr("checked") mustBe empty
 
       val optionTwo = view.getElementById("Simplified declaration")
-      optionTwo.attr("checked") must be("")
+      optionTwo.attr("checked") mustBe empty
 
       val optionThree = view.getElementById("Related document")
       optionThree.attr("checked") must be("checked")
@@ -187,25 +187,25 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
       val view = createView(form = Document.form.fill(Document("", "Test", "", Some(""))))
 
       view.getElementById("documentType").attr("value") must be("Test")
-      view.getElementById("documentReference").attr("value") must be("")
-      view.getElementById("goodsItemIdentifier").attr("value") must be("")
+      view.getElementById("documentReference").attr("value") mustBe empty
+      view.getElementById("goodsItemIdentifier").attr("value") mustBe empty
     }
 
     "display data in Previous DUCR or MUCR input" in {
 
       val view = createView(form = Document.form.fill(Document("", "", "Test", Some(""))))
 
-      view.getElementById("documentType").attr("value") must be("")
+      view.getElementById("documentType").attr("value") mustBe empty
       view.getElementById("documentReference").attr("value") must be("Test")
-      view.getElementById("goodsItemIdentifier").attr("value") must be("")
+      view.getElementById("goodsItemIdentifier").attr("value") mustBe empty
     }
 
     "display data in Previous Goods Identifier input" in {
 
       val view = createView(form = Document.form.fill(Document("", "", "", Some("Test"))))
 
-      view.getElementById("documentType").attr("value") must be("")
-      view.getElementById("documentReference").attr("value") must be("")
+      view.getElementById("documentType").attr("value") mustBe empty
+      view.getElementById("documentReference").attr("value") mustBe empty
       view.getElementById("goodsItemIdentifier").attr("value") must be("Test")
     }
 
@@ -217,10 +217,10 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
       optionOne.attr("checked") must be("checked")
 
       val optionTwo = view.getElementById("Simplified declaration")
-      optionTwo.attr("checked") must be("")
+      optionTwo.attr("checked") mustBe empty
 
       val optionThree = view.getElementById("Related document")
-      optionThree.attr("checked") must be("")
+      optionThree.attr("checked") mustBe empty
 
       view.getElementById("documentType").attr("value") must be("Test")
       view.getElementById("documentReference").attr("value") must be("Test")
