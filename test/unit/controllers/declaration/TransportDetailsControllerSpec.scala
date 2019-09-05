@@ -93,10 +93,20 @@ class TransportDetailsControllerSpec extends ControllerSpec {
         val correctForm =
           Json.toJson(TransportDetails(Some("United Kingdom"), false, IMOShipIDNumber, Some("correct"), Some(cash)))
 
+        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
+      }
+
+      "Container is not selected in draft mode" in new SetUp {
+        val correctForm =
+          Json.toJson(TransportDetails(Some("United Kingdom"), false, IMOShipIDNumber, Some("correct"), Some(cash)))
+
         val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Draft)
+        thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
       }
     }
   }
