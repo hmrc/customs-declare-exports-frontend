@@ -118,10 +118,10 @@ class OfficeOfExitStandardViewSpec extends UnitViewSpec with ExportsTestData wit
         view.getElementById("officeId-error").text() mustBe "declaration.officeOfExit.empty"
         view.getElementById("error-message-officeId-input").text() mustBe "declaration.officeOfExit.empty"
 
-        view.getElementById("circumstancesCode-error").text() mustBe "standard.officeOfExit.circumstancesCode.empty"
+        view.getElementById("circumstancesCode-error").text() mustBe "standard.officeOfExit.circumstancesCode.error"
         view
           .getElementById("error-message-circumstancesCode-input")
-          .text() mustBe "standard.officeOfExit.circumstancesCode.empty"
+          .text() mustBe "standard.officeOfExit.circumstancesCode.error"
       }
 
       "display errors when all inputs are incorrect" in {

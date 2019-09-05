@@ -16,17 +16,16 @@
 
 package forms.declaration
 
-import play.api.data.{Form, Forms}
-import play.api.data.Forms.text
-import play.api.libs.json.Json
-import utils.validators.forms.FieldValidator.{isContainedIn, isEmpty, nonEmpty}
-import utils.validators.forms.FieldValidator._
+import forms.Mapping.requiredRadio
+import play.api.data.{Form, Forms, Mapping}
+import play.api.libs.json.{Json, OFormat}
+import utils.validators.forms.FieldValidator.isContainedIn
 
 case class FiscalInformation(onwardSupplyRelief: String)
 
 object FiscalInformation {
 
-  implicit val format = Json.format[FiscalInformation]
+  implicit val format: OFormat[FiscalInformation] = Json.format[FiscalInformation]
 
   object AllowedFiscalInformationAnswers {
     val yes = "Yes"
@@ -37,10 +36,9 @@ object FiscalInformation {
 
   val allowedValues: Seq[String] = Seq(yes, no)
 
-  val mapping = Forms.mapping(
-    "onwardSupplyRelief" -> text()
-      .verifying("declaration.fiscalInformation.onwardSupplyRelief.error", nonEmpty)
-      .verifying("declaration.fiscalInformation.onwardSupplyRelief.error", isEmpty or isContainedIn(allowedValues))
+  val mapping: Mapping[FiscalInformation] = Forms.mapping(
+    "onwardSupplyRelief" -> requiredRadio("declaration.fiscalInformation.onwardSupplyRelief.empty")
+      .verifying("declaration.fiscalInformation.onwardSupplyRelief.error", isContainedIn(allowedValues))
   )(FiscalInformation.apply)(FiscalInformation.unapply)
 
   val formId = "FiscalInformation"

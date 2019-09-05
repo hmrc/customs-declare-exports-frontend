@@ -16,17 +16,19 @@
 
 package forms.declaration.officeOfExit
 
+import forms.Mapping.requiredRadio
 import forms.declaration.officeOfExit.OfficeOfExitStandard.AllowedCircumstancesCodeAnswers.{no, yes}
 import play.api.data.Forms.{optional, text}
-import play.api.data.{Form, Forms}
-import play.api.libs.json.Json
+import play.api.data.{Forms, Mapping}
+import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
 
 case class OfficeOfExitStandard(officeId: String, presentationOfficeId: Option[String], circumstancesCode: String)
 
 object OfficeOfExitStandard {
-  implicit val format = Json.format[OfficeOfExitStandard]
-  val mapping = Forms.mapping(
+  implicit val format: OFormat[OfficeOfExitStandard] = Json.format[OfficeOfExitStandard]
+
+  val mapping: Mapping[OfficeOfExitStandard] = Forms.mapping(
     "officeId" -> text()
       .verifying("declaration.officeOfExit.empty", nonEmpty)
       .verifying("declaration.officeOfExit.length", isEmpty or hasSpecificLength(8))
@@ -36,9 +38,8 @@ object OfficeOfExitStandard {
         .verifying("standard.officeOfExit.presentationOffice.length", isEmpty or hasSpecificLength(8))
         .verifying("standard.officeOfExit.presentationOffice.specialCharacters", isEmpty or isAlphanumeric)
     ),
-    "circumstancesCode" -> text()
-      .verifying("standard.officeOfExit.circumstancesCode.empty", nonEmpty)
-      .verifying("standard.officeOfExit.circumstancesCode.error", isEmpty or isContainedIn(Seq(yes, no)))
+    "circumstancesCode" -> requiredRadio("standard.officeOfExit.circumstancesCode.empty")
+      .verifying("standard.officeOfExit.circumstancesCode.error", isContainedIn(Seq(yes, no)))
   )(OfficeOfExitStandard.apply)(OfficeOfExitStandard.unapply)
 
   def apply(officeOfExit: OfficeOfExit): OfficeOfExitStandard = OfficeOfExitStandard(
@@ -46,16 +47,6 @@ object OfficeOfExitStandard {
     presentationOfficeId = officeOfExit.presentationOfficeId,
     circumstancesCode = officeOfExit.circumstancesCode.getOrElse("")
   )
-
-  def adjustCircumstancesError(form: Form[OfficeOfExitStandard]): Form[OfficeOfExitStandard] = {
-    val errors = form.errors.map { error =>
-      if (error.key == "circumstancesCode" && error.message == "error.required")
-        error.copy(messages = Seq("standard.officeOfExit.circumstancesCode.empty"))
-      else error
-    }
-
-    form.copy(errors = errors)
-  }
 
   object AllowedCircumstancesCodeAnswers {
     val yes = "Yes"

@@ -16,9 +16,9 @@
 
 package forms.declaration
 
-import play.api.data.Forms.{optional, text}
+import forms.Mapping.requiredRadio
 import play.api.data.{Form, Forms, Mapping}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
 
 case class DispatchLocation(
@@ -26,20 +26,14 @@ case class DispatchLocation(
 )
 
 object DispatchLocation {
-  implicit val format = Json.format[DispatchLocation]
+  implicit val format: OFormat[DispatchLocation] = Json.format[DispatchLocation]
 
   private val allowedValues = Set(AllowedDispatchLocations.OutsideEU, AllowedDispatchLocations.SpecialFiscalTerritory)
 
-  val formMapping: Mapping[DispatchLocation] = Forms.single(
-    "dispatchLocation" -> optional(
-      text(maxLength = 2)
-        .verifying("supplementary.dispatchLocation.inputText.error.incorrect", isContainedIn(allowedValues))
-    ).verifying("supplementary.dispatchLocation.inputText.error.empty", _.isDefined)
-      .transform[DispatchLocation](
-        value => DispatchLocation(value.getOrElse("")),
-        dispatchLocation => Some(dispatchLocation.dispatchLocation)
-      )
-  )
+  val formMapping: Mapping[DispatchLocation] = Forms.mapping(
+    "dispatchLocation" -> requiredRadio("supplementary.dispatchLocation.inputText.error.empty")
+      .verifying("supplementary.dispatchLocation.inputText.error.incorrect", isContainedIn(allowedValues))
+  )(DispatchLocation.apply)(DispatchLocation.unapply)
 
   val formId: String = "DispatchLocation"
 
