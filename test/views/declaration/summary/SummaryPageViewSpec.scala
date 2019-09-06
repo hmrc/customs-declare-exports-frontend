@@ -18,12 +18,13 @@ package views.declaration.summary
 
 import base.ExportsTestData.newUser
 import forms.Choice
-import forms.declaration.GoodsLocation
+import forms.declaration.{GoodsLocation, LegalDeclaration}
 import models.declaration.{Container, SupplementaryDeclarationData}
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import models.{ExportsDeclaration, Mode}
 import org.jsoup.nodes.Document
 import org.scalatest.{MustMatchers, WordSpec}
+import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
@@ -35,6 +36,8 @@ import views.html.declaration.summary.{summary_page, summary_page_no_data}
 class SummaryPageViewSpec
     extends WordSpec with MustMatchers with ExportsDeclarationBuilder with ExportsItemBuilder with Stubs
     with ViewMatchers {
+
+  private val form: Form[LegalDeclaration] = LegalDeclaration.form()
 
   val declaration = aDeclaration(
     withConsignmentReferences(),
@@ -53,7 +56,7 @@ class SummaryPageViewSpec
       declaration
     )
   val summaryPage = contentAsString(
-    new summary_page(mainTemplate)(Mode.Normal, SupplementaryDeclarationData(declaration))(
+    new summary_page(mainTemplate)(Mode.Normal, SupplementaryDeclarationData(declaration), form)(
       request,
       stubMessages(),
       minimalAppConfig
@@ -63,7 +66,7 @@ class SummaryPageViewSpec
 
   "Summary page" should {
     def view(mode: Mode, declaration: ExportsDeclaration = declaration): Document =
-      new summary_page(mainTemplate)(mode, SupplementaryDeclarationData(declaration))(
+      new summary_page(mainTemplate)(mode, SupplementaryDeclarationData(declaration), form)(
         new JourneyRequest(
           new AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")),
           declaration

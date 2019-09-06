@@ -18,12 +18,14 @@ package controllers.declaration
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
+import forms.declaration.LegalDeclaration
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.SupplementaryDeclarationData
 import models.requests.ExportsSessionKeys
 import models.{ExportsDeclaration, Mode}
 import play.api.Logger
+import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services._
@@ -31,7 +33,7 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.summary.{summary_page, summary_page_no_data}
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class SummaryController @Inject()(
   authenticate: AuthAction,
@@ -49,7 +51,7 @@ class SummaryController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (containsMandatoryData(request.cacheModel, mode)) {
-      Ok(summaryPage(mode, SupplementaryDeclarationData(request.cacheModel)))
+      Ok(summaryPage(mode, SupplementaryDeclarationData(request.cacheModel), LegalDeclaration.form()))
     } else {
       Ok(summaryPageNoData())
     }
@@ -59,13 +61,24 @@ class SummaryController @Inject()(
     mode.equals(Mode.Draft) || data.consignmentReferences.exists(references => references.lrn.nonEmpty)
 
   def submitDeclaration(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    submissionService.submit(request.cacheModel).map {
-      case Some(lrn) =>
-        Redirect(controllers.declaration.routes.ConfirmationController.displaySubmissionConfirmation())
-          .flashing(Flash(Map("LRN" -> lrn)))
-          .removingFromSession(ExportsSessionKeys.declarationId)
-      case _ => handleError(s"Error from Customs Declarations API")
-    }
+    LegalDeclaration
+      .form()
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[LegalDeclaration]) =>
+          Future.successful(
+            BadRequest(summaryPage(Mode.Normal, SupplementaryDeclarationData(request.cacheModel), formWithErrors))
+        ),
+        legalDeclaration => {
+          submissionService.submit(request.cacheModel, legalDeclaration).map {
+            case Some(lrn) =>
+              Redirect(controllers.declaration.routes.ConfirmationController.displaySubmissionConfirmation())
+                .flashing(Flash(Map("LRN" -> lrn)))
+                .removingFromSession(ExportsSessionKeys.declarationId)
+            case _ => handleError(s"Error from Customs Declarations API")
+          }
+        }
+      )
   }
 
   private def handleError(logMessage: String)(implicit request: Request[_]): Result = {
