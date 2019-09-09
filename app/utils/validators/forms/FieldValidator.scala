@@ -53,7 +53,7 @@ object FieldValidator {
 
   val nonEmpty: String => Boolean = (input: String) => input.trim.nonEmpty
 
-  val isTrue: Boolean => Boolean = (input: Boolean) => input.equals(true)
+  val isTrue: Boolean => Boolean = (input: Boolean) => input
 
   val noLongerThan: Int => String => Boolean = (length: Int) => (input: String) => input.length <= length
 

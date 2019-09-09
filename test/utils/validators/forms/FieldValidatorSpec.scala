@@ -867,4 +867,18 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
       }
     }
   }
+
+  "FieldValidator isTrue" should {
+
+    "return false" when {
+      "not true" in {
+        isTrue(false) must be(false)
+      }
+    }
+    "return true" when {
+      "true" in {
+        isTrue(true) must be(true)
+      }
+    }
+  }
 }

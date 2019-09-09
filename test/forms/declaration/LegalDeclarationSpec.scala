@@ -20,7 +20,7 @@ import helpers.views.declaration.WarehouseIdentificationMessages
 import play.api.libs.json._
 import unit.base.UnitSpec
 
-class LegalDeclarationSpec extends UnitSpec with WarehouseIdentificationMessages {
+class LegalDeclarationSpec extends UnitSpec {
 
   import LegalDeclaration._
 
