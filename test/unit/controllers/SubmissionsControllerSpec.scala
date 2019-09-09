@@ -104,6 +104,7 @@ class SubmissionsControllerSpec extends ControllerSpec {
         val created = theDeclarationCreated
         created.status mustBe DeclarationStatus.DRAFT
         created.sourceId mustBe Some("id")
+        created.id mustBe None
         created.updatedDateTime mustBe inTheLast(1 seconds)
         created.createdDateTime mustBe inTheLast(1 seconds)
       }

@@ -52,15 +52,8 @@ class SubmissionsController @Inject()(
   def amend(id: String): Action[AnyContent] = authenticate.async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id) flatMap {
       case Some(declaration) =>
-        val currentDateTime = Instant.now()
-        val newDeclaration = declaration.copy(
-          status = DeclarationStatus.DRAFT,
-          sourceId = Some(id),
-          createdDateTime = currentDateTime,
-          updatedDateTime = currentDateTime
-        )
         customsDeclareExportsConnector
-          .createDeclaration(newDeclaration)
+          .createDeclaration(declaration.amend(sourceId = id))
           .map { created =>
             Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.Amend))
               .addingToSession(ExportsSessionKeys.declarationId -> created.id.get)
