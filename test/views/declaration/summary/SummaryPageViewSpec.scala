@@ -76,22 +76,21 @@ class SummaryPageViewSpec
       )
 
     "contain back button" when {
-      "Draft Mode" when {
-        "source Id is populated" in {
+      "Draft Mode" in {
+        val document = view(Mode.Draft)
+        document must containElementWithID("link-back")
+        document.getElementById("link-back") must haveHref(
+          controllers.routes.SavedDeclarationsController.displayDeclarations()
+        )
+      }
+
+      "Amend Mode" when {
+        "source id populated" in {
           val model = aDeclaration(withSourceId("source-id"))
-          val document = view(Mode.Draft, model)
+          val document = view(Mode.Amend, model)
           document must containElementWithID("link-back")
           document.getElementById("link-back") must haveHref(
             controllers.routes.NotificationsController.listOfNotificationsForSubmission("source-id")
-          )
-        }
-
-        "source Id is empty" in {
-          val model = aDeclaration(withoutSourceId())
-          val document = view(Mode.Draft, model)
-          document must containElementWithID("link-back")
-          document.getElementById("link-back") must haveHref(
-            controllers.routes.SavedDeclarationsController.displayDeclarations()
           )
         }
       }

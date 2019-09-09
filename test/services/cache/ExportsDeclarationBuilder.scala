@@ -65,6 +65,14 @@ trait ExportsDeclarationBuilder {
 
   def withoutSourceId(): ExportsDeclarationModifier = _.copy(sourceId = None)
 
+  def withCreatedDate(date: LocalDateTime): ExportsDeclarationModifier =
+    _.copy(createdDateTime = date.toInstant(ZoneOffset.UTC))
+
+  def withCreatedDate(date: LocalDate): ExportsDeclarationModifier =
+    _.copy(createdDateTime = date.atStartOfDay().toInstant(ZoneOffset.UTC))
+
+  def withCreatedTime(createdDateTime: Instant): ExportsDeclarationModifier = _.copy(createdDateTime = createdDateTime)
+
   def withUpdateDate(date: LocalDateTime): ExportsDeclarationModifier =
     _.copy(updatedDateTime = date.toInstant(ZoneOffset.UTC))
 

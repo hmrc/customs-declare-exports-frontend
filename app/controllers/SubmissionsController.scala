@@ -16,15 +16,16 @@
 
 package controllers
 
+import java.time.Instant
+
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.AuthAction
 import controllers.util.SubmissionDisplayHelper
 import javax.inject.Inject
-import models.{DeclarationStatus, Mode}
 import models.requests.ExportsSessionKeys
+import models.{DeclarationStatus, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.submissions
 
@@ -51,8 +52,15 @@ class SubmissionsController @Inject()(
   def amend(id: String): Action[AnyContent] = authenticate.async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id) flatMap {
       case Some(declaration) =>
+        val currentDateTime = Instant.now()
+        val newDeclaration = declaration.copy(
+          status = DeclarationStatus.DRAFT,
+          sourceId = Some(id),
+          createdDateTime = currentDateTime,
+          updatedDateTime = currentDateTime
+        )
         customsDeclareExportsConnector
-          .createDeclaration(declaration.copy(status = DeclarationStatus.DRAFT, sourceId = Some(id)))
+          .createDeclaration(newDeclaration)
           .map { created =>
             Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.Amend))
               .addingToSession(ExportsSessionKeys.declarationId -> created.id.get)

@@ -35,7 +35,7 @@
 ) {
 
   @mode match {
-      case Mode.Draft if request.cacheModel.sourceId.isDefined => {
+      case Mode.Amend if request.cacheModel.sourceId.isDefined => {
           @components.back_link(controllers.routes.NotificationsController.listOfNotificationsForSubmission(request.cacheModel.sourceId.get), mode)
       }
       case Mode.Draft => {
