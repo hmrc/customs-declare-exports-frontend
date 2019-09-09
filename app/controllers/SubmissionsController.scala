@@ -16,14 +16,12 @@
 
 package controllers
 
-import java.time.Instant
-
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.AuthAction
 import controllers.util.SubmissionDisplayHelper
 import javax.inject.Inject
+import models.Mode
 import models.requests.ExportsSessionKeys
-import models.{DeclarationStatus, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController

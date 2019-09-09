@@ -16,7 +16,7 @@
 
 package models
 
-import java.time.Instant
+import java.time.{Clock, Instant}
 
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
@@ -60,8 +60,8 @@ case class ExportsDeclaration(
 
   def containerBy(containerId: String): Option[Container] = containers.find(_.id.equalsIgnoreCase(containerId))
 
-  def amend(sourceId: String): ExportsDeclaration = {
-    val currentTime = Instant.now()
+  def amend(sourceId: String)(implicit clock: Clock = Clock.systemUTC()): ExportsDeclaration = {
+    val currentTime = Instant.now(clock)
     this.copy(
       id = None,
       status = DeclarationStatus.DRAFT,
