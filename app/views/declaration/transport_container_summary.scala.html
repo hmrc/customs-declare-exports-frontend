@@ -50,8 +50,11 @@
                         <th>@messages("supplementary.transportInfo.containerId.title")</th>
                           @if(showSeals) {
                               <th>@messages("standard.seal.summary.heading")</th>
+                              <th></th>
+                              <th></th>
+                          } else {
+                              <th></th>
                           }
-                        <th></th>
                       </tr>
                   </thead>
                   <tbody>
@@ -67,8 +70,13 @@
                             }
                         }
                         <td id="containers-row@index-remove_button">
-                            @remove_button(value = Some(container.id), buttonClass="button-link")
+                            @remove_button(value = Some(container.id), buttonClass="button-link", label="supplementary.transportInfo.containers.remove")
                         </td>
+                        @if(showSeals) {
+                            <td>
+                                <a class="button-link" href="@SealController.displaySealSummary(mode, container.id)">@messages("supplementary.transportInfo.containers.change")</a>
+                            </td>
+                        }
                     </tr>
                   }
                   </tbody>
