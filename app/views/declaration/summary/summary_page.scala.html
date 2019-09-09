@@ -17,16 +17,18 @@
 @import config.AppConfig
 @import controllers.declaration.routes
 @import forms.Choice.AllowedChoiceValues._
+@import forms.declaration.LegalDeclaration
 @import models.Mode
 @import models.declaration.SupplementaryDeclarationData
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 @import views.html.declaration.summary._
+@import views.html.declaration.summary.legal_declaration
 @import views.ViewDates
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, suppDecData: SupplementaryDeclarationData)(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(mode: Mode, suppDecData: SupplementaryDeclarationData, legalDeclarationForm: Form[LegalDeclaration])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(
     title = messages("supplementary.summary.title")
@@ -114,6 +116,8 @@
     @if(mode == Mode.Normal) {
         @helper.form(action = routes.SummaryController.submitDeclaration(), 'id -> "summary") {
             @helper.CSRF.formField
+
+            @legal_declaration(legalDeclarationForm)
 
             @components.submit_button(messages("site.acceptAndSubmitDeclaration"))
         }

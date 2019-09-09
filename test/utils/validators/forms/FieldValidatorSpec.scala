@@ -825,4 +825,60 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
       }
     }
   }
+
+  "FieldValidator isAlphanumericWithSpace" should {
+
+    "return false" when {
+
+      "value is incorrect" in {
+
+        isAlphanumericWithSpace("@test") must be(false)
+      }
+    }
+
+    "return true" when {
+
+      "value is correct" in {
+
+        isAlphanumericWithSpace("abc 123") must be(true)
+        isAlphanumericWithSpace(" ") must be(true)
+      }
+    }
+  }
+
+  "FieldValidator isValidEmail" should {
+
+    "return false" when {
+
+      "email is incorrect" in {
+
+        isValidEmail("@test") must be(false)
+        isValidEmail("test@") must be(false)
+      }
+    }
+
+    "return true" when {
+
+      "email is correct" in {
+
+        isValidEmail("test@test") must be(true)
+        isValidEmail("test@test.com") must be(true)
+        isValidEmail("#!$%&'*+-/=?^_{}|~@domain.org") must be(true)
+      }
+    }
+  }
+
+  "FieldValidator isTrue" should {
+
+    "return false" when {
+      "not true" in {
+        isTrue(false) must be(false)
+      }
+    }
+    "return true" when {
+      "true" in {
+        isTrue(true) must be(true)
+      }
+    }
+  }
 }

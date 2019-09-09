@@ -1,0 +1,51 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.declaration.Items
+@import models.viewmodels.HtmlTableRow
+@import forms.declaration.LegalDeclaration
+@import views.html.components.section_header
+@import views.html.components.warning
+
+@(form: Form[LegalDeclaration])(implicit messages: Messages)
+
+
+<h2 class="heading-medium">@messages("legal.declaration.heading")</h2>
+
+<p>@messages("legal.declaration.info")</p>
+
+@warning(messages("legal.declaration.warning"), containerClass = "mt-2, mb-2")
+
+@components.fields.field_text(
+ field = form("fullName"),
+ label = messages("legal.declaration.fullName")
+)
+
+@components.fields.field_text(
+ field = form("jobRole"),
+ label = messages("legal.declaration.jobRole")
+)
+
+@components.fields.field_text(
+ field = form("email"),
+ label = messages("legal.declaration.email")
+)
+
+@components.fields.field_checkbox(
+ field = form("confirmation"),
+ label = messages("legal.declaration.confirmation")
+)
+

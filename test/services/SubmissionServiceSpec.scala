@@ -20,6 +20,7 @@ import base.{Injector, MockConnectors, MockExportCacheService, TestHelper}
 import com.kenshoo.play.metrics.Metrics
 import config.AppConfig
 import forms.Choice.AllowedChoiceValues
+import forms.declaration.LegalDeclaration
 import metrics.{ExportsMetrics, MetricIdentifiers}
 import models.{DeclarationStatus, ExportsDeclaration}
 import org.mockito.ArgumentMatchers.any
@@ -48,6 +49,8 @@ class SubmissionServiceSpec
 
   val request = TestHelper.journeyRequest(FakeRequest("", ""), AllowedChoiceValues.SupplementaryDec)
 
+  val legal = LegalDeclaration("Name", "Role", "email@test.com", true)
+
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockExportsCacheService, mockCustomsDeclareExportsConnector, mockAuditService)
@@ -58,6 +61,10 @@ class SubmissionServiceSpec
     EventData.LRN.toString -> "123LRN",
     EventData.DUCR.toString -> "ducr",
     EventData.DecType.toString -> "SMP",
+    EventData.FullName.toString -> legal.fullName,
+    EventData.JobRole.toString -> legal.jobRole,
+    EventData.Email.toString -> legal.email,
+    EventData.Confirmed.toString -> legal.confirmation.toString,
     EventData.SubmissionResult.toString -> "Success"
   )
   val submissionService = new SubmissionService(
@@ -89,7 +96,7 @@ class SubmissionServiceSpec
       val counterBefore = registry.getCounters.get(exportMetrics.counterName(metric)).getCount
       val model = aDeclaration(withConsignmentReferences(ducr = "ducr", lrn = "123LRN"))
 
-      val result = submissionService.submit(model)(request, hc, global).futureValue
+      val result = submissionService.submit(model, legal)(request, hc, global).futureValue
 
       result.value mustBe "123LRN"
 
@@ -109,7 +116,7 @@ class SubmissionServiceSpec
 
       val model = aDeclaration(withConsignmentReferences(ducr = "ducr", lrn = "123LRN"))
 
-      intercept[Exception](submissionService.submit(model)(request, hc, global)) mustBe error
+      intercept[Exception](submissionService.submit(model, legal)(request, hc, global)) mustBe error
     }
   }
 }

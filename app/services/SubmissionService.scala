@@ -19,11 +19,12 @@ package services
 import com.google.inject.Inject
 import config.AppConfig
 import connectors.CustomsDeclareExportsConnector
+import forms.declaration.LegalDeclaration
 import javax.inject.Singleton
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers.submissionMetric
-import models.{DeclarationStatus, ExportsDeclaration}
 import models.requests.JourneyRequest
+import models.{DeclarationStatus, ExportsDeclaration}
 import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 import services.audit.EventData._
@@ -46,7 +47,8 @@ class SubmissionService @Inject()(
   private val logger = Logger(this.getClass)
 
   def submit(
-    exportsDeclaration: ExportsDeclaration
+    exportsDeclaration: ExportsDeclaration,
+    legalDeclaration: LegalDeclaration
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]] = {
 
     val timerContext = exportsMetrics.startTimer(submissionMetric)
@@ -57,20 +59,20 @@ class SubmissionService @Inject()(
           logger.error(s"Error response from backend $exception")
           auditService.audit(
             AuditTypes.Submission,
-            auditData(exportsDeclaration.lrn, exportsDeclaration.ducr, Failure.toString)
+            auditData(exportsDeclaration.lrn, exportsDeclaration.ducr, legalDeclaration, Failure.toString)
           )
       }
 
       _ = auditService.audit(
         AuditTypes.Submission,
-        auditData(exportsDeclaration.lrn, exportsDeclaration.ducr, Success.toString)
+        auditData(exportsDeclaration.lrn, exportsDeclaration.ducr, legalDeclaration, Success.toString)
       )
       _ = exportsMetrics.incrementCounter(submissionMetric)
       _ = timerContext.stop()
     } yield exportsDeclaration.lrn
   }
 
-  private def auditData(lrn: Option[String], ducr: Option[String], result: String)(
+  private def auditData(lrn: Option[String], ducr: Option[String], legalDeclaration: LegalDeclaration, result: String)(
     implicit request: JourneyRequest[_]
   ) =
     Map(
@@ -78,6 +80,10 @@ class SubmissionService @Inject()(
       DecType.toString -> request.choice.value,
       LRN.toString -> lrn.getOrElse(""),
       DUCR.toString -> ducr.getOrElse(""),
+      FullName.toString -> legalDeclaration.fullName,
+      JobRole.toString -> legalDeclaration.jobRole,
+      Email.toString -> legalDeclaration.email,
+      Confirmed.toString -> legalDeclaration.confirmation.toString,
       SubmissionResult.toString -> result
     )
 

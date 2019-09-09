@@ -53,6 +53,8 @@ object FieldValidator {
 
   val nonEmpty: String => Boolean = (input: String) => input.trim.nonEmpty
 
+  val isTrue: Boolean => Boolean = (input: Boolean) => input
+
   val noLongerThan: Int => String => Boolean = (length: Int) => (input: String) => input.length <= length
 
   val noShorterThan: Int => String => Boolean = (length: Int) => (input: String) => input.length >= length
@@ -71,6 +73,9 @@ object FieldValidator {
   val isAlphabetic: String => Boolean = (input: String) => input.forall(_.isLetter)
 
   val isAlphanumeric: String => Boolean = (input: String) => input.forall(_.isLetterOrDigit)
+
+  val isAlphanumericWithSpace: String => Boolean = (input: String) =>
+    isAlphanumericWithSpecialCharacters(Set(' '))(input)
 
   val isAlphanumericWithSpecialCharacters: Set[Char] => String => Boolean = (allowedChars: Set[Char]) =>
     (input: String) => input.filter(!_.isLetterOrDigit).forall(allowedChars)
@@ -120,6 +125,8 @@ object FieldValidator {
   }
 
   private val namePattern = Pattern.compile("[\\p{IsLatin} ,.'-]+")
-
   val isValidName: String => Boolean = (name: String) => namePattern.matcher(name).matches()
+
+  private val emailPattern = Pattern.compile("""^\S+@\S+$""")
+  val isValidEmail: String => Boolean = (name: String) => emailPattern.matcher(name).matches()
 }
