@@ -20,11 +20,10 @@ import connectors.CustomsDeclareExportsConnector
 import controllers.actions.AuthAction
 import controllers.util.SubmissionDisplayHelper
 import javax.inject.Inject
-import models.{DeclarationStatus, Mode}
+import models.Mode
 import models.requests.ExportsSessionKeys
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.submissions
 
@@ -52,7 +51,7 @@ class SubmissionsController @Inject()(
     customsDeclareExportsConnector.findDeclaration(id) flatMap {
       case Some(declaration) =>
         customsDeclareExportsConnector
-          .createDeclaration(declaration.copy(status = DeclarationStatus.DRAFT))
+          .createDeclaration(declaration.amend(sourceId = id))
           .map { created =>
             Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.Amend))
               .addingToSession(ExportsSessionKeys.declarationId -> created.id.get)

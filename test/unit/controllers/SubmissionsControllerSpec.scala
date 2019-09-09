@@ -16,9 +16,10 @@
 
 package unit.controllers
 
-import java.time.LocalDateTime
+import java.time.{Instant, LocalDate, LocalDateTime}
 import java.util.UUID
 
+import akka.util.Timeout
 import controllers.SubmissionsController
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
@@ -28,10 +29,12 @@ import models.{DeclarationStatus, ExportsDeclaration, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
+import org.scalatest.matchers.{BeMatcher, MatchResult, Matcher}
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import views.html.submissions
 
+import scala.concurrent.duration._
 import scala.concurrent.Future.successful
 
 class SubmissionsControllerSpec extends ControllerSpec {
@@ -79,7 +82,12 @@ class SubmissionsControllerSpec extends ControllerSpec {
   "Amend Submission" should {
     "return 303 (SEE OTHER)" when {
       "declaration found" in new SetUp {
-        val rejectedDeclaration: ExportsDeclaration = aDeclaration(withId("id"), withStatus(DeclarationStatus.COMPLETE))
+        val rejectedDeclaration: ExportsDeclaration = aDeclaration(
+          withId("id"),
+          withStatus(DeclarationStatus.COMPLETE),
+          withUpdateDate(LocalDate.MIN),
+          withCreatedDate(LocalDate.MIN)
+        )
         val newDeclaration: ExportsDeclaration = aDeclaration(withId("new-id"), withStatus(DeclarationStatus.DRAFT))
         when(mockCustomsDeclareExportsConnector.findDeclaration(refEq("id"))(any(), any()))
           .thenReturn(successful(Some(rejectedDeclaration)))
@@ -93,7 +101,12 @@ class SubmissionsControllerSpec extends ControllerSpec {
           Some(controllers.declaration.routes.SummaryController.displayPage(Mode.Amend).url)
         )
         session(result).get(ExportsSessionKeys.declarationId) must be(Some("new-id"))
-        theDeclarationCreated.status mustBe DeclarationStatus.DRAFT
+        val created = theDeclarationCreated
+        created.status mustBe DeclarationStatus.DRAFT
+        created.sourceId mustBe Some("id")
+        created.id mustBe None
+        created.updatedDateTime mustBe inTheLast(1 seconds)
+        created.createdDateTime mustBe inTheLast(1 seconds)
       }
 
       "declaration not found" in new SetUp {
@@ -103,6 +116,17 @@ class SubmissionsControllerSpec extends ControllerSpec {
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some(controllers.routes.SubmissionsController.displayListOfSubmissions().url))
+      }
+
+      def inTheLast(timeout: Timeout): BeMatcher[Instant] = new BeMatcher[Instant] {
+        override def apply(left: Instant): MatchResult = {
+          val currentTime = Instant.now()
+          MatchResult(
+            left != null && left.plusSeconds(timeout.duration.toSeconds).isAfter(currentTime),
+            s"Instant was ${currentTime.getEpochSecond - left.getEpochSecond} seconds ago",
+            s"Instant was ${currentTime.getEpochSecond - left.getEpochSecond} seconds ago, expected it to be later"
+          )
+        }
       }
 
       def theDeclarationCreated: ExportsDeclaration = {

@@ -84,6 +84,17 @@ class SummaryPageViewSpec
         )
       }
 
+      "Amend Mode" when {
+        "source id populated" in {
+          val model = aDeclaration(withSourceId("source-id"))
+          val document = view(Mode.Amend, model)
+          document must containElementWithID("link-back")
+          document.getElementById("link-back") must haveHref(
+            controllers.routes.NotificationsController.listOfNotificationsForSubmission("source-id")
+          )
+        }
+      }
+
       "Normal Mode" when {
         "standard declaration with containers" in {
           val model = aDeclaration(

@@ -16,7 +16,7 @@
 
 package models
 
-import java.time.Instant
+import java.time.{Clock, Instant}
 
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
@@ -30,6 +30,7 @@ case class ExportsDeclaration(
   status: DeclarationStatus = DeclarationStatus.COMPLETE,
   createdDateTime: Instant,
   updatedDateTime: Instant,
+  sourceId: Option[String],
   choice: String,
   dispatchLocation: Option[DispatchLocation] = None,
   additionalDeclarationType: Option[AdditionalDeclarationType] = None,
@@ -58,6 +59,17 @@ case class ExportsDeclaration(
   def containers: Seq[Container] = containerData.map(_.containers).getOrElse(Seq.empty)
 
   def containerBy(containerId: String): Option[Container] = containers.find(_.id.equalsIgnoreCase(containerId))
+
+  def amend(sourceId: String)(implicit clock: Clock = Clock.systemUTC()): ExportsDeclaration = {
+    val currentTime = Instant.now(clock)
+    this.copy(
+      id = None,
+      status = DeclarationStatus.DRAFT,
+      createdDateTime = currentTime,
+      updatedDateTime = currentTime,
+      sourceId = Some(sourceId)
+    )
+  }
 }
 
 object ExportsDeclaration {

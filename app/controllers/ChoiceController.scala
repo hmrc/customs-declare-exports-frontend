@@ -104,6 +104,7 @@ class ChoiceController @Inject()(
           DeclarationStatus.DRAFT,
           createdDateTime = Instant.now,
           updatedDateTime = Instant.now,
+          sourceId = None,
           choice.value
         )
       )
