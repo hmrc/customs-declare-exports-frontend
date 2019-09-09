@@ -52,7 +52,7 @@ class SubmissionsController @Inject()(
     customsDeclareExportsConnector.findDeclaration(id) flatMap {
       case Some(declaration) =>
         customsDeclareExportsConnector
-          .createDeclaration(declaration.copy(status = DeclarationStatus.DRAFT))
+          .createDeclaration(declaration.copy(status = DeclarationStatus.DRAFT, sourceId = Some(id)))
           .map { created =>
             Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.Amend))
               .addingToSession(ExportsSessionKeys.declarationId -> created.id.get)

@@ -93,7 +93,9 @@ class SubmissionsControllerSpec extends ControllerSpec {
           Some(controllers.declaration.routes.SummaryController.displayPage(Mode.Amend).url)
         )
         session(result).get(ExportsSessionKeys.declarationId) must be(Some("new-id"))
-        theDeclarationCreated.status mustBe DeclarationStatus.DRAFT
+        val created = theDeclarationCreated
+        created.status mustBe DeclarationStatus.DRAFT
+        created.sourceId mustBe Some("id")
       }
 
       "declaration not found" in new SetUp {

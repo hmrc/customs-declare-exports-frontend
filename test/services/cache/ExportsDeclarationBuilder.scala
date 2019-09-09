@@ -42,7 +42,8 @@ trait ExportsDeclarationBuilder {
   private val modelWithDefaults: ExportsDeclaration = ExportsDeclaration(
     createdDateTime = LocalDateTime.of(2019, 1, 1, 0, 0, 0).toInstant(ZoneOffset.UTC),
     updatedDateTime = LocalDateTime.of(2019, 2, 2, 0, 0, 0).toInstant(ZoneOffset.UTC),
-    choice = Choice.AllowedChoiceValues.StandardDec
+    choice = Choice.AllowedChoiceValues.StandardDec,
+    sourceId = None
   )
 
   private type ExportsDeclarationModifier = ExportsDeclaration => ExportsDeclaration
@@ -59,6 +60,10 @@ trait ExportsDeclarationBuilder {
   def withStatus(status: DeclarationStatus): ExportsDeclarationModifier = _.copy(status = status)
 
   def withChoice(choice: String): ExportsDeclarationModifier = _.copy(choice = choice)
+
+  def withSourceId(id: String = uuid): ExportsDeclarationModifier = _.copy(sourceId = Some(id))
+
+  def withoutSourceId(): ExportsDeclarationModifier = _.copy(sourceId = None)
 
   def withUpdateDate(date: LocalDateTime): ExportsDeclarationModifier =
     _.copy(updatedDateTime = date.toInstant(ZoneOffset.UTC))

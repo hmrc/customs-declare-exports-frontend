@@ -107,6 +107,7 @@ class ChoiceControllerSpec extends ControllerSpec {
         created.id mustBe None
         created.status mustBe DeclarationStatus.DRAFT
         created.choice mustBe "SMP"
+        created.sourceId mustBe None
       }
 
       "user chooses Supplementary Dec for existing Standard Dec" in new SetUp {

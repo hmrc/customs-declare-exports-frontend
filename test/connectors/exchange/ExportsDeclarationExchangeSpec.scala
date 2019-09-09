@@ -31,6 +31,7 @@ import services.cache.{ExportItem, ExportsDeclarationBuilder}
 class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with ExportsDeclarationBuilder with MockitoSugar {
 
   private val id = "id"
+  private val sourceId = "source-id"
   private val status = DeclarationStatus.COMPLETE
   private val choice = "choice"
   private val createdDate = Instant.MIN
@@ -56,6 +57,7 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
     status = status,
     createdDateTime = createdDate,
     updatedDateTime = updatedDate,
+    sourceId = Some(sourceId),
     choice = choice,
     dispatchLocation = Some(dispatchLocation),
     additionalDeclarationType = Some(additionalDeclarationType),
@@ -76,6 +78,7 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
     status = status,
     createdDateTime = createdDate,
     updatedDateTime = updatedDate,
+    sourceId = Some(sourceId),
     choice = choice,
     dispatchLocation = Some(dispatchLocation),
     additionalDeclarationType = Some(additionalDeclarationType),

@@ -30,6 +30,7 @@ case class ExportsDeclaration(
   status: DeclarationStatus = DeclarationStatus.COMPLETE,
   createdDateTime: Instant,
   updatedDateTime: Instant,
+  sourceId: Option[String],
   choice: String,
   dispatchLocation: Option[DispatchLocation] = None,
   additionalDeclarationType: Option[AdditionalDeclarationType] = None,
