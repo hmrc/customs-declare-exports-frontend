@@ -50,10 +50,10 @@
                         <th>@messages("supplementary.transportInfo.containerId.title")</th>
                           @if(showSeals) {
                               <th>@messages("standard.seal.summary.heading")</th>
-                              <th></th>
-                              <th></th>
-                          } else {
-                              <th></th>
+                          }
+                          <th></th>
+                          @if(showSeals) {
+                            <th></th>
                           }
                       </tr>
                   </thead>
@@ -64,8 +64,7 @@
                         @if(showSeals) {
                             @if(container.seals.isEmpty){
                                 <td id="containers-row@index-seals">@messages("standard.seal.summary.noSeals")</td>
-                            }
-                            @if(container.seals.nonEmpty){
+                            } else {
                                 <td id="containers-row@index-seals">@Html(container.seals.map(_.id).mkString("<br/>"))</td>
                             }
                         }
