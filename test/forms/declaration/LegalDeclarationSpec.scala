@@ -16,7 +16,7 @@
 
 package forms.declaration
 
-import helpers.views.declaration.WarehouseIdentificationMessages
+import base.TestHelper
 import play.api.libs.json._
 import unit.base.UnitSpec
 
@@ -38,6 +38,12 @@ class LegalDeclarationSpec extends UnitSpec {
       "name too short" in {
         form().bind(formDataWith(name = "Al")).errors.map(_.message) must contain("legal.declaration.fullName.short")
       }
+      "name too long" in {
+        form()
+          .bind(formDataWith(name = TestHelper.createRandomAlphanumericString(65)))
+          .errors
+          .map(_.message) must contain("legal.declaration.fullName.long")
+      }
       "name invalid" in {
         form().bind(formDataWith(name = "Prince!")).errors.map(_.message) must contain(
           "legal.declaration.fullName.error"
@@ -52,6 +58,12 @@ class LegalDeclarationSpec extends UnitSpec {
       "job role too short" in {
         form().bind(formDataWith(role = "CEO")).errors.map(_.message) must contain("legal.declaration.jobRole.short")
       }
+      "job role too long" in {
+        form()
+          .bind(formDataWith(role = TestHelper.createRandomAlphanumericString(65)))
+          .errors
+          .map(_.message) must contain("legal.declaration.jobRole.long")
+      }
       "job role invalid" in {
         form().bind(formDataWith(role = "Prince!")).errors.map(_.message) must contain(
           "legal.declaration.jobRole.error"
@@ -62,6 +74,12 @@ class LegalDeclarationSpec extends UnitSpec {
     "return errors for email" when {
       "email missing" in {
         form().bind(formDataWith(email = "")).errors.map(_.message) must contain("legal.declaration.email.empty")
+      }
+      "email too long" in {
+        form()
+          .bind(formDataWith(email = TestHelper.createRandomAlphanumericString(65)))
+          .errors
+          .map(_.message) must contain("legal.declaration.email.long")
       }
       "email invalid" in {
         form().bind(formDataWith(email = "not.an.email.address")).errors.map(_.message) must contain(

@@ -29,13 +29,16 @@ object LegalDeclaration {
     "fullName" -> text()
       .verifying("legal.declaration.fullName.empty", nonEmpty)
       .verifying("legal.declaration.fullName.short", isEmpty or noShorterThan(4))
+      .verifying("legal.declaration.fullName.long", isEmpty or noLongerThan(64))
       .verifying("legal.declaration.fullName.error", isEmpty or isAlphanumericWithSpace),
     "jobRole" -> text()
       .verifying("legal.declaration.jobRole.empty", nonEmpty)
       .verifying("legal.declaration.jobRole.short", isEmpty or noShorterThan(4))
+      .verifying("legal.declaration.jobRole.long", isEmpty or noLongerThan(64))
       .verifying("legal.declaration.jobRole.error", isEmpty or isAlphanumericWithSpace),
     "email" -> text()
       .verifying("legal.declaration.email.empty", nonEmpty)
+      .verifying("legal.declaration.email.long", isEmpty or noLongerThan(64))
       .verifying("legal.declaration.email.error", isEmpty or isValidEmail),
     "confirmation" -> boolean.verifying("legal.declaration.confirmation.missing", isTrue)
   )(LegalDeclaration.apply)(LegalDeclaration.unapply)
