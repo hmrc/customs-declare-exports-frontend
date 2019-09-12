@@ -53,7 +53,7 @@ class CancelDeclarationController @Inject()(
       .fold(
         (formWithErrors: Form[CancelDeclaration]) =>
           Future.successful(BadRequest(cancelDeclarationPage(formWithErrors))),
-        (form: CancelDeclaration) => {
+        form => {
           val context = exportsMetrics.startTimer(cancelMetric)
           customsDeclareExportsConnector.createCancellation(form).map { _ =>
             exportsMetrics.incrementCounter(cancelMetric)
