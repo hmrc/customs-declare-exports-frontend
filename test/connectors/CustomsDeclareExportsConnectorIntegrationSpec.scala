@@ -21,6 +21,7 @@ import java.util.UUID
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.exchange.ExportsDeclarationExchange
+import forms.CancelDeclaration
 import models.declaration.notifications.Notification
 import models.declaration.submissions.{Action, RequestType, Submission}
 import models.{Page, Paginated}
@@ -54,6 +55,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
   override def beforeEach(): Unit = {
     super.beforeEach()
     given(config.declarationsV2).willReturn("/v2/declarations")
+    given(config.cancelDeclaration).willReturn("/cancellations")
   }
 
   "Create Declaration" should {
@@ -218,6 +220,27 @@ class CustomsDeclareExportsConnectorIntegrationSpec
 
       response mustBe Seq(notification)
       verify(getRequestedFor(urlEqualTo(s"/v2/declarations/$id/submission/notifications")))
+    }
+  }
+
+  "Create Cancellation" should {
+    val cancellation = CancelDeclaration("ref", "id", "statement", "reason")
+
+    "return payload" in {
+      stubFor(
+        post("/cancellations")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.OK)
+          )
+      )
+
+      await(connector.createCancellation(cancellation))
+
+      verify(
+        postRequestedFor(urlEqualTo("/cancellations"))
+          .withRequestBody(containing(json(cancellation)))
+      )
     }
   }
 

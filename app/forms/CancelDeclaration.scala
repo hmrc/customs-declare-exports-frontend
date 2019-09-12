@@ -27,7 +27,7 @@ import wco.datamodel.wco.documentmetadata_dms._2.MetaData
 
 case class CancelDeclaration(
   functionalReferenceId: String,
-  declarationId: String,
+  mrn: String,
   statementDescription: String,
   changeReason: String
 ) {
@@ -42,7 +42,7 @@ case class CancelDeclaration(
   def createCancellationMetadata(eori: String): MetaData =
     MetaDataBuilder.buildRequest(
       DeclarationBuilder
-        .buildCancellationRequest(functionalReferenceId, declarationId, statementDescription, changeReason, eori)
+        .buildCancellationRequest(functionalReferenceId, mrn, statementDescription, changeReason, eori)
     )
 }
 
@@ -60,11 +60,11 @@ object CancelDeclaration {
         "cancellation.functionalReferenceId.wrongFormat",
         isEmpty or (input => input.matches(correctDucrFormat))
       ),
-    "declarationId" -> text()
-      .verifying("cancellation.declarationId.empty", nonEmpty)
-      .verifying("cancellation.declarationId.tooLong", isEmpty or noLongerThan(70))
-      .verifying("cancellation.declarationId.tooShort", isEmpty or noShorterThan(0)) // TODO what is the minimum value for declarationID?
-      .verifying("cancellation.declarationId.wrongFormat", isEmpty or isAlphanumeric),
+    "mrn" -> text()
+      .verifying("cancellation.mrn.empty", nonEmpty)
+      .verifying("cancellation.mrn.tooLong", isEmpty or noLongerThan(70))
+      .verifying("cancellation.mrn.tooShort", isEmpty or noShorterThan(0)) // TODO what is the minimum value for declarationID?
+      .verifying("cancellation.mrn.wrongFormat", isEmpty or isAlphanumeric),
     "statementDescription" -> text()
       .verifying("cancellation.statementDescription.empty", nonEmpty)
       .verifying("cancellation.statementDescription.tooLong", isEmpty or noLongerThan(512))

@@ -69,39 +69,11 @@ class CancelDeclarationControllerSpec
 
       "cancellation is requested with success" in new SetUp {
 
-        successfulCancelDeclarationResponse(CancellationRequested)
+        successfulCancelDeclarationResponse()
 
         val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
 
         status(result) must be(OK)
-      }
-    }
-
-    "return 400 (BAD_REQUEST)" when {
-
-      "cancellation request already exists" in new SetUp {
-
-        successfulCancelDeclarationResponse(CancellationRequestExists)
-
-        val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
-
-        status(result) must be(BAD_REQUEST)
-      }
-
-      "declaration is missing" in new SetUp {
-
-        successfulCancelDeclarationResponse(MissingDeclaration)
-
-        val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
-
-        status(result) must be(BAD_REQUEST)
-      }
-
-      "form is incorrect" in new SetUp {
-
-        val result = controller.onSubmit()(postRequest(incorrectCancelDeclarationJSON))
-
-        status(result) must be(BAD_REQUEST)
       }
     }
   }
@@ -123,7 +95,7 @@ class CancelDeclarationControllerSpec
       val counterBefore = cancelCounter.getCount
 
       successfulCustomsDeclareExportsResponse()
-      successfulCancelDeclarationResponse(CancellationRequested)
+      successfulCancelDeclarationResponse()
 
       val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
 
@@ -141,7 +113,7 @@ object CancelDeclarationControllerSpec {
   val correctCancelDeclaration =
     CancelDeclaration(
       functionalReferenceId = "1SA123456789012-1FSA1234567",
-      declarationId = "87654321",
+      mrn = "87654321",
       statementDescription = "Some description",
       changeReason = NoLongerRequired.toString
     )

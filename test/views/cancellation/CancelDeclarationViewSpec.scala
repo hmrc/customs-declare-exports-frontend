@@ -35,7 +35,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
 
   def testView(
     functionalReferenceId: String,
-    declarationId: String,
+    mrn: String,
     statementDescription: String,
     cancellationReason: String,
     elementId: String,
@@ -46,9 +46,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
 
     val view = createView(
       CancelDeclaration.form
-        .fillAndValidate(
-          CancelDeclaration(functionalReferenceId, declarationId, statementDescription, cancellationReason)
-        )
+        .fillAndValidate(CancelDeclaration(functionalReferenceId, mrn, statementDescription, cancellationReason))
     )
 
     view must haveGlobalErrorSummary
@@ -75,12 +73,12 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
       view.getElementById("functionalReferenceId").attr("value") mustBe empty
     }
 
-    "display empty input with label for 'declaration Id'" in {
+    "display empty input with label for 'mrn'" in {
 
       val view = createView()
 
-      view.getElementById("declarationId-label").text() mustBe messages("cancellation.declarationId")
-      view.getElementById("declarationId").attr("value") mustBe empty
+      view.getElementById("mrn-label").text() mustBe messages("cancellation.mrn")
+      view.getElementById("mrn").attr("value") mustBe empty
     }
 
     "display empty input with label for 'statement Description'" in {
@@ -140,10 +138,10 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
         view.getElementById("error-message-functionalReferenceId-input").text() mustBe messages("error.required")
       }
 
-      "declarationId is empty" in {
+      "mrn is empty" in {
         view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("declarationId", "#declarationId")
-        view.getElementById("error-message-declarationId-input").text() mustBe messages("error.required")
+        view must haveFieldErrorLink("mrn", "#mrn")
+        view.getElementById("error-message-mrn-input").text() mustBe messages("error.required")
       }
 
       "statementDescription is empty" in {
@@ -217,7 +215,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
       }
     }
 
-    "display error when declarationId" when {
+    "display error when mrn" when {
 
       "is entered but is too long" in {
 
@@ -234,10 +232,10 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
         )
 
         view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("declarationId", "#declarationId")
+        view must haveFieldErrorLink("mrn", "#mrn")
 
-        view.getElementById("error-message-declarationId-input").text() mustBe
-          messages("cancellation.declarationId.tooLong")
+        view.getElementById("error-message-mrn-input").text() mustBe
+          messages("cancellation.mrn.tooLong")
       }
 
       "is empty" in {
@@ -247,10 +245,10 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
           "",
           "Some Description",
           NoLongerRequired.toString,
-          "declarationId",
-          "#declarationId",
-          "error-message-declarationId-input",
-          messages("cancellation.declarationId.empty")
+          "mrn",
+          "#mrn",
+          "error-message-mrn-input",
+          messages("cancellation.mrn.empty")
         )
       }
 
@@ -269,10 +267,10 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
         )
 
         view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("declarationId", "#declarationId")
+        view must haveFieldErrorLink("mrn", "#mrn")
 
-        view.getElementById("error-message-declarationId-input").text() mustBe
-          messages("cancellation.declarationId.wrongFormat")
+        view.getElementById("error-message-mrn-input").text() mustBe
+          messages("cancellation.mrn.wrongFormat")
       }
     }
 
