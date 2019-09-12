@@ -27,7 +27,7 @@ import wco.datamodel.wco.documentmetadata_dms._2.MetaData
 
 case class CancelDeclaration(
   functionalReferenceId: String,
-  declarationId: String,
+  mrn: String,
   statementDescription: String,
   changeReason: String
 ) {
@@ -42,7 +42,7 @@ case class CancelDeclaration(
   def createCancellationMetadata(eori: String): MetaData =
     MetaDataBuilder.buildRequest(
       DeclarationBuilder
-        .buildCancellationRequest(functionalReferenceId, declarationId, statementDescription, changeReason, eori)
+        .buildCancellationRequest(functionalReferenceId, mrn, statementDescription, changeReason, eori)
     )
 }
 

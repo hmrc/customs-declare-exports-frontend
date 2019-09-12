@@ -113,7 +113,7 @@ object CancelDeclarationControllerSpec {
   val correctCancelDeclaration =
     CancelDeclaration(
       functionalReferenceId = "1SA123456789012-1FSA1234567",
-      declarationId = "87654321",
+      mrn = "87654321",
       statementDescription = "Some description",
       changeReason = NoLongerRequired.toString
     )
