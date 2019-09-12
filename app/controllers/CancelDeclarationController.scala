@@ -24,10 +24,8 @@ import handlers.ErrorHandler
 import javax.inject.Inject
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers._
-import models.requests._
-import play.api.Logger
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.{cancel_declaration, cancellation_confirmation_page}
@@ -45,8 +43,6 @@ class CancelDeclarationController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  private val logger = Logger(this.getClass)
-
   def displayPage(): Action[AnyContent] = authenticate { implicit request =>
     Ok(cancelDeclarationPage(CancelDeclaration.form))
   }
@@ -57,46 +53,12 @@ class CancelDeclarationController @Inject()(
       .fold(
         (formWithErrors: Form[CancelDeclaration]) =>
           Future.successful(BadRequest(cancelDeclarationPage(formWithErrors))),
-        form => {
+        (form: CancelDeclaration) => {
           val context = exportsMetrics.startTimer(cancelMetric)
-
-          val metadata = form.createCancellationMetadata(request.user.eori)
-
-          val mrn = form.declarationId
-
-          customsDeclareExportsConnector.submitCancellation(mrn, metadata).flatMap {
-            case CancellationRequested =>
-              exportsMetrics.incrementCounter(cancelMetric)
-              context.stop()
-              Future.successful(Ok(cancelConfirmationPage()))
-
-            case CancellationRequestExists =>
-              // $COVERAGE-OFF$Trivial
-              logger.error(s"Cancellation for declaration with mrn $mrn exists")
-              // $COVERAGE-ON
-              Future.successful(
-                BadRequest(
-                  errorHandler.standardErrorTemplate(
-                    pageTitle = Messages("cancellation.error.title"),
-                    heading = Messages("cancellation.exists.error.heading"),
-                    message = Messages("cancellation.exists.error.message")
-                  )
-                )
-              )
-
-            case MissingDeclaration =>
-              // $COVERAGE-OFF$Trivial
-              logger.error(s"Declaration with mrn $mrn doesn't exists")
-              // $COVERAGE-ON
-              Future.successful(
-                BadRequest(
-                  errorHandler.standardErrorTemplate(
-                    pageTitle = Messages("cancellation.error.title"),
-                    heading = Messages("cancellation.error.heading"),
-                    message = Messages("cancellation.error.message")
-                  )
-                )
-              )
+          customsDeclareExportsConnector.createCancellation(form).map { _ =>
+            exportsMetrics.incrementCounter(cancelMetric)
+            context.stop()
+            Ok(cancelConfirmationPage())
           }
         }
       )

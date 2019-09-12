@@ -55,7 +55,7 @@ class AppConfigSpec extends UnitSpec {
         |microservice.services.customs-declare-exports.port=9875
         |microservice.services.customs-declare-exports.submit-declaration=/declaration
         |microservice.services.customs-declare-exports.declaration-v2=/v2/declaration
-        |microservice.services.customs-declare-exports.cancel-declaration=/cancel-declaration
+        |microservice.services.customs-declare-exports.cancel-declaration=/cancellations
         |microservice.services.customs-declare-exports.fetch-notifications=/notifications
         |microservice.services.customs-declare-exports.fetch-submissions=/submissions
         |microservice.services.customs-declare-exports.fetch-submission-notifications=/submission-notifications
@@ -146,7 +146,7 @@ class AppConfigSpec extends UnitSpec {
     }
 
     "have cancel declaration URL" in {
-      validConfigService.cancelDeclaration must be("/cancel-declaration")
+      validConfigService.cancelDeclaration must be("/cancellations")
     }
 
     "have fetch notification URL" in {

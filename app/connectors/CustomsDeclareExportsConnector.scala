@@ -17,26 +17,28 @@
 package connectors
 
 import config.AppConfig
-import connectors.CustomsDeclareExportsConnector.toXml
 import connectors.exchange.ExportsDeclarationExchange
+import forms.CancelDeclaration
 import javax.inject.{Inject, Singleton}
 import models._
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Submission
-import models.requests.CancellationStatus
 import play.api.Logger
-import play.api.http.{ContentTypes, HeaderNames}
+import play.api.http.Status
 import play.api.libs.json.{Json, Writes}
-import play.api.mvc.Codec
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import wco.datamodel.wco.documentmetadata_dms._2.MetaData
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient) {
   private val logger = Logger(this.getClass)
+
+  private def logPayload[T](prefix: String, payload: T)(implicit wts: Writes[T]): T = {
+    logger.debug(s"$prefix: ${Json.toJson(payload)}")
+    payload
+  }
 
   def deleteDraftDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] =
     httpClient
@@ -54,11 +56,6 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
       )
       .map(logPayload("Create Declaration Response", _))
       .map(_.toExportsDeclaration)
-  }
-
-  private def logPayload[T](prefix: String, payload: T)(implicit wts: Writes[T]): T = {
-    logger.debug(s"$prefix: ${Json.toJson(payload)}")
-    payload
   }
 
   def updateDeclaration(
@@ -125,37 +122,13 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
         response
     }
 
-  def submitCancellation(
-    mrn: String,
-    metadata: MetaData
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CancellationStatus] =
-    httpClient
-      .POSTString[CancellationStatus](
-        s"${appConfig.customsDeclareExports}${appConfig.cancelDeclaration}",
-        toXml(metadata),
-        Seq(
-          (HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8)),
-          (HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8)),
-          ("X-MRN", mrn)
-        )
-      )
-      .map { response =>
-        logger.debug(s"CUSTOMS_DECLARE_EXPORTS cancel declaration response is --> ${response.toString}")
-        response
-      }
-}
-
-object CustomsDeclareExportsConnector {
-  def toXml(metaData: MetaData): String = {
-    import java.io.StringWriter
-
-    import javax.xml.bind.{JAXBContext, Marshaller}
-
-    val jaxbMarshaller = JAXBContext.newInstance(classOf[MetaData]).createMarshaller
-    jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true)
-
-    val sw = new StringWriter
-    jaxbMarshaller.marshal(metaData, sw)
-    sw.toString
+  def createCancellation(
+    cancellation: CancelDeclaration
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
+    logPayload("Create Cancellation Request", cancellation)
+    httpClient.POST[CancelDeclaration, HttpResponse](
+      s"${appConfig.customsDeclareExports}${appConfig.cancelDeclaration}",
+      cancellation
+    ) filter (_.status == Status.OK) map (_ => (): Unit)
   }
 }

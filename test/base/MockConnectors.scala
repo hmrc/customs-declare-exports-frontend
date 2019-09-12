@@ -103,7 +103,7 @@ trait MockConnectors extends MockitoSugar {
     when(mockNrsConnector.submitNonRepudiation(any())(any(), any()))
       .thenReturn(Future.successful(NrsSubmissionResponse("submissionId1")))
 
-  def successfulCancelDeclarationResponse(status: CancellationStatus): OngoingStubbing[Future[CancellationStatus]] =
-    when(mockCustomsDeclareExportsConnector.submitCancellation(any(), any())(any(), any()))
-      .thenReturn(Future.successful(status))
+  def successfulCancelDeclarationResponse(): OngoingStubbing[Future[Unit]] =
+    when(mockCustomsDeclareExportsConnector.createCancellation(any())(any(), any()))
+      .thenReturn(Future.successful((): Unit))
 }
