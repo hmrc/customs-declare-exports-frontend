@@ -101,8 +101,8 @@ class LegalDeclarationSpec extends UnitSpec {
   private def validFormData = formDataWith()
 
   private def formDataWith(
-    name: String = "Some Name",
-    role: String = "Some Role",
+    name: String = "O'Neil Some-Name, Jr.",
+    role: String = "Traveling-Secretary for the N.Y. Yankees' Chairman",
     email: String = "some@email.com",
     checked: Boolean = true
   ) = {
