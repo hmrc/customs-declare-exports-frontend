@@ -20,31 +20,14 @@ import forms.cancellation.CancellationChangeReason.{Duplication, NoLongerRequire
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import services.mapping.MetaDataBuilder
-import services.mapping.declaration.DeclarationBuilder
 import utils.validators.forms.FieldValidator._
-import wco.datamodel.wco.documentmetadata_dms._2.MetaData
 
 case class CancelDeclaration(
   functionalReferenceId: String,
   mrn: String,
   statementDescription: String,
   changeReason: String
-) {
-
-  private val FunctionCode = 13
-  private val TypeCode = "INV"
-  private val StatementTypeCode = "AES"
-  private val PointerSequenceNumeric = 1
-  private val PointerDocumentSectionCode1 = "42A"
-  private val PointerDocumentSectionCode2 = "06A"
-
-  def createCancellationMetadata(eori: String): MetaData =
-    MetaDataBuilder.buildRequest(
-      DeclarationBuilder
-        .buildCancellationRequest(functionalReferenceId, mrn, statementDescription, changeReason, eori)
-    )
-}
+)
 
 object CancelDeclaration {
   implicit val format = Json.format[CancelDeclaration]
