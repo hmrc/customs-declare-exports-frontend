@@ -54,14 +54,14 @@ class CustomsDeclareExportsConnectorIntegrationSpec
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    given(config.declarationsV2).willReturn("/v2/declarations")
+    given(config.declarationsV2).willReturn("/declarations")
     given(config.cancelDeclaration).willReturn("/cancellations")
   }
 
   "Create Declaration" should {
     "return payload" in {
       stubFor(
-        post("/v2/declarations")
+        post("/declarations")
           .willReturn(
             aResponse()
               .withStatus(Status.ACCEPTED)
@@ -73,7 +73,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
 
       response mustBe existingDeclaration
       verify(
-        postRequestedFor(urlEqualTo("/v2/declarations"))
+        postRequestedFor(urlEqualTo("/declarations"))
           .withRequestBody(containing(json(newDeclarationExchange)))
       )
     }
@@ -82,7 +82,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
   "Update Declaration" should {
     "return payload" in {
       stubFor(
-        put(s"/v2/declarations/$id")
+        put(s"/declarations/$id")
           .willReturn(
             aResponse()
               .withStatus(Status.ACCEPTED)
@@ -94,7 +94,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
 
       response mustBe existingDeclaration
       verify(
-        putRequestedFor(urlEqualTo(s"/v2/declarations/id"))
+        putRequestedFor(urlEqualTo(s"/declarations/id"))
           .withRequestBody(containing(json(existingDeclarationExchange)))
       )
     }
@@ -109,7 +109,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
   "Delete Declaration" should {
     "return payload" in {
       stubFor(
-        delete(s"/v2/declarations/$id")
+        delete(s"/declarations/$id")
           .willReturn(
             aResponse()
               .withStatus(Status.NO_CONTENT)
@@ -119,7 +119,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
       val response = await(connector.deleteDraftDeclaration(id))
 
       response mustBe ((): Unit)
-      verify(deleteRequestedFor(urlEqualTo(s"/v2/declarations/id")))
+      verify(deleteRequestedFor(urlEqualTo(s"/declarations/id")))
     }
   }
 
@@ -128,7 +128,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
 
     "return Ok" in {
       stubFor(
-        get("/v2/declarations?page-index=1&page-size=10")
+        get("/declarations?page-index=1&page-size=10")
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
@@ -139,7 +139,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
       val response = await(connector.findDeclarations(pagination))
 
       response mustBe Paginated(Seq(existingDeclaration), pagination, 1)
-      verify(getRequestedFor(urlEqualTo("/v2/declarations?page-index=1&page-size=10")))
+      verify(getRequestedFor(urlEqualTo("/declarations?page-index=1&page-size=10")))
     }
   }
 
@@ -148,7 +148,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
 
     "return Ok" in {
       stubFor(
-        get("/v2/declarations?status=DRAFT&page-index=1&page-size=10&sort-by=updatedDateTime&sort-direction=des")
+        get("/declarations?status=DRAFT&page-index=1&page-size=10&sort-by=updatedDateTime&sort-direction=des")
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
@@ -161,9 +161,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
       response mustBe Paginated(Seq(existingDeclaration), pagination, 1)
       verify(
         getRequestedFor(
-          urlEqualTo(
-            "/v2/declarations?status=DRAFT&page-index=1&page-size=10&sort-by=updatedDateTime&sort-direction=des"
-          )
+          urlEqualTo("/declarations?status=DRAFT&page-index=1&page-size=10&sort-by=updatedDateTime&sort-direction=des")
         )
       )
     }
@@ -172,7 +170,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
   "Find Declaration" should {
     "return Ok" in {
       stubFor(
-        get(s"/v2/declarations/$id")
+        get(s"/declarations/$id")
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
@@ -183,14 +181,14 @@ class CustomsDeclareExportsConnectorIntegrationSpec
       val response = await(connector.findDeclaration(id))
 
       response mustBe Some(existingDeclaration)
-      verify(getRequestedFor(urlEqualTo(s"/v2/declarations/$id")))
+      verify(getRequestedFor(urlEqualTo(s"/declarations/$id")))
     }
   }
 
   "Find Submission" should {
     "return Ok" in {
       stubFor(
-        get(s"/v2/declarations/$id/submission")
+        get(s"/declarations/$id/submission")
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
@@ -201,14 +199,14 @@ class CustomsDeclareExportsConnectorIntegrationSpec
       val response = await(connector.findSubmission(id))
 
       response mustBe Some(submission)
-      verify(getRequestedFor(urlEqualTo(s"/v2/declarations/$id/submission")))
+      verify(getRequestedFor(urlEqualTo(s"/declarations/$id/submission")))
     }
   }
 
   "Find Notifications" should {
     "return Ok" in {
       stubFor(
-        get(s"/v2/declarations/$id/submission/notifications")
+        get(s"/declarations/$id/submission/notifications")
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
@@ -219,7 +217,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
       val response = await(connector.findNotifications(id))
 
       response mustBe Seq(notification)
-      verify(getRequestedFor(urlEqualTo(s"/v2/declarations/$id/submission/notifications")))
+      verify(getRequestedFor(urlEqualTo(s"/declarations/$id/submission/notifications")))
     }
   }
 
