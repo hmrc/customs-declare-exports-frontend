@@ -30,12 +30,12 @@ object LegalDeclaration {
       .verifying("legal.declaration.fullName.empty", nonEmpty)
       .verifying("legal.declaration.fullName.short", isEmpty or noShorterThan(4))
       .verifying("legal.declaration.fullName.long", isEmpty or noLongerThan(64))
-      .verifying("legal.declaration.fullName.error", isEmpty or isAlphanumericWithSpace),
+      .verifying("legal.declaration.fullName.error", isEmpty or isValidName),
     "jobRole" -> text()
       .verifying("legal.declaration.jobRole.empty", nonEmpty)
       .verifying("legal.declaration.jobRole.short", isEmpty or noShorterThan(4))
       .verifying("legal.declaration.jobRole.long", isEmpty or noLongerThan(64))
-      .verifying("legal.declaration.jobRole.error", isEmpty or isAlphanumericWithSpace),
+      .verifying("legal.declaration.jobRole.error", isEmpty or isValidName),
     "email" -> text()
       .verifying("legal.declaration.email.empty", nonEmpty)
       .verifying("legal.declaration.email.long", isEmpty or noLongerThan(64))
