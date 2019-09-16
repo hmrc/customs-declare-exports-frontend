@@ -23,11 +23,12 @@ import controllers.CancelDeclarationController
 import forms.CancelDeclaration
 import forms.cancellation.CancellationChangeReason.NoLongerRequired
 import metrics.{ExportsMetrics, MetricIdentifiers}
-import models.requests.{CancellationRequestExists, CancellationRequested, MissingDeclaration}
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{verify, when}
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
+import services.audit.{AuditService, AuditTypes}
 import unit.base.ControllerSpec
 import unit.mock.{ErrorHandlerMocks, ExportsMetricsMocks}
 import views.html.{cancel_declaration, cancellation_confirmation_page}
@@ -37,6 +38,7 @@ class CancelDeclarationControllerSpec
   import CancelDeclarationControllerSpec._
 
   trait SetUp {
+    val mockAuditService = mock[AuditService]
     val cancelDeclarationPage = new cancel_declaration(mainTemplate)
     val cancelConfirmationPage = new cancellation_confirmation_page(mainTemplate)
 
@@ -46,6 +48,7 @@ class CancelDeclarationControllerSpec
       mockErrorHandler,
       mockExportsMetrics,
       stubMessagesControllerComponents(),
+      mockAuditService,
       cancelDeclarationPage,
       cancelConfirmationPage
     )(ec)
@@ -105,6 +108,17 @@ class CancelDeclarationControllerSpec
       stringResult must include("cancellation.confirmationPage.message")
       cancelTimer.getCount mustBe >=(timerBefore)
       cancelCounter.getCount mustBe >=(counterBefore)
+      verify(mockAuditService).auditAllPagesUserInput(any())(any())
+      verify(mockAuditService).audit(ArgumentMatchers.eq(AuditTypes.Cancellation), any())(any())
+    }
+
+    "propagate errors from exports connector" in new SetUp {
+      val error = new RuntimeException("some error")
+      when(mockCustomsDeclareExportsConnector.createCancellation(any[CancelDeclaration])(any(), any())).thenThrow(error)
+
+      val result = controller.onSubmit()(postRequest(correctCancelDeclarationJSON))
+
+      intercept[Exception](status(result)) mustBe error
     }
   }
 }
