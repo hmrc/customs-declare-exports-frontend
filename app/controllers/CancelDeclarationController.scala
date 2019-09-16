@@ -24,13 +24,19 @@ import handlers.ErrorHandler
 import javax.inject.Inject
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers._
+import models.requests.AuthenticatedRequest
+import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.audit.EventData._
+import services.audit.{AuditService, AuditTypes}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.{cancel_declaration, cancellation_confirmation_page}
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
 class CancelDeclarationController @Inject()(
   authenticate: AuthAction,
@@ -38,10 +44,13 @@ class CancelDeclarationController @Inject()(
   errorHandler: ErrorHandler,
   exportsMetrics: ExportsMetrics,
   mcc: MessagesControllerComponents,
+  auditService: AuditService,
   cancelDeclarationPage: cancel_declaration,
   cancelConfirmationPage: cancellation_confirmation_page
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
+
+  private val logger = Logger(this.getClass)
 
   def displayPage(): Action[AnyContent] = authenticate { implicit request =>
     Ok(cancelDeclarationPage(CancelDeclaration.form))
@@ -54,13 +63,30 @@ class CancelDeclarationController @Inject()(
         (formWithErrors: Form[CancelDeclaration]) =>
           Future.successful(BadRequest(cancelDeclarationPage(formWithErrors))),
         form => {
+          auditService.auditAllPagesUserInput(Json.toJson(form).as[JsObject])
           val context = exportsMetrics.startTimer(cancelMetric)
-          customsDeclareExportsConnector.createCancellation(form).map { _ =>
-            exportsMetrics.incrementCounter(cancelMetric)
-            context.stop()
-            Ok(cancelConfirmationPage())
-          }
+          customsDeclareExportsConnector.createCancellation(form) andThen {
+            case Failure(exception) =>
+              logger.error(s"Error response from backend $exception")
+              auditService.audit(AuditTypes.Cancellation, auditData(form, Failure.toString))
+            case Success(_) =>
+              auditService.audit(AuditTypes.Cancellation, auditData(form, Success.toString))
+              exportsMetrics.incrementCounter(cancelMetric)
+              context.stop()
+          } map (_ => Ok(cancelConfirmationPage()))
         }
       )
   }
+
+  private def auditData(form: CancelDeclaration, result: String)(
+    implicit request: AuthenticatedRequest[_]
+  ): Map[String, String] =
+    Map(
+      EORI.toString -> request.user.eori,
+      DUCR.toString -> form.functionalReferenceId,
+      MRN.toString -> form.mrn,
+      ChangeReason.toString -> form.changeReason,
+      ChangeDescription.toString -> form.statementDescription,
+      SubmissionResult.toString -> result
+    )
 }
