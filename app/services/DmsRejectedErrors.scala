@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package services.model
+package services
 
-import play.api.Logger
-import play.api.libs.json.Json
+import java.io.File
 
-case class DmsRejError(code: String, description: String)
+import com.github.tototoshi.csv._
+import services.model.DmsRejectedError
 
-object DmsRejError {
+object DmsRejectedErrors {
 
-  private val logger = Logger(this.getClass)
+  val allRejectedErrors: List[DmsRejectedError] = {
+    val reader = CSVReader.open(new File("conf/code-lists/errors-dms-rej-list.csv"))
 
-  implicit val format = Json.format[DmsRejError]
+    val errors: List[List[String]] = reader.all()
 
-  def apply(list: List[String]): DmsRejError = list match {
-    case code :: description :: Nil => DmsRejError(code, description)
-    case error =>
-      logger.warn("Incorrect error: " + error)
-      throw new IllegalArgumentException("Error has incorrect structure")
+    errors.map(DmsRejectedError.apply _)
   }
 }

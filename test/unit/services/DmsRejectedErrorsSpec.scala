@@ -16,13 +16,13 @@
 
 package unit.services
 
-import services.DmsRejErrors
-import services.model.DmsRejError
+import services.DmsRejectedErrors
+import services.model.DmsRejectedError
 import unit.base.UnitSpec
 
-class DmsRejErrorsSpec extends UnitSpec {
+class DmsRejectedErrorsSpec extends UnitSpec {
 
-  import DmsRejErrors._
+  import DmsRejectedErrors._
 
   "Dms Rejected Errors" should {
 
@@ -33,16 +33,16 @@ class DmsRejErrorsSpec extends UnitSpec {
 
     "contain correct values" in {
 
-      allRejectedErrors must contain(DmsRejError("CDS40049", "Quota exhausted."))
-      allRejectedErrors must contain(DmsRejError("CDS40051", "Quota blocked."))
+      allRejectedErrors must contain(DmsRejectedError("CDS40049", "Quota exhausted."))
+      allRejectedErrors must contain(DmsRejectedError("CDS40051", "Quota blocked."))
       allRejectedErrors must contain(
-        DmsRejError(
+        DmsRejectedError(
           "CDS12087",
           "Relation error: VAT Declaring Party Identification (D.E. 3/40), where mandated, must be supplied at either header or item."
         )
       )
       allRejectedErrors must contain(
-        DmsRejError("CDS12108", "Obligation error: DUCR is mandatory on an Export Declaration.")
+        DmsRejectedError("CDS12108", "Obligation error: DUCR is mandatory on an Export Declaration.")
       )
     }
   }

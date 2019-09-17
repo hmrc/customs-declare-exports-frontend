@@ -16,10 +16,10 @@
 
 package unit.services.model
 
-import services.model.DmsRejError
+import services.model.DmsRejectedError
 import unit.base.UnitSpec
 
-class DmsRejErrorSpec extends UnitSpec {
+class DmsRejectedErrorSpec extends UnitSpec {
 
   "Dms Rejected Error model" should {
 
@@ -29,12 +29,12 @@ class DmsRejErrorSpec extends UnitSpec {
       val errorDescription = "Error description"
       val error = List(errorCode, errorDescription)
 
-      DmsRejError.apply(error) mustBe DmsRejError(errorCode, errorDescription)
+      DmsRejectedError.apply(error) mustBe DmsRejectedError(errorCode, errorDescription)
     }
 
     "throw an exception when input is incorrect" in {
 
-      intercept[IllegalArgumentException](DmsRejError.apply(List.empty))
+      intercept[IllegalArgumentException](DmsRejectedError.apply(List.empty))
     }
   }
 }
