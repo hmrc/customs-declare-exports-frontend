@@ -1,0 +1,142 @@
+CDS10001,Obligation error: Mandatory Data Element has not been provided.
+CDS10002,Obligation error: Data Element is not allowed.
+CDS10003,Obligation error: Number of Occurrences exceeds what is allowed for the Data Element.
+CDS10004,Commodity code error: Mandatory data element not provided or format error or number of occurrences exceeds what is allowed for the data element.
+CDS10010,Format error: Data element has invalid format.
+CDS10020,Domain error: Data element contains invalid value.
+CDS10021,Domain error: value can not be lower than 0.
+CDS10044,Document is not allowed.
+CDS10045,Calculated customs value is not allowed to be below zero.
+CDS11003,Relation error: The value of ItemTotal is invalid; it does not correspond to the number of times that ItemNumber is used in the declaration.
+CDS11004,Relation error: The combination of the requested procedure followed by a previous procedure followed by an additional procedure code is invalid.
+CDS11005,Relation error: The requested procedure is not the same for each item in the declaration.
+CDS11006,Relation error: The NetMass per item or the sum of all in the declaration is larger than the gross mass.
+CDS11007,Relation error: The submitter in the request/supplementary declaration differs from the related declaration.
+CDS11012,Relation error: element is not allowed to be amended through this additional message type.
+CDS12003,Uniqueness error: Reuse of submitter reference is not (yet) allowed.
+CDS12005,Authorization error: Party ID unknown or invalid.
+CDS12006,Authorization warning: invalid import/export license number.
+CDS12007,Authorization error: authorization not valid for declaration.
+CDS12008,Authorization error: requested amount or quantity is not available for authorization reservation.
+CDS12014,"Sequence error: Sequence does not comply with one of the following conditions:
+- A Goods Presentation Notification is only permitted after an advance declaration or an advance incomplete declaration.
+- A supplementary declaration after incomplete is only permitted after an incomplete declaration.
+- Requests are allowed after all types of declarations, except: advance and advance incomplete."
+CDS12015,"Sequence error: The referred declaration does not comply with one of the following conditions:
+- The AdditionalMessage.declarationReference must refer to an existing declaration (Declaration.reference),
+- have been accepted,
+- not be invalidated."
+CDS12016,Date error: Date of acceptance is not allowed.
+CDS12022,Relation error: The sequence number is larger than the total.
+CDS12024,Uniqueness error: The Item number is not unique.
+CDS12026,Uniqueness error: The element is referenced more than once for all amendments in the declaration.
+CDS12031,Sequence error: The referred related declaration has clearance.
+CDS12034,Relation error: The mode of entry of an additional message (manually or electronically) is not the same as the mode of entry of the involved declaration.
+CDS12036,Sequence error: There exist another request for correction or invalidation (for the same declaration) for which a customs position has not yet been taken.
+CDS12037,Relation error: The content of packaging is incorrect
+CDS12042,Relation error: elements must be identical within the GoodsItem
+CDS12046,Process error: goods presentation notification deadline passed.
+CDS12049,Process error: supplement local clearance notification deadline passed.
+CDS12050,Prerequisite error: The requested procedure is not valid.
+CDS12052,Prerequisite error: The declaration.type is invalid.
+CDS12054,Relation error: the following parties must be identical.
+CDS12055,Relation error: the following parties can not be identical.
+CDS12056,Relation error: the combination of elements is not allowed.
+CDS12057,Relation error: elements must be identical within the Declaration.
+CDS12058,Relation error: at least one packaging quantity must be greater than zero.
+CDS12062,External ILE validation DUCR result - not OK.
+CDS12070,Relation error: The value supplied in Data Element 1 mandates the completion of Data Element 2.
+CDS12071,Relation error: Data Element must be supplied at either header or item level and cannot be declared at both levels.
+CDS12072,"Relation error: Either Data Element 1 or Data Element 2 must be supplied, but not both."
+CDS12073,Relation error: Data Element must be supplied at header or item level.
+CDS12074,"Relation error: Because Data Element 1 is not supplied, Data Element 2 is mandatory."
+CDS12075,Relation error: Data Element 2 must not be supplied with this value in Data Element 1.
+CDS12077,Relation error: A valid value must be supplied in Data Element 2 as Data Element 1 is present.
+CDS12078,"Relation error: As no Deferment Account Number is provided in D.E. 2/6, an immediate Method of Payment must be offered in D.E. 4/8."
+CDS12079,Relation error: Data Element 2 must not be supplied with Data Element 1.
+CDS12080,Relation error: Combination of Addition / Deduction codes (D.E. 4/9) is not allowed.
+CDS12081,Relation error: Importer (D.E. 3/16) & Exporter (D.E. 3/2) must not be the same party.
+CDS12082,Relation error: The currency declared in D.E. 4/11 must be the same as the currency declared in D.E. 4/14.
+CDS12083,"Relation error: For Country of Preferential Origin D.E. 5/16 where mandated, only provide one country or country group, not both."
+CDS12084,"Relation error: Either Consignee Name (D.E. 3/9) or Consignee Identification Number (D.E. 3/10) must be supplied, but not both."
+CDS12085,Relation error: Delivery Destination (DE 5/8 or 5/9) must be supplied at either header or item level and cannot be declared at both.
+CDS12086,"Relation error: Either Carrier Name (D.E. 3/31) or Carrier Identification Number (D.E. 3/32) must be supplied, but not both."
+CDS12087,"Relation error: VAT Declaring Party Identification (D.E. 3/40), where mandated, must be supplied at either header or item."
+CDS12088,Relation error: Either Agent Name (D.E. 3/19) or Agent Identification Number (D.E. 3/20) must be supplied.
+CDS12089,Relation error: Consignee Party Name (D.E.3/9) must be supplied at either header  or item level.
+CDS12090,Relation error: Carrier Name (D.E. 3/31) or Carrier Identification Number (D.E. 3/32)  must be supplied for the 17X Additional Procedure  Code at either header or item level.
+CDS12091,Relation error: Consignee (D.E. 3/10) & Exporter (D.E. 3/1) must not be the same Party.
+CDS12092,Relation error: Seller (D.E. 3/25) & Exporter (D.E. 3/1) must not be the same Party.
+CDS12094,Relation error: Additional Document C505 is required with Requested Procedure 71.
+CDS12095,Relation error: Additional Procedure Combination (D.E. 1/11) can only be used when Country of Dispatch/Export (D.E. 5/14) Exportation Country is a Third Country.
+CDS12096,Relation error: Provided Authorisation Type (D.E. 3/39) requires specific document in Additional Documents.
+CDS12097,Relation error: Combination Additional Procedure Code (D.E. 1/11) and Country of Destination in DE 5/8 is not allowed.
+CDS12098,Relation error: Combination of Means of Transport (D.E. 7/14) in DE 7/14 and Delivery Terms in DE 4/1 is not allowed.
+CDS12099,Relation error: Combination of elements that make up the Goods Location code (5/23) is invalid.
+CDS12100,Relation error: Combination of Trade  terms (D.E. 4/1) and Addition/Deduction code (D.E .4/9) is not allowed.
+CDS12101,Relation error: Declared Tax Type (D.E.4/3) is not allowed in combination with the Additional Procedure.
+CDS12102,Relation error: Deferred Payment Method in DE 4/8 is Required with the duty deferment account number provided in D.E. 2/6.
+CDS12103,Relation error: Valid delivery destination is required in D.E.5/8 for a CO declaration.
+CDS12104,Relation error: Valid Import Procedure code (1/10) is required.
+CDS12105,Relation error: Addition/Deduction code (D.E. 4/9) not allowed with the declared Additional Procedure Code (D.E.1/11).
+CDS12106,Relation error: Appropriate Additional Information Code must be provided in D.E.2/2 with Additional Procedure Code 1CL.
+CDS12107,Relation error: Conditions not met for the requested simplification. Please see CDS Trade Tariff Vol.3 Appendix 4.
+CDS12108,Obligation error: DUCR is mandatory on an Export Declaration.
+CDS12109,"Obligation error: When providing fixed rate of exchange rate in DE 4/15, a currency code of GBP must be supplied."
+CDS12110,Relation error: A Quota Order number (D.E.8/1) cannot be provided in combination with this Preference Code (D.E. 4/17).
+CDS12111,Relation error: The provided tax amount (D.E. 4/6 or D.E. 4/7) must  always be declared with currency code GBP.
+CDS12112,Relation error: Airfreight related additions/deduction code must be provided in DE 4/9 when an airport place of loading is provided in DE 5/21.
+CDS12113,Relation error: Authorisation holder CGU requires a guarantee type of 0 or 1 to be provided in D.E.8/2.
+CDS12114,Relation error: Value declared must be less than 100 as D.E. 4/9 Additions/Deductions code is a percentage.
+CDS12115,Relation error: Declared Procedure Code (D.E. 1/10 and / or 1/11)  mandates the use of Additional Document (D.E. 2/3) 185C.
+CDS12117,Relation error: Importer (D.E. 3/16) & Buyer (D.E. 3/27) must not be the same party.
+CDS12118,Relation error: Consignor (D.E.3/1) information must be supplied for the 17X Additional Procedure Code at either header or item level and cannot be declared at both levels.
+CDS12119,Relation error: Declared Additional Document (D.E. 2/3) is not allowed with  this Procedure Code (D.E. 1/10 or D.E. 1/11).
+CDS13000,Credibility check: incredible value found.
+CDS19999,Additional errors found.
+CDS20001,Related movement not (yet) found.
+CDS20003,Related movement not found.
+CDS40001,Missing reference date.
+CDS40003,Commodity code can not be declared
+CDS40007,Duplicate value.
+CDS40008,Additional agricultural code missing.
+CDS40010,Data element value does not apply.
+CDS40011,Missing data element value.
+CDS40013,Data element contains invalid value.
+CDS40049,Quota exhausted.
+CDS40050,Quota critical.
+CDS40051,Quota blocked.
+CDS40059,Incomplete measure or commodity code.
+CDS40066,Tariff condition not fulfilled.
+CDS49998,Other warnings.
+CDS49999,Other errors.
+CDS50001,"Invalid UCR Format, DUCR or MUCR."
+CDS50002,MUCR can not be declared into as it is shut.
+CDS50003,UCR is not at the top of its' consolidation.
+CDS50004,Cannot consolidate the MUCR as it is not shut.
+CDS50005,Immediate parent MUCR cannot already be within it's same tree/consolidation.
+CDS50006,Cannot find the consolidation.
+CDS50007,Consolidation already shut.
+CDS50008,UCR Type does not match UCR Format.
+CDS50009,Given parent is not a MUCR.
+CDS50010,Declaration does not exist.
+CDS50011,UCR is already associated to given MUCR.
+CDS50012,Prior movement for the UCR is not at the same location as given on the EDL.
+CDS50013,No prior EAL can be found for the UCR at the location given on the EDL.
+CDS50014,Not all declaration(s) have P2P.
+CDS50015,Declaration is cancelled/terminated/invalidated/handled externally/rejected.
+CDS50016,"Unknown Declaration ID, DUCR or MUCR."
+CDS50017,Consolidation has reached maximum number of levels/items within a level.
+CDS50018,Goods Departure/Arrival Date/Time is invalid.
+CDS50019,Cannot depart the MUCR from UK as MUCR is not Shut.
+CDS50020,Message sent with a future date/time (greater than 25hours in the future).
+CDS50021,UCR is not for a MUCR.
+CDS50022,UCR to be disassociated does not exist.
+CDS50023,UCR to be disassociated is not already associated.
+CDS50024,Master UCR/UCR field completion does not match the EAC action.
+CDS50025,MUCR is empty.
+CDS50026,IE906 (Exit message failed validation/processing in DMS) was received as a result of an exit message.
+CDS50027,Role/Location-Based Authorisation failed (PDS).
+CDS50028,Goods Location is invalid.
+CDS50029,MUCR has been departed.
+CDS50030,UCR cannot be associated as it has been Rejected Upon Arrival.
