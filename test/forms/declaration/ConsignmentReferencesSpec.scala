@@ -23,8 +23,8 @@ object ConsignmentReferencesSpec {
   val exemplaryDucr = "8GB123456789012-1234567890QWERTYUIO"
 
   val correctConsignmentReferences = ConsignmentReferences(ducr = Ducr(ducr = exemplaryDucr), lrn = "123LRN")
-  val correctConsignmentReferencesNoDucr = ConsignmentReferences(ducr = Ducr(""), lrn = "123LRN", None)
-  val emptyConsignmentReferences = ConsignmentReferences(ducr = Ducr(""), lrn = "", None)
+  val correctConsignmentReferencesNoDucr = ConsignmentReferences(ducr = Ducr(""), lrn = "123LRN")
+  val emptyConsignmentReferences = ConsignmentReferences(ducr = Ducr(""), lrn = "")
 
   val correctConsignmentReferencesJSON: JsValue = JsObject(
     Map("ducr" -> JsObject(Map("ducr" -> JsString(exemplaryDucr))), "lrn" -> JsString("123LRN"))

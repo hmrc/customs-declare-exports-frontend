@@ -46,11 +46,9 @@ class CommodityMeasureViewSpec
 
       messages must haveTranslationFor("supplementary.commodityMeasure.title")
       messages must haveTranslationFor("supplementary.commodityMeasure.netMass")
-      messages must haveTranslationFor("supplementary.commodityMeasure.netMass.hint")
       messages must haveTranslationFor("supplementary.commodityMeasure.netMass.empty")
       messages must haveTranslationFor("supplementary.commodityMeasure.netMass.error")
       messages must haveTranslationFor("supplementary.commodityMeasure.grossMass")
-      messages must haveTranslationFor("supplementary.commodityMeasure.grossMass.hint")
       messages must haveTranslationFor("supplementary.commodityMeasure.grossMass.empty")
       messages must haveTranslationFor("supplementary.commodityMeasure.grossMass.error")
       messages must haveTranslationFor("supplementary.commodityMeasure.global.addOne")
@@ -87,7 +85,6 @@ class CommodityMeasureViewSpec
       val view = createView()
 
       view.getElementById("netMass-label").text() mustBe messages(netMass)
-      view.getElementById("netMass-hint").text() mustBe messages(netMassHint)
       view.getElementById("netMass").attr("value") mustBe empty
     }
 
@@ -96,7 +93,6 @@ class CommodityMeasureViewSpec
       val view = createView()
 
       view.getElementById("grossMass-label").text() mustBe messages(grossMass)
-      view.getElementById("grossMass-hint").text() mustBe messages(grossMassHint)
       view.getElementById("grossMass").attr("value") mustBe empty
     }
 

@@ -22,10 +22,9 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class ConsignmentReferences(ducr: Ducr, lrn: String, personalUcr: Option[String] = None)
+case class ConsignmentReferences(ducr: Ducr, lrn: String)
 
 object ConsignmentReferences {
-  private val ucrFormat = "^\\d[A-Z]{2}\\d{12}-[0-9A-Z]{1,19}$"
   private val lrnMaxLength = 22
   private val ucrMaxLength = 35
 
@@ -34,12 +33,7 @@ object ConsignmentReferences {
     "lrn" -> text()
       .verifying("supplementary.consignmentReferences.lrn.error.empty", _.trim.nonEmpty)
       .verifying("supplementary.consignmentReferences.lrn.error.length", noLongerThan(lrnMaxLength))
-      .verifying("supplementary.consignmentReferences.lrn.error.specialCharacter", isAlphanumeric),
-    "personalUcr" -> optional(
-      text()
-        .verifying("supplementary.consignmentReferences.ucr.error.length", noLongerThan(ucrMaxLength))
-        .verifying("supplementary.consignmentReferences.ucr.error.specialCharacter", isAlphanumeric)
-    )
+      .verifying("supplementary.consignmentReferences.lrn.error.specialCharacter", isAlphanumeric)
   )(ConsignmentReferences.apply)(ConsignmentReferences.unapply)
 
   implicit val format = Json.format[ConsignmentReferences]

@@ -16,11 +16,11 @@
 
 package services
 
-import services.Countries.allCountries
+import org.scalatest.{Matchers, WordSpec}
+import services.Countries._
 import services.model.Country
-import unit.base.UnitSpec
 
-class CountriesSpec extends UnitSpec {
+class CountriesSpec extends WordSpec with Matchers {
 
   "Countries" should {
 
@@ -28,7 +28,21 @@ class CountriesSpec extends UnitSpec {
       val threeCountries = allCountries.filter(
         c => c.countryName == "Afghanistan" || c.countryName == "Mayotte" || c.countryName == "Zimbabwe"
       )
-      threeCountries mustBe List(Country("Afghanistan", "AF"), Country("Mayotte", "YT"), Country("Zimbabwe", "ZW"))
+      threeCountries should contain inOrderOnly (Country("Afghanistan", "AF"), Country("Mayotte", "YT"), Country(
+        "Zimbabwe",
+        "ZW"
+      ))
+    }
+
+    "give list of EU countries" in {
+      euCountries should not be empty
+      euCountries should contain("France")
+      euCountries should not contain "UK"
+    }
+
+    "give territories with special fiscal status" in {
+      euSpecialFiscalTerritories should not be empty
+      euSpecialFiscalTerritories should contain("Turkey")
     }
   }
 }

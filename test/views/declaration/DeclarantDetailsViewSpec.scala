@@ -59,7 +59,6 @@ class DeclarantDetailsViewSpec
       val view = createView()
 
       view.getElementById("details_eori-label").text() mustBe messages(declarantEori)
-      view.getElementById("details_eori-hint").text() mustBe messages(eoriHint)
       view.getElementById("details_eori").attr("value") mustBe empty
     }
 

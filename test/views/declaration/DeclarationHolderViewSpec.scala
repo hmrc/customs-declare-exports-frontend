@@ -83,7 +83,6 @@ class DeclarationHolderViewSpec
       val view = createView()
 
       view.getElementById("eori-label").text() mustBe messages(declarationHolderEori)
-      view.getElementById("eori-hint").text() mustBe messages(eoriHint)
       view.getElementById("eori").attr("value") mustBe empty
     }
 

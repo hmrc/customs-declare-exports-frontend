@@ -34,7 +34,7 @@
 
     @components.page_title(Some("supplementary.consignee.title"))
 
-    <p>@messages("supplementary.carrier.title.hint")</p>
+    <p>@messages("supplementary.consignee.title.hint")</p>
 
     @helper.form(ConsigneeDetailsController.saveAddress(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
@@ -44,7 +44,6 @@
             @components.fields.field_text(
                 field = form("details.eori"),
                 label = messages("supplementary.consignee.eori.info"),
-                hint = Some(messages("supplementary.consignee.eori.hint")),
                 labelClass = Some("heading-24")
             )
 

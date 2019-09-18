@@ -82,7 +82,6 @@ class DeclarationAdditionalActorsViewSpec
       val view = createView()
 
       view.getElementById("eori-label").text() mustBe messages("supplementary.additionalActors.eori")
-      view.getElementById("eori-hint").text() mustBe messages("supplementary.eori.hint")
       view.getElementById("eori").attr("value") mustBe empty
     }
 

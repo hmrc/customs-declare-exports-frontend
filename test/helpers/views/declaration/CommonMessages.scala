@@ -24,7 +24,6 @@ trait CommonMessages {
   val continueError: String = common + ".continue.error"
   val continueMandatory: String = common + ".continue.mandatory"
   val eori: String = common + ".eori"
-  val eoriHint: String = common + ".eori.hint"
   val eoriEmpty: String = common + ".eori.empty"
   val eoriError: String = common + ".eori.error"
   val eoriOrAddressEmpty: String = common + ".namedEntityDetails.error"
