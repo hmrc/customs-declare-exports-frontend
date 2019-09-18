@@ -37,6 +37,8 @@ case class Notification(
     else -1
 
   val status: SubmissionStatus = SubmissionStatus.retrieve(this.functionCode, this.nameCode)
+
+  val isStatusRejected: Boolean = status == SubmissionStatus.Rejected
 }
 
 object Notification {

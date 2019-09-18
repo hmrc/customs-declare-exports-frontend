@@ -18,34 +18,29 @@ package controllers
 
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.AuthAction
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.model.RejectionReason
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.{notifications, submission_notifications}
+import views.html.rejected_notification_errors
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class NotificationsController @Inject()(
+@Singleton
+class RejectedNotificationsController @Inject()(
   authenticate: AuthAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
-  notificationsPage: notifications,
-  submissionsNotificationPage: submission_notifications
+  rejectedNotificationPage: rejected_notification_errors
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def listOfNotifications(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsDeclareExportsConnector.fetchNotifications().map { results =>
-      Ok(notificationsPage(request.user.eori, results.sorted.reverse))
-    }
-  }
-
-  def listOfNotificationsForSubmission(id: String): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayPage(id: String): Action[AnyContent] = authenticate.async { implicit request =>
     customsDeclareExportsConnector.findSubmission(id).flatMap {
       case Some(submission) =>
         customsDeclareExportsConnector.findNotifications(id).map { notifications =>
-          Ok(submissionsNotificationPage(submission, notifications.sorted.reverse))
+          Ok(rejectedNotificationPage(submission, RejectionReason.fromNotifications(notifications)))
         }
       case None => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
     }

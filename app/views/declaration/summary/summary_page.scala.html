@@ -113,6 +113,9 @@
     @items_section(suppDecData.items)
 
     @if(mode == Mode.Amend) {
+        <br/>
+        @messages("summary.amend.information")
+        <br/>
         <a class="button mt-3" href="@routes.DispatchLocationController.displayPage(mode)">@messages("site.continue")</a>
     }
 

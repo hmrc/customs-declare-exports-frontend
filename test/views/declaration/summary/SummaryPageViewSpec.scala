@@ -64,6 +64,14 @@ class SummaryPageViewSpec
   )
   val summaryNoDataPage = contentAsString(new summary_page_no_data(mainTemplate)()(request, stubMessages()))
 
+  val amendSummaryPage = contentAsString(
+    new summary_page(mainTemplate)(Mode.Amend, SupplementaryDeclarationData(declaration), form)(
+      request,
+      stubMessages(),
+      minimalAppConfig
+    )
+  )
+
   "Summary page" should {
     def view(mode: Mode, declaration: ExportsDeclaration = declaration): Document =
       new summary_page(mainTemplate)(mode, SupplementaryDeclarationData(declaration), form)(
@@ -213,6 +221,11 @@ class SummaryPageViewSpec
         summaryNoDataPage must include("Make an export declaration")
         summaryNoDataPage must include("/customs-declare-exports/start")
       }
+    }
+
+    "amend summary page must include information about starting declaration from the beginning" in {
+
+      amendSummaryPage must include("summary.amend.information")
     }
   }
 }
