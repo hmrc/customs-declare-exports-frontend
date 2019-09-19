@@ -47,7 +47,6 @@ class CarrierDetailsViewSpec
       messages must haveTranslationFor("supplementary.carrier.title")
       messages must haveTranslationFor("supplementary.carrier.title.hint")
       messages must haveTranslationFor("supplementary.carrier.eori.info")
-      messages must haveTranslationFor("supplementary.carrier.eori.hint")
       messages must haveTranslationFor("supplementary.carrier.address.info")
     }
   }
@@ -64,7 +63,6 @@ class CarrierDetailsViewSpec
       val view = createView()
 
       view.getElementById("details_eori-label").text() mustBe messages(eoriInfo)
-      view.getElementById("details_eori-hint").text() mustBe messages(carrierEoriHint)
       view.getElementById("details_eori").attr("value") mustBe empty
     }
 

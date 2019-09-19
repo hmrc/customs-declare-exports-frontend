@@ -46,12 +46,14 @@
         @components.fields.field_text(
             field = form("grossMass"),
             label = messages("supplementary.commodityMeasure.grossMass"),
+            hint = Some(messages("supplementary.commodityMeasure.grossMass.hint")),
             labelClass = Some("bold-small")
         )
 
         @components.fields.field_text(
           field = form("netMass"),
           label = messages("supplementary.commodityMeasure.netMass"),
+          hint = Some(messages("supplementary.commodityMeasure.netMass.hint")),
           labelClass = Some("bold-small")
         )
 

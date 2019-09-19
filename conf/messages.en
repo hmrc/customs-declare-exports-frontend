@@ -219,28 +219,28 @@ supplementary.consignmentReferences.lrn.error.length = LRN cannot exceed 22 char
 supplementary.consignmentReferences.lrn.error.specialCharacter = LRN cannot contain special characters
 
 supplementary.consignor.title = Who is the exporter?
-supplementary.consignor.title.hint = Enter the exporter’s 15 digit EORI number or name and business address.
+supplementary.consignor.title.hint = Enter the exporter’s EORI number or name and business address.
 supplementary.consignor.eori = Exporter’s EORI number
 supplementary.consignor.address.info = Exporter’s name and business address
+
 supplementary.declarant.title = Who is the declarant?
-supplementary.declarant.title.hint = Enter the declarant’s 15 digit EORI number or name and business address.
+supplementary.declarant.title.hint = Enter the declarant’s EORI number or name and business address.
 supplementary.declarant.eori.info = Declarant’s EORI number
 supplementary.declarant.address.info = Declarant’s name and business address
 
 supplementary.consignee.title = Who is the consignee?
-supplementary.consignee.title.hint = Enter the consignee’s 15 digit EORI number or name and business address.
+supplementary.consignee.title.hint = Enter the consignee’s EORI number or name and business address.
 supplementary.consignee.eori.info = Consignee’s EORI number
 supplementary.consignee.address.info = Consignee’s name and business address
 
 supplementary.carrier.title = Who is the carrier?
-supplementary.carrier.title.hint = Enter the carrier’s 15 digit EORI number or name and business address.
+supplementary.carrier.title.hint = Enter the carrier’s EORI number or name and business address.
 supplementary.carrier.eori.info = Carrier’s EORI number
-supplementary.carrier.eori.hint = The number starts with a country code, for example FR for France, and is then followed by up to 15 digits
 supplementary.carrier.address.info = Carrier’s name and business address
 
 supplementary.representative.title = Add representative
 supplementary.representative.header = Who is the representative?
-supplementary.representative.hint = Enter the representative’s 15-digit EORI number or name and business address. If no representative was used, leave this page blank and continue.
+supplementary.representative.hint = Enter the representative’s EORI number or name and business address. If no representative was used, leave this page blank and continue.
 supplementary.representative.eori.info = Representative’s EORI number
 supplementary.representative.address.info = Representative’s name and business address
 supplementary.representative.representationType.header = What type of representative will be used?
@@ -663,9 +663,11 @@ supplementary.packageInformation.shippingMarks.characterError = Shipping marks c
 supplementary.packageInformation.shippingMarks.empty = Shipping marks can not be empty
 supplementary.commodityMeasure.title = Commodity measurements
 supplementary.commodityMeasure.netMass = Net Weight
+supplementary.commodityMeasure.netMass.hint = The total weight of the goods without any packaging.
 supplementary.commodityMeasure.netMass.empty= Net weight cannot be empty
 supplementary.commodityMeasure.netMass.error = Net weight should be a decimal value and should be less than or equal to 99999999999.999 with 3 decimals
 supplementary.commodityMeasure.grossMass = Gross Weight
+supplementary.commodityMeasure.grossMass.hint = This includes the total weight of the goods and any immediate packaging. For example shrink-wrap and a pallet.
 supplementary.commodityMeasure.grossMass.empty = Gross weight cannot be empty
 supplementary.commodityMeasure.grossMass.error = Gross weight should be a decimal value and should be less than or equal to 99999999999999.99 with 2 decimals
 supplementary.commodityMeasure.global.addOne = You must add package information to proceed
