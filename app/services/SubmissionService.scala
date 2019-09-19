@@ -33,7 +33,7 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Failure
+import scala.util.{Failure, Success}
 
 @Singleton
 class SubmissionService @Inject()(
@@ -50,26 +50,32 @@ class SubmissionService @Inject()(
     exportsDeclaration: ExportsDeclaration,
     legalDeclaration: LegalDeclaration
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]] = {
-
     val timerContext = exportsMetrics.startTimer(submissionMetric)
     auditService.auditAllPagesUserInput(getCachedData(exportsDeclaration))
-    for {
-      _ <- exportsConnector.updateDeclaration(exportsDeclaration.copy(status = DeclarationStatus.COMPLETE)) andThen {
-        case Failure(exception) =>
-          logger.error(s"Error response from backend $exception")
-          auditService.audit(
-            AuditTypes.Submission,
-            auditData(exportsDeclaration.lrn, exportsDeclaration.ducr, legalDeclaration, Failure.toString)
-          )
-      }
 
-      _ = auditService.audit(
-        AuditTypes.Submission,
-        auditData(exportsDeclaration.lrn, exportsDeclaration.ducr, legalDeclaration, Success.toString)
-      )
-      _ = exportsMetrics.incrementCounter(submissionMetric)
-      _ = timerContext.stop()
-    } yield exportsDeclaration.lrn
+    val completedDeclaration = if(exportsDeclaration.isComplete) {
+      Future.successful(exportsDeclaration)
+    } else {
+      exportsConnector.updateDeclaration(exportsDeclaration.copy(status = DeclarationStatus.COMPLETE))
+    }
+
+    completedDeclaration.flatMap { declaration =>
+        exportsConnector.submitDeclaration(declaration.id.get).andThen {
+          case Success(_) =>
+            auditService.audit(
+              AuditTypes.Submission,
+              auditData(exportsDeclaration.lrn, exportsDeclaration.ducr, legalDeclaration, Success.toString)
+            )
+            exportsMetrics.incrementCounter(submissionMetric)
+            timerContext.stop()
+          case Failure(exception) =>
+            logger.error(s"Error response from backend $exception")
+            auditService.audit(
+              AuditTypes.Submission,
+              auditData(exportsDeclaration.lrn, exportsDeclaration.ducr, legalDeclaration, Failure.toString)
+            )
+        }.map(_ => declaration.lrn)
+    }
   }
 
   private def auditData(lrn: Option[String], ducr: Option[String], legalDeclaration: LegalDeclaration, result: String)(
