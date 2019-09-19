@@ -135,6 +135,11 @@ class CustomsDeclareExportsConnectorIntegrationSpec
 
       response.uuid mustBe id
       response.actions must not be empty
+
+      verify(
+        postRequestedFor(urlEqualTo(s"/declarations/id/submission"))
+          .withRequestBody(absent())
+      )
     }
   }
 
