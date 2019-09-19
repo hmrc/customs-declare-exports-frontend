@@ -1,0 +1,55 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.declaration.submissions.Submission
+@import services.model.RejectionReason
+
+@this(main_template: views.html.main_template)
+
+@(submission: Submission, errors: Seq[RejectionReason])(implicit request: Request[_], messages: Messages)
+
+@main_template(messages("rejected.notification.title")) {
+
+    @components.back_link(routes.SubmissionsController.displayListOfSubmissions())
+
+    <br/>
+
+    @components.section_header(messages("rejected.notification.ucr", submission.ducr.getOrElse("No DUCR")))
+
+    @components.page_title(Some(messages("rejected.notification.title")))
+
+    <span id="information">@messages("rejected.notification.information")</span>
+
+    <table>
+        <tr class="table-row">
+            <th class="table-cell table-head">@messages("rejected.notification.header.errorCode")</th>
+            <th class="table-cell table-head">@messages("rejected.notification.header.errorDescription")</th>
+        </tr>
+
+        @for(error <- errors) {
+          <tr class="table-row">
+            <th class="table-cell">@error.code</th>
+            <th class="table-cell">@error.description</th>
+          </tr>
+        }
+    </table>
+
+    <br/>
+    <br/>
+
+    <a href="@routes.SubmissionsController.amend(submission.uuid)"
+        target="_blank" id="continue">@messages("rejected.notification.continue")</a>
+}

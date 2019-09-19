@@ -98,6 +98,16 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
         payload = "payload"
       )
 
+      val rejectedNotification = Notification(
+        conversationId = "convId",
+        mrn = "mrn",
+        dateTimeIssued = LocalDateTime.now(),
+        functionCode = "03",
+        nameCode = None,
+        errors = Seq.empty,
+        payload = ""
+      )
+
       "all fields are populated" in {
         val view = createView(Seq(submission -> Seq(notification)))
 
@@ -130,6 +140,16 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
 
         tableCell(view)(1, 4).text() mustBe "Unknown status"
       }
+
+      "submission has link when contains rejected notification" in {
+        val view = createView(Seq(submission -> Seq(rejectedNotification)))
+
+        tableCell(view)(1, 0).text() mustBe submission.ducr.get
+        tableCell(view)(1, 0).toString must include(
+          routes.RejectedNotificationsController.displayPage(submission.uuid).url
+        )
+      }
+
       "submission status is unknown due to invalid notification functionCode" in {
         val notificationWithUnknownStatus = notification.copy(functionCode = "abc")
         val view = createView(Seq(submission -> Seq(notificationWithUnknownStatus)))

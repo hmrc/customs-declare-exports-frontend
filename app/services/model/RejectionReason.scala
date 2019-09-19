@@ -19,6 +19,8 @@ package services.model
 import java.io.File
 
 import com.github.tototoshi.csv._
+import models.declaration.notifications.Notification
+import models.declaration.submissions.SubmissionStatus
 import play.api.Logger
 import play.api.libs.json.Json
 
@@ -43,5 +45,23 @@ object RejectionReason {
     val errors: List[List[String]] = reader.all()
 
     errors.map(RejectionReason.apply _)
+  }
+
+  def getErrorDescription(errorCode: String): String =
+    allRejectedErrors.find(_.code == errorCode).map(_.description).getOrElse("Unknown error")
+
+  def fromNotifications(notifications: Seq[Notification]): Seq[RejectionReason] = {
+
+    val rejectionNotification = notifications.find(_.functionCode == SubmissionStatus.Rejected.fullCode)
+
+    val errorCodes = rejectionNotification.map { notification =>
+      notification.errors.map { error =>
+        error.validationCode
+      }
+    }.getOrElse(Seq.empty)
+
+    errorCodes.map { code =>
+      RejectionReason(code, getErrorDescription(code))
+    }
   }
 }

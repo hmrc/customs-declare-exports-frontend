@@ -16,12 +16,16 @@
 
 package unit.services.model
 
+import java.time.LocalDateTime
+
+import models.declaration.notifications.{Notification, NotificationError}
+import models.declaration.submissions.SubmissionStatus
 import services.model.RejectionReason
 import unit.base.UnitSpec
 
 class RejectionReasonSpec extends UnitSpec {
 
-  import services.model.RejectionReason.allRejectedErrors
+  import services.model.RejectionReason._
 
   "Rejection reason model" should {
 
@@ -69,6 +73,54 @@ class RejectionReasonSpec extends UnitSpec {
       val expectedRejectionReason = RejectionReason("CDS12015", expectedMessages)
 
       allRejectedErrors must contain(expectedRejectionReason)
+    }
+
+    "correctly return error description" in {
+
+      getErrorDescription("CDS12016") mustBe "Date error: Date of acceptance is not allowed."
+    }
+
+    "return Unknown error when error code is not in rejected errors" in {
+
+      getErrorDescription("unknown code") mustBe "Unknown error"
+    }
+
+    "successfully convert list of notifications to list of rejection reasons" when {
+
+      val nonRejectionNotification =
+        Notification("convId", "mrn", LocalDateTime.now(), SubmissionStatus.Accepted.fullCode, None, Seq.empty, "")
+
+      "list is empty" in {
+
+        fromNotifications(Seq.empty) mustBe Seq.empty
+      }
+
+      "list doesn't contain rejected notification" in {
+
+        fromNotifications(Seq(nonRejectionNotification)) mustBe Seq.empty
+      }
+
+      "list contains rejected notification" in {
+
+        val firstError = NotificationError("CDS12016", Seq.empty)
+        val secondError = NotificationError("CDS12022", Seq.empty)
+        val notificationErrors = Seq(firstError, secondError)
+        val rejectionNotification = Notification(
+          "convId",
+          "mrn",
+          LocalDateTime.now(),
+          SubmissionStatus.Rejected.fullCode,
+          None,
+          notificationErrors,
+          ""
+        )
+        val notifications = Seq(nonRejectionNotification, rejectionNotification)
+        val firstExpectedRejectionReason = RejectionReason("CDS12016", "Date error: Date of acceptance is not allowed.")
+        val secondExpectedRejectionReason =
+          RejectionReason("CDS12022", "Relation error: The sequence number is larger than the total.")
+
+        fromNotifications(notifications) mustBe Seq(firstExpectedRejectionReason, secondExpectedRejectionReason)
+      }
     }
   }
 }

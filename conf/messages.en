@@ -826,3 +826,12 @@ legal.declaration.email.long=Your email address must not be more than 64 charact
 legal.declaration.email.error=Enter a valid email address
 legal.declaration.confirmation=I confirm the information given is correct to the best of my knowledge
 legal.declaration.confirmation.missing=You must confirm this information is correct
+
+rejected.notification.ucr = UCR {0}
+rejected.notification.title = There are errors in this declaration
+rejected.notification.header.errorCode = Error code
+rejected.notification.header.errorDescription = Description
+rejected.notification.information = You will need to review your answers and fix the errors before you can resubmit.
+rejected.notification.continue = Continue declaration (opens in a new window)
+
+summary.amend.information = You will start at the beginning of the declaration

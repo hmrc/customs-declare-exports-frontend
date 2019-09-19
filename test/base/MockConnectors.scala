@@ -24,13 +24,12 @@ import models._
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{Action, Submission}
-import models.requests.CancellationStatus
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.when
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.stubbing.{Answer, OngoingStubbing}
 import org.scalatestplus.mockito.MockitoSugar
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -106,4 +105,15 @@ trait MockConnectors extends MockitoSugar {
   def successfulCancelDeclarationResponse(): OngoingStubbing[Future[Unit]] =
     when(mockCustomsDeclareExportsConnector.createCancellation(any())(any(), any()))
       .thenReturn(Future.successful((): Unit))
+
+  def findSubmission(id: String, submission: Option[Submission] = None): OngoingStubbing[Future[Option[Submission]]] =
+    when(mockCustomsDeclareExportsConnector.findSubmission(refEq(id))(any(), any()))
+      .thenReturn(Future.successful(submission))
+
+  def findNotifications(
+    id: String,
+    notifications: Seq[Notification] = Seq.empty
+  ): OngoingStubbing[Future[Seq[Notification]]] =
+    when(mockCustomsDeclareExportsConnector.findNotifications(refEq(id))(any(), any()))
+      .thenReturn(Future.successful(notifications))
 }

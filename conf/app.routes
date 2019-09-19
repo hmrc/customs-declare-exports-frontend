@@ -1,45 +1,47 @@
-->         /declaration                                 declaration.Routes
+->          /declaration                                   declaration.Routes
 
 # microservice specific routes
 
-GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file                                  controllers.Assets.versioned(path="/public", file: Asset)
 
-GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
+GET         /unauthorised                                  controllers.UnauthorisedController.onPageLoad
 
 # Notifications
 
-GET        /notifications                               controllers.NotificationsController.listOfNotifications()
+GET         /notifications                                 controllers.NotificationsController.listOfNotifications()
 
-GET        /submissions/:id/notifications               controllers.NotificationsController.listOfNotificationsForSubmission(id: String)
+GET         /submissions/:id/notifications                 controllers.NotificationsController.listOfNotificationsForSubmission(id: String)
+
+GET         /submissions/:id/rejected-notifications        controllers.RejectedNotificationsController.displayPage(id: String)
 
 # Submissions
 
-GET        /submissions                                 controllers.SubmissionsController.displayListOfSubmissions()
+GET         /submissions                                   controllers.SubmissionsController.displayListOfSubmissions()
 
-GET        /submissions/:id                             controllers.SubmissionsController.amend(id: String)
+GET         /submissions/:id                               controllers.SubmissionsController.amend(id: String)
 
 # Cancel declaration
 
-GET        /cancel-declaration                          controllers.CancelDeclarationController.displayPage()
+GET         /cancel-declaration                            controllers.CancelDeclarationController.displayPage()
 
-POST       /cancel-declaration                          controllers.CancelDeclarationController.onSubmit()
+POST        /cancel-declaration                            controllers.CancelDeclarationController.onSubmit()
 
 # Saved declaration
 
-GET        /saved-declarations                          controllers.SavedDeclarationsController.displayDeclarations(page: Int ?= 1)
+GET         /saved-declarations                            controllers.SavedDeclarationsController.displayDeclarations(page: Int ?= 1)
 
-GET        /saved-declarations/:id                      controllers.SavedDeclarationsController.continueDeclaration(id: String)
+GET         /saved-declarations/:id                        controllers.SavedDeclarationsController.continueDeclaration(id: String)
 
-GET        /saved-declarations/:id/remove               controllers.RemoveSavedDeclarationsController.displayPage(id: String)
+GET         /saved-declarations/:id/remove                 controllers.RemoveSavedDeclarationsController.displayPage(id: String)
 
-POST       /saved-declarations/:id/remove               controllers.RemoveSavedDeclarationsController.removeDeclaration(id: String)
+POST        /saved-declarations/:id/remove                 controllers.RemoveSavedDeclarationsController.removeDeclaration(id: String)
 
 # Start Page
 
-GET        /start                                       controllers.StartController.displayStartPage()
+GET         /start                                         controllers.StartController.displayStartPage()
 
 # Declaration Choice Page
 
-GET        /choice                                      controllers.ChoiceController.displayPage()
+GET         /choice                                        controllers.ChoiceController.displayPage()
 
-POST       /choice                                      controllers.ChoiceController.submitChoice()
+POST        /choice                                        controllers.ChoiceController.submitChoice()
