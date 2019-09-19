@@ -98,7 +98,7 @@ class SummaryPageViewSpec
           val document = view(Mode.Amend, model)
           document must containElementWithID("link-back")
           document.getElementById("link-back") must haveHref(
-            controllers.routes.NotificationsController.listOfNotificationsForSubmission("source-id")
+            controllers.routes.SubmissionsController.displayListOfSubmissions()
           )
         }
       }
