@@ -54,10 +54,6 @@ class ConsignmentReferencesViewSpec
       messages must haveTranslationFor("supplementary.consignmentReferences.header")
       messages must haveTranslationFor("supplementary.consignmentReferences.ducr.info")
       messages must haveTranslationFor("supplementary.consignmentReferences.ducr.hint")
-      messages must haveTranslationFor("supplementary.consignmentReferences.ucr.info")
-      messages must haveTranslationFor("supplementary.consignmentReferences.ucr.hint")
-      messages must haveTranslationFor("supplementary.consignmentReferences.ucr.error.length")
-      messages must haveTranslationFor("supplementary.consignmentReferences.ucr.error.specialCharacter")
       messages must haveTranslationFor("supplementary.consignmentReferences.lrn.info")
       messages must haveTranslationFor("supplementary.consignmentReferences.lrn.hint")
       messages must haveTranslationFor("supplementary.consignmentReferences.lrn.error.empty")
@@ -96,15 +92,6 @@ class ConsignmentReferencesViewSpec
       view.getElementById("lrn-label").text() mustBe messages(lrnInfo)
       view.getElementById("lrn-hint").text() mustBe messages(lrnHint)
       view.getElementById("lrn").attr("value") mustBe empty
-    }
-
-    "display empty input with label for UCR" in {
-
-      val view = createView()
-
-      view.getElementById("personalUcr-label").text() mustBe messages(ucrInfo)
-      view.getElementById("personalUcr-hint").text() mustBe messages(ucrHint)
-      view.getElementById("personalUcr").attr("value") mustBe empty
     }
 
     "display 'Back' button that links to 'Declaration Type' page" in {
@@ -232,46 +219,11 @@ class ConsignmentReferencesViewSpec
     "display data in all inputs" in {
 
       val view =
-        createView(
-          ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("GB/ABC4-ASIUDYFAHSDJF"), "test1", Some("ucr")))
-        )
+        createView(ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("GB/ABC4-ASIUDYFAHSDJF"), "test1")))
 
       view.getElementById("ducr_ducr").attr("value") mustBe "GB/ABC4-ASIUDYFAHSDJF"
       view.getElementById("lrn").attr("value") mustBe "test1"
-      view.getElementById("personalUcr").attr("value") mustBe "ucr"
     }
 
-    "display error when UCR is longer then 35 characters" in {
-
-      val view = createView(
-        ConsignmentReferences
-          .form()
-          .fillAndValidate(
-            ConsignmentReferences(
-              Ducr(properDUCR),
-              TestHelper.createRandomAlphanumericString(22),
-              Some(TestHelper.createRandomAlphanumericString(36))
-            )
-          )
-      )
-
-      view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("personalUcr", "#personalUcr")
-
-      view.select("#error-message-personalUcr-input").text() mustBe messages(ucrLength)
-    }
-
-    "display error when UCR contains special character" in {
-
-      val view =
-        createView(
-          ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Ducr(properDUCR), "test2", Some("#@#$")))
-        )
-
-      view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("personalUcr", "#personalUcr")
-
-      view.select("#error-message-personalUcr-input").text() mustBe messages(ucrSpecialCharacter)
-    }
   }
 }

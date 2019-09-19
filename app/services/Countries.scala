@@ -18,6 +18,7 @@ package services
 
 import play.api.libs.json._
 import services.model.Country
+import utils.FileReader
 
 object Countries {
 
@@ -41,4 +42,10 @@ object Countries {
   private def countryCode: String => String = cc => cc.split(":")(1).trim
 
   val allCountries: List[Country] = countries
+
+  lazy val euCountries: List[String] =
+    FileReader("code-lists/eu-countries.csv")
+
+  lazy val euSpecialFiscalTerritories: List[String] =
+    FileReader("code-lists/eu-special-fiscal-territories.csv")
 }

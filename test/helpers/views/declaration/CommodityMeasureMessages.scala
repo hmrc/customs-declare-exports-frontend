@@ -22,11 +22,9 @@ trait CommodityMeasureMessages {
 
   val title: String = commodityMeasure + ".title"
   val netMass: String = commodityMeasure + ".netMass"
-  val netMassHint: String = commodityMeasure + ".netMass.hint"
   val netMassEmpty: String = commodityMeasure + ".netMass.empty"
   val netMassError: String = commodityMeasure + ".netMass.error"
   val grossMass: String = commodityMeasure + ".grossMass"
-  val grossMassHint: String = commodityMeasure + ".grossMass.hint"
   val grossMassEmpty: String = commodityMeasure + ".grossMass.empty"
   val grossMassError: String = commodityMeasure + ".grossMass.error"
   val globalAddOne: String = commodityMeasure + ".global.addOne"

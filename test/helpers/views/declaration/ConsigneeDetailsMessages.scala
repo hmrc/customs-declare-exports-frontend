@@ -23,6 +23,5 @@ trait ConsigneeDetailsMessages {
   val title: String = consigneeDetails + ".title"
   val hint: String = consigneeDetails + ".title.hint"
   val eoriInfo: String = consigneeDetails + ".eori.info"
-  val consigneeEoriHint: String = consigneeDetails + ".eori.hint"
   val addressInfo: String = consigneeDetails + ".address.info"
 }

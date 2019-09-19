@@ -37,7 +37,7 @@
 
     @components.page_title(Some("supplementary.declarant.title"))
 
-    <p>@messages("supplementary.carrier.title.hint")</p>
+    <p>@messages("supplementary.declarant.title.hint")</p>
 
     @helper.form(DeclarantDetailsController.saveAddress(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
@@ -47,7 +47,6 @@
             @components.fields.field_text(
                 field = form("details.eori"),
                 label = messages("supplementary.declarant.eori.info"),
-                hint = Some(messages("supplementary.eori.hint")),
                 labelClass = Some("heading-24")
             )
 

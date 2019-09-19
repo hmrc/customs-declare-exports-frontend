@@ -56,7 +56,6 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with ConsigneeDetailsMessage
       val view = createView()
 
       view.getElementById("details_eori-label").text() mustBe messages(eoriInfo)
-      view.getElementById("details_eori-hint").text() mustBe messages(consigneeEoriHint)
       view.getElementById("details_eori").attr("value") mustBe empty
     }
 

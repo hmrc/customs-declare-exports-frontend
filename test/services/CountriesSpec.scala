@@ -16,7 +16,7 @@
 
 package services
 
-import services.Countries.allCountries
+import services.Countries._
 import services.model.Country
 import unit.base.UnitSpec
 
@@ -28,7 +28,21 @@ class CountriesSpec extends UnitSpec {
       val threeCountries = allCountries.filter(
         c => c.countryName == "Afghanistan" || c.countryName == "Mayotte" || c.countryName == "Zimbabwe"
       )
-      threeCountries mustBe List(Country("Afghanistan", "AF"), Country("Mayotte", "YT"), Country("Zimbabwe", "ZW"))
+      threeCountries must contain inOrderOnly (Country("Afghanistan", "AF"), Country("Mayotte", "YT"), Country(
+        "Zimbabwe",
+        "ZW"
+      ))
+    }
+
+    "give list of EU countries" in {
+      euCountries must not be empty
+      euCountries must contain("France")
+      euCountries must not contain "UK"
+    }
+
+    "give territories with special fiscal status" in {
+      euSpecialFiscalTerritories must not be empty
+      euSpecialFiscalTerritories must contain("Turkey")
     }
   }
 }
