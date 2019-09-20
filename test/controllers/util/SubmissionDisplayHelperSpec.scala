@@ -21,8 +21,8 @@ import java.util.UUID
 
 import base.TestHelper.createRandomAlphanumericString
 import models.declaration.notifications.{ErrorPointer, Notification, NotificationError}
-import models.declaration.submissions.{Action, Submission}
 import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
+import models.declaration.submissions.{Action, Submission, SubmissionStatus}
 import org.scalatest.{MustMatchers, WordSpec}
 
 import scala.util.Random
@@ -95,7 +95,7 @@ class SubmissionDisplayHelperSpec extends WordSpec with MustMatchers {
     "provided with multiple Submissions and additional non-matching Notification" should {
       "return Map with matching Notifications only" in {
         val submissions = Seq(submission, submission_2)
-        val additionalNotification = notification.copy(conversationId = "anything-different", mrn = "any-other-mrn")
+        val additionalNotification = notification.copy(actionId = "anything-different", mrn = "any-other-mrn")
         val notifications = Seq(notification, notification_2, notification_3, additionalNotification)
 
         val result =
@@ -118,9 +118,9 @@ class SubmissionDisplayHelperSpec extends WordSpec with MustMatchers {
       "return Map with empty lists as values" in {
         val submissions = Seq(submission, submission_2)
         val notifications = Seq(
-          notification.copy(conversationId = "convId1", mrn = "mrn1"),
-          notification_2.copy(conversationId = "convId2", mrn = "mrn2"),
-          notification_3.copy(conversationId = "convId3", mrn = "mrn3")
+          notification.copy(actionId = "actionId1", mrn = "mrn1"),
+          notification_2.copy(actionId = "actionId2", mrn = "mrn2"),
+          notification_3.copy(actionId = "actionId3", mrn = "mrn3")
         )
 
         val result =
@@ -138,7 +138,7 @@ class SubmissionDisplayHelperSpec extends WordSpec with MustMatchers {
       "return Map with Notifications sorted in descending order" in {
         val submissions = Seq(submission)
         val newNotification_3 =
-          notification_3.copy(conversationId = notification.conversationId, mrn = notification.mrn)
+          notification_3.copy(actionId = notification.actionId, mrn = notification.mrn)
         val notifications = Seq(notification, newNotification_3, notification_2)
 
         val result =
@@ -179,20 +179,20 @@ object SubmissionDisplayHelperSpec {
   val conversationId_2: String = "b1c09f1b-7c94-4e90-b754-7c5c71c55e22"
   val conversationId_3: String = "b1c09f1b-7c94-4e90-b754-7c5c71c55e23"
 
-  lazy val action = Action(requestType = SubmissionRequest, conversationId = conversationId)
+  lazy val action = Action(requestType = SubmissionRequest, id = conversationId)
   lazy val action_2 = Action(
     requestType = SubmissionRequest,
-    conversationId = conversationId_2,
+    id = conversationId_2,
     requestTimestamp = action.requestTimestamp.plusDays(2)
   )
   lazy val action_3 = Action(
     requestType = SubmissionRequest,
-    conversationId = conversationId_2,
+    id = conversationId_2,
     requestTimestamp = action.requestTimestamp.minusDays(2)
   )
   lazy val actionCancellation = Action(
     requestType = CancellationRequest,
-    conversationId = conversationId,
+    id = conversationId,
     requestTimestamp = action.requestTimestamp.plusHours(3)
   )
 
@@ -236,29 +236,26 @@ object SubmissionDisplayHelperSpec {
   val payload_3 = createRandomAlphanumericString(payloadExemplaryLength)
 
   val notification = Notification(
-    conversationId = conversationId,
+    actionId = conversationId,
     mrn = mrn,
     dateTimeIssued = dateTimeIssued,
-    functionCode = functionCode,
-    nameCode = nameCode,
+    status = SubmissionStatus.UNKNOWN,
     errors = errors,
     payload = payload
   )
   val notification_2 = Notification(
-    conversationId = conversationId,
+    actionId = conversationId,
     mrn = mrn,
     dateTimeIssued = dateTimeIssued_2,
-    functionCode = functionCode_2,
-    nameCode = nameCode,
+    status = SubmissionStatus.UNKNOWN,
     errors = errors,
     payload = payload_2
   )
   val notification_3 = Notification(
-    conversationId = conversationId_2,
+    actionId = conversationId_2,
     mrn = mrn,
     dateTimeIssued = dateTimeIssued_3,
-    functionCode = functionCode_3,
-    nameCode = nameCode,
+    status = SubmissionStatus.UNKNOWN,
     errors = Seq.empty,
     payload = payload_3
   )

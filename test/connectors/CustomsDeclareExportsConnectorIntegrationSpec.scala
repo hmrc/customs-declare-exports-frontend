@@ -23,7 +23,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.exchange.ExportsDeclarationExchange
 import forms.CancelDeclaration
 import models.declaration.notifications.Notification
-import models.declaration.submissions.{Action, RequestType, Submission}
+import models.declaration.submissions.{Action, RequestType, Submission, SubmissionStatus}
 import models.{Page, Paginated}
 import org.mockito.BDDMockito._
 import org.scalatest.BeforeAndAfterEach
@@ -46,7 +46,8 @@ class CustomsDeclareExportsConnectorIntegrationSpec
   private val existingDeclarationExchange = ExportsDeclarationExchange(existingDeclaration)
   private val action = Action(RequestType.SubmissionRequest, UUID.randomUUID().toString)
   private val submission = Submission(id, "eori", "lrn", Some("mrn"), None, Seq(action))
-  private val notification = Notification("conv-id", "mrn", LocalDateTime.now, "f-code", None, Seq.empty, "payload")
+  private val notification =
+    Notification("action-id", "mrn", LocalDateTime.now, SubmissionStatus.UNKNOWN, Seq.empty, "payload")
   private val connector = new CustomsDeclareExportsConnector(config, httpClient)
 
   implicit val defaultPatience: PatienceConfig =

@@ -21,8 +21,8 @@ import java.util.UUID
 
 import controllers.NotificationsController
 import models.declaration.notifications.Notification
-import models.declaration.submissions.{Action, Submission}
 import models.declaration.submissions.RequestType.SubmissionRequest
+import models.declaration.submissions.{Action, Submission, SubmissionStatus}
 import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
 import play.api.mvc.{AnyContentAsEmpty, Request, Result}
@@ -35,16 +35,16 @@ import scala.concurrent.Future.successful
 
 class NotificationControllerSpec extends ControllerSpec {
 
-  private val notification = Notification("convId", "mrn", LocalDateTime.now(), "01", None, Seq.empty, "payload")
+  private val notification =
+    Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.UNKNOWN, Seq.empty, "payload")
   private val submission = Submission(
     uuid = UUID.randomUUID().toString,
     eori = "eori",
     lrn = "lrn",
     mrn = None,
     ducr = None,
-    actions = Seq(
-      Action(requestType = SubmissionRequest, conversationId = "conversationID", requestTimestamp = LocalDateTime.now())
-    )
+    actions =
+      Seq(Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = LocalDateTime.now()))
   )
 
   trait SetUp {

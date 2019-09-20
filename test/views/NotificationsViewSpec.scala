@@ -21,6 +21,7 @@ import java.util.UUID
 
 import controllers.routes
 import models.declaration.notifications.Notification
+import models.declaration.submissions.SubmissionStatus.SubmissionStatus
 import models.declaration.submissions.{Action, RequestType, Submission, SubmissionStatus}
 import org.jsoup.nodes.Document
 import unit.tools.Stubs
@@ -34,8 +35,8 @@ class NotificationsViewSpec extends UnitViewSpec with Stubs {
   private val page = new submission_notifications(mainTemplate)
   private val actions = Action(RequestType.SubmissionRequest, UUID.randomUUID().toString)
   private val submission = Submission("id", "eori", "lrn", None, None, Seq(actions))
-  private def notification(status: SubmissionStatus = SubmissionStatus.Accepted) =
-    Notification("conv-id", "mrn", LocalDateTime.of(2019, 1, 1, 0, 0), status.fullCode, None, Seq.empty, "payload")
+  private def notification(status: SubmissionStatus = SubmissionStatus.ACCEPTED) =
+    Notification("conv-id", "mrn", LocalDateTime.of(2019, 1, 1, 0, 0), status, Seq.empty, "payload")
 
   private def createView(submission: Submission, notifications: Seq[Notification]): Document =
     page(submission, notifications)
@@ -43,7 +44,7 @@ class NotificationsViewSpec extends UnitViewSpec with Stubs {
   "View" should {
     "render notification" when {
       "status Accepted" in {
-        val view = createView(submission, Seq(notification(SubmissionStatus.Accepted)))
+        val view = createView(submission, Seq(notification(SubmissionStatus.ACCEPTED)))
 
         val rows = view.select("tbody tr")
         rows must haveSize(1)
@@ -55,7 +56,7 @@ class NotificationsViewSpec extends UnitViewSpec with Stubs {
       }
 
       "status Rejected" in {
-        val view = createView(submission, Seq(notification(SubmissionStatus.Rejected)))
+        val view = createView(submission, Seq(notification(SubmissionStatus.REJECTED)))
 
         val rows = view.select("tbody tr")
         rows must haveSize(1)

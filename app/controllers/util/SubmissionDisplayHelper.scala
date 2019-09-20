@@ -26,9 +26,9 @@ object SubmissionDisplayHelper {
     allNotifications: Seq[Notification]
   ): Seq[(Submission, Seq[Notification])] =
     allSubmissions.map { submission =>
-      val currentSubmissionConversationIds = submission.actions.map(_.conversationId)
+      val currentSubmissionConversationIds = submission.actions.map(_.id)
       val currentSubmissionNotifications = allNotifications
-        .filter(n => currentSubmissionConversationIds.contains(n.conversationId))
+        .filter(n => currentSubmissionConversationIds.contains(n.actionId))
         .sorted
         .reverse
 

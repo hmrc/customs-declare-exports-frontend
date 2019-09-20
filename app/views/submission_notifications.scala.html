@@ -17,7 +17,8 @@
 @import views.ViewDates
 
 @import models.declaration.notifications.Notification
-@import models.declaration.submissions.{Submission, SubmissionStatus}
+@import models.declaration.submissions.Submission
+@import models.declaration.submissions.SubmissionStatus
 
 @this(main_template: views.html.main_template)
 
@@ -44,10 +45,10 @@
         <tbody>
         @for((notification, index) <- notifications.zipWithIndex){
             <tr id="submission_notifications-table-row@index" class="table-row">
-                <td id="submission_notifications-table-row@index-status" class="table-cell">@notification.status.toString</td>
+                <td id="submission_notifications-table-row@index-status" class="table-cell">@notification.displayStatus</td>
                 <td id="submission_notifications-table-row@index-date" class="table-cell">@ViewDates.format(notification.dateTimeIssued)</td>
                 <td class="table-cell">
-                @if(notification.status == SubmissionStatus.Rejected) {
+                @if(notification.isStatusRejected) {
                     <a id="submission_notifications-table-row@index-amend_link" href="@routes.SubmissionsController.amend(submission.uuid)">@messages("notifications.amend")</a>
                 }
                 </td>

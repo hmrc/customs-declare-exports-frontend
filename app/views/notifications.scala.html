@@ -17,7 +17,6 @@
 @import java.time.format.DateTimeFormatter
 
 @import models.declaration.notifications.Notification
-@import models.declaration.submissions.SubmissionStatus
 
 @this(main_template: views.html.main_template)
 
@@ -41,8 +40,8 @@
             @for(notification <- notifications){
                 <tr class="table-row">
                     <td class="table-cell">@eori</td>
-                    <td class="table-cell">@notification.conversationId</td>
-                    <td class="table-cell">@SubmissionStatus.retrieve(notification.functionCode, notification.nameCode)</td>
+                    <td class="table-cell">@notification.actionId</td>
+                    <td class="table-cell">@notification.displayStatus</td>
                     <td class="table-cell">@DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(notification.dateTimeIssued)</td>
                 </tr>
             }

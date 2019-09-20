@@ -20,11 +20,7 @@ import java.time.LocalDateTime
 
 import play.api.libs.json.Json
 
-case class Action(
-  requestType: RequestType,
-  conversationId: String,
-  requestTimestamp: LocalDateTime = LocalDateTime.now()
-)
+case class Action(requestType: RequestType, id: String, requestTimestamp: LocalDateTime = LocalDateTime.now())
 
 object Action {
   implicit val format = Json.format[Action]
