@@ -24,6 +24,8 @@ import models.declaration.submissions.SubmissionStatus
 import play.api.Logger
 import play.api.libs.json.Json
 
+import scala.io.Source
+
 case class RejectionReason(code: String, description: String)
 
 object RejectionReason {
@@ -40,7 +42,8 @@ object RejectionReason {
   }
 
   val allRejectedErrors: List[RejectionReason] = {
-    val reader = CSVReader.open(new File("conf/code-lists/errors-dms-rej-list.csv"))
+    val reader =
+      CSVReader.open(Source.fromURL(getClass.getClassLoader.getResource("code-lists/errors-dms-rej-list.csv"), "UTF-8"))
 
     val errors: List[List[String]] = reader.all()
 
