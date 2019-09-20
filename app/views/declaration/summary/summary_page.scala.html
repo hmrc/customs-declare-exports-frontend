@@ -35,7 +35,7 @@
 ) {
 
   @mode match {
-      case Mode.Amend if request.cacheModel.sourceId.isDefined => {
+      case Mode.Amend => {
           @components.back_link(controllers.routes.SubmissionsController.displayListOfSubmissions(), mode, "supplementary.summary.back")
       }
       case Mode.Draft => {
