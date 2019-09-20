@@ -90,6 +90,7 @@ class SummaryPageViewSpec
         document.getElementById("link-back") must haveHref(
           controllers.routes.SavedDeclarationsController.displayDeclarations()
         )
+        document.getElementById("link-back") must containText("site.back")
       }
 
       "Amend Mode" when {
@@ -98,8 +99,9 @@ class SummaryPageViewSpec
           val document = view(Mode.Amend, model)
           document must containElementWithID("link-back")
           document.getElementById("link-back") must haveHref(
-            controllers.routes.NotificationsController.listOfNotificationsForSubmission("source-id")
+            controllers.routes.SubmissionsController.displayListOfSubmissions()
           )
+          document.getElementById("link-back") must containText("supplementary.summary.back")
         }
       }
 
@@ -114,6 +116,7 @@ class SummaryPageViewSpec
           document.getElementById("link-back") must haveHref(
             controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
           )
+          document.getElementById("link-back") must containText("site.back")
         }
 
         "standard declaration without containers" in {
