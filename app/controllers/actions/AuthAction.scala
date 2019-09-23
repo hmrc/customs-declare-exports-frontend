@@ -16,11 +16,13 @@
 
 package controllers.actions
 
-import com.google.inject.{ImplementedBy, Inject}
+import com.google.inject.{ImplementedBy, Inject, ProvidedBy}
 import com.kenshoo.play.metrics.Metrics
+import controllers.routes
+import javax.inject.Provider
 import models.requests.AuthenticatedRequest
 import models.{IdentityData, SignedInUser}
-import play.api.Logger
+import play.api.{Configuration, Logger}
 import play.api.mvc._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{agentCode, _}
 import uk.gov.hmrc.auth.core.retrieve.~
@@ -32,6 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AuthActionImpl @Inject()(
   override val authConnector: AuthConnector,
+  eoriWhitelist: EoriWhitelist,
   mcc: MessagesControllerComponents,
   metrics: Metrics
 ) extends AuthAction with AuthorisedFunctions {
@@ -87,7 +90,12 @@ class AuthActionImpl @Inject()(
 
           val cdsLoggedInUser = SignedInUser(eori.get.value, allEnrolments, identityData)
 
-          block(new AuthenticatedRequest(request, cdsLoggedInUser))
+          if(eoriWhitelist.allows(cdsLoggedInUser.eori)){
+            block(new AuthenticatedRequest(request, cdsLoggedInUser))
+          } else {
+            logger.warn("User is not in whitelist")
+            Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad()))
+          }
       }
   }
 
@@ -116,3 +124,14 @@ trait AuthAction
     extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]
 
 case class NoExternalId() extends NoActiveSession("No externalId was found")
+
+@ProvidedBy(classOf[EoriWhitelistProvider])
+class EoriWhitelist(values: Seq[String]){
+  def allows(eori: String): Boolean = values.isEmpty || values.contains(eori)
+}
+
+class EoriWhitelistProvider @Inject()(configuration: Configuration) extends Provider[EoriWhitelist] {
+  override def get(): EoriWhitelist = {
+    new EoriWhitelist(configuration.get[Seq[String]]("whitelist.eori"))
+  }
+}

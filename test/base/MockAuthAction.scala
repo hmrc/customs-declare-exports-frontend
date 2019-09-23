@@ -17,7 +17,7 @@
 package base
 
 import base.ExportsTestData._
-import controllers.actions.AuthActionImpl
+import controllers.actions.{AuthActionImpl, EoriWhitelist}
 import models.SignedInUser
 import models.requests.{AuthenticatedRequest, ExportsSessionKeys}
 import org.mockito.ArgumentMatchers
@@ -37,7 +37,7 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks {
 
   val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
-  val mockAuthAction = new AuthActionImpl(mockAuthConnector, stubMessagesControllerComponents(), metricsMock)
+  val mockAuthAction = new AuthActionImpl(mockAuthConnector, new EoriWhitelist(Seq.empty), stubMessagesControllerComponents(), metricsMock)
 
   val exampleUser = newUser("12345", "external1")
 

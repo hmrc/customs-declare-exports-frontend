@@ -26,6 +26,7 @@ import views.html.choice_page
 class AuthActionSpec extends ControllerSpec {
 
   val choicePage = new choice_page(mainTemplate, minimalAppConfig)
+
   val controller =
     new ChoiceController(mockAuthAction, mockExportsCacheService, stubMessagesControllerComponents(), choicePage)(ec)
 
