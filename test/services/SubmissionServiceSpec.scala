@@ -39,7 +39,8 @@ import scala.concurrent.ExecutionContext.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class SubmissionServiceSpec
-    extends UnitSpec with MockExportCacheService with MockConnectors with ScalaFutures with OptionValues with Injector with SubmissionBuilder {
+    extends UnitSpec with MockExportCacheService with MockConnectors with ScalaFutures with OptionValues with Injector
+    with SubmissionBuilder {
 
   val mockAuditService = mock[AuditService]
 
@@ -88,7 +89,11 @@ class SubmissionServiceSpec
 
     "submit cached data to backend" in {
 
-      val declaration = aDeclaration(withId(), withStatus(DeclarationStatus.DRAFT), withConsignmentReferences(ducr = "ducr", lrn = "123LRN"))
+      val declaration = aDeclaration(
+        withId(),
+        withStatus(DeclarationStatus.DRAFT),
+        withConsignmentReferences(ducr = "ducr", lrn = "123LRN")
+      )
 
       val completed = declaration.copy(status = DeclarationStatus.COMPLETE)
 
@@ -124,7 +129,8 @@ class SubmissionServiceSpec
       val error = new RuntimeException("some error")
       when(mockCustomsDeclareExportsConnector.updateDeclaration(any[ExportsDeclaration])(any(), any())).thenThrow(error)
 
-      val model = aDeclaration(withStatus(DeclarationStatus.DRAFT), withConsignmentReferences(ducr = "ducr", lrn = "123LRN"))
+      val model =
+        aDeclaration(withStatus(DeclarationStatus.DRAFT), withConsignmentReferences(ducr = "ducr", lrn = "123LRN"))
 
       intercept[Exception](submissionService.submit(model, legal)(request, hc, global)) mustBe error
     }

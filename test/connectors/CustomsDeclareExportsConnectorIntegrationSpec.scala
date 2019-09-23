@@ -117,8 +117,8 @@ class CustomsDeclareExportsConnectorIntegrationSpec
            |  "eori": "${createRandomAlphanumericString(11)}",
            |  "lrn":  "${createRandomAlphanumericString(8)}",
            |  "actions" : [{
+           |      "id" : "${UUID.randomUUID().toString}",
            |      "requestType" : "SubmissionRequest",
-           |      "conversationId" : "${UUID.randomUUID().toString}",
            |      "requestTimestamp" : "${Instant.now().toString}"
            |   }]
           |}

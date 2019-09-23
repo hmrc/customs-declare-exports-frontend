@@ -21,14 +21,13 @@ import models.declaration.submissions.Submission
 
 trait SubmissionBuilder {
 
-  def emptySubmission(declaration: ExportsDeclaration, eori: String): Submission = {
+  def emptySubmission(declaration: ExportsDeclaration, eori: String): Submission =
     Submission(
       uuid = declaration.id.get,
       eori = eori,
       lrn = declaration.lrn.get,
       mrn = None,
       ducr = None,
-      actions =  Seq.empty
+      actions = Seq.empty
     )
-  }
 }
