@@ -30,7 +30,7 @@ case class Submission(
   actions: Seq[Action]
 ) {
 
-  val latestAction: Option[Action] = if(actions.nonEmpty){
+  val latestAction: Option[Action] = if (actions.nonEmpty) {
     Some(actions.minBy(_.requestTimestamp)(Submission.localDateTimeOrdering))
   } else {
     None

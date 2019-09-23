@@ -102,12 +102,9 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
       .GET[Option[ExportsDeclarationExchange]](s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}/$id")
       .map(_.map(_.toExportsDeclaration))
 
-  def submitDeclaration(
-    id: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Submission] = {
+  def submitDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Submission] =
     httpClient
       .POSTEmpty[Submission](s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}/$id/submission")
-  }
 
   def findSubmission(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Submission]] =
     httpClient

@@ -53,14 +53,16 @@ class SubmissionService @Inject()(
     val timerContext = exportsMetrics.startTimer(submissionMetric)
     auditService.auditAllPagesUserInput(getCachedData(exportsDeclaration))
 
-    val completedDeclaration = if(exportsDeclaration.isComplete) {
+    val completedDeclaration = if (exportsDeclaration.isComplete) {
       Future.successful(exportsDeclaration)
     } else {
       exportsConnector.updateDeclaration(exportsDeclaration.copy(status = DeclarationStatus.COMPLETE))
     }
 
     completedDeclaration.flatMap { declaration =>
-        exportsConnector.submitDeclaration(declaration.id.get).andThen {
+      exportsConnector
+        .submitDeclaration(declaration.id.get)
+        .andThen {
           case Success(_) =>
             auditService.audit(
               AuditTypes.Submission,
@@ -74,7 +76,8 @@ class SubmissionService @Inject()(
               AuditTypes.Submission,
               auditData(exportsDeclaration.lrn, exportsDeclaration.ducr, legalDeclaration, Failure.toString)
             )
-        }.map(_ => declaration.lrn)
+        }
+        .map(_ => declaration.lrn)
     }
   }
 
