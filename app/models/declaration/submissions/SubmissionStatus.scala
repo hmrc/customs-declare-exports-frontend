@@ -15,136 +15,36 @@
  */
 
 package models.declaration.submissions
+import play.api.libs.json.Format
+import utils.EnumJson
 
-import play.api.libs.json._
+object SubmissionStatus extends Enumeration {
+  type SubmissionStatus = Value
+  implicit val format: Format[SubmissionStatus.Value] = EnumJson.format(SubmissionStatus)
 
-sealed trait SubmissionStatus {
-  val fullCode: String
-}
+  val PENDING, REQUESTED_CANCELLATION, ACCEPTED, RECEIVED, REJECTED, UNDERGOING_PHYSICAL_CHECK,
+  ADDITIONAL_DOCUMENTS_REQUIRED, AMENDED, RELEASED, CLEARED, CANCELLED, CUSTOMS_POSITION_GRANTED,
+  CUSTOMS_POSITION_DENIED, GOODS_HAVE_EXITED_THE_COMMUNITY, DECLARATION_HANDLED_EXTERNALLY, AWAITING_EXIT_RESULTS,
+  UNKNOWN = Value
 
-object SubmissionStatus {
-
-  implicit object StatusFormat extends Format[SubmissionStatus] {
-    def reads(status: JsValue): JsResult[SubmissionStatus] = status match {
-      case JsString(code) => JsSuccess(getStatusOrUnknown(code))
-      case _              => JsSuccess(UnknownStatus)
-    }
-
-    def writes(status: SubmissionStatus): JsValue = JsString(status.fullCode)
+  def format(status: SubmissionStatus): String = status match {
+    case PENDING                         => "Pending"
+    case REQUESTED_CANCELLATION          => "Cancellation Requested"
+    case ACCEPTED                        => "Accepted"
+    case RECEIVED                        => "Received"
+    case REJECTED                        => "Rejected"
+    case UNDERGOING_PHYSICAL_CHECK       => "Undergoing Physical Check"
+    case ADDITIONAL_DOCUMENTS_REQUIRED   => "Additional Documents Required"
+    case AMENDED                         => "Amended"
+    case RELEASED                        => "Released"
+    case CLEARED                         => "Cleared"
+    case CANCELLED                       => "Cancelled"
+    case CUSTOMS_POSITION_GRANTED        => "Customs Position Granted"
+    case CUSTOMS_POSITION_DENIED         => "Customs Position Denied"
+    case GOODS_HAVE_EXITED_THE_COMMUNITY => "Goods Have Exited The Community"
+    case DECLARATION_HANDLED_EXTERNALLY  => "Declaration Handled Externally"
+    case AWAITING_EXIT_RESULTS           => "Awaiting Exit Results"
+    case UNKNOWN                         => "Unknown status"
   }
 
-  private val codesMap: Map[String, SubmissionStatus] = Map(
-    Pending.fullCode -> Pending,
-    RequestedCancellation.fullCode -> RequestedCancellation,
-    Accepted.fullCode -> Accepted,
-    Received.fullCode -> Received,
-    Rejected.fullCode -> Rejected,
-    UndergoingPhysicalCheck.fullCode -> UndergoingPhysicalCheck,
-    AdditionalDocumentsRequired.fullCode -> AdditionalDocumentsRequired,
-    Amended.fullCode -> Amended,
-    Released.fullCode -> Released,
-    Cleared.fullCode -> Cleared,
-    Cancelled.fullCode -> Cancelled,
-    CustomsPositionGranted.fullCode -> CustomsPositionGranted,
-    CustomsPositionDenied.fullCode -> CustomsPositionDenied,
-    GoodsHaveExitedTheCommunity.fullCode -> GoodsHaveExitedTheCommunity,
-    DeclarationHandledExternally.fullCode -> DeclarationHandledExternally,
-    AwaitingExitResults.fullCode -> AwaitingExitResults,
-    UnknownStatus.fullCode -> UnknownStatus
-  )
-
-  def retrieve(functionCode: String, nameCode: Option[String]): SubmissionStatus =
-    getStatusOrUnknown(functionCode + nameCode.getOrElse(""))
-
-  private def getStatusOrUnknown(searchKey: String): SubmissionStatus =
-    codesMap.get(searchKey) match {
-      case Some(status) => status
-      case None         => UnknownStatus
-    }
-
-  case object Pending extends SubmissionStatus {
-    val fullCode: String = "Pending"
-  }
-
-  case object RequestedCancellation extends SubmissionStatus {
-    val fullCode: String = "Cancellation Requested"
-
-    override def toString: String = "Cancellation Requested"
-  }
-
-  case object Accepted extends SubmissionStatus {
-    val fullCode: String = "01"
-  }
-
-  case object Received extends SubmissionStatus {
-    val fullCode: String = "02"
-  }
-
-  case object Rejected extends SubmissionStatus {
-    val fullCode: String = "03"
-  }
-
-  case object UndergoingPhysicalCheck extends SubmissionStatus {
-    val fullCode: String = "05"
-
-    override def toString(): String = "Undergoing Physical Check"
-  }
-
-  case object AdditionalDocumentsRequired extends SubmissionStatus {
-    val fullCode: String = "06"
-
-    override def toString(): String = "Additional Documents Required"
-  }
-
-  case object Amended extends SubmissionStatus {
-    val fullCode: String = "07"
-  }
-
-  case object Released extends SubmissionStatus {
-    val fullCode: String = "08"
-  }
-
-  case object Cleared extends SubmissionStatus {
-    val fullCode: String = "09"
-  }
-
-  case object Cancelled extends SubmissionStatus {
-    val fullCode: String = "10"
-  }
-
-  case object CustomsPositionGranted extends SubmissionStatus {
-    val fullCode: String = "1139"
-
-    override def toString(): String = "Customs Position Granted"
-  }
-
-  case object CustomsPositionDenied extends SubmissionStatus {
-    val fullCode: String = "1141"
-
-    override def toString(): String = "Customs Position Denied"
-  }
-
-  case object GoodsHaveExitedTheCommunity extends SubmissionStatus {
-    val fullCode: String = "16"
-
-    override def toString(): String = "Goods Have Exited The Community"
-  }
-
-  case object DeclarationHandledExternally extends SubmissionStatus {
-    val fullCode: String = "17"
-
-    override def toString(): String = "Declaration Handled Externally"
-  }
-
-  case object AwaitingExitResults extends SubmissionStatus {
-    val fullCode: String = "18"
-
-    override def toString(): String = "Awaiting Exit Results"
-  }
-
-  case object UnknownStatus extends SubmissionStatus {
-    val fullCode: String = "UnknownStatus"
-
-    override def toString(): String = "Unknown status"
-  }
 }

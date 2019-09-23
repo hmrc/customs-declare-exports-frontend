@@ -19,14 +19,14 @@ package models.declaration.notifications
 import java.time.LocalDateTime
 
 import models.declaration.submissions.SubmissionStatus
+import models.declaration.submissions.SubmissionStatus.SubmissionStatus
 import play.api.libs.json.Json
 
 case class Notification(
-  conversationId: String,
+  actionId: String,
   mrn: String,
   dateTimeIssued: LocalDateTime,
-  functionCode: String,
-  nameCode: Option[String],
+  status: SubmissionStatus,
   errors: Seq[NotificationError],
   payload: String
 ) extends Ordered[Notification] {
@@ -36,9 +36,8 @@ case class Notification(
     else if (this.dateTimeIssued.isAfter(that.dateTimeIssued)) 1
     else -1
 
-  val status: SubmissionStatus = SubmissionStatus.retrieve(this.functionCode, this.nameCode)
-
-  val isStatusRejected: Boolean = status == SubmissionStatus.Rejected
+  val displayStatus = SubmissionStatus.format(status)
+  val isStatusRejected: Boolean = status == SubmissionStatus.REJECTED
 }
 
 object Notification {

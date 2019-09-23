@@ -20,9 +20,8 @@ import java.io.File
 
 import com.github.tototoshi.csv._
 import models.declaration.notifications.Notification
-import models.declaration.submissions.SubmissionStatus
 import play.api.Logger
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 import scala.io.Source
 
@@ -32,7 +31,7 @@ object RejectionReason {
 
   private val logger = Logger(this.getClass)
 
-  implicit val format = Json.format[RejectionReason]
+  implicit val format: OFormat[RejectionReason] = Json.format[RejectionReason]
 
   def apply(list: List[String]): RejectionReason = list match {
     case code :: description :: Nil => RejectionReason(code, description)
@@ -47,7 +46,7 @@ object RejectionReason {
 
     val errors: List[List[String]] = reader.all()
 
-    errors.map(RejectionReason.apply _)
+    errors.map(RejectionReason.apply)
   }
 
   def getErrorDescription(errorCode: String): String =
@@ -55,7 +54,7 @@ object RejectionReason {
 
   def fromNotifications(notifications: Seq[Notification]): Seq[RejectionReason] = {
 
-    val rejectionNotification = notifications.find(_.functionCode == SubmissionStatus.Rejected.fullCode)
+    val rejectionNotification = notifications.find(_.isStatusRejected)
 
     val errorCodes = rejectionNotification.map { notification =>
       notification.errors.map { error =>

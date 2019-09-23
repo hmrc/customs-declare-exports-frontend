@@ -23,7 +23,7 @@ import connectors.{CustomsDeclareExportsConnector, NrsConnector}
 import models._
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
-import models.declaration.submissions.{Action, Submission}
+import models.declaration.submissions.{Action, Submission, SubmissionStatus}
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.when
 import org.mockito.invocation.InvocationOnMock
@@ -53,7 +53,9 @@ trait MockConnectors extends MockitoSugar {
   def listOfNotifications(): OngoingStubbing[Future[Seq[Notification]]] =
     when(mockCustomsDeclareExportsConnector.fetchNotifications()(any(), any()))
       .thenReturn(
-        Future.successful(Seq(Notification("convId", "mrn", LocalDateTime.now(), "01", None, Seq.empty, "payload")))
+        Future.successful(
+          Seq(Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.UNKNOWN, Seq.empty, "payload"))
+        )
       )
 
   def listOfSubmissions(): OngoingStubbing[Future[Seq[Submission]]] =
@@ -68,11 +70,7 @@ trait MockConnectors extends MockitoSugar {
               mrn = None,
               ducr = None,
               actions = Seq(
-                Action(
-                  requestType = SubmissionRequest,
-                  conversationId = "conversationID",
-                  requestTimestamp = LocalDateTime.now()
-                )
+                Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = LocalDateTime.now())
               )
             )
           )

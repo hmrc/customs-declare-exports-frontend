@@ -18,15 +18,16 @@ package models.declaration.notifications
 
 import java.time.LocalDateTime
 
+import models.declaration.submissions.SubmissionStatus
 import org.scalatest.{MustMatchers, WordSpec}
 
 class NotificationSpec extends WordSpec with MustMatchers {
   val earlierDate = LocalDateTime.of(2019, 6, 10, 10, 10)
   val laterDate = LocalDateTime.of(2019, 6, 15, 10, 10)
   val latestDate = LocalDateTime.of(2019, 6, 20, 10, 10)
-  val firstNotification = Notification("convId", "mrn", earlierDate, "01", None, Seq.empty, "payload")
-  val secondNotification = Notification("convId", "mrn", laterDate, "01", None, Seq.empty, "payload")
-  val thirdNotification = Notification("convId", "mrn", latestDate, "01", None, Seq.empty, "payload")
+  val firstNotification = Notification("convId", "mrn", earlierDate, SubmissionStatus.UNKNOWN, Seq.empty, "payload")
+  val secondNotification = Notification("convId", "mrn", laterDate, SubmissionStatus.UNKNOWN, Seq.empty, "payload")
+  val thirdNotification = Notification("convId", "mrn", latestDate, SubmissionStatus.UNKNOWN, Seq.empty, "payload")
 
   "Notification compare method" should {
 

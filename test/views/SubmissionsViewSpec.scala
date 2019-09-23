@@ -22,7 +22,7 @@ import base.Injector
 import controllers.routes
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
-import models.declaration.submissions.{Action, Submission}
+import models.declaration.submissions.{Action, Submission, SubmissionStatus}
 import org.jsoup.nodes.Element
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
@@ -69,13 +69,13 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
     "display page submissions" when {
       val actionSubmission = Action(
         requestType = SubmissionRequest,
-        conversationId = "conv-id",
+        id = "conv-id",
         requestTimestamp = LocalDateTime.of(2019, 1, 1, 0, 0, 0)
       )
 
       val actionCancellation = Action(
         requestType = CancellationRequest,
-        conversationId = "conv-id",
+        id = "conv-id",
         requestTimestamp = LocalDateTime.of(2021, 1, 1, 0, 0, 0)
       )
 
@@ -89,21 +89,19 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
       )
 
       val notification = Notification(
-        conversationId = "conv-id",
+        actionId = "action-id",
         mrn = "mrn",
         dateTimeIssued = LocalDateTime.of(2020, 1, 1, 0, 0, 0),
-        functionCode = "01",
-        nameCode = None,
+        status = SubmissionStatus.ACCEPTED,
         errors = Seq.empty,
         payload = "payload"
       )
 
       val rejectedNotification = Notification(
-        conversationId = "convId",
+        actionId = "actionId",
         mrn = "mrn",
         dateTimeIssued = LocalDateTime.now(),
-        functionCode = "03",
-        nameCode = None,
+        status = SubmissionStatus.REJECTED,
         errors = Seq.empty,
         payload = ""
       )
@@ -148,20 +146,6 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
         tableCell(view)(1, 0).toString must include(
           routes.RejectedNotificationsController.displayPage(submission.uuid).url
         )
-      }
-
-      "submission status is unknown due to invalid notification functionCode" in {
-        val notificationWithUnknownStatus = notification.copy(functionCode = "abc")
-        val view = createView(Seq(submission -> Seq(notificationWithUnknownStatus)))
-
-        tableCell(view)(1, 4).text() mustBe "Unknown status"
-      }
-
-      "submission status is unknown due to invalid notification nameCode" in {
-        val notificationWithUnknownStatus = notification.copy(nameCode = Some("abc"))
-        val view = createView(Seq(submission -> Seq(notificationWithUnknownStatus)))
-
-        tableCell(view)(1, 4).text() mustBe "Unknown status"
       }
 
       "submission date is unknown due to missing submit action" in {

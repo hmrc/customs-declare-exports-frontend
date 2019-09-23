@@ -88,7 +88,7 @@ class RejectionReasonSpec extends UnitSpec {
     "successfully convert list of notifications to list of rejection reasons" when {
 
       val nonRejectionNotification =
-        Notification("convId", "mrn", LocalDateTime.now(), SubmissionStatus.Accepted.fullCode, None, Seq.empty, "")
+        Notification("convId", "mrn", LocalDateTime.now(), SubmissionStatus.ACCEPTED, Seq.empty, "")
 
       "list is empty" in {
 
@@ -105,15 +105,8 @@ class RejectionReasonSpec extends UnitSpec {
         val firstError = NotificationError("CDS12016", Seq.empty)
         val secondError = NotificationError("CDS12022", Seq.empty)
         val notificationErrors = Seq(firstError, secondError)
-        val rejectionNotification = Notification(
-          "convId",
-          "mrn",
-          LocalDateTime.now(),
-          SubmissionStatus.Rejected.fullCode,
-          None,
-          notificationErrors,
-          ""
-        )
+        val rejectionNotification =
+          Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, notificationErrors, "")
         val notifications = Seq(nonRejectionNotification, rejectionNotification)
         val firstExpectedRejectionReason = RejectionReason("CDS12016", "Date error: Date of acceptance is not allowed.")
         val secondExpectedRejectionReason =

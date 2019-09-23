@@ -23,32 +23,32 @@ import akka.util.Timeout
 import controllers.SubmissionsController
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
-import models.declaration.submissions.{Action, Submission}
+import models.declaration.submissions.{Action, Submission, SubmissionStatus}
 import models.requests.ExportsSessionKeys
 import models.{DeclarationStatus, ExportsDeclaration, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
-import org.scalatest.matchers.{BeMatcher, MatchResult, Matcher}
+import org.scalatest.matchers.{BeMatcher, MatchResult}
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import views.html.submissions
 
-import scala.concurrent.duration._
 import scala.concurrent.Future.successful
+import scala.concurrent.duration._
 
 class SubmissionsControllerSpec extends ControllerSpec {
 
-  private val notification = Notification("convId", "mrn", LocalDateTime.now(), "01", None, Seq.empty, "payload")
+  private val notification =
+    Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.UNKNOWN, Seq.empty, "payload")
   private val submission = Submission(
     uuid = UUID.randomUUID().toString,
     eori = "eori",
     lrn = "lrn",
     mrn = None,
     ducr = None,
-    actions = Seq(
-      Action(requestType = SubmissionRequest, conversationId = "conversationID", requestTimestamp = LocalDateTime.now())
-    )
+    actions =
+      Seq(Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = LocalDateTime.now()))
   )
 
   trait SetUp {
