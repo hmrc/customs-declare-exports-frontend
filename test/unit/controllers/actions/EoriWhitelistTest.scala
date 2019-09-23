@@ -17,8 +17,9 @@
 package unit.controllers.actions
 
 import controllers.actions.EoriWhitelist
+import unit.base.UnitSpec
 
-class EoriWhitelistTest extends unit.base.UnitSpec {
+class EoriWhitelistTest extends UnitSpec {
 
   "Eori whitelist" when {
     "has empty" should {

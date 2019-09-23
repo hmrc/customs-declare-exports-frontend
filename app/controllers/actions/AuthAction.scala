@@ -90,7 +90,7 @@ class AuthActionImpl @Inject()(
 
           val cdsLoggedInUser = SignedInUser(eori.get.value, allEnrolments, identityData)
 
-          if(eoriWhitelist.allows(cdsLoggedInUser.eori)){
+          if (eoriWhitelist.allows(cdsLoggedInUser.eori)) {
             block(new AuthenticatedRequest(request, cdsLoggedInUser))
           } else {
             logger.warn("User is not in whitelist")
@@ -126,12 +126,11 @@ trait AuthAction
 case class NoExternalId() extends NoActiveSession("No externalId was found")
 
 @ProvidedBy(classOf[EoriWhitelistProvider])
-class EoriWhitelist(values: Seq[String]){
+class EoriWhitelist(values: Seq[String]) {
   def allows(eori: String): Boolean = values.isEmpty || values.contains(eori)
 }
 
 class EoriWhitelistProvider @Inject()(configuration: Configuration) extends Provider[EoriWhitelist] {
-  override def get(): EoriWhitelist = {
+  override def get(): EoriWhitelist =
     new EoriWhitelist(configuration.get[Seq[String]]("whitelist.eori"))
-  }
 }

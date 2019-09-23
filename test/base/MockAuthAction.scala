@@ -37,7 +37,8 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks {
 
   val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
-  val mockAuthAction = new AuthActionImpl(mockAuthConnector, new EoriWhitelist(Seq.empty), stubMessagesControllerComponents(), metricsMock)
+  val mockAuthAction =
+    new AuthActionImpl(mockAuthConnector, new EoriWhitelist(Seq.empty), stubMessagesControllerComponents(), metricsMock)
 
   val exampleUser = newUser("12345", "external1")
 
