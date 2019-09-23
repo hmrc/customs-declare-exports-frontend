@@ -29,19 +29,23 @@ case class Submission(
   ducr: Option[String] = None,
   actions: Seq[Action]
 ) {
-  require(actions.nonEmpty, "Submission must have at least one action")
 
-  val latestAction: Action = actions.minBy(_.requestTimestamp)(Submission.localDateTimeOrdering)
+  val latestAction: Option[Action] = if (actions.nonEmpty) {
+    Some(actions.minBy(_.requestTimestamp)(Submission.localDateTimeOrdering))
+  } else {
+    None
+  }
 }
 
 object Submission {
+
   val localDateTimeOrdering: Ordering[LocalDateTime] = Ordering.fromLessThan[LocalDateTime]((a, b) => a.isBefore(b))
 
   implicit val formats = Json.format[Submission]
 
-  implicit val ordering: Ordering[Submission] = Ordering.by[Submission, LocalDateTime](
-    submission => submission.latestAction.requestTimestamp
-  )(localDateTimeOrdering)
+  implicit val ordering: Ordering[Submission] = Ordering.by[Submission, Option[LocalDateTime]](
+    submission => submission.latestAction.map(_.requestTimestamp)
+  )(Ordering.Option(localDateTimeOrdering))
 
   val newestEarlierOrdering: Ordering[Submission] = ordering.reverse
 }

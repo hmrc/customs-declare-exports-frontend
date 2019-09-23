@@ -30,6 +30,7 @@ import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import play.api.test.FakeRequest
 import services.audit.{AuditService, AuditTypes, EventData}
+import services.cache.SubmissionBuilder
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.Authorization
 import unit.base.UnitSpec
@@ -38,11 +39,13 @@ import scala.concurrent.ExecutionContext.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class SubmissionServiceSpec
-    extends UnitSpec with MockExportCacheService with MockConnectors with ScalaFutures with OptionValues with Injector {
+    extends UnitSpec with MockExportCacheService with MockConnectors with ScalaFutures with OptionValues with Injector
+    with SubmissionBuilder {
 
   val mockAuditService = mock[AuditService]
 
   val appConfig = instanceOf[AppConfig]
+
   val exportMetrics = instanceOf[ExportsMetrics]
 
   val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestHelper.createRandomString(255))))
@@ -83,12 +86,24 @@ class SubmissionServiceSpec
   }
 
   "SubmissionService" should {
-    val submittedDeclaration = mock[ExportsDeclaration]
 
     "submit cached data to backend" in {
 
+      val declaration = aDeclaration(
+        withId(),
+        withStatus(DeclarationStatus.DRAFT),
+        withConsignmentReferences(ducr = "ducr", lrn = "123LRN")
+      )
+
+      val completed = declaration.copy(status = DeclarationStatus.COMPLETE)
+
+      val submission = emptySubmission(completed, "12345")
+
       when(mockCustomsDeclareExportsConnector.updateDeclaration(any[ExportsDeclaration])(any(), any()))
-        .thenReturn(Future.successful(submittedDeclaration))
+        .thenReturn(Future.successful(completed))
+
+      when(mockCustomsDeclareExportsConnector.submitDeclaration(any[String])(any(), any()))
+        .thenReturn(Future.successful(submission))
 
       val registry = instanceOf[Metrics].defaultRegistry
       val metric = MetricIdentifiers.submissionMetric
@@ -96,7 +111,7 @@ class SubmissionServiceSpec
       val counterBefore = registry.getCounters.get(exportMetrics.counterName(metric)).getCount
       val model = aDeclaration(withConsignmentReferences(ducr = "ducr", lrn = "123LRN"))
 
-      val result = submissionService.submit(model, legal)(request, hc, global).futureValue
+      val result = submissionService.submit(declaration, legal)(request, hc, global).futureValue
 
       result.value mustBe "123LRN"
 
@@ -114,7 +129,8 @@ class SubmissionServiceSpec
       val error = new RuntimeException("some error")
       when(mockCustomsDeclareExportsConnector.updateDeclaration(any[ExportsDeclaration])(any(), any())).thenThrow(error)
 
-      val model = aDeclaration(withConsignmentReferences(ducr = "ducr", lrn = "123LRN"))
+      val model =
+        aDeclaration(withStatus(DeclarationStatus.DRAFT), withConsignmentReferences(ducr = "ducr", lrn = "123LRN"))
 
       intercept[Exception](submissionService.submit(model, legal)(request, hc, global)) mustBe error
     }

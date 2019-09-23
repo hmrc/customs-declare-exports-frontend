@@ -16,7 +16,7 @@
 
 package connectors
 
-import java.time.LocalDateTime
+import java.time.{Instant, LocalDateTime}
 import java.util.UUID
 
 import com.github.tomakehurst.wiremock.client.WireMock._
@@ -35,6 +35,7 @@ import play.api.test.Helpers._
 import services.cache.ExportsDeclarationBuilder
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import base.TestHelper._
 
 class CustomsDeclareExportsConnectorIntegrationSpec
     extends ConnectorSpec with BeforeAndAfterEach with ExportsDeclarationBuilder with ScalaFutures {
@@ -104,6 +105,41 @@ class CustomsDeclareExportsConnectorIntegrationSpec
       intercept[IllegalArgumentException] {
         await(connector.updateDeclaration(newDeclaration))
       }
+    }
+  }
+
+  "Submit declaration" should {
+    "return submission object" in {
+      val payload =
+        s"""
+           |{
+           |  "uuid": "$id",
+           |  "eori": "${createRandomAlphanumericString(11)}",
+           |  "lrn":  "${createRandomAlphanumericString(8)}",
+           |  "actions" : [{
+           |      "id" : "${UUID.randomUUID().toString}",
+           |      "requestType" : "SubmissionRequest",
+           |      "requestTimestamp" : "${Instant.now().toString}"
+           |   }]
+          |}
+        """.stripMargin
+      stubFor(
+        post(s"/declarations/$id/submission")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.CREATED)
+              .withBody(payload)
+          )
+      )
+      val response = await(connector.submitDeclaration(id))
+
+      response.uuid mustBe id
+      response.actions must not be empty
+
+      verify(
+        postRequestedFor(urlEqualTo(s"/declarations/id/submission"))
+          .withRequestBody(absent())
+      )
     }
   }
 

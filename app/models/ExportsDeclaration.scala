@@ -45,6 +45,8 @@ case class ExportsDeclaration(
   previousDocuments: Option[PreviousDocumentsData] = None,
   natureOfTransaction: Option[NatureOfTransaction] = None
 ) {
+  def isComplete: Boolean = status == DeclarationStatus.COMPLETE
+
   val lrn: Option[String] = this.consignmentReferences.map(_.lrn)
   val ducr: Option[String] = this.consignmentReferences.map(_.ducr.ducr)
 
