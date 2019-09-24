@@ -43,10 +43,7 @@ class ExportsMetrics @Inject()(metrics: Metrics) {
 }
 
 object MetricIdentifiers {
-  val submissionMetric = "submission"
-  val arrivalMetric = "movement.arrival"
-  val departureMetric = "movement.departure"
-  val consolidationMetric = "consolidation"
-  val cancelMetric = "cancellation"
 
+  val submissionMetric = "submission"
+  val cancelMetric = "cancellation"
 }
