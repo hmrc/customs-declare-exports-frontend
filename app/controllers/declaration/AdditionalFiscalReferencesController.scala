@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import controllers.actions.{AuthAction, ItemActionBuilder, JourneyAction}
+import controllers.actions.ItemActionBuilder
 import controllers.navigation.Navigator
 import controllers.util.{MultipleItemsHelper, _}
 import forms.declaration.AdditionalFiscalReference.form
@@ -24,8 +24,8 @@ import forms.declaration.AdditionalFiscalReferencesData._
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
