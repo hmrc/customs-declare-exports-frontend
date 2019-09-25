@@ -17,7 +17,7 @@
 package views.cancellation
 
 import base.TestHelper.createRandomAlphanumericString
-import forms.CancelDeclaration
+import forms.{CancelDeclaration, Lrn}
 import forms.cancellation.CancellationChangeReason.NoLongerRequired
 import helpers.views.declaration.CommonMessages
 import org.jsoup.nodes.Document
@@ -46,7 +46,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
 
     val view = createView(
       CancelDeclaration.form
-        .fillAndValidate(CancelDeclaration(functionalReferenceId, mrn, statementDescription, cancellationReason))
+        .fillAndValidate(CancelDeclaration(Lrn(functionalReferenceId), mrn, statementDescription, cancellationReason))
     )
 
     view must haveGlobalErrorSummary
@@ -99,7 +99,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
 
     "display three radio buttons with description (not selected)" in {
 
-      val view = createView(CancelDeclaration.form.fill(CancelDeclaration("", "", "", "")))
+      val view = createView(CancelDeclaration.form.fill(CancelDeclaration(Lrn(""), "", "", "")))
 
       val noLongerRequired = view.getElementById("noLongerRequired")
       noLongerRequired.attr("checked") mustBe empty
@@ -158,27 +158,13 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
     }
 
     "display error when referenceId" when {
-      "is entered but is too short" in {
-
-        val view = createView(
-          CancelDeclaration.form
-            .fillAndValidate(CancelDeclaration("123", "123456789", "Some Description", NoLongerRequired.toString))
-        )
-
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("functionalReferenceId", "#functionalReferenceId")
-
-        view.getElementById("error-message-functionalReferenceId-input").text() mustBe
-          messages("cancellation.functionalReferenceId.tooShort")
-      }
-
       "is entered but is too long" in {
 
         val view = createView(
           CancelDeclaration.form
             .fillAndValidate(
               CancelDeclaration(
-                "1SA123456789012-1FSA1234567IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII",
+                Lrn("1SA123456789012-1FSA1234567IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII"),
                 "123456789",
                 "Some Description",
                 NoLongerRequired.toString
@@ -190,7 +176,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
         view must haveFieldErrorLink("functionalReferenceId", "#functionalReferenceId")
 
         view.getElementById("error-message-functionalReferenceId-input").text() mustBe
-          messages("cancellation.functionalReferenceId.tooLong")
+          messages("cancellation.functionalReferenceId.error.length")
       }
 
       "is entered but is in the wrong format" in {
@@ -199,7 +185,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
           CancelDeclaration.form
             .fillAndValidate(
               CancelDeclaration(
-                "1SA123456789012+1FSA1234567",
+                Lrn("12345566++"),
                 "123456789",
                 "Some Description",
                 NoLongerRequired.toString
@@ -211,7 +197,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
         view must haveFieldErrorLink("functionalReferenceId", "#functionalReferenceId")
 
         view.getElementById("error-message-functionalReferenceId-input").text() mustBe
-          messages("cancellation.functionalReferenceId.wrongFormat")
+          messages("cancellation.functionalReferenceId.error.specialCharacter")
       }
     }
 
@@ -223,7 +209,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
           CancelDeclaration.form
             .fillAndValidate(
               CancelDeclaration(
-                "1SA123456789012-1FSA1234567",
+                Lrn("1SA123456789012-1FSA1234567"),
                 createRandomAlphanumericString(71),
                 "Some Description",
                 NoLongerRequired.toString
@@ -258,7 +244,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
           CancelDeclaration.form
             .fillAndValidate(
               CancelDeclaration(
-                "1SA123456789012-1FSA1234567",
+                Lrn("1SA123456789012-1FSA1234567"),
                 "1234567890123-",
                 "Some Description",
                 NoLongerRequired.toString
@@ -310,7 +296,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
           CancelDeclaration.form
             .fillAndValidate(
               CancelDeclaration(
-                "1SA123456789012-1FSA1234567",
+                Lrn("1SA123456789012-1FSA1234567"),
                 "1234567890123",
                 "Some Description$$$$",
                 NoLongerRequired.toString
@@ -332,7 +318,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
         val view = createView(
           CancelDeclaration.form
             .fillAndValidate(
-              CancelDeclaration("1SA123456789012-1FSA1234567", "1234567890123", "Some Description", "wrong value")
+              CancelDeclaration(Lrn("1SA123456789012-1FSA1234567"), "1234567890123", "Some Description", "wrong value")
             )
         )
 

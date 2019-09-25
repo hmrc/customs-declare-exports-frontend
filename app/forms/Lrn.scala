@@ -31,9 +31,9 @@ object Lrn {
 
   private val lrnMaxLength = 22
 
-  val mapping = text()
-    .verifying("supplementary.consignmentReferences.lrn.error.empty", _.trim.nonEmpty)
-    .verifying("supplementary.consignmentReferences.lrn.error.length", noLongerThan(lrnMaxLength))
-    .verifying("supplementary.consignmentReferences.lrn.error.specialCharacter", isAlphanumeric)
+  def mapping(prefix: String) = text()
+    .verifying(s"$prefix.error.empty", _.trim.nonEmpty)
+    .verifying(s"$prefix.error.length", noLongerThan(lrnMaxLength))
+    .verifying(s"$prefix.error.specialCharacter", isAlphanumeric)
     .transform[Lrn](Lrn.apply, _.value)
 }

@@ -83,7 +83,7 @@ class CancelDeclarationController @Inject()(
   ): Map[String, String] =
     Map(
       EORI.toString -> request.user.eori,
-      DUCR.toString -> form.functionalReferenceId,
+      LRN.toString -> form.functionalReferenceId.value,
       MRN.toString -> form.mrn,
       ChangeReason.toString -> form.changeReason,
       ChangeDescription.toString -> form.statementDescription,

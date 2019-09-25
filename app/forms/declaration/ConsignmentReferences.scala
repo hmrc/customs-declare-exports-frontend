@@ -30,7 +30,7 @@ object ConsignmentReferences {
 
   val mapping = Forms.mapping(
     "ducr" -> Ducr.ducrMapping,
-    "lrn" -> Lrn.mapping
+    "lrn" -> Lrn.mapping("supplementary.consignmentReferences.lrn")
   )(ConsignmentReferences.apply)(ConsignmentReferences.unapply)
 
   implicit val format = Json.format[ConsignmentReferences]
