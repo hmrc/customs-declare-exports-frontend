@@ -19,18 +19,24 @@ package controllers.navigation
 import java.time.{LocalDate, ZoneOffset}
 import java.util.concurrent.TimeUnit
 
+import base.TestHelper
 import config.AppConfig
-import controllers.util.{Add, FormAction, Remove, SaveAndContinue, SaveAndReturn, Unknown}
+import controllers.util._
 import models.SignedInUser
 import models.requests.{AuthenticatedRequest, ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
+import org.mockito.ArgumentMatchers.any
 import org.mockito.BDDMockito._
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.Mockito.{verify, verifyZeroInteractions}
 import org.scalatest.{Matchers, WordSpec}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.audit.AuditService
 import services.cache.ExportsDeclarationBuilder
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.logging.Authorization
 
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
@@ -39,7 +45,9 @@ class NavigatorTest extends WordSpec with Matchers with MockitoSugar with Export
 
   private val call = Call("GET", "url")
   private val config = mock[AppConfig]
-  private val navigator = new Navigator(config)
+  private val auditService = mock[AuditService]
+  private val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestHelper.createRandomString(255))))
+  private val navigator = new Navigator(config, auditService)
 
   "Continue To" should {
     val updatedDate = LocalDate.of(2020, 1, 1)
@@ -58,7 +66,7 @@ class NavigatorTest extends WordSpec with Matchers with MockitoSugar with Export
     "Go to Save as Draft" in {
       given(config.draftTimeToLive).willReturn(FiniteDuration(10, TimeUnit.DAYS))
 
-      val result = navigator.continueTo(call)(request(Some(SaveAndReturn)))
+      val result = navigator.continueTo(call)(request(Some(SaveAndReturn)), hc)
 
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
@@ -68,35 +76,41 @@ class NavigatorTest extends WordSpec with Matchers with MockitoSugar with Export
         expiryDate.atStartOfDay(ZoneOffset.UTC).toInstant.toEpochMilli.toString
       )
       session(result).get(ExportsSessionKeys.declarationId) shouldBe None
+
+      verify(auditService).auditAllPagesUserInput(any())(any())
     }
 
     "Go to URL provided" when {
       "Save And Continue" in {
-        val result = navigator.continueTo(call)(request(Some(SaveAndContinue)))
+        val result = navigator.continueTo(call)(request(Some(SaveAndContinue)), hc)
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some("url")
+        verifyZeroInteractions(auditService)
       }
 
       "Add" in {
-        val result = navigator.continueTo(call)(request(Some(Add)))
+        val result = navigator.continueTo(call)(request(Some(Add)), hc)
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some("url")
+        verifyZeroInteractions(auditService)
       }
 
       "Remove" in {
-        val result = navigator.continueTo(call)(request(Some(Remove(Seq.empty))))
+        val result = navigator.continueTo(call)(request(Some(Remove(Seq.empty))), hc)
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some("url")
+        verifyZeroInteractions(auditService)
       }
 
       "Unknown Action" in {
-        val result = navigator.continueTo(call)(request(Some(Unknown)))
+        val result = navigator.continueTo(call)(request(Some(Unknown)), hc)
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some("url")
+        verifyZeroInteractions(auditService)
       }
     }
   }

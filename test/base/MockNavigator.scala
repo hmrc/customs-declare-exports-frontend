@@ -21,21 +21,26 @@ import models.requests.JourneyRequest
 import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
 import org.mockito.{ArgumentCaptor, Mockito}
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, Suite}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Call, Result}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.logging.Authorization
 
 trait MockNavigator extends MockitoSugar with BeforeAndAfterEach { self: MockitoSugar with Suite =>
 
   protected val navigator: Navigator = mock[Navigator]
   protected val aRedirectToTheNextPage: Result = mock[Result]
+  protected val hc: HeaderCarrier = HeaderCarrier(
+    authorization = Some(Authorization(TestHelper.createRandomString(255)))
+  )
 
   override protected def beforeEach(): Unit =
-    given(navigator.continueTo(any[Call])(any[JourneyRequest[AnyContent]])).willReturn(aRedirectToTheNextPage)
+    given(navigator.continueTo(any[Call])(any[JourneyRequest[AnyContent]], any())).willReturn(aRedirectToTheNextPage)
 
   protected def thePageNavigatedTo: Call = {
     val captor: ArgumentCaptor[Call] = ArgumentCaptor.forClass(classOf[Call])
-    Mockito.verify(navigator).continueTo(captor.capture())(any())
+    Mockito.verify(navigator).continueTo(captor.capture())(any(), any())
     captor.getValue
   }
 
