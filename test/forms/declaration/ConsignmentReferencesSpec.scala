@@ -16,15 +16,15 @@
 
 package forms.declaration
 
-import forms.Ducr
+import forms.{Ducr, Lrn}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
 object ConsignmentReferencesSpec {
   val exemplaryDucr = "8GB123456789012-1234567890QWERTYUIO"
 
-  val correctConsignmentReferences = ConsignmentReferences(ducr = Ducr(ducr = exemplaryDucr), lrn = "123LRN")
-  val correctConsignmentReferencesNoDucr = ConsignmentReferences(ducr = Ducr(""), lrn = "123LRN")
-  val emptyConsignmentReferences = ConsignmentReferences(ducr = Ducr(""), lrn = "")
+  val correctConsignmentReferences = ConsignmentReferences(ducr = Ducr(ducr = exemplaryDucr), lrn = Lrn("123LRN"))
+  val correctConsignmentReferencesNoDucr = ConsignmentReferences(ducr = Ducr(""), lrn = Lrn("123LRN"))
+  val emptyConsignmentReferences = ConsignmentReferences(ducr = Ducr(""), lrn = Lrn(""))
 
   val correctConsignmentReferencesJSON: JsValue = JsObject(
     Map("ducr" -> JsObject(Map("ducr" -> JsString(exemplaryDucr))), "lrn" -> JsString("123LRN"))

@@ -16,24 +16,21 @@
 
 package forms.declaration
 
-import forms.Ducr
+import forms.{Ducr, Lrn}
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class ConsignmentReferences(ducr: Ducr, lrn: String)
+case class ConsignmentReferences(ducr: Ducr, lrn: Lrn)
 
 object ConsignmentReferences {
-  private val lrnMaxLength = 22
+
   private val ucrMaxLength = 35
 
   val mapping = Forms.mapping(
     "ducr" -> Ducr.ducrMapping,
-    "lrn" -> text()
-      .verifying("supplementary.consignmentReferences.lrn.error.empty", _.trim.nonEmpty)
-      .verifying("supplementary.consignmentReferences.lrn.error.length", noLongerThan(lrnMaxLength))
-      .verifying("supplementary.consignmentReferences.lrn.error.specialCharacter", isAlphanumeric)
+    "lrn" -> Lrn.mapping
   )(ConsignmentReferences.apply)(ConsignmentReferences.unapply)
 
   implicit val format = Json.format[ConsignmentReferences]

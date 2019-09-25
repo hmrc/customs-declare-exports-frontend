@@ -18,7 +18,7 @@ package unit.controllers.declaration
 
 import controllers.declaration.ConsignmentReferencesController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
-import forms.Ducr
+import forms.{Ducr, Lrn}
 import forms.declaration.ConsignmentReferences
 import models.Mode
 import play.api.libs.json.Json
@@ -67,7 +67,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
 
     "return 400 (BAD_REQUEST)" in new SetUp {
 
-      val incorrectForm = Json.toJson(ConsignmentReferences(Ducr("1234"), ""))
+      val incorrectForm = Json.toJson(ConsignmentReferences(Ducr("1234"), Lrn("")))
 
       val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(incorrectForm))
 

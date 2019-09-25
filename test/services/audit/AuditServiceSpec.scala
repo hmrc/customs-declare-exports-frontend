@@ -104,7 +104,7 @@ trait AuditTestSupport
 
   val auditData = Map(
     EORI.toString -> "eori1",
-    LRN.toString -> "lrn1",
+    LRN.toString -> "lrn1", // FIXME refere to bad thing
     DUCR.toString -> "ducr1",
     SubmissionResult.toString -> "Success"
   )

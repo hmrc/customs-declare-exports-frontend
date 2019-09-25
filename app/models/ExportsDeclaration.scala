@@ -47,8 +47,8 @@ case class ExportsDeclaration(
 ) {
   def isComplete: Boolean = status == DeclarationStatus.COMPLETE
 
-  val lrn: Option[String] = this.consignmentReferences.map(_.lrn)
-  val ducr: Option[String] = this.consignmentReferences.map(_.ducr.ducr)
+  val lrn: Option[String] = consignmentReferences.map(_.lrn.value)
+  val ducr: Option[String] = consignmentReferences.map(_.ducr.ducr)
 
   def updatedItem(itemId: String, update: ExportItem => ExportItem): ExportsDeclaration =
     itemBy(itemId).fold(this) { item =>

@@ -26,7 +26,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.officeOfExit.OfficeOfExit
-import forms.{Choice, Ducr}
+import forms.{Choice, Ducr, Lrn}
 import models.DeclarationStatus.DeclarationStatus
 import models.ExportsDeclaration
 import models.declaration._
@@ -35,7 +35,7 @@ import models.declaration._
 trait ExportsDeclarationBuilder {
 
   protected val DUCR = "5GB123456789000-123ABC456DEFIIIII"
-  protected val LRN = "FG7676767889"
+  protected val LRN = Lrn("FG7676767889")
 
   private def uuid: String = UUID.randomUUID().toString
 
@@ -167,8 +167,8 @@ trait ExportsDeclarationBuilder {
       )
     )
 
-  def withConsignmentReferences(ducr: String = DUCR, lrn: String = LRN): ExportsDeclarationModifier =
-    withConsignmentReferences(ConsignmentReferences(Ducr(ducr), lrn))
+  def withConsignmentReferences(ducr: String = DUCR, lrn: String = LRN.value): ExportsDeclarationModifier =
+    withConsignmentReferences(ConsignmentReferences(Ducr(ducr), Lrn(lrn)))
 
   def withConsignmentReferences(consignmentReferences: ConsignmentReferences): ExportsDeclarationModifier =
     _.copy(consignmentReferences = Some(consignmentReferences))
