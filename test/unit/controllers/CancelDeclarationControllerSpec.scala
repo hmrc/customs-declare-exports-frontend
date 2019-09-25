@@ -134,7 +134,8 @@ object CancelDeclarationControllerSpec {
 
   val correctCancelDeclarationJSON: JsValue = Json.toJson(correctCancelDeclaration)
 
-  val incorrectCancelDeclaration = CancelDeclaration(Lrn("functionalRefernceId"), "decId", "description", "wrong reason")
+  val incorrectCancelDeclaration =
+    CancelDeclaration(Lrn("functionalRefernceId"), "decId", "description", "wrong reason")
 
   val incorrectCancelDeclarationJSON: JsValue = Json.toJson(incorrectCancelDeclaration)
 }

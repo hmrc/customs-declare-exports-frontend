@@ -31,9 +31,10 @@ object Lrn {
 
   private val lrnMaxLength = 22
 
-  def mapping(prefix: String) = text()
-    .verifying(s"$prefix.error.empty", _.trim.nonEmpty)
-    .verifying(s"$prefix.error.length", noLongerThan(lrnMaxLength))
-    .verifying(s"$prefix.error.specialCharacter", isAlphanumeric)
-    .transform[Lrn](Lrn.apply, _.value)
+  def mapping(prefix: String) =
+    text()
+      .verifying(s"$prefix.error.empty", _.trim.nonEmpty)
+      .verifying(s"$prefix.error.length", noLongerThan(lrnMaxLength))
+      .verifying(s"$prefix.error.specialCharacter", isAlphanumeric)
+      .transform[Lrn](Lrn.apply, _.value)
 }

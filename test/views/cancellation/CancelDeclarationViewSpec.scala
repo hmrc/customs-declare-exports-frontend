@@ -184,12 +184,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
         val view = createView(
           CancelDeclaration.form
             .fillAndValidate(
-              CancelDeclaration(
-                Lrn("12345566++"),
-                "123456789",
-                "Some Description",
-                NoLongerRequired.toString
-              )
+              CancelDeclaration(Lrn("12345566++"), "123456789", "Some Description", NoLongerRequired.toString)
             )
         )
 

@@ -172,7 +172,9 @@ class ConsignmentReferencesViewSpec
       val view = createView(
         ConsignmentReferences
           .form()
-          .fillAndValidate(ConsignmentReferences(Ducr(incorrectDUCR), Lrn(TestHelper.createRandomAlphanumericString(23))))
+          .fillAndValidate(
+            ConsignmentReferences(Ducr(incorrectDUCR), Lrn(TestHelper.createRandomAlphanumericString(23)))
+          )
       )
 
       view must haveGlobalErrorSummary
@@ -202,7 +204,9 @@ class ConsignmentReferencesViewSpec
     "display data in DUCR input" in {
 
       val view =
-        createView(ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("9GB12345678901234-SHIP1234-1"), Lrn(""))))
+        createView(
+          ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("9GB12345678901234-SHIP1234-1"), Lrn("")))
+        )
 
       view.getElementById("ducr_ducr").attr("value") mustBe "9GB12345678901234-SHIP1234-1"
       view.getElementById("lrn").attr("value") mustBe empty
@@ -219,7 +223,9 @@ class ConsignmentReferencesViewSpec
     "display data in all inputs" in {
 
       val view =
-        createView(ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("GB/ABC4-ASIUDYFAHSDJF"), Lrn("test1"))))
+        createView(
+          ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("GB/ABC4-ASIUDYFAHSDJF"), Lrn("test1")))
+        )
 
       view.getElementById("ducr_ducr").attr("value") mustBe "GB/ABC4-ASIUDYFAHSDJF"
       view.getElementById("lrn").attr("value") mustBe "test1"

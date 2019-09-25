@@ -28,10 +28,10 @@ object ConsignmentReferences {
 
   private val ucrMaxLength = 35
 
-  val mapping = Forms.mapping(
-    "ducr" -> Ducr.ducrMapping,
-    "lrn" -> Lrn.mapping("supplementary.consignmentReferences.lrn")
-  )(ConsignmentReferences.apply)(ConsignmentReferences.unapply)
+  val mapping =
+    Forms.mapping("ducr" -> Ducr.ducrMapping, "lrn" -> Lrn.mapping("supplementary.consignmentReferences.lrn"))(
+      ConsignmentReferences.apply
+    )(ConsignmentReferences.unapply)
 
   implicit val format = Json.format[ConsignmentReferences]
   val id = "ConsignmentReferences"
