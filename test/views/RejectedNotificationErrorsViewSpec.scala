@@ -18,7 +18,8 @@ package views
 
 import base.Injector
 import controllers.routes
-import models.declaration.submissions.{Action, RequestType, Submission}
+import models.declaration.submissions.RequestType.SubmissionRequest
+import models.declaration.submissions.{Action, Submission}
 import play.api.i18n.MessagesApi
 import play.api.test.Helpers._
 import services.model.RejectionReason
@@ -31,13 +32,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
   private val page = new rejected_notification_errors(mainTemplate)
   private val ducr = Some("DUCR")
   private val submission =
-    Submission(
-      "submissionId",
-      "eori",
-      "lrn",
-      ducr = ducr,
-      actions = Seq(Action(RequestType.SubmissionRequest, "convId"))
-    )
+    Submission("submissionId", "eori", "lrn", ducr = ducr, actions = Seq(Action("convId", SubmissionRequest)))
   private val rejectionReason = Seq(RejectionReason("code", "description"))
   private val view = page(submission, rejectionReason)(request, messages)
 

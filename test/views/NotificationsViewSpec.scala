@@ -21,6 +21,7 @@ import java.util.UUID
 
 import controllers.routes
 import models.declaration.notifications.Notification
+import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.SubmissionStatus.SubmissionStatus
 import models.declaration.submissions.{Action, RequestType, Submission, SubmissionStatus}
 import org.jsoup.nodes.Document
@@ -33,7 +34,7 @@ import views.tags.ViewTest
 class NotificationsViewSpec extends UnitViewSpec with Stubs {
 
   private val page = new submission_notifications(mainTemplate)
-  private val actions = Action(RequestType.SubmissionRequest, UUID.randomUUID().toString)
+  private val actions = Action(UUID.randomUUID().toString, SubmissionRequest)
   private val submission = Submission("id", "eori", "lrn", None, None, Seq(actions))
   private def notification(status: SubmissionStatus = SubmissionStatus.ACCEPTED) =
     Notification("conv-id", "mrn", LocalDateTime.of(2019, 1, 1, 0, 0), status, Seq.empty, "payload")
