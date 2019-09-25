@@ -35,7 +35,7 @@ object CancelDeclaration {
   val correctDucrFormat = "^\\d[A-Z]{2}\\d{12}-[0-9A-Z]{1,19}$"
 
   val mapping = Forms.mapping(
-    "functionalReferenceId" -> Lrn.mapping("cancellation.functionalReferenceId").verifying("error.required", lrn => nonEmpty(lrn.value)),
+    "functionalReferenceId" -> Lrn.mapping("cancellation.functionalReferenceId"),
     "mrn" -> text()
       .verifying("cancellation.mrn.empty", nonEmpty)
       .verifying("cancellation.mrn.tooLong", isEmpty or noLongerThan(70))
