@@ -64,7 +64,7 @@ class WarehouseIdentificationController @Inject()(
 
   private def updateCache(
     formData: WarehouseIdentification
-  )(implicit request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+  )(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>
       val updatedLocations = model.locations.copy(warehouseIdentification = Some(formData))
       model.copy(locations = updatedLocations)

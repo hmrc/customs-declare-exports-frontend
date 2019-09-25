@@ -53,13 +53,13 @@ class OfficeOfExitController @Inject()(
     }
   }
 
-  private def supplementaryPage(mode: Mode)(implicit request: JourneyRequest[_]): Html =
+  private def supplementaryPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Html =
     request.cacheModel.locations.officeOfExit match {
       case Some(data) => officeOfExitSupplementaryPage(mode, supplementaryForm().fill(OfficeOfExitSupplementary(data)))
       case _          => officeOfExitSupplementaryPage(mode, supplementaryForm())
     }
 
-  private def standardPage(mode: Mode)(implicit request: JourneyRequest[_], hc: HeaderCarrier): Html =
+  private def standardPage(mode: Mode)(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Html =
     request.cacheModel.locations.officeOfExit match {
       case Some(data) => officeOfExitStandardPage(mode, standardForm().fill(OfficeOfExitStandard(data)))
       case _          => officeOfExitStandardPage(mode, standardForm())
@@ -103,14 +103,14 @@ class OfficeOfExitController @Inject()(
 
   private def updateCache(
     formData: OfficeOfExitSupplementary
-  )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+  )(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(
       model => model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData))))
     )
 
   private def updateCache(
     formData: OfficeOfExitStandard
-  )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+  )(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(
       model => model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData))))
     )

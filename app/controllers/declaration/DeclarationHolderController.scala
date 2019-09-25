@@ -74,7 +74,7 @@ class DeclarationHolderController @Inject()(
   }
 
   private def addHolder(mode: Mode, userInput: DeclarationHolder, cachedData: DeclarationHoldersData)(
-    implicit request: JourneyRequest[_],
+    implicit request: JourneyRequest[AnyContent],
     hc: HeaderCarrier
   ): Future[Result] =
     (userInput, cachedData.holders) match {
@@ -119,7 +119,7 @@ class DeclarationHolderController @Inject()(
 
   private def updateCache(
     formData: DeclarationHoldersData
-  )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+  )(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
       val updatedParties = model.parties.copy(declarationHoldersData = Some(formData))
       model.copy(parties = updatedParties)
@@ -187,7 +187,7 @@ class DeclarationHolderController @Inject()(
     holderToRemove: DeclarationHolder,
     userInput: Form[DeclarationHolder],
     cachedData: DeclarationHoldersData
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
+  )(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] = {
     val updatedCache = cachedData.copy(holders = remove(cachedData.holders, (_: DeclarationHolder) == holderToRemove))
     updateCache(updatedCache)
       .map(_ => Ok(declarationHolderPage(mode, userInput.discardingErrors, updatedCache.holders)))

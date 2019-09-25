@@ -73,7 +73,7 @@ class RepresentativeDetailsController @Inject()(
 
   private def updateCache(
     formData: RepresentativeDetails
-  )(implicit request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+  )(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>
       val updatedParties = model.parties.copy(representativeDetails = Some(formData))
       model.copy(parties = updatedParties)

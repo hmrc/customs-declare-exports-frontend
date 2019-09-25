@@ -72,7 +72,7 @@ class DispatchLocationController @Inject()(
 
   private def updateCache(
     formData: DispatchLocation
-  )(implicit request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+  )(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.copy(dispatchLocation = Some(formData)))
 
 }
