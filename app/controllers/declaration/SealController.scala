@@ -153,7 +153,7 @@ class SealController @Inject()(
           Future.successful(navigator.continueTo(routes.SealController.displaySealSummary(mode, cachedContainer.id)))
     )
 
-  private def updateCache(container: Container)(implicit req: JourneyRequest[_]) =
+  private def updateCache(container: Container)(implicit req: JourneyRequest[AnyContent]) =
     updateExportsDeclarationSyncDirect(model => {
 
       val updatedContainers =

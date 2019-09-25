@@ -116,11 +116,11 @@ class DocumentsProducedController @Inject()(
     } else Future.successful(navigator.continueTo(routes.ItemsSummaryController.displayPage(mode)))
 
   private def updateModelInCache(itemId: String, document: DocumentsProduced, updatedDocs: DocumentsProducedData)(
-    implicit journeyRequest: JourneyRequest[_]
+    implicit journeyRequest: JourneyRequest[AnyContent]
   ) = updateCache(itemId, updatedDocs)
 
   private def addItem(mode: Mode, itemId: String, userInput: DocumentsProduced, cachedData: DocumentsProducedData)(
-    implicit request: JourneyRequest[_],
+    implicit request: JourneyRequest[AnyContent],
     hc: HeaderCarrier
   ): Future[Result] =
     (userInput, cachedData.documents) match {
@@ -162,7 +162,7 @@ class DocumentsProducedController @Inject()(
     values: Seq[String],
     boundForm: Form[DocumentsProduced],
     cachedData: DocumentsProducedData
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
+  )(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] = {
     val itemToRemove = DocumentsProduced.fromJsonString(values.head)
     val updatedCache =
       cachedData.copy(documents = remove(cachedData.documents, itemToRemove.contains(_: DocumentsProduced)))
@@ -186,7 +186,7 @@ class DocumentsProducedController @Inject()(
   }
 
   private def updateCache(itemId: String, updatedData: DocumentsProducedData)(
-    implicit req: JourneyRequest[_]
+    implicit req: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
       val item: Option[ExportItem] = model.items

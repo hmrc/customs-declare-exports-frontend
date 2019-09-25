@@ -130,7 +130,7 @@ class ProcedureCodesController @Inject()(
     code: String,
     userInput: Form[ProcedureCodes],
     cachedData: ProcedureCodesData
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
+  )(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] = {
     val updatedCache =
       cachedData.copy(additionalProcedureCodes = remove(cachedData.additionalProcedureCodes, (_: String) == code))
     updateCache(itemId, updatedCache)
@@ -138,7 +138,7 @@ class ProcedureCodesController @Inject()(
   }
 
   private def updateCache(itemId: String, updatedProcedureCodes: ProcedureCodesData)(
-    implicit r: JourneyRequest[_]
+    implicit r: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
       val item: Option[ExportItem] = model.items

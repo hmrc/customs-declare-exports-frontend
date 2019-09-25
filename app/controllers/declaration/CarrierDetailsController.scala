@@ -65,7 +65,7 @@ class CarrierDetailsController @Inject()(
       )
   }
 
-  private def updateCache(formData: CarrierDetails)(implicit req: JourneyRequest[_]) =
+  private def updateCache(formData: CarrierDetails)(implicit req: JourneyRequest[AnyContent]) =
     updateExportsDeclarationSyncDirect(model => {
       val updatedParties = model.parties.copy(carrierDetails = Some(formData))
       model.copy(parties = updatedParties)

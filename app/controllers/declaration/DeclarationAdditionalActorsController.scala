@@ -76,7 +76,7 @@ class DeclarationAdditionalActorsController @Inject()(
   }
 
   private def addItem(mode: Mode, userInput: DeclarationAdditionalActors, cachedData: DeclarationAdditionalActorsData)(
-    implicit request: JourneyRequest[_],
+    implicit request: JourneyRequest[AnyContent],
     hc: HeaderCarrier
   ): Future[Result] =
     (userInput, cachedData.actors) match {
@@ -105,7 +105,7 @@ class DeclarationAdditionalActorsController @Inject()(
     fieldWithError: Seq[(String, String)],
     userInput: DeclarationAdditionalActors,
     actors: Seq[DeclarationAdditionalActors]
-  )(implicit request: JourneyRequest[_]): Future[Result] = {
+  )(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
     val updatedErrors = fieldWithError.map((FormError.apply(_: String, _: String)).tupled)
 
     val formWithError = form().fill(userInput).copy(errors = updatedErrors)
@@ -115,7 +115,7 @@ class DeclarationAdditionalActorsController @Inject()(
 
   private def updateCache(
     formData: DeclarationAdditionalActorsData
-  )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+  )(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
       val updatedParties = model.parties.copy(declarationAdditionalActorsData = Some(formData))
       model.copy(parties = updatedParties)
@@ -161,7 +161,7 @@ class DeclarationAdditionalActorsController @Inject()(
     actorToRemove: Option[DeclarationAdditionalActors],
     formData: Form[DeclarationAdditionalActors],
     cachedData: DeclarationAdditionalActorsData
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
+  )(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] = {
     val updatedCache =
       cachedData.copy(actors = remove(cachedData.actors, actorToRemove.contains(_: DeclarationAdditionalActors)))
     updateCache(updatedCache)

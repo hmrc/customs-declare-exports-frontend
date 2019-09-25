@@ -64,6 +64,6 @@ class NatureOfTransactionController @Inject()(
 
   private def updateCache(
     formData: NatureOfTransaction
-  )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+  )(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.copy(natureOfTransaction = Some(formData)))
 }

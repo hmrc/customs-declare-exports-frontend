@@ -255,7 +255,7 @@ class ItemTypeController @Inject()(
   }
 
   private def updateExportsCache(itemId: String, updatedItem: ItemType)(
-    implicit request: JourneyRequest[_]
+    implicit request: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSync(model => {
       val itemList = model.items

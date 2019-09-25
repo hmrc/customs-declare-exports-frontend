@@ -69,7 +69,7 @@ class AdditionalFiscalReferencesController @Inject()(
     itemId: String,
     form: Form[AdditionalFiscalReference],
     cachedData: AdditionalFiscalReferencesData
-  )(implicit request: JourneyRequest[_]): Future[Result] =
+  )(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     MultipleItemsHelper
       .add(form, cachedData.references, limit)
       .fold(
@@ -113,11 +113,11 @@ class AdditionalFiscalReferencesController @Inject()(
     itemId: String,
     formWithErrors: Form[AdditionalFiscalReference],
     references: Seq[AdditionalFiscalReference]
-  )(implicit request: JourneyRequest[_]): Result =
+  )(implicit request: JourneyRequest[AnyContent]): Result =
     BadRequest(additionalFiscalReferencesPage(mode, itemId, formWithErrors, references))
 
   private def updateExportsCache(itemId: String, updatedAdditionalFiscalReferencesData: AdditionalFiscalReferencesData)(
-    implicit request: JourneyRequest[_]
+    implicit request: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>
       model.updatedItem(

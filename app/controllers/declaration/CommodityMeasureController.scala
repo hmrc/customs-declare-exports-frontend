@@ -74,7 +74,7 @@ class CommodityMeasureController @Inject()(
   }
 
   private def updateExportsCache(itemId: String, updatedItem: CommodityMeasure)(
-    implicit r: JourneyRequest[_]
+    implicit r: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
       val itemList = model.items

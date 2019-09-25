@@ -72,7 +72,7 @@ class PackageInformationController @Inject()(
     values: Seq[String],
     boundForm: Form[PackageInformation],
     items: Seq[PackageInformation]
-  )(implicit request: JourneyRequest[_]): Future[Result] = {
+  )(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
     val itemToRemove = PackageInformation.fromJsonString(values.head)
     val updatedCache = remove(items, itemToRemove.contains(_: PackageInformation))
     updateExportsCache(itemId, updatedCache)
@@ -123,7 +123,7 @@ class PackageInformationController @Inject()(
       )
 
   private def updateExportsCache(itemId: String, updatedCache: Seq[PackageInformation])(
-    implicit r: JourneyRequest[_]
+    implicit r: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
       val item: Option[ExportItem] = model.items

@@ -107,7 +107,7 @@ class DestinationCountriesController @Inject()(
   private def addRoutingCountry(
     mode: Mode,
     cachedData: DestinationCountries
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
+  )(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] = {
     val countriesStandardForm = Standard.form.bindFromRequest()
     val countriesStandardInput = countriesStandardForm.value.getOrElse(DestinationCountries.empty())
     val countriesStandardUpdated =
@@ -181,7 +181,7 @@ class DestinationCountriesController @Inject()(
     keys: Seq[String],
     userInput: Form[DestinationCountries],
     cachedData: DestinationCountries
-  )(implicit request: JourneyRequest[_]): Future[Result] = {
+  )(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
 
     val updatedCountries = remove(cachedData.countriesOfRouting, keys.contains(_: String))
     val updatedCache = cachedData.copy(countriesOfRouting = updatedCountries)
@@ -192,7 +192,7 @@ class DestinationCountriesController @Inject()(
 
   private def updateCache(
     formData: DestinationCountries
-  )(implicit r: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+  )(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(
       model => model.copy(locations = model.locations.copy(destinationCountries = Some(formData)))
     )
