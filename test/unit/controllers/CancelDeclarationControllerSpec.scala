@@ -20,7 +20,7 @@ import base.Injector
 import com.codahale.metrics.Timer
 import com.kenshoo.play.metrics.Metrics
 import controllers.CancelDeclarationController
-import forms.CancelDeclaration
+import forms.{CancelDeclaration, Lrn}
 import forms.cancellation.CancellationChangeReason.NoLongerRequired
 import metrics.{ExportsMetrics, MetricIdentifiers}
 import org.mockito.ArgumentMatchers
@@ -126,7 +126,7 @@ class CancelDeclarationControllerSpec
 object CancelDeclarationControllerSpec {
   val correctCancelDeclaration =
     CancelDeclaration(
-      functionalReferenceId = "1SA123456789012-1FSA1234567",
+      functionalReferenceId = Lrn("1SA123456789012"),
       mrn = "87654321",
       statementDescription = "Some description",
       changeReason = NoLongerRequired.toString
@@ -134,7 +134,8 @@ object CancelDeclarationControllerSpec {
 
   val correctCancelDeclarationJSON: JsValue = Json.toJson(correctCancelDeclaration)
 
-  val incorrectCancelDeclaration = CancelDeclaration("functionalRefernceId", "decId", "description", "wrong reason")
+  val incorrectCancelDeclaration =
+    CancelDeclaration(Lrn("functionalRefernceId"), "decId", "description", "wrong reason")
 
   val incorrectCancelDeclarationJSON: JsValue = Json.toJson(incorrectCancelDeclaration)
 }

@@ -21,7 +21,7 @@ import java.time.{LocalDateTime, ZoneOffset}
 import base.ExportsTestData
 import base.ExportsTestData._
 import forms.declaration.ConsignmentReferences
-import forms.{Ducr, RemoveDraftDeclaration}
+import forms.{Ducr, Lrn, RemoveDraftDeclaration}
 import helpers.views.declaration.CommonMessages
 import models.{DeclarationStatus, ExportsDeclaration}
 import org.jsoup.nodes.Element
@@ -43,7 +43,7 @@ class RemoveSavedDeclarationsViewSpec extends UnitViewSpec with CommonMessages w
 
   private def decWithDucr(index: Int = 1) = ExportsTestData.aDeclaration(
     withStatus(DeclarationStatus.DRAFT),
-    withConsignmentReferences(ConsignmentReferences(Ducr(s"DUCR-XXXX-$index"), "LRN-1234")),
+    withConsignmentReferences(ConsignmentReferences(Ducr(s"DUCR-XXXX-$index"), Lrn("LRN-1234"))),
     withUpdateTime(LocalDateTime.of(2019, 1, 1, 10, 0, 0).toInstant(ZoneOffset.UTC))
   )
 

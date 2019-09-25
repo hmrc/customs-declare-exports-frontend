@@ -23,7 +23,7 @@ import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
 case class CancelDeclaration(
-  functionalReferenceId: String,
+  functionalReferenceId: Lrn,
   mrn: String,
   statementDescription: String,
   changeReason: String
@@ -35,14 +35,7 @@ object CancelDeclaration {
   val correctDucrFormat = "^\\d[A-Z]{2}\\d{12}-[0-9A-Z]{1,19}$"
 
   val mapping = Forms.mapping(
-    "functionalReferenceId" -> text()
-      .verifying("cancellation.functionalReferenceId.empty", nonEmpty)
-      .verifying("cancellation.functionalReferenceId.tooLong", isEmpty or noLongerThan(35))
-      .verifying("cancellation.functionalReferenceId.tooShort", isEmpty or noShorterThan(23))
-      .verifying(
-        "cancellation.functionalReferenceId.wrongFormat",
-        isEmpty or (input => input.matches(correctDucrFormat))
-      ),
+    "functionalReferenceId" -> Lrn.mapping("cancellation.functionalReferenceId"),
     "mrn" -> text()
       .verifying("cancellation.mrn.empty", nonEmpty)
       .verifying("cancellation.mrn.tooLong", isEmpty or noLongerThan(70))

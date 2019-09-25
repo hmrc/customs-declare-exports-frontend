@@ -96,7 +96,7 @@
         ))
         @components.table_row_no_change_link(HtmlTableRow(
             label = messages("supplementary.summary.yourReferences.lrn"),
-            value = Seq(suppDecData.consignmentReferences.map(_.lrn))
+            value = Seq(suppDecData.consignmentReferences.map(_.lrn.value))
         ))
     }
 

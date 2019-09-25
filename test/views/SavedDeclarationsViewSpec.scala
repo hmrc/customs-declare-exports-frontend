@@ -21,7 +21,7 @@ import java.time.{LocalDateTime, ZoneOffset}
 import base.ExportsTestData
 import base.ExportsTestData._
 import controllers.routes
-import forms.Ducr
+import forms.{Ducr, Lrn}
 import forms.declaration.ConsignmentReferences
 import helpers.views.declaration.CommonMessages
 import models.{DeclarationStatus, ExportsDeclaration, Page, Paginated}
@@ -47,7 +47,7 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with CommonMessages with St
 
   private def decWithDucr(index: Int = 1) = ExportsTestData.aDeclaration(
     withStatus(DeclarationStatus.DRAFT),
-    withConsignmentReferences(ConsignmentReferences(Ducr(s"DUCR-XXXX-$index"), "LRN-1234")),
+    withConsignmentReferences(ConsignmentReferences(Ducr(s"DUCR-XXXX-$index"), Lrn("LRN-1234"))),
     withUpdateTime(LocalDateTime.of(2019, 1, 1, 10, 0, 0).toInstant(ZoneOffset.UTC))
   )
 

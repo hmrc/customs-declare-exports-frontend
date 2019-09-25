@@ -19,7 +19,7 @@ package views.declaration
 import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
-import forms.Ducr
+import forms.{Ducr, Lrn}
 import forms.declaration.ConsignmentReferences
 import helpers.views.declaration.{CommonMessages, ConsignmentReferencesMessages}
 import models.Mode
@@ -121,7 +121,7 @@ class ConsignmentReferencesViewSpec
     "display error for empty LRN" in {
 
       val view =
-        createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Ducr(properDUCR), "")))
+        createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Ducr(properDUCR), Lrn(""))))
 
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("lrn", "#lrn")
@@ -134,7 +134,7 @@ class ConsignmentReferencesViewSpec
       val view = createView(
         ConsignmentReferences
           .form()
-          .fillAndValidate(ConsignmentReferences(Ducr(properDUCR), TestHelper.createRandomAlphanumericString(23)))
+          .fillAndValidate(ConsignmentReferences(Ducr(properDUCR), Lrn(TestHelper.createRandomAlphanumericString(23))))
       )
 
       view must haveGlobalErrorSummary
@@ -146,7 +146,7 @@ class ConsignmentReferencesViewSpec
     "display error when LRN contains special character" in {
 
       val view =
-        createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Ducr(properDUCR), "#@#$")))
+        createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Ducr(properDUCR), Lrn("#@#$"))))
 
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("lrn", "#lrn")
@@ -157,7 +157,7 @@ class ConsignmentReferencesViewSpec
     "display error when DUCR is incorrect and LRN empty" in {
 
       val view =
-        createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Ducr(incorrectDUCR), "")))
+        createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Ducr(incorrectDUCR), Lrn(""))))
 
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("ducr.ducr", "#ducr_ducr")
@@ -172,7 +172,9 @@ class ConsignmentReferencesViewSpec
       val view = createView(
         ConsignmentReferences
           .form()
-          .fillAndValidate(ConsignmentReferences(Ducr(incorrectDUCR), TestHelper.createRandomAlphanumericString(23)))
+          .fillAndValidate(
+            ConsignmentReferences(Ducr(incorrectDUCR), Lrn(TestHelper.createRandomAlphanumericString(23)))
+          )
       )
 
       view must haveGlobalErrorSummary
@@ -186,7 +188,7 @@ class ConsignmentReferencesViewSpec
     "display error when DUCR is incorrect and LRN contains special character" in {
 
       val view =
-        createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Ducr(incorrectDUCR), "$$%")))
+        createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Ducr(incorrectDUCR), Lrn("$$%"))))
 
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("ducr.ducr", "#ducr_ducr")
@@ -202,7 +204,9 @@ class ConsignmentReferencesViewSpec
     "display data in DUCR input" in {
 
       val view =
-        createView(ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("9GB12345678901234-SHIP1234-1"), "")))
+        createView(
+          ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("9GB12345678901234-SHIP1234-1"), Lrn("")))
+        )
 
       view.getElementById("ducr_ducr").attr("value") mustBe "9GB12345678901234-SHIP1234-1"
       view.getElementById("lrn").attr("value") mustBe empty
@@ -210,7 +214,7 @@ class ConsignmentReferencesViewSpec
 
     "display data in LRN input" in {
 
-      val view = createView(ConsignmentReferences.form().fill(ConsignmentReferences(Ducr(""), "test1")))
+      val view = createView(ConsignmentReferences.form().fill(ConsignmentReferences(Ducr(""), Lrn("test1"))))
 
       view.getElementById("ducr_ducr").attr("value") mustBe empty
       view.getElementById("lrn").attr("value") mustBe "test1"
@@ -219,7 +223,9 @@ class ConsignmentReferencesViewSpec
     "display data in all inputs" in {
 
       val view =
-        createView(ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("GB/ABC4-ASIUDYFAHSDJF"), "test1")))
+        createView(
+          ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("GB/ABC4-ASIUDYFAHSDJF"), Lrn("test1")))
+        )
 
       view.getElementById("ducr_ducr").attr("value") mustBe "GB/ABC4-ASIUDYFAHSDJF"
       view.getElementById("lrn").attr("value") mustBe "test1"

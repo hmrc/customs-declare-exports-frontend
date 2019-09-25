@@ -21,7 +21,7 @@ import java.util.UUID
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.exchange.ExportsDeclarationExchange
-import forms.CancelDeclaration
+import forms.{CancelDeclaration, Lrn}
 import models.declaration.notifications.Notification
 import models.declaration.submissions.{Action, RequestType, Submission, SubmissionStatus}
 import models.{Page, Paginated}
@@ -259,7 +259,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
   }
 
   "Create Cancellation" should {
-    val cancellation = CancelDeclaration("ref", "id", "statement", "reason")
+    val cancellation = CancelDeclaration(Lrn("ref"), "id", "statement", "reason")
 
     "return payload" in {
       stubFor(
