@@ -53,12 +53,6 @@ class SubmissionServiceSpec
   val request = TestHelper.journeyRequest(FakeRequest("", ""), AllowedChoiceValues.SupplementaryDec)
 
   val legal = LegalDeclaration("Name", "Role", "email@test.com", true)
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockExportsCacheService, mockCustomsDeclareExportsConnector, mockAuditService)
-  }
-
   val auditData = Map(
     EventData.EORI.toString -> request.authenticatedRequest.user.eori,
     EventData.LRN.toString -> "123LRN",
@@ -77,6 +71,11 @@ class SubmissionServiceSpec
     mockAuditService,
     exportMetrics
   )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockExportsCacheService, mockCustomsDeclareExportsConnector, mockAuditService)
+  }
 
   def theExportsDeclarationSubmitted: ExportsDeclaration = {
     val captor: ArgumentCaptor[ExportsDeclaration] = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
@@ -117,7 +116,8 @@ class SubmissionServiceSpec
 
       theExportsDeclarationSubmitted.status mustBe DeclarationStatus.COMPLETE
       verify(mockAuditService, times(1)).audit(any(), any())(any())
-      verify(mockAuditService, times(1)).auditAllPagesUserInput(any())(any())
+      verify(mockAuditService, times(1))
+        .auditAllPagesUserInput(ArgumentMatchers.eq(AuditTypes.SubmissionPayload), any())(any())
       verify(mockAuditService)
         .audit(ArgumentMatchers.eq(AuditTypes.Submission), ArgumentMatchers.eq[Map[String, String]](auditData))(any())
       registry.getTimers.get(exportMetrics.timerName(metric)).getCount mustBe >(timerBefore)

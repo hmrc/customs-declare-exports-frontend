@@ -37,6 +37,7 @@ import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
 import forms.declaration.additionaldocuments.{DocumentIdentifierAndPart, DocumentWriteOff, DocumentsProduced}
+import forms.{CancelDeclaration, Lrn}
 import models.declaration.DeclarationAdditionalActorsDataSpec._
 import models.declaration.DeclarationHoldersDataSpec._
 import models.declaration.dectype.DeclarationTypeSupplementarySpec._
@@ -170,7 +171,6 @@ class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
 }
 
 object TransportInformationContainerSpec {
-  private val containerId = "id"
   val correctTransportInformationContainerData =
     TransportInformationContainerData(Seq(Container(id = "M1l3s", Seq.empty)))
   val emptyTransportInformationContainerData = TransportInformationContainer("")
@@ -178,6 +178,7 @@ object TransportInformationContainerSpec {
   val incorrectTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("123456789012345678")))
   val emptyTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("")))
   val correctTransportInformationContainerDataJSON: JsValue = Json.toJson(correctTransportInformationContainerData)
+  private val containerId = "id"
 }
 
 object SupplementaryDeclarationTestData {
@@ -207,6 +208,8 @@ object SupplementaryDeclarationTestData {
       officeOfExit = Some(correctOfficeOfExit)
     )
   )
+
+  lazy val cancellationDeclarationTest = CancelDeclaration(Lrn("FG7676767889"), "mrn", "description", "reason")
 
   lazy val allRecordsXmlMarshallingTest = allRecords.copy(
     items = Set(

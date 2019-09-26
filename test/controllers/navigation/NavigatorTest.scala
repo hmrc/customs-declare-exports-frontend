@@ -24,6 +24,7 @@ import controllers.util._
 import models.SignedInUser
 import models.requests.{AuthenticatedRequest, ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.BDDMockito._
 import org.mockito.Mockito.{verify, verifyZeroInteractions}
@@ -32,7 +33,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.audit.AuditService
+import services.audit.{AuditService, AuditTypes}
 import services.cache.ExportsDeclarationBuilder
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -75,7 +76,7 @@ class NavigatorTest extends WordSpec with Matchers with MockitoSugar with Export
       )
       session(result).get(ExportsSessionKeys.declarationId) shouldBe None
 
-      verify(auditService).auditAllPagesUserInput(any())(any())
+      verify(auditService).auditAllPagesUserInput(ArgumentMatchers.eq(AuditTypes.SaveAndReturnSubmission), any())(any())
     }
 
     "Go to URL provided" when {
