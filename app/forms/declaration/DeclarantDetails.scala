@@ -15,8 +15,11 @@
  */
 
 package forms.declaration
+import forms.common.Address
+import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
+import utils.validators.forms.FieldValidator._
 
 case class DeclarantDetails(details: EntityDetails)
 
@@ -25,7 +28,18 @@ object DeclarantDetails {
 
   val id = "DeclarantDetails"
 
-  val mapping = Forms.mapping("details" -> EntityDetails.mapping)(DeclarantDetails.apply)(DeclarantDetails.unapply)
+  val declarantMapping = Forms
+    .mapping(
+      "eori" -> optional(
+        text()
+          .verifying("supplementary.eori.empty", nonEmpty)
+          .verifying("supplementary.eori.error", noLongerThan(17) and isAlphanumeric)
+      ),
+      "address" -> optional(Address.mapping)
+    )(EntityDetails.apply)(EntityDetails.unapply)
+    .verifying("supplementary.eori.empty", _.eori.exists(!_.trim.isEmpty))
+
+  val mapping = Forms.mapping("details" -> declarantMapping)(DeclarantDetails.apply)(DeclarantDetails.unapply)
 
   def form(): Form[DeclarantDetails] = Form(mapping)
 }
