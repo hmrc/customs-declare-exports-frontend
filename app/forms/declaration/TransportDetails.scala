@@ -55,10 +55,10 @@ object TransportDetails {
       isContainedIn(allowedMeansOfTransportTypeCodes)
     ),
     "meansOfTransportCrossingTheBorderIDNumber" -> text()
-      .verifying("supplementary.meansOfTransportCrossingTheBorderIDNumber.error.empty", nonEmpty)
-      .verifying("supplementary.meansOfTransportCrossingTheBorderIDNumber.error.length", noLongerThan(35))
+      .verifying("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.empty", nonEmpty)
+      .verifying("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.length", noLongerThan(35))
       .verifying(
-        "supplementary.transportInfo.meansOfTransport.idNumber.invalid",
+        "supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid",
         isAlphanumericWithAllowedSpecialCharacters
       )
     ,

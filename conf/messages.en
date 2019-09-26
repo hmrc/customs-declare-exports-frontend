@@ -490,6 +490,7 @@ supplementary.transportInfo.transportMode.postalOrMail = Postal or Mail
 supplementary.transportInfo.transportMode.fixedTransportInstallations = Fixed transport installations
 supplementary.transportInfo.transportMode.inlandWaterway = Inland waterway transport
 supplementary.transportInfo.transportMode.unknown = Mode unknown, for example own propulsion
+
 supplementary.transportInfo.meansOfTransport.departure.header = What are the chosen transport’s details?
 supplementary.transportInfo.meansOfTransport.departure.header.hint = Select the type of identification used for the chosen transport and enter the reference
 supplementary.transportInfo.meansOfTransport.departure.error.empty = Please, choose transport details
@@ -515,7 +516,9 @@ supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.heade
 supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.error.incorrect = Please, choose valid active means of transport
 
 
-supplementary.meansOfTransportCrossingTheBorderIDNumber.error.length = Reference should be less than 35 alpha numeric characters
+supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.empty = Please provide reference to transport
+supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.length = Reference should be less than 35 alpha numeric characters
+supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid = Reference cannot contain invalid characters
 
 supplementary.transportInfo.container = Were the goods in a container?
 supplementary.transportInfo.container.error.empty = Please select an option
