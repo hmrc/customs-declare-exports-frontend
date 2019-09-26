@@ -20,8 +20,8 @@ import base.Injector
 import com.codahale.metrics.Timer
 import com.kenshoo.play.metrics.Metrics
 import controllers.CancelDeclarationController
-import forms.{CancelDeclaration, Lrn}
 import forms.cancellation.CancellationChangeReason.NoLongerRequired
+import forms.{CancelDeclaration, Lrn}
 import metrics.{ExportsMetrics, MetricIdentifiers}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -108,7 +108,7 @@ class CancelDeclarationControllerSpec
       stringResult must include("cancellation.confirmationPage.message")
       cancelTimer.getCount mustBe >=(timerBefore)
       cancelCounter.getCount mustBe >=(counterBefore)
-      verify(mockAuditService).auditAllPagesUserInput(any())(any())
+      verify(mockAuditService).auditAllPagesDeclarationCancellation(any())(any())
       verify(mockAuditService).audit(ArgumentMatchers.eq(AuditTypes.Cancellation), any())(any())
     }
 

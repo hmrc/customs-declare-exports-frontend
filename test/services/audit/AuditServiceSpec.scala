@@ -18,7 +18,7 @@ package services.audit
 
 import base.{Injector, TestHelper}
 import config.AppConfig
-import models.declaration.SupplementaryDeclarationTestData.allRecordsXmlMarshallingTest
+import models.declaration.SupplementaryDeclarationTestData.{allRecordsXmlMarshallingTest, cancellationDeclarationTest}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
@@ -44,7 +44,7 @@ class AuditServiceSpec extends AuditTestSupport {
   override def beforeEach(): Unit = {
     super.beforeEach()
     mockSendEvent()
-    mockSendCompletePayload()
+    mockSendCompletePayload(extendedDataEvent = extendedSubmissionEvent)
   }
 
   "AuditService" should {
@@ -57,17 +57,26 @@ class AuditServiceSpec extends AuditTestSupport {
 
     "audit full payload" in {
 
-      auditService.auditAllPagesUserInput(Json.toJson(allRecordsXmlMarshallingTest).as[JsObject])(hc)
-      verify(mockAuditConnector).sendExtendedEvent(ArgumentMatchers.refEq(extendedEvent, "eventId", "generatedAt"))(
-        any(),
-        any()
-      )
+      auditService.auditAllPagesUserInput(AuditTypes.SubmissionPayload, allRecordsXmlMarshallingTest)(hc)
+      verify(mockAuditConnector).sendExtendedEvent(
+        ArgumentMatchers.refEq(extendedSubmissionEvent, "eventId", "generatedAt")
+      )(any(), any())
+    }
+
+    "audit Cancellation payload" in {
+      mockSendCompletePayload(extendedDataEvent = extendedCancellationEvent)
+      auditService.auditAllPagesDeclarationCancellation(cancellationDeclarationTest)(hc)
+      verify(mockAuditConnector).sendExtendedEvent(
+        ArgumentMatchers.refEq(extendedSubmissionEvent, "eventId", "generatedAt")
+      )(any(), any())
     }
 
     "audit full payload success" in {
 
       val res =
-        auditService.auditAllPagesUserInput(Json.toJson(allRecordsXmlMarshallingTest).as[JsObject])(hc).futureValue
+        auditService
+          .auditAllPagesUserInput(AuditTypes.SubmissionPayload, allRecordsXmlMarshallingTest)(hc)
+          .futureValue
 
       res mustBe AuditResult.Success
     }
@@ -112,6 +121,8 @@ trait AuditTestSupport
   val appConfig = instanceOf[AppConfig]
   val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestHelper.createRandomString(255))))
 
+  private val auditCarrierDetails: Map[String, String] = AuditExtensions.auditHeaderCarrier(hc).toAuditDetails()
+
   val event = DataEvent(
     auditSource = appConfig.appName,
     auditType = AuditTypes.Submission.toString,
@@ -121,10 +132,11 @@ trait AuditTestSupport
         transactionName = s"Export-Declaration-${AuditTypes.Submission.toString}-request",
         path = s"customs-declare-exports/${AuditTypes.Submission.toString}"
       ),
-    detail = AuditExtensions.auditHeaderCarrier(hc).toAuditDetails() ++ auditData
+    detail = auditCarrierDetails ++ auditData
   )
 
-  val extendedEvent = ExtendedDataEvent(
+  private val declarationAsJson: JsObject = Json.toJson(allRecordsXmlMarshallingTest).as[JsObject]
+  val extendedSubmissionEvent = ExtendedDataEvent(
     auditSource = appConfig.appName,
     auditType = AuditTypes.SubmissionPayload.toString,
     tags = AuditExtensions
@@ -134,9 +146,25 @@ trait AuditTestSupport
         path = s"customs-declare-exports/${AuditTypes.SubmissionPayload.toString}/full-payload"
       ),
     detail = Json
-      .toJson(AuditExtensions.auditHeaderCarrier(hc).toAuditDetails())
+      .toJson(auditCarrierDetails)
       .as[JsObject]
-      .deepMerge(Json.toJson(allRecordsXmlMarshallingTest).as[JsObject])
+      .deepMerge(declarationAsJson)
+  )
+
+  private val cancelDeclarationAsJson: JsObject = Json.toJson(cancellationDeclarationTest).as[JsObject]
+  val extendedCancellationEvent = ExtendedDataEvent(
+    auditSource = appConfig.appName,
+    auditType = AuditTypes.Cancellation.toString,
+    tags = AuditExtensions
+      .auditHeaderCarrier(hc)
+      .toAuditTags(
+        transactionName = s"Export-Declaration-${AuditTypes.Cancellation.toString}-payload-request",
+        path = s"customs-declare-exports/${AuditTypes.Cancellation.toString}/full-payload"
+      ),
+    detail = Json
+      .toJson(auditCarrierDetails)
+      .as[JsObject]
+      .deepMerge(cancelDeclarationAsJson)
   )
 
   val auditFailure = Failure("Event sending failed")
@@ -154,9 +182,12 @@ trait AuditTestSupport
       )
     ).thenReturn(Future.successful(result))
 
-  def mockSendCompletePayload(result: AuditResult = Success): OngoingStubbing[Future[AuditResult]] =
+  def mockSendCompletePayload(
+    result: AuditResult = Success,
+    extendedDataEvent: ExtendedDataEvent
+  ): OngoingStubbing[Future[AuditResult]] =
     when(
-      mockAuditConnector.sendExtendedEvent(ArgumentMatchers.refEq(extendedEvent, "eventId", "generatedAt"))(
+      mockAuditConnector.sendExtendedEvent(ArgumentMatchers.refEq(extendedDataEvent, "eventId", "generatedAt"))(
         ArgumentMatchers.any[HeaderCarrier],
         ArgumentMatchers.any[ExecutionContext]
       )

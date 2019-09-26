@@ -21,9 +21,8 @@ import controllers.util.{FormAction, SaveAndReturn}
 import javax.inject.Inject
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContent, Call, Result, Results}
-import services.audit.AuditService
+import services.audit.{AuditService, AuditTypes}
 import uk.gov.hmrc.http.HeaderCarrier
 
 class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
@@ -31,7 +30,7 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
   def continueTo(call: Call)(implicit req: JourneyRequest[AnyContent], hc: HeaderCarrier): Result =
     FormAction.bindFromRequest match {
       case SaveAndReturn =>
-        auditService.auditAllPagesUserInput(Json.toJson(req.cacheModel).as[JsObject])
+        auditService.auditAllPagesUserInput(AuditTypes.SaveAndReturnSubmission, req.cacheModel)
         goToDraftConfirmation()
       case _ => Results.Redirect(call)
     }

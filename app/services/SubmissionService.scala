@@ -26,7 +26,6 @@ import metrics.MetricIdentifiers.submissionMetric
 import models.requests.JourneyRequest
 import models.{DeclarationStatus, ExportsDeclaration}
 import play.api.Logger
-import play.api.libs.json.{JsObject, Json}
 import services.audit.EventData._
 import services.audit.{AuditService, AuditTypes}
 import services.cache.ExportsCacheService
@@ -51,7 +50,7 @@ class SubmissionService @Inject()(
     legalDeclaration: LegalDeclaration
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]] = {
     val timerContext = exportsMetrics.startTimer(submissionMetric)
-    auditService.auditAllPagesUserInput(getCachedData(exportsDeclaration))
+    auditService.auditAllPagesUserInput(AuditTypes.SubmissionPayload, exportsDeclaration)
 
     val completedDeclaration = if (exportsDeclaration.isComplete) {
       Future.successful(exportsDeclaration)
@@ -95,9 +94,6 @@ class SubmissionService @Inject()(
       Confirmed.toString -> legalDeclaration.confirmation.toString,
       SubmissionResult.toString -> result
     )
-
-  def getCachedData(exportsCacheModel: ExportsDeclaration)(implicit request: JourneyRequest[_]): JsObject =
-    Json.toJson(exportsCacheModel).as[JsObject]
 
   protected case class FormattedData(lrn: Option[String], ducr: Option[String], payload: String)
 

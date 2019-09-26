@@ -63,7 +63,7 @@ class CancelDeclarationController @Inject()(
         (formWithErrors: Form[CancelDeclaration]) =>
           Future.successful(BadRequest(cancelDeclarationPage(formWithErrors))),
         form => {
-          auditService.auditAllPagesUserInput(Json.toJson(form).as[JsObject])
+          auditService.auditAllPagesDeclarationCancellation(form)
           val context = exportsMetrics.startTimer(cancelMetric)
           customsDeclareExportsConnector.createCancellation(form) andThen {
             case Failure(exception) =>
