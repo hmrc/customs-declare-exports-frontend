@@ -19,7 +19,6 @@ package controllers.navigation
 import java.time.{LocalDate, ZoneOffset}
 import java.util.concurrent.TimeUnit
 
-import base.TestHelper
 import config.AppConfig
 import controllers.util._
 import models.SignedInUser
@@ -36,7 +35,6 @@ import play.api.test.Helpers._
 import services.audit.AuditService
 import services.cache.ExportsDeclarationBuilder
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.logging.Authorization
 
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
@@ -46,7 +44,7 @@ class NavigatorTest extends WordSpec with Matchers with MockitoSugar with Export
   private val call = Call("GET", "url")
   private val config = mock[AppConfig]
   private val auditService = mock[AuditService]
-  private val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestHelper.createRandomString(255))))
+  private val hc: HeaderCarrier = mock[HeaderCarrier]
   private val navigator = new Navigator(config, auditService)
 
   "Continue To" should {
