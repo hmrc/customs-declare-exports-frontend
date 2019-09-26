@@ -75,12 +75,14 @@ class BorderTransportViewSpec extends UnitViewSpec with CommonMessages with Stub
 
       "have correct hint" in {
 
-          section.getElementsByClass("form-hint")
+        section
+          .getElementsByClass("form-hint")
           .text() mustBe messages("supplementary.transportInfo.borderTransportMode.header.hint")
       }
 
       "have correct legend" in {
-        section.getElementsByTag("legend")
+        section
+          .getElementsByTag("legend")
           .text() must startWith(messages("supplementary.transportInfo.borderTransportMode.header"))
       }
 

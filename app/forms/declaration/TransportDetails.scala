@@ -56,12 +56,14 @@ object TransportDetails {
     ),
     "meansOfTransportCrossingTheBorderIDNumber" -> text()
       .verifying("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.empty", nonEmpty)
-      .verifying("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.length", noLongerThan(35))
+      .verifying(
+        "supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.length",
+        noLongerThan(35)
+      )
       .verifying(
         "supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid",
         isAlphanumericWithAllowedSpecialCharacters
-      )
-    ,
+      ),
     "paymentMethod" -> optional(
       text()
         .verifying("standard.transportDetails.paymentMethod.error", isContainedIn(paymentMethods.keys))

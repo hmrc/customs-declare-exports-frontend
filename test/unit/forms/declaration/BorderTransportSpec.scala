@@ -79,7 +79,9 @@ class BorderTransportSpec extends WordSpec with MustMatchers {
         val errorKeys = result.errors.map(_.key)
         val errorMessages = result.errors.map(_.message)
 
-        errorKeys must be(List("borderModeOfTransportCode", "meansOfTransportOnDepartureType", "meansOfTransportOnDepartureIDNumber"))
+        errorKeys must be(
+          List("borderModeOfTransportCode", "meansOfTransportOnDepartureType", "meansOfTransportOnDepartureIDNumber")
+        )
         errorMessages must be(
           List(
             "supplementary.transportInfo.borderTransportMode.error.empty",

@@ -17,11 +17,9 @@
 package unit.forms.declaration
 
 import forms.declaration.{TransportCodes, TransportDetails}
-import org.scalatest.enablers.Containing
-import org.scalatest.{MustMatchers, WordSpec}
-import play.api.data.FormError
+import unit.base.FormSpec
 
-class TransportDetailsSpec extends WordSpec with MustMatchers {
+class TransportDetailsSpec extends FormSpec {
 
   val form = TransportDetails.form
 
@@ -49,64 +47,53 @@ class TransportDetailsSpec extends WordSpec with MustMatchers {
       }
     }
 
-    implicit object ErrorListContaining extends Containing[Seq[FormError]] {
-      override def contains(container: Seq[FormError], element: Any): Boolean = {
-        element match {
-          case error: FormError => container.contains(error)
-          case messageKey: String => container.exists(_.message == messageKey)
-        }
-      }
-
-      override def containsOneOf(container: Seq[FormError], elements: Seq[Any]): Boolean = ???
-
-      override def containsNoneOf(container: Seq[FormError], elements: Seq[Any]): Boolean = ???
-    }
-
     "has errors" when {
-
       "sending incorrect nationality" in {
-        form.bind(Map("meansOfTransportCrossingTheBorderNationality" -> "fizz"))
-          .errors must contain("supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.error.incorrect")
+        form.bind(Map("meansOfTransportCrossingTheBorderNationality" -> "fizz")).errors must contain(
+          "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.error.incorrect"
+        )
       }
 
       "sending no container info" in {
-        form.bind(Map.empty[String, String])
-          .errors must contain("supplementary.transportInfo.container.error.empty")
+        form.bind(Map.empty[String, String]).errors must contain("supplementary.transportInfo.container.error.empty")
       }
 
       "sending no information about transport type" in {
-        form.bind(Map.empty[String, String])
-          .errors must contain("supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty")
+        form.bind(Map.empty[String, String]).errors must contain(
+          "supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty"
+        )
       }
 
       "sending non existing transport type" in {
-        form.bind(Map("meansOfTransportCrossingTheBorderType" -> "donkey"))
-          .errors must contain("supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.incorrect")
+        form.bind(Map("meansOfTransportCrossingTheBorderType" -> "donkey")).errors must contain(
+          "supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.incorrect"
+        )
       }
 
       "sending no transport type reference" in {
-        form.bind(Map.empty[String, String])
-          .errors must contain("error.required")
+        form.bind(Map.empty[String, String]).errors must contain("error.required")
       }
 
       "sending empty transport type reference" in {
-        form.bind(Map("meansOfTransportCrossingTheBorderIDNumber" -> ""))
-          .errors must contain("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.empty")
+        form.bind(Map("meansOfTransportCrossingTheBorderIDNumber" -> "")).errors must contain(
+          "supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.empty"
+        )
       }
 
       "sending very long transport type reference" in {
-        form.bind(Map("meansOfTransportCrossingTheBorderIDNumber" -> "a" * 128))
-          .errors must contain("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.length")
+        form.bind(Map("meansOfTransportCrossingTheBorderIDNumber" -> "a" * 128)).errors must contain(
+          "supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.length"
+        )
       }
 
       "sending reference with special characters" in {
-        form.bind(Map("meansOfTransportCrossingTheBorderIDNumber" -> "$#@!"))
-          .errors must contain("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid")
+        form.bind(Map("meansOfTransportCrossingTheBorderIDNumber" -> "$#@!")).errors must contain(
+          "supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid"
+        )
       }
 
       "sending non existing payment method" in {
-        form.bind(Map("paymentMethod" -> "$#@!"))
-          .errors must contain("standard.transportDetails.paymentMethod.error")
+        form.bind(Map("paymentMethod" -> "$#@!")).errors must contain("standard.transportDetails.paymentMethod.error")
       }
     }
   }
