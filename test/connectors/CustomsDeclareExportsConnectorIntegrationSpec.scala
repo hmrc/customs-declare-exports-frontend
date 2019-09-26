@@ -23,6 +23,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.exchange.ExportsDeclarationExchange
 import forms.{CancelDeclaration, Lrn}
 import models.declaration.notifications.Notification
+import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{Action, RequestType, Submission, SubmissionStatus}
 import models.{Page, Paginated}
 import org.mockito.BDDMockito._
@@ -45,7 +46,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
   private val existingDeclaration = aDeclaration(withId(id))
   private val newDeclarationExchange = ExportsDeclarationExchange(newDeclaration)
   private val existingDeclarationExchange = ExportsDeclarationExchange(existingDeclaration)
-  private val action = Action(RequestType.SubmissionRequest, UUID.randomUUID().toString)
+  private val action = Action(UUID.randomUUID().toString, SubmissionRequest)
   private val submission = Submission(id, "eori", "lrn", Some("mrn"), None, Seq(action))
   private val notification =
     Notification("action-id", "mrn", LocalDateTime.now, SubmissionStatus.UNKNOWN, Seq.empty, "payload")

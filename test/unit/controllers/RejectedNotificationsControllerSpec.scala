@@ -17,7 +17,8 @@
 package unit.controllers
 
 import controllers.{routes, RejectedNotificationsController}
-import models.declaration.submissions.{Action, RequestType, Submission}
+import models.declaration.submissions.RequestType.SubmissionRequest
+import models.declaration.submissions.{Action, Submission}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues
@@ -40,7 +41,7 @@ class RejectedNotificationsControllerSpec extends ControllerSpec with OptionValu
   )(global)
 
   private val submissionId = "SubmissionId"
-  private val action = Action(RequestType.SubmissionRequest, "convId")
+  private val action = Action("convId", SubmissionRequest)
   private val submission = Submission(submissionId, "eori", "lrn", actions = Seq(action))
 
   override protected def beforeEach(): Unit = {
