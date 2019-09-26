@@ -186,11 +186,11 @@ object SupplementaryDeclarationTestData {
     dispatchLocation = Some(correctDispatchLocation),
     additionalDeclarationType = Some(correctAdditionalDeclarationTypeSupplementaryDec),
     consignmentReferences = Some(correctConsignmentReferences),
-    transportDetails = Some(TransportDetails(Some("Portugal"), true, "40", Some("1234567878ui"), Some("A"))),
+    transportDetails = Some(TransportDetails(Some("Portugal"), true, "40", "1234567878ui", Some("A"))),
     containerData = Some(correctTransportInformationContainerData),
     natureOfTransaction = Some(correctNatureOfTransaction),
     totalNumberOfItems = Some(correctTotalNumberOfItemsDecimalValues),
-    borderTransport = Some(BorderTransport("3", "10", Some("123112yu78"))),
+    borderTransport = Some(BorderTransport("3", "10", "123112yu78")),
     parties = Parties(
       exporterDetails = Some(correctExporterDetails),
       declarantDetails = Some(correctDeclarantDetailsEORIOnly),

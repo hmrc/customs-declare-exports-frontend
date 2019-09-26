@@ -16,6 +16,7 @@
 
 package models.declaration
 
+//FIXME deadcode
 case class BorderTransportMeans(
   name: Option[String] = None, // max 35 chars,
   id: Option[String] = None, // max 35 chars,

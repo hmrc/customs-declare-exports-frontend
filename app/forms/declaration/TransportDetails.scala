@@ -27,7 +27,7 @@ case class TransportDetails(
   meansOfTransportCrossingTheBorderNationality: Option[String],
   container: Boolean,
   meansOfTransportCrossingTheBorderType: String,
-  meansOfTransportCrossingTheBorderIDNumber: Option[String],
+  meansOfTransportCrossingTheBorderIDNumber: String,
   paymentMethod: Option[String] = None
 )
 
@@ -54,14 +54,14 @@ object TransportDetails {
       "supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.incorrect",
       isContainedIn(allowedMeansOfTransportTypeCodes)
     ),
-    "meansOfTransportCrossingTheBorderIDNumber" -> optional(
-      text()
-        .verifying("supplementary.meansOfTransportCrossingTheBorderIDNumber.error.length", noLongerThan(35))
-        .verifying(
-          "supplementary.transportInfo.meansOfTransport.idNumber.invalid",
-          isAlphanumericWithAllowedSpecialCharacters
-        )
-    ),
+    "meansOfTransportCrossingTheBorderIDNumber" -> text()
+      .verifying("supplementary.meansOfTransportCrossingTheBorderIDNumber.error.empty", nonEmpty)
+      .verifying("supplementary.meansOfTransportCrossingTheBorderIDNumber.error.length", noLongerThan(35))
+      .verifying(
+        "supplementary.transportInfo.meansOfTransport.idNumber.invalid",
+        isAlphanumericWithAllowedSpecialCharacters
+      )
+    ,
     "paymentMethod" -> optional(
       text()
         .verifying("standard.transportDetails.paymentMethod.error", isContainedIn(paymentMethods.keys))

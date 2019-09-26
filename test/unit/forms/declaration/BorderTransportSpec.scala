@@ -38,7 +38,7 @@ class BorderTransportSpec extends WordSpec with MustMatchers {
     "allow all mode transport codes" in {
 
       val errors = allowedModeOfTransportCodes.map { code =>
-        form.fillAndValidate(BorderTransport(code, IMOShipIDNumber, None)).errors
+        form.fillAndValidate(BorderTransport(code, IMOShipIDNumber, "rereference")).errors
       }.toSeq.flatten
 
       errors must be(empty)
@@ -47,7 +47,7 @@ class BorderTransportSpec extends WordSpec with MustMatchers {
     "allow all means of transport type codes" in {
 
       val errors = allowedMeansOfTransportTypeCodes.map { code =>
-        form.fillAndValidate(BorderTransport(Maritime, code, None)).errors
+        form.fillAndValidate(BorderTransport(Maritime, code, "reference")).errors
       }.toSeq.flatten
 
       errors must be(empty)
@@ -57,16 +57,7 @@ class BorderTransportSpec extends WordSpec with MustMatchers {
 
       "user filled all mandatory fields with correct data" in {
 
-        val correctForm = BorderTransport(Maritime, IMOShipIDNumber, None)
-
-        val result = form.fillAndValidate(correctForm)
-
-        result.errors must be(empty)
-      }
-
-      "user filled all inputs with correct data" in {
-
-        val correctForm = BorderTransport(Rail, NameOfVessel, Some("correct value."))
+        val correctForm = BorderTransport(Maritime, IMOShipIDNumber, "reference")
 
         val result = form.fillAndValidate(correctForm)
 
@@ -88,11 +79,12 @@ class BorderTransportSpec extends WordSpec with MustMatchers {
         val errorKeys = result.errors.map(_.key)
         val errorMessages = result.errors.map(_.message)
 
-        errorKeys must be(List("borderModeOfTransportCode", "meansOfTransportOnDepartureType"))
+        errorKeys must be(List("borderModeOfTransportCode", "meansOfTransportOnDepartureType", "meansOfTransportOnDepartureIDNumber"))
         errorMessages must be(
           List(
             "supplementary.transportInfo.borderTransportMode.error.empty",
-            "supplementary.transportInfo.meansOfTransport.departure.error.empty"
+            "supplementary.transportInfo.meansOfTransport.departure.error.empty",
+            "supplementary.transportInfo.meansOfTransport.reference.error.empty"
           )
         )
       }
@@ -102,7 +94,7 @@ class BorderTransportSpec extends WordSpec with MustMatchers {
         val incorrectForm = Map(
           "borderModeOfTransportCode" -> "incorrect",
           "meansOfTransportOnDepartureType" -> "incorrect",
-          "meansOfTransportOnDepartureIDNumber" -> ""
+          "meansOfTransportOnDepartureIDNumber" -> "correct"
         )
 
         val result = form.bind(incorrectForm)
@@ -116,6 +108,23 @@ class BorderTransportSpec extends WordSpec with MustMatchers {
             "supplementary.transportInfo.meansOfTransport.departure.error.incorrect"
           )
         )
+      }
+
+      "means of transport on departure id number is empty" in {
+        val incorrectForm = Map(
+          "borderModeOfTransportCode" -> Maritime,
+          "meansOfTransportOnDepartureType" -> IMOShipIDNumber,
+          "meansOfTransportOnDepartureIDNumber" -> ""
+        )
+
+        val result = form.bind(incorrectForm)
+
+        result.errors.length must be(1)
+
+        val error = result.errors.head
+
+        error.key must be("meansOfTransportOnDepartureIDNumber")
+        error.message must be("supplementary.transportInfo.meansOfTransport.reference.error.empty")
       }
 
       "means of transport on departure id number is too long" in {
@@ -133,7 +142,7 @@ class BorderTransportSpec extends WordSpec with MustMatchers {
         val error = result.errors.head
 
         error.key must be("meansOfTransportOnDepartureIDNumber")
-        error.message must be("supplementary.transportInfo.meansOfTransport.idNumber.error.length")
+        error.message must be("supplementary.transportInfo.meansOfTransport.reference.error.length")
       }
 
       "means of transport on departure id number contains invalid special characters" in {
@@ -151,7 +160,7 @@ class BorderTransportSpec extends WordSpec with MustMatchers {
         val error = result.errors.head
 
         error.key must be("meansOfTransportOnDepartureIDNumber")
-        error.message must be("supplementary.transportInfo.meansOfTransport.idNumber.invalid")
+        error.message must be("supplementary.transportInfo.meansOfTransport.reference.error.invalid")
       }
     }
   }
