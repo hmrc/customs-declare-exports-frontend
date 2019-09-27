@@ -27,14 +27,14 @@ object GoodsLocationTestData {
   val city = "City"
   val typeOfLocation = "T"
   val qualifierOfIdentification = "Y"
-  val additionalQualifier = "9GB1234567ABCDEF"
+  val additionalIdentifier = "9GB1234567ABCDEF"
 
   val correctGoodsLocation = GoodsLocation(
     country = country,
     typeOfLocation = typeOfLocation,
     qualifierOfIdentification = qualifierOfIdentification,
     identificationOfLocation = Some(identificationOfLocation),
-    additionalQualifier = Some(additionalQualifier),
+    additionalIdentifier = Some(additionalIdentifier),
     addressLine = Some(addressLine),
     postCode = Some(postcode),
     city = Some(city)
@@ -44,7 +44,7 @@ object GoodsLocationTestData {
     typeOfLocation = "",
     qualifierOfIdentification = "",
     identificationOfLocation = None,
-    additionalQualifier = None,
+    additionalIdentifier = None,
     addressLine = None,
     postCode = None,
     city = None
@@ -59,7 +59,7 @@ object GoodsLocationTestData {
       "city" -> JsString(city),
       "postCode" -> JsString(postcode),
       "country" -> JsString(country),
-      "additionalQualifier" -> JsString(additionalQualifier),
+      "additionalIdentifier" -> JsString(additionalIdentifier),
       "typeOfLocation" -> JsString(typeOfLocation),
       "qualifierOfIdentification" -> JsString(qualifierOfIdentification)
     )
@@ -70,7 +70,7 @@ object GoodsLocationTestData {
       "typeOfLocation" -> JsString(""),
       "qualifierOfIdentification" -> JsString(""),
       "identificationOfLocation" -> JsString(""),
-      "additionalQualifier" -> JsString(""),
+      "additionalIdentifier" -> JsString(""),
       "addressLine" -> JsString(""),
       "postCode" -> JsString(""),
       "city" -> JsString("")
@@ -81,8 +81,8 @@ object GoodsLocationTestData {
       "country" -> JsString(TestHelper.createRandomAlphanumericString(3)),
       "typeOfLocation" -> JsString(TestHelper.createRandomAlphanumericString(2)),
       "qualifierOfIdentification" -> JsString(TestHelper.createRandomAlphanumericString(2)),
-      "identificationOfLocation" -> JsString(TestHelper.createRandomAlphanumericString(4)),
-      "additionalQualifier" -> JsString(TestHelper.createRandomAlphanumericString(33)),
+      "identificationOfLocation" -> JsString(TestHelper.createRandomAlphanumericString(36)),
+      "additionalIdentifier" -> JsString(TestHelper.createRandomAlphanumericString(4)),
       "addressLine" -> JsString(TestHelper.createRandomAlphanumericString(71)),
       "postCode" -> JsString(TestHelper.createRandomAlphanumericString(10)),
       "city" -> JsString(TestHelper.createRandomAlphanumericString(36))
