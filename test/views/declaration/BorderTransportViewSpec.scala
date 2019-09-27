@@ -45,6 +45,39 @@ class BorderTransportViewSpec extends UnitViewSpec with CommonMessages with Stub
   "BorderTransport View" should {
     val view = createView()
 
+    "have defined translation for used labels" in {
+      val messages = realMessagesApi.preferred(request)
+      messages must haveTranslationFor("supplementary.transportInfo.title")
+      messages must haveTranslationFor("supplementary.transportInfo.title")
+      messages must haveTranslationFor(backCaption)
+      messages must haveTranslationFor(saveAndContinueCaption)
+      messages must haveTranslationFor(saveAndReturnCaption)
+      messages must haveTranslationFor("supplementary.transportInfo.borderTransportMode.header.hint")
+      messages must haveTranslationFor("supplementary.transportInfo.borderTransportMode.header")
+      messages must haveTranslationFor("supplementary.transportInfo.transportMode.sea")
+      messages must haveTranslationFor("supplementary.transportInfo.transportMode.road")
+      messages must haveTranslationFor("supplementary.transportInfo.transportMode.rail")
+      messages must haveTranslationFor("supplementary.transportInfo.transportMode.air")
+      messages must haveTranslationFor("supplementary.transportInfo.transportMode.postalOrMail")
+      messages must haveTranslationFor("supplementary.transportInfo.transportMode.fixedTransportInstallations")
+      messages must haveTranslationFor("supplementary.transportInfo.transportMode.inlandWaterway")
+      messages must haveTranslationFor("supplementary.transportInfo.transportMode.unknown")
+
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.departure.header")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.departure.header.hint")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.IMOShipIDNumber")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.nameOfVessel")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.wagonNumber")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.vehicleRegistrationNumber")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.IATAFlightNumber")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.aircraftRegistrationNumber")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.europeanVesselIDNumber")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel")
+
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.reference.header")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.reference.hint")
+    }
+
     "display page title" in {
       view.getElementById("title").text() mustBe messages("supplementary.transportInfo.title")
     }
@@ -74,7 +107,6 @@ class BorderTransportViewSpec extends UnitViewSpec with CommonMessages with Stub
       val section = view.getElementById("borderModeOfTransportCode")
 
       "have correct hint" in {
-
         section
           .getElementsByClass("form-hint")
           .text() mustBe messages("supplementary.transportInfo.borderTransportMode.header.hint")
