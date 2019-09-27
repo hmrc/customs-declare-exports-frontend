@@ -37,6 +37,7 @@ import services.cache.ExportsDeclarationBuilder
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import base.TestHelper._
+import play.api.Application
 
 class CustomsDeclareExportsConnectorIntegrationSpec
     extends ConnectorSpec with BeforeAndAfterEach with ExportsDeclarationBuilder with ScalaFutures {
@@ -50,16 +51,10 @@ class CustomsDeclareExportsConnectorIntegrationSpec
   private val submission = Submission(id, "eori", "lrn", Some("mrn"), None, Seq(action))
   private val notification =
     Notification("action-id", "mrn", LocalDateTime.now, SubmissionStatus.UNKNOWN, Seq.empty, "payload")
-  private val connector = new CustomsDeclareExportsConnector(config, httpClient)
+  private val connector = app.injector.instanceOf[CustomsDeclareExportsConnector]
 
   implicit val defaultPatience: PatienceConfig =
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    given(config.declarationsV2).willReturn("/declarations")
-    given(config.cancelDeclaration).willReturn("/cancellations")
-  }
 
   "Create Declaration" should {
     "return payload" in {
