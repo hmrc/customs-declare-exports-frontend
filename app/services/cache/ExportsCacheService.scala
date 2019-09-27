@@ -16,7 +16,7 @@
 
 package services.cache
 
-import java.time.{Clock, Instant}
+import java.time.Instant
 
 import connectors.CustomsDeclareExportsConnector
 import javax.inject.{Inject, Singleton}
