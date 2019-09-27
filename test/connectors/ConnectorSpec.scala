@@ -23,6 +23,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
+import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
 
@@ -31,21 +32,20 @@ import scala.concurrent.ExecutionContext
 class ConnectorSpec
     extends WordSpec with GuiceOneAppPerSuite with WiremockTestServer with MockitoSugar with BeforeAndAfterEach {
 
+  def overrideConfig: Map[String, Any] = Map(
+    "microservice.services.customs-declare-exports.host" -> wireHost,
+    "microservice.services.customs-declare-exports.port" -> wirePort
+  )
+
   /**
     * @see [[base.Injector]]
     */
   override def fakeApplication(): Application = {
     SharedMetricRegistries.clear()
-    super.fakeApplication()
+    new GuiceApplicationBuilder().configure(overrideConfig).build()
   }
 
   protected implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
   protected implicit val hc: HeaderCarrier = HeaderCarrier()
   protected val httpClient: DefaultHttpClient = app.injector.instanceOf[DefaultHttpClient]
-  protected val config: AppConfig = mock[AppConfig]
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    given(config.customsDeclareExports).willReturn(host)
-  }
 }

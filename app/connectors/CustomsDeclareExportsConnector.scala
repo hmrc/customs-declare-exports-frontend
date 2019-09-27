@@ -16,6 +16,8 @@
 
 package connectors
 
+import com.codahale.metrics.Timer
+import com.kenshoo.play.metrics.Metrics
 import config.AppConfig
 import connectors.exchange.ExportsDeclarationExchange
 import forms.CancelDeclaration
@@ -30,9 +32,10 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
 @Singleton
-class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient) {
+class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient, metrics: Metrics) {
   private val logger = Logger(this.getClass)
 
   private def logPayload[T](prefix: String, payload: T)(implicit wts: Writes[T]): T = {
@@ -45,30 +48,48 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
       .DELETE(s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}/$id")
       .map(_ => ())
 
+  private val createTimer: Timer = metrics.defaultRegistry.timer("declaration.create.timer")
+
   def createDeclaration(
     declaration: ExportsDeclaration
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] = {
     logPayload("Create Declaration Request", declaration)
+    val createStopwatch = createTimer.time()
     httpClient
       .POST[ExportsDeclarationExchange, ExportsDeclarationExchange](
         s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}",
         ExportsDeclarationExchange(declaration)
       )
-      .map(logPayload("Create Declaration Response", _))
+      .andThen {
+        case Success(response) =>
+          logPayload("Create Declaration Response", response)
+          createStopwatch.stop()
+        case Failure(_) =>
+          createStopwatch.stop()
+      }
       .map(_.toExportsDeclaration)
   }
+
+  private val updateTimer: Timer = metrics.defaultRegistry.timer("declaration.update.timer")
 
   def updateDeclaration(
     declaration: ExportsDeclaration
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] = {
     logPayload("Update Declaration Request", declaration)
+    val updateStopwatch = updateTimer.time()
     httpClient
       .PUT[ExportsDeclarationExchange, ExportsDeclarationExchange](
         s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}/${declaration.id
           .getOrElse(throw new IllegalArgumentException("Cannot update a declaration which hasn't been created first"))}",
         ExportsDeclarationExchange(declaration)
       )
-      .map(logPayload("Update Declaration Response", _))
+      .andThen {
+        case Success(request) =>
+          logPayload("Update Declaration Response", request)
+          updateStopwatch.stop()
+        case Failure(_) =>
+          updateStopwatch.stop()
+      }
       .map(_.toExportsDeclaration)
   }
 
@@ -95,12 +116,19 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
       .map(_.map(_.toExportsDeclaration))
   }
 
+  private val fetchTimer: Timer = metrics.defaultRegistry.timer("declaration.fetch.timer")
+
   def findDeclaration(
     id: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ExportsDeclaration]] =
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ExportsDeclaration]] = {
+    val fetchStopwatch = fetchTimer.time()
     httpClient
       .GET[Option[ExportsDeclarationExchange]](s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}/$id")
       .map(_.map(_.toExportsDeclaration))
+      .andThen {
+        case _ => fetchStopwatch.stop()
+      }
+  }
 
   def submitDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Submission] =
     httpClient

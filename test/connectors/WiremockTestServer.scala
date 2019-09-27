@@ -24,11 +24,9 @@ import unit.base.UnitSpec
 
 trait WiremockTestServer extends UnitSpec with BeforeAndAfterAll {
 
-  private val wireHost = "localhost"
-  private val wirePort = 20001
-  private val wireMockServer = new WireMockServer(wirePort)
-
-  lazy val host: String = s"http://$wireHost:$wirePort"
+  val wireHost = "localhost"
+  val wirePort = 20001
+  val wireMockServer = new WireMockServer(wirePort)
 
   protected def stubFor(mappingBuilder: MappingBuilder): StubMapping =
     wireMockServer.stubFor(mappingBuilder)
