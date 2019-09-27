@@ -57,7 +57,7 @@ class TransportDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
       messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.aircraftRegistrationNumber")
       messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.europeanVesselIDNumber")
       messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel")
-      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.reference.header")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.header")
       messages must haveTranslationFor("supplementary.transportInfo.container")
       messages must haveTranslationFor("standard.transportDetails.paymentMethod.notPrePaid")
       messages must haveTranslationFor("standard.transportDetails.paymentMethod.other")
@@ -94,65 +94,109 @@ class TransportDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
       view.getElementById("submit_and_return").text() mustBe "site.save_and_come_back_later"
     }
 
-    "have labels for all fields" in {
-      view
-        .getElementById("meansOfTransportCrossingTheBorderType-label")
-        .text() mustBe "supplementary.transportInfo.meansOfTransport.crossingTheBorder.header"
-      view
-        .getElementById("meansOfTransportCrossingTheBorderNationality-label")
-        .text() mustBe "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.header"
-      view
-        .getElementById("meansOfTransportCrossingTheBorderType-hint")
-        .text() mustBe "supplementary.transportInfo.meansOfTransport.crossingTheBorder.header.hint"
-      view
-        .getElementById("Border_IMOShipIDNumber-label")
-        .text() mustBe "supplementary.transportInfo.meansOfTransport.IMOShipIDNumber"
-      view
-        .getElementById("Border_NameOfVessel-label")
-        .text() mustBe "supplementary.transportInfo.meansOfTransport.nameOfVessel"
-      view
-        .getElementById("Border_WagonNumber-label")
-        .text() mustBe "supplementary.transportInfo.meansOfTransport.wagonNumber"
-      view
-        .getElementById("Border_VehicleRegistrationNumber-label")
-        .text() mustBe "supplementary.transportInfo.meansOfTransport.vehicleRegistrationNumber"
-      view
-        .getElementById("Border_IATAFlightNumber-label")
-        .text() mustBe "supplementary.transportInfo.meansOfTransport.IATAFlightNumber"
-      view
-        .getElementById("Border_AircraftRegistrationNumber-label")
-        .text() mustBe "supplementary.transportInfo.meansOfTransport.aircraftRegistrationNumber"
-      view
-        .getElementById("Border_EuropeanVesselIDNumber-label")
-        .text() mustBe "supplementary.transportInfo.meansOfTransport.europeanVesselIDNumber"
-      view
-        .getElementById("Border_NameOfInlandWaterwayVessel-label")
-        .text() mustBe "supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel"
-      view
-        .getElementById("meansOfTransportCrossingTheBorderIDNumber-label")
-        .text() mustBe "supplementary.transportInfo.meansOfTransport.reference.header"
+    "display 'Means of Transport' section" which {
+      "nationality picker" in {
+        view
+          .getElementById("meansOfTransportCrossingTheBorderNationality-label")
+          .text() mustBe "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.header"
+      }
+      "has label" in {
+        view
+          .getElementById("meansOfTransportCrossingTheBorderType-label")
+          .text() mustBe "supplementary.transportInfo.meansOfTransport.crossingTheBorder.header"
+      }
+      "has hint" in {
+        view
+          .getElementById("meansOfTransportCrossingTheBorderType-hint")
+          .text() mustBe "supplementary.transportInfo.meansOfTransport.crossingTheBorder.header.hint"
+      }
+      "has 'Ship' section" in {
+        view
+          .getElementById("Border_IMOShipIDNumber-label")
+          .text() mustBe "supplementary.transportInfo.meansOfTransport.IMOShipIDNumber"
+      }
+      "has 'Vessel' section" in {
+        view
+          .getElementById("Border_NameOfVessel-label")
+          .text() mustBe "supplementary.transportInfo.meansOfTransport.nameOfVessel"
+      }
+      "has 'Vagon' section" in {
+        view
+          .getElementById("Border_WagonNumber-label")
+          .text() mustBe "supplementary.transportInfo.meansOfTransport.wagonNumber"
+      }
+      "has 'Register Vehicle' section" in {
+        view
+          .getElementById("Border_VehicleRegistrationNumber-label")
+          .text() mustBe "supplementary.transportInfo.meansOfTransport.vehicleRegistrationNumber"
+      }
+      "has 'Fligh number' section" in {
+        view
+          .getElementById("Border_IATAFlightNumber-label")
+          .text() mustBe "supplementary.transportInfo.meansOfTransport.IATAFlightNumber"
+      }
+      "has 'Aircraft Number' section" in {
+        view
+          .getElementById("Border_AircraftRegistrationNumber-label")
+          .text() mustBe "supplementary.transportInfo.meansOfTransport.aircraftRegistrationNumber"
+      }
+      "has 'European Vessel' section" in {
+        view
+          .getElementById("Border_EuropeanVesselIDNumber-label")
+          .text() mustBe "supplementary.transportInfo.meansOfTransport.europeanVesselIDNumber"
+      }
+      "has 'Inland waterway vessel' section " in {
+        view
+          .getElementById("Border_NameOfInlandWaterwayVessel-label")
+          .text() mustBe "supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel"
+      }
+      "has Reference input text" in {
+        view
+          .getElementById("meansOfTransportCrossingTheBorderIDNumber-label")
+          .text() mustBe "supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.header"
+      }
+    }
+
+    "display 'Container' section" in {
       view.getElementById("container-label").text() mustBe "supplementary.transportInfo.container"
-      view
-        .getElementById("standard.transportDetails.paymentMethod.notPrePaid-label")
-        .text() mustBe "standard.transportDetails.paymentMethod.notPrePaid"
-      view
-        .getElementById("standard.transportDetails.paymentMethod.other-label")
-        .text() mustBe "standard.transportDetails.paymentMethod.other"
-      view
-        .getElementById("standard.transportDetails.paymentMethod.accHolder-label")
-        .text() mustBe "standard.transportDetails.paymentMethod.accHolder"
-      view
-        .getElementById("standard.transportDetails.paymentMethod.cash-label")
-        .text() mustBe "standard.transportDetails.paymentMethod.cash"
-      view
-        .getElementById("standard.transportDetails.paymentMethod.creditCard-label")
-        .text() mustBe "standard.transportDetails.paymentMethod.creditCard"
-      view
-        .getElementById("standard.transportDetails.paymentMethod.cheque-label")
-        .text() mustBe "standard.transportDetails.paymentMethod.cheque"
-      view
-        .getElementById("standard.transportDetails.paymentMethod.eFunds-label")
-        .text() mustBe "standard.transportDetails.paymentMethod.eFunds"
+    }
+
+    "display 'Payment Method' section" which {
+      "have 'Not PrePaid' option" in {
+        view
+          .getElementById("standard.transportDetails.paymentMethod.notPrePaid-label")
+          .text() mustBe "standard.transportDetails.paymentMethod.notPrePaid"
+      }
+      "have 'Other' option" in {
+        view
+          .getElementById("standard.transportDetails.paymentMethod.other-label")
+          .text() mustBe "standard.transportDetails.paymentMethod.other"
+      }
+      "have 'Account Holder' option" in {
+        view
+          .getElementById("standard.transportDetails.paymentMethod.accHolder-label")
+          .text() mustBe "standard.transportDetails.paymentMethod.accHolder"
+      }
+      "have 'Cash' option" in {
+        view
+          .getElementById("standard.transportDetails.paymentMethod.cash-label")
+          .text() mustBe "standard.transportDetails.paymentMethod.cash"
+      }
+      "have 'Credit Card' option" in {
+        view
+          .getElementById("standard.transportDetails.paymentMethod.creditCard-label")
+          .text() mustBe "standard.transportDetails.paymentMethod.creditCard"
+      }
+      "have 'Cheque' option" in {
+        view
+          .getElementById("standard.transportDetails.paymentMethod.cheque-label")
+          .text() mustBe "standard.transportDetails.paymentMethod.cheque"
+      }
+      "have 'eFounds' option" in {
+        view
+          .getElementById("standard.transportDetails.paymentMethod.eFunds-label")
+          .text() mustBe "standard.transportDetails.paymentMethod.eFunds"
+      }
     }
   }
 }

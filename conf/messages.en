@@ -490,6 +490,7 @@ supplementary.transportInfo.transportMode.postalOrMail = Postal or Mail
 supplementary.transportInfo.transportMode.fixedTransportInstallations = Fixed transport installations
 supplementary.transportInfo.transportMode.inlandWaterway = Inland waterway transport
 supplementary.transportInfo.transportMode.unknown = Mode unknown, for example own propulsion
+
 supplementary.transportInfo.meansOfTransport.departure.header = What are the chosen transport’s details?
 supplementary.transportInfo.meansOfTransport.departure.header.hint = Select the type of identification used for the chosen transport and enter the reference
 supplementary.transportInfo.meansOfTransport.departure.error.empty = Please, choose transport details
@@ -499,6 +500,10 @@ supplementary.transportInfo.meansOfTransport.crossingTheBorder.header.hint = Sel
 supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty = Please, choose active means of transport
 supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.incorrect = Please, choose valid active means of transport
 supplementary.transportInfo.meansOfTransport.reference.header = Reference
+supplementary.transportInfo.meansOfTransport.reference.hint = This can be up to 35 characters. For example a vehicle registration number or an IATA flight number. If postal or fixed installation selected, type unknown in the box.
+supplementary.transportInfo.meansOfTransport.reference.error.empty = Please provide reference for transport
+supplementary.transportInfo.meansOfTransport.reference.error.length = Reference should be less than 28 alpha numeric characters
+supplementary.transportInfo.meansOfTransport.reference.error.invalid = Reference cannot contain invalid characters
 supplementary.transportInfo.meansOfTransport.IMOShipIDNumber = IMO Ship identification number
 supplementary.transportInfo.meansOfTransport.nameOfVessel = Name of the seagoing vessel
 supplementary.transportInfo.meansOfTransport.wagonNumber = Wagon number
@@ -509,9 +514,13 @@ supplementary.transportInfo.meansOfTransport.europeanVesselIDNumber = European v
 supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel = Name of the inland waterway’s vessel
 supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.header = What nationality is the active means of transport?
 supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.error.incorrect = Please, choose valid active means of transport
-supplementary.transportInfo.meansOfTransport.idNumber.error.length = Reference should be less than 28 alpha numeric characters
-supplementary.meansOfTransportCrossingTheBorderIDNumber.error.length = Reference should be less than 35 alpha numeric characters
-supplementary.transportInfo.meansOfTransport.idNumber.invalid = Reference cannot contain invalid characters
+
+supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.header = Reference
+supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.hint = This can be up to 35 characters. For example a vehicle registration number or an IATA flight number. If postal or fixed installation selected, type unknown in the box.
+supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.empty = Please provide reference to transport
+supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.length = Reference should be less than 35 alpha numeric characters
+supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid = Reference cannot contain invalid characters
+
 supplementary.transportInfo.container = Were the goods in a container?
 supplementary.transportInfo.container.error.empty = Please select an option
 supplementary.transportInfo.containers.title = Container information 

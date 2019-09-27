@@ -159,7 +159,7 @@ trait ExportsDeclarationBuilder {
   def withBorderTransport(
     borderModeOfTransportCode: String = "",
     meansOfTransportOnDepartureType: String = "",
-    meansOfTransportOnDepartureIDNumber: Option[String] = None
+    meansOfTransportOnDepartureIDNumber: String = ""
   ): ExportsDeclarationModifier =
     _.copy(
       borderTransport = Some(
@@ -227,7 +227,7 @@ trait ExportsDeclarationBuilder {
     meansOfTransportCrossingTheBorderNationality: Option[String] = None,
     container: Boolean = false,
     meansOfTransportCrossingTheBorderType: String = "",
-    meansOfTransportCrossingTheBorderIDNumber: Option[String] = None,
+    meansOfTransportCrossingTheBorderIDNumber: String = "",
     paymentMethod: Option[String] = None
   ): ExportsDeclarationModifier =
     _.copy(

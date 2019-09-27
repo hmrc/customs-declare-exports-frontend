@@ -26,8 +26,9 @@ import utils.validators.forms.FieldValidator.{isContainedIn, noLongerThan, _}
 case class BorderTransport(
   borderModeOfTransportCode: String,
   meansOfTransportOnDepartureType: String,
-  meansOfTransportOnDepartureIDNumber: Option[String]
+  meansOfTransportOnDepartureIDNumber: String
 )
+
 object BorderTransport {
   val formId = "BorderTransport"
 
@@ -45,14 +46,13 @@ object BorderTransport {
       "supplementary.transportInfo.meansOfTransport.departure.error.incorrect",
       isContainedIn(allowedMeansOfTransportTypeCodes)
     ),
-    "meansOfTransportOnDepartureIDNumber" -> optional(
-      text()
-        .verifying("supplementary.transportInfo.meansOfTransport.idNumber.error.length", noLongerThan(27))
-        .verifying(
-          "supplementary.transportInfo.meansOfTransport.idNumber.invalid",
-          isAlphanumericWithAllowedSpecialCharacters
-        )
-    )
+    "meansOfTransportOnDepartureIDNumber" -> text()
+      .verifying("supplementary.transportInfo.meansOfTransport.reference.error.empty", nonEmpty)
+      .verifying("supplementary.transportInfo.meansOfTransport.reference.error.length", noLongerThan(27))
+      .verifying(
+        "supplementary.transportInfo.meansOfTransport.reference.error.invalid",
+        isAlphanumericWithAllowedSpecialCharacters
+      )
   )(BorderTransport.apply)(BorderTransport.unapply)
 
   def form(): Form[BorderTransport] = Form(BorderTransport.formMapping)

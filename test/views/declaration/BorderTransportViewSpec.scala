@@ -33,155 +33,208 @@ import views.html.declaration.border_transport
 import views.tags.ViewTest
 
 @ViewTest
-class BorderTransportViewSpec extends BorderTransportFields with CommonMessages with Stubs {
+class BorderTransportViewSpec extends UnitViewSpec with CommonMessages with Stubs {
+
+  val form: Form[BorderTransport] = BorderTransport.form()
 
   private val borderTransportPage = new border_transport(mainTemplate)
+
   def createView(form: Form[BorderTransport] = form): Html =
     borderTransportPage(Mode.Normal, form)(request, messages)
 
   "BorderTransport View" should {
+    val view = createView()
+
+    "have defined translation for used labels" in {
+      val messages = realMessagesApi.preferred(request)
+      messages must haveTranslationFor("supplementary.transportInfo.title")
+      messages must haveTranslationFor("supplementary.transportInfo.title")
+      messages must haveTranslationFor(backCaption)
+      messages must haveTranslationFor(saveAndContinueCaption)
+      messages must haveTranslationFor(saveAndReturnCaption)
+      messages must haveTranslationFor("supplementary.transportInfo.borderTransportMode.header.hint")
+      messages must haveTranslationFor("supplementary.transportInfo.borderTransportMode.header")
+      messages must haveTranslationFor("supplementary.transportInfo.transportMode.sea")
+      messages must haveTranslationFor("supplementary.transportInfo.transportMode.road")
+      messages must haveTranslationFor("supplementary.transportInfo.transportMode.rail")
+      messages must haveTranslationFor("supplementary.transportInfo.transportMode.air")
+      messages must haveTranslationFor("supplementary.transportInfo.transportMode.postalOrMail")
+      messages must haveTranslationFor("supplementary.transportInfo.transportMode.fixedTransportInstallations")
+      messages must haveTranslationFor("supplementary.transportInfo.transportMode.inlandWaterway")
+      messages must haveTranslationFor("supplementary.transportInfo.transportMode.unknown")
+
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.departure.header")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.departure.header.hint")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.IMOShipIDNumber")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.nameOfVessel")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.wagonNumber")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.vehicleRegistrationNumber")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.IATAFlightNumber")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.aircraftRegistrationNumber")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.europeanVesselIDNumber")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel")
+
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.reference.header")
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.reference.hint")
+    }
 
     "display page title" in {
-      val view = createView()
-
       view.getElementById("title").text() mustBe messages("supplementary.transportInfo.title")
     }
 
     "display header" in {
-      val view = createView()
-
       view.select("legend>h1").text() mustBe messages("supplementary.transportInfo.title")
     }
 
     "display 'Back' button that links to 'Warehouse' page" in {
-
-      val backButton = createView().getElementById("link-back")
-
+      val backButton = view.getElementById("link-back")
       backButton.text() mustBe messages(backCaption)
-      backButton.attr("href") mustBe routes.WarehouseIdentificationController.displayPage().url
+      backButton must haveHref(routes.WarehouseIdentificationController.displayPage())
     }
 
     "display 'Save and continue' button on page" in {
-      val view: Document = createView()
       view.getElementById("submit").text() mustBe messages(saveAndContinueCaption)
     }
 
     "display 'Save and return' button on page" in {
-      val view: Document = createView()
-      view.getElementById("submit_and_return").text() mustBe messages(saveAndReturnCaption)
-      view.getElementById("submit_and_return").attr("name") mustBe SaveAndReturn.toString
+      val saveAndReturn = view.getElementById("submit_and_return")
+      saveAndReturn.text() mustBe messages(saveAndReturnCaption)
+      saveAndReturn must haveAttribute("name", SaveAndReturn.toString)
     }
 
-    "have labels for all fields" in {
-      val view = createView()
-      view
-        .getElementById("borderModeOfTransportCode")
-        .getElementsByClass("form-hint")
-        .text() mustBe messages("supplementary.transportInfo.borderTransportMode.header.hint")
+    "display 'Mode of Transport' section" which {
 
-      view
-        .getElementById("borderModeOfTransportCode")
-        .getElementsByTag("legend")
-        .text()
-        .startsWith(messages("supplementary.transportInfo.borderTransportMode.header")) mustBe true
+      val section = view.getElementById("borderModeOfTransportCode")
 
-      view.getElementById("Border_Sea-label").text() mustBe "supplementary.transportInfo.transportMode.sea"
-      view.getElementById("Border_Road-label").text() mustBe "supplementary.transportInfo.transportMode.road"
-      view.getElementById("Border_Rail-label").text() mustBe "supplementary.transportInfo.transportMode.rail"
-      view.getElementById("Border_Air-label").text() mustBe "supplementary.transportInfo.transportMode.air"
-      view
-        .getElementById("Border_PostalOrMail-label")
-        .text() mustBe "supplementary.transportInfo.transportMode.postalOrMail"
+      "have correct hint" in {
+        section
+          .getElementsByClass("form-hint")
+          .text() mustBe messages("supplementary.transportInfo.borderTransportMode.header.hint")
+      }
 
-      view.body must include(expBorderModeOfTransportCode.body)
-      view.body must include(expMeansOfTransportOnDepartureType.body)
-      view.body must include(expMeansOfTransportOnDepartureIDNumber.body)
+      "have correct legend" in {
+        section
+          .getElementsByTag("legend")
+          .text() must startWith(messages("supplementary.transportInfo.borderTransportMode.header"))
+      }
+
+      "have 'Sea' option" in {
+        section.getElementById("Border_Sea-label").text() mustBe "supplementary.transportInfo.transportMode.sea"
+      }
+
+      "have 'Road' option" in {
+        section.getElementById("Border_Road-label").text() mustBe "supplementary.transportInfo.transportMode.road"
+      }
+
+      "have 'Rail' option" in {
+        section.getElementById("Border_Rail-label").text() mustBe "supplementary.transportInfo.transportMode.rail"
+      }
+
+      "have 'Air' option" in {
+        section.getElementById("Border_Air-label").text() mustBe "supplementary.transportInfo.transportMode.air"
+      }
+
+      "have 'Postal or Mail' option" in {
+        section
+          .getElementById("Border_PostalOrMail-label")
+          .text() mustBe "supplementary.transportInfo.transportMode.postalOrMail"
+      }
+
+      "have 'Fixed transport installations' option" in {
+        section
+          .getElementById("Border_FixedTransportInstallations-label")
+          .text() mustBe "supplementary.transportInfo.transportMode.fixedTransportInstallations"
+      }
+
+      "have 'Inland waterway transport' option" in {
+        section
+          .getElementById("Border_InlandWaterway-label")
+          .text() mustBe "supplementary.transportInfo.transportMode.inlandWaterway"
+      }
+
+      "have 'Mode unknown' option" in {
+        section
+          .getElementById("Border_Unknown-label")
+          .text() mustBe "supplementary.transportInfo.transportMode.unknown"
+      }
+    }
+
+    "display 'Transport details type' section " which {
+
+      val section = view.getElementById("meansOfTransportOnDepartureType")
+
+      "have label" in {
+        section
+          .getElementById("meansOfTransportOnDepartureType-label")
+          .text() mustBe "supplementary.transportInfo.meansOfTransport.departure.header"
+      }
+
+      "have hint" in {
+        section
+          .getElementById("meansOfTransportOnDepartureType-hint")
+          .text() mustBe "supplementary.transportInfo.meansOfTransport.departure.header.hint"
+      }
+
+      "have 'Ship number' option" in {
+        section
+          .getElementById("Departure_IMOShipIDNumber-label")
+          .text() mustBe "supplementary.transportInfo.meansOfTransport.IMOShipIDNumber"
+      }
+
+      "have 'Name of vessel' option" in {
+        section
+          .getElementById("Departure_NameOfVessel-label")
+          .text() mustBe "supplementary.transportInfo.meansOfTransport.nameOfVessel"
+      }
+
+      "have 'Vagon number' option" in {
+        section
+          .getElementById("Departure_WagonNumber-label")
+          .text() mustBe "supplementary.transportInfo.meansOfTransport.wagonNumber"
+      }
+
+      "have 'Vehice number' option" in {
+        section
+          .getElementById("Departure_VehicleRegistrationNumber-label")
+          .text() mustBe "supplementary.transportInfo.meansOfTransport.vehicleRegistrationNumber"
+      }
+
+      "have 'flight number' option" in {
+        section
+          .getElementById("Departure_IATAFlightNumber-label")
+          .text() mustBe "supplementary.transportInfo.meansOfTransport.IATAFlightNumber"
+      }
+
+      "have 'aircraft registration' option" in {
+        section
+          .getElementById("Departure_AircraftRegistrationNumber-label")
+          .text() mustBe "supplementary.transportInfo.meansOfTransport.aircraftRegistrationNumber"
+      }
+
+      "have 'eni code' optopn" in {
+        section
+          .getElementById("Departure_EuropeanVesselIDNumber-label")
+          .text() mustBe "supplementary.transportInfo.meansOfTransport.europeanVesselIDNumber"
+      }
+
+      "have 'inland waterway' option" in {
+        section
+          .getElementById("Departure_NameOfInlandWaterwayVessel-label")
+          .text() mustBe "supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel"
+      }
+    }
+
+    "display 'Reference' section" which {
+      "have label" in {
+        view
+          .getElementById("meansOfTransportOnDepartureIDNumber-label")
+          .text() mustBe "supplementary.transportInfo.meansOfTransport.reference.header"
+      }
+      "have hint" in {
+        view
+          .getElementById("meansOfTransportOnDepartureIDNumber-hint")
+          .text() mustBe "supplementary.transportInfo.meansOfTransport.reference.hint"
+      }
     }
   }
-}
-
-trait BorderTransportFields extends UnitViewSpec {
-  val form: Form[BorderTransport] = BorderTransport.form()
-
-  val expBorderModeOfTransportCode = field_radio(
-    field = form("borderModeOfTransportCode"),
-    legend = messages("supplementary.transportInfo.borderTransportMode.header"),
-    hint = Some(messages("supplementary.transportInfo.borderTransportMode.header.hint")),
-    inputs = Seq(
-      RadioOption("Border_Sea", Maritime, messages("supplementary.transportInfo.transportMode.sea")),
-      RadioOption("Border_Rail", Rail, messages("supplementary.transportInfo.transportMode.rail")),
-      RadioOption("Border_Road", Road, messages("supplementary.transportInfo.transportMode.road")),
-      RadioOption("Border_Air", Air, messages("supplementary.transportInfo.transportMode.air")),
-      RadioOption(
-        "Border_PostalOrMail",
-        PostalConsignment,
-        messages("supplementary.transportInfo.transportMode.postalOrMail")
-      ),
-      RadioOption(
-        "Border_FixedTransportInstallations",
-        FixedTransportInstallations,
-        messages("supplementary.transportInfo.transportMode.fixedTransportInstallations")
-      ),
-      RadioOption(
-        "Border_InlandWaterway",
-        InlandWaterway,
-        messages("supplementary.transportInfo.transportMode.inlandWaterway")
-      ),
-      RadioOption("Border_Unknown", Unknown, messages("supplementary.transportInfo.transportMode.unknown"))
-    )
-  )
-
-  val expMeansOfTransportOnDepartureType = field_radio(
-    field = form("meansOfTransportOnDepartureType"),
-    legend = messages("supplementary.transportInfo.meansOfTransport.departure.header"),
-    hint = Some(messages("supplementary.transportInfo.meansOfTransport.departure.header.hint")),
-    inputs = Seq(
-      RadioOption(
-        "Departure_IMOShipIDNumber",
-        IMOShipIDNumber,
-        messages("supplementary.transportInfo.meansOfTransport.IMOShipIDNumber")
-      ),
-      RadioOption(
-        "Departure_NameOfVessel",
-        NameOfVessel,
-        messages("supplementary.transportInfo.meansOfTransport.nameOfVessel")
-      ),
-      RadioOption(
-        "Departure_WagonNumber",
-        WagonNumber,
-        messages("supplementary.transportInfo.meansOfTransport.wagonNumber")
-      ),
-      RadioOption(
-        "Departure_VehicleRegistrationNumber",
-        VehicleRegistrationNumber,
-        messages("supplementary.transportInfo.meansOfTransport.vehicleRegistrationNumber")
-      ),
-      RadioOption(
-        "Departure_IATAFlightNumber",
-        IATAFlightNumber,
-        messages("supplementary.transportInfo.meansOfTransport.IATAFlightNumber")
-      ),
-      RadioOption(
-        "Departure_AircraftRegistrationNumber",
-        AircraftRegistrationNumber,
-        messages("supplementary.transportInfo.meansOfTransport.aircraftRegistrationNumber")
-      ),
-      RadioOption(
-        "Departure_EuropeanVesselIDNumber",
-        EuropeanVesselIDNumber,
-        messages("supplementary.transportInfo.meansOfTransport.europeanVesselIDNumber")
-      ),
-      RadioOption(
-        "Departure_NameOfInlandWaterwayVessel",
-        NameOfInlandWaterwayVessel,
-        messages("supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel")
-      )
-    )
-  )
-
-  val expMeansOfTransportOnDepartureIDNumber = field_text(
-    field = form("meansOfTransportOnDepartureIDNumber"),
-    label = messages("supplementary.transportInfo.meansOfTransport.reference.header")
-  )
-
 }

@@ -65,7 +65,7 @@ class BorderTransportControllerSpec extends ControllerSpec with ErrorHandlerMock
         withNewCaching(
           aDeclaration(
             withChoice(Choice.AllowedChoiceValues.SupplementaryDec),
-            withBorderTransport(Maritime, WagonNumber, None)
+            withBorderTransport(Maritime, WagonNumber, "FAA")
           )
         )
 
@@ -79,7 +79,7 @@ class BorderTransportControllerSpec extends ControllerSpec with ErrorHandlerMock
 
       "form is incorrect" in new SetUp {
 
-        val incorrectForm: JsValue = Json.toJson(BorderTransport("wrongValue", "wrongValue", None))
+        val incorrectForm: JsValue = Json.toJson(BorderTransport("wrongValue", "wrongValue", "FAA"))
 
         val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
 
@@ -91,7 +91,7 @@ class BorderTransportControllerSpec extends ControllerSpec with ErrorHandlerMock
 
       "information provided by user are correct" in new SetUp {
 
-        val correctForm: JsValue = Json.toJson(BorderTransport(Maritime, WagonNumber, None))
+        val correctForm: JsValue = Json.toJson(BorderTransport(Maritime, WagonNumber, "FAA"))
 
         val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 

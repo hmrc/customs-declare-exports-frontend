@@ -76,7 +76,8 @@
         )
         @components.fields.field_text(
             field = form("meansOfTransportCrossingTheBorderIDNumber"),
-            label = messages("supplementary.transportInfo.meansOfTransport.reference.header")
+            hint = Some(messages("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.hint")),
+            label = messages("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.header")
         )
         @components.fields.field_radio(
             field = form("container"),
