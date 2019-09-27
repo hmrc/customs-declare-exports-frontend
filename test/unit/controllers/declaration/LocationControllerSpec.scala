@@ -91,7 +91,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
         theResponseForm.value.value.typeOfLocation mustBe "A"
         theResponseForm.value.value.qualifierOfIdentification mustBe "B"
         theResponseForm.value.value.identificationOfLocation mustBe empty
-        theResponseForm.value.value.additionalQualifier mustBe empty
+        theResponseForm.value.value.additionalIdentifier mustBe empty
         theResponseForm.value.value.addressLine mustBe empty
         theResponseForm.value.value.postCode mustBe empty
         theResponseForm.value.value.city mustBe empty

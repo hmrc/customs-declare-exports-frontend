@@ -50,7 +50,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       messages must haveTranslationFor("supplementary.goodsLocation.typeOfLocation")
       messages must haveTranslationFor("supplementary.goodsLocation.qualifierOfIdentification")
       messages must haveTranslationFor("supplementary.goodsLocation.identificationOfLocation")
-      messages must haveTranslationFor("supplementary.goodsLocation.additionalQualifier")
+      messages must haveTranslationFor("supplementary.goodsLocation.additionalIdentifier")
       messages must haveTranslationFor("supplementary.goodsLocation.addressLine")
       messages must haveTranslationFor("supplementary.goodsLocation.postCode")
       messages must haveTranslationFor("supplementary.goodsLocation.city")
@@ -61,7 +61,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       messages must haveTranslationFor("supplementary.goodsLocation.qualifierOfIdentification.empty")
       messages must haveTranslationFor("supplementary.goodsLocation.qualifierOfIdentification.error")
       messages must haveTranslationFor("supplementary.goodsLocation.identificationOfLocation.error")
-      messages must haveTranslationFor("supplementary.goodsLocation.additionalQualifier.error")
+      messages must haveTranslationFor("supplementary.goodsLocation.additionalIdentifier.error")
       messages must haveTranslationFor("supplementary.goodsLocation.addressLine.error")
       messages must haveTranslationFor("supplementary.goodsLocation.postCode.error")
       messages must haveTranslationFor("supplementary.goodsLocation.city.error")
@@ -106,8 +106,8 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
     }
 
     "display empty input with label for Additional Identifier" in {
-      view.getElementById("additionalQualifier-label").text() mustBe "supplementary.goodsLocation.additionalQualifier"
-      view.getElementById("additionalQualifier").attr("value") mustBe empty
+      view.getElementById("additionalIdentifier-label").text() mustBe "supplementary.goodsLocation.additionalIdentifier"
+      view.getElementById("additionalIdentifier").attr("value") mustBe empty
     }
 
     "display empty input with label for Street and Number" in {
@@ -262,11 +262,11 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       val view = createView(form = form)
 
       checkErrorsSummary(view)
-      haveFieldErrorLink("additionalQualifier", "#additionalQualifier")
+      haveFieldErrorLink("additionalIdentifier", "#additionalIdentifier")
 
       view
-        .select("#error-message-additionalQualifier-input")
-        .text() mustBe "supplementary.goodsLocation.additionalQualifier.error"
+        .select("#error-message-additionalIdentifier-input")
+        .text() mustBe "supplementary.goodsLocation.additionalIdentifier.error"
     }
 
     "display error for incorrect Street and Number" in {
@@ -346,8 +346,8 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
             "Country",
             "ABC",
             "ABC",
-            Some("TEST"),
-            Some(TestHelper.createRandomAlphanumericString(33)),
+            Some(TestHelper.createRandomAlphanumericString(36)),
+            Some(TestHelper.createRandomAlphanumericString(4)),
             Some(TestHelper.createRandomAlphanumericString(71)),
             Some(TestHelper.createRandomAlphanumericString(10)),
             Some(TestHelper.createRandomAlphanumericString(36))
@@ -360,7 +360,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       haveFieldErrorLink("typeOfLocation", "#typeOfLocation")
       haveFieldErrorLink("qualifierOfIdentification", "#qualifierOfIdentification")
       haveFieldErrorLink("identificationOfLocation", "#identificationOfLocation")
-      haveFieldErrorLink("additionalQualifier", "#additionalQualifier")
+      haveFieldErrorLink("additionalIdentifier", "#additionalIdentifier")
       haveFieldErrorLink("addressLine", "#addressLine")
       haveFieldErrorLink("postCode", "#postCode")
       haveFieldErrorLink("city", "#city")
@@ -376,8 +376,8 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         .select("#error-message-identificationOfLocation-input")
         .text() mustBe "supplementary.goodsLocation.identificationOfLocation.error"
       view
-        .select("#error-message-additionalQualifier-input")
-        .text() mustBe "supplementary.goodsLocation.additionalQualifier.error"
+        .select("#error-message-additionalIdentifier-input")
+        .text() mustBe "supplementary.goodsLocation.additionalIdentifier.error"
       view.select("#error-message-postCode-input").text() mustBe "supplementary.goodsLocation.postCode.error"
       view.select("#error-message-city-input").text() mustBe "supplementary.goodsLocation.city.error"
     }
@@ -403,7 +403,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       haveFieldErrorLink("country", "#country")
       haveFieldErrorLink("typeOfLocation", "#typeOfLocation")
       haveFieldErrorLink("qualifierOfIdentification", "#qualifierOfIdentification")
-      haveFieldErrorLink("additionalQualifier", "#additionalQualifier")
+      haveFieldErrorLink("additionalIdentifier", "#additionalIdentifier")
       haveFieldErrorLink("addressLine", "#addressLine")
       haveFieldErrorLink("postCode", "#postCode")
       haveFieldErrorLink("city", "#city")
@@ -416,8 +416,8 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         .select("#error-message-qualifierOfIdentification-input")
         .text() mustBe "supplementary.goodsLocation.qualifierOfIdentification.error"
       view
-        .select("#error-message-additionalQualifier-input")
-        .text() mustBe "supplementary.goodsLocation.additionalQualifier.error"
+        .select("#error-message-additionalIdentifier-input")
+        .text() mustBe "supplementary.goodsLocation.additionalIdentifier.error"
       view.select("#error-message-postCode-input").text() mustBe "supplementary.goodsLocation.postCode.error"
       view.select("#error-message-city-input").text() mustBe "supplementary.goodsLocation.city.error"
     }
@@ -450,7 +450,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       view.getElementById("typeOfLocation").attr("value") must be("AB")
       view.getElementById("qualifierOfIdentification").attr("value") must be("CD")
       view.getElementById("identificationOfLocation").attr("value") must be("TST")
-      view.getElementById("additionalQualifier").attr("value") must be(ladditionalInformation)
+      view.getElementById("additionalIdentifier").attr("value") must be(ladditionalInformation)
       view.getElementById("addressLine").attr("value") must be(lstreetAndNumber)
       view.getElementById("postCode").attr("value") must be(lpostCode)
       view.getElementById("city").attr("value") must be(lcity)

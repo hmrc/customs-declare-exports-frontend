@@ -193,7 +193,7 @@ class SummaryPageViewSpec
       summaryPage must include("supplementary.summary.locations.goodsExaminationAddress")
       summaryPage must include("supplementary.summary.locations.goodsExaminationLocationType")
       summaryPage must include("supplementary.summary.locations.qualifierCode")
-      summaryPage must include("supplementary.summary.locations.additionalQualifier")
+      summaryPage must include("supplementary.summary.locations.additionalIdentifier")
       summaryPage must include("supplementary.summary.locations.warehouseType")
       summaryPage must include("supplementary.summary.locations.warehouseId")
       summaryPage must include("supplementary.summary.locations.supervisingCustomsOffice")

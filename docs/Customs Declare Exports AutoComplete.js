@@ -126,7 +126,7 @@ function completePage() {
         document.getElementById('typeOfLocation').value ='B';
         document.getElementById('qualifierOfIdentification').value ='Y';
         document.getElementById('identificationOfLocation').value ='FXT';
-        document.getElementById('additionalQualifier').value ='U1234567GB';
+        document.getElementById('additionalIdentifier').value ='123';
         selectFromAutoPredict(document.getElementById('country-container'), "United Kingdom");
         document.getElementsByClassName('button')[0].click()
     }
