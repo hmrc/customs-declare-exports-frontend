@@ -29,6 +29,22 @@ border: 0;
 
 /*
 ====================================
+Page heading for all our form pages
+====================================
+*/
+.page-heading {
+  display: table;
+  padding-top: 8px;
+  margin-top: 0px;
+  margin-bottom: 20px;
+}
+
+.page-heading .heading-secondary {
+  line-height: 1.25;
+}
+
+/*
+====================================
 Welsh/English language selector
 ====================================
 */

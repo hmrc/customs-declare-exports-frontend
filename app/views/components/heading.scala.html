@@ -16,9 +16,9 @@
 
 @(sectionHeader: Option[String] = None, title: Option[String], hint: Option[String] = None)
 
-<header class="page-heading" style="margin: 0">
+<header class="page-heading">
     @if(title.nonEmpty) {
-        <h1 style="margin-top: 0px; margin-bottom: 20px">@title.get</h1>
+        <h1 style="margin: 0px">@title.get</h1>
         @if(hint.nonEmpty) {
             <span class="form-hint">@hint.get</span>
         }
