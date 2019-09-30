@@ -19,7 +19,6 @@ package views.declaration
 import base.TestHelper
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
-import forms.common.Address
 import forms.declaration.{DeclarantDetails, EntityDetails}
 import helpers.views.declaration.{CommonMessages, DeclarantDetailsMessages}
 import models.Mode
@@ -62,46 +61,6 @@ class DeclarantDetailsViewSpec
       view.getElementById("details_eori").attr("value") mustBe empty
     }
 
-    "display empty input with label for Full name" in {
-
-      val view = createView()
-
-      view.getElementById("details_address_fullName-label").text() mustBe messages(fullName)
-      view.getElementById("details_address_fullName").attr("value") mustBe empty
-    }
-
-    "display empty input with label for Address" in {
-
-      val view = createView()
-
-      view.getElementById("details_address_addressLine-label").text() mustBe messages(addressLine)
-      view.getElementById("details_address_addressLine").attr("value") mustBe empty
-    }
-
-    "display empty input with label for Town or City" in {
-
-      val view = createView()
-
-      view.getElementById("details_address_townOrCity-label").text() mustBe messages(townOrCity)
-      view.getElementById("details_address_townOrCity").attr("value") mustBe empty
-    }
-
-    "display empty input with label for Postcode" in {
-
-      val view = createView()
-
-      view.getElementById("details_address_postCode-label").text() mustBe messages(postCode)
-      view.getElementById("details_address_postCode").attr("value") mustBe empty
-    }
-
-    "display empty input with label for Country" in {
-
-      val view = createView()
-
-      view.getElementById("details.address.country-label").text() mustBe messages("supplementary.address.country")
-      view.getElementById("details.address.country").attr("value") mustBe empty
-    }
-
     "display 'Back' button that links to 'Consignee Details' page" in {
 
       val view = declarantDetailsPage(Mode.Normal, form)(journeyRequest(), messages)
@@ -125,14 +84,14 @@ class DeclarantDetailsViewSpec
 
   "Declarant Details View with invalid input" should {
 
-    "display error when both EORI and business details are empty" in {
+    "display error when EORI is empty" in {
 
-      val view = createView(DeclarantDetails.form().bind(Map[String, String]()))
+      val view = createView(DeclarantDetails.form().fillAndValidate(DeclarantDetails(EntityDetails(Some(""), None))))
 
       checkErrorsSummary(view)
-      view must haveFieldErrorLink("details", "#details")
+      view must haveFieldErrorLink("details.eori", "#details_eori")
 
-      view.getElementById("error-message-details-input").text() mustBe messages(eoriOrAddressEmpty)
+      view.getElementById("error-message-details_eori-input").text() mustBe messages(eoriEmpty)
     }
 
     "display error when EORI is provided, but is incorrect" in {
@@ -149,315 +108,6 @@ class DeclarantDetailsViewSpec
       view.getElementById("error-message-details_eori-input").text() mustBe messages(eoriError)
     }
 
-    "display error for empty Full name" in {
-
-      val view = createView(
-        DeclarantDetails
-          .form()
-          .fillAndValidate(
-            DeclarantDetails(EntityDetails(None, Some(Address("", "Test Street", "Leeds", "LS18BN", "England"))))
-          )
-      )
-
-      checkErrorsSummary(view)
-      view must haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
-
-      view.getElementById("error-message-details_address_fullName-input").text() mustBe messages(fullNameEmpty)
-    }
-
-    "display error for incorrect Full name" in {
-
-      val view = createView(
-        DeclarantDetails
-          .form()
-          .fillAndValidate(
-            DeclarantDetails(
-              EntityDetails(
-                None,
-                Some(
-                  Address(TestHelper.createRandomAlphanumericString(71), "Test Street", "Leeds", "LS18BN", "England")
-                )
-              )
-            )
-          )
-      )
-
-      checkErrorsSummary(view)
-      view must haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
-
-      view.getElementById("error-message-details_address_fullName-input").text() mustBe messages(fullNameError)
-    }
-
-    "display error for empty Address" in {
-
-      val view = createView(
-        DeclarantDetails
-          .form()
-          .fillAndValidate(
-            DeclarantDetails(EntityDetails(None, Some(Address("Marco Polo", "", "Leeds", "LS18BN", "England"))))
-          )
-      )
-
-      checkErrorsSummary(view)
-      view must haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
-
-      view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages(addressLineEmpty)
-    }
-
-    "display error for incorrect Address" in {
-
-      val view = createView(
-        DeclarantDetails
-          .form()
-          .fillAndValidate(
-            DeclarantDetails(
-              EntityDetails(
-                None,
-                Some(Address("Marco Polo", TestHelper.createRandomAlphanumericString(71), "Leeds", "LS18BN", "England"))
-              )
-            )
-          )
-      )
-
-      checkErrorsSummary(view)
-      view must haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
-
-      view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages(addressLineError)
-    }
-
-    "display error for empty Town or city" in {
-
-      val view = createView(
-        DeclarantDetails
-          .form()
-          .fillAndValidate(
-            DeclarantDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "", "LS18BN", "England"))))
-          )
-      )
-
-      checkErrorsSummary(view)
-      view must haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
-
-      view.getElementById("error-message-details_address_townOrCity-input").text() mustBe messages(townOrCityEmpty)
-    }
-
-    "display error for incorrect Town or city" in {
-
-      val view = createView(
-        DeclarantDetails
-          .form()
-          .fillAndValidate(
-            DeclarantDetails(
-              EntityDetails(
-                None,
-                Some(
-                  Address(
-                    "Marco Polo",
-                    "Test Street",
-                    TestHelper.createRandomAlphanumericString(71),
-                    "LS18BN",
-                    "England"
-                  )
-                )
-              )
-            )
-          )
-      )
-
-      checkErrorsSummary(view)
-      view must haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
-
-      view.getElementById("error-message-details_address_townOrCity-input").text() mustBe messages(townOrCityError)
-    }
-
-    "display error for empty Postcode" in {
-
-      val view = createView(
-        DeclarantDetails
-          .form()
-          .fillAndValidate(
-            DeclarantDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "", "England"))))
-          )
-      )
-      checkErrorsSummary(view)
-      view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
-
-      view.getElementById("error-message-details_address_postCode-input").text() mustBe messages(postCodeEmpty)
-    }
-
-    "display error for incorrect Postcode" in {
-
-      val view = createView(
-        DeclarantDetails
-          .form()
-          .fillAndValidate(
-            DeclarantDetails(
-              EntityDetails(
-                None,
-                Some(
-                  Address(
-                    "Marco Polo",
-                    "Test Street",
-                    "Leeds",
-                    TestHelper.createRandomAlphanumericString(71),
-                    "England"
-                  )
-                )
-              )
-            )
-          )
-      )
-
-      checkErrorsSummary(view)
-      view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
-
-      view.getElementById("error-message-details_address_postCode-input").text() mustBe messages(postCodeError)
-    }
-
-    "display error for empty Country" in {
-
-      val view = createView(
-        DeclarantDetails
-          .form()
-          .fillAndValidate(
-            DeclarantDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", ""))))
-          )
-      )
-
-      checkErrorsSummary(view)
-      view must haveFieldErrorLink("details.address.country", "#details_address_country")
-
-      view.select("span.error-message").text() mustBe messages(countryEmpty)
-    }
-
-    "display error for incorrect Country" in {
-
-      val view = createView(
-        DeclarantDetails
-          .form()
-          .fillAndValidate(
-            DeclarantDetails(
-              EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "Barcelona")))
-            )
-          )
-      )
-
-      checkErrorsSummary(view)
-      view must haveFieldErrorLink("details.address.country", "#details_address_country")
-
-      view.select("span.error-message").text() mustBe messages(countryError)
-    }
-
-    "display errors when everything except Full name is empty" in {
-
-      val view = createView(
-        DeclarantDetails
-          .form()
-          .fillAndValidate(DeclarantDetails(EntityDetails(None, Some(Address("Marco Polo", "", "", "", "")))))
-      )
-
-      checkErrorsSummary(view)
-      view must haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
-      view must haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
-      view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
-      view must haveFieldErrorLink("details.address.country", "#details_address_country")
-
-      view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages(addressLineEmpty)
-      view.getElementById("error-message-details_address_townOrCity-input").text() mustBe messages(townOrCityEmpty)
-      view.getElementById("error-message-details_address_postCode-input").text() mustBe messages(postCodeEmpty)
-      view.select("span.error-message").text() mustBe messages(countryEmpty)
-
-    }
-
-    "display errors when everything except Country is empty" in {
-
-      val view = createView(
-        DeclarantDetails
-          .form()
-          .fillAndValidate(DeclarantDetails(EntityDetails(None, Some(Address("", "", "", "", "Ukraine")))))
-      )
-
-      checkErrorsSummary(view)
-      view must haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
-      view must haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
-      view must haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
-      view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
-
-      view.getElementById("error-message-details_address_fullName-input").text() mustBe messages(fullNameEmpty)
-      view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages(addressLineEmpty)
-      view.getElementById("error-message-details_address_townOrCity-input").text() mustBe messages(townOrCityEmpty)
-      view.getElementById("error-message-details_address_postCode-input").text() mustBe messages(postCodeEmpty)
-    }
-
-    "display errors when everything except Full name is incorrect" in {
-
-      val view = createView(
-        DeclarantDetails
-          .form()
-          .fillAndValidate(
-            DeclarantDetails(
-              EntityDetails(
-                None,
-                Some(
-                  Address(
-                    "Marco Polo",
-                    TestHelper.createRandomAlphanumericString(71),
-                    TestHelper.createRandomAlphanumericString(71),
-                    TestHelper.createRandomAlphanumericString(71),
-                    TestHelper.createRandomAlphanumericString(71)
-                  )
-                )
-              )
-            )
-          )
-      )
-
-      checkErrorsSummary(view)
-      view must haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
-      view must haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
-      view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
-      view must haveFieldErrorLink("details.address.country", "#details_address_country")
-
-      view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages(addressLineError)
-      view.getElementById("error-message-details_address_townOrCity-input").text() mustBe messages(townOrCityError)
-      view.getElementById("error-message-details_address_postCode-input").text() mustBe messages(postCodeError)
-      view.select("span.error-message").text() mustBe messages(countryError)
-    }
-
-    "display errors when everything except Country is incorrect" in {
-
-      val view = createView(
-        DeclarantDetails
-          .form()
-          .fillAndValidate(
-            DeclarantDetails(
-              EntityDetails(
-                None,
-                Some(
-                  Address(
-                    TestHelper.createRandomAlphanumericString(71),
-                    TestHelper.createRandomAlphanumericString(71),
-                    TestHelper.createRandomAlphanumericString(71),
-                    TestHelper.createRandomAlphanumericString(71),
-                    "Ukraine"
-                  )
-                )
-              )
-            )
-          )
-      )
-
-      checkErrorsSummary(view)
-      view must haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
-      view must haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
-      view must haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
-      view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
-
-      view.getElementById("error-message-details_address_fullName-input").text() mustBe messages(fullNameError)
-      view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages(addressLineError)
-      view.getElementById("error-message-details_address_townOrCity-input").text() mustBe messages(townOrCityError)
-      view.getElementById("error-message-details_address_postCode-input").text() mustBe messages(postCodeError)
-    }
   }
 
   "Declarant Details View when filled" should {
@@ -468,41 +118,7 @@ class DeclarantDetailsViewSpec
       val view = createView(form)
 
       view.getElementById("details_eori").attr("value") mustBe "1234"
-      view.getElementById("details_address_fullName").attr("value") mustBe empty
-      view.getElementById("details_address_addressLine").attr("value") mustBe empty
-      view.getElementById("details_address_townOrCity").attr("value") mustBe empty
-      view.getElementById("details_address_postCode").attr("value") mustBe empty
-      view.getElementById("details.address.country").attr("value") mustBe empty
     }
 
-    "display data in Business address inputs" in {
-
-      val form = DeclarantDetails
-        .form()
-        .fill(DeclarantDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "test4")))))
-      val view = createView(form)
-
-      view.getElementById("details_eori").attr("value") mustBe empty
-      view.getElementById("details_address_fullName").attr("value") mustBe "test"
-      view.getElementById("details_address_addressLine").attr("value") mustBe "test1"
-      view.getElementById("details_address_townOrCity").attr("value") mustBe "test2"
-      view.getElementById("details_address_postCode").attr("value") mustBe "test3"
-      view.getElementById("details.address.country").attr("value") mustBe "test4"
-    }
-
-    "display data in both EORI and Business address inputs" in {
-
-      val form = DeclarantDetails
-        .form()
-        .fill(DeclarantDetails(EntityDetails(Some("1234"), Some(Address("test", "test1", "test2", "test3", "test4")))))
-      val view = createView(form)
-
-      view.getElementById("details_eori").attr("value") mustBe "1234"
-      view.getElementById("details_address_fullName").attr("value") mustBe "test"
-      view.getElementById("details_address_addressLine").attr("value") mustBe "test1"
-      view.getElementById("details_address_townOrCity").attr("value") mustBe "test2"
-      view.getElementById("details_address_postCode").attr("value") mustBe "test3"
-      view.getElementById("details.address.country").attr("value") mustBe "test4"
-    }
   }
 }

@@ -223,7 +223,7 @@ supplementary.consignor.eori = Exporter’s EORI number
 supplementary.consignor.address.info = Exporter’s name and business address
 
 supplementary.declarant.title = Who is the declarant?
-supplementary.declarant.title.hint = Enter the declarant’s EORI number or name and business address.
+supplementary.declarant.title.hint = Enter the declarant’s EORI number.
 supplementary.declarant.eori.info = Declarant’s EORI number
 supplementary.declarant.address.info = Declarant’s name and business address
 
