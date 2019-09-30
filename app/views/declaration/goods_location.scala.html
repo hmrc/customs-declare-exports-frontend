@@ -35,9 +35,10 @@
             @components.error_summary(form.errors)
 
             @components.heading(
-                Some(messages("declaration.summary.locations.header")),
-                Some(messages("supplementary.goodsLocation.title")),
-                Some(messages("supplementary.goodsLocation.hint")))
+                sectionHeader = messages("declaration.summary.locations.header"),
+                title = messages("supplementary.goodsLocation.title"),
+                hint = messages("supplementary.goodsLocation.hint")
+            )
 
             @components.fields.field_text(
                 field = form("typeOfLocation"),

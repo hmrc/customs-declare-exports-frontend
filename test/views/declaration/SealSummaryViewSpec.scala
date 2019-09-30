@@ -48,10 +48,6 @@ class SealSummaryViewSpec extends UnitViewSpec with Stubs with MustMatchers with
       view.getElementById("title").text() must be(messages("standard.seal.title"))
     }
 
-    "display header" in {
-      view.select("legend>h1").text() must be(messages("standard.seal.title"))
-    }
-
     "display summary of seals" in {
       view.getElementById("removable_elements-row0-label").text() must be(sealId)
     }

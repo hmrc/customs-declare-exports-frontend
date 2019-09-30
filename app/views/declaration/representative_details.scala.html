@@ -37,8 +37,9 @@
         @components.error_summary(form.errors)
 
         @components.heading(
-            Some(messages("supplementary.summary.parties.header")),
-            Some(messages("supplementary.representative.header")))
+            sectionHeader = messages("supplementary.summary.parties.header"),
+            title = messages("supplementary.representative.header")
+        )
 
         <p>@messages("supplementary.representative.hint")</p>
 
@@ -55,7 +56,7 @@
             @components.address(form, "details.address", Some(messages("supplementary.representative.address.info")))
         }
 
-        @components.heading(title = Some("supplementary.representative.representationType.header"))
+        <h1 class="title" title="title-representation-type">@messages("supplementary.representative.representationType.header")</h1>
 
         @components.fields.field_radio(
             field = form("statusCode"),

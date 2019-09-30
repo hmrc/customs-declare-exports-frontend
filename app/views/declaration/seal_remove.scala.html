@@ -35,7 +35,7 @@
 
     @components.error_summary(form.errors)
 
-    @components.heading(None, Some(messages("standard.seal.remove.title", containerId)), None)
+    @components.heading(title = messages("standard.seal.remove.title", containerId))
 
     @helper.form(SealController.submitSealRemove(mode, containerId, sealId), 'autoComplete -> "off") {
         @helper.CSRF.formField

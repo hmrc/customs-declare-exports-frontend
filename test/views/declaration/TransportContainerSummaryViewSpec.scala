@@ -51,10 +51,6 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with Stubs with Mus
       view.getElementById("title").text() must be(messages("supplementary.transportInfo.containers.title"))
     }
 
-    "display header" in {
-      view.select("legend>h1").text() must be(messages("supplementary.transportInfo.containers.title"))
-    }
-
     "display summary of container with seals" in {
       view.getElementById("containers-row0-container").text() must be(containerId)
       view.getElementById("containers-row0-seals").text() must be(sealId)

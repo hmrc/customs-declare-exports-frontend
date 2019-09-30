@@ -42,13 +42,7 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
   "Choice View on empty page" should {
 
     "display page title" in {
-
       createView().select("title").text() mustBe messages(title)
-    }
-
-    "display header with hint" in {
-
-      createView().select("legend>h1").text() mustBe messages(title)
     }
 
     "display four radio buttons with description (not selected)" in {

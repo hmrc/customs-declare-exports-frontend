@@ -53,10 +53,6 @@ class SealRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers with 
       view.getElementById("title").text() must be(messages("standard.seal.remove.title"))
     }
 
-    "display header" in {
-      view.select("legend>h1").text() must be(messages("standard.seal.remove.title"))
-    }
-
     "display seal to remove" in {
       view.getElementById("seal-table").text() must include(sealId)
     }

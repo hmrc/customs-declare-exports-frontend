@@ -35,8 +35,8 @@
         @components.error_summary(form.errors)
 
         @components.heading(
-            Some(messages("declaration.summary.locations.header")),
-            Some(messages("declaration.officeOfExit")))
+            sectionHeader = messages("declaration.summary.locations.header"),
+            title = messages("declaration.officeOfExit"))
 
         @components.fields.field_autocomplete(
                   field = form("officeId"),

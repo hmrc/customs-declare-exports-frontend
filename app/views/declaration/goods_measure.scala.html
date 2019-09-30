@@ -30,8 +30,9 @@
     @components.error_summary(form.errors)
 
     @components.heading(
-        Some(messages("supplementary.items")),
-        Some(messages("supplementary.commodityMeasure.title")))
+        sectionHeader = messages("supplementary.items"),
+        title = messages("supplementary.commodityMeasure.title")
+    )
 
     @helper.form(CommodityMeasureController.submitForm(mode, itemId), 'autoComplete -> "off") {
         @helper.CSRF.formField

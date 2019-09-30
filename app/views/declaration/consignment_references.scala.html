@@ -31,8 +31,8 @@
     @components.error_summary(form.errors)
 
     @components.heading(
-        Some(messages("supplementary.consignmentReferences.heading")),
-        Some(messages("supplementary.consignmentReferences.header")))
+        title = messages("supplementary.consignmentReferences.header"),
+        sectionHeader = messages("supplementary.consignmentReferences.heading"))
 
     @helper.form(ConsignmentReferencesController.submitConsignmentReferences(mode), 'autoComplete -> "off") {
       @helper.CSRF.formField

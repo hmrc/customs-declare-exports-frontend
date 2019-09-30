@@ -39,10 +39,10 @@
         @defining(container.map(_.seals).getOrElse(Seq.empty)) { seals: Seq[Seal] =>
 
             @if(seals.nonEmpty) {
-                @components.heading(None, Some(messages("standard.seal.title", containerId)), None)
+                @components.heading(title = messages("standard.seal.title", containerId))
             }
             @if(seals.isEmpty) {
-                @components.heading(None, Some(messages("standard.seal.add.first", containerId)), None)
+                @components.heading(title = messages("standard.seal.add.first", containerId))
             }
 
             @helper.form(SealController.submitSummaryAction(mode, containerId), 'autoComplete -> "off") {

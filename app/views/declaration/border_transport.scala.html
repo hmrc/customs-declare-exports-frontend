@@ -33,7 +33,7 @@
 
     @components.error_summary(form.errors)
 
-    @components.heading(None, Some(messages("supplementary.transportInfo.title")), None)
+    @components.heading(title = messages("supplementary.transportInfo.title"))
 
     @helper.form(BorderTransportController.submitForm(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField

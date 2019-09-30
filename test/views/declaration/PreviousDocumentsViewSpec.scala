@@ -72,11 +72,6 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
       view.getElementById("section-header").text() must be("supplementary.consignmentReferences.heading")
     }
 
-    "display header with hint" in {
-      view.select("legend>h1").text() must be("supplementary.previousDocuments.title")
-      view.select("legend>span").text() must include("")
-    }
-
     "display three radio buttons with description (not selected)" in {
 
       val view = createView(form = Document.form.fill(Document("", "", "", Some(""))))

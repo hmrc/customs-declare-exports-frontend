@@ -21,8 +21,9 @@
 @(form: Form[AdditionalDeclarationType])(implicit messages: Messages)
 
 @components.heading(
-    Some(messages("declaration.declarationType.title")),
-    Some(messages("declaration.declarationType.header.standard")))
+    sectionHeader = messages("declaration.declarationType.title"),
+    title = messages("declaration.declarationType.header.standard")
+)
 
 @components.fields.field_radio(
     field = form("additionalDeclarationType"),

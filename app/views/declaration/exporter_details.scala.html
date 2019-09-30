@@ -34,8 +34,9 @@
         @components.error_summary(form.errors)
 
         @components.heading(
-            Some(messages("supplementary.summary.parties.header")),
-            Some(messages("supplementary.consignor.title")))
+            sectionHeader = messages("supplementary.summary.parties.header"),
+            title = messages("supplementary.consignor.title")
+        )
 
         <p>@messages("supplementary.consignor.title.hint")</p>
 

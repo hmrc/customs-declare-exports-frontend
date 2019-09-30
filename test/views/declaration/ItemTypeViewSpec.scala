@@ -83,10 +83,6 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         view.getElementById("section-header").text() mustBe "supplementary.items"
       }
 
-      "display header" in {
-        view.select("legend>h1").text() mustBe "declaration.itemType.title"
-      }
-
       "display empty input with label for CNC" in {
         view
           .getElementById("combinedNomenclatureCode-label")

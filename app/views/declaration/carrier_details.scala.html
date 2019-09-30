@@ -30,9 +30,7 @@
 
     @components.error_summary(form.errors)
 
-    @components.heading(
-        Some(messages("supplementary.summary.parties.header")),
-        Some(messages("supplementary.carrier.title")))
+    @components.heading(title = messages("supplementary.carrier.title"))
 
     <p>@messages("supplementary.carrier.title.hint")</p>
 

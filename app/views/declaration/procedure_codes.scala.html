@@ -34,8 +34,9 @@
             @components.error_summary(form.errors)
 
             @components.heading(
-                Some(messages("supplementary.items")),
-                Some(messages("supplementary.procedureCodes.title")))
+                sectionHeader = messages("supplementary.items"),
+                title = messages("supplementary.procedureCodes.title")
+            )
 
             @components.fields.field_text(
                 field = form("procedureCode"),

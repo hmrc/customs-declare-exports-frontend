@@ -50,10 +50,6 @@ class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestData 
       view.select("title").text() must be("supplementary.warehouse.title")
     }
 
-    "display header" in {
-      view.select("legend>h1").text() must be("supplementary.warehouse.title")
-    }
-
     "display 'Back' button that links to 'Supervising Office' page" in {
       val backButton = view.getElementById("link-back")
 
