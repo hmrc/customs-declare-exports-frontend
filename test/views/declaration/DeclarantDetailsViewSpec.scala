@@ -84,14 +84,14 @@ class DeclarantDetailsViewSpec
 
   "Declarant Details View with invalid input" should {
 
-    "display error when both EORI and business details are empty" in {
+    "display error when EORI is empty" in {
 
-      val view = createView(DeclarantDetails.form().bind(Map[String, String]()))
+      val view = createView(DeclarantDetails.form().fillAndValidate(DeclarantDetails(EntityDetails(Some(""), None))))
 
       checkErrorsSummary(view)
-      view must haveFieldErrorLink("details", "#details")
+      view must haveFieldErrorLink("details.eori", "#details_eori")
 
-      view.getElementById("error-message-details-input").text() mustBe messages(eoriEmpty)
+      view.getElementById("error-message-details_eori-input").text() mustBe messages(eoriEmpty)
     }
 
     "display error when EORI is provided, but is incorrect" in {
