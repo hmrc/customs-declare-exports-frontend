@@ -124,63 +124,53 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Stub
           .text() mustBe empty
       }
 
-      "display 'Declarant address' table row with no value" in {
-
-        emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(6)>td:nth-child(1)")
-          .text() mustBe "supplementary.summary.parties.declarantAddress"
-        emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(6)>td:nth-child(2)")
-          .text() mustBe empty
-      }
-
       "display 'Representative ID' table row with no value" in {
 
         emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(1)")
+          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(6)>td:nth-child(1)")
           .text() mustBe "supplementary.summary.parties.representativeId"
         emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(2)")
+          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(6)>td:nth-child(2)")
           .text() mustBe empty
       }
 
       "display 'Representative address' table row with no value" in {
 
         emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(1)")
+          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(1)")
           .text() mustBe "supplementary.summary.parties.representativeAddress"
         emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(2)")
+          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(2)")
           .text() mustBe empty
       }
 
       "display 'Representation type' table row with no value" in {
 
         emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(1)")
+          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(1)")
           .text() mustBe "supplementary.summary.parties.representationType"
         emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(2)")
+          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(2)")
           .text() mustBe empty
       }
 
       "display 'Authorised party EORI' table row with no value" in {
 
         emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(10)>td:nth-child(1)")
+          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(1)")
           .text() mustBe "supplementary.summary.parties.authorizedPartyEori"
         emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(10)>td:nth-child(2)")
+          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(2)")
           .text() mustBe empty
       }
 
       "display 'ID status number authorisation code' table row with no value" in {
 
         emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(11)>td:nth-child(1)")
+          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(10)>td:nth-child(1)")
           .text() mustBe "supplementary.summary.parties.idStatusNumberAuthorisationCode"
         emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(11)>td:nth-child(2)")
+          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(10)>td:nth-child(2)")
           .text() mustBe empty
       }
 
@@ -279,29 +269,16 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Stub
           .text() must equal(declarantDetails.details.eori.get)
       }
 
-      "display 'Declarant address' table row with proper value" in {
-
-        val declarantDetails = correctDeclarantDetailsAddressOnly
-        val view = createView(Some(Parties(declarantDetails = Some(declarantDetails))))
-
-        view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(6)>td:nth-child(1)")
-          .text() mustBe "supplementary.summary.parties.declarantAddress"
-        view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(6)>td:nth-child(2)")
-          .text() must equal(extractAddress(declarantDetails.details.address.get))
-      }
-
       "display 'Representative ID' table row with proper value" in {
 
         val representativeDetails = correctRepresentativeDetailsEORIOnly
         val view = createView(Some(Parties(representativeDetails = Some(representativeDetails))))
 
         view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(1)")
+          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(6)>td:nth-child(1)")
           .text() mustBe "supplementary.summary.parties.representativeId"
         view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(2)")
+          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(6)>td:nth-child(2)")
           .text() must equal(representativeDetails.details.flatMap(_.eori).get)
       }
 
@@ -311,10 +288,10 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Stub
         val view = createView(Some(Parties(representativeDetails = Some(representativeDetails))))
 
         view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(1)")
+          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(1)")
           .text() mustBe "supplementary.summary.parties.representativeAddress"
         view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(2)")
+          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(2)")
           .text() must equal(extractAddress(representativeDetails.details.flatMap(_.address).get))
       }
 
@@ -324,10 +301,10 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Stub
         val view = createView(Some(Parties(representativeDetails = Some(representativeDetails))))
 
         view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(1)")
+          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(1)")
           .text() mustBe "supplementary.summary.parties.representationType"
         view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(2)")
+          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(2)")
           .text() must equal(representativeDetails.statusCode.get)
       }
 
@@ -338,10 +315,10 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Stub
         val view = createView(Some(Parties(declarationHoldersData = Some(declarationHoldersData))))
 
         view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(10)>td:nth-child(1)")
+          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(1)")
           .text() mustBe "supplementary.summary.parties.authorizedPartyEori"
         view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(10)>td:nth-child(2)")
+          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(2)")
           .text() must equal(declarationHoldersData.holders.head.eori.get)
       }
 
@@ -352,10 +329,10 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Stub
         val view = createView(Some(Parties(declarationHoldersData = Some(declarationHoldersData))))
 
         view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(11)>td:nth-child(1)")
+          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(10)>td:nth-child(1)")
           .text() mustBe "supplementary.summary.parties.idStatusNumberAuthorisationCode"
         view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(11)>td:nth-child(2)")
+          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(10)>td:nth-child(2)")
           .text() mustBe declarationHoldersData.holders.head.authorisationTypeCode.get
       }
 
