@@ -37,9 +37,9 @@
 
             @components.error_summary(form.errors)
 
-            @components.section_header(messages("supplementary.warehouse.title.hint"))
-
-            @components.page_title(Some("supplementary.warehouse.title"))
+            @components.heading(
+                Some(messages("supplementary.warehouse.title.hint")),
+                Some(messages("supplementary.warehouse.title")))
 
             @components.fields.field_autocomplete(
                 field = form("supervisingCustomsOffice"),

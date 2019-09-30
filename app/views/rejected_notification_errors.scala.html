@@ -27,9 +27,9 @@
 
     <br/>
 
-    @components.section_header(messages("rejected.notification.ucr", submission.ducr.getOrElse("No DUCR")))
-
-    @components.page_title(Some(messages("rejected.notification.title")))
+    @components.heading(
+        Some(messages("rejected.notification.ucr", submission.ducr.getOrElse("No DUCR"))),
+        Some(messages("rejected.notification.title")))
 
     <span id="information">@messages("rejected.notification.information")</span>
 

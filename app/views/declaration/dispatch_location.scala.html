@@ -40,11 +40,11 @@
   @helper.form(controllers.declaration.routes.DispatchLocationController.submitForm(mode), 'autoComplete -> "off") {
       @helper.CSRF.formField
 
-    @components.error_summary(form.errors)
+      @components.error_summary(form.errors)
 
-    @components.section_header(messages("declaration.summary.locations.header"))
-
-    @components.page_title(Some(messages("supplementary.dispatchLocation.header")))
+      @components.heading(
+          Some(messages("declaration.summary.locations.header")),
+          Some(messages("supplementary.dispatchLocation.header")))
 
     @components.fields.field_radio(
       field = form("dispatchLocation"),

@@ -32,9 +32,9 @@
 
     @components.error_summary(form.errors)
 
-    @components.section_header(messages("declaration.fiscalInformation.header"))
-
-    @components.page_title(Some("declaration.fiscalInformation.title"))
+    @components.heading(
+        Some(messages("declaration.fiscalInformation.header")),
+        Some(messages("declaration.fiscalInformation.title")))
 
     <p>
         If you have entered a procedure code which starts ‘10 42’, please state whether you would like to claim for OSR.

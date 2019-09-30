@@ -34,7 +34,10 @@
 
     @components.error_summary(form.errors)
 
-    @components.section_header(messages("supplementary.consignmentReferences.heading"))
+    @components.heading(
+        Some(messages("supplementary.consignmentReferences.heading")),
+        Some(messages("supplementary.previousDocuments.title")),
+        Some(messages("supplementary.previousDocuments.hint")))
 
     @helper.form(PreviousDocumentsController.savePreviousDocuments(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
@@ -68,8 +71,6 @@
                 </tbody>
             </table>
         }
-
-        @components.page_title(Some("supplementary.previousDocuments.title"), Some("supplementary.previousDocuments.hint"))
 
         @components.fields.field_radio(
             field = form("documentCategory"),

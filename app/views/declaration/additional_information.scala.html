@@ -34,9 +34,9 @@
 
     @components.error_summary(form.errors)
 
-    @components.section_header(messages("supplementary.summary.yourReferences.header"))
-
-    @components.page_title(Some("supplementary.additionalInformation.title"))
+    @components.heading(
+        Some(messages("supplementary.summary.yourReferences.header")),
+        Some(messages("supplementary.additionalInformation.title")))
 
     @helper.form(AdditionalInformationController.saveAdditionalInfo(mode, itemId), 'autoComplete -> "off") {
         @helper.CSRF.formField

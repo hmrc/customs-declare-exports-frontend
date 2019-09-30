@@ -30,9 +30,9 @@
 
     @components.error_summary(form.errors)
 
-    @components.section_header(messages("supplementary.summary.parties.header"))
-
-    @components.page_title(Some("supplementary.consignee.title"))
+    @components.heading(
+        Some(messages("supplementary.summary.parties.header")),
+        Some(messages("supplementary.consignee.title")))
 
     <p>@messages("supplementary.consignee.title.hint")</p>
 
