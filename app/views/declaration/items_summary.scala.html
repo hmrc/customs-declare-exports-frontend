@@ -22,12 +22,14 @@
 @this(main_template: views.html.main_template)
 
 
-@(mode: Mode, items: List[ExportItem])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, items: List[ExportItem], itemsErrors: Seq[FormError] = Seq.empty)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.items")
 ) {
     @components.back_link(routes.PreviousDocumentsController.displayPage(mode), mode)
+
+    @components.error_summary(itemsErrors)
 
     @components.section_header(messages("supplementary.items"))
 
