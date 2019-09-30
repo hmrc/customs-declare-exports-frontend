@@ -41,6 +41,10 @@ case class ExportItem(
 ) {
   def hasFiscalReferences: Boolean =
     fiscalInformation.exists(_.onwardSupplyRelief == FiscalInformation.AllowedFiscalInformationAnswers.yes)
+
+  def isCompleted: Boolean =
+    procedureCodes.isDefined && fiscalInformation.isDefined && itemType.isDefined &&
+      packageInformation.nonEmpty && commodityMeasure.isDefined && additionalInformation.isDefined
 }
 
 object ExportItem {

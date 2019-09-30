@@ -51,7 +51,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
-    when(mockItemsSummaryPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockItemsSummaryPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockExportIdGeneratorService.generateItemId()).thenReturn(itemId)
   }
 
@@ -63,7 +63,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
 
   def theResponseForm: List[ExportItem] = {
     val captor = ArgumentCaptor.forClass(classOf[List[ExportItem]])
-    verify(mockItemsSummaryPage).apply(any(), captor.capture())(any(), any())
+    verify(mockItemsSummaryPage).apply(any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
@@ -76,7 +76,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
-        verify(mockItemsSummaryPage, times(1)).apply(any(), any())(any(), any())
+        verify(mockItemsSummaryPage, times(1)).apply(any(), any(), any())(any(), any())
 
         theResponseForm mustBe empty
       }
@@ -90,7 +90,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(Add.toString -> ""))
 
         status(result) mustBe SEE_OTHER
-        verify(mockItemsSummaryPage, times(0)).apply(any(), any())(any(), any())
+        verify(mockItemsSummaryPage, times(0)).apply(any(), any(), any())(any(), any())
         redirectLocation(result).value must endWith(s"/items/${itemId}/procedure-codes")
       }
     }
@@ -112,6 +112,20 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
           .displayPage(Mode.Normal)
       }
     }
+
+    "return 400 (BAD_REQUEST)" when {
+
+      "there is not completed item in the cache" in {
+
+        val cachedData = aDeclaration(withChoice(SupplementaryDec), withItem(anItem(withItemId("id"))))
+        withNewCaching(cachedData)
+
+        val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(SaveAndContinue.toString -> ""))
+
+        status(result) mustBe BAD_REQUEST
+        verify(mockItemsSummaryPage).apply(any(), any(), any())(any(), any())
+      }
+    }
   }
 
   "Remove" should {
@@ -123,7 +137,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.removeItem(Mode.Normal, itemId)(getRequest())
 
         status(result) mustBe SEE_OTHER
-        verify(mockItemsSummaryPage, times(0)).apply(any(), any())(any(), any())
+        verify(mockItemsSummaryPage, times(0)).apply(any(), any(), any())(any(), any())
       }
 
       "user successfully remove item" in {
@@ -135,7 +149,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.removeItem(Mode.Normal, itemId)(getRequest())
 
         status(result) mustBe SEE_OTHER
-        verify(mockItemsSummaryPage, times(0)).apply(any(), any())(any(), any())
+        verify(mockItemsSummaryPage, times(0)).apply(any(), any(), any())(any(), any())
         verify(mockExportsCacheService, times(1))
           .update(meq(aDeclaration(withItem(secondItem.copy(sequenceId = secondItem.sequenceId + 1)))))(any())
       }

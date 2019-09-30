@@ -22,6 +22,7 @@ import forms.declaration.{ItemType, PackageInformation}
 import models.Mode
 import models.declaration.ProcedureCodesData
 import org.jsoup.nodes.Document
+import play.api.data.FormError
 import play.api.i18n.MessagesApi
 import play.api.test.Helpers.stubMessages
 import services.cache.{ExportItem, ExportsTestData}
@@ -34,8 +35,12 @@ import views.tags.ViewTest
 class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = new items_summary(mainTemplate)
-  private def createView(mode: Mode = Mode.Normal, items: List[ExportItem] = List.empty): Document =
-    page(mode, items)(journeyRequest(), stubMessages())
+  private def createView(
+    mode: Mode = Mode.Normal,
+    items: List[ExportItem] = List.empty,
+    itemErrors: Seq[FormError] = Seq.empty
+  ): Document =
+    page(mode, items, itemErrors)(journeyRequest(), stubMessages())
 
   "Item Summary Page View" should {
 
@@ -45,6 +50,7 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
       messages must haveTranslationFor("supplementary.itemsAdd.titleWithItems")
       messages must haveTranslationFor("site.add.item")
       messages must haveTranslationFor("site.add.anotherItem")
+      messages must haveTranslationFor("declaration.itemsSummary.item.incorrect")
     }
 
     val view = createView()
@@ -141,7 +147,25 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
         view must containElementWithID("submit")
         view must containElementWithID("submit_and_return")
       }
+    }
 
+    "render error section" when {
+
+      "there are some errors in items" in {
+
+        val itemSequenceId = "1"
+        val items = List(ExportItem(itemSequenceId))
+        val errors = Seq(FormError("item_0", Seq("declaration.itemsSummary.item.incorrect"), itemSequenceId))
+        val view = createView(items = items, itemErrors = errors)
+
+        view must haveGlobalErrorSummary
+        view must containElementWithID("item_0-error")
+        view.getElementById("item_0-error").text() mustBe messages(
+          "declaration.itemsSummary.item.incorrect",
+          itemSequenceId
+        )
+        view.getElementById("item_0-error") must haveHref("#item_0")
+      }
     }
   }
 }

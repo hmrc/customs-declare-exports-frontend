@@ -21,6 +21,7 @@ import controllers.navigation.Navigator
 import controllers.util.{Add, FormAction, SaveAndContinue, SaveAndReturn}
 import javax.inject.Inject
 import models.Mode
+import play.api.data.FormError
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.{ExportItem, ExportItemIdGeneratorService, ExportsCacheService}
@@ -44,8 +45,11 @@ class ItemsSummaryController @Inject()(
     Ok(itemsSummaryPage(mode, request.cacheModel.items.toList))
   }
 
+  //TODO Should we add validation for POST without items?
   def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val action = FormAction.bindFromRequest()
+    val incorrectItems = buildIncorrectItemsErrors(request.cacheModel.items.toSeq)
+
     action match {
       case Add =>
         val newItem = ExportItem(id = exportItemIdGeneratorService.generateItemId())
@@ -55,12 +59,20 @@ class ItemsSummaryController @Inject()(
               .copy(items = request.cacheModel.items + newItem.copy(sequenceId = request.cacheModel.items.size + 1))
           )
           .map(_ => Redirect(controllers.declaration.routes.ProcedureCodesController.displayPage(mode, newItem.id)))
-      case SaveAndContinue | SaveAndReturn =>
+      case SaveAndContinue if incorrectItems.nonEmpty =>
+        Future.successful(BadRequest(itemsSummaryPage(mode, request.cacheModel.items.toList, incorrectItems)))
+      case SaveAndReturn | SaveAndContinue =>
         Future.successful(
           navigator.continueTo(controllers.declaration.routes.WarehouseIdentificationController.displayPage(mode))
         )
     }
   }
+
+  private def buildIncorrectItemsErrors(items: Seq[ExportItem]): Seq[FormError] =
+    items.zipWithIndex.filterNot { case (item, _) => item.isCompleted }.map {
+      case (item, index) =>
+        FormError("item_" + index, "declaration.itemsSummary.item.incorrect", Seq(item.sequenceId.toString))
+    }
 
   def removeItem(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
