@@ -516,7 +516,7 @@ supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.heade
 supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.error.incorrect = Please, choose valid active means of transport
 
 supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.header = Reference
-supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.hint = This can be up to 35 characters. For example a vehicle registration number or an IATA flight number. If postal or fixed installation selected, type unknown in the box.
+supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.hint = This can be up to 27 characters. For example a vehicle registration number or an IATA flight number. If postal or fixed installation selected, type unknown in the box.
 supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.empty = Please provide reference to transport
 supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.length = Reference should be less than 35 alpha numeric characters
 supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid = Reference cannot contain invalid characters
