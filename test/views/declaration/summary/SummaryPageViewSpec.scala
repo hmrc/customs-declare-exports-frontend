@@ -73,8 +73,12 @@ class SummaryPageViewSpec
   )
 
   "Summary page" should {
-    def view(mode: Mode, declaration: ExportsDeclaration = declaration): Document =
-      new summary_page(mainTemplate)(mode, SupplementaryDeclarationData(declaration), form)(
+    def view(
+      mode: Mode,
+      declaration: ExportsDeclaration = declaration,
+      legalForm: Form[LegalDeclaration] = form
+    ): Document =
+      new summary_page(mainTemplate)(mode, SupplementaryDeclarationData(declaration), legalForm)(
         new JourneyRequest(
           new AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")),
           declaration
@@ -147,6 +151,23 @@ class SummaryPageViewSpec
           document.getElementById("link-back") must haveHref(
             controllers.declaration.routes.TransportDetailsController.displayPage(Mode.Normal)
           )
+        }
+      }
+
+      "contains errors summary" when {
+
+        "legal declaration form is incorrect" in {
+
+          val formWithErrors: Form[LegalDeclaration] =
+            LegalDeclaration.form().fillAndValidate(LegalDeclaration("", "", "", false))
+
+          val document = view(Mode.Normal, legalForm = formWithErrors)
+
+          document must containElementWithID("error-summary-heading")
+          document must containElementWithID("fullName-error")
+          document must containElementWithID("jobRole-error")
+          document must containElementWithID("email-error")
+          document must containElementWithID("confirmation-error")
         }
       }
     }
