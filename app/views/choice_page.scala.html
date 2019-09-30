@@ -33,7 +33,7 @@
 
             @components.back_link(controllers.routes.StartController.displayStartPage())
 
-            @components.heading("", "declaration.choice.description")
+            @components.heading(None, Some(messages("declaration.choice.description")))
 
             @components.fields.field_radio(
                 field = form("value"),

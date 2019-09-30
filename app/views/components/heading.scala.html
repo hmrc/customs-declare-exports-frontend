@@ -14,11 +14,18 @@
  * limitations under the License.
  *@
 
-@(title: String, heading: String)(implicit messages: Messages)
+@(sectionHeader: Option[String] = None, title: Option[String], hint: Option[String] = None)
 
-<fieldset>
-    <legend class="heading-large" role="heading" aria="" level="1">
-        <span class="heading-secondary">@messages(title)</span>
-        <h1 style="margin:0">@messages(heading)</h1>
-    </legend>
-</fieldset>
+<header class="page-heading" style="margin: 0">
+    @if(title.nonEmpty) {
+        <h1 style="margin-top: 0px; margin-bottom: 20px">@title.get</h1>
+        @if(hint.nonEmpty) {
+            <span class="form-hint">@hint.get</span>
+        }
+    }
+    @if(sectionHeader.nonEmpty) {
+        <p class="heading-secondary">
+            <span class="visuallyhidden">This section is </span>@sectionHeader.get
+        </p>
+    }
+</header>

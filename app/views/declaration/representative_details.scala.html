@@ -36,9 +36,9 @@
 
         @components.error_summary(form.errors)
 
-        @components.section_header(messages("supplementary.summary.parties.header"))
-
-        @components.page_title(Some("supplementary.representative.header"), None)
+        @components.heading(
+            Some(messages("supplementary.summary.parties.header")),
+            Some(messages("supplementary.representative.header")))
 
         <p>@messages("supplementary.representative.hint")</p>
 
@@ -55,7 +55,7 @@
             @components.address(form, "details.address", Some(messages("supplementary.representative.address.info")))
         }
 
-        @components.page_title(title = Some("supplementary.representative.representationType.header"))
+        @components.heading(title = Some("supplementary.representative.representationType.header"))
 
         @components.fields.field_radio(
             field = form("statusCode"),

@@ -33,9 +33,9 @@
 
     @components.error_summary(form.errors)
 
-    @components.section_header(messages("supplementary.summary.parties.header"))
-
-    @components.page_title(Some("supplementary.declarationHolder.title"))
+    @components.heading(
+        Some(messages("supplementary.summary.parties.header")),
+        Some(messages("supplementary.declarationHolder.title")))
 
     <p>@messages("supplementary.declarationHolder.title.hint")</p>
 

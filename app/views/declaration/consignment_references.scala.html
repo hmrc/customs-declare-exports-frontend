@@ -30,9 +30,9 @@
 
     @components.error_summary(form.errors)
 
-    @components.section_header(messages("supplementary.consignmentReferences.heading"))
-
-    @components.page_title(Some("supplementary.consignmentReferences.header"))
+    @components.heading(
+        Some(messages("supplementary.consignmentReferences.heading")),
+        Some(messages("supplementary.consignmentReferences.header")))
 
     @helper.form(ConsignmentReferencesController.submitConsignmentReferences(mode), 'autoComplete -> "off") {
       @helper.CSRF.formField

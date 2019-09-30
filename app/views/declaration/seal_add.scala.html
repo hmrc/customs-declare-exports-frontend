@@ -32,7 +32,7 @@
 
     @components.error_summary(form.errors)
 
-    @components.page_title(Some(messages("standard.seal.title", containerId)), None)
+    @components.heading(None, Some(messages("standard.seal.title", containerId)), None)
 
     @helper.form(SealController.submitAddSeal(mode, containerId), 'autoComplete -> "off") {
         @helper.CSRF.formField

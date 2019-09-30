@@ -32,7 +32,7 @@
 
     @components.error_summary(form.errors)
 
-    @components.page_title(Some("supplementary.transportInfo.containers.title"), None)
+    @components.heading(None, Some(messages("supplementary.transportInfo.containers.title")), None)
 
     @helper.form(TransportContainerController.submitAddContainer(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField

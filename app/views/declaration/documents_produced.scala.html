@@ -34,9 +34,10 @@
 
     @components.error_summary(form.errors)
 
-    @components.section_header(messages("supplementary.summary.yourReferences.header"))
-
-    @components.page_title(Some("supplementary.addDocument.title"), Some("supplementary.addDocument.hint"))
+    @components.heading(
+        Some(messages("supplementary.summary.yourReferences.header")),
+        Some(messages("supplementary.addDocument.title")),
+        Some(messages("supplementary.addDocument.hint")))
 
     @helper.form(DocumentsProducedController.saveForm(mode, itemId), 'autoComplete -> "off") {
         @helper.CSRF.formField

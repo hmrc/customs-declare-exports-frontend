@@ -51,9 +51,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.section_header(messages("supplementary.items"))
-
-        @components.page_title(Some("declaration.itemType.title"))
+        @components.heading(Some(messages("supplementary.items")), Some(messages("declaration.itemType.title")))
 
         @components.fields.field_text(
             field = form(combinedNomenclatureCodeKey),

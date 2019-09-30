@@ -14,10 +14,10 @@
  * limitations under the License.
  *@
 
-@(title: Option[String] = None, subtitle: Option[String] = None)(implicit messages: Messages)
+@(title: Option[String] = None, subtitle: Option[String] = None, hint: Option[String] = None)(implicit messages: Messages)
 
 <fieldset>
-    <legend class="heading-large" role="heading" aria="" level="1">
+    <legend class="heading-large">
         @if(title.nonEmpty) {
             <h1 id="title" style="margin:0">@messages(title.get)</h1>
         }

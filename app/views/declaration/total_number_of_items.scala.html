@@ -32,9 +32,9 @@
 
         @components.error_summary(form.errors)
 
-        @components.section_header(messages("supplementary.items"))
-
-        @components.page_title(Some("supplementary.valueOfItems"))
+        @components.heading(
+            Some(messages("supplementary.items")),
+            Some(messages("supplementary.valueOfItems")))
 
         @components.fields.field_text(
             field = form("totalAmountInvoiced"),

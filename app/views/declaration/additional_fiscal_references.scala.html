@@ -83,16 +83,14 @@
 
     @components.error_summary(form.errors)
 
-    @components.section_header(messages("declaration.fiscalInformation.header"))
-
-    @components.page_title(Some(messages("declaration.additionalFiscalReferences.title")))
+    @components.heading(
+        Some(messages("declaration.fiscalInformation.header")),
+        Some(messages("declaration.additionalFiscalReferences.title")))
 
     @helper.form(routes.AdditionalFiscalReferencesController.saveReferences(mode, itemId), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
-
         @referenceTable
-
 
         <div id="country-of-dispatch-field">
             @components.fields.field_autocomplete(

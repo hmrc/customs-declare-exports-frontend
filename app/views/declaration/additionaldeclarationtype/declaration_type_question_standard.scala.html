@@ -20,12 +20,9 @@
 
 @(form: Form[AdditionalDeclarationType])(implicit messages: Messages)
 
-@components.section_header(messages("declaration.declarationType.title"))
-
-@components.page_title(
-    Some(messages("declaration.declarationType.header.standard")),
-    None
-)
+@components.heading(
+    Some(messages("declaration.declarationType.title")),
+    Some(messages("declaration.declarationType.header.standard")))
 
 @components.fields.field_radio(
     field = form("additionalDeclarationType"),

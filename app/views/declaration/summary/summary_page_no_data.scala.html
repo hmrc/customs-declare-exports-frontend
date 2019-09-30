@@ -22,9 +22,9 @@
     title = messages("supplementary.summary.title")
 ) {
 
-    @components.page_title(
+    @components.heading(
         title = Some(messages("supplementary.summary.noData.header")),
-        subtitle = Some(messages("supplementary.summary.noData.header.secondary"))
+        hint = Some(messages("supplementary.summary.noData.header.secondary"))
     )
 
     @components.button_link("Make an export declaration", "/customs-declare-exports/start")
