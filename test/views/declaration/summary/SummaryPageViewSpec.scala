@@ -176,7 +176,6 @@ class SummaryPageViewSpec
       summaryPage must include("supplementary.summary.parties.exporterId")
       summaryPage must include("supplementary.summary.parties.exporterAddress")
       summaryPage must include("supplementary.summary.parties.declarantId")
-      summaryPage must include("supplementary.summary.parties.declarantAddress")
       summaryPage must include("supplementary.summary.parties.representativeId")
       summaryPage must include("supplementary.summary.parties.representativeAddress")
       summaryPage must include("supplementary.summary.parties.representationType")
