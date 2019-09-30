@@ -23,11 +23,11 @@
 @(form: Form[LegalDeclaration])(implicit messages: Messages)
 
 
-<h2 class="heading-medium">@messages("legal.declaration.heading")</h2>
+<h2 class="heading-medium legal-declaration-heading">@messages("legal.declaration.heading")</h2>
 
 <p>@messages("legal.declaration.info")</p>
 
-@warning(messages("legal.declaration.warning"), containerClass = "mt-2, mb-2")
+@warning(messages("legal.declaration.warning"), containerClass = "mt-2, mb-2, legal-declaration-warning")
 
 @components.fields.field_text(
  field = form("fullName"),
