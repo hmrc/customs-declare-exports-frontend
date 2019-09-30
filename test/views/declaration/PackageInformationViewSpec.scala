@@ -74,10 +74,6 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
       view.getElementById("section-header").text() mustBe "supplementary.items"
     }
 
-    "display header" in {
-      view.select("legend>h1").text() mustBe "supplementary.packageInformation.title"
-    }
-
     "display empty input with label for Types of Packages" in {
       view.getElementById("typesOfPackages-label").text() mustBe "supplementary.packageInformation.typesOfPackages"
       view.getElementById("typesOfPackages").attr("value") mustBe empty

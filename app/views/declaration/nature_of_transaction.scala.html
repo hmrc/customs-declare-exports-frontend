@@ -36,8 +36,8 @@
         @components.error_summary(form.errors)
 
         @components.heading(
-            Some(messages("declaration.natureOfTransaction.header")),
-            Some(messages("declaration.natureOfTransaction.title")))
+            sectionHeader = messages("declaration.natureOfTransaction.header"),
+            title = messages("declaration.natureOfTransaction.title"))
 
         @components.fields.field_radio(
             field = form("natureType"),

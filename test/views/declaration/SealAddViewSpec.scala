@@ -43,10 +43,6 @@ class SealAddViewSpec extends UnitViewSpec with Stubs with MustMatchers with Com
       view.getElementById("title").text() must be(messages("standard.seal.title"))
     }
 
-    "display header" in {
-      view.select("legend>h1").text() must be(messages("standard.seal.title"))
-    }
-
     "display 'Back' button that links to 'seals summary' page" in {
       val backLinkContainer = view.getElementById("link-back")
 

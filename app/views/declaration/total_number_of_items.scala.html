@@ -33,8 +33,9 @@
         @components.error_summary(form.errors)
 
         @components.heading(
-            Some(messages("supplementary.items")),
-            Some(messages("supplementary.valueOfItems")))
+            sectionHeader = messages("supplementary.items"),
+            title = messages("supplementary.valueOfItems")
+        )
 
         @components.fields.field_text(
             field = form("totalAmountInvoiced"),

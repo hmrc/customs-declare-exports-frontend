@@ -43,8 +43,9 @@
       @components.error_summary(form.errors)
 
       @components.heading(
-          Some(messages("declaration.summary.locations.header")),
-          Some(messages("supplementary.dispatchLocation.header")))
+          title = messages("supplementary.dispatchLocation.header"),
+          sectionHeader = messages("declaration.summary.locations.header")
+      )
 
     @components.fields.field_radio(
       field = form("dispatchLocation"),

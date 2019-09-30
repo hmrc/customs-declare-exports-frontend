@@ -35,8 +35,7 @@
 
     @components.error_summary(form.errors)
 
-    @components.heading(None, Some(messages("supplementary.transportInfo.container.remove.title")), None)
-
+    @components.heading(title = messages("supplementary.transportInfo.container.remove.title"))
 
     @helper.form(TransportContainerController.submitContainerRemove(mode, container.id), 'autoComplete -> "off") {
         @helper.CSRF.formField

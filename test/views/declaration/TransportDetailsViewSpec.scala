@@ -72,10 +72,6 @@ class TransportDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
       view.getElementById("title").text() mustBe "supplementary.transportInfo.active.title"
     }
 
-    "display header" in {
-      view.select("legend>h1").text() mustBe "supplementary.transportInfo.active.title"
-    }
-
     "display 'Back' button that links to 'border-transport' page" in {
 
       val backButton = view.getElementById("link-back")

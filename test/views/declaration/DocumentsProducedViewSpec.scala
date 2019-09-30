@@ -111,10 +111,7 @@ class DocumentsProducedViewSpec
 
     "display header with hint" in {
 
-      val view = createView()
-
-      view.select("legend>h1").text() mustBe messages(title)
-      view.select("legend>span").text() must include(messages(hint))
+      createView().getElementById("hint").text() must include(messages(hint))
     }
 
     "display empty input with label for Document type code" in {

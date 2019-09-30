@@ -33,8 +33,9 @@
     @components.error_summary(form.errors)
 
     @components.heading(
-        Some(messages("declaration.summary.locations.header")),
-        Some(messages("declaration.destinationCountries.title")))
+        title = messages("declaration.destinationCountries.title"),
+        sectionHeader = messages("declaration.summary.locations.header")
+    )
 
     @helper.form(routes.DestinationCountriesController.saveCountries(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField

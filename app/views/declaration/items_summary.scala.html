@@ -31,7 +31,7 @@
 
     @components.error_summary(itemsErrors)
 
-    @components.section_header(messages("supplementary.items"))
+    @components.heading(sectionHeader = messages("supplementary.items"))
 
     @if(items.isEmpty) {
         <h1 id="title" style="margin:0">@messages("supplementary.itemsAdd.title")</h1>

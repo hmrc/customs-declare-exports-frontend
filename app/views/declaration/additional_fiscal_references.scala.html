@@ -84,8 +84,9 @@
     @components.error_summary(form.errors)
 
     @components.heading(
-        Some(messages("declaration.fiscalInformation.header")),
-        Some(messages("declaration.additionalFiscalReferences.title")))
+        title = messages("declaration.additionalFiscalReferences.title"),
+        sectionHeader = messages("declaration.fiscalInformation.header")
+    )
 
     @helper.form(routes.AdditionalFiscalReferencesController.saveReferences(mode, itemId), 'autoComplete -> "off") {
         @helper.CSRF.formField

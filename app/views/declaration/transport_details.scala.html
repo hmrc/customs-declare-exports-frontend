@@ -40,7 +40,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading(None, Some(messages("supplementary.transportInfo.active.title")), None)
+        @components.heading(title = messages("supplementary.transportInfo.active.title"))
 
         @components.fields.field_autocomplete(
             form("meansOfTransportCrossingTheBorderNationality"),

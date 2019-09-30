@@ -43,10 +43,6 @@ class TransportContainerAddViewSpec extends UnitViewSpec with Stubs with MustMat
       view.getElementById("title").text() must be(messages("supplementary.transportInfo.containers.title"))
     }
 
-    "display header" in {
-      view.select("legend>h1").text() must be(messages("supplementary.transportInfo.containers.title"))
-    }
-
     "display 'Back' button that links to 'transport details' page" in {
       val backLinkContainer = view.getElementById("link-back")
 

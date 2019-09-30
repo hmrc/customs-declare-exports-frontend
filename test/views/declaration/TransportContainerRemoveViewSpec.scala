@@ -48,10 +48,6 @@ class TransportContainerRemoveViewSpec extends UnitViewSpec with Stubs with Must
       view.getElementById("title").text() must be(messages("supplementary.transportInfo.container.remove.title"))
     }
 
-    "display header" in {
-      view.select("legend>h1").text() must be(messages("supplementary.transportInfo.container.remove.title"))
-    }
-
     "display container and seal to remove" in {
       view.getElementById("container-table").text() must include(containerId)
       view.getElementById("container-table").text() must include(sealId)

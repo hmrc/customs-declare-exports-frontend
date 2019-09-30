@@ -35,9 +35,10 @@
     @components.error_summary(form.errors)
 
     @components.heading(
-        Some(messages("supplementary.consignmentReferences.heading")),
-        Some(messages("supplementary.previousDocuments.title")),
-        Some(messages("supplementary.previousDocuments.hint")))
+        sectionHeader = messages("supplementary.consignmentReferences.heading"),
+        title = messages("supplementary.previousDocuments.title"),
+        hint = messages("supplementary.previousDocuments.hint")
+    )
 
     @helper.form(PreviousDocumentsController.savePreviousDocuments(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField

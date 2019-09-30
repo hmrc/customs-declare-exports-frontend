@@ -14,18 +14,19 @@
  * limitations under the License.
  *@
 
-@(sectionHeader: Option[String] = None, title: Option[String], hint: Option[String] = None)
+@(title: String = "", sectionHeader: String = "", hint: String = "")
 
 <header class="page-heading">
-    @if(title.nonEmpty) {
-        <h1 style="margin: 0px">@title.get</h1>
-        @if(hint.nonEmpty) {
-            <span class="form-hint">@hint.get</span>
-        }
-    }
     @if(sectionHeader.nonEmpty) {
-        <p class="heading-secondary">
-            <span class="visuallyhidden">This section is </span>@sectionHeader.get
-        </p>
+        <span class="visuallyhidden">This section is </span>
+        <span id="section-header" class="heading-secondary">@sectionHeader</span>
+    }
+
+    @if(title.nonEmpty) {
+        <h1 class="title" id="title">@title</h1>
+    }
+
+    @if(hint.nonEmpty) {
+        <span id="hint" class="form-hint">@hint</span>
     }
 </header>

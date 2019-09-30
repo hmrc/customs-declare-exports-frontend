@@ -33,8 +33,9 @@
     @components.error_summary(form.errors)
 
     @components.heading(
-        Some(messages("declaration.fiscalInformation.header")),
-        Some(messages("declaration.fiscalInformation.title")))
+        sectionHeader = messages("declaration.fiscalInformation.header"),
+        title = messages("declaration.fiscalInformation.title")
+    )
 
     <p>
         If you have entered a procedure code which starts ‘10 42’, please state whether you would like to claim for OSR.

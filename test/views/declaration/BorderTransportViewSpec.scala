@@ -19,16 +19,12 @@ package views.declaration
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.declaration.BorderTransport
-import forms.declaration.TransportCodes._
 import helpers.views.declaration.CommonMessages
 import models.Mode
-import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.twirl.api.Html
 import unit.tools.Stubs
-import views.components.inputs.RadioOption
 import views.declaration.spec.UnitViewSpec
-import views.html.components.fields.{field_radio, field_text}
 import views.html.declaration.border_transport
 import views.tags.ViewTest
 
@@ -80,10 +76,6 @@ class BorderTransportViewSpec extends UnitViewSpec with CommonMessages with Stub
 
     "display page title" in {
       view.getElementById("title").text() mustBe messages("supplementary.transportInfo.title")
-    }
-
-    "display header" in {
-      view.select("legend>h1").text() mustBe messages("supplementary.transportInfo.title")
     }
 
     "display 'Back' button that links to 'Warehouse' page" in {
