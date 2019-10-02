@@ -41,5 +41,11 @@ class HolderOfAuthorisationCodeSpec extends UnitSpec {
       val codes = HolderOfAuthorisationCode.all.filter(code => Set("ACE", "UKCS").contains(code.value))
       codes mustBe List(HolderOfAuthorisationCode("ACE"), HolderOfAuthorisationCode("UKCS"))
     }
+
+    "contain values for CEDS-1773" in {
+      val codes = HolderOfAuthorisationCode.all
+      codes must contain(HolderOfAuthorisationCode("NIRE"))
+      codes must contain(HolderOfAuthorisationCode("RORO"))
+    }
   }
 }
