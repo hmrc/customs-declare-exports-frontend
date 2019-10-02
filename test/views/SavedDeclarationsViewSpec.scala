@@ -21,8 +21,9 @@ import java.time.{LocalDateTime, ZoneOffset}
 import base.ExportsTestData
 import base.ExportsTestData._
 import controllers.routes
-import forms.{Ducr, Lrn}
+import forms.Choice.AllowedChoiceValues.ContinueDec
 import forms.declaration.ConsignmentReferences
+import forms.{Ducr, Lrn}
 import helpers.views.declaration.CommonMessages
 import models.{DeclarationStatus, ExportsDeclaration, Page, Paginated}
 import org.jsoup.nodes.Element
@@ -114,6 +115,13 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with CommonMessages with St
       view.getElementById("pagination-page_next").attr("href") mustBe
         routes.SavedDeclarationsController.displayDeclarations(3).url
 
+    }
+
+    "display 'Back' button that links to 'Choice' page with 'Continue saved declarations' selected" in {
+      val backButton = createView().getElementById("link-back")
+
+      backButton must containText("site.back")
+      backButton must haveHref(routes.ChoiceController.displayPage(Some(ContinueDec)))
     }
 
   }

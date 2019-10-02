@@ -65,6 +65,7 @@ trait Stubs {
       |metrics.jvm=false
       |metrics.logback=false
       |draft.timeToLive=1d
+      |list-of-available-journeys = "SMP,STD,CAN,SUB,CON"
     """.stripMargin)
 
   val minimalConfiguration = Configuration(minimalConfig)

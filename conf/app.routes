@@ -42,6 +42,6 @@ GET         /start                                         controllers.StartCont
 
 # Declaration Choice Page
 
-GET         /choice                                        controllers.ChoiceController.displayPage()
+GET         /choice                                        controllers.ChoiceController.displayPage(previousChoice: Option[String] ?= None)
 
 POST        /choice                                        controllers.ChoiceController.submitChoice()

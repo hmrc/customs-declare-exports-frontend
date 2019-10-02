@@ -28,9 +28,8 @@ import play.api.mvc.{AnyContentAsJson, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
-import unit.mock.ErrorHandlerMocks
-import views.html.choice_page
 import utils.FakeRequestCSRFSupport._
+import views.html.choice_page
 
 import scala.concurrent.Future
 
@@ -73,6 +72,56 @@ class ChoiceControllerSpec extends ControllerSpec {
         val result = controller.displayPage()(getRequest())
 
         status(result) must be(OK)
+      }
+    }
+
+    "pre-select given choice " when {
+
+      "cache is empty" in new SetUp {
+        when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(None))
+
+        val request = getRequest()
+        val result = controller.displayPage(Some(CancelDec))(request)
+        var form = Choice.form().fill(Choice(CancelDec))
+
+        viewOf(result) must be(choicePage(form)(request, controller.messagesApi.preferred(request)))
+      }
+
+      "cache contains existing declaration" in new SetUp {
+        when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(Some(existingDeclaration())))
+
+        val request = getRequest()
+        val result = controller.displayPage(Some(Submissions))(request)
+        var form = Choice.form().fill(Choice(Submissions))
+
+        viewOf(result) must be(choicePage(form)(request, controller.messagesApi.preferred(request)))
+      }
+    }
+
+    "pre-select declaration type " when {
+
+      "choice parameter not given" in new SetUp {
+        when(mockExportsCacheService.get(any())(any()))
+          .thenReturn(Future.successful(Some(existingDeclaration(SupplementaryDec))))
+
+        val request = getRequest()
+        val result = controller.displayPage()(request)
+        var form = Choice.form().fill(Choice(SupplementaryDec))
+
+        viewOf(result) must be(choicePage(form)(request, controller.messagesApi.preferred(request)))
+      }
+    }
+
+    "not select any choice " when {
+
+      "choice parameter not given and cache empty" in new SetUp {
+        when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(None))
+
+        val request = getRequest()
+        val result = controller.displayPage()(request)
+        var form = Choice.form()
+
+        viewOf(result) must be(choicePage(form)(request, controller.messagesApi.preferred(request)))
       }
     }
   }

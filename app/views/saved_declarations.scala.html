@@ -23,9 +23,9 @@
 @import uk.gov.hmrc.play.views.html._
 @import views.html.components.pagination
 @import views.components.inputs.RadioOption
+@import forms.Choice.AllowedChoiceValues
 
 @this(main_template: views.html.main_template)
-
 
 @(declarations: Paginated[ExportsDeclaration])(implicit request: Request[_], messages: Messages)
 
@@ -34,7 +34,7 @@
     fullWidth = true
 ) {
 
-    @components.back_link(routes.ChoiceController.displayPage())
+    @components.back_link(routes.ChoiceController.displayPage(Some(AllowedChoiceValues.ContinueDec)))
 
     <h1>@messages("saved.declarations.title")</h1>
 
