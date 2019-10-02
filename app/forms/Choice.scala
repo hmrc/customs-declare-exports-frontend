@@ -19,6 +19,7 @@ package forms
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
+import play.api.mvc.QueryStringBindable
 import utils.validators.forms.FieldValidator.isContainedIn
 
 case class Choice(value: String)
@@ -47,5 +48,18 @@ object Choice {
     val ContinueDec = "CON"
     val CancelDec = "CAN"
     val Submissions = "SUB"
+  }
+
+  implicit val queryStringBindable = new QueryStringBindable[Choice] {
+    override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, Choice]] =
+      QueryStringBindable.bindableString.bind(key, params).map {
+        case Right(choice) =>
+          correctChoices
+            .find(_ == choice)
+            .map(Choice.apply)
+            .map(choice => Right(choice))
+            .getOrElse(Left("Unrecognized option"))
+      }
+    override def unbind(key: String, value: Choice): String = s"$key=${value.value}"
   }
 }

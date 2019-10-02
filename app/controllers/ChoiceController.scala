@@ -47,10 +47,10 @@ class ChoiceController @Inject()(
 
   private val logger = Logger(this.getClass)
 
-  def displayPage(previousChoice: Option[String] = None): Action[AnyContent] = authenticate.async { implicit request =>
-    def pageForPreviousChoice(previousChoice: Option[String]) = {
+  def displayPage(previousChoice: Option[Choice]): Action[AnyContent] = authenticate.async { implicit request =>
+    def pageForPreviousChoice(previousChoice: Option[Choice]) = {
       val form = Choice.form()
-      choicePage(previousChoice.fold(form)(choice => form.fill(Choice(choice))))
+      choicePage(previousChoice.fold(form)(form.fill))
     }
 
     request.declarationId match {

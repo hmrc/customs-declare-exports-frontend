@@ -21,7 +21,8 @@
 @import models.declaration.submissions.SubmissionStatus
 @import models.declaration.submissions.Submission
 @import models.declaration.submissions.RequestType.SubmissionRequest
-@import forms.Choice.AllowedChoiceValues
+@import forms.Choice
+@import forms.Choice.AllowedChoiceValues.Submissions
 
 @this(main_template: views.html.main_template)
 
@@ -32,7 +33,7 @@
     fullWidth = true
 ) {
 
-    @components.back_link(routes.ChoiceController.displayPage(Some(AllowedChoiceValues.Submissions)))
+    @components.back_link(routes.ChoiceController.displayPage(Some(Choice(Submissions))))
 
     <h1>@messages("submissions.title")</h1>
 

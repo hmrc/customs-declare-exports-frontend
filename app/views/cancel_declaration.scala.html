@@ -21,7 +21,8 @@
 @import views.components.inputs.RadioOption
 @import forms.cancellation.CancellationChangeReason
 @import forms.cancellation.CancellationChangeReason.{NoLongerRequired, Duplication, OtherReason}
-@import forms.Choice.AllowedChoiceValues
+@import forms.Choice
+@import forms.Choice.AllowedChoiceValues.CancelDec
 
 @this(main_template: views.html.main_template)
 
@@ -34,7 +35,7 @@
     @helper.form(action = CancelDeclarationController.onSubmit(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
-        @components.back_link(controllers.routes.ChoiceController.displayPage(Some(AllowedChoiceValues.CancelDec)))
+        @components.back_link(controllers.routes.ChoiceController.displayPage(Some(Choice(CancelDec))))
 
         @components.error_summary(form.errors)
 

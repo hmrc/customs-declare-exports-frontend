@@ -20,6 +20,7 @@ import java.time.LocalDateTime
 
 import base.Injector
 import controllers.routes
+import forms.Choice
 import forms.Choice.AllowedChoiceValues.Submissions
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
@@ -161,7 +162,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
       val backButton = view.getElementById("link-back")
 
       backButton must containText("site.back")
-      backButton must haveHref(routes.ChoiceController.displayPage(Some(Submissions)))
+      backButton must haveHref(routes.ChoiceController.displayPage(Some(Choice(Submissions))))
     }
 
     "display 'Start a new declaration' link on page" in {

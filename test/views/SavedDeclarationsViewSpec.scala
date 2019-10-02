@@ -23,7 +23,7 @@ import base.ExportsTestData._
 import controllers.routes
 import forms.Choice.AllowedChoiceValues.ContinueDec
 import forms.declaration.ConsignmentReferences
-import forms.{Ducr, Lrn}
+import forms.{Choice, Ducr, Lrn}
 import helpers.views.declaration.CommonMessages
 import models.{DeclarationStatus, ExportsDeclaration, Page, Paginated}
 import org.jsoup.nodes.Element
@@ -121,7 +121,7 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with CommonMessages with St
       val backButton = createView().getElementById("link-back")
 
       backButton must containText("site.back")
-      backButton must haveHref(routes.ChoiceController.displayPage(Some(ContinueDec)))
+      backButton must haveHref(routes.ChoiceController.displayPage(Some(Choice(ContinueDec))))
     }
 
   }

@@ -23,7 +23,8 @@
 @import uk.gov.hmrc.play.views.html._
 @import views.html.components.pagination
 @import views.components.inputs.RadioOption
-@import forms.Choice.AllowedChoiceValues
+@import forms.Choice
+@import forms.Choice.AllowedChoiceValues.ContinueDec
 
 @this(main_template: views.html.main_template)
 
@@ -34,7 +35,7 @@
     fullWidth = true
 ) {
 
-    @components.back_link(routes.ChoiceController.displayPage(Some(AllowedChoiceValues.ContinueDec)))
+    @components.back_link(routes.ChoiceController.displayPage(Some(Choice(ContinueDec))))
 
     <h1>@messages("saved.declarations.title")</h1>
 

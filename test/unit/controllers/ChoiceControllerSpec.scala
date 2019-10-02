@@ -61,7 +61,7 @@ class ChoiceControllerSpec extends ControllerSpec {
       "display page method is invoked with empty cache" in new SetUp {
         when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(None))
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(None)(getRequest())
 
         status(result) must be(OK)
       }
@@ -69,7 +69,7 @@ class ChoiceControllerSpec extends ControllerSpec {
       "display page method is invoked with data in cache" in new SetUp {
         when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(Some(existingDeclaration())))
 
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage(None)(getRequest())
 
         status(result) must be(OK)
       }
@@ -81,7 +81,7 @@ class ChoiceControllerSpec extends ControllerSpec {
         when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(None))
 
         val request = getRequest()
-        val result = controller.displayPage(Some(CancelDec))(request)
+        val result = controller.displayPage(Some(Choice(CancelDec)))(request)
         var form = Choice.form().fill(Choice(CancelDec))
 
         viewOf(result) must be(choicePage(form)(request, controller.messagesApi.preferred(request)))
@@ -91,7 +91,7 @@ class ChoiceControllerSpec extends ControllerSpec {
         when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(Some(existingDeclaration())))
 
         val request = getRequest()
-        val result = controller.displayPage(Some(Submissions))(request)
+        val result = controller.displayPage(Some(Choice(Submissions)))(request)
         var form = Choice.form().fill(Choice(Submissions))
 
         viewOf(result) must be(choicePage(form)(request, controller.messagesApi.preferred(request)))
@@ -105,7 +105,7 @@ class ChoiceControllerSpec extends ControllerSpec {
           .thenReturn(Future.successful(Some(existingDeclaration(SupplementaryDec))))
 
         val request = getRequest()
-        val result = controller.displayPage()(request)
+        val result = controller.displayPage(None)(request)
         var form = Choice.form().fill(Choice(SupplementaryDec))
 
         viewOf(result) must be(choicePage(form)(request, controller.messagesApi.preferred(request)))
@@ -118,7 +118,7 @@ class ChoiceControllerSpec extends ControllerSpec {
         when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(None))
 
         val request = getRequest()
-        val result = controller.displayPage()(request)
+        val result = controller.displayPage(None)(request)
         var form = Choice.form()
 
         viewOf(result) must be(choicePage(form)(request, controller.messagesApi.preferred(request)))
