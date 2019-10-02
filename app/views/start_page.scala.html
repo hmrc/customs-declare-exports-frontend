@@ -15,13 +15,14 @@
  *@
 
 @import controllers.routes._
+@import views.Title.createTitle
 
 @this(main_template: views.html.main_template)
 
 @()(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("startPage.title")
+    title = createTitle("startPage.heading")
 ) {
     <div class="grid-row">
         <div class="column-two-thirds, overflow: hidden;, white-space: nowrap;">

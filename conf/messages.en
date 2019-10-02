@@ -2,6 +2,10 @@ date.day = Day
 date.month = Month
 date.year = Year
 
+title.service.name=Declare your exports
+title.format={0} - {1} - GOV.UK
+title.withSection.format={0} - {1} - {2} - GOV.UK
+
 error.boolean = Please give an answer
 error.invalid_date = Give a correct date
 error.date.day_blank = Enter a day
@@ -147,7 +151,6 @@ declaration.choice.CAN = Cancel a declaration
 declaration.choice.CON = Continue a saved declaration
 declaration.choice.SUB = View declarations
 
-startPage.title = Register for customs services
 startPage.heading = Make an export declaration
 startPage.description = An export declaration must be completed for any export leaving the UK. This includes goods being exported through the EU to a third (non-EU) country.
 startPage.listHeading = You will need:
@@ -173,7 +176,6 @@ startPage.enquiries = General enquires help
 choicePage.input.error.empty = Please, choose what do you want to do
 choicePage.input.error.incorrectValue = Please, choose valid option
 
-supplementary.dispatchLocation.title = Dispatch Location
 supplementary.dispatchLocation.header = Are the goods being sent outside the EU?
 supplementary.dispatchLocation.header.hint = Hint text if needed here
 supplementary.dispatchLocation.inputText.outsideEU = Yes

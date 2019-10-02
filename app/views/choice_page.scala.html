@@ -19,13 +19,14 @@
 @import forms.Choice.AllowedChoiceValues._
 @import uk.gov.hmrc.play.views.html._
 @import views.components.inputs.RadioOption
+@import views.Title.createTitle
 
 @this(main_template: views.html.main_template, appConfig: AppConfig)
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
     @main_template(
-        title = messages("declaration.choice.description")
+        title = createTitle("declaration.choice.description")
     ) {
 
         @helper.form(ChoiceController.submitChoice(), 'autoComplete -> "off") {
