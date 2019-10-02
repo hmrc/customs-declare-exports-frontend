@@ -42,7 +42,7 @@ class HolderOfAuthorisationCodeSpec extends UnitSpec {
       codes mustBe List(HolderOfAuthorisationCode("ACE"), HolderOfAuthorisationCode("UKCS"))
     }
 
-    "contain values for CEDS-1773" in {
+    "contain values for No Deal (see CEDS-1773)" in {
       val codes = HolderOfAuthorisationCode.all
       codes must contain(HolderOfAuthorisationCode("NIRE"))
       codes must contain(HolderOfAuthorisationCode("RORO"))
