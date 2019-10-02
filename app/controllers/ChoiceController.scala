@@ -47,14 +47,19 @@ class ChoiceController @Inject()(
 
   private val logger = Logger(this.getClass)
 
-  def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayPage(previousChoice: Option[Choice]): Action[AnyContent] = authenticate.async { implicit request =>
+    def pageForPreviousChoice(previousChoice: Option[Choice]) = {
+      val form = Choice.form()
+      choicePage(previousChoice.fold(form)(form.fill))
+    }
+
     request.declarationId match {
-      case Some(id) =>
+      case Some(id) if previousChoice.isEmpty =>
         exportsCacheService.get(id).map(_.map(_.choice)).map {
           case Some(data) => Ok(choicePage(Choice.form().fill(Choice(data))))
           case _          => Ok(choicePage(Choice.form()))
         }
-      case None => Future.successful(Ok(choicePage(Choice.form())))
+      case _ => Future.successful(Ok(pageForPreviousChoice(previousChoice)))
     }
 
   }

@@ -17,8 +17,10 @@
 package views.cancellation
 
 import base.TestHelper.createRandomAlphanumericString
-import forms.{CancelDeclaration, Lrn}
+import controllers.routes
+import forms.Choice.AllowedChoiceValues.CancelDec
 import forms.cancellation.CancellationChangeReason.NoLongerRequired
+import forms.{CancelDeclaration, Choice, Lrn}
 import helpers.views.declaration.CommonMessages
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -123,6 +125,13 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
 
       val saveButton = view.select("#submit")
       saveButton.text() mustBe messages("cancellation.submitButton")
+    }
+
+    "display 'Back' button that links to 'Choice' page with Cancel declaration selected" in {
+      val backButton = createView().getElementById("link-back")
+
+      backButton must containText("site.back")
+      backButton must haveHref(routes.ChoiceController.displayPage(Some(Choice(CancelDec))))
     }
   }
 

@@ -35,7 +35,7 @@ class AuthActionSpec extends ControllerSpec {
     "return InsufficientEnrolments when EORI number is missing" in {
       userWithoutEori()
 
-      val result = controller.displayPage()(getRequest())
+      val result = controller.displayPage(None)(getRequest())
 
       intercept[InsufficientEnrolments](status(result))
     }
@@ -43,7 +43,7 @@ class AuthActionSpec extends ControllerSpec {
     "return NoExternalId when External Id is missing" in {
       userWithoutExternalId()
 
-      val result = controller.displayPage()(getRequest())
+      val result = controller.displayPage(None)(getRequest())
 
       intercept[NoExternalId](status(result))
     }

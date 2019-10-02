@@ -20,6 +20,8 @@ import java.time.LocalDateTime
 
 import base.Injector
 import controllers.routes
+import forms.Choice
+import forms.Choice.AllowedChoiceValues.Submissions
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
 import models.declaration.submissions.{Action, Submission, SubmissionStatus}
@@ -156,11 +158,11 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
       }
     }
 
-    "display 'Back' button that links to 'Choice' page" in {
+    "display 'Back' button that links to 'Choice' page with Submissions selected" in {
       val backButton = view.getElementById("link-back")
 
-      backButton.text() mustBe "site.back"
-      backButton.attr("href") mustBe routes.ChoiceController.displayPage().url
+      backButton must containText("site.back")
+      backButton must haveHref(routes.ChoiceController.displayPage(Some(Choice(Submissions))))
     }
 
     "display 'Start a new declaration' link on page" in {
