@@ -14,12 +14,14 @@
  * limitations under the License.
  *@
 
+@import views.Title
+
 @this(main_template: views.html.main_template)
 
 @()(implicit request: Request[_], messages: Messages)
 
 @main_template(
-  title = messages("cancellation.confirmationPage.title")
+  title = Title("cancellation.confirmationPage.title")
 ) {
   <div>
       <div class="govuk-box-highlight">

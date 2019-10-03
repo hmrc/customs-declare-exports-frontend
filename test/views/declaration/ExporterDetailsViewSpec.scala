@@ -25,6 +25,8 @@ import helpers.views.declaration.{CommonMessages, ExporterDetailsMessages}
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
+import play.api.i18n.Messages
+import play.api.test.Helpers.stubMessages
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.exporter_details
@@ -36,14 +38,14 @@ class ExporterDetailsViewSpec
 
   private val form: Form[ExporterDetails] = ExporterDetails.form()
   private val exporterDetailsPage = new exporter_details(mainTemplate)
-  private def createView(form: Form[ExporterDetails] = form): Document =
+  private def createView(form: Form[ExporterDetails] = form, messages: Messages = stubMessages()): Document =
     exporterDetailsPage(Mode.Normal, form)(request, messages)
 
   "Exporter Details View on empty page" should {
 
-    "display page title" in {
-
-      createView().select("title").text() mustBe messages(title)
+    "display same page title as header" in {
+      val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+      viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
     }
 
     "display section header" in {

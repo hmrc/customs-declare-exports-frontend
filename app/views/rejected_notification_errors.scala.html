@@ -16,12 +16,13 @@
 
 @import models.declaration.submissions.Submission
 @import services.model.RejectionReason
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(submission: Submission, errors: Seq[RejectionReason])(implicit request: Request[_], messages: Messages)
 
-@main_template(messages("rejected.notification.title")) {
+@main_template(Title("rejected.notification.title")) {
 
     @components.back_link(routes.SubmissionsController.displayListOfSubmissions())
 

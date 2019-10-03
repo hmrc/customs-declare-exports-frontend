@@ -18,19 +18,23 @@
 @import forms.declaration.CarrierDetails
 @import services.model.Country
 @import uk.gov.hmrc.play.views.html._
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(mode: Mode, form: Form[CarrierDetails])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.carrier.title")
+    title = Title("supplementary.carrier.title", "supplementary.summary.parties.header")
 ) {
     @components.back_link(controllers.declaration.routes.RepresentativeDetailsController.displayPage(mode), mode)
 
     @components.error_summary(form.errors)
 
-    @components.heading(title = messages("supplementary.carrier.title"))
+    @components.heading(
+        sectionHeader = messages("supplementary.summary.parties.header"),
+        title = messages("supplementary.carrier.title")
+    )
 
     <p>@messages("supplementary.carrier.title.hint")</p>
 

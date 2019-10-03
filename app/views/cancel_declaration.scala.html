@@ -23,13 +23,14 @@
 @import forms.cancellation.CancellationChangeReason.{NoLongerRequired, Duplication, OtherReason}
 @import forms.Choice
 @import forms.Choice.AllowedChoiceValues.CancelDec
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(form: Form[CancelDeclaration])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("cancellation.title")
+    title = Title("cancellation.title")
 ) {
 
     @helper.form(action = CancelDeclarationController.onSubmit(), 'autoComplete -> "off") {

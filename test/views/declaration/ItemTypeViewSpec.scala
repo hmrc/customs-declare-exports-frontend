@@ -22,7 +22,7 @@ import forms.declaration.ItemType
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
@@ -42,11 +42,12 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
     form: Form[ItemType] = form,
     hasAdditionalFiscalReferences: Boolean = false,
     taricAdditionalCodes: Seq[String] = Seq.empty,
-    nationalAdditionalCodes: Seq[String] = Seq.empty
+    nationalAdditionalCodes: Seq[String] = Seq.empty,
+    messages: Messages = stubMessages()
   ): Document =
     page(mode, itemId, form, hasAdditionalFiscalReferences, taricAdditionalCodes, nationalAdditionalCodes)(
       journeyRequest(),
-      stubMessages()
+      messages
     )
 
   "Item Type View on empty page" when {
@@ -75,8 +76,9 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
     "used for Standard Declaration journey" should {
 
-      "display page title" in {
-        view.select("title").text() mustBe "declaration.itemType.title"
+      "display same page title as header" in {
+        val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+        viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
       }
 
       "display section header" in {

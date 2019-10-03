@@ -24,6 +24,7 @@
 @import services.NationalAdditionalCode
 @import services.view.AutoCompleteItem
 @import forms.declaration.AdditionalFiscalReference
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
@@ -37,7 +38,7 @@
 )(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
-    title = messages("declaration.itemType.title")
+    title = Title("declaration.itemType.title", "supplementary.items")
 ) {
 
     @helper.form(routes.ItemTypeController.submitItemType(mode, itemId), 'autocomplete -> "off") {

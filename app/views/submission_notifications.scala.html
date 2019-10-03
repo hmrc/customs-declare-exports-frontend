@@ -19,13 +19,14 @@
 @import models.declaration.notifications.Notification
 @import models.declaration.submissions.Submission
 @import models.declaration.submissions.SubmissionStatus
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(submission: Submission, notifications: Seq[Notification])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("notifications.title"),
+    title = Title("notifications.title"),
     fullWidth = true
 ) {
 

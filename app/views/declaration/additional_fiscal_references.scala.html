@@ -38,6 +38,7 @@
 @import views.components.fields.LabelledValue
 
 @import services.view.AutoCompleteItem
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
@@ -76,7 +77,7 @@
 }
 
 @main_template(
-    title = messages("declaration.additionalFiscalReferences.title")
+    title = Title("declaration.additionalFiscalReferences.title", "declaration.fiscalInformation.header")
 ) {
 
     @components.back_link(routes.FiscalInformationController.displayPage(mode, itemId), mode)

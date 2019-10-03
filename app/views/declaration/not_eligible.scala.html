@@ -17,13 +17,14 @@
 @import uk.gov.hmrc.play.views.html._
 @import controllers.routes._
 @import views.components.inputs.RadioOption
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @()(implicit request: Request[_], messages: Messages)
 
 @main_template(
- title = messages("notEligible.pageTitle")
+ title = Title("notEligible.pageTitle")
 ) {
 @components.back_link(controllers.routes.StartController.displayStartPage())
 

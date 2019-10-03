@@ -18,49 +18,44 @@
 @import uk.gov.hmrc.play.views.html._
 @import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
 @import services.cache.ExportItem
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 
 @(mode: Mode, items: List[ExportItem], itemsErrors: Seq[FormError] = Seq.empty)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("supplementary.items")
-) {
-    @components.back_link(routes.PreviousDocumentsController.displayPage(mode), mode)
+@defining(if(items.isEmpty) { messages("supplementary.itemsAdd.title") }
+    else if(items.length == 1) { messages("supplementary.itemsAdd.titleWithItem") }
+    else { messages("supplementary.itemsAdd.titleWithItems", items.length) }) { titleMessage =>
 
-    @components.error_summary(itemsErrors)
+    @main_template(
+        title = Title(titleMessage, "supplementary.items")
+    ) {
+        @components.back_link(routes.PreviousDocumentsController.displayPage(mode), mode)
 
-    @components.heading(sectionHeader = messages("supplementary.items"))
+        @components.error_summary(itemsErrors)
 
-    @if(items.isEmpty) {
-        <h1 id="title" style="margin:0">@messages("supplementary.itemsAdd.title")</h1>
-    }
-    @if(items.length == 1) {
-        <h1 id="title" style="margin:0">@messages("supplementary.itemsAdd.titleWithItem")</h1>
-    }
-    @if(items.length > 1) {
-        <h1 id="title" style="margin:0">@messages("supplementary.itemsAdd.titleWithItems", items.length)</h1>
-    }
+        @components.heading(sectionHeader = messages("supplementary.items"))
 
-    <span class="form-hint" style="margin-bottom: 50px">@messages("supplementary.itemsAdd.title.hint")</span>
+        <h1 id="title" style="margin: 0">@titleMessage</h1>
 
+        <span class="form-hint" style="margin-bottom: 50px">@messages("supplementary.itemsAdd.title.hint")</span>
 
+        @if(items.nonEmpty) {
+            <table id="item_table" class="form-group">
+                <thead>
+                    <tr id="item_table--headers">
+                        <th scope="col">@messages("supplementary.itemsSummary.itemNumber")</th>
+                        <th scope="col">@messages("supplementary.itemsSummary.procedureCode")</th>
+                        <th scope="col">@messages("supplementary.itemsSummary.commodityCode")</th>
+                        <th scope="col">@messages("supplementary.itemsSummary.noOfPackages")</th>
+                        <th scope="col" colspan="2"></th>
+                    </tr>
+                </thead>
+                <tbody>
 
-    @if(items.nonEmpty) {
-        <table id="item_table" class="form-group">
-            <thead>
-                <tr id="item_table--headers">
-                    <th scope="col">@messages("supplementary.itemsSummary.itemNumber")</th>
-                    <th scope="col">@messages("supplementary.itemsSummary.procedureCode")</th>
-                    <th scope="col">@messages("supplementary.itemsSummary.commodityCode")</th>
-                    <th scope="col">@messages("supplementary.itemsSummary.noOfPackages")</th>
-                    <th scope="col" colspan="2"></th>
-                </tr>
-            </thead>
-            <tbody>
-
-         @items.sortBy(_.sequenceId).zipWithIndex.map { case (item, index) =>
+                @items.sortBy(_.sequenceId).zipWithIndex.map { case (item, index) =>
                 <tr id="item_@index">
                     <td id="item_@index--sequence_id" scope="row">@item.sequenceId</td>
                     <td id="item_@index--procedure_code" scope="row">@item.procedureCodes.map(_.procedureCode).getOrElse("") </td>
@@ -76,27 +71,28 @@
                     </td>
                     <td scope="row">
                         <a id="item_@index--remove" class="button button--gray" href="@routes.ItemsSummaryController.removeItem(mode, item.id)">@messages("site.remove")</a>
-                    </td>
+                </td>
                 </tr>
-            }
+                }
 
-            </tbody>
-        </table>
-    }
-    @helper.form(routes.ItemsSummaryController.submit(mode), 'autocomplete -> "off") {
-        @helper.CSRF.formField
+                </tbody>
+            </table>
+        }
+        @helper.form(routes.ItemsSummaryController.submit(mode), 'autocomplete -> "off") {
+            @helper.CSRF.formField
 
-        <div class="section">
-            @components.buttons.add_button(if(items.isEmpty) "site.add.item" else "site.add.anotherItem")
-
-            @if(items.nonEmpty) {
-                @components.buttons.save_and_continue_button()
-            }
-        </div>
-        @if(items.nonEmpty) {
             <div class="section">
-                @components.buttons.save_and_return_later_button()
+                @components.buttons.add_button(if(items.isEmpty) "site.add.item" else "site.add.anotherItem")
+
+                @if(items.nonEmpty) {
+                    @components.buttons.save_and_continue_button()
+                }
             </div>
+            @if(items.nonEmpty) {
+                <div class="section">
+                @components.buttons.save_and_return_later_button()
+                </div>
+            }
         }
     }
 }

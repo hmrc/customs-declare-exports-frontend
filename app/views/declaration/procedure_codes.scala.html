@@ -16,13 +16,14 @@
 
 @import forms.declaration.ProcedureCodes
 @import uk.gov.hmrc.play.views.html._
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(mode: Mode, itemId: String, form: Form[ProcedureCodes], codes: Seq[String])(implicit request: Request[_], messages: Messages)
 
     @main_template(
-        title = messages("supplementary.procedureCodes.title")
+        title = Title("supplementary.procedureCodes.title", "supplementary.items")
      ) {
 
 

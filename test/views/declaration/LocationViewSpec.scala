@@ -21,7 +21,7 @@ import forms.declaration.GoodsLocation
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
@@ -34,14 +34,17 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
   private val page = new goods_location(mainTemplate)
   private val form: Form[GoodsLocation] = GoodsLocation.form()
-  private def createView(mode: Mode = Mode.Normal, form: Form[GoodsLocation] = form): Document =
-    page(mode, form)(journeyRequest(), stubMessages())
+  private def createView(
+    mode: Mode = Mode.Normal,
+    form: Form[GoodsLocation] = form,
+    messages: Messages = stubMessages()
+  ): Document =
+    page(mode, form)(journeyRequest(), messages)
 
   "Location View on empty page" should {
 
     "have proper messages for labels" in {
       val messages = instanceOf[MessagesApi].preferred(journeyRequest())
-      messages must haveTranslationFor("supplementary.goodsLocation")
       messages must haveTranslationFor("declaration.summary.locations.header")
       messages must haveTranslationFor("supplementary.goodsLocation.title")
       messages must haveTranslationFor("supplementary.address.country")
@@ -69,8 +72,9 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
     val view = createView()
 
-    "display page title" in {
-      view.select("title").text() mustBe "supplementary.goodsLocation"
+    "display same page title as header" in {
+      val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+      viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
     }
 
     "display section header" in {

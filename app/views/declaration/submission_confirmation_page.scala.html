@@ -15,13 +15,14 @@
  *@
 
 @import models.responses.FlashKeys
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @()(implicit request: Request[_], flash: Flash, messages: Messages)
 
 @main_template(
-    title = messages("supplementary.confirmation.title")
+    title = Title("supplementary.confirmation.title")
 ) {
 
     <div class="govuk-box-highlight">

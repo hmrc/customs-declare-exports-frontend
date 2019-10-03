@@ -26,6 +26,8 @@ import helpers.views.declaration.CommonMessages
 import models.{DeclarationStatus, ExportsDeclaration}
 import org.jsoup.nodes.Element
 import play.api.data.Form
+import play.api.i18n.Messages
+import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -47,15 +49,23 @@ class RemoveSavedDeclarationsViewSpec extends UnitViewSpec with CommonMessages w
     withUpdateTime(LocalDateTime.of(2019, 1, 1, 10, 0, 0).toInstant(ZoneOffset.UTC))
   )
 
-  private def createView(dec: ExportsDeclaration, form: Form[RemoveDraftDeclaration] = RemoveDraftDeclaration.form) =
-    removeSavedDeclarationsPage(declaration = dec, form)
+  private def createView(
+    dec: ExportsDeclaration,
+    form: Form[RemoveDraftDeclaration] = RemoveDraftDeclaration.form,
+    messages: Messages = stubMessages()
+  ) =
+    removeSavedDeclarationsPage(declaration = dec, form)(request, messages)
 
   "Remove Saved Declarations View" should {
+
+    "display same page title as header" in {
+      val viewWithMessage = createView(decWithDucr(), messages = realMessagesApi.preferred(request))
+      viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
+    }
 
     "display declaration about to be removed" in {
       val view = createView(decWithDucr())
 
-      view.title() mustBe messages(title)
       view.getElementsByTag("h1").text() mustBe messages(title)
 
       tableCell(view)(0, 0).text() mustBe messages(ducr)

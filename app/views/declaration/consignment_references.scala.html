@@ -17,13 +17,14 @@
 @import controllers.declaration.routes._
 @import forms.declaration.ConsignmentReferences
 @import uk.gov.hmrc.play.views.html._
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(mode: Mode, form: Form[ConsignmentReferences])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-  title = messages("supplementary.consignmentReferences.title")
+  title = Title("supplementary.consignmentReferences.header", "supplementary.consignmentReferences.heading")
 ) {
 
     @components.back_link(controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage(mode), mode)

@@ -19,13 +19,14 @@
 @import uk.gov.hmrc.play.views.html._
 @import services.Countries
 @import services.view.AutoCompleteItem
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(mode: Mode, form: Form[GoodsLocation])(implicit request: Request[_], messages: Messages)
 
     @main_template(
-        title = messages("supplementary.goodsLocation")
+        title = Title("supplementary.goodsLocation.title", "declaration.summary.locations.header")
     ) {
         @helper.form(LocationController.saveLocation(mode), 'autoComplete -> "off") {
             @helper.CSRF.formField

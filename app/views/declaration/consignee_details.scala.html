@@ -18,13 +18,14 @@
 @import forms.declaration.ConsigneeDetails
 @import services.model.Country
 @import uk.gov.hmrc.play.views.html._
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(mode: Mode, form: Form[ConsigneeDetails])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.consignee.title")
+    title = Title("supplementary.consignee.title", "supplementary.summary.parties.header")
 ) {
     @components.back_link(controllers.declaration.routes.ExporterDetailsController.displayPage(mode), mode)
 

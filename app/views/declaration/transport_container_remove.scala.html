@@ -21,6 +21,7 @@
 @import views.components.fields.LabelledValue
 @import views.components.inputs.RadioOption
 @import forms.declaration.Seal
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
@@ -28,7 +29,7 @@
 
 
 @main_template(
-    title = messages("supplementary.transportInfo.container.remove.title")
+    title = Title("supplementary.transportInfo.container.remove.title")
 ) {
 
     @components.back_link(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode), mode)

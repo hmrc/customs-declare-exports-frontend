@@ -20,7 +20,7 @@ import forms.declaration.Document
 import models.Mode
 import org.jsoup.nodes.{Document => JsonDocument}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
@@ -36,16 +36,16 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
   private def createView(
     mode: Mode = Mode.Normal,
     form: Form[Document] = form,
-    documents: Seq[Document] = Seq.empty
+    documents: Seq[Document] = Seq.empty,
+    messages: Messages = stubMessages()
   ): JsonDocument =
-    page(mode, form, documents)(journeyRequest(), stubMessages())
+    page(mode, form, documents)(journeyRequest(), messages)
 
   "Previous Documents View on empty page" should {
     val view = createView()
 
     "have proper messages for labels" in {
       val messages = instanceOf[MessagesApi].preferred(journeyRequest())
-      messages must haveTranslationFor("supplementary.previousDocuments")
       messages must haveTranslationFor("supplementary.previousDocuments.documentCategory.label")
       messages must haveTranslationFor("supplementary.previousDocuments.documentType.label")
       messages must haveTranslationFor("supplementary.previousDocuments.documentReference.label")
@@ -64,8 +64,9 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
       messages must haveTranslationFor("supplementary.previousDocuments.documentCategory.label")
     }
 
-    "display page title" in {
-      view.select("title").text() must be("supplementary.previousDocuments")
+    "display same page title as header" in {
+      val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+      viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
     }
 
     "display section header" in {

@@ -19,8 +19,8 @@ package views.declaration
 import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
-import forms.{Ducr, Lrn}
 import forms.declaration.ConsignmentReferences
+import forms.{Ducr, Lrn}
 import helpers.views.declaration.{CommonMessages, ConsignmentReferencesMessages}
 import models.Mode
 import org.jsoup.nodes.Document
@@ -49,7 +49,6 @@ class ConsignmentReferencesViewSpec
 
       val messages = instanceOf[MessagesApi].preferred(request)
 
-      messages must haveTranslationFor("supplementary.consignmentReferences.title")
       messages must haveTranslationFor("supplementary.consignmentReferences.heading")
       messages must haveTranslationFor("supplementary.consignmentReferences.header")
       messages must haveTranslationFor("supplementary.consignmentReferences.ducr.info")

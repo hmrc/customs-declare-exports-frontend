@@ -238,7 +238,6 @@ class SummaryPageViewSpec
 
       "there is no mandatory information" in {
 
-        summaryNoDataPage must include("supplementary.summary.title")
         summaryNoDataPage must include("supplementary.summary.noData.header")
         summaryNoDataPage must include("supplementary.summary.noData.header.secondary")
         summaryNoDataPage must include("Make an export declaration")

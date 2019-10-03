@@ -17,13 +17,14 @@
 @import java.time.format.DateTimeFormatter
 
 @import models.declaration.notifications.Notification
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(eori: String, notifications: Seq[Notification])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("notifications.title")
+    title = Title("notifications.title")
 ) {
 
     <h1>@messages("notifications.title")</h1>

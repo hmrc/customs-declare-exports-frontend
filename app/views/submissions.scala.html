@@ -23,13 +23,14 @@
 @import models.declaration.submissions.RequestType.SubmissionRequest
 @import forms.Choice
 @import forms.Choice.AllowedChoiceValues.Submissions
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(submissions: Seq[(Submission, Seq[Notification])])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("submissions.title"),
+    title = Title("submissions.title"),
     fullWidth = true
 ) {
 

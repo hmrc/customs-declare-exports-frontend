@@ -21,13 +21,14 @@
 @import views.components.fields.LabelledValue
 
 @import forms.declaration.CommodityMeasure
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(mode: Mode, itemId: String, form: Form[AdditionalInformation], items: Seq[AdditionalInformation])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.additionalInformation")
+    title = Title("supplementary.additionalInformation.title", "supplementary.summary.yourReferences.header")
 ) {
 
     @components.back_link(CommodityMeasureController.displayPage(mode, itemId), mode)

@@ -31,6 +31,8 @@ import helpers.views.declaration.{CommonMessages, DeclarationTypeMessages}
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
+import play.api.i18n.Messages
+import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -45,7 +47,11 @@ class DeclarationTypeViewSpec
   private val formStandard: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeStandardDec.form()
   private val formSupplementary: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeSupplementaryDec.form()
   private val declarationTypePage = new declaration_type(mainTemplate)
-  private def createView(form: Form[AdditionalDeclarationType], journeyType: String): Document =
+  private def createView(
+    form: Form[AdditionalDeclarationType],
+    journeyType: String,
+    messages: Messages = stubMessages()
+  ): Document =
     declarationTypePage(Mode.Normal, form)(journeyRequest(journeyType), messages)
 
   "Declaration Type View on empty page" should {
@@ -53,13 +59,13 @@ class DeclarationTypeViewSpec
     "display page title" when {
 
       "used for Standard Declaration journey" in {
-
-        createView(formStandard, StandardDec).select("title").text() mustBe messages(title)
+        val viewWithMessage = createView(formStandard, StandardDec, realMessagesApi.preferred(request))
+        viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
       }
 
       "used for Supplementary Declaration journey" in {
-
-        createView(formSupplementary, SupplementaryDec).select("title").text() mustBe messages(title)
+        val viewWithMessage = createView(formSupplementary, SupplementaryDec, realMessagesApi.preferred(request))
+        viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
       }
     }
 

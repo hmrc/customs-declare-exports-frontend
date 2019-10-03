@@ -24,13 +24,14 @@
 @import services.model.Country
 @import services.Countries
 @import services.view.AutoCompleteItem
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(mode: Mode, form: Form[TransportDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.transportInfo.active.title")
+    title = Title("supplementary.transportInfo.active.title")
 ) {
 
     @components.back_link(controllers.declaration.routes.BorderTransportController.displayPage(mode), mode)

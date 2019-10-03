@@ -21,6 +21,7 @@
 @import services.PackageTypes
 
 @import services.view.AutoCompleteItem
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
@@ -35,7 +36,7 @@
 }
 
 @main_template(
-    title = messages("supplementary.packageInformation.title")
+    title = Title("supplementary.packageInformation.title", "supplementary.items")
 ) {
 
     @components.back_link(routes.ItemTypeController.displayPage(mode, itemId), mode)

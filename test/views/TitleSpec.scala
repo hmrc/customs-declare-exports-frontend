@@ -16,14 +16,25 @@
 
 package views
 
-import play.api.i18n.Messages
+import org.scalatest.MustMatchers
+import views.declaration.spec.UnitViewSpec
 
-case class Title(headingKey: String, sectionKey: String = "") {
+class TitleSpec extends UnitViewSpec with MustMatchers {
 
-  def toString(implicit messages: Messages): String =
-    if (sectionKey.isEmpty) {
-      messages("title.format", messages(headingKey), messages("service.name"))
-    } else {
-      messages("title.withSection.format", messages(headingKey), messages(sectionKey), messages("service.name"))
+  override val messages = realMessagesApi.preferred(request)
+  val serviceName = messages("service.name")
+
+  "Title" should {
+
+    "format title without section" in {
+      Title("some.title").toString(messages) must equal(s"some.title - $serviceName - GOV.UK")
     }
+
+    "format title with section" in {
+      Title("some.title", "some.section").toString(messages) must equal(
+        s"some.title - some.section - $serviceName - GOV.UK"
+      )
+    }
+
+  }
 }

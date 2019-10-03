@@ -46,7 +46,6 @@ class AdditionalInformationViewSpec
 
       val messages = instanceOf[MessagesApi].preferred(request)
 
-      messages must haveTranslationFor("supplementary.additionalInformation")
       messages must haveTranslationFor("supplementary.additionalInformation.title")
       messages must haveTranslationFor("supplementary.additionalInformation.code")
       messages must haveTranslationFor("supplementary.additionalInformation.item.code")

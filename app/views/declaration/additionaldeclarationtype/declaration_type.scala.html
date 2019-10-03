@@ -18,13 +18,17 @@
 @import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.play.views.html._
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(mode: Mode, form: Form[AdditionalDeclarationType])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
-    title = messages("declaration.declarationType.title")
+    title = request.choice.value match {
+        case SupplementaryDec => Title("declaration.declarationType.header.supplementary", "declaration.declarationType.title")
+        case StandardDec => Title("declaration.declarationType.header.standard", "declaration.declarationType.title")
+    }
 ) {
 
     @components.back_link(controllers.declaration.routes.DispatchLocationController.displayPage(mode), mode)

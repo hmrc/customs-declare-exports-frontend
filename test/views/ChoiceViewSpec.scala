@@ -24,6 +24,8 @@ import helpers.views.declaration.{ChoiceMessages, CommonMessages}
 import org.scalatest.Matchers._
 import play.api.Mode.Test
 import play.api.data.Form
+import play.api.i18n.Messages
+import play.api.test.Helpers.stubMessages
 import play.api.{Configuration, Environment}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
@@ -37,12 +39,14 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
 
   private val form: Form[Choice] = Choice.form()
   private val choicePage = new choice_page(mainTemplate, instanceOf[AppConfig])
-  private def createView(form: Form[Choice] = form): Html = choicePage(form)
+  private def createView(form: Form[Choice] = form, messages: Messages = stubMessages()): Html =
+    choicePage(form)(request, messages)
 
   "Choice View on empty page" should {
 
-    "display page title" in {
-      createView().select("title").text() mustBe messages(title)
+    "display same page title as header" in {
+      val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+      viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
     }
 
     "display four radio buttons with description (not selected)" in {

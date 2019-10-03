@@ -25,13 +25,14 @@
 @import views.components.inputs.RadioOption
 @import forms.Choice
 @import forms.Choice.AllowedChoiceValues.ContinueDec
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(declarations: Paginated[ExportsDeclaration])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("saved.declarations.title"),
+    title = Title("saved.declarations.title"),
     fullWidth = true
 ) {
 

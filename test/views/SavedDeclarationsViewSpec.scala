@@ -27,6 +27,8 @@ import forms.{Choice, Ducr, Lrn}
 import helpers.views.declaration.CommonMessages
 import models.{DeclarationStatus, ExportsDeclaration, Page, Paginated}
 import org.jsoup.nodes.Element
+import play.api.i18n.Messages
+import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -56,26 +58,29 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with CommonMessages with St
     declarations: Seq[ExportsDeclaration] = Seq.empty,
     page: Int = 1,
     pageSize: Int = 10,
-    total: Int = 0
+    total: Int = 0,
+    messages: Messages = stubMessages()
   ) = {
     val data = Paginated(declarations, Page(page, pageSize), total)
-    savedDeclarationsPage(data)
+    savedDeclarationsPage(data)(request, messages)
   }
 
   "Saved Declarations View" should {
 
     "display empty declaration list " in {
-      val view = createView()
+      val messages = realMessagesApi.preferred(request)
+      val view = createView(messages = messages)
 
-      view.title() mustBe messages(title)
-      view.getElementsByTag("h1").text() mustBe messages(title)
+      view.title() must include(view.getElementsByTag("h1").text())
 
       tableCell(view)(0, 0).text() mustBe messages(ducr)
       tableCell(view)(0, 1).text() mustBe messages(dateSaved)
 
       numberOfTableRows(view) mustBe 0
 
-      view.getElementById("pagination-none").text() mustBe "Showing no saved.declarations.pagination.plural"
+      view
+        .getElementById("pagination-none")
+        .text() mustBe s"Showing no ${messages("saved.declarations.pagination.plural")}"
     }
 
     "display declarations" in {
