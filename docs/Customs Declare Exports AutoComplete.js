@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      0.5
+// @version      0.7
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -226,7 +226,7 @@ function completePage() {
         selectRadioOption(document.getElementById('inlandModeOfTransportCode'), 0);
         document.getElementsByClassName('button')[0].click()
     }
-    if (currentPageIs('/customs-declare-exports/declaration/border-transport')) {
+    if (currentPageIs('/customs-declare-exports/declaration/departure-transport')) {
         selectRadioOption(document.getElementById('borderModeOfTransportCode'), 0);
         selectRadioOption(document.getElementById('meansOfTransportOnDepartureType'), 1);
         if(document.getElementById("meansOfTransportCrossingTheBorderIDNumber")){
@@ -237,7 +237,7 @@ function completePage() {
         }
         document.getElementsByClassName('button')[0].click()
     }
-    if (currentPageIs('/customs-declare-exports/declaration/transport-details')) {
+    if (currentPageIs('/customs-declare-exports/declaration/border-transport')) {
         selectFromAutoPredict(document.getElementById('meansOfTransportCrossingTheBorderNationality-container'), "United Kingdom");
         selectRadioOption(document.getElementById('meansOfTransportCrossingTheBorderType'), 1);
         document.getElementById("meansOfTransportCrossingTheBorderIDNumber").value = 'BOAT1';
