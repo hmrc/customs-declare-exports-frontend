@@ -18,8 +18,8 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.BorderTransport
-import forms.declaration.BorderTransport._
+import forms.declaration.DepartureTransport
+import forms.declaration.DepartureTransport._
 import javax.inject.Inject
 import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
@@ -28,24 +28,24 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.border_transport
+import views.html.declaration.departure_transport
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class BorderTransportController @Inject()(
+class DepartureTransportController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  borderTransportPage: border_transport
+  departureTransportPage: departure_transport
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.borderTransport match {
-      case Some(data) => Ok(borderTransportPage(mode, form().fill(data)))
-      case _          => Ok(borderTransportPage(mode, form()))
+      case Some(data) => Ok(departureTransportPage(mode, form().fill(data)))
+      case _          => Ok(departureTransportPage(mode, form()))
     }
   }
 
@@ -53,8 +53,8 @@ class BorderTransportController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[BorderTransport]) =>
-          Future.successful(BadRequest(borderTransportPage(mode, formWithErrors))),
+        (formWithErrors: Form[DepartureTransport]) =>
+          Future.successful(BadRequest(departureTransportPage(mode, formWithErrors))),
         borderTransport =>
           updateCache(borderTransport)
             .map(_ => navigator.continueTo(routes.TransportDetailsController.displayPage(mode)))
@@ -62,7 +62,7 @@ class BorderTransportController @Inject()(
   }
 
   private def updateCache(
-    formData: BorderTransport
+    formData: DepartureTransport
   )(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(_.copy(borderTransport = Some(formData)))
 }

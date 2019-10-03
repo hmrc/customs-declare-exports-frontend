@@ -18,24 +18,26 @@ package views.declaration
 
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
-import forms.declaration.BorderTransport
+import forms.declaration.DepartureTransport
+import forms.declaration.TransportCodes._
 import helpers.views.declaration.CommonMessages
 import models.Mode
 import play.api.data.Form
 import play.twirl.api.Html
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.border_transport
+import views.html.components.fields.{field_radio, field_text}
+import views.html.declaration.departure_transport
 import views.tags.ViewTest
 
 @ViewTest
 class BorderTransportViewSpec extends UnitViewSpec with CommonMessages with Stubs {
 
-  val form: Form[BorderTransport] = BorderTransport.form()
+  val form: Form[DepartureTransport] = DepartureTransport.form()
 
-  private val borderTransportPage = new border_transport(mainTemplate)
+  private val borderTransportPage = new departure_transport(mainTemplate)
 
-  def createView(form: Form[BorderTransport] = form): Html =
+  def createView(form: Form[DepartureTransport] = form): Html =
     borderTransportPage(Mode.Normal, form)(request, messages)
 
   "BorderTransport View" should {

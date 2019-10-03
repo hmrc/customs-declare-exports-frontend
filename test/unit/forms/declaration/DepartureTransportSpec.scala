@@ -17,19 +17,19 @@
 package unit.forms.declaration
 
 import base.TestHelper
-import forms.declaration.BorderTransport
+import forms.declaration.DepartureTransport
 import forms.declaration.TransportCodes._
 import org.scalatest.{MustMatchers, WordSpec}
 
-class BorderTransportSpec extends WordSpec with MustMatchers {
+class DepartureTransportSpec extends WordSpec with MustMatchers {
 
-  val form = BorderTransport.form
+  val form = DepartureTransport.form
 
   "Border Transport" should {
 
     "has correct form id" in {
 
-      BorderTransport.formId must be("BorderTransport")
+      DepartureTransport.formId must be("BorderTransport")
     }
   }
 
@@ -38,7 +38,7 @@ class BorderTransportSpec extends WordSpec with MustMatchers {
     "allow all mode transport codes" in {
 
       val errors = allowedModeOfTransportCodes.map { code =>
-        form.fillAndValidate(BorderTransport(code, IMOShipIDNumber, "rereference")).errors
+        form.fillAndValidate(DepartureTransport(code, IMOShipIDNumber, "rereference")).errors
       }.toSeq.flatten
 
       errors must be(empty)
@@ -47,7 +47,7 @@ class BorderTransportSpec extends WordSpec with MustMatchers {
     "allow all means of transport type codes" in {
 
       val errors = allowedMeansOfTransportTypeCodes.map { code =>
-        form.fillAndValidate(BorderTransport(Maritime, code, "reference")).errors
+        form.fillAndValidate(DepartureTransport(Maritime, code, "reference")).errors
       }.toSeq.flatten
 
       errors must be(empty)
@@ -57,7 +57,7 @@ class BorderTransportSpec extends WordSpec with MustMatchers {
 
       "user filled all mandatory fields with correct data" in {
 
-        val correctForm = BorderTransport(Maritime, IMOShipIDNumber, "reference")
+        val correctForm = DepartureTransport(Maritime, IMOShipIDNumber, "reference")
 
         val result = form.fillAndValidate(correctForm)
 

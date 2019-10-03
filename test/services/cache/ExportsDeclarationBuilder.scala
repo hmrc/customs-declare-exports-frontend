@@ -163,7 +163,11 @@ trait ExportsDeclarationBuilder {
   ): ExportsDeclarationModifier =
     _.copy(
       borderTransport = Some(
-        BorderTransport(borderModeOfTransportCode, meansOfTransportOnDepartureType, meansOfTransportOnDepartureIDNumber)
+        DepartureTransport(
+          borderModeOfTransportCode,
+          meansOfTransportOnDepartureType,
+          meansOfTransportOnDepartureIDNumber
+        )
       )
     )
 

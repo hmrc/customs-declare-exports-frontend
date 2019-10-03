@@ -171,9 +171,9 @@ POST         /items/:itemId/add-document                        controllers.decl
 
 # Border Transport
 
-GET         /border-transport                    controllers.declaration.BorderTransportController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /departure-transport                    controllers.declaration.DepartureTransportController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /border-transport                    controllers.declaration.BorderTransportController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /departure-transport                    controllers.declaration.DepartureTransportController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
 # Transport Details
 

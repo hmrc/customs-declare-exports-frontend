@@ -191,7 +191,7 @@ object SupplementaryDeclarationTestData {
     containerData = Some(correctTransportInformationContainerData),
     natureOfTransaction = Some(correctNatureOfTransaction),
     totalNumberOfItems = Some(correctTotalNumberOfItemsDecimalValues),
-    borderTransport = Some(BorderTransport("3", "10", "123112yu78")),
+    borderTransport = Some(DepartureTransport("3", "10", "123112yu78")),
     parties = Parties(
       exporterDetails = Some(correctExporterDetails),
       declarantDetails = Some(correctDeclarantDetailsEORIOnly),

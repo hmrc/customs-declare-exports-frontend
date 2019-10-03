@@ -16,9 +16,9 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.{routes, BorderTransportController}
+import controllers.declaration.{routes, DepartureTransportController}
 import forms.Choice
-import forms.declaration.BorderTransport
+import forms.declaration.DepartureTransport
 import forms.declaration.TransportCodes.{Maritime, WagonNumber}
 import models.Mode
 import play.api.libs.json.{JsValue, Json}
@@ -26,16 +26,16 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
-import views.html.declaration.border_transport
+import views.html.declaration.departure_transport
 
 import scala.concurrent.Future
 
-class BorderTransportControllerSpec extends ControllerSpec with ErrorHandlerMocks {
+class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
   trait SetUp {
-    val borderTransportPage = new border_transport(mainTemplate)
+    val borderTransportPage = new departure_transport(mainTemplate)
 
-    val controller = new BorderTransportController(
+    val controller = new DepartureTransportController(
       mockAuthAction,
       mockJourneyAction,
       mockExportsCacheService,
@@ -79,7 +79,7 @@ class BorderTransportControllerSpec extends ControllerSpec with ErrorHandlerMock
 
       "form is incorrect" in new SetUp {
 
-        val incorrectForm: JsValue = Json.toJson(BorderTransport("wrongValue", "wrongValue", "FAA"))
+        val incorrectForm: JsValue = Json.toJson(DepartureTransport("wrongValue", "wrongValue", "FAA"))
 
         val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
 
@@ -91,7 +91,7 @@ class BorderTransportControllerSpec extends ControllerSpec with ErrorHandlerMock
 
       "information provided by user are correct" in new SetUp {
 
-        val correctForm: JsValue = Json.toJson(BorderTransport(Maritime, WagonNumber, "FAA"))
+        val correctForm: JsValue = Json.toJson(DepartureTransport(Maritime, WagonNumber, "FAA"))
 
         val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 

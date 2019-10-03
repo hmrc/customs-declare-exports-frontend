@@ -23,16 +23,16 @@ import play.api.data.Forms.{mapping, optional, text}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator.{isContainedIn, noLongerThan, _}
 
-case class BorderTransport(
+case class DepartureTransport(
   borderModeOfTransportCode: String,
   meansOfTransportOnDepartureType: String,
   meansOfTransportOnDepartureIDNumber: String
 )
 
-object BorderTransport {
+object DepartureTransport {
   val formId = "BorderTransport"
 
-  implicit val formats = Json.format[BorderTransport]
+  implicit val formats = Json.format[DepartureTransport]
 
   val formMapping = mapping(
     "borderModeOfTransportCode" -> requiredRadio("supplementary.transportInfo.borderTransportMode.error.empty")
@@ -53,9 +53,9 @@ object BorderTransport {
         "supplementary.transportInfo.meansOfTransport.reference.error.invalid",
         isAlphanumericWithAllowedSpecialCharacters
       )
-  )(BorderTransport.apply)(BorderTransport.unapply)
+  )(DepartureTransport.apply)(DepartureTransport.unapply)
 
-  def form(): Form[BorderTransport] = Form(BorderTransport.formMapping)
+  def form(): Form[DepartureTransport] = Form(DepartureTransport.formMapping)
 
 }
 

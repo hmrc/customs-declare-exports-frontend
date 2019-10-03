@@ -78,7 +78,7 @@ class TransportDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
 
       backButton.text() mustBe "site.back"
       backButton.getElementById("link-back") must haveHref(
-        controllers.declaration.routes.BorderTransportController.displayPage(Mode.Normal)
+        controllers.declaration.routes.DepartureTransportController.displayPage(Mode.Normal)
       )
     }
 

@@ -15,7 +15,7 @@
  *@
 
 @import controllers.declaration.routes._
-@import forms.declaration.BorderTransport
+@import forms.declaration.DepartureTransport
 @import forms.declaration.TransportCodes._
 @import services.model.Country
 @import uk.gov.hmrc.play.views.html._
@@ -24,7 +24,7 @@
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[BorderTransport])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, form: Form[DepartureTransport])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = Title("supplementary.transportInfo.title")
@@ -36,7 +36,7 @@
 
     @components.heading(title = messages("supplementary.transportInfo.title"))
 
-    @helper.form(BorderTransportController.submitForm(mode), 'autoComplete -> "off") {
+    @helper.form(DepartureTransportController.submitForm(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         @components.fields.field_radio(
