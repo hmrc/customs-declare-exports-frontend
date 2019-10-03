@@ -48,7 +48,7 @@ class TransportContainerAddViewSpec extends UnitViewSpec with Stubs with MustMat
 
       backLinkContainer.text() must be(messages(backCaption))
       backLinkContainer.getElementById("link-back") must haveHref(
-        controllers.declaration.routes.TransportDetailsController.displayPage(Mode.Normal)
+        controllers.declaration.routes.BorderTransportController.displayPage(Mode.Normal)
       )
     }
 

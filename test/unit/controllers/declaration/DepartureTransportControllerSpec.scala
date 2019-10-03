@@ -96,7 +96,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.TransportDetailsController.displayPage()
+        thePageNavigatedTo mustBe routes.BorderTransportController.displayPage()
       }
     }
   }

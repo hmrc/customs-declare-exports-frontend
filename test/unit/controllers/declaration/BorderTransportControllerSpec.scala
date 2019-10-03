@@ -24,12 +24,12 @@ import models.Mode
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
-import views.html.declaration.transport_details
+import views.html.declaration.border_transport
 
 class BorderTransportControllerSpec extends ControllerSpec {
 
   trait SetUp {
-    val transportDetailsPage = new transport_details(mainTemplate)
+    val borderTransportPage = new border_transport(mainTemplate)
 
     val controller = new BorderTransportController(
       mockAuthAction,
@@ -37,7 +37,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
       navigator,
       mockExportsCacheService,
       stubMessagesControllerComponents(),
-      transportDetailsPage
+      borderTransportPage
     )(ec)
 
     authorizedUser()

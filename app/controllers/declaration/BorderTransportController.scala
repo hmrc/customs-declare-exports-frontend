@@ -28,7 +28,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.transport_details
+import views.html.declaration.border_transport
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -38,14 +38,14 @@ class BorderTransportController @Inject()(
   navigator: Navigator,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
-  transportDetailsPage: transport_details
+  borderTransport: border_transport
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.transportDetails match {
-      case Some(data) => Ok(transportDetailsPage(mode, form().fill(data)))
-      case _          => Ok(transportDetailsPage(mode, form()))
+      case Some(data) => Ok(borderTransport(mode, form().fill(data)))
+      case _          => Ok(borderTransport(mode, form()))
     }
   }
 
@@ -54,7 +54,7 @@ class BorderTransportController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[TransportDetails]) =>
-          Future.successful(BadRequest(transportDetailsPage(mode, formWithErrors))),
+          Future.successful(BadRequest(borderTransport(mode, formWithErrors))),
         transportDetails => updateCache(transportDetails).map(_ => redirect(mode, transportDetails))
       )
   }
