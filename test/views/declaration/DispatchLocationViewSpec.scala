@@ -44,7 +44,6 @@ class DispatchLocationViewSpec
 
       val messages = instanceOf[MessagesApi].preferred(request)
 
-      messages must haveTranslationFor("supplementary.dispatchLocation.title")
       messages must haveTranslationFor("supplementary.dispatchLocation.header")
       messages must haveTranslationFor("supplementary.dispatchLocation.header.hint")
       messages must haveTranslationFor("supplementary.dispatchLocation.inputText.outsideEU")

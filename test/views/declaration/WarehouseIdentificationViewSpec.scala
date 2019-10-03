@@ -21,7 +21,7 @@ import forms.declaration.WarehouseIdentification
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
@@ -35,8 +35,12 @@ class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestData 
   private val page = new warehouse_identification(mainTemplate)
   private val form: Form[WarehouseIdentification] = WarehouseIdentification.form()
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[WarehouseIdentification] = form): Document =
-    page(mode, form)(journeyRequest(), stubMessages())
+  private def createView(
+    mode: Mode = Mode.Normal,
+    form: Form[WarehouseIdentification] = form,
+    messages: Messages = stubMessages()
+  ): Document =
+    page(mode, form)(journeyRequest(), messages)
 
   "Warehouse Identification View" should {
     val view = createView()
@@ -46,8 +50,9 @@ class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestData 
       messages must haveTranslationFor("supplementary.warehouse.title")
     }
 
-    "display page title" in {
-      view.select("title").text() must be("supplementary.warehouse.title")
+    "display same page title as header" in {
+      val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+      viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
     }
 
     "display 'Back' button that links to 'Supervising Office' page" in {

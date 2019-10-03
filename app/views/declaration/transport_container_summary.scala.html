@@ -23,13 +23,14 @@
 @import views.components.fields.LabelledValue
 @import views.components.inputs.RadioOption
 @import views.html.components.buttons.remove_button
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(mode: Mode, form: Form[YesNoAnswer], containers: Seq[Container], showSeals: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.transportInfo.containers.title")
+    title = Title("supplementary.transportInfo.containers.title")
 ) {
 
     @components.back_link(controllers.declaration.routes.TransportDetailsController.displayPage(mode), mode)

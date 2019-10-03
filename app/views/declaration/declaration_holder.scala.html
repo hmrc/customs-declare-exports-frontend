@@ -20,13 +20,14 @@
 @import services.HolderOfAuthorisationCode
 @import services.view.AutoCompleteItem
 @import views.components.fields.LabelledValue
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(mode: Mode, form: Form[DeclarationHolder], holders: Seq[DeclarationHolder])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.declarationHolder.title")
+    title = Title("supplementary.declarationHolder.title", "supplementary.summary.parties.header")
 ) {
 
     @components.back_link(controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage(mode), mode)

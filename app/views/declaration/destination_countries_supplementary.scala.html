@@ -20,13 +20,14 @@
 @import services.Countries
 @import services.view.AutoCompleteItem
 @import uk.gov.hmrc.play.views.html._
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(mode: Mode, form: Form[DestinationCountries])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
-    title = messages("declaration.destinationCountries.title")
+    title = Title("declaration.destinationCountries.title", "declaration.summary.locations.header")
 ) {
     @components.back_link(controllers.declaration.routes.DeclarationHolderController.displayPage(mode), mode)
 

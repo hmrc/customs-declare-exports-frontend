@@ -26,7 +26,8 @@ import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
 import models.declaration.submissions.{Action, Submission, SubmissionStatus}
 import org.jsoup.nodes.Element
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
+import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
 import services.cache.ExportsTestData
 import unit.tools.Stubs
@@ -38,13 +39,15 @@ import views.tags.ViewTest
 class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = new submissions(mainTemplate)
-  private def createView(data: Seq[(Submission, Seq[Notification])] = Seq.empty): Html = page(data)
+  private def createView(
+    data: Seq[(Submission, Seq[Notification])] = Seq.empty,
+    messages: Messages = stubMessages()
+  ): Html = page(data)(request, messages)
 
   "Submission View" should {
 
     "have proper messages for labels" in {
       val messages = instanceOf[MessagesApi].preferred(journeyRequest())
-      messages must haveTranslationFor("supplementary.totalNumberOfItems.title")
       messages must haveTranslationFor("submissions.title")
       messages must haveTranslationFor("submissions.eori")
       messages must haveTranslationFor("submissions.conversationId")
@@ -58,8 +61,12 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
 
     val view = createView()
 
+    "display same page title as header" in {
+      val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+      viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
+    }
+
     "display page messages" in {
-      view.select("title").text() mustBe "submissions.title"
       tableCell(view)(0, 0).text() mustBe "submissions.ducr"
       tableCell(view)(0, 1).text() mustBe "submissions.lrn"
       tableCell(view)(0, 2).text() mustBe "submissions.mrn"

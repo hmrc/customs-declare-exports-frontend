@@ -17,13 +17,14 @@
 @import controllers.declaration.routes._
 @import forms.declaration. CommodityMeasure
 @import uk.gov.hmrc.play.views.html._
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(mode: Mode, itemId: String, form: Form[CommodityMeasure])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.commodityMeasure.title")
+    title = Title("supplementary.commodityMeasure.title", "supplementary.items")
 ) {
     @components.back_link(PackageInformationController.displayPage(mode, itemId), mode)
 

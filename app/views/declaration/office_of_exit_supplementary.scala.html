@@ -19,13 +19,14 @@
 @import uk.gov.hmrc.play.views.html._
 @import services.OfficeOfExits
 @import services.view.AutoCompleteItem
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(mode: Mode, form: Form[OfficeOfExitSupplementary])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("declaration.officeOfExit.title")
+    title = Title("declaration.officeOfExit.title", "declaration.summary.locations.header")
 ) {
     @helper.form(routes.OfficeOfExitController.saveOffice(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField

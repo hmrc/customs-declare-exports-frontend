@@ -21,13 +21,14 @@
 @import forms.declaration.additionaldocuments.DocumentsProduced
 @import forms.declaration.additionaldocuments.DocumentsProduced._
 @import uk.gov.hmrc.play.views.html._
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(mode: Mode, itemId: String, form: Form[DocumentsProduced], documents: Seq[DocumentsProduced])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.addDocument.title")
+    title = Title("supplementary.addDocument.title", "supplementary.summary.yourReferences.header")
 ) {
 
     @components.back_link(AdditionalInformationController.displayPage(mode, itemId), mode)

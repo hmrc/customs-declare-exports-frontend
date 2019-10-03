@@ -17,6 +17,8 @@
 package views
 
 import helpers.views.declaration.StartMessages
+import play.api.i18n.Messages
+import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -27,13 +29,13 @@ import views.tags.ViewTest
 class StartViewSpec extends UnitViewSpec with StartMessages with Stubs {
 
   private val startPage = new start_page(mainTemplate)
-  private def createView(): Html = startPage()
+  private def createView(messages: Messages = stubMessages()): Html = startPage()(request, messages)
 
   "Start View on empty page" when {
 
-    "display page title" in {
-
-      createView().select("title").text() mustBe messages(title)
+    "display same page title as header" in {
+      val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+      viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
     }
 
     "display 'Export' header" in {

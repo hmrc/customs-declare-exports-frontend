@@ -43,8 +43,9 @@ class NotEligibleViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
       messages must haveTranslationFor("notEligible.reference.text")
     }
 
-    "display page title" in {
-      view.select("title").text() mustBe "notEligible.pageTitle"
+    "display same page title as header" in {
+      val viewWithMessage = new not_eligible(mainTemplate)()(journeyRequest(), realMessagesApi.preferred(request))
+      viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
     }
 
     "display header with hint" in {

@@ -25,13 +25,21 @@
 @import views.html.declaration.summary._
 @import views.html.declaration.summary.legal_declaration
 @import views.ViewDates
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(mode: Mode, suppDecData: SupplementaryDeclarationData, legalDeclarationForm: Form[LegalDeclaration])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
+@titleMsg = @{mode match {
+    case Mode.Normal => Title("supplementary.summary.normal-header")
+    case Mode.Amend => Title("supplementary.summary.amend-header")
+    case Mode.Draft => Title("supplementary.summary.saved-header")
+    }
+}
+
 @main_template(
-    title = messages("supplementary.summary.title")
+    title = titleMsg
 ) {
 
   @mode match {
@@ -51,12 +59,7 @@
 
     @components.error_summary(legalDeclarationForm.errors)
 
-    @components.heading(title = mode match {
-                case Mode.Normal => messages("supplementary.summary.normal-header")
-                case Mode.Amend => messages("supplementary.summary.amend-header")
-                case Mode.Draft => messages("supplementary.summary.saved-header")
-            }
-    )
+    @components.heading(title = messages(titleMsg.headingKey))
 
     @if(mode == Mode.Draft) {
         <p>@messages("saved.declarations.summary.intro")</p>

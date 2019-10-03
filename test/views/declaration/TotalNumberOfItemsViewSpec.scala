@@ -21,7 +21,7 @@ import forms.declaration.TotalNumberOfItems
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
@@ -33,15 +33,18 @@ import views.tags.ViewTest
 class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
   private val page = new total_number_of_items(mainTemplate)
   private val form: Form[TotalNumberOfItems] = TotalNumberOfItems.form()
-  private def createView(mode: Mode = Mode.Normal, form: Form[TotalNumberOfItems] = form): Document =
-    page(mode, form)(journeyRequest(), stubMessages())
+  private def createView(
+    mode: Mode = Mode.Normal,
+    form: Form[TotalNumberOfItems] = form,
+    messages: Messages = stubMessages()
+  ): Document =
+    page(mode, form)(journeyRequest(), messages)
 
   "Total Number Of Items View on empty page" should {
     val view = createView()
 
     "have proper messages for labels" in {
       val messages = instanceOf[MessagesApi].preferred(journeyRequest())
-      messages must haveTranslationFor("supplementary.totalNumberOfItems.title")
       messages must haveTranslationFor("supplementary.items")
       messages must haveTranslationFor("supplementary.valueOfItems")
       messages must haveTranslationFor("supplementary.totalAmountInvoiced")
@@ -56,8 +59,9 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
       messages must haveTranslationFor("error.summary.title")
     }
 
-    "display page title" in {
-      view.select("title").text() must be("supplementary.totalNumberOfItems.title")
+    "display same page title as header" in {
+      val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+      viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
     }
 
     "display section header" in {

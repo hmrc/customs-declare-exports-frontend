@@ -17,13 +17,14 @@
 @import controllers.declaration.routes._
 @import forms.declaration.TotalNumberOfItems
 @import uk.gov.hmrc.play.views.html._
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(mode: Mode, form: Form[TotalNumberOfItems])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.totalNumberOfItems.title")
+    title = Title("supplementary.valueOfItems", "supplementary.items")
 ) {
     @helper.form(TotalNumberOfItemsController.saveNoOfItems(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField

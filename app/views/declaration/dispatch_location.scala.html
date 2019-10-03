@@ -19,13 +19,14 @@
 @import services.Countries
 @import uk.gov.hmrc.play.views.html._
 @import views.components.inputs.RadioOption
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(mode: Mode, form: Form[DispatchLocation])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-  title = messages("supplementary.dispatchLocation.title")
+  title = Title("supplementary.dispatchLocation.header", "declaration.summary.locations.header")
 ) {
 
     @mode match {

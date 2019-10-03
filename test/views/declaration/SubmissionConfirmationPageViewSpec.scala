@@ -17,7 +17,7 @@
 package views.declaration
 import base.Injector
 import org.jsoup.nodes.Document
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.Flash
 import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
@@ -45,10 +45,6 @@ class SubmissionConfirmationPageViewSpec extends UnitViewSpec with ExportsTestDa
       messages must haveTranslationFor("supplementary.confirmation.explanation.linkText")
       messages must haveTranslationFor("supplementary.confirmation.submitAnotherDeclaration")
       messages must haveTranslationFor("supplementary.confirmation.rejection.header")
-    }
-
-    "display page title" in {
-      view.select("title").text() mustBe "supplementary.confirmation.title"
     }
 
     "display header" in {

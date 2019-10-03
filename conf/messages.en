@@ -2,6 +2,11 @@ date.day = Day
 date.month = Month
 date.year = Year
 
+service.name=Customs Export Declaration Service
+
+title.format={0} - {1} - GOV.UK
+title.withSection.format={0} - {1} - {2} - GOV.UK
+
 error.boolean = Please give an answer
 error.invalid_date = Give a correct date
 error.date.day_blank = Enter a day
@@ -62,7 +67,6 @@ site.add.anotherItem = Add another item
 
 general.inquiries.help.link = General enquires help
 
-unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
 dateTime.date.error.format = Date format is incorrect
@@ -147,7 +151,6 @@ declaration.choice.CAN = Cancel a declaration
 declaration.choice.CON = Continue a saved declaration
 declaration.choice.SUB = View declarations
 
-startPage.title = Register for customs services
 startPage.heading = Make an export declaration
 startPage.description = An export declaration must be completed for any export leaving the UK. This includes goods being exported through the EU to a third (non-EU) country.
 startPage.listHeading = You will need:
@@ -173,7 +176,6 @@ startPage.enquiries = General enquires help
 choicePage.input.error.empty = Please, choose what do you want to do
 choicePage.input.error.incorrectValue = Please, choose valid option
 
-supplementary.dispatchLocation.title = Dispatch Location
 supplementary.dispatchLocation.header = Are the goods being sent outside the EU?
 supplementary.dispatchLocation.header.hint = Hint text if needed here
 supplementary.dispatchLocation.inputText.outsideEU = Yes
@@ -206,7 +208,6 @@ notEligible.descriptionPostUrl = to make your declaration.
 notEligible.referenceTitle = Help and support
 notEligible.reference.text = If you are having problems with making a declaration, phone: 0300 333 3333. Open 8am to 6pm, Monday to Friday (closed bank holidays).
 
-supplementary.consignmentReferences.title = Consignment References
 supplementary.consignmentReferences.heading = Your references
 supplementary.consignmentReferences.header =  Consignment references
 supplementary.consignmentReferences.ducr.info = Give this declaration a Unique Consignment Reference (UCR)
@@ -237,7 +238,6 @@ supplementary.carrier.title.hint = Enter the carrier’s EORI number or name and
 supplementary.carrier.eori.info = Carrier’s EORI number
 supplementary.carrier.address.info = Carrier’s name and business address
 
-supplementary.representative.title = Add representative
 supplementary.representative.header = Who is the representative?
 supplementary.representative.hint = Enter the representative’s EORI number or name and business address. If no representative was used, leave this page blank and continue.
 supplementary.representative.eori.info = Representative’s EORI number
@@ -341,7 +341,6 @@ declaration.destinationCountries.countriesOfRouting.hint = Enter the countries i
 declaration.destinationCountries.countriesOfRouting.error = Country of routing is incorrect
 declaration.destinationCountries.countriesOfRouting.empty = Enter a country code
 
-supplementary.goodsLocation = Location of goods
 supplementary.goodsLocation.title = Which port will the goods leave the UK from?
 supplementary.goodsLocation.hint = Enter the location where the goods left the UK.
 supplementary.goodsLocation.typeOfLocation = Location Type
@@ -468,7 +467,6 @@ supplementary.addDocument.error.measurementUnitAndQuantity = Please provide both
 supplementary.items = Items
 supplementary.valueOfItems = Enter item information
 supplementary.totalNumberOfItems = 1/9 What were the total number of items?
-supplementary.totalNumberOfItems.title = Total number of items
 supplementary.totalNumberOfItems.hint = Up to a maximum of 999 items
 supplementary.totalNumberOfItems.empty = Total number of items cannot be empty
 supplementary.totalNumberOfItems.error = Total number of items is incorrect
@@ -591,7 +589,6 @@ declaration.itemType.statisticalValue.error.empty = The statistical value cannot
 declaration.itemType.statisticalValue.error.length = Entered statistical value is too long
 declaration.itemType.statisticalValue.error.wrongFormat = Format of this value is incorrect
 
-supplementary.previousDocuments = Previous documents
 supplementary.previousDocuments.title = Add any documents or MUCRs and DUCRs to this declaration
 supplementary.previousDocuments.hint = If there are none, leave this page blank
 supplementary.previousDocuments.documentCategory.error.empty = Document category cannot be empty
@@ -615,7 +612,6 @@ supplementary.previousDocuments.documentType.label = Document Type
 supplementary.previousDocuments.documentReference.label = Document Reference
 supplementary.previousDocuments.goodsItemIdentifier.label = Goods Item Identifier
 
-supplementary.additionalInformation = Additional information
 supplementary.additionalInformation.title = Enter additional information
 supplementary.additionalInformation.code = Enter the union or national code
 supplementary.additionalInformation.item.code = 2/2 union or national code
@@ -626,7 +622,6 @@ supplementary.additionalInformation.item.description = 2/2 information
 supplementary.additionalInformation.description.error = Information description is incorrect
 supplementary.additionalInformation.description.empty = Information description cannot be empty
 
-declaration.natureOfTransaction.pageTitle = Nature of transaction
 declaration.natureOfTransaction.header = Consignment information
 declaration.natureOfTransaction.title = What was the nature of the transaction?
 declaration.natureOfTransaction.purchase = Sale
@@ -684,7 +679,6 @@ supplementary.commodityMeasure.supplementaryUnits.item = 6/2 Supplementary units
 supplementary.commodityMeasure.supplementaryUnits.hint = Enter the quantity in the unit specified by the commodity code, for example 1,000 kWh
 supplementary.commodityMeasure.supplementaryUnits.error = Supplementary units should be a decimal value and should be less than or equal to 99999999999999.99 with 2 decimals
 
-supplementary.summary.title = Summary
 supplementary.summary.back = Back to Submissions
 supplementary.summary.normal-header = Check your answers before making this declaration
 supplementary.summary.amend-header = Check your answers

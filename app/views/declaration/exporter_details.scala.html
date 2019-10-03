@@ -18,13 +18,14 @@
 @import forms.declaration.ExporterDetails
 @import services.model.Country
 @import uk.gov.hmrc.play.views.html._
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(mode: Mode, form: Form[ExporterDetails])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.consignor.title")
+    title = Title("supplementary.consignor.title", "supplementary.summary.parties.header")
 ) {
     @helper.form(ExporterDetailsController.saveAddress(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField

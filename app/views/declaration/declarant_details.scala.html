@@ -20,13 +20,14 @@
 @import forms.Choice.AllowedChoiceValues._
 @import models.requests.JourneyRequest
 @import services.model.Country
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(mode: Mode, form: Form[DeclarantDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.declarant.title")
+    title = Title("supplementary.declarant.title", "supplementary.summary.parties.header")
 ) {
 
     @components.back_link(controllers.declaration.routes.ConsigneeDetailsController.displayPage(mode), mode)

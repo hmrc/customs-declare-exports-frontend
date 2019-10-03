@@ -21,6 +21,7 @@
 @import views.components.fields.LabelledValue
 @import views.components.inputs.RadioOption
 @import forms.declaration.Seal
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
@@ -28,7 +29,7 @@
 
 
 @main_template(
-    title = messages("standard.seal.remove.title", containerId)
+    title = Title(messages("standard.seal.remove.title", containerId))
 ) {
 
     @components.back_link(controllers.declaration.routes.SealController.displaySealSummary(mode, containerId), mode)

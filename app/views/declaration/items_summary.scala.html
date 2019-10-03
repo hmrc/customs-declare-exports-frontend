@@ -18,14 +18,21 @@
 @import uk.gov.hmrc.play.views.html._
 @import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
 @import services.cache.ExportItem
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 
 @(mode: Mode, items: List[ExportItem], itemsErrors: Seq[FormError] = Seq.empty)(implicit request: Request[_], messages: Messages)
 
+@titleMessage = @{
+    if(items.isEmpty) { messages("supplementary.itemsAdd.title") }
+    else if(items.length == 1) { messages("supplementary.itemsAdd.titleWithItem") }
+    else { messages("supplementary.itemsAdd.titleWithItems", items.length) }
+}
+
 @main_template(
-    title = messages("supplementary.items")
+    title = Title(titleMessage, "supplementary.items")
 ) {
     @components.back_link(routes.PreviousDocumentsController.displayPage(mode), mode)
 

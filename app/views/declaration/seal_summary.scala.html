@@ -21,54 +21,55 @@
 @import views.components.fields.LabelledValue
 @import views.components.inputs.RadioOption
 @import forms.declaration.Seal
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(mode: Mode, form: Form[YesNoAnswer], container: Option[Container])(implicit request: Request[_], messages: Messages)
 
 @defining(container.map(_.id).getOrElse("")) { containerId =>
+    @defining(container.map(_.seals).getOrElse(Seq.empty)) { seals: Seq[Seal] =>
+        @defining(if(seals.nonEmpty) {
+            messages("standard.seal.title", containerId)
+        } else {
+            messages("standard.seal.add.first", containerId)
+        }) { heading =>
 
-    @main_template(
-        title = messages("standard.seal.title", containerId)
-    ) {
+            @main_template(
+                Title(heading)
+            ) {
 
-        @components.back_link(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode), mode)
+                @components.back_link(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode), mode)
 
-        @components.error_summary(form.errors)
+                @components.error_summary(form.errors)
 
-        @defining(container.map(_.seals).getOrElse(Seq.empty)) { seals: Seq[Seal] =>
+                @components.heading(title = heading)
 
-            @if(seals.nonEmpty) {
-                @components.heading(title = messages("standard.seal.title", containerId))
-            }
-            @if(seals.isEmpty) {
-                @components.heading(title = messages("standard.seal.add.first", containerId))
-            }
+                @helper.form(SealController.submitSummaryAction(mode, containerId), 'autoComplete -> "off") {
+                    @helper.CSRF.formField
 
-            @helper.form(SealController.submitSummaryAction(mode, containerId), 'autoComplete -> "off") {
-                @helper.CSRF.formField
+                    @if(seals.nonEmpty) {
+                        @components.fields.removable_elements_table(
+                            title = Some(messages("standard.seal.summary.heading")),
+                            elements = seals.map(seal => LabelledValue(seal.id)),
+                            removeButtonClass = "button-link"
+                        )
+                    }
 
-                @if(seals.nonEmpty) {
-                    @components.fields.removable_elements_table(
-                        title = Some(messages("standard.seal.summary.heading")),
-                        elements = seals.map(seal => LabelledValue(seal.id)),
-                        removeButtonClass = "button-link"
+                    @components.fields.field_radio(
+                        field = form("yesNo"),
+                        legend = if(seals.nonEmpty) messages("standard.seal.add.another") else "",
+                        inputs = Seq(
+                            RadioOption("Yes", yes, messages("site.yes")),
+                            RadioOption("No", no, messages("site.no"))
+                        )
                     )
+
+                    @components.submit_button()
+                    @components.buttons.save_and_return_later_button()
                 }
 
-                @components.fields.field_radio(
-                    field = form("yesNo"),
-                    legend = if(seals.nonEmpty) messages("standard.seal.add.another") else "",
-                    inputs = Seq(
-                        RadioOption("Yes", yes, messages("site.yes")),
-                        RadioOption("No", no, messages("site.no"))
-                    )
-                )
-
-                @components.submit_button()
-                @components.buttons.save_and_return_later_button()
             }
         }
     }
-
 }

@@ -18,6 +18,7 @@
 @import forms.declaration.NatureOfTransaction._
 @import uk.gov.hmrc.play.views.html._
 @import views.components.inputs.RadioOption
+@import views.Title
 
 @this(main_template: views.html.main_template)
 
@@ -26,7 +27,7 @@
 
 
 @main_template(
-    title = messages("declaration.natureOfTransaction.pageTitle")
+    title = Title("declaration.natureOfTransaction.title", "declaration.natureOfTransaction.header")
 ) {
     @helper.form(controllers.declaration.routes.NatureOfTransactionController.saveTransactionType(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
