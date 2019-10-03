@@ -19,7 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.BorderTransportController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.TransportCodes.{cash, IMOShipIDNumber}
-import forms.declaration.TransportDetails
+import forms.declaration.BorderTransport
 import models.Mode
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -69,7 +69,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
       "form contains incorrect values" in new SetUp {
 
-        val incorrectForm = Json.toJson(TransportDetails(Some("incorrect"), false, "", "", None))
+        val incorrectForm = Json.toJson(BorderTransport(Some("incorrect"), false, "", "", None))
 
         val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
 
@@ -80,7 +80,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
     "return 303 (SEE_OTHER)" when {
       "Container is selected" in new SetUp {
         val correctForm =
-          Json.toJson(TransportDetails(Some("United Kingdom"), true, IMOShipIDNumber, "correct", Some(cash)))
+          Json.toJson(BorderTransport(Some("United Kingdom"), true, IMOShipIDNumber, "correct", Some(cash)))
 
         val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
 
@@ -91,7 +91,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
       "Container is not selected" in new SetUp {
         val correctForm =
-          Json.toJson(TransportDetails(Some("United Kingdom"), false, IMOShipIDNumber, "correct", Some(cash)))
+          Json.toJson(BorderTransport(Some("United Kingdom"), false, IMOShipIDNumber, "correct", Some(cash)))
 
         val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
@@ -101,7 +101,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
       "Container is not selected in draft mode" in new SetUp {
         val correctForm =
-          Json.toJson(TransportDetails(Some("United Kingdom"), false, IMOShipIDNumber, "correct", Some(cash)))
+          Json.toJson(BorderTransport(Some("United Kingdom"), false, IMOShipIDNumber, "correct", Some(cash)))
 
         val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
 

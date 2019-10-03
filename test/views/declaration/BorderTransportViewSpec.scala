@@ -17,7 +17,7 @@
 package views.declaration
 
 import base.Injector
-import forms.declaration.TransportDetails
+import forms.declaration.BorderTransport
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -32,9 +32,9 @@ import views.tags.ViewTest
 class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = new border_transport(mainTemplate)
-  private val form: Form[TransportDetails] = TransportDetails.form()
+  private val form: Form[BorderTransport] = BorderTransport.form()
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[TransportDetails] = form): Document =
+  private def createView(mode: Mode = Mode.Normal, form: Form[BorderTransport] = form): Document =
     page(mode, form)(journeyRequest(), stubMessages())
 
   "TransportDetails View" should {

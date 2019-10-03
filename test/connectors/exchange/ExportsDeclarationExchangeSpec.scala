@@ -44,7 +44,7 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
   when(consignmentReferences.lrn).thenReturn(Lrn(""))
 
   private val borderTransport = mock[DepartureTransport]
-  private val transportDetails = mock[TransportDetails]
+  private val transportDetails = mock[BorderTransport]
   private val containers = mock[TransportInformationContainerData]
   private val parties = mock[Parties]
   private val locations = mock[Locations]

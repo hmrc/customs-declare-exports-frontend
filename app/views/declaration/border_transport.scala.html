@@ -15,7 +15,7 @@
  *@
 
 @import controllers.declaration.routes._
-@import forms.declaration.TransportDetails
+@import forms.declaration.BorderTransport
 @import uk.gov.hmrc.play.views.html._
 @import views.components.inputs.RadioOption
 @import forms.declaration.TransportCodes._
@@ -28,7 +28,7 @@
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[TransportDetails])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[BorderTransport])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
     title = Title("supplementary.transportInfo.active.title")

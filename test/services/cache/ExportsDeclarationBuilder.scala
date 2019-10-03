@@ -224,7 +224,7 @@ trait ExportsDeclarationBuilder {
 
   def withoutTransportDetails(): ExportsDeclarationModifier = _.copy(transportDetails = None)
 
-  def withTransportDetails(details: TransportDetails): ExportsDeclarationModifier =
+  def withTransportDetails(details: BorderTransport): ExportsDeclarationModifier =
     _.copy(transportDetails = Some(details))
 
   def withTransportDetails(
@@ -236,7 +236,7 @@ trait ExportsDeclarationBuilder {
   ): ExportsDeclarationModifier =
     _.copy(
       transportDetails = Some(
-        TransportDetails(
+        BorderTransport(
           meansOfTransportCrossingTheBorderNationality = meansOfTransportCrossingTheBorderNationality,
           container = container,
           meansOfTransportCrossingTheBorderType = meansOfTransportCrossingTheBorderType,

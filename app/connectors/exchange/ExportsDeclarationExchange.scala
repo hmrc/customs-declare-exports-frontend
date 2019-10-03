@@ -37,7 +37,7 @@ case class ExportsDeclarationExchange(
   additionalDeclarationType: Option[AdditionalDeclarationType] = None,
   consignmentReferences: Option[ConsignmentReferences] = None,
   borderTransport: Option[DepartureTransport] = None,
-  transportDetails: Option[TransportDetails] = None,
+  transportDetails: Option[BorderTransport] = None,
   containerData: Option[TransportInformationContainerData] = None,
   parties: Parties = Parties(),
   locations: Locations = Locations(),

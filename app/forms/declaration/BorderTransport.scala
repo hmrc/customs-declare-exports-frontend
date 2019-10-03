@@ -23,7 +23,7 @@ import play.api.libs.json.{Json, OFormat}
 import services.Countries.allCountries
 import utils.validators.forms.FieldValidator.{isContainedIn, noLongerThan, _}
 
-case class TransportDetails(
+case class BorderTransport(
   meansOfTransportCrossingTheBorderNationality: Option[String],
   container: Boolean,
   meansOfTransportCrossingTheBorderType: String,
@@ -31,13 +31,13 @@ case class TransportDetails(
   paymentMethod: Option[String] = None
 )
 
-object TransportDetails {
+object BorderTransport {
 
   val formId = "TransportDetails"
 
-  implicit val formats: OFormat[TransportDetails] = Json.format[TransportDetails]
+  implicit val formats: OFormat[BorderTransport] = Json.format[BorderTransport]
 
-  val formMapping: Mapping[TransportDetails] = mapping(
+  val formMapping: Mapping[BorderTransport] = mapping(
     "meansOfTransportCrossingTheBorderNationality" -> optional(
       text()
         .verifying(
@@ -68,7 +68,7 @@ object TransportDetails {
       text()
         .verifying("standard.transportDetails.paymentMethod.error", isContainedIn(paymentMethods.keys))
     )
-  )(TransportDetails.apply)(TransportDetails.unapply)
+  )(BorderTransport.apply)(BorderTransport.unapply)
 
-  def form(): Form[TransportDetails] = Form(TransportDetails.formMapping)
+  def form(): Form[BorderTransport] = Form(BorderTransport.formMapping)
 }

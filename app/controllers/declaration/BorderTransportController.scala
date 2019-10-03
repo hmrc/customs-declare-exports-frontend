@@ -18,8 +18,8 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.TransportDetails
-import forms.declaration.TransportDetails._
+import forms.declaration.BorderTransport
+import forms.declaration.BorderTransport._
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -53,13 +53,12 @@ class BorderTransportController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[TransportDetails]) =>
-          Future.successful(BadRequest(borderTransport(mode, formWithErrors))),
+        (formWithErrors: Form[BorderTransport]) => Future.successful(BadRequest(borderTransport(mode, formWithErrors))),
         transportDetails => updateCache(transportDetails).map(_ => redirect(mode, transportDetails))
       )
   }
 
-  private def redirect(mode: Mode, transportDetails: TransportDetails)(
+  private def redirect(mode: Mode, transportDetails: BorderTransport)(
     implicit request: JourneyRequest[AnyContent]
   ): Result =
     if (transportDetails.container)
@@ -67,7 +66,7 @@ class BorderTransportController @Inject()(
     else navigator.continueTo(controllers.declaration.routes.SummaryController.displayPage(Mode.Normal))
 
   private def updateCache(
-    formData: TransportDetails
+    formData: BorderTransport
   )(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.copy(transportDetails = Some(formData)))
 }
