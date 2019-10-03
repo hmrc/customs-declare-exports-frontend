@@ -23,8 +23,8 @@ import forms.declaration.{
   ItemType,
   PackageInformation
 }
+import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers.yes
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
-import org.apache.commons.lang3.RandomStringUtils
 import play.api.libs.json.Json
 
 case class ExportItem(
@@ -43,8 +43,12 @@ case class ExportItem(
     fiscalInformation.exists(_.onwardSupplyRelief == FiscalInformation.AllowedFiscalInformationAnswers.yes)
 
   def isCompleted: Boolean =
-    procedureCodes.isDefined && fiscalInformation.isDefined && itemType.isDefined &&
+    procedureCodes.isDefined && isFiscalInformationCompleted && itemType.isDefined &&
       packageInformation.nonEmpty && commodityMeasure.isDefined && additionalInformation.isDefined
+
+  private def isFiscalInformationCompleted: Boolean =
+    if (fiscalInformation.exists(_.onwardSupplyRelief == yes)) additionalFiscalReferencesData.isDefined
+    else fiscalInformation.isDefined
 }
 
 object ExportItem {
