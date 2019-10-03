@@ -177,9 +177,9 @@ POST        /departure-transport                    controllers.declaration.Depa
 
 # Transport Details
 
-GET         /transport-details                   controllers.declaration.TransportDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /border-transport                   controllers.declaration.BorderTransportController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /transport-details                   controllers.declaration.TransportDetailsController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /border-transport                   controllers.declaration.BorderTransportController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
 # Transport Containers & Seals
 

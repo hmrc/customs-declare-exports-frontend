@@ -16,7 +16,7 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.TransportDetailsController
+import controllers.declaration.BorderTransportController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.TransportCodes.{cash, IMOShipIDNumber}
 import forms.declaration.TransportDetails
@@ -26,12 +26,12 @@ import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import views.html.declaration.transport_details
 
-class TransportDetailsControllerSpec extends ControllerSpec {
+class BorderTransportControllerSpec extends ControllerSpec {
 
   trait SetUp {
     val transportDetailsPage = new transport_details(mainTemplate)
 
-    val controller = new TransportDetailsController(
+    val controller = new BorderTransportController(
       mockAuthAction,
       mockJourneyAction,
       navigator,

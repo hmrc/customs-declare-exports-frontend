@@ -32,7 +32,7 @@ import views.html.declaration.transport_details
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class TransportDetailsController @Inject()(
+class BorderTransportController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,

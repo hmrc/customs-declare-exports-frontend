@@ -57,7 +57,7 @@ class DepartureTransportController @Inject()(
           Future.successful(BadRequest(departureTransportPage(mode, formWithErrors))),
         borderTransport =>
           updateCache(borderTransport)
-            .map(_ => navigator.continueTo(routes.TransportDetailsController.displayPage(mode)))
+            .map(_ => navigator.continueTo(routes.BorderTransportController.displayPage(mode)))
       )
   }
 
