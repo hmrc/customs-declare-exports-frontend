@@ -16,7 +16,13 @@
 
 package services.cache
 
-import forms.declaration.{CommodityMeasure, FiscalInformation}
+import forms.declaration.{
+  AdditionalFiscalReference,
+  AdditionalFiscalReferencesData,
+  CommodityMeasure,
+  FiscalInformation
+}
+import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
 import unit.base.UnitSpec
 
 class ExportItemSpec extends UnitSpec with ExportsItemBuilder {
@@ -49,12 +55,43 @@ class ExportItemSpec extends UnitSpec with ExportsItemBuilder {
         notCompletedItem.isCompleted mustBe false
       }
 
+      "item contain Yes in fiscal information but without additional fiscal references" in {
+
+        val completedItem = anItem(
+          withItemId("id"),
+          withProcedureCodes(),
+          withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
+          withItemType(),
+          withPackageInformation(),
+          withCommodityMeasure(CommodityMeasure(None, "100", "100")),
+          withAdditionalInformation("code", "description")
+        ).copy(additionalFiscalReferencesData = None)
+
+        completedItem.isCompleted mustBe false
+      }
+
+      "item contain No in fiscal information and doesn't contain additional fiscal references" in {
+
+        val completedItem = anItem(
+          withItemId("id"),
+          withProcedureCodes(),
+          withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.no)),
+          withItemType(),
+          withPackageInformation(),
+          withCommodityMeasure(CommodityMeasure(None, "100", "100")),
+          withAdditionalInformation("code", "description")
+        )
+
+        completedItem.isCompleted mustBe true
+      }
+
       "item is completed" in {
 
         val completedItem = anItem(
           withItemId("id"),
           withProcedureCodes(),
-          withFiscalInformation(FiscalInformation("Yes")),
+          withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
+          withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12")))),
           withItemType(),
           withPackageInformation(),
           withCommodityMeasure(CommodityMeasure(None, "100", "100")),
