@@ -1,0 +1,15 @@
+
+.dashed-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.dashed-list .dashed-list-item {
+  margin-left: 15px;
+}
+
+/* Prevent nested li's from getting messed up */
+.dashed-list .dashed-list-item::before {
+  content: "- ";
+  margin-left: -15px;
+}
