@@ -19,6 +19,7 @@ package views.declaration
 import base.Injector
 import forms.declaration.BorderTransport
 import models.Mode
+import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.test.Helpers.stubMessages
