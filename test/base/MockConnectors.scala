@@ -19,7 +19,7 @@ package base
 import java.time.LocalDateTime
 import java.util.UUID
 
-import connectors.{CustomsDeclareExportsConnector, NrsConnector}
+import connectors.CustomsDeclareExportsConnector
 import models._
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
@@ -35,8 +35,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait MockConnectors extends MockitoSugar {
   lazy val mockCustomsDeclareExportsConnector: CustomsDeclareExportsConnector = mock[CustomsDeclareExportsConnector]
-
-  lazy val mockNrsConnector: NrsConnector = mock[NrsConnector]
 
   def successfulCustomsDeclareExportsResponse(): Unit =
     when(mockCustomsDeclareExportsConnector.createDeclaration(any[ExportsDeclaration])(any(), any()))
@@ -95,10 +93,6 @@ trait MockConnectors extends MockitoSugar {
   def declarationNotFound: OngoingStubbing[Future[Option[ExportsDeclaration]]] =
     when(mockCustomsDeclareExportsConnector.findDeclaration(anyString())(any(), any()))
       .thenReturn(Future.successful(None))
-
-  def submitNrsRequest(): OngoingStubbing[Future[NrsSubmissionResponse]] =
-    when(mockNrsConnector.submitNonRepudiation(any())(any(), any()))
-      .thenReturn(Future.successful(NrsSubmissionResponse("submissionId1")))
 
   def successfulCancelDeclarationResponse(): OngoingStubbing[Future[Unit]] =
     when(mockCustomsDeclareExportsConnector.createCancellation(any())(any(), any()))

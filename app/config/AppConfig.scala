@@ -53,13 +53,8 @@ class AppConfig @Inject()(
 
   lazy val customsDeclareExports = servicesConfig.baseUrl("customs-declare-exports")
 
-  lazy val declarationsV2 = servicesConfig.getConfString(
+  lazy val declarations = servicesConfig.getConfString(
     "customs-declare-exports.declarations",
-    throw new IllegalStateException("Missing configuration for Customs Declarations Exports submit declaration URI")
-  )
-
-  lazy val submitDeclaration = servicesConfig.getConfString(
-    "customs-declare-exports.submit-declaration",
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports submit declaration URI")
   )
 
@@ -73,13 +68,6 @@ class AppConfig @Inject()(
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports fetch notification URI")
   )
 
-  lazy val fetchSubmissionNotifications = servicesConfig.getConfString(
-    "customs-declare-exports.fetch-submission-notifications",
-    throw new IllegalStateException(
-      "Missing configuration for Customs Declaration Export fetch submission notification URI"
-    )
-  )
-
   lazy val cancelDeclaration = servicesConfig.getConfString(
     "customs-declare-exports.cancel-declaration",
     throw new IllegalStateException("Missing configuration for Customs Declaration Export cancel declaration URI")
@@ -91,11 +79,6 @@ class AppConfig @Inject()(
   lazy val countriesCsvFilename: String = loadConfig("countryCodesCsvFilename")
 
   lazy val countryCodesJsonFilename: String = loadConfig("countryCodesJsonFilename")
-
-  lazy val nrsServiceUrl: String = servicesConfig.baseUrl("nrs")
-
-  lazy val nrsApiKey =
-    servicesConfig.getConfString("nrs.apikey", throw new IllegalStateException("Missing configuration for nrs apikey"))
 
   def languageMap: Map[String, Lang] = Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))
 

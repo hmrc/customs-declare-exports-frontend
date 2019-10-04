@@ -138,11 +138,7 @@ class AppConfigSpec extends UnitSpec {
     }
 
     "have submit declaration URL" in {
-      validConfigService.submitDeclaration must be("/declaration")
-    }
-
-    "have submit declaration v2 URL" in {
-      validConfigService.declarationsV2 must be("/v2/declaration")
+      validConfigService.declarations must be("/v2/declaration")
     }
 
     "have cancel declaration URL" in {
@@ -151,10 +147,6 @@ class AppConfigSpec extends UnitSpec {
 
     "have fetch notification URL" in {
       validConfigService.fetchNotifications must be("/notifications")
-    }
-
-    "have fetch submission notification URL" in {
-      validConfigService.fetchSubmissionNotifications must be("/submission-notifications")
     }
 
     "have fetchSubmissions URL" in {
@@ -167,14 +159,6 @@ class AppConfigSpec extends UnitSpec {
 
     "have countriesCsvFilename" in {
       validConfigService.countriesCsvFilename must be("code-lists/mdg-country-codes.csv")
-    }
-
-    "have nrsServiceUrl" in {
-      validConfigService.nrsServiceUrl must be("http://localhostnrs:7654")
-    }
-
-    "have nrsApiKey" in {
-      validConfigService.nrsApiKey must be("cds-exports")
     }
 
     "have ttl lifetime" in {
@@ -234,13 +218,7 @@ class AppConfigSpec extends UnitSpec {
   }
 
   "throw an exception when submit declaration uri is missing" in {
-    intercept[Exception](emptyConfigService.submitDeclaration).getMessage must be(
-      "Missing configuration for Customs Declarations Exports submit declaration URI"
-    )
-  }
-
-  "throw an exception when submit declaration v2 uri is missing" in {
-    intercept[Exception](emptyConfigService.declarationsV2).getMessage must be(
+    intercept[Exception](emptyConfigService.declarations).getMessage must be(
       "Missing configuration for Customs Declarations Exports submit declaration URI"
     )
   }
@@ -263,12 +241,6 @@ class AppConfigSpec extends UnitSpec {
     )
   }
 
-  "throw an exception when fetch-submission-notifications uri is missing" in {
-    intercept[Exception](emptyConfigService.fetchSubmissionNotifications).getMessage must be(
-      "Missing configuration for Customs Declaration Export fetch submission notification URI"
-    )
-  }
-
   "throw an exception when countryCodesJsonFilename is missing" in {
     intercept[Exception](emptyConfigService.countryCodesJsonFilename).getMessage must be(
       "Missing configuration key: countryCodesJsonFilename"
@@ -279,14 +251,6 @@ class AppConfigSpec extends UnitSpec {
     intercept[Exception](emptyConfigService.countriesCsvFilename).getMessage must be(
       "Missing configuration key: countryCodesCsvFilename"
     )
-  }
-
-  "throw an exception when nrs.host is missing" in {
-    intercept[Exception](emptyConfigService.nrsServiceUrl).getMessage must be("Could not find config nrs.host")
-  }
-
-  "throw an exception when nrs apikey is missing" in {
-    intercept[Exception](emptyConfigService.nrsApiKey).getMessage must be("Missing configuration for nrs apikey")
   }
 
 }
