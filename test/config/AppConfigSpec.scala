@@ -137,8 +137,8 @@ class AppConfigSpec extends UnitSpec {
       validConfigService.customsDeclareExports must be("http://localhoste:9875")
     }
 
-    "have submit declaration v2 URL" in {
-      validConfigService.declarationsV2 must be("/v2/declaration")
+    "have submit declaration URL" in {
+      validConfigService.declarations must be("/v2/declaration")
     }
 
     "have cancel declaration URL" in {
@@ -221,8 +221,8 @@ class AppConfigSpec extends UnitSpec {
     )
   }
 
-  "throw an exception when submit declaration v2 uri is missing" in {
-    intercept[Exception](emptyConfigService.declarationsV2).getMessage must be(
+  "throw an exception when submit declaration uri is missing" in {
+    intercept[Exception](emptyConfigService.declarations).getMessage must be(
       "Missing configuration for Customs Declarations Exports submit declaration URI"
     )
   }

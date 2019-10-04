@@ -45,7 +45,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
 
   def deleteDraftDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] =
     httpClient
-      .DELETE(s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}/$id")
+      .DELETE(s"${appConfig.customsDeclareExports}${appConfig.declarations}/$id")
       .map(_ => ())
 
   private val createTimer: Timer = metrics.defaultRegistry.timer("declaration.create.timer")
@@ -57,7 +57,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
     val createStopwatch = createTimer.time()
     httpClient
       .POST[ExportsDeclarationExchange, ExportsDeclarationExchange](
-        s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}",
+        s"${appConfig.customsDeclareExports}${appConfig.declarations}",
         ExportsDeclarationExchange(declaration)
       )
       .andThen {
@@ -79,7 +79,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
     val updateStopwatch = updateTimer.time()
     httpClient
       .PUT[ExportsDeclarationExchange, ExportsDeclarationExchange](
-        s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}/${declaration.id
+        s"${appConfig.customsDeclareExports}${appConfig.declarations}/${declaration.id
           .getOrElse(throw new IllegalArgumentException("Cannot update a declaration which hasn't been created first"))}",
         ExportsDeclarationExchange(declaration)
       )
@@ -99,7 +99,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
     val pagination = Page.bindable.unbind("page", page)
     httpClient
       .GET[Paginated[ExportsDeclarationExchange]](
-        s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}?$pagination"
+        s"${appConfig.customsDeclareExports}${appConfig.declarations}?$pagination"
       )
       .map(_.map(_.toExportsDeclaration))
   }
@@ -111,7 +111,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
     val sort = DeclarationSort.bindable.unbind("sort", DeclarationSort(SortBy.UPDATED, SortDirection.DES))
     httpClient
       .GET[Paginated[ExportsDeclarationExchange]](
-        s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}?status=DRAFT&$pagination&$sort"
+        s"${appConfig.customsDeclareExports}${appConfig.declarations}?status=DRAFT&$pagination&$sort"
       )
       .map(_.map(_.toExportsDeclaration))
   }
@@ -123,7 +123,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ExportsDeclaration]] = {
     val fetchStopwatch = fetchTimer.time()
     httpClient
-      .GET[Option[ExportsDeclarationExchange]](s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}/$id")
+      .GET[Option[ExportsDeclarationExchange]](s"${appConfig.customsDeclareExports}${appConfig.declarations}/$id")
       .map(_.map(_.toExportsDeclaration))
       .andThen {
         case _ => fetchStopwatch.stop()
@@ -132,16 +132,16 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
 
   def submitDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Submission] =
     httpClient
-      .POSTEmpty[Submission](s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}/$id/submission")
+      .POSTEmpty[Submission](s"${appConfig.customsDeclareExports}${appConfig.declarations}/$id/submission")
 
   def findSubmission(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Submission]] =
     httpClient
-      .GET[Option[Submission]](s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}/$id/submission")
+      .GET[Option[Submission]](s"${appConfig.customsDeclareExports}${appConfig.declarations}/$id/submission")
 
   def findNotifications(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
     httpClient
       .GET[Seq[Notification]](
-        s"${appConfig.customsDeclareExports}${appConfig.declarationsV2}/$id/submission/notifications"
+        s"${appConfig.customsDeclareExports}${appConfig.declarations}/$id/submission/notifications"
       )
 
   def fetchNotifications()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
