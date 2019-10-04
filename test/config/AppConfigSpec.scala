@@ -149,10 +149,6 @@ class AppConfigSpec extends UnitSpec {
       validConfigService.fetchNotifications must be("/notifications")
     }
 
-    "have fetch submission notification URL" in {
-      validConfigService.fetchSubmissionNotifications must be("/submission-notifications")
-    }
-
     "have fetchSubmissions URL" in {
       validConfigService.fetchSubmissions must be("/submissions")
     }
@@ -242,12 +238,6 @@ class AppConfigSpec extends UnitSpec {
   "throw an exception when fetch notifications uri is missing" in {
     intercept[Exception](emptyConfigService.fetchNotifications).getMessage must be(
       "Missing configuration for Customs Declarations Exports fetch notification URI"
-    )
-  }
-
-  "throw an exception when fetch-submission-notifications uri is missing" in {
-    intercept[Exception](emptyConfigService.fetchSubmissionNotifications).getMessage must be(
-      "Missing configuration for Customs Declaration Export fetch submission notification URI"
     )
   }
 

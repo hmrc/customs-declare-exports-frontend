@@ -68,13 +68,6 @@ class AppConfig @Inject()(
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports fetch notification URI")
   )
 
-  lazy val fetchSubmissionNotifications = servicesConfig.getConfString(
-    "customs-declare-exports.fetch-submission-notifications",
-    throw new IllegalStateException(
-      "Missing configuration for Customs Declaration Export fetch submission notification URI"
-    )
-  )
-
   lazy val cancelDeclaration = servicesConfig.getConfString(
     "customs-declare-exports.cancel-declaration",
     throw new IllegalStateException("Missing configuration for Customs Declaration Export cancel declaration URI")
