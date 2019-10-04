@@ -589,6 +589,7 @@ declaration.itemType.statisticalValue.error.empty = The statistical value cannot
 declaration.itemType.statisticalValue.error.length = Entered statistical value is too long
 declaration.itemType.statisticalValue.error.wrongFormat = Format of this value is incorrect
 
+supplementary.previousDocuments = Previous documents
 supplementary.previousDocuments.title = Add any documents or MUCRs and DUCRs to this declaration
 supplementary.previousDocuments.hint = If there are none, leave this page blank
 supplementary.previousDocuments.documentCategory.error.empty = Document category cannot be empty
