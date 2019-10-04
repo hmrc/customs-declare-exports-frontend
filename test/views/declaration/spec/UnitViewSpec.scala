@@ -16,9 +16,10 @@
 
 package views.declaration.spec
 
+import base.Injector
+import config.AppConfig
 import org.jsoup.nodes.Document
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.{FakeRequest, Helpers}
 import unit.base.UnitSpec
@@ -33,6 +34,8 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
 
   val realMessagesApi = UnitViewSpec.realMessagesApi
 
+  val realAppConfig: AppConfig = UnitViewSpec.realAppConfig
+
   def checkErrorsSummary(view: Document) = {
     view.getElementById("error-summary-heading").text() must be("error.summary.title")
     view.getElementsByClass("error-summary error-summary--show").get(0).getElementsByTag("p").text() must be(
@@ -41,8 +44,7 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
   }
 }
 
-object UnitViewSpec {
-  val realMessagesApi: MessagesApi = {
-    new GuiceApplicationBuilder().injector().instanceOf(classOf[MessagesApi])
-  }
+object UnitViewSpec extends Injector {
+  val realMessagesApi: MessagesApi = instanceOf[MessagesApi]
+  val realAppConfig: AppConfig = instanceOf[AppConfig]
 }
