@@ -16,153 +16,84 @@
 
 package unit.forms.declaration
 
-import base.TestHelper
-import forms.declaration.BorderTransport
-import forms.declaration.TransportCodes._
-import org.scalatest.{MustMatchers, WordSpec}
+import forms.declaration.{BorderTransport, TransportCodes}
+import unit.base.FormSpec
 
-class BorderTransportSpec extends WordSpec with MustMatchers {
+class BorderTransportSpec extends FormSpec {
 
   val form = BorderTransport.form
 
-  "Border Transport" should {
-
-    "has correct form id" in {
-
-      BorderTransport.formId must be("BorderTransport")
-    }
-  }
-
-  "Border Transport form" should {
-
-    "allow all mode transport codes" in {
-
-      val errors = allowedModeOfTransportCodes.map { code =>
-        form.fillAndValidate(BorderTransport(code, IMOShipIDNumber, "rereference")).errors
-      }.toSeq.flatten
-
-      errors must be(empty)
-    }
-
-    "allow all means of transport type codes" in {
-
-      val errors = allowedMeansOfTransportTypeCodes.map { code =>
-        form.fillAndValidate(BorderTransport(Maritime, code, "reference")).errors
-      }.toSeq.flatten
-
-      errors must be(empty)
-    }
+  "Transport Details form" should {
 
     "has no errors" when {
 
-      "user filled all mandatory fields with correct data" in {
+      "only mandatory fields are provided with correct data" in {
 
-        val correctForm = BorderTransport(Maritime, IMOShipIDNumber, "reference")
+        val correctForm = BorderTransport(None, false, "40", "reference", None)
 
         val result = form.fillAndValidate(correctForm)
 
-        result.errors must be(empty)
+        result.hasErrors must be(false)
+      }
+
+      "all fields contains correct data" in {
+
+        val correctForm =
+          BorderTransport(Some("United Kingdom"), false, "40", "Id.Number", Some(TransportCodes.cash))
+
+        val result = form.fillAndValidate(correctForm)
+
+        result.hasErrors must be(false)
       }
     }
 
     "has errors" when {
-
-      "mandatory field are empty" in {
-
-        val incorrectForm = Map(
-          "borderModeOfTransportCode" -> "",
-          "meansOfTransportOnDepartureType" -> "",
-          "meansOfTransportOnDepartureIDNumber" -> ""
-        )
-
-        val result = form.bind(incorrectForm)
-        val errorKeys = result.errors.map(_.key)
-        val errorMessages = result.errors.map(_.message)
-
-        errorKeys must be(
-          List("borderModeOfTransportCode", "meansOfTransportOnDepartureType", "meansOfTransportOnDepartureIDNumber")
-        )
-        errorMessages must be(
-          List(
-            "supplementary.transportInfo.borderTransportMode.error.empty",
-            "supplementary.transportInfo.meansOfTransport.departure.error.empty",
-            "supplementary.transportInfo.meansOfTransport.reference.error.empty"
-          )
+      "sending incorrect nationality" in {
+        form.bind(Map("meansOfTransportCrossingTheBorderNationality" -> "fizz")).errors must contain(
+          "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.error.incorrect"
         )
       }
 
-      "fields are incorrect" in {
+      "sending no container info" in {
+        form.bind(Map.empty[String, String]).errors must contain("supplementary.transportInfo.container.error.empty")
+      }
 
-        val incorrectForm = Map(
-          "borderModeOfTransportCode" -> "incorrect",
-          "meansOfTransportOnDepartureType" -> "incorrect",
-          "meansOfTransportOnDepartureIDNumber" -> "correct"
-        )
-
-        val result = form.bind(incorrectForm)
-        val errorKeys = result.errors.map(_.key)
-        val errorMessages = result.errors.map(_.message)
-
-        errorKeys must be(List("borderModeOfTransportCode", "meansOfTransportOnDepartureType"))
-        errorMessages must be(
-          List(
-            "supplementary.transportInfo.borderTransportMode.error.incorrect",
-            "supplementary.transportInfo.meansOfTransport.departure.error.incorrect"
-          )
+      "sending no information about transport type" in {
+        form.bind(Map.empty[String, String]).errors must contain(
+          "supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty"
         )
       }
 
-      "means of transport on departure id number is empty" in {
-        val incorrectForm = Map(
-          "borderModeOfTransportCode" -> Maritime,
-          "meansOfTransportOnDepartureType" -> IMOShipIDNumber,
-          "meansOfTransportOnDepartureIDNumber" -> ""
+      "sending non existing transport type" in {
+        form.bind(Map("meansOfTransportCrossingTheBorderType" -> "donkey")).errors must contain(
+          "supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.incorrect"
         )
-
-        val result = form.bind(incorrectForm)
-
-        result.errors.length must be(1)
-
-        val error = result.errors.head
-
-        error.key must be("meansOfTransportOnDepartureIDNumber")
-        error.message must be("supplementary.transportInfo.meansOfTransport.reference.error.empty")
       }
 
-      "means of transport on departure id number is too long" in {
-
-        val incorrectForm = Map(
-          "borderModeOfTransportCode" -> Maritime,
-          "meansOfTransportOnDepartureType" -> IMOShipIDNumber,
-          "meansOfTransportOnDepartureIDNumber" -> TestHelper.createRandomAlphanumericString(28)
-        )
-
-        val result = form.bind(incorrectForm)
-
-        result.errors.length must be(1)
-
-        val error = result.errors.head
-
-        error.key must be("meansOfTransportOnDepartureIDNumber")
-        error.message must be("supplementary.transportInfo.meansOfTransport.reference.error.length")
+      "sending no transport type reference" in {
+        form.bind(Map.empty[String, String]).errors must contain("error.required")
       }
 
-      "means of transport on departure id number contains invalid special characters" in {
-
-        val incorrectForm = Map(
-          "borderModeOfTransportCode" -> Maritime,
-          "meansOfTransportOnDepartureType" -> IMOShipIDNumber,
-          "meansOfTransportOnDepartureIDNumber" -> "!@#$"
+      "sending empty transport type reference" in {
+        form.bind(Map("meansOfTransportCrossingTheBorderIDNumber" -> "")).errors must contain(
+          "supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.empty"
         )
+      }
 
-        val result = form.bind(incorrectForm)
+      "sending very long transport type reference" in {
+        form.bind(Map("meansOfTransportCrossingTheBorderIDNumber" -> "a" * 128)).errors must contain(
+          "supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.length"
+        )
+      }
 
-        result.errors.length must be(1)
+      "sending reference with special characters" in {
+        form.bind(Map("meansOfTransportCrossingTheBorderIDNumber" -> "$#@!")).errors must contain(
+          "supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid"
+        )
+      }
 
-        val error = result.errors.head
-
-        error.key must be("meansOfTransportOnDepartureIDNumber")
-        error.message must be("supplementary.transportInfo.meansOfTransport.reference.error.invalid")
+      "sending non existing payment method" in {
+        form.bind(Map("paymentMethod" -> "$#@!")).errors must contain("standard.transportDetails.paymentMethod.error")
       }
     }
   }

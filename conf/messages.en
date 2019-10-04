@@ -498,7 +498,7 @@ supplementary.transportInfo.meansOfTransport.crossingTheBorder.header.hint = Sel
 supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty = Please, choose active means of transport
 supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.incorrect = Please, choose valid active means of transport
 supplementary.transportInfo.meansOfTransport.reference.header = Reference
-supplementary.transportInfo.meansOfTransport.reference.hint = This can be up to 35 characters. For example a vehicle registration number or an IATA flight number. If postal or fixed installation selected, type unknown in the box.
+supplementary.transportInfo.meansOfTransport.reference.hint = This can be up to 27 characters. For example a vehicle registration number or an IATA flight number. If postal or fixed installation selected, type unknown in the box.
 supplementary.transportInfo.meansOfTransport.reference.error.empty = Please provide reference for transport
 supplementary.transportInfo.meansOfTransport.reference.error.length = Reference should be less than 28 alpha numeric characters
 supplementary.transportInfo.meansOfTransport.reference.error.invalid = Reference cannot contain invalid characters
@@ -514,7 +514,7 @@ supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.heade
 supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.error.incorrect = Please, choose valid active means of transport
 
 supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.header = Reference
-supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.hint = This can be up to 27 characters. For example a vehicle registration number or an IATA flight number. If postal or fixed installation selected, type unknown in the box.
+supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.hint = This can be up to 35 characters. For example a vehicle registration number or an IATA flight number. If postal or fixed installation selected, type unknown in the box.
 supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.empty = Please provide reference to transport
 supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.length = Reference should be less than 35 alpha numeric characters
 supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid = Reference cannot contain invalid characters

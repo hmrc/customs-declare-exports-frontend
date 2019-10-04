@@ -18,34 +18,34 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.TransportDetails
-import forms.declaration.TransportDetails._
+import forms.declaration.DepartureTransport
+import forms.declaration.DepartureTransport._
 import javax.inject.Inject
-import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.transport_details
+import views.html.declaration.departure_transport
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class TransportDetailsController @Inject()(
+class DepartureTransportController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  navigator: Navigator,
   override val exportsCacheService: ExportsCacheService,
+  navigator: Navigator,
   mcc: MessagesControllerComponents,
-  transportDetailsPage: transport_details
+  departureTransportPage: departure_transport
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.transportDetails match {
-      case Some(data) => Ok(transportDetailsPage(mode, form().fill(data)))
-      case _          => Ok(transportDetailsPage(mode, form()))
+    request.cacheModel.borderTransport match {
+      case Some(data) => Ok(departureTransportPage(mode, form().fill(data)))
+      case _          => Ok(departureTransportPage(mode, form()))
     }
   }
 
@@ -53,21 +53,16 @@ class TransportDetailsController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[TransportDetails]) =>
-          Future.successful(BadRequest(transportDetailsPage(mode, formWithErrors))),
-        transportDetails => updateCache(transportDetails).map(_ => redirect(mode, transportDetails))
+        (formWithErrors: Form[DepartureTransport]) =>
+          Future.successful(BadRequest(departureTransportPage(mode, formWithErrors))),
+        borderTransport =>
+          updateCache(borderTransport)
+            .map(_ => navigator.continueTo(routes.BorderTransportController.displayPage(mode)))
       )
   }
 
-  private def redirect(mode: Mode, transportDetails: TransportDetails)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Result =
-    if (transportDetails.container)
-      navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode))
-    else navigator.continueTo(controllers.declaration.routes.SummaryController.displayPage(Mode.Normal))
-
   private def updateCache(
-    formData: TransportDetails
+    formData: DepartureTransport
   )(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.copy(transportDetails = Some(formData)))
+    updateExportsDeclarationSyncDirect(_.copy(borderTransport = Some(formData)))
 }

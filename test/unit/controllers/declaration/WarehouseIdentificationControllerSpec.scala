@@ -97,7 +97,7 @@ class WarehouseIdentificationControllerSpec
       val result = controller.saveWarehouse(Mode.Normal).apply(postRequest(body))
 
       await(result) mustBe aRedirectToTheNextPage
-      thePageNavigatedTo mustBe controllers.declaration.routes.BorderTransportController.displayPage()
+      thePageNavigatedTo mustBe controllers.declaration.routes.DepartureTransportController.displayPage()
 
       val updatedWarehouse = theCacheModelUpdated.locations.warehouseIdentification.value
       updatedWarehouse.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier

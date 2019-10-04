@@ -58,7 +58,9 @@ class WarehouseIdentificationController @Inject()(
           Future.successful(BadRequest(warehouseIdentificationPage(mode, formWithErrors))),
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(controllers.declaration.routes.BorderTransportController.displayPage(mode)))
+            .map(
+              _ => navigator.continueTo(controllers.declaration.routes.DepartureTransportController.displayPage(mode))
+          )
       )
   }
 

@@ -16,69 +16,85 @@
 
 @import controllers.declaration.routes._
 @import forms.declaration.BorderTransport
-@import forms.declaration.TransportCodes._
-@import services.model.Country
 @import uk.gov.hmrc.play.views.html._
 @import views.components.inputs.RadioOption
+@import forms.declaration.TransportCodes._
+@import models.requests.JourneyRequest
+@import forms.Choice.AllowedChoiceValues
+@import services.model.Country
+@import services.Countries
+@import services.view.AutoCompleteItem
 @import views.Title
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[BorderTransport])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, form: Form[BorderTransport])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
-    title = Title("supplementary.transportInfo.title")
+    title = Title("supplementary.transportInfo.active.title")
 ) {
 
-    @components.back_link(controllers.declaration.routes.WarehouseIdentificationController.displayPage(mode), mode)
-
-    @components.error_summary(form.errors)
-
-    @components.heading(title = messages("supplementary.transportInfo.title"))
+    @components.back_link(controllers.declaration.routes.DepartureTransportController.displayPage(mode), mode)
 
     @helper.form(BorderTransportController.submitForm(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
-        @components.fields.field_radio(
-            field = form("borderModeOfTransportCode"),
-            legend = messages("supplementary.transportInfo.borderTransportMode.header"),
-            hint = Some(messages("supplementary.transportInfo.borderTransportMode.header.hint")),
-            inputs = Seq(
-                RadioOption("Border_Sea", Maritime, messages("supplementary.transportInfo.transportMode.sea")),
-                RadioOption("Border_Rail", Rail, messages("supplementary.transportInfo.transportMode.rail")),
-                RadioOption("Border_Road", Road, messages("supplementary.transportInfo.transportMode.road")),
-                RadioOption("Border_Air", Air, messages("supplementary.transportInfo.transportMode.air")),
-                RadioOption("Border_PostalOrMail", PostalConsignment, messages("supplementary.transportInfo.transportMode.postalOrMail")),
-                RadioOption("Border_FixedTransportInstallations", FixedTransportInstallations, messages("supplementary.transportInfo.transportMode.fixedTransportInstallations")),
-                RadioOption("Border_InlandWaterway", InlandWaterway, messages("supplementary.transportInfo.transportMode.inlandWaterway")),
-                RadioOption("Border_Unknown", Unknown, messages("supplementary.transportInfo.transportMode.unknown"))
-            )
+        @components.error_summary(form.errors)
+
+        @components.heading(title = messages("supplementary.transportInfo.active.title"))
+
+        @components.fields.field_autocomplete(
+            form("meansOfTransportCrossingTheBorderNationality"),
+            "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.header",
+            Some("form-label-bold"),
+            None,
+            messages("declaration.destinationCountries.countriesOfRouting.empty"),
+            AutoCompleteItem.fromCountry(Countries.allCountries),
+            'autocomplete -> "off",
+            '_inputClass -> "form-control form-control--block",
+            'spellcheck -> "false",
+            'ariaautocomplete -> "list",
+            'ariahaspopup -> "true",
+            'ariaowns -> "suggestions-list",
+            'ariaactivedescendant -> "true",
+            'otherErrorFields -> Seq("countryCode")
         )
 
         @components.fields.field_radio(
-            field = form("meansOfTransportOnDepartureType"),
-            legend = messages("supplementary.transportInfo.meansOfTransport.departure.header"),
-            hint = Some(messages("supplementary.transportInfo.meansOfTransport.departure.header.hint")),
+            field = form("meansOfTransportCrossingTheBorderType"),
+            legend = messages("supplementary.transportInfo.meansOfTransport.crossingTheBorder.header"),
+            hint = Some(messages("supplementary.transportInfo.meansOfTransport.crossingTheBorder.header.hint")),
             inputs = Seq(
-                RadioOption("Departure_IMOShipIDNumber", IMOShipIDNumber, messages("supplementary.transportInfo.meansOfTransport.IMOShipIDNumber")),
-                RadioOption("Departure_NameOfVessel", NameOfVessel, messages("supplementary.transportInfo.meansOfTransport.nameOfVessel")),
-                RadioOption("Departure_WagonNumber", WagonNumber, messages("supplementary.transportInfo.meansOfTransport.wagonNumber")),
-                RadioOption("Departure_VehicleRegistrationNumber", VehicleRegistrationNumber, messages("supplementary.transportInfo.meansOfTransport.vehicleRegistrationNumber")),
-                RadioOption("Departure_IATAFlightNumber", IATAFlightNumber, messages("supplementary.transportInfo.meansOfTransport.IATAFlightNumber")),
-                RadioOption("Departure_AircraftRegistrationNumber", AircraftRegistrationNumber, messages("supplementary.transportInfo.meansOfTransport.aircraftRegistrationNumber")),
-                RadioOption("Departure_EuropeanVesselIDNumber", EuropeanVesselIDNumber, messages("supplementary.transportInfo.meansOfTransport.europeanVesselIDNumber")),
-                RadioOption("Departure_NameOfInlandWaterwayVessel", NameOfInlandWaterwayVessel, messages("supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel"))
+                RadioOption("Border_IMOShipIDNumber", IMOShipIDNumber, messages("supplementary.transportInfo.meansOfTransport.IMOShipIDNumber")),
+                RadioOption("Border_NameOfVessel", NameOfVessel, messages("supplementary.transportInfo.meansOfTransport.nameOfVessel")),
+                RadioOption("Border_WagonNumber", WagonNumber, messages("supplementary.transportInfo.meansOfTransport.wagonNumber")),
+                RadioOption("Border_VehicleRegistrationNumber", VehicleRegistrationNumber, messages("supplementary.transportInfo.meansOfTransport.vehicleRegistrationNumber")),
+                RadioOption("Border_IATAFlightNumber", IATAFlightNumber, messages("supplementary.transportInfo.meansOfTransport.IATAFlightNumber")),
+                RadioOption("Border_AircraftRegistrationNumber", AircraftRegistrationNumber, messages("supplementary.transportInfo.meansOfTransport.aircraftRegistrationNumber")),
+                RadioOption("Border_EuropeanVesselIDNumber", EuropeanVesselIDNumber, messages("supplementary.transportInfo.meansOfTransport.europeanVesselIDNumber")),
+                RadioOption("Border_NameOfInlandWaterwayVessel", NameOfInlandWaterwayVessel, messages("supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel"))
             )
         )
         @components.fields.field_text(
-            field = form("meansOfTransportOnDepartureIDNumber"),
-            hint = Some(messages("supplementary.transportInfo.meansOfTransport.reference.hint")),
-            label = messages("supplementary.transportInfo.meansOfTransport.reference.header"),
+            field = form("meansOfTransportCrossingTheBorderIDNumber"),
+            hint = Some(messages("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.hint")),
+            label = messages("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.header"),
             labelClass = Some("bold-small")
         )
-
-       @components.submit_button()
-       @components.buttons.save_and_return_later_button()
+        @components.fields.field_radio(
+            field = form("container"),
+            legend = messages("supplementary.transportInfo.container"),
+            inputs = Seq(RadioOption("Yes", "true", messages("site.yes")), RadioOption("No", "false", messages("site.no")))
+        )
+        @if(request.choice.value == AllowedChoiceValues.StandardDec) {
+            @components.fields.field_radio(
+                field = form("paymentMethod"),
+                legend = messages("standard.transportDetails.paymentMethod"),
+                inputs = paymentMethods.toSeq.map { case (a, b) => RadioOption(messages(b), a, messages(b)) }
+            )
+        }
+        @components.submit_button()
+        @components.buttons.save_and_return_later_button()
     }
 
 }

@@ -15,101 +15,60 @@
  */
 
 package forms.declaration
-
 import forms.Mapping.requiredRadio
 import forms.declaration.TransportCodes._
-import play.api.data.Form
-import play.api.data.Forms.{mapping, optional, text}
-import play.api.libs.json.Json
+import play.api.data.Forms.{boolean, mapping, optional, text}
+import play.api.data.{Form, Mapping}
+import play.api.libs.json.{Json, OFormat}
+import services.Countries.allCountries
 import utils.validators.forms.FieldValidator.{isContainedIn, noLongerThan, _}
 
 case class BorderTransport(
-  borderModeOfTransportCode: String,
-  meansOfTransportOnDepartureType: String,
-  meansOfTransportOnDepartureIDNumber: String
+  meansOfTransportCrossingTheBorderNationality: Option[String],
+  container: Boolean,
+  meansOfTransportCrossingTheBorderType: String,
+  meansOfTransportCrossingTheBorderIDNumber: String,
+  paymentMethod: Option[String] = None
 )
 
 object BorderTransport {
-  val formId = "BorderTransport"
 
-  implicit val formats = Json.format[BorderTransport]
+  val formId = "TransportDetails"
 
-  val formMapping = mapping(
-    "borderModeOfTransportCode" -> requiredRadio("supplementary.transportInfo.borderTransportMode.error.empty")
-      .verifying(
-        "supplementary.transportInfo.borderTransportMode.error.incorrect",
-        isContainedIn(allowedModeOfTransportCodes)
-      ),
-    "meansOfTransportOnDepartureType" -> requiredRadio(
-      "supplementary.transportInfo.meansOfTransport.departure.error.empty"
+  implicit val formats: OFormat[BorderTransport] = Json.format[BorderTransport]
+
+  val formMapping: Mapping[BorderTransport] = mapping(
+    "meansOfTransportCrossingTheBorderNationality" -> optional(
+      text()
+        .verifying(
+          "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.error.incorrect",
+          isContainedIn(allCountries.map(_.countryName))
+        )
+    ),
+    "container" -> optional(boolean)
+      .verifying("supplementary.transportInfo.container.error.empty", _.isDefined)
+      .transform(_.get, (b: Boolean) => Some(b)),
+    "meansOfTransportCrossingTheBorderType" -> requiredRadio(
+      "supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty"
     ).verifying(
-      "supplementary.transportInfo.meansOfTransport.departure.error.incorrect",
+      "supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.incorrect",
       isContainedIn(allowedMeansOfTransportTypeCodes)
     ),
-    "meansOfTransportOnDepartureIDNumber" -> text()
-      .verifying("supplementary.transportInfo.meansOfTransport.reference.error.empty", nonEmpty)
-      .verifying("supplementary.transportInfo.meansOfTransport.reference.error.length", noLongerThan(27))
+    "meansOfTransportCrossingTheBorderIDNumber" -> text()
+      .verifying("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.empty", nonEmpty)
       .verifying(
-        "supplementary.transportInfo.meansOfTransport.reference.error.invalid",
-        isAlphanumericWithAllowedSpecialCharacters
+        "supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.length",
+        noLongerThan(35)
       )
+      .verifying(
+        "supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid",
+        isAlphanumericWithAllowedSpecialCharacters
+      ),
+    "paymentMethod" -> optional(
+      text()
+        .verifying("standard.transportDetails.paymentMethod.error", isContainedIn(paymentMethods.keys))
+    )
   )(BorderTransport.apply)(BorderTransport.unapply)
 
   def form(): Form[BorderTransport] = Form(BorderTransport.formMapping)
-
-}
-
-object TransportCodes {
-
-  val Maritime = "1"
-  val Rail = "2"
-  val Road = "3"
-  val Air = "4"
-  val PostalConsignment = "5"
-  val FixedTransportInstallations = "7"
-  val InlandWaterway = "8"
-  val Unknown = "9"
-
-  val IMOShipIDNumber = "10"
-  val NameOfVessel = "11"
-  val WagonNumber = "20"
-  val VehicleRegistrationNumber = "30"
-  val IATAFlightNumber = "40"
-  val AircraftRegistrationNumber = "41"
-  val EuropeanVesselIDNumber = "80"
-  val NameOfInlandWaterwayVessel = "81"
-
-  val allowedModeOfTransportCodes =
-    Set(Maritime, Rail, Road, Air, PostalConsignment, FixedTransportInstallations, InlandWaterway, Unknown)
-
-  val allowedMeansOfTransportTypeCodes =
-    Set(
-      IMOShipIDNumber,
-      NameOfVessel,
-      WagonNumber,
-      VehicleRegistrationNumber,
-      IATAFlightNumber,
-      AircraftRegistrationNumber,
-      EuropeanVesselIDNumber,
-      NameOfInlandWaterwayVessel
-    )
-
-  val cash = "A"
-  val creditCard = "B"
-  val cheque = "C"
-  val other = "D"
-  val eFunds = "H"
-  val accHolder = "Y"
-  val notPrePaid = "Z"
-
-  val paymentMethods = Map(
-    cash -> "standard.transportDetails.paymentMethod.cash",
-    creditCard -> "standard.transportDetails.paymentMethod.creditCard",
-    cheque -> "standard.transportDetails.paymentMethod.cheque",
-    other -> "standard.transportDetails.paymentMethod.other",
-    eFunds -> "standard.transportDetails.paymentMethod.eFunds",
-    accHolder -> "standard.transportDetails.paymentMethod.accHolder",
-    notPrePaid -> "standard.transportDetails.paymentMethod.notPrePaid"
-  )
-
 }

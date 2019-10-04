@@ -1,0 +1,84 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.declaration.routes._
+@import forms.declaration.DepartureTransport
+@import forms.declaration.TransportCodes._
+@import services.model.Country
+@import uk.gov.hmrc.play.views.html._
+@import views.components.inputs.RadioOption
+@import views.Title
+
+@this(main_template: views.html.main_template)
+
+@(mode: Mode, form: Form[DepartureTransport])(implicit request: Request[_], messages: Messages)
+
+@main_template(
+    title = Title("supplementary.transportInfo.title")
+) {
+
+    @components.back_link(controllers.declaration.routes.WarehouseIdentificationController.displayPage(mode), mode)
+
+    @components.error_summary(form.errors)
+
+    @components.heading(title = messages("supplementary.transportInfo.title"))
+
+    @helper.form(DepartureTransportController.submitForm(mode), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
+        @components.fields.field_radio(
+            field = form("borderModeOfTransportCode"),
+            legend = messages("supplementary.transportInfo.borderTransportMode.header"),
+            hint = Some(messages("supplementary.transportInfo.borderTransportMode.header.hint")),
+            inputs = Seq(
+                RadioOption("Border_Sea", Maritime, messages("supplementary.transportInfo.transportMode.sea")),
+                RadioOption("Border_Rail", Rail, messages("supplementary.transportInfo.transportMode.rail")),
+                RadioOption("Border_Road", Road, messages("supplementary.transportInfo.transportMode.road")),
+                RadioOption("Border_Air", Air, messages("supplementary.transportInfo.transportMode.air")),
+                RadioOption("Border_PostalOrMail", PostalConsignment, messages("supplementary.transportInfo.transportMode.postalOrMail")),
+                RadioOption("Border_FixedTransportInstallations", FixedTransportInstallations, messages("supplementary.transportInfo.transportMode.fixedTransportInstallations")),
+                RadioOption("Border_InlandWaterway", InlandWaterway, messages("supplementary.transportInfo.transportMode.inlandWaterway")),
+                RadioOption("Border_Unknown", Unknown, messages("supplementary.transportInfo.transportMode.unknown"))
+            )
+        )
+
+        @components.fields.field_radio(
+            field = form("meansOfTransportOnDepartureType"),
+            legend = messages("supplementary.transportInfo.meansOfTransport.departure.header"),
+            hint = Some(messages("supplementary.transportInfo.meansOfTransport.departure.header.hint")),
+            inputs = Seq(
+                RadioOption("Departure_IMOShipIDNumber", IMOShipIDNumber, messages("supplementary.transportInfo.meansOfTransport.IMOShipIDNumber")),
+                RadioOption("Departure_NameOfVessel", NameOfVessel, messages("supplementary.transportInfo.meansOfTransport.nameOfVessel")),
+                RadioOption("Departure_WagonNumber", WagonNumber, messages("supplementary.transportInfo.meansOfTransport.wagonNumber")),
+                RadioOption("Departure_VehicleRegistrationNumber", VehicleRegistrationNumber, messages("supplementary.transportInfo.meansOfTransport.vehicleRegistrationNumber")),
+                RadioOption("Departure_IATAFlightNumber", IATAFlightNumber, messages("supplementary.transportInfo.meansOfTransport.IATAFlightNumber")),
+                RadioOption("Departure_AircraftRegistrationNumber", AircraftRegistrationNumber, messages("supplementary.transportInfo.meansOfTransport.aircraftRegistrationNumber")),
+                RadioOption("Departure_EuropeanVesselIDNumber", EuropeanVesselIDNumber, messages("supplementary.transportInfo.meansOfTransport.europeanVesselIDNumber")),
+                RadioOption("Departure_NameOfInlandWaterwayVessel", NameOfInlandWaterwayVessel, messages("supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel"))
+            )
+        )
+        @components.fields.field_text(
+            field = form("meansOfTransportOnDepartureIDNumber"),
+            hint = Some(messages("supplementary.transportInfo.meansOfTransport.reference.hint")),
+            label = messages("supplementary.transportInfo.meansOfTransport.reference.header"),
+            labelClass = Some("bold-small")
+        )
+
+       @components.submit_button()
+       @components.buttons.save_and_return_later_button()
+    }
+
+}

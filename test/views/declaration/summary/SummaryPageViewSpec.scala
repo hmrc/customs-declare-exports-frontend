@@ -128,7 +128,7 @@ class SummaryPageViewSpec
           val document = view(Mode.Normal, model)
           document must containElementWithID("link-back")
           document.getElementById("link-back") must haveHref(
-            controllers.declaration.routes.TransportDetailsController.displayPage(Mode.Normal)
+            controllers.declaration.routes.BorderTransportController.displayPage(Mode.Normal)
           )
         }
 
@@ -149,7 +149,7 @@ class SummaryPageViewSpec
           val document = view(Mode.Normal, model)
           document must containElementWithID("link-back")
           document.getElementById("link-back") must haveHref(
-            controllers.declaration.routes.TransportDetailsController.displayPage(Mode.Normal)
+            controllers.declaration.routes.BorderTransportController.displayPage(Mode.Normal)
           )
         }
       }

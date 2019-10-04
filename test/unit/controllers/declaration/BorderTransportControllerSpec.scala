@@ -16,21 +16,17 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.{routes, BorderTransportController}
-import forms.Choice
+import controllers.declaration.BorderTransportController
+import forms.Choice.AllowedChoiceValues.SupplementaryDec
+import forms.declaration.TransportCodes.{cash, IMOShipIDNumber}
 import forms.declaration.BorderTransport
-import forms.declaration.TransportCodes.{Maritime, WagonNumber}
 import models.Mode
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.Result
+import play.api.libs.json.Json
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
-import unit.mock.ErrorHandlerMocks
 import views.html.declaration.border_transport
 
-import scala.concurrent.Future
-
-class BorderTransportControllerSpec extends ControllerSpec with ErrorHandlerMocks {
+class BorderTransportControllerSpec extends ControllerSpec {
 
   trait SetUp {
     val borderTransportPage = new border_transport(mainTemplate)
@@ -38,38 +34,32 @@ class BorderTransportControllerSpec extends ControllerSpec with ErrorHandlerMock
     val controller = new BorderTransportController(
       mockAuthAction,
       mockJourneyAction,
-      mockExportsCacheService,
       navigator,
+      mockExportsCacheService,
       stubMessagesControllerComponents(),
       borderTransportPage
     )(ec)
 
-    setupErrorHandler()
     authorizedUser()
-    withNewCaching(aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
+    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
   }
 
-  "Border transport controller" should {
+  "Transport Details Controller" should {
 
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in new SetUp {
 
-        val result: Future[Result] = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
 
-      "display page method is invoked and cache contains data" in new SetUp {
+      "display page method is invoked and cache is not empty" in new SetUp {
 
-        withNewCaching(
-          aDeclaration(
-            withChoice(Choice.AllowedChoiceValues.SupplementaryDec),
-            withBorderTransport(Maritime, WagonNumber, "FAA")
-          )
-        )
+        withNewCaching(aDeclaration(withTransportDetails()))
 
-        val result: Future[Result] = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -77,26 +67,46 @@ class BorderTransportControllerSpec extends ControllerSpec with ErrorHandlerMock
 
     "return 400 (BAD_REQUEST)" when {
 
-      "form is incorrect" in new SetUp {
+      "form contains incorrect values" in new SetUp {
 
-        val incorrectForm: JsValue = Json.toJson(BorderTransport("wrongValue", "wrongValue", "FAA"))
+        val incorrectForm = Json.toJson(BorderTransport(Some("incorrect"), false, "", "", None))
 
-        val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+        val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
 
         status(result) must be(BAD_REQUEST)
       }
     }
 
     "return 303 (SEE_OTHER)" when {
+      "Container is selected" in new SetUp {
+        val correctForm =
+          Json.toJson(BorderTransport(Some("United Kingdom"), true, IMOShipIDNumber, "correct", Some(cash)))
 
-      "information provided by user are correct" in new SetUp {
-
-        val correctForm: JsValue = Json.toJson(BorderTransport(Maritime, WagonNumber, "FAA"))
-
-        val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.TransportDetailsController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
+          .displayContainerSummary(Mode.Draft)
+      }
+
+      "Container is not selected" in new SetUp {
+        val correctForm =
+          Json.toJson(BorderTransport(Some("United Kingdom"), false, IMOShipIDNumber, "correct", Some(cash)))
+
+        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
+      }
+
+      "Container is not selected in draft mode" in new SetUp {
+        val correctForm =
+          Json.toJson(BorderTransport(Some("United Kingdom"), false, IMOShipIDNumber, "correct", Some(cash)))
+
+        val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
       }
     }
   }
