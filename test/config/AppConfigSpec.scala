@@ -169,14 +169,6 @@ class AppConfigSpec extends UnitSpec {
       validConfigService.countriesCsvFilename must be("code-lists/mdg-country-codes.csv")
     }
 
-    "have nrsServiceUrl" in {
-      validConfigService.nrsServiceUrl must be("http://localhostnrs:7654")
-    }
-
-    "have nrsApiKey" in {
-      validConfigService.nrsApiKey must be("cds-exports")
-    }
-
     "have ttl lifetime" in {
       validConfigService.cacheTimeToLive must be(FiniteDuration(24, "h"))
     }
@@ -279,14 +271,6 @@ class AppConfigSpec extends UnitSpec {
     intercept[Exception](emptyConfigService.countriesCsvFilename).getMessage must be(
       "Missing configuration key: countryCodesCsvFilename"
     )
-  }
-
-  "throw an exception when nrs.host is missing" in {
-    intercept[Exception](emptyConfigService.nrsServiceUrl).getMessage must be("Could not find config nrs.host")
-  }
-
-  "throw an exception when nrs apikey is missing" in {
-    intercept[Exception](emptyConfigService.nrsApiKey).getMessage must be("Missing configuration for nrs apikey")
   }
 
 }
