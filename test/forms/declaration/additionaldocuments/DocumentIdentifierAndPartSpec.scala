@@ -31,9 +31,17 @@ class DocumentIdentifierAndPartSpec extends WordSpec with MustMatchers with Docu
 
       "provided with Document Identifier" which {
 
-        "is longer than 30 characters" in {
+        "is empty" in {
+          val input = JsObject(Map(documentIdentifierKey -> JsString("")))
+          val expectedErrors =
+            Seq(FormError(documentIdentifierKey, documentIdentifierError))
 
-          val input = JsObject(Map(documentIdentifierKey -> JsString(TestHelper.createRandomAlphanumericString(31))))
+          testFailedValidationErrors(input, expectedErrors)
+        }
+
+        "is longer than 35 characters" in {
+
+          val input = JsObject(Map(documentIdentifierKey -> JsString(TestHelper.createRandomAlphanumericString(36))))
           val expectedErrors =
             Seq(FormError(documentIdentifierKey, documentIdentifierError))
 
@@ -50,41 +58,6 @@ class DocumentIdentifierAndPartSpec extends WordSpec with MustMatchers with Docu
         }
       }
 
-      "provided with Document Part" which {
-
-        "is longer than 5 characters" in {
-
-          val input = JsObject(Map(documentPartKey -> JsString(TestHelper.createRandomAlphanumericString(6))))
-          val expectedErrors = Seq(FormError(documentPartKey, documentPartError))
-
-          testFailedValidationErrors(input, expectedErrors)
-        }
-
-        "contains special characters" in {
-
-          val input = JsObject(Map(documentPartKey -> JsString("12#$")))
-          val expectedErrors = Seq(FormError(documentPartKey, documentPartError))
-
-          testFailedValidationErrors(input, expectedErrors)
-        }
-      }
-
-      "provided with correct Document Identifier but no Document Part" in {
-
-        val input = JsObject(Map(documentIdentifierKey -> JsString("ABCD1234")))
-        val expectedErrors = Seq(FormError("", documentIdentifierAndPartError))
-
-        testFailedValidationErrors(input, expectedErrors)
-      }
-
-      "provided with correct Document Part but no Document Identifier" in {
-
-        val input = JsObject(Map(documentPartKey -> JsString("ABC45")))
-        val expectedErrors = Seq(FormError("", documentIdentifierAndPartError))
-
-        testFailedValidationErrors(input, expectedErrors)
-      }
-
       def testFailedValidationErrors(input: JsValue, expectedErrors: Seq[FormError]): Unit = {
         val form = DocumentIdentifierAndPart.form().bind(input)
         expectedErrors.foreach(form.errors must contain(_))
@@ -96,28 +69,23 @@ class DocumentIdentifierAndPartSpec extends WordSpec with MustMatchers with Docu
 object DocumentIdentifierAndPartSpec {
 
   val correctDocumentIdentifierAndPart: DocumentIdentifierAndPart =
-    DocumentIdentifierAndPart(documentIdentifier = Some("ABCDEF1234567890"), documentPart = Some("ABC12"))
+    DocumentIdentifierAndPart(documentIdentifier = "ABCDEF1234567890-ABC12")
 
   val correctDocumentIdentifierAndPartJSON: JsValue = JsObject(
-    Map(documentIdentifierKey -> JsString("ABCDEF1234567890"), documentPartKey -> JsString("ABC12"))
+    Map(documentIdentifierKey -> JsString("ABCDEF1234567890"))
   )
 
   val incorrectDocumentIdentifierAndPart: DocumentIdentifierAndPart = DocumentIdentifierAndPart(
-    documentIdentifier = Some(TestHelper.createRandomAlphanumericString(31)),
-    documentPart = Some(TestHelper.createRandomAlphanumericString(6))
+    documentIdentifier = TestHelper.createRandomAlphanumericString(36)
   )
 
   val incorrectDocumentIdentifierAndPartJSON: JsValue = JsObject(
     Map(
-      documentIdentifierKey -> JsString(TestHelper.createRandomAlphanumericString(31)),
-      documentPartKey -> JsString(TestHelper.createRandomAlphanumericString(6))
+      documentIdentifierKey -> JsString(TestHelper.createRandomAlphanumericString(36))
     )
   )
 
-  val emptyDocumentIdentifierAndPart: DocumentIdentifierAndPart =
-    DocumentIdentifierAndPart(documentIdentifier = None, documentPart = None)
-
   val emptyDocumentIdentifierAndPartJSON: JsValue = JsObject(
-    Map(documentIdentifierKey -> JsString(""), documentPartKey -> JsString(""))
+    Map(documentIdentifierKey -> JsString(""))
   )
 }

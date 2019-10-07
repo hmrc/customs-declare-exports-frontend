@@ -200,7 +200,7 @@ class DocumentsProducedViewSpec
       val documentsProducedWithIncorrectDocumentIdentifier = correctDocumentsProduced.copy(
         documentIdentifierAndPart = Some(
           correctDocumentIdentifierAndPart
-            .copy(documentIdentifier = Some(incorrectDocumentIdentifierAndPart.documentIdentifier.get))
+            .copy(documentIdentifier = incorrectDocumentIdentifierAndPart.documentIdentifier)
         )
       )
       val view =
@@ -215,45 +215,6 @@ class DocumentsProducedViewSpec
       view
         .select(s"#error-message-${documentIdentifierAndPartKey}_$documentIdentifierKey-input")
         .text() mustBe messages(documentIdentifierError)
-    }
-
-    "display error for Document Identifier and Part" when {
-
-      "provided with Document Identifier but no Document Part" in {
-
-        val documentsProducedWithIncorrectDocumentIdentifierAndPart = correctDocumentsProduced.copy(
-          documentIdentifierAndPart = Some(
-            emptyDocumentIdentifierAndPart
-              .copy(documentIdentifier = Some(correctDocumentIdentifierAndPart.documentIdentifier.get))
-          )
-        )
-        val view =
-          createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentIdentifierAndPart)))
-
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink(s"$documentIdentifierAndPartKey", s"#$documentIdentifierAndPartKey")
-
-        view.select(s"#error-message-$documentIdentifierAndPartKey-input").text() mustBe
-          messages(documentIdentifierAndPartError)
-      }
-
-      "provided with Document Part but no Document Identifier" in {
-
-        val documentsProducedWithIncorrectDocumentIdentifierAndPart = correctDocumentsProduced.copy(
-          documentIdentifierAndPart = Some(
-            emptyDocumentIdentifierAndPart
-              .copy(documentPart = Some(correctDocumentIdentifierAndPart.documentPart.get))
-          )
-        )
-        val view =
-          createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentIdentifierAndPart)))
-
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink(s"$documentIdentifierAndPartKey", s"#$documentIdentifierAndPartKey")
-
-        view.select(s"#error-message-$documentIdentifierAndPartKey-input").text() mustBe
-          messages(documentIdentifierAndPartError)
-      }
     }
 
     "display error for Document status" in {
@@ -462,7 +423,7 @@ class DocumentsProducedViewSpec
 
       view.getElementById(documentTypeCodeKey).attr("value") must equal(data.documentTypeCode.value)
       view.getElementById(s"${documentIdentifierAndPartKey}_$documentIdentifierKey").attr("value") must equal(
-        data.documentIdentifierAndPart.value.documentIdentifier.value
+        data.documentIdentifierAndPart.value.documentIdentifier
       )
       view.getElementById(documentStatusKey).attr("value") must equal(data.documentStatus.value)
       view.getElementById(documentStatusReasonKey).attr("value") must equal(data.documentStatusReason.value)
@@ -520,31 +481,28 @@ class DocumentsProducedViewSpec
         correctDocumentsProduced.documentTypeCode.get
       )
       view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(2)").text() must equal(
-        correctDocumentsProduced.documentIdentifierAndPart.get.documentIdentifier.get
+        correctDocumentsProduced.documentIdentifierAndPart.get.documentIdentifier
       )
       view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(3)").text() must equal(
-        correctDocumentsProduced.documentIdentifierAndPart.get.documentPart.get
-      )
-      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(4)").text() must equal(
         correctDocumentsProduced.documentStatus.get
       )
-      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(5)").text() must equal(
+      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(4)").text() must equal(
         correctDocumentsProduced.documentStatusReason.get
       )
-      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(6)").text() must equal(
+      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(5)").text() must equal(
         correctDocumentsProduced.issuingAuthorityName.get
       )
-      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(7)").text() must equal(
+      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(6)").text() must equal(
         correctDocumentsProduced.dateOfValidity.get.toString
       )
-      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(8)").text() must equal(
+      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(7)").text() must equal(
         correctDocumentsProduced.documentWriteOff.get.measurementUnit.get
       )
-      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(9)").text() must equal(
+      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(8)").text() must equal(
         correctDocumentsProduced.documentWriteOff.get.documentQuantity.get.toString
       )
 
-      val removeButton = view.select("tbody>tr>td:nth-child(10)>button")
+      val removeButton = view.select("tbody>tr>td:nth-child(9)>button")
 
       removeButton.text() mustBe messages("site.remove")
       removeButton.attr("value") mustBe correctDocumentsProduced.toJson.toString()

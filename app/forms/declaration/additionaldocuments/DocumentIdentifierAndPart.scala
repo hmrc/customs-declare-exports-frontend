@@ -16,12 +16,12 @@
 
 package forms.declaration.additionaldocuments
 
-import play.api.data.Forms.{optional, text}
+import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import utils.validators.forms.FieldValidator.{isAlphanumeric, noLongerThan, PredicateOpsForFunctions}
+import utils.validators.forms.FieldValidator.{PredicateOpsForFunctions, isAlphanumeric, noLongerThan, nonEmpty}
 
-case class DocumentIdentifierAndPart(documentIdentifier: Option[String], documentPart: Option[String])
+case class DocumentIdentifierAndPart(documentIdentifier: String)
 
 object DocumentIdentifierAndPart {
 
@@ -32,17 +32,9 @@ object DocumentIdentifierAndPart {
 
   val mapping = Forms
     .mapping(
-      documentIdentifierKey -> optional(
-        text().verifying("supplementary.addDocument.documentIdentifier.error", isAlphanumeric and noLongerThan(30))
-      ),
-      documentPartKey -> optional(
-        text().verifying("supplementary.addDocument.documentPart.error", isAlphanumeric and noLongerThan(5))
-      )
-    )(DocumentIdentifierAndPart.apply)(DocumentIdentifierAndPart.unapply)
-    .verifying("supplementary.addDocument.error.documentIdentifierAndPart", validateDocumentIdentifierAndPart(_))
+      documentIdentifierKey -> text().verifying("supplementary.addDocument.documentIdentifier.error", nonEmpty and isAlphanumeric and noLongerThan(35))
 
-  private def validateDocumentIdentifierAndPart(doc: DocumentIdentifierAndPart): Boolean =
-    (doc.documentIdentifier.isEmpty && doc.documentPart.isEmpty) || (doc.documentIdentifier.nonEmpty && doc.documentPart.nonEmpty)
+    )(DocumentIdentifierAndPart.apply)(DocumentIdentifierAndPart.unapply)
 
   def form(): Form[DocumentIdentifierAndPart] = Form(mapping)
 }

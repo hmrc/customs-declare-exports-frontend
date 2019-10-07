@@ -67,31 +67,11 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers with DocumentsPro
       }
 
       "provided with Document Identifier and Part" which {
-
-        "has missing Document Identifier" in {
-
-          val input = JsObject(Map(documentIdentifierAndPartKey -> JsObject(Map(documentPartKey -> JsString("ABC12")))))
-          val expectedErrors = Seq(FormError(documentIdentifierAndPartKey, documentIdentifierAndPartError))
-
-          testFailedValidationErrors(input, expectedErrors)
-        }
-
-        "has missing Document Part" in {
-
-          val input = JsObject(
-            Map(documentIdentifierAndPartKey -> JsObject(Map(documentIdentifierKey -> JsString("ABCDEF1234567890"))))
-          )
-          val expectedErrors = Seq(FormError(documentIdentifierAndPartKey, documentIdentifierAndPartError))
-
-          testFailedValidationErrors(input, expectedErrors)
-        }
-
         "contains errors in its fields" in {
 
           val input = JsObject(Map(documentIdentifierAndPartKey -> incorrectDocumentIdentifierAndPartJSON))
           val expectedErrors = Seq(
-            FormError(s"$documentIdentifierAndPartKey.$documentIdentifierKey", documentIdentifierError),
-            FormError(s"$documentIdentifierAndPartKey.$documentPartKey", documentPartError)
+            FormError(s"$documentIdentifierAndPartKey.$documentIdentifierKey", documentIdentifierError)
           )
 
           testFailedValidationErrors(input, expectedErrors)
@@ -299,8 +279,7 @@ object DocumentsProducedSpec {
 
   val incorrectDocumentsProducedMap: Map[String, String] = Map(
     documentTypeCodeKey -> TestHelper.createRandomAlphanumericString(5),
-    s"$documentIdentifierAndPartKey.$documentIdentifierKey" -> TestHelper.createRandomAlphanumericString(31),
-    s"$documentIdentifierAndPartKey.$documentPartKey" -> TestHelper.createRandomAlphanumericString(6),
+    s"$documentIdentifierAndPartKey.$documentIdentifierKey" -> TestHelper.createRandomAlphanumericString(36),
     documentStatusKey -> "ABC",
     documentStatusReasonKey -> TestHelper.createRandomAlphanumericString(36),
     issuingAuthorityNameKey -> TestHelper.createRandomAlphanumericString(71),

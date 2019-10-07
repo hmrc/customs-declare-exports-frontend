@@ -233,7 +233,7 @@ object SupplementaryDeclarationTestData {
               DocumentsProduced(
                 documentTypeCode = Some("C501"),
                 documentIdentifierAndPart = Some(
-                  DocumentIdentifierAndPart(documentIdentifier = Some("SYSUYSU123"), documentPart = Some("24554"))
+                  DocumentIdentifierAndPart(documentIdentifier = "SYSUYSU123-24554")
                 ),
                 documentStatus = Some("PND"),
                 documentStatusReason = Some("Reason"),

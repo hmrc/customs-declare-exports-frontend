@@ -60,8 +60,7 @@ trait GoodsItemCachingData {
   )
 
   private def createDocumentIdentifierAndPart(): DocumentIdentifierAndPart = DocumentIdentifierAndPart(
-    documentIdentifier = Some(createRandomAlphanumericString(30)),
-    documentPart = Some(createRandomAlphanumericString(5))
+    documentIdentifier = createRandomAlphanumericString(35)
   )
 
   private def createDocumentWriteOff(): DocumentWriteOff = DocumentWriteOff(
