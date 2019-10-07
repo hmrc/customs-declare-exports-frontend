@@ -19,6 +19,9 @@ package views.declaration.spec
 import base.Injector
 import org.jsoup.nodes.Document
 import play.api.i18n.{Messages, MessagesApi}
+import org.scalatest.matchers.{BeMatcher, MatchResult}
+import play.api.i18n.{Lang, Messages, MessagesApi}
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.{FakeRequest, Helpers}
 import unit.base.UnitSpec
@@ -39,6 +42,27 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
       "error.summary.text"
     )
   }
+
+  def messagesKey(key: String): BeMatcher[String] = new MessagesKeyMatcher(key)
+}
+
+class MessagesKeyMatcher(key: String) extends BeMatcher[String] {
+  override def apply(left: String): MatchResult =
+    if (left == key) {
+      val missing = MessagesKeyMatcher.langs.find(lang => !UnitViewSpec.realMessagesApi.isDefinedAt(key)(lang))
+      val language = missing.map(_.toLocale.getDisplayLanguage())
+      MatchResult(
+        missing.isEmpty,
+        s"${language.getOrElse("None of languages")} does not have translation for $key",
+        s"$key have translation for ${language.getOrElse("every language")}"
+      )
+    } else {
+      MatchResult(matches = false, s"$left is not $key", s"$left is $key")
+    }
+}
+
+object MessagesKeyMatcher {
+  val langs: Seq[Lang] = Seq(Lang("en"))
 }
 
 object UnitViewSpec extends Injector {

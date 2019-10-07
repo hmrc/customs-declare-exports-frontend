@@ -36,7 +36,7 @@ import forms.declaration.WarehouseIdentificationSpec._
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
-import forms.declaration.additionaldocuments.{ DocumentWriteOff, DocumentsProduced}
+import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
 import forms.{CancelDeclaration, Lrn}
 import models.declaration.DeclarationAdditionalActorsDataSpec._
 import models.declaration.DeclarationHoldersDataSpec._

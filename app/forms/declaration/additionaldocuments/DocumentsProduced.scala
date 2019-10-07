@@ -69,7 +69,10 @@ object DocumentsProduced {
         text().verifying("supplementary.addDocument.documentTypeCode.error", hasSpecificLength(4) and isAlphanumeric)
       ),
       documentIdentifierKey -> optional(
-        text().verifying("supplementary.addDocument.documentIdentifier.error", nonEmpty and isAlphanumeric and noLongerThan(35))
+        text().verifying(
+          "supplementary.addDocument.documentIdentifier.error",
+          nonEmpty and isAlphanumeric and noLongerThan(35)
+        )
       ),
       documentStatusKey -> optional(
         text().verifying("supplementary.addDocument.documentStatus.error", noLongerThan(2) and isAllCapitalLetter)
