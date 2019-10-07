@@ -42,7 +42,7 @@ class AppConfigSpec extends UnitSpec {
         |urls.commodityCodes="https://www.gov.uk/guidance/finding-commodity-codes-for-imports-or-exports"
         |urls.relevantLicenses="https://www.gov.uk/starting-to-export/licences"
         |urls.serviceAvailability="https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues"
-        |urls.customsMovementsFrontend="http://localhost:6796/customs-movements/start"
+        |urls.customsMovementsFrontend="http://url-to-movements-frontend/start"
         |
         |microservice.services.auth.host=localhostauth
         |google-analytics.token=N/A
@@ -115,21 +115,17 @@ class AppConfigSpec extends UnitSpec {
     }
 
     "have relevantLicenses URL" in {
-      validConfigService.relevantLicensesUrl must be(
-        "https://www.gov.uk/starting-to-export/licences"
-      )
+      validConfigService.relevantLicensesUrl must be("https://www.gov.uk/starting-to-export/licences")
     }
 
     "have serviceAvailability URL" in {
       validConfigService.serviceAvailabilityUrl must be(
-      "https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues"
+        "https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues"
       )
     }
 
     "have customsMovementsFrontend URL" in {
-      validConfigService.customsMovementsFrontendUrl must be(
-        "http://localhost:6796/customs-movements/start"
-      )
+      validConfigService.customsMovementsFrontendUrl must be("http://url-to-movements-frontend/start")
     }
 
     "load the Choice options when list-of-available-journeys is defined" in {
