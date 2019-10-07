@@ -70,7 +70,7 @@ class SummaryController @Inject()(
             BadRequest(summaryPage(Mode.Normal, SupplementaryDeclarationData(request.cacheModel), formWithErrors))
         ),
         legalDeclaration => {
-          submissionService.submit(request.cacheModel, legalDeclaration).map {
+          submissionService.submit(request.eori, request.cacheModel, legalDeclaration).map {
             case Some(lrn) =>
               Redirect(controllers.declaration.routes.ConfirmationController.displaySubmissionConfirmation())
                 .flashing(Flash(Map("LRN" -> lrn)))

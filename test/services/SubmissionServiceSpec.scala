@@ -16,123 +16,84 @@
 
 package services
 
-import base.{Injector, MockConnectors, MockExportCacheService, TestHelper}
+import base.{Injector, MockConnectors, MockExportCacheService}
 import com.kenshoo.play.metrics.Metrics
 import config.AppConfig
-import forms.Choice.AllowedChoiceValues
+import connectors.CustomsDeclareExportsConnector
 import forms.declaration.LegalDeclaration
 import metrics.{ExportsMetrics, MetricIdentifiers}
-import models.{DeclarationStatus, ExportsDeclaration}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
+import models.DeclarationStatus
+import models.declaration.submissions.{Action, Submission}
+import org.mockito.ArgumentMatchers.{any, eq => equalTo}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
-import play.api.test.FakeRequest
 import services.audit.{AuditService, AuditTypes, EventData}
 import services.cache.SubmissionBuilder
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.logging.Authorization
 import unit.base.UnitSpec
 
 import scala.concurrent.ExecutionContext.global
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class SubmissionServiceSpec
     extends UnitSpec with MockExportCacheService with MockConnectors with ScalaFutures with OptionValues with Injector
     with SubmissionBuilder {
 
-  val mockAuditService = mock[AuditService]
-
-  val appConfig = instanceOf[AppConfig]
-
-  val exportMetrics = instanceOf[ExportsMetrics]
-
-  val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestHelper.createRandomString(255))))
-
-  val request = TestHelper.journeyRequest(FakeRequest("", ""), AllowedChoiceValues.SupplementaryDec)
-
-  val legal = LegalDeclaration("Name", "Role", "email@test.com", true)
-  val auditData = Map(
-    EventData.EORI.toString -> request.authenticatedRequest.user.eori,
+  private val auditService = mock[AuditService]
+  private val connector = mock[CustomsDeclareExportsConnector]
+  private val appConfig = instanceOf[AppConfig]
+  private val exportMetrics = instanceOf[ExportsMetrics]
+  private val hc: HeaderCarrier = mock[HeaderCarrier]
+  private val legal = LegalDeclaration("Name", "Role", "email@test.com", confirmation = true)
+  private val auditData = Map(
+    EventData.EORI.toString -> "eori",
     EventData.LRN.toString -> "123LRN",
     EventData.DUCR.toString -> "ducr",
-    EventData.DecType.toString -> "SMP",
+    EventData.DecType.toString -> "STD",
     EventData.FullName.toString -> legal.fullName,
     EventData.JobRole.toString -> legal.jobRole,
     EventData.Email.toString -> legal.email,
     EventData.Confirmed.toString -> legal.confirmation.toString,
     EventData.SubmissionResult.toString -> "Success"
   )
-  val submissionService = new SubmissionService(
-    appConfig,
-    mockExportsCacheService,
-    mockCustomsDeclareExportsConnector,
-    mockAuditService,
-    exportMetrics
-  )
+  private val submissionService = new SubmissionService(appConfig, connector, auditService, exportMetrics)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockExportsCacheService, mockCustomsDeclareExportsConnector, mockAuditService)
-  }
-
-  def theExportsDeclarationSubmitted: ExportsDeclaration = {
-    val captor: ArgumentCaptor[ExportsDeclaration] = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
-    verify(mockCustomsDeclareExportsConnector)
-      .updateDeclaration(captor.capture())(any[HeaderCarrier], any[ExecutionContext])
-    captor.getValue
+    reset(connector, auditService)
   }
 
   "SubmissionService" should {
+    val registry = instanceOf[Metrics].defaultRegistry
+    val metric = MetricIdentifiers.submissionMetric
+    val timerBefore = registry.getTimers.get(exportMetrics.timerName(metric)).getCount
+    val counterBefore = registry.getCounters.get(exportMetrics.counterName(metric)).getCount
 
-    "submit cached data to backend" in {
+    "submit to the back end" when {
+      "valid declaration" in {
+        // Given
+        val declaration = aDeclaration(
+          withId("id"),
+          withStatus(DeclarationStatus.DRAFT),
+          withChoice("STD"),
+          withConsignmentReferences(ducr = "ducr", lrn = "123LRN")
+        )
+        val submission = Submission(uuid = "id", eori = "eori", lrn = "lrn", actions = Seq.empty[Action])
+        when(connector.submitDeclaration(any[String])(any(), any())).thenReturn(Future.successful(submission))
 
-      val declaration = aDeclaration(
-        withId(),
-        withStatus(DeclarationStatus.DRAFT),
-        withConsignmentReferences(ducr = "ducr", lrn = "123LRN")
-      )
+        // When
+        submissionService.submit("eori", declaration, legal)(hc, global).futureValue.value mustBe "123LRN"
 
-      val completed = declaration.copy(status = DeclarationStatus.COMPLETE)
-
-      val submission = emptySubmission(completed, "12345")
-
-      when(mockCustomsDeclareExportsConnector.updateDeclaration(any[ExportsDeclaration])(any(), any()))
-        .thenReturn(Future.successful(completed))
-
-      when(mockCustomsDeclareExportsConnector.submitDeclaration(any[String])(any(), any()))
-        .thenReturn(Future.successful(submission))
-
-      val registry = instanceOf[Metrics].defaultRegistry
-      val metric = MetricIdentifiers.submissionMetric
-      val timerBefore = registry.getTimers.get(exportMetrics.timerName(metric)).getCount
-      val counterBefore = registry.getCounters.get(exportMetrics.counterName(metric)).getCount
-      val model = aDeclaration(withConsignmentReferences(ducr = "ducr", lrn = "123LRN"))
-
-      val result = submissionService.submit(declaration, legal)(request, hc, global).futureValue
-
-      result.value mustBe "123LRN"
-
-      theExportsDeclarationSubmitted.status mustBe DeclarationStatus.COMPLETE
-      verify(mockAuditService, times(1)).audit(any(), any())(any())
-      verify(mockAuditService, times(1))
-        .auditAllPagesUserInput(ArgumentMatchers.eq(AuditTypes.SubmissionPayload), any())(any())
-      verify(mockAuditService)
-        .audit(ArgumentMatchers.eq(AuditTypes.Submission), ArgumentMatchers.eq[Map[String, String]](auditData))(any())
-      registry.getTimers.get(exportMetrics.timerName(metric)).getCount mustBe >(timerBefore)
-      registry.getCounters.get(exportMetrics.counterName(metric)).getCount mustBe >(counterBefore)
-    }
-
-    "propagate errors from exports connector" in {
-
-      val error = new RuntimeException("some error")
-      when(mockCustomsDeclareExportsConnector.updateDeclaration(any[ExportsDeclaration])(any(), any())).thenThrow(error)
-
-      val model =
-        aDeclaration(withStatus(DeclarationStatus.DRAFT), withConsignmentReferences(ducr = "ducr", lrn = "123LRN"))
-
-      intercept[Exception](submissionService.submit(model, legal)(request, hc, global)) mustBe error
+        // Then
+        verify(connector).submitDeclaration(equalTo("id"))(equalTo(hc), any())
+        verify(auditService).auditAllPagesUserInput(equalTo(AuditTypes.SubmissionPayload), equalTo(declaration))(
+          equalTo(hc)
+        )
+        verify(auditService).audit(equalTo(AuditTypes.Submission), equalTo[Map[String, String]](auditData))(equalTo(hc))
+        registry.getTimers.get(exportMetrics.timerName(metric)).getCount mustBe >(timerBefore)
+        registry.getCounters.get(exportMetrics.counterName(metric)).getCount mustBe >(counterBefore)
+      }
     }
   }
 }

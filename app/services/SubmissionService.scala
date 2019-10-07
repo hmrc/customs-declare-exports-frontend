@@ -23,12 +23,10 @@ import forms.declaration.LegalDeclaration
 import javax.inject.Singleton
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers.submissionMetric
-import models.requests.JourneyRequest
-import models.{DeclarationStatus, ExportsDeclaration}
+import models.ExportsDeclaration
 import play.api.Logger
 import services.audit.EventData._
 import services.audit.{AuditService, AuditTypes}
-import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,7 +35,6 @@ import scala.util.{Failure, Success}
 @Singleton
 class SubmissionService @Inject()(
   appConfig: AppConfig,
-  cacheService: ExportsCacheService,
   exportsConnector: CustomsDeclareExportsConnector,
   auditService: AuditService,
   exportsMetrics: ExportsMetrics
@@ -45,47 +42,64 @@ class SubmissionService @Inject()(
 
   private val logger = Logger(this.getClass)
 
-  def submit(
-    exportsDeclaration: ExportsDeclaration,
-    legalDeclaration: LegalDeclaration
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]] = {
+  def submit(eori: String, exportsDeclaration: ExportsDeclaration, legalDeclaration: LegalDeclaration)(
+    implicit hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[Option[String]] = {
     val timerContext = exportsMetrics.startTimer(submissionMetric)
     auditService.auditAllPagesUserInput(AuditTypes.SubmissionPayload, exportsDeclaration)
 
-    val completedDeclaration = if (exportsDeclaration.isComplete) {
-      Future.successful(exportsDeclaration)
-    } else {
-      exportsConnector.updateDeclaration(exportsDeclaration.copy(status = DeclarationStatus.COMPLETE))
-    }
-
-    completedDeclaration.flatMap { declaration =>
-      exportsConnector
-        .submitDeclaration(declaration.id.get)
-        .andThen {
-          case Success(_) =>
-            auditService.audit(
-              AuditTypes.Submission,
-              auditData(exportsDeclaration.lrn, exportsDeclaration.ducr, legalDeclaration, Success.toString)
+    logProgress(exportsDeclaration, "Beginning Submission")
+    exportsConnector
+      .submitDeclaration(exportsDeclaration.id.get)
+      .andThen {
+        case Success(_) =>
+          logProgress(exportsDeclaration, "Submitted Successfully")
+          auditService.audit(
+            AuditTypes.Submission,
+            auditData(
+              eori,
+              exportsDeclaration.choice,
+              exportsDeclaration.lrn,
+              exportsDeclaration.ducr,
+              legalDeclaration,
+              Success.toString
             )
-            exportsMetrics.incrementCounter(submissionMetric)
-            timerContext.stop()
-          case Failure(exception) =>
-            logger.error(s"Error response from backend $exception")
-            auditService.audit(
-              AuditTypes.Submission,
-              auditData(exportsDeclaration.lrn, exportsDeclaration.ducr, legalDeclaration, Failure.toString)
+          )
+          exportsMetrics.incrementCounter(submissionMetric)
+          timerContext.stop()
+        case Failure(exception) =>
+          logProgress(exportsDeclaration, "Submission Failed")
+          logger.error(s"Error response from backend $exception")
+          auditService.audit(
+            AuditTypes.Submission,
+            auditData(
+              eori,
+              exportsDeclaration.choice,
+              exportsDeclaration.lrn,
+              exportsDeclaration.ducr,
+              legalDeclaration,
+              Failure.toString
             )
-        }
-        .map(_ => declaration.lrn)
-    }
+          )
+      }
+      .map(_ => exportsDeclaration.lrn)
   }
 
-  private def auditData(lrn: Option[String], ducr: Option[String], legalDeclaration: LegalDeclaration, result: String)(
-    implicit request: JourneyRequest[_]
+  private def logProgress(declaration: ExportsDeclaration, message: String): Unit =
+    logger.info(s"Declaration [${declaration.id}]: $message")
+
+  private def auditData(
+    eori: String,
+    choice: String,
+    lrn: Option[String],
+    ducr: Option[String],
+    legalDeclaration: LegalDeclaration,
+    result: String
   ) =
     Map(
-      EORI.toString -> request.authenticatedRequest.user.eori,
-      DecType.toString -> request.choice.value,
+      EORI.toString -> eori,
+      DecType.toString -> choice,
       LRN.toString -> lrn.getOrElse(""),
       DUCR.toString -> ducr.getOrElse(""),
       FullName.toString -> legalDeclaration.fullName,
@@ -94,7 +108,5 @@ class SubmissionService @Inject()(
       Confirmed.toString -> legalDeclaration.confirmation.toString,
       SubmissionResult.toString -> result
     )
-
-  protected case class FormattedData(lrn: Option[String], ducr: Option[String], payload: String)
 
 }
