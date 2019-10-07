@@ -43,33 +43,32 @@
         @helper.CSRF.formField
 
         @if(documents.nonEmpty) {
-            <table class="form-group">
+            <table class="form-group documents">
                 <thead>
                     <tr>
-                        <th scope="col">@messages("supplementary.addDocument.documentTypeCode")</th>
-                        <th scope="col">@messages("supplementary.addDocument.documentIdentifier")</th>
-                        <th scope="col">@messages("supplementary.addDocument.documentPart")</th>
-                        <th scope="col">@messages("supplementary.addDocument.documentStatus")</th>
-                        <th scope="col">@messages("supplementary.addDocument.documentStatusReason")</th>
-                        <th scope="col">@messages("supplementary.addDocument.issuingAuthorityName")</th>
-                        <th scope="col">@messages("supplementary.addDocument.dateOfValidity")</th>
-                        <th scope="col">@messages("supplementary.addDocument.measurementUnit")</th>
-                        <th scope="col">@messages("supplementary.addDocument.documentQuantity")</th>
+                        <th scope="col" class="document-type">@messages("supplementary.addDocument.documentTypeCode")</th>
+                        <th scope="col" class="document-identifier">@messages("supplementary.addDocument.documentIdentifier")</th>
+                        <th scope="col" class="document-status">@messages("supplementary.addDocument.documentStatus")</th>
+                        <th scope="col" class="document-status-reason">@messages("supplementary.addDocument.documentStatusReason")</th>
+                        <th scope="col" class="document-issuing-authority">@messages("supplementary.addDocument.issuingAuthorityName")</th>
+                        <th scope="col" class="date-of-validity">@messages("supplementary.addDocument.dateOfValidity")</th>
+                        <th scope="col" class="measurement-unit">@messages("supplementary.addDocument.measurementUnit")</th>
+                        <th scope="col" class="document-quantity">@messages("supplementary.addDocument.documentQuantity")</th>
                         <td></td>
                     </tr>
                 </thead>
                 <tbody>
                 @documents.zipWithIndex.map { case (item, index) =>
                     <tr>
-                        <td scope="row">@item.documentTypeCode</td>
-                        <td>@item.documentIdentifierAndPart.map(_.documentIdentifier)</td>
-                        <td>@item.documentStatus</td>
-                        <td>@item.documentStatusReason</td>
-                        <td>@item.issuingAuthorityName</td>
-                        <td>@item.dateOfValidity</td>
-                        <td>@item.documentWriteOff.map(_.measurementUnit)</td>
-                        <td>@item.documentWriteOff.map(_.documentQuantity)</td>
-                        <td>@components.buttons.remove_button(value = Some(item.toJson))</td>
+                        <td scope="row" class="document-type">@item.documentTypeCode</td>
+                        <td class="document-identifier">@item.documentIdentifierAndPart.map(_.documentIdentifier)</td>
+                        <td class="document-status">@item.documentStatus</td>
+                        <td class="document-status-reason">@item.documentStatusReason</td>
+                        <td class="document-issuing-authority">@item.issuingAuthorityName</td>
+                        <td class="date-of-validity">@item.dateOfValidity</td>
+                        <td class="measurement-unit">@item.documentWriteOff.map(_.measurementUnit)</td>
+                        <td class="document-quantity">@item.documentWriteOff.map(_.documentQuantity)</td>
+                        <td class="remove-button">@components.buttons.remove_button(value = Some(item.toJson))</td>
                     </tr>
                 }
                 </tbody>

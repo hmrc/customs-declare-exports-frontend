@@ -445,67 +445,115 @@ class DocumentsProducedViewSpec
       )
     }
 
-    "display a table with previously entered document" in {
+    "display a table with previously entered document" which {
 
       val view = createView(cachedDocuments = Seq(correctDocumentsProduced))
 
-      view.select("table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(1)").text() must equal(
-        messages(documentTypeCode)
-      )
-      view.select("table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(2)").text() must equal(
-        messages(documentIdentifier)
-      )
-      view.select("table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(3)").text() must equal(
-        messages(documentPart)
-      )
-      view.select("table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(4)").text() must equal(
-        messages(documentStatus)
-      )
-      view.select("table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(5)").text() must equal(
-        messages(documentStatusReason)
-      )
-      view.select("table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(6)").text() must equal(
-        messages(issuingAuthorityName)
-      )
-      view.select("table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(7)").text() must equal(
-        messages(dateOfValidity)
-      )
-      view.select("table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(8)").text() must equal(
-        messages(measurementUnit)
-      )
-      view.select("table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(9)").text() must equal(
-        messages(documentQuantity)
-      )
+      "have header row" that {
+        val header = view.selectFirst(".documents thead tr")
 
-      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(1)").text() must equal(
-        correctDocumentsProduced.documentTypeCode.get
-      )
-      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(2)").text() must equal(
-        correctDocumentsProduced.documentIdentifierAndPart.get.documentIdentifier
-      )
-      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(3)").text() must equal(
-        correctDocumentsProduced.documentStatus.get
-      )
-      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(4)").text() must equal(
-        correctDocumentsProduced.documentStatusReason.get
-      )
-      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(5)").text() must equal(
-        correctDocumentsProduced.issuingAuthorityName.get
-      )
-      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(6)").text() must equal(
-        correctDocumentsProduced.dateOfValidity.get.toString
-      )
-      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(7)").text() must equal(
-        correctDocumentsProduced.documentWriteOff.get.measurementUnit.get
-      )
-      view.select("table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(8)").text() must equal(
-        correctDocumentsProduced.documentWriteOff.get.documentQuantity.get.toString
-      )
+        "have header for Document Type" in {
+          header.selectFirst(".document-type").text()  must equal(
+            messages(documentTypeCode)
+          )
+        }
 
-      val removeButton = view.select("tbody>tr>td:nth-child(9)>button")
+        "have header for Document Identifier" in {
+          header.selectFirst(".document-identifier").text() must equal(
+            messages(documentIdentifier)
+          )
+        }
+        "have header for Document Status" in {
+          header.selectFirst(".document-status").text() must equal(
+            messages(documentStatus)
+          )
+        }
+        "have header for Document Status Reason" in {
+          header.selectFirst(".document-status-reason").text() must equal(
+            messages(documentStatusReason)
+          )
+        }
+        "have header for Document Issuing Authroity" in {
+          header.selectFirst(".document-issuing-authority").text() must equal(
+            messages(issuingAuthorityName)
+          )
+        }
+        "have header for Document Date of Validtiy" in {
+          header.selectFirst(".date-of-validity").text() must equal(
+            messages(dateOfValidity)
+          )
+        }
+        "have header for Document Measurement Unit" in {
+          header.selectFirst(".measurement-unit").text() must equal(
+            messages(measurementUnit)
+          )
+        }
+        "have header for Document Quntity" in {
+          header.selectFirst(".document-quantity").text() must equal(
+            messages(documentQuantity)
+          )
+        }
+      }
 
-      removeButton.text() mustBe messages("site.remove")
-      removeButton.attr("value") mustBe correctDocumentsProduced.toJson.toString()
+
+
+      "have data row" that {
+
+        val row  = view.select(".documents tbody tr").first()
+
+        "have Document Type" in {
+          row.selectFirst(".document-type").text() must equal(
+            correctDocumentsProduced.documentTypeCode.get
+          )
+        }
+
+        "have Document Identifier" in {
+          row.selectFirst(".document-identifier").text() must equal(
+            correctDocumentsProduced.documentIdentifierAndPart.get.documentIdentifier
+          )
+        }
+        "have Document Status" in {
+          row.selectFirst(".document-status").text() must equal(
+            correctDocumentsProduced.documentStatus.get
+          )
+        }
+        "have Document Status Reason" in {
+          row.selectFirst(".document-status-reason").text() must equal(
+            correctDocumentsProduced.documentStatusReason.get
+          )
+        }
+
+        "have Document Issuing Authority" in {
+          row.selectFirst(".document-issuing-authority").text() must equal(
+            correctDocumentsProduced.issuingAuthorityName.get
+          )
+        }
+
+        "have Document Date of Validity" in {
+          row.selectFirst(".date-of-validity").text() must equal(
+            correctDocumentsProduced.dateOfValidity.get.toString
+          )
+        }
+
+        "have Document Measurment Unit" in {
+          row.selectFirst(".measurement-unit").text() must equal(
+            correctDocumentsProduced.documentWriteOff.get.measurementUnit.get
+          )
+        }
+
+        "have Document Quantitiy" in {
+          row.selectFirst(".document-quantity").text() must equal(
+            correctDocumentsProduced.documentWriteOff.get.documentQuantity.get.toString
+          )
+        }
+
+        "have remove button" in {
+          val removeButton = row.selectFirst(".remove-button button")
+          removeButton.text() mustBe messages("site.remove")
+          removeButton.attr("value") mustBe correctDocumentsProduced.toJson.toString()
+        }
+      }
+
     }
   }
 }
