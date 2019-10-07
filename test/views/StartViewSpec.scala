@@ -16,7 +16,8 @@
 
 package views
 
-import helpers.views.declaration.StartMessages
+import config.AppConfig
+import org.mockito.Mockito.when
 import play.twirl.api.Html
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -24,9 +25,17 @@ import views.html.start_page
 import views.tags.ViewTest
 
 @ViewTest
-class StartViewSpec extends UnitViewSpec with StartMessages with Stubs {
+class StartViewSpec extends UnitViewSpec with Stubs {
 
-  private val startPage = new start_page(mainTemplate, realAppConfig)
+  private val appConfig = mock[AppConfig]
+  when(appConfig.customsDeclarationsGoodsTakenOutOfEuUrl)
+    .thenReturn("appConfig.customsDeclarationsGoodsTakenOutOfEuUrl")
+  when(appConfig.commodityCodesUrl).thenReturn("appConfig.commodityCodesUrl")
+  when(appConfig.relevantLicensesUrl).thenReturn("appConfig.relevantLicensesUrl")
+  when(appConfig.serviceAvailabilityUrl).thenReturn("appConfig.serviceAvailabilityUrl")
+  when(appConfig.customsMovementsFrontendUrl).thenReturn("appConfig.customsMovementsFrontendUrl")
+
+  private val startPage = new start_page(mainTemplate, appConfig)
   private def createView(): Html = startPage()
 
   "Start Page view" should {
@@ -70,7 +79,7 @@ class StartViewSpec extends UnitViewSpec with StartMessages with Stubs {
     val view = createView()
 
     "display title" in {
-      view.select("title").text() mustBe "startPage.title"
+      view.select("title").text() mustBe "title.format"
     }
 
     "display section header" in {
@@ -119,7 +128,7 @@ class StartViewSpec extends UnitViewSpec with StartMessages with Stubs {
 
     "contain link to Customs Declarations Guidance in 'Use this service to' notice" in {
       view.getElementById("use-this-service-to-notice").child(0) must haveHref(
-        realAppConfig.customsDeclarationsGoodsTakenOutOfEuUrl
+        appConfig.customsDeclarationsGoodsTakenOutOfEuUrl
       )
     }
 
@@ -158,13 +167,11 @@ class StartViewSpec extends UnitViewSpec with StartMessages with Stubs {
     }
 
     "contain link to Commodity Codes in 'Information you need' section" in {
-      view.getElementById("information-you-need-list").child(2).child(0) must haveHref(realAppConfig.commodityCodesUrl)
+      view.getElementById("information-you-need-list").child(2).child(0) must haveHref(appConfig.commodityCodesUrl)
     }
 
     "contain link to 'Relevant licenses' in 'Information you need' section" in {
-      view.getElementById("information-you-need-list").child(3).child(0) must haveHref(
-        realAppConfig.relevantLicensesUrl
-      )
+      view.getElementById("information-you-need-list").child(3).child(0) must haveHref(appConfig.relevantLicensesUrl)
     }
 
     "display 'Make a declaration' section" in {
@@ -179,7 +186,7 @@ class StartViewSpec extends UnitViewSpec with StartMessages with Stubs {
     }
 
     "contain link to service availability in 'Report your arrival and departure' section" in {
-      view.getElementById("problems-with-service-notice").child(0) must haveHref(realAppConfig.serviceAvailabilityUrl)
+      view.getElementById("problems-with-service-notice").child(0) must haveHref(appConfig.serviceAvailabilityUrl)
     }
 
     "display 'Start now' button" in {
@@ -198,7 +205,7 @@ class StartViewSpec extends UnitViewSpec with StartMessages with Stubs {
 
     "contain link to Customs Movements Service in 'After you’ve declared your goods' section" in {
       view.getElementById("after-declaring-goods-element-1").child(0) must haveHref(
-        realAppConfig.customsMovementsFrontendUrl
+        appConfig.customsMovementsFrontendUrl
       )
     }
 
