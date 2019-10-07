@@ -20,7 +20,7 @@ import config.AppConfig
 import controllers.declaration.SummaryController
 import forms.declaration.LegalDeclaration
 import models.declaration.SupplementaryDeclarationData
-import models.requests.{ExportsSessionKeys, JourneyRequest}
+import models.requests.ExportsSessionKeys
 import models.{ExportsDeclaration, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -38,12 +38,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with OptionValues {
 
-  val mockSummaryPage = mock[summary_page]
-  val mockSummaryPageNoData = mock[summary_page_no_data]
-  val mockSubmissionService = mock[SubmissionService]
-  val appConfig = mock[AppConfig]
+  private val mockSummaryPage = mock[summary_page]
+  private val mockSummaryPageNoData = mock[summary_page_no_data]
+  private val mockSubmissionService = mock[SubmissionService]
+  private val appConfig = mock[AppConfig]
 
-  val controller = new SummaryController(
+  private val controller = new SummaryController(
     mockAuthAction,
     mockJourneyAction,
     mockErrorHandler,
@@ -107,7 +107,7 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
     "return 500 (INTERNAL_SERVER_ERROR) during submission" when {
       "lrn is not returned from submission service" in {
         withNewCaching(aDeclaration())
-        when(mockSubmissionService.submit(any(), any())(any(), any(), any())).thenReturn(Future.successful(None))
+        when(mockSubmissionService.submit(any(), any(), any())(any(), any())).thenReturn(Future.successful(None))
 
         val correctForm = Seq(
           ("fullName", "Test Tester"),
@@ -128,11 +128,7 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
         withNewCaching(aDeclaration())
         when(
           mockSubmissionService
-            .submit(any[ExportsDeclaration], any[LegalDeclaration])(
-              any[JourneyRequest[_]],
-              any[HeaderCarrier],
-              any[ExecutionContext]
-            )
+            .submit(any(), any[ExportsDeclaration], any[LegalDeclaration])(any[HeaderCarrier], any[ExecutionContext])
         ).thenReturn(Future.successful(Some("123LRN")))
 
         val correctForm = Seq(
@@ -149,8 +145,7 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
           Some(controllers.declaration.routes.ConfirmationController.displaySubmissionConfirmation().url)
         )
         flash(result).get("LRN") must be(Some("123LRN"))
-        verify(mockSubmissionService).submit(any[ExportsDeclaration], any[LegalDeclaration])(
-          any[JourneyRequest[_]],
+        verify(mockSubmissionService).submit(any(), any[ExportsDeclaration], any[LegalDeclaration])(
           any[HeaderCarrier],
           any[ExecutionContext]
         )
