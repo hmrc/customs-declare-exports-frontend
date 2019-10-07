@@ -65,10 +65,12 @@ a.button--gray, button.button--gray, .button--gray:visited {
   -webkit-box-shadow: none;
   box-shadow: none;
 
-  &:hover, &:focus {
+  &:hover {
     color: #2e8aca;
   }
-
+  &:focus {
+    color: inherit;
+  }
   &:visited {
     color: #4c2c92;
   }
@@ -85,4 +87,8 @@ a.button--gray, button.button--gray, .button--gray:visited {
 
 .bold {
   font-weight:bold;
+}
+
+button:focus {
+  outline: 3px solid #ffbf47;
 }
