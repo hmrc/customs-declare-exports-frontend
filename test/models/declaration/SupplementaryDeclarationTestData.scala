@@ -36,7 +36,7 @@ import forms.declaration.WarehouseIdentificationSpec._
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
-import forms.declaration.additionaldocuments.{DocumentIdentifierAndPart, DocumentWriteOff, DocumentsProduced}
+import forms.declaration.additionaldocuments.{ DocumentWriteOff, DocumentsProduced}
 import forms.{CancelDeclaration, Lrn}
 import models.declaration.DeclarationAdditionalActorsDataSpec._
 import models.declaration.DeclarationHoldersDataSpec._
@@ -232,9 +232,7 @@ object SupplementaryDeclarationTestData {
             Seq(
               DocumentsProduced(
                 documentTypeCode = Some("C501"),
-                documentIdentifierAndPart = Some(
-                  DocumentIdentifierAndPart(documentIdentifier = "SYSUYSU123-24554")
-                ),
+                documentIdentifier = Some("SYSUYSU123-24554"),
                 documentStatus = Some("PND"),
                 documentStatusReason = Some("Reason"),
                 issuingAuthorityName = Some("issuingAuthorityName"),

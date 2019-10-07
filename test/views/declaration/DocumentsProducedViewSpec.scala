@@ -20,8 +20,6 @@ import base.{Injector, TestHelper}
 import controllers.util.SaveAndReturn
 import forms.common.Date._
 import forms.declaration.DocumentsProducedSpec._
-import forms.declaration.additionaldocuments.DocumentIdentifierAndPart._
-import forms.declaration.additionaldocuments.DocumentIdentifierAndPartSpec._
 import forms.declaration.additionaldocuments.DocumentWriteOff._
 import forms.declaration.additionaldocuments.DocumentWriteOffSpec._
 import forms.declaration.additionaldocuments.DocumentsProduced
@@ -119,10 +117,10 @@ class DocumentsProducedViewSpec
     }
 
     "display empty input with label for Document identifier" in {
-      view.getElementById(s"${documentIdentifierAndPartKey}_$documentIdentifierKey-label").text() mustBe
+      view.getElementById(s"$documentIdentifierKey-label").text() mustBe
         messages(documentIdentifier)
 
-      view.getElementById(s"${documentIdentifierAndPartKey}_$documentIdentifierKey").attr("value") mustBe empty
+      view.getElementById(s"$documentIdentifierKey").attr("value") mustBe empty
     }
 
     "display empty input with label for Document status" in {
@@ -198,22 +196,19 @@ class DocumentsProducedViewSpec
     "display error for Document identifier" in {
 
       val documentsProducedWithIncorrectDocumentIdentifier = correctDocumentsProduced.copy(
-        documentIdentifierAndPart = Some(
-          correctDocumentIdentifierAndPart
-            .copy(documentIdentifier = incorrectDocumentIdentifierAndPart.documentIdentifier)
-        )
+        documentIdentifier = Some("!@#$%")
       )
       val view =
         createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentIdentifier)))
 
       checkErrorsSummary(view)
       view must haveFieldErrorLink(
-        s"$documentIdentifierAndPartKey.$documentIdentifierKey",
-        s"#${documentIdentifierAndPartKey}_$documentIdentifierKey"
+        s"$documentIdentifierKey",
+        s"#$documentIdentifierKey"
       )
 
       view
-        .select(s"#error-message-${documentIdentifierAndPartKey}_$documentIdentifierKey-input")
+        .select(s"#error-message-$documentIdentifierKey-input")
         .text() mustBe messages(documentIdentifierError)
     }
 
@@ -380,8 +375,8 @@ class DocumentsProducedViewSpec
       checkErrorsSummary(view)
       view must haveFieldErrorLink(s"$documentTypeCodeKey", s"#$documentTypeCodeKey")
       view must haveFieldErrorLink(
-        s"$documentIdentifierAndPartKey.$documentIdentifierKey",
-        s"#${documentIdentifierAndPartKey}_$documentIdentifierKey"
+        s"$documentIdentifierKey",
+        s"#$documentIdentifierKey"
       )
       view must haveFieldErrorLink(s"$documentStatusKey", s"#$documentStatusKey")
       view must haveFieldErrorLink(s"$documentStatusReasonKey", s"#$documentStatusReasonKey")
@@ -398,7 +393,7 @@ class DocumentsProducedViewSpec
 
       view.select(s"#error-message-$documentTypeCodeKey-input").text() mustBe messages(documentTypeCodeError)
       view
-        .select(s"#error-message-${documentIdentifierAndPartKey}_$documentIdentifierKey-input")
+        .select(s"#error-message-$documentIdentifierKey-input")
         .text() mustBe messages(documentIdentifierError)
 
       view.select(s"#error-message-$documentStatusKey-input").text() mustBe messages(documentStatusError)
@@ -422,8 +417,8 @@ class DocumentsProducedViewSpec
       val view = createView(form)
 
       view.getElementById(documentTypeCodeKey).attr("value") must equal(data.documentTypeCode.value)
-      view.getElementById(s"${documentIdentifierAndPartKey}_$documentIdentifierKey").attr("value") must equal(
-        data.documentIdentifierAndPart.value.documentIdentifier
+      view.getElementById(documentIdentifierKey).attr("value") must equal(
+        data.documentIdentifier.value
       )
       view.getElementById(documentStatusKey).attr("value") must equal(data.documentStatus.value)
       view.getElementById(documentStatusReasonKey).attr("value") must equal(data.documentStatusReason.value)
@@ -509,7 +504,7 @@ class DocumentsProducedViewSpec
 
         "have Document Identifier" in {
           row.selectFirst(".document-identifier").text() must equal(
-            correctDocumentsProduced.documentIdentifierAndPart.get.documentIdentifier
+            correctDocumentsProduced.documentIdentifier.get
           )
         }
         "have Document Status" in {
@@ -548,7 +543,7 @@ class DocumentsProducedViewSpec
         }
 
         "have remove button" in {
-          val removeButton = row.selectFirst(".remove .remove-button")
+          val removeButton = row.selectFirst(".actions .remove")
           removeButton.text() mustBe messages("site.remove")
           removeButton.attr("value") mustBe correctDocumentsProduced.toJson.toString()
         }

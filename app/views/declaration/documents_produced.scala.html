@@ -16,7 +16,6 @@
 
 @import controllers.declaration.routes._
 @import controllers.util.Remove
-@import forms.declaration.additionaldocuments.DocumentIdentifierAndPart._
 @import forms.declaration.additionaldocuments.DocumentWriteOff._
 @import forms.declaration.additionaldocuments.DocumentsProduced
 @import forms.declaration.additionaldocuments.DocumentsProduced._
@@ -61,14 +60,14 @@
                 @documents.zipWithIndex.map { case (item, index) =>
                     <tr>
                         <td scope="row" class="document-type">@item.documentTypeCode</td>
-                        <td class="document-identifier">@item.documentIdentifierAndPart.map(_.documentIdentifier)</td>
+                        <td class="document-identifier">@item.documentIdentifier</td>
                         <td class="document-status">@item.documentStatus</td>
                         <td class="document-status-reason">@item.documentStatusReason</td>
                         <td class="document-issuing-authority">@item.issuingAuthorityName</td>
                         <td class="date-of-validity">@item.dateOfValidity</td>
                         <td class="measurement-unit">@item.documentWriteOff.map(_.measurementUnit)</td>
                         <td class="document-quantity">@item.documentWriteOff.map(_.documentQuantity)</td>
-                        <td class="remove">@components.buttons.remove_button(value = Some(item.toJson))</td>
+                        <td class="actions">@components.buttons.remove_button(value = Some(item.toJson))</td>
                     </tr>
                 }
                 </tbody>
@@ -81,13 +80,13 @@
             labelClass = Some("bold-small")
         )
 
-        @components.form_fields_wrapper(field = form(documentIdentifierAndPartKey)) {
-            @components.fields.field_text(
-                field = form(s"$documentIdentifierAndPartKey.$documentIdentifierKey"),
-                label = messages("supplementary.addDocument.documentIdentifier"),
-                labelClass = Some("bold-small")
-            )
-        }
+
+        @components.fields.field_text(
+            field = form(documentIdentifierKey),
+            label = messages("supplementary.addDocument.documentIdentifier"),
+            labelClass = Some("bold-small")
+        )
+
 
         @components.fields.field_text(
             field = form(documentStatusKey),
