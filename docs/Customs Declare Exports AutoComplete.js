@@ -217,7 +217,7 @@ function completePage() {
     }
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/add-document')) {
         document.getElementById('documentTypeCode').value ='C501';
-        document.getElementById('documentIdentifierAndPart_documentIdentifier').value ='GBAEOC71757250450281';
+        document.getElementById('documentIdentifier').value ='GBAEOC71757250450281';
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/warehouse')) {
