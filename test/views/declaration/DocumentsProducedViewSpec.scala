@@ -548,7 +548,7 @@ class DocumentsProducedViewSpec
         }
 
         "have remove button" in {
-          val removeButton = row.selectFirst(".remove-button button")
+          val removeButton = row.selectFirst(".remove .remove-button")
           removeButton.text() mustBe messages("site.remove")
           removeButton.attr("value") mustBe correctDocumentsProduced.toJson.toString()
         }
