@@ -23,4 +23,5 @@ import play.api.mvc.WrappedRequest
 class JourneyRequest[A](val authenticatedRequest: AuthenticatedRequest[A], val cacheModel: ExportsDeclaration)
     extends AuthenticatedRequest[A](authenticatedRequest, authenticatedRequest.user) {
   val choice: Choice = Choice(cacheModel.choice)
+  def eori: String = authenticatedRequest.user.eori
 }
