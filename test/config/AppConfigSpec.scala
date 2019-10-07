@@ -37,6 +37,13 @@ class AppConfigSpec extends UnitSpec {
       """
         |urls.login="http://localhost:9949/auth-login-stub/gg-sign-in"
         |urls.loginContinue="http://localhost:9000/customs-declare-exports-frontend"
+        |
+        |urls.customsDeclarationsGoodsTakenOutOfEu="https://www.gov.uk/guidance/customs-declarations-for-goods-taken-out-of-the-eu"
+        |urls.commodityCodes="https://www.gov.uk/guidance/finding-commodity-codes-for-imports-or-exports"
+        |urls.relevantLicenses="https://www.gov.uk/starting-to-export/licences"
+        |urls.serviceAvailability="https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues"
+        |urls.customsMovementsFrontend="http://url-to-movements-frontend/start"
+        |
         |microservice.services.auth.host=localhostauth
         |google-analytics.token=N/A
         |google-analytics.host=localhostGoogle
@@ -93,6 +100,32 @@ class AppConfigSpec extends UnitSpec {
 
     "have login URL" in {
       validConfigService.loginUrl must be("http://localhost:9949/auth-login-stub/gg-sign-in")
+    }
+
+    "have customsDeclarationsGoodsTakenOutOfEu URL" in {
+      validConfigService.customsDeclarationsGoodsTakenOutOfEuUrl must be(
+        "https://www.gov.uk/guidance/customs-declarations-for-goods-taken-out-of-the-eu"
+      )
+    }
+
+    "have commodityCodes URL" in {
+      validConfigService.commodityCodesUrl must be(
+        "https://www.gov.uk/guidance/finding-commodity-codes-for-imports-or-exports"
+      )
+    }
+
+    "have relevantLicenses URL" in {
+      validConfigService.relevantLicensesUrl must be("https://www.gov.uk/starting-to-export/licences")
+    }
+
+    "have serviceAvailability URL" in {
+      validConfigService.serviceAvailabilityUrl must be(
+        "https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues"
+      )
+    }
+
+    "have customsMovementsFrontend URL" in {
+      validConfigService.customsMovementsFrontendUrl must be("http://url-to-movements-frontend/start")
     }
 
     "load the Choice options when list-of-available-journeys is defined" in {

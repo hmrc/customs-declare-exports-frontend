@@ -14,44 +14,97 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import controllers.routes._
 @import views.Title
 
-@this(main_template: views.html.main_template)
+@this(main_template: views.html.main_template, appConfig: AppConfig)
 
 @()(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = Title("startPage.heading")
+    title = Title("startPage.title")
 ) {
-    <div class="grid-row">
-        <div class="column-two-thirds, overflow: hidden;, white-space: nowrap;">
-            <h1 class="heading-xlarge">@messages("startPage.heading")</h1>
 
-            <p>@messages("startPage.description")</p>
-            <h3 class="heading-medium">@messages("startPage.listHeading")</h3>
-            <ul class="list list-bullet">
-                <li>@messages("startPage.listItemOne")</li>
-                <li>@messages("startPage.listItemTwoPreUrl") <a href="http://www.gov.uk/eori" target="_blank" rel="noopener noreferrer">@messages("startPage.listItemTwoUrl")</a> @messages("startPage.listItemTwoPostUrl")</li>
-                <li>@messages("startPage.listItemThree")</li>
-                <li>@messages("startPage.listItemFour") </li>
-                <li>@messages("startPage.listItemFive")</li>
-                <li>@messages("startPage.listItemSix") <a href="https://www.gov.uk/trade-tariff" target="_blank" rel="noopener noreferrer">@messages("startPage.listItemSixUrl")</a></li>
-                <li><a href="https://www.gov.uk/government/publications/uk-trade-tariff-customs-procedure-codes/customs-procedure-codes-box-37" target="_blank" rel="noopener noreferrer">@messages("startPage.listItemSevenUrl")</a> @messages("startPage.listItemSeven")</li>
-            </ul>
-
-            <p><a class="button button-start" href="@ChoiceController.displayPage()" role="button">@messages("startPage.buttonName")</a></p>
-
-            <p>@messages("startPage.additionalInformation")</p>
-
-            <div class="form-group">
-                <h2 class="heading-medium">@messages("startPage.referenceTitle")</h2>
-                <p>
-                    @messages("startPage.reference") <b>@messages("startPage.reference.number")</b> <br>
-                @messages("startPage.reference.text")
-                </p>
-                <p><a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/customs-international-trade-and-excise-enquiries" target="_blank" rel="noopener noreferrer">@messages("startPage.enquiries")</a></p>
-            </div>
-        </div>
+  <div class="grid-row">
+    <div class="column-full">
+    @components.heading(
+      sectionHeader = messages("startPage.title.sectionHeader"),
+      title = messages("startPage.title")
+    )
     </div>
+    <div class="column-full">
+      <p id="description" class="lede">@messages("startPage.description")</p>
+    </div>
+  </div>
+
+  <div class="grid-row">
+    <div class="column-full">
+
+      <p id="contents">@messages("startPage.contents.header")</p>
+      <ul id="contents-list" class="dashed-list">
+        <li class="dashed-list-item"><a href="#before-you-start">@messages("startPage.beforeYouStart.header")</a></li>
+        <li class="dashed-list-item"><a href="#information-you-need">@messages("startPage.informationYouNeed.header")</a></li>
+        <li class="dashed-list-item"><a href="#make-declaration">@messages("startPage.makeDeclaration.header")</a></li>
+        <li class="dashed-list-item"><a href="#after-declaring-goods">@messages("startPage.afterDeclaringGoods.header")</a></li>
+      </ul>
+
+      <p id="use-this-service-to">@messages("startPage.useThisServiceTo.header")</p>
+      <ul id="use-this-service-to-list">
+        <li>@messages("startPage.useThisServiceTo.listItem.1")</li>
+        <li>@messages("startPage.useThisServiceTo.listItem.2")</li>
+        <li>@messages("startPage.useThisServiceTo.listItem.3")</li>
+        <li>@messages("startPage.useThisServiceTo.listItem.4")</li>
+      </ul>
+
+      <div class="panel panel-border-wide">
+        <p id="use-this-service-to-notice">
+          @messages("startPage.useThisServiceTo.notice") <a href=@{appConfig.customsDeclarationsGoodsTakenOutOfEuUrl}>@messages("startPage.useThisServiceTo.notice.link")</a>
+        </p>
+      </div>
+
+      <h2 id="before-you-start" class="heading-medium">@messages("startPage.beforeYouStart.header")</h2>
+      <p id="before-you-start-element-1">@messages("startPage.beforeYouStart.line.1")</p>
+      <p id="before-you-start-element-2">@messages("startPage.beforeYouStart.line.2")</p>
+
+      <h2 id="information-you-need" class="heading-medium">@messages("startPage.informationYouNeed.header")</h2>
+      <p id="information-you-need-element-1">@messages("startPage.informationYouNeed.line.1")</p>
+      <ul id="information-you-need-list">
+        <li>@messages("startPage.informationYouNeed.listItem.1")</li>
+        <li>@messages("startPage.informationYouNeed.listItem.2")</li>
+        <li>@messages("startPage.informationYouNeed.listItem.3.1") <a href=@{appConfig.commodityCodesUrl}>@messages("startPage.informationYouNeed.listItem.3.link")</a> @messages("startPage.informationYouNeed.listItem.3.2")</li>
+        <li>@messages("startPage.informationYouNeed.listItem.4") <a href=@{appConfig.relevantLicensesUrl}>@messages("startPage.informationYouNeed.listItem.4.link")</a></li>
+        <li>@messages("startPage.informationYouNeed.listItem.5")</li>
+        <li>@messages("startPage.informationYouNeed.listItem.6")</li>
+      </ul>
+
+      <h2 id="make-declaration" class="heading-medium">@messages("startPage.makeDeclaration.header")</h2>
+
+      <div class="panel panel-border-wide">
+        <p id="problems-with-service-notice">
+          @messages("startPage.problemsWithServiceNotice") <a href=@{appConfig.serviceAvailabilityUrl}>@messages("startPage.problemsWithServiceNotice.link")</a>
+        </p>
+      </div>
+
+      <a id="button-start" class="button button-start" href=@{ChoiceController.displayPage()} role="button">
+        @messages("startPage.buttonName")
+      </a>
+
+      <h2 id="after-declaring-goods" class="heading-medium">@messages("startPage.afterDeclaringGoods.header")</h2>
+      <p id="after-declaring-goods-element-1">@messages("startPage.afterDeclaringGoods.line.1") <a href=@{appConfig.customsMovementsFrontendUrl}>@messages("startPage.afterDeclaringGoods.line.1.link")</a></p>
+
+      <div class="mt-5">
+        <p id="back-to-top">
+          <a href="#contents">
+            <svg class="app-c-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+              <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+            </svg>
+            @messages("startPage.contents.header")
+          </a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+
 }

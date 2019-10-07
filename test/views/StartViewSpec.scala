@@ -16,9 +16,8 @@
 
 package views
 
-import helpers.views.declaration.StartMessages
-import play.api.i18n.Messages
-import play.api.test.Helpers.stubMessages
+import config.AppConfig
+import org.mockito.Mockito.when
 import play.twirl.api.Html
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -26,127 +25,194 @@ import views.html.start_page
 import views.tags.ViewTest
 
 @ViewTest
-class StartViewSpec extends UnitViewSpec with StartMessages with Stubs {
+class StartViewSpec extends UnitViewSpec with Stubs {
 
-  private val startPage = new start_page(mainTemplate)
-  private def createView(messages: Messages = stubMessages()): Html = startPage()(request, messages)
+  private val appConfig = mock[AppConfig]
+  when(appConfig.customsDeclarationsGoodsTakenOutOfEuUrl)
+    .thenReturn("appConfig.customsDeclarationsGoodsTakenOutOfEuUrl")
+  when(appConfig.commodityCodesUrl).thenReturn("appConfig.commodityCodesUrl")
+  when(appConfig.relevantLicensesUrl).thenReturn("appConfig.relevantLicensesUrl")
+  when(appConfig.serviceAvailabilityUrl).thenReturn("appConfig.serviceAvailabilityUrl")
+  when(appConfig.customsMovementsFrontendUrl).thenReturn("appConfig.customsMovementsFrontendUrl")
 
-  "Start View on empty page" when {
+  private val startPage = new start_page(mainTemplate, appConfig)
+  private def createView(): Html = startPage()
 
-    "display same page title as header" in {
-      val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
-      viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
+  "Start Page view" should {
+
+    "have proper messages for labels" in {
+      val messages = realMessagesApi.preferred(request)
+      messages must haveTranslationFor("startPage.title.sectionHeader")
+      messages must haveTranslationFor("startPage.title")
+      messages must haveTranslationFor("startPage.description")
+      messages must haveTranslationFor("startPage.contents.header")
+      messages must haveTranslationFor("startPage.useThisServiceTo.header")
+      messages must haveTranslationFor("startPage.useThisServiceTo.listItem.1")
+      messages must haveTranslationFor("startPage.useThisServiceTo.listItem.2")
+      messages must haveTranslationFor("startPage.useThisServiceTo.listItem.3")
+      messages must haveTranslationFor("startPage.useThisServiceTo.listItem.4")
+      messages must haveTranslationFor("startPage.useThisServiceTo.notice")
+      messages must haveTranslationFor("startPage.useThisServiceTo.notice.link")
+      messages must haveTranslationFor("startPage.beforeYouStart.header")
+      messages must haveTranslationFor("startPage.beforeYouStart.line.1")
+      messages must haveTranslationFor("startPage.beforeYouStart.line.2")
+      messages must haveTranslationFor("startPage.informationYouNeed.header")
+      messages must haveTranslationFor("startPage.informationYouNeed.line.1")
+      messages must haveTranslationFor("startPage.informationYouNeed.listItem.1")
+      messages must haveTranslationFor("startPage.informationYouNeed.listItem.2")
+      messages must haveTranslationFor("startPage.informationYouNeed.listItem.3.1")
+      messages must haveTranslationFor("startPage.informationYouNeed.listItem.3.link")
+      messages must haveTranslationFor("startPage.informationYouNeed.listItem.3.2")
+      messages must haveTranslationFor("startPage.informationYouNeed.listItem.4")
+      messages must haveTranslationFor("startPage.informationYouNeed.listItem.4.link")
+      messages must haveTranslationFor("startPage.informationYouNeed.listItem.5")
+      messages must haveTranslationFor("startPage.informationYouNeed.listItem.6")
+      messages must haveTranslationFor("startPage.makeDeclaration.header")
+      messages must haveTranslationFor("startPage.problemsWithServiceNotice")
+      messages must haveTranslationFor("startPage.problemsWithServiceNotice.link")
+      messages must haveTranslationFor("startPage.buttonName")
+      messages must haveTranslationFor("startPage.afterDeclaringGoods.header")
+      messages must haveTranslationFor("startPage.afterDeclaringGoods.line.1")
+      messages must haveTranslationFor("startPage.afterDeclaringGoods.line.1.link")
     }
 
-    "display 'Export' header" in {
+    val view = createView()
 
-      createView().select("h1").text() mustBe messages(heading)
+    "display title" in {
+      view.select("title").text() mustBe "title.format"
     }
 
-    "display 'Export' description" in {
-
-      createView().select("article>div>div>p:nth-child(2)").text() mustBe messages(description)
+    "display section header" in {
+      view.getElementById("section-header").text() mustBe "startPage.title.sectionHeader"
     }
 
-    "display list header" in {
-
-      createView().select("h3").text() mustBe messages(listHeading)
+    "display header" in {
+      view.getElementById("title").text() mustBe "startPage.title"
     }
 
-    "display list with elements" should {
-
-      "first element" in {
-
-        createView().select("article>div>div>ul>li:nth-child(1)").text() mustBe messages(listItemOne)
-      }
-
-      "second element" in {
-
-        createView().select("article>div>div>ul>li:nth-child(2)").text() mustBe
-          messages(listItemTwoPreUrl) + " " + messages(listItemTwoUrl) + " " + messages(listItemTwoPostUrl)
-      }
-
-      "link in second element to 'EORI' page" in {
-
-        val link = createView().select("article>div>div>ul>li:nth-child(2)>a")
-
-        link.text() mustBe messages(listItemTwoUrl)
-        link.attr("href") mustBe "http://www.gov.uk/eori"
-      }
-
-      "third element" in {
-
-        createView().select("article>div>div>ul>li:nth-child(3)").text() mustBe messages(listItemThree)
-      }
-
-      "fourth element" in {
-
-        createView().select("article>div>div>ul>li:nth-child(4)").text() mustBe messages(listItemFour)
-      }
-
-      "fifth element" in {
-
-        createView().select("article>div>div>ul>li:nth-child(5)").text() mustBe messages(listItemFive)
-      }
-
-      "sixth element" in {
-
-        createView().select("article>div>div>ul>li:nth-child(6)").text() mustBe
-          messages(listItemSix) + " " + messages(listItemSixUrl)
-      }
-
-      "link in sixth element to 'Commodity codes' page" in {
-
-        val link = createView().select("article>div>div>ul>li:nth-child(6)>a")
-
-        link.text() mustBe messages(listItemSixUrl)
-        link.attr("href") mustBe "https://www.gov.uk/trade-tariff"
-      }
-
-      "seventh element" in {
-
-        createView().select("article>div>div>ul>li:nth-child(7)").text() mustBe
-          messages(listItemSevenUrl) + " " + messages(listItemSeven)
-      }
-
-      "link in seventh element to'Customs procedure codes' page" in {
-
-        val link = createView().select("article>div>div>ul>li:nth-child(7)>a")
-
-        link.text() mustBe messages(listItemSevenUrl)
-        link.attr("href") mustBe
-          "https://www.gov.uk/government/publications/uk-trade-tariff-customs-procedure-codes/customs-procedure-codes-box-37"
-      }
+    "display general description" in {
+      view.getElementById("description").text() mustBe "startPage.description"
     }
 
-    "display 'Start Now' button" in {
+    "display Contents section" in {
+      view.getElementById("contents").text() mustBe "startPage.contents.header"
 
-      createView().select("article>div>div>p:nth-child(5)>a").text() mustBe messages(buttonName)
+      view.getElementById("contents-list") must haveChildCount(4)
+      view.getElementById("contents-list").child(0).text() mustBe "startPage.beforeYouStart.header"
+      view.getElementById("contents-list").child(1).text() mustBe "startPage.informationYouNeed.header"
+      view.getElementById("contents-list").child(2).text() mustBe "startPage.makeDeclaration.header"
+      view.getElementById("contents-list").child(3).text() mustBe "startPage.afterDeclaringGoods.header"
     }
 
-    "display message under button" in {
-
-      createView().select("article>div>div>p:nth-child(6)").text() mustBe messages(additionalInformation)
+    "contain links in Contents section" in {
+      view.getElementById("contents-list").child(0).child(0) must haveHref("#before-you-start")
+      view.getElementById("contents-list").child(1).child(0) must haveHref("#information-you-need")
+      view.getElementById("contents-list").child(2).child(0) must haveHref("#make-declaration")
+      view.getElementById("contents-list").child(3).child(0) must haveHref("#after-declaring-goods")
     }
 
-    "display 'Help and Support' header" in {
+    "display 'Use this service to' section" in {
+      view.getElementById("use-this-service-to").text() mustBe "startPage.useThisServiceTo.header"
 
-      createView().select("article>div>div>div>h2").text() mustBe messages(referenceTitle)
+      view.getElementById("use-this-service-to-list") must haveChildCount(4)
+      view.getElementById("use-this-service-to-list").child(0).text() mustBe "startPage.useThisServiceTo.listItem.1"
+      view.getElementById("use-this-service-to-list").child(1).text() mustBe "startPage.useThisServiceTo.listItem.2"
+      view.getElementById("use-this-service-to-list").child(2).text() mustBe "startPage.useThisServiceTo.listItem.3"
+      view.getElementById("use-this-service-to-list").child(3).text() mustBe "startPage.useThisServiceTo.listItem.4"
     }
 
-    "display 'Help and Support' description" in {
-
-      createView().select("#content > article > div > div > div > p:nth-child(2)").text() mustBe
-        messages(reference) + " " + messages(referenceNumber) + " " + messages(referenceText)
+    "display notice in 'Use this service to' section" in {
+      view.getElementById("use-this-service-to-notice").text() must include("startPage.useThisServiceTo.notice")
+      view.getElementById("use-this-service-to-notice").text() must include("startPage.useThisServiceTo.notice.link")
     }
 
-    "display link to 'General Enquires page'" in {
+    "contain link to Customs Declarations Guidance in 'Use this service to' notice" in {
+      view.getElementById("use-this-service-to-notice").child(0) must haveHref(
+        appConfig.customsDeclarationsGoodsTakenOutOfEuUrl
+      )
+    }
 
-      val link = createView().select("article>div>div>div>p:nth-child(3)>a")
+    "display 'Before you start' section" in {
+      view.getElementById("before-you-start").text() mustBe "startPage.beforeYouStart.header"
 
-      link.text() mustBe messages(enquiries)
-      link.attr("href") mustBe
-        "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/customs-international-trade-and-excise-enquiries"
+      view.getElementById("before-you-start-element-1").text() mustBe "startPage.beforeYouStart.line.1"
+      view.getElementById("before-you-start-element-2").text() mustBe "startPage.beforeYouStart.line.2"
+    }
+
+    "display 'Information you need' section" in {
+      view.getElementById("information-you-need").text() mustBe "startPage.informationYouNeed.header"
+
+      view.getElementById("information-you-need-element-1").text() mustBe "startPage.informationYouNeed.line.1"
+
+      view.getElementById("information-you-need-list") must haveChildCount(6)
+      view.getElementById("information-you-need-list").child(0).text() mustBe "startPage.informationYouNeed.listItem.1"
+      view.getElementById("information-you-need-list").child(1).text() mustBe "startPage.informationYouNeed.listItem.2"
+      view.getElementById("information-you-need-list").child(2).text() must include(
+        "startPage.informationYouNeed.listItem.3.1"
+      )
+      view.getElementById("information-you-need-list").child(2).text() must include(
+        "startPage.informationYouNeed.listItem.3.link"
+      )
+      view.getElementById("information-you-need-list").child(2).text() must include(
+        "startPage.informationYouNeed.listItem.3.2"
+      )
+      view.getElementById("information-you-need-list").child(3).text() must include(
+        "startPage.informationYouNeed.listItem.4"
+      )
+      view.getElementById("information-you-need-list").child(3).text() must include(
+        "startPage.informationYouNeed.listItem.4.link"
+      )
+      view.getElementById("information-you-need-list").child(4).text() mustBe "startPage.informationYouNeed.listItem.5"
+      view.getElementById("information-you-need-list").child(5).text() mustBe "startPage.informationYouNeed.listItem.6"
+    }
+
+    "contain link to Commodity Codes in 'Information you need' section" in {
+      view.getElementById("information-you-need-list").child(2).child(0) must haveHref(appConfig.commodityCodesUrl)
+    }
+
+    "contain link to 'Relevant licenses' in 'Information you need' section" in {
+      view.getElementById("information-you-need-list").child(3).child(0) must haveHref(appConfig.relevantLicensesUrl)
+    }
+
+    "display 'Make a declaration' section" in {
+      view.getElementById("make-declaration").text() mustBe "startPage.makeDeclaration.header"
+    }
+
+    "display problems with service notice" in {
+      view.getElementById("problems-with-service-notice").text() must include("startPage.problemsWithServiceNotice")
+      view.getElementById("problems-with-service-notice").text() must include(
+        "startPage.problemsWithServiceNotice.link"
+      )
+    }
+
+    "contain link to service availability in 'Report your arrival and departure' section" in {
+      view.getElementById("problems-with-service-notice").child(0) must haveHref(appConfig.serviceAvailabilityUrl)
+    }
+
+    "display 'Start now' button" in {
+      view.getElementById("button-start").text() mustBe "startPage.buttonName"
+      view.getElementById("button-start") must haveHref(controllers.routes.ChoiceController.displayPage())
+    }
+
+    "display 'After you’ve declared your goods' section" in {
+      view.getElementById("after-declaring-goods").text() mustBe "startPage.afterDeclaringGoods.header"
+
+      view.getElementById("after-declaring-goods-element-1").text() must include("startPage.afterDeclaringGoods.line.1")
+      view.getElementById("after-declaring-goods-element-1").text() must include(
+        "startPage.afterDeclaringGoods.line.1.link"
+      )
+    }
+
+    "contain link to Customs Movements Service in 'After you’ve declared your goods' section" in {
+      view.getElementById("after-declaring-goods-element-1").child(0) must haveHref(
+        appConfig.customsMovementsFrontendUrl
+      )
+    }
+
+    "display link to go back to Contents section" in {
+      view.getElementById("back-to-top").text() mustBe "startPage.contents.header"
+      view.getElementById("back-to-top").child(0) must haveHref("#contents")
     }
   }
+
 }

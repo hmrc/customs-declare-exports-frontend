@@ -24,7 +24,7 @@ import views.html.start_page
 class StartControllerSpec extends ControllerSpec {
 
   val mcc = stubMessagesControllerComponents()
-  val startPage = new start_page(mainTemplate)
+  val startPage = new start_page(mainTemplate, config)
 
   val controller = new StartController(mcc, startPage)(ec)
 

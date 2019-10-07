@@ -16,9 +16,9 @@
 
 package views.declaration.spec
 
+import base.Injector
 import org.jsoup.nodes.Document
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.{FakeRequest, Helpers}
 import unit.base.UnitSpec
@@ -41,8 +41,6 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
   }
 }
 
-object UnitViewSpec {
-  val realMessagesApi: MessagesApi = {
-    new GuiceApplicationBuilder().injector().instanceOf(classOf[MessagesApi])
-  }
+object UnitViewSpec extends Injector {
+  val realMessagesApi: MessagesApi = instanceOf[MessagesApi]
 }
