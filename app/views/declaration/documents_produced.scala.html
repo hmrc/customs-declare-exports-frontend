@@ -27,9 +27,7 @@
 
 @(mode: Mode, itemId: String, form: Form[DocumentsProduced], documents: Seq[DocumentsProduced])(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = Title("supplementary.addDocument.title", "supplementary.summary.yourReferences.header")
-) {
+@main_template(title = Title("supplementary.addDocument.title", "supplementary.summary.yourReferences.header")) {
 
     @components.back_link(AdditionalInformationController.displayPage(mode, itemId), mode)
 
@@ -86,16 +84,9 @@
         )
 
         @components.form_fields_wrapper(field = form(documentIdentifierAndPartKey)) {
-
             @components.fields.field_text(
                 field = form(s"$documentIdentifierAndPartKey.$documentIdentifierKey"),
                 label = messages("supplementary.addDocument.documentIdentifier"),
-                labelClass = Some("bold-small")
-            )
-
-            @components.fields.field_text(
-                field = form(s"$documentIdentifierAndPartKey.$documentPartKey"),
-                label = messages("supplementary.addDocument.documentPart"),
                 labelClass = Some("bold-small")
             )
         }

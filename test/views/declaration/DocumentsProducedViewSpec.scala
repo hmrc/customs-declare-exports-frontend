@@ -97,95 +97,60 @@ class DocumentsProducedViewSpec
 
   "Documents Produced View on empty page" should {
 
-    "display page title" in {
+    val view = createView()
 
-      createView().getElementById("title").text() mustBe messages(title)
+    "display page title" in {
+      view.getElementById("title").text() mustBe messages(title)
     }
 
     "display section header" in {
-
-      createView().getElementById("section-header").text() must include(
-        messages("supplementary.summary.yourReferences.header")
-      )
+      view.getElementById("section-header").text() mustBe include(messages(
+        "supplementary.summary.yourReferences.header"
+      ))
     }
 
     "display header with hint" in {
-
-      createView().getElementById("hint").text() must include(messages(hint))
+      view.getElementById("hint").text() must include(messages(hint))
     }
 
     "display empty input with label for Document type code" in {
-
-      val view = createView()
-
       view.getElementById(s"$documentTypeCodeKey-label").text() mustBe messages(documentTypeCode)
       view.getElementById(s"$documentTypeCodeKey").attr("value") mustBe empty
     }
 
     "display empty input with label for Document identifier" in {
-
-      val view = createView()
-
       view.getElementById(s"${documentIdentifierAndPartKey}_$documentIdentifierKey-label").text() mustBe
         messages(documentIdentifier)
 
       view.getElementById(s"${documentIdentifierAndPartKey}_$documentIdentifierKey").attr("value") mustBe empty
     }
 
-    "display empty input with label for Document part" in {
-
-      val view = createView()
-
-      view.getElementById(s"${documentIdentifierAndPartKey}_$documentPartKey-label").text() mustBe
-        messages(documentPart)
-
-      view.getElementById(s"${documentIdentifierAndPartKey}_$documentPartKey").attr("value") mustBe empty
-    }
-
     "display empty input with label for Document status" in {
-
-      val view = createView()
-
       view.getElementById(s"$documentStatusKey-label").text() mustBe messages(documentStatus)
       view.getElementById(s"$documentStatusKey").attr("value") mustBe empty
     }
 
     "display empty input with label for Document status reason" in {
-
-      val view = createView()
-
       view.getElementById(s"$documentStatusReasonKey-label").text() mustBe messages(documentStatusReason)
       view.getElementById(s"$documentStatusReasonKey").attr("value") mustBe empty
     }
 
     "display empty input with label for Issuing Authority Name" in {
-
-      val view = createView()
-
       view.getElementById(s"$issuingAuthorityNameKey-label").text() mustBe messages(issuingAuthorityName)
       view.getElementById(issuingAuthorityNameKey).attr("value") mustBe empty
     }
 
     "display empty input with label for Date of Validity" in {
-
-      val view = createView()
-
       view.getElementById(s"$dateOfValidityKey-label").text() mustBe messages(dateOfValidity)
       view.getElementById(dateOfValidityKey).attr("value") mustBe empty
     }
 
     "display empty input with label for Measurement Unit" in {
-
-      val view = createView()
-
       view.getElementById(s"${documentWriteOffKey}_$measurementUnitKey-label").text() mustBe messages(measurementUnit)
       view.getElementById(s"${documentWriteOffKey}_$measurementUnitKey").attr("value") mustBe empty
     }
 
     "display empty input with label for Document quantity" in {
-
-      val view = createView()
-
       view.getElementById(s"${documentWriteOffKey}_$documentQuantityKey-label").text() mustBe
         messages(documentQuantity)
 
@@ -194,15 +159,13 @@ class DocumentsProducedViewSpec
 
     "display 'Back' button that links to 'Additional Information' page" in {
 
-      val backButton = createView().getElementById("link-back")
+      val backButton = view.getElementById("link-back")
 
       backButton.text() mustBe messages(backCaption)
       backButton.attr("href") must endWith(s"/items/$itemId/additional-information")
     }
 
     "display both 'Add' and 'Save and continue' button on page" in {
-      val view = createView()
-
       val addButton = view.getElementById("add")
       addButton.text() mustBe messages(addCaption)
 
@@ -252,26 +215,6 @@ class DocumentsProducedViewSpec
       view
         .select(s"#error-message-${documentIdentifierAndPartKey}_$documentIdentifierKey-input")
         .text() mustBe messages(documentIdentifierError)
-    }
-
-    "display error for Document part" in {
-
-      val documentsProducedWithIncorrectDocumentPart = correctDocumentsProduced.copy(
-        documentIdentifierAndPart = Some(
-          correctDocumentIdentifierAndPart
-            .copy(documentPart = Some(incorrectDocumentIdentifierAndPart.documentPart.get))
-        )
-      )
-      val view = createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentPart)))
-
-      checkErrorsSummary(view)
-      view must haveFieldErrorLink(
-        s"$documentIdentifierAndPartKey.$documentPartKey",
-        s"#${documentIdentifierAndPartKey}_$documentPartKey"
-      )
-
-      view.select(s"#error-message-${documentIdentifierAndPartKey}_$documentPartKey-input").text() mustBe
-        messages(documentPartError)
     }
 
     "display error for Document Identifier and Part" when {
@@ -479,10 +422,6 @@ class DocumentsProducedViewSpec
         s"$documentIdentifierAndPartKey.$documentIdentifierKey",
         s"#${documentIdentifierAndPartKey}_$documentIdentifierKey"
       )
-      view must haveFieldErrorLink(
-        s"$documentIdentifierAndPartKey.$documentIdentifierKey",
-        s"#${documentIdentifierAndPartKey}_$documentIdentifierKey"
-      )
       view must haveFieldErrorLink(s"$documentStatusKey", s"#$documentStatusKey")
       view must haveFieldErrorLink(s"$documentStatusReasonKey", s"#$documentStatusReasonKey")
       view must haveFieldErrorLink(s"$issuingAuthorityNameKey", s"#$issuingAuthorityNameKey")
@@ -500,8 +439,7 @@ class DocumentsProducedViewSpec
       view
         .select(s"#error-message-${documentIdentifierAndPartKey}_$documentIdentifierKey-input")
         .text() mustBe messages(documentIdentifierError)
-      view.select(s"#error-message-${documentIdentifierAndPartKey}_$documentPartKey-input").text() mustBe
-        messages(documentPartError)
+
       view.select(s"#error-message-$documentStatusKey-input").text() mustBe messages(documentStatusError)
       view.select(s"#error-message-$documentStatusReasonKey-input").text() mustBe messages(documentStatusReasonError)
       view.select(s"#error-message-$issuingAuthorityNameKey-input").text() mustBe
@@ -525,9 +463,6 @@ class DocumentsProducedViewSpec
       view.getElementById(documentTypeCodeKey).attr("value") must equal(data.documentTypeCode.value)
       view.getElementById(s"${documentIdentifierAndPartKey}_$documentIdentifierKey").attr("value") must equal(
         data.documentIdentifierAndPart.value.documentIdentifier.value
-      )
-      view.getElementById(s"${documentIdentifierAndPartKey}_$documentPartKey").attr("value") must equal(
-        data.documentIdentifierAndPart.value.documentPart.value
       )
       view.getElementById(documentStatusKey).attr("value") must equal(data.documentStatus.value)
       view.getElementById(documentStatusReasonKey).attr("value") must equal(data.documentStatusReason.value)
