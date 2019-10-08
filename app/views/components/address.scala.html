@@ -19,10 +19,10 @@
 @import services.view.AutoCompleteItem
 @(form: Form[_], addressPrefix: String = "", addressHeader: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
+<fieldset class="form-field">
 @if(addressHeader.nonEmpty) {
-    <span id="address-header" class="heading-24">@addressHeader</span>
+    <legend id="address-header" class="heading-24">@addressHeader</legend>
 }
-<div class="form-field">
     @components.fields.field_text(
         field = form(s"$addressPrefix.fullName"),
         label = messages("supplementary.address.fullName")
@@ -59,4 +59,4 @@
         'ariaactivedescendant -> "true",
         'otherErrorFields -> Seq("countryCode")
     )
-</div>
+</fieldset>
