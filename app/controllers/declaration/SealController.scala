@@ -159,7 +159,10 @@ class SealController @Inject()(
       val updatedContainers =
         model.containerData
           .map(_.containers)
-          .fold(Seq(container))(_.filterNot(_.id == container.id) :+ container)
+          .fold(Seq(container))(_.map {
+            case c if (c.id == container.id) => container
+            case x                           => x
+          })
 
       model.copy(containerData = Some(TransportInformationContainerData(updatedContainers)))
     })

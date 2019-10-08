@@ -234,7 +234,11 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
       "remove seal confirmation" when {
         "user confirms that they want to remove" in new SetUp {
 
-          withNewCaching(aDeclaration(withContainerData(Container(containerId, Seq(Seal(sealId))))))
+          withNewCaching(
+            aDeclaration(
+              withContainerData(Container(containerId, Seq(Seal(sealId))), Container("containerB", Seq(Seal("sealB"))))
+            )
+          )
           val body = Seq(("yesNo", "Yes"))
 
           val result =
@@ -244,7 +248,10 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
           thePageNavigatedTo mustBe controllers.declaration.routes.SealController
             .displaySealSummary(Mode.Normal, containerId)
 
-          theCacheModelUpdated.containers mustBe Seq(Container(containerId, Seq.empty))
+          theCacheModelUpdated.containers mustBe Seq(
+            Container(containerId, Seq.empty),
+            Container("containerB", Seq(Seal("sealB")))
+          )
         }
 
         "user confirms that they do not want to remove" in new SetUp {
