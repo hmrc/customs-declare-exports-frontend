@@ -78,7 +78,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
     }
 
     "display section header" in {
-      view.getElementById("section-header").text() mustBe "declaration.summary.locations.header"
+      view.getElementById("section-header").text() must include("declaration.summary.locations.header")
     }
 
     "display header" in {

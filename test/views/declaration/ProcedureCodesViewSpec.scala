@@ -58,7 +58,7 @@ class ProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData with Stub
     }
 
     "display section header" in {
-      view.getElementById("section-header").text() mustBe "supplementary.items"
+      view.getElementById("section-header").text() must include("supplementary.items")
     }
 
     "display empty input with label for Procedure Code" in {

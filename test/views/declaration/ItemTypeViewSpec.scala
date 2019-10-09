@@ -82,7 +82,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       }
 
       "display section header" in {
-        view.getElementById("section-header").text() mustBe "supplementary.items"
+        view.getElementById("section-header").text() must include("supplementary.items")
       }
 
       "display empty input with label for CNC" in {

@@ -70,7 +70,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
     }
 
     "display section header" in {
-      view.getElementById("section-header").text() must be("supplementary.consignmentReferences.heading")
+      view.getElementById("section-header").text() must include("supplementary.consignmentReferences.heading")
     }
 
     "display three radio buttons with description (not selected)" in {

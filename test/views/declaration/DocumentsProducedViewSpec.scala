@@ -104,8 +104,8 @@ class DocumentsProducedViewSpec
 
     "display section header" in {
 
-      createView().getElementById("section-header").text() mustBe messages(
-        "supplementary.summary.yourReferences.header"
+      createView().getElementById("section-header").text() must include(
+        messages("supplementary.summary.yourReferences.header")
       )
     }
 

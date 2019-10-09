@@ -54,7 +54,7 @@ class OfficeOfExitSupplementaryViewSpec extends UnitViewSpec with ExportsTestDat
     }
 
     "display section header" in {
-      view.getElementById("section-header").text() mustBe "declaration.summary.locations.header"
+      view.getElementById("section-header").text() must include("declaration.summary.locations.header")
     }
 
     "display empty input with label for Country" in {

@@ -70,8 +70,8 @@ class ConsignmentReferencesViewSpec
 
     "display section header" in {
 
-      createView().getElementById("section-header").text() mustBe messages(
-        "supplementary.consignmentReferences.heading"
+      createView().getElementById("section-header").text() must include(
+        messages("supplementary.consignmentReferences.heading")
       )
     }
 

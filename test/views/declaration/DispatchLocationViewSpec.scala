@@ -62,7 +62,9 @@ class DispatchLocationViewSpec
 
     "display section header" in {
 
-      createView().getElementById("section-header").text() mustBe messages("declaration.summary.locations.header")
+      createView().getElementById("section-header").text() must include(
+        messages("declaration.summary.locations.header")
+      )
     }
 
     "display two radio buttons with description (not selected)" in {

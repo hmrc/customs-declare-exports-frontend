@@ -83,7 +83,7 @@ class StartViewSpec extends UnitViewSpec with Stubs {
     }
 
     "display section header" in {
-      view.getElementById("section-header").text() mustBe "startPage.title.sectionHeader"
+      view.getElementById("section-header").text() must include("startPage.title.sectionHeader")
     }
 
     "display header" in {

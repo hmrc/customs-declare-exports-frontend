@@ -63,7 +63,7 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
     }
 
     "display section header" in {
-      view.getElementById("section-header").text() mustBe "declaration.fiscalInformation.header"
+      view.getElementById("section-header").text() must include("declaration.fiscalInformation.header")
     }
 
     "display two radio buttons with description (not selected)" in {

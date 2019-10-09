@@ -67,7 +67,7 @@ class AdditionalInformationViewSpec
 
     "display section header" in {
 
-      createView().getElementById("section-header").text() mustBe "supplementary.summary.yourReferences.header"
+      createView().getElementById("section-header").text() must include("supplementary.summary.yourReferences.header")
     }
 
     "display empty input with label for Union code" in {
