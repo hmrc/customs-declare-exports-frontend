@@ -22,7 +22,7 @@
 
 @(submission: Submission, errors: Seq[RejectionReason])(implicit request: Request[_], messages: Messages)
 
-@main_template(Title("rejected.notification.title")) {
+@main_template(title = Title("rejected.notification.title"), fullWidth = true) {
 
     @components.back_link(routes.SubmissionsController.displayListOfSubmissions())
 
@@ -36,14 +36,18 @@
 
     <table>
         <tr class="table-row">
+            <th class="table-cell table-head">@messages("rejected.notification.header.fieldName")</th>
             <th class="table-cell table-head">@messages("rejected.notification.header.errorCode")</th>
             <th class="table-cell table-head">@messages("rejected.notification.header.errorDescription")</th>
         </tr>
 
-        @for(error <- errors) {
-          <tr class="table-row">
-            <th class="table-cell">@error.code</th>
-            <th class="table-cell">@error.description</th>
+        @for((error, index) <- errors.zipWithIndex) {
+          <tr class="table-row" id="rejected_notifications-row-@index">
+            <th class="table-cell table-head" id="rejected_notifications-row-@index-name">
+                @error.pointer.map(_.pattern).map(pattern => "field." + pattern).filter(messages.isDefinedAt).map(messages(_))
+            </th>
+            <th class="table-cell" id="rejected_notifications-row-@index-code">@error.code</th>
+            <th class="table-cell" id="rejected_notifications-row-@index-description">@error.description</th>
           </tr>
         }
     </table>

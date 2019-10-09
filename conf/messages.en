@@ -847,9 +847,12 @@ legal.declaration.confirmation.missing=You must confirm this information is corr
 
 rejected.notification.ucr = UCR {0}
 rejected.notification.title = There are errors in this declaration
+rejected.notification.header.fieldName = Name
 rejected.notification.header.errorCode = Error code
 rejected.notification.header.errorDescription = Description
 rejected.notification.information = You will need to review your answers and fix the errors before you can resubmit.
 rejected.notification.continue = Continue declaration (opens in a new window)
 
 summary.amend.information = You will start at the beginning of the declaration
+
+field.declaration.consignmentReferences.lrn=LRN

@@ -19,13 +19,14 @@ package services.model
 import java.io.File
 
 import com.github.tototoshi.csv._
+import models.Pointer
 import models.declaration.notifications.Notification
 import play.api.Logger
 import play.api.libs.json.{Json, OFormat}
 
 import scala.io.Source
 
-case class RejectionReason(code: String, description: String)
+case class RejectionReason(code: String, description: String, pointer: Option[Pointer])
 
 object RejectionReason {
 
@@ -34,7 +35,7 @@ object RejectionReason {
   implicit val format: OFormat[RejectionReason] = Json.format[RejectionReason]
 
   def apply(list: List[String]): RejectionReason = list match {
-    case code :: description :: Nil => RejectionReason(code, description)
+    case code :: description :: Nil => RejectionReason(code, description, None)
     case error =>
       logger.warn("Incorrect error: " + error)
       throw new IllegalArgumentException("Error has incorrect structure")
@@ -53,17 +54,12 @@ object RejectionReason {
     allRejectedErrors.find(_.code == errorCode).map(_.description).getOrElse("Unknown error")
 
   def fromNotifications(notifications: Seq[Notification]): Seq[RejectionReason] = {
-
     val rejectionNotification = notifications.find(_.isStatusRejected)
 
-    val errorCodes = rejectionNotification.map { notification =>
+    rejectionNotification.map { notification =>
       notification.errors.map { error =>
-        error.validationCode
+        RejectionReason(error.validationCode, getErrorDescription(error.validationCode), error.pointer)
       }
     }.getOrElse(Seq.empty)
-
-    errorCodes.map { code =>
-      RejectionReason(code, getErrorDescription(code))
-    }
   }
 }

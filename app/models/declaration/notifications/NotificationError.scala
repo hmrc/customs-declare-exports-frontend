@@ -16,9 +16,10 @@
 
 package models.declaration.notifications
 
+import models.Pointer
 import play.api.libs.json.Json
 
-case class NotificationError(validationCode: String, pointers: Seq[ErrorPointer])
+case class NotificationError(validationCode: String, pointer: Option[Pointer])
 
 object NotificationError {
   implicit val format = Json.format[NotificationError]

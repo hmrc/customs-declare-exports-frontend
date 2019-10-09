@@ -20,7 +20,8 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 import base.TestHelper.createRandomAlphanumericString
-import models.declaration.notifications.{ErrorPointer, Notification, NotificationError}
+import models.Pointer
+import models.declaration.notifications.{Notification, NotificationError}
 import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
 import models.declaration.submissions.{Action, Submission, SubmissionStatus}
 import org.scalatest.{MustMatchers, WordSpec}
@@ -226,7 +227,7 @@ object SubmissionDisplayHelperSpec {
   val errors = Seq(
     NotificationError(
       validationCode = "CDS12056",
-      pointers = Seq(ErrorPointer(documentSectionCode = "42A", tagId = None))
+      pointer = Some(Pointer("42A.26B"))
     )
   )
 

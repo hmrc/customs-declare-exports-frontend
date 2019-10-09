@@ -18,6 +18,7 @@ package unit.services.model
 
 import java.time.LocalDateTime
 
+import models.Pointer
 import models.declaration.notifications.{Notification, NotificationError}
 import models.declaration.submissions.SubmissionStatus
 import services.model.RejectionReason
@@ -35,7 +36,7 @@ class RejectionReasonSpec extends UnitSpec {
       val errorDescription = "Error description"
       val error = List(errorCode, errorDescription)
 
-      RejectionReason.apply(error) mustBe RejectionReason(errorCode, errorDescription)
+      RejectionReason.apply(error) mustBe RejectionReason(errorCode, errorDescription, None)
     }
 
     "throw an exception when input is incorrect" in {
@@ -50,16 +51,17 @@ class RejectionReasonSpec extends UnitSpec {
 
     "contain correct values" in {
 
-      allRejectedErrors must contain(RejectionReason("CDS40049", "Quota exhausted."))
-      allRejectedErrors must contain(RejectionReason("CDS40051", "Quota blocked."))
+      allRejectedErrors must contain(RejectionReason("CDS40049", "Quota exhausted.", None))
+      allRejectedErrors must contain(RejectionReason("CDS40051", "Quota blocked.", None))
       allRejectedErrors must contain(
         RejectionReason(
           "CDS12087",
-          "Relation error: VAT Declaring Party Identification (D.E. 3/40), where mandated, must be supplied at either header or item."
+          "Relation error: VAT Declaring Party Identification (D.E. 3/40), where mandated, must be supplied at either header or item.",
+          None
         )
       )
       allRejectedErrors must contain(
-        RejectionReason("CDS12108", "Obligation error: DUCR is mandatory on an Export Declaration.")
+        RejectionReason("CDS12108", "Obligation error: DUCR is mandatory on an Export Declaration.", None)
       )
     }
 
@@ -70,7 +72,7 @@ class RejectionReasonSpec extends UnitSpec {
           |- The AdditionalMessage.declarationReference must refer to an existing declaration (Declaration.reference),
           |- have been accepted,
           |- not be invalidated.""".stripMargin
-      val expectedRejectionReason = RejectionReason("CDS12015", expectedMessages)
+      val expectedRejectionReason = RejectionReason("CDS12015", expectedMessages, None)
 
       allRejectedErrors must contain(expectedRejectionReason)
     }
@@ -102,15 +104,19 @@ class RejectionReasonSpec extends UnitSpec {
 
       "list contains rejected notification" in {
 
-        val firstError = NotificationError("CDS12016", Seq.empty)
-        val secondError = NotificationError("CDS12022", Seq.empty)
+        val firstError = NotificationError("CDS12016", Some(Pointer("declaration.consignmentReferences.lrn")))
+        val secondError = NotificationError("CDS12022", None)
         val notificationErrors = Seq(firstError, secondError)
         val rejectionNotification =
           Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, notificationErrors, "")
         val notifications = Seq(nonRejectionNotification, rejectionNotification)
-        val firstExpectedRejectionReason = RejectionReason("CDS12016", "Date error: Date of acceptance is not allowed.")
+        val firstExpectedRejectionReason = RejectionReason(
+          "CDS12016",
+          "Date error: Date of acceptance is not allowed.",
+          Some(Pointer("declaration.consignmentReferences.lrn"))
+        )
         val secondExpectedRejectionReason =
-          RejectionReason("CDS12022", "Relation error: The sequence number is larger than the total.")
+          RejectionReason("CDS12022", "Relation error: The sequence number is larger than the total.", None)
 
         fromNotifications(notifications) mustBe Seq(firstExpectedRejectionReason, secondExpectedRejectionReason)
       }
