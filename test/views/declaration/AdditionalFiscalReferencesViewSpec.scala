@@ -53,7 +53,7 @@ class AdditionalFiscalReferencesViewSpec
     }
 
     "display header" in {
-      view.getElementById("section-header").text() mustBe "declaration.fiscalInformation.header"
+      view.getElementById("section-header").text() must include("declaration.fiscalInformation.header")
     }
 
     "display country input" in {

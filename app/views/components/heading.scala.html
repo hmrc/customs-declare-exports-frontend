@@ -18,8 +18,10 @@
 
 <header class="page-heading">
     @if(sectionHeader.nonEmpty) {
-        <span class="visuallyhidden">This section is </span>
-        <span id="section-header" class="heading-secondary">@sectionHeader</span>
+        <p id="section-header" class="heading-secondary">
+            <span class="visuallyhidden">This section is </span>
+            @sectionHeader
+        </p>
     }
 
     @if(title.nonEmpty) {

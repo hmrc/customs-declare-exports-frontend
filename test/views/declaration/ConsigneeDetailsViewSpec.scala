@@ -48,7 +48,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with ConsigneeDetailsMessage
 
       val view = createView()
 
-      view.getElementById("section-header").text() mustBe messages("supplementary.summary.parties.header")
+      view.getElementById("section-header").text() must include(messages("supplementary.summary.parties.header"))
     }
 
     "display empty input with label for EORI" in {

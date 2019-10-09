@@ -74,7 +74,9 @@ class DeclarationAdditionalActorsViewSpec
 
     "display section header" in {
 
-      createView().getElementById("section-header").text() mustBe messages("supplementary.summary.parties.header")
+      createView().getElementById("section-header").text() must include(
+        messages("supplementary.summary.parties.header")
+      )
     }
 
     "display empty input with label for EORI" in {

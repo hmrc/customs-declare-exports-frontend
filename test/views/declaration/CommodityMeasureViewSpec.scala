@@ -68,7 +68,7 @@ class CommodityMeasureViewSpec
 
     "display section header" in {
 
-      createView().getElementById("section-header").text() mustBe messages("supplementary.items")
+      createView().getElementById("section-header").text() must include(messages("supplementary.items"))
     }
 
     "display empty input with label for supplementary units" in {

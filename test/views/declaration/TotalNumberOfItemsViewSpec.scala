@@ -65,7 +65,7 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
     }
 
     "display section header" in {
-      view.getElementById("section-header").text() must be("supplementary.items")
+      view.getElementById("section-header").text() must include("supplementary.items")
     }
 
     "display header" in {
