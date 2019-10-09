@@ -79,9 +79,7 @@ class DocumentsProducedViewSpec
     }
 
     "display section header" in {
-      view.getElementById("section-header").text() must include(
-        "supplementary.summary.yourReferences.header"
-      )
+      view.getElementById("section-header").text() must include("supplementary.summary.yourReferences.header")
     }
 
     "display header with hint" in {
