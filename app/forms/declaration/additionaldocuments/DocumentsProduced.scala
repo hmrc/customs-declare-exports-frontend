@@ -24,7 +24,7 @@ import utils.validators.forms.FieldValidator._
 
 case class DocumentsProduced(
   documentTypeCode: Option[String],
-  documentIdentifierAndPart: Option[DocumentIdentifierAndPart],
+  documentIdentifier: Option[String],
   documentStatus: Option[String],
   documentStatusReason: Option[String],
   issuingAuthorityName: Option[String],
@@ -38,7 +38,7 @@ case class DocumentsProduced(
   def isDefined: Boolean =
     List(
       documentTypeCode,
-      documentIdentifierAndPart,
+      documentIdentifier,
       documentStatus,
       documentStatusReason,
       issuingAuthorityName,
@@ -56,7 +56,7 @@ object DocumentsProduced {
   private val issuingAuthorityNameMaxLength = 70
 
   val documentTypeCodeKey = "documentTypeCode"
-  val documentIdentifierAndPartKey = "documentIdentifierAndPart"
+  val documentIdentifierKey = "documentIdentifier"
   val documentStatusKey = "documentStatus"
   val documentStatusReasonKey = "documentStatusReason"
   val issuingAuthorityNameKey = "issuingAuthorityName"
@@ -68,7 +68,12 @@ object DocumentsProduced {
       documentTypeCodeKey -> optional(
         text().verifying("supplementary.addDocument.documentTypeCode.error", hasSpecificLength(4) and isAlphanumeric)
       ),
-      documentIdentifierAndPartKey -> optional(DocumentIdentifierAndPart.mapping),
+      documentIdentifierKey -> optional(
+        text().verifying(
+          "supplementary.addDocument.documentIdentifier.error",
+          nonEmpty and isAlphanumericWithAllowedSpecialCharacters and noLongerThan(35)
+        )
+      ),
       documentStatusKey -> optional(
         text().verifying("supplementary.addDocument.documentStatus.error", noLongerThan(2) and isAllCapitalLetter)
       ),

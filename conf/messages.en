@@ -449,9 +449,6 @@ supplementary.addDocument.documentTypeCode.error = Incorrect document type code
 supplementary.addDocument.documentIdentifier = Document identifier
 supplementary.addDocument.item.documentIdentifier = 2/3 Document identifier
 supplementary.addDocument.documentIdentifier.error = Incorrect document identifier
-supplementary.addDocument.documentPart = Document part
-supplementary.addDocument.item.documentPart = 2/3 Document part
-supplementary.addDocument.documentPart.error = Incorrect document part
 supplementary.addDocument.documentStatus = Document status
 supplementary.addDocument.item.documentStatus = 2/3 Document status
 supplementary.addDocument.documentStatus.error = Incorrect document status
@@ -472,7 +469,6 @@ supplementary.addDocument.documentQuantity.error = Quantity cannot be negative a
 supplementary.addDocument.error.maximumAmount = You cannot have more than 99 documents
 supplementary.addDocument.error.duplicated = You cannot add an already existent document
 supplementary.addDocument.error.notDefined = Please provide some document information
-supplementary.addDocument.error.documentIdentifierAndPart = Please provide both Document Identifier and Document Part
 supplementary.addDocument.error.measurementUnitAndQuantity = Please provide both Measurement Unit and Document Quantity
 
 supplementary.items = Items

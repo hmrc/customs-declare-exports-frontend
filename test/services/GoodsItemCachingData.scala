@@ -19,7 +19,7 @@ package services
 import base.TestHelper._
 import forms.common.DateSpec.correctDate
 import forms.declaration._
-import forms.declaration.additionaldocuments.{DocumentIdentifierAndPart, DocumentWriteOff, DocumentsProduced}
+import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
 
 import scala.util.Random
@@ -51,17 +51,12 @@ trait GoodsItemCachingData {
 
   def createDocsProduced(): DocumentsProduced = DocumentsProduced(
     documentTypeCode = Some(createRandomAlphanumericString(4)),
-    documentIdentifierAndPart = Some(createDocumentIdentifierAndPart()),
+    documentIdentifier = Some(createRandomAlphanumericString(35)),
     documentStatus = Some(createRandomAlphanumericString(2)),
     documentStatusReason = Some(createRandomAlphanumericString(35)),
     issuingAuthorityName = Some(createRandomAlphanumericString(70)),
     dateOfValidity = Some(correctDate),
     documentWriteOff = Some(createDocumentWriteOff())
-  )
-
-  private def createDocumentIdentifierAndPart(): DocumentIdentifierAndPart = DocumentIdentifierAndPart(
-    documentIdentifier = Some(createRandomAlphanumericString(30)),
-    documentPart = Some(createRandomAlphanumericString(5))
   )
 
   private def createDocumentWriteOff(): DocumentWriteOff = DocumentWriteOff(

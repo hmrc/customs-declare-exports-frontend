@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      0.7
+// @version      0.8
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -217,8 +217,7 @@ function completePage() {
     }
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/add-document')) {
         document.getElementById('documentTypeCode').value ='C501';
-        document.getElementById('documentIdentifierAndPart_documentIdentifier').value ='GBAEOC71757250450281';
-        document.getElementById('documentIdentifierAndPart_documentPart').value ='1';
+        document.getElementById('documentIdentifier').value ='GBAEOC71757250450281';
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/warehouse')) {

@@ -18,4 +18,4 @@
 
 @(value: Option[Any] = None, label: String = "site.remove", buttonClass: String = "button--secondary")(implicit messages: Messages)
 
-<button id="remove" class="@buttonClass" name="@Remove.toString" @value.map{v => value="@{v.toString}"}>@messages(label)</button>
+<button class="remove @buttonClass" name="@Remove.toString" @value.map{v => value="@{v.toString}"}>@messages(label)</button>
