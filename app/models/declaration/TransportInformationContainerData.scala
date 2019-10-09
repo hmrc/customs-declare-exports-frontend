@@ -18,7 +18,20 @@ package models.declaration
 
 import play.api.libs.json.Json
 
-case class TransportInformationContainerData(containers: Seq[Container])
+case class TransportInformationContainerData(containers: Seq[Container]) {
+
+  def addOrUpdate(updatedContainer: Container): Seq[Container] =
+    if (containers.isEmpty) {
+      Seq(updatedContainer)
+    } else if (!containers.exists(_.id == updatedContainer.id)) {
+      containers :+ updatedContainer
+    } else {
+      containers.map {
+        case container if updatedContainer.id == container.id => updatedContainer
+        case otherContainer                                   => otherContainer
+      }
+    }
+}
 
 object TransportInformationContainerData {
   implicit val format = Json.format[TransportInformationContainerData]
