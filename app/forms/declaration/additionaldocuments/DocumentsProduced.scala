@@ -71,7 +71,7 @@ object DocumentsProduced {
       documentIdentifierKey -> optional(
         text().verifying(
           "supplementary.addDocument.documentIdentifier.error",
-          nonEmpty and isAlphanumeric and noLongerThan(35)
+          nonEmpty and isAlphanumericWithAllowedSpecialCharacters and noLongerThan(35)
         )
       ),
       documentStatusKey -> optional(
