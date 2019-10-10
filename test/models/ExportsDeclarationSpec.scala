@@ -28,11 +28,8 @@ class ExportsDeclarationSpec extends WordSpec with MustMatchers with ExportsDecl
     val clock = Clock.fixed(currentTime, ZoneOffset.UTC)
 
     "override required fields" in {
-      val declaration = aDeclaration(
-        withStatus(DeclarationStatus.COMPLETE),
-        withCreatedDate(LocalDate.of(2019, 1, 1)),
-        withUpdateDate(LocalDate.of(2019, 1, 1))
-      )
+      val declaration =
+        aDeclaration(withStatus(DeclarationStatus.COMPLETE), withCreatedDate(LocalDate.of(2019, 1, 1)), withUpdateDate(LocalDate.of(2019, 1, 1)))
       val amendedDeclaration = declaration.amend()(clock)
       amendedDeclaration.status mustBe DeclarationStatus.DRAFT
       amendedDeclaration.createdDateTime mustBe currentTime

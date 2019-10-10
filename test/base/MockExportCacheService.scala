@@ -43,14 +43,12 @@ trait MockExportCacheService extends MockitoSugar with ExportsDeclarationBuilder
       .thenReturn(Future.successful(Some(dataToReturn)))
   }
 
-  def withCreateResponse(declaration: ExportsDeclaration): Unit = {
+  def withCreateResponse(declaration: ExportsDeclaration): Unit =
     when(mockExportsCacheService.create(any[ExportsDeclarationExchange])(any()))
       .thenReturn(Future.successful(declaration))
-  }
 
-  def withNoDeclaration(): Unit = {
+  def withNoDeclaration(): Unit =
     when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(None))
-  }
 
   protected def theCacheModelUpdated: ExportsDeclaration = {
     val captor = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
