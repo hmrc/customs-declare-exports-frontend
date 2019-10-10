@@ -22,11 +22,12 @@ import com.github.tototoshi.csv._
 import models.Pointer
 import models.declaration.notifications.Notification
 import play.api.Logger
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.{Json, OFormat}
 
 import scala.io.Source
 
-case class RejectionReason(code: String, description: String, pointer: Option[Pointer])
+case class RejectionReason(code: String, description: String, pointer: Option[String])
 
 object RejectionReason {
 
@@ -53,12 +54,12 @@ object RejectionReason {
   def getErrorDescription(errorCode: String): String =
     allRejectedErrors.find(_.code == errorCode).map(_.description).getOrElse("Unknown error")
 
-  def fromNotifications(notifications: Seq[Notification]): Seq[RejectionReason] = {
+  def fromNotifications(notifications: Seq[Notification])(implicit messages: Messages): Seq[RejectionReason] = {
     val rejectionNotification = notifications.find(_.isStatusRejected)
 
     rejectionNotification.map { notification =>
       notification.errors.map { error =>
-        RejectionReason(error.validationCode, getErrorDescription(error.validationCode), error.pointer)
+        RejectionReason(error.validationCode, getErrorDescription(error.validationCode), error.pointer.map(_.pattern).filter(messages.isDefinedAt))
       }
     }.getOrElse(Seq.empty)
   }

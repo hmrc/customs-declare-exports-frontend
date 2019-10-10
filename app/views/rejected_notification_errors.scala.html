@@ -44,7 +44,7 @@
         @for((error, index) <- errors.zipWithIndex) {
           <tr class="table-row" id="rejected_notifications-row-@index">
             <th class="table-cell table-head" id="rejected_notifications-row-@index-name">
-                @error.pointer.map(_.pattern).map(pattern => "field." + pattern).filter(messages.isDefinedAt).map(messages(_))
+                @error.pointer.map(messages(_))
             </th>
             <th class="table-cell" id="rejected_notifications-row-@index-code">@error.code</th>
             <th class="table-cell" id="rejected_notifications-row-@index-description">@error.description</th>
