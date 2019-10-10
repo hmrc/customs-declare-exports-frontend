@@ -35,21 +35,25 @@
     <span id="information">@messages("rejected.notification.information")</span>
 
     <table>
-        <tr class="table-row">
-            <th class="table-cell table-head">@messages("rejected.notification.header.fieldName")</th>
-            <th class="table-cell table-head">@messages("rejected.notification.header.errorCode")</th>
-            <th class="table-cell table-head">@messages("rejected.notification.header.errorDescription")</th>
-        </tr>
+        <thead>
+            <tr class="table-row">
+                <th class="table-cell table-head rejected-field-name">@messages("rejected.notification.header.fieldName")</th>
+                <th class="table-cell table-head rejected-error-description">@messages("rejected.notification.header.errorDescription")</th>
+                <th class="table-cell table-head rejected-error-code">@messages("rejected.notification.header.errorCode")</th>
+            </tr>
+        </thead>
 
-        @for((error, index) <- errors.zipWithIndex) {
-          <tr class="table-row" id="rejected_notifications-row-@index">
-            <th class="table-cell table-head" id="rejected_notifications-row-@index-name">
-                @error.pointer.map(messages(_))
-            </th>
-            <th class="table-cell" id="rejected_notifications-row-@index-code">@error.code</th>
-            <th class="table-cell" id="rejected_notifications-row-@index-description">@error.description</th>
-          </tr>
-        }
+        <tbody>
+            @for((error, index) <- errors.zipWithIndex) {
+              <tr class="table-row" id="rejected_notifications-row-@index">
+                <th class="table-cell table-head rejected-field-name" id="rejected_notifications-row-@index-name">
+                    @error.pointer.map(messages(_))
+                </th>
+                <td class="table-cell rejected-error-description" id="rejected_notifications-row-@index-description">@error.description</td>
+                <td class="table-cell rejected-error-code" id="rejected_notifications-row-@index-code">@error.code</td>
+              </tr>
+            }
+        </tbody>
     </table>
 
     <br/>
