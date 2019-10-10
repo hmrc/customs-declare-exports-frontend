@@ -77,15 +77,18 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
     }
 
     "must contain notifications" when {
-      val reason = RejectionReason("code", "description", Some("declaration.consignmentReferences.lrn"))
+      val reason =
+        RejectionReason("rejectionCode", "rejectionDescription", Some("declaration.consignmentReferences.lrn"))
 
       "pointer key is known" in {
         val doc: Document = view(Seq(reason))
 
         doc must containElementWithID("rejected_notifications-row-0")
-        doc.getElementById("rejected_notifications-row-0-name").text() mustBe messages
-        doc.getElementById("rejected_notifications-row-0-code").text() mustBe "code1"
-        doc.getElementById("rejected_notifications-row-0-description").text() mustBe "description1"
+        doc.getElementById("rejected_notifications-row-0-name").text() mustBe messages(
+          "declaration.consignmentReferences.lrn"
+        )
+        doc.getElementById("rejected_notifications-row-0-code").text() mustBe "rejectionCode"
+        doc.getElementById("rejected_notifications-row-0-description").text() mustBe "rejectionDescription"
       }
     }
 
