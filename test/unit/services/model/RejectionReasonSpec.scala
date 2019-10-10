@@ -99,7 +99,8 @@ class RejectionReasonSpec extends UnitSpec {
 
   "Map from Notifications" should {
     "map to Rejected Reason" when {
-      val nonRejectionNotification = Notification("convId", "mrn", LocalDateTime.now(), SubmissionStatus.ACCEPTED, Seq.empty, "")
+      val nonRejectionNotification =
+        Notification("convId", "mrn", LocalDateTime.now(), SubmissionStatus.ACCEPTED, Seq.empty, "")
 
       "list is empty" in {
         fromNotifications(Seq.empty)(messages) mustBe Seq.empty
@@ -113,41 +114,32 @@ class RejectionReasonSpec extends UnitSpec {
         "pointer is known" in {
           given(messages.isDefinedAt(anyString())).willReturn(true)
           val error = NotificationError("CDS12016", Some(Pointer("x.0.z")))
-          val notification = Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, Seq(error), "")
+          val notification =
+            Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, Seq(error), "")
 
           fromNotifications(Seq(notification))(messages) mustBe Seq(
-            RejectionReason(
-              "CDS12016",
-              "Date error: Date of acceptance is not allowed.",
-              Some("x.$.z")
-            )
+            RejectionReason("CDS12016", "Date error: Date of acceptance is not allowed.", Some("x.$.z"))
           )
         }
 
         "pointer is unknown" in {
           given(messages.isDefinedAt(anyString())).willReturn(false)
           val error = NotificationError("CDS12016", Some(Pointer("x.0.z")))
-          val notification = Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, Seq(error), "")
+          val notification =
+            Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, Seq(error), "")
 
           fromNotifications(Seq(notification))(messages) mustBe Seq(
-            RejectionReason(
-              "CDS12016",
-              "Date error: Date of acceptance is not allowed.",
-              None
-            )
+            RejectionReason("CDS12016", "Date error: Date of acceptance is not allowed.", None)
           )
         }
 
-        "pointer is empty"  in {
-          val error = NotificationError("CDS12022", None)
-          val notification = Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, Seq(error), "")
+        "pointer is empty" in {
+          val error = NotificationError("CDS12016", None)
+          val notification =
+            Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, Seq(error), "")
 
           fromNotifications(Seq(notification))(messages) mustBe Seq(
-            RejectionReason(
-              "CDS12016",
-              "Date error: Date of acceptance is not allowed.",
-              None
-            )
+            RejectionReason("CDS12016", "Date error: Date of acceptance is not allowed.", None)
           )
         }
       }

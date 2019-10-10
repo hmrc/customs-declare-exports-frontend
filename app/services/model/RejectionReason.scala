@@ -59,7 +59,11 @@ object RejectionReason {
 
     rejectionNotification.map { notification =>
       notification.errors.map { error =>
-        RejectionReason(error.validationCode, getErrorDescription(error.validationCode), error.pointer.map(_.pattern).filter(messages.isDefinedAt))
+        RejectionReason(
+          error.validationCode,
+          getErrorDescription(error.validationCode),
+          error.pointer.map(_.pattern).filter(messages.isDefinedAt)
+        )
       }
     }.getOrElse(Seq.empty)
   }
