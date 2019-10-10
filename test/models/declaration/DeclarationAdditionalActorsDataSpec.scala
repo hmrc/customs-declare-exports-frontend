@@ -20,9 +20,7 @@ import forms.declaration.DeclarationAdditionalActorsSpec._
 import play.api.libs.json.{JsArray, JsObject, JsValue}
 
 object DeclarationAdditionalActorsDataSpec {
-  val correctAdditionalActorsData = DeclarationAdditionalActorsData(
-    Seq(correctAdditionalActors1, correctAdditionalActors2)
-  )
+  val correctAdditionalActorsData = DeclarationAdditionalActorsData(Seq(correctAdditionalActors1, correctAdditionalActors2))
 
   val correctAdditionalActorsDataJSON: JsValue = JsObject(Map("actors" -> JsArray(Seq(correctAdditionalActorsJSON))))
   val emptyAdditionalActorsDataJSON = JsObject(Map("actors" -> JsArray(Seq(emptyAdditionalActorsJSON))))

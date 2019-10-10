@@ -53,20 +53,14 @@ class DeclarantDetailsController @Inject()(
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[DeclarantDetails]) =>
-          Future.successful(BadRequest(declarantDetailsPage(mode, formWithErrors))),
+        (formWithErrors: Form[DeclarantDetails]) => Future.successful(BadRequest(declarantDetailsPage(mode, formWithErrors))),
         form =>
           updateCache(form)
-            .map(
-              _ =>
-                navigator.continueTo(controllers.declaration.routes.RepresentativeDetailsController.displayPage(mode))
-          )
+            .map(_ => navigator.continueTo(controllers.declaration.routes.RepresentativeDetailsController.displayPage(mode)))
       )
   }
 
-  private def updateCache(
-    formData: DeclarantDetails
-  )(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+  private def updateCache(formData: DeclarantDetails)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
       val updatedParties = model.parties.copy(declarantDetails = Some(formData))
       model.copy(parties = updatedParties)

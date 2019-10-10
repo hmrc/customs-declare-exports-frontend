@@ -229,9 +229,7 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
 
       "item type has been removed and there is exisitng data in cache" in {
 
-        withNewCaching(
-          aDeclaration(withItem(anItem(withItemId(itemId), withItemType(taricAdditionalCodes = Seq("1234")))))
-        )
+        withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId), withItemType(taricAdditionalCodes = Seq("1234"))))))
 
         val removeAction = (Remove.toString, "taricAdditionalCode_0")
 

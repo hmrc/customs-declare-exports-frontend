@@ -204,13 +204,8 @@ object AddressSpec {
 
   import play.api.libs.json._
 
-  val correctAddress = Address(
-    fullName = "Full Name",
-    addressLine = "Address Line",
-    townOrCity = "Town or City",
-    postCode = "AB12 34CD",
-    country = "Poland"
-  )
+  val correctAddress =
+    Address(fullName = "Full Name", addressLine = "Address Line", townOrCity = "Town or City", postCode = "AB12 34CD", country = "Poland")
 
   val incorrectAddress = Address(
     fullName = "nX9KuS2J6Ee1ATbgbcZFaFOCHI1t8RJnNfbU0dbPQAK4w0q6PdzuZIyxcXziSbUBzizlmi1",
@@ -220,13 +215,8 @@ object AddressSpec {
     country = "abc"
   )
 
-  val addressWithEmptyFullname = Address(
-    fullName = "",
-    addressLine = "Address Line",
-    townOrCity = "Town or City",
-    postCode = "AB12 34CD",
-    country = "Poland"
-  )
+  val addressWithEmptyFullname =
+    Address(fullName = "", addressLine = "Address Line", townOrCity = "Town or City", postCode = "AB12 34CD", country = "Poland")
 
   val emptyAddress = Address("", "", "", "", "")
 
@@ -249,11 +239,6 @@ object AddressSpec {
     townOrCity: String = "",
     postCode: String = "",
     country: String = ""
-  ): Map[String, String] = Map(
-    "fullName" -> fullName,
-    "addressLine" -> addressLine,
-    "townOrCity" -> townOrCity,
-    "postCode" -> postCode,
-    "country" -> country
-  )
+  ): Map[String, String] =
+    Map("fullName" -> fullName, "addressLine" -> addressLine, "townOrCity" -> townOrCity, "postCode" -> postCode, "country" -> country)
 }

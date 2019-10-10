@@ -28,9 +28,7 @@ class NotEligibleControllerSpec extends ControllerSpec {
     val notEligiblePage = new not_eligible(mainTemplate)
 
     val controller =
-      new NotEligibleController(mockAuthAction, mockJourneyAction, stubMessagesControllerComponents(), notEligiblePage)(
-        ec
-      )
+      new NotEligibleController(mockAuthAction, mockJourneyAction, stubMessagesControllerComponents(), notEligiblePage)(ec)
 
     authorizedUser()
     withNewCaching(aDeclaration(withChoice(SupplementaryDec)))

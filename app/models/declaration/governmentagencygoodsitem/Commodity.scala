@@ -25,10 +25,6 @@ case class Commodity(
 
 case class DangerousGoods(undgid: Option[String] = None)
 
-case class GoodsMeasure(
-  grossMassMeasure: Option[Measure] = None,
-  netWeightMeasure: Option[Measure] = None,
-  tariffQuantity: Option[Measure] = None
-)
+case class GoodsMeasure(grossMassMeasure: Option[Measure] = None, netWeightMeasure: Option[Measure] = None, tariffQuantity: Option[Measure] = None)
 
 case class Measure(unitCode: Option[String] = None, value: Option[BigDecimal] = None)

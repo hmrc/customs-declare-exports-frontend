@@ -34,11 +34,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
   private val page = new goods_location(mainTemplate)
   private val form: Form[GoodsLocation] = GoodsLocation.form()
-  private def createView(
-    mode: Mode = Mode.Normal,
-    form: Form[GoodsLocation] = form,
-    messages: Messages = stubMessages()
-  ): Document =
+  private def createView(mode: Mode = Mode.Normal, form: Form[GoodsLocation] = form, messages: Messages = stubMessages()): Document =
     page(mode, form)(journeyRequest(), messages)
 
   "Location View on empty page" should {
@@ -133,9 +129,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       val backButton = view.getElementById("link-back")
 
       backButton.text() mustBe "site.back"
-      backButton.getElementById("link-back") must haveHref(
-        controllers.declaration.routes.DestinationCountriesController.displayPage(Mode.Normal)
-      )
+      backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.DestinationCountriesController.displayPage(Mode.Normal))
     }
 
     "display 'Save and continue' button" in {
@@ -251,18 +245,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
     "display error for incorrect Additional Identifier" in {
 
       val form = GoodsLocation.form
-        .fillAndValidate(
-          GoodsLocation(
-            "Poland",
-            "t",
-            "t",
-            Some("TST"),
-            Some(TestHelper.createRandomAlphanumericString(33)),
-            None,
-            None,
-            None
-          )
-        )
+        .fillAndValidate(GoodsLocation("Poland", "t", "t", Some("TST"), Some(TestHelper.createRandomAlphanumericString(33)), None, None, None))
       val view = createView(form = form)
 
       checkErrorsSummary(view)
@@ -276,18 +259,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
     "display error for incorrect Street and Number" in {
 
       val form = GoodsLocation.form
-        .fillAndValidate(
-          GoodsLocation(
-            "Poland",
-            "t",
-            "t",
-            Some("TST"),
-            Some("TST"),
-            Some(TestHelper.createRandomAlphanumericString(71)),
-            None,
-            None
-          )
-        )
+        .fillAndValidate(GoodsLocation("Poland", "t", "t", Some("TST"), Some("TST"), Some(TestHelper.createRandomAlphanumericString(71)), None, None))
       val view = createView(form = form)
 
       checkErrorsSummary(view)
@@ -299,18 +271,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
     "display error for incorrect Postcode" in {
 
       val form = GoodsLocation.form
-        .fillAndValidate(
-          GoodsLocation(
-            "Poland",
-            "t",
-            "t",
-            Some("TST"),
-            Some("TST"),
-            None,
-            Some(TestHelper.createRandomAlphanumericString(10)),
-            None
-          )
-        )
+        .fillAndValidate(GoodsLocation("Poland", "t", "t", Some("TST"), Some("TST"), None, Some(TestHelper.createRandomAlphanumericString(10)), None))
       val view = createView(form = form)
 
       checkErrorsSummary(view)
@@ -322,18 +283,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
     "display error for incorrect City" in {
 
       val form = GoodsLocation.form
-        .fillAndValidate(
-          GoodsLocation(
-            "Poland",
-            "t",
-            "t",
-            Some("TST"),
-            Some("TST"),
-            None,
-            None,
-            Some(TestHelper.createRandomAlphanumericString(36))
-          )
-        )
+        .fillAndValidate(GoodsLocation("Poland", "t", "t", Some("TST"), Some("TST"), None, None, Some(TestHelper.createRandomAlphanumericString(36))))
       val view = createView(form = form)
 
       checkErrorsSummary(view)
@@ -438,16 +388,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       val form = GoodsLocation.form
         .fillAndValidate(
-          GoodsLocation(
-            "Poland",
-            "AB",
-            "CD",
-            Some("TST"),
-            Some(ladditionalInformation),
-            Some(lstreetAndNumber),
-            Some(lpostCode),
-            Some(lcity)
-          )
+          GoodsLocation("Poland", "AB", "CD", Some("TST"), Some(ladditionalInformation), Some(lstreetAndNumber), Some(lpostCode), Some(lcity))
         )
       val view = createView(form = form)
       view.getElementById("country").attr("value") must be("Poland")

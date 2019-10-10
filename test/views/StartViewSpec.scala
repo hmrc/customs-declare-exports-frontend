@@ -127,9 +127,7 @@ class StartViewSpec extends UnitViewSpec with Stubs {
     }
 
     "contain link to Customs Declarations Guidance in 'Use this service to' notice" in {
-      view.getElementById("use-this-service-to-notice").child(0) must haveHref(
-        appConfig.customsDeclarationsGoodsTakenOutOfEuUrl
-      )
+      view.getElementById("use-this-service-to-notice").child(0) must haveHref(appConfig.customsDeclarationsGoodsTakenOutOfEuUrl)
     }
 
     "display 'Before you start' section" in {
@@ -147,21 +145,11 @@ class StartViewSpec extends UnitViewSpec with Stubs {
       view.getElementById("information-you-need-list") must haveChildCount(6)
       view.getElementById("information-you-need-list").child(0).text() mustBe "startPage.informationYouNeed.listItem.1"
       view.getElementById("information-you-need-list").child(1).text() mustBe "startPage.informationYouNeed.listItem.2"
-      view.getElementById("information-you-need-list").child(2).text() must include(
-        "startPage.informationYouNeed.listItem.3.1"
-      )
-      view.getElementById("information-you-need-list").child(2).text() must include(
-        "startPage.informationYouNeed.listItem.3.link"
-      )
-      view.getElementById("information-you-need-list").child(2).text() must include(
-        "startPage.informationYouNeed.listItem.3.2"
-      )
-      view.getElementById("information-you-need-list").child(3).text() must include(
-        "startPage.informationYouNeed.listItem.4"
-      )
-      view.getElementById("information-you-need-list").child(3).text() must include(
-        "startPage.informationYouNeed.listItem.4.link"
-      )
+      view.getElementById("information-you-need-list").child(2).text() must include("startPage.informationYouNeed.listItem.3.1")
+      view.getElementById("information-you-need-list").child(2).text() must include("startPage.informationYouNeed.listItem.3.link")
+      view.getElementById("information-you-need-list").child(2).text() must include("startPage.informationYouNeed.listItem.3.2")
+      view.getElementById("information-you-need-list").child(3).text() must include("startPage.informationYouNeed.listItem.4")
+      view.getElementById("information-you-need-list").child(3).text() must include("startPage.informationYouNeed.listItem.4.link")
       view.getElementById("information-you-need-list").child(4).text() mustBe "startPage.informationYouNeed.listItem.5"
       view.getElementById("information-you-need-list").child(5).text() mustBe "startPage.informationYouNeed.listItem.6"
     }
@@ -180,9 +168,7 @@ class StartViewSpec extends UnitViewSpec with Stubs {
 
     "display problems with service notice" in {
       view.getElementById("problems-with-service-notice").text() must include("startPage.problemsWithServiceNotice")
-      view.getElementById("problems-with-service-notice").text() must include(
-        "startPage.problemsWithServiceNotice.link"
-      )
+      view.getElementById("problems-with-service-notice").text() must include("startPage.problemsWithServiceNotice.link")
     }
 
     "contain link to service availability in 'Report your arrival and departure' section" in {
@@ -198,15 +184,11 @@ class StartViewSpec extends UnitViewSpec with Stubs {
       view.getElementById("after-declaring-goods").text() mustBe "startPage.afterDeclaringGoods.header"
 
       view.getElementById("after-declaring-goods-element-1").text() must include("startPage.afterDeclaringGoods.line.1")
-      view.getElementById("after-declaring-goods-element-1").text() must include(
-        "startPage.afterDeclaringGoods.line.1.link"
-      )
+      view.getElementById("after-declaring-goods-element-1").text() must include("startPage.afterDeclaringGoods.line.1.link")
     }
 
     "contain link to Customs Movements Service in 'After you’ve declared your goods' section" in {
-      view.getElementById("after-declaring-goods-element-1").child(0) must haveHref(
-        appConfig.customsMovementsFrontendUrl
-      )
+      view.getElementById("after-declaring-goods-element-1").child(0) must haveHref(appConfig.customsMovementsFrontendUrl)
     }
 
     "display link to go back to Contents section" in {

@@ -42,40 +42,35 @@ class FiscalInformationController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) {
-    implicit request =>
-      request.cacheModel.itemBy(itemId) match {
-        case Some(ExportItem(_, _, _, Some(fiscalInformation), _, _, _, _, _, _)) =>
-          Ok(fiscalInformationPage(mode, itemId, form().fill(fiscalInformation)))
-        case response => Ok(fiscalInformationPage(mode, itemId, form()))
-      }
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.itemBy(itemId) match {
+      case Some(ExportItem(_, _, _, Some(fiscalInformation), _, _, _, _, _, _)) =>
+        Ok(fiscalInformationPage(mode, itemId, form().fill(fiscalInformation)))
+      case response => Ok(fiscalInformationPage(mode, itemId, form()))
+    }
   }
 
-  def saveFiscalInformation(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
-    implicit request =>
-      form()
-        .bindFromRequest()
-        .fold(
-          (formWithErrors: Form[FiscalInformation]) =>
-            Future.successful(BadRequest(fiscalInformationPage(mode, itemId, formWithErrors))),
-          formData =>
-            formData.onwardSupplyRelief match {
-              case FiscalInformation.AllowedFiscalInformationAnswers.yes =>
-                updateCacheForYes(itemId, formData) map { _ =>
-                  navigator.continueTo(routes.AdditionalFiscalReferencesController.displayPage(mode, itemId))
-                }
-              case FiscalInformation.AllowedFiscalInformationAnswers.no =>
-                updateCacheForNo(itemId, formData) map { _ =>
-                  navigator.continueTo(routes.ItemTypeController.displayPage(mode, itemId))
-                }
-          }
-        )
+  def saveFiscalInformation(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    form()
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[FiscalInformation]) => Future.successful(BadRequest(fiscalInformationPage(mode, itemId, formWithErrors))),
+        formData =>
+          formData.onwardSupplyRelief match {
+            case FiscalInformation.AllowedFiscalInformationAnswers.yes =>
+              updateCacheForYes(itemId, formData) map { _ =>
+                navigator.continueTo(routes.AdditionalFiscalReferencesController.displayPage(mode, itemId))
+              }
+            case FiscalInformation.AllowedFiscalInformationAnswers.no =>
+              updateCacheForNo(itemId, formData) map { _ =>
+                navigator.continueTo(routes.ItemTypeController.displayPage(mode, itemId))
+              }
+        }
+      )
   }
 
   //TODO Use one method instead of updateCacheForYes and updateCacheForNo
-  private def updateCacheForYes(itemId: String, updatedFiscalInformation: FiscalInformation)(
-    implicit req: JourneyRequest[AnyContent]
-  ): Future[Unit] =
+  private def updateCacheForYes(itemId: String, updatedFiscalInformation: FiscalInformation)(implicit req: JourneyRequest[AnyContent]): Future[Unit] =
     updateExportsDeclarationSyncDirect(model => {
       val itemList = model.items
         .find(item => item.id.equals(itemId))
@@ -84,9 +79,7 @@ class FiscalInformationController @Inject()(
       model.copy(items = itemList)
     }).map(_ => ())
 
-  private def updateCacheForNo(itemId: String, updatedFiscalInformation: FiscalInformation)(
-    implicit req: JourneyRequest[AnyContent]
-  ): Future[Unit] =
+  private def updateCacheForNo(itemId: String, updatedFiscalInformation: FiscalInformation)(implicit req: JourneyRequest[AnyContent]): Future[Unit] =
     updateExportsDeclarationSyncDirect(model => {
       val itemList = model.items
         .find(item => item.id.equals(itemId))

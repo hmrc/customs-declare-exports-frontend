@@ -35,11 +35,7 @@ import views.tags.ViewTest
 class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = new items_summary(mainTemplate)
-  private def createView(
-    mode: Mode = Mode.Normal,
-    items: List[ExportItem] = List.empty,
-    itemErrors: Seq[FormError] = Seq.empty
-  ): Document =
+  private def createView(mode: Mode = Mode.Normal, items: List[ExportItem] = List.empty, itemErrors: Seq[FormError] = Seq.empty): Document =
     page(mode, items, itemErrors)(journeyRequest(), stubMessages())
 
   "Item Summary Page View" should {
@@ -112,24 +108,16 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
         rows.get(1).getElementById("item_0--procedure_code") must containText("procedure-code1")
         rows.get(1).getElementById("item_0--item_type") must containText("item-type1")
         rows.get(1).getElementById("item_0--package_count") must containText("1")
-        rows.get(1).getElementById("item_0--change") must haveHref(
-          routes.ProcedureCodesController.displayPage(Mode.Normal, "id1")
-        )
-        rows.get(1).getElementById("item_0--remove") must haveHref(
-          routes.ItemsSummaryController.removeItem(Mode.Normal, "id1")
-        )
+        rows.get(1).getElementById("item_0--change") must haveHref(routes.ProcedureCodesController.displayPage(Mode.Normal, "id1"))
+        rows.get(1).getElementById("item_0--remove") must haveHref(routes.ItemsSummaryController.removeItem(Mode.Normal, "id1"))
 
         rows.get(2) must haveId("item_1")
         rows.get(2).getElementById("item_1--sequence_id") must containText("2")
         rows.get(2).getElementById("item_1--procedure_code") must containText("procedure-code2")
         rows.get(2).getElementById("item_1--item_type") must containText("item-type2")
         rows.get(2).getElementById("item_1--package_count") must containText("2")
-        rows.get(2).getElementById("item_1--change") must haveHref(
-          routes.ProcedureCodesController.displayPage(Mode.Normal, "id2")
-        )
-        rows.get(2).getElementById("item_1--remove") must haveHref(
-          routes.ItemsSummaryController.removeItem(Mode.Normal, "id2")
-        )
+        rows.get(2).getElementById("item_1--change") must haveHref(routes.ProcedureCodesController.displayPage(Mode.Normal, "id2"))
+        rows.get(2).getElementById("item_1--remove") must haveHref(routes.ItemsSummaryController.removeItem(Mode.Normal, "id2"))
       }
     }
 
@@ -160,10 +148,7 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
 
         view must haveGlobalErrorSummary
         view must containElementWithID("item_0-error")
-        view.getElementById("item_0-error").text() mustBe messages(
-          "declaration.itemsSummary.item.incorrect",
-          itemSequenceId
-        )
+        view.getElementById("item_0-error").text() mustBe messages("declaration.itemsSummary.item.incorrect", itemSequenceId)
         view.getElementById("item_0-error") must haveHref("#item_0")
       }
     }

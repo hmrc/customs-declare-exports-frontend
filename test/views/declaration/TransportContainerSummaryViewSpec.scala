@@ -38,11 +38,8 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with Stubs with Mus
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val page = new transport_container_summary(mainTemplate)
 
-  private def createView(
-    form: Form[YesNoAnswer] = form,
-    containers: Seq[Container] = Seq(container),
-    showSeals: Boolean = true
-  ): Document = page(Mode.Normal, form, containers, showSeals)
+  private def createView(form: Form[YesNoAnswer] = form, containers: Seq[Container] = Seq(container), showSeals: Boolean = true): Document =
+    page(Mode.Normal, form, containers, showSeals)
 
   "Transport Containers Summary View" should {
     val view = createView()
@@ -74,9 +71,7 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with Stubs with Mus
       val backLinkContainer = view.getElementById("link-back")
 
       backLinkContainer.text() must be(messages(backCaption))
-      backLinkContainer.getElementById("link-back") must haveHref(
-        controllers.declaration.routes.BorderTransportController.displayPage(Mode.Normal)
-      )
+      backLinkContainer.getElementById("link-back") must haveHref(controllers.declaration.routes.BorderTransportController.displayPage(Mode.Normal))
     }
 
     "display 'Save and continue' button on page" in {

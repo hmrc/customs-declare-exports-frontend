@@ -33,11 +33,7 @@ import views.tags.ViewTest
 class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
   private val page = new total_number_of_items(mainTemplate)
   private val form: Form[TotalNumberOfItems] = TotalNumberOfItems.form()
-  private def createView(
-    mode: Mode = Mode.Normal,
-    form: Form[TotalNumberOfItems] = form,
-    messages: Messages = stubMessages()
-  ): Document =
+  private def createView(mode: Mode = Mode.Normal, form: Form[TotalNumberOfItems] = form, messages: Messages = stubMessages()): Document =
     page(mode, form)(journeyRequest(), messages)
 
   "Total Number Of Items View on empty page" should {
@@ -93,9 +89,7 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
       val backButton = view.getElementById("link-back")
 
       backButton.text() must be("site.back")
-      backButton.getElementById("link-back") must haveHref(
-        controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Normal)
-      )
+      backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Normal))
     }
 
     "display 'Save and continue' button on page" in {
@@ -125,18 +119,14 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
     "display error when all entered input is incorrect" in {
 
       val view =
-        createView(
-          form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("abcd"), Some("abcd"), "abcd"))
-        ).outerHtml()
+        createView(form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("abcd"), Some("abcd"), "abcd"))).outerHtml()
 
       checkErrorsSummary(view)
       haveFieldErrorLink("totalAmountInvoiced", "#totalAmountInvoiced")
       haveFieldErrorLink("exchangeRate", "#exchangeRate")
       haveFieldErrorLink("totalPackage", "#totalPackage")
 
-      view.getElementById("error-message-totalAmountInvoiced-input").text() must be(
-        "supplementary.totalAmountInvoiced.error"
-      )
+      view.getElementById("error-message-totalAmountInvoiced-input").text() must be("supplementary.totalAmountInvoiced.error")
       view.getElementById("error-message-exchangeRate-input").text() must be("supplementary.exchangeRate.error")
       view.getElementById("error-message-totalPackage-input").text() must be("supplementary.totalPackageQuantity.error")
     }
@@ -144,24 +134,18 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
     "display error when Total Amount Invoiced is incorrect" in {
 
       val view =
-        createView(
-          form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("abcd"), Some("123.12345"), "1"))
-        ).outerHtml()
+        createView(form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("abcd"), Some("123.12345"), "1"))).outerHtml()
 
       checkErrorsSummary(view)
       haveFieldErrorLink("totalAmountInvoiced", "#totalAmountInvoiced")
 
-      view.getElementById("error-message-totalAmountInvoiced-input").text() must be(
-        "supplementary.totalAmountInvoiced.error"
-      )
+      view.getElementById("error-message-totalAmountInvoiced-input").text() must be("supplementary.totalAmountInvoiced.error")
     }
 
     "display error when Exchange Rate is incorrect" in {
 
       val view =
-        createView(
-          form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("123.12"), Some("abcd"), "1"))
-        ).outerHtml()
+        createView(form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("123.12"), Some("abcd"), "1"))).outerHtml()
 
       checkErrorsSummary(view)
       haveFieldErrorLink("exchangeRate", "#exchangeRate")
@@ -172,9 +156,7 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
     "display error when Total Package is empty" in {
 
       val view =
-        createView(
-          form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("123.12"), Some("123.12345"), ""))
-        ).outerHtml()
+        createView(form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("123.12"), Some("123.12345"), ""))).outerHtml()
 
       checkErrorsSummary(view)
       haveFieldErrorLink("totalPackage", "#totalPackage")
@@ -185,9 +167,7 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
     "display error when Total Package is incorrect" in {
 
       val view =
-        createView(
-          form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("123.12"), Some("123.12345"), "abcd"))
-        ).outerHtml()
+        createView(form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("123.12"), Some("123.12345"), "abcd"))).outerHtml()
 
       checkErrorsSummary(view)
       haveFieldErrorLink("totalPackage", "#totalPackage")

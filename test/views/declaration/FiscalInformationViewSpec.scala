@@ -87,9 +87,7 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
       val backButton = view.getElementById("link-back")
 
       backButton.text() mustBe "site.back"
-      backButton.getElementById("link-back") must haveHref(
-        controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, "itemId")
-      )
+      backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, "itemId"))
     }
 
     "display 'Save and continue' button" in {

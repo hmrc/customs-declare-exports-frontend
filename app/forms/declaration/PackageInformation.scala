@@ -44,20 +44,14 @@ object PackageInformation {
       "typesOfPackages" ->
         text()
           .verifying("supplementary.packageInformation.typesOfPackages.empty", nonEmpty)
-          .verifying(
-            "supplementary.packageInformation.typesOfPackages.error",
-            isEmpty or isContainedIn(PackageTypes.all.map(_.code))
-          ),
+          .verifying("supplementary.packageInformation.typesOfPackages.error", isEmpty or isContainedIn(PackageTypes.all.map(_.code))),
       "numberOfPackages" ->
         number()
           .verifying("supplementary.packageInformation.numberOfPackages.error", q => q > 0 && q <= 999999),
       "shippingMarks" ->
         text()
           .verifying("supplementary.packageInformation.shippingMarks.empty", nonEmpty)
-          .verifying(
-            "supplementary.packageInformation.shippingMarks.characterError",
-            isEmpty or isAlphanumericWithAllowedSpecialCharacters
-          )
+          .verifying("supplementary.packageInformation.shippingMarks.characterError", isEmpty or isAlphanumericWithAllowedSpecialCharacters)
           .verifying("supplementary.packageInformation.shippingMarks.lengthError", isEmpty or noLongerThan(42))
     )(PackageInformation.apply)(PackageInformation.unapply)
 

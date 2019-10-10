@@ -119,9 +119,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
       val backButton = view.getElementById("link-back")
 
       backButton.text() must be("site.back")
-      backButton.getElementById("link-back") must haveHref(
-        controllers.declaration.routes.DeclarantDetailsController.displayPage(Mode.Normal)
-      )
+      backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.DeclarantDetailsController.displayPage(Mode.Normal))
     }
 
     "display 'Save and continue' button on page" in {
@@ -162,9 +160,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         checkErrorsSummary(view)
         haveFieldErrorLink("statusCode", "#statusCode")
 
-        view.getElementById("error-message-statusCode-input").text() must be(
-          "supplementary.representative.representationType.error.empty"
-        )
+        view.getElementById("error-message-statusCode-input").text() must be("supplementary.representative.representationType.error.empty")
       }
 
       "display errors when only address is entered" in {
@@ -190,9 +186,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         checkErrorsSummary(view)
         haveFieldErrorLink("statusCode", "#statusCode")
 
-        view.getElementById("error-message-statusCode-input").text() must be(
-          "supplementary.representative.representationType.error.empty"
-        )
+        view.getElementById("error-message-statusCode-input").text() must be("supplementary.representative.representationType.error.empty")
       }
 
       "display errors when EORI is incorrect" in {
@@ -240,9 +234,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         checkErrorsSummary(view)
         haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
 
-        view.getElementById("error-message-details_address_fullName-input").text() must be(
-          "supplementary.address.fullName.empty"
-        )
+        view.getElementById("error-message-details_address_fullName-input").text() must be("supplementary.address.fullName.empty")
       }
 
       "display errors for incorrect Full name" in {
@@ -266,9 +258,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         checkErrorsSummary(view)
         haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
 
-        view.getElementById("error-message-details_address_fullName-input").text() must be(
-          "supplementary.address.fullName.error"
-        )
+        view.getElementById("error-message-details_address_fullName-input").text() must be("supplementary.address.fullName.error")
       }
 
       "display errors for empty Address" in {
@@ -292,9 +282,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         checkErrorsSummary(view)
         haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
 
-        view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          "supplementary.address.addressLine.empty"
-        )
+        view.getElementById("error-message-details_address_addressLine-input").text() must be("supplementary.address.addressLine.empty")
       }
 
       "display errors for incorrect Address" in {
@@ -318,9 +306,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         checkErrorsSummary(view)
         haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
 
-        view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          "supplementary.address.addressLine.error"
-        )
+        view.getElementById("error-message-details_address_addressLine-input").text() must be("supplementary.address.addressLine.error")
       }
 
       "display errors for empty Town or city" in {
@@ -344,9 +330,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         checkErrorsSummary(view)
         haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
 
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(
-          "supplementary.address.townOrCity.empty"
-        )
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be("supplementary.address.townOrCity.empty")
       }
 
       "display errors for incorrect Town or city" in {
@@ -370,9 +354,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         checkErrorsSummary(view)
         haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
 
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(
-          "supplementary.address.townOrCity.error"
-        )
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be("supplementary.address.townOrCity.error")
       }
 
       "display errors for empty Postcode" in {
@@ -396,9 +378,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         checkErrorsSummary(view)
         haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
 
-        view.getElementById("error-message-details_address_postCode-input").text() must be(
-          "supplementary.address.postCode.empty"
-        )
+        view.getElementById("error-message-details_address_postCode-input").text() must be("supplementary.address.postCode.empty")
       }
 
       "display errors for incorrect Postcode" in {
@@ -422,9 +402,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         checkErrorsSummary(view)
         haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
 
-        view.getElementById("error-message-details_address_postCode-input").text() must be(
-          "supplementary.address.postCode.error"
-        )
+        view.getElementById("error-message-details_address_postCode-input").text() must be("supplementary.address.postCode.error")
       }
 
       "display errors for empty Country" in {
@@ -499,15 +477,9 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
         haveFieldErrorLink("details.address.country", "#details_address_country")
 
-        view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          "supplementary.address.addressLine.empty"
-        )
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(
-          "supplementary.address.townOrCity.empty"
-        )
-        view.getElementById("error-message-details_address_postCode-input").text() must be(
-          "supplementary.address.postCode.empty"
-        )
+        view.getElementById("error-message-details_address_addressLine-input").text() must be("supplementary.address.addressLine.empty")
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be("supplementary.address.townOrCity.empty")
+        view.getElementById("error-message-details_address_postCode-input").text() must be("supplementary.address.postCode.empty")
         view.select("span.error-message").text() must be("supplementary.address.country.empty")
       }
 
@@ -535,18 +507,10 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
         haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
 
-        view.getElementById("error-message-details_address_fullName-input").text() must be(
-          "supplementary.address.fullName.empty"
-        )
-        view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          "supplementary.address.addressLine.empty"
-        )
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(
-          "supplementary.address.townOrCity.empty"
-        )
-        view.getElementById("error-message-details_address_postCode-input").text() must be(
-          "supplementary.address.postCode.empty"
-        )
+        view.getElementById("error-message-details_address_fullName-input").text() must be("supplementary.address.fullName.empty")
+        view.getElementById("error-message-details_address_addressLine-input").text() must be("supplementary.address.addressLine.empty")
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be("supplementary.address.townOrCity.empty")
+        view.getElementById("error-message-details_address_postCode-input").text() must be("supplementary.address.postCode.empty")
       }
 
       "display errors when everything except Full name is incorrect" in {
@@ -573,15 +537,9 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
         haveFieldErrorLink("details.address.country", "#details_address_country")
 
-        view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          "supplementary.address.addressLine.error"
-        )
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(
-          "supplementary.address.townOrCity.error"
-        )
-        view.getElementById("error-message-details_address_postCode-input").text() must be(
-          "supplementary.address.postCode.error"
-        )
+        view.getElementById("error-message-details_address_addressLine-input").text() must be("supplementary.address.addressLine.error")
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be("supplementary.address.townOrCity.error")
+        view.getElementById("error-message-details_address_postCode-input").text() must be("supplementary.address.postCode.error")
         view.select("span.error-message").text() must be("supplementary.address.country.error")
       }
 
@@ -609,18 +567,10 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
         haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
 
-        view.getElementById("error-message-details_address_fullName-input").text() must be(
-          "supplementary.address.fullName.error"
-        )
-        view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          "supplementary.address.addressLine.error"
-        )
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(
-          "supplementary.address.townOrCity.error"
-        )
-        view.getElementById("error-message-details_address_postCode-input").text() must be(
-          "supplementary.address.postCode.error"
-        )
+        view.getElementById("error-message-details_address_fullName-input").text() must be("supplementary.address.fullName.error")
+        view.getElementById("error-message-details_address_addressLine-input").text() must be("supplementary.address.addressLine.error")
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be("supplementary.address.townOrCity.error")
+        view.getElementById("error-message-details_address_postCode-input").text() must be("supplementary.address.postCode.error")
       }
     }
 
@@ -671,9 +621,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         checkErrorsSummary(view)
         haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
 
-        view.getElementById("error-message-details_address_fullName-input").text() must be(
-          "supplementary.address.fullName.empty"
-        )
+        view.getElementById("error-message-details_address_fullName-input").text() must be("supplementary.address.fullName.empty")
       }
 
       "display errors for incorrect Full name" in {
@@ -697,9 +645,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         checkErrorsSummary(view)
         haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
 
-        view.getElementById("error-message-details_address_fullName-input").text() must be(
-          "supplementary.address.fullName.error"
-        )
+        view.getElementById("error-message-details_address_fullName-input").text() must be("supplementary.address.fullName.error")
       }
 
       "display errors for empty Address" in {
@@ -723,9 +669,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         checkErrorsSummary(view)
         haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
 
-        view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          "supplementary.address.addressLine.empty"
-        )
+        view.getElementById("error-message-details_address_addressLine-input").text() must be("supplementary.address.addressLine.empty")
       }
 
       "display errors for incorrect Address" in {
@@ -749,9 +693,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         checkErrorsSummary(view)
         haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
 
-        view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          "supplementary.address.addressLine.error"
-        )
+        view.getElementById("error-message-details_address_addressLine-input").text() must be("supplementary.address.addressLine.error")
       }
 
       "display errors for empty Town or city" in {
@@ -775,9 +717,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         checkErrorsSummary(view)
         haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
 
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(
-          "supplementary.address.townOrCity.empty"
-        )
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be("supplementary.address.townOrCity.empty")
       }
 
       "display errors for incorrect Town or city" in {
@@ -801,9 +741,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         checkErrorsSummary(view)
         haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
 
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(
-          "supplementary.address.townOrCity.error"
-        )
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be("supplementary.address.townOrCity.error")
       }
 
       "display errors for empty Postcode" in {
@@ -827,9 +765,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         checkErrorsSummary(view)
         haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
 
-        view.getElementById("error-message-details_address_postCode-input").text() must be(
-          "supplementary.address.postCode.empty"
-        )
+        view.getElementById("error-message-details_address_postCode-input").text() must be("supplementary.address.postCode.empty")
       }
 
       "display errors for incorrect Postcode" in {
@@ -853,9 +789,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         checkErrorsSummary(view)
         haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
 
-        view.getElementById("error-message-details_address_postCode-input").text() must be(
-          "supplementary.address.postCode.error"
-        )
+        view.getElementById("error-message-details_address_postCode-input").text() must be("supplementary.address.postCode.error")
       }
 
       "display errors for empty Country" in {
@@ -930,15 +864,9 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
         haveFieldErrorLink("details.address.country", "#details_address_country")
 
-        view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          "supplementary.address.addressLine.empty"
-        )
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(
-          "supplementary.address.townOrCity.empty"
-        )
-        view.getElementById("error-message-details_address_postCode-input").text() must be(
-          "supplementary.address.postCode.empty"
-        )
+        view.getElementById("error-message-details_address_addressLine-input").text() must be("supplementary.address.addressLine.empty")
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be("supplementary.address.townOrCity.empty")
+        view.getElementById("error-message-details_address_postCode-input").text() must be("supplementary.address.postCode.empty")
         view.select("span.error-message").text() must be("supplementary.address.country.empty")
       }
 
@@ -966,18 +894,10 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
         haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
 
-        view.getElementById("error-message-details_address_fullName-input").text() must be(
-          "supplementary.address.fullName.empty"
-        )
-        view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          "supplementary.address.addressLine.empty"
-        )
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(
-          "supplementary.address.townOrCity.empty"
-        )
-        view.getElementById("error-message-details_address_postCode-input").text() must be(
-          "supplementary.address.postCode.empty"
-        )
+        view.getElementById("error-message-details_address_fullName-input").text() must be("supplementary.address.fullName.empty")
+        view.getElementById("error-message-details_address_addressLine-input").text() must be("supplementary.address.addressLine.empty")
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be("supplementary.address.townOrCity.empty")
+        view.getElementById("error-message-details_address_postCode-input").text() must be("supplementary.address.postCode.empty")
       }
 
       "display errors when everything except Full name is incorrect" in {
@@ -1004,15 +924,9 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
         haveFieldErrorLink("details.address.country", "#details_address_country")
 
-        view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          "supplementary.address.addressLine.error"
-        )
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(
-          "supplementary.address.townOrCity.error"
-        )
-        view.getElementById("error-message-details_address_postCode-input").text() must be(
-          "supplementary.address.postCode.error"
-        )
+        view.getElementById("error-message-details_address_addressLine-input").text() must be("supplementary.address.addressLine.error")
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be("supplementary.address.townOrCity.error")
+        view.getElementById("error-message-details_address_postCode-input").text() must be("supplementary.address.postCode.error")
         view.select("span.error-message").text() must be("supplementary.address.country.error")
       }
 
@@ -1040,18 +954,10 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
         haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
 
-        view.getElementById("error-message-details_address_fullName-input").text() must be(
-          "supplementary.address.fullName.error"
-        )
-        view.getElementById("error-message-details_address_addressLine-input").text() must be(
-          "supplementary.address.addressLine.error"
-        )
-        view.getElementById("error-message-details_address_townOrCity-input").text() must be(
-          "supplementary.address.townOrCity.error"
-        )
-        view.getElementById("error-message-details_address_postCode-input").text() must be(
-          "supplementary.address.postCode.error"
-        )
+        view.getElementById("error-message-details_address_fullName-input").text() must be("supplementary.address.fullName.error")
+        view.getElementById("error-message-details_address_addressLine-input").text() must be("supplementary.address.addressLine.error")
+        view.getElementById("error-message-details_address_townOrCity-input").text() must be("supplementary.address.townOrCity.error")
+        view.getElementById("error-message-details_address_postCode-input").text() must be("supplementary.address.postCode.error")
       }
     }
   }

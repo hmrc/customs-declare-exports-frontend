@@ -40,8 +40,5 @@ trait ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder 
   )
 
   protected def journeyRequest(choice: String = Choice.AllowedChoiceValues.StandardDec) =
-    new JourneyRequest(
-      new AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")),
-      declaration(choice)
-    )
+    new JourneyRequest(new AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration(choice))
 }

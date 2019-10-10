@@ -36,15 +36,9 @@ case class DocumentsProduced(
   implicit val writes = Json.writes[DocumentsProduced]
 
   def isDefined: Boolean =
-    List(
-      documentTypeCode,
-      documentIdentifier,
-      documentStatus,
-      documentStatusReason,
-      issuingAuthorityName,
-      dateOfValidity,
-      documentWriteOff
-    ).exists(_.isDefined)
+    List(documentTypeCode, documentIdentifier, documentStatus, documentStatusReason, issuingAuthorityName, dateOfValidity, documentWriteOff).exists(
+      _.isDefined
+    )
 }
 
 object DocumentsProduced {
@@ -65,27 +59,20 @@ object DocumentsProduced {
 
   val mapping = Forms
     .mapping(
-      documentTypeCodeKey -> optional(
-        text().verifying("supplementary.addDocument.documentTypeCode.error", hasSpecificLength(4) and isAlphanumeric)
-      ),
+      documentTypeCodeKey -> optional(text().verifying("supplementary.addDocument.documentTypeCode.error", hasSpecificLength(4) and isAlphanumeric)),
       documentIdentifierKey -> optional(
         text().verifying(
           "supplementary.addDocument.documentIdentifier.error",
           nonEmpty and isAlphanumericWithAllowedSpecialCharacters and noLongerThan(35)
         )
       ),
-      documentStatusKey -> optional(
-        text().verifying("supplementary.addDocument.documentStatus.error", noLongerThan(2) and isAllCapitalLetter)
-      ),
+      documentStatusKey -> optional(text().verifying("supplementary.addDocument.documentStatus.error", noLongerThan(2) and isAllCapitalLetter)),
       documentStatusReasonKey -> optional(
         text().verifying("supplementary.addDocument.documentStatusReason.error", noLongerThan(35) and isAlphanumeric)
       ),
       issuingAuthorityNameKey -> optional(
         text()
-          .verifying(
-            "supplementary.addDocument.issuingAuthorityName.error.length",
-            noLongerThan(issuingAuthorityNameMaxLength)
-          )
+          .verifying("supplementary.addDocument.issuingAuthorityName.error.length", noLongerThan(issuingAuthorityNameMaxLength))
       ),
       dateOfValidityKey -> optional(Date.mapping),
       documentWriteOffKey -> optional(DocumentWriteOff.mapping)

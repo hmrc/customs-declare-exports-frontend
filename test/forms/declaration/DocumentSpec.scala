@@ -59,12 +59,8 @@ class DocumentSpec extends WordSpec with MustMatchers {
 object DocumentSpec {
   import forms.declaration.Document.AllowedValues.TemporaryStorage
 
-  val correctPreviousDocument = Document(
-    documentCategory = TemporaryStorage,
-    documentType = "ABC",
-    documentReference = "DocumentReference",
-    goodsItemIdentifier = Some("123")
-  )
+  val correctPreviousDocument =
+    Document(documentCategory = TemporaryStorage, documentType = "ABC", documentReference = "DocumentReference", goodsItemIdentifier = Some("123"))
   val emptyPreviousDocument =
     Document(documentCategory = "", documentType = "", documentReference = "", goodsItemIdentifier = None)
 
@@ -74,12 +70,8 @@ object DocumentSpec {
     documentReference = TestHelper.createRandomAlphanumericString(36),
     goodsItemIdentifier = Some("Incorrect identifier")
   )
-  val mandatoryPreviousDocuments = Document(
-    documentCategory = TemporaryStorage,
-    documentType = "ABC",
-    documentReference = "DocumentReference",
-    goodsItemIdentifier = None
-  )
+  val mandatoryPreviousDocuments =
+    Document(documentCategory = TemporaryStorage, documentType = "ABC", documentReference = "DocumentReference", goodsItemIdentifier = None)
 
   val correctPreviousDocumentsJSON: JsValue = JsObject(
     Map(

@@ -160,12 +160,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
         val officeId = "officeId"
         val presentationOfficeId = Some("preOffice")
         val circumstancesCode = "Yes"
-        withNewCaching(
-          aDeclaration(
-            withChoice(StandardDec),
-            withOfficeOfExit(officeId, presentationOfficeId, Some(circumstancesCode))
-          )
-        )
+        withNewCaching(aDeclaration(withChoice(StandardDec), withOfficeOfExit(officeId, presentationOfficeId, Some(circumstancesCode))))
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
 

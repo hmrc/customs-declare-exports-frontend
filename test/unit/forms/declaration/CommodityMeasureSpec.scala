@@ -65,9 +65,7 @@ class CommodityMeasureSpec extends WordSpec with MustMatchers {
         val errorMessages = result.errors.map(_.message)
 
         errorKeys must be(List("netMass", "grossMass"))
-        errorMessages must be(
-          List("supplementary.commodityMeasure.netMass.empty", "supplementary.commodityMeasure.grossMass.empty")
-        )
+        errorMessages must be(List("supplementary.commodityMeasure.netMass.empty", "supplementary.commodityMeasure.grossMass.empty"))
       }
 
       "data provided by user is incorrect" in {

@@ -31,8 +31,7 @@ import views.html.declaration.additional_information
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalInformationViewSpec
-    extends UnitViewSpec with AdditionalInformationMessages with CommonMessages with Stubs with Injector {
+class AdditionalInformationViewSpec extends UnitViewSpec with AdditionalInformationMessages with CommonMessages with Stubs with Injector {
 
   val itemId = "a7sc78"
   private val form: Form[AdditionalInformation] = AdditionalInformation.form()

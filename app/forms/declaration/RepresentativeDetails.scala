@@ -36,20 +36,11 @@ object RepresentativeDetails {
     .mapping(
       "details" -> optional(EntityDetails.mapping),
       "statusCode" -> optional(
-        text().verifying(
-          "supplementary.representative.representationType.error.wrongValue",
-          isContainedIn(representativeStatusCodeAllowedValues)
-        )
+        text().verifying("supplementary.representative.representationType.error.wrongValue", isContainedIn(representativeStatusCodeAllowedValues))
       )
     )(RepresentativeDetails.apply)(RepresentativeDetails.unapply)
-    .verifying(
-      "supplementary.namedEntityDetails.error",
-      details => details.details.nonEmpty || details.statusCode.isEmpty
-    )
-    .verifying(
-      "supplementary.representative.representationType.error.empty",
-      details => details.details.isEmpty || details.statusCode.nonEmpty
-    )
+    .verifying("supplementary.namedEntityDetails.error", details => details.details.nonEmpty || details.statusCode.isEmpty)
+    .verifying("supplementary.representative.representationType.error.empty", details => details.details.isEmpty || details.statusCode.nonEmpty)
 
   def form(): Form[RepresentativeDetails] = Form(mapping)
 

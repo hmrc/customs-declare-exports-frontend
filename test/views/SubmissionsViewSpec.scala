@@ -39,10 +39,8 @@ import views.tags.ViewTest
 class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = new submissions(mainTemplate)
-  private def createView(
-    data: Seq[(Submission, Seq[Notification])] = Seq.empty,
-    messages: Messages = stubMessages()
-  ): Html = page(data)(request, messages)
+  private def createView(data: Seq[(Submission, Seq[Notification])] = Seq.empty, messages: Messages = stubMessages()): Html =
+    page(data)(request, messages)
 
   "Submission View" should {
 
@@ -76,17 +74,9 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
     }
 
     "display page submissions" when {
-      val actionSubmission = Action(
-        requestType = SubmissionRequest,
-        id = "conv-id",
-        requestTimestamp = LocalDateTime.of(2019, 1, 1, 0, 0, 0)
-      )
+      val actionSubmission = Action(requestType = SubmissionRequest, id = "conv-id", requestTimestamp = LocalDateTime.of(2019, 1, 1, 0, 0, 0))
 
-      val actionCancellation = Action(
-        requestType = CancellationRequest,
-        id = "conv-id",
-        requestTimestamp = LocalDateTime.of(2021, 1, 1, 0, 0, 0)
-      )
+      val actionCancellation = Action(requestType = CancellationRequest, id = "conv-id", requestTimestamp = LocalDateTime.of(2021, 1, 1, 0, 0, 0))
 
       val submission = Submission(
         uuid = "id",
@@ -152,9 +142,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
         val view = createView(Seq(submission -> Seq(rejectedNotification)))
 
         tableCell(view)(1, 0).text() mustBe submission.ducr.get
-        tableCell(view)(1, 0).toString must include(
-          routes.RejectedNotificationsController.displayPage(submission.uuid).url
-        )
+        tableCell(view)(1, 0).toString must include(routes.RejectedNotificationsController.displayPage(submission.uuid).url)
       }
 
       "submission date is unknown due to missing submit action" in {

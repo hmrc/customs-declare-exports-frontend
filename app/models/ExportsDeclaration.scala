@@ -64,13 +64,7 @@ case class ExportsDeclaration(
 
   def amend(sourceId: String)(implicit clock: Clock = Clock.systemUTC()): ExportsDeclaration = {
     val currentTime = Instant.now(clock)
-    this.copy(
-      id = None,
-      status = DeclarationStatus.DRAFT,
-      createdDateTime = currentTime,
-      updatedDateTime = currentTime,
-      sourceId = Some(sourceId)
-    )
+    this.copy(id = None, status = DeclarationStatus.DRAFT, createdDateTime = currentTime, updatedDateTime = currentTime, sourceId = Some(sourceId))
   }
 }
 

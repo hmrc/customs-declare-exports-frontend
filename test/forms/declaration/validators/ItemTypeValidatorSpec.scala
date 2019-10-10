@@ -33,24 +33,16 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
 
       "any TARIC additional code is not 4 characters long" in {
         val itemType = buildItemType(taricAdditionalCode = Seq("1111", "2222", "333", "4444"))
-        val expectedValidationResult = Invalid(
-          errors =
-            Seq(FormError(s"$taricAdditionalCodesKey[2]", "declaration.itemType.taricAdditionalCodes.error.length"))
-        )
+        val expectedValidationResult =
+          Invalid(errors = Seq(FormError(s"$taricAdditionalCodesKey[2]", "declaration.itemType.taricAdditionalCodes.error.length")))
 
         testFailedValidationOnAddition(itemType, expectedValidationResult)
       }
 
       "any TARIC additional code contains special characters" in {
         val itemType = buildItemType(taricAdditionalCode = Seq("1111", "2222", "333$", "4444"))
-        val expectedValidationResult = Invalid(
-          errors = Seq(
-            FormError(
-              s"$taricAdditionalCodesKey[2]",
-              "declaration.itemType.taricAdditionalCodes.error.specialCharacters"
-            )
-          )
-        )
+        val expectedValidationResult =
+          Invalid(errors = Seq(FormError(s"$taricAdditionalCodesKey[2]", "declaration.itemType.taricAdditionalCodes.error.specialCharacters")))
 
         testFailedValidationOnAddition(itemType, expectedValidationResult)
       }
@@ -58,29 +50,24 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       "there is more than 99 TARIC additional codes" in {
         val itemType =
           buildItemType(taricAdditionalCode = (1 to 100).map(_ => TestHelper.createRandomAlphanumericString(4)))
-        val expectedValidationResult = Invalid(
-          errors = Seq(FormError(taricAdditionalCodesKey, "declaration.itemType.taricAdditionalCodes.error.maxAmount"))
-        )
+        val expectedValidationResult =
+          Invalid(errors = Seq(FormError(taricAdditionalCodesKey, "declaration.itemType.taricAdditionalCodes.error.maxAmount")))
 
         testFailedValidationOnAddition(itemType, expectedValidationResult)
       }
 
       "there is duplicated TARIC additional code" in {
         val itemType = buildItemType(taricAdditionalCode = Seq("1111", "1111"))
-        val expectedValidationResult = Invalid(
-          errors = Seq(FormError(taricAdditionalCodesKey, "declaration.itemType.taricAdditionalCodes.error.duplicate"))
-        )
+        val expectedValidationResult =
+          Invalid(errors = Seq(FormError(taricAdditionalCodesKey, "declaration.itemType.taricAdditionalCodes.error.duplicate")))
 
         testFailedValidationOnAddition(itemType, expectedValidationResult)
       }
 
       "any National additional code not in list" in {
         val itemType = buildItemType(nationalAdditionalCode = Seq("VATE", "ABC"))
-        val expectedValidationResult = Invalid(
-          errors = Seq(
-            FormError(s"$nationalAdditionalCodesKey[1]", "declaration.itemType.nationalAdditionalCode.error.invalid")
-          )
-        )
+        val expectedValidationResult =
+          Invalid(errors = Seq(FormError(s"$nationalAdditionalCodesKey[1]", "declaration.itemType.nationalAdditionalCode.error.invalid")))
 
         testFailedValidationOnAddition(itemType, expectedValidationResult)
       }
@@ -88,20 +75,16 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       "there is more than 99 National additional codes" in {
         val itemType =
           buildItemType(nationalAdditionalCode = (1 to 100).map(_ => TestHelper.createRandomAlphanumericString(4)))
-        val expectedValidationResult = Invalid(
-          errors =
-            Seq(FormError(nationalAdditionalCodesKey, "declaration.itemType.nationalAdditionalCode.error.maxAmount"))
-        )
+        val expectedValidationResult =
+          Invalid(errors = Seq(FormError(nationalAdditionalCodesKey, "declaration.itemType.nationalAdditionalCode.error.maxAmount")))
 
         testFailedValidationOnAddition(itemType, expectedValidationResult)
       }
 
       "there is duplicated National additional code" in {
         val itemType = buildItemType(nationalAdditionalCode = Seq("VATE", "VATE"))
-        val expectedValidationResult = Invalid(
-          errors =
-            Seq(FormError(nationalAdditionalCodesKey, "declaration.itemType.nationalAdditionalCode.error.duplicate"))
-        )
+        val expectedValidationResult =
+          Invalid(errors = Seq(FormError(nationalAdditionalCodesKey, "declaration.itemType.nationalAdditionalCode.error.duplicate")))
 
         testFailedValidationOnAddition(itemType, expectedValidationResult)
       }
@@ -145,58 +128,40 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
 
       "Combined Nomenclature Code is empty" in {
         val itemType = buildItemType()
-        val expectedValidationResult = Invalid(
-          errors =
-            Seq(FormError(combinedNomenclatureCodeKey, "declaration.itemType.combinedNomenclatureCode.error.empty"))
-        )
+        val expectedValidationResult =
+          Invalid(errors = Seq(FormError(combinedNomenclatureCodeKey, "declaration.itemType.combinedNomenclatureCode.error.empty")))
 
         testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
       }
 
       "Combined Nomenclature Code is longer than 8 characters" in {
         val itemType = buildItemType(combinedNomenclatureCode = "ABCD12345")
-        val expectedValidationResult = Invalid(
-          errors =
-            Seq(FormError(combinedNomenclatureCodeKey, "declaration.itemType.combinedNomenclatureCode.error.length"))
-        )
+        val expectedValidationResult =
+          Invalid(errors = Seq(FormError(combinedNomenclatureCodeKey, "declaration.itemType.combinedNomenclatureCode.error.length")))
 
         testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
       }
 
       "Combined Nomenclature Code contains special characters" in {
         val itemType = buildItemType(combinedNomenclatureCode = "1234!@#$")
-        val expectedValidationResult = Invalid(
-          errors = Seq(
-            FormError(
-              combinedNomenclatureCodeKey,
-              "declaration.itemType.combinedNomenclatureCode.error.specialCharacters"
-            )
-          )
-        )
+        val expectedValidationResult =
+          Invalid(errors = Seq(FormError(combinedNomenclatureCodeKey, "declaration.itemType.combinedNomenclatureCode.error.specialCharacters")))
 
         testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
       }
 
       "any TARIC additional code is not 4 characters long" in {
         val itemType = buildItemType(taricAdditionalCode = Seq("1111", "2222", "333", "4444"))
-        val expectedValidationResult = Invalid(
-          errors =
-            Seq(FormError(s"$taricAdditionalCodesKey[2]", "declaration.itemType.taricAdditionalCodes.error.length"))
-        )
+        val expectedValidationResult =
+          Invalid(errors = Seq(FormError(s"$taricAdditionalCodesKey[2]", "declaration.itemType.taricAdditionalCodes.error.length")))
 
         testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
       }
 
       "any TARIC additional code contains special characters" in {
         val itemType = buildItemType(taricAdditionalCode = Seq("1111", "2222", "333$", "4444"))
-        val expectedValidationResult = Invalid(
-          errors = Seq(
-            FormError(
-              s"$taricAdditionalCodesKey[2]",
-              "declaration.itemType.taricAdditionalCodes.error.specialCharacters"
-            )
-          )
-        )
+        val expectedValidationResult =
+          Invalid(errors = Seq(FormError(s"$taricAdditionalCodesKey[2]", "declaration.itemType.taricAdditionalCodes.error.specialCharacters")))
 
         testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
       }
@@ -204,29 +169,24 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       "there is more than 99 TARIC additional codes" in {
         val itemType =
           buildItemType(taricAdditionalCode = (1 to 100).map(_ => TestHelper.createRandomAlphanumericString(4)))
-        val expectedValidationResult = Invalid(
-          errors = Seq(FormError(taricAdditionalCodesKey, "declaration.itemType.taricAdditionalCodes.error.maxAmount"))
-        )
+        val expectedValidationResult =
+          Invalid(errors = Seq(FormError(taricAdditionalCodesKey, "declaration.itemType.taricAdditionalCodes.error.maxAmount")))
 
         testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
       }
 
       "there is duplicated TARIC additional code" in {
         val itemType = buildItemType(taricAdditionalCode = Seq("1111", "1111"))
-        val expectedValidationResult = Invalid(
-          errors = Seq(FormError(taricAdditionalCodesKey, "declaration.itemType.taricAdditionalCodes.error.duplicate"))
-        )
+        val expectedValidationResult =
+          Invalid(errors = Seq(FormError(taricAdditionalCodesKey, "declaration.itemType.taricAdditionalCodes.error.duplicate")))
 
         testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
       }
 
       "any National additional code is not in list" in {
         val itemType = buildItemType(nationalAdditionalCode = Seq("VATE", "ABC"))
-        val expectedValidationResult = Invalid(
-          errors = Seq(
-            FormError(s"$nationalAdditionalCodesKey[1]", "declaration.itemType.nationalAdditionalCode.error.invalid")
-          )
-        )
+        val expectedValidationResult =
+          Invalid(errors = Seq(FormError(s"$nationalAdditionalCodesKey[1]", "declaration.itemType.nationalAdditionalCode.error.invalid")))
 
         testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
       }
@@ -234,20 +194,16 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       "there is more than 99 National additional codes" in {
         val itemType =
           buildItemType(nationalAdditionalCode = (1 to 100).map(_ => TestHelper.createRandomAlphanumericString(4)))
-        val expectedValidationResult = Invalid(
-          errors =
-            Seq(FormError(nationalAdditionalCodesKey, "declaration.itemType.nationalAdditionalCode.error.maxAmount"))
-        )
+        val expectedValidationResult =
+          Invalid(errors = Seq(FormError(nationalAdditionalCodesKey, "declaration.itemType.nationalAdditionalCode.error.maxAmount")))
 
         testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
       }
 
       "there is duplicated National additional code" in {
         val itemType = buildItemType(nationalAdditionalCode = Seq("1111", "1111"))
-        val expectedValidationResult = Invalid(
-          errors =
-            Seq(FormError(nationalAdditionalCodesKey, "declaration.itemType.nationalAdditionalCode.error.duplicate"))
-        )
+        val expectedValidationResult =
+          Invalid(errors = Seq(FormError(nationalAdditionalCodesKey, "declaration.itemType.nationalAdditionalCode.error.duplicate")))
 
         testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
       }
@@ -287,9 +243,7 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       "UN Dangerous Goods Code is longer than 4 characters" in {
         val itemType = buildItemType(unDangerousGoodsCode = Some("ABCD5"))
         val expectedValidationResult =
-          Invalid(
-            errors = Seq(FormError(unDangerousGoodsCodeKey, "declaration.itemType.unDangerousGoodsCode.error.length"))
-          )
+          Invalid(errors = Seq(FormError(unDangerousGoodsCodeKey, "declaration.itemType.unDangerousGoodsCode.error.length")))
 
         testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
       }
@@ -297,9 +251,7 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       "UN Dangerous Goods Code is shorter than 4 characters" in {
         val itemType = buildItemType(unDangerousGoodsCode = Some("123"))
         val expectedValidationResult =
-          Invalid(
-            errors = Seq(FormError(unDangerousGoodsCodeKey, "declaration.itemType.unDangerousGoodsCode.error.length"))
-          )
+          Invalid(errors = Seq(FormError(unDangerousGoodsCodeKey, "declaration.itemType.unDangerousGoodsCode.error.length")))
 
         testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
       }
@@ -307,11 +259,7 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       "UN Dangerous Goods Code contains special characters" in {
         val itemType = buildItemType(unDangerousGoodsCode = Some("A7#$"))
         val expectedValidationResult =
-          Invalid(
-            errors = Seq(
-              FormError(unDangerousGoodsCodeKey, "declaration.itemType.unDangerousGoodsCode.error.specialCharacters")
-            )
-          )
+          Invalid(errors = Seq(FormError(unDangerousGoodsCodeKey, "declaration.itemType.unDangerousGoodsCode.error.specialCharacters")))
 
         testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
       }
@@ -334,9 +282,8 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
 
       "Statistical value contains non-digit characters" in {
         val itemType = buildItemType(statisticalValue = "123ABC")
-        val expectedValidationResult = Invalid(
-          errors = Seq(FormError(statisticalValueKey, "declaration.itemType.statisticalValue.error.wrongFormat"))
-        )
+        val expectedValidationResult =
+          Invalid(errors = Seq(FormError(statisticalValueKey, "declaration.itemType.statisticalValue.error.wrongFormat")))
 
         testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
       }

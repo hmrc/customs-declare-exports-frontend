@@ -20,10 +20,6 @@ import play.api.libs.json.{JsObject, JsString, JsValue}
 
 object OfficeOfExitStandardSpec {
   val correctOfficeOfExitJSON: JsValue = JsObject(
-    Map(
-      "officeId" -> JsString("123qwe12"),
-      "presentationOfficeId" -> JsString("123"),
-      "circumstancesCode" -> JsString("Yes")
-    )
+    Map("officeId" -> JsString("123qwe12"), "presentationOfficeId" -> JsString("123"), "circumstancesCode" -> JsString("Yes"))
   )
 }

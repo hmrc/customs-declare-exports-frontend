@@ -31,11 +31,7 @@ class JsonFileSpec extends WordSpec with MustMatchers {
 
       "data is in an Array" in {
         val result = JsonFile.readFromJsonFile(file, deserialiser)
-        val expectedResult = List(
-          AutoCompleteItem("Chemical", "1"),
-          AutoCompleteItem("Aquarium", "2"),
-          AutoCompleteItem("Peppermint", "3")
-        )
+        val expectedResult = List(AutoCompleteItem("Chemical", "1"), AutoCompleteItem("Aquarium", "2"), AutoCompleteItem("Peppermint", "3"))
         result must be(expectedResult)
 
       }

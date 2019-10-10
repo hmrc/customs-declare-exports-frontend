@@ -56,17 +56,14 @@ class ConsigneeDetailsController @Inject()(
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ConsigneeDetails]) =>
-          Future.successful(BadRequest(consigneeDetailsPage(mode, formWithErrors))),
+        (formWithErrors: Form[ConsigneeDetails]) => Future.successful(BadRequest(consigneeDetailsPage(mode, formWithErrors))),
         form =>
           updateCache(form)
             .map(_ => navigator.continueTo(controllers.declaration.routes.DeclarantDetailsController.displayPage(mode)))
       )
   }
 
-  private def updateCache(
-    formData: ConsigneeDetails
-  )(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+  private def updateCache(formData: ConsigneeDetails)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>
       val updatedParties = model.parties.copy(consigneeDetails = Some(formData))
       model.copy(parties = updatedParties)

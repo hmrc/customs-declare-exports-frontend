@@ -68,12 +68,8 @@ class NavigatorTest extends WordSpec with Matchers with MockitoSugar with Export
       val result = navigator.continueTo(call)(request(Some(SaveAndReturn)), hc)
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some(
-        controllers.declaration.routes.ConfirmationController.displayDraftConfirmation().url
-      )
-      flash(result).get(FlashKeys.expiryDate) shouldBe Some(
-        expiryDate.atStartOfDay(ZoneOffset.UTC).toInstant.toEpochMilli.toString
-      )
+      redirectLocation(result) shouldBe Some(controllers.declaration.routes.ConfirmationController.displayDraftConfirmation().url)
+      flash(result).get(FlashKeys.expiryDate) shouldBe Some(expiryDate.atStartOfDay(ZoneOffset.UTC).toInstant.toEpochMilli.toString)
       session(result).get(ExportsSessionKeys.declarationId) shouldBe None
 
       verify(auditService).auditAllPagesUserInput(ArgumentMatchers.eq(AuditTypes.SaveAndReturnSubmission), any())(any())

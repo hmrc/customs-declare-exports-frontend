@@ -61,8 +61,7 @@ object FieldValidator {
 
   val hasSpecificLength: Int => String => Boolean = (length: Int) => (input: String) => input.length == length
 
-  val lengthInRange: Int => Int => String => Boolean = (min: Int) =>
-    (max: Int) => (input: String) => input.length >= min && input.length <= max
+  val lengthInRange: Int => Int => String => Boolean = (min: Int) => (max: Int) => (input: String) => input.length >= min && input.length <= max
 
   val isInRange: (Int, Int) => Int => Boolean = (min: Int, max: Int) => (input: Int) => input >= min && input <= max
 
@@ -74,17 +73,14 @@ object FieldValidator {
 
   val isAlphanumeric: String => Boolean = (input: String) => input.forall(_.isLetterOrDigit)
 
-  val isAlphanumericWithSpace: String => Boolean = (input: String) =>
-    isAlphanumericWithSpecialCharacters(Set(' '))(input)
+  val isAlphanumericWithSpace: String => Boolean = (input: String) => isAlphanumericWithSpecialCharacters(Set(' '))(input)
 
   val isAlphanumericWithSpecialCharacters: Set[Char] => String => Boolean = (allowedChars: Set[Char]) =>
     (input: String) => input.filter(!_.isLetterOrDigit).forall(allowedChars)
 
-  val isAlphanumericWithAllowedSpecialCharacters: String => Boolean = (input: String) =>
-    input.filter(!_.isLetterOrDigit).forall(allowedSpecialChars)
+  val isAlphanumericWithAllowedSpecialCharacters: String => Boolean = (input: String) => input.filter(!_.isLetterOrDigit).forall(allowedSpecialChars)
 
-  val isAlphanumericWithAllowedHyphenCharacter: String => Boolean = (input: String) =>
-    input.filter(!_.isLetterOrDigit).forall(allowedHyphenChar)
+  val isAlphanumericWithAllowedHyphenCharacter: String => Boolean = (input: String) => input.filter(!_.isLetterOrDigit).forall(allowedHyphenChar)
 
   val startsWithCapitalLetter: String => Boolean = (input: String) => input.headOption.exists(_.isUpper)
 

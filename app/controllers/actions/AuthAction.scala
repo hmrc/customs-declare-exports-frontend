@@ -120,8 +120,7 @@ class AuthActionImpl @Inject()(
 }
 
 @ImplementedBy(classOf[AuthActionImpl])
-trait AuthAction
-    extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]
+trait AuthAction extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]
 
 case class NoExternalId() extends NoActiveSession("No externalId was found")
 

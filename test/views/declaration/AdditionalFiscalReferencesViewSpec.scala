@@ -29,8 +29,7 @@ import views.html.declaration.additional_fiscal_references
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalFiscalReferencesViewSpec
-    extends UnitViewSpec with Stubs with AdditionalFiscalReferencesMessages with CommonMessages {
+class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with AdditionalFiscalReferencesMessages with CommonMessages {
 
   private val form: Form[AdditionalFiscalReference] = AdditionalFiscalReference.form()
 
@@ -38,10 +37,7 @@ class AdditionalFiscalReferencesViewSpec
 
   val itemId = new ExportItemIdGeneratorService().generateItemId()
 
-  private def createView(
-    form: Form[AdditionalFiscalReference] = form,
-    references: Seq[AdditionalFiscalReference] = Seq.empty
-  ): Document =
+  private def createView(form: Form[AdditionalFiscalReference] = form, references: Seq[AdditionalFiscalReference] = Seq.empty): Document =
     additionalFiscalReferencesPage(Mode.Normal, itemId, form, references)
 
   "Additional Fiscal References View on empty page" should {
@@ -71,9 +67,7 @@ class AdditionalFiscalReferencesViewSpec
       val backButton = view.getElementById("link-back")
 
       backButton.text() mustBe backCaption
-      backButton must haveHref(
-        controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId)
-      )
+      backButton must haveHref(controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId))
     }
 
     "display 'Save and continue' button" in {

@@ -109,12 +109,7 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
         withNewCaching(aDeclaration())
         when(mockSubmissionService.submit(any(), any(), any())(any(), any())).thenReturn(Future.successful(None))
 
-        val correctForm = Seq(
-          ("fullName", "Test Tester"),
-          ("jobRole", "Tester"),
-          ("email", "test@tester.com"),
-          ("confirmation", "true")
-        )
+        val correctForm = Seq(("fullName", "Test Tester"), ("jobRole", "Tester"), ("email", "test@tester.com"), ("confirmation", "true"))
         val result = controller.submitDeclaration()(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) mustBe INTERNAL_SERVER_ERROR
@@ -131,24 +126,14 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
             .submit(any(), any[ExportsDeclaration], any[LegalDeclaration])(any[HeaderCarrier], any[ExecutionContext])
         ).thenReturn(Future.successful(Some("123LRN")))
 
-        val correctForm = Seq(
-          ("fullName", "Test Tester"),
-          ("jobRole", "Tester"),
-          ("email", "test@tester.com"),
-          ("confirmation", "true")
-        )
+        val correctForm = Seq(("fullName", "Test Tester"), ("jobRole", "Tester"), ("email", "test@tester.com"), ("confirmation", "true"))
         val result = controller.submitDeclaration()(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(SEE_OTHER)
         session(result).get(ExportsSessionKeys.declarationId) must be(None)
-        redirectLocation(result) must be(
-          Some(controllers.declaration.routes.ConfirmationController.displaySubmissionConfirmation().url)
-        )
+        redirectLocation(result) must be(Some(controllers.declaration.routes.ConfirmationController.displaySubmissionConfirmation().url))
         flash(result).get("LRN") must be(Some("123LRN"))
-        verify(mockSubmissionService).submit(any(), any[ExportsDeclaration], any[LegalDeclaration])(
-          any[HeaderCarrier],
-          any[ExecutionContext]
-        )
+        verify(mockSubmissionService).submit(any(), any[ExportsDeclaration], any[LegalDeclaration])(any[HeaderCarrier], any[ExecutionContext])
       }
     }
 

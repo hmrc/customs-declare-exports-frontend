@@ -53,17 +53,14 @@ class ExporterDetailsController @Inject()(
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ExporterDetails]) =>
-          Future.successful(BadRequest(exporterDetailsPage(mode, formWithErrors))),
+        (formWithErrors: Form[ExporterDetails]) => Future.successful(BadRequest(exporterDetailsPage(mode, formWithErrors))),
         form =>
           updateCache(form)
             .map(_ => navigator.continueTo(controllers.declaration.routes.ConsigneeDetailsController.displayPage(mode)))
       )
   }
 
-  private def updateCache(
-    formData: ExporterDetails
-  )(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+  private def updateCache(formData: ExporterDetails)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
       val updatedParties = model.parties.copy(exporterDetails = Some(formData))
       model.copy(parties = updatedParties)

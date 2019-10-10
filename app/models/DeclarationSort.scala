@@ -22,10 +22,7 @@ import models.SortBy.SortBy
 import models.SortDirection.SortDirection
 import utils.EnumJson
 
-case class DeclarationSort(
-  by: SortBy = DeclarationSort.DEFAULT_BY,
-  direction: SortDirection = DeclarationSort.DEFAULT_DIRECTION
-)
+case class DeclarationSort(by: SortBy = DeclarationSort.DEFAULT_BY, direction: SortDirection = DeclarationSort.DEFAULT_DIRECTION)
 
 object DeclarationSort {
   val DEFAULT_BY = SortBy.CREATED
@@ -53,10 +50,7 @@ object DeclarationSort {
       }
 
       override def unbind(key: String, sort: DeclarationSort): String =
-        strBinder.unbind(queryParamBy(key), sort.by.toString) + "&" + strBinder.unbind(
-          queryParamDirection(key),
-          sort.direction.toString
-        )
+        strBinder.unbind(queryParamBy(key), sort.by.toString) + "&" + strBinder.unbind(queryParamDirection(key), sort.direction.toString)
     }
 }
 

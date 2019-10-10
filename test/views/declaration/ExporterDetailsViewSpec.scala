@@ -33,8 +33,7 @@ import views.html.declaration.exporter_details
 import views.tags.ViewTest
 
 @ViewTest
-class ExporterDetailsViewSpec
-    extends UnitViewSpec with ExporterDetailsMessages with CommonMessages with Stubs with Injector {
+class ExporterDetailsViewSpec extends UnitViewSpec with ExporterDetailsMessages with CommonMessages with Stubs with Injector {
 
   private val form: Form[ExporterDetails] = ExporterDetails.form()
   private val exporterDetailsPage = new exporter_details(mainTemplate)
@@ -50,9 +49,7 @@ class ExporterDetailsViewSpec
 
     "display section header" in {
 
-      createView().getElementById("section-header").text() must include(
-        messages("supplementary.summary.parties.header")
-      )
+      createView().getElementById("section-header").text() must include(messages("supplementary.summary.parties.header"))
     }
 
     "display empty input with label for EORI" in {
@@ -154,9 +151,7 @@ class ExporterDetailsViewSpec
       val view = createView(
         ExporterDetails
           .form()
-          .fillAndValidate(
-            ExporterDetails(EntityDetails(None, Some(Address("", "Test Street", "Leeds", "LS18BN", "England"))))
-          )
+          .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("", "Test Street", "Leeds", "LS18BN", "England")))))
       )
 
       checkErrorsSummary(view)
@@ -172,12 +167,7 @@ class ExporterDetailsViewSpec
           .form()
           .fillAndValidate(
             ExporterDetails(
-              EntityDetails(
-                None,
-                Some(
-                  Address(TestHelper.createRandomAlphanumericString(71), "Test Street", "Leeds", "LS18BN", "England")
-                )
-              )
+              EntityDetails(None, Some(Address(TestHelper.createRandomAlphanumericString(71), "Test Street", "Leeds", "LS18BN", "England")))
             )
           )
       )
@@ -193,9 +183,7 @@ class ExporterDetailsViewSpec
       val view = createView(
         ExporterDetails
           .form()
-          .fillAndValidate(
-            ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "", "Leeds", "LS18BN", "England"))))
-          )
+          .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "", "Leeds", "LS18BN", "England")))))
       )
 
       checkErrorsSummary(view)
@@ -211,10 +199,7 @@ class ExporterDetailsViewSpec
           .form()
           .fillAndValidate(
             ExporterDetails(
-              EntityDetails(
-                None,
-                Some(Address("Marco Polo", TestHelper.createRandomAlphanumericString(71), "Leeds", "LS18BN", "England"))
-              )
+              EntityDetails(None, Some(Address("Marco Polo", TestHelper.createRandomAlphanumericString(71), "Leeds", "LS18BN", "England")))
             )
           )
       )
@@ -230,9 +215,7 @@ class ExporterDetailsViewSpec
       val view = createView(
         ExporterDetails
           .form()
-          .fillAndValidate(
-            ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "", "LS18BN", "England"))))
-          )
+          .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "", "LS18BN", "England")))))
       )
 
       checkErrorsSummary(view)
@@ -248,18 +231,7 @@ class ExporterDetailsViewSpec
           .form()
           .fillAndValidate(
             ExporterDetails(
-              EntityDetails(
-                None,
-                Some(
-                  Address(
-                    "Marco Polo",
-                    "Test Street",
-                    TestHelper.createRandomAlphanumericString(71),
-                    "LS18BN",
-                    "England"
-                  )
-                )
-              )
+              EntityDetails(None, Some(Address("Marco Polo", "Test Street", TestHelper.createRandomAlphanumericString(71), "LS18BN", "England")))
             )
           )
       )
@@ -275,9 +247,7 @@ class ExporterDetailsViewSpec
       val view = createView(
         ExporterDetails
           .form()
-          .fillAndValidate(
-            ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "", "England"))))
-          )
+          .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "", "England")))))
       )
       checkErrorsSummary(view)
       view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
@@ -292,18 +262,7 @@ class ExporterDetailsViewSpec
           .form()
           .fillAndValidate(
             ExporterDetails(
-              EntityDetails(
-                None,
-                Some(
-                  Address(
-                    "Marco Polo",
-                    "Test Street",
-                    "Leeds",
-                    TestHelper.createRandomAlphanumericString(71),
-                    "England"
-                  )
-                )
-              )
+              EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", TestHelper.createRandomAlphanumericString(71), "England")))
             )
           )
       )
@@ -319,9 +278,7 @@ class ExporterDetailsViewSpec
       val view = createView(
         ExporterDetails
           .form()
-          .fillAndValidate(
-            ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", ""))))
-          )
+          .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "")))))
       )
 
       checkErrorsSummary(view)
@@ -335,11 +292,7 @@ class ExporterDetailsViewSpec
       val view = createView(
         ExporterDetails
           .form()
-          .fillAndValidate(
-            ExporterDetails(
-              EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "Barcelona")))
-            )
-          )
+          .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "Barcelona")))))
       )
 
       checkErrorsSummary(view)

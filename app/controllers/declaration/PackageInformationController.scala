@@ -47,49 +47,39 @@ class PackageInformationController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   // TODO Future[Option[List[PackageInformation]]]...
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) {
-    implicit request =>
-      val items = request.cacheModel.itemBy(itemId).map(_.packageInformation).getOrElse(Nil)
-      Ok(packageInformationPage(mode, itemId, form(), items))
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val items = request.cacheModel.itemBy(itemId).map(_.packageInformation).getOrElse(Nil)
+    Ok(packageInformationPage(mode, itemId, form(), items))
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
-    implicit authRequest =>
-      val actionTypeOpt = FormAction.bindFromRequest()
-      val boundForm = form().bindFromRequest()
-      val packagings = authRequest.cacheModel.itemBy(itemId).map(_.packageInformation).getOrElse(Seq.empty)
-      actionTypeOpt match {
-        case Add                             => addItem(mode, itemId, boundForm, packagings)
-        case Remove(values)                  => removeItem(mode, itemId, values, boundForm, packagings)
-        case SaveAndContinue | SaveAndReturn => saveAndContinue(mode, itemId, boundForm, packagings)
-        case _                               => errorHandler.displayErrorPage()
-      }
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit authRequest =>
+    val actionTypeOpt = FormAction.bindFromRequest()
+    val boundForm = form().bindFromRequest()
+    val packagings = authRequest.cacheModel.itemBy(itemId).map(_.packageInformation).getOrElse(Seq.empty)
+    actionTypeOpt match {
+      case Add                             => addItem(mode, itemId, boundForm, packagings)
+      case Remove(values)                  => removeItem(mode, itemId, values, boundForm, packagings)
+      case SaveAndContinue | SaveAndReturn => saveAndContinue(mode, itemId, boundForm, packagings)
+      case _                               => errorHandler.displayErrorPage()
+    }
   }
 
-  private def removeItem(
-    mode: Mode,
-    itemId: String,
-    values: Seq[String],
-    boundForm: Form[PackageInformation],
-    items: Seq[PackageInformation]
-  )(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
+  private def removeItem(mode: Mode, itemId: String, values: Seq[String], boundForm: Form[PackageInformation], items: Seq[PackageInformation])(
+    implicit request: JourneyRequest[AnyContent]
+  ): Future[Result] = {
     val itemToRemove = PackageInformation.fromJsonString(values.head)
     val updatedCache = remove(items, itemToRemove.contains(_: PackageInformation))
     updateExportsCache(itemId, updatedCache)
       .map(_ => Ok(packageInformationPage(mode, itemId, boundForm.discardingErrors, updatedCache)))
   }
 
-  private def saveAndContinue(
-    mode: Mode,
-    itemId: String,
-    boundForm: Form[PackageInformation],
-    cachedData: Seq[PackageInformation]
-  )(implicit request: JourneyRequest[AnyContent]): Future[Result] =
+  private def saveAndContinue(mode: Mode, itemId: String, boundForm: Form[PackageInformation], cachedData: Seq[PackageInformation])(
+    implicit request: JourneyRequest[AnyContent]
+  ): Future[Result] =
     MultipleItemsHelper
       .saveAndContinue(boundForm, cachedData, true, PackageInformation.limit)
       .fold(
-        formWithErrors =>
-          Future.successful(BadRequest(packageInformationPage(mode, itemId, formWithErrors, cachedData))),
+        formWithErrors => Future.successful(BadRequest(packageInformationPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
           if (updatedCache != cachedData)
             updateExportsCache(itemId, updatedCache)
@@ -106,17 +96,13 @@ class PackageInformationController @Inject()(
             )
       )
 
-  private def addItem(
-    mode: Mode,
-    itemId: String,
-    boundForm: Form[PackageInformation],
-    cachedData: Seq[PackageInformation]
-  )(implicit request: JourneyRequest[AnyContent]): Future[Result] =
+  private def addItem(mode: Mode, itemId: String, boundForm: Form[PackageInformation], cachedData: Seq[PackageInformation])(
+    implicit request: JourneyRequest[AnyContent]
+  ): Future[Result] =
     MultipleItemsHelper
       .add(boundForm, cachedData, PackageInformation.limit)
       .fold(
-        formWithErrors =>
-          Future.successful(BadRequest(packageInformationPage(mode, itemId, formWithErrors, cachedData))),
+        formWithErrors => Future.successful(BadRequest(packageInformationPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
           updateExportsCache(itemId, updatedCache)
             .map(_ => Redirect(controllers.declaration.routes.PackageInformationController.displayPage(mode, itemId)))

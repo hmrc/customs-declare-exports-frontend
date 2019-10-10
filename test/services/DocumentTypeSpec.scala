@@ -26,9 +26,7 @@ class DocumentTypeSpec extends WordSpec with MustMatchers {
     "return document type in correct order" in {
 
       val threeTypes =
-        allDocuments.filter(
-          d => d.description == "MUCR" || d.description == "Information Sheet INF3" || d.description == "Other"
-        )
+        allDocuments.filter(d => d.description == "MUCR" || d.description == "Information Sheet INF3" || d.description == "Other")
       val expectedResult =
         List(DocumentType("Information Sheet INF3", "IF3"), DocumentType("MUCR", "MCR"), DocumentType("Other", "ZZZ"))
       threeTypes must be(expectedResult)

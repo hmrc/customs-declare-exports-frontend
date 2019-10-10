@@ -48,22 +48,12 @@ object BorderTransport {
     "container" -> optional(boolean)
       .verifying("supplementary.transportInfo.container.error.empty", _.isDefined)
       .transform(_.get, (b: Boolean) => Some(b)),
-    "meansOfTransportCrossingTheBorderType" -> requiredRadio(
-      "supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty"
-    ).verifying(
-      "supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.incorrect",
-      isContainedIn(allowedMeansOfTransportTypeCodes)
-    ),
+    "meansOfTransportCrossingTheBorderType" -> requiredRadio("supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty")
+      .verifying("supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.incorrect", isContainedIn(allowedMeansOfTransportTypeCodes)),
     "meansOfTransportCrossingTheBorderIDNumber" -> text()
       .verifying("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.empty", nonEmpty)
-      .verifying(
-        "supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.length",
-        noLongerThan(35)
-      )
-      .verifying(
-        "supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid",
-        isAlphanumericWithAllowedSpecialCharacters
-      ),
+      .verifying("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.length", noLongerThan(35))
+      .verifying("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid", isAlphanumericWithAllowedSpecialCharacters),
     "paymentMethod" -> optional(
       text()
         .verifying("standard.transportDetails.paymentMethod.error", isContainedIn(paymentMethods.keys))

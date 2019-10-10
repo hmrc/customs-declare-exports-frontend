@@ -37,16 +37,8 @@ object ExportsTestData extends ExportsDeclarationBuilder {
   val nrsCredentialRole = Some(User)
   val nrsMdtpInformation = MdtpInformation("deviceId", "sessionId")
   val nrsItmpName = ItmpName(Some("givenName"), Some("middleName"), Some("familyName"))
-  val nrsItmpAddress = ItmpAddress(
-    Some("line1"),
-    Some("line2"),
-    Some("line3"),
-    Some("line4"),
-    Some("line5"),
-    Some("postCode"),
-    Some("countryName"),
-    Some("countryCode")
-  )
+  val nrsItmpAddress =
+    ItmpAddress(Some("line1"), Some("line2"), Some("line3"), Some("line4"), Some("line5"), Some("postCode"), Some("countryName"), Some("countryCode"))
   val nrsAffinityGroup = Some(Individual)
   val nrsCredentialStrength = Some("STRONG")
   val nrsDateOfBirth = Some(LocalDate.now().minusYears(25))
@@ -172,13 +164,7 @@ object ExportsTestData extends ExportsDeclarationBuilder {
   )
 
   val goodsDate: JsValue = JsObject(
-    Map(
-      "day" -> JsNumber(15),
-      "month" -> JsNumber(4),
-      "year" -> JsNumber(LocalDate.now().getYear),
-      "hour" -> JsNumber(16),
-      "minute" -> JsNumber(30)
-    )
+    Map("day" -> JsNumber(15), "month" -> JsNumber(4), "year" -> JsNumber(LocalDate.now().getYear), "hour" -> JsNumber(16), "minute" -> JsNumber(30))
   )
 
   val emptyLocation: JsValue = JsObject(Map("" -> JsString("")))
@@ -201,11 +187,7 @@ object ExportsTestData extends ExportsDeclarationBuilder {
   )
 
   val correctTransport: JsValue = JsObject(
-    Map(
-      "transportId" -> JsString("Transport Id"),
-      "transportMode" -> JsString("M"),
-      "transportNationality" -> JsString("PL")
-    )
+    Map("transportId" -> JsString("Transport Id"), "transportMode" -> JsString("M"), "transportNationality" -> JsString("PL"))
   )
 
   val choiceForm = Json.toJson(Choice("EAL"))

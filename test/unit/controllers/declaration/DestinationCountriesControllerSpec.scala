@@ -112,12 +112,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
       "user provide wrong action" in new StandardSetUp {
 
-        val wrongAction = Seq(
-          ("countryOfDispatch", "GB"),
-          ("countriesOfRouting[]", "US"),
-          ("countryOfDestination", "PL"),
-          ("WrongAction", "")
-        )
+        val wrongAction = Seq(("countryOfDispatch", "GB"), ("countriesOfRouting[]", "US"), ("countryOfDestination", "PL"), ("WrongAction", ""))
 
         val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(wrongAction: _*))
 
@@ -126,12 +121,8 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
       "user provide incorrect data during adding" in new StandardSetUp {
 
-        val incorrectForm = Seq(
-          ("countryOfDispatch", "incorrect"),
-          ("countriesOfRouting[]", "incorrect"),
-          ("countryOfDestination", "incorrect"),
-          addActionUrlEncoded
-        )
+        val incorrectForm =
+          Seq(("countryOfDispatch", "incorrect"), ("countriesOfRouting[]", "incorrect"), ("countryOfDestination", "incorrect"), addActionUrlEncoded)
 
         val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
@@ -156,12 +147,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
         withNewCaching(aDeclaration(withDestinationCountries(DestinationCountries("GB", Seq("US"), "PL"))))
 
-        val duplicatedForm = Seq(
-          ("countryOfDispatch", "GB"),
-          ("countriesOfRouting[]", "US"),
-          ("countryOfDestination", "PL"),
-          addActionUrlEncoded
-        )
+        val duplicatedForm = Seq(("countryOfDispatch", "GB"), ("countriesOfRouting[]", "US"), ("countryOfDestination", "PL"), addActionUrlEncoded)
 
         val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
@@ -172,12 +158,8 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
         withNewCaching(aDeclaration(withDestinationCountries(DestinationCountries("GB", Seq("US"), "PL"))))
 
-        val duplicatedForm = Seq(
-          ("countryOfDispatch", "GB"),
-          ("countriesOfRouting[]", "US"),
-          ("countryOfDestination", "PL"),
-          saveAndContinueActionUrlEncoded
-        )
+        val duplicatedForm =
+          Seq(("countryOfDispatch", "GB"), ("countriesOfRouting[]", "US"), ("countryOfDestination", "PL"), saveAndContinueActionUrlEncoded)
 
         val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
@@ -186,18 +168,9 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
       "user reach maximum amount of items during adding" in new StandardSetUp {
 
-        withNewCaching(
-          aDeclaration(
-            withDestinationCountries(DestinationCountries("GB", Seq.fill(DestinationCountries.limit)("US"), "PL"))
-          )
-        )
+        withNewCaching(aDeclaration(withDestinationCountries(DestinationCountries("GB", Seq.fill(DestinationCountries.limit)("US"), "PL"))))
 
-        val correctForm = Seq(
-          ("countryOfDispatch", "GB"),
-          ("countriesOfRouting[]", "US"),
-          ("countryOfDestination", "PL"),
-          addActionUrlEncoded
-        )
+        val correctForm = Seq(("countryOfDispatch", "GB"), ("countriesOfRouting[]", "US"), ("countryOfDestination", "PL"), addActionUrlEncoded)
 
         val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
@@ -206,18 +179,10 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
       "user reach maximum amount of items during saving" in new StandardSetUp {
 
-        withNewCaching(
-          aDeclaration(
-            withDestinationCountries(DestinationCountries("GB", Seq.fill(DestinationCountries.limit)("US"), "PL"))
-          )
-        )
+        withNewCaching(aDeclaration(withDestinationCountries(DestinationCountries("GB", Seq.fill(DestinationCountries.limit)("US"), "PL"))))
 
-        val correctForm = Seq(
-          ("countryOfDispatch", "GB"),
-          ("countriesOfRouting[]", "US"),
-          ("countryOfDestination", "PL"),
-          saveAndContinueActionUrlEncoded
-        )
+        val correctForm =
+          Seq(("countryOfDispatch", "GB"), ("countriesOfRouting[]", "US"), ("countryOfDestination", "PL"), saveAndContinueActionUrlEncoded)
 
         val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
@@ -242,12 +207,7 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
       "user correctly add new item" in new StandardSetUp {
 
-        val correctForm = Seq(
-          ("countryOfDispatch", "GB"),
-          ("countriesOfRouting[]", "US"),
-          ("countryOfDestination", "PL"),
-          addActionUrlEncoded
-        )
+        val correctForm = Seq(("countryOfDispatch", "GB"), ("countriesOfRouting[]", "US"), ("countryOfDestination", "PL"), addActionUrlEncoded)
 
         val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
@@ -256,12 +216,8 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
       "user save correct data with empty cache" in new StandardSetUp {
 
-        val correctForm = Seq(
-          ("countryOfDispatch", "GB"),
-          ("countriesOfRouting[]", "US"),
-          ("countryOfDestination", "PL"),
-          saveAndContinueActionUrlEncoded
-        )
+        val correctForm =
+          Seq(("countryOfDispatch", "GB"), ("countriesOfRouting[]", "US"), ("countryOfDestination", "PL"), saveAndContinueActionUrlEncoded)
 
         val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
@@ -273,12 +229,8 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
         withNewCaching(aDeclaration(withDestinationCountries(DestinationCountries("GB", Seq("US"), "PL"))))
 
-        val correctForm = Seq(
-          ("countryOfDispatch", "GB"),
-          ("countriesOfRouting[]", ""),
-          ("countryOfDestination", "PL"),
-          saveAndContinueActionUrlEncoded
-        )
+        val correctForm =
+          Seq(("countryOfDispatch", "GB"), ("countriesOfRouting[]", ""), ("countryOfDestination", "PL"), saveAndContinueActionUrlEncoded)
 
         val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 

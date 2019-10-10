@@ -62,10 +62,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
       "display page method is invoked with data in cache" in new SetUp {
 
-        val itemCacheData = ExportItem(
-          "itemId",
-          additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("12345", "description"))))
-        )
+        val itemCacheData =
+          ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("12345", "description")))))
         val cachedData =
           aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
@@ -102,10 +100,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
       "user put duplicated item" in new SetUp {
 
-        val itemCacheData = ExportItem(
-          "itemId",
-          additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("12345", "description"))))
-        )
+        val itemCacheData =
+          ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("12345", "description")))))
         val cachedData =
           aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
@@ -120,11 +116,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
       "user reach maximum amount of items" in new SetUp {
 
-        val itemCacheData = ExportItem(
-          "itemId",
-          additionalInformation =
-            Some(AdditionalInformationData(Seq.fill(99)(AdditionalInformation("12345", "description"))))
-        )
+        val itemCacheData =
+          ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq.fill(99)(AdditionalInformation("12345", "description")))))
         val cachedData =
           aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
@@ -151,10 +144,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
       "user put duplicated item" in new SetUp {
 
-        val itemCacheData = ExportItem(
-          "itemId",
-          additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("12345", "description"))))
-        )
+        val itemCacheData =
+          ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("12345", "description")))))
         val cachedData =
           aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
@@ -169,11 +160,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
       "user reach maximum amount of items" in new SetUp {
 
-        val itemCacheData = ExportItem(
-          "itemId",
-          additionalInformation =
-            Some(AdditionalInformationData(Seq.fill(99)(AdditionalInformation("12345", "description"))))
-        )
+        val itemCacheData =
+          ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq.fill(99)(AdditionalInformation("12345", "description")))))
         val cachedData =
           aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
@@ -209,11 +197,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
       "user save correct data without new item" in new SetUp {
 
-        val itemCacheData = ExportItem(
-          "itemId",
-          additionalInformation =
-            Some(AdditionalInformationData(Seq.fill(99)(AdditionalInformation("12345", "description"))))
-        )
+        val itemCacheData =
+          ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq.fill(99)(AdditionalInformation("12345", "description")))))
         val cachedData =
           aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
@@ -228,10 +213,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
       "user remove existing item" in new SetUp {
 
-        val itemCacheData = ExportItem(
-          "itemId",
-          additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("12345", "description"))))
-        )
+        val itemCacheData =
+          ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("12345", "description")))))
         val cachedData =
           aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)

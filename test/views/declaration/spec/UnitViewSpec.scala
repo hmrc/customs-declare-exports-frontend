@@ -38,9 +38,7 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
 
   def checkErrorsSummary(view: Document) = {
     view.getElementById("error-summary-heading").text() must be("error.summary.title")
-    view.getElementsByClass("error-summary error-summary--show").get(0).getElementsByTag("p").text() must be(
-      "error.summary.text"
-    )
+    view.getElementsByClass("error-summary error-summary--show").get(0).getElementsByTag("p").text() must be("error.summary.text")
   }
 
   def messagesKey(key: String): BeMatcher[String] = new MessagesKeyMatcher(key)

@@ -48,9 +48,7 @@ class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig)(im
       detail = AuditExtensions.auditHeaderCarrier(hc).toAuditDetails() ++ auditData
     )
 
-  def auditAllPagesUserInput(auditType: AuditTypes.Audit, userInput: ExportsDeclaration)(
-    implicit hc: HeaderCarrier
-  ): Future[AuditResult] = {
+  def auditAllPagesUserInput(auditType: AuditTypes.Audit, userInput: ExportsDeclaration)(implicit hc: HeaderCarrier): Future[AuditResult] = {
     val extendedEvent = ExtendedDataEvent(
       auditSource = appConfig.appName,
       auditType = auditType.toString,
@@ -60,9 +58,7 @@ class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig)(im
     connector.sendExtendedEvent(extendedEvent).map(handleResponse(_, auditType.toString))
   }
 
-  def auditAllPagesDeclarationCancellation(
-    userInput: CancelDeclaration
-  )(implicit hc: HeaderCarrier): Future[AuditResult] = {
+  def auditAllPagesDeclarationCancellation(userInput: CancelDeclaration)(implicit hc: HeaderCarrier): Future[AuditResult] = {
     val auditType = AuditTypes.Cancellation.toString
     val extendedEvent = ExtendedDataEvent(
       auditSource = appConfig.appName,
@@ -76,10 +72,7 @@ class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig)(im
   private def getAuditTags(transactionName: String, path: String)(implicit hc: HeaderCarrier) =
     AuditExtensions
       .auditHeaderCarrier(hc)
-      .toAuditTags(
-        transactionName = s"Export-Declaration-${transactionName}",
-        path = s"customs-declare-exports/${path}"
-      )
+      .toAuditTags(transactionName = s"Export-Declaration-${transactionName}", path = s"customs-declare-exports/${path}")
 
   private def handleResponse(result: AuditResult, auditType: String) = result match {
     case Success =>
@@ -105,6 +98,5 @@ object AuditTypes extends Enumeration {
 }
 object EventData extends Enumeration {
   type Data = Value
-  val EORI, LRN, MRN, DUCR, DecType, ChangeReason, ChangeDescription, FullName, JobRole, Email, Confirmed,
-  SubmissionResult, Success, Failure = Value
+  val EORI, LRN, MRN, DUCR, DecType, ChangeReason, ChangeDescription, FullName, JobRole, Email, Confirmed, SubmissionResult, Success, Failure = Value
 }

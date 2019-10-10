@@ -64,12 +64,9 @@ class AdditionalFiscalReferencesController @Inject()(
 
   }
 
-  private def addReference(
-    mode: Mode,
-    itemId: String,
-    form: Form[AdditionalFiscalReference],
-    cachedData: AdditionalFiscalReferencesData
-  )(implicit request: JourneyRequest[AnyContent]): Future[Result] =
+  private def addReference(mode: Mode, itemId: String, form: Form[AdditionalFiscalReference], cachedData: AdditionalFiscalReferencesData)(
+    implicit request: JourneyRequest[AnyContent]
+  ): Future[Result] =
     MultipleItemsHelper
       .add(form, cachedData.references, limit)
       .fold(
@@ -79,12 +76,9 @@ class AdditionalFiscalReferencesController @Inject()(
             .map(_ => Redirect(routes.AdditionalFiscalReferencesController.displayPage(mode, itemId)))
       )
 
-  private def saveAndContinue(
-    mode: Mode,
-    itemId: String,
-    form: Form[AdditionalFiscalReference],
-    cachedData: AdditionalFiscalReferencesData
-  )(implicit request: JourneyRequest[AnyContent]): Future[Result] =
+  private def saveAndContinue(mode: Mode, itemId: String, form: Form[AdditionalFiscalReference], cachedData: AdditionalFiscalReferencesData)(
+    implicit request: JourneyRequest[AnyContent]
+  ): Future[Result] =
     MultipleItemsHelper
       .saveAndContinue(form, cachedData.references, isMandatory = true, limit)
       .fold(
@@ -108,21 +102,15 @@ class AdditionalFiscalReferencesController @Inject()(
     }
   }
 
-  private def badRequest(
-    mode: Mode,
-    itemId: String,
-    formWithErrors: Form[AdditionalFiscalReference],
-    references: Seq[AdditionalFiscalReference]
-  )(implicit request: JourneyRequest[AnyContent]): Result =
+  private def badRequest(mode: Mode, itemId: String, formWithErrors: Form[AdditionalFiscalReference], references: Seq[AdditionalFiscalReference])(
+    implicit request: JourneyRequest[AnyContent]
+  ): Result =
     BadRequest(additionalFiscalReferencesPage(mode, itemId, formWithErrors, references))
 
   private def updateExportsCache(itemId: String, updatedAdditionalFiscalReferencesData: AdditionalFiscalReferencesData)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>
-      model.updatedItem(
-        itemId,
-        item => item.copy(additionalFiscalReferencesData = Some(updatedAdditionalFiscalReferencesData))
-      )
+      model.updatedItem(itemId, item => item.copy(additionalFiscalReferencesData = Some(updatedAdditionalFiscalReferencesData)))
     }
 }

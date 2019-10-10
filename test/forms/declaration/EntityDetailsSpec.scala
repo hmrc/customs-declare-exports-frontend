@@ -66,13 +66,8 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
 
       "Address is correct but EORI is wrong" in {
         val eori = "12345ABCD!@#$"
-        val address = Address(
-          fullName = "Full Name",
-          addressLine = "Address Line",
-          townOrCity = "City",
-          postCode = "AB12 CD3",
-          country = "United Kingdom"
-        )
+        val address =
+          Address(fullName = "Full Name", addressLine = "Address Line", townOrCity = "City", postCode = "AB12 CD3", country = "United Kingdom")
         val input = buildEntityInputMap(eori, address)
 
         val form = EntityDetails.form().bind(input)
@@ -86,13 +81,8 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
 
     "contain errors for Address only" when {
       "EORI is empty & Address has error in a single field" in {
-        val address = Address(
-          fullName = "!@#$%^&*",
-          addressLine = "Address Line",
-          townOrCity = "City",
-          postCode = "AB12 CD3",
-          country = "United Kingdom"
-        )
+        val address =
+          Address(fullName = "!@#$%^&*", addressLine = "Address Line", townOrCity = "City", postCode = "AB12 CD3", country = "United Kingdom")
         val input = buildEntityInputMap(address = address)
 
         val form = EntityDetails.form().bind(input)
@@ -224,36 +214,23 @@ object EntityDetailsSpec {
   val correctEntityDetails = EntityDetails(eori = Some("9GB1234567ABCDEF"), address = Some(AddressSpec.correctAddress))
   val correctEntityDetailsEORIOnly = EntityDetails(eori = Some("9GB1234567ABCDEF"), address = None)
   val correctEntityDetailsAddressOnly = EntityDetails(eori = None, address = Some(AddressSpec.correctAddress))
-  val incorrectEntityDetails = EntityDetails(
-    eori = Some("gIeC1xyOPmgpZSVGT1nFmGxPd3tS7yvj7CKgsZfq2BYfXPB0tKM6GISKwvuqn0g14TwN6e"),
-    address = Some(AddressSpec.incorrectAddress)
-  )
+  val incorrectEntityDetails =
+    EntityDetails(eori = Some("gIeC1xyOPmgpZSVGT1nFmGxPd3tS7yvj7CKgsZfq2BYfXPB0tKM6GISKwvuqn0g14TwN6e"), address = Some(AddressSpec.incorrectAddress))
   val emptyEntityDetails = EntityDetails(None, None)
 
-  val correctEntityDetailsJSON: JsValue = JsObject(
-    Map("eori" -> JsString("9GB1234567ABCDEF"), "address" -> AddressSpec.correctAddressJSON)
-  )
+  val correctEntityDetailsJSON: JsValue = JsObject(Map("eori" -> JsString("9GB1234567ABCDEF"), "address" -> AddressSpec.correctAddressJSON))
   val entityDetailsWithEmptyFullNameJSON: JsValue = JsObject(
     Map("eori" -> JsString("9GB1234567ABCDEF"), "address" -> AddressSpec.addressWithEmptyFullnameJSON)
   )
-  val correctEntityDetailsEORIOnlyJSON: JsValue = JsObject(
-    Map("eori" -> JsString("9GB1234567ABCDEF"), "address" -> AddressSpec.emptyAddressJSON)
-  )
-  val correctEntityDetailsAddressOnlyJSON: JsValue = JsObject(
-    Map("eori" -> JsString(""), "address" -> AddressSpec.correctAddressJSON)
-  )
+  val correctEntityDetailsEORIOnlyJSON: JsValue = JsObject(Map("eori" -> JsString("9GB1234567ABCDEF"), "address" -> AddressSpec.emptyAddressJSON))
+  val correctEntityDetailsAddressOnlyJSON: JsValue = JsObject(Map("eori" -> JsString(""), "address" -> AddressSpec.correctAddressJSON))
   val incorrectEntityDetailsJSON: JsValue = JsObject(
-    Map(
-      "eori" -> JsString("gIeC1xyOPmgpZSVGT1nFmGxPd3tS7yvj7CKgsZfq2BYfXPB0tKM6GISKwvuqn0g14TwN6e"),
-      "address" -> AddressSpec.incorrectAddressJSON
-    )
+    Map("eori" -> JsString("gIeC1xyOPmgpZSVGT1nFmGxPd3tS7yvj7CKgsZfq2BYfXPB0tKM6GISKwvuqn0g14TwN6e"), "address" -> AddressSpec.incorrectAddressJSON)
   )
   val emptyEntityDetailsJSON: JsValue = JsObject(Map("eori" -> JsString(""), "address" -> AddressSpec.emptyAddressJSON))
 
-  def buildEntityInputMap(entityDetails: EntityDetails): Map[String, String] = buildEntityInputMap(
-    eori = entityDetails.eori.getOrElse(""),
-    address = entityDetails.address.getOrElse(buildAddress())
-  )
+  def buildEntityInputMap(entityDetails: EntityDetails): Map[String, String] =
+    buildEntityInputMap(eori = entityDetails.eori.getOrElse(""), address = entityDetails.address.getOrElse(buildAddress()))
 
   def buildEntityInputMap(eori: String = "", address: Address = buildAddress()): Map[String, String] = Map(
     "eori" -> eori,
@@ -270,12 +247,6 @@ object EntityDetailsSpec {
     townOrCity: String = "",
     postCode: String = "",
     country: String = ""
-  ): Address = Address(
-    fullName = fullName,
-    addressLine = addressLine,
-    townOrCity = townOrCity,
-    postCode = postCode,
-    country = country
-  )
+  ): Address = Address(fullName = fullName, addressLine = addressLine, townOrCity = townOrCity, postCode = postCode, country = country)
 
 }

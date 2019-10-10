@@ -30,17 +30,11 @@ trait GoodsItemCachingData {
 
   def decimalString(): String = Random.nextDouble().toString
 
-  def createPackageInformation(): PackageInformation = PackageInformation(
-    createRandomAlphanumericString(2),
-    Random.nextInt(20) + 1,
-    shippingMarks = createRandomAlphanumericString(150)
-  )
+  def createPackageInformation(): PackageInformation =
+    PackageInformation(createRandomAlphanumericString(2), Random.nextInt(20) + 1, shippingMarks = createRandomAlphanumericString(150))
 
   def createProcedureCodesData(): ProcedureCodesData =
-    ProcedureCodesData(
-      Some(intBetween(1000, 9999).toString),
-      getDataSeq(10, createRandomAlphanumericString, Random.nextInt(5))
-    )
+    ProcedureCodesData(Some(intBetween(1000, 9999).toString), getDataSeq(10, createRandomAlphanumericString, Random.nextInt(5)))
 
   def createCommodityMeasure(): CommodityMeasure =
     CommodityMeasure(Some(Random.nextDouble().toString), Random.nextDouble().toString, Random.nextDouble().toString)
@@ -59,10 +53,8 @@ trait GoodsItemCachingData {
     documentWriteOff = Some(createDocumentWriteOff())
   )
 
-  private def createDocumentWriteOff(): DocumentWriteOff = DocumentWriteOff(
-    measurementUnit = Some(createRandomAlphanumericString(4)),
-    documentQuantity = Some(BigDecimal(123))
-  )
+  private def createDocumentWriteOff(): DocumentWriteOff =
+    DocumentWriteOff(measurementUnit = Some(createRandomAlphanumericString(4)), documentQuantity = Some(BigDecimal(123)))
 
   def createItemType(): ItemType = ItemType(
     createRandomAlphanumericString(8),

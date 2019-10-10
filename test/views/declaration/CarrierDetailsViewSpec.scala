@@ -32,8 +32,7 @@ import views.html.declaration.carrier_details
 import views.tags.ViewTest
 
 @ViewTest
-class CarrierDetailsViewSpec
-    extends UnitViewSpec with CarrierDetailsMessages with CommonMessages with Stubs with Injector {
+class CarrierDetailsViewSpec extends UnitViewSpec with CarrierDetailsMessages with CommonMessages with Stubs with Injector {
 
   val form: Form[CarrierDetails] = CarrierDetails.form()
   private val carrierDetailsPage = new carrier_details(mainTemplate)
@@ -165,9 +164,7 @@ class CarrierDetailsViewSpec
       val view = createView(
         CarrierDetails
           .form()
-          .fillAndValidate(
-            CarrierDetails(EntityDetails(None, Some(Address("", "Test Street", "Leeds", "LS18BN", "England"))))
-          )
+          .fillAndValidate(CarrierDetails(EntityDetails(None, Some(Address("", "Test Street", "Leeds", "LS18BN", "England")))))
       )
 
       view must haveGlobalErrorSummary
@@ -183,12 +180,7 @@ class CarrierDetailsViewSpec
           .form()
           .fillAndValidate(
             CarrierDetails(
-              EntityDetails(
-                None,
-                Some(
-                  Address(TestHelper.createRandomAlphanumericString(71), "Test Street", "Leeds", "LS18BN", "England")
-                )
-              )
+              EntityDetails(None, Some(Address(TestHelper.createRandomAlphanumericString(71), "Test Street", "Leeds", "LS18BN", "England")))
             )
           )
       )
@@ -204,9 +196,7 @@ class CarrierDetailsViewSpec
       val view = createView(
         CarrierDetails
           .form()
-          .fillAndValidate(
-            CarrierDetails(EntityDetails(None, Some(Address("Marco Polo", "", "Leeds", "LS18BN", "England"))))
-          )
+          .fillAndValidate(CarrierDetails(EntityDetails(None, Some(Address("Marco Polo", "", "Leeds", "LS18BN", "England")))))
       )
 
       view must haveGlobalErrorSummary
@@ -222,10 +212,7 @@ class CarrierDetailsViewSpec
           .form()
           .fillAndValidate(
             CarrierDetails(
-              EntityDetails(
-                None,
-                Some(Address("Marco Polo", TestHelper.createRandomAlphanumericString(71), "Leeds", "LS18BN", "England"))
-              )
+              EntityDetails(None, Some(Address("Marco Polo", TestHelper.createRandomAlphanumericString(71), "Leeds", "LS18BN", "England")))
             )
           )
       )
@@ -241,9 +228,7 @@ class CarrierDetailsViewSpec
       val view = createView(
         CarrierDetails
           .form()
-          .fillAndValidate(
-            CarrierDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "", "LS18BN", "England"))))
-          )
+          .fillAndValidate(CarrierDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "", "LS18BN", "England")))))
       )
 
       view must haveGlobalErrorSummary
@@ -259,18 +244,7 @@ class CarrierDetailsViewSpec
           .form()
           .fillAndValidate(
             CarrierDetails(
-              EntityDetails(
-                None,
-                Some(
-                  Address(
-                    "Marco Polo",
-                    "Test Street",
-                    TestHelper.createRandomAlphanumericString(71),
-                    "LS18BN",
-                    "England"
-                  )
-                )
-              )
+              EntityDetails(None, Some(Address("Marco Polo", "Test Street", TestHelper.createRandomAlphanumericString(71), "LS18BN", "England")))
             )
           )
       )
@@ -286,9 +260,7 @@ class CarrierDetailsViewSpec
       val view = createView(
         CarrierDetails
           .form()
-          .fillAndValidate(
-            CarrierDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "", "England"))))
-          )
+          .fillAndValidate(CarrierDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "", "England")))))
       )
 
       view must haveGlobalErrorSummary
@@ -304,18 +276,7 @@ class CarrierDetailsViewSpec
           .form()
           .fillAndValidate(
             CarrierDetails(
-              EntityDetails(
-                None,
-                Some(
-                  Address(
-                    "Marco Polo",
-                    "Test Street",
-                    "Leeds",
-                    TestHelper.createRandomAlphanumericString(71),
-                    "England"
-                  )
-                )
-              )
+              EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", TestHelper.createRandomAlphanumericString(71), "England")))
             )
           )
       )
@@ -331,9 +292,7 @@ class CarrierDetailsViewSpec
       val view = createView(
         CarrierDetails
           .form()
-          .fillAndValidate(
-            CarrierDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", ""))))
-          )
+          .fillAndValidate(CarrierDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "")))))
       )
 
       view must haveGlobalErrorSummary
@@ -347,11 +306,7 @@ class CarrierDetailsViewSpec
       val view = createView(
         CarrierDetails
           .form()
-          .fillAndValidate(
-            CarrierDetails(
-              EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "Barcelona")))
-            )
-          )
+          .fillAndValidate(CarrierDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "Barcelona")))))
       )
 
       view must haveGlobalErrorSummary

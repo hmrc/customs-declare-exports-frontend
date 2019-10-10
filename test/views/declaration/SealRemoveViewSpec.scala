@@ -38,11 +38,7 @@ class SealRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers with 
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val page = new seal_remove(mainTemplate)
 
-  private def createView(
-    form: Form[YesNoAnswer] = form,
-    containerId: String = containerId,
-    sealId: String = sealId
-  ): Document =
+  private def createView(form: Form[YesNoAnswer] = form, containerId: String = containerId, sealId: String = sealId): Document =
     page(Mode.Normal, form, containerId, sealId)
 
   "Seal Remove View" should {

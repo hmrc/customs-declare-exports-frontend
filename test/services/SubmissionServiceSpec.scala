@@ -37,8 +37,7 @@ import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
 class SubmissionServiceSpec
-    extends UnitSpec with MockExportCacheService with MockConnectors with ScalaFutures with OptionValues with Injector
-    with SubmissionBuilder {
+    extends UnitSpec with MockExportCacheService with MockConnectors with ScalaFutures with OptionValues with Injector with SubmissionBuilder {
 
   private val auditService = mock[AuditService]
   private val connector = mock[CustomsDeclareExportsConnector]
@@ -73,12 +72,8 @@ class SubmissionServiceSpec
     "submit to the back end" when {
       "valid declaration" in {
         // Given
-        val declaration = aDeclaration(
-          withId("id"),
-          withStatus(DeclarationStatus.DRAFT),
-          withChoice("STD"),
-          withConsignmentReferences(ducr = "ducr", lrn = "123LRN")
-        )
+        val declaration =
+          aDeclaration(withId("id"), withStatus(DeclarationStatus.DRAFT), withChoice("STD"), withConsignmentReferences(ducr = "ducr", lrn = "123LRN"))
         val submission = Submission(uuid = "id", eori = "eori", lrn = "lrn", actions = Seq.empty[Action])
         when(connector.submitDeclaration(any[String])(any(), any())).thenReturn(Future.successful(submission))
 
@@ -87,9 +82,7 @@ class SubmissionServiceSpec
 
         // Then
         verify(connector).submitDeclaration(equalTo("id"))(equalTo(hc), any())
-        verify(auditService).auditAllPagesUserInput(equalTo(AuditTypes.SubmissionPayload), equalTo(declaration))(
-          equalTo(hc)
-        )
+        verify(auditService).auditAllPagesUserInput(equalTo(AuditTypes.SubmissionPayload), equalTo(declaration))(equalTo(hc))
         verify(auditService).audit(equalTo(AuditTypes.Submission), equalTo[Map[String, String]](auditData))(equalTo(hc))
         registry.getTimers.get(exportMetrics.timerName(metric)).getCount mustBe >(timerBefore)
         registry.getCounters.get(exportMetrics.counterName(metric)).getCount mustBe >(counterBefore)

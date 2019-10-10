@@ -26,9 +26,8 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class JourneyAction @Inject()(cacheService: ExportsCacheService)(
-  implicit override val executionContext: ExecutionContext
-) extends ActionRefiner[AuthenticatedRequest, JourneyRequest] {
+class JourneyAction @Inject()(cacheService: ExportsCacheService)(implicit override val executionContext: ExecutionContext)
+    extends ActionRefiner[AuthenticatedRequest, JourneyRequest] {
 
   private val logger = Logger(this.getClass)
 

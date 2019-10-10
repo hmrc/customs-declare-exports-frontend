@@ -54,8 +54,7 @@ class DispatchLocationController @Inject()(
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[DispatchLocation]) =>
-          Future.successful(BadRequest(dispatchLocationPage(mode, formWithErrors))),
+        (formWithErrors: Form[DispatchLocation]) => Future.successful(BadRequest(dispatchLocationPage(mode, formWithErrors))),
         validDispatchLocation =>
           updateCache(validDispatchLocation)
             .map(_ => navigator.continueTo(nextPage(mode, validDispatchLocation)))
@@ -70,9 +69,7 @@ class DispatchLocationController @Inject()(
         controllers.declaration.routes.NotEligibleController.displayPage()
     }
 
-  private def updateCache(
-    formData: DispatchLocation
-  )(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+  private def updateCache(formData: DispatchLocation)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.copy(dispatchLocation = Some(formData)))
 
 }

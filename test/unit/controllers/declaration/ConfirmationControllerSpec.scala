@@ -31,12 +31,7 @@ class ConfirmationControllerSpec extends ControllerSpec {
     val draftConfirmationPage = new draft_confirmation_page(mainTemplate)
 
     val controller =
-      new ConfirmationController(
-        mockAuthAction,
-        stubMessagesControllerComponents(),
-        submissionConfirmationPage,
-        draftConfirmationPage
-      )(ec)
+      new ConfirmationController(mockAuthAction, stubMessagesControllerComponents(), submissionConfirmationPage, draftConfirmationPage)(ec)
 
     authorizedUser()
   }
@@ -48,13 +43,7 @@ class ConfirmationControllerSpec extends ControllerSpec {
       val result: Future[Result] = controller.displaySubmissionConfirmation()(request)
 
       status(result) must be(OK)
-      viewOf(result) must be(
-        submissionConfirmationPage()(
-          request,
-          Flash(),
-          stubMessagesControllerComponents().messagesApi.preferred(request)
-        )
-      )
+      viewOf(result) must be(submissionConfirmationPage()(request, Flash(), stubMessagesControllerComponents().messagesApi.preferred(request)))
     }
   }
 
@@ -65,9 +54,7 @@ class ConfirmationControllerSpec extends ControllerSpec {
       val result: Future[Result] = controller.displayDraftConfirmation()(request)
 
       status(result) must be(OK)
-      viewOf(result) must be(
-        draftConfirmationPage()(request, Flash(), stubMessagesControllerComponents().messagesApi.preferred(request))
-      )
+      viewOf(result) must be(draftConfirmationPage()(request, Flash(), stubMessagesControllerComponents().messagesApi.preferred(request)))
     }
   }
 }

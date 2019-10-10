@@ -42,51 +42,30 @@ object GoodsLocation {
     "country" ->
       text()
         .verifying("supplementary.address.country.empty", _.trim.nonEmpty)
-        .verifying(
-          "supplementary.address.country.error",
-          input => input.trim.isEmpty || allCountries.exists(_.countryName == input)
-        ),
+        .verifying("supplementary.address.country.error", input => input.trim.isEmpty || allCountries.exists(_.countryName == input)),
     "typeOfLocation" -> text()
       .verifying("supplementary.goodsLocation.typeOfLocation.empty", nonEmpty)
-      .verifying(
-        "supplementary.goodsLocation.typeOfLocation.error",
-        isEmpty or (isAlphabetic and hasSpecificLength(1))
-      ),
+      .verifying("supplementary.goodsLocation.typeOfLocation.error", isEmpty or (isAlphabetic and hasSpecificLength(1))),
     "qualifierOfIdentification" -> text()
       .verifying("supplementary.goodsLocation.qualifierOfIdentification.empty", nonEmpty)
-      .verifying(
-        "supplementary.goodsLocation.qualifierOfIdentification.error",
-        isEmpty or (isAlphabetic and hasSpecificLength(1))
-      ),
+      .verifying("supplementary.goodsLocation.qualifierOfIdentification.error", isEmpty or (isAlphabetic and hasSpecificLength(1))),
     "identificationOfLocation" -> optional(
       text()
-        .verifying(
-          "supplementary.goodsLocation.identificationOfLocation.error",
-          isEmpty or (isAlphanumeric and noLongerThan(35))
-        )
+        .verifying("supplementary.goodsLocation.identificationOfLocation.error", isEmpty or (isAlphanumeric and noLongerThan(35)))
     ),
     "additionalIdentifier" -> optional(
       text()
         .verifying("supplementary.goodsLocation.additionalIdentifier.error", isNumeric and noLongerThan(3))
     ),
     "addressLine" -> optional(
-      text().verifying(
-        "supplementary.goodsLocation.addressLine.error",
-        isAlphanumericWithAllowedSpecialCharacters and noLongerThan(70)
-      )
+      text().verifying("supplementary.goodsLocation.addressLine.error", isAlphanumericWithAllowedSpecialCharacters and noLongerThan(70))
     ),
     "postCode" -> optional(
-      text().verifying(
-        "supplementary.goodsLocation.postCode.error",
-        isAlphanumericWithAllowedSpecialCharacters and noLongerThan(9)
-      )
+      text().verifying("supplementary.goodsLocation.postCode.error", isAlphanumericWithAllowedSpecialCharacters and noLongerThan(9))
     ),
     "city" -> optional(
       text()
-        .verifying(
-          "supplementary.goodsLocation.city.error",
-          isAlphanumericWithAllowedSpecialCharacters and noLongerThan(35)
-        )
+        .verifying("supplementary.goodsLocation.city.error", isAlphanumericWithAllowedSpecialCharacters and noLongerThan(35))
     )
   )(GoodsLocation.apply)(GoodsLocation.unapply)
 

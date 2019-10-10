@@ -34,10 +34,7 @@ object AdditionalInformation {
     "code" ->
       text()
         .verifying("supplementary.additionalInformation.code.empty", nonEmpty)
-        .verifying(
-          "supplementary.additionalInformation.code.error",
-          isEmpty or (isAlphanumeric and hasSpecificLength(5))
-        ),
+        .verifying("supplementary.additionalInformation.code.error", isEmpty or (isAlphanumeric and hasSpecificLength(5))),
     "description" ->
       text()
         .verifying("supplementary.additionalInformation.description.empty", nonEmpty)

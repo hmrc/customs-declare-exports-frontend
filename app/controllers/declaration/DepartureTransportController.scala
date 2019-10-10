@@ -53,16 +53,13 @@ class DepartureTransportController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[DepartureTransport]) =>
-          Future.successful(BadRequest(departureTransportPage(mode, formWithErrors))),
+        (formWithErrors: Form[DepartureTransport]) => Future.successful(BadRequest(departureTransportPage(mode, formWithErrors))),
         borderTransport =>
           updateCache(borderTransport)
             .map(_ => navigator.continueTo(routes.BorderTransportController.displayPage(mode)))
       )
   }
 
-  private def updateCache(
-    formData: DepartureTransport
-  )(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+  private def updateCache(formData: DepartureTransport)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(_.copy(borderTransport = Some(formData)))
 }

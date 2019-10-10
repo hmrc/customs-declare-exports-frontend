@@ -148,9 +148,7 @@ class ChoiceControllerSpec extends ControllerSpec {
         val result = controller.submitChoice()(postChoiceRequest(supplementaryChoice))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(
-          Some(controllers.declaration.routes.DispatchLocationController.displayPage().url)
-        )
+        redirectLocation(result) must be(Some(controllers.declaration.routes.DispatchLocationController.displayPage().url))
         session(result).get(ExportsSessionKeys.declarationId) must be(newDeclaration.id)
         val created: ExportsDeclaration = theCacheModelCreated
         created.id mustBe None
@@ -168,9 +166,7 @@ class ChoiceControllerSpec extends ControllerSpec {
         val result = controller.submitChoice()(postRequest(supplementaryChoice, existingDec))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(
-          Some(controllers.declaration.routes.DispatchLocationController.displayPage().url)
-        )
+        redirectLocation(result) must be(Some(controllers.declaration.routes.DispatchLocationController.displayPage().url))
         val updated: ExportsDeclaration = theCacheModelUpdated
         updated.id mustBe existingDec.id
         updated.choice mustBe "SMP"
@@ -183,9 +179,7 @@ class ChoiceControllerSpec extends ControllerSpec {
         val result = controller.submitChoice()(postChoiceRequest(standardChoice))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(
-          Some(controllers.declaration.routes.DispatchLocationController.displayPage().url)
-        )
+        redirectLocation(result) must be(Some(controllers.declaration.routes.DispatchLocationController.displayPage().url))
         session(result).get(ExportsSessionKeys.declarationId) must be(newDeclaration.id)
         val created: ExportsDeclaration = theCacheModelCreated
         created.id mustBe None
@@ -202,9 +196,7 @@ class ChoiceControllerSpec extends ControllerSpec {
         val result = controller.submitChoice()(postRequest(standardChoice, existingDec))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(
-          Some(controllers.declaration.routes.DispatchLocationController.displayPage().url)
-        )
+        redirectLocation(result) must be(Some(controllers.declaration.routes.DispatchLocationController.displayPage().url))
         val updated: ExportsDeclaration = theCacheModelUpdated
         updated.id mustBe existingDec.id
         updated.choice mustBe "STD"

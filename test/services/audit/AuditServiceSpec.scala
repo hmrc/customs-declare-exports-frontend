@@ -58,17 +58,13 @@ class AuditServiceSpec extends AuditTestSupport {
     "audit full payload" in {
 
       auditService.auditAllPagesUserInput(AuditTypes.SubmissionPayload, allRecordsXmlMarshallingTest)(hc)
-      verify(mockAuditConnector).sendExtendedEvent(
-        ArgumentMatchers.refEq(extendedSubmissionEvent, "eventId", "generatedAt")
-      )(any(), any())
+      verify(mockAuditConnector).sendExtendedEvent(ArgumentMatchers.refEq(extendedSubmissionEvent, "eventId", "generatedAt"))(any(), any())
     }
 
     "audit Cancellation payload" in {
       mockSendCompletePayload(extendedDataEvent = extendedCancellationEvent)
       auditService.auditAllPagesDeclarationCancellation(cancellationDeclarationTest)(hc)
-      verify(mockAuditConnector).sendExtendedEvent(
-        ArgumentMatchers.refEq(extendedSubmissionEvent, "eventId", "generatedAt")
-      )(any(), any())
+      verify(mockAuditConnector).sendExtendedEvent(ArgumentMatchers.refEq(extendedSubmissionEvent, "eventId", "generatedAt"))(any(), any())
     }
 
     "audit full payload success" in {
@@ -107,8 +103,7 @@ class AuditServiceSpec extends AuditTestSupport {
   }
 }
 
-trait AuditTestSupport
-    extends UnitSpec with ExportsDeclarationBuilder with ScalaFutures with BeforeAndAfterEach with Injector {
+trait AuditTestSupport extends UnitSpec with ExportsDeclarationBuilder with ScalaFutures with BeforeAndAfterEach with Injector {
   val mockAuditConnector = mock[AuditConnector]
 
   val auditData = Map(
@@ -171,10 +166,7 @@ trait AuditTestSupport
 
   val auditService = new AuditService(mockAuditConnector, appConfig)(global)
 
-  def mockSendEvent(
-    eventToAudit: DataEvent = event,
-    result: AuditResult = Success
-  ): OngoingStubbing[Future[AuditResult]] =
+  def mockSendEvent(eventToAudit: DataEvent = event, result: AuditResult = Success): OngoingStubbing[Future[AuditResult]] =
     when(
       mockAuditConnector.sendEvent(ArgumentMatchers.refEq(eventToAudit, "eventId", "generatedAt"))(
         ArgumentMatchers.any[HeaderCarrier],
@@ -182,10 +174,7 @@ trait AuditTestSupport
       )
     ).thenReturn(Future.successful(result))
 
-  def mockSendCompletePayload(
-    result: AuditResult = Success,
-    extendedDataEvent: ExtendedDataEvent
-  ): OngoingStubbing[Future[AuditResult]] =
+  def mockSendCompletePayload(result: AuditResult = Success, extendedDataEvent: ExtendedDataEvent): OngoingStubbing[Future[AuditResult]] =
     when(
       mockAuditConnector.sendExtendedEvent(ArgumentMatchers.refEq(extendedDataEvent, "eventId", "generatedAt"))(
         ArgumentMatchers.any[HeaderCarrier],

@@ -58,15 +58,11 @@ class BorderTransportController @Inject()(
       )
   }
 
-  private def redirect(mode: Mode, transportDetails: BorderTransport)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Result =
+  private def redirect(mode: Mode, transportDetails: BorderTransport)(implicit request: JourneyRequest[AnyContent]): Result =
     if (transportDetails.container)
       navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode))
     else navigator.continueTo(controllers.declaration.routes.SummaryController.displayPage(Mode.Normal))
 
-  private def updateCache(
-    formData: BorderTransport
-  )(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+  private def updateCache(formData: BorderTransport)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.copy(transportDetails = Some(formData)))
 }

@@ -41,10 +41,7 @@ trait ExportsItemBuilder {
 
   def withoutProcedureCodes(): ItemModifier = _.copy(procedureCodes = None)
 
-  def withProcedureCodes(
-    procedureCode: Option[String] = None,
-    additionalProcedureCodes: Seq[String] = Seq.empty
-  ): ItemModifier =
+  def withProcedureCodes(procedureCode: Option[String] = None, additionalProcedureCodes: Seq[String] = Seq.empty): ItemModifier =
     _.copy(procedureCodes = Some(ProcedureCodesData(procedureCode, additionalProcedureCodes)))
 
   def withoutAdditionalInformation(): ItemModifier = _.copy(additionalInformation = None)
@@ -100,19 +97,8 @@ trait ExportsItemBuilder {
   def withPackageInformation(informations: List[PackageInformation]): ItemModifier =
     _.copy(packageInformation = informations)
 
-  def withPackageInformation(
-    typesOfPackages: String = "",
-    numberOfPackages: Int = 0,
-    shippingMarks: String = ""
-  ): ItemModifier =
-    cache =>
-      cache.copy(
-        packageInformation = cache.packageInformation :+ PackageInformation(
-          typesOfPackages,
-          numberOfPackages,
-          shippingMarks
-        )
-    )
+  def withPackageInformation(typesOfPackages: String = "", numberOfPackages: Int = 0, shippingMarks: String = ""): ItemModifier =
+    cache => cache.copy(packageInformation = cache.packageInformation :+ PackageInformation(typesOfPackages, numberOfPackages, shippingMarks))
 
   def withDocumentsProduced(first: DocumentsProduced, docs: DocumentsProduced*): ItemModifier = cache => {
     val existing = cache.documentsProducedData.map(_.documents).getOrElse(Seq.empty)

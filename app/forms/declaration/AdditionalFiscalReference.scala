@@ -32,10 +32,7 @@ object AdditionalFiscalReference {
   val mapping = Forms.mapping(
     "country" -> text()
       .verifying("declaration.additionalFiscalReferences.country.empty", _.trim.nonEmpty)
-      .verifying(
-        "declaration.additionalFiscalReferences.country.error",
-        input => input.isEmpty || allCountries.exists(_.countryCode == input)
-      ),
+      .verifying("declaration.additionalFiscalReferences.country.error", input => input.isEmpty || allCountries.exists(_.countryCode == input)),
     "reference" -> text()
       .verifying("declaration.additionalFiscalReferences.reference.empty", _.trim.nonEmpty)
       .verifying("declaration.additionalFiscalReferences.reference.error", isAlphanumeric and noLongerThan(15))

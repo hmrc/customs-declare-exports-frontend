@@ -35,11 +35,7 @@ class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestData 
   private val page = new warehouse_identification(mainTemplate)
   private val form: Form[WarehouseIdentification] = WarehouseIdentification.form()
 
-  private def createView(
-    mode: Mode = Mode.Normal,
-    form: Form[WarehouseIdentification] = form,
-    messages: Messages = stubMessages()
-  ): Document =
+  private def createView(mode: Mode = Mode.Normal, form: Form[WarehouseIdentification] = form, messages: Messages = stubMessages()): Document =
     page(mode, form)(journeyRequest(), messages)
 
   "Warehouse Identification View" should {
@@ -59,9 +55,7 @@ class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestData 
       val backButton = view.getElementById("link-back")
 
       backButton.text() mustBe "site.back"
-      backButton.getElementById("link-back") must haveHref(
-        controllers.declaration.routes.ItemsSummaryController.displayPage(Mode.Normal)
-      )
+      backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.ItemsSummaryController.displayPage(Mode.Normal))
     }
 
     "display 'Save and continue' button on page" in {

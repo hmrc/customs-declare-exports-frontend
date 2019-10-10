@@ -32,16 +32,13 @@ import views.html.error_template
 import scala.concurrent.Future
 
 @Singleton
-class ErrorHandler @Inject()(override val messagesApi: MessagesApi, errorPage: error_template)(
-  implicit appConfig: AppConfig
-) extends FrontendErrorHandler with AuthRedirects {
+class ErrorHandler @Inject()(override val messagesApi: MessagesApi, errorPage: error_template)(implicit appConfig: AppConfig)
+    extends FrontendErrorHandler with AuthRedirects {
   override def config: Configuration = appConfig.runModeConfiguration
 
   override def env: Environment = appConfig.environment
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(
-    implicit request: Request[_]
-  ): Html =
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
     errorPage(pageTitle, heading, message)
 
   override def resolveError(rh: RequestHeader, ex: Throwable): Result = ex match {

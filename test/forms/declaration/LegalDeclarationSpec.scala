@@ -45,9 +45,7 @@ class LegalDeclarationSpec extends UnitSpec {
           .map(_.message) must contain("legal.declaration.fullName.long")
       }
       "name invalid" in {
-        form().bind(formDataWith(name = "Prince!")).errors.map(_.message) must contain(
-          "legal.declaration.fullName.error"
-        )
+        form().bind(formDataWith(name = "Prince!")).errors.map(_.message) must contain("legal.declaration.fullName.error")
       }
     }
 
@@ -65,9 +63,7 @@ class LegalDeclarationSpec extends UnitSpec {
           .map(_.message) must contain("legal.declaration.jobRole.long")
       }
       "job role invalid" in {
-        form().bind(formDataWith(role = "Prince!")).errors.map(_.message) must contain(
-          "legal.declaration.jobRole.error"
-        )
+        form().bind(formDataWith(role = "Prince!")).errors.map(_.message) must contain("legal.declaration.jobRole.error")
       }
     }
 
@@ -82,17 +78,13 @@ class LegalDeclarationSpec extends UnitSpec {
           .map(_.message) must contain("legal.declaration.email.long")
       }
       "email invalid" in {
-        form().bind(formDataWith(email = "not.an.email.address")).errors.map(_.message) must contain(
-          "legal.declaration.email.error"
-        )
+        form().bind(formDataWith(email = "not.an.email.address")).errors.map(_.message) must contain("legal.declaration.email.error")
       }
     }
 
     "return errors for confirmation" when {
       "not selected" in {
-        form().bind(formDataWith(checked = false)).errors.map(_.message) must contain(
-          "legal.declaration.confirmation.missing"
-        )
+        form().bind(formDataWith(checked = false)).errors.map(_.message) must contain("legal.declaration.confirmation.missing")
       }
     }
 
@@ -107,13 +99,6 @@ class LegalDeclarationSpec extends UnitSpec {
     checked: Boolean = true
   ) = {
     def isChecked = if (checked) JsTrue else JsFalse
-    JsObject(
-      Map(
-        "fullName" -> JsString(name),
-        "jobRole" -> JsString(role),
-        "email" -> JsString(email),
-        "confirmation" -> isChecked
-      )
-    )
+    JsObject(Map("fullName" -> JsString(name), "jobRole" -> JsString(role), "email" -> JsString(email), "confirmation" -> isChecked))
   }
 }

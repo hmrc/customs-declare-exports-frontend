@@ -31,9 +31,7 @@ class TitleSpec extends UnitViewSpec with MustMatchers {
     }
 
     "format title with section" in {
-      Title("some.title", "some.section").toString(messages) must equal(
-        s"some.title - some.section - $serviceName - GOV.UK"
-      )
+      Title("some.title", "some.section").toString(messages) must equal(s"some.title - some.section - $serviceName - GOV.UK")
     }
 
   }

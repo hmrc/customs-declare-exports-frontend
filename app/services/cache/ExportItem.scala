@@ -16,13 +16,7 @@
 
 package services.cache
 
-import forms.declaration.{
-  AdditionalFiscalReferencesData,
-  CommodityMeasure,
-  FiscalInformation,
-  ItemType,
-  PackageInformation
-}
+import forms.declaration.{AdditionalFiscalReferencesData, CommodityMeasure, FiscalInformation, ItemType, PackageInformation}
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers.yes
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
 import play.api.libs.json.Json

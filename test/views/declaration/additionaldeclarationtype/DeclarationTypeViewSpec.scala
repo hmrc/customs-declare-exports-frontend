@@ -40,18 +40,12 @@ import views.html.declaration.additionaldeclarationtype.declaration_type
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarationTypeViewSpec
-    extends UnitViewSpec with ExportsTestData with DeclarationTypeMessages with CommonMessages with Stubs
-    with Injector {
+class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with DeclarationTypeMessages with CommonMessages with Stubs with Injector {
 
   private val formStandard: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeStandardDec.form()
   private val formSupplementary: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeSupplementaryDec.form()
   private val declarationTypePage = new declaration_type(mainTemplate)
-  private def createView(
-    form: Form[AdditionalDeclarationType],
-    journeyType: String,
-    messages: Messages = stubMessages()
-  ): Document =
+  private def createView(form: Form[AdditionalDeclarationType], journeyType: String, messages: Messages = stubMessages()): Document =
     declarationTypePage(Mode.Normal, form)(journeyRequest(journeyType), messages)
 
   "Declaration Type View on empty page" should {

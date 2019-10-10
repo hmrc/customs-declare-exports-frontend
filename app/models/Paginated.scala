@@ -49,10 +49,7 @@ object Paginated {
   }
 
   implicit def writes[T](implicit fmt: Writes[T]): Writes[Paginated[T]] = new Writes[Paginated[T]] {
-    override def writes(paged: Paginated[T]): JsValue = Json.obj(
-      "results" -> JsArray(paged.results.map(fmt.writes)),
-      "page" -> Json.toJson(paged.page),
-      "total" -> JsNumber(paged.total)
-    )
+    override def writes(paged: Paginated[T]): JsValue =
+      Json.obj("results" -> JsArray(paged.results.map(fmt.writes)), "page" -> Json.toJson(paged.page), "total" -> JsNumber(paged.total))
   }
 }

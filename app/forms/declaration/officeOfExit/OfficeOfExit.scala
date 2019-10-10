@@ -26,9 +26,5 @@ object OfficeOfExit {
     OfficeOfExit(officeOfExitSupplementary.officeId, None, None)
 
   def from(officeOfExitStandard: OfficeOfExitStandard): OfficeOfExit =
-    OfficeOfExit(
-      officeOfExitStandard.officeId,
-      officeOfExitStandard.presentationOfficeId,
-      Some(officeOfExitStandard.circumstancesCode)
-    )
+    OfficeOfExit(officeOfExitStandard.officeId, officeOfExitStandard.presentationOfficeId, Some(officeOfExitStandard.circumstancesCode))
 }

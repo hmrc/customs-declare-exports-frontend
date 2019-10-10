@@ -55,9 +55,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
   val sealId = "287345"
 
   val containerData = TransportInformationContainerData(Seq(Container(containerId, Seq(Seal(sealId)))))
-  val maxContainerData = TransportInformationContainerData(
-    Seq.fill(TransportInformationContainerData.maxNumberOfItems)(Container("id", Seq.empty))
-  )
+  val maxContainerData = TransportInformationContainerData(Seq.fill(TransportInformationContainerData.maxNumberOfItems)(Container("id", Seq.empty)))
 
   "Transport Container controller display add page" should {
 

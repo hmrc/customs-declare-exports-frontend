@@ -28,9 +28,7 @@ object CommodityMeasure {
   val commodityFormId = "CommodityMeasure"
 
   val mapping = Forms.mapping(
-    "supplementaryUnits" -> optional(
-      text().verifying("supplementary.commodityMeasure.supplementaryUnits.error", validateDecimal(16)(2))
-    ),
+    "supplementaryUnits" -> optional(text().verifying("supplementary.commodityMeasure.supplementaryUnits.error", validateDecimal(16)(2))),
     "netMass" -> text
       .verifying("supplementary.commodityMeasure.netMass.empty", nonEmpty)
       .verifying("supplementary.commodityMeasure.netMass.error", isEmpty or validateDecimal(11)(3)),

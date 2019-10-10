@@ -34,10 +34,6 @@ object LightFormMatchers {
   class ErrorHasMessage(right: String) extends Matcher[Option[FormError]] {
 
     override def apply(left: Option[FormError]): MatchResult =
-      MatchResult(
-        left.exists(_.message == right),
-        s""""$left" does not contains message "$right"""",
-        s""""$left contains message "$right""""
-      )
+      MatchResult(left.exists(_.message == right), s""""$left" does not contains message "$right"""", s""""$left contains message "$right"""")
   }
 }

@@ -61,23 +61,13 @@ class RepresentativeDetailsSpec extends WordSpec with MustMatchers {
 
 object RepresentativeDetailsSpec {
   val correctRepresentativeDetails =
-    RepresentativeDetails(
-      details = Some(EntityDetailsSpec.correctEntityDetails),
-      statusCode = Some(DirectRepresentative)
-    )
+    RepresentativeDetails(details = Some(EntityDetailsSpec.correctEntityDetails), statusCode = Some(DirectRepresentative))
   val correctRepresentativeDetailsEORIOnly =
-    RepresentativeDetails(
-      details = Some(EntityDetailsSpec.correctEntityDetailsEORIOnly),
-      statusCode = Some(DirectRepresentative)
-    )
-  val correctRepresentativeDetailsAddressOnly = RepresentativeDetails(
-    details = Some(EntityDetailsSpec.correctEntityDetailsAddressOnly),
-    statusCode = Some(DirectRepresentative)
-  )
+    RepresentativeDetails(details = Some(EntityDetailsSpec.correctEntityDetailsEORIOnly), statusCode = Some(DirectRepresentative))
+  val correctRepresentativeDetailsAddressOnly =
+    RepresentativeDetails(details = Some(EntityDetailsSpec.correctEntityDetailsAddressOnly), statusCode = Some(DirectRepresentative))
 
-  val correctRepresentativeDetailsJSON: JsValue = JsObject(
-    Map("details" -> correctEntityDetailsJSON, "statusCode" -> JsString(DirectRepresentative))
-  )
+  val correctRepresentativeDetailsJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsJSON, "statusCode" -> JsString(DirectRepresentative)))
 
   val correctRepresentativeDetailsEORIOnlyJSON: JsValue = JsObject(
     Map("details" -> correctEntityDetailsEORIOnlyJSON, "statusCode" -> JsString(DirectRepresentative))

@@ -34,8 +34,7 @@ import views.tags.ViewTest
 
 @ViewTest
 class DeclarationAdditionalActorsViewSpec
-    extends UnitViewSpec with ExportsTestData with DeclarationAdditionalActorsMessages with CommonMessages with Stubs
-    with Injector {
+    extends UnitViewSpec with ExportsTestData with DeclarationAdditionalActorsMessages with CommonMessages with Stubs with Injector {
 
   private val form: Form[DeclarationAdditionalActors] = DeclarationAdditionalActors.form()
   private val declarationAdditionalActorsPage = new declaration_additional_actors(mainTemplate)
@@ -74,9 +73,7 @@ class DeclarationAdditionalActorsViewSpec
 
     "display section header" in {
 
-      createView().getElementById("section-header").text() must include(
-        messages("supplementary.summary.parties.header")
-      )
+      createView().getElementById("section-header").text() must include(messages("supplementary.summary.parties.header"))
     }
 
     "display empty input with label for EORI" in {
@@ -236,11 +233,8 @@ class DeclarationAdditionalActorsViewSpec
 
     "display one row with data in table" in {
 
-      val view = declarationAdditionalActorsPage(
-        Mode.Normal,
-        form,
-        Seq(DeclarationAdditionalActors(Some("12345"), Some("CS")))
-      )(journeyRequest(), messages)
+      val view =
+        declarationAdditionalActorsPage(Mode.Normal, form, Seq(DeclarationAdditionalActors(Some("12345"), Some("CS"))))(journeyRequest(), messages)
 
       view.select("table>thead>tr>th:nth-child(1)").text() mustBe messages("supplementary.additionalActors.eori")
       view.select("table>thead>tr>th:nth-child(2)").text() mustBe messages("supplementary.additionalActors.partyType")

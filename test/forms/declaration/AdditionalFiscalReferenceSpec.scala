@@ -71,10 +71,7 @@ class AdditionalFiscalReferenceSpec extends WordSpec with MustMatchers {
         val form = AdditionalFiscalReference.form().bind(emptyCountryAndRef)
 
         form.errors.map(_.message) must be(
-          Seq(
-            "declaration.additionalFiscalReferences.country.empty",
-            "declaration.additionalFiscalReferences.reference.empty"
-          )
+          Seq("declaration.additionalFiscalReferences.country.empty", "declaration.additionalFiscalReferences.reference.empty")
         )
       }
     }

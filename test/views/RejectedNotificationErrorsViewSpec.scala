@@ -84,9 +84,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
         val doc: Document = view(Seq(reason))
 
         doc must containElementWithID("rejected_notifications-row-0")
-        doc.getElementById("rejected_notifications-row-0-name").text() mustBe messages(
-          "field.declaration.consignmentReferences.lrn"
-        )
+        doc.getElementById("rejected_notifications-row-0-name").text() mustBe messages("field.declaration.consignmentReferences.lrn")
         doc.getElementById("rejected_notifications-row-0-code").text() mustBe "rejectionCode"
         doc.getElementById("rejected_notifications-row-0-description").text() mustBe "rejectionDescription"
       }

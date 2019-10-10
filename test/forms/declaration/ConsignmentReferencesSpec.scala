@@ -29,10 +29,6 @@ object ConsignmentReferencesSpec {
   val correctConsignmentReferencesJSON: JsValue = JsObject(
     Map("ducr" -> JsObject(Map("ducr" -> JsString(exemplaryDucr))), "lrn" -> JsString("123LRN"))
   )
-  val correctConsignmentReferencesNoDucrJSON: JsValue = JsObject(
-    Map("ducr" -> JsObject(Map("ducr" -> JsString(""))), "lrn" -> JsString("123LRN"))
-  )
-  val emptyConsignmentReferencesJSON: JsValue = JsObject(
-    Map("ducr" -> JsObject(Map("ducr" -> JsString(""))), "lrn" -> JsString(""))
-  )
+  val correctConsignmentReferencesNoDucrJSON: JsValue = JsObject(Map("ducr" -> JsObject(Map("ducr" -> JsString(""))), "lrn" -> JsString("123LRN")))
+  val emptyConsignmentReferencesJSON: JsValue = JsObject(Map("ducr" -> JsObject(Map("ducr" -> JsString(""))), "lrn" -> JsString("")))
 }

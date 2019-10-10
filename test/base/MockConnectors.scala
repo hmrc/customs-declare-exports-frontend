@@ -50,11 +50,7 @@ trait MockConnectors extends MockitoSugar {
 
   def listOfNotifications(): OngoingStubbing[Future[Seq[Notification]]] =
     when(mockCustomsDeclareExportsConnector.fetchNotifications()(any(), any()))
-      .thenReturn(
-        Future.successful(
-          Seq(Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.UNKNOWN, Seq.empty, "payload"))
-        )
-      )
+      .thenReturn(Future.successful(Seq(Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.UNKNOWN, Seq.empty, "payload"))))
 
   def listOfSubmissions(): OngoingStubbing[Future[Seq[Submission]]] =
     when(mockCustomsDeclareExportsConnector.fetchSubmissions()(any(), any()))
@@ -67,9 +63,7 @@ trait MockConnectors extends MockitoSugar {
               lrn = "lrn",
               mrn = None,
               ducr = None,
-              actions = Seq(
-                Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = LocalDateTime.now())
-              )
+              actions = Seq(Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = LocalDateTime.now()))
             )
           )
         )
@@ -102,10 +96,7 @@ trait MockConnectors extends MockitoSugar {
     when(mockCustomsDeclareExportsConnector.findSubmission(refEq(id))(any(), any()))
       .thenReturn(Future.successful(submission))
 
-  def findNotifications(
-    id: String,
-    notifications: Seq[Notification] = Seq.empty
-  ): OngoingStubbing[Future[Seq[Notification]]] =
+  def findNotifications(id: String, notifications: Seq[Notification] = Seq.empty): OngoingStubbing[Future[Seq[Notification]]] =
     when(mockCustomsDeclareExportsConnector.findNotifications(refEq(id))(any(), any()))
       .thenReturn(Future.successful(notifications))
 }

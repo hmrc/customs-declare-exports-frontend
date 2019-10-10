@@ -49,32 +49,20 @@ object ItemTypeValidator extends Validator[ItemType] {
 
   private val mappingCombinedNomenclatureCode = text()
     .verifying("declaration.itemType.combinedNomenclatureCode.error.empty", nonEmpty)
-    .verifying(
-      "declaration.itemType.combinedNomenclatureCode.error.length",
-      isEmpty or noLongerThan(combinedNomenclatureCodeMaxLength)
-    )
+    .verifying("declaration.itemType.combinedNomenclatureCode.error.length", isEmpty or noLongerThan(combinedNomenclatureCodeMaxLength))
     .verifying("declaration.itemType.combinedNomenclatureCode.error.specialCharacters", isEmpty or isAlphanumeric)
 
   private val mappingTARICAdditionalCode = seq(
     text()
       .verifying("declaration.itemType.taricAdditionalCodes.error.length", hasSpecificLength(taricAdditionalCodeLength))
       .verifying("declaration.itemType.taricAdditionalCodes.error.specialCharacters", isAlphanumeric)
-  ).verifying(
-      "declaration.itemType.taricAdditionalCodes.error.maxAmount",
-      codes => codes.size <= taricAdditionalCodesMaxAmount
-    )
+  ).verifying("declaration.itemType.taricAdditionalCodes.error.maxAmount", codes => codes.size <= taricAdditionalCodesMaxAmount)
     .verifying("declaration.itemType.taricAdditionalCodes.error.duplicate", areAllElementsUnique)
 
   private val mappingNationalAdditionalCode = seq(
     text()
-      .verifying(
-        "declaration.itemType.nationalAdditionalCode.error.invalid",
-        isContainedIn(NationalAdditionalCode.all.map(_.value))
-      )
-  ).verifying(
-      "declaration.itemType.nationalAdditionalCode.error.maxAmount",
-      codes => codes.size <= nationalAdditionalCodesMaxAmount
-    )
+      .verifying("declaration.itemType.nationalAdditionalCode.error.invalid", isContainedIn(NationalAdditionalCode.all.map(_.value)))
+  ).verifying("declaration.itemType.nationalAdditionalCode.error.maxAmount", codes => codes.size <= nationalAdditionalCodesMaxAmount)
     .verifying("declaration.itemType.nationalAdditionalCode.error.duplicate", areAllElementsUnique)
 
   private val mappingDescriptionOfGoods = text()
@@ -89,10 +77,7 @@ object ItemTypeValidator extends Validator[ItemType] {
 
   private val mappingUNDangerousGoodsCode = optional(
     text()
-      .verifying(
-        "declaration.itemType.unDangerousGoodsCode.error.length",
-        hasSpecificLength(unDangerousGoodsCodeLength)
-      )
+      .verifying("declaration.itemType.unDangerousGoodsCode.error.length", hasSpecificLength(unDangerousGoodsCodeLength))
       .verifying("declaration.itemType.unDangerousGoodsCode.error.specialCharacters", isAlphanumeric)
   )
 

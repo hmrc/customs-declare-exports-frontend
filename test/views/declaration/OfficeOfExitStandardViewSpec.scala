@@ -90,9 +90,7 @@ class OfficeOfExitStandardViewSpec extends UnitViewSpec with ExportsTestData wit
         val backButton = view.getElementById("link-back")
 
         backButton.text() mustBe "site.back"
-        backButton.getElementById("link-back") must haveHref(
-          controllers.declaration.routes.LocationController.displayPage(Mode.Normal)
-        )
+        backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.LocationController.displayPage(Mode.Normal))
       }
 
       "display 'Save and continue' button" in {

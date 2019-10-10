@@ -31,7 +31,5 @@ object DeclarationTypeSupplementarySpec {
   val correctDeclarationTypeJSON: JsValue = JsObject(
     Map("dispatchLocation" -> JsString(OutsideEU), "additionalDeclarationType" -> JsString(Simplified))
   )
-  val emptyDeclarationTypeJSON: JsValue = JsObject(
-    Map("dispatchLocation" -> JsString(""), "additionalDeclarationType" -> JsString(""))
-  )
+  val emptyDeclarationTypeJSON: JsValue = JsObject(Map("dispatchLocation" -> JsString(""), "additionalDeclarationType" -> JsString("")))
 }

@@ -33,9 +33,7 @@ import utils.FakeRequestCSRFSupport._
 import views.declaration.spec.ViewMatchers
 import views.html.declaration.summary.{summary_page, summary_page_no_data}
 
-class SummaryPageViewSpec
-    extends WordSpec with MustMatchers with ExportsDeclarationBuilder with ExportsItemBuilder with Stubs
-    with ViewMatchers {
+class SummaryPageViewSpec extends WordSpec with MustMatchers with ExportsDeclarationBuilder with ExportsItemBuilder with Stubs with ViewMatchers {
 
   private val form: Form[LegalDeclaration] = LegalDeclaration.form()
 
@@ -51,38 +49,20 @@ class SummaryPageViewSpec
     withItem(anItem())
   )
   val request =
-    new JourneyRequest(
-      new AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")),
-      declaration
-    )
+    new JourneyRequest(new AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration)
   val summaryPage = contentAsString(
-    new summary_page(mainTemplate)(Mode.Normal, SupplementaryDeclarationData(declaration), form)(
-      request,
-      stubMessages(),
-      minimalAppConfig
-    )
+    new summary_page(mainTemplate)(Mode.Normal, SupplementaryDeclarationData(declaration), form)(request, stubMessages(), minimalAppConfig)
   )
   val summaryNoDataPage = contentAsString(new summary_page_no_data(mainTemplate)()(request, stubMessages()))
 
   val amendSummaryPage = contentAsString(
-    new summary_page(mainTemplate)(Mode.Amend, SupplementaryDeclarationData(declaration), form)(
-      request,
-      stubMessages(),
-      minimalAppConfig
-    )
+    new summary_page(mainTemplate)(Mode.Amend, SupplementaryDeclarationData(declaration), form)(request, stubMessages(), minimalAppConfig)
   )
 
   "Summary page" should {
-    def view(
-      mode: Mode,
-      declaration: ExportsDeclaration = declaration,
-      legalForm: Form[LegalDeclaration] = form
-    ): Document =
+    def view(mode: Mode, declaration: ExportsDeclaration = declaration, legalForm: Form[LegalDeclaration] = form): Document =
       new summary_page(mainTemplate)(mode, SupplementaryDeclarationData(declaration), legalForm)(
-        new JourneyRequest(
-          new AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")),
-          declaration
-        ),
+        new JourneyRequest(new AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration),
         stubMessages(),
         minimalAppConfig
       )
@@ -91,9 +71,7 @@ class SummaryPageViewSpec
       "Draft Mode" in {
         val document = view(Mode.Draft)
         document must containElementWithID("link-back")
-        document.getElementById("link-back") must haveHref(
-          controllers.routes.SavedDeclarationsController.displayDeclarations()
-        )
+        document.getElementById("link-back") must haveHref(controllers.routes.SavedDeclarationsController.displayDeclarations())
         document.getElementById("link-back") must containText("site.back")
       }
 
@@ -102,19 +80,14 @@ class SummaryPageViewSpec
           val model = aDeclaration(withSourceId("source-id"))
           val document = view(Mode.Amend, model)
           document must containElementWithID("link-back")
-          document.getElementById("link-back") must haveHref(
-            controllers.routes.SubmissionsController.displayListOfSubmissions()
-          )
+          document.getElementById("link-back") must haveHref(controllers.routes.SubmissionsController.displayListOfSubmissions())
           document.getElementById("link-back") must containText("supplementary.summary.back")
         }
       }
 
       "Normal Mode" when {
         "standard declaration with containers" in {
-          val model = aDeclaration(
-            withChoice(Choice.AllowedChoiceValues.StandardDec),
-            withContainerData(Container("1234", Seq.empty))
-          )
+          val model = aDeclaration(withChoice(Choice.AllowedChoiceValues.StandardDec), withContainerData(Container("1234", Seq.empty)))
           val document = view(Mode.Normal, model)
           document must containElementWithID("link-back")
           document.getElementById("link-back") must haveHref(
@@ -127,16 +100,11 @@ class SummaryPageViewSpec
           val model = aDeclaration(withChoice(Choice.AllowedChoiceValues.StandardDec))
           val document = view(Mode.Normal, model)
           document must containElementWithID("link-back")
-          document.getElementById("link-back") must haveHref(
-            controllers.declaration.routes.BorderTransportController.displayPage(Mode.Normal)
-          )
+          document.getElementById("link-back") must haveHref(controllers.declaration.routes.BorderTransportController.displayPage(Mode.Normal))
         }
 
         "supplementary declaration with containers" in {
-          val model = aDeclaration(
-            withChoice(Choice.AllowedChoiceValues.SupplementaryDec),
-            withContainerData(Container("1234", Seq.empty))
-          )
+          val model = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withContainerData(Container("1234", Seq.empty)))
           val document = view(Mode.Normal, model)
           document must containElementWithID("link-back")
           document.getElementById("link-back") must haveHref(
@@ -148,9 +116,7 @@ class SummaryPageViewSpec
           val model = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withoutContainerData())
           val document = view(Mode.Normal, model)
           document must containElementWithID("link-back")
-          document.getElementById("link-back") must haveHref(
-            controllers.declaration.routes.BorderTransportController.displayPage(Mode.Normal)
-          )
+          document.getElementById("link-back") must haveHref(controllers.declaration.routes.BorderTransportController.displayPage(Mode.Normal))
         }
       }
 

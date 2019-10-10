@@ -54,19 +54,14 @@ class WarehouseIdentificationController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[WarehouseIdentification]) =>
-          Future.successful(BadRequest(warehouseIdentificationPage(mode, formWithErrors))),
+        (formWithErrors: Form[WarehouseIdentification]) => Future.successful(BadRequest(warehouseIdentificationPage(mode, formWithErrors))),
         form =>
           updateCache(form)
-            .map(
-              _ => navigator.continueTo(controllers.declaration.routes.DepartureTransportController.displayPage(mode))
-          )
+            .map(_ => navigator.continueTo(controllers.declaration.routes.DepartureTransportController.displayPage(mode)))
       )
   }
 
-  private def updateCache(
-    formData: WarehouseIdentification
-  )(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+  private def updateCache(formData: WarehouseIdentification)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>
       val updatedLocations = model.locations.copy(warehouseIdentification = Some(formData))
       model.copy(locations = updatedLocations)

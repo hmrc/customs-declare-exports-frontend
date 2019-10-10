@@ -28,10 +28,7 @@ trait SchemaValidation {
   private val logger = Logger(this.getClass)
 
   private val schemas =
-    Seq(
-      "/wco-declaration-schemas/declaration/DocumentMetaData_2_DMS.xsd",
-      "/wco-declaration-schemas/declaration/WCO_DEC_2_DMS.xsd"
-    )
+    Seq("/wco-declaration-schemas/declaration/DocumentMetaData_2_DMS.xsd", "/wco-declaration-schemas/declaration/WCO_DEC_2_DMS.xsd")
 
   def validateXmlAgainstSchema(xml: String): Unit = {
     val schema: Schema = {

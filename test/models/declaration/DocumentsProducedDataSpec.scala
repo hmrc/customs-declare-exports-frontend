@@ -33,9 +33,7 @@ object DocumentsProducedDataSpec {
 
   val correctDocumentsProducedData = DocumentsProducedData(Seq(correctDocumentsProduced))
 
-  val correctDocumentsProducedDataJSON: JsValue = JsObject(
-    Map("documents" -> JsArray(Seq(correctDocumentsProducedJSON)))
-  )
+  val correctDocumentsProducedDataJSON: JsValue = JsObject(Map("documents" -> JsArray(Seq(correctDocumentsProducedJSON))))
 
   val emptyDocumentsProducedDataJSON: JsValue = JsObject(Map("documents" -> JsArray(Seq(correctDocumentsProducedJSON))))
 }

@@ -155,13 +155,8 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers with DocumentsPro
 
         "is in incorrect format" in {
 
-          val input = JsObject(
-            Map(
-              dateOfValidityKey -> JsObject(
-                Map(yearKey -> JsString("2000"), monthKey -> JsString("13"), dayKey -> JsString("32"))
-              )
-            )
-          )
+          val input =
+            JsObject(Map(dateOfValidityKey -> JsObject(Map(yearKey -> JsString("2000"), monthKey -> JsString("13"), dayKey -> JsString("32")))))
           val expectedErrors = Seq(FormError(dateOfValidityKey, dateFormatError))
 
           testFailedValidationErrors(input, expectedErrors)

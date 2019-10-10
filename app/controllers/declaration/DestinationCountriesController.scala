@@ -77,14 +77,11 @@ class DestinationCountriesController @Inject()(
     }
   }
 
-  private def handleSubmitSupplementary(
-    mode: Mode
-  )(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] =
+  private def handleSubmitSupplementary(mode: Mode)(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] =
     Supplementary.form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[DestinationCountries]) =>
-          Future.successful(BadRequest(destinationCountriesSupplementaryPage(mode, formWithErrors))),
+        (formWithErrors: Form[DestinationCountries]) => Future.successful(BadRequest(destinationCountriesSupplementaryPage(mode, formWithErrors))),
         formData =>
           updateCache(formData)
             .map(_ => navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode)))
@@ -143,9 +140,8 @@ class DestinationCountriesController @Inject()(
   )(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] = {
     val countriesStandardForm = Standard.form.bindFromRequest()
     val countriesStandardInput = countriesStandardForm.value.getOrElse(DestinationCountries.empty())
-    val countriesStandardUpdated = countriesStandardInput.copy(
-      countriesOfRouting = cachedData.countriesOfRouting ++ countriesStandardInput.countriesOfRouting
-    )
+    val countriesStandardUpdated =
+      countriesStandardInput.copy(countriesOfRouting = cachedData.countriesOfRouting ++ countriesStandardInput.countriesOfRouting)
 
     DestinationCountriesValidator.validateOnSaveAndContinue(countriesStandardUpdated) match {
       case Valid =>
@@ -176,12 +172,9 @@ class DestinationCountriesController @Inject()(
       case (key, value)                                       => (key, value)
     })
 
-  private def removeRoutingCountry(
-    mode: Mode,
-    keys: Seq[String],
-    userInput: Form[DestinationCountries],
-    cachedData: DestinationCountries
-  )(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
+  private def removeRoutingCountry(mode: Mode, keys: Seq[String], userInput: Form[DestinationCountries], cachedData: DestinationCountries)(
+    implicit request: JourneyRequest[AnyContent]
+  ): Future[Result] = {
 
     val updatedCountries = remove(cachedData.countriesOfRouting, keys.contains(_: String))
     val updatedCache = cachedData.copy(countriesOfRouting = updatedCountries)
@@ -190,11 +183,7 @@ class DestinationCountriesController @Inject()(
       .map(_ => Ok(destinationCountriesStandardPage(mode, userInput.discardingErrors, updatedCache.countriesOfRouting)))
   }
 
-  private def updateCache(
-    formData: DestinationCountries
-  )(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(
-      model => model.copy(locations = model.locations.copy(destinationCountries = Some(formData)))
-    )
+  private def updateCache(formData: DestinationCountries)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(destinationCountries = Some(formData))))
 
 }

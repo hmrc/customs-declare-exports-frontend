@@ -31,8 +31,7 @@ import views.html.declaration.declarant_details
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarantDetailsViewSpec
-    extends UnitViewSpec with ExportsTestData with DeclarantDetailsMessages with CommonMessages with Stubs {
+class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with DeclarantDetailsMessages with CommonMessages with Stubs {
 
   private val form: Form[DeclarantDetails] = DeclarantDetails.form()
   private val declarantDetailsPage = new declarant_details(mainTemplate)

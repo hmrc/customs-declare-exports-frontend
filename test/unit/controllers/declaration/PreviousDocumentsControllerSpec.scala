@@ -156,11 +156,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
       "user reach maximum amount of items" in {
 
         val document = Document("X", "355", "reference", Some("123"))
-        withNewCaching(
-          aDeclaration(
-            withPreviousDocuments(PreviousDocumentsData(Seq.fill(PreviousDocumentsData.maxAmountOfItems)(document)))
-          )
-        )
+        withNewCaching(aDeclaration(withPreviousDocuments(PreviousDocumentsData(Seq.fill(PreviousDocumentsData.maxAmountOfItems)(document)))))
 
         val correctForm = Seq(
           ("documentCategory", "X"),
@@ -217,11 +213,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
       "user reach maximum amount of items" in {
 
         val document = Document("X", "355", "reference", Some("123"))
-        withNewCaching(
-          aDeclaration(
-            withPreviousDocuments(PreviousDocumentsData(Seq.fill(PreviousDocumentsData.maxAmountOfItems)(document)))
-          )
-        )
+        withNewCaching(aDeclaration(withPreviousDocuments(PreviousDocumentsData(Seq.fill(PreviousDocumentsData.maxAmountOfItems)(document)))))
 
         val correctForm = Seq(
           ("documentCategory", "X"),

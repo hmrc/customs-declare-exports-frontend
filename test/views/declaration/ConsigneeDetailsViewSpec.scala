@@ -157,9 +157,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with ConsigneeDetailsMessage
       val view = createView(
         ConsigneeDetails
           .form()
-          .fillAndValidate(
-            ConsigneeDetails(EntityDetails(None, Some(Address("", "Test Street", "Leeds", "LS18BN", "England"))))
-          )
+          .fillAndValidate(ConsigneeDetails(EntityDetails(None, Some(Address("", "Test Street", "Leeds", "LS18BN", "England")))))
       )
 
       view must haveGlobalErrorSummary
@@ -175,12 +173,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with ConsigneeDetailsMessage
           .form()
           .fillAndValidate(
             ConsigneeDetails(
-              EntityDetails(
-                None,
-                Some(
-                  Address(TestHelper.createRandomAlphanumericString(71), "Test Street", "Leeds", "LS18BN", "England")
-                )
-              )
+              EntityDetails(None, Some(Address(TestHelper.createRandomAlphanumericString(71), "Test Street", "Leeds", "LS18BN", "England")))
             )
           )
       )
@@ -196,9 +189,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with ConsigneeDetailsMessage
       val view = createView(
         ConsigneeDetails
           .form()
-          .fillAndValidate(
-            ConsigneeDetails(EntityDetails(None, Some(Address("Marco Polo", "", "Leeds", "LS18BN", "England"))))
-          )
+          .fillAndValidate(ConsigneeDetails(EntityDetails(None, Some(Address("Marco Polo", "", "Leeds", "LS18BN", "England")))))
       )
 
       view must haveGlobalErrorSummary
@@ -214,10 +205,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with ConsigneeDetailsMessage
           .form()
           .fillAndValidate(
             ConsigneeDetails(
-              EntityDetails(
-                None,
-                Some(Address("Marco Polo", TestHelper.createRandomAlphanumericString(71), "Leeds", "LS18BN", "England"))
-              )
+              EntityDetails(None, Some(Address("Marco Polo", TestHelper.createRandomAlphanumericString(71), "Leeds", "LS18BN", "England")))
             )
           )
       )
@@ -233,9 +221,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with ConsigneeDetailsMessage
       val view = createView(
         ConsigneeDetails
           .form()
-          .fillAndValidate(
-            ConsigneeDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "", "LS18BN", "England"))))
-          )
+          .fillAndValidate(ConsigneeDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "", "LS18BN", "England")))))
       )
 
       view must haveGlobalErrorSummary
@@ -251,18 +237,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with ConsigneeDetailsMessage
           .form()
           .fillAndValidate(
             ConsigneeDetails(
-              EntityDetails(
-                None,
-                Some(
-                  Address(
-                    "Marco Polo",
-                    "Test Street",
-                    TestHelper.createRandomAlphanumericString(71),
-                    "LS18BN",
-                    "England"
-                  )
-                )
-              )
+              EntityDetails(None, Some(Address("Marco Polo", "Test Street", TestHelper.createRandomAlphanumericString(71), "LS18BN", "England")))
             )
           )
       )
@@ -278,9 +253,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with ConsigneeDetailsMessage
       val view = createView(
         ConsigneeDetails
           .form()
-          .fillAndValidate(
-            ConsigneeDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "", "England"))))
-          )
+          .fillAndValidate(ConsigneeDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "", "England")))))
       )
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
@@ -295,18 +268,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with ConsigneeDetailsMessage
           .form()
           .fillAndValidate(
             ConsigneeDetails(
-              EntityDetails(
-                None,
-                Some(
-                  Address(
-                    "Marco Polo",
-                    "Test Street",
-                    "Leeds",
-                    TestHelper.createRandomAlphanumericString(71),
-                    "England"
-                  )
-                )
-              )
+              EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", TestHelper.createRandomAlphanumericString(71), "England")))
             )
           )
       )
@@ -322,9 +284,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with ConsigneeDetailsMessage
       val view = createView(
         ConsigneeDetails
           .form()
-          .fillAndValidate(
-            ConsigneeDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", ""))))
-          )
+          .fillAndValidate(ConsigneeDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "")))))
       )
 
       view must haveGlobalErrorSummary
@@ -338,11 +298,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with ConsigneeDetailsMessage
       val view = createView(
         ConsigneeDetails
           .form()
-          .fillAndValidate(
-            ConsigneeDetails(
-              EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "Barcelona")))
-            )
-          )
+          .fillAndValidate(ConsigneeDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "Barcelona")))))
       )
 
       view must haveGlobalErrorSummary

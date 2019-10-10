@@ -23,9 +23,7 @@ object DeclarationHoldersDataSpec {
   val correctDeclarationHolder =
     DeclarationHolder(authorisationTypeCode = Some("1234"), eori = Some("PL213472539481923"))
   val correctDeclarationHoldersData = DeclarationHoldersData(Seq(correctDeclarationHolder))
-  val correctDeclarationHolderJSON: JsValue = JsObject(
-    Map("authorisationTypeCode" -> JsString("1234"), "eori" -> JsString("PL213472539481923"))
-  )
+  val correctDeclarationHolderJSON: JsValue = JsObject(Map("authorisationTypeCode" -> JsString("1234"), "eori" -> JsString("PL213472539481923")))
   val anotherCorrectDeclarationHolderJSON: JsValue = JsObject(
     Map("authorisationTypeCode" -> JsString("4321"), "eori" -> JsString("PT213472539481923"))
   )

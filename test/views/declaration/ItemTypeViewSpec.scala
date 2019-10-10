@@ -45,10 +45,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
     nationalAdditionalCodes: Seq[String] = Seq.empty,
     messages: Messages = stubMessages()
   ): Document =
-    page(mode, itemId, form, hasAdditionalFiscalReferences, taricAdditionalCodes, nationalAdditionalCodes)(
-      journeyRequest(),
-      messages
-    )
+    page(mode, itemId, form, hasAdditionalFiscalReferences, taricAdditionalCodes, nationalAdditionalCodes)(journeyRequest(), messages)
 
   "Item Type View on empty page" when {
 
@@ -324,9 +321,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         view.getElementById("combinedNomenclatureCode").attr("value") must equal(itemType.combinedNomenclatureCode)
         view.getElementById("descriptionOfGoods").text() must equal(itemType.descriptionOfGoods)
         view.getElementById("cusCode").attr("value") must equal(itemType.cusCode.getOrElse(""))
-        view.getElementById("unDangerousGoodsCode").attr("value") must equal(
-          itemType.unDangerousGoodsCode.getOrElse("")
-        )
+        view.getElementById("unDangerousGoodsCode").attr("value") must equal(itemType.unDangerousGoodsCode.getOrElse(""))
         view.getElementById("statisticalValue").attr("value") must equal(itemType.statisticalValue)
       }
     }

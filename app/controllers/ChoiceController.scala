@@ -104,13 +104,6 @@ class ChoiceController @Inject()(
   private def create(choice: Choice)(implicit hc: HeaderCarrier) =
     exportsCacheService
       .create(
-        ExportsDeclaration(
-          None,
-          DeclarationStatus.DRAFT,
-          createdDateTime = Instant.now,
-          updatedDateTime = Instant.now,
-          sourceId = None,
-          choice.value
-        )
+        ExportsDeclaration(None, DeclarationStatus.DRAFT, createdDateTime = Instant.now, updatedDateTime = Instant.now, sourceId = None, choice.value)
       )
 }

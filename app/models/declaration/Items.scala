@@ -19,10 +19,8 @@ package models.declaration
 import forms.declaration._
 import models.ExportsDeclaration
 
-case class Items(
-  totalNumberOfItems: Option[TotalNumberOfItems] = None,
-  natureOfTransaction: Option[NatureOfTransaction] = None
-) extends SummaryContainer {
+case class Items(totalNumberOfItems: Option[TotalNumberOfItems] = None, natureOfTransaction: Option[NatureOfTransaction] = None)
+    extends SummaryContainer {
 
   override def isEmpty: Boolean = totalNumberOfItems.isEmpty && natureOfTransaction.isEmpty
 }

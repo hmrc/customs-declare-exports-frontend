@@ -47,19 +47,14 @@ class SubmissionsControllerSpec extends ControllerSpec {
     lrn = "lrn",
     mrn = None,
     ducr = None,
-    actions =
-      Seq(Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = LocalDateTime.now()))
+    actions = Seq(Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = LocalDateTime.now()))
   )
 
   trait SetUp {
     val submissionsPage = new submissions(mainTemplate)
 
-    val controller = new SubmissionsController(
-      mockAuthAction,
-      mockCustomsDeclareExportsConnector,
-      stubMessagesControllerComponents(),
-      submissionsPage
-    )(ec)
+    val controller =
+      new SubmissionsController(mockAuthAction, mockCustomsDeclareExportsConnector, stubMessagesControllerComponents(), submissionsPage)(ec)
 
     authorizedUser()
   }
@@ -82,12 +77,8 @@ class SubmissionsControllerSpec extends ControllerSpec {
   "Amend Submission" should {
     "return 303 (SEE OTHER)" when {
       "declaration found" in new SetUp {
-        val rejectedDeclaration: ExportsDeclaration = aDeclaration(
-          withId("id"),
-          withStatus(DeclarationStatus.COMPLETE),
-          withUpdateDate(LocalDate.MIN),
-          withCreatedDate(LocalDate.MIN)
-        )
+        val rejectedDeclaration: ExportsDeclaration =
+          aDeclaration(withId("id"), withStatus(DeclarationStatus.COMPLETE), withUpdateDate(LocalDate.MIN), withCreatedDate(LocalDate.MIN))
         val newDeclaration: ExportsDeclaration = aDeclaration(withId("new-id"), withStatus(DeclarationStatus.DRAFT))
         when(mockCustomsDeclareExportsConnector.findDeclaration(refEq("id"))(any(), any()))
           .thenReturn(successful(Some(rejectedDeclaration)))
@@ -97,9 +88,7 @@ class SubmissionsControllerSpec extends ControllerSpec {
         val result = controller.amend("id")(getRequest())
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(
-          Some(controllers.declaration.routes.SummaryController.displayPage(Mode.Amend).url)
-        )
+        redirectLocation(result) must be(Some(controllers.declaration.routes.SummaryController.displayPage(Mode.Amend).url))
         session(result).get(ExportsSessionKeys.declarationId) must be(Some("new-id"))
         val created = theDeclarationCreated
         created.status mustBe DeclarationStatus.DRAFT

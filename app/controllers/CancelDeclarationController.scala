@@ -60,8 +60,7 @@ class CancelDeclarationController @Inject()(
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[CancelDeclaration]) =>
-          Future.successful(BadRequest(cancelDeclarationPage(formWithErrors))),
+        (formWithErrors: Form[CancelDeclaration]) => Future.successful(BadRequest(cancelDeclarationPage(formWithErrors))),
         form => {
           auditService.auditAllPagesDeclarationCancellation(form)
           val context = exportsMetrics.startTimer(cancelMetric)
@@ -78,9 +77,7 @@ class CancelDeclarationController @Inject()(
       )
   }
 
-  private def auditData(form: CancelDeclaration, result: String)(
-    implicit request: AuthenticatedRequest[_]
-  ): Map[String, String] =
+  private def auditData(form: CancelDeclaration, result: String)(implicit request: AuthenticatedRequest[_]): Map[String, String] =
     Map(
       EORI.toString -> request.user.eori,
       LRN.toString -> form.functionalReferenceId.value,

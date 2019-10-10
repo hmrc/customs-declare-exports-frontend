@@ -129,9 +129,7 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
             withItems(
               anItem(
                 withItemId("itemId"),
-                withDocumentsProducedData(
-                  DocumentsProducedData(Seq.fill(DocumentsProducedData.maxNumberOfItems)(documentsProduced))
-                )
+                withDocumentsProducedData(DocumentsProducedData(Seq.fill(DocumentsProducedData.maxNumberOfItems)(documentsProduced)))
               )
             )
           )
@@ -177,9 +175,7 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
             withItems(
               anItem(
                 withItemId("itemId"),
-                withDocumentsProducedData(
-                  DocumentsProducedData(Seq.fill(DocumentsProducedData.maxNumberOfItems)(documentsProduced))
-                )
+                withDocumentsProducedData(DocumentsProducedData(Seq.fill(DocumentsProducedData.maxNumberOfItems)(documentsProduced)))
               )
             )
           )

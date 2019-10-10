@@ -32,11 +32,8 @@ class DateSpec extends WordSpec with MustMatchers with DateMessages {
       "provided with empty data" in {
 
         val input = Map.empty[String, String]
-        val expectedErrors = Seq(
-          FormError(yearKey, yearEmptyFieldError),
-          FormError(monthKey, monthEmptyFieldError),
-          FormError(dayKey, dayEmptyFieldError)
-        )
+        val expectedErrors =
+          Seq(FormError(yearKey, yearEmptyFieldError), FormError(monthKey, monthEmptyFieldError), FormError(dayKey, dayEmptyFieldError))
 
         testFailedValidationErrors(input, expectedErrors)
       }

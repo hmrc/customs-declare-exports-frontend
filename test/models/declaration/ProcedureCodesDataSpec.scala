@@ -36,10 +36,8 @@ object ProcedureCodesDataSpec {
   private val procedureCode_1 = "12"
   private val procedureCode_2 = "34"
 
-  val correctProcedureCodes = ProcedureCodesData(
-    procedureCode = Some(procedureCode_1 + procedureCode_2),
-    additionalProcedureCodes = Seq("111", "222", "333")
-  )
+  val correctProcedureCodes =
+    ProcedureCodesData(procedureCode = Some(procedureCode_1 + procedureCode_2), additionalProcedureCodes = Seq("111", "222", "333"))
 
   val emptyProcedureCodes = ProcedureCodesData(procedureCode = None, additionalProcedureCodes = Seq.empty)
 
@@ -50,7 +48,5 @@ object ProcedureCodesDataSpec {
     )
   )
 
-  val emptyProcedureCodesJSON: JsValue = JsObject(
-    Map("procedureCode" -> JsString(""), "additionalProcedureCodes" -> JsArray())
-  )
+  val emptyProcedureCodesJSON: JsValue = JsObject(Map("procedureCode" -> JsString(""), "additionalProcedureCodes" -> JsArray()))
 }

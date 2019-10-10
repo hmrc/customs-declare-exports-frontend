@@ -72,16 +72,13 @@ class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
             SupplementaryDeclarationData(declaration.copy(dispatchLocation = Some(correctDispatchLocation)))
 
           supplementaryDeclarationData.declarationType must be(defined)
-          supplementaryDeclarationData.declarationType.get.dispatchLocation.get.dispatchLocation must equal(
-            AllowedDispatchLocations.OutsideEU
-          )
+          supplementaryDeclarationData.declarationType.get.dispatchLocation.get.dispatchLocation must equal(AllowedDispatchLocations.OutsideEU)
           supplementaryDeclarationData.declarationType.get.additionalDeclarationType mustNot be(defined)
         }
 
         "CacheMap contains record for AdditionalDeclarationType only" in {
-          val supplementaryDeclarationData = SupplementaryDeclarationData(
-            declaration.copy(additionalDeclarationType = Some(correctAdditionalDeclarationTypeSupplementaryDec))
-          )
+          val supplementaryDeclarationData =
+            SupplementaryDeclarationData(declaration.copy(additionalDeclarationType = Some(correctAdditionalDeclarationTypeSupplementaryDec)))
 
           supplementaryDeclarationData.declarationType must be(defined)
           supplementaryDeclarationData.declarationType.get.dispatchLocation mustNot be(defined)
@@ -99,9 +96,7 @@ class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
           )
 
           supplementaryDeclarationData.declarationType must be(defined)
-          supplementaryDeclarationData.declarationType.get.dispatchLocation.get.dispatchLocation must equal(
-            AllowedDispatchLocations.OutsideEU
-          )
+          supplementaryDeclarationData.declarationType.get.dispatchLocation.get.dispatchLocation must equal(AllowedDispatchLocations.OutsideEU)
           supplementaryDeclarationData.declarationType.get.additionalDeclarationType.get.additionalDeclarationType must equal(
             AllowedAdditionalDeclarationTypes.Simplified
           )
@@ -131,10 +126,8 @@ class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
           val exporterDetails = Json.fromJson[ExporterDetails](correctExporterDetailsJSON).get
 
           val supplementaryDeclarationData = SupplementaryDeclarationData(
-            declaration.copy(
-              consignmentReferences = Some(correctConsignmentReferences),
-              parties = Parties(exporterDetails = Some(correctExporterDetails))
-            )
+            declaration
+              .copy(consignmentReferences = Some(correctConsignmentReferences), parties = Parties(exporterDetails = Some(correctExporterDetails)))
           )
 
           supplementaryDeclarationData.consignmentReferences must be(defined)
@@ -237,19 +230,15 @@ object SupplementaryDeclarationTestData {
                 documentStatusReason = Some("Reason"),
                 issuingAuthorityName = Some("issuingAuthorityName"),
                 dateOfValidity = Some(Date(year = Some(2017), month = Some(1), day = Some(1))),
-                documentWriteOff =
-                  Some(DocumentWriteOff(measurementUnit = Some("KGM"), documentQuantity = Some(BigDecimal("10"))))
+                documentWriteOff = Some(DocumentWriteOff(measurementUnit = Some("KGM"), documentQuantity = Some(BigDecimal("10"))))
               )
             )
           )
         ),
         additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("code", "description")))),
         commodityMeasure = Some(CommodityMeasure(Some("2"), "90", "100")),
-        additionalFiscalReferencesData = Some(
-          AdditionalFiscalReferencesData(
-            Seq(AdditionalFiscalReference("PL", "12345"), AdditionalFiscalReference("FR", "54321"))
-          )
-        ),
+        additionalFiscalReferencesData =
+          Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"), AdditionalFiscalReference("FR", "54321")))),
         procedureCodes = Some(ProcedureCodesData(Some("CUPR"), Seq("CC", "PR"))),
         packageInformation = List(PackageInformation("AA", 2, "mark1"), PackageInformation("AB", 4, "mark2"))
       )
@@ -274,8 +263,7 @@ object SupplementaryDeclarationTestData {
     locations = Locations(
       destinationCountries = Some(DestinationCountriesSpec.correctDestinationCountries),
       goodsLocation = Some(correctGoodsLocation),
-      warehouseIdentification =
-        Some(WarehouseIdentification(Some("12345678"), Some("R"), Some("1234567GB"), Some(Rail))),
+      warehouseIdentification = Some(WarehouseIdentification(Some("12345678"), Some("R"), Some("1234567GB"), Some(Rail))),
       officeOfExit = Some(correctOfficeOfExit)
     ),
     previousDocuments = Some(PreviousDocumentsData(Seq(Document("X", "MCR", "DocumentReference", Some("123")))))
@@ -306,12 +294,7 @@ object SupplementaryDeclarationTestData {
       )
     ),
     transportInformationContainerData = Some(correctTransportInformationContainerData),
-    items = Some(
-      Items(
-        totalNumberOfItems = Some(correctTotalNumberOfItemsDecimalValues),
-        natureOfTransaction = Some(correctNatureOfTransaction)
-      )
-    )
+    items = Some(Items(totalNumberOfItems = Some(correctTotalNumberOfItemsDecimalValues), natureOfTransaction = Some(correctNatureOfTransaction)))
   )
   val date = Date(Some(12), Some(12), Some(2019))
   val correctPackingJSON: JsValue = JsObject(

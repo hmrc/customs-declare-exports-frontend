@@ -48,9 +48,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
   val declarationWithHolder = aDeclaration(withDeclarationHolders(Some("ACP"), Some("GB123456")))
   val maxAmountOfItems = aDeclaration(
-    withDeclarationHolders(
-      Seq.fill(DeclarationHoldersData.limitOfHolders)(DeclarationHolder(Some("ACP"), Some("GB123456"))): _*
-    )
+    withDeclarationHolders(Seq.fill(DeclarationHoldersData.limitOfHolders)(DeclarationHolder(Some("ACP"), Some("GB123456"))): _*)
   )
 
   "Declaration Additional Actors controller" should {
@@ -186,9 +184,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
         withNewCaching(declarationWithHolder)
 
         val result =
-          controller.submitHoldersOfAuthorisation(Mode.Normal)(
-            postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded)
-          )
+          controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.DestinationCountriesController.displayPage()

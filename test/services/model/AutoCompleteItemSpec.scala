@@ -30,40 +30,28 @@ class AutoCompleteItemSpec extends UnitSpec {
       }
 
       "value is specified" in {
-        AutoCompleteItem.fromCountry(List(Country("name", "code")), _.countryCode) mustBe List(
-          AutoCompleteItem("name - code", "code")
-        )
+        AutoCompleteItem.fromCountry(List(Country("name", "code")), _.countryCode) mustBe List(AutoCompleteItem("name - code", "code"))
       }
     }
 
     "map from Package Type" in {
-      AutoCompleteItem.fromPackageType(List(PackageType("code", "description"))) mustBe List(
-        AutoCompleteItem("description - code", "code")
-      )
+      AutoCompleteItem.fromPackageType(List(PackageType("code", "description"))) mustBe List(AutoCompleteItem("description - code", "code"))
     }
 
     "map from Office Of Exit" in {
-      AutoCompleteItem.fromOfficeOfExit(List(OfficeOfExit("code", "description"))) mustBe List(
-        AutoCompleteItem("description - code", "code")
-      )
+      AutoCompleteItem.fromOfficeOfExit(List(OfficeOfExit("code", "description"))) mustBe List(AutoCompleteItem("description - code", "code"))
     }
 
     "map from document type" in {
-      AutoCompleteItem.fromDocumentType(List(DocumentType("description", "code"))) mustBe List(
-        AutoCompleteItem("description - code", "code")
-      )
+      AutoCompleteItem.fromDocumentType(List(DocumentType("description", "code"))) mustBe List(AutoCompleteItem("description - code", "code"))
     }
 
     "map from national additional code" in {
-      AutoCompleteItem.fromNationalAdditionalCode(List(NationalAdditionalCode("code"))) mustBe List(
-        AutoCompleteItem("code", "code")
-      )
+      AutoCompleteItem.fromNationalAdditionalCode(List(NationalAdditionalCode("code"))) mustBe List(AutoCompleteItem("code", "code"))
     }
 
     "map from holder of authorisation code" in {
-      AutoCompleteItem.fromHolderOfAuthorisationCode(List(HolderOfAuthorisationCode("code"))) mustBe List(
-        AutoCompleteItem("code", "code")
-      )
+      AutoCompleteItem.fromHolderOfAuthorisationCode(List(HolderOfAuthorisationCode("code"))) mustBe List(AutoCompleteItem("code", "code"))
     }
 
     "map from supervising customs office for Warehouse using Description - CODE" in {

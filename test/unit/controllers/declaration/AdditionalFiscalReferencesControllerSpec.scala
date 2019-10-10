@@ -75,11 +75,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
 
       "display page method is invoked with data in cache" in new SetUp {
 
-        val itemCacheData = ExportItem(
-          "itemId",
-          additionalFiscalReferencesData =
-            Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"))))
-        )
+        val itemCacheData =
+          ExportItem("itemId", additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345")))))
         val cachedData: ExportsDeclaration =
           aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
@@ -121,11 +118,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
 
       "user put duplicated item" in new SetUp {
 
-        val itemCacheData = ExportItem(
-          "itemId",
-          additionalFiscalReferencesData =
-            Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"))))
-        )
+        val itemCacheData =
+          ExportItem("itemId", additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345")))))
         val cachedData: ExportsDeclaration =
           aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
@@ -142,8 +136,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
 
         val itemCacheData = ExportItem(
           "itemId",
-          additionalFiscalReferencesData =
-            Some(AdditionalFiscalReferencesData(Seq.fill(99)(AdditionalFiscalReference("PL", "12345"))))
+          additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq.fill(99)(AdditionalFiscalReference("PL", "12345"))))
         )
         val cachedData: ExportsDeclaration =
           aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
@@ -175,11 +168,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
 
       "user put duplicated item" in new SetUp {
 
-        val itemCacheData = ExportItem(
-          "itemId",
-          additionalFiscalReferencesData =
-            Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"))))
-        )
+        val itemCacheData =
+          ExportItem("itemId", additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345")))))
         val cachedData: ExportsDeclaration =
           aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
@@ -197,8 +187,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
 
         val itemCacheData = ExportItem(
           "itemId",
-          additionalFiscalReferencesData =
-            Some(AdditionalFiscalReferencesData(Seq.fill(99)(AdditionalFiscalReference("PL", "12345"))))
+          additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq.fill(99)(AdditionalFiscalReference("PL", "12345"))))
         )
         val cachedData: ExportsDeclaration =
           aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
@@ -245,8 +234,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
       "user save correct data without new item" in new SetUp {
         val itemCacheData = ExportItem(
           "itemId",
-          additionalFiscalReferencesData =
-            Some(AdditionalFiscalReferencesData(Seq.fill(99)(AdditionalFiscalReference("PL", "12345"))))
+          additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq.fill(99)(AdditionalFiscalReference("PL", "12345"))))
         )
         val cachedData: ExportsDeclaration =
           aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
@@ -263,11 +251,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
 
       "user remove existing item" in new SetUp {
 
-        val itemCacheData = ExportItem(
-          "itemId",
-          additionalFiscalReferencesData =
-            Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"))))
-        )
+        val itemCacheData =
+          ExportItem("itemId", additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345")))))
         val cachedData: ExportsDeclaration =
           aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)

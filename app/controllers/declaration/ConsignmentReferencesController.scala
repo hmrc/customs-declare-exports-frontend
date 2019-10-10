@@ -48,25 +48,19 @@ class ConsignmentReferencesController @Inject()(
     }
   }
 
-  def submitConsignmentReferences(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async {
-    implicit request =>
-      ConsignmentReferences
-        .form()
-        .bindFromRequest()
-        .fold(
-          (formWithErrors: Form[ConsignmentReferences]) =>
-            Future.successful(BadRequest(consignmentReferencesPage(mode, formWithErrors))),
-          validConsignmentReferences =>
-            updateCache(validConsignmentReferences)
-              .map(
-                _ => navigator.continueTo(controllers.declaration.routes.ExporterDetailsController.displayPage(mode))
-            )
-        )
+  def submitConsignmentReferences(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    ConsignmentReferences
+      .form()
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[ConsignmentReferences]) => Future.successful(BadRequest(consignmentReferencesPage(mode, formWithErrors))),
+        validConsignmentReferences =>
+          updateCache(validConsignmentReferences)
+            .map(_ => navigator.continueTo(controllers.declaration.routes.ExporterDetailsController.displayPage(mode)))
+      )
   }
 
-  private def updateCache(
-    formData: ConsignmentReferences
-  )(implicit req: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+  private def updateCache(formData: ConsignmentReferences)(implicit req: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
       model.copy(consignmentReferences = Some(formData))
     })

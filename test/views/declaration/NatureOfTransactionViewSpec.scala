@@ -99,9 +99,7 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestData with
       val backButton = view.getElementById("link-back")
 
       backButton.text() must be("site.back")
-      backButton.getElementById("link-back") must haveHref(
-        controllers.declaration.routes.TotalNumberOfItemsController.displayPage(Mode.Normal)
-      )
+      backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage(Mode.Normal))
     }
 
     "display 'Save and continue' button on page" in {

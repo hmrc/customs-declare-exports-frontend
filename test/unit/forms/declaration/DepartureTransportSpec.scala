@@ -69,19 +69,14 @@ class DepartureTransportSpec extends WordSpec with MustMatchers {
 
       "mandatory field are empty" in {
 
-        val incorrectForm = Map(
-          "borderModeOfTransportCode" -> "",
-          "meansOfTransportOnDepartureType" -> "",
-          "meansOfTransportOnDepartureIDNumber" -> ""
-        )
+        val incorrectForm =
+          Map("borderModeOfTransportCode" -> "", "meansOfTransportOnDepartureType" -> "", "meansOfTransportOnDepartureIDNumber" -> "")
 
         val result = form.bind(incorrectForm)
         val errorKeys = result.errors.map(_.key)
         val errorMessages = result.errors.map(_.message)
 
-        errorKeys must be(
-          List("borderModeOfTransportCode", "meansOfTransportOnDepartureType", "meansOfTransportOnDepartureIDNumber")
-        )
+        errorKeys must be(List("borderModeOfTransportCode", "meansOfTransportOnDepartureType", "meansOfTransportOnDepartureIDNumber"))
         errorMessages must be(
           List(
             "supplementary.transportInfo.borderTransportMode.error.empty",

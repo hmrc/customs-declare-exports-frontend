@@ -192,9 +192,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
 
         val view = createView(
           CancelDeclaration.form
-            .fillAndValidate(
-              CancelDeclaration(Lrn("12345566++"), "123456789", "Some Description", NoLongerRequired.toString)
-            )
+            .fillAndValidate(CancelDeclaration(Lrn("12345566++"), "123456789", "Some Description", NoLongerRequired.toString))
         )
 
         view must haveGlobalErrorSummary
@@ -212,12 +210,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
         val view = createView(
           CancelDeclaration.form
             .fillAndValidate(
-              CancelDeclaration(
-                Lrn("1SA123456789012-1FSA1234567"),
-                createRandomAlphanumericString(71),
-                "Some Description",
-                NoLongerRequired.toString
-              )
+              CancelDeclaration(Lrn("1SA123456789012-1FSA1234567"), createRandomAlphanumericString(71), "Some Description", NoLongerRequired.toString)
             )
         )
 
@@ -246,14 +239,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
 
         val view = createView(
           CancelDeclaration.form
-            .fillAndValidate(
-              CancelDeclaration(
-                Lrn("1SA123456789012-1FSA1234567"),
-                "1234567890123-",
-                "Some Description",
-                NoLongerRequired.toString
-              )
-            )
+            .fillAndValidate(CancelDeclaration(Lrn("1SA123456789012-1FSA1234567"), "1234567890123-", "Some Description", NoLongerRequired.toString))
         )
 
         view must haveGlobalErrorSummary
@@ -299,12 +285,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
         val view = createView(
           CancelDeclaration.form
             .fillAndValidate(
-              CancelDeclaration(
-                Lrn("1SA123456789012-1FSA1234567"),
-                "1234567890123",
-                "Some Description$$$$",
-                NoLongerRequired.toString
-              )
+              CancelDeclaration(Lrn("1SA123456789012-1FSA1234567"), "1234567890123", "Some Description$$$$", NoLongerRequired.toString)
             )
         )
 
@@ -321,9 +302,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
 
         val view = createView(
           CancelDeclaration.form
-            .fillAndValidate(
-              CancelDeclaration(Lrn("1SA123456789012-1FSA1234567"), "1234567890123", "Some Description", "wrong value")
-            )
+            .fillAndValidate(CancelDeclaration(Lrn("1SA123456789012-1FSA1234567"), "1234567890123", "Some Description", "wrong value"))
         )
 
         view must haveGlobalErrorSummary

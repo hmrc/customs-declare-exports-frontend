@@ -66,9 +66,7 @@ class SummaryController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[LegalDeclaration]) =>
-          Future.successful(
-            BadRequest(summaryPage(Mode.Normal, SupplementaryDeclarationData(request.cacheModel), formWithErrors))
-        ),
+          Future.successful(BadRequest(summaryPage(Mode.Normal, SupplementaryDeclarationData(request.cacheModel), formWithErrors))),
         legalDeclaration => {
           submissionService.submit(request.eori, request.cacheModel, legalDeclaration).map {
             case Some(lrn) =>

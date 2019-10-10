@@ -61,9 +61,7 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
 
     "display back link" in {
       view must containElementWithID("link-back")
-      view.getElementById("link-back") must haveHref(
-        controllers.declaration.routes.ItemTypeController.displayPage(Mode.Normal, "itemId")
-      )
+      view.getElementById("link-back") must haveHref(controllers.declaration.routes.ItemTypeController.displayPage(Mode.Normal, "itemId"))
     }
 
     "display page title" in {
@@ -157,9 +155,7 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
 
     "display two rows with data in table" in {
 
-      val view = createView(
-        packages = Seq(PackageInformation("PA", 100, "Shipping Mark"), PackageInformation("PB", 101, "Shipping Mark"))
-      )
+      val view = createView(packages = Seq(PackageInformation("PA", 100, "Shipping Mark"), PackageInformation("PB", 101, "Shipping Mark")))
 
       // check table header
       view.select("table>caption").text() mustBe "supplementary.packageInformation.table.multiple.heading"

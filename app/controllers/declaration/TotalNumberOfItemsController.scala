@@ -53,8 +53,7 @@ class TotalNumberOfItemsController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[TotalNumberOfItems]) =>
-          Future.successful(BadRequest(totalNumberOfItemsPage(mode, formWithErrors))),
+        (formWithErrors: Form[TotalNumberOfItems]) => Future.successful(BadRequest(totalNumberOfItemsPage(mode, formWithErrors))),
         formData =>
           updateCache(formData).map { _ =>
             navigator.continueTo(controllers.declaration.routes.NatureOfTransactionController.displayPage(mode))

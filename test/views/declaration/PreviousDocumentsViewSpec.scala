@@ -104,9 +104,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
     }
 
     "display empty input with label for Previous Goods Identifier" in {
-      view.getElementById("goodsItemIdentifier-label").text() must be(
-        "supplementary.previousDocuments.goodsItemIdentifier"
-      )
+      view.getElementById("goodsItemIdentifier-label").text() must be("supplementary.previousDocuments.goodsItemIdentifier")
       view.getElementById("goodsItemIdentifier").attr("value") mustBe empty
     }
 
@@ -115,9 +113,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
       val backButton = view.getElementById("link-back")
 
       backButton.text() must be("site.back")
-      backButton.getElementById("link-back") must haveHref(
-        controllers.declaration.routes.NatureOfTransactionController.displayPage(Mode.Normal)
-      )
+      backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.NatureOfTransactionController.displayPage(Mode.Normal))
     }
 
     "display both 'Add' and 'Save and continue' button on page" in {
@@ -230,18 +226,10 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
 
       // table header
       view.select("form>table>caption").text() must be("supplementary.previousDocuments")
-      view.select("form>table>thead>tr>th:nth-child(1)").text() must be(
-        "supplementary.previousDocuments.documentCategory.label"
-      )
-      view.select("form>table>thead>tr>th:nth-child(2)").text() must be(
-        "supplementary.previousDocuments.documentType.label"
-      )
-      view.select("form>table>thead>tr>th:nth-child(3)").text() must be(
-        "supplementary.previousDocuments.documentReference.label"
-      )
-      view.select("form>table>thead>tr>th:nth-child(4)").text() must be(
-        "supplementary.previousDocuments.goodsItemIdentifier.label"
-      )
+      view.select("form>table>thead>tr>th:nth-child(1)").text() must be("supplementary.previousDocuments.documentCategory.label")
+      view.select("form>table>thead>tr>th:nth-child(2)").text() must be("supplementary.previousDocuments.documentType.label")
+      view.select("form>table>thead>tr>th:nth-child(3)").text() must be("supplementary.previousDocuments.documentReference.label")
+      view.select("form>table>thead>tr>th:nth-child(4)").text() must be("supplementary.previousDocuments.goodsItemIdentifier.label")
       view.select("form>table>thead>tr>th:nth-child(5)").text() must be("supplementary.packageInformation.remove")
 
       // row

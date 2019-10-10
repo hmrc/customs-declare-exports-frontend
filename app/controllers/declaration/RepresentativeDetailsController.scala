@@ -55,11 +55,8 @@ class RepresentativeDetailsController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[RepresentativeDetails]) =>
-          Future.successful(
-            BadRequest(representativeDetailsPage(mode, RepresentativeDetails.adjustErrors(formWithErrors)))
-        ),
-        validRepresentativeDetails =>
-          updateCache(validRepresentativeDetails).map(_ => navigator.continueTo(nextPage(mode, request)))
+          Future.successful(BadRequest(representativeDetailsPage(mode, RepresentativeDetails.adjustErrors(formWithErrors)))),
+        validRepresentativeDetails => updateCache(validRepresentativeDetails).map(_ => navigator.continueTo(nextPage(mode, request)))
       )
   }
 
@@ -71,9 +68,7 @@ class RepresentativeDetailsController @Inject()(
         controllers.declaration.routes.CarrierDetailsController.displayPage(mode)
     }
 
-  private def updateCache(
-    formData: RepresentativeDetails
-  )(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+  private def updateCache(formData: RepresentativeDetails)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>
       val updatedParties = model.parties.copy(representativeDetails = Some(formData))
       model.copy(parties = updatedParties)

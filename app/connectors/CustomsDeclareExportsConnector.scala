@@ -50,9 +50,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
 
   private val createTimer: Timer = metrics.defaultRegistry.timer("declaration.create.timer")
 
-  def createDeclaration(
-    declaration: ExportsDeclaration
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] = {
+  def createDeclaration(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] = {
     logPayload("Create Declaration Request", declaration)
     val createStopwatch = createTimer.time()
     httpClient
@@ -72,9 +70,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
 
   private val updateTimer: Timer = metrics.defaultRegistry.timer("declaration.update.timer")
 
-  def updateDeclaration(
-    declaration: ExportsDeclaration
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] = {
+  def updateDeclaration(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] = {
     logPayload("Update Declaration Request", declaration)
     val updateStopwatch = updateTimer.time()
     httpClient
@@ -93,34 +89,24 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
       .map(_.toExportsDeclaration)
   }
 
-  def findDeclarations(
-    page: Page
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
+  def findDeclarations(page: Page)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
     val pagination = Page.bindable.unbind("page", page)
     httpClient
-      .GET[Paginated[ExportsDeclarationExchange]](
-        s"${appConfig.customsDeclareExports}${appConfig.declarations}?$pagination"
-      )
+      .GET[Paginated[ExportsDeclarationExchange]](s"${appConfig.customsDeclareExports}${appConfig.declarations}?$pagination")
       .map(_.map(_.toExportsDeclaration))
   }
 
-  def findSavedDeclarations(
-    page: Page
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
+  def findSavedDeclarations(page: Page)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
     val pagination = Page.bindable.unbind("page", page)
     val sort = DeclarationSort.bindable.unbind("sort", DeclarationSort(SortBy.UPDATED, SortDirection.DES))
     httpClient
-      .GET[Paginated[ExportsDeclarationExchange]](
-        s"${appConfig.customsDeclareExports}${appConfig.declarations}?status=DRAFT&$pagination&$sort"
-      )
+      .GET[Paginated[ExportsDeclarationExchange]](s"${appConfig.customsDeclareExports}${appConfig.declarations}?status=DRAFT&$pagination&$sort")
       .map(_.map(_.toExportsDeclaration))
   }
 
   private val fetchTimer: Timer = metrics.defaultRegistry.timer("declaration.fetch.timer")
 
-  def findDeclaration(
-    id: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ExportsDeclaration]] = {
+  def findDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ExportsDeclaration]] = {
     val fetchStopwatch = fetchTimer.time()
     httpClient
       .GET[Option[ExportsDeclarationExchange]](s"${appConfig.customsDeclareExports}${appConfig.declarations}/$id")
@@ -140,27 +126,22 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
 
   def findNotifications(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
     httpClient
-      .GET[Seq[Notification]](
-        s"${appConfig.customsDeclareExports}${appConfig.declarations}/$id/submission/notifications"
-      )
+      .GET[Seq[Notification]](s"${appConfig.customsDeclareExports}${appConfig.declarations}/$id/submission/notifications")
 
   def fetchNotifications()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
     httpClient.GET[Seq[Notification]](s"${appConfig.customsDeclareExports}${appConfig.fetchNotifications}")
 
   def fetchSubmissions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Submission]] =
-    httpClient.GET[Seq[Submission]](s"${appConfig.customsDeclareExports}${appConfig.fetchSubmissions}").map {
-      response =>
-        logger.debug(s"CUSTOMS_DECLARE_EXPORTS fetch submission response is --> ${response.toString}")
-        response
+    httpClient.GET[Seq[Submission]](s"${appConfig.customsDeclareExports}${appConfig.fetchSubmissions}").map { response =>
+      logger.debug(s"CUSTOMS_DECLARE_EXPORTS fetch submission response is --> ${response.toString}")
+      response
     }
 
-  def createCancellation(
-    cancellation: CancelDeclaration
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
+  def createCancellation(cancellation: CancelDeclaration)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
     logPayload("Create Cancellation Request", cancellation)
-    httpClient.POST[CancelDeclaration, HttpResponse](
-      s"${appConfig.customsDeclareExports}${appConfig.cancelDeclaration}",
-      cancellation
-    ) filter (_.status == Status.OK) map (_ => (): Unit)
+    httpClient
+      .POST[CancelDeclaration, HttpResponse](s"${appConfig.customsDeclareExports}${appConfig.cancelDeclaration}", cancellation) filter (_.status == Status.OK) map (
+      _ => (): Unit
+    )
   }
 }

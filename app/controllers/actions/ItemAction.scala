@@ -22,8 +22,7 @@ import play.api.mvc.{ActionRefiner, Result}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class ItemAction(itemId: String)(implicit val executionContext: ExecutionContext)
-    extends ActionRefiner[JourneyRequest, ItemRequest] {
+case class ItemAction(itemId: String)(implicit val executionContext: ExecutionContext) extends ActionRefiner[JourneyRequest, ItemRequest] {
 
   import play.api.mvc.Results._
 
@@ -38,9 +37,7 @@ case class ItemAction(itemId: String)(implicit val executionContext: ExecutionCo
     }
 }
 
-class ItemActionBuilder @Inject()(authorized: AuthAction, journeyAction: JourneyAction)(
-  implicit val executionContext: ExecutionContext
-) {
+class ItemActionBuilder @Inject()(authorized: AuthAction, journeyAction: JourneyAction)(implicit val executionContext: ExecutionContext) {
 
   def apply(itemId: String) = authorized andThen journeyAction andThen ItemAction(itemId)
 }

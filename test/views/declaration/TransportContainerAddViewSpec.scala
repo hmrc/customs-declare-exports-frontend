@@ -47,9 +47,7 @@ class TransportContainerAddViewSpec extends UnitViewSpec with Stubs with MustMat
       val backLinkContainer = view.getElementById("link-back")
 
       backLinkContainer.text() must be(messages(backCaption))
-      backLinkContainer.getElementById("link-back") must haveHref(
-        controllers.declaration.routes.BorderTransportController.displayPage(Mode.Normal)
-      )
+      backLinkContainer.getElementById("link-back") must haveHref(controllers.declaration.routes.BorderTransportController.displayPage(Mode.Normal))
     }
 
     "display 'Save and continue' button on page" in {
@@ -72,13 +70,9 @@ class TransportContainerAddViewSpec extends UnitViewSpec with Stubs with MustMat
     }
 
     "display error if incorrect containerId is entered" in {
-      val view = createView(
-        TransportInformationContainer.form().fillAndValidate(TransportInformationContainer("12345678901234567890"))
-      )
+      val view = createView(TransportInformationContainer.form().fillAndValidate(TransportInformationContainer("12345678901234567890")))
 
-      view.select("#error-message-id-input").text() must be(
-        messages("supplementary.transportInfo.containerId.error.length")
-      )
+      view.select("#error-message-id-input").text() must be(messages("supplementary.transportInfo.containerId.error.length"))
     }
 
   }

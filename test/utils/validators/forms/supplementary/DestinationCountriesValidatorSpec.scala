@@ -52,9 +52,8 @@ class DestinationCountriesValidatorSpec extends WordSpec with MustMatchers {
       "routing country does not exist" in {
         val destinationCountries = DestinationCountries("PL", Seq("YE", "XX"), "FR")
 
-        val expectedValidationResult = Invalid(
-          errors = Seq(FormError("countriesOfRouting[1]", "declaration.destinationCountries.countriesOfRouting.error"))
-        )
+        val expectedValidationResult =
+          Invalid(errors = Seq(FormError("countriesOfRouting[1]", "declaration.destinationCountries.countriesOfRouting.error")))
 
         DestinationCountriesValidator.validateOnAddition(destinationCountries) must be(expectedValidationResult)
       }
@@ -89,9 +88,8 @@ class DestinationCountriesValidatorSpec extends WordSpec with MustMatchers {
       "routing country does not exist" in {
         val destinationCountries = DestinationCountries("PL", Seq("YE", "XX"), "FR")
 
-        val expectedValidationResult = Invalid(
-          errors = Seq(FormError("countriesOfRouting[1]", "declaration.destinationCountries.countriesOfRouting.error"))
-        )
+        val expectedValidationResult =
+          Invalid(errors = Seq(FormError("countriesOfRouting[1]", "declaration.destinationCountries.countriesOfRouting.error")))
 
         DestinationCountriesValidator.validateOnSaveAndContinue(destinationCountries) must be(expectedValidationResult)
       }

@@ -40,37 +40,23 @@ object WarehouseIdentification {
         text()
           .verifying("supplementary.warehouse.supervisingCustomsOffice.error", isAlphanumeric and hasSpecificLength(8))
       ),
-      "identificationType" -> optional(
-        text().verifying("supplementary.warehouse.identificationType.error", isContainedIn(IdentifierType.all))
-      ),
+      "identificationType" -> optional(text().verifying("supplementary.warehouse.identificationType.error", isContainedIn(IdentifierType.all))),
       "identificationNumber" -> optional(
-        text().verifying(
-          "supplementary.warehouse.identificationNumber.error",
-          noShorterThan(1) and noLongerThan(35) and isAlphanumeric
-        )
+        text().verifying("supplementary.warehouse.identificationNumber.error", noShorterThan(1) and noLongerThan(35) and isAlphanumeric)
       ),
       "inlandModeOfTransportCode" -> optional(
         text()
-          .verifying(
-            "supplementary.warehouse.inlandTransportMode.error.incorrect",
-            isContainedIn(allowedModeOfTransportCodes)
-          )
+          .verifying("supplementary.warehouse.inlandTransportMode.error.incorrect", isContainedIn(allowedModeOfTransportCodes))
       )
     )(WarehouseIdentification.apply)(WarehouseIdentification.unapply)
     .verifying("supplementary.warehouse.identificationNumberNoType.error", typeSelectedWhenNumberIsPopulated)
     .verifying("supplementary.warehouse.identificationTypeNoNumber.error", idNumberIsPopulatedWhenIDTypeIsSelected)
 
   private def typeSelectedWhenNumberIsPopulated: WarehouseIdentification => Boolean =
-    warehouseIdentification =>
-      warehouseIdentification.identificationNumber.isEmpty || warehouseIdentification.identificationType.exists(
-        _.nonEmpty
-    )
+    warehouseIdentification => warehouseIdentification.identificationNumber.isEmpty || warehouseIdentification.identificationType.exists(_.nonEmpty)
 
   private def idNumberIsPopulatedWhenIDTypeIsSelected: WarehouseIdentification => Boolean =
-    warehouseIdentification =>
-      warehouseIdentification.identificationType.isEmpty || warehouseIdentification.identificationNumber.exists(
-        _.nonEmpty
-    )
+    warehouseIdentification => warehouseIdentification.identificationType.isEmpty || warehouseIdentification.identificationNumber.exists(_.nonEmpty)
 
   def form(): Form[WarehouseIdentification] = Form(mapping)
 

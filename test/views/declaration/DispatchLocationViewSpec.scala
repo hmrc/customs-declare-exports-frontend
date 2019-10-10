@@ -30,8 +30,7 @@ import views.html.declaration.dispatch_location
 import views.tags.ViewTest
 
 @ViewTest
-class DispatchLocationViewSpec
-    extends UnitViewSpec with DispatchLocationMessages with CommonMessages with Stubs with Injector {
+class DispatchLocationViewSpec extends UnitViewSpec with DispatchLocationMessages with CommonMessages with Stubs with Injector {
 
   private val form: Form[DispatchLocation] = DispatchLocation.form()
   private val dispatchLocationPage = new dispatch_location(mainTemplate)
@@ -62,9 +61,7 @@ class DispatchLocationViewSpec
 
     "display section header" in {
 
-      createView().getElementById("section-header").text() must include(
-        messages("declaration.summary.locations.header")
-      )
+      createView().getElementById("section-header").text() must include(messages("declaration.summary.locations.header"))
     }
 
     "display two radio buttons with description (not selected)" in {

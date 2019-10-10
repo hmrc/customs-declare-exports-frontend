@@ -16,12 +16,7 @@
 
 package services.cache
 
-import forms.declaration.{
-  AdditionalFiscalReference,
-  AdditionalFiscalReferencesData,
-  CommodityMeasure,
-  FiscalInformation
-}
+import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, CommodityMeasure, FiscalInformation}
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
 import unit.base.UnitSpec
 

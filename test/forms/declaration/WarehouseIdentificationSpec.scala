@@ -38,10 +38,7 @@ class WarehouseIdentificationSpec extends UnitSpec with WarehouseIdentificationM
 
       val incorrectWarehouseIdentification: JsValue =
         JsObject(
-          Map(
-            "identificationType" -> JsString(WarehouseIdentification.IdentifierType.PUBLIC_CUSTOMS_1),
-            "identificationNumber" -> JsString("")
-          )
+          Map("identificationType" -> JsString(WarehouseIdentification.IdentifierType.PUBLIC_CUSTOMS_1), "identificationNumber" -> JsString(""))
         )
 
       form().bind(incorrectWarehouseIdentification).errors.map(_.message) must contain(identificationTypeNoNumber)
@@ -50,12 +47,7 @@ class WarehouseIdentificationSpec extends UnitSpec with WarehouseIdentificationM
     "validate identification number present and type missing" in {
 
       val incorrectWarehouseIdentification: JsValue =
-        JsObject(
-          Map(
-            "identificationType" -> JsString(""),
-            "identificationNumber" -> JsString(TestHelper.createRandomAlphanumericString(2))
-          )
-        )
+        JsObject(Map("identificationType" -> JsString(""), "identificationNumber" -> JsString(TestHelper.createRandomAlphanumericString(2))))
 
       form().bind(incorrectWarehouseIdentification).errors.map(_.message) must contain(identificationNumberNoType)
     }

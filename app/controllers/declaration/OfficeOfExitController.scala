@@ -76,13 +76,10 @@ class OfficeOfExitController @Inject()(
     supplementaryForm()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[OfficeOfExitSupplementary]) =>
-          Future.successful(BadRequest(officeOfExitSupplementaryPage(mode, formWithErrors))),
+        (formWithErrors: Form[OfficeOfExitSupplementary]) => Future.successful(BadRequest(officeOfExitSupplementaryPage(mode, formWithErrors))),
         form =>
           updateCache(form)
-            .map(
-              _ => navigator.continueTo(controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode))
-          )
+            .map(_ => navigator.continueTo(controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode)))
       )
 
   private def saveStandardOffice(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
@@ -96,22 +93,12 @@ class OfficeOfExitController @Inject()(
         },
         form =>
           updateCache(form)
-            .map(
-              _ => navigator.continueTo(controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode))
-          )
+            .map(_ => navigator.continueTo(controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode)))
       )
 
-  private def updateCache(
-    formData: OfficeOfExitSupplementary
-  )(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(
-      model => model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData))))
-    )
+  private def updateCache(formData: OfficeOfExitSupplementary)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData)))))
 
-  private def updateCache(
-    formData: OfficeOfExitStandard
-  )(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(
-      model => model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData))))
-    )
+  private def updateCache(formData: OfficeOfExitStandard)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData)))))
 }

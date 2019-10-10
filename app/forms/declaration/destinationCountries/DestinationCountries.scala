@@ -21,11 +21,7 @@ import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import services.Countries.allCountries
 
-case class DestinationCountries(
-  countryOfDispatch: String,
-  countriesOfRouting: Seq[String],
-  countryOfDestination: String
-)
+case class DestinationCountries(countryOfDispatch: String, countriesOfRouting: Seq[String], countryOfDestination: String)
 
 object DestinationCountries {
   val limit = 99

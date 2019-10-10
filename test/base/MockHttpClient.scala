@@ -71,9 +71,7 @@ class MockHttpClient[A, B](
       case _ if url == expectedUrl && body.asInstanceOf[A] == expectedBody && headers == expectedHeaders =>
         Future.successful(result.asInstanceOf[O])
       case _ =>
-        throw new BadRequestException(
-          s"Expected: \nurl = '$expectedUrl', \nbody = '$expectedBody'.\nGot: \nurl = '$url', \nbody = '$body'."
-        )
+        throw new BadRequestException(s"Expected: \nurl = '$expectedUrl', \nbody = '$expectedBody'.\nGot: \nurl = '$url', \nbody = '$body'.")
     }
   //scalastyle:on method.name
 

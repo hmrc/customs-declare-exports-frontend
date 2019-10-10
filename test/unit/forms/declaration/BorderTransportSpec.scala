@@ -59,9 +59,7 @@ class BorderTransportSpec extends FormSpec {
       }
 
       "sending no information about transport type" in {
-        form.bind(Map.empty[String, String]).errors must contain(
-          "supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty"
-        )
+        form.bind(Map.empty[String, String]).errors must contain("supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty")
       }
 
       "sending non existing transport type" in {

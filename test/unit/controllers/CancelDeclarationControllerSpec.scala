@@ -33,8 +33,7 @@ import unit.base.ControllerSpec
 import unit.mock.{ErrorHandlerMocks, ExportsMetricsMocks}
 import views.html.{cancel_declaration, cancellation_confirmation_page}
 
-class CancelDeclarationControllerSpec
-    extends ControllerSpec with ErrorHandlerMocks with ExportsMetricsMocks with Injector {
+class CancelDeclarationControllerSpec extends ControllerSpec with ErrorHandlerMocks with ExportsMetricsMocks with Injector {
   import CancelDeclarationControllerSpec._
 
   trait SetUp {

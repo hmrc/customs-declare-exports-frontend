@@ -32,10 +32,7 @@ object DeclarationHolder {
   val mapping = Forms.mapping(
     "authorisationTypeCode" -> optional(
       text()
-        .verifying(
-          "supplementary.declarationHolder.authorisationCode.invalid",
-          isContainedIn(HolderOfAuthorisationCode.all.map(_.value))
-        )
+        .verifying("supplementary.declarationHolder.authorisationCode.invalid", isContainedIn(HolderOfAuthorisationCode.all.map(_.value)))
     ),
     "eori" -> optional(text().verifying("supplementary.eori.error", lengthInRange(1)(17) and isAlphanumeric))
   )(DeclarationHolder.apply)(DeclarationHolder.unapply)

@@ -22,12 +22,7 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class CancelDeclaration(
-  functionalReferenceId: Lrn,
-  mrn: String,
-  statementDescription: String,
-  changeReason: String
-)
+case class CancelDeclaration(functionalReferenceId: Lrn, mrn: String, statementDescription: String, changeReason: String)
 
 object CancelDeclaration {
   implicit val format = Json.format[CancelDeclaration]
@@ -45,10 +40,7 @@ object CancelDeclaration {
       .verifying("cancellation.statementDescription.empty", nonEmpty)
       .verifying("cancellation.statementDescription.tooLong", isEmpty or noLongerThan(512))
       .verifying("cancellation.statementDescription.tooShort", isEmpty or noShorterThan(0))
-      .verifying(
-        "cancellation.statementDescription.wrongFormat",
-        isEmpty or isAlphanumericWithAllowedSpecialCharacters
-      ),
+      .verifying("cancellation.statementDescription.wrongFormat", isEmpty or isAlphanumericWithAllowedSpecialCharacters),
     "changeReason" ->
       text()
         .verifying(

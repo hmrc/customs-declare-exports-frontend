@@ -39,18 +39,12 @@ object ProcedureCodes {
     "procedureCode" -> optional(
       text()
         .verifying("supplementary.procedureCodes.procedureCode.error.empty", _.trim.nonEmpty)
-        .verifying(
-          "supplementary.procedureCodes.procedureCode.error.length",
-          isEmpty or hasSpecificLength(procedureCodeLength)
-        )
+        .verifying("supplementary.procedureCodes.procedureCode.error.length", isEmpty or hasSpecificLength(procedureCodeLength))
         .verifying("supplementary.procedureCodes.procedureCode.error.specialCharacters", isAlphanumeric)
     ),
     "additionalProcedureCode" -> optional(
       text()
-        .verifying(
-          "supplementary.procedureCodes.additionalProcedureCode.error.length",
-          isEmpty or hasSpecificLength(additionalProcedureCodeLength)
-        )
+        .verifying("supplementary.procedureCodes.additionalProcedureCode.error.length", isEmpty or hasSpecificLength(additionalProcedureCodeLength))
         .verifying("supplementary.procedureCodes.additionalProcedureCode.error.specialCharacters", isAlphanumeric)
     )
   )(ProcedureCodes.apply)(ProcedureCodes.unapply)

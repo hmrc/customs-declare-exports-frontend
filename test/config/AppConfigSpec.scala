@@ -109,9 +109,7 @@ class AppConfigSpec extends UnitSpec {
     }
 
     "have commodityCodes URL" in {
-      validConfigService.commodityCodesUrl must be(
-        "https://www.gov.uk/guidance/finding-commodity-codes-for-imports-or-exports"
-      )
+      validConfigService.commodityCodesUrl must be("https://www.gov.uk/guidance/finding-commodity-codes-for-imports-or-exports")
     }
 
     "have relevantLicenses URL" in {
@@ -119,9 +117,7 @@ class AppConfigSpec extends UnitSpec {
     }
 
     "have serviceAvailability URL" in {
-      validConfigService.serviceAvailabilityUrl must be(
-        "https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues"
-      )
+      validConfigService.serviceAvailabilityUrl must be("https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues")
     }
 
     "have customsMovementsFrontend URL" in {
@@ -213,15 +209,11 @@ class AppConfigSpec extends UnitSpec {
   }
 
   "throw an exception when google-analytics.host is missing" in {
-    intercept[Exception](emptyConfigService.analyticsHost).getMessage must be(
-      "Missing configuration key: google-analytics.host"
-    )
+    intercept[Exception](emptyConfigService.analyticsHost).getMessage must be("Missing configuration key: google-analytics.host")
   }
 
   "throw an exception when google-analytics.token is missing" in {
-    intercept[Exception](emptyConfigService.analyticsToken).getMessage must be(
-      "Missing configuration key: google-analytics.token"
-    )
+    intercept[Exception](emptyConfigService.analyticsToken).getMessage must be("Missing configuration key: google-analytics.token")
   }
 
   "throw an exception when auth.host is missing" in {
@@ -233,9 +225,7 @@ class AppConfigSpec extends UnitSpec {
   }
 
   "throw an exception when urls.loginContinue is missing" in {
-    intercept[Exception](emptyConfigService.loginContinueUrl).getMessage must be(
-      "Missing configuration key: urls.loginContinue"
-    )
+    intercept[Exception](emptyConfigService.loginContinueUrl).getMessage must be("Missing configuration key: urls.loginContinue")
   }
 
   "throw an exception when microservice.services.features.default is missing" in {
@@ -245,9 +235,7 @@ class AppConfigSpec extends UnitSpec {
   }
 
   "throw an exception when customs-declare-exports.host is missing" in {
-    intercept[Exception](emptyConfigService.customsDeclareExports).getMessage must be(
-      "Could not find config customs-declare-exports.host"
-    )
+    intercept[Exception](emptyConfigService.customsDeclareExports).getMessage must be("Could not find config customs-declare-exports.host")
   }
 
   "throw an exception when submit declaration uri is missing" in {
@@ -275,15 +263,11 @@ class AppConfigSpec extends UnitSpec {
   }
 
   "throw an exception when countryCodesJsonFilename is missing" in {
-    intercept[Exception](emptyConfigService.countryCodesJsonFilename).getMessage must be(
-      "Missing configuration key: countryCodesJsonFilename"
-    )
+    intercept[Exception](emptyConfigService.countryCodesJsonFilename).getMessage must be("Missing configuration key: countryCodesJsonFilename")
   }
 
   "throw an exception when countryCodesCsvFilename is missing" in {
-    intercept[Exception](emptyConfigService.countriesCsvFilename).getMessage must be(
-      "Missing configuration key: countryCodesCsvFilename"
-    )
+    intercept[Exception](emptyConfigService.countriesCsvFilename).getMessage must be("Missing configuration key: countryCodesCsvFilename")
   }
 
 }

@@ -57,14 +57,7 @@ class SubmissionService @Inject()(
           logProgress(exportsDeclaration, "Submitted Successfully")
           auditService.audit(
             AuditTypes.Submission,
-            auditData(
-              eori,
-              exportsDeclaration.choice,
-              exportsDeclaration.lrn,
-              exportsDeclaration.ducr,
-              legalDeclaration,
-              Success.toString
-            )
+            auditData(eori, exportsDeclaration.choice, exportsDeclaration.lrn, exportsDeclaration.ducr, legalDeclaration, Success.toString)
           )
           exportsMetrics.incrementCounter(submissionMetric)
           timerContext.stop()
@@ -73,14 +66,7 @@ class SubmissionService @Inject()(
           logger.error(s"Error response from backend $exception")
           auditService.audit(
             AuditTypes.Submission,
-            auditData(
-              eori,
-              exportsDeclaration.choice,
-              exportsDeclaration.lrn,
-              exportsDeclaration.ducr,
-              legalDeclaration,
-              Failure.toString
-            )
+            auditData(eori, exportsDeclaration.choice, exportsDeclaration.lrn, exportsDeclaration.ducr, legalDeclaration, Failure.toString)
           )
       }
       .map(_ => exportsDeclaration.lrn)
@@ -89,14 +75,7 @@ class SubmissionService @Inject()(
   private def logProgress(declaration: ExportsDeclaration, message: String): Unit =
     logger.info(s"Declaration [${declaration.id}]: $message")
 
-  private def auditData(
-    eori: String,
-    choice: String,
-    lrn: Option[String],
-    ducr: Option[String],
-    legalDeclaration: LegalDeclaration,
-    result: String
-  ) =
+  private def auditData(eori: String, choice: String, lrn: Option[String], ducr: Option[String], legalDeclaration: LegalDeclaration, result: String) =
     Map(
       EORI.toString -> eori,
       DecType.toString -> choice,

@@ -39,9 +39,8 @@ class SavedDeclarationsController @Inject()(
     extends FrontendController(mcc) with I18nSupport {
 
   def displayDeclarations(pageNumber: Int = 1): Action[AnyContent] = authenticate.async { implicit request =>
-    customsDeclareExportsConnector.findSavedDeclarations(Page(pageNumber, appConfig.paginationItemsPerPage)).map {
-      page =>
-        Ok(savedDeclarationsPage(page))
+    customsDeclareExportsConnector.findSavedDeclarations(Page(pageNumber, appConfig.paginationItemsPerPage)).map { page =>
+      Ok(savedDeclarationsPage(page))
     }
   }
 

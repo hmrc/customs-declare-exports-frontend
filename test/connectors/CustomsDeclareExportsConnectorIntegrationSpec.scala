@@ -39,8 +39,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import base.TestHelper._
 import play.api.Application
 
-class CustomsDeclareExportsConnectorIntegrationSpec
-    extends ConnectorSpec with BeforeAndAfterEach with ExportsDeclarationBuilder with ScalaFutures {
+class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with BeforeAndAfterEach with ExportsDeclarationBuilder with ScalaFutures {
 
   private val id = "id"
   private val newDeclaration = aDeclaration(withoutId())
@@ -192,11 +191,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec
       val response = await(connector.findSavedDeclarations(pagination))
 
       response mustBe Paginated(Seq(existingDeclaration), pagination, 1)
-      verify(
-        getRequestedFor(
-          urlEqualTo("/declarations?status=DRAFT&page-index=1&page-size=10&sort-by=updatedDateTime&sort-direction=des")
-        )
-      )
+      verify(getRequestedFor(urlEqualTo("/declarations?status=DRAFT&page-index=1&page-size=10&sort-by=updatedDateTime&sort-direction=des")))
     }
   }
 

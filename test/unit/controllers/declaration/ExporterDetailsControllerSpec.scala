@@ -73,10 +73,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
       }
       "details are filled" in {
         val declaration = aDeclaration(
-          withExporterDetails(
-            eori = Some("99980"),
-            address = Some(Address("CaptainAmerica", "Test Street", "Leeds", "LS18BN", "Portugal"))
-          )
+          withExporterDetails(eori = Some("99980"), address = Some(Address("CaptainAmerica", "Test Street", "Leeds", "LS18BN", "Portugal")))
         )
         withNewCaching(declaration)
         val response = controller.displayPage(Mode.Normal)(getRequest(declaration))

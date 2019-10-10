@@ -22,12 +22,7 @@ import play.api.libs.json.{JsValue, Json}
 import services.DocumentType
 import utils.validators.forms.FieldValidator._
 
-case class Document(
-  documentCategory: String,
-  documentType: String,
-  documentReference: String,
-  goodsItemIdentifier: Option[String]
-) {
+case class Document(documentCategory: String, documentType: String, documentReference: String, goodsItemIdentifier: Option[String]) {
   def toJson: JsValue = Json.toJson(this)(Document.format)
 }
 
@@ -43,25 +38,17 @@ object Document {
   val mapping = Forms.mapping(
     "documentCategory" -> text()
       .verifying("supplementary.previousDocuments.documentCategory.error.empty", nonEmpty)
-      .verifying(
-        "supplementary.previousDocuments.documentCategory.error.incorrect",
-        isEmpty or isContainedIn(correctDocumentCategories)
-      ),
+      .verifying("supplementary.previousDocuments.documentCategory.error.incorrect", isEmpty or isContainedIn(correctDocumentCategories)),
     "documentType" -> text()
       .verifying("supplementary.previousDocuments.documentType.empty", nonEmpty)
-      .verifying(
-        "supplementary.previousDocuments.documentType.error",
-        isEmpty or isContainedIn(DocumentType.allDocuments.map(_.code))
-      ),
+      .verifying("supplementary.previousDocuments.documentType.error", isEmpty or isContainedIn(DocumentType.allDocuments.map(_.code))),
     "documentReference" -> text()
       .verifying("supplementary.previousDocuments.documentReference.empty", nonEmpty)
       .verifying(
         "supplementary.previousDocuments.documentReference.error",
         isEmpty or (isAlphanumericWithAllowedHyphenCharacter and noLongerThan(35))
       ),
-    "goodsItemIdentifier" -> optional(
-      text().verifying("supplementary.previousDocuments.goodsItemIdentifier.error", isNumeric and noLongerThan(3))
-    )
+    "goodsItemIdentifier" -> optional(text().verifying("supplementary.previousDocuments.goodsItemIdentifier.error", isNumeric and noLongerThan(3)))
   )(Document.apply)(Document.unapply)
 
   def form(): Form[Document] = Form(mapping)

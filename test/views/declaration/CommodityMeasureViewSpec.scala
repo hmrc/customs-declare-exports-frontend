@@ -29,8 +29,7 @@ import views.html.declaration.goods_measure
 import views.tags.ViewTest
 
 @ViewTest
-class CommodityMeasureViewSpec
-    extends UnitViewSpec with CommodityMeasureMessages with CommonMessages with Stubs with Injector {
+class CommodityMeasureViewSpec extends UnitViewSpec with CommodityMeasureMessages with CommonMessages with Stubs with Injector {
 
   val itemId = "a7sc78"
   private val form: Form[CommodityMeasure] = CommodityMeasure.form()

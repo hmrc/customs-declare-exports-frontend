@@ -45,9 +45,7 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
       val messages = instanceOf[MessagesApi].preferred(journeyRequest())
       messages must haveTranslationFor("supplementary.transportInfo.active.title")
       messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.crossingTheBorder.header")
-      messages must haveTranslationFor(
-        "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.header"
-      )
+      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.header")
       messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.crossingTheBorder.header.hint")
       messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.IMOShipIDNumber")
       messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.nameOfVessel")
@@ -76,9 +74,7 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
       val backButton = view.getElementById("link-back")
 
       backButton.text() mustBe "site.back"
-      backButton.getElementById("link-back") must haveHref(
-        controllers.declaration.routes.DepartureTransportController.displayPage(Mode.Normal)
-      )
+      backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.DepartureTransportController.displayPage(Mode.Normal))
     }
 
     "display 'Save and continue' button on page" in {

@@ -80,10 +80,7 @@ case class GovernmentAgencyGoodsItemAdditionalDocument(
 
 case class WriteOff(quantity: Option[Measure] = None, amount: Option[Amount] = None)
 
-case class GovernmentAgencyGoodsItemAdditionalDocumentSubmitter(
-  name: Option[String] = None,
-  roleCode: Option[String] = None
-)
+case class GovernmentAgencyGoodsItemAdditionalDocumentSubmitter(name: Option[String] = None, roleCode: Option[String] = None)
 
 case class DateTimeElement(dateTimeString: DateTimeString)
 

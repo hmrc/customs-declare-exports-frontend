@@ -66,9 +66,7 @@ class RejectionReasonSpec extends UnitSpec {
           None
         )
       )
-      allRejectedErrors must contain(
-        RejectionReason("CDS12108", "Obligation error: DUCR is mandatory on an Export Declaration.", None)
-      )
+      allRejectedErrors must contain(RejectionReason("CDS12108", "Obligation error: DUCR is mandatory on an Export Declaration.", None))
     }
 
     "correctly read multiline values" in {

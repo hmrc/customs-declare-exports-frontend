@@ -38,29 +38,17 @@ object DocumentWriteOff {
     .mapping(
       measurementUnitKey -> optional(
         text()
-          .verifying(
-            "supplementary.addDocument.measurementUnit.error.length",
-            hasSpecificLength(measurementUnitMaxLength)
-          )
+          .verifying("supplementary.addDocument.measurementUnit.error.length", hasSpecificLength(measurementUnitMaxLength))
           .verifying("supplementary.addDocument.measurementUnit.error.specialCharacters", isAlphanumeric)
       ),
       documentQuantityKey -> optional(
         bigDecimal
-          .verifying(
-            "supplementary.addDocument.documentQuantity.error.precision",
-            _.precision <= documentQuantityMaxLength
-          )
-          .verifying(
-            "supplementary.addDocument.documentQuantity.error.scale",
-            _.scale <= documentQuantityMaxDecimalPlaces
-          )
+          .verifying("supplementary.addDocument.documentQuantity.error.precision", _.precision <= documentQuantityMaxLength)
+          .verifying("supplementary.addDocument.documentQuantity.error.scale", _.scale <= documentQuantityMaxDecimalPlaces)
           .verifying("supplementary.addDocument.documentQuantity.error", _ >= 0)
       )
     )(DocumentWriteOff.apply)(DocumentWriteOff.unapply)
-    .verifying(
-      "supplementary.addDocument.error.measurementUnitAndQuantity",
-      validateMeasurementUnitAndDocumentQuantity(_)
-    )
+    .verifying("supplementary.addDocument.error.measurementUnitAndQuantity", validateMeasurementUnitAndDocumentQuantity(_))
 
   private def validateMeasurementUnitAndDocumentQuantity(documentWriteOff: DocumentWriteOff): Boolean =
     (documentWriteOff.measurementUnit.isEmpty && documentWriteOff.documentQuantity.isEmpty) ||

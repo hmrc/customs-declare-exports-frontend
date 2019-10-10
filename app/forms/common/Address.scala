@@ -54,10 +54,7 @@ object Address {
       .verifying("supplementary.address.postCode.error", validateAddressField(9)),
     "country" -> text()
       .verifying("supplementary.address.country.empty", nonEmpty)
-      .verifying(
-        "supplementary.address.country.error",
-        input => input.isEmpty || allCountries.exists(_.countryName == input)
-      )
+      .verifying("supplementary.address.country.error", input => input.isEmpty || allCountries.exists(_.countryName == input))
   )(Address.apply)(Address.unapply)
 
   def form(): Form[Address] = Form(mapping)

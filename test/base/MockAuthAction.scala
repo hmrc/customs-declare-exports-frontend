@@ -72,10 +72,7 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks {
                                       new ~(
                                         new ~(
                                           new ~(
-                                            new ~(
-                                              new ~(user.identityData.credentials, user.identityData.name),
-                                              user.identityData.email
-                                            ),
+                                            new ~(new ~(user.identityData.credentials, user.identityData.name), user.identityData.email),
                                             user.identityData.externalId
                                           ),
                                           user.identityData.internalId
@@ -145,10 +142,7 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks {
                                       new ~(
                                         new ~(
                                           new ~(
-                                            new ~(
-                                              new ~(user.identityData.credentials, user.identityData.name),
-                                              user.identityData.email
-                                            ),
+                                            new ~(new ~(user.identityData.credentials, user.identityData.name), user.identityData.email),
                                             user.identityData.externalId
                                           ),
                                           user.identityData.internalId
@@ -217,13 +211,7 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks {
                                     new ~(
                                       new ~(
                                         new ~(
-                                          new ~(
-                                            new ~(
-                                              new ~(user.identityData.credentials, user.identityData.name),
-                                              user.identityData.email
-                                            ),
-                                            None
-                                          ),
+                                          new ~(new ~(new ~(user.identityData.credentials, user.identityData.name), user.identityData.email), None),
                                           user.identityData.internalId
                                         ),
                                         user.identityData.affinityGroup
@@ -263,10 +251,7 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks {
 
   def getAuthenticatedRequest(declarationId: String = "declarationId"): AuthenticatedRequest[AnyContentAsEmpty.type] = {
     import utils.FakeRequestCSRFSupport._
-    new AuthenticatedRequest(
-      FakeRequest("GET", "").withSession((ExportsSessionKeys.declarationId, declarationId)).withCSRFToken,
-      exampleUser
-    )
+    new AuthenticatedRequest(FakeRequest("GET", "").withSession((ExportsSessionKeys.declarationId, declarationId)).withCSRFToken, exampleUser)
   }
 
   def getRequest(): Request[AnyContentAsEmpty.type] = {

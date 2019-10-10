@@ -21,10 +21,8 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.ExportsDeclaration
 import models.declaration.SummaryContainer
 
-case class DeclarationTypeSupplementary(
-  dispatchLocation: Option[DispatchLocation],
-  additionalDeclarationType: Option[AdditionalDeclarationType]
-) extends SummaryContainer {
+case class DeclarationTypeSupplementary(dispatchLocation: Option[DispatchLocation], additionalDeclarationType: Option[AdditionalDeclarationType])
+    extends SummaryContainer {
 
   override def isEmpty: Boolean = dispatchLocation.isEmpty && additionalDeclarationType.isEmpty
 }
@@ -32,8 +30,6 @@ case class DeclarationTypeSupplementary(
 object DeclarationTypeSupplementary {
   val id = "DeclarationType"
 
-  def apply(cacheData: ExportsDeclaration): DeclarationTypeSupplementary = DeclarationTypeSupplementary(
-    dispatchLocation = cacheData.dispatchLocation,
-    additionalDeclarationType = cacheData.additionalDeclarationType
-  )
+  def apply(cacheData: ExportsDeclaration): DeclarationTypeSupplementary =
+    DeclarationTypeSupplementary(dispatchLocation = cacheData.dispatchLocation, additionalDeclarationType = cacheData.additionalDeclarationType)
 }

@@ -88,9 +88,7 @@ class SubmissionConfirmationPageViewSpec extends UnitViewSpec with ExportsTestDa
       val link = view.select("article>p:nth-child(4)>a")
       link.text() mustBe "supplementary.confirmation.explanation.linkText"
 
-      view.getElementById("submissions-link") must haveHref(
-        controllers.routes.SubmissionsController.displayListOfSubmissions()
-      )
+      view.getElementById("submissions-link") must haveHref(controllers.routes.SubmissionsController.displayListOfSubmissions())
     }
   }
 }

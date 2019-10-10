@@ -31,8 +31,7 @@ import views.html.declaration.declaration_holder
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarationHolderViewSpec
-    extends UnitViewSpec with DeclarationHolderMessages with CommonMessages with Stubs with Injector {
+class DeclarationHolderViewSpec extends UnitViewSpec with DeclarationHolderMessages with CommonMessages with Stubs with Injector {
 
   private val form: Form[DeclarationHolder] = DeclarationHolder.form()
   private val declarationHolderPage = new declaration_holder(mainTemplate)
@@ -66,9 +65,7 @@ class DeclarationHolderViewSpec
 
     "display section header" in {
 
-      createView().getElementById("section-header").text() must include(
-        messages("supplementary.summary.parties.header")
-      )
+      createView().getElementById("section-header").text() must include(messages("supplementary.summary.parties.header"))
     }
 
     "display empty input with label for Authorisation Code" in {
@@ -150,12 +147,7 @@ class DeclarationHolderViewSpec
       val view = createView(
         DeclarationHolder
           .form()
-          .fillAndValidate(
-            DeclarationHolder(
-              Some(TestHelper.createRandomAlphanumericString(6)),
-              Some(TestHelper.createRandomAlphanumericString(18))
-            )
-          )
+          .fillAndValidate(DeclarationHolder(Some(TestHelper.createRandomAlphanumericString(6)), Some(TestHelper.createRandomAlphanumericString(18))))
       )
 
       view must haveGlobalErrorSummary

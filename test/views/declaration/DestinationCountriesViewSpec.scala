@@ -33,8 +33,7 @@ import views.tags.ViewTest
 
 @ViewTest
 class DestinationCountriesViewSpec
-    extends UnitViewSpec with ExportsTestData with DestinationCountriesMessages with CommonMessages with Stubs
-    with Injector {
+    extends UnitViewSpec with ExportsTestData with DestinationCountriesMessages with CommonMessages with Stubs with Injector {
 
   private val form: Form[DestinationCountries] = DestinationCountries.Supplementary.form
   private val destiantionCountriesSupplementaryPage = new destination_countries_supplementary(mainTemplate)
@@ -164,12 +163,7 @@ class DestinationCountriesViewSpec
 
       val view = createView(
         DestinationCountries.Supplementary.form
-          .fillAndValidate(
-            DestinationCountries(
-              TestHelper.createRandomAlphanumericString(10),
-              TestHelper.createRandomAlphanumericString(10)
-            )
-          )
+          .fillAndValidate(DestinationCountries(TestHelper.createRandomAlphanumericString(10), TestHelper.createRandomAlphanumericString(10)))
       )
 
       view must haveGlobalErrorSummary

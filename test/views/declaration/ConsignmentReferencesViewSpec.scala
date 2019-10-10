@@ -32,8 +32,7 @@ import views.html.declaration.consignment_references
 import views.tags.ViewTest
 
 @ViewTest
-class ConsignmentReferencesViewSpec
-    extends UnitViewSpec with ConsignmentReferencesMessages with CommonMessages with Stubs with Injector {
+class ConsignmentReferencesViewSpec extends UnitViewSpec with ConsignmentReferencesMessages with CommonMessages with Stubs with Injector {
 
   private val properDUCR = "7GB000000000000-12345"
   private val incorrectDUCR = "7GB000000000000-1234512345123451234512345"
@@ -70,9 +69,7 @@ class ConsignmentReferencesViewSpec
 
     "display section header" in {
 
-      createView().getElementById("section-header").text() must include(
-        messages("supplementary.consignmentReferences.heading")
-      )
+      createView().getElementById("section-header").text() must include(messages("supplementary.consignmentReferences.heading"))
     }
 
     "display empty input with label for DUCR" in {
@@ -171,9 +168,7 @@ class ConsignmentReferencesViewSpec
       val view = createView(
         ConsignmentReferences
           .form()
-          .fillAndValidate(
-            ConsignmentReferences(Ducr(incorrectDUCR), Lrn(TestHelper.createRandomAlphanumericString(23)))
-          )
+          .fillAndValidate(ConsignmentReferences(Ducr(incorrectDUCR), Lrn(TestHelper.createRandomAlphanumericString(23))))
       )
 
       view must haveGlobalErrorSummary
@@ -203,9 +198,7 @@ class ConsignmentReferencesViewSpec
     "display data in DUCR input" in {
 
       val view =
-        createView(
-          ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("9GB12345678901234-SHIP1234-1"), Lrn("")))
-        )
+        createView(ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("9GB12345678901234-SHIP1234-1"), Lrn(""))))
 
       view.getElementById("ducr_ducr").attr("value") mustBe "9GB12345678901234-SHIP1234-1"
       view.getElementById("lrn").attr("value") mustBe empty
@@ -222,9 +215,7 @@ class ConsignmentReferencesViewSpec
     "display data in all inputs" in {
 
       val view =
-        createView(
-          ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("GB/ABC4-ASIUDYFAHSDJF"), Lrn("test1")))
-        )
+        createView(ConsignmentReferences.form().fill(ConsignmentReferences(Ducr("GB/ABC4-ASIUDYFAHSDJF"), Lrn("test1"))))
 
       view.getElementById("ducr_ducr").attr("value") mustBe "GB/ABC4-ASIUDYFAHSDJF"
       view.getElementById("lrn").attr("value") mustBe "test1"

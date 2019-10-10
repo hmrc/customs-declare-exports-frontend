@@ -23,11 +23,7 @@ import play.api.data.Forms.{mapping, optional, text}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator.{isContainedIn, noLongerThan, _}
 
-case class DepartureTransport(
-  borderModeOfTransportCode: String,
-  meansOfTransportOnDepartureType: String,
-  meansOfTransportOnDepartureIDNumber: String
-)
+case class DepartureTransport(borderModeOfTransportCode: String, meansOfTransportOnDepartureType: String, meansOfTransportOnDepartureIDNumber: String)
 
 object DepartureTransport {
   val formId = "BorderTransport"
@@ -36,23 +32,13 @@ object DepartureTransport {
 
   val formMapping = mapping(
     "borderModeOfTransportCode" -> requiredRadio("supplementary.transportInfo.borderTransportMode.error.empty")
-      .verifying(
-        "supplementary.transportInfo.borderTransportMode.error.incorrect",
-        isContainedIn(allowedModeOfTransportCodes)
-      ),
-    "meansOfTransportOnDepartureType" -> requiredRadio(
-      "supplementary.transportInfo.meansOfTransport.departure.error.empty"
-    ).verifying(
-      "supplementary.transportInfo.meansOfTransport.departure.error.incorrect",
-      isContainedIn(allowedMeansOfTransportTypeCodes)
-    ),
+      .verifying("supplementary.transportInfo.borderTransportMode.error.incorrect", isContainedIn(allowedModeOfTransportCodes)),
+    "meansOfTransportOnDepartureType" -> requiredRadio("supplementary.transportInfo.meansOfTransport.departure.error.empty")
+      .verifying("supplementary.transportInfo.meansOfTransport.departure.error.incorrect", isContainedIn(allowedMeansOfTransportTypeCodes)),
     "meansOfTransportOnDepartureIDNumber" -> text()
       .verifying("supplementary.transportInfo.meansOfTransport.reference.error.empty", nonEmpty)
       .verifying("supplementary.transportInfo.meansOfTransport.reference.error.length", noLongerThan(27))
-      .verifying(
-        "supplementary.transportInfo.meansOfTransport.reference.error.invalid",
-        isAlphanumericWithAllowedSpecialCharacters
-      )
+      .verifying("supplementary.transportInfo.meansOfTransport.reference.error.invalid", isAlphanumericWithAllowedSpecialCharacters)
   )(DepartureTransport.apply)(DepartureTransport.unapply)
 
   def form(): Form[DepartureTransport] = Form(DepartureTransport.formMapping)

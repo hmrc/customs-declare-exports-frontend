@@ -92,12 +92,7 @@ class DeclarationAdditionalActorsController @Inject()(
           updateCache(updatedCache)
             .map(_ => Redirect(routes.DeclarationAdditionalActorsController.displayPage(mode)))
         } else
-          handleErrorPage(
-            mode,
-            Seq(("eori", "supplementary.additionalActors.eori.isNotDefined")),
-            userInput,
-            cachedData.actors
-          )
+          handleErrorPage(mode, Seq(("eori", "supplementary.additionalActors.eori.isNotDefined")), userInput, cachedData.actors)
     }
 
   private def handleErrorPage(
@@ -113,9 +108,7 @@ class DeclarationAdditionalActorsController @Inject()(
     Future.successful(BadRequest(declarationAdditionalActorsPage(mode, formWithError, actors)))
   }
 
-  private def updateCache(
-    formData: DeclarationAdditionalActorsData
-  )(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+  private def updateCache(formData: DeclarationAdditionalActorsData)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
       val updatedParties = model.parties.copy(declarationAdditionalActorsData = Some(formData))
       model.copy(parties = updatedParties)
@@ -124,21 +117,18 @@ class DeclarationAdditionalActorsController @Inject()(
   private def retrieveItem(value: String): Option[DeclarationAdditionalActors] =
     DeclarationAdditionalActors.fromJsonString(value)
 
-  private def saveAndContinue(
-    mode: Mode,
-    userInput: DeclarationAdditionalActors,
-    cacheData: DeclarationAdditionalActorsData
-  )(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] =
+  private def saveAndContinue(mode: Mode, userInput: DeclarationAdditionalActors, cacheData: DeclarationAdditionalActorsData)(
+    implicit request: JourneyRequest[AnyContent],
+    hc: HeaderCarrier
+  ): Future[Result] =
     (userInput, cacheData.actors) match {
       case (actor, Seq())  => saveAndRedirect(mode, actor, Seq())
       case (actor, actors) => handleSaveAndContinueCache(mode, actor, actors)
     }
 
-  private def handleSaveAndContinueCache(
-    mode: Mode,
-    actor: DeclarationAdditionalActors,
-    actors: Seq[DeclarationAdditionalActors]
-  )(implicit request: JourneyRequest[AnyContent]) =
+  private def handleSaveAndContinueCache(mode: Mode, actor: DeclarationAdditionalActors, actors: Seq[DeclarationAdditionalActors])(
+    implicit request: JourneyRequest[AnyContent]
+  ) =
     if (actors.length >= maxNumberOfItems) {
       handleErrorPage(mode, Seq(("", exceedMaximumNumberError)), actor, actors)
     } else if (actors.contains(actor)) {

@@ -34,11 +34,8 @@ class ProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData with Stub
 
   private val page = new procedure_codes(mainTemplate)
   private val form: Form[ProcedureCodes] = ProcedureCodes.form()
-  private def createView(
-    mode: Mode = Mode.Normal,
-    form: Form[ProcedureCodes] = form,
-    codes: Seq[String] = Seq.empty
-  ): Document = page(mode, "itemId", form, codes)(journeyRequest(), stubMessages())
+  private def createView(mode: Mode = Mode.Normal, form: Form[ProcedureCodes] = form, codes: Seq[String] = Seq.empty): Document =
+    page(mode, "itemId", form, codes)(journeyRequest(), stubMessages())
 
   "Procedure Codes View on empty page" should {
     val view = createView()
@@ -82,9 +79,7 @@ class ProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData with Stub
       val backButton = view.getElementById("link-back")
 
       backButton.text() mustBe "site.back"
-      backButton.getElementById("link-back") must haveHref(
-        controllers.declaration.routes.ItemsSummaryController.displayPage(Mode.Normal)
-      )
+      backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.ItemsSummaryController.displayPage(Mode.Normal))
     }
 
     "display both 'Add' and 'Save and continue' button on page" in {
