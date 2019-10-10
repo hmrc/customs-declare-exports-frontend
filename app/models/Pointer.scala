@@ -33,10 +33,8 @@ case class Pointer(sections: List[String]) {
 }
 
 object Pointer {
-  implicit val format: Format[Pointer] = Format(
-    Reads(js => js.validate[String].map(string => Pointer(string))),
-    Writes(pointer => JsString(pointer.value))
-  )
+  implicit val format: Format[Pointer] =
+    Format(Reads(js => js.validate[String].map(string => Pointer(string))), Writes(pointer => JsString(pointer.value)))
 
   def apply(value: String): Pointer = Pointer(value.split("\\.").toList)
 }
