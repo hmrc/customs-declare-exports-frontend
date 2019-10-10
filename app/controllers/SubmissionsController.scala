@@ -54,7 +54,7 @@ class SubmissionsController @Inject()(
           .createDeclaration(declaration.amend(sourceId = id))
           .map { created =>
             Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.Amend))
-              .addingToSession(ExportsSessionKeys.declarationId -> created.id.get)
+              .addingToSession(ExportsSessionKeys.declarationId -> created.id)
           }
       case _ => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
     }

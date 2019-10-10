@@ -16,6 +16,7 @@
 
 package base
 
+import connectors.exchange.ExportsDeclarationExchange
 import models.ExportsDeclaration
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{never, verify, when}
@@ -35,8 +36,8 @@ trait MockExportCacheService extends MockitoSugar with ExportsDeclarationBuilder
     when(mockExportsCacheService.update(any[ExportsDeclaration])(any()))
       .thenReturn(Future.successful(Some(dataToReturn)))
 
-    when(mockExportsCacheService.create(any[ExportsDeclaration])(any()))
-      .thenReturn(Future.successful(dataToReturn.copy(id = Some("declarationId"))))
+    when(mockExportsCacheService.create(any[ExportsDeclarationExchange])(any()))
+      .thenReturn(Future.successful(dataToReturn.copy(id = "declarationId")))
 
     when(mockExportsCacheService.get(anyString)(any()))
       .thenReturn(Future.successful(Some(dataToReturn)))
@@ -48,15 +49,15 @@ trait MockExportCacheService extends MockitoSugar with ExportsDeclarationBuilder
     captor.getValue
   }
 
-  protected def theCacheModelCreated: ExportsDeclaration = {
-    val captor = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
+  protected def theCacheModelCreated: ExportsDeclarationExchange = {
+    val captor = ArgumentCaptor.forClass(classOf[ExportsDeclarationExchange])
     verify(mockExportsCacheService).create(captor.capture())(any())
     captor.getValue
   }
 
   protected def verifyTheCacheIsUnchanged(): Unit = {
     verify(mockExportsCacheService, never()).update(any[ExportsDeclaration])(any())
-    verify(mockExportsCacheService, never()).create(any[ExportsDeclaration])(any())
+    verify(mockExportsCacheService, never()).create(any[ExportsDeclarationExchange])(any())
   }
 
   override protected def afterEach(): Unit = {

@@ -16,6 +16,7 @@
 
 package unit.controllers
 
+import connectors.exchange.ExportsDeclarationExchange
 import controllers.ChoiceController
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
@@ -23,6 +24,7 @@ import models.requests.ExportsSessionKeys
 import models.{DeclarationStatus, ExportsDeclaration}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.OptionValues
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Request}
 import play.api.test.FakeRequest
@@ -33,7 +35,7 @@ import views.html.choice_page
 
 import scala.concurrent.Future
 
-class ChoiceControllerSpec extends ControllerSpec {
+class ChoiceControllerSpec extends ControllerSpec with OptionValues {
   import ChoiceControllerSpec._
 
   private def existingDeclaration(choice: String = SupplementaryDec) =
@@ -142,15 +144,18 @@ class ChoiceControllerSpec extends ControllerSpec {
     "redirect to Dispatch Location page" when {
 
       "user chooses Supplementary Dec for new declaration" in new SetUp {
-        when(mockExportsCacheService.create(any[ExportsDeclaration])(any()))
+        // FIXME move to mock trait
+        when(mockExportsCacheService.create(any[ExportsDeclarationExchange])(any()))
           .thenReturn(Future.successful(newDeclaration))
 
         val result = controller.submitChoice()(postChoiceRequest(supplementaryChoice))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.declaration.routes.DispatchLocationController.displayPage().url))
-        session(result).get(ExportsSessionKeys.declarationId) must be(newDeclaration.id)
-        val created: ExportsDeclaration = theCacheModelCreated
+        redirectLocation(result) must be(
+          Some(controllers.declaration.routes.DispatchLocationController.displayPage().url)
+        )
+        session(result).get(ExportsSessionKeys.declarationId).value mustEqual newDeclaration.id
+        val created = theCacheModelCreated
         created.id mustBe None
         created.status mustBe DeclarationStatus.DRAFT
         created.choice mustBe "SMP"
@@ -166,22 +171,27 @@ class ChoiceControllerSpec extends ControllerSpec {
         val result = controller.submitChoice()(postRequest(supplementaryChoice, existingDec))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.declaration.routes.DispatchLocationController.displayPage().url))
+        redirectLocation(result) must be(
+          Some(controllers.declaration.routes.DispatchLocationController.displayPage().url)
+        )
         val updated: ExportsDeclaration = theCacheModelUpdated
         updated.id mustBe existingDec.id
         updated.choice mustBe "SMP"
       }
 
       "user chooses Standard Dec for new declaration" in new SetUp {
-        when(mockExportsCacheService.create(any[ExportsDeclaration])(any()))
+        // FIXME
+        when(mockExportsCacheService.create(any[ExportsDeclarationExchange])(any()))
           .thenReturn(Future.successful(newDeclaration))
 
         val result = controller.submitChoice()(postChoiceRequest(standardChoice))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.declaration.routes.DispatchLocationController.displayPage().url))
-        session(result).get(ExportsSessionKeys.declarationId) must be(newDeclaration.id)
-        val created: ExportsDeclaration = theCacheModelCreated
+        redirectLocation(result) must be(
+          Some(controllers.declaration.routes.DispatchLocationController.displayPage().url)
+        )
+        session(result).get(ExportsSessionKeys.declarationId).value mustEqual newDeclaration.id
+        val created = theCacheModelCreated
         created.id mustBe None
         created.status mustBe DeclarationStatus.DRAFT
         created.choice mustBe "STD"
@@ -196,8 +206,10 @@ class ChoiceControllerSpec extends ControllerSpec {
         val result = controller.submitChoice()(postRequest(standardChoice, existingDec))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.declaration.routes.DispatchLocationController.displayPage().url))
-        val updated: ExportsDeclaration = theCacheModelUpdated
+        redirectLocation(result) must be(
+          Some(controllers.declaration.routes.DispatchLocationController.displayPage().url)
+        )
+        val updated = theCacheModelUpdated
         updated.id mustBe existingDec.id
         updated.choice mustBe "STD"
       }

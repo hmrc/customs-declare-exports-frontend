@@ -20,6 +20,7 @@ import java.time.{Instant, LocalDate, LocalDateTime}
 import java.util.UUID
 
 import akka.util.Timeout
+import connectors.exchange.ExportsDeclarationExchange
 import controllers.SubmissionsController
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
@@ -82,7 +83,7 @@ class SubmissionsControllerSpec extends ControllerSpec {
         val newDeclaration: ExportsDeclaration = aDeclaration(withId("new-id"), withStatus(DeclarationStatus.DRAFT))
         when(mockCustomsDeclareExportsConnector.findDeclaration(refEq("id"))(any(), any()))
           .thenReturn(successful(Some(rejectedDeclaration)))
-        when(mockCustomsDeclareExportsConnector.createDeclaration(any[ExportsDeclaration])(any(), any()))
+        when(mockCustomsDeclareExportsConnector.createDeclaration(any[ExportsDeclarationExchange])(any(), any()))
           .thenReturn(successful(newDeclaration))
 
         val result = controller.amend("id")(getRequest())
@@ -118,8 +119,8 @@ class SubmissionsControllerSpec extends ControllerSpec {
         }
       }
 
-      def theDeclarationCreated: ExportsDeclaration = {
-        val captor: ArgumentCaptor[ExportsDeclaration] = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
+      def theDeclarationCreated: ExportsDeclarationExchange = {
+        val captor: ArgumentCaptor[ExportsDeclarationExchange] = ArgumentCaptor.forClass(classOf[ExportsDeclarationExchange])
         verify(mockCustomsDeclareExportsConnector).createDeclaration(captor.capture())(any(), any())
         captor.getValue
       }

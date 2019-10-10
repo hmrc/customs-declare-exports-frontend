@@ -50,13 +50,13 @@
         @for(declaration <- declarations.results) {
             <tr class="table-row">
                 <td class="table-cell">
-                    <a href="@routes.SavedDeclarationsController.continueDeclaration(declaration.id.getOrElse(""))">
+                    <a href="@routes.SavedDeclarationsController.continueDeclaration(declaration.id)">
                     @declaration.ducr.getOrElse(messages("saved.declarations.noDucr"))
                     </a>
                 </td>
                 <td class="table-cell">@ViewDates.formatDateAtTime(declaration.updatedDateTime)</td>
                 <td class="table-cell">
-                    <a href="@routes.RemoveSavedDeclarationsController.displayPage(declaration.id.getOrElse(""))">
+                    <a href="@routes.RemoveSavedDeclarationsController.displayPage(declaration.id)">
                         @messages("site.remove")
                     </a>
                 </td>

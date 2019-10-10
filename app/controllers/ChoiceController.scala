@@ -18,6 +18,7 @@ package controllers
 
 import java.time.Instant
 
+import connectors.exchange.ExportsDeclarationExchange
 import controllers.actions.AuthAction
 import controllers.declaration.ModelCacheable
 import forms.Choice
@@ -80,7 +81,7 @@ class ChoiceController @Inject()(
                 case _ =>
                   create(choice) map { created =>
                     Redirect(controllers.declaration.routes.DispatchLocationController.displayPage(Mode.Normal))
-                      .addingToSession(ExportsSessionKeys.declarationId -> created.id.get)
+                      .addingToSession(ExportsSessionKeys.declarationId -> created.id)
                   }
               }
             case CancelDec =>
@@ -104,6 +105,13 @@ class ChoiceController @Inject()(
   private def create(choice: Choice)(implicit hc: HeaderCarrier) =
     exportsCacheService
       .create(
-        ExportsDeclaration(None, DeclarationStatus.DRAFT, createdDateTime = Instant.now, updatedDateTime = Instant.now, sourceId = None, choice.value)
+        ExportsDeclarationExchange(
+          None,
+          DeclarationStatus.DRAFT,
+          createdDateTime = Instant.now,
+          updatedDateTime = Instant.now,
+          sourceId = None,
+          choice.value
+        )
       )
 }
