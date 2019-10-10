@@ -63,14 +63,14 @@ case class ExportsDeclaration(
 
   def containerBy(containerId: String): Option[Container] = containers.find(_.id.equalsIgnoreCase(containerId))
 
-  def amend(sourceId: String)(implicit clock: Clock = Clock.systemUTC()): ExportsDeclarationExchange = {
+  def amend()(implicit clock: Clock = Clock.systemUTC()): ExportsDeclaration = {
     val currentTime = Instant.now(clock)
-    ExportsDeclarationExchange.withoutId(this.copy(
+    this.copy(
       status = DeclarationStatus.DRAFT,
       createdDateTime = currentTime,
       updatedDateTime = currentTime,
-      sourceId = Some(sourceId)
-    ))
+      sourceId = Some(id)
+    )
   }
 }
 

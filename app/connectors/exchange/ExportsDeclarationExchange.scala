@@ -101,5 +101,5 @@ object ExportsDeclarationExchange {
     buildDeclaration(declaration, declaration => Some(declaration.id))
 
   def withoutId(declaration: ExportsDeclaration): ExportsDeclarationExchange =
-    buildDeclaration(declaration, declaration => None)
+    buildDeclaration(declaration, _ => None)
 }
