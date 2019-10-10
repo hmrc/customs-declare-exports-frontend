@@ -20,6 +20,7 @@ import base.Injector
 import controllers.routes
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{Action, Submission}
+import org.jsoup.nodes.Document
 import play.api.i18n.MessagesApi
 import play.api.test.Helpers._
 import services.model.RejectionReason
@@ -33,8 +34,8 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
   private val ducr = Some("DUCR")
   private val submission =
     Submission("submissionId", "eori", "lrn", ducr = ducr, actions = Seq(Action("convId", SubmissionRequest)))
-  private val rejectionReason = Seq(RejectionReason("code", "description"))
-  private val view = page(submission, rejectionReason)(request, messages)
+  private def view(reasons: Seq[RejectionReason] = Seq.empty) = page(submission, reasons)(request, messages)
+  val defaultView = view()
 
   "Rejected notification errors page" should {
 
@@ -43,6 +44,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
       val messages = instanceOf[MessagesApi].preferred(request)
       messages must haveTranslationFor("rejected.notification.ucr")
       messages must haveTranslationFor("rejected.notification.title")
+      messages must haveTranslationFor("rejected.notification.header.fieldName")
       messages must haveTranslationFor("rejected.notification.header.errorCode")
       messages must haveTranslationFor("rejected.notification.header.errorDescription")
       messages must haveTranslationFor("rejected.notification.information")
@@ -51,12 +53,12 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
 
     "have correct title" in {
 
-      view.getElementById("title").text() mustBe messages("rejected.notification.title")
+      defaultView.getElementById("title").text() mustBe messages("rejected.notification.title")
     }
 
     "have correct back link" in {
 
-      val backLink = view.getElementById("link-back")
+      val backLink = defaultView.getElementById("link-back")
 
       backLink.text() mustBe messages("site.back")
       backLink.attr("href") mustBe routes.SubmissionsController.displayListOfSubmissions().url
@@ -64,18 +66,35 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
 
     "must contain information" in {
 
-      view.getElementById("information").text() mustBe messages("rejected.notification.information")
+      defaultView.getElementById("information").text() mustBe messages("rejected.notification.information")
     }
 
     "must contain table headers" in {
 
-      contentAsString(view) must include(messages("rejected.notification.header.errorCode"))
-      contentAsString(view) must include(messages("rejected.notification.header.errorDescription"))
+      contentAsString(defaultView) must include(messages("rejected.notification.header.fieldName"))
+      contentAsString(defaultView) must include(messages("rejected.notification.header.errorCode"))
+      contentAsString(defaultView) must include(messages("rejected.notification.header.errorDescription"))
+    }
+
+    "must contain notifications" when {
+      val reason =
+        RejectionReason("rejectionCode", "rejectionDescription", Some("field.declaration.consignmentReferences.lrn"))
+
+      "pointer key is known" in {
+        val doc: Document = view(Seq(reason))
+
+        doc must containElementWithID("rejected_notifications-row-0")
+        doc.getElementById("rejected_notifications-row-0-name").text() mustBe messages(
+          "field.declaration.consignmentReferences.lrn"
+        )
+        doc.getElementById("rejected_notifications-row-0-code").text() mustBe "rejectionCode"
+        doc.getElementById("rejected_notifications-row-0-description").text() mustBe "rejectionDescription"
+      }
     }
 
     "must contain continue link" in {
 
-      val continueLink = view.getElementById("continue")
+      val continueLink = defaultView.getElementById("continue")
 
       continueLink.text() mustBe messages("rejected.notification.continue")
       continueLink.attr("href") mustBe routes.SubmissionsController.amend(submission.uuid).url

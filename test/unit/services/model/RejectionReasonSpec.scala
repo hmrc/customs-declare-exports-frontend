@@ -18,16 +18,21 @@ package unit.services.model
 
 import java.time.LocalDateTime
 
+import models.Pointer
 import models.declaration.notifications.{Notification, NotificationError}
 import models.declaration.submissions.SubmissionStatus
+import play.api.i18n.Messages
 import services.model.RejectionReason
 import unit.base.UnitSpec
+import org.mockito.BDDMockito.given
+import org.mockito.ArgumentMatchers._
 
 class RejectionReasonSpec extends UnitSpec {
 
   import services.model.RejectionReason._
+  private val messages = mock[Messages]
 
-  "Rejection reason model" should {
+  "Apply" should {
 
     "create correct error based on the list" in {
 
@@ -35,14 +40,16 @@ class RejectionReasonSpec extends UnitSpec {
       val errorDescription = "Error description"
       val error = List(errorCode, errorDescription)
 
-      RejectionReason.apply(error) mustBe RejectionReason(errorCode, errorDescription)
+      RejectionReason.apply(error) mustBe RejectionReason(errorCode, errorDescription, None)
     }
 
     "throw an exception when input is incorrect" in {
 
       intercept[IllegalArgumentException](RejectionReason.apply(List.empty))
     }
+  }
 
+  "All Errors" should {
     "have 136 errors" in {
 
       allRejectedErrors.length mustBe 136
@@ -50,16 +57,17 @@ class RejectionReasonSpec extends UnitSpec {
 
     "contain correct values" in {
 
-      allRejectedErrors must contain(RejectionReason("CDS40049", "Quota exhausted."))
-      allRejectedErrors must contain(RejectionReason("CDS40051", "Quota blocked."))
+      allRejectedErrors must contain(RejectionReason("CDS40049", "Quota exhausted.", None))
+      allRejectedErrors must contain(RejectionReason("CDS40051", "Quota blocked.", None))
       allRejectedErrors must contain(
         RejectionReason(
           "CDS12087",
-          "Relation error: VAT Declaring Party Identification (D.E. 3/40), where mandated, must be supplied at either header or item."
+          "Relation error: VAT Declaring Party Identification (D.E. 3/40), where mandated, must be supplied at either header or item.",
+          None
         )
       )
       allRejectedErrors must contain(
-        RejectionReason("CDS12108", "Obligation error: DUCR is mandatory on an Export Declaration.")
+        RejectionReason("CDS12108", "Obligation error: DUCR is mandatory on an Export Declaration.", None)
       )
     }
 
@@ -70,10 +78,13 @@ class RejectionReasonSpec extends UnitSpec {
           |- The AdditionalMessage.declarationReference must refer to an existing declaration (Declaration.reference),
           |- have been accepted,
           |- not be invalidated.""".stripMargin
-      val expectedRejectionReason = RejectionReason("CDS12015", expectedMessages)
+      val expectedRejectionReason = RejectionReason("CDS12015", expectedMessages, None)
 
       allRejectedErrors must contain(expectedRejectionReason)
     }
+  }
+
+  "Get Error  Description" should {
 
     "correctly return error description" in {
 
@@ -84,35 +95,53 @@ class RejectionReasonSpec extends UnitSpec {
 
       getErrorDescription("unknown code") mustBe "Unknown error"
     }
+  }
 
-    "successfully convert list of notifications to list of rejection reasons" when {
-
+  "Map from Notifications" should {
+    "map to Rejected Reason" when {
       val nonRejectionNotification =
         Notification("convId", "mrn", LocalDateTime.now(), SubmissionStatus.ACCEPTED, Seq.empty, "")
 
       "list is empty" in {
-
-        fromNotifications(Seq.empty) mustBe Seq.empty
+        fromNotifications(Seq.empty)(messages) mustBe Seq.empty
       }
 
       "list doesn't contain rejected notification" in {
-
-        fromNotifications(Seq(nonRejectionNotification)) mustBe Seq.empty
+        fromNotifications(Seq(nonRejectionNotification))(messages) mustBe Seq.empty
       }
 
-      "list contains rejected notification" in {
+      "list contains rejected notification" when {
+        "pointer is known" in {
+          given(messages.isDefinedAt(anyString())).willReturn(true)
+          val error = NotificationError("CDS12016", Some(Pointer("x.0.z")))
+          val notification =
+            Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, Seq(error), "")
 
-        val firstError = NotificationError("CDS12016", Seq.empty)
-        val secondError = NotificationError("CDS12022", Seq.empty)
-        val notificationErrors = Seq(firstError, secondError)
-        val rejectionNotification =
-          Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, notificationErrors, "")
-        val notifications = Seq(nonRejectionNotification, rejectionNotification)
-        val firstExpectedRejectionReason = RejectionReason("CDS12016", "Date error: Date of acceptance is not allowed.")
-        val secondExpectedRejectionReason =
-          RejectionReason("CDS12022", "Relation error: The sequence number is larger than the total.")
+          fromNotifications(Seq(notification))(messages) mustBe Seq(
+            RejectionReason("CDS12016", "Date error: Date of acceptance is not allowed.", Some("field.x.$.z"))
+          )
+        }
 
-        fromNotifications(notifications) mustBe Seq(firstExpectedRejectionReason, secondExpectedRejectionReason)
+        "pointer is unknown" in {
+          given(messages.isDefinedAt(anyString())).willReturn(false)
+          val error = NotificationError("CDS12016", Some(Pointer("x.0.z")))
+          val notification =
+            Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, Seq(error), "")
+
+          fromNotifications(Seq(notification))(messages) mustBe Seq(
+            RejectionReason("CDS12016", "Date error: Date of acceptance is not allowed.", None)
+          )
+        }
+
+        "pointer is empty" in {
+          val error = NotificationError("CDS12016", None)
+          val notification =
+            Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, Seq(error), "")
+
+          fromNotifications(Seq(notification))(messages) mustBe Seq(
+            RejectionReason("CDS12016", "Date error: Date of acceptance is not allowed.", None)
+          )
+        }
       }
     }
   }
