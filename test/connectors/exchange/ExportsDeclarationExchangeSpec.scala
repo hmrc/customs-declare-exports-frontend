@@ -75,7 +75,7 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
   )
 
   private val declaration = ExportsDeclaration(
-    id = Some(id),
+    id = id,
     status = status,
     createdDateTime = createdDate,
     updatedDateTime = updatedDate,

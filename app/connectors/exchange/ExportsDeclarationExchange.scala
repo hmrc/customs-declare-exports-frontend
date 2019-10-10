@@ -47,7 +47,7 @@ case class ExportsDeclarationExchange(
   natureOfTransaction: Option[NatureOfTransaction] = None
 ) {
   def toExportsDeclaration: ExportsDeclaration = ExportsDeclaration(
-    id = this.id,
+    id = this.id.get,
     status = this.status,
     createdDateTime = this.createdDateTime,
     updatedDateTime = this.updatedDateTime,
@@ -71,24 +71,31 @@ case class ExportsDeclarationExchange(
 object ExportsDeclarationExchange {
   implicit val format: OFormat[ExportsDeclarationExchange] = Json.format[ExportsDeclarationExchange]
 
-  def apply(declaration: ExportsDeclaration): ExportsDeclarationExchange = ExportsDeclarationExchange(
-    id = declaration.id,
-    status = declaration.status,
-    createdDateTime = declaration.createdDateTime,
-    updatedDateTime = declaration.updatedDateTime,
-    sourceId = declaration.sourceId,
-    choice = declaration.choice,
-    dispatchLocation = declaration.dispatchLocation,
-    additionalDeclarationType = declaration.additionalDeclarationType,
-    consignmentReferences = declaration.consignmentReferences,
-    borderTransport = declaration.borderTransport,
-    transportDetails = declaration.transportDetails,
-    containerData = declaration.containerData,
-    parties = declaration.parties,
-    locations = declaration.locations,
-    items = declaration.items,
-    totalNumberOfItems = declaration.totalNumberOfItems,
-    previousDocuments = declaration.previousDocuments,
-    natureOfTransaction = declaration.natureOfTransaction
-  )
+  private def buildDeclaration(declaration: ExportsDeclaration, idProvider: ExportsDeclaration => Option[String]): ExportsDeclarationExchange =
+    ExportsDeclarationExchange(
+      id = idProvider(declaration),
+      status = declaration.status,
+      createdDateTime = declaration.createdDateTime,
+      updatedDateTime = declaration.updatedDateTime,
+      sourceId = declaration.sourceId,
+      choice = declaration.choice,
+      dispatchLocation = declaration.dispatchLocation,
+      additionalDeclarationType = declaration.additionalDeclarationType,
+      consignmentReferences = declaration.consignmentReferences,
+      borderTransport = declaration.borderTransport,
+      transportDetails = declaration.transportDetails,
+      containerData = declaration.containerData,
+      parties = declaration.parties,
+      locations = declaration.locations,
+      items = declaration.items,
+      totalNumberOfItems = declaration.totalNumberOfItems,
+      previousDocuments = declaration.previousDocuments,
+      natureOfTransaction = declaration.natureOfTransaction
+    )
+
+  def apply(declaration: ExportsDeclaration): ExportsDeclarationExchange =
+    buildDeclaration(declaration, declaration => Some(declaration.id))
+
+  def withoutId(declaration: ExportsDeclaration): ExportsDeclarationExchange =
+    buildDeclaration(declaration, _ => None)
 }

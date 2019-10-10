@@ -21,8 +21,7 @@ import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import models.requests.ExportsSessionKeys
 import models.{DeclarationStatus, ExportsDeclaration}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.scalatest.OptionValues
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Request}
 import play.api.test.FakeRequest
@@ -31,9 +30,7 @@ import unit.base.ControllerSpec
 import utils.FakeRequestCSRFSupport._
 import views.html.choice_page
 
-import scala.concurrent.Future
-
-class ChoiceControllerSpec extends ControllerSpec {
+class ChoiceControllerSpec extends ControllerSpec with OptionValues {
   import ChoiceControllerSpec._
 
   private def existingDeclaration(choice: String = SupplementaryDec) =
@@ -42,10 +39,13 @@ class ChoiceControllerSpec extends ControllerSpec {
   private val newDeclaration =
     aDeclaration(withId("newDeclarationId"), withChoice(SupplementaryDec))
 
-  trait SetUp {
-    val choicePage = new choice_page(mainTemplate, minimalAppConfig)
-    val controller =
-      new ChoiceController(mockAuthAction, mockExportsCacheService, stubMessagesControllerComponents(), choicePage)(ec)
+  val choicePage = new choice_page(mainTemplate, minimalAppConfig)
+
+  val controller =
+    new ChoiceController(mockAuthAction, mockExportsCacheService, stubMessagesControllerComponents(), choicePage)(ec)
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     authorizedUser()
   }
 
@@ -58,16 +58,16 @@ class ChoiceControllerSpec extends ControllerSpec {
 
     "return 200 (OK)" when {
 
-      "display page method is invoked with empty cache" in new SetUp {
-        when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(None))
+      "display page method is invoked with empty cache" in {
+        withNoDeclaration()
 
         val result = controller.displayPage(None)(getRequest())
 
         status(result) must be(OK)
       }
 
-      "display page method is invoked with data in cache" in new SetUp {
-        when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(Some(existingDeclaration())))
+      "display page method is invoked with data in cache" in {
+        withNewCaching(existingDeclaration())
 
         val result = controller.displayPage(None)(getRequest())
 
@@ -77,22 +77,22 @@ class ChoiceControllerSpec extends ControllerSpec {
 
     "pre-select given choice " when {
 
-      "cache is empty" in new SetUp {
-        when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(None))
+      "cache is empty" in {
+        withNoDeclaration()
 
         val request = getRequest()
         val result = controller.displayPage(Some(Choice(CancelDec)))(request)
-        var form = Choice.form().fill(Choice(CancelDec))
+        val form = Choice.form().fill(Choice(CancelDec))
 
         viewOf(result) must be(choicePage(form)(request, controller.messagesApi.preferred(request)))
       }
 
-      "cache contains existing declaration" in new SetUp {
-        when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(Some(existingDeclaration())))
+      "cache contains existing declaration" in {
+        withNewCaching(existingDeclaration())
 
         val request = getRequest()
         val result = controller.displayPage(Some(Choice(Submissions)))(request)
-        var form = Choice.form().fill(Choice(Submissions))
+        val form = Choice.form().fill(Choice(Submissions))
 
         viewOf(result) must be(choicePage(form)(request, controller.messagesApi.preferred(request)))
       }
@@ -100,9 +100,8 @@ class ChoiceControllerSpec extends ControllerSpec {
 
     "pre-select declaration type " when {
 
-      "choice parameter not given" in new SetUp {
-        when(mockExportsCacheService.get(any())(any()))
-          .thenReturn(Future.successful(Some(existingDeclaration(SupplementaryDec))))
+      "choice parameter not given" in {
+        withNewCaching(existingDeclaration(SupplementaryDec))
 
         val request = getRequest()
         val result = controller.displayPage(None)(request)
@@ -114,8 +113,8 @@ class ChoiceControllerSpec extends ControllerSpec {
 
     "not select any choice " when {
 
-      "choice parameter not given and cache empty" in new SetUp {
-        when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(None))
+      "choice parameter not given and cache empty" in {
+        withNoDeclaration()
 
         val request = getRequest()
         val result = controller.displayPage(None)(request)
@@ -130,7 +129,7 @@ class ChoiceControllerSpec extends ControllerSpec {
 
     "return 400 (BAD_REQUEST)" when {
 
-      "form is incorrect" in new SetUp {
+      "form is incorrect" in {
 
         val result = controller.submitChoice()(postChoiceRequest(incorrectChoice))
 
@@ -141,27 +140,24 @@ class ChoiceControllerSpec extends ControllerSpec {
 
     "redirect to Dispatch Location page" when {
 
-      "user chooses Supplementary Dec for new declaration" in new SetUp {
-        when(mockExportsCacheService.create(any[ExportsDeclaration])(any()))
-          .thenReturn(Future.successful(newDeclaration))
+      "user chooses Supplementary Dec for new declaration" in {
+        withCreateResponse(newDeclaration)
 
         val result = controller.submitChoice()(postChoiceRequest(supplementaryChoice))
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some(controllers.declaration.routes.DispatchLocationController.displayPage().url))
-        session(result).get(ExportsSessionKeys.declarationId) must be(newDeclaration.id)
-        val created: ExportsDeclaration = theCacheModelCreated
+        session(result).get(ExportsSessionKeys.declarationId).value mustEqual newDeclaration.id
+        val created = theCacheModelCreated
         created.id mustBe None
         created.status mustBe DeclarationStatus.DRAFT
         created.choice mustBe "SMP"
         created.sourceId mustBe None
       }
 
-      "user chooses Supplementary Dec for existing Standard Dec" in new SetUp {
+      "user chooses Supplementary Dec for existing Standard Dec" in {
         val existingDec = existingDeclaration(StandardDec)
-        when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(Some(existingDec)))
-        when(mockExportsCacheService.update(any())(any()))
-          .thenReturn(Future.successful(Some(existingDec)))
+        withNewCaching(existingDec)
 
         val result = controller.submitChoice()(postRequest(supplementaryChoice, existingDec))
 
@@ -172,32 +168,29 @@ class ChoiceControllerSpec extends ControllerSpec {
         updated.choice mustBe "SMP"
       }
 
-      "user chooses Standard Dec for new declaration" in new SetUp {
-        when(mockExportsCacheService.create(any[ExportsDeclaration])(any()))
-          .thenReturn(Future.successful(newDeclaration))
+      "user chooses Standard Dec for new declaration" in {
+        withCreateResponse(newDeclaration)
 
         val result = controller.submitChoice()(postChoiceRequest(standardChoice))
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some(controllers.declaration.routes.DispatchLocationController.displayPage().url))
-        session(result).get(ExportsSessionKeys.declarationId) must be(newDeclaration.id)
-        val created: ExportsDeclaration = theCacheModelCreated
+        session(result).get(ExportsSessionKeys.declarationId).value mustEqual newDeclaration.id
+        val created = theCacheModelCreated
         created.id mustBe None
         created.status mustBe DeclarationStatus.DRAFT
         created.choice mustBe "STD"
       }
 
-      "user chooses Standard Dec for existing Supplementary Dec" in new SetUp {
+      "user chooses Standard Dec for existing Supplementary Dec" in {
         val existingDec = existingDeclaration(SupplementaryDec)
-        when(mockExportsCacheService.get(any())(any())).thenReturn(Future.successful(Some(existingDec)))
-        when(mockExportsCacheService.update(any())(any()))
-          .thenReturn(Future.successful(Some(existingDec)))
+        withNewCaching(existingDec)
 
         val result = controller.submitChoice()(postRequest(standardChoice, existingDec))
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some(controllers.declaration.routes.DispatchLocationController.displayPage().url))
-        val updated: ExportsDeclaration = theCacheModelUpdated
+        val updated = theCacheModelUpdated
         updated.id mustBe existingDec.id
         updated.choice mustBe "STD"
       }
@@ -205,7 +198,7 @@ class ChoiceControllerSpec extends ControllerSpec {
 
     "redirect to Cancel Declaration page" when {
 
-      "user chose Cancel Dec" in new SetUp {
+      "user chose Cancel Dec" in {
 
         val result = controller.submitChoice()(postChoiceRequest(cancelChoice))
 
@@ -217,7 +210,7 @@ class ChoiceControllerSpec extends ControllerSpec {
 
     "redirect to Submissions page" when {
 
-      "user chose submissions" in new SetUp {
+      "user chose submissions" in {
 
         val result = controller.submitChoice()(postChoiceRequest(submissionsChoice))
 
@@ -229,7 +222,7 @@ class ChoiceControllerSpec extends ControllerSpec {
 
     "redirect to Saved Declarations page" when {
 
-      "user chose continue a saved declaration" in new SetUp {
+      "user chose continue a saved declaration" in {
 
         val result = controller.submitChoice()(postChoiceRequest(continueDeclarationChoice))
 

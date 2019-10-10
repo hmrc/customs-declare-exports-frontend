@@ -58,7 +58,7 @@
 
         <br />
 
-        @helper.form(RemoveSavedDeclarationsController.removeDeclaration(declaration.id.getOrElse("")), 'autoComplete -> "off") {
+        @helper.form(RemoveSavedDeclarationsController.removeDeclaration(declaration.id), 'autoComplete -> "off") {
             @helper.CSRF.formField
 
             @components.fields.field_radio(

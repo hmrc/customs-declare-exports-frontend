@@ -51,7 +51,7 @@ class SubmissionService @Inject()(
 
     logProgress(exportsDeclaration, "Beginning Submission")
     exportsConnector
-      .submitDeclaration(exportsDeclaration.id.get)
+      .submitDeclaration(exportsDeclaration.id)
       .andThen {
         case Success(_) =>
           logProgress(exportsDeclaration, "Submitted Successfully")

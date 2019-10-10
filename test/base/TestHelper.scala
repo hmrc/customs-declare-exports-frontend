@@ -17,7 +17,9 @@
 package base
 
 import java.time.Instant
+import java.util.UUID
 
+import connectors.exchange.ExportsDeclarationExchange
 import controllers.util.{Add, Remove, SaveAndContinue}
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import models.{DeclarationStatus, ExportsDeclaration}
@@ -42,12 +44,12 @@ object TestHelper {
   def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 
   def journeyRequest(fakeRequest: FakeRequest[_], choice: String): JourneyRequest[_] = {
-    val cache = ExportsDeclaration(None, DeclarationStatus.COMPLETE, Instant.now(), Instant.now(), None, choice)
+    val cache = ExportsDeclaration(UUID.randomUUID.toString, DeclarationStatus.COMPLETE, Instant.now(), Instant.now(), None, choice)
     new JourneyRequest(new AuthenticatedRequest(fakeRequest, ExportsTestData.newUser(Random.nextString(10), Random.nextString(5))), cache)
   }
 
   def journeyRequest(fakeRequest: Request[_], choice: String): JourneyRequest[_] = {
-    val cache = ExportsDeclaration(None, DeclarationStatus.COMPLETE, Instant.now(), Instant.now(), None, choice)
+    val cache = ExportsDeclaration(UUID.randomUUID.toString, DeclarationStatus.COMPLETE, Instant.now(), Instant.now(), None, choice)
     new JourneyRequest(new AuthenticatedRequest(fakeRequest, ExportsTestData.newUser(Random.nextString(10), Random.nextString(5))), cache)
   }
 
