@@ -35,6 +35,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
   private val submission =
     Submission("submissionId", "eori", "lrn", ducr = ducr, actions = Seq(Action("convId", SubmissionRequest)))
   private def view(reasons: Seq[RejectionReason] = Seq.empty) = page(submission, reasons)(request, messages)
+  val defaultView = view()
 
   "Rejected notification errors page" should {
 
@@ -52,12 +53,12 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
 
     "have correct title" in {
 
-      view().getElementById("title").text() mustBe messages("rejected.notification.title")
+      defaultView.getElementById("title").text() mustBe messages("rejected.notification.title")
     }
 
     "have correct back link" in {
 
-      val backLink = view().getElementById("link-back")
+      val backLink = defaultView.getElementById("link-back")
 
       backLink.text() mustBe messages("site.back")
       backLink.attr("href") mustBe routes.SubmissionsController.displayListOfSubmissions().url
@@ -65,14 +66,14 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
 
     "must contain information" in {
 
-      view().getElementById("information").text() mustBe messages("rejected.notification.information")
+      defaultView.getElementById("information").text() mustBe messages("rejected.notification.information")
     }
 
     "must contain table headers" in {
 
-      contentAsString(view()) must include(messages("rejected.notification.header.fieldName"))
-      contentAsString(view()) must include(messages("rejected.notification.header.errorCode"))
-      contentAsString(view()) must include(messages("rejected.notification.header.errorDescription"))
+      contentAsString(defaultView) must include(messages("rejected.notification.header.fieldName"))
+      contentAsString(defaultView) must include(messages("rejected.notification.header.errorCode"))
+      contentAsString(defaultView) must include(messages("rejected.notification.header.errorDescription"))
     }
 
     "must contain notifications" when {
@@ -93,7 +94,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
 
     "must contain continue link" in {
 
-      val continueLink = view().getElementById("continue")
+      val continueLink = defaultView.getElementById("continue")
 
       continueLink.text() mustBe messages("rejected.notification.continue")
       continueLink.attr("href") mustBe routes.SubmissionsController.amend(submission.uuid).url

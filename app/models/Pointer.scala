@@ -34,7 +34,7 @@ case class Pointer(sections: List[String]) {
 
 object Pointer {
   implicit val format: Format[Pointer] = Format(
-    Reads(js => js.validate[JsString].map(string => Pointer(string.value))),
+    Reads(js => js.validate[String].map(string => Pointer(string))),
     Writes(pointer => JsString(pointer.value))
   )
 
