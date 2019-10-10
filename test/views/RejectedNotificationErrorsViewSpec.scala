@@ -18,7 +18,6 @@ package views
 
 import base.Injector
 import controllers.routes
-import models.Pointer
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{Action, Submission}
 import org.jsoup.nodes.Document
@@ -78,7 +77,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
 
     "must contain notifications" when {
       val reason =
-        RejectionReason("rejectionCode", "rejectionDescription", Some("declaration.consignmentReferences.lrn"))
+        RejectionReason("rejectionCode", "rejectionDescription", Some("field.declaration.consignmentReferences.lrn"))
 
       "pointer key is known" in {
         val doc: Document = view(Seq(reason))

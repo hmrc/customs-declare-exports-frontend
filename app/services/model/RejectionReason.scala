@@ -62,7 +62,7 @@ object RejectionReason {
         RejectionReason(
           error.validationCode,
           getErrorDescription(error.validationCode),
-          error.pointer.map(_.pattern).filter(messages.isDefinedAt)
+          error.pointer.map(_.pattern).map(p => "field." + p).filter(messages.isDefinedAt)
         )
       }
     }.getOrElse(Seq.empty)
