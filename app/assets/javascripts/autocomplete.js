@@ -15,8 +15,16 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 var selected = this.element.children(":selected"),
                     value = selected.val() ? selected.text() : "";
 
-                this.input = $("<input>")
+                this.comboBoxLabel = $("<label>")
                     .appendTo(this.wrapper)
+
+                this.span = $("<span>")
+                    .appendTo(this.comboBoxLabel)
+                    .addClass("visuallyhidden")
+                    .text("Please type or choose an item from the list")
+
+                this.input = $("<input>")
+                    .appendTo(this.comboBoxLabel)   
                     .val(value)
                     .attr("autocomplete", "off")
                     .addClass("custom-combobox-input ui-state-default ui-corner-left")
@@ -51,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
                     .attr("tabIndex", -1)
                     .attr("title", "Show All Items")
                     .tooltip()
-                    .appendTo(this.wrapper)
+                    .appendTo(this.comboBoxLabel)
                     .button({
                         icons: {
                             primary: "ui-icon-triangle-1-s"
