@@ -20,6 +20,7 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 import connectors.CustomsDeclareExportsConnector
+import connectors.exchange.ExportsDeclarationExchange
 import models._
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
@@ -37,7 +38,7 @@ trait MockConnectors extends MockitoSugar {
   lazy val mockCustomsDeclareExportsConnector: CustomsDeclareExportsConnector = mock[CustomsDeclareExportsConnector]
 
   def successfulCustomsDeclareExportsResponse(): Unit =
-    when(mockCustomsDeclareExportsConnector.createDeclaration(any[ExportsDeclaration])(any(), any()))
+    when(mockCustomsDeclareExportsConnector.createDeclaration(any[ExportsDeclarationExchange])(any(), any()))
       .thenAnswer(withTheFirstArgument)
 
   private def withTheFirstArgument[T]: Answer[Future[T]] = new Answer[Future[T]] {

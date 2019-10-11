@@ -18,6 +18,7 @@ package models
 
 import java.time.{Clock, Instant}
 
+import connectors.exchange.ExportsDeclarationExchange
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.DeclarationStatus.DeclarationStatus
@@ -26,8 +27,8 @@ import play.api.libs.json._
 import services.cache.ExportItem
 
 case class ExportsDeclaration(
-  id: Option[String] = None,
-  status: DeclarationStatus = DeclarationStatus.COMPLETE,
+  id: String,
+  status: DeclarationStatus,
   createdDateTime: Instant,
   updatedDateTime: Instant,
   sourceId: Option[String],
@@ -62,9 +63,9 @@ case class ExportsDeclaration(
 
   def containerBy(containerId: String): Option[Container] = containers.find(_.id.equalsIgnoreCase(containerId))
 
-  def amend(sourceId: String)(implicit clock: Clock = Clock.systemUTC()): ExportsDeclaration = {
+  def amend()(implicit clock: Clock = Clock.systemUTC()): ExportsDeclaration = {
     val currentTime = Instant.now(clock)
-    this.copy(id = None, status = DeclarationStatus.DRAFT, createdDateTime = currentTime, updatedDateTime = currentTime, sourceId = Some(sourceId))
+    this.copy(status = DeclarationStatus.DRAFT, createdDateTime = currentTime, updatedDateTime = currentTime, sourceId = Some(id))
   }
 }
 

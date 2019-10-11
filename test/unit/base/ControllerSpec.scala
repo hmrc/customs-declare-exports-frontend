@@ -59,7 +59,7 @@ trait ControllerSpec
 
   protected def postRequest(body: JsValue, declaration: ExportsDeclaration): Request[AnyContentAsJson] =
     FakeRequest("POST", "")
-      .withSession(ExportsSessionKeys.declarationId -> declaration.id.getOrElse(""))
+      .withSession(ExportsSessionKeys.declarationId -> declaration.id)
       .withJsonBody(body)
       .withCSRFToken
 

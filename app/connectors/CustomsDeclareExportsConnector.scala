@@ -50,14 +50,11 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
 
   private val createTimer: Timer = metrics.defaultRegistry.timer("declaration.create.timer")
 
-  def createDeclaration(declaration: ExportsDeclaration)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] = {
+  def createDeclaration(declaration: ExportsDeclarationExchange)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] = {
     logPayload("Create Declaration Request", declaration)
     val createStopwatch = createTimer.time()
     httpClient
-      .POST[ExportsDeclarationExchange, ExportsDeclarationExchange](
-        s"${appConfig.customsDeclareExports}${appConfig.declarations}",
-        ExportsDeclarationExchange(declaration)
-      )
+      .POST[ExportsDeclarationExchange, ExportsDeclarationExchange](s"${appConfig.customsDeclareExports}${appConfig.declarations}", declaration)
       .andThen {
         case Success(response) =>
           logPayload("Create Declaration Response", response)
@@ -75,8 +72,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
     val updateStopwatch = updateTimer.time()
     httpClient
       .PUT[ExportsDeclarationExchange, ExportsDeclarationExchange](
-        s"${appConfig.customsDeclareExports}${appConfig.declarations}/${declaration.id
-          .getOrElse(throw new IllegalArgumentException("Cannot update a declaration which hasn't been created first"))}",
+        s"${appConfig.customsDeclareExports}${appConfig.declarations}/${declaration.id}",
         ExportsDeclarationExchange(declaration)
       )
       .andThen {

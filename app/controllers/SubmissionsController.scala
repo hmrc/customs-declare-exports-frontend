@@ -17,6 +17,7 @@
 package controllers
 
 import connectors.CustomsDeclareExportsConnector
+import connectors.exchange.ExportsDeclarationExchange
 import controllers.actions.AuthAction
 import controllers.util.SubmissionDisplayHelper
 import javax.inject.Inject
@@ -50,11 +51,12 @@ class SubmissionsController @Inject()(
   def amend(id: String): Action[AnyContent] = authenticate.async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id) flatMap {
       case Some(declaration) =>
+        val amendedDeclaration = ExportsDeclarationExchange.withoutId(declaration.amend())
         customsDeclareExportsConnector
-          .createDeclaration(declaration.amend(sourceId = id))
+          .createDeclaration(amendedDeclaration)
           .map { created =>
             Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.Amend))
-              .addingToSession(ExportsSessionKeys.declarationId -> created.id.get)
+              .addingToSession(ExportsSessionKeys.declarationId -> created.id)
           }
       case _ => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
     }

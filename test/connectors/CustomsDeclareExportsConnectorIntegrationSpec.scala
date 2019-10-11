@@ -42,9 +42,8 @@ import play.api.Application
 class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with BeforeAndAfterEach with ExportsDeclarationBuilder with ScalaFutures {
 
   private val id = "id"
-  private val newDeclaration = aDeclaration(withoutId())
   private val existingDeclaration = aDeclaration(withId(id))
-  private val newDeclarationExchange = ExportsDeclarationExchange(newDeclaration)
+  private val newDeclarationExchange = ExportsDeclarationExchange.withoutId(aDeclaration())
   private val existingDeclarationExchange = ExportsDeclarationExchange(existingDeclaration)
   private val action = Action(UUID.randomUUID().toString, SubmissionRequest)
   private val submission = Submission(id, "eori", "lrn", Some("mrn"), None, Seq(action))
@@ -66,7 +65,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with B
           )
       )
 
-      val response = await(connector.createDeclaration(newDeclaration))
+      val response = await(connector.createDeclaration(newDeclarationExchange))
 
       response mustBe existingDeclaration
       verify(
@@ -94,12 +93,6 @@ class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with B
         putRequestedFor(urlEqualTo(s"/declarations/id"))
           .withRequestBody(containing(json(existingDeclarationExchange)))
       )
-    }
-
-    "throw IllegalArgument for missing ID" in {
-      intercept[IllegalArgumentException] {
-        await(connector.updateDeclaration(newDeclaration))
-      }
     }
   }
 
