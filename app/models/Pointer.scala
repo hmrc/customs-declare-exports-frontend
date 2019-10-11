@@ -16,25 +16,53 @@
 
 package models
 
+import models.PointerSectionType.PointerSectionType
 import play.api.libs.json.{Format, JsString, Reads, Writes}
 
-import scala.util.{Failure, Success, Try}
+object PointerSectionType extends Enumeration {
+  type PointerSectionType = Value
+  val FIELD, SEQUENCE = Value
+  implicit val format: Format[models.PointerSectionType.Value] = Format(Reads.enumNameReads(PointerSectionType), Writes.enumNameWrites)
+}
 
-case class Pointer(sections: List[String]) {
-  lazy val value: String = sections.mkString(".")
-  lazy val pattern: String = sections.map { s =>
-    Try(s.toInt) match {
-      case Success(_) => "$"
-      case Failure(_) => s
-    }
-  }.mkString(".")
+case class PointerSection(value: String, `type`: PointerSectionType) {
+  lazy val pattern: String = `type` match {
+    case PointerSectionType.FIELD    => value
+    case PointerSectionType.SEQUENCE => "$"
+  }
 
-  override def toString: String = value
+  override def toString: String = `type` match {
+    case PointerSectionType.FIELD    => value
+    case PointerSectionType.SEQUENCE => "#" + value
+  }
+}
+
+object PointerSection {
+  private val SEQUENCE_REGEX = "^#(\\d*)$".r
+  implicit val format: Format[PointerSection] =
+    Format[PointerSection](Reads(js => js.validate[String].map(PointerSection(_))), Writes(section => JsString(section.toString)))
+
+  def apply(value: String): PointerSection = SEQUENCE_REGEX.findFirstMatchIn(value).map(_.group(1)) match {
+    case Some(sequence) => PointerSection(sequence, PointerSectionType.SEQUENCE)
+    case _              => PointerSection(value, PointerSectionType.FIELD)
+  }
+}
+
+case class Pointer(sections: Seq[PointerSection]) {
+  //  Converts a pointer into it's pattern form
+  // e.g. ABC.DEF.*.GHI (if the pointer contains a sequence index)
+  // e.g. ABC.DEF.GHI (if the pointer doesnt contain a sequence)
+  lazy val pattern: String = sections.map(_.pattern).mkString(".")
+
+  // Converts a pointer to it's string form preserving the type
+  // e.g. ABC.DEF.#1.GHI (if the pointer contains a sequence with index 1)
+  // e.g. ABC.DEF.GHI (if the pointer doesnt contain a sequence)
+  override def toString: String = sections.map(_.toString).mkString(".")
 }
 
 object Pointer {
   implicit val format: Format[Pointer] =
-    Format(Reads(js => js.validate[String].map(string => Pointer(string))), Writes(pointer => JsString(pointer.value)))
+    Format(Reads(js => js.validate[JsString].map(string => Pointer(string.value))), Writes(pointer => JsString(pointer.toString)))
 
-  def apply(value: String): Pointer = Pointer(value.split("\\.").toList)
+  def apply(sections: String): Pointer = Pointer(sections.split("\\.").map(PointerSection(_)))
 }
