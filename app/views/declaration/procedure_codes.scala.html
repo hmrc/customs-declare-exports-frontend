@@ -52,10 +52,11 @@
                 hint = Some(messages("supplementary.procedureCodes.additionalProcedureCode.header.hint")),
                 elements = codes,
                 labelClass = Some("bold-small"),
-                includeAddButton = false
+                includeAddButton = false,
+                removeHint = "supplementary.procedureCodes.additionalProcedureCode.remove.hint"
             )
 
-            @components.add_save_button()
+            @components.add_save_button(addHint = "supplementary.procedureCodes.additionalProcedureCode.add.hint")
             @components.buttons.save_and_return_later_button()
         }
     }

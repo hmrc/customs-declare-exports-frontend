@@ -66,7 +66,7 @@
                         <td scope="row">@actor.eori</td>
                         <td>@actor.partyType</td>
                         <td>
-                            @components.buttons.remove_button(value = Some(actor.toJson.toString))
+                            @components.buttons.remove_button(value = Some(actor.toJson.toString), hint=messages("site.remove.hint", actor.eori.getOrElse("")))
                         </td>
                     </tr>
                 }
@@ -92,7 +92,7 @@
             labelClass = Some("heading-24")
         )
 
-        @components.add_save_button()
+        @components.add_save_button(addHint = "supplementary.additionalActors.add.hint")
         @components.buttons.save_and_return_later_button()
     }
 }

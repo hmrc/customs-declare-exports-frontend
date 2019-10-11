@@ -27,7 +27,9 @@
     labelClass: Option[String] = None,
     input: Html,
     includeAddButton: Boolean = true,
-    valuePrefix: Option[String] = None
+    valuePrefix: Option[String] = None,
+    addHint: String = "site.add",
+    removeHint: String = "site.remove.hint"
 )(implicit messages: Messages)
 
 <div class="form-field @if(field.hasErrors){form-field--error}">
@@ -46,7 +48,8 @@
 
         @removable_elements_table(
               id = field.id + "-table",
-              elements = elements.map(elm => LabelledValue(elm, valuePrefix.getOrElse("") + elm))
+              elements = elements.map(elm => LabelledValue(elm, valuePrefix.getOrElse("") + elm)),
+              removeButtonHint = removeHint
           )
 
     }
@@ -57,7 +60,7 @@
 
     @if(includeAddButton) {
       <div class="section">
-        @add_button()
+        @add_button(addHint = addHint)
       </div>
     }
 </div>

@@ -55,6 +55,7 @@ trait CommonMessages {
   val site: String = "site"
   val backCaption: String = site + ".back"
   val removeCaption: String = site + ".remove"
+  val removeHint: String = site + ".remove.hint"
   val addCaption: String = site + ".add"
   val saveAndContinueCaption: String = site + ".save_and_continue"
   val saveAndReturnCaption: String = site + ".save_and_come_back_later"

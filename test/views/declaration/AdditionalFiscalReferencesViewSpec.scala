@@ -94,7 +94,7 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Ad
     }
 
     "display remove button" in {
-      view.getElementsByAttributeValue("value", "site.remove").first() must submitTo(
+      view.getElementsByAttributeValue("class", "remove button--secondary").first() must submitTo(
         controllers.declaration.routes.AdditionalFiscalReferencesController
           .removeReference(Mode.Normal, itemId, "FR12345")
       )

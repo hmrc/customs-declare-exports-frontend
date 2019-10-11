@@ -143,7 +143,7 @@ class AdditionalInformationViewSpec extends UnitViewSpec with AdditionalInformat
       view.select("table>tbody>tr>th:nth-child(1)").text() mustBe "12345-12345"
 
       val removeButton = view.select("table>tbody>tr>th:nth-child(2)>button")
-      removeButton.text() mustBe messages(removeCaption)
+      removeButton.text() mustBe "site.remove site.remove.hint"
       removeButton.attr("name") mustBe "Remove"
     }
   }

@@ -69,8 +69,10 @@
                     <td>@item.numberOfPackages</td>
                     <td>@item.shippingMarks</td>
                     <td>
-                        <button class="button--secondary" name=@messages("site.remove") value=@item.toJson>
-                        @messages("site.remove")
+                        @components.buttons.remove_button(value = Some(item.toJson.toString),
+                            hint=messages("supplementary.packageInformation.remove.hint",
+                                item.typesOfPackages,
+                                item.shippingMarks))
                 </button>
                 </td>
                 </tr>
@@ -102,7 +104,7 @@
             labelClass = Some("bold-small")
         )
 
-        @components.add_save_button()
+        @components.add_save_button(addHint = "supplementary.packageInformation.add.hint")
         @components.buttons.save_and_return_later_button()
     }
 }

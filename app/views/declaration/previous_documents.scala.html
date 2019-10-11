@@ -53,7 +53,7 @@
                         <th scope="col">@messages("supplementary.previousDocuments.documentType.label")</th>
                         <th scope="col">@messages("supplementary.previousDocuments.documentReference.label")</th>
                         <th scope="col">@messages("supplementary.previousDocuments.goodsItemIdentifier.label")</th>
-                        <th scope="col">@messages("supplementary.packageInformation.remove")</th>
+                        <th scope="col">@messages("supplementary.previousDocuments.remove")</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -64,8 +64,11 @@
                     <td>@document.documentReference</td>
                     <td>@document.goodsItemIdentifier.getOrElse("")</td>
                     <td>
-                        <button class="button--secondary" name=@messages("site.remove") value=@document.toJson>
-                        @messages("site.remove")
+                        @components.buttons.remove_button(value = Some(document.toJson.toString),
+                            hint=messages("supplementary.previousDocuments.remove.hint",
+                                messages("supplementary.previousDocuments." + document.documentCategory),
+                                document.documentType,
+                                document.documentReference))
                 </button>
                 </td>
                 </tr>
@@ -109,7 +112,7 @@
             labelClass = Some("bold-small")
         )
 
-        @components.add_save_button()
+        @components.add_save_button(addHint = "supplementary.previousDocuments.add.hint")
         @components.buttons.save_and_return_later_button()
     }
 }

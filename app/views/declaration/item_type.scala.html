@@ -70,7 +70,8 @@
             hint = Some(messages("declaration.itemType.taricAdditionalCodes.header.hint")),
             elements = taricAdditionalCodes,
             labelClass = Some("bold-small"),
-            valuePrefix = Some(taricAdditionalCodesKey+"_")
+            valuePrefix = Some(taricAdditionalCodesKey+"_"),
+            addHint = "declaration.itemType.taricAdditionalCodes.add.hint"
         )
 
         @components.fields.field_multiple_values(
@@ -84,7 +85,8 @@
                 emptySelectValue = messages("declaration.itemType.nationalAdditionalCode.error.empty"),
                 items = AutoCompleteItem.fromNationalAdditionalCode(NationalAdditionalCode.all)
             ),
-            valuePrefix = Some(nationalAdditionalCodesKey+"_")
+            valuePrefix = Some(nationalAdditionalCodesKey+"_"),
+            addHint = "declaration.itemType.nationalAdditionalCode.add.hint"
         )
 
         @components.fields.field_text(

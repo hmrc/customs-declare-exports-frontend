@@ -23,7 +23,8 @@
         elements: Seq[LabelledValue],
         title: Option[String] = None,
         buttonMessagesKey: String = "site.remove",
-        removeButtonClass: String = "button--secondary"
+        removeButtonClass: String = "button--secondary",
+        removeButtonHint: String = "site.remove.hint"
 )(implicit messages: Messages)
 
 @if(elements.nonEmpty){
@@ -41,7 +42,7 @@
                 <tr id="@{id}__row@index">
                     <th id="@{id}-row@index-label">@{elem.label}</th>
                     <th id="@{id}-row@index-remove_button">
-                        @remove_button(value = Some(elem.value), buttonClass = removeButtonClass)
+                        @remove_button(value = Some(elem.value), buttonClass = removeButtonClass, hint = removeButtonHint)
                     </th>
                 </tr>
             }

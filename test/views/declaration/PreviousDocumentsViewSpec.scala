@@ -118,7 +118,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
 
     "display both 'Add' and 'Save and continue' button on page" in {
       val addButton = view.getElementById("add")
-      addButton.text() must be("site.add")
+      addButton.text() must be("site.add supplementary.previousDocuments.add.hint")
 
       val saveButton = view.getElementById("submit")
       saveButton.text() must be("site.save_and_continue")
@@ -230,14 +230,14 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
       view.select("form>table>thead>tr>th:nth-child(2)").text() must be("supplementary.previousDocuments.documentType.label")
       view.select("form>table>thead>tr>th:nth-child(3)").text() must be("supplementary.previousDocuments.documentReference.label")
       view.select("form>table>thead>tr>th:nth-child(4)").text() must be("supplementary.previousDocuments.goodsItemIdentifier.label")
-      view.select("form>table>thead>tr>th:nth-child(5)").text() must be("supplementary.packageInformation.remove")
+      view.select("form>table>thead>tr>th:nth-child(5)").text() must be("supplementary.previousDocuments.remove")
 
       // row
       view.select("form>table>tbody>tr>td:nth-child(1)").text() must be("supplementary.previousDocuments.X")
       view.select("form>table>tbody>tr>td:nth-child(2)").text() must be("1")
       view.select("form>table>tbody>tr>td:nth-child(3)").text() must be("A")
       view.select("form>table>tbody>tr>td:nth-child(4)").text() must be("1")
-      view.select("form>table>tbody>tr>td:nth-child(5)>button").text() must be("site.remove")
+      view.select("form>table>tbody>tr>td:nth-child(5)>button").text() must be("site.remove supplementary.previousDocuments.remove.hint")
     }
   }
 }

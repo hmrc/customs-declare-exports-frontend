@@ -70,11 +70,14 @@
                             }
                         }
                         <td id="containers-row@index-remove_button">
-                            @remove_button(value = Some(container.id), buttonClass="button-link", label="supplementary.transportInfo.containers.remove")
+                            @remove_button(value = Some(container.id), buttonClass="button-link", label="supplementary.transportInfo.containers.remove", hint="supplementary.transportInfo.containers.remove.hint")
                         </td>
                         @if(showSeals) {
                             <td>
-                                <a class="button-link" href="@SealController.displaySealSummary(mode, container.id)">@messages("supplementary.transportInfo.containers.change")</a>
+                                <a class="button-link" href="@SealController.displaySealSummary(mode, container.id)">
+                                    <span aria-hidden="true">@messages("supplementary.transportInfo.containers.change")</span>
+                                    <span class="visually-hidden">@messages("supplementary.transportInfo.containers.change.hint", container.id)</span>
+                                </a>
                             </td>
                         }
                     </tr>

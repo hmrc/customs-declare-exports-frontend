@@ -89,7 +89,7 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
     }
 
     "display both 'Add' and 'Save and continue' button on page" in {
-      view.getElementById("add").text() mustBe "site.add"
+      view.getElementById("add").text() mustBe "site.add supplementary.packageInformation.add.hint"
       view.getElementById("submit").text() mustBe "site.save_and_continue"
     }
 

@@ -136,7 +136,7 @@ class DocumentsProducedViewSpec
 
     "display both 'Add' and 'Save and continue' button on page" in {
       val addButton = view.getElementById("add")
-      addButton.text() mustBe messagesKey(addCaption)
+      addButton.text() mustBe "site.add supplementary.addDocument.add.hint"
 
       val saveAndContinueButton = view.getElementById("submit")
       saveAndContinueButton.text() mustBe messagesKey(saveAndContinueCaption)
@@ -480,7 +480,7 @@ class DocumentsProducedViewSpec
 
         "have remove button" in {
           val removeButton = row.selectFirst(".actions .remove")
-          removeButton.text() mustBe messages("site.remove")
+          removeButton.text() mustBe messages("site.remove supplementary.addDocument.remove.hint")
           removeButton.attr("value") mustBe correctDocumentsProduced.toJson.toString()
         }
       }

@@ -123,7 +123,7 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
 
     "render actions section" when {
       "no items" in {
-        view.getElementById("add").text() mustBe "site.add.item"
+        view.getElementById("add").text() mustBe "site.add.item site.add.item"
         view must not(containElementWithID("submit"))
         view must not(containElementWithID("submit_and_return"))
       }
@@ -131,7 +131,7 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
       "some items" in {
         val view = createView(items = List(ExportItem("id")))
 
-        view.getElementById("add").text() mustBe "site.add.anotherItem"
+        view.getElementById("add").text() mustBe "site.add.anotherItem site.add.anotherItem"
         view must containElementWithID("submit")
         view must containElementWithID("submit_and_return")
       }
