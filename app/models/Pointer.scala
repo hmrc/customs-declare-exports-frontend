@@ -62,7 +62,7 @@ case class Pointer(sections: Seq[PointerSection]) {
 
 object Pointer {
   implicit val format: Format[Pointer] =
-    Format(Reads(js => js.validate[JsString].map(string => Pointer(string.value))), Writes(pointer => JsString(pointer.toString)))
+    Format(Reads(js => js.validate[String].map(Pointer(_))), Writes(pointer => JsString(pointer.toString)))
 
   def apply(sections: String): Pointer = Pointer(sections.split("\\.").map(PointerSection(_)))
 }
