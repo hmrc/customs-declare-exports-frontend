@@ -79,10 +79,16 @@
                         </ol>
                     </td>
                     <td scope="row">
-                        <a id="item_@index--change" href="@routes.ProcedureCodesController.displayPage(mode, item.id)">@messages("site.change")</a>
+                        <a id="item_@index--change" href="@routes.ProcedureCodesController.displayPage(mode, item.id)">
+                            <span aria-hidden="true">@messages("site.change")</span>
+                            <span class="visuallyhidden">@{messages("supplementary.itemsAdd.change.hint", item.sequenceId)}</span>
+                        </a>
                     </td>
                     <td scope="row">
-                        <a id="item_@index--remove" class="button button--gray" href="@routes.ItemsSummaryController.removeItem(mode, item.id)">@messages("site.remove")</a>
+                        <a id="item_@index--remove" class="button button--gray" href="@routes.ItemsSummaryController.removeItem(mode, item.id)">
+                            <span aria-hidden="true">@messages("site.remove")</span>
+                            <span class="visuallyhidden">@{messages("supplementary.itemsAdd.remove.hint", item.sequenceId)}</span>
+                        </a>
                     </td>
                 </tr>
             }
@@ -94,7 +100,11 @@
         @helper.CSRF.formField
 
         <div class="section">
-            @components.buttons.add_button(if(items.isEmpty) "site.add.item" else "site.add.anotherItem")
+            @if(items.isEmpty) {
+                @components.buttons.add_button("site.add.item", "site.add.item")
+            } else {
+                @components.buttons.add_button("site.add.anotherItem", "site.add.anotherItem")
+            }
 
             @if(items.nonEmpty) {
                 @components.buttons.save_and_continue_button()

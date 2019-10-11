@@ -84,7 +84,7 @@ class ProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData with Stub
 
     "display both 'Add' and 'Save and continue' button on page" in {
       val addButton = view.getElementById("add")
-      addButton.text() mustBe "site.add"
+      addButton.text() mustBe "site.add supplementary.procedureCodes.additionalProcedureCode.add.hint"
 
       val saveButton = view.getElementById("submit")
       saveButton.text() mustBe "site.save_and_continue"

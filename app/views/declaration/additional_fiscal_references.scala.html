@@ -60,13 +60,10 @@
                     <tr id="removable_elements__row@index">
                         <td id="removable_elements-row@index-label">@{elem}</td>
                         <td id="removable_elements-row@index-remove_button">
-                            <input
-                                type="submit"
-                                class="button--secondary"
-                                formmethod="post"
-                                formaction="@routes.AdditionalFiscalReferencesController.removeReference(mode, itemId, elem)"
-                                value="@messages("site.remove")"
-                            >
+                            <button class="remove button--secondary" type="submit" formmethod="post" formaction="@routes.AdditionalFiscalReferencesController.removeReference(mode, itemId, elem)">
+                                <span aria-hidden="true">@messages("site.remove")</span>
+                                <span class="visuallyhidden">@{messages("declaration.additionalFiscalReferences.remove.hint", elem)}</span>
+                            </button>
                         </td>
                     </tr>
                 }
@@ -112,7 +109,7 @@
             labelClass = Some("bold-small")
         )
 
-        @components.add_save_button()
+        @components.add_save_button(addHint = "declaration.additionalFiscalReferences.add.hint")
         @components.buttons.save_and_return_later_button()
     }
 }

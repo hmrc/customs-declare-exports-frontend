@@ -64,7 +64,9 @@
                     field = form("countriesOfRouting[]"),
                     emptySelectValue = messages("declaration.destinationCountries.countriesOfRouting.empty"),
                     items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
-                )
+                ),
+                addHint = "declaration.destinationCountries.add.hint",
+                removeHint = "declaration.destinationCountries.remove.hint"
             )
         </div>
 

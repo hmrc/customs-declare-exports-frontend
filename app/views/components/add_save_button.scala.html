@@ -18,10 +18,14 @@
 
 @(
     saveKey: String = "site.save_and_continue",
-    addKey: String = "site.add"
+    addKey: String = "site.add",
+    addHint: String = "site.add"
 )(implicit messages: Messages)
 
 <div class="section align='right'">
-    <button id="add" class="button--secondary" name="@Add.toString">@messages(addKey)</button>
+    <button id="add" class="button--secondary" name="@Add.toString">
+        <span aria-hidden="true">@messages(addKey)</span>
+        <span class="visuallyhidden">@{messages(addHint)}</span>
+    </button>
     <button id="submit" class="button" name="@SaveAndContinue.toString">@messages(saveKey)</button>
 </div>

@@ -52,7 +52,8 @@
                         @components.fields.removable_elements_table(
                             title = Some(messages("standard.seal.summary.heading")),
                             elements = seals.map(seal => LabelledValue(seal.id)),
-                            removeButtonClass = "button-link"
+                            removeButtonClass = "button-link",
+                            removeButtonHint = "standard.seal.remove.hint"
                         )
                     }
 

@@ -137,7 +137,7 @@ class DeclarationAdditionalActorsViewSpec
       val view = createView()
 
       val addButton = view.getElementById("add")
-      addButton.text() mustBe messages(addCaption)
+      addButton.text() mustBe "site.add supplementary.additionalActors.add.hint"
 
       val saveAndContinueButton = view.getElementById("submit")
       saveAndContinueButton.text() mustBe messages(saveAndContinueCaption)
@@ -244,7 +244,7 @@ class DeclarationAdditionalActorsViewSpec
 
       val removeButton = view.select("table>tbody>tr>td:nth-child(3)>button")
 
-      removeButton.text() mustBe messages(removeCaption)
+      removeButton.text() mustBe "site.remove site.remove.hint"
       removeButton.attr("value") mustBe """{"eori":"12345","partyType":"CS"}"""
     }
   }

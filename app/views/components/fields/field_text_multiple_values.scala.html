@@ -25,7 +25,9 @@
     inputClass: Option[String] = None,
     labelClass: Option[String] = None,
     includeAddButton: Boolean = true,
-    valuePrefix: Option[String] = None
+    valuePrefix: Option[String] = None,
+    addHint: String = "site.add",
+    removeHint: String = "site.remove.hint"
 )(implicit messages: Messages)
 
 @field_multiple_values(
@@ -36,5 +38,7 @@
     labelClass = labelClass,
     input = input_text(field, inputClass),
     includeAddButton = includeAddButton,
-    valuePrefix = valuePrefix
+    valuePrefix = valuePrefix,
+    addHint = addHint,
+    removeHint = removeHint
 )
