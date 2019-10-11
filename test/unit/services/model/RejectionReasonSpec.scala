@@ -111,7 +111,7 @@ class RejectionReasonSpec extends UnitSpec {
       "list contains rejected notification" when {
         "pointer is known" in {
           given(messages.isDefinedAt(anyString())).willReturn(true)
-          val error = NotificationError("CDS12016", Some(Pointer("x.0.z")))
+          val error = NotificationError("CDS12016", Some(Pointer("x.#0.z")))
           val notification =
             Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, Seq(error), "")
 
@@ -122,7 +122,7 @@ class RejectionReasonSpec extends UnitSpec {
 
         "pointer is unknown" in {
           given(messages.isDefinedAt(anyString())).willReturn(false)
-          val error = NotificationError("CDS12016", Some(Pointer("x.0.z")))
+          val error = NotificationError("CDS12016", Some(Pointer("x.#0.z")))
           val notification =
             Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, Seq(error), "")
 
