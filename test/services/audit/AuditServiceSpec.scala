@@ -26,7 +26,6 @@ import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import play.api.libs.json.{JsObject, Json}
-import services.audit.EventData.{EORI, SubmissionResult}
 import services.cache.ExportsDeclarationBuilder
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.Authorization
@@ -107,10 +106,10 @@ trait AuditTestSupport extends UnitSpec with ExportsDeclarationBuilder with Scal
   val mockAuditConnector = mock[AuditConnector]
 
   val auditData = Map(
-    EORI.toString -> "eori1",
-    LRN.toString -> "lrn1", // FIXME refere to bad thing
-    DUCR.toString -> "ducr1",
-    SubmissionResult.toString -> "Success"
+    EventData.eori.toString -> "eori1",
+    EventData.lrn.toString -> "lrn1",
+    EventData.ducr.toString -> "ducr1",
+    EventData.submissionResult.toString -> "Success"
   )
 
   val appConfig = instanceOf[AppConfig]

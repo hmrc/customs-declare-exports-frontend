@@ -79,11 +79,11 @@ class CancelDeclarationController @Inject()(
 
   private def auditData(form: CancelDeclaration, result: String)(implicit request: AuthenticatedRequest[_]): Map[String, String] =
     Map(
-      EORI.toString -> request.user.eori,
-      LRN.toString -> form.functionalReferenceId.value,
-      MRN.toString -> form.mrn,
-      ChangeReason.toString -> form.changeReason,
-      ChangeDescription.toString -> form.statementDescription,
-      SubmissionResult.toString -> result
+      eori.toString -> request.user.eori,
+      lrn.toString -> form.functionalReferenceId.value,
+      mrn.toString -> form.mrn,
+      changeReason.toString -> form.changeReason,
+      changeDescription.toString -> form.statementDescription,
+      submissionResult.toString -> result
     )
 }
