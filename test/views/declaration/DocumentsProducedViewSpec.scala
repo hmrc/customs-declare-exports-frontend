@@ -58,6 +58,7 @@ class DocumentsProducedViewSpec
       // FIXME Not used on view -> for remove this
       messages must haveTranslationFor("supplementary.addDocument.item.documentTypeCode")
       messages must haveTranslationFor("supplementary.addDocument.item.documentIdentifier")
+      messages must haveTranslationFor("supplementary.addDocument.documentIdentifier.hint")
       messages must haveTranslationFor("supplementary.addDocument.item.documentStatusReason")
       messages must haveTranslationFor("supplementary.addDocument.item.documentQuantity")
       messages must haveTranslationFor("supplementary.addDocument.error.maximumAmount")
@@ -87,9 +88,9 @@ class DocumentsProducedViewSpec
       view.getElementById(s"$documentTypeCodeKey").attr("value") mustBe empty
     }
 
-    "display empty input with label for Document identifier" in {
-      view.getElementById(s"$documentIdentifierKey-label").text() mustBe
-        messagesKey(documentIdentifier)
+    "display empty input with label and hint for Document identifier" in {
+      view.getElementById(s"$documentIdentifierKey-label").text() mustBe messagesKey(documentIdentifier)
+      view.getElementById(s"$documentIdentifierKey-hint").text() mustBe messagesKey("supplementary.addDocument.documentIdentifier.hint")
 
       view.getElementById(s"$documentIdentifierKey").attr("value") mustBe empty
     }
