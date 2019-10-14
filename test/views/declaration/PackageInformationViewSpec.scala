@@ -144,6 +144,8 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
       view.select("table>thead>tr>th:nth-child(1)").text() mustBe "supplementary.packageInformation.typesOfPackages"
       view.select("table>thead>tr>th:nth-child(2)").text() mustBe "supplementary.packageInformation.numberOfPackages"
       view.select("table>thead>tr>th:nth-child(3)").text() mustBe "supplementary.packageInformation.shippingMarks"
+      // remove button column
+      view.select("form>table>thead>tr>td").text() must be("")
 
       // check row
       view.select("table>tbody>tr>td:nth-child(1)").text() mustBe "PA"
@@ -160,6 +162,8 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
       view.select("table>thead>tr>th:nth-child(1)").text() mustBe "supplementary.packageInformation.typesOfPackages"
       view.select("table>thead>tr>th:nth-child(2)").text() mustBe "supplementary.packageInformation.numberOfPackages"
       view.select("table>thead>tr>th:nth-child(3)").text() mustBe "supplementary.packageInformation.shippingMarks"
+      // remove button column
+      view.select("form>table>thead>tr>td").text() must be("")
 
       // check rows
       view.select("table>tbody>tr>td:nth-child(1)").text() must include("PA")

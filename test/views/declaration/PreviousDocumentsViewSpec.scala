@@ -229,6 +229,8 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
       view.select("form>table>thead>tr>th:nth-child(2)").text() must be("supplementary.previousDocuments.documentType.label")
       view.select("form>table>thead>tr>th:nth-child(3)").text() must be("supplementary.previousDocuments.documentReference.label")
       view.select("form>table>thead>tr>th:nth-child(4)").text() must be("supplementary.previousDocuments.goodsItemIdentifier.label")
+      // remove button column
+      view.select("form>table>thead>tr>td").text() must be("")
 
       // row
       view.select("form>table>tbody>tr>td:nth-child(1)").text() must be("supplementary.previousDocuments.X")
