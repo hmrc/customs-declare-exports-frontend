@@ -25,8 +25,7 @@ import metrics.ExportsMetrics
 import metrics.MetricIdentifiers.submissionMetric
 import models.ExportsDeclaration
 import play.api.Logger
-import services.audit.EventData._
-import services.audit.{AuditService, AuditTypes}
+import services.audit.{AuditService, AuditTypes, EventData}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -77,15 +76,15 @@ class SubmissionService @Inject()(
 
   private def auditData(eori: String, choice: String, lrn: Option[String], ducr: Option[String], legalDeclaration: LegalDeclaration, result: String) =
     Map(
-      EORI.toString -> eori,
-      DecType.toString -> choice,
-      LRN.toString -> lrn.getOrElse(""),
-      DUCR.toString -> ducr.getOrElse(""),
-      FullName.toString -> legalDeclaration.fullName,
-      JobRole.toString -> legalDeclaration.jobRole,
-      Email.toString -> legalDeclaration.email,
-      Confirmed.toString -> legalDeclaration.confirmation.toString,
-      SubmissionResult.toString -> result
+      EventData.eori.toString -> eori,
+      EventData.decType.toString -> choice,
+      EventData.lrn.toString -> lrn.getOrElse(""),
+      EventData.ducr.toString -> ducr.getOrElse(""),
+      EventData.fullName.toString -> legalDeclaration.fullName,
+      EventData.jobRole.toString -> legalDeclaration.jobRole,
+      EventData.email.toString -> legalDeclaration.email,
+      EventData.confirmed.toString -> legalDeclaration.confirmation.toString,
+      EventData.submissionResult.toString -> result
     )
 
 }

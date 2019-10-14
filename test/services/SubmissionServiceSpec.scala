@@ -46,15 +46,15 @@ class SubmissionServiceSpec
   private val hc: HeaderCarrier = mock[HeaderCarrier]
   private val legal = LegalDeclaration("Name", "Role", "email@test.com", confirmation = true)
   private val auditData = Map(
-    EventData.EORI.toString -> "eori",
-    EventData.LRN.toString -> "123LRN",
-    EventData.DUCR.toString -> "ducr",
-    EventData.DecType.toString -> "STD",
-    EventData.FullName.toString -> legal.fullName,
-    EventData.JobRole.toString -> legal.jobRole,
-    EventData.Email.toString -> legal.email,
-    EventData.Confirmed.toString -> legal.confirmation.toString,
-    EventData.SubmissionResult.toString -> "Success"
+    EventData.eori.toString -> "eori",
+    EventData.lrn.toString -> "123LRN",
+    EventData.ducr.toString -> "ducr",
+    EventData.decType.toString -> "STD",
+    EventData.fullName.toString -> legal.fullName,
+    EventData.jobRole.toString -> legal.jobRole,
+    EventData.email.toString -> legal.email,
+    EventData.confirmed.toString -> legal.confirmation.toString,
+    EventData.submissionResult.toString -> "Success"
   )
   private val submissionService = new SubmissionService(appConfig, connector, auditService, exportMetrics)
 
