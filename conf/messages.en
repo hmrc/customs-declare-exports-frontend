@@ -877,3 +877,4 @@ rejected.notification.continue = Continue declaration (opens in a new window)
 summary.amend.information = You will start at the beginning of the declaration
 
 field.declaration.consignmentReferences.lrn=LRN
+field.declaration.goodsShipment.governmentAgencyGoodsItem.$.additionalDocument.$.id=Item {0} - Additional Document {1} - ID

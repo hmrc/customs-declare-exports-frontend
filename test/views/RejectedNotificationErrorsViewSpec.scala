@@ -18,6 +18,7 @@ package views
 
 import base.Injector
 import controllers.routes
+import models.Pointer
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{Action, Submission}
 import org.jsoup.nodes.Document
@@ -77,16 +78,32 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
     }
 
     "must contain notifications" when {
-      val reason =
-        RejectionReason("rejectionCode", "rejectionDescription", Some("field.declaration.consignmentReferences.lrn"))
+      "fully populated" in {
+        val reason = RejectionReason("rejectionCode", "rejectionDescription", Some(Pointer("declaration.consignmentReferences.lrn")))
 
-      "pointer key is known" in {
         val doc: Document = view(Seq(reason))
 
         doc must containElementWithID("rejected_notifications-row-0")
         doc.getElementById("rejected_notifications-row-0-name").text() mustBe messages("field.declaration.consignmentReferences.lrn")
         doc.getElementById("rejected_notifications-row-0-code").text() mustBe "rejectionCode"
         doc.getElementById("rejected_notifications-row-0-description").text() mustBe "rejectionDescription"
+      }
+
+      "pointer " in {
+        val reason = RejectionReason(
+          "rejectionCode",
+          "rejectionDescription",
+          Some(Pointer("declaration.goodsShipment.governmentAgencyGoodsItem.#0.additionalDocument.#1.id"))
+        )
+
+        val doc: Document = view(Seq(reason))
+
+        doc must containElementWithID("rejected_notifications-row-0")
+        doc.getElementById("rejected_notifications-row-0-name").text() mustBe messages(
+          "field.declaration.goodsShipment.governmentAgencyGoodsItem.$.additionalDocument.$.id",
+          "0",
+          "1"
+        )
       }
     }
 

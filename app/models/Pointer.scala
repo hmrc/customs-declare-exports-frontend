@@ -54,6 +54,10 @@ case class Pointer(sections: Seq[PointerSection]) {
   // e.g. ABC.DEF.GHI (if the pointer doesnt contain a sequence)
   lazy val pattern: String = sections.map(_.pattern).mkString(".")
 
+  lazy val sequenceArgs: Seq[String] = sections.filter(_.`type` == PointerSectionType.SEQUENCE).map(_.value)
+
+  lazy val messageKey: String = "field." + pattern
+
   // Converts a pointer to it's string form preserving the type
   // e.g. ABC.DEF.#1.GHI (if the pointer contains a sequence with index 1)
   // e.g. ABC.DEF.GHI (if the pointer doesnt contain a sequence)

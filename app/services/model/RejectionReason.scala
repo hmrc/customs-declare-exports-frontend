@@ -27,7 +27,7 @@ import play.api.libs.json.{Json, OFormat}
 
 import scala.io.Source
 
-case class RejectionReason(code: String, description: String, pointer: Option[String])
+case class RejectionReason(code: String, description: String, pointer: Option[Pointer])
 
 object RejectionReason {
 
@@ -62,7 +62,7 @@ object RejectionReason {
         RejectionReason(
           error.validationCode,
           getErrorDescription(error.validationCode),
-          error.pointer.map(_.pattern).map(p => "field." + p).filter(messages.isDefinedAt)
+          error.pointer.filter(p => messages.isDefinedAt(p.messageKey))
         )
       }
     }.getOrElse(Seq.empty)
