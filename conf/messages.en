@@ -456,6 +456,7 @@ supplementary.addDocument.documentTypeCode = Document type code
 supplementary.addDocument.item.documentTypeCode = 2/3 Document type code
 supplementary.addDocument.documentTypeCode.error = Incorrect document type code
 supplementary.addDocument.documentIdentifier = Document identifier
+supplementary.addDocument.documentIdentifier.hint = This can be up to 35 characters and can include a document part if required. For example X0021234/16-1234 with the document part allowing for up to five numbers after the dash.
 supplementary.addDocument.item.documentIdentifier = 2/3 Document identifier
 supplementary.addDocument.documentIdentifier.error = Incorrect document identifier
 supplementary.addDocument.documentStatus = Document status
