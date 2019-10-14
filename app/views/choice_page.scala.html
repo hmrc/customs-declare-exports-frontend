@@ -17,9 +17,8 @@
 @import config.AppConfig
 @import controllers.routes._
 @import forms.Choice.AllowedChoiceValues._
-@import uk.gov.hmrc.play.views.html._
-@import views.components.inputs.RadioOption
 @import views.Title
+@import views.components.inputs.RadioOption
 
 @this(main_template: views.html.main_template, appConfig: AppConfig)
 
@@ -29,10 +28,12 @@
         title = Title("declaration.choice.description")
     ) {
 
+        @components.back_link(controllers.routes.StartController.displayStartPage())
+
         @helper.form(ChoiceController.submitChoice(), 'autoComplete -> "off") {
             @helper.CSRF.formField
 
-            @components.back_link(controllers.routes.StartController.displayStartPage())
+            @components.error_summary(form.errors)
 
             @components.heading(title = messages("declaration.choice.description"))
 

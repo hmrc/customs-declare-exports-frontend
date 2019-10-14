@@ -88,7 +88,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with De
       val view = createView(DeclarantDetails.form().fillAndValidate(DeclarantDetails(EntityDetails(Some(""), None))))
 
       checkErrorsSummary(view)
-      view must haveFieldErrorLink("details.eori", "#details_eori")
+      view must haveFieldErrorLink("details_eori", "#details_eori")
 
       view.getElementById("error-message-details_eori-input").text() mustBe messages(eoriEmpty)
     }
@@ -102,7 +102,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with De
       )
 
       checkErrorsSummary(view)
-      view must haveFieldErrorLink("details.eori", "#details_eori")
+      view must haveFieldErrorLink("details_eori", "#details_eori")
 
       view.getElementById("error-message-details_eori-input").text() mustBe messages(eoriError)
     }
