@@ -39,7 +39,4 @@ trait PreviousDocumentsMessages {
   val documentTypeLabel: String = previousDocuments + ".documentType.label"
   val documentReferenceLabel: String = previousDocuments + ".documentReference.label"
   val documentGoodsIdentifierLabel: String = previousDocuments + ".goodsItemIdentifier.label"
-
-  // TODO: message from other screen
-  val removePackageInformation: String = "supplementary.packageInformation.remove"
 }

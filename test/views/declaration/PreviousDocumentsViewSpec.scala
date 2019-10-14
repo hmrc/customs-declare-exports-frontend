@@ -50,7 +50,6 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
       messages must haveTranslationFor("supplementary.previousDocuments.documentType.label")
       messages must haveTranslationFor("supplementary.previousDocuments.documentReference.label")
       messages must haveTranslationFor("supplementary.previousDocuments.goodsItemIdentifier.label")
-      messages must haveTranslationFor("supplementary.packageInformation.remove")
       messages must haveTranslationFor("supplementary.previousDocuments.X")
       messages must haveTranslationFor("supplementary.previousDocuments.Y")
       messages must haveTranslationFor("supplementary.previousDocuments.Z")
@@ -230,7 +229,8 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
       view.select("form>table>thead>tr>th:nth-child(2)").text() must be("supplementary.previousDocuments.documentType.label")
       view.select("form>table>thead>tr>th:nth-child(3)").text() must be("supplementary.previousDocuments.documentReference.label")
       view.select("form>table>thead>tr>th:nth-child(4)").text() must be("supplementary.previousDocuments.goodsItemIdentifier.label")
-      view.select("form>table>thead>tr>th:nth-child(5)").text() must be("supplementary.previousDocuments.remove")
+      // remove button column
+      view.select("form>table>thead>tr>td").text() must be("")
 
       // row
       view.select("form>table>tbody>tr>td:nth-child(1)").text() must be("supplementary.previousDocuments.X")
