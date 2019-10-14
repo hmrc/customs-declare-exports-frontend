@@ -634,7 +634,6 @@ supplementary.previousDocuments.documentCategory.label = Document Category
 supplementary.previousDocuments.documentType.label = Document Type
 supplementary.previousDocuments.documentReference.label = Document Reference
 supplementary.previousDocuments.goodsItemIdentifier.label = Goods Item Identifier
-supplementary.previousDocuments.remove = Remove Previous Documents
 supplementary.previousDocuments.remove.hint = Remove document {0} type {1} reference {2}
 supplementary.previousDocuments.add.hint = Add document
 
@@ -673,7 +672,6 @@ declaration.natureOfTransaction.empty = Please choose nature of transaction
 declaration.natureOfTransaction.error = Nature of transaction is incorrect
 
 supplementary.packageInformation.title = Package Information
-supplementary.packageInformation.remove = Remove Packaging Information
 supplementary.packageInformation.remove.hint = Remove package type {0} shipping reference {1}
 supplementary.packageInformation.add.hint = Add packaging information
 supplementary.packageInformation.table.heading= 1 Package added

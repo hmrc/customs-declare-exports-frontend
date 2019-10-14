@@ -53,7 +53,6 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
     messages must haveTranslationFor("supplementary.packageInformation.table.heading")
     messages must haveTranslationFor("supplementary.packageInformation.numberOfPackages")
     messages must haveTranslationFor("supplementary.packageInformation.table.multiple.heading")
-    messages must haveTranslationFor("supplementary.packageInformation.remove")
   }
 
   "Package Information View on empty page" should {
@@ -145,7 +144,6 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
       view.select("table>thead>tr>th:nth-child(1)").text() mustBe "supplementary.packageInformation.typesOfPackages"
       view.select("table>thead>tr>th:nth-child(2)").text() mustBe "supplementary.packageInformation.numberOfPackages"
       view.select("table>thead>tr>th:nth-child(3)").text() mustBe "supplementary.packageInformation.shippingMarks"
-      view.select("table>thead>tr>th:nth-child(4)").text() mustBe "supplementary.packageInformation.remove"
 
       // check row
       view.select("table>tbody>tr>td:nth-child(1)").text() mustBe "PA"
@@ -162,7 +160,6 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
       view.select("table>thead>tr>th:nth-child(1)").text() mustBe "supplementary.packageInformation.typesOfPackages"
       view.select("table>thead>tr>th:nth-child(2)").text() mustBe "supplementary.packageInformation.numberOfPackages"
       view.select("table>thead>tr>th:nth-child(3)").text() mustBe "supplementary.packageInformation.shippingMarks"
-      view.select("table>thead>tr>th:nth-child(4)").text() mustBe "supplementary.packageInformation.remove"
 
       // check rows
       view.select("table>tbody>tr>td:nth-child(1)").text() must include("PA")
