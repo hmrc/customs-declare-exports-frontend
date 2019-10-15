@@ -66,7 +66,7 @@ class DocumentsProducedController @Inject()(
         .getOrElse(DocumentsProducedData(Seq()))
 
     actionTypeOpt match {
-      case Add(_) if !boundForm.hasErrors => addItem(mode, itemId, boundForm.get, cache)
+      case Add if !boundForm.hasErrors => addItem(mode, itemId, boundForm.get, cache)
       case SaveAndContinue | SaveAndReturn if !boundForm.hasErrors =>
         saveAndContinue(mode, itemId, boundForm.get, cache)
       case Remove(keys) => removeItem(mode, itemId, keys, boundForm, cache)

@@ -24,8 +24,8 @@ import forms.declaration.PreviousDocumentsData._
 import forms.declaration.{Document, PreviousDocumentsData}
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -72,7 +72,7 @@ class PreviousDocumentsController @Inject()(
               Future.successful(navigator.continueTo(controllers.declaration.routes.ItemsSummaryController.displayPage(mode)))
         )
 
-      case Add(_) =>
+      case Add =>
         add(boundForm, cache.documents, PreviousDocumentsData.maxAmountOfItems).fold(
           formWithErrors => Future.successful(BadRequest(previousDocumentsPage(mode, formWithErrors, cache.documents))),
           updatedCache =>

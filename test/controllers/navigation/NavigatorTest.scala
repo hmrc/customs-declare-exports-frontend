@@ -85,7 +85,7 @@ class NavigatorTest extends WordSpec with Matchers with MockitoSugar with Export
       }
 
       "Add" in {
-        val result = navigator.continueTo(call)(request(Some(Add(None))), hc)
+        val result = navigator.continueTo(call)(request(Some(Add)), hc)
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some("url")

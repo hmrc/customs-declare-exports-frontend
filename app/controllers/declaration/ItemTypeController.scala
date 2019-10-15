@@ -57,7 +57,7 @@ class ItemTypeController @Inject()(
               itemTypePage(
                 mode,
                 itemId,
-                ItemTypeForm.form().fill(ItemTypeForm.convert(itemType)),
+                ItemTypeForm.form().fill(fromItemType(itemType)),
                 item.hasFiscalReferences,
                 itemType.taricAdditionalCodes,
                 itemType.nationalAdditionalCodes
@@ -81,7 +81,7 @@ class ItemTypeController @Inject()(
         val hasFiscalReferences = item.hasFiscalReferences
         val formAction = FormAction.bindFromRequest()
         formAction match {
-          case Add(field) =>
+          case AddField(field) =>
             handleAddition(mode, itemId, field, itemTypeInput, itemTypeCache, hasFiscalReferences)
           case SaveAndContinue | SaveAndReturn =>
             handleSaveAndContinue(mode, itemId, itemTypeInput, itemTypeCache, hasFiscalReferences)

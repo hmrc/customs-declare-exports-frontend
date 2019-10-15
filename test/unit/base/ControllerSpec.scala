@@ -18,7 +18,7 @@ package unit.base
 
 import base.{MockAuthAction, MockConnectors, MockExportCacheService, MockNavigator}
 import config.AppConfig
-import controllers.util.{Add, SaveAndContinue}
+import controllers.util.{Add, AddField, SaveAndContinue}
 import models.ExportsDeclaration
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import play.api.libs.json.JsValue
@@ -41,7 +41,7 @@ trait ControllerSpec
 
   protected val config: AppConfig = mock[AppConfig]
 
-  protected def addActionUrlEncoded(field: String = ""): (String, String) = (Add.toString, field)
+  protected def addActionUrlEncoded(field: String = ""): (String, String) = if (field.isEmpty) (Add.toString, field) else (AddField.toString, field)
 
   protected val saveAndContinueActionUrlEncoded: (String, String) = (SaveAndContinue.toString, "")
 

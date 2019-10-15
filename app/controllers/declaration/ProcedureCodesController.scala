@@ -24,10 +24,10 @@ import forms.declaration.ProcedureCodes
 import forms.declaration.ProcedureCodes.form
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.{ExportsDeclaration, Mode}
-import models.declaration.{ExportItem, ProcedureCodesData}
 import models.declaration.ProcedureCodesData._
+import models.declaration.{ExportItem, ProcedureCodesData}
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -66,7 +66,7 @@ class ProcedureCodesController @Inject()(
 
     val cache = request.cacheModel.itemBy(itemId).flatMap(_.procedureCodes).getOrElse(ProcedureCodesData(None, Seq()))
     actionTypeOpt match {
-      case Add(_) if !boundForm.hasErrors => addAnotherCodeHandler(mode, itemId, boundForm.get, cache)
+      case Add if !boundForm.hasErrors => addAnotherCodeHandler(mode, itemId, boundForm.get, cache)
       case SaveAndContinue | SaveAndReturn if !boundForm.hasErrors =>
         saveAndContinueHandler(mode, itemId, boundForm.get, cache)
       case Remove(values) => removeCodeHandler(mode, itemId, retrieveProcedureCode(values), boundForm, cache)

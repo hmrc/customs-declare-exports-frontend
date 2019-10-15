@@ -16,6 +16,7 @@
 
 package forms.declaration
 
+import models.declaration.ItemType
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 
@@ -55,7 +56,7 @@ object ItemTypeForm {
 
   val empty: ItemTypeForm = ItemTypeForm("", None, None, "", None, None, "")
 
-  def convert(model: models.declaration.ItemType) =
+  def fromItemType(model: ItemType) =
     ItemTypeForm(
       model.combinedNomenclatureCode,
       None,

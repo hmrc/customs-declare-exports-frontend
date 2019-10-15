@@ -25,8 +25,8 @@ import forms.declaration.destinationCountries.DestinationCountries.{Standard, Su
 import forms.declaration.destinationCountries._
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -94,7 +94,7 @@ class DestinationCountriesController @Inject()(
     val cache = request.cacheModel.locations.destinationCountries.getOrElse(DestinationCountries.empty())
 
     actionTypeOpt match {
-      case Add(_) if !boundForm.hasErrors                          => addRoutingCountry(mode, cache)
+      case Add if !boundForm.hasErrors                             => addRoutingCountry(mode, cache)
       case SaveAndContinue | SaveAndReturn if !boundForm.hasErrors => saveAndContinue(mode, cache)
       case Remove(values)                                          => removeRoutingCountry(mode, values, boundForm, cache)
       case _                                                       => Future.successful(BadRequest(destinationCountriesStandardPage(mode, boundForm)))

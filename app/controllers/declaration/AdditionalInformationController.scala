@@ -66,7 +66,7 @@ class AdditionalInformationController @Inject()(
       .getOrElse(AdditionalInformationData(Seq()))
 
     actionTypeOpt match {
-      case Add(_)                          => handleAdd(mode, itemId, boundForm, cache.items)
+      case Add                             => handleAdd(mode, itemId, boundForm, cache.items)
       case Remove(ids)                     => handleRemove(mode, itemId, ids, boundForm, cache.items)
       case SaveAndContinue | SaveAndReturn => handleSaveAndContinue(mode, itemId, boundForm, cache.items)
       case _                               => errorHandler.displayErrorPage()

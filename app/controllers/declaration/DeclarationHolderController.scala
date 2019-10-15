@@ -64,7 +64,7 @@ class DeclarationHolderController @Inject()(
     val cache = request.cacheModel.parties.declarationHoldersData.getOrElse(DeclarationHoldersData(Seq()))
 
     actionTypeOpt match {
-      case Add(_) if !boundForm.hasErrors => addHolder(mode, boundForm.get, cache)
+      case Add if !boundForm.hasErrors => addHolder(mode, boundForm.get, cache)
       case SaveAndContinue | SaveAndReturn if !boundForm.hasErrors =>
         saveAndContinue(mode, boundForm.get, cache)
       case Remove(values) => removeHolder(mode, retrieveHolder(values), boundForm, cache)

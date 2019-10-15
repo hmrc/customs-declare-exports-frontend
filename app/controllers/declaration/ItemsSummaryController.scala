@@ -52,7 +52,7 @@ class ItemsSummaryController @Inject()(
     val incorrectItems = buildIncorrectItemsErrors(request.cacheModel.items.toSeq)
 
     action match {
-      case Add(_) =>
+      case Add =>
         val newItem = ExportItem(id = exportItemIdGeneratorService.generateItemId())
         exportsCacheService
           .update(
