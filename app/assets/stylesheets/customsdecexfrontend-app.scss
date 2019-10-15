@@ -82,6 +82,10 @@ a.button--gray, button.button--gray, .button--gray:visited {
   }
 }
 
+th.rejected-field-name, td.rejected-field-name {
+  white-space: nowrap;
+}
+
 .button-link {
   background: none !important;
   color: inherit;
