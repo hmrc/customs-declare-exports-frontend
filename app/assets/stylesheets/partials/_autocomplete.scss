@@ -31,9 +31,9 @@ $custom-combobox-input-border-width: 2px;
   bottom: 0;
   margin-left: -1px;
   padding: 0;
-  right: -#{$custom-combobox-input-border-width};
+  right: -1 * $custom-combobox-input-border-width;
 
-  @media screen and (min-width: #{$media-query-breakpoint}) {
+  @media screen and (min-width: $media-query-breakpoint) {
     right: calc(50% - #{$custom-combobox-input-border-width});
   }
 }
