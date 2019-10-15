@@ -97,13 +97,13 @@ class ItemTypeController @Inject()(
   private def handleAddition(
     mode: Mode,
     itemId: String,
-    field: Option[String],
+    field: String,
     itemTypeInput: ItemTypeForm,
     itemTypeCache: ItemType,
     hasFiscalReferences: Boolean
   )(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
 
-    val itemTypeUpdated = updateCachedItemType(itemTypeInput, itemTypeCache, field)
+    val itemTypeUpdated = updateCachedItemType(itemTypeInput, itemTypeCache, Some(field))
 
     ItemTypeValidator.validateOnAddition(itemTypeUpdated) match {
       case Valid =>
@@ -124,10 +124,10 @@ class ItemTypeController @Inject()(
     }
   }
 
-  private def itemTypeInputForAdd(field: Option[String], itemTypeInput: ItemTypeForm) = field match {
-    case Some(`taricAdditionalCodeKey`) =>
+  private def itemTypeInputForAdd(field: String, itemTypeInput: ItemTypeForm) = field match {
+    case `taricAdditionalCodeKey` =>
       itemTypeInput.copy(taricAdditionalCode = None)
-    case Some(`nationalAdditionalCodeKey`) =>
+    case `nationalAdditionalCodeKey` =>
       itemTypeInput.copy(nationalAdditionalCode = None)
     case _ => itemTypeInput
   }
