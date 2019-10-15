@@ -70,7 +70,7 @@
                             }
                         }
                         <td id="containers-row@index-remove_button">
-                            @remove_button(value = Some(container.id), buttonClass="button-link", label="supplementary.transportInfo.containers.remove", hint="supplementary.transportInfo.containers.remove.hint")
+                            @remove_button(element = LabelledValue(container.id), buttonClass="button-link", label="supplementary.transportInfo.containers.remove", hint="supplementary.transportInfo.containers.remove.hint")
                         </td>
                         @if(showSeals) {
                             <td>

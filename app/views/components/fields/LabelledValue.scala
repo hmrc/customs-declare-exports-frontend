@@ -19,5 +19,5 @@ package views.components.fields
 case class LabelledValue(label: String, value: String)
 
 object LabelledValue {
-  def apply(labelAndValue: String): LabelledValue = LabelledValue(labelAndValue, labelAndValue)
+  def apply(labelAndValue: Any): LabelledValue = LabelledValue(labelAndValue.toString, labelAndValue.toString)
 }

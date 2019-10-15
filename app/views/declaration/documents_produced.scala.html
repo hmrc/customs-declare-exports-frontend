@@ -21,6 +21,7 @@
 @import forms.declaration.additionaldocuments.DocumentsProduced._
 @import uk.gov.hmrc.play.views.html._
 @import views.Title
+@import views.components.fields.LabelledValue
 
 @this(main_template: views.html.main_template)
 
@@ -67,7 +68,7 @@
                         <td class="date-of-validity">@item.dateOfValidity</td>
                         <td class="measurement-unit">@item.documentWriteOff.map(_.measurementUnit)</td>
                         <td class="document-quantity">@item.documentWriteOff.map(_.documentQuantity)</td>
-                        <td class="actions">@components.buttons.remove_button(value = Some(item.toJson), hint = messages("supplementary.addDocument.remove.hint", item.documentIdentifier.getOrElse("")))</td>
+                        <td class="actions">@components.buttons.remove_button(element = LabelledValue(item.toJson), hint = messages("supplementary.addDocument.remove.hint", item.documentIdentifier.getOrElse("")))</td>
                     </tr>
                 }
                 </tbody>

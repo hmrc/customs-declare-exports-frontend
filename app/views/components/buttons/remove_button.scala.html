@@ -15,10 +15,11 @@
  *@
 
 @import controllers.util.Remove
+@import views.components.fields.LabelledValue
 
-@(value: Option[Any] = None, label: String = "site.remove", buttonClass: String = "button--secondary", hint: String = "site.remove.hint")(implicit messages: Messages)
+@(element: LabelledValue, label: String = "site.remove", buttonClass: String = "button--secondary", hint: String = "site.remove.hint")(implicit messages: Messages)
 
-<button class="remove @buttonClass" name="@Remove.toString" @value.map{v => value="@{v.toString}"}>
+<button class="remove @buttonClass" name="@Remove.toString" value="@{element.value}">
  <span aria-hidden="true">@messages(label)</span>
- <span class="visuallyhidden">@{messages(hint, value.map(_.toString).getOrElse(""))}</span>
+ <span class="visuallyhidden">@{messages(hint, element.label)}</span>
 </button>
