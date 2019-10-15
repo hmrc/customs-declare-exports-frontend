@@ -28,6 +28,7 @@
     input: Html,
     includeAddButton: Boolean = true,
     valuePrefix: Option[String] = None,
+    addField: Option[String] = None,
     addHint: String = "site.add",
     removeHint: String = "site.remove.hint"
 )(implicit messages: Messages)
@@ -60,7 +61,7 @@
 
     @if(includeAddButton) {
       <div class="section">
-        @add_button(addHint = addHint, fieldId = Some(field.id))
+        @add_button(addHint = addHint, fieldId = addField)
       </div>
     }
 </div>
