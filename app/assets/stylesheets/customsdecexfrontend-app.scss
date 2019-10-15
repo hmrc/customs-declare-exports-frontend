@@ -56,6 +56,32 @@ a.button--gray, button.button--gray, .button--gray:visited {
   margin-top: 5rem;
 }
 
+.rejected-field-name {
+  ol, ul {
+    margin: 0;
+  }
+
+  li {
+    font-weight: 700;
+  }
+
+  li:before {
+    content: "- "
+  }
+
+  li:first-child:before {
+    content: ""
+  }
+
+  li:nth-child(2) {
+    padding-left: 1rem;
+  }
+
+  li:nth-child(3) {
+    padding-left: 2rem;
+  }
+}
+
 .button-link {
   background: none !important;
   color: inherit;
