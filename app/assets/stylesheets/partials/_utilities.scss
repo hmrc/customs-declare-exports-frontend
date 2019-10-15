@@ -1,3 +1,6 @@
+
+$media-query-breakpoint: 641px;
+
 /*
 ====================================
 Utility alignments
@@ -6,7 +9,7 @@ Utility alignments
 .u-align--right {
   text-align: right;
 }
-@media screen and (min-width: 641px){
+@media screen and (min-width: #{$media-query-breakpoint}){
   .u-align--tablet-right {
     text-align: right;
   }
