@@ -154,7 +154,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CarrierDetailsMessages wi
       )
 
       view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("details.eori", "#details_eori")
+      view must haveFieldErrorLink("details_eori", "#details_eori")
 
       view.getElementById("error-message-details_eori-input").text() mustBe messages(eoriError)
     }
@@ -168,7 +168,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CarrierDetailsMessages wi
       )
 
       view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
+      view must haveFieldErrorLink("details_address_fullName", "#details_address_fullName")
 
       view.getElementById("error-message-details_address_fullName-input").text() mustBe messages(fullNameEmpty)
     }
@@ -186,7 +186,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CarrierDetailsMessages wi
       )
 
       view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
+      view must haveFieldErrorLink("details_address_fullName", "#details_address_fullName")
 
       view.getElementById("error-message-details_address_fullName-input").text() mustBe messages(fullNameError)
     }
@@ -200,7 +200,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CarrierDetailsMessages wi
       )
 
       view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
+      view must haveFieldErrorLink("details_address_addressLine", "#details_address_addressLine")
 
       view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages(addressLineEmpty)
     }
@@ -218,7 +218,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CarrierDetailsMessages wi
       )
 
       view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
+      view must haveFieldErrorLink("details_address_addressLine", "#details_address_addressLine")
 
       view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages(addressLineError)
     }
@@ -232,7 +232,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CarrierDetailsMessages wi
       )
 
       view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
+      view must haveFieldErrorLink("details_address_townOrCity", "#details_address_townOrCity")
 
       view.getElementById("error-message-details_address_townOrCity-input").text() mustBe messages(townOrCityEmpty)
     }
@@ -250,7 +250,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CarrierDetailsMessages wi
       )
 
       view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
+      view must haveFieldErrorLink("details_address_townOrCity", "#details_address_townOrCity")
 
       view.getElementById("error-message-details_address_townOrCity-input").text() mustBe messages(townOrCityError)
     }
@@ -264,7 +264,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CarrierDetailsMessages wi
       )
 
       view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
+      view must haveFieldErrorLink("details_address_postCode", "#details_address_postCode")
 
       view.getElementById("error-message-details_address_postCode-input").text() mustBe messages(postCodeEmpty)
     }
@@ -282,7 +282,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CarrierDetailsMessages wi
       )
 
       view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
+      view must haveFieldErrorLink("details_address_postCode", "#details_address_postCode")
 
       view.getElementById("error-message-details_address_postCode-input").text() mustBe messages(postCodeError)
     }
@@ -296,7 +296,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CarrierDetailsMessages wi
       )
 
       view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("details.address.country", "#details_address_country")
+      view must haveFieldErrorLink("details_address_country", "#details_address_country")
 
       view.select("span.error-message").text() mustBe messages(countryEmpty)
     }
@@ -310,7 +310,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CarrierDetailsMessages wi
       )
 
       view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("details.address.country", "#details_address_country")
+      view must haveFieldErrorLink("details_address_country", "#details_address_country")
 
       view.select("span.error-message").text() mustBe messages(countryError)
     }
@@ -324,10 +324,10 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CarrierDetailsMessages wi
       )
 
       view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
-      view must haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
-      view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
-      view must haveFieldErrorLink("details.address.country", "#details_address_country")
+      view must haveFieldErrorLink("details_address_addressLine", "#details_address_addressLine")
+      view must haveFieldErrorLink("details_address_townOrCity", "#details_address_townOrCity")
+      view must haveFieldErrorLink("details_address_postCode", "#details_address_postCode")
+      view must haveFieldErrorLink("details_address_country", "#details_address_country")
 
       view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages(addressLineEmpty)
       view.getElementById("error-message-details_address_townOrCity-input").text() mustBe messages(townOrCityEmpty)
@@ -344,10 +344,10 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CarrierDetailsMessages wi
       )
 
       view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
-      view must haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
-      view must haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
-      view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
+      view must haveFieldErrorLink("details_address_fullName", "#details_address_fullName")
+      view must haveFieldErrorLink("details_address_addressLine", "#details_address_addressLine")
+      view must haveFieldErrorLink("details_address_townOrCity", "#details_address_townOrCity")
+      view must haveFieldErrorLink("details_address_postCode", "#details_address_postCode")
 
       view.getElementById("error-message-details_address_fullName-input").text() mustBe messages(fullNameEmpty)
       view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages(addressLineEmpty)
@@ -379,10 +379,10 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CarrierDetailsMessages wi
       )
 
       view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
-      view must haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
-      view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
-      view must haveFieldErrorLink("details.address.country", "#details_address_country")
+      view must haveFieldErrorLink("details_address_addressLine", "#details_address_addressLine")
+      view must haveFieldErrorLink("details_address_townOrCity", "#details_address_townOrCity")
+      view must haveFieldErrorLink("details_address_postCode", "#details_address_postCode")
+      view must haveFieldErrorLink("details_address_country", "#details_address_country")
 
       view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages(addressLineError)
       view.getElementById("error-message-details_address_townOrCity-input").text() mustBe messages(townOrCityError)
@@ -414,10 +414,10 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CarrierDetailsMessages wi
       )
 
       view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("details.address.fullName", "#details_address_fullName")
-      view must haveFieldErrorLink("details.address.addressLine", "#details_address_addressLine")
-      view must haveFieldErrorLink("details.address.townOrCity", "#details_address_townOrCity")
-      view must haveFieldErrorLink("details.address.postCode", "#details_address_postCode")
+      view must haveFieldErrorLink("details_address_fullName", "#details_address_fullName")
+      view must haveFieldErrorLink("details_address_addressLine", "#details_address_addressLine")
+      view must haveFieldErrorLink("details_address_townOrCity", "#details_address_townOrCity")
+      view must haveFieldErrorLink("details_address_postCode", "#details_address_postCode")
 
       view.getElementById("error-message-details_address_fullName-input").text() mustBe messages(fullNameError)
       view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages(addressLineError)

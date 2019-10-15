@@ -21,13 +21,13 @@ import com.typesafe.config.{Config, ConfigFactory}
 import config.AppConfig
 import forms.Choice
 import helpers.views.declaration.{ChoiceMessages, CommonMessages}
+import org.jsoup.nodes.Document
 import org.scalatest.Matchers._
 import play.api.Mode.Test
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.api.{Configuration, Environment}
-import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -39,7 +39,7 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
 
   private val form: Form[Choice] = Choice.form()
   private val choicePage = new choice_page(mainTemplate, instanceOf[AppConfig])
-  private def createView(form: Form[Choice] = form, messages: Messages = stubMessages()): Html =
+  private def createView(form: Form[Choice] = form, messages: Messages = stubMessages()): Document =
     choicePage(form)(request, messages)
 
   "Choice View on empty page" should {
@@ -106,12 +106,18 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
 
       val view = createView(Choice.form().bind(Map[String, String]()))
 
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("value", "#value")
+
       view.select("#error-message-value-input").text() mustBe messages(choiceEmpty)
     }
 
     "display error when choice is incorrect" in {
 
       val view = createView(Choice.form().bind(Map("value" -> "incorrect")))
+
+      view must haveGlobalErrorSummary
+      view must haveFieldErrorLink("value", "#value")
 
       view.select("#error-message-value-input").text() mustBe messages(choiceError)
     }
@@ -176,7 +182,7 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
       ensureRadioIsChecked(view, "Continue declaration")
     }
   }
-  private def ensureAllLabelTextIsCorrect(view: Html): Unit = {
+  private def ensureAllLabelTextIsCorrect(view: Document): Unit = {
     view.getElementsByTag("label").size mustBe 5
     view.getElementById("Standard declaration-label").text() mustBe standardDec
     view.getElementById("Supplementary declaration-label").text() mustBe supplementaryDec
@@ -185,17 +191,17 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
     view.getElementById("Cancel declaration-label").text() mustBe cancelDec
   }
 
-  private def ensureSupplementaryLabelIsCorrect(view: Html): Unit = {
+  private def ensureSupplementaryLabelIsCorrect(view: Document): Unit = {
     view.getElementsByTag("label").size mustBe 1
     view.getElementById("Supplementary declaration-label").text() mustBe supplementaryDec
   }
 
-  private def ensureRadioIsChecked(view: Html, elementId: String): Unit = {
+  private def ensureRadioIsChecked(view: Document, elementId: String): Unit = {
     val option = view.getElementById(elementId)
     option.attr("checked") mustBe "checked"
   }
 
-  private def ensureRadioIsUnChecked(view: Html, elementId: String): Unit = {
+  private def ensureRadioIsUnChecked(view: Document, elementId: String): Unit = {
     val option = view.getElementById(elementId)
     option.attr("checked") mustBe empty
   }

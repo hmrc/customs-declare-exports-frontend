@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.{Injector, TestHelper}
+import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.Date._
 import forms.declaration.DocumentsProducedSpec._
@@ -36,7 +37,6 @@ import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.documents_produced
 import views.tags.ViewTest
-import controllers.declaration.routes
 
 @ViewTest
 class DocumentsProducedViewSpec
@@ -55,11 +55,20 @@ class DocumentsProducedViewSpec
     "have correct message keys" in {
 
       val messages = instanceOf[MessagesApi].preferred(request)
-      // FIXME Not used on view -> for remove this
-      messages must haveTranslationFor("supplementary.addDocument.item.documentTypeCode")
-      messages must haveTranslationFor("supplementary.addDocument.item.documentIdentifier")
-      messages must haveTranslationFor("supplementary.addDocument.item.documentStatusReason")
-      messages must haveTranslationFor("supplementary.addDocument.item.documentQuantity")
+      messages must haveTranslationFor("supplementary.addDocument.documentTypeCode")
+      messages must haveTranslationFor("supplementary.addDocument.documentIdentifier")
+      messages must haveTranslationFor("supplementary.addDocument.documentIdentifier.hint")
+      messages must haveTranslationFor("supplementary.addDocument.documentIdentifier.error")
+      messages must haveTranslationFor("supplementary.addDocument.documentStatusReason")
+      messages must haveTranslationFor("supplementary.addDocument.documentStatusReason.error")
+      messages must haveTranslationFor("supplementary.addDocument.documentQuantity")
+      messages must haveTranslationFor("supplementary.addDocument.documentQuantity.error")
+      messages must haveTranslationFor("supplementary.addDocument.documentQuantity.error.scale")
+      messages must haveTranslationFor("supplementary.addDocument.documentQuantity.error.precision")
+      messages must haveTranslationFor("supplementary.addDocument.documentStatus")
+      messages must haveTranslationFor("supplementary.addDocument.documentStatus.error")
+      messages must haveTranslationFor("supplementary.addDocument.issuingAuthorityName")
+      messages must haveTranslationFor("supplementary.addDocument.issuingAuthorityName.error.length")
       messages must haveTranslationFor("supplementary.addDocument.error.maximumAmount")
       messages must haveTranslationFor("supplementary.addDocument.error.duplicated")
       messages must haveTranslationFor("supplementary.addDocument.error.notDefined")
@@ -87,9 +96,9 @@ class DocumentsProducedViewSpec
       view.getElementById(s"$documentTypeCodeKey").attr("value") mustBe empty
     }
 
-    "display empty input with label for Document identifier" in {
-      view.getElementById(s"$documentIdentifierKey-label").text() mustBe
-        messagesKey(documentIdentifier)
+    "display empty input with label and hint for Document identifier" in {
+      view.getElementById(s"$documentIdentifierKey-label").text() mustBe messagesKey(documentIdentifier)
+      view.getElementById(s"$documentIdentifierKey-hint").text() mustBe messagesKey("supplementary.addDocument.documentIdentifier.hint")
 
       view.getElementById(s"$documentIdentifierKey").attr("value") mustBe empty
     }
@@ -261,7 +270,7 @@ class DocumentsProducedViewSpec
         val view = createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectMeasurementUnit)))
 
         checkErrorsSummary(view)
-        view must haveFieldErrorLink(s"$documentWriteOffKey.$measurementUnitKey", s"#${documentWriteOffKey}_$measurementUnitKey")
+        view must haveFieldErrorLink(s"${documentWriteOffKey}_$measurementUnitKey", s"#${documentWriteOffKey}_$measurementUnitKey")
 
         view.select(s"#error-message-${documentWriteOffKey}_$measurementUnitKey-input").text() mustBe
           messagesKey(measurementUnitLengthError)
@@ -273,7 +282,7 @@ class DocumentsProducedViewSpec
         val view = createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectMeasurementUnit)))
 
         checkErrorsSummary(view)
-        view must haveFieldErrorLink(s"$documentWriteOffKey.$measurementUnitKey", s"#${documentWriteOffKey}_$measurementUnitKey")
+        view must haveFieldErrorLink(s"${documentWriteOffKey}_$measurementUnitKey", s"#${documentWriteOffKey}_$measurementUnitKey")
 
         view.select(s"#error-message-${documentWriteOffKey}_$measurementUnitKey-input").text() mustBe
           messagesKey(measurementUnitSpecialCharactersError)
@@ -290,7 +299,7 @@ class DocumentsProducedViewSpec
         val view = createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentQuantity)))
 
         checkErrorsSummary(view)
-        view must haveFieldErrorLink(s"$documentWriteOffKey.$documentQuantityKey", s"#${documentWriteOffKey}_$documentQuantityKey")
+        view must haveFieldErrorLink(s"${documentWriteOffKey}_$documentQuantityKey", s"#${documentWriteOffKey}_$documentQuantityKey")
 
         view.select(s"#error-message-${documentWriteOffKey}_$documentQuantityKey-input").text() mustBe
           messagesKey(documentQuantityPrecisionError)
@@ -302,7 +311,7 @@ class DocumentsProducedViewSpec
         val view = createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentQuantity)))
 
         checkErrorsSummary(view)
-        view must haveFieldErrorLink(s"$documentWriteOffKey.$documentQuantityKey", s"#${documentWriteOffKey}_$documentQuantityKey")
+        view must haveFieldErrorLink(s"${documentWriteOffKey}_$documentQuantityKey", s"#${documentWriteOffKey}_$documentQuantityKey")
 
         view.select(s"#error-message-${documentWriteOffKey}_$documentQuantityKey-input").text() mustBe
           messagesKey(documentQuantityScaleError)
@@ -314,7 +323,7 @@ class DocumentsProducedViewSpec
         val view = createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentQuantity)))
 
         checkErrorsSummary(view)
-        view must haveFieldErrorLink(s"$documentWriteOffKey.$documentQuantityKey", s"#${documentWriteOffKey}_$documentQuantityKey")
+        view must haveFieldErrorLink(s"${documentWriteOffKey}_$documentQuantityKey", s"#${documentWriteOffKey}_$documentQuantityKey")
 
         view.select(s"#error-message-${documentWriteOffKey}_$documentQuantityKey-input").text() mustBe
           messagesKey(documentQuantityError)
@@ -368,8 +377,8 @@ class DocumentsProducedViewSpec
       view must haveFieldErrorLink(s"$documentStatusReasonKey", s"#$documentStatusReasonKey")
       view must haveFieldErrorLink(s"$issuingAuthorityNameKey", s"#$issuingAuthorityNameKey")
       view must haveFieldErrorLink(s"$dateOfValidityKey", s"#$dateOfValidityKey")
-      view must haveFieldErrorLink(s"$documentWriteOffKey.$measurementUnitKey", s"#${documentWriteOffKey}_$measurementUnitKey")
-      view must haveFieldErrorLink(s"$documentWriteOffKey.$documentQuantityKey", s"#${documentWriteOffKey}_$documentQuantityKey")
+      view must haveFieldErrorLink(s"${documentWriteOffKey}_$measurementUnitKey", s"#${documentWriteOffKey}_$measurementUnitKey")
+      view must haveFieldErrorLink(s"${documentWriteOffKey}_$documentQuantityKey", s"#${documentWriteOffKey}_$documentQuantityKey")
 
       view.select(s"#error-message-$documentTypeCodeKey-input").text() mustBe messagesKey(documentTypeCodeError)
       view

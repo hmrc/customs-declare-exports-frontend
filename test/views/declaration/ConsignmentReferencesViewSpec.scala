@@ -156,7 +156,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with ConsignmentReferen
         createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Ducr(incorrectDUCR), Lrn(""))))
 
       view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("ducr.ducr", "#ducr_ducr")
+      view must haveFieldErrorLink("ducr_ducr", "#ducr_ducr")
       view must haveFieldErrorLink("lrn", "#lrn")
 
       view.select("#error-message-ducr_ducr-input").text() mustBe messages(ducrError)
@@ -172,7 +172,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with ConsignmentReferen
       )
 
       view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("ducr.ducr", "#ducr_ducr")
+      view must haveFieldErrorLink("ducr_ducr", "#ducr_ducr")
       view must haveFieldErrorLink("lrn", "#lrn")
 
       view.select("#error-message-ducr_ducr-input").text() mustBe messages(ducrError)
@@ -185,7 +185,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with ConsignmentReferen
         createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Ducr(incorrectDUCR), Lrn("$$%"))))
 
       view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("ducr.ducr", "#ducr_ducr")
+      view must haveFieldErrorLink("ducr_ducr", "#ducr_ducr")
       view must haveFieldErrorLink("lrn", "#lrn")
 
       view.select("#error-message-ducr_ducr-input").text() mustBe messages(ducrError)
