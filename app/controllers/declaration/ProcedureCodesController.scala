@@ -24,14 +24,14 @@ import forms.declaration.ProcedureCodes
 import forms.declaration.ProcedureCodes.form
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.{ExportsDeclaration, Mode}
-import models.declaration.ProcedureCodesData
 import models.declaration.ProcedureCodesData._
+import models.declaration.{ExportItem, ProcedureCodesData}
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.cache.{ExportItem, ExportsCacheService}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.procedure_codes

@@ -24,6 +24,7 @@ sealed trait FormAction {
 
 object FormAction {
   private val addLabel = "Add"
+  private val addFieldLabel = "AddField"
   private val saveAndContinueLabel = "SaveAndContinue"
   private val saveAndReturnLabel = "SaveAndReturn"
   private val continueLabel = "Continue"
@@ -32,6 +33,7 @@ object FormAction {
   def bindFromRequest()(implicit request: Request[AnyContent]): FormAction =
     request.body.asFormUrlEncoded.flatMap { body =>
       body.flatMap {
+        case (`addFieldLabel`, values)   => Some(AddField(values.headOption.getOrElse("")))
         case (`addLabel`, _)             => Some(Add)
         case (`saveAndContinueLabel`, _) => Some(SaveAndContinue)
         case (`saveAndReturnLabel`, _)   => Some(SaveAndReturn)
@@ -42,9 +44,10 @@ object FormAction {
     }.getOrElse(Unknown)
 }
 
-case object Unknown extends FormAction
 case object Add extends FormAction
+case object Unknown extends FormAction
 case object SaveAndContinue extends FormAction
 case object SaveAndReturn extends FormAction
 case object Continue extends FormAction
 case class Remove(keys: Seq[String]) extends FormAction
+case class AddField(field: String) extends FormAction

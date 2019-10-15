@@ -22,9 +22,8 @@ import connectors.exchange.ExportsDeclarationExchange
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.DeclarationStatus.DeclarationStatus
-import models.declaration.{Container, Locations, Parties, TransportInformationContainerData}
+import models.declaration._
 import play.api.libs.json._
-import services.cache.ExportItem
 
 case class ExportsDeclaration(
   id: String,

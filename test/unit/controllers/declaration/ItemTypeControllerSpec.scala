@@ -18,8 +18,9 @@ package unit.controllers.declaration
 
 import controllers.declaration.ItemTypeController
 import controllers.util.Remove
-import forms.declaration.ItemType
+import forms.declaration.ItemTypeForm
 import models.Mode
+import models.declaration.ItemType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -61,10 +62,15 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
     super.afterEach()
   }
 
-  def theResponseForm: Form[ItemType] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[ItemType]])
+  def theResponseForm: Form[ItemTypeForm] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[ItemTypeForm]])
     verify(mockItemTypePage).apply(any(), any(), captor.capture(), any(), any(), any())(any(), any())
     captor.getValue
+  }
+
+  def validateCache(itemType: ItemType) = {
+    val cacheItemType = theCacheModelUpdated.items.head.itemType.getOrElse(ItemType.empty)
+    cacheItemType mustBe (itemType)
   }
 
   "Item Type Controller" should {
@@ -91,25 +97,70 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
         theResponseForm.value mustBe empty
       }
 
-      "correct item type is added and declaration model exist in the cache" in {
+      "correct item type is added for add TARIC code and declaration model exist in the cache" in {
 
         withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
 
         val correctForm = Seq(
-          ("combinedNomenclatureCode", "code"),
-          ("taricAdditionalCode[]", ""),
-          ("nationalAdditionalCode[]", ""),
+          ("combinedNomenclatureCode", "nomCode"),
+          ("taricAdditionalCode", "1234"),
+          ("nationalAdditionalCode", "VATE"),
           ("descriptionOfGoods", "description"),
-          ("cusCode", ""),
-          ("unDangerousGoodsCode", ""),
-          ("statisticalValue", "1234"),
-          addActionUrlEncoded
+          ("cusCode", "12345678"),
+          ("unDangerousGoodsCode", "4321"),
+          ("statisticalValue", "999"),
+          addActionUrlEncoded(ItemTypeForm.taricAdditionalCodeKey)
         )
 
         val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) mustBe OK
         verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any(), any(), any())(any(), any())
+
+        validateCache(
+          ItemType(
+            combinedNomenclatureCode = "nomCode",
+            taricAdditionalCodes = Seq("1234"),
+            nationalAdditionalCodes = Seq.empty, // NOT added to the cache model after an Add for TARIC codes - see bug CEDS-1094
+            descriptionOfGoods = "description",
+            cusCode = Some("12345678"),
+            unDangerousGoodsCode = Some("4321"),
+            statisticalValue = "999"
+          )
+        )
+      }
+
+      "correct item type is added for add National code and declaration model exist in the cache" in {
+
+        withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
+
+        val correctForm = Seq(
+          ("combinedNomenclatureCode", "nomCode2"),
+          ("taricAdditionalCode", "5356"),
+          ("nationalAdditionalCode", "X611"),
+          ("descriptionOfGoods", "description2"),
+          ("cusCode", "56353789"),
+          ("unDangerousGoodsCode", "6468"),
+          ("statisticalValue", "435"),
+          addActionUrlEncoded(ItemTypeForm.nationalAdditionalCodeKey)
+        )
+
+        val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        status(result) mustBe OK
+        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any(), any(), any())(any(), any())
+
+        validateCache(
+          ItemType(
+            combinedNomenclatureCode = "nomCode2",
+            taricAdditionalCodes = Seq.empty, // NOT added to the cache model after an Add for TARIC codes - see bug CEDS-1094
+            nationalAdditionalCodes = Seq("X611"),
+            descriptionOfGoods = "description2",
+            cusCode = Some("56353789"),
+            unDangerousGoodsCode = Some("6468"),
+            statisticalValue = "435"
+          )
+        )
       }
     }
 
@@ -134,8 +185,8 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
 
         val wrongAction = Seq(
           ("combinedNomenclatureCode", "code"),
-          ("taricAdditionalCode[]", ""),
-          ("nationalAdditionalCode[]", ""),
+          ("taricAdditionalCode", ""),
+          ("nationalAdditionalCode", ""),
           ("descriptionOfGoods", "description"),
           ("cusCode", ""),
           ("unDangerousGoodsCode", ""),
@@ -155,13 +206,13 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
 
         val incorrectForm = Seq(
           ("combinedNomenclatureCode", "!@#$$%"),
-          ("taricAdditionalCode[]", "!@#$$%"),
-          ("nationalAdditionalCode[]", "!@#$$%"),
+          ("taricAdditionalCode", "!@#$$%"),
+          ("nationalAdditionalCode", "!@#$$%"),
           ("descriptionOfGoods", "!@#$$%"),
           ("cusCode", "!@#$$%"),
           ("unDangerousGoodsCode", "!@#$$%"),
           ("statisticalValue", "!@#$$%"),
-          addActionUrlEncoded
+          addActionUrlEncoded(ItemTypeForm.taricAdditionalCodeKey)
         )
 
         val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
@@ -176,8 +227,8 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
 
         val incorrectForm = Seq(
           ("combinedNomenclatureCode", ""),
-          ("taricAdditionalCode[]", "!@#$$%"),
-          ("nationalAdditionalCode[]", ""),
+          ("taricAdditionalCode", "!@#$$%"),
+          ("nationalAdditionalCode", ""),
           ("descriptionOfGoods", ""),
           ("cusCode", ""),
           ("unDangerousGoodsCode", ""),
@@ -210,8 +261,8 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
 
         val correctForm = Seq(
           ("combinedNomenclatureCode", "code"),
-          ("taricAdditionalCode[]", "1234"),
-          ("nationalAdditionalCode[]", "VATR"),
+          ("taricAdditionalCode", "1234"),
+          ("nationalAdditionalCode", "VATR"),
           ("descriptionOfGoods", "description"),
           ("cusCode", ""),
           ("unDangerousGoodsCode", ""),

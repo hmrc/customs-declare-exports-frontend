@@ -47,7 +47,6 @@ import models.declaration.governmentagencygoodsitem.{Amount, GovernmentAgencyGoo
 import models.{DeclarationStatus, ExportsDeclaration}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json._
-import services.cache.ExportItem
 
 class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
   import SupplementaryDeclarationTestData._

@@ -125,7 +125,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
           ("documentType", "355"),
           ("documentReference", "reference"),
           ("goodsItemIdentifier", ""),
-          addActionUrlEncoded
+          addActionUrlEncoded()
         )
 
         val result = controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(incorrectForm: _*))
@@ -144,7 +144,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
           ("documentType", "355"),
           ("documentReference", "reference"),
           ("goodsItemIdentifier", "123"),
-          addActionUrlEncoded
+          addActionUrlEncoded()
         )
 
         val result = controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
@@ -163,7 +163,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
           ("documentType", "355"),
           ("documentReference", "reference"),
           ("goodsItemIdentifier", ""),
-          addActionUrlEncoded
+          addActionUrlEncoded()
         )
 
         val result = controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
@@ -239,7 +239,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
           ("documentType", "355"),
           ("documentReference", "reference"),
           ("goodsItemIdentifier", ""),
-          addActionUrlEncoded
+          addActionUrlEncoded()
         )
 
         val result = controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
