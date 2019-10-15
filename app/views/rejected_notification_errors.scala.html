@@ -47,7 +47,7 @@
             @for((error, index) <- errors.zipWithIndex) {
               <tr class="table-row" id="rejected_notifications-row-@index">
                 <th class="table-cell table-head rejected-field-name" id="rejected_notifications-row-@index-name">
-                    @error.pointer.map(p => messages(p.messageKey, p.sequenceArgs: _*))
+                    @Html(error.pointer.map(p => messages(p.messageKey, p.sequenceArgs: _*)).getOrElse(""))
                 </th>
                 <td class="table-cell rejected-error-description" id="rejected_notifications-row-@index-description">@error.description</td>
                 <td class="table-cell rejected-error-code" id="rejected_notifications-row-@index-code">@error.code</td>
