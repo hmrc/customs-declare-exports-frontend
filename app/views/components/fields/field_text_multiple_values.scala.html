@@ -26,6 +26,7 @@
     labelClass: Option[String] = None,
     includeAddButton: Boolean = true,
     valuePrefix: Option[String] = None,
+    addField: Option[String] = None,
     addHint: String = "site.add",
     removeHint: String = "site.remove.hint"
 )(implicit messages: Messages)
@@ -39,6 +40,7 @@
     input = input_text(field, inputClass),
     includeAddButton = includeAddButton,
     valuePrefix = valuePrefix,
+    addField = addField,
     addHint = addHint,
     removeHint = removeHint
 )
