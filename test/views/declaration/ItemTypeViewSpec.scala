@@ -18,7 +18,7 @@ package views.declaration
 
 import base.Injector
 import forms.Choice.AllowedChoiceValues
-import forms.declaration.ItemType
+import forms.declaration.ItemTypeForm
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -34,12 +34,12 @@ import views.tags.ViewTest
 class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = new item_type(mainTemplate)
-  private val form: Form[ItemType] = ItemType.form()
+  private val form: Form[ItemTypeForm] = ItemTypeForm.form()
   private def createView(
     journeyType: String = AllowedChoiceValues.StandardDec,
     mode: Mode = Mode.Normal,
     itemId: String = "itemId",
-    form: Form[ItemType] = form,
+    form: Form[ItemTypeForm] = form,
     hasAdditionalFiscalReferences: Boolean = false,
     taricAdditionalCodes: Seq[String] = Seq.empty,
     nationalAdditionalCodes: Seq[String] = Seq.empty,
@@ -94,20 +94,20 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display empty input with label for TARIC" in {
         view
-          .getElementById("taricAdditionalCode_-label")
+          .getElementById("taricAdditionalCode-label")
           .text() mustBe "declaration.itemType.taricAdditionalCodes.header"
         view
-          .getElementById("taricAdditionalCode_-hint")
+          .getElementById("taricAdditionalCode-hint")
           .text() mustBe "declaration.itemType.taricAdditionalCodes.header.hint"
-        view.getElementById("taricAdditionalCode_").attr("value") mustBe empty
+        view.getElementById("taricAdditionalCode").attr("value") mustBe empty
       }
 
       "display empty input with label for NAC" in {
         view
-          .getElementById("nationalAdditionalCode_-label")
+          .getElementById("nationalAdditionalCode-label")
           .text() mustBe "declaration.itemType.nationalAdditionalCode.header"
         view
-          .getElementById("nationalAdditionalCode_-hint")
+          .getElementById("nationalAdditionalCode-hint")
           .text() mustBe "declaration.itemType.nationalAdditionalCode.header.hint"
         view.getElementById("nationalAdditionalCode").attr("value") mustBe empty
       }
@@ -195,12 +195,12 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
 
         view
-          .getElementById("taricAdditionalCode_-label")
+          .getElementById("taricAdditionalCode-label")
           .text() mustBe "declaration.itemType.taricAdditionalCodes.header"
         view
-          .getElementById("taricAdditionalCode_-hint")
+          .getElementById("taricAdditionalCode-hint")
           .text() mustBe "declaration.itemType.taricAdditionalCodes.header.hint"
-        view.getElementById("taricAdditionalCode_").attr("value") mustBe empty
+        view.getElementById("taricAdditionalCode").attr("value") mustBe empty
       }
 
       "display empty input with label for NAC" in {
@@ -208,10 +208,10 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
 
         view
-          .getElementById("nationalAdditionalCode_-label")
+          .getElementById("nationalAdditionalCode-label")
           .text() mustBe "declaration.itemType.nationalAdditionalCode.header"
         view
-          .getElementById("nationalAdditionalCode_-hint")
+          .getElementById("nationalAdditionalCode-hint")
           .text() mustBe "declaration.itemType.nationalAdditionalCode.header.hint"
         view.getElementById("nationalAdditionalCode").attr("value") mustBe empty
       }
@@ -279,45 +279,45 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in CNC input" in {
 
-        val itemType = ItemType("12345", Seq(), Seq(), "", None, None, "")
-        val view = createView(form = ItemType.form().fill(itemType))
+        val itemType = ItemTypeForm("12345", None, None, "", None, None, "")
+        val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
 
       "display data in Description input" in {
 
-        val itemType = ItemType("", Seq(), Seq(""), "Description", None, None, "")
-        val view = createView(form = ItemType.form().fill(itemType))
+        val itemType = ItemTypeForm("", None, Some(""), "Description", None, None, "")
+        val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
 
       "display data in CUS input" in {
 
-        val itemType = ItemType("", Seq(), Seq(""), "", Some("1234"), None, "")
-        val view = createView(form = ItemType.form().fill(itemType))
+        val itemType = ItemTypeForm("", None, Some(""), "", Some("1234"), None, "")
+        val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
 
       "display data in UN Dangerous Goods Code input" in {
 
-        val itemType = ItemType("", Seq(), Seq(""), "", None, Some("1234"), "12345")
-        val view = createView(form = ItemType.form().fill(itemType))
+        val itemType = ItemTypeForm("", None, Some(""), "", None, Some("1234"), "12345")
+        val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
 
       "display data in Statistical Value input" in {
 
-        val itemType = ItemType("", Seq(), Seq(""), "", None, None, "12345")
-        val view = createView(form = ItemType.form().fill(itemType))
+        val itemType = ItemTypeForm("", None, Some(""), "", None, None, "12345")
+        val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
 
-      def assertViewDataEntered(view: Document, itemType: ItemType): Unit = {
+      def assertViewDataEntered(view: Document, itemType: ItemTypeForm): Unit = {
         view.getElementById("combinedNomenclatureCode").attr("value") must equal(itemType.combinedNomenclatureCode)
         view.getElementById("descriptionOfGoods").text() must equal(itemType.descriptionOfGoods)
         view.getElementById("cusCode").attr("value") must equal(itemType.cusCode.getOrElse(""))
@@ -330,37 +330,37 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in CNC input" in {
 
-        val itemType = ItemType("12345", Seq(), Seq(), "", None, None, "")
-        val view = createView(form = ItemType.form().fill(itemType), journeyType = AllowedChoiceValues.SupplementaryDec)
+        val itemType = ItemTypeForm("12345", None, None, "", None, None, "")
+        val view = createView(form = ItemTypeForm.form().fill(itemType), journeyType = AllowedChoiceValues.SupplementaryDec)
 
         assertViewDataEntered(view, itemType)
       }
 
       "display data in Description input" in {
 
-        val itemType = ItemType("", Seq(), Seq(""), "Description", None, None, "")
-        val view = createView(form = ItemType.form().fill(itemType), journeyType = AllowedChoiceValues.SupplementaryDec)
+        val itemType = ItemTypeForm("", None, Some(""), "Description", None, None, "")
+        val view = createView(form = ItemTypeForm.form().fill(itemType), journeyType = AllowedChoiceValues.SupplementaryDec)
 
         assertViewDataEntered(view, itemType)
       }
 
       "display data in CUS input" in {
 
-        val itemType = ItemType("", Seq(), Seq(""), "", Some("1234"), None, "")
-        val view = createView(form = ItemType.form().fill(itemType), journeyType = AllowedChoiceValues.SupplementaryDec)
+        val itemType = ItemTypeForm("", None, Some(""), "", Some("1234"), None, "")
+        val view = createView(form = ItemTypeForm.form().fill(itemType), journeyType = AllowedChoiceValues.SupplementaryDec)
 
         assertViewDataEntered(view, itemType)
       }
 
       "display data in Statistical Value input" in {
 
-        val itemType = ItemType("", Seq(), Seq(""), "", None, None, "12345")
-        val view = createView(form = ItemType.form().fill(itemType), journeyType = AllowedChoiceValues.SupplementaryDec)
+        val itemType = ItemTypeForm("", None, Some(""), "", None, None, "12345")
+        val view = createView(form = ItemTypeForm.form().fill(itemType), journeyType = AllowedChoiceValues.SupplementaryDec)
 
         assertViewDataEntered(view, itemType)
       }
 
-      def assertViewDataEntered(view: Document, itemType: ItemType): Unit = {
+      def assertViewDataEntered(view: Document, itemType: ItemTypeForm): Unit = {
         view.getElementById("combinedNomenclatureCode").attr("value") must equal(itemType.combinedNomenclatureCode)
         view.getElementById("descriptionOfGoods").text() must equal(itemType.descriptionOfGoods)
         view.getElementById("cusCode").attr("value") must equal(itemType.cusCode.getOrElse(""))

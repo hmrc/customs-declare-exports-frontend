@@ -20,9 +20,9 @@ import controllers.declaration.{routes, CommodityMeasureController}
 import forms.Choice
 import forms.declaration.{CommodityMeasure, PackageInformation}
 import models.Mode
+import models.declaration.ExportItem
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import services.cache.ExportItem
 import unit.base.ControllerSpec
 import views.html.declaration.goods_measure
 

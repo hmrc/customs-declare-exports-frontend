@@ -24,12 +24,13 @@ import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation._
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.{ExportsDeclaration, Mode}
+import models.declaration.ExportItem
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.cache.{ExportItem, ExportsCacheService}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.package_information
 

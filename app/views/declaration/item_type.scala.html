@@ -17,8 +17,8 @@
 @import controllers.declaration.routes
 @import controllers.util.SaveAndContinue
 @import forms.Choice.AllowedChoiceValues
-@import forms.declaration.ItemType
-@import forms.declaration.ItemType._
+@import forms.declaration.ItemTypeForm
+@import forms.declaration.ItemTypeForm._
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.play.views.html._
 @import services.NationalAdditionalCode
@@ -31,7 +31,7 @@
 @(
         mode: Mode,
         itemId: String,
-        form: Form[ItemType],
+        form: Form[ItemTypeForm],
         hasAdditionalFiscalReferences: Boolean,
         taricAdditionalCodes: Seq[String] = Seq.empty,
         nationalAdditionalCodes: Seq[String] = Seq.empty
@@ -65,27 +65,27 @@
         )
 
         @components.fields.field_text_multiple_values(
-            field = form(taricAdditionalCodesKey + "[]"),
+            field = form(taricAdditionalCodeKey),
             label = messages("declaration.itemType.taricAdditionalCodes.header"),
             hint = Some(messages("declaration.itemType.taricAdditionalCodes.header.hint")),
             elements = taricAdditionalCodes,
             labelClass = Some("bold-small"),
-            valuePrefix = Some(taricAdditionalCodesKey+"_"),
+            valuePrefix = Some(taricAdditionalCodeKey+"_"),
             addHint = "declaration.itemType.taricAdditionalCodes.add.hint"
         )
 
         @components.fields.field_multiple_values(
-            field = form(nationalAdditionalCodesKey + "[]"),
+            field = form(nationalAdditionalCodeKey),
             label = messages("declaration.itemType.nationalAdditionalCode.header"),
             hint = Some(messages("declaration.itemType.nationalAdditionalCode.header.hint")),
             elements = nationalAdditionalCodes,
             labelClass = Some("bold-small"),
             input = components.inputs.input_autocomplete(
-                field = form(nationalAdditionalCodesKey + "[]"),
+                field = form(nationalAdditionalCodeKey),
                 emptySelectValue = messages("declaration.itemType.nationalAdditionalCode.error.empty"),
                 items = AutoCompleteItem.fromNationalAdditionalCode(NationalAdditionalCode.all)
             ),
-            valuePrefix = Some(nationalAdditionalCodesKey+"_"),
+            valuePrefix = Some(nationalAdditionalCodeKey+"_"),
             addHint = "declaration.itemType.nationalAdditionalCode.add.hint"
         )
 

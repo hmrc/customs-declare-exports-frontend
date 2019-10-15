@@ -23,10 +23,10 @@ import controllers.util._
 import forms.declaration.DeclarationHolder
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.{ExportsDeclaration, Mode}
 import models.declaration.DeclarationHoldersData
 import models.declaration.DeclarationHoldersData.limitOfHolders
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._

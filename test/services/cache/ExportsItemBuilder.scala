@@ -20,7 +20,7 @@ import java.util.UUID
 
 import forms.declaration._
 import forms.declaration.additionaldocuments.DocumentsProduced
-import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
+import models.declaration._
 
 trait ExportsItemBuilder {
 

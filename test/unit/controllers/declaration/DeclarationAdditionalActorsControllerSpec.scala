@@ -96,7 +96,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
       "user put incorrect data" in new SetUp {
 
         val longerEori = TestHelper.createRandomAlphanumericString(18)
-        val wrongAction = Seq(("eori", longerEori), ("partyType", "CS"), addActionUrlEncoded)
+        val wrongAction = Seq(("eori", longerEori), ("partyType", "CS"), addActionUrlEncoded())
 
         val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(wrongAction: _*))
 
@@ -107,7 +107,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
         withNewCaching(declarationWithActor)
 
-        val duplication = Seq(("eori", eori), ("partyType", "CS"), addActionUrlEncoded)
+        val duplication = Seq(("eori", eori), ("partyType", "CS"), addActionUrlEncoded())
 
         val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(duplication: _*))
 
@@ -118,7 +118,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
         withNewCaching(maxAmountOfItems)
 
-        val correctForm = Seq(("eori", "GB123456"), ("partyType", "CS"), addActionUrlEncoded)
+        val correctForm = Seq(("eori", "GB123456"), ("partyType", "CS"), addActionUrlEncoded())
 
         val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
@@ -165,7 +165,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
       "user correctly add new item" in new SetUp {
 
-        val correctForm = Seq(("eori", eori), ("partyType", "CS"), addActionUrlEncoded)
+        val correctForm = Seq(("eori", eori), ("partyType", "CS"), addActionUrlEncoded())
 
         val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 

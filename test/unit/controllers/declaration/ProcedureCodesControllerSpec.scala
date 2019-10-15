@@ -21,7 +21,7 @@ import controllers.util.Remove
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.ProcedureCodes
 import models.Mode
-import models.declaration.ProcedureCodesData
+import models.declaration.{ExportItem, ProcedureCodesData}
 import models.declaration.ProcedureCodesData.limitOfCodes
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -30,7 +30,6 @@ import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import services.cache.ExportItem
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
 import views.html.declaration.procedure_codes
@@ -126,7 +125,7 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
 
         val incorrectForm =
-          Seq(("procedureCode", "1234"), ("additionalProcedureCode", "incorrect"), addActionUrlEncoded)
+          Seq(("procedureCode", "1234"), ("additionalProcedureCode", "incorrect"), addActionUrlEncoded())
 
         val result =
           controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
@@ -141,7 +140,7 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         withNewCaching(aDeclaration(withItem(item)))
 
         val duplicatedForm =
-          Seq(("procedureCode", "1234"), ("additionalProcedureCode", "123"), addActionUrlEncoded)
+          Seq(("procedureCode", "1234"), ("additionalProcedureCode", "123"), addActionUrlEncoded())
 
         val result =
           controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
@@ -157,7 +156,7 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         withNewCaching(aDeclaration(withItem(item)))
 
         val correctForm =
-          Seq(("procedureCode", "1234"), ("additionalProcedureCode", "321"), addActionUrlEncoded)
+          Seq(("procedureCode", "1234"), ("additionalProcedureCode", "321"), addActionUrlEncoded())
 
         val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
@@ -220,7 +219,7 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
 
         val correctForm =
-          Seq(("procedureCode", "1234"), ("additionalProcedureCode", "321"), addActionUrlEncoded)
+          Seq(("procedureCode", "1234"), ("additionalProcedureCode", "321"), addActionUrlEncoded())
 
         val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 

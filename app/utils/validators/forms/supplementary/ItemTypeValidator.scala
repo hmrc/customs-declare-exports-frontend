@@ -16,8 +16,8 @@
 
 package utils.validators.forms.supplementary
 
-import forms.declaration.ItemType
-import forms.declaration.ItemType._
+import forms.declaration.ItemTypeForm._
+import models.declaration.ItemType
 import play.api.data.Forms.{optional, seq, text}
 import play.api.data.{Form, Forms}
 import services.NationalAdditionalCode
@@ -94,8 +94,8 @@ object ItemTypeValidator extends Validator[ItemType] {
 
   val mappingWithValidationForAddition = Forms.mapping(
     combinedNomenclatureCodeKey -> text(),
-    taricAdditionalCodesKey -> mappingTARICAdditionalCode,
-    nationalAdditionalCodesKey -> mappingNationalAdditionalCode,
+    taricAdditionalCodeKey -> mappingTARICAdditionalCode,
+    nationalAdditionalCodeKey -> mappingNationalAdditionalCode,
     descriptionOfGoodsKey -> text(),
     cusCodeKey -> optional(text()),
     unDangerousGoodsCodeKey -> optional(text()),
@@ -104,8 +104,8 @@ object ItemTypeValidator extends Validator[ItemType] {
 
   val mappingWithValidation = Forms.mapping(
     combinedNomenclatureCodeKey -> mappingCombinedNomenclatureCode,
-    taricAdditionalCodesKey -> mappingTARICAdditionalCode,
-    nationalAdditionalCodesKey -> mappingNationalAdditionalCode,
+    taricAdditionalCodeKey -> mappingTARICAdditionalCode,
+    nationalAdditionalCodeKey -> mappingNationalAdditionalCode,
     descriptionOfGoodsKey -> mappingDescriptionOfGoods,
     cusCodeKey -> mappingCUSCode,
     unDangerousGoodsCodeKey -> mappingUNDangerousGoodsCode,

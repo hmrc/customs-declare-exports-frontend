@@ -21,12 +21,12 @@ import java.time.Instant
 import forms.{Ducr, Lrn}
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
-import models.declaration.{Locations, Parties, TransportInformationContainerData}
+import models.declaration.{ExportItem, Locations, Parties, TransportInformationContainerData}
 import models.{DeclarationStatus, ExportsDeclaration}
 import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Mockito.when
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.{ExportItem, ExportsDeclarationBuilder}
+import services.cache.ExportsDeclarationBuilder
 
 class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with ExportsDeclarationBuilder with MockitoSugar {
 
