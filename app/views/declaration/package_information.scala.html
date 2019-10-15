@@ -22,6 +22,7 @@
 
 @import services.view.AutoCompleteItem
 @import views.Title
+@import views.components.fields.LabelledValue
 
 @this(main_template: views.html.main_template)
 
@@ -69,7 +70,7 @@
                     <td>@item.numberOfPackages</td>
                     <td>@item.shippingMarks</td>
                     <td>
-                        @components.buttons.remove_button(value = Some(item.toJson.toString),
+                        @components.buttons.remove_button(element = LabelledValue(item.toJson),
                             hint=messages("supplementary.packageInformation.remove.hint",
                                 item.typesOfPackages,
                                 item.shippingMarks))

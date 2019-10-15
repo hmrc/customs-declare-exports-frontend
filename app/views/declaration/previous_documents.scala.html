@@ -22,6 +22,7 @@
 @import services.DocumentType
 @import services.view.AutoCompleteItem
 @import views.Title
+@import views.components.fields.LabelledValue
 
 @this(main_template: views.html.main_template)
 
@@ -64,7 +65,7 @@
                     <td>@document.documentReference</td>
                     <td>@document.goodsItemIdentifier.getOrElse("")</td>
                     <td>
-                        @components.buttons.remove_button(value = Some(document.toJson.toString),
+                        @components.buttons.remove_button(element = LabelledValue(document.toJson),
                             hint=messages("supplementary.previousDocuments.remove.hint",
                                 messages("supplementary.previousDocuments." + document.documentCategory),
                                 document.documentType,

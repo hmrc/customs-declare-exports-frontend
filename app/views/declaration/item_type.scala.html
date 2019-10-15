@@ -71,7 +71,8 @@
             elements = taricAdditionalCodes,
             labelClass = Some("bold-small"),
             valuePrefix = Some(taricAdditionalCodeKey+"_"),
-            addHint = "declaration.itemType.taricAdditionalCodes.add.hint"
+            addHint = "declaration.itemType.taricAdditionalCodes.add.hint",
+            removeHint = "declaration.itemType.taricAdditionalCodes.remove.hint"
         )
 
         @components.fields.field_multiple_values(
@@ -86,7 +87,8 @@
                 items = AutoCompleteItem.fromNationalAdditionalCode(NationalAdditionalCode.all)
             ),
             valuePrefix = Some(nationalAdditionalCodeKey+"_"),
-            addHint = "declaration.itemType.nationalAdditionalCode.add.hint"
+            addHint = "declaration.itemType.nationalAdditionalCode.add.hint",
+            removeHint = "declaration.itemType.nationalAdditionalCode.remove.hint"
         )
 
         @components.fields.field_text(

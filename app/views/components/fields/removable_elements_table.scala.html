@@ -42,7 +42,7 @@
                 <tr id="@{id}__row@index">
                     <th id="@{id}-row@index-label">@{elem.label}</th>
                     <th id="@{id}-row@index-remove_button">
-                        @remove_button(value = Some(elem.value), buttonClass = removeButtonClass, hint = removeButtonHint)
+                        @remove_button(element = elem, buttonClass = removeButtonClass, hint = removeButtonHint)
                     </th>
                 </tr>
             }

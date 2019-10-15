@@ -23,6 +23,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import views.components.inputs.RadioOption
 @import views.Title
+@import views.components.fields.LabelledValue
 
 @this(main_template: views.html.main_template)
 
@@ -66,7 +67,7 @@
                         <td scope="row">@actor.eori</td>
                         <td>@actor.partyType</td>
                         <td>
-                            @components.buttons.remove_button(value = Some(actor.toJson.toString), hint=messages("site.remove.hint", actor.eori.getOrElse("")))
+                            @components.buttons.remove_button(element = LabelledValue(actor.toJson), hint=messages("site.remove.hint", actor.eori.getOrElse("")))
                         </td>
                     </tr>
                 }
