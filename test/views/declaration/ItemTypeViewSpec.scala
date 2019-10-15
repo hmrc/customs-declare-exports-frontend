@@ -142,7 +142,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display two 'Add' buttons" in {
 
-        view.select("#add").size() must be(2)
+        view.getElementsByAttributeValue("name", "AddField").size() must be(2)
       }
 
       "display 'Back' button that links to 'fiscal-information' page" in {
@@ -245,7 +245,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display two 'Add' buttons" in {
 
-        createView(journeyType = AllowedChoiceValues.SupplementaryDec).select("#add").size() must be(2)
+        createView(journeyType = AllowedChoiceValues.SupplementaryDec).getElementsByAttributeValue("name", "AddField").size() must be(2)
       }
 
       "display 'Back' button that links to 'fiscal-information' page" in {
