@@ -16,8 +16,11 @@
 
 package views.components.fields
 
+import play.api.libs.json.JsValue
+
 case class LabelledValue(label: String, value: String)
 
 object LabelledValue {
-  def apply(labelAndValue: Any): LabelledValue = LabelledValue(labelAndValue.toString, labelAndValue.toString)
+  def apply(labelAndValue: String): LabelledValue = LabelledValue(labelAndValue, labelAndValue)
+  def apply(labelAndValue: JsValue): LabelledValue = LabelledValue(labelAndValue.toString, labelAndValue.toString)
 }
