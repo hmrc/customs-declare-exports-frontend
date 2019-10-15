@@ -57,6 +57,7 @@ class AppConfigSpec extends UnitSpec {
         |microservice.services.nrs.apikey=cds-exports
         |microservice.services.features.default=disabled
         |microservice.services.features.welsh-translation=false
+        |microservice.services.features.use-improved-error-messages=true
         |microservice.services.auth.port=9988
         |microservice.services.customs-declare-exports.host=localhoste
         |microservice.services.customs-declare-exports.port=9875
@@ -140,6 +141,14 @@ class AppConfigSpec extends UnitSpec {
 
     "have language translation enabled field" in {
       validConfigService.languageTranslationEnabled must be(false)
+    }
+
+    "have improved error messages feature toggle set to false if not defined" in {
+      emptyConfigService.useImprovedErrorMessages must be(false)
+    }
+
+    "have improved error messages feature toggle set to true if defined" in {
+      validConfigService.useImprovedErrorMessages must be(true)
     }
 
     "have language map with English" in {
