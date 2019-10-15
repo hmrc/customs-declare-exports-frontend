@@ -82,6 +82,9 @@ class AppConfig @Inject()(
   lazy val languageTranslationEnabled =
     runModeConfiguration.getOptional[Boolean]("microservice.services.features.welsh-translation").getOrElse(true)
 
+  lazy val useImprovedErrorMessages =
+    runModeConfiguration.getOptional[Boolean]("microservice.services.features.use-improved-error-messages").getOrElse(false)
+
   lazy val countriesCsvFilename: String = loadConfig("countryCodesCsvFilename")
 
   lazy val countryCodesJsonFilename: String = loadConfig("countryCodesJsonFilename")
