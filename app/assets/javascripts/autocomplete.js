@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
                     .appendTo(this.comboBoxLabel)   
                     .val(value)
                     .attr("autocomplete", "off")
-                    .addClass("custom-combobox-input ui-state-default ui-corner-left")
+                    .addClass("custom-combobox-input ui-state-default ui-corner-left form-control")
                     .autocomplete({
                         delay: 0,
                         minLength: 0,

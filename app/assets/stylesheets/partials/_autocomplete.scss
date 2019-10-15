@@ -1,3 +1,5 @@
+@import "./_utilities.scss";
+
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -10,10 +12,11 @@ table {
   background-position: top;
 }
 
+$custom-combobox-input-border-width: 2px;
+
 .custom-combobox-input {
-  border: 2px solid #000000;
+  border: $custom-combobox-input-border-width solid #000000;
   border-right: none;
-  padding:5px 0px 0px 5px;
 }
 
 .custom-combobox {
@@ -28,4 +31,9 @@ table {
   bottom: 0;
   margin-left: -1px;
   padding: 0;
+  right: -#{$custom-combobox-input-border-width};
+
+  @media screen and (min-width: #{$media-query-breakpoint}) {
+    right: calc(50% - #{$custom-combobox-input-border-width});
+  }
 }
