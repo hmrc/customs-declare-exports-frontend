@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package services.cache
+package models.declaration
 
-import forms.declaration.{AdditionalFiscalReferencesData, CommodityMeasure, FiscalInformation, ItemType, PackageInformation}
+import forms.declaration.{AdditionalFiscalReferencesData, CommodityMeasure, FiscalInformation, PackageInformation}
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers.yes
-import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
 import play.api.libs.json.Json
 
 case class ExportItem(

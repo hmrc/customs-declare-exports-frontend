@@ -21,9 +21,8 @@ import controllers.util.Remove
 import forms.Choice
 import forms.declaration.AdditionalInformation
 import models.Mode
-import models.declaration.AdditionalInformationData
+import models.declaration.{AdditionalInformationData, ExportItem}
 import play.api.test.Helpers._
-import services.cache.ExportItem
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
 import views.html.declaration.additional_information
@@ -90,7 +89,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
       "user put incorrect data" in new SetUp {
 
-        val incorrectForm = Seq(("code", "12345"), ("description", ""), addActionUrlEncoded)
+        val incorrectForm = Seq(("code", "12345"), ("description", ""), addActionUrlEncoded())
 
         val result =
           controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(incorrectForm: _*))
@@ -106,7 +105,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
           aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
-        val duplicatedForm = Seq(("code", "12345"), ("description", "description"), addActionUrlEncoded)
+        val duplicatedForm = Seq(("code", "12345"), ("description", "description"), addActionUrlEncoded())
 
         val result =
           controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(duplicatedForm: _*))
@@ -122,7 +121,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
           aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
-        val form = Seq(("code", "12345"), ("description", "text"), addActionUrlEncoded)
+        val form = Seq(("code", "12345"), ("description", "text"), addActionUrlEncoded())
 
         val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(form: _*))
 
@@ -178,7 +177,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
       "user correctly add new item" in new SetUp {
 
-        val correctForm = Seq(("code", "12345"), ("description", "text"), addActionUrlEncoded)
+        val correctForm = Seq(("code", "12345"), ("description", "text"), addActionUrlEncoded())
 
         val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(correctForm: _*))
 

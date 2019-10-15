@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-package forms.declaration
-
-import play.api.data.Forms.{default, optional, seq, text}
-import play.api.data.{Form, Forms}
-import play.api.libs.functional.syntax._
-import play.api.libs.json.Reads._
-import play.api.libs.json._
+package models.declaration
+import play.api.libs.functional.syntax.{unlift, _}
+import play.api.libs.json.{JsPath, Reads, Writes}
 
 case class ItemType(
   combinedNomenclatureCode: String,
@@ -33,6 +29,7 @@ case class ItemType(
 )
 
 object ItemType {
+
   implicit val reads: Reads[ItemType] = (
     (JsPath \ "combinedNomenclatureCode").read[String] and
       (JsPath \ "taricAdditionalCode").read[Seq[String]] and
@@ -52,28 +49,6 @@ object ItemType {
       (JsPath \ "unDangerousGoodsCode").writeNullable[String] and
       (JsPath \ "statisticalValue").write[String]
   )(unlift(ItemType.unapply))
-
-  val combinedNomenclatureCodeKey = "combinedNomenclatureCode"
-  val taricAdditionalCodesKey = "taricAdditionalCode"
-  val nationalAdditionalCodesKey = "nationalAdditionalCode"
-  val descriptionOfGoodsKey = "descriptionOfGoods"
-  val cusCodeKey = "cusCode"
-  val unDangerousGoodsCodeKey = "unDangerousGoodsCode"
-  val statisticalValueKey = "statisticalValue"
-
-  val mapping = Forms.mapping(
-    combinedNomenclatureCodeKey -> text(),
-    taricAdditionalCodesKey -> default(seq(text()), Seq.empty),
-    nationalAdditionalCodesKey -> default(seq(text()), Seq.empty),
-    descriptionOfGoodsKey -> text(),
-    cusCodeKey -> optional(text()),
-    unDangerousGoodsCodeKey -> optional(text()),
-    statisticalValueKey -> text()
-  )(ItemType.apply)(ItemType.unapply)
-
-  val id = "ItemType"
-
-  def form(): Form[ItemType] = Form(mapping)
 
   val empty: ItemType = ItemType("", Nil, Nil, "", None, None, "")
 }

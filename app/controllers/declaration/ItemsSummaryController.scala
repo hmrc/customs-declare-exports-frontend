@@ -21,10 +21,11 @@ import controllers.navigation.Navigator
 import controllers.util.{Add, FormAction, SaveAndContinue, SaveAndReturn}
 import javax.inject.Inject
 import models.Mode
+import models.declaration.ExportItem
 import play.api.data.FormError
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.cache.{ExportItem, ExportItemIdGeneratorService, ExportsCacheService}
+import services.cache.{ExportItemIdGeneratorService, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.items_summary
 
@@ -51,7 +52,7 @@ class ItemsSummaryController @Inject()(
     val incorrectItems = buildIncorrectItemsErrors(request.cacheModel.items.toSeq)
 
     action match {
-      case Add =>
+      case Add(_) =>
         val newItem = ExportItem(id = exportItemIdGeneratorService.generateItemId())
         exportsCacheService
           .update(

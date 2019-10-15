@@ -20,10 +20,10 @@ import controllers.declaration.{routes, AdditionalFiscalReferencesController}
 import controllers.util.Remove
 import forms.Choice
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
+import models.declaration.ExportItem
 import models.{ExportsDeclaration, Mode}
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import services.cache.ExportItem
 import unit.base.ControllerSpec
 import unit.mock.{ErrorHandlerMocks, ItemActionMocks}
 import views.html.declaration.additional_fiscal_references
@@ -108,7 +108,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
         val item = anItem()
         withNewCaching(aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(item)))
 
-        val incorrectForm: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "!@#$"), addActionUrlEncoded)
+        val incorrectForm: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "!@#$"), addActionUrlEncoded())
 
         val result: Future[Result] =
           controller.saveReferences(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(incorrectForm: _*))
@@ -124,7 +124,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
           aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
-        val duplicatedForm: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "12345"), addActionUrlEncoded)
+        val duplicatedForm: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "12345"), addActionUrlEncoded())
 
         val result: Future[Result] =
           controller.saveReferences(Mode.Normal, itemCacheData.id)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
@@ -142,7 +142,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
           aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
-        val form: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "54321"), addActionUrlEncoded)
+        val form: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "54321"), addActionUrlEncoded())
 
         val result: Future[Result] =
           controller.saveReferences(Mode.Normal, itemCacheData.id)(postRequestAsFormUrlEncoded(form: _*))
@@ -209,7 +209,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
         val item = anItem()
         withNewCaching(aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(item)))
 
-        val correctForm: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "12345"), addActionUrlEncoded)
+        val correctForm: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "12345"), addActionUrlEncoded())
 
         val result: Future[Result] =
           controller.saveReferences(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(correctForm: _*))

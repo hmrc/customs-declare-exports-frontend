@@ -16,9 +16,9 @@
 
 @import controllers.util.Add
 
-@(addKey: String = "site.add", addHint: String = "site.add")(implicit messages: Messages)
+@(addKey: String = "site.add", addHint: String = "site.add", fieldId: Option[String] = None)(implicit messages: Messages)
 
-<button id="add" class="button--secondary" name="@Add.toString">
+<button id="add" class="button--secondary" name="@Add.toString" @fieldId.map(id => s"value=$id").getOrElse("")>
  <span aria-hidden="true">@messages(addKey)</span>
  <span class="visuallyhidden">@{messages(addHint)}</span>
 </button>

@@ -22,11 +22,12 @@ import forms.declaration.FiscalInformation
 import forms.declaration.FiscalInformation.form
 import javax.inject.Inject
 import models.Mode
+import models.declaration.ExportItem
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.cache.{ExportItem, ExportsCacheService}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.fiscal_information
 

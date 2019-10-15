@@ -22,14 +22,13 @@ import controllers.util.{Add, SaveAndContinue}
 import models.ExportsDeclaration
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import play.api.libs.json.JsValue
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, AnyContentAsJson, Request, Result}
+import play.api.mvc._
 import play.api.test.FakeRequest
-import play.api.test.Helpers.contentAsString
+import play.api.test.Helpers.{contentAsString, _}
 import play.twirl.api.Html
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 import unit.mock.JourneyActionMocks
 import unit.tools.Stubs
-import play.api.test.Helpers._
 import utils.FakeRequestCSRFSupport._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,7 +41,7 @@ trait ControllerSpec
 
   protected val config: AppConfig = mock[AppConfig]
 
-  protected val addActionUrlEncoded: (String, String) = (Add.toString, "")
+  protected def addActionUrlEncoded(field: String = ""): (String, String) = (Add.toString, field)
 
   protected val saveAndContinueActionUrlEncoded: (String, String) = (SaveAndContinue.toString, "")
 

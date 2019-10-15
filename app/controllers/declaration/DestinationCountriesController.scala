@@ -94,7 +94,7 @@ class DestinationCountriesController @Inject()(
     val cache = request.cacheModel.locations.destinationCountries.getOrElse(DestinationCountries.empty())
 
     actionTypeOpt match {
-      case Add if !boundForm.hasErrors                             => addRoutingCountry(mode, cache)
+      case Add(_) if !boundForm.hasErrors                          => addRoutingCountry(mode, cache)
       case SaveAndContinue | SaveAndReturn if !boundForm.hasErrors => saveAndContinue(mode, cache)
       case Remove(values)                                          => removeRoutingCountry(mode, values, boundForm, cache)
       case _                                                       => Future.successful(BadRequest(destinationCountriesStandardPage(mode, boundForm)))

@@ -20,7 +20,7 @@ import base.TestHelper._
 import forms.common.DateSpec.correctDate
 import forms.declaration._
 import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
-import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
+import models.declaration.{AdditionalInformationData, DocumentsProducedData, ItemType, ProcedureCodesData}
 
 import scala.util.Random
 

@@ -72,7 +72,7 @@ class PreviousDocumentsController @Inject()(
               Future.successful(navigator.continueTo(controllers.declaration.routes.ItemsSummaryController.displayPage(mode)))
         )
 
-      case Add =>
+      case Add(_) =>
         add(boundForm, cache.documents, PreviousDocumentsData.maxAmountOfItems).fold(
           formWithErrors => Future.successful(BadRequest(previousDocumentsPage(mode, formWithErrors, cache.documents))),
           updatedCache =>

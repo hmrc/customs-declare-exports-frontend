@@ -102,7 +102,7 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
       "user put incorrect data" in {
 
-        val incorrectForm = Seq(("documentTypeCode", "12345"), addActionUrlEncoded)
+        val incorrectForm = Seq(("documentTypeCode", "12345"), addActionUrlEncoded())
 
         val result = controller.saveForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
@@ -114,7 +114,7 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
         withNewCaching(aDeclaration(withItems(anItem(withItemId("itemId"), withDocumentsProduced(documentsProduced)))))
 
-        val duplicatedForm = Seq(("documentTypeCode", "1234"), addActionUrlEncoded)
+        val duplicatedForm = Seq(("documentTypeCode", "1234"), addActionUrlEncoded())
 
         val result = controller.saveForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
@@ -135,7 +135,7 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
           )
         )
 
-        val correctForm = Seq(("documentTypeCode", "4321"), addActionUrlEncoded)
+        val correctForm = Seq(("documentTypeCode", "4321"), addActionUrlEncoded())
 
         val result = controller.saveForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
@@ -194,7 +194,7 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
       "user correctly add new item" in {
 
-        val correctForm = Seq(("documentTypeCode", "1234"), addActionUrlEncoded)
+        val correctForm = Seq(("documentTypeCode", "1234"), addActionUrlEncoded())
 
         val result = controller.saveForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 

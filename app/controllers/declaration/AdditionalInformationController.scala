@@ -24,9 +24,9 @@ import forms.declaration.AdditionalInformation
 import forms.declaration.AdditionalInformation.form
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.{ExportsDeclaration, Mode}
 import models.declaration.AdditionalInformationData
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -66,7 +66,7 @@ class AdditionalInformationController @Inject()(
       .getOrElse(AdditionalInformationData(Seq()))
 
     actionTypeOpt match {
-      case Add                             => handleAdd(mode, itemId, boundForm, cache.items)
+      case Add(_)                          => handleAdd(mode, itemId, boundForm, cache.items)
       case Remove(ids)                     => handleRemove(mode, itemId, ids, boundForm, cache.items)
       case SaveAndContinue | SaveAndReturn => handleSaveAndContinue(mode, itemId, boundForm, cache.items)
       case _                               => errorHandler.displayErrorPage()

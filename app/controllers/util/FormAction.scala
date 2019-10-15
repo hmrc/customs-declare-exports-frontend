@@ -32,7 +32,7 @@ object FormAction {
   def bindFromRequest()(implicit request: Request[AnyContent]): FormAction =
     request.body.asFormUrlEncoded.flatMap { body =>
       body.flatMap {
-        case (`addLabel`, _)             => Some(Add)
+        case (`addLabel`, values)        => Some(Add(values.headOption))
         case (`saveAndContinueLabel`, _) => Some(SaveAndContinue)
         case (`saveAndReturnLabel`, _)   => Some(SaveAndReturn)
         case (`continueLabel`, _)        => Some(Continue)
@@ -43,8 +43,8 @@ object FormAction {
 }
 
 case object Unknown extends FormAction
-case object Add extends FormAction
 case object SaveAndContinue extends FormAction
 case object SaveAndReturn extends FormAction
 case object Continue extends FormAction
+case class Add(field: Option[String]) extends FormAction
 case class Remove(keys: Seq[String]) extends FormAction

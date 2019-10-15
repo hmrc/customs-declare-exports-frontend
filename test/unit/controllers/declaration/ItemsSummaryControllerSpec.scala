@@ -20,13 +20,14 @@ import controllers.declaration.ItemsSummaryController
 import controllers.util.{Add, SaveAndContinue, SaveAndReturn}
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import models.Mode
+import models.declaration.ExportItem
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import services.cache.{ExportItem, ExportItemIdGeneratorService}
+import services.cache.ExportItemIdGeneratorService
 import unit.base.ControllerSpec
 import views.html.declaration.items_summary
 

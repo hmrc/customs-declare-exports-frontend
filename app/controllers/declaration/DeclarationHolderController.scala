@@ -23,10 +23,10 @@ import controllers.util._
 import forms.declaration.DeclarationHolder
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.{ExportsDeclaration, Mode}
 import models.declaration.DeclarationHoldersData
 import models.declaration.DeclarationHoldersData.limitOfHolders
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -64,7 +64,7 @@ class DeclarationHolderController @Inject()(
     val cache = request.cacheModel.parties.declarationHoldersData.getOrElse(DeclarationHoldersData(Seq()))
 
     actionTypeOpt match {
-      case Add if !boundForm.hasErrors => addHolder(mode, boundForm.get, cache)
+      case Add(_) if !boundForm.hasErrors => addHolder(mode, boundForm.get, cache)
       case SaveAndContinue | SaveAndReturn if !boundForm.hasErrors =>
         saveAndContinue(mode, boundForm.get, cache)
       case Remove(values) => removeHolder(mode, retrieveHolder(values), boundForm, cache)

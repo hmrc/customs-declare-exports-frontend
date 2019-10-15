@@ -18,14 +18,14 @@ package views.declaration
 
 import base.Injector
 import controllers.declaration.routes
-import forms.declaration.{ItemType, PackageInformation}
+import forms.declaration.PackageInformation
 import models.Mode
-import models.declaration.ProcedureCodesData
+import models.declaration.{ExportItem, ItemType, ProcedureCodesData}
 import org.jsoup.nodes.Document
 import play.api.data.FormError
 import play.api.i18n.MessagesApi
 import play.api.test.Helpers.stubMessages
-import services.cache.{ExportItem, ExportsTestData}
+import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.items_summary

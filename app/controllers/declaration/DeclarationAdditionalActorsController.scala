@@ -24,10 +24,10 @@ import forms.declaration.DeclarationAdditionalActors
 import forms.declaration.DeclarationAdditionalActors.form
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.{ExportsDeclaration, Mode}
 import models.declaration.DeclarationAdditionalActorsData
 import models.declaration.DeclarationAdditionalActorsData.maxNumberOfItems
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -67,7 +67,7 @@ class DeclarationAdditionalActorsController @Inject()(
       request.cacheModel.parties.declarationAdditionalActorsData.getOrElse(DeclarationAdditionalActorsData(Seq()))
 
     actionTypeOpt match {
-      case Add if !boundForm.hasErrors => addItem(mode, boundForm.get, cache)
+      case Add(_) if !boundForm.hasErrors => addItem(mode, boundForm.get, cache)
       case SaveAndContinue | SaveAndReturn if !boundForm.hasErrors =>
         saveAndContinue(mode, boundForm.get, cache)
       case Remove(values) => removeItem(mode, retrieveItem(values.headOption.get), boundForm, cache)

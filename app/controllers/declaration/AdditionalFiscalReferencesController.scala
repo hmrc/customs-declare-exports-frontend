@@ -57,7 +57,7 @@ class AdditionalFiscalReferencesController @Inject()(
     val boundForm = form().bindFromRequest()
 
     actionTypeOpt match {
-      case Add                             => addReference(mode, itemId, boundForm, cache)
+      case Add(_)                          => addReference(mode, itemId, boundForm, cache)
       case SaveAndContinue | SaveAndReturn => saveAndContinue(mode, itemId, boundForm, cache)
       case _                               => errorHandler.displayErrorPage()
     }

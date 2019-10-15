@@ -88,7 +88,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
       "user put incorrect data" in new SetUp {
 
-        val incorrectForm = Seq(("authorisationTypeCode", "incorrect"), ("eori", "GB123456"), addActionUrlEncoded)
+        val incorrectForm = Seq(("authorisationTypeCode", "incorrect"), ("eori", "GB123456"), addActionUrlEncoded())
 
         val result =
           controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(incorrectForm: _*))
@@ -100,7 +100,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
         withNewCaching(declarationWithHolder)
 
-        val duplicatedForm = Seq(("authorisationTypeCode", "ACP"), ("eori", "GB123456"), addActionUrlEncoded)
+        val duplicatedForm = Seq(("authorisationTypeCode", "ACP"), ("eori", "GB123456"), addActionUrlEncoded())
 
         val result =
           controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
@@ -112,7 +112,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
         withNewCaching(maxAmountOfItems)
 
-        val correctForm = Seq(("authorisationTypeCode", "ACT"), ("eori", "GB654321"), addActionUrlEncoded)
+        val correctForm = Seq(("authorisationTypeCode", "ACT"), ("eori", "GB654321"), addActionUrlEncoded())
 
         val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
@@ -162,7 +162,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
       "user correctly add new item" in new SetUp {
 
-        val correctForm = Seq(("authorisationTypeCode", "ACT"), ("eori", "GB654321"), addActionUrlEncoded)
+        val correctForm = Seq(("authorisationTypeCode", "ACT"), ("eori", "GB654321"), addActionUrlEncoded())
 
         val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 

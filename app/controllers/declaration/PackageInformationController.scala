@@ -24,12 +24,13 @@ import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation._
 import handlers.ErrorHandler
 import javax.inject.Inject
+import models.declaration.ExportItem
 import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.cache.{ExportItem, ExportsCacheService}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.package_information
 
@@ -57,7 +58,7 @@ class PackageInformationController @Inject()(
     val boundForm = form().bindFromRequest()
     val packagings = authRequest.cacheModel.itemBy(itemId).map(_.packageInformation).getOrElse(Seq.empty)
     actionTypeOpt match {
-      case Add                             => addItem(mode, itemId, boundForm, packagings)
+      case Add(_)                          => addItem(mode, itemId, boundForm, packagings)
       case Remove(values)                  => removeItem(mode, itemId, values, boundForm, packagings)
       case SaveAndContinue | SaveAndReturn => saveAndContinue(mode, itemId, boundForm, packagings)
       case _                               => errorHandler.displayErrorPage()
