@@ -144,11 +144,11 @@ class AppConfigSpec extends UnitSpec {
     }
 
     "have improved error messages feature toggle set to false if not defined" in {
-      emptyConfigService.useImprovedErrorMessages must be(false)
+      emptyConfigService.isUsingImprovedErrorMessages must be(false)
     }
 
     "have improved error messages feature toggle set to true if defined" in {
-      validConfigService.useImprovedErrorMessages must be(true)
+      validConfigService.isUsingImprovedErrorMessages must be(true)
     }
 
     "have language map with English" in {

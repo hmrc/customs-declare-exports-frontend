@@ -17,8 +17,9 @@
 @import models.declaration.submissions.Submission
 @import services.model.RejectionReason
 @import views.Title
+@import config.AppConfig
 
-@this(main_template: views.html.main_template)
+@this(main_template: views.html.main_template, appConfig: AppConfig)
 
 @(submission: Submission, errors: Seq[RejectionReason])(implicit request: Request[_], messages: Messages)
 
@@ -49,7 +50,13 @@
                 <th class="table-cell table-head rejected-field-name" id="rejected_notifications-row-@index-name">
                     @Html(error.pointer.map(p => messages(p.messageKey, p.sequenceArgs: _*)).getOrElse(""))
                 </th>
-                <td class="table-cell rejected-error-description" id="rejected_notifications-row-@index-description">@error.cdsDescription</td>
+                <td class="table-cell rejected-error-description" id="rejected_notifications-row-@index-description">
+                    @if(appConfig.isUsingImprovedErrorMessages) {
+                        @error.exportsDescription
+                    } else {
+                        @error.cdsDescription
+                    }
+                </td>
                 <td class="table-cell rejected-error-code" id="rejected_notifications-row-@index-code">@error.code</td>
               </tr>
             }

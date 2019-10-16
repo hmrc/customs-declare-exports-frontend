@@ -125,7 +125,12 @@ class RejectionReasonSpec extends UnitSpec {
             Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, Seq(error), "")
 
           fromNotifications(Seq(notification))(messages) mustBe Seq(
-            RejectionReason("CDS12016", "Date error: Date of acceptance is not allowed.", "Date error: Date of acceptance is not allowed.", Some(Pointer("x.#0.z")))
+            RejectionReason(
+              "CDS12016",
+              "Date error: Date of acceptance is not allowed.",
+              "Date error: Date of acceptance is not allowed.",
+              Some(Pointer("x.#0.z"))
+            )
           )
         }
 

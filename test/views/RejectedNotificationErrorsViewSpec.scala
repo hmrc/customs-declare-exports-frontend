@@ -17,11 +17,14 @@
 package views
 
 import base.Injector
+import com.typesafe.config.ConfigFactory
+import config.AppConfig
 import controllers.routes
 import models.Pointer
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{Action, Submission}
 import org.jsoup.nodes.Document
+import play.api.Configuration
 import play.api.i18n.MessagesApi
 import play.api.test.Helpers._
 import services.model.RejectionReason
@@ -31,7 +34,7 @@ import views.html.rejected_notification_errors
 
 class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with Injector {
 
-  private val page = new rejected_notification_errors(mainTemplate)
+  private val page = new rejected_notification_errors(mainTemplate, minimalAppConfig)
   private val ducr = Some("DUCR")
   private val submission =
     Submission("submissionId", "eori", "lrn", ducr = ducr, actions = Seq(Action("convId", SubmissionRequest)))
@@ -78,22 +81,28 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
     }
 
     "must contain notifications" when {
-      "fully populated" in {
       val reason =
-        RejectionReason("rejectionCode", "cdsRejectionDescription", "exportsRejectionDescription", Some(Pointer("field.declaration.consignmentReferences.lrn")))
+        RejectionReason(
+          "rejectionCode",
+          "cdsRejectionDescription",
+          "exportsRejectionDescription",
+          Some(Pointer("declaration.consignmentReferences.lrn"))
+        )
 
+      "fully populated and we are using the exports error descriptions" in {
         val doc: Document = view(Seq(reason))
 
         doc must containElementWithID("rejected_notifications-row-0")
         doc.getElementById("rejected_notifications-row-0-name").text() mustBe messages("field.declaration.consignmentReferences.lrn")
         doc.getElementById("rejected_notifications-row-0-code").text() mustBe "rejectionCode"
-        doc.getElementById("rejected_notifications-row-0-description").text() mustBe "rejectionDescription"
+        doc.getElementById("rejected_notifications-row-0-description").text() mustBe "exportsRejectionDescription"
       }
 
       "pointer " in {
         val reason = RejectionReason(
           "rejectionCode",
-          "rejectionDescription",
+          "cdsRejectionDescription",
+          "exportsRejectionDescription",
           Some(Pointer("declaration.goodsShipment.governmentAgencyGoodsItem.#0.additionalDocument.#1.id"))
         )
 
