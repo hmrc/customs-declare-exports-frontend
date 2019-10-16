@@ -16,7 +16,7 @@
 
 package unit.tools
 
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{Config, ConfigFactory}
 import config.AppConfig
 import play.api.Mode.Test
 import play.api.http.{DefaultFileMimeTypes, FileMimeTypes, FileMimeTypesConfiguration}
@@ -53,7 +53,7 @@ trait Stubs {
       executionContext
     )
 
-  private val minimalConfig = ConfigFactory.parseString("""
+  private val minimalConfig: Config = ConfigFactory.parseString("""
       |assets.url="localhost"
       |assets.version="version"
       |google-analytics.token=N/A
@@ -66,6 +66,7 @@ trait Stubs {
       |metrics.logback=false
       |draft.timeToLive=1d
       |list-of-available-journeys = "SMP,STD,CAN,SUB,CON"
+      |microservice.services.features.use-improved-error-messages=true
     """.stripMargin)
 
   val minimalConfiguration = Configuration(minimalConfig)
