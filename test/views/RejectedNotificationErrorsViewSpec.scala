@@ -79,7 +79,8 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
 
     "must contain notifications" when {
       "fully populated" in {
-        val reason = RejectionReason("rejectionCode", "rejectionDescription", Some(Pointer("declaration.consignmentReferences.lrn")))
+      val reason =
+        RejectionReason("rejectionCode", "cdsRejectionDescription", "exportsRejectionDescription", Some(Pointer("field.declaration.consignmentReferences.lrn")))
 
         val doc: Document = view(Seq(reason))
 

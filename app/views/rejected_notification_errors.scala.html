@@ -49,7 +49,7 @@
                 <th class="table-cell table-head rejected-field-name" id="rejected_notifications-row-@index-name">
                     @Html(error.pointer.map(p => messages(p.messageKey, p.sequenceArgs: _*)).getOrElse(""))
                 </th>
-                <td class="table-cell rejected-error-description" id="rejected_notifications-row-@index-description">@error.description</td>
+                <td class="table-cell rejected-error-description" id="rejected_notifications-row-@index-description">@error.cdsDescription</td>
                 <td class="table-cell rejected-error-code" id="rejected_notifications-row-@index-code">@error.code</td>
               </tr>
             }

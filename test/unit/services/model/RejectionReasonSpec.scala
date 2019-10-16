@@ -21,11 +21,11 @@ import java.time.LocalDateTime
 import models.Pointer
 import models.declaration.notifications.{Notification, NotificationError}
 import models.declaration.submissions.SubmissionStatus
+import org.mockito.ArgumentMatchers._
+import org.mockito.BDDMockito.given
 import play.api.i18n.Messages
 import services.model.RejectionReason
 import unit.base.UnitSpec
-import org.mockito.BDDMockito.given
-import org.mockito.ArgumentMatchers._
 
 class RejectionReasonSpec extends UnitSpec {
 
@@ -37,10 +37,11 @@ class RejectionReasonSpec extends UnitSpec {
     "create correct error based on the list" in {
 
       val errorCode = "ErrorCode"
-      val errorDescription = "Error description"
-      val error = List(errorCode, errorDescription)
+      val cdsErrorDescription = "Error description"
+      val exportsErrorDescription = "Improved Error description"
+      val error = List(errorCode, cdsErrorDescription, exportsErrorDescription)
 
-      RejectionReason.apply(error) mustBe RejectionReason(errorCode, errorDescription, None)
+      RejectionReason.apply(error) mustBe RejectionReason(errorCode, cdsErrorDescription, exportsErrorDescription, None)
     }
 
     "throw an exception when input is incorrect" in {
@@ -57,16 +58,24 @@ class RejectionReasonSpec extends UnitSpec {
 
     "contain correct values" in {
 
-      allRejectedErrors must contain(RejectionReason("CDS40049", "Quota exhausted.", None))
-      allRejectedErrors must contain(RejectionReason("CDS40051", "Quota blocked.", None))
+      allRejectedErrors must contain(RejectionReason("CDS40049", "Quota exhausted.", "Quota exhausted.", None))
+      allRejectedErrors must contain(RejectionReason("CDS40051", "Quota blocked.", "Quota blocked.", None))
       allRejectedErrors must contain(
         RejectionReason(
           "CDS12087",
           "Relation error: VAT Declaring Party Identification (D.E. 3/40), where mandated, must be supplied at either header or item.",
+          "Relation error: VAT Declaring Party Identification (D.E. 3/40), where mandated, must be supplied at either header or item.",
           None
         )
       )
-      allRejectedErrors must contain(RejectionReason("CDS12108", "Obligation error: DUCR is mandatory on an Export Declaration.", None))
+      allRejectedErrors must contain(
+        RejectionReason(
+          "CDS12108",
+          "Obligation error: DUCR is mandatory on an Export Declaration.",
+          "Obligation error: DUCR is mandatory on an Export Declaration.",
+          None
+        )
+      )
     }
 
     "correctly read multiline values" in {
@@ -76,7 +85,7 @@ class RejectionReasonSpec extends UnitSpec {
           |- The AdditionalMessage.declarationReference must refer to an existing declaration (Declaration.reference),
           |- have been accepted,
           |- not be invalidated.""".stripMargin
-      val expectedRejectionReason = RejectionReason("CDS12015", expectedMessages, None)
+      val expectedRejectionReason = RejectionReason("CDS12015", expectedMessages, expectedMessages, None)
 
       allRejectedErrors must contain(expectedRejectionReason)
     }
@@ -86,12 +95,12 @@ class RejectionReasonSpec extends UnitSpec {
 
     "correctly return error description" in {
 
-      getErrorDescription("CDS12016") mustBe "Date error: Date of acceptance is not allowed."
+      getCdsErrorDescription("CDS12016") mustBe "Date error: Date of acceptance is not allowed."
     }
 
     "return Unknown error when error code is not in rejected errors" in {
 
-      getErrorDescription("unknown code") mustBe "Unknown error"
+      getCdsErrorDescription("unknown code") mustBe "Unknown error"
     }
   }
 
@@ -116,7 +125,7 @@ class RejectionReasonSpec extends UnitSpec {
             Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, Seq(error), "")
 
           fromNotifications(Seq(notification))(messages) mustBe Seq(
-            RejectionReason("CDS12016", "Date error: Date of acceptance is not allowed.", Some(Pointer("x.#0.z")))
+            RejectionReason("CDS12016", "Date error: Date of acceptance is not allowed.", "Date error: Date of acceptance is not allowed.", Some(Pointer("x.#0.z")))
           )
         }
 
@@ -127,7 +136,7 @@ class RejectionReasonSpec extends UnitSpec {
             Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, Seq(error), "")
 
           fromNotifications(Seq(notification))(messages) mustBe Seq(
-            RejectionReason("CDS12016", "Date error: Date of acceptance is not allowed.", None)
+            RejectionReason("CDS12016", "Date error: Date of acceptance is not allowed.", "Date error: Date of acceptance is not allowed.", None)
           )
         }
 
@@ -137,7 +146,7 @@ class RejectionReasonSpec extends UnitSpec {
             Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, Seq(error), "")
 
           fromNotifications(Seq(notification))(messages) mustBe Seq(
-            RejectionReason("CDS12016", "Date error: Date of acceptance is not allowed.", None)
+            RejectionReason("CDS12016", "Date error: Date of acceptance is not allowed.", "Date error: Date of acceptance is not allowed.", None)
           )
         }
       }
