@@ -69,23 +69,19 @@ class RejectionReasonSpec extends UnitSpec {
         )
       )
       allRejectedErrors must contain(
-        RejectionReason(
-          "CDS12108",
-          "Obligation error: DUCR is mandatory on an Export Declaration.",
-          "Obligation error: DUCR is mandatory on an Export Declaration.",
-          None
-        )
+        RejectionReason("CDS12108", "Obligation error: DUCR is mandatory on an Export Declaration.", "An export declaration needs a DUCR.", None)
       )
     }
 
     "correctly read multiline values" in {
 
-      val expectedMessages =
+      val expectedMessage =
         """Sequence error: The referred declaration does not comply with one of the following conditions:
           |- The AdditionalMessage.declarationReference must refer to an existing declaration (Declaration.reference),
           |- have been accepted,
           |- not be invalidated.""".stripMargin
-      val expectedRejectionReason = RejectionReason("CDS12015", expectedMessages, expectedMessages, None)
+      val expectedRejectionReason =
+        RejectionReason("CDS12015", expectedMessage, "Declaration does not exist or is not ready to process the request.", None)
 
       allRejectedErrors must contain(expectedRejectionReason)
     }
@@ -128,7 +124,7 @@ class RejectionReasonSpec extends UnitSpec {
             RejectionReason(
               "CDS12016",
               "Date error: Date of acceptance is not allowed.",
-              "Date error: Date of acceptance is not allowed.",
+              "The acceptance date cannot be more than 180 days in the past.",
               Some(Pointer("x.#0.z"))
             )
           )
@@ -141,7 +137,12 @@ class RejectionReasonSpec extends UnitSpec {
             Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, Seq(error), "")
 
           fromNotifications(Seq(notification))(messages) mustBe Seq(
-            RejectionReason("CDS12016", "Date error: Date of acceptance is not allowed.", "Date error: Date of acceptance is not allowed.", None)
+            RejectionReason(
+              "CDS12016",
+              "Date error: Date of acceptance is not allowed.",
+              "The acceptance date cannot be more than 180 days in the past.",
+              None
+            )
           )
         }
 
@@ -151,7 +152,12 @@ class RejectionReasonSpec extends UnitSpec {
             Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, Seq(error), "")
 
           fromNotifications(Seq(notification))(messages) mustBe Seq(
-            RejectionReason("CDS12016", "Date error: Date of acceptance is not allowed.", "Date error: Date of acceptance is not allowed.", None)
+            RejectionReason(
+              "CDS12016",
+              "Date error: Date of acceptance is not allowed.",
+              "The acceptance date cannot be more than 180 days in the past.",
+              None
+            )
           )
         }
       }
