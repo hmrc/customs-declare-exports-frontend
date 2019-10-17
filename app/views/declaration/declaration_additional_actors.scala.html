@@ -63,13 +63,18 @@
                 </thead>
                 <tbody>
                 @for(actor <- actors) {
-                    <tr>
-                        <td scope="row">@actor.eori</td>
-                        <td>@actor.partyType</td>
-                        <td>
-                            @components.buttons.remove_button(element = LabelledValue(actor.toJson), hint=messages("site.remove.hint", actor.eori.getOrElse("")))
-                        </td>
-                    </tr>
+                  @defining(messages(s"supplementary.partyType.${actor.partyType.getOrElse("error")}")) { partyType =>
+                      <tr>
+                          <td scope="row">@actor.eori</td>
+                          <td>@partyType</td>
+                          <td>
+                          @components.buttons.remove_button(
+                              element = LabelledValue(actor.toJson),
+                              hint=messages("supplementary.partyType.remove.hint", partyType, actor.eori.getOrElse(""))
+                          )
+                          </td>
+                      </tr>
+                  }
                 }
                 </tbody>
             </table>

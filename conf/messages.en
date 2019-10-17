@@ -302,6 +302,7 @@ supplementary.partyType.FW = Freight forwarder
 supplementary.partyType.WH = Warehouse keeper
 supplementary.partyType.empty = Please, choose party type
 supplementary.partyType.error = Party type is incorrect
+supplementary.partyType.remove.hint = Remove {0} {1}
 
 submissions.title = Submissions
 submissions.eori = Eori
@@ -393,7 +394,7 @@ supplementary.procedureCodes.additionalProcedureCode.mandatory.error = You must 
 supplementary.procedureCodes.additionalProcedureCode.maximumAmount.error = You can have up to 99 codes
 supplementary.procedureCodes.additionalProcedureCode.empty = You cannot add empty code
 supplementary.procedureCodes.additionalProcedureCode.duplication = You cannot add the same code like before
-supplementary.procedureCodes.additionalProcedureCode.remove.hint = Remove additional code {0}“
+supplementary.procedureCodes.additionalProcedureCode.remove.hint = Remove additional code {0}
 supplementary.procedureCodes.additionalProcedureCode.add.hint = Add additional code“
 
 declaration.officeOfExit.title = Office of presentation and exit
