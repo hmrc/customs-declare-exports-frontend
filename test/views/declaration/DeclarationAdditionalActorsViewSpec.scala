@@ -234,17 +234,20 @@ class DeclarationAdditionalActorsViewSpec
     "display one row with data in table" in {
 
       val view =
-        declarationAdditionalActorsPage(Mode.Normal, form, Seq(DeclarationAdditionalActors(Some("12345"), Some("CS"))))(journeyRequest(), messages)
+        declarationAdditionalActorsPage(Mode.Normal, form, Seq(DeclarationAdditionalActors(Some("12345"), Some("CS"))))(
+          journeyRequest(),
+          realMessagesApi.preferred(request)
+        )
 
-      view.select("table>thead>tr>th:nth-child(1)").text() mustBe messages("supplementary.additionalActors.eori")
-      view.select("table>thead>tr>th:nth-child(2)").text() mustBe messages("supplementary.additionalActors.partyType")
+      view.select("table>thead>tr>th:nth-child(1)").text() mustBe "Party’s EORI number"
+      view.select("table>thead>tr>th:nth-child(2)").text() mustBe "Party type"
 
       view.select("table>tbody>tr>td:nth-child(1)").text() mustBe "12345"
-      view.select("table>tbody>tr>td:nth-child(2)").text() mustBe "CS"
+      view.select("table>tbody>tr>td:nth-child(2)").text() mustBe "Consolidator"
 
       val removeButton = view.select("table>tbody>tr>td:nth-child(3)>button")
 
-      removeButton.text() mustBe "site.remove site.remove.hint"
+      removeButton.text() must include("Remove Consolidator 12345")
       removeButton.attr("value") mustBe """{"eori":"12345","partyType":"CS"}"""
     }
   }
