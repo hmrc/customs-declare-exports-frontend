@@ -33,7 +33,6 @@ class OfficeOfExitFormsSpec extends WordSpec with MustMatchers with OfficeOfExit
   trait StandardSetUp extends SetUp {
     val standardForm = OfficeOfExitForms.standardForm
 
-    val presentationOfficeFieldId = "presentationOfficeId"
     val circumstancesCodeFieldId = "circumstancesCode"
   }
 
@@ -96,7 +95,7 @@ class OfficeOfExitFormsSpec extends WordSpec with MustMatchers with OfficeOfExit
 
       "all inputs are empty" in new StandardSetUp {
 
-        val data = OfficeOfExitStandard("", None, "")
+        val data = OfficeOfExitStandard("", "")
         val errors = standardForm.fillAndValidate(data).errors
 
         errors.length must be(2)
@@ -104,38 +103,35 @@ class OfficeOfExitFormsSpec extends WordSpec with MustMatchers with OfficeOfExit
         errors(1) must be(FormError(circumstancesCodeFieldId, circumstancesCodeError))
       }
 
-      "office of exit and presentation office are too short" in new StandardSetUp {
+      "office of exit too short" in new StandardSetUp {
 
-        val data = OfficeOfExitStandard("123456", Some("654321"), "Yes")
+        val data = OfficeOfExitStandard("123456", "Yes")
         val errors = standardForm.fillAndValidate(data).errors
 
-        errors.length must be(2)
+        errors.length must be(1)
         errors(0) must be(FormError(officeFieldId, officeOfExitLength))
-        errors(1) must be(FormError(presentationOfficeFieldId, presentationOfficeLength))
       }
 
-      "office of exit and presentation office are too long" in new StandardSetUp {
+      "office of exit too long" in new StandardSetUp {
 
-        val data = OfficeOfExitStandard("123456789", Some("987654321"), "Yes")
+        val data = OfficeOfExitStandard("123456789", "Yes")
         val errors = standardForm.fillAndValidate(data).errors
 
-        errors.length must be(2)
+        errors.length must be(1)
         errors(0) must be(FormError(officeFieldId, officeOfExitLength))
-        errors(1) must be(FormError(presentationOfficeFieldId, presentationOfficeLength))
       }
 
-      "office of exit and presentation office contains special characters" in new StandardSetUp {
-        val data = OfficeOfExitStandard("12!@#$78", Some("87!@#$21"), "Yes")
+      "office of exit contains special characters" in new StandardSetUp {
+        val data = OfficeOfExitStandard("12!@#$78", "Yes")
         val errors = standardForm.fillAndValidate(data).errors
 
-        errors.length must be(2)
+        errors.length must be(1)
         errors(0) must be(FormError(officeFieldId, officeOfExitSpecialCharacters))
-        errors(1) must be(FormError(presentationOfficeFieldId, presentationOfficeSpecialCharacters))
       }
 
       "circumstances code is incorrect" in new StandardSetUp {
 
-        val data = OfficeOfExitStandard("12345678", Some("87654321"), "Incorrect")
+        val data = OfficeOfExitStandard("12345678", "Incorrect")
         val errors = standardForm.fillAndValidate(data).errors
 
         errors.length must be(1)
