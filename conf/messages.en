@@ -397,7 +397,7 @@ supplementary.procedureCodes.additionalProcedureCode.duplication = You cannot ad
 supplementary.procedureCodes.additionalProcedureCode.remove.hint = Remove additional code {0}
 supplementary.procedureCodes.additionalProcedureCode.add.hint = Add additional code“
 
-declaration.officeOfExit.title = Office of presentation and exit
+declaration.officeOfExit.title = Office of exit
 declaration.officeOfExit = Where is the office of exit?
 declaration.officeOfExit.hint = This is the office where goods are officially recorded as having left the EU.
 declaration.officeOfExit.empty = Office of exit cannot be empty
