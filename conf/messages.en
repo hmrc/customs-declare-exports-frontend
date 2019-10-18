@@ -397,16 +397,13 @@ supplementary.procedureCodes.additionalProcedureCode.duplication = You cannot ad
 supplementary.procedureCodes.additionalProcedureCode.remove.hint = Remove additional code {0}
 supplementary.procedureCodes.additionalProcedureCode.add.hint = Add additional code“
 
-declaration.officeOfExit.title = Office of presentation and exit
+declaration.officeOfExit.title = Office of exit
 declaration.officeOfExit = Where is the office of exit?
 declaration.officeOfExit.hint = This is the office where goods are officially recorded as having left the EU.
 declaration.officeOfExit.empty = Office of exit cannot be empty
 declaration.officeOfExit.length = The code must be 8 characters
 declaration.officeOfExit.specialCharacters = Enter a reference in the correct format
-standard.officeOfExit.presentationOffice = Where is the office of presentation?
-standard.officeOfExit.presentationOffice.hint = This is where the goods will be presented to customs.
-standard.officeOfExit.presentationOffice.length = The code must be 8 characters
-standard.officeOfExit.presentationOffice.specialCharacters = Enter a reference in the correct format
+
 standard.officeOfExit.circumstancesCode = Does the declaration relate to an express consignment?
 standard.officeOfExit.circumstancesCode.hint = This is where the goods have been fast-tracked by an express courier.
 standard.officeOfExit.circumstancesCode.empty = Please provide an answer on this question

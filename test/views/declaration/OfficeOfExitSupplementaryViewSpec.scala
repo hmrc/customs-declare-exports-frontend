@@ -50,7 +50,7 @@ class OfficeOfExitSupplementaryViewSpec extends UnitViewSpec with ExportsTestDat
     }
 
     "display page title" in {
-      view.getElementById("title").text() mustBe "declaration.officeOfExit"
+      view.getElementById("title").text() mustBe "declaration.officeOfExit.title"
     }
 
     "display section header" in {

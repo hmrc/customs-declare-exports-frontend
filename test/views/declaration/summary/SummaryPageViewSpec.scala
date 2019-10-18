@@ -42,7 +42,7 @@ class SummaryPageViewSpec extends WordSpec with MustMatchers with ExportsDeclara
     withDestinationCountries(),
     withGoodsLocation(GoodsLocation("PL", "type", "id", Some("a"), Some("b"), Some("c"), Some("d"), Some("e"))),
     withWarehouseIdentification(Some("a"), Some("b"), Some("c"), Some("d")),
-    withOfficeOfExit("id", Some("office"), Some("code")),
+    withOfficeOfExit("id", Some("code")),
     withContainerData(Container("id", Seq.empty)),
     withTotalNumberOfItems(Some("123"), Some("123")),
     withNatureOfTransaction("nature"),
