@@ -59,11 +59,5 @@ class AutoCompleteItemSpec extends UnitSpec {
         AutoCompleteItem("description - code", "code")
       )
     }
-
-    "map from supervising customs office for Office Of Exit using Description (CODE)" in {
-      AutoCompleteItem.fromOfficeOfPresentation(List(CustomsOffice("code", "description"))) mustBe List(
-        AutoCompleteItem("description (code)", "code")
-      )
-    }
   }
 }
