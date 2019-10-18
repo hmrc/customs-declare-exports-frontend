@@ -18,12 +18,12 @@ package forms.declaration.officeOfExit
 
 import forms.Mapping.requiredRadio
 import forms.declaration.officeOfExit.OfficeOfExitStandard.AllowedCircumstancesCodeAnswers.{no, yes}
-import play.api.data.Forms.text
+import play.api.data.Forms.{optional, text}
 import play.api.data.{Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
 
-case class OfficeOfExitStandard(officeId: String, circumstancesCode: String)
+case class OfficeOfExitStandard(officeId: String, presentationOfficeId: Option[String], circumstancesCode: String)
 
 object OfficeOfExitStandard {
   implicit val format: OFormat[OfficeOfExitStandard] = Json.format[OfficeOfExitStandard]
@@ -33,12 +33,20 @@ object OfficeOfExitStandard {
       .verifying("declaration.officeOfExit.empty", nonEmpty)
       .verifying("declaration.officeOfExit.length", isEmpty or hasSpecificLength(8))
       .verifying("declaration.officeOfExit.specialCharacters", isEmpty or isAlphanumeric),
+    "presentationOfficeId" -> optional(
+      text()
+        .verifying("standard.officeOfExit.presentationOffice.length", isEmpty or hasSpecificLength(8))
+        .verifying("standard.officeOfExit.presentationOffice.specialCharacters", isEmpty or isAlphanumeric)
+    ),
     "circumstancesCode" -> requiredRadio("standard.officeOfExit.circumstancesCode.empty")
       .verifying("standard.officeOfExit.circumstancesCode.error", isContainedIn(Seq(yes, no)))
   )(OfficeOfExitStandard.apply)(OfficeOfExitStandard.unapply)
 
-  def apply(officeOfExit: OfficeOfExit): OfficeOfExitStandard =
-    OfficeOfExitStandard(officeId = officeOfExit.officeId, circumstancesCode = officeOfExit.circumstancesCode.getOrElse(""))
+  def apply(officeOfExit: OfficeOfExit): OfficeOfExitStandard = OfficeOfExitStandard(
+    officeId = officeOfExit.officeId,
+    presentationOfficeId = officeOfExit.presentationOfficeId,
+    circumstancesCode = officeOfExit.circumstancesCode.getOrElse("")
+  )
 
   object AllowedCircumstancesCodeAnswers {
     val yes = "Yes"

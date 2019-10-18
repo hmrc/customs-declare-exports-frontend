@@ -28,8 +28,8 @@ import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Choice, Ducr, Lrn}
 import models.DeclarationStatus.DeclarationStatus
-import models.declaration._
 import models.{DeclarationStatus, ExportsDeclaration}
+import models.declaration._
 
 //noinspection ScalaStyle
 trait ExportsDeclarationBuilder {
@@ -265,8 +265,12 @@ trait ExportsDeclarationBuilder {
   def withoutOfficeOfExit(): ExportsDeclarationModifier =
     cache => cache.copy(locations = cache.locations.copy(officeOfExit = None))
 
-  def withOfficeOfExit(officeId: String = "", circumstancesCode: Option[String] = None): ExportsDeclarationModifier =
-    cache => cache.copy(locations = cache.locations.copy(officeOfExit = Some(OfficeOfExit(officeId, circumstancesCode))))
+  def withOfficeOfExit(
+    officeId: String = "",
+    presentationOfficeId: Option[String] = None,
+    circumstancesCode: Option[String] = None
+  ): ExportsDeclarationModifier =
+    cache => cache.copy(locations = cache.locations.copy(officeOfExit = Some(OfficeOfExit(officeId, presentationOfficeId, circumstancesCode))))
 
   def withContainerData(data: TransportInformationContainerData): ExportsDeclarationModifier =
     _.copy(containerData = Some(data))

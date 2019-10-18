@@ -48,6 +48,10 @@ class OfficeOfExitStandardViewSpec extends UnitViewSpec with ExportsTestData wit
       messages must haveTranslationFor("declaration.officeOfExit.empty")
       messages must haveTranslationFor("declaration.officeOfExit.length")
       messages must haveTranslationFor("declaration.officeOfExit.specialCharacters")
+      messages must haveTranslationFor("standard.officeOfExit.presentationOffice")
+      messages must haveTranslationFor("standard.officeOfExit.presentationOffice.hint")
+      messages must haveTranslationFor("standard.officeOfExit.presentationOffice.length")
+      messages must haveTranslationFor("standard.officeOfExit.presentationOffice.specialCharacters")
       messages must haveTranslationFor("standard.officeOfExit.circumstancesCode")
       messages must haveTranslationFor("standard.officeOfExit.circumstancesCode.hint")
       messages must haveTranslationFor("standard.officeOfExit.circumstancesCode.empty")
@@ -68,6 +72,12 @@ class OfficeOfExitStandardViewSpec extends UnitViewSpec with ExportsTestData wit
         view.getElementById("officeId-label").text() mustBe "declaration.officeOfExit"
         view.getElementById("officeId-hint").text() mustBe "declaration.officeOfExit.hint"
         view.getElementById("officeId").attr("value") mustBe empty
+      }
+
+      "display presentation office question" in {
+        view.getElementById("presentationOfficeId-label").text() mustBe "standard.officeOfExit.presentationOffice"
+        view.getElementById("presentationOfficeId-hint").text() mustBe "standard.officeOfExit.presentationOffice.hint"
+        view.getElementById("presentationOfficeId").attr("value") mustBe empty
       }
 
       // TODO change below code to use getElementById, missing ID in radio input for legend
@@ -97,7 +107,7 @@ class OfficeOfExitStandardViewSpec extends UnitViewSpec with ExportsTestData wit
     "Office of Exit during standard declaration for invalid input" should {
 
       "display errors when all inputs are empty" in {
-        val data = OfficeOfExitStandard("", "")
+        val data = OfficeOfExitStandard("", None, "")
         val form = OfficeOfExitForms.standardForm.fillAndValidate(data)
         val view = createView(form = form)
 
@@ -113,7 +123,7 @@ class OfficeOfExitStandardViewSpec extends UnitViewSpec with ExportsTestData wit
       }
 
       "display errors when all inputs are incorrect" in {
-        val data = OfficeOfExitStandard("123456", "Yes")
+        val data = OfficeOfExitStandard("123456", Some("654321"), "Yes")
         val form = OfficeOfExitForms.standardForm.fillAndValidate(data)
         val view = createView(form = form)
 
@@ -121,10 +131,17 @@ class OfficeOfExitStandardViewSpec extends UnitViewSpec with ExportsTestData wit
 
         view.getElementById("officeId-error").text() mustBe "declaration.officeOfExit.length"
         view.getElementById("error-message-officeId-input").text() mustBe "declaration.officeOfExit.length"
+
+        view
+          .getElementById("presentationOfficeId-error")
+          .text() mustBe "standard.officeOfExit.presentationOffice.length"
+        view
+          .getElementById("error-message-presentationOfficeId-input")
+          .text() mustBe "standard.officeOfExit.presentationOffice.length"
       }
 
-      "display errors when office of exit contains special characters" in {
-        val data = OfficeOfExitStandard("12#$%^78", "Yes")
+      "display errors when office of exit and presentation office contains special characters" in {
+        val data = OfficeOfExitStandard("12#$%^78", Some("87^%$#21"), "Yes")
         val form = OfficeOfExitForms.standardForm.fillAndValidate(data)
         val view = createView(form = form)
 
@@ -132,6 +149,13 @@ class OfficeOfExitStandardViewSpec extends UnitViewSpec with ExportsTestData wit
 
         view.getElementById("officeId-error").text() mustBe "declaration.officeOfExit.specialCharacters"
         view.getElementById("error-message-officeId-input").text() mustBe "declaration.officeOfExit.specialCharacters"
+
+        view
+          .getElementById("presentationOfficeId-error")
+          .text() mustBe "standard.officeOfExit.presentationOffice.specialCharacters"
+        view
+          .getElementById("error-message-presentationOfficeId-input")
+          .text() mustBe "standard.officeOfExit.presentationOffice.specialCharacters"
       }
     }
   }

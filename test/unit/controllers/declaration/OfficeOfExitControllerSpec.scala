@@ -158,8 +158,9 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
       "display page method is invoked and cache contains data" in {
 
         val officeId = "officeId"
+        val presentationOfficeId = Some("preOffice")
         val circumstancesCode = "Yes"
-        withNewCaching(aDeclaration(withChoice(StandardDec), withOfficeOfExit(officeId, Some(circumstancesCode))))
+        withNewCaching(aDeclaration(withChoice(StandardDec), withOfficeOfExit(officeId, presentationOfficeId, Some(circumstancesCode))))
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -167,6 +168,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
         checkStandardViewInteractions()
 
         theStandardResponseForm.value.value.officeId mustBe officeId
+        theStandardResponseForm.value.value.presentationOfficeId mustBe presentationOfficeId
         theStandardResponseForm.value.value.circumstancesCode mustBe circumstancesCode
       }
     }
@@ -177,7 +179,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         withNewCaching(aDeclaration(withChoice(StandardDec)))
 
-        val incorrectForm = Json.toJson(OfficeOfExitStandard("!@#$", "wrong"))
+        val incorrectForm = Json.toJson(OfficeOfExitStandard("!@#$", None, "wrong"))
 
         val result = controller.saveOffice(Mode.Normal)(postRequest(incorrectForm))
 
@@ -192,7 +194,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         withNewCaching(aDeclaration(withChoice(StandardDec)))
 
-        val correctForm = Json.toJson(OfficeOfExitStandard("officeId", "Yes"))
+        val correctForm = Json.toJson(OfficeOfExitStandard("officeId", None, "Yes"))
 
         val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
 
