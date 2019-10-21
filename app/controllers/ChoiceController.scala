@@ -78,7 +78,7 @@ class ChoiceController @Inject()(
                 .getOrElse(throw new IllegalArgumentException(s"Cannot deduce Declaration Type from Choice [${choice.value}]"))
               request.declarationId match {
                 case Some(id) =>
-                  updateDeclarationTyoe(id, declarationType).map { _ =>
+                  updateDeclarationType(id, declarationType).map { _ =>
                     Redirect(controllers.declaration.routes.DispatchLocationController.displayPage(Mode.Normal))
                   }
                 case _ =>
@@ -97,7 +97,7 @@ class ChoiceController @Inject()(
       )
   }
 
-  private def updateDeclarationTyoe(id: String, `type`: DeclarationType)(implicit hc: HeaderCarrier) =
+  private def updateDeclarationType(id: String, `type`: DeclarationType)(implicit hc: HeaderCarrier) =
     exportsCacheService.get(id).map(_.map(_.copy(`type` = `type`))).flatMap {
       case Some(declaration) => exportsCacheService.update(declaration)
       case None =>
