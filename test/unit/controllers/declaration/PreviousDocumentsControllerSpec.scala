@@ -20,7 +20,7 @@ import controllers.declaration.PreviousDocumentsController
 import controllers.util.Remove
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.{Document, PreviousDocumentsData}
-import models.Mode
+import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -49,7 +49,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
     when(mockPreviousDocumentsPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 

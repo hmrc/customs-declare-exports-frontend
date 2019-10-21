@@ -20,7 +20,7 @@ import controllers.declaration.ProcedureCodesController
 import controllers.util.Remove
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.ProcedureCodes
-import models.Mode
+import models.{DeclarationType, Mode}
 import models.declaration.{ExportItem, ProcedureCodesData}
 import models.declaration.ProcedureCodesData.limitOfCodes
 import org.mockito.ArgumentCaptor
@@ -75,7 +75,7 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
 
       "display page method is invoked with empty cache" in {
 
-        withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
 
         val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
@@ -107,7 +107,7 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
 
       "user provide wrong action" in {
 
-        withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
 
         val wrongAction = Seq(("procedureCode", "1234"), ("additionalProcedureCode", "123"), ("WrongAction", ""))
 
@@ -122,7 +122,7 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
 
       "user put incorrect data" in {
 
-        withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
 
         val incorrectForm =
           Seq(("procedureCode", "1234"), ("additionalProcedureCode", "incorrect"), addActionUrlEncoded())
@@ -169,7 +169,7 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
 
       "user put incorrect data" in {
 
-        withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
 
         val incorrectForm =
           Seq(("procedureCode", "1234"), ("additionalProcedureCode", "incorrect"), saveAndContinueActionUrlEncoded)
@@ -216,7 +216,7 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
 
       "user correctly add new item" in {
 
-        withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
 
         val correctForm =
           Seq(("procedureCode", "1234"), ("additionalProcedureCode", "321"), addActionUrlEncoded())
@@ -232,7 +232,7 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
 
       "user save correct data" in {
 
-        withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
 
         val correctForm =
           Seq(("procedureCode", "1234"), ("additionalProcedureCode", "321"), saveAndContinueActionUrlEncoded)

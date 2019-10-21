@@ -20,7 +20,7 @@ import controllers.declaration.SealController
 import controllers.util.{Remove, SaveAndContinue, SaveAndReturn}
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.Seal
-import models.Mode
+import models.{DeclarationType, Mode}
 import models.declaration.Container
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
@@ -51,7 +51,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
     authorizedUser()
     setupErrorHandler()
-    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
   }
 
   "Seal Controller" should {

@@ -20,7 +20,7 @@ import controllers.declaration.ConsignmentReferencesController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.{Ducr, Lrn}
 import forms.declaration.ConsignmentReferences
-import models.Mode
+import models.{DeclarationType, Mode}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
@@ -41,7 +41,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
     )(ec)
 
     authorizedUser()
-    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
   }
 
   "Consignment References controller" should {

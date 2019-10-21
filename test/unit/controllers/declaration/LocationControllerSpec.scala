@@ -19,7 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.LocationController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.GoodsLocation
-import models.Mode
+import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -47,7 +47,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
     when(mockGoodsLocationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 

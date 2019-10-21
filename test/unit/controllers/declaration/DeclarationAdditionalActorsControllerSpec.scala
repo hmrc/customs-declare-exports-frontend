@@ -21,7 +21,7 @@ import controllers.declaration.DeclarationAdditionalActorsController
 import controllers.util.Remove
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.DeclarationAdditionalActors
-import models.Mode
+import models.{DeclarationType, Mode}
 import models.declaration.DeclarationAdditionalActorsData
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -46,7 +46,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
     setupErrorHandler()
     authorizedUser()
-    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
   }
 
   val eori = "GB123456"

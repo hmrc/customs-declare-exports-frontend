@@ -19,7 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.ItemsSummaryController
 import controllers.util.{Add, SaveAndContinue, SaveAndReturn}
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
-import models.Mode
+import models.{DeclarationType, Mode}
 import models.declaration.ExportItem
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
@@ -51,7 +51,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
     when(mockItemsSummaryPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockExportIdGeneratorService.generateItemId()).thenReturn(itemId)
   }
@@ -118,7 +118,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
 
       "there is not completed item in the cache" in {
 
-        val cachedData = aDeclaration(withChoice(SupplementaryDec), withItem(anItem(withItemId("id"))))
+        val cachedData = aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(anItem(withItemId("id"))))
         withNewCaching(cachedData)
 
         val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(SaveAndContinue.toString -> ""))

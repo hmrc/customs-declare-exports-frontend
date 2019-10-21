@@ -19,7 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.{routes, CarrierDetailsController}
 import forms.Choice
 import forms.declaration.{CarrierDetails, EntityDetails}
-import models.Mode
+import models.{DeclarationType, Mode}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
@@ -40,7 +40,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
     )(ec)
 
     authorizedUser()
-    withNewCaching(aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
+    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
   }
 
   "Carrier Details Controller" should {

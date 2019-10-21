@@ -28,8 +28,9 @@ import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Choice, Ducr, Lrn}
 import models.DeclarationStatus.DeclarationStatus
+import models.DeclarationType.DeclarationType
 import models.declaration._
-import models.{DeclarationStatus, ExportsDeclaration}
+import models.{DeclarationStatus, DeclarationType, ExportsDeclaration}
 
 //noinspection ScalaStyle
 trait ExportsDeclarationBuilder {
@@ -44,7 +45,7 @@ trait ExportsDeclarationBuilder {
     status = DeclarationStatus.COMPLETE,
     createdDateTime = LocalDateTime.of(2019, 1, 1, 0, 0, 0).toInstant(ZoneOffset.UTC),
     updatedDateTime = LocalDateTime.of(2019, 2, 2, 0, 0, 0).toInstant(ZoneOffset.UTC),
-    choice = Choice.AllowedChoiceValues.StandardDec,
+    `type` = DeclarationType.STANDARD,
     sourceId = None
   )
 
@@ -59,7 +60,7 @@ trait ExportsDeclarationBuilder {
 
   def withStatus(status: DeclarationStatus): ExportsDeclarationModifier = _.copy(status = status)
 
-  def withChoice(choice: String): ExportsDeclarationModifier = _.copy(choice = choice)
+  def withType(`type`: DeclarationType): ExportsDeclarationModifier = _.copy(`type` = `type`)
 
   def withSourceId(id: String = uuid): ExportsDeclarationModifier = _.copy(sourceId = Some(id))
 

@@ -21,7 +21,7 @@ import forms.Choice
 import forms.declaration.{GoodsLocation, LegalDeclaration}
 import models.declaration.{Container, SupplementaryDeclarationData}
 import models.requests.{AuthenticatedRequest, JourneyRequest}
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import org.jsoup.nodes.Document
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.Form
@@ -87,7 +87,7 @@ class SummaryPageViewSpec extends WordSpec with MustMatchers with ExportsDeclara
 
       "Normal Mode" when {
         "standard declaration with containers" in {
-          val model = aDeclaration(withChoice(Choice.AllowedChoiceValues.StandardDec), withContainerData(Container("1234", Seq.empty)))
+          val model = aDeclaration(withType(DeclarationType.STANDARD), withContainerData(Container("1234", Seq.empty)))
           val document = view(Mode.Normal, model)
           document must containElementWithID("link-back")
           document.getElementById("link-back") must haveHref(
@@ -97,14 +97,14 @@ class SummaryPageViewSpec extends WordSpec with MustMatchers with ExportsDeclara
         }
 
         "standard declaration without containers" in {
-          val model = aDeclaration(withChoice(Choice.AllowedChoiceValues.StandardDec))
+          val model = aDeclaration(withType(DeclarationType.STANDARD))
           val document = view(Mode.Normal, model)
           document must containElementWithID("link-back")
           document.getElementById("link-back") must haveHref(controllers.declaration.routes.BorderTransportController.displayPage(Mode.Normal))
         }
 
         "supplementary declaration with containers" in {
-          val model = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withContainerData(Container("1234", Seq.empty)))
+          val model = aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withContainerData(Container("1234", Seq.empty)))
           val document = view(Mode.Normal, model)
           document must containElementWithID("link-back")
           document.getElementById("link-back") must haveHref(
@@ -113,7 +113,7 @@ class SummaryPageViewSpec extends WordSpec with MustMatchers with ExportsDeclara
         }
 
         "supplementary declaration without containers" in {
-          val model = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withoutContainerData())
+          val model = aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withoutContainerData())
           val document = view(Mode.Normal, model)
           document must containElementWithID("link-back")
           document.getElementById("link-back") must haveHref(controllers.declaration.routes.BorderTransportController.displayPage(Mode.Normal))

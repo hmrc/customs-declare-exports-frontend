@@ -43,14 +43,4 @@ object TestHelper {
   val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
   def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 
-  def journeyRequest(fakeRequest: FakeRequest[_], choice: String): JourneyRequest[_] = {
-    val cache = ExportsDeclaration(UUID.randomUUID.toString, DeclarationStatus.COMPLETE, Instant.now(), Instant.now(), None, choice)
-    new JourneyRequest(new AuthenticatedRequest(fakeRequest, ExportsTestData.newUser(Random.nextString(10), Random.nextString(5))), cache)
-  }
-
-  def journeyRequest(fakeRequest: Request[_], choice: String): JourneyRequest[_] = {
-    val cache = ExportsDeclaration(UUID.randomUUID.toString, DeclarationStatus.COMPLETE, Instant.now(), Instant.now(), None, choice)
-    new JourneyRequest(new AuthenticatedRequest(fakeRequest, ExportsTestData.newUser(Random.nextString(10), Random.nextString(5))), cache)
-  }
-
 }

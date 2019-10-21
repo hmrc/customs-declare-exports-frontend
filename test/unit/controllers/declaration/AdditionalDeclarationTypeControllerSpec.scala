@@ -20,7 +20,7 @@ import controllers.declaration.AdditionalDeclarationTypeController
 import controllers.util.SaveAndContinue
 import forms.Choice
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
-import models.Mode
+import models.{DeclarationType, Mode}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
@@ -44,11 +44,11 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
   }
 
   trait SupplementarySetUp extends SetUp {
-    withNewCaching(aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
+    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
   }
 
   trait StandardSetUp extends SetUp {
-    withNewCaching(aDeclaration(withChoice(Choice.AllowedChoiceValues.StandardDec)))
+    withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
   }
 
   "Display Page" should {
@@ -60,7 +60,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
       }
 
       "cache is populated during supplementary journey" in new SupplementarySetUp {
-        val cachedData = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
+        val cachedData = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
           .copy(additionalDeclarationType = Some(AdditionalDeclarationType("Z")))
         withNewCaching(cachedData)
 
@@ -76,7 +76,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
       }
 
       "cache is populated during standard journey" in new StandardSetUp {
-        val cachedData = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
+        val cachedData = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
           .copy(additionalDeclarationType = Some(AdditionalDeclarationType("D")))
         withNewCaching(cachedData)
 

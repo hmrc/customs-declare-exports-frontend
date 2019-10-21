@@ -25,6 +25,7 @@ import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import forms.Choice._
 import javax.inject.Inject
+import models.DeclarationType.DeclarationType
 import models.requests.ExportsSessionKeys
 import models.{DeclarationStatus, ExportsDeclaration, Mode}
 import play.api.Logger
@@ -56,7 +57,7 @@ class ChoiceController @Inject()(
 
     request.declarationId match {
       case Some(id) if previousChoice.isEmpty =>
-        exportsCacheService.get(id).map(_.map(_.choice)).map {
+        exportsCacheService.get(id).map(_.map(_.`type`)).map {
           case Some(data) => Ok(choicePage(Choice.form().fill(Choice(data))))
           case _          => Ok(choicePage(Choice.form()))
         }
@@ -73,13 +74,15 @@ class ChoiceController @Inject()(
         choice =>
           choice.value match {
             case SupplementaryDec | StandardDec =>
+              val declarationType = choice.toDeclarationType
+                .getOrElse(throw new IllegalArgumentException(s"Cannot deduce Declaration Type from Choice [${choice.value}]"))
               request.declarationId match {
                 case Some(id) =>
-                  updateChoice(id, choice).map { _ =>
+                  updateDeclarationType(id, declarationType).map { _ =>
                     Redirect(controllers.declaration.routes.DispatchLocationController.displayPage(Mode.Normal))
                   }
                 case _ =>
-                  create(choice) map { created =>
+                  create(declarationType) map { created =>
                     Redirect(controllers.declaration.routes.DispatchLocationController.displayPage(Mode.Normal))
                       .addingToSession(ExportsSessionKeys.declarationId -> created.id)
                   }
@@ -94,15 +97,15 @@ class ChoiceController @Inject()(
       )
   }
 
-  private def updateChoice(id: String, choice: Choice)(implicit hc: HeaderCarrier) =
-    exportsCacheService.get(id).map(_.map(_.copy(choice = choice.value))).flatMap {
+  private def updateDeclarationType(id: String, `type`: DeclarationType)(implicit hc: HeaderCarrier) =
+    exportsCacheService.get(id).map(_.map(_.copy(`type` = `type`))).flatMap {
       case Some(declaration) => exportsCacheService.update(declaration)
       case None =>
         logger.error(s"Failed to find declaration for id $id")
         Future.successful(None)
     }
 
-  private def create(choice: Choice)(implicit hc: HeaderCarrier) =
+  private def create(`type`: DeclarationType)(implicit hc: HeaderCarrier) =
     exportsCacheService
       .create(
         ExportsDeclarationExchange(
@@ -111,7 +114,7 @@ class ChoiceController @Inject()(
           createdDateTime = Instant.now,
           updatedDateTime = Instant.now,
           sourceId = None,
-          choice.value
+          `type`
         )
       )
 }

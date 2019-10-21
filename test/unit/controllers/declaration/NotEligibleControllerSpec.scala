@@ -18,6 +18,7 @@ package unit.controllers.declaration
 
 import controllers.declaration.NotEligibleController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
+import models.DeclarationType
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import views.html.declaration.not_eligible
@@ -31,7 +32,7 @@ class NotEligibleControllerSpec extends ControllerSpec {
       new NotEligibleController(mockAuthAction, mockJourneyAction, stubMessagesControllerComponents(), notEligiblePage)(ec)
 
     authorizedUser()
-    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
   }
 
   "Not Eligible Controller" should {

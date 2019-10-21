@@ -20,7 +20,7 @@ import controllers.declaration.{routes, DepartureTransportController}
 import forms.Choice
 import forms.declaration.DepartureTransport
 import forms.declaration.TransportCodes.{Maritime, WagonNumber}
-import models.Mode
+import models.{DeclarationType, Mode}
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers._
@@ -46,7 +46,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
     setupErrorHandler()
     authorizedUser()
-    withNewCaching(aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
+    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
   }
 
   "Border transport controller" should {
@@ -62,7 +62,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "display page method is invoked and cache contains data" in new SetUp {
 
-        withNewCaching(aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withBorderTransport(Maritime, WagonNumber, "FAA")))
+        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withBorderTransport(Maritime, WagonNumber, "FAA")))
 
         val result: Future[Result] = controller.displayPage(Mode.Normal)(getRequest())
 

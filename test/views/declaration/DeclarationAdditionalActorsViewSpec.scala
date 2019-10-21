@@ -22,7 +22,7 @@ import controllers.util.SaveAndReturn
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.DeclarationAdditionalActors
 import helpers.views.declaration.{CommonMessages, DeclarationAdditionalActorsMessages}
-import models.Mode
+import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -115,7 +115,7 @@ class DeclarationAdditionalActorsViewSpec
 
     "display 'Back' button that links to 'Representative Details' page if on Supplementary journey" in {
 
-      val view = declarationAdditionalActorsPage(Mode.Normal, form, Seq())(journeyRequest(SupplementaryDec), messages)
+      val view = declarationAdditionalActorsPage(Mode.Normal, form, Seq())(journeyRequest(DeclarationType.SUPPLEMENTARY), messages)
 
       val backButton = view.getElementById("link-back")
 

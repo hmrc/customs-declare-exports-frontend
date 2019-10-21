@@ -19,7 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.OfficeOfExitController
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.officeOfExit.{OfficeOfExitStandard, OfficeOfExitSupplementary}
-import models.Mode
+import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -83,7 +83,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
       "display page method is invoked and cache is empty" in {
 
-        withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -96,7 +96,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
       "display page method is invoked and cache contains data" in {
 
         val officeId = "officeId"
-        withNewCaching(aDeclaration(withChoice(SupplementaryDec), withOfficeOfExit(officeId)))
+        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withOfficeOfExit(officeId)))
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -111,7 +111,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
       "form is incorrect" in {
 
-        withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
 
         val incorrectForm = Json.toJson(OfficeOfExitSupplementary("!@#$"))
 
@@ -126,7 +126,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
       "information provided by user are correct" in {
 
-        withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
 
         val correctForm = Json.toJson(OfficeOfExitSupplementary("officeId"))
 
@@ -145,7 +145,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
       "display page method is invoked and cache is empty" in {
 
-        withNewCaching(aDeclaration(withChoice(StandardDec)))
+        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -159,7 +159,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         val officeId = "officeId"
         val circumstancesCode = "Yes"
-        withNewCaching(aDeclaration(withChoice(StandardDec), withOfficeOfExit(officeId, Some(circumstancesCode))))
+        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withOfficeOfExit(officeId, Some(circumstancesCode))))
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -175,7 +175,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
       "form is incorrect" in {
 
-        withNewCaching(aDeclaration(withChoice(StandardDec)))
+        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
 
         val incorrectForm = Json.toJson(OfficeOfExitStandard("!@#$", "wrong"))
 
@@ -190,7 +190,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
       "information provided by user are correct" in {
 
-        withNewCaching(aDeclaration(withChoice(StandardDec)))
+        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
 
         val correctForm = Json.toJson(OfficeOfExitStandard("officeId", "Yes"))
 

@@ -20,7 +20,7 @@ import controllers.declaration.BorderTransportController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.TransportCodes.{cash, IMOShipIDNumber}
 import forms.declaration.BorderTransport
-import models.Mode
+import models.{DeclarationType, Mode}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
@@ -41,7 +41,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
     )(ec)
 
     authorizedUser()
-    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
   }
 
   "Transport Details Controller" should {
