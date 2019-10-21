@@ -22,7 +22,7 @@ import forms.{Ducr, Lrn}
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.declaration.{ExportItem, Locations, Parties, TransportInformationContainerData}
-import models.{DeclarationStatus, ExportsDeclaration}
+import models.{DeclarationStatus, DeclarationType, ExportsDeclaration}
 import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Mockito.when
 import org.scalatest.{Matchers, WordSpec}
@@ -33,7 +33,7 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
   private val id = "id"
   private val sourceId = "source-id"
   private val status = DeclarationStatus.COMPLETE
-  private val choice = "choice"
+  private val `type` = DeclarationType.STANDARD
   private val createdDate = Instant.MIN
   private val updatedDate = Instant.MAX
   private val dispatchLocation = mock[DispatchLocation]
@@ -59,7 +59,7 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
     createdDateTime = createdDate,
     updatedDateTime = updatedDate,
     sourceId = Some(sourceId),
-    choice = choice,
+    `type` = `type`,
     dispatchLocation = Some(dispatchLocation),
     additionalDeclarationType = Some(additionalDeclarationType),
     consignmentReferences = Some(consignmentReferences),
@@ -80,7 +80,7 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
     createdDateTime = createdDate,
     updatedDateTime = updatedDate,
     sourceId = Some(sourceId),
-    choice = choice,
+    `type` = `type`,
     dispatchLocation = Some(dispatchLocation),
     additionalDeclarationType = Some(additionalDeclarationType),
     consignmentReferences = Some(consignmentReferences),

@@ -19,10 +19,12 @@ package services
 import com.google.inject.Inject
 import config.AppConfig
 import connectors.CustomsDeclareExportsConnector
+import forms.Choice
 import forms.declaration.LegalDeclaration
 import javax.inject.Singleton
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers.submissionMetric
+import models.DeclarationType.DeclarationType
 import models.ExportsDeclaration
 import play.api.Logger
 import services.audit.{AuditService, AuditTypes, EventData}
@@ -56,7 +58,7 @@ class SubmissionService @Inject()(
           logProgress(exportsDeclaration, "Submitted Successfully")
           auditService.audit(
             AuditTypes.Submission,
-            auditData(eori, exportsDeclaration.choice, exportsDeclaration.lrn, exportsDeclaration.ducr, legalDeclaration, Success.toString)
+            auditData(eori, exportsDeclaration.`type`, exportsDeclaration.lrn, exportsDeclaration.ducr, legalDeclaration, Success.toString)
           )
           exportsMetrics.incrementCounter(submissionMetric)
           timerContext.stop()
@@ -65,7 +67,7 @@ class SubmissionService @Inject()(
           logger.error(s"Error response from backend $exception")
           auditService.audit(
             AuditTypes.Submission,
-            auditData(eori, exportsDeclaration.choice, exportsDeclaration.lrn, exportsDeclaration.ducr, legalDeclaration, Failure.toString)
+            auditData(eori, exportsDeclaration.`type`, exportsDeclaration.lrn, exportsDeclaration.ducr, legalDeclaration, Failure.toString)
           )
       }
       .map(_ => exportsDeclaration.lrn)
@@ -74,10 +76,17 @@ class SubmissionService @Inject()(
   private def logProgress(declaration: ExportsDeclaration, message: String): Unit =
     logger.info(s"Declaration [${declaration.id}]: $message")
 
-  private def auditData(eori: String, choice: String, lrn: Option[String], ducr: Option[String], legalDeclaration: LegalDeclaration, result: String) =
+  private def auditData(
+    eori: String,
+    `type`: DeclarationType,
+    lrn: Option[String],
+    ducr: Option[String],
+    legalDeclaration: LegalDeclaration,
+    result: String
+  ) =
     Map(
       EventData.eori.toString -> eori,
-      EventData.decType.toString -> choice,
+      EventData.decType.toString -> `type`.toString,
       EventData.lrn.toString -> lrn.getOrElse(""),
       EventData.ducr.toString -> ducr.getOrElse(""),
       EventData.fullName.toString -> legalDeclaration.fullName,

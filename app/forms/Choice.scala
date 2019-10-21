@@ -16,13 +16,21 @@
 
 package forms
 
+import models.DeclarationType
+import models.DeclarationType.DeclarationType
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
 import play.api.mvc.QueryStringBindable
 import utils.validators.forms.FieldValidator.isContainedIn
 
-case class Choice(value: String)
+case class Choice(value: String) {
+  def toDeclarationType: Option[DeclarationType] = value match {
+    case Choice.AllowedChoiceValues.SupplementaryDec => Some(DeclarationType.SUPPLEMENTARY)
+    case Choice.AllowedChoiceValues.StandardDec      => Some(DeclarationType.STANDARD)
+    case _                                           => None
+  }
+}
 
 object Choice {
   implicit val format = Json.format[Choice]
@@ -39,6 +47,11 @@ object Choice {
     ).verifying("choicePage.input.error.empty", _.isDefined)
       .transform[Choice](choice => Choice(choice.getOrElse("")), choice => Some(choice.value))
   )
+
+  def apply(`type`: DeclarationType): Choice = `type` match {
+    case DeclarationType.STANDARD      => Choice(StandardDec)
+    case DeclarationType.SUPPLEMENTARY => Choice(SupplementaryDec)
+  }
 
   def form(): Form[Choice] = Form(choiceMapping)
 

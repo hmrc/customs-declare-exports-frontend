@@ -17,6 +17,7 @@
 package forms
 
 import forms.Choice.AllowedChoiceValues._
+import models.DeclarationType
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
@@ -49,6 +50,16 @@ class ChoiceSpec extends WordSpec with MustMatchers {
 
         form.hasErrors must be(false)
       }
+    }
+  }
+
+  "to declaration type" should {
+    "convert to dec type" in {
+      Choice(Choice.AllowedChoiceValues.StandardDec).toDeclarationType mustBe Some(DeclarationType.STANDARD)
+      Choice(Choice.AllowedChoiceValues.SupplementaryDec).toDeclarationType mustBe Some(DeclarationType.SUPPLEMENTARY)
+      Choice(Choice.AllowedChoiceValues.Submissions).toDeclarationType mustBe None
+      Choice(Choice.AllowedChoiceValues.CancelDec).toDeclarationType mustBe None
+      Choice(Choice.AllowedChoiceValues.ContinueDec).toDeclarationType mustBe None
     }
   }
 

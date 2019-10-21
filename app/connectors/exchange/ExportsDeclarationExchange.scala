@@ -21,6 +21,7 @@ import java.time.Instant
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.DeclarationStatus.DeclarationStatus
+import models.DeclarationType.DeclarationType
 import models.ExportsDeclaration
 import models.declaration.{ExportItem, Locations, Parties, TransportInformationContainerData}
 import play.api.libs.json.{Json, OFormat}
@@ -31,7 +32,7 @@ case class ExportsDeclarationExchange(
   createdDateTime: Instant,
   updatedDateTime: Instant,
   sourceId: Option[String],
-  choice: String,
+  `type`: DeclarationType,
   dispatchLocation: Option[DispatchLocation] = None,
   additionalDeclarationType: Option[AdditionalDeclarationType] = None,
   consignmentReferences: Option[ConsignmentReferences] = None,
@@ -51,7 +52,7 @@ case class ExportsDeclarationExchange(
     createdDateTime = this.createdDateTime,
     updatedDateTime = this.updatedDateTime,
     sourceId = this.sourceId,
-    choice = this.choice,
+    `type` = this.`type`,
     dispatchLocation = this.dispatchLocation,
     additionalDeclarationType = this.additionalDeclarationType,
     consignmentReferences = this.consignmentReferences,
@@ -77,7 +78,7 @@ object ExportsDeclarationExchange {
       createdDateTime = declaration.createdDateTime,
       updatedDateTime = declaration.updatedDateTime,
       sourceId = declaration.sourceId,
-      choice = declaration.choice,
+      `type` = declaration.`type`,
       dispatchLocation = declaration.dispatchLocation,
       additionalDeclarationType = declaration.additionalDeclarationType,
       consignmentReferences = declaration.consignmentReferences,

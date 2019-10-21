@@ -20,7 +20,7 @@ import controllers.declaration.DestinationCountriesController
 import controllers.util.Remove
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.destinationCountries.DestinationCountries
-import models.Mode
+import models.{DeclarationType, Mode}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
@@ -49,11 +49,11 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
   }
 
   trait SupplementarySetUp extends SetUp {
-    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
   }
 
   trait StandardSetUp extends SetUp {
-    withNewCaching(aDeclaration(withChoice(StandardDec)))
+    withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
   }
 
   "Destination Countries controller" should {

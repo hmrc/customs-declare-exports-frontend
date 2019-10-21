@@ -19,6 +19,8 @@ package services.cache
 import base.ExportsTestData.newUser
 import forms.Choice
 import forms.declaration.GoodsLocation
+import models.DeclarationType
+import models.DeclarationType.DeclarationType
 import models.declaration.Container
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.test.FakeRequest
@@ -26,8 +28,8 @@ import utils.FakeRequestCSRFSupport._
 
 trait ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder {
 
-  private def declaration(choice: String) = aDeclaration(
-    withChoice(choice),
+  private def declaration(`type`: DeclarationType) = aDeclaration(
+    withType(`type`),
     withConsignmentReferences(),
     withDestinationCountries(),
     withGoodsLocation(GoodsLocation("PL", "type", "id", Some("a"), Some("b"), Some("c"), Some("d"), Some("e"))),
@@ -39,6 +41,6 @@ trait ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder 
     withItem(anItem())
   )
 
-  protected def journeyRequest(choice: String = Choice.AllowedChoiceValues.StandardDec) =
-    new JourneyRequest(new AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration(choice))
+  protected def journeyRequest(`type`: DeclarationType = DeclarationType.STANDARD) =
+    new JourneyRequest(new AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration(`type`))
 }

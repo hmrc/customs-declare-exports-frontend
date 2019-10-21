@@ -18,10 +18,10 @@ package models
 
 import java.time.{Clock, Instant}
 
-import connectors.exchange.ExportsDeclarationExchange
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.DeclarationStatus.DeclarationStatus
+import models.DeclarationType.DeclarationType
 import models.declaration._
 import play.api.libs.json._
 
@@ -31,7 +31,7 @@ case class ExportsDeclaration(
   createdDateTime: Instant,
   updatedDateTime: Instant,
   sourceId: Option[String],
-  choice: String,
+  `type`: DeclarationType,
   dispatchLocation: Option[DispatchLocation] = None,
   additionalDeclarationType: Option[AdditionalDeclarationType] = None,
   consignmentReferences: Option[ConsignmentReferences] = None,

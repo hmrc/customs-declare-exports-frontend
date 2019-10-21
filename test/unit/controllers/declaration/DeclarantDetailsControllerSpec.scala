@@ -19,7 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.DeclarantDetailsController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.{DeclarantDetails, EntityDetails}
-import models.Mode
+import models.{DeclarationType, Mode}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
@@ -40,7 +40,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
     )(ec)
 
     authorizedUser()
-    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
   }
 
   "Declarant Details Controller" should {

@@ -19,8 +19,9 @@ package unit.controllers
 import controllers.ChoiceController
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
+import models.DeclarationType.DeclarationType
 import models.requests.ExportsSessionKeys
-import models.{DeclarationStatus, ExportsDeclaration}
+import models.{DeclarationStatus, DeclarationType, ExportsDeclaration}
 import org.scalatest.OptionValues
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Request}
@@ -33,11 +34,11 @@ import views.html.choice_page
 class ChoiceControllerSpec extends ControllerSpec with OptionValues {
   import ChoiceControllerSpec._
 
-  private def existingDeclaration(choice: String = SupplementaryDec) =
-    aDeclaration(withId("existingDeclarationId"), withChoice(choice))
+  private def existingDeclaration(choice: DeclarationType = DeclarationType.SUPPLEMENTARY) =
+    aDeclaration(withId("existingDeclarationId"), withType(choice))
 
   private val newDeclaration =
-    aDeclaration(withId("newDeclarationId"), withChoice(SupplementaryDec))
+    aDeclaration(withId("newDeclarationId"), withType(DeclarationType.SUPPLEMENTARY))
 
   val choicePage = new choice_page(mainTemplate, minimalAppConfig)
 
@@ -101,7 +102,7 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues {
     "pre-select declaration type " when {
 
       "choice parameter not given" in {
-        withNewCaching(existingDeclaration(SupplementaryDec))
+        withNewCaching(existingDeclaration(DeclarationType.SUPPLEMENTARY))
 
         val request = getRequest()
         val result = controller.displayPage(None)(request)
@@ -151,12 +152,12 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues {
         val created = theCacheModelCreated
         created.id mustBe None
         created.status mustBe DeclarationStatus.DRAFT
-        created.choice mustBe "SMP"
+        created.`type` mustBe DeclarationType.SUPPLEMENTARY
         created.sourceId mustBe None
       }
 
       "user chooses Supplementary Dec for existing Standard Dec" in {
-        val existingDec = existingDeclaration(StandardDec)
+        val existingDec = existingDeclaration(DeclarationType.STANDARD)
         withNewCaching(existingDec)
 
         val result = controller.submitChoice()(postRequest(supplementaryChoice, existingDec))
@@ -165,7 +166,7 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues {
         redirectLocation(result) must be(Some(controllers.declaration.routes.DispatchLocationController.displayPage().url))
         val updated: ExportsDeclaration = theCacheModelUpdated
         updated.id mustBe existingDec.id
-        updated.choice mustBe "SMP"
+        updated.`type` mustBe DeclarationType.SUPPLEMENTARY
       }
 
       "user chooses Standard Dec for new declaration" in {
@@ -179,11 +180,11 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues {
         val created = theCacheModelCreated
         created.id mustBe None
         created.status mustBe DeclarationStatus.DRAFT
-        created.choice mustBe "STD"
+        created.`type` mustBe DeclarationType.STANDARD
       }
 
       "user chooses Standard Dec for existing Supplementary Dec" in {
-        val existingDec = existingDeclaration(SupplementaryDec)
+        val existingDec = existingDeclaration(DeclarationType.SUPPLEMENTARY)
         withNewCaching(existingDec)
 
         val result = controller.submitChoice()(postRequest(standardChoice, existingDec))
@@ -192,7 +193,7 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues {
         redirectLocation(result) must be(Some(controllers.declaration.routes.DispatchLocationController.displayPage().url))
         val updated = theCacheModelUpdated
         updated.id mustBe existingDec.id
-        updated.choice mustBe "STD"
+        updated.`type` mustBe DeclarationType.STANDARD
       }
     }
 

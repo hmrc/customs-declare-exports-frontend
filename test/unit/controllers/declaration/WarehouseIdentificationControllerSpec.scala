@@ -20,7 +20,7 @@ import controllers.declaration.WarehouseIdentificationController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.TransportCodes.Maritime
 import helpers.views.declaration.WarehouseIdentificationMessages
-import models.Mode
+import models.{DeclarationType, Mode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.mockito.Mockito.{times, verify, when}
@@ -50,7 +50,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
   val exampleTransportMode = Maritime
 
   val cacheModel = aDeclaration(
-    withChoice(SupplementaryDec),
+    withType(DeclarationType.SUPPLEMENTARY),
     withWarehouseIdentification(
       Some(exampleCustomsOfficeIdentifier),
       Some(exampleWarehauseIdentificationType),

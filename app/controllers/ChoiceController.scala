@@ -56,7 +56,7 @@ class ChoiceController @Inject()(
 
     request.declarationId match {
       case Some(id) if previousChoice.isEmpty =>
-        exportsCacheService.get(id).map(_.map(_.choice)).map {
+        exportsCacheService.get(id).map(_.map(_.`type`)).map {
           case Some(data) => Ok(choicePage(Choice.form().fill(Choice(data))))
           case _          => Ok(choicePage(Choice.form()))
         }
@@ -95,7 +95,7 @@ class ChoiceController @Inject()(
   }
 
   private def updateChoice(id: String, choice: Choice)(implicit hc: HeaderCarrier) =
-    exportsCacheService.get(id).map(_.map(_.copy(choice = choice.value))).flatMap {
+    exportsCacheService.get(id).map(_.map(_.copy(`type` = choice.toDeclarationType.get))).flatMap {
       case Some(declaration) => exportsCacheService.update(declaration)
       case None =>
         logger.error(s"Failed to find declaration for id $id")
@@ -111,7 +111,7 @@ class ChoiceController @Inject()(
           createdDateTime = Instant.now,
           updatedDateTime = Instant.now,
           sourceId = None,
-          choice.value
+          choice.toDeclarationType.get
         )
       )
 }

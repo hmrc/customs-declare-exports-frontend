@@ -20,7 +20,7 @@ import controllers.declaration.RepresentativeDetailsController
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import forms.declaration.{EntityDetails, RepresentativeDetails}
-import models.Mode
+import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -44,7 +44,7 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
     stubMessagesControllerComponents(),
     mockRepresentativeDetailsPage
   )(ec)
-  val exampleDeclaration = aDeclaration(withChoice(SupplementaryDec))
+  val exampleDeclaration = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
   val eori = "GB1000200"
 
   def theResponseForm: Form[RepresentativeDetails] = {
@@ -117,7 +117,7 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
 
       "form is correct and user is during Supplementary journey" in {
 
-        withNewCaching(exampleDeclaration.copy(choice = Choice.AllowedChoiceValues.SupplementaryDec))
+        withNewCaching(exampleDeclaration.copy(`type` = DeclarationType.SUPPLEMENTARY))
 
         val correctForm = Json.toJson(RepresentativeDetails(Some(EntityDetails(Some(eori), None)), Some("2")))
 
@@ -134,7 +134,7 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
 
       "form is correct and user is during Standard journey" in {
 
-        withNewCaching(exampleDeclaration.copy(choice = Choice.AllowedChoiceValues.StandardDec))
+        withNewCaching(exampleDeclaration.copy(`type` = DeclarationType.STANDARD))
 
         val correctForm = Json.toJson(RepresentativeDetails(Some(EntityDetails(Some(eori), None)), Some("2")))
 

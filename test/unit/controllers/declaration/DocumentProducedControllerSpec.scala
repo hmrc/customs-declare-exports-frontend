@@ -20,7 +20,7 @@ import controllers.declaration.DocumentsProducedController
 import controllers.util.Remove
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.additionaldocuments.DocumentsProduced
-import models.Mode
+import models.{DeclarationType, Mode}
 import models.declaration.DocumentsProducedData
 import org.mockito.ArgumentMatchers.{any, refEq}
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -50,7 +50,7 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
     when(mockDocumentProducedPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 

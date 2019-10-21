@@ -20,7 +20,7 @@ import controllers.declaration.TransportContainerController
 import controllers.util.Remove
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.Seal
-import models.Mode
+import models.{DeclarationType, Mode}
 import models.declaration.{Container, TransportInformationContainerData}
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
@@ -48,7 +48,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
     authorizedUser()
     setupErrorHandler()
-    withNewCaching(aDeclaration(withChoice(StandardDec)))
+    withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
   }
 
   val containerId = "434335468"
@@ -123,7 +123,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
     "add new container and redirect to add seal page" when {
       "working on standard declaration with cache empty" in new SetUp {
-        withNewCaching(aDeclaration(withChoice(StandardDec)))
+        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
         val body = Seq("id" -> "value")
 
         val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
@@ -138,7 +138,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
     "add new container and redirect to container summary page" when {
       "working on supplementary declaration with cache empty" in new SetUp {
-        withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
         val body = Seq("id" -> "value")
 
         val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))

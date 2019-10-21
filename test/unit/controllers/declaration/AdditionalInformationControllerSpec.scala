@@ -20,7 +20,7 @@ import controllers.declaration.{routes, AdditionalInformationController}
 import controllers.util.Remove
 import forms.Choice
 import forms.declaration.AdditionalInformation
-import models.Mode
+import models.{DeclarationType, Mode}
 import models.declaration.{AdditionalInformationData, ExportItem}
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
@@ -45,7 +45,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
     setupErrorHandler()
     authorizedUser()
-    withNewCaching(aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
+    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
   }
 
   "Additional information controller" should {
@@ -64,7 +64,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
         val itemCacheData =
           ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("12345", "description")))))
         val cachedData =
-          aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
+          aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
         withNewCaching(cachedData)
 
         val result = controller.displayPage(Mode.Normal, "itemId")(getRequest())
@@ -102,7 +102,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
         val itemCacheData =
           ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("12345", "description")))))
         val cachedData =
-          aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
+          aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
         withNewCaching(cachedData)
 
         val duplicatedForm = Seq(("code", "12345"), ("description", "description"), addActionUrlEncoded())
@@ -118,7 +118,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
         val itemCacheData =
           ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq.fill(99)(AdditionalInformation("12345", "description")))))
         val cachedData =
-          aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
+          aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
         withNewCaching(cachedData)
 
         val form = Seq(("code", "12345"), ("description", "text"), addActionUrlEncoded())
@@ -146,7 +146,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
         val itemCacheData =
           ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("12345", "description")))))
         val cachedData =
-          aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
+          aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
         withNewCaching(cachedData)
 
         val duplicatedForm = Seq(("code", "12345"), ("description", "description"), saveAndContinueActionUrlEncoded)
@@ -162,7 +162,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
         val itemCacheData =
           ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq.fill(99)(AdditionalInformation("12345", "description")))))
         val cachedData =
-          aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
+          aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
         withNewCaching(cachedData)
 
         val form = Seq(("code", "12345"), ("description", "text"), saveAndContinueActionUrlEncoded)
@@ -199,7 +199,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
         val itemCacheData =
           ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq.fill(99)(AdditionalInformation("12345", "description")))))
         val cachedData =
-          aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
+          aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
         withNewCaching(cachedData)
 
         val correctForm = saveAndContinueActionUrlEncoded
@@ -215,7 +215,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
         val itemCacheData =
           ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("12345", "description")))))
         val cachedData =
-          aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
+          aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
         withNewCaching(cachedData)
 
         val removeForm = (Remove.toString, "0")

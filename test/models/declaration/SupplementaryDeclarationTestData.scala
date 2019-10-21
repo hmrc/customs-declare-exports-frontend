@@ -44,7 +44,7 @@ import models.declaration.DeclarationHoldersDataSpec._
 import models.declaration.dectype.DeclarationTypeSupplementarySpec._
 import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.{Amount, GovernmentAgencyGoodsItem}
-import models.{DeclarationStatus, ExportsDeclaration}
+import models.{DeclarationStatus, DeclarationType, ExportsDeclaration}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json._
 
@@ -300,7 +300,8 @@ object SupplementaryDeclarationTestData {
   val correctPackingJSON: JsValue = JsObject(
     Map("sequenceNumeric" -> JsString("0"), "marksNumbersId" -> JsString("wefdsf"), "typeCode" -> JsString("22"))
   )
-  val declaration = ExportsDeclaration(UUID.randomUUID.toString, DeclarationStatus.DRAFT, Instant.now(), Instant.now(), None, "SMP")
+  val declaration =
+    ExportsDeclaration(UUID.randomUUID.toString, DeclarationStatus.DRAFT, Instant.now(), Instant.now(), None, DeclarationType.SUPPLEMENTARY)
 
   def createGovernmentAgencyGoodsItem(): GovernmentAgencyGoodsItem =
     GovernmentAgencyGoodsItem(

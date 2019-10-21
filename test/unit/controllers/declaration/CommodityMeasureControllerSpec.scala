@@ -19,7 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.{routes, CommodityMeasureController}
 import forms.Choice
 import forms.declaration.{CommodityMeasure, PackageInformation}
-import models.Mode
+import models.{DeclarationType, Mode}
 import models.declaration.ExportItem
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -44,7 +44,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
 
     val item =
       ExportItem("itemId", packageInformation = List(PackageInformation("123", 123, "123")))
-    val cachedData = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(item))
+    val cachedData = aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item))
 
     withNewCaching(cachedData)
   }
@@ -64,7 +64,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
 
         val commodityItem = item.copy(commodityMeasure = Some(CommodityMeasure(None, "123", "123")))
         val commodityCachedData =
-          aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(item))
+          aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item))
         withNewCaching(commodityCachedData)
 
         val result = controller.displayPage(Mode.Normal, "itemId")(getRequest())
@@ -76,7 +76,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
     "return 400 (BAD_REQUEST)" when {
 
       "display page method is invoked and commodity package information cache is empty" in new SetUp {
-        val noPackageCache = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
+        val noPackageCache = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
         withNewCaching(noPackageCache)
 
         val result = controller.displayPage(Mode.Normal, "itemId")(getRequest())
@@ -86,7 +86,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
 
       "form is incorrect" in new SetUp {
 
-        val noPackageCache = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
+        val noPackageCache = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
         withNewCaching(noPackageCache)
 
         val incorrectForm = Json.toJson(CommodityMeasure(None, "", ""))
@@ -101,7 +101,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
 
       "information provided by user are correct" in new SetUp {
 
-        val noPackageCache = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
+        val noPackageCache = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
         withNewCaching(noPackageCache)
 
         val correctForm = Json.toJson(CommodityMeasure(None, "1234.12", "1234.12"))

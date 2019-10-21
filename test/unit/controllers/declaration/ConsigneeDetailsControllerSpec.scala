@@ -17,9 +17,8 @@
 package unit.controllers.declaration
 
 import controllers.declaration.ConsigneeDetailsController
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.{ConsigneeDetails, EntityDetails}
-import models.Mode
+import models.{DeclarationType, Mode}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
@@ -39,7 +38,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
       consigneeDetailsPage
     )(ec)
 
-    val model = aDeclaration(withChoice(SupplementaryDec))
+    val model = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
     authorizedUser()
     withNewCaching(model)
   }

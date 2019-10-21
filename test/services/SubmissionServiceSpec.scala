@@ -22,7 +22,7 @@ import config.AppConfig
 import connectors.CustomsDeclareExportsConnector
 import forms.declaration.LegalDeclaration
 import metrics.{ExportsMetrics, MetricIdentifiers}
-import models.DeclarationStatus
+import models.{DeclarationStatus, DeclarationType}
 import models.declaration.submissions.{Action, Submission}
 import org.mockito.ArgumentMatchers.{any, eq => equalTo}
 import org.mockito.Mockito.{reset, verify, when}
@@ -49,7 +49,7 @@ class SubmissionServiceSpec
     EventData.eori.toString -> "eori",
     EventData.lrn.toString -> "123LRN",
     EventData.ducr.toString -> "ducr",
-    EventData.decType.toString -> "STD",
+    EventData.decType.toString -> "STANDARD",
     EventData.fullName.toString -> legal.fullName,
     EventData.jobRole.toString -> legal.jobRole,
     EventData.email.toString -> legal.email,
@@ -73,7 +73,12 @@ class SubmissionServiceSpec
       "valid declaration" in {
         // Given
         val declaration =
-          aDeclaration(withId("id"), withStatus(DeclarationStatus.DRAFT), withChoice("STD"), withConsignmentReferences(ducr = "ducr", lrn = "123LRN"))
+          aDeclaration(
+            withId("id"),
+            withStatus(DeclarationStatus.DRAFT),
+            withType(DeclarationType.STANDARD),
+            withConsignmentReferences(ducr = "ducr", lrn = "123LRN")
+          )
         val submission = Submission(uuid = "id", eori = "eori", lrn = "lrn", actions = Seq.empty[Action])
         when(connector.submitDeclaration(any[String])(any(), any())).thenReturn(Future.successful(submission))
 

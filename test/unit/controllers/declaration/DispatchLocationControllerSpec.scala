@@ -20,7 +20,7 @@ import controllers.declaration.DispatchLocationController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.DispatchLocation
 import forms.declaration.DispatchLocation.AllowedDispatchLocations._
-import models.Mode
+import models.{DeclarationType, Mode}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
@@ -41,7 +41,7 @@ class DispatchLocationControllerSpec extends ControllerSpec {
     )(ec)
 
     authorizedUser()
-    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
   }
 
   "Dispatch Location controller" should {

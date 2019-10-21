@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package models.requests
+package models
 
-import forms.Choice
-import models.ExportsDeclaration
-import play.api.mvc.WrappedRequest
+import play.api.libs.json._
+import utils.EnumJson
 
-class JourneyRequest[A](val authenticatedRequest: AuthenticatedRequest[A], val cacheModel: ExportsDeclaration)
-    extends AuthenticatedRequest[A](authenticatedRequest, authenticatedRequest.user) {
-  val choice: Choice = Choice(cacheModel.`type`)
-  def eori: String = authenticatedRequest.user.eori
+object DeclarationType extends Enumeration {
+  type DeclarationType = Value
+  implicit val format: Format[DeclarationType.Value] = EnumJson.format(DeclarationType)
+  val STANDARD, SUPPLEMENTARY, SIMPLIFIED = Value
 }
