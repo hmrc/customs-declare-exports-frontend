@@ -16,13 +16,12 @@
 
 package models.requests
 
-import forms.Choice
 import models.DeclarationType.DeclarationType
 import models.ExportsDeclaration
-import play.api.mvc.WrappedRequest
 
 class JourneyRequest[A](val authenticatedRequest: AuthenticatedRequest[A], val cacheModel: ExportsDeclaration)
     extends AuthenticatedRequest[A](authenticatedRequest, authenticatedRequest.user) {
   val declarationType: DeclarationType = cacheModel.`type`
+  def isType(`type`: DeclarationType): Boolean = declarationType == `type`
   def eori: String = authenticatedRequest.user.eori
 }

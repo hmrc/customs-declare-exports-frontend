@@ -175,6 +175,6 @@ class TransportContainerController @Inject()(
       navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode))
 
   private def allowSeals(implicit request: JourneyRequest[AnyContent]) =
-    request.declarationType == DeclarationType.STANDARD || request.declarationType == DeclarationType.SIMPLIFIED
+    request.isType(DeclarationType.STANDARD) || request.isType(DeclarationType.SIMPLIFIED)
 
 }
