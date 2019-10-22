@@ -24,10 +24,10 @@ object AdditionalDeclarationType extends Enumeration {
     Format(
       Reads(
         _.validate[String]
-          .filter(s => AdditionalDeclarationType.values.exists(_.toString == s))
+          .filter(`type` => AdditionalDeclarationType.values.exists(_.toString == `type`))
           .map(AdditionalDeclarationType.from(_).get)
       ),
-      Writes(v => JsString(v.toString))
+      Writes(value => JsString(value.toString))
     )
 
   val SUPPLEMENTARY_SIMPLIFIED = Value("Y")
