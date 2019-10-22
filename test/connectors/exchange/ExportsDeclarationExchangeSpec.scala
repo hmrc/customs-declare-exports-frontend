@@ -21,6 +21,7 @@ import java.time.Instant
 import forms.{Ducr, Lrn}
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import models.declaration.{ExportItem, Locations, Parties, TransportInformationContainerData}
 import models.{DeclarationStatus, DeclarationType, ExportsDeclaration}
 import org.scalatestplus.mockito.MockitoSugar

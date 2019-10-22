@@ -19,7 +19,7 @@ package models
 import java.time.{Clock, Instant}
 
 import forms.declaration._
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import models.DeclarationStatus.DeclarationStatus
 import models.DeclarationType.DeclarationType
 import models.declaration._

@@ -16,9 +16,11 @@
 
 package forms.declaration.additionaldeclarationtype
 
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+
 object AdditionalDeclarationTypeStandardDec extends AdditionalDeclarationTypeTrait {
-  override def allowedValues: Set[String] =
-    Set(AllowedAdditionalDeclarationTypes.PreLodged, AllowedAdditionalDeclarationTypes.Frontier)
+  override def allowedValues: Set[AdditionalDeclarationType] =
+    Set(AdditionalDeclarationType.STANDARD_PRE_LODGED, AdditionalDeclarationType.STANDARD_FRONTIER)
 
   object AllowedAdditionalDeclarationTypes {
     val PreLodged = "D"

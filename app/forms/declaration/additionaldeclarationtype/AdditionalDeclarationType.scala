@@ -16,12 +16,24 @@
 
 package forms.declaration.additionaldeclarationtype
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Format, JsString, Reads, Writes}
 
-case class AdditionalDeclarationType(
-  additionalDeclarationType: String // 1 upper case alphabetic character
-)
+object AdditionalDeclarationType extends Enumeration {
+  type AdditionalDeclarationType = Value
+  implicit val format: Format[AdditionalDeclarationType.Value] =
+    Format(
+      Reads(
+        _.validate[String]
+          .filter(`type` => AdditionalDeclarationType.values.exists(_.toString == `type`))
+          .map(AdditionalDeclarationType.from(_).get)
+      ),
+      Writes(value => JsString(value.toString))
+    )
 
-object AdditionalDeclarationType {
-  implicit val format = Json.format[AdditionalDeclarationType]
+  val SUPPLEMENTARY_SIMPLIFIED = Value("Y")
+  val SUPPLEMENTARY_EIDR = Value("Z")
+  val STANDARD_PRE_LODGED = Value("D")
+  val STANDARD_FRONTIER = Value("A")
+
+  def from(string: String): Option[AdditionalDeclarationType] = AdditionalDeclarationType.values.find(_.toString == string)
 }

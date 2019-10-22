@@ -55,9 +55,7 @@ class AdditionalDeclarationTypeStandardDecSpec extends WordSpec with MustMatcher
 }
 
 object AdditionalDeclarationTypeStandardDecSpec {
-  val correctAdditionalDeclarationTypeStandardDec = AdditionalDeclarationType(PreLodged)
-  val incorrectAdditionalDeclarationTypeStandardDec = AdditionalDeclarationType("1")
-  val emptyAdditionalDeclarationTypeStandardDec = AdditionalDeclarationType("")
+  val correctAdditionalDeclarationTypeStandardDec = AdditionalDeclarationType.STANDARD_PRE_LODGED
 
   val correctAdditionalDeclarationTypeStandardDecJSON: JsValue = JsObject(Map("additionalDeclarationType" -> JsString(PreLodged)))
   val incorrectAdditionalDeclarationTypeStandardDecJSON: JsValue = JsObject(Map("additionalDeclarationType" -> JsString("1")))

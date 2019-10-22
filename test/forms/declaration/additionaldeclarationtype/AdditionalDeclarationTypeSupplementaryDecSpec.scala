@@ -58,9 +58,7 @@ class AdditionalDeclarationTypeSupplementaryDecSpec extends WordSpec with MustMa
 }
 
 object AdditionalDeclarationTypeSupplementaryDecSpec {
-  val correctAdditionalDeclarationTypeSupplementaryDec = AdditionalDeclarationType(Simplified)
-  val incorrectAdditionalDeclarationTypeSupplementaryDec = AdditionalDeclarationType("1")
-  val emptyAdditionalDeclarationTypeSupplementaryDec = AdditionalDeclarationType("")
+  val correctAdditionalDeclarationTypeSupplementaryDec = AdditionalDeclarationType.SUPPLEMENTARY_SIMPLIFIED
 
   val correctAdditionalDeclarationTypeSupplementaryDecJSON: JsValue = JsObject(Map("additionalDeclarationType" -> JsString(Simplified)))
   val incorrectAdditionalDeclarationTypeSupplementaryDecJSON: JsValue = JsObject(Map("additionalDeclarationType" -> JsString("1")))

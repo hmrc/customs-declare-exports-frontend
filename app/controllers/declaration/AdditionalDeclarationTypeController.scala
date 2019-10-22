@@ -19,6 +19,7 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype._
 import javax.inject.Inject
 import models.requests.JourneyRequest

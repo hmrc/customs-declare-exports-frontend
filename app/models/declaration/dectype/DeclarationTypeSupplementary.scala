@@ -17,7 +17,7 @@
 package models.declaration.dectype
 
 import forms.declaration.DispatchLocation
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import models.ExportsDeclaration
 import models.declaration.SummaryContainer
 

@@ -84,8 +84,8 @@ object FieldValidator {
 
   val startsWithCapitalLetter: String => Boolean = (input: String) => input.headOption.exists(_.isUpper)
 
-  val isContainedIn: Iterable[String] => String => Boolean =
-    (iterable: Iterable[String]) => (input: String) => iterable.exists(_ == input)
+  def isContainedIn[T](iterable: Iterable[T]): T => Boolean =
+    (input: T) => iterable.exists(_ == input)
 
   val containsNotOnlyZeros: String => Boolean = (input: String) => input.isEmpty || input.exists(char => char != '0')
 
