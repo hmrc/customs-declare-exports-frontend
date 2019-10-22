@@ -21,7 +21,7 @@ import controllers.navigation.Navigator
 import forms.Choice.AllowedChoiceValues._
 import forms.declaration.RepresentativeDetails
 import javax.inject.Inject
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -61,10 +61,10 @@ class RepresentativeDetailsController @Inject()(
   }
 
   private def nextPage(mode: Mode, request: JourneyRequest[AnyContent]) =
-    request.choice.value match {
-      case SupplementaryDec =>
+    request.declarationType match {
+      case DeclarationType.SUPPLEMENTARY =>
         controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage(mode)
-      case StandardDec | SimplifiedDec =>
+      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED =>
         controllers.declaration.routes.CarrierDetailsController.displayPage(mode)
     }
 
