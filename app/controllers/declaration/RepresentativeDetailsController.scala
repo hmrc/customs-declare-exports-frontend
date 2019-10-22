@@ -64,7 +64,7 @@ class RepresentativeDetailsController @Inject()(
     request.choice.value match {
       case SupplementaryDec =>
         controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage(mode)
-      case StandardDec =>
+      case StandardDec | SimplifiedDec =>
         controllers.declaration.routes.CarrierDetailsController.displayPage(mode)
     }
 

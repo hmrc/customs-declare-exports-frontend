@@ -22,6 +22,7 @@ import controllers.util.SaveAndReturn
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.{
   AdditionalDeclarationType,
+  AdditionalDeclarationTypeSimplifiedDec,
   AdditionalDeclarationTypeStandardDec,
   AdditionalDeclarationTypeSupplementaryDec
 }
@@ -31,7 +32,6 @@ import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.libs.json.JsString
 import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
@@ -44,6 +44,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
 
   private val formStandard: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeStandardDec.form()
   private val formSupplementary: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeSupplementaryDec.form()
+  private val formSimplified: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeSimplifiedDec.form()
   private val declarationTypePage = new declaration_type(mainTemplate)
   private def createView(form: Form[AdditionalDeclarationType], journeyType: DeclarationType, messages: Messages = stubMessages()): Document =
     declarationTypePage(Mode.Normal, form)(journeyRequest(journeyType), messages)
@@ -59,6 +60,11 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
 
       "used for Supplementary Declaration journey" in {
         val viewWithMessage = createView(formSupplementary, DeclarationType.SUPPLEMENTARY, realMessagesApi.preferred(request))
+        viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
+      }
+
+      "used for Simplified Declaration journey" in {
+        val viewWithMessage = createView(formSimplified, DeclarationType.SIMPLIFIED, realMessagesApi.preferred(request))
         viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
       }
     }
@@ -79,6 +85,13 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         backButton.text() mustBe messages(backCaption)
         backButton.attr("href") mustBe routes.DispatchLocationController.displayPage().url
       }
+
+      "used for Simplified Declaration journey" in {
+        val backButton = createView(formSimplified, DeclarationType.SIMPLIFIED).getElementById("link-back")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.DispatchLocationController.displayPage().url
+      }
     }
 
     "display 'Save and continue' button" when {
@@ -90,6 +103,11 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
 
       "used for Supplementary Declaration journey" in {
         val view: Document = createView(formSupplementary, DeclarationType.SUPPLEMENTARY)
+        view.getElementById("submit").text() mustBe messages(saveAndContinueCaption)
+      }
+
+      "used for Simplified Declaration journey" in {
+        val view: Document = createView(formSimplified, DeclarationType.SIMPLIFIED)
         view.getElementById("submit").text() mustBe messages(saveAndContinueCaption)
       }
     }
@@ -105,6 +123,13 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
 
       "used for Supplementary Declaration journey" in {
         val view: Document = createView(formSupplementary, DeclarationType.SUPPLEMENTARY)
+        val button = view.getElementById("submit_and_return")
+        button.text() mustBe messages(saveAndReturnCaption)
+        button must haveAttribute("name", SaveAndReturn.toString)
+      }
+
+      "used for Simplified Declaration journey" in {
+        val view: Document = createView(formSimplified, DeclarationType.SIMPLIFIED)
         val button = view.getElementById("submit_and_return")
         button.text() mustBe messages(saveAndReturnCaption)
         button must haveAttribute("name", SaveAndReturn.toString)
@@ -126,6 +151,13 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
 
         view.getElementById("title").text() mustBe messages(headerSupplementaryDec)
       }
+
+      "used for Simplified Declaration journey" in {
+
+        val view = createView(formSimplified, DeclarationType.SIMPLIFIED)
+
+        view.getElementById("title").text() mustBe messages(headerSimplifiedDec)
+      }
     }
 
     "display two radio buttons with description (not selected)" when {
@@ -138,13 +170,13 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         optionOne.attr("checked") mustBe empty
 
         val optionOneLabel = view.getElementById("PreLodged-label")
-        optionOneLabel.text() mustBe messages(preLodged)
+        optionOneLabel.text() mustBe messages(standardPreLodged)
 
         val optionTwo = view.getElementById("Frontier")
         optionTwo.attr("checked") mustBe empty
 
         val optionTwoLabel = view.getElementById("Frontier-label")
-        optionTwoLabel.text() mustBe messages(frontier)
+        optionTwoLabel.text() mustBe messages(standardFrontier)
       }
 
       "used for Supplementary Declaration journey" in {
@@ -155,13 +187,30 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         optionOne.attr("checked") mustBe empty
 
         val optionOneLabel = view.select("#additionalDeclarationType>div:nth-child(2)>label")
-        optionOneLabel.text() mustBe messages(simplified)
+        optionOneLabel.text() mustBe messages(supplementarySimplified)
 
         val optionTwo = view.getElementById("Standard")
         optionTwo.attr("checked") mustBe empty
 
         val optionTwoLabel = view.select("#additionalDeclarationType>div:nth-child(3)>label")
-        optionTwoLabel.text() mustBe messages(standard)
+        optionTwoLabel.text() mustBe messages(supplementaryStandard)
+      }
+
+      "used for Simplified Declaration journey" in {
+
+        val view = createView(formSimplified, DeclarationType.SIMPLIFIED)
+
+        val optionOne = view.getElementById("PreLodged")
+        optionOne.attr("checked") mustBe empty
+
+        val optionOneLabel = view.getElementById("PreLodged-label")
+        optionOneLabel.text() mustBe messages(simplifiedPreLodged)
+
+        val optionTwo = view.getElementById("Frontier")
+        optionTwo.attr("checked") mustBe empty
+
+        val optionTwoLabel = view.getElementById("Frontier-label")
+        optionTwoLabel.text() mustBe messages(simplifiedFrontier)
       }
     }
 
@@ -190,6 +239,16 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
 
         view.select("#error-message-additionalDeclarationType-input").text() mustBe messages(errorMessageEmpty)
       }
+
+      "used for Simplified Declaration journey" in {
+
+        val view = createView(formSimplified.bind(Map[String, String]()), DeclarationType.SIMPLIFIED)
+
+        checkErrorsSummary(view)
+        view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
+
+        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages(errorMessageEmpty)
+      }
     }
 
     "display error if incorrect declaration is selected" when {
@@ -207,6 +266,16 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
       "used for Supplementary Declaration journey" in {
 
         val view = createView(formSupplementary.bind(Map("additionalDeclarationType" -> "#")), DeclarationType.SUPPLEMENTARY)
+
+        checkErrorsSummary(view)
+        view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
+
+        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages(errorMessageIncorrect)
+      }
+
+      "used for Simplified Declaration journey" in {
+
+        val view = createView(formSimplified.bind(Map("additionalDeclarationType" -> "#")), DeclarationType.SIMPLIFIED)
 
         checkErrorsSummary(view)
         view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
@@ -242,6 +311,17 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         val optionTwo = view.getElementById("Standard")
         optionTwo.attr("checked") mustBe empty
       }
+
+      "used for Simplified Declaration journey - Pre-lodged (F)" in {
+
+        val view = createView(formSimplified.fill(AdditionalDeclarationType.SIMPLIFIED_PRE_LODGED), DeclarationType.SIMPLIFIED)
+
+        val optionOne = view.getElementById("PreLodged")
+        optionOne.attr("checked") mustBe "checked"
+
+        val optionTwo = view.getElementById("Frontier")
+        optionTwo.attr("checked") mustBe empty
+      }
     }
 
     "display selected second radio button" when {
@@ -265,6 +345,17 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         optionOne.attr("checked") mustBe empty
 
         val optionTwo = view.getElementById("Standard")
+        optionTwo.attr("checked") mustBe "checked"
+      }
+
+      "used for Simplified Declaration journey - Frontier (C)" in {
+
+        val view = createView(formSimplified.fill(AdditionalDeclarationType.SIMPLIFIED_FRONTIER), DeclarationType.SIMPLIFIED)
+
+        val optionOne = view.getElementById("PreLodged")
+        optionOne.attr("checked") mustBe empty
+
+        val optionTwo = view.getElementById("Frontier")
         optionTwo.attr("checked") mustBe "checked"
       }
     }

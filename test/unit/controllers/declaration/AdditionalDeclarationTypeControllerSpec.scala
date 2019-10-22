@@ -19,6 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.AdditionalDeclarationTypeController
 import controllers.util.SaveAndContinue
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
+import models.DeclarationType.DeclarationType
 import models.{DeclarationType, Mode}
 import play.api.libs.json.JsString
 import play.api.test.Helpers._
@@ -42,82 +43,92 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
     authorizedUser()
   }
 
-  trait SupplementarySetUp extends SetUp {
-    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
-  }
-
-  trait StandardSetUp extends SetUp {
-    withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
-  }
-
   "Display Page" should {
     "return 200 (OK)" when {
-      "cache is empty during supplementary journey" in new SupplementarySetUp {
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+      "cache is empty" when {
+        for (decType: DeclarationType <- DeclarationType.values) {
+          s"during $decType journey" in new SetUp {
+            withNewCaching(aDeclaration(withType(decType)))
 
-        status(result) must be(OK)
+            val result = controller.displayPage(Mode.Normal)(getRequest())
+
+            status(result) must be(OK)
+          }
+        }
       }
 
-      "cache is populated during supplementary journey" in new SupplementarySetUp {
-        val cachedData = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
-          .copy(additionalDeclarationType = Some(AdditionalDeclarationType.SUPPLEMENTARY_EIDR))
-        withNewCaching(cachedData)
+      "cache is populated" when {
+        "during supplementary journey" in new SetUp {
+          withNewCaching(
+            aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withAdditionalDeclarationType(AdditionalDeclarationType.SUPPLEMENTARY_EIDR))
+          )
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage(Mode.Normal)(getRequest())
 
-        status(result) must be(OK)
-      }
+          status(result) must be(OK)
+        }
 
-      "cache is empty during standard journey" in new StandardSetUp {
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        "during standard journey" in new SetUp {
+          withNewCaching(
+            aDeclaration(withType(DeclarationType.STANDARD), withAdditionalDeclarationType(AdditionalDeclarationType.STANDARD_PRE_LODGED))
+          )
 
-        status(result) must be(OK)
-      }
+          val result = controller.displayPage(Mode.Normal)(getRequest())
 
-      "cache is populated during standard journey" in new StandardSetUp {
-        val cachedData = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
-          .copy(additionalDeclarationType = Some(AdditionalDeclarationType.STANDARD_PRE_LODGED))
-        withNewCaching(cachedData)
+          status(result) must be(OK)
+        }
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        "during simplified journey" in new SetUp {
+          withNewCaching(
+            aDeclaration(withType(DeclarationType.SIMPLIFIED), withAdditionalDeclarationType(AdditionalDeclarationType.SIMPLIFIED_FRONTIER))
+          )
 
-        status(result) must be(OK)
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) must be(OK)
+        }
       }
     }
   }
 
   "Submit" should {
-    "return 400 (BAD_REQUEST)" when {
-      "form is incorrect during supplementary journey" in new SupplementarySetUp {
-        val incorrectForm = JsString("x")
+    "return 400 (BAD_REQUEST) for is invalid" when {
+      for (decType: DeclarationType <- DeclarationType.values) {
+        s"during $decType journey" in new SetUp {
+          withNewCaching(aDeclaration(withType(decType)))
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+          val result = controller.submitForm(Mode.Normal)(postRequest(JsString("x")))
 
-        status(result) must be(BAD_REQUEST)
-      }
-
-      "form is incorrect during standard journey" in new StandardSetUp {
-        val incorrectForm = JsString("x")
-
-        val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
-
-        status(result) must be(BAD_REQUEST)
+          status(result) must be(BAD_REQUEST)
+        }
       }
     }
 
     "Continue to the next page" when {
-      "during supplementary journey" in new SupplementarySetUp {
-        val correctForm = Seq("additionalDeclarationType" -> "Z", SaveAndContinue.toString -> "")
+      "during supplementary journey" in new SetUp {
+        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
 
+        val correctForm = Seq("additionalDeclarationType" -> "Z", SaveAndContinue.toString -> "")
         val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.ConsignmentReferencesController.displayPage()
       }
 
-      "during standard journey" in new StandardSetUp {
-        val correctForm = Seq("additionalDeclarationType" -> "D", SaveAndContinue.toString -> "")
+      "during standard journey" in new SetUp {
+        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
 
+        val correctForm = Seq("additionalDeclarationType" -> "D", SaveAndContinue.toString -> "")
+        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.ConsignmentReferencesController.displayPage()
+      }
+
+      "during simplified journey" in new SetUp {
+        withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED)))
+
+        val correctForm = Seq("additionalDeclarationType" -> "F", SaveAndContinue.toString -> "")
         val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage

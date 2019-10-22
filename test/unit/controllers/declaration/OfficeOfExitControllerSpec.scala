@@ -202,4 +202,68 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
       }
     }
   }
+
+  "Office of Exit controller for simplified journey" should {
+
+    "return 200 (OK)" when {
+
+      "display page method is invoked and cache is empty" in {
+
+        withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED)))
+
+        val result = controller.displayPage(Mode.Normal)(getRequest())
+
+        status(result) mustBe OK
+        checkStandardViewInteractions()
+
+        theStandardResponseForm.value mustBe empty
+      }
+
+      "display page method is invoked and cache contains data" in {
+
+        val officeId = "officeId"
+        val circumstancesCode = "Yes"
+        withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED), withOfficeOfExit(officeId, Some(circumstancesCode))))
+
+        val result = controller.displayPage(Mode.Normal)(getRequest())
+
+        status(result) mustBe OK
+        checkStandardViewInteractions()
+
+        theStandardResponseForm.value.value.officeId mustBe officeId
+        theStandardResponseForm.value.value.circumstancesCode mustBe circumstancesCode
+      }
+    }
+
+    "return 400 (BAD_REQUEST)" when {
+
+      "form is incorrect" in {
+
+        withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED)))
+
+        val incorrectForm = Json.toJson(OfficeOfExitStandard("!@#$", "wrong"))
+
+        val result = controller.saveOffice(Mode.Normal)(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+        checkStandardViewInteractions()
+      }
+    }
+
+    "return 303 (SEE_OTHER)" when {
+
+      "information provided by user are correct" in {
+
+        withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED)))
+
+        val correctForm = Json.toJson(OfficeOfExitStandard("officeId", "Yes"))
+
+        val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.TotalNumberOfItemsController.displayPage()
+        checkStandardViewInteractions(0)
+      }
+    }
+  }
 }

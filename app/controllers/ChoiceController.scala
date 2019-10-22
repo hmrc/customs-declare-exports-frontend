@@ -73,7 +73,7 @@ class ChoiceController @Inject()(
         (formWithErrors: Form[Choice]) => Future.successful(BadRequest(choicePage(formWithErrors))),
         choice =>
           choice.value match {
-            case SupplementaryDec | StandardDec =>
+            case SupplementaryDec | StandardDec | SimplifiedDec =>
               val declarationType = choice.toDeclarationType
                 .getOrElse(throw new IllegalArgumentException(s"Cannot deduce Declaration Type from Choice [${choice.value}]"))
               request.declarationId match {

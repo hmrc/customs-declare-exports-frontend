@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
+import forms.Choice.AllowedChoiceValues.{SimplifiedDec, StandardDec, SupplementaryDec}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype._
 import javax.inject.Inject
@@ -67,6 +67,7 @@ class AdditionalDeclarationTypeController @Inject()(
     journeyRequest.choice.value match {
       case SupplementaryDec => AdditionalDeclarationTypeSupplementaryDec
       case StandardDec      => AdditionalDeclarationTypeStandardDec
+      case SimplifiedDec    => AdditionalDeclarationTypeSimplifiedDec
     }
 
   private def updateCache(formData: AdditionalDeclarationType)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =

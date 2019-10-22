@@ -41,11 +41,12 @@
                 field = form("value"),
                 legend = "",
                 inputs = Seq(
-                    RadioOption("Standard declaration", StandardDec, messages("declaration.choice.STD")),
-                    RadioOption("Supplementary declaration", SupplementaryDec, messages("declaration.choice.SMP")),
-                    RadioOption("Submissions", Submissions, messages("declaration.choice.SUB")),
-                    RadioOption("Continue declaration", ContinueDec, messages("declaration.choice.CON")),
-                    RadioOption("Cancel declaration", CancelDec, messages("declaration.choice.CAN"))
+                    RadioOption("Standard declaration", StandardDec, messages(s"declaration.choice.$StandardDec")),
+                    RadioOption("Supplementary declaration", SupplementaryDec, messages(s"declaration.choice.$SupplementaryDec")),
+                    RadioOption("Simplified declaration", SimplifiedDec, messages(s"declaration.choice.$SimplifiedDec")),
+                    RadioOption("Submissions", Submissions, messages(s"declaration.choice.$Submissions")),
+                    RadioOption("Continue declaration", ContinueDec, messages(s"declaration.choice.$ContinueDec")),
+                    RadioOption("Cancel declaration", CancelDec, messages(s"declaration.choice.$CancelDec"))
                 ).filter(radioOption => appConfig.availableJourneys().contains(radioOption.value))
             )
 

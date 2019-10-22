@@ -49,13 +49,14 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
       viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
     }
 
-    "display four radio buttons with description (not selected)" in {
+    "display radio buttons with description (not selected)" in {
 
       val view = createView(Choice.form().fill(Choice("")))
       ensureAllLabelTextIsCorrect(view)
 
       ensureRadioIsUnChecked(view, "Supplementary declaration")
       ensureRadioIsUnChecked(view, "Standard declaration")
+      ensureRadioIsUnChecked(view, "Simplified declaration")
       ensureRadioIsUnChecked(view, "Cancel declaration")
       ensureRadioIsUnChecked(view, "Submissions")
       ensureRadioIsUnChecked(view, "Continue declaration")
@@ -131,6 +132,7 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
 
       ensureRadioIsChecked(view, "Supplementary declaration")
       ensureRadioIsUnChecked(view, "Standard declaration")
+      ensureRadioIsUnChecked(view, "Simplified declaration")
       ensureRadioIsUnChecked(view, "Cancel declaration")
       ensureRadioIsUnChecked(view, "Submissions")
       ensureRadioIsUnChecked(view, "Continue declaration")
@@ -142,6 +144,19 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
 
       ensureRadioIsUnChecked(view, "Supplementary declaration")
       ensureRadioIsChecked(view, "Standard declaration")
+      ensureRadioIsUnChecked(view, "Simplified declaration")
+      ensureRadioIsUnChecked(view, "Cancel declaration")
+      ensureRadioIsUnChecked(view, "Submissions")
+      ensureRadioIsUnChecked(view, "Continue declaration")
+    }
+
+    "display selected radio button - Simplified (SIM)" in {
+      val view = createView(Choice.form().fill(Choice("SIM")))
+      ensureAllLabelTextIsCorrect(view)
+
+      ensureRadioIsUnChecked(view, "Supplementary declaration")
+      ensureRadioIsUnChecked(view, "Standard declaration")
+      ensureRadioIsChecked(view, "Simplified declaration")
       ensureRadioIsUnChecked(view, "Cancel declaration")
       ensureRadioIsUnChecked(view, "Submissions")
       ensureRadioIsUnChecked(view, "Continue declaration")
@@ -153,6 +168,7 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
 
       ensureRadioIsUnChecked(view, "Supplementary declaration")
       ensureRadioIsUnChecked(view, "Standard declaration")
+      ensureRadioIsUnChecked(view, "Simplified declaration")
       ensureRadioIsChecked(view, "Cancel declaration")
       ensureRadioIsUnChecked(view, "Submissions")
       ensureRadioIsUnChecked(view, "Continue declaration")
@@ -165,6 +181,7 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
 
       ensureRadioIsUnChecked(view, "Supplementary declaration")
       ensureRadioIsUnChecked(view, "Standard declaration")
+      ensureRadioIsUnChecked(view, "Simplified declaration")
       ensureRadioIsUnChecked(view, "Cancel declaration")
       ensureRadioIsChecked(view, "Submissions")
       ensureRadioIsUnChecked(view, "Continue declaration")
@@ -177,15 +194,17 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
 
       ensureRadioIsUnChecked(view, "Supplementary declaration")
       ensureRadioIsUnChecked(view, "Standard declaration")
+      ensureRadioIsUnChecked(view, "Simplified declaration")
       ensureRadioIsUnChecked(view, "Cancel declaration")
       ensureRadioIsUnChecked(view, "Submissions")
       ensureRadioIsChecked(view, "Continue declaration")
     }
   }
   private def ensureAllLabelTextIsCorrect(view: Document): Unit = {
-    view.getElementsByTag("label").size mustBe 5
+    view.getElementsByTag("label").size mustBe 6
     view.getElementById("Standard declaration-label").text() mustBe standardDec
     view.getElementById("Supplementary declaration-label").text() mustBe supplementaryDec
+    view.getElementById("Simplified declaration-label").text() mustBe simplifiedDec
     view.getElementById("Submissions-label").text() mustBe recentDec
     view.getElementById("Continue declaration-label").text() mustBe continueDec
     view.getElementById("Cancel declaration-label").text() mustBe cancelDec
