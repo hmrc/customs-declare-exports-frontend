@@ -114,7 +114,7 @@
             labelClass = Some("bold-small")
         )
 
-        @if(request.declarationType == DeclarationType.STANDARD || request.declarationType == DeclarationType.SIMPLIFIED) @{
+        @if(request.isType(DeclarationType.STANDARD) || request.isType(DeclarationType.SIMPLIFIED)) @{
             components.fields.field_text(
                 field = form(unDangerousGoodsCodeKey),
                 label = messages("declaration.itemType.unDangerousGoodsCode.header"),
