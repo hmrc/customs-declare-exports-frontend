@@ -114,7 +114,7 @@
             labelClass = Some("bold-small")
         )
 
-        @if(request.choice.value == AllowedChoiceValues.StandardDec) @{
+        @if(request.choice.value == AllowedChoiceValues.StandardDec || request.choice.value == AllowedChoiceValues.SimplifiedDec) @{
             components.fields.field_text(
                 field = form(unDangerousGoodsCodeKey),
                 label = messages("declaration.itemType.unDangerousGoodsCode.header"),

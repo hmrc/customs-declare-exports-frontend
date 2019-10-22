@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.remove
 import controllers.util._
-import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
+import forms.Choice.AllowedChoiceValues.{SimplifiedDec, StandardDec, SupplementaryDec}
 import forms.declaration.destinationCountries.DestinationCountries.{Standard, Supplementary}
 import forms.declaration.destinationCountries._
 import handlers.ErrorHandler
@@ -53,8 +53,8 @@ class DestinationCountriesController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.choice.value match {
-      case SupplementaryDec => displayPageSupplementary(mode)
-      case StandardDec      => displayPageStandard(mode)
+      case SupplementaryDec            => displayPageSupplementary(mode)
+      case StandardDec | SimplifiedDec => displayPageStandard(mode)
     }
   }
 
@@ -72,8 +72,8 @@ class DestinationCountriesController @Inject()(
 
   def saveCountries(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     request.choice.value match {
-      case SupplementaryDec => handleSubmitSupplementary(mode)
-      case StandardDec      => handleSubmitStandard(mode)
+      case SupplementaryDec            => handleSubmitSupplementary(mode)
+      case StandardDec | SimplifiedDec => handleSubmitStandard(mode)
     }
   }
 

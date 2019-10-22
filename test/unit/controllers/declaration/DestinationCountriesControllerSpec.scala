@@ -56,6 +56,10 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
     withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
   }
 
+  trait SimplifiedSetUp extends SetUp {
+    withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED)))
+  }
+
   "Destination Countries controller" should {
 
     "return 200 (OK) during supplementary journey" when {
@@ -87,6 +91,25 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
       }
 
       "display page method is invoked with data in cache" in new StandardSetUp {
+
+        withNewCaching(aDeclaration(withDestinationCountries()))
+
+        val result = controller.displayPage(Mode.Normal)(getRequest())
+
+        status(result) must be(OK)
+      }
+    }
+
+    "return 200 (OK) during simplified journey" when {
+
+      "display page method is invoked with empty cache" in new SimplifiedSetUp {
+
+        val result = controller.displayPage(Mode.Normal)(getRequest())
+
+        status(result) must be(OK)
+      }
+
+      "display page method is invoked with data in cache" in new SimplifiedSetUp {
 
         withNewCaching(aDeclaration(withDestinationCountries()))
 
@@ -190,6 +213,88 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
       }
     }
 
+    "return 400 (BAD_REQUEST) during simplified journey" when {
+
+      "user provide wrong action" in new SimplifiedSetUp {
+
+        val wrongAction = Seq(("countryOfDispatch", "GB"), ("countriesOfRouting[]", "US"), ("countryOfDestination", "PL"), ("WrongAction", ""))
+
+        val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(wrongAction: _*))
+
+        status(result) must be(BAD_REQUEST)
+      }
+
+      "user provide incorrect data during adding" in new SimplifiedSetUp {
+
+        val incorrectForm =
+          Seq(("countryOfDispatch", "incorrect"), ("countriesOfRouting[]", "incorrect"), ("countryOfDestination", "incorrect"), addActionUrlEncoded())
+
+        val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(incorrectForm: _*))
+
+        status(result) must be(BAD_REQUEST)
+      }
+
+      "user provide incorrect data during saving" in new SimplifiedSetUp {
+
+        val incorrectForm = Seq(
+          ("countryOfDispatch", "incorrect"),
+          ("countriesOfRouting[]", "incorrect"),
+          ("countryOfDestination", "incorrect"),
+          saveAndContinueActionUrlEncoded
+        )
+
+        val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(incorrectForm: _*))
+
+        status(result) must be(BAD_REQUEST)
+      }
+
+      "user provide duplicated data during adding" in new SimplifiedSetUp {
+
+        withNewCaching(aDeclaration(withDestinationCountries(DestinationCountries("GB", Seq("US"), "PL"))))
+
+        val duplicatedForm = Seq(("countryOfDispatch", "GB"), ("countriesOfRouting[]", "US"), ("countryOfDestination", "PL"), addActionUrlEncoded())
+
+        val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+
+        status(result) must be(BAD_REQUEST)
+      }
+
+      "user provide duplicated data during saving" in new SimplifiedSetUp {
+
+        withNewCaching(aDeclaration(withDestinationCountries(DestinationCountries("GB", Seq("US"), "PL"))))
+
+        val duplicatedForm =
+          Seq(("countryOfDispatch", "GB"), ("countriesOfRouting[]", "US"), ("countryOfDestination", "PL"), saveAndContinueActionUrlEncoded)
+
+        val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+
+        status(result) must be(BAD_REQUEST)
+      }
+
+      "user reach maximum amount of items during adding" in new SimplifiedSetUp {
+
+        withNewCaching(aDeclaration(withDestinationCountries(DestinationCountries("GB", Seq.fill(DestinationCountries.limit)("US"), "PL"))))
+
+        val correctForm = Seq(("countryOfDispatch", "GB"), ("countriesOfRouting[]", "US"), ("countryOfDestination", "PL"), addActionUrlEncoded())
+
+        val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        status(result) must be(BAD_REQUEST)
+      }
+
+      "user reach maximum amount of items during saving" in new SimplifiedSetUp {
+
+        withNewCaching(aDeclaration(withDestinationCountries(DestinationCountries("GB", Seq.fill(DestinationCountries.limit)("US"), "PL"))))
+
+        val correctForm =
+          Seq(("countryOfDispatch", "GB"), ("countriesOfRouting[]", "US"), ("countryOfDestination", "PL"), saveAndContinueActionUrlEncoded)
+
+        val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        status(result) must be(BAD_REQUEST)
+      }
+    }
+
     "return 303 (SEE_OTHER) during supplementary journey" when {
 
       "user put correct data" in new SupplementarySetUp {
@@ -239,6 +344,53 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
       }
 
       "user remove existing item" in new StandardSetUp {
+
+        withNewCaching(aDeclaration(withDestinationCountries(DestinationCountries("GB", Seq("US"), "PL"))))
+
+        val removeAction = (Remove.toString, "countriesOfRouting_0")
+
+        val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(removeAction))
+
+        status(result) must be(OK)
+      }
+    }
+
+    "return 303 (SEE_OTHER) during simplified journey" when {
+
+      "user correctly add new item" in new SimplifiedSetUp {
+
+        val correctForm = Seq(("countryOfDispatch", "GB"), ("countriesOfRouting[]", "US"), ("countryOfDestination", "PL"), addActionUrlEncoded())
+
+        val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        status(result) must be(OK)
+      }
+
+      "user save correct data with empty cache" in new SimplifiedSetUp {
+
+        val correctForm =
+          Seq(("countryOfDispatch", "GB"), ("countriesOfRouting[]", "US"), ("countryOfDestination", "PL"), saveAndContinueActionUrlEncoded)
+
+        val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.LocationController.displayPage()
+      }
+
+      "user save correct data with item in cache and empty form" in new SimplifiedSetUp {
+
+        withNewCaching(aDeclaration(withDestinationCountries(DestinationCountries("GB", Seq("US"), "PL"))))
+
+        val correctForm =
+          Seq(("countryOfDispatch", "GB"), ("countriesOfRouting[]", ""), ("countryOfDestination", "PL"), saveAndContinueActionUrlEncoded)
+
+        val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.LocationController.displayPage()
+      }
+
+      "user remove existing item" in new SimplifiedSetUp {
 
         withNewCaching(aDeclaration(withDestinationCountries(DestinationCountries("GB", Seq("US"), "PL"))))
 

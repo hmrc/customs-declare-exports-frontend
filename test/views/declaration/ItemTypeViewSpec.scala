@@ -168,6 +168,105 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       }
     }
 
+    "used for Simplified Declaration journey" should {
+
+      "display same page title as header" in {
+        val viewWithMessage = createView(journeyType = AllowedChoiceValues.SimplifiedDec, messages = realMessagesApi.preferred(request))
+        viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
+      }
+
+      val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec)
+
+      "display section header" in {
+        view.getElementById("section-header").text() must include("supplementary.items")
+      }
+
+      "display empty input with label for CNC" in {
+        view
+          .getElementById("combinedNomenclatureCode-label")
+          .text() mustBe "declaration.itemType.combinedNomenclatureCode.header"
+        view
+          .getElementById("combinedNomenclatureCode-hint")
+          .text() mustBe "declaration.itemType.combinedNomenclatureCode.header.hint"
+        view.getElementById("combinedNomenclatureCode").attr("value") mustBe empty
+      }
+
+      "display empty input with label for TARIC" in {
+        view
+          .getElementById("taricAdditionalCode-label")
+          .text() mustBe "declaration.itemType.taricAdditionalCodes.header"
+        view
+          .getElementById("taricAdditionalCode-hint")
+          .text() mustBe "declaration.itemType.taricAdditionalCodes.header.hint"
+        view.getElementById("taricAdditionalCode").attr("value") mustBe empty
+      }
+
+      "display empty input with label for NAC" in {
+        view
+          .getElementById("nationalAdditionalCode-label")
+          .text() mustBe "declaration.itemType.nationalAdditionalCode.header"
+        view
+          .getElementById("nationalAdditionalCode-hint")
+          .text() mustBe "declaration.itemType.nationalAdditionalCode.header.hint"
+        view.getElementById("nationalAdditionalCode").attr("value") mustBe empty
+      }
+
+      "display empty input with label for Statistical Value" in {
+        view.getElementById("statisticalValue-label").text() mustBe "declaration.itemType.statisticalValue.header"
+        view.getElementById("statisticalValue-hint").text() mustBe "declaration.itemType.statisticalValue.header.hint"
+        view.getElementById("statisticalValue").attr("value") mustBe empty
+      }
+
+      "display empty input with label for Description" in {
+        view.getElementById("descriptionOfGoods-label").ownText() mustBe "declaration.itemType.description.header"
+        view.getElementById("descriptionOfGoods-hint").text() mustBe "declaration.itemType.description.header.hint"
+        view.getElementById("descriptionOfGoods").text() mustBe empty
+      }
+
+      "display empty input with label for CUS" in {
+        view.getElementById("cusCode-label").text() mustBe "declaration.itemType.cusCode.header"
+        view.getElementById("cusCode-hint").text() mustBe "declaration.itemType.cusCode.header.hint"
+        view.getElementById("cusCode").attr("value") mustBe empty
+      }
+
+      "display empty input with label for UN Dangerous Goods Code" in {
+        view
+          .getElementById("unDangerousGoodsCode-label")
+          .text() mustBe "declaration.itemType.unDangerousGoodsCode.header"
+        view
+          .getElementById("unDangerousGoodsCode-hint")
+          .text() mustBe "declaration.itemType.unDangerousGoodsCode.header.hint"
+        view.getElementById("unDangerousGoodsCode").attr("value") mustBe empty
+      }
+
+      "display two 'Add' buttons" in {
+
+        view.getElementsByAttributeValue("name", "AddField").size() must be(2)
+      }
+
+      "display 'Back' button that links to 'fiscal-information' page" in {
+
+        val backButton = createView(journeyType = AllowedChoiceValues.SimplifiedDec).getElementById("link-back")
+
+        backButton.text() mustBe "site.back"
+        backButton.getElementById("link-back") must haveHref(
+          controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId = "itemId")
+        )
+      }
+
+      "display 'Save and continue' button" in {
+        val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec)
+        val saveButton = view.getElementById("submit")
+        saveButton.text() mustBe "site.save_and_continue"
+      }
+
+      "display 'Save and return' button" in {
+        val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec)
+        val saveButton = view.getElementById("submit_and_return")
+        saveButton.text() mustBe "site.save_and_come_back_later"
+      }
+    }
+
     "used for Supplementary Declaration journey" should {
 
       "display page title" in {
@@ -313,6 +412,57 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
         val itemType = ItemTypeForm("", None, Some(""), "", None, None, "12345")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
+
+        assertViewDataEntered(view, itemType)
+      }
+
+      def assertViewDataEntered(view: Document, itemType: ItemTypeForm): Unit = {
+        view.getElementById("combinedNomenclatureCode").attr("value") must equal(itemType.combinedNomenclatureCode)
+        view.getElementById("descriptionOfGoods").text() must equal(itemType.descriptionOfGoods)
+        view.getElementById("cusCode").attr("value") must equal(itemType.cusCode.getOrElse(""))
+        view.getElementById("unDangerousGoodsCode").attr("value") must equal(itemType.unDangerousGoodsCode.getOrElse(""))
+        view.getElementById("statisticalValue").attr("value") must equal(itemType.statisticalValue)
+      }
+    }
+
+    "used for Simplified Declaration journey" should {
+
+      "display data in CNC input" in {
+
+        val itemType = ItemTypeForm("12345", None, None, "", None, None, "")
+        val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec, form = ItemTypeForm.form().fill(itemType))
+
+        assertViewDataEntered(view, itemType)
+      }
+
+      "display data in Description input" in {
+
+        val itemType = ItemTypeForm("", None, Some(""), "Description", None, None, "")
+        val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec, form = ItemTypeForm.form().fill(itemType))
+
+        assertViewDataEntered(view, itemType)
+      }
+
+      "display data in CUS input" in {
+
+        val itemType = ItemTypeForm("", None, Some(""), "", Some("1234"), None, "")
+        val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec, form = ItemTypeForm.form().fill(itemType))
+
+        assertViewDataEntered(view, itemType)
+      }
+
+      "display data in UN Dangerous Goods Code input" in {
+
+        val itemType = ItemTypeForm("", None, Some(""), "", None, Some("1234"), "12345")
+        val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec, form = ItemTypeForm.form().fill(itemType))
+
+        assertViewDataEntered(view, itemType)
+      }
+
+      "display data in Statistical Value input" in {
+
+        val itemType = ItemTypeForm("", None, Some(""), "", None, None, "12345")
+        val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec, form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }

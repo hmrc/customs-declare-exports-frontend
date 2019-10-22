@@ -20,7 +20,7 @@ import models.DeclarationType
 import models.DeclarationType.DeclarationType
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.QueryStringBindable
 import utils.validators.forms.FieldValidator.isContainedIn
 
@@ -28,17 +28,18 @@ case class Choice(value: String) {
   def toDeclarationType: Option[DeclarationType] = value match {
     case Choice.AllowedChoiceValues.SupplementaryDec => Some(DeclarationType.SUPPLEMENTARY)
     case Choice.AllowedChoiceValues.StandardDec      => Some(DeclarationType.STANDARD)
+    case Choice.AllowedChoiceValues.SimplifiedDec    => Some(DeclarationType.SIMPLIFIED)
     case _                                           => None
   }
 }
 
 object Choice {
-  implicit val format = Json.format[Choice]
+  implicit val format: OFormat[Choice] = Json.format[Choice]
 
   val choiceId = "Choice"
 
   import AllowedChoiceValues._
-  private val correctChoices = Set(SupplementaryDec, StandardDec, ContinueDec, CancelDec, Submissions)
+  private val correctChoices = Set(SupplementaryDec, StandardDec, SimplifiedDec, ContinueDec, CancelDec, Submissions)
 
   val choiceMapping: Mapping[Choice] = Forms.single(
     "value" -> optional(
@@ -51,6 +52,7 @@ object Choice {
   def apply(`type`: DeclarationType): Choice = `type` match {
     case DeclarationType.STANDARD      => Choice(StandardDec)
     case DeclarationType.SUPPLEMENTARY => Choice(SupplementaryDec)
+    case DeclarationType.SIMPLIFIED    => Choice(SimplifiedDec)
   }
 
   def form(): Form[Choice] = Form(choiceMapping)
@@ -58,12 +60,13 @@ object Choice {
   object AllowedChoiceValues {
     val SupplementaryDec = "SMP"
     val StandardDec = "STD"
+    val SimplifiedDec = "SIM"
     val ContinueDec = "CON"
     val CancelDec = "CAN"
     val Submissions = "SUB"
   }
 
-  implicit val queryStringBindable = new QueryStringBindable[Choice] {
+  implicit val queryStringBindable: QueryStringBindable[Choice] = new QueryStringBindable[Choice] {
     override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, Choice]] =
       QueryStringBindable.bindableString.bind(key, params).map {
         case Right(choice) =>

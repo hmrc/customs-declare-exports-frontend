@@ -175,6 +175,6 @@ class TransportContainerController @Inject()(
       navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode))
 
   private def allowSeals(implicit request: JourneyRequest[AnyContent]) =
-    request.choice.value == AllowedChoiceValues.StandardDec
+    request.choice.value == AllowedChoiceValues.StandardDec || request.choice.value == AllowedChoiceValues.SimplifiedDec
 
 }

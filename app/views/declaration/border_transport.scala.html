@@ -86,7 +86,7 @@
             legend = messages("supplementary.transportInfo.container"),
             inputs = Seq(RadioOption("Yes", "true", messages("site.yes")), RadioOption("No", "false", messages("site.no")))
         )
-        @if(request.choice.value == AllowedChoiceValues.StandardDec) {
+        @if(request.choice.value == AllowedChoiceValues.StandardDec || request.choice.value == AllowedChoiceValues.SimplifiedDec) {
             @components.fields.field_radio(
                 field = form("paymentMethod"),
                 legend = messages("standard.transportDetails.paymentMethod"),

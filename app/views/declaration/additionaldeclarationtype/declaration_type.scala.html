@@ -30,6 +30,7 @@
     title = request.choice.value match {
         case SupplementaryDec => Title("declaration.declarationType.header.supplementary", "declaration.declarationType.title")
         case StandardDec => Title("declaration.declarationType.header.standard", "declaration.declarationType.title")
+        case SimplifiedDec => Title("declaration.declarationType.header.simplified", "declaration.declarationType.title")
     }
 ) {
 
@@ -44,6 +45,7 @@
             request.choice.value match {
                 case SupplementaryDec => declaration_type_question_supplementary(form)
                 case StandardDec => declaration_type_question_standard(form)
+                case SimplifiedDec => declaration_type_question_simplified(form)
             }
         }
 

@@ -145,6 +145,20 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
 
         verify(mockRepresentativeDetailsPage, times(0)).apply(any(), any())(any(), any())
       }
+
+      "form is correct and user is during Simplified journey" in {
+
+        withNewCaching(exampleDeclaration.copy(`type` = DeclarationType.SIMPLIFIED))
+
+        val correctForm = Json.toJson(RepresentativeDetails(Some(EntityDetails(Some(eori), None)), Some("2")))
+
+        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.CarrierDetailsController.displayPage()
+
+        verify(mockRepresentativeDetailsPage, times(0)).apply(any(), any())(any(), any())
+      }
     }
   }
 }

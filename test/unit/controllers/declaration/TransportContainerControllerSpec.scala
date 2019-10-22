@@ -134,6 +134,19 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
         theCacheModelUpdated.containers mustBe Seq(Container("value", Seq.empty))
       }
+
+      "working on simplified declaration with cache empty" in new SetUp {
+        withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED)))
+        val body = Seq("id" -> "value")
+
+        val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.SealController
+          .displaySealSummary(Mode.Normal, "value")
+
+        theCacheModelUpdated.containers mustBe Seq(Container("value", Seq.empty))
+      }
     }
 
     "add new container and redirect to container summary page" when {

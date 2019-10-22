@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
+import forms.Choice.AllowedChoiceValues.{SimplifiedDec, StandardDec, SupplementaryDec}
 import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitStandard, OfficeOfExitSupplementary}
 import javax.inject.Inject
 import models.{ExportsDeclaration, Mode}
@@ -48,8 +48,8 @@ class OfficeOfExitController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.choice.value match {
-      case SupplementaryDec => Ok(supplementaryPage(mode))
-      case StandardDec      => Ok(standardPage(mode))
+      case SupplementaryDec            => Ok(supplementaryPage(mode))
+      case StandardDec | SimplifiedDec => Ok(standardPage(mode))
     }
   }
 
@@ -67,8 +67,8 @@ class OfficeOfExitController @Inject()(
 
   def saveOffice(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     request.choice.value match {
-      case SupplementaryDec => saveSupplementaryOffice(mode)
-      case StandardDec      => saveStandardOffice(mode)
+      case SupplementaryDec            => saveSupplementaryOffice(mode)
+      case StandardDec | SimplifiedDec => saveStandardOffice(mode)
     }
   }
 
