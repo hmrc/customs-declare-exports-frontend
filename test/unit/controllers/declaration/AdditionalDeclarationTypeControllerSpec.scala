@@ -18,10 +18,9 @@ package unit.controllers.declaration
 
 import controllers.declaration.AdditionalDeclarationTypeController
 import controllers.util.SaveAndContinue
-import forms.Choice
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.{DeclarationType, Mode}
-import play.api.libs.json.Json
+import play.api.libs.json.JsString
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import views.html.declaration.additionaldeclarationtype.declaration_type
@@ -61,7 +60,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
 
       "cache is populated during supplementary journey" in new SupplementarySetUp {
         val cachedData = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
-          .copy(additionalDeclarationType = Some(AdditionalDeclarationType("Z")))
+          .copy(additionalDeclarationType = Some(AdditionalDeclarationType.SUPPLEMENTARY_EIDR))
         withNewCaching(cachedData)
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
@@ -77,7 +76,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
 
       "cache is populated during standard journey" in new StandardSetUp {
         val cachedData = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
-          .copy(additionalDeclarationType = Some(AdditionalDeclarationType("D")))
+          .copy(additionalDeclarationType = Some(AdditionalDeclarationType.STANDARD_PRE_LODGED))
         withNewCaching(cachedData)
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
@@ -90,7 +89,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
   "Submit" should {
     "return 400 (BAD_REQUEST)" when {
       "form is incorrect during supplementary journey" in new SupplementarySetUp {
-        val incorrectForm = Json.toJson(AdditionalDeclarationType("Incorrect"))
+        val incorrectForm = JsString("x")
 
         val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
 
@@ -98,7 +97,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
       }
 
       "form is incorrect during standard journey" in new StandardSetUp {
-        val incorrectForm = Json.toJson(AdditionalDeclarationType("Incorrect"))
+        val incorrectForm = JsString("x")
 
         val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
 

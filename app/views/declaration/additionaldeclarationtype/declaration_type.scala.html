@@ -19,8 +19,10 @@
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.play.views.html._
 @import views.Title
+@import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 
 @this(main_template: views.html.main_template)
+
 
 @(mode: Mode, form: Form[AdditionalDeclarationType])(implicit request: JourneyRequest[_], messages: Messages)
 

@@ -82,7 +82,7 @@ class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
 
           supplementaryDeclarationData.declarationType must be(defined)
           supplementaryDeclarationData.declarationType.get.dispatchLocation mustNot be(defined)
-          supplementaryDeclarationData.declarationType.get.additionalDeclarationType.get.additionalDeclarationType must equal(
+          supplementaryDeclarationData.declarationType.get.additionalDeclarationType.get.toString must equal(
             AllowedAdditionalDeclarationTypes.Simplified
           )
         }
@@ -97,7 +97,7 @@ class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
 
           supplementaryDeclarationData.declarationType must be(defined)
           supplementaryDeclarationData.declarationType.get.dispatchLocation.get.dispatchLocation must equal(AllowedDispatchLocations.OutsideEU)
-          supplementaryDeclarationData.declarationType.get.additionalDeclarationType.get.additionalDeclarationType must equal(
+          supplementaryDeclarationData.declarationType.get.additionalDeclarationType.get.toString must equal(
             AllowedAdditionalDeclarationTypes.Simplified
           )
         }

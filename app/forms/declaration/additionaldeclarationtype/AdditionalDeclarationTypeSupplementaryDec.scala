@@ -16,9 +16,11 @@
 
 package forms.declaration.additionaldeclarationtype
 
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+
 object AdditionalDeclarationTypeSupplementaryDec extends AdditionalDeclarationTypeTrait {
-  override def allowedValues: Set[String] =
-    Set(AllowedAdditionalDeclarationTypes.Simplified, AllowedAdditionalDeclarationTypes.Standard)
+  override def allowedValues: Set[AdditionalDeclarationType] =
+    Set(AdditionalDeclarationType.SUPPLEMENTARY_EIDR, AdditionalDeclarationType.SUPPLEMENTARY_SIMPLIFIED)
 
   object AllowedAdditionalDeclarationTypes {
     val Simplified = "Y"

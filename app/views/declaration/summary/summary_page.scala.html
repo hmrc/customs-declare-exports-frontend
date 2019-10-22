@@ -87,7 +87,7 @@
         ))
         @components.table_row_no_change_link(HtmlTableRow(
             label = messages("supplementary.summary.declarationType.supplementaryDeclarationType"),
-            value = suppDecData.declarationType.flatMap(_.additionalDeclarationType).map(_.additionalDeclarationType)
+            value = suppDecData.declarationType.flatMap(_.additionalDeclarationType).map(_.toString)
         ))
     }
 

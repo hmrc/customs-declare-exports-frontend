@@ -23,6 +23,7 @@ import forms.common.Address
 import forms.declaration.DispatchLocation.AllowedDispatchLocations.OutsideEU
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.officeOfExit.OfficeOfExit
@@ -94,8 +95,8 @@ trait ExportsDeclarationBuilder {
   ): ExportsDeclarationModifier =
     _.copy(totalNumberOfItems = Some(TotalNumberOfItems(totalAmountInvoiced, exchangeRate, totalPackage)))
 
-  def withAdditionalDeclarationType(decType: String = AllowedAdditionalDeclarationTypes.Standard): ExportsDeclarationModifier =
-    _.copy(additionalDeclarationType = Some(AdditionalDeclarationType(decType)))
+  def withAdditionalDeclarationType(decType: AdditionalDeclarationType = AdditionalDeclarationType.STANDARD_FRONTIER): ExportsDeclarationModifier =
+    _.copy(additionalDeclarationType = Some(decType))
 
   def withDispatchLocation(location: String = OutsideEU): ExportsDeclarationModifier =
     _.copy(dispatchLocation = Some(DispatchLocation(location)))
