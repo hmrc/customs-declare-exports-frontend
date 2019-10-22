@@ -23,7 +23,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.Add
 import forms.declaration.additionaldeclarationtype._
 import javax.inject.Inject
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -64,10 +64,10 @@ class AdditionalDeclarationTypeController @Inject()(
   }
 
   private def extractFormType(journeyRequest: JourneyRequest[_]): AdditionalDeclarationTypeTrait =
-    journeyRequest.choice.value match {
-      case SupplementaryDec => AdditionalDeclarationTypeSupplementaryDec
-      case StandardDec      => AdditionalDeclarationTypeStandardDec
-      case SimplifiedDec    => AdditionalDeclarationTypeSimplifiedDec
+    journeyRequest.declarationType match {
+      case DeclarationType.SUPPLEMENTARY => AdditionalDeclarationTypeSupplementaryDec
+      case DeclarationType.STANDARD      => AdditionalDeclarationTypeStandardDec
+      case DeclarationType.SIMPLIFIED    => AdditionalDeclarationTypeSimplifiedDec
     }
 
   private def updateCache(formData: AdditionalDeclarationType)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =

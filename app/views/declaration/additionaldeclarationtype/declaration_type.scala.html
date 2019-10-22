@@ -27,10 +27,10 @@
 @(mode: Mode, form: Form[AdditionalDeclarationType])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
-    title = request.choice.value match {
-        case SupplementaryDec => Title("declaration.declarationType.header.supplementary", "declaration.declarationType.title")
-        case StandardDec => Title("declaration.declarationType.header.standard", "declaration.declarationType.title")
-        case SimplifiedDec => Title("declaration.declarationType.header.simplified", "declaration.declarationType.title")
+    title = request.declarationType match {
+        case DeclarationType.SUPPLEMENTARY => Title("declaration.declarationType.header.supplementary", "declaration.declarationType.title")
+        case DeclarationType.STANDARD => Title("declaration.declarationType.header.standard", "declaration.declarationType.title")
+        case DeclarationType.SIMPLIFIED => Title("declaration.declarationType.header.simplified", "declaration.declarationType.title")
     }
 ) {
 
@@ -42,10 +42,10 @@
         @components.error_summary(form.errors)
 
         @{
-            request.choice.value match {
-                case SupplementaryDec => declaration_type_question_supplementary(form)
-                case StandardDec => declaration_type_question_standard(form)
-                case SimplifiedDec => declaration_type_question_simplified(form)
+            request.declarationType match {
+                case DeclarationType.SUPPLEMENTARY => declaration_type_question_supplementary(form)
+                case DeclarationType.STANDARD => declaration_type_question_standard(form)
+                case DeclarationType.SIMPLIFIED => declaration_type_question_simplified(form)
             }
         }
 

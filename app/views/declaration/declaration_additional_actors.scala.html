@@ -34,9 +34,9 @@
 ) {
 
     @{
-        request.choice.value match {
-            case SupplementaryDec => components.back_link(controllers.declaration.routes.RepresentativeDetailsController.displayPage(mode), mode)
-            case StandardDec | SimplifiedDec => components.back_link(controllers.declaration.routes.CarrierDetailsController.displayPage(mode), mode)
+        request.declarationType match {
+            case DeclarationType.SUPPLEMENTARY => components.back_link(controllers.declaration.routes.RepresentativeDetailsController.displayPage(mode), mode)
+            case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED => components.back_link(controllers.declaration.routes.CarrierDetailsController.displayPage(mode), mode)
         }
     }
 

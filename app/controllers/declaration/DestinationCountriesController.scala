@@ -26,7 +26,7 @@ import forms.declaration.destinationCountries._
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -52,9 +52,9 @@ class DestinationCountriesController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.choice.value match {
-      case SupplementaryDec            => displayPageSupplementary(mode)
-      case StandardDec | SimplifiedDec => displayPageStandard(mode)
+    request.declarationType match {
+      case DeclarationType.SUPPLEMENTARY                         => displayPageSupplementary(mode)
+      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED => displayPageStandard(mode)
     }
   }
 
@@ -71,9 +71,9 @@ class DestinationCountriesController @Inject()(
     }
 
   def saveCountries(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    request.choice.value match {
-      case SupplementaryDec            => handleSubmitSupplementary(mode)
-      case StandardDec | SimplifiedDec => handleSubmitStandard(mode)
+    request.declarationType match {
+      case DeclarationType.SUPPLEMENTARY                         => handleSubmitSupplementary(mode)
+      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED => handleSubmitStandard(mode)
     }
   }
 

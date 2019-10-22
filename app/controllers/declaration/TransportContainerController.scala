@@ -28,7 +28,7 @@ import javax.inject.Inject
 import models.declaration.TransportInformationContainerData.maxNumberOfItems
 import models.declaration.{Container, TransportInformationContainerData}
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -175,6 +175,6 @@ class TransportContainerController @Inject()(
       navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode))
 
   private def allowSeals(implicit request: JourneyRequest[AnyContent]) =
-    request.choice.value == AllowedChoiceValues.StandardDec || request.choice.value == AllowedChoiceValues.SimplifiedDec
+    request.isType(DeclarationType.STANDARD) || request.isType(DeclarationType.SIMPLIFIED)
 
 }
