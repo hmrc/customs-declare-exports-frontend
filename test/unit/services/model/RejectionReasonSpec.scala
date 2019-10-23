@@ -58,18 +58,18 @@ class RejectionReasonSpec extends UnitSpec {
 
     "contain correct values" in {
 
-      allRejectedErrors must contain(RejectionReason("CDS40049", "Quota exhausted.", "Quota exhausted.", None))
-      allRejectedErrors must contain(RejectionReason("CDS40051", "Quota blocked.", "Quota blocked.", None))
+      allRejectedErrors must contain(RejectionReason("CDS40049", "Quota exhausted.", "Quota exhausted", None))
+      allRejectedErrors must contain(RejectionReason("CDS40051", "Quota blocked.", "Quota blocked", None))
       allRejectedErrors must contain(
         RejectionReason(
           "CDS12087",
           "Relation error: VAT Declaring Party Identification (D.E. 3/40), where mandated, must be supplied at either header or item.",
-          "Relation error: VAT Declaring Party Identification (D.E. 3/40), where mandated, must be supplied at either header or item.",
+          "Relation error: VAT Declaring Party Identification (D.E. 3/40), where mandated, must be supplied at either header or item",
           None
         )
       )
       allRejectedErrors must contain(
-        RejectionReason("CDS12108", "Obligation error: DUCR is mandatory on an Export Declaration.", "An export declaration needs a DUCR.", None)
+        RejectionReason("CDS12108", "Obligation error: DUCR is mandatory on an Export Declaration.", "An export declaration needs a DUCR", None)
       )
     }
 
@@ -81,7 +81,7 @@ class RejectionReasonSpec extends UnitSpec {
           |- have been accepted,
           |- not be invalidated.""".stripMargin
       val expectedRejectionReason =
-        RejectionReason("CDS12015", expectedMessage, "Declaration does not exist or is not ready to process the request.", None)
+        RejectionReason("CDS12015", expectedMessage, "Declaration does not exist or is not ready to process the request", None)
 
       allRejectedErrors must contain(expectedRejectionReason)
     }
@@ -124,7 +124,7 @@ class RejectionReasonSpec extends UnitSpec {
             RejectionReason(
               "CDS12016",
               "Date error: Date of acceptance is not allowed.",
-              "The acceptance date cannot be more than 180 days in the past.",
+              "The acceptance date cannot be more than 180 days in the past",
               Some(Pointer("x.#0.z"))
             )
           )
@@ -140,7 +140,7 @@ class RejectionReasonSpec extends UnitSpec {
             RejectionReason(
               "CDS12016",
               "Date error: Date of acceptance is not allowed.",
-              "The acceptance date cannot be more than 180 days in the past.",
+              "The acceptance date cannot be more than 180 days in the past",
               None
             )
           )
@@ -155,7 +155,7 @@ class RejectionReasonSpec extends UnitSpec {
             RejectionReason(
               "CDS12016",
               "Date error: Date of acceptance is not allowed.",
-              "The acceptance date cannot be more than 180 days in the past.",
+              "The acceptance date cannot be more than 180 days in the past",
               None
             )
           )
