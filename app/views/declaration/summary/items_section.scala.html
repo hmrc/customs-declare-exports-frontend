@@ -19,7 +19,7 @@
 
 @(items: Option[Items])(implicit messages: Messages)
 
-@components.summary_list(Some(messages("supplementary.summary.items.header"))) {
+@components.summary_list(Some(messages("declaration.itemType.title", 1))) {
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.amountInvoiced"),
         value = items.flatMap(_.totalNumberOfItems).map(_.totalAmountInvoiced)
@@ -38,5 +38,4 @@
         value = items.flatMap(_.natureOfTransaction).map(_.natureType)
 
     ))
-
 }

@@ -20,6 +20,7 @@ import base.Injector
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.ItemTypeForm
 import models.Mode
+import models.declaration.ExportItem
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
@@ -38,14 +39,13 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
   private def createView(
     journeyType: String = AllowedChoiceValues.StandardDec,
     mode: Mode = Mode.Normal,
-    itemId: String = "itemId",
+    item: ExportItem = ExportItem(id = "itemId", sequenceId = 1),
     form: Form[ItemTypeForm] = form,
-    hasAdditionalFiscalReferences: Boolean = false,
     taricAdditionalCodes: Seq[String] = Seq.empty,
     nationalAdditionalCodes: Seq[String] = Seq.empty,
     messages: Messages = stubMessages()
   ): Document =
-    page(mode, itemId, form, hasAdditionalFiscalReferences, taricAdditionalCodes, nationalAdditionalCodes)(journeyRequest(), messages)
+    page(mode, item, form, taricAdditionalCodes, nationalAdditionalCodes)(journeyRequest(), messages)
 
   "Item Type View on empty page" when {
 

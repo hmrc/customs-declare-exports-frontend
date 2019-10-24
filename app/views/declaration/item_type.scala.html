@@ -24,29 +24,29 @@
 @import services.NationalAdditionalCode
 @import services.view.AutoCompleteItem
 @import forms.declaration.AdditionalFiscalReference
+@import models.declaration.ExportItem
 @import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(
         mode: Mode,
-        itemId: String,
+        item: ExportItem,
         form: Form[ItemTypeForm],
-        hasAdditionalFiscalReferences: Boolean,
         taricAdditionalCodes: Seq[String] = Seq.empty,
         nationalAdditionalCodes: Seq[String] = Seq.empty
 )(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
-    title = Title("declaration.itemType.title", "supplementary.items")
+    title = Title(messages("declaration.itemType.title", item.sequenceId), "supplementary.items")
 ) {
 
-    @helper.form(routes.ItemTypeController.submitItemType(mode, itemId), 'autocomplete -> "off") {
+    @helper.form(routes.ItemTypeController.submitItemType(mode, item.id), 'autocomplete -> "off") {
         @helper.CSRF.formField
 
         @{
-          if(hasAdditionalFiscalReferences) components.back_link(routes.AdditionalFiscalReferencesController.displayPage(mode, itemId), mode)
-          else components.back_link(routes.FiscalInformationController.displayPage(mode, itemId), mode)
+          if(item.hasFiscalReferences) components.back_link(routes.AdditionalFiscalReferencesController.displayPage(mode, item.id), mode)
+          else components.back_link(routes.FiscalInformationController.displayPage(mode, item.id), mode)
         }
 
 
@@ -54,7 +54,7 @@
 
         @components.heading(
             sectionHeader = messages("supplementary.items"),
-            title = messages("declaration.itemType.title")
+            title = messages("declaration.itemType.title", item.sequenceId)
         )
 
         @components.fields.field_text(

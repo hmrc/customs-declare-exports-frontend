@@ -23,7 +23,7 @@ import forms.declaration.ItemTypeForm
 import forms.declaration.ItemTypeForm._
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.declaration.ItemType
+import models.declaration.{ExportItem, ItemType}
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
@@ -56,15 +56,14 @@ class ItemTypeController @Inject()(
             Ok(
               itemTypePage(
                 mode,
-                itemId,
+                item,
                 ItemTypeForm.form().fill(fromItemType(itemType)),
-                item.hasFiscalReferences,
                 itemType.taricAdditionalCodes,
                 itemType.nationalAdditionalCodes
               )
             )
           case None =>
-            Ok(itemTypePage(mode, itemId, ItemTypeForm.form(), item.hasFiscalReferences))
+            Ok(itemTypePage(mode, item, ItemTypeForm.form()))
         }
       }
       .getOrElse(Redirect(routes.ItemsSummaryController.displayPage()))
@@ -78,15 +77,14 @@ class ItemTypeController @Inject()(
       .itemBy(itemId)
       .map { item =>
         val itemTypeCache = item.itemType.getOrElse(ItemType.empty)
-        val hasFiscalReferences = item.hasFiscalReferences
         val formAction = FormAction.bindFromRequest()
         formAction match {
           case AddField(field) =>
-            handleAddition(mode, itemId, field, itemTypeInput, itemTypeCache, hasFiscalReferences)
+            handleAddition(mode, item, field, itemTypeInput, itemTypeCache)
           case SaveAndContinue | SaveAndReturn =>
-            handleSaveAndContinue(mode, itemId, itemTypeInput, itemTypeCache, hasFiscalReferences)
+            handleSaveAndContinue(mode, item, itemTypeInput, itemTypeCache)
           case Remove(keys) =>
-            handleRemoval(mode, itemId, keys, itemTypeInput, itemTypeCache, hasFiscalReferences)
+            handleRemoval(mode, item, keys, itemTypeInput, itemTypeCache)
           case _ =>
             errorHandler.displayErrorPage()
         }
@@ -94,22 +92,17 @@ class ItemTypeController @Inject()(
       .getOrElse(errorHandler.displayErrorPage())
   }
 
-  private def handleAddition(
-    mode: Mode,
-    itemId: String,
-    field: String,
-    itemTypeInput: ItemTypeForm,
-    itemTypeCache: ItemType,
-    hasFiscalReferences: Boolean
-  )(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
+  private def handleAddition(mode: Mode, item: ExportItem, field: String, itemTypeInput: ItemTypeForm, itemTypeCache: ItemType)(
+    implicit request: JourneyRequest[AnyContent]
+  ): Future[Result] = {
 
     val itemTypeUpdated = updateCachedItemType(itemTypeInput, itemTypeCache, Some(field))
 
     ItemTypeValidator.validateOnAddition(itemTypeUpdated) match {
       case Valid =>
-        updateExportsCache(itemId, itemTypeUpdated).map {
+        updateExportsCache(item.id, itemTypeUpdated).map {
           case Some(model) =>
-            refreshPage(mode, itemId, itemTypeInputForAdd(field, itemTypeInput), model)
+            refreshPage(mode, item.id, itemTypeInputForAdd(field, itemTypeInput), model)
           case None =>
             Redirect(routes.ItemsSummaryController.displayPage(mode))
         }
@@ -117,9 +110,7 @@ class ItemTypeController @Inject()(
         val formWithErrors =
           errors.foldLeft(ItemTypeForm.form().fill(itemTypeInput))((form, error) => form.withError(error))
         Future.successful(
-          BadRequest(
-            itemTypePage(mode, itemId, formWithErrors, hasFiscalReferences, itemTypeCache.taricAdditionalCodes, itemTypeCache.nationalAdditionalCodes)
-          )
+          BadRequest(itemTypePage(mode, item, formWithErrors, itemTypeCache.taricAdditionalCodes, itemTypeCache.nationalAdditionalCodes))
         )
     }
   }
@@ -130,26 +121,6 @@ class ItemTypeController @Inject()(
     case `nationalAdditionalCodeKey` =>
       itemTypeInput.copy(nationalAdditionalCode = None)
     case _ => itemTypeInput
-  }
-
-  private def handleSaveAndContinue(mode: Mode, itemId: String, itemTypeInput: ItemTypeForm, itemTypeCache: ItemType, hasFiscalReferences: Boolean)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] = {
-    val itemTypeUpdated = updateCachedItemType(itemTypeInput, itemTypeCache, None)
-    ItemTypeValidator.validateOnSaveAndContinue(itemTypeUpdated) match {
-      case Valid =>
-        updateExportsCache(itemId, itemTypeUpdated).map { _ =>
-          navigator.continueTo(controllers.declaration.routes.PackageInformationController.displayPage(mode, itemId))
-        }
-      case Invalid(errors) =>
-        val formWithErrors =
-          errors.foldLeft(ItemTypeForm.form().fill(itemTypeInput))((form, error) => form.withError(error))
-        Future.successful(
-          BadRequest(
-            itemTypePage(mode, itemId, formWithErrors, hasFiscalReferences, itemTypeCache.taricAdditionalCodes, itemTypeCache.nationalAdditionalCodes)
-          )
-        )
-    }
   }
 
   private def updateCachedItemType(itemTypeInput: ItemTypeForm, itemTypeCache: ItemType, addField: Option[String]): ItemType = {
@@ -179,14 +150,47 @@ class ItemTypeController @Inject()(
     )
   }
 
-  private def handleRemoval(
-    mode: Mode,
-    itemId: String,
-    keys: Seq[String],
-    itemTypeInput: ItemTypeForm,
-    itemTypeCached: ItemType,
-    hasFiscalReferences: Boolean
-  )(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
+  private def refreshPage(mode: Mode, itemId: String, itemTypeInput: ItemTypeForm, model: ExportsDeclaration)(
+    implicit request: JourneyRequest[AnyContent]
+  ): Result =
+    model
+      .itemBy(itemId)
+      .map { item =>
+        item.itemType match {
+          case Some(cachedData) =>
+            Ok(itemTypePage(mode, item, ItemTypeForm.form().fill(itemTypeInput), cachedData.taricAdditionalCodes, cachedData.nationalAdditionalCodes))
+          case _ =>
+            Ok(itemTypePage(mode, item, ItemTypeForm.form()))
+        }
+      }
+      .getOrElse(Redirect(routes.ItemsSummaryController.displayPage(mode)))
+
+  private def updateExportsCache(itemId: String, updatedItem: ItemType)(
+    implicit request: JourneyRequest[AnyContent]
+  ): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(itemType = Some(updatedItem))))
+
+  private def handleSaveAndContinue(mode: Mode, item: ExportItem, itemTypeInput: ItemTypeForm, itemTypeCache: ItemType)(
+    implicit request: JourneyRequest[AnyContent]
+  ): Future[Result] = {
+    val itemTypeUpdated = updateCachedItemType(itemTypeInput, itemTypeCache, None)
+    ItemTypeValidator.validateOnSaveAndContinue(itemTypeUpdated) match {
+      case Valid =>
+        updateExportsCache(item.id, itemTypeUpdated).map { _ =>
+          navigator.continueTo(controllers.declaration.routes.PackageInformationController.displayPage(mode, item.id))
+        }
+      case Invalid(errors) =>
+        val formWithErrors =
+          errors.foldLeft(ItemTypeForm.form().fill(itemTypeInput))((form, error) => form.withError(error))
+        Future.successful(
+          BadRequest(itemTypePage(mode, item, formWithErrors, itemTypeCache.taricAdditionalCodes, itemTypeCache.nationalAdditionalCodes))
+        )
+    }
+  }
+
+  private def handleRemoval(mode: Mode, item: ExportItem, keys: Seq[String], itemTypeInput: ItemTypeForm, itemTypeCached: ItemType)(
+    implicit request: JourneyRequest[AnyContent]
+  ): Future[Result] = {
     val key = keys.headOption.getOrElse("")
     val label = Label(key)
 
@@ -196,9 +200,9 @@ class ItemTypeController @Inject()(
       case `nationalAdditionalCodeKey` =>
         itemTypeCached.copy(nationalAdditionalCodes = removeElement(itemTypeCached.nationalAdditionalCodes, label.value))
     }
-    updateExportsCache(itemId, itemTypeUpdated).map {
+    updateExportsCache(item.id, itemTypeUpdated).map {
       case Some(model) =>
-        refreshPage(mode, itemId, itemTypeInput, model)
+        refreshPage(mode, item.id, itemTypeInput, model)
       case None =>
         Redirect(routes.ItemsSummaryController.displayPage(mode))
     }
@@ -207,31 +211,8 @@ class ItemTypeController @Inject()(
   private def removeElement(collection: Seq[String], valueToRemove: String): Seq[String] =
     MultipleItemsHelper.remove(collection, (_: String) == valueToRemove)
 
-  private def refreshPage(mode: Mode, itemId: String, itemTypeInput: ItemTypeForm, model: ExportsDeclaration)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Result =
-    model
-      .itemBy(itemId)
-      .map { item =>
-        item.itemType match {
-          case Some(cachedData) =>
-            Ok(
-              itemTypePage(
-                mode,
-                item.id,
-                ItemTypeForm.form().fill(itemTypeInput),
-                item.hasFiscalReferences,
-                cachedData.taricAdditionalCodes,
-                cachedData.nationalAdditionalCodes
-              )
-            )
-          case _ =>
-            Ok(itemTypePage(mode, itemId, ItemTypeForm.form(), item.hasFiscalReferences))
-        }
-      }
-      .getOrElse(Redirect(routes.ItemsSummaryController.displayPage(mode)))
-
   private case class Label(name: String, value: String)
+
   private object Label {
 
     def apply(str: String): Label = {
@@ -239,16 +220,4 @@ class ItemTypeController @Inject()(
       Label(name, value)
     }
   }
-
-  private def updateExportsCache(itemId: String, updatedItem: ItemType)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSync(model => {
-      val itemList = model.items
-        .find(item => item.id.equals(itemId))
-        .map(_.copy(itemType = Some(updatedItem)))
-        .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
-
-      Some(model.copy(items = itemList))
-    })
 }
