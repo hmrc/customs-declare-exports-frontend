@@ -188,7 +188,7 @@ class SummaryPageViewSpec extends WordSpec with MustMatchers with ExportsDeclara
 
     "has correct items" in {
 
-      summaryPage must include("supplementary.summary.items.header")
+      summaryPage must include("declaration.itemType.title")
       summaryPage must include("supplementary.summary.items.amountInvoiced")
       summaryPage must include("supplementary.summary.items.exchangeRate")
       summaryPage must include("supplementary.summary.items.transactionType")

@@ -571,10 +571,9 @@ supplementary.exchangeRate.hint = This is a set price contractually agreed based
 
 supplementary.goodItemNumber.title = Good item number
 supplementary.goodItemNumber.error = Incorrect item number
-supplementary.goodItemNumber = 1/6 Enter the item number
 supplementary.goodItemNumber.hint = The number assigned to the item in the declaration
 
-declaration.itemType.title = Item type
+declaration.itemType.title = Details of declaration item {0}
 declaration.itemType.combinedNomenclatureCode.header = What is the Commodity Code for this item?
 declaration.itemType.combinedNomenclatureCode.header.hint = Up to 8 digits
 declaration.itemType.combinedNomenclatureCode.error.empty = Combined Nomenclature Commodity Code cannot be empty
@@ -812,13 +811,13 @@ supplementary.continue.mandatory = You must add at least one item
 
 supplementary.startNewDec = Start a new declaration
 
-supplementary.itemsAdd.title = Declare all items involved in this export
+supplementary.itemsAdd.title = Add declaration item 1
 supplementary.itemsAdd.titleWithItem = You have added 1 item
-supplementary.itemsAdd.titleWithItems = You have added {0} items
-supplementary.itemsAdd.title.hint = An item is an individual goods type that is identified by a commodity code, for example a computer or an aluminium pipe
+supplementary.itemsAdd.titleWithItems = Declaration item {0} added
+supplementary.itemsAdd.title.hint = A declaration can have multiple items. Each item is identified by a commodity code which explains what type of goods are being added to the declaration.
 supplementary.itemsAdd.change.hint = Change item {0}
 supplementary.itemsAdd.remove.hint = Remove item {0}
-supplementary.itemsSummary.itemNumber = Item number
+supplementary.itemsSummary.itemNumber = Declaration item
 supplementary.itemsSummary.procedureCode = Procedure code
 supplementary.itemsSummary.commodityCode = Commodity code
 supplementary.itemsSummary.noOfPackages = Number of packages

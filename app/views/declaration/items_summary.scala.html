@@ -42,11 +42,7 @@
 
     @if(items.isEmpty) {
         <h1 id="title" style="margin:0">@messages("supplementary.itemsAdd.title")</h1>
-    }
-    @if(items.length == 1) {
-        <h1 id="title" style="margin:0">@messages("supplementary.itemsAdd.titleWithItem")</h1>
-    }
-    @if(items.length > 1) {
+    } else {
         <h1 id="title" style="margin:0">@messages("supplementary.itemsAdd.titleWithItems", items.length)</h1>
     }
 
