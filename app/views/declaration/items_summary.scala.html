@@ -27,7 +27,6 @@
 
 @titleMessage = @{
     if(items.isEmpty) { messages("supplementary.itemsAdd.title") }
-    else if(items.length == 1) { messages("supplementary.itemsAdd.titleWithItem") }
     else { messages("supplementary.itemsAdd.titleWithItems", items.length) }
 }
 
@@ -38,17 +37,11 @@
 
     @components.error_summary(itemsErrors)
 
-    @components.heading(sectionHeader = messages("supplementary.items"))
-
-    @if(items.isEmpty) {
-        <h1 id="title" style="margin:0">@messages("supplementary.itemsAdd.title")</h1>
-    } else {
-        <h1 id="title" style="margin:0">@messages("supplementary.itemsAdd.titleWithItems", items.length)</h1>
-    }
-
-    <span class="form-hint" style="margin-bottom: 50px">@messages("supplementary.itemsAdd.title.hint")</span>
-
-
+    @components.heading(
+        sectionHeader = messages("supplementary.items"),
+        title = titleMessage,
+        hint = messages("supplementary.itemsAdd.title.hint")
+    )
 
     @if(items.nonEmpty) {
         <table id="item_table" class="form-group">
