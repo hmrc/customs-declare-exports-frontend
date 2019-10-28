@@ -123,7 +123,7 @@ trait AuditTestSupport extends UnitSpec with ExportsDeclarationBuilder with Scal
     tags = AuditExtensions
       .auditHeaderCarrier(hc)
       .toAuditTags(
-        transactionName = s"Export-Declaration-${AuditTypes.Submission.toString}-request",
+        transactionName = s"export-declaration-${AuditTypes.Submission.toString.toLowerCase}-request",
         path = s"customs-declare-exports/${AuditTypes.Submission.toString}"
       ),
     detail = auditCarrierDetails ++ auditData
@@ -136,7 +136,7 @@ trait AuditTestSupport extends UnitSpec with ExportsDeclarationBuilder with Scal
     tags = AuditExtensions
       .auditHeaderCarrier(hc)
       .toAuditTags(
-        transactionName = s"Export-Declaration-${AuditTypes.SubmissionPayload.toString}-payload-request",
+        transactionName = s"export-declaration-${AuditTypes.SubmissionPayload.toString.toLowerCase}-payload-request",
         path = s"customs-declare-exports/${AuditTypes.SubmissionPayload.toString}/full-payload"
       ),
     detail = Json
@@ -152,7 +152,7 @@ trait AuditTestSupport extends UnitSpec with ExportsDeclarationBuilder with Scal
     tags = AuditExtensions
       .auditHeaderCarrier(hc)
       .toAuditTags(
-        transactionName = s"Export-Declaration-${AuditTypes.Cancellation.toString}-payload-request",
+        transactionName = s"export-declaration-${AuditTypes.Cancellation.toString.toLowerCase}-payload-request",
         path = s"customs-declare-exports/${AuditTypes.Cancellation.toString}/full-payload"
       ),
     detail = Json
