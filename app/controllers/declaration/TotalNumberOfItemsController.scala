@@ -20,8 +20,8 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.TotalNumberOfItems
 import javax.inject.Inject
-import models.Mode
 import models.requests.JourneyRequest
+import models.{DeclarationType, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -54,12 +54,17 @@ class TotalNumberOfItemsController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[TotalNumberOfItems]) => Future.successful(BadRequest(totalNumberOfItemsPage(mode, formWithErrors))),
-        formData =>
-          updateCache(formData).map { _ =>
-            navigator.continueTo(controllers.declaration.routes.NatureOfTransactionController.displayPage(mode))
-        }
+        formData => updateCache(formData).map(_ => navigator.continueTo(nextPage(mode, request)))
       )
   }
+
+  private def nextPage(mode: Mode, request: JourneyRequest[AnyContent]) =
+    request.declarationType match {
+      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
+        controllers.declaration.routes.NatureOfTransactionController.displayPage(mode)
+      case DeclarationType.SIMPLIFIED =>
+        controllers.declaration.routes.PreviousDocumentsController.displayPage(mode)
+    }
 
   private def updateCache(formData: TotalNumberOfItems)(implicit req: JourneyRequest[AnyContent]) =
     updateExportsDeclarationSyncDirect(_.copy(totalNumberOfItems = Some(formData)))

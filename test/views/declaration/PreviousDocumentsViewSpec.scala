@@ -17,7 +17,8 @@
 package views.declaration
 import base.Injector
 import forms.declaration.Document
-import models.Mode
+import models.DeclarationType.DeclarationType
+import models.{DeclarationType, Mode}
 import org.jsoup.nodes.{Document => JsonDocument}
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
@@ -37,9 +38,10 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
     mode: Mode = Mode.Normal,
     form: Form[Document] = form,
     documents: Seq[Document] = Seq.empty,
-    messages: Messages = stubMessages()
+    messages: Messages = stubMessages(),
+    declarationType: DeclarationType = DeclarationType.STANDARD
   ): JsonDocument =
-    page(mode, form, documents)(journeyRequest(), messages)
+    page(mode, form, documents)(journeyRequest(declarationType), messages)
 
   "Previous Documents View on empty page" should {
     val view = createView()
@@ -107,12 +109,22 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
       view.getElementById("goodsItemIdentifier").attr("value") mustBe empty
     }
 
-    "display 'Back' button that links to 'Transaction Type' page" in {
+    "display 'Back' button that links to 'Transaction Type' page" when {
+      "on the Standard journey" in {
 
-      val backButton = view.getElementById("link-back")
+        val backButton = view.getElementById("link-back")
 
-      backButton.text() must be("site.back")
-      backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.NatureOfTransactionController.displayPage(Mode.Normal))
+        backButton.text() must be("site.back")
+        backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.NatureOfTransactionController.displayPage(Mode.Normal))
+      }
+
+      "on the Simplified journey" in {
+
+        val backButton = createView(declarationType = DeclarationType.SIMPLIFIED).getElementById("link-back")
+
+        backButton.text() must be("site.back")
+        backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage(Mode.Normal))
+      }
     }
 
     "display both 'Add' and 'Save and continue' button on page" in {

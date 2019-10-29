@@ -17,7 +17,6 @@
 package unit.controllers.declaration
 
 import controllers.declaration.TotalNumberOfItemsController
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.TotalNumberOfItems
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
@@ -33,89 +32,150 @@ import views.html.declaration.total_number_of_items
 
 class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues {
 
-  val mockTotalNumberOfItemsPage = mock[total_number_of_items]
-
-  val controller = new TotalNumberOfItemsController(
-    mockAuthAction,
-    mockJourneyAction,
-    navigator,
-    stubMessagesControllerComponents(),
-    mockTotalNumberOfItemsPage,
-    mockExportsCacheService
-  )(ec)
-
-  override protected def beforeEach(): Unit = {
-    super.beforeEach()
-    authorizedUser()
-    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
-    when(mockTotalNumberOfItemsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-  }
-
-  override protected def afterEach(): Unit = {
-    super.afterEach()
-    reset(mockTotalNumberOfItemsPage)
-  }
-
-  def theResponseForm: Form[TotalNumberOfItems] = {
+  def theResponseForm(mockTotalNumberOfItemsPage: total_number_of_items): Form[TotalNumberOfItems] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[TotalNumberOfItems]])
     verify(mockTotalNumberOfItemsPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
+  trait SetUp {
+    val mockTotalNumberOfItemsPage: total_number_of_items = mock[total_number_of_items]
+
+    val controller = new TotalNumberOfItemsController(
+      mockAuthAction,
+      mockJourneyAction,
+      navigator,
+      stubMessagesControllerComponents(),
+      mockTotalNumberOfItemsPage,
+      mockExportsCacheService
+    )(ec)
+  }
+
+  trait StandardSetUp extends SetUp {
+    reset(mockTotalNumberOfItemsPage)
+    authorizedUser()
+    withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
+    when(mockTotalNumberOfItemsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+  }
+
+  trait SimplifiedSetUp extends SetUp {
+    reset(mockTotalNumberOfItemsPage)
+    authorizedUser()
+    withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED)))
+    when(mockTotalNumberOfItemsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+  }
+
   "Total Number of Items controller" should {
 
     "return 200 (OK)" when {
+      "during Standard journey" when {
 
-      "display page method is invoked and cache is empty" in {
+        "display page method is invoked and cache is empty" in new StandardSetUp {
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage(Mode.Normal)(getRequest())
 
-        status(result) mustBe OK
-        verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any())(any(), any())
+          status(result) mustBe OK
+          verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any())(any(), any())
 
-        theResponseForm.value mustBe empty
+          theResponseForm(mockTotalNumberOfItemsPage).value mustBe empty
+        }
+
+        "display page method is invoked and cache contains data" in new StandardSetUp {
+
+          val totalPackage = "12"
+          val totalNumberOfItems = TotalNumberOfItems(None, None, totalPackage)
+          withNewCaching(aDeclaration(withTotalNumberOfItems(totalNumberOfItems)))
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) mustBe OK
+          verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any())(any(), any())
+
+          theResponseForm(mockTotalNumberOfItemsPage).value mustNot be(empty)
+          theResponseForm(mockTotalNumberOfItemsPage).value.value.totalPackage mustBe totalPackage
+        }
       }
 
-      "display page method is invoked and cache contains data" in {
+      "during Simplified journey" when {
 
-        val totalPackage = "12"
-        val totalNumberOfItems = TotalNumberOfItems(None, None, totalPackage)
-        withNewCaching(aDeclaration(withTotalNumberOfItems(totalNumberOfItems)))
+        "display page method is invoked and cache is empty" in new SimplifiedSetUp {
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage(Mode.Normal)(getRequest())
 
-        status(result) mustBe OK
-        verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any())(any(), any())
+          status(result) mustBe OK
+          verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any())(any(), any())
 
-        theResponseForm.value mustNot be(empty)
-        theResponseForm.value.value.totalPackage mustBe totalPackage
+          theResponseForm(mockTotalNumberOfItemsPage).value mustBe empty
+        }
+
+        "display page method is invoked and cache contains data" in new SimplifiedSetUp {
+
+          val totalPackage = "12"
+          val totalNumberOfItems = TotalNumberOfItems(None, None, totalPackage)
+          withNewCaching(aDeclaration(withTotalNumberOfItems(totalNumberOfItems), withType(DeclarationType.SIMPLIFIED)))
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) mustBe OK
+          verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any())(any(), any())
+
+          theResponseForm(mockTotalNumberOfItemsPage).value mustNot be(empty)
+          theResponseForm(mockTotalNumberOfItemsPage).value.value.totalPackage mustBe totalPackage
+        }
       }
     }
 
     "return 400 (BAD_REQUEST)" when {
+      "standard journey" when {
+        "form is incorrect" in new StandardSetUp {
 
-      "form is incorrect" in {
+          val incorrectForm = Json.toJson(TotalNumberOfItems(Some("abc"), None, "12"))
 
-        val incorrectForm = Json.toJson(TotalNumberOfItems(Some("abc"), None, "12"))
+          val result = controller.saveNoOfItems(Mode.Normal)(postRequest(incorrectForm))
 
-        val result = controller.saveNoOfItems(Mode.Normal)(postRequest(incorrectForm))
+          status(result) mustBe BAD_REQUEST
+          verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any())(any(), any())
+        }
+      }
+      "simplified journey" when {
+        "form is incorrect" in new SimplifiedSetUp {
 
-        status(result) mustBe BAD_REQUEST
-        verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any())(any(), any())
+          val incorrectForm = Json.toJson(TotalNumberOfItems(Some("abc"), None, "12"))
+
+          val result = controller.saveNoOfItems(Mode.Normal)(postRequest(incorrectForm))
+
+          status(result) mustBe BAD_REQUEST
+          verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any())(any(), any())
+        }
       }
     }
 
     "return 303 (SEE_OTHER)" when {
+      "Standard journey" when {
 
-      "information provided by user are correct" in {
+        "information provided by user are correct" in new StandardSetUp {
 
-        val correctForm = Json.toJson(TotalNumberOfItems(None, None, "12"))
+          val correctForm = Json.toJson(TotalNumberOfItems(None, None, "12"))
 
-        val result = controller.saveNoOfItems(Mode.Normal)(postRequest(correctForm))
+          val result = controller.saveNoOfItems(Mode.Normal)(postRequest(correctForm))
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.NatureOfTransactionController.displayPage()
-        verify(mockTotalNumberOfItemsPage, times(0)).apply(any(), any())(any(), any())
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.NatureOfTransactionController.displayPage()
+          verify(mockTotalNumberOfItemsPage, times(0)).apply(any(), any())(any(), any())
+        }
+      }
+      "Simplified journey" when {
+
+        "information provided by user are correct" in new SimplifiedSetUp {
+
+          val correctForm = Json.toJson(TotalNumberOfItems(None, None, "12"))
+
+          val result = controller.saveNoOfItems(Mode.Normal)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
+          verify(mockTotalNumberOfItemsPage, times(0)).apply(any(), any())(any(), any())
+        }
       }
     }
   }
