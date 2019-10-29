@@ -18,7 +18,6 @@ package unit.controllers.declaration
 
 import controllers.declaration.DestinationCountriesController
 import controllers.util.Remove
-import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.destinationCountries.DestinationCountries
 import models.{DeclarationType, Mode}
 import play.api.libs.json.Json
