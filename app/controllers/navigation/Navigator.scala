@@ -54,24 +54,23 @@ object Navigator {
 
   val standard: PartialFunction[DeclarationFieldCompanion, Mode => Call] = {
     case BorderTransport => controllers.declaration.routes.DepartureTransportController.displayPage
-    case _ => ???
+    case _               => ???
   }
 
   val supplementary: PartialFunction[DeclarationFieldCompanion, Mode => Call] = {
     case BorderTransport => controllers.declaration.routes.DepartureTransportController.displayPage
-    case _ => ???
+    case _               => ???
   }
 
   val simplified: PartialFunction[DeclarationFieldCompanion, Mode => Call] = {
     case BorderTransport => controllers.declaration.routes.WarehouseIdentificationController.displayPage
-    case _ => ???
+    case _               => ???
   }
 
-  def backLink(page: DeclarationFieldCompanion)(implicit request: JourneyRequest[_]): Mode => Call = {
+  def backLink(page: DeclarationFieldCompanion)(implicit request: JourneyRequest[_]): Mode => Call =
     request.declarationType match {
-      case STANDARD => standard(page)
+      case STANDARD      => standard(page)
       case SUPPLEMENTARY => supplementary(page)
-      case SIMPLIFIED => simplified(page)
+      case SIMPLIFIED    => simplified(page)
     }
-  }
 }

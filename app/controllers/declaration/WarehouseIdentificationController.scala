@@ -65,9 +65,6 @@ class WarehouseIdentificationController @Inject()(
           updateCache(form)
             .map(_ => navigator.continueTo(nextStep))
         }
-
-
-
       )
   }
 

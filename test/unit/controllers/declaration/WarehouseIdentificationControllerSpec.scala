@@ -199,8 +199,6 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
       }
     }
 
-
-
   }
 
 }
