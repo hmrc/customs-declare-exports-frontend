@@ -24,9 +24,8 @@ import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation._
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.declaration.ExportItem
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -84,18 +83,24 @@ class PackageInformationController @Inject()(
         updatedCache =>
           if (updatedCache != cachedData)
             updateExportsCache(itemId, updatedCache)
-              .map(
-                _ =>
-                  navigator
-                    .continueTo(controllers.declaration.routes.CommodityMeasureController.displayPage(mode, itemId))
-              )
+              .map(_ => navigator.continueTo(nextPage(mode, itemId, request)))
           else
             Future
-              .successful(
-                navigator
-                  .continueTo(controllers.declaration.routes.CommodityMeasureController.displayPage(mode, itemId))
-            )
+              .successful(navigator.continueTo(nextPage(mode, itemId, request)))
       )
+
+  private def updateExportsCache(itemId: String, updatedCache: Seq[PackageInformation])(
+    implicit r: JourneyRequest[AnyContent]
+  ): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(packageInformation = updatedCache.toList)))
+
+  private def nextPage(mode: Mode, itemId: String, request: JourneyRequest[AnyContent]) =
+    request.declarationType match {
+      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
+        controllers.declaration.routes.CommodityMeasureController.displayPage(mode, itemId)
+      case DeclarationType.SIMPLIFIED =>
+        controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId)
+    }
 
   private def addItem(mode: Mode, itemId: String, boundForm: Form[PackageInformation], cachedData: Seq[PackageInformation])(
     implicit request: JourneyRequest[AnyContent]
@@ -108,15 +113,4 @@ class PackageInformationController @Inject()(
           updateExportsCache(itemId, updatedCache)
             .map(_ => Redirect(controllers.declaration.routes.PackageInformationController.displayPage(mode, itemId)))
       )
-
-  private def updateExportsCache(itemId: String, updatedCache: Seq[PackageInformation])(
-    implicit r: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => {
-      val item: Option[ExportItem] = model.items
-        .find(item => item.id.equals(itemId))
-        .map(_.copy(packageInformation = updatedCache.toList))
-      val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
-      model.copy(items = itemList)
-    })
 }
