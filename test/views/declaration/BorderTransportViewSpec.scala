@@ -18,7 +18,8 @@ package views.declaration
 
 import base.Injector
 import forms.declaration.BorderTransport
-import models.Mode
+import models.{DeclarationType, Mode}
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -35,12 +36,10 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
   private val page = new border_transport(mainTemplate)
   private val form: Form[BorderTransport] = BorderTransport.form()
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[BorderTransport] = form): Document =
-    page(mode, form)(journeyRequest(), stubMessages())
+  private def createView(mode: Mode = Mode.Normal, form: Form[BorderTransport] = form, request: JourneyRequest[_] = journeyRequest()): Document =
+    page(mode, form)(request, stubMessages())
 
-  "TransportDetails View" should {
-    val view = createView()
-
+  def borderView(view: Document): Unit = {
     "have proper messages for labels" in {
       val messages = instanceOf[MessagesApi].preferred(journeyRequest())
       messages must haveTranslationFor("supplementary.transportInfo.active.title")
@@ -70,13 +69,6 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
       view.getElementById("title").text() mustBe "supplementary.transportInfo.active.title"
     }
 
-    "display 'Back' button that links to 'Warehouse' page" in {
-      val backButton = view.getElementById("link-back")
-
-      backButton.text() mustBe "site.back"
-      backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.DepartureTransportController.displayPage(Mode.Normal))
-    }
-
     "display 'Save and continue' button on page" in {
       view.getElementById("submit").text() mustBe "site.save_and_continue"
     }
@@ -84,6 +76,9 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
     "display 'Save and return' button on page" in {
       view.getElementById("submit_and_return").text() mustBe "site.save_and_come_back_later"
     }
+  }
+
+  def havingMeansOfTransport(view: Document): Unit = {
 
     "display 'Means of Transport' section" which {
       "nationality picker" in {
@@ -151,7 +146,9 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
     "display 'Container' section" in {
       view.getElementById("container-label").text() mustBe "supplementary.transportInfo.container"
     }
+  }
 
+  def havingPaymentMethod(view: Document): Unit =
     "display 'Payment Method' section" which {
       "have 'Not PrePaid' option" in {
         view
@@ -188,6 +185,55 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
           .getElementById("standard.transportDetails.paymentMethod.eFunds-label")
           .text() mustBe "standard.transportDetails.paymentMethod.eFunds"
       }
+    }
+
+  "TransportDetails View" when {
+    "we are on Standard journey" should {
+      val requrestOnStandard = journeyRequest(DeclarationType.STANDARD)
+
+      val view = createView(request = requrestOnStandard)
+      "display 'Back' button that links to 'Departure' page" in {
+        val backButton = view.getElementById("link-back")
+
+        backButton.text() mustBe "site.back"
+        backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.DepartureTransportController.displayPage(Mode.Normal))
+      }
+
+      behave like borderView(view)
+      behave like havingMeansOfTransport(view)
+      behave like havingPaymentMethod(view)
+    }
+
+    "we are on Supplementary journey" should {
+      val requrestOnSupplementary = journeyRequest(DeclarationType.SUPPLEMENTARY)
+      val view = createView(request = requrestOnSupplementary)
+
+      "display 'Back' button that links to 'Departure' page" in {
+        val backButton = view.getElementById("link-back")
+
+        backButton.text() mustBe "site.back"
+        backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.DepartureTransportController.displayPage(Mode.Normal))
+      }
+
+      behave like havingMeansOfTransport(view)
+      behave like borderView(view)
+    }
+
+    "we are on Simplified journey" should {
+      val requestOnSimplified = journeyRequest(DeclarationType.SIMPLIFIED)
+      val view = createView(request = requestOnSimplified)
+      "display 'Back' button that links to 'Warehouse' pagfe" in {
+        val viewForStandard = view
+        val backButton = viewForStandard.getElementById("link-back")
+
+        backButton.text() mustBe "site.back"
+        backButton.getElementById("link-back") must haveHref(
+          controllers.declaration.routes.WarehouseIdentificationController.displayPage(Mode.Normal)
+        )
+      }
+      behave like borderView(view)
+      behave like havingMeansOfTransport(view)
+      behave like havingPaymentMethod(view)
     }
   }
 }
