@@ -39,9 +39,9 @@ class DocumentWriteOffSpec extends WordSpec with MustMatchers with DocumentsProd
           testFailedValidationErrors(input, expectedErrors)
         }
 
-        "is shorter than 4 characters" in {
+        "is shorter than 3 characters" in {
 
-          val input = JsObject(Map(measurementUnitKey -> JsString("AB3")))
+          val input = JsObject(Map(measurementUnitKey -> JsString("AB")))
           val expectedErrors = Seq(FormError(measurementUnitKey, measurementUnitLengthError))
 
           testFailedValidationErrors(input, expectedErrors)
