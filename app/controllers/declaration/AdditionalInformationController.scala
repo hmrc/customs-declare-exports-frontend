@@ -89,7 +89,7 @@ class AdditionalInformationController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
-      .saveAndContinue(boundForm, cachedData, true, elementLimit)
+      .saveAndContinue(boundForm, cachedData, isMandatory = false, elementLimit)
       .fold(
         formWithErrors => Future.successful(BadRequest(additionalInformationPage(mode: Mode, itemId, formWithErrors, cachedData))),
         updatedCache =>

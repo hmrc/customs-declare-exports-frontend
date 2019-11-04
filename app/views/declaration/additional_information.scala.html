@@ -19,6 +19,7 @@
 @import forms.declaration.AdditionalInformation
 @import uk.gov.hmrc.play.views.html._
 @import views.components.fields.LabelledValue
+@import views.html.components.buttons.remove_button
 @import models.requests.JourneyRequest
 
 @import forms.declaration.CommodityMeasure
@@ -53,9 +54,29 @@
         @helper.CSRF.formField
 
         @if(items.nonEmpty){
-          @components.fields.removable_elements_table(
-              elements = items.map(item => LabelledValue(item.toString))
-            )
+
+            <div class="field-group mb-2">
+                <table id="additional_information">
+                    <thead>
+                        <tr>
+                            <th class="code-header" colspan="1">@messages("supplementary.additionalInformation.table.headers.code")</th>
+                            <th class="description-header" colspan="1">@messages("supplementary.additionalInformation.table.headers.description")</th>
+                            <th colspan="1"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @for((elem, index) <- items.zipWithIndex) {
+                        <tr id="removable_elements__row@index">
+                            <th class="code-row" id="removable_elements-row@index-code">@{elem.code}</th>
+                            <th class="description-row" id="removable_elements-row@index-info">@{elem.description}</th>
+                            <th id="removable_elements-row@index-remove_button">
+                                @remove_button(element = LabelledValue(elem.toString))
+                            </th>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
         }
 
         @components.fields.field_text(

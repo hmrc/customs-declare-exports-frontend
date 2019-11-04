@@ -25,7 +25,6 @@ import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.twirl.api.Html
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -38,8 +37,11 @@ class AdditionalInformationViewSpec
 
   val itemId = "a7sc78"
   private val form: Form[AdditionalInformation] = AdditionalInformation.form()
+  private val additionalInformationPage = new additional_information(mainTemplate)
+
   private val page = new additional_information(mainTemplate)
-  private def createView(declarationType: DeclarationType = DeclarationType.STANDARD, form: Form[AdditionalInformation] = form): Html =
+
+  private def createView(declarationType: DeclarationType = DeclarationType.STANDARD, form: Form[AdditionalInformation] = form): Document =
     page(Mode.Normal, itemId, form, Seq())(journeyRequest(declarationType), messages)
 
   "Additional Information View" should {
@@ -149,15 +151,34 @@ class AdditionalInformationViewSpec
       view.getElementById("description").text() mustBe "12345"
     }
 
-    "display one row with data in table" in {
+    "display one row with data in table" which {
 
       val view = page(Mode.Normal, itemId, form, Seq(AdditionalInformation("12345", "12345")))(journeyRequest(DeclarationType.STANDARD), messages)
 
-      view.select("table>tbody>tr>th:nth-child(1)").text() mustBe "12345-12345"
+      "has Code header" in {
+        view.select("#additional_information thead .code-header").first().text() mustBe "supplementary.additionalInformation.table.headers.code"
+      }
 
-      val removeButton = view.select("table>tbody>tr>th:nth-child(2)>button")
-      removeButton.text() mustBe "site.remove site.remove.hint"
-      removeButton.attr("name") mustBe "Remove"
+      "has 'Required information' header" in {
+        view.select("#additional_information thead .description-header").first().text() mustBe "supplementary.additionalInformation.table.headers.description"
+      }
+
+      "has row with 'Code' in " in {
+        view.select("table tbody tr:nth-child(1) .code-row").first().text() mustBe "12345"
+      }
+
+      "has row wiht 'Required information" in {
+        view.select("table tbody tr:nth-child(1) .description-row").first().text() mustBe "12345678"
+      }
+
+      "has 'Remove' button" in {
+        val removeButton = view.select("table tbody tr:nth-child(1) .remove").first()
+        removeButton.text() mustBe "site.remove site.remove.hint"
+        removeButton.attr("name") mustBe "Remove"
+      }
+
+
+
     }
   }
 }

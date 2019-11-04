@@ -649,6 +649,8 @@ supplementary.additionalInformation.add.hint = Add additional information
 supplementary.additionalInformation.item.description = 2/2 information
 supplementary.additionalInformation.description.error = Information description is incorrect
 supplementary.additionalInformation.description.empty = Information description cannot be empty
+supplementary.additionalInformation.table.headers.code = Code
+supplementary.additionalInformation.table.headers.description = Required description
 
 declaration.natureOfTransaction.header = Consignment information
 declaration.natureOfTransaction.title = What was the nature of the transaction?
