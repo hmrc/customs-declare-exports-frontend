@@ -169,13 +169,13 @@ POST         /items/:itemId/add-document                        controllers.decl
 
 # **** END OF ITEM PAGES ****
 
-# Border Transport
+# Departure Transport
 
 GET         /departure-transport                    controllers.declaration.DepartureTransportController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
 POST        /departure-transport                    controllers.declaration.DepartureTransportController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
-# Transport Details
+# Border Transport
 
 GET         /border-transport                   controllers.declaration.BorderTransportController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
