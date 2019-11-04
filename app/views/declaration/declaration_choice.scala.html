@@ -40,7 +40,7 @@
             @components.heading(title = messages("declaration.type.description"))
 
             @components.fields.field_radio(
-                field = form("value"),
+                field = form("type"),
                 legend = "",
                 inputs = Seq(
                     RadioOption("Standard declaration", DeclarationType.STANDARD.toString, messages(s"declaration.type.standard"), Some(messages(s"declaration.type.standard.hint"))),

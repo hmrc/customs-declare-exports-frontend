@@ -26,7 +26,7 @@ case class DeclarationChoice(value: DeclarationType)
 object DeclarationChoice {
 
   val mapping = Forms.single(
-    "value" ->
+    "type" ->
       text()
         .verifying("declaration.type.error", isContainedIn(DeclarationType.values.map(_.toString)))
         .transform[DeclarationChoice](

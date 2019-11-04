@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      0.8
+// @version      0.9
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -62,6 +62,10 @@ function completePage() {
     }
     if(currentPageIs("/customs-declare-exports/choice")){
         selectRadioOption(document.getElementById("value"), 0);
+        document.getElementsByClassName('button')[0].click()
+    }
+    if(currentPageIs("/customs-declare-exports/declaration/declaration-choice")){
+        selectRadioOption(document.getElementById("type"), 0);
         document.getElementsByClassName('button')[0].click()
     }
     if(currentPageIs("/customs-declare-exports/declaration/dispatch-location")){
