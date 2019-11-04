@@ -24,6 +24,7 @@
 @import services.model.Country
 @import services.Countries
 @import services.view.AutoCompleteItem
+@import controllers.navigation.Navigator
 @import views.Title
 
 @this(main_template: views.html.main_template)
@@ -34,7 +35,7 @@
     title = Title("supplementary.transportInfo.active.title")
 ) {
 
-    @components.back_link(controllers.declaration.routes.DepartureTransportController.displayPage(mode), mode)
+    @components.back_link(Navigator.backLink(BorderTransport)(request)(mode), mode)
 
     @helper.form(BorderTransportController.submitForm(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField

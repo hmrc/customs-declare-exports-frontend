@@ -18,7 +18,11 @@ package controllers.navigation
 
 import config.AppConfig
 import controllers.util.{FormAction, SaveAndReturn}
+import forms.DeclarationFieldCompanion
+import forms.declaration.BorderTransport
 import javax.inject.Inject
+import models.{DeclarationType, Mode}
+import models.DeclarationType._
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
 import play.api.mvc.{AnyContent, Call, Result, Results}
@@ -44,4 +48,29 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
       .removingFromSession(ExportsSessionKeys.declarationId)
   }
 
+}
+
+object Navigator {
+
+  val standard: PartialFunction[DeclarationFieldCompanion, Mode => Call] = {
+    case BorderTransport => controllers.declaration.routes.DepartureTransportController.displayPage
+    case _               => ???
+  }
+
+  val supplementary: PartialFunction[DeclarationFieldCompanion, Mode => Call] = {
+    case BorderTransport => controllers.declaration.routes.DepartureTransportController.displayPage
+    case _               => ???
+  }
+
+  val simplified: PartialFunction[DeclarationFieldCompanion, Mode => Call] = {
+    case BorderTransport => controllers.declaration.routes.WarehouseIdentificationController.displayPage
+    case _               => ???
+  }
+
+  def backLink(page: DeclarationFieldCompanion)(implicit request: JourneyRequest[_]): Mode => Call =
+    request.declarationType match {
+      case STANDARD      => standard(page)
+      case SUPPLEMENTARY => supplementary(page)
+      case SIMPLIFIED    => simplified(page)
+    }
 }

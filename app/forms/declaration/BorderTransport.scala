@@ -15,6 +15,7 @@
  */
 
 package forms.declaration
+import forms.DeclarationFieldCompanion
 import forms.Mapping.requiredRadio
 import forms.declaration.TransportCodes._
 import play.api.data.Forms.{boolean, mapping, optional, text}
@@ -31,7 +32,7 @@ case class BorderTransport(
   paymentMethod: Option[String] = None
 )
 
-object BorderTransport {
+object BorderTransport extends DeclarationFieldCompanion {
 
   val formId = "TransportDetails"
 

@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.WarehouseIdentification
 import javax.inject.Inject
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -55,9 +55,16 @@ class WarehouseIdentificationController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[WarehouseIdentification]) => Future.successful(BadRequest(warehouseIdentificationPage(mode, formWithErrors))),
-        form =>
+        form => {
+          val nextStep = request.cacheModel.`type` match {
+            case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
+              controllers.declaration.routes.DepartureTransportController.displayPage(mode)
+            case DeclarationType.SIMPLIFIED =>
+              controllers.declaration.routes.BorderTransportController.displayPage(mode)
+          }
           updateCache(form)
-            .map(_ => navigator.continueTo(controllers.declaration.routes.DepartureTransportController.displayPage(mode)))
+            .map(_ => navigator.continueTo(nextStep))
+        }
       )
   }
 
