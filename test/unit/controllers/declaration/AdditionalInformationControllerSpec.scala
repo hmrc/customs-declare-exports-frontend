@@ -94,15 +94,6 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
     "return 400 (BAD_REQUEST) during adding" when {
 
-      "user put incorrect data" in journeyFor(declaration) {
-        val incorrectForm = Seq(("code", "12345"), ("description", ""), addActionUrlEncoded())
-
-        val result =
-          controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(incorrectForm: _*))
-
-        status(result) must be(BAD_REQUEST)
-      }
-
       "user put duplicated item" in journeyFor(aDeclarationAfter(declaration, withItem(itemCacheData))) {
         val duplicatedForm = Seq(("code", "12345"), ("description", "description"), addActionUrlEncoded())
 
@@ -124,7 +115,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
     "return 400 (BAD_REQUEST) during saving" when {
 
       "user put incorrect data" in journeyFor(declaration) {
-        val incorrectForm = Seq(("code", "12345"), ("description", ""), saveAndContinueActionUrlEncoded)
+        val incorrectForm = Seq(("code", "111"), ("description", ""), saveAndContinueActionUrlEncoded)
 
         val result =
           controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(incorrectForm: _*))
