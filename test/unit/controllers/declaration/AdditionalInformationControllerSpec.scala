@@ -64,7 +64,6 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
   val itemWith99InformationCacheData =
     ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq.fill(99)(AdditionalInformation("12345", "description")))))
 
-
   def journeyPageController(declaration: ExportsDeclaration): Unit = {
     "return 200 (OK)" when {
 

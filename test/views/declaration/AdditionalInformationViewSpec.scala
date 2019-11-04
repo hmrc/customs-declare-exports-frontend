@@ -160,7 +160,10 @@ class AdditionalInformationViewSpec
       }
 
       "has 'Required information' header" in {
-        view.select("#additional_information thead .description-header").first().text() mustBe "supplementary.additionalInformation.table.headers.description"
+        view
+          .select("#additional_information thead .description-header")
+          .first()
+          .text() mustBe "supplementary.additionalInformation.table.headers.description"
       }
 
       "has row with 'Code' in " in {
@@ -172,12 +175,11 @@ class AdditionalInformationViewSpec
       }
 
       "has 'Remove' button" in {
+
         val removeButton = view.select("table tbody tr:nth-child(1) .remove").first()
         removeButton.text() mustBe "site.remove site.remove.hint"
         removeButton.attr("name") mustBe "Remove"
       }
-
-
 
     }
   }
