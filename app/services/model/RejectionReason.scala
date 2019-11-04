@@ -52,20 +52,19 @@ object RejectionReason {
 
     rejectionNotification.map { notification =>
       notification.errors.map { error =>
-        logMissingPointerMessageKey(error.pointer)
-
         RejectionReason(
           error.validationCode,
           getCdsErrorDescription(error.validationCode),
           getExportsErrorDescription(error.validationCode),
-          error.pointer.filter(p => messages.isDefinedAt(p.messageKey))
+          error.pointer.filter { p =>
+            val defined = messages.isDefinedAt(p.messageKey)
+            if(!defined) logger.warn("Missing error message key: " + p.messageKey)
+            defined
+          }
         )
       }
     }.getOrElse(Seq.empty)
   }
-
-  private def logMissingPointerMessageKey(pointer: Option[Pointer])(implicit messages: Messages): Unit =
-    pointer.foreach(p => if (messages.isDefinedAt(p.messageKey)) logger.warn("Missing error message key: " + p.messageKey))
 
   def getCdsErrorDescription(errorCode: String): String =
     allRejectedErrors.find(_.code == errorCode).map(_.cdsDescription).getOrElse("Unknown error")
