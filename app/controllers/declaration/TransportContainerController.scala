@@ -19,7 +19,6 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.{FormAction, Remove}
-import forms.Choice.AllowedChoiceValues
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.{form, YesNoAnswers}
 import forms.declaration.TransportInformationContainer
@@ -175,6 +174,6 @@ class TransportContainerController @Inject()(
       navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode))
 
   private def allowSeals(implicit request: JourneyRequest[AnyContent]) =
-    request.isType(DeclarationType.STANDARD) || request.isType(DeclarationType.SIMPLIFIED)
+    request.isType(DeclarationType.STANDARD) || request.isType(DeclarationType.SUPPLEMENTARY) || request.isType(DeclarationType.SIMPLIFIED)
 
 }
