@@ -83,7 +83,7 @@ class DeclarationChoiceController @Inject()(
   }
 
   private def updateDeclarationType(id: String, `type`: DeclarationType)(implicit hc: HeaderCarrier) =
-    exportsCacheService.get(id).map(_.map(_.copy(`type` = `type`))).flatMap {
+    exportsCacheService.get(id).map(_.map(_.updateType(`type`))).flatMap {
       case Some(declaration) => exportsCacheService.update(declaration)
       case None =>
         logger.error(s"Failed to find declaration for id $id")
