@@ -18,7 +18,6 @@ package unit.controllers.declaration
 
 import controllers.declaration.TransportContainerController
 import controllers.util.Remove
-import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.Seal
 import models.{DeclarationType, Mode}
 import models.declaration.{Container, TransportInformationContainerData}

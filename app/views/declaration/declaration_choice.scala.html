@@ -15,37 +15,38 @@
  *@
 
 @import config.AppConfig
-@import controllers.routes._
 @import forms.Choice.AllowedChoiceValues._
+@import models.DeclarationType
+@import models.DeclarationType.DeclarationType
 @import views.Title
 @import views.components.inputs.RadioOption
+@import forms.Choice
 
 @this(main_template: views.html.main_template, appConfig: AppConfig)
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
     @main_template(
-        title = Title("declaration.choice.description")
+        title = Title("declaration.type.description")
     ) {
 
-        @components.back_link(controllers.routes.StartController.displayStartPage())
+        @components.back_link(controllers.routes.ChoiceController.displayPage(Some(Choice(CreateDec))))
 
-        @helper.form(ChoiceController.submitChoice(), 'autoComplete -> "off") {
+        @helper.form(controllers.declaration.routes.DeclarationChoiceController.submitChoice(), 'autoComplete -> "off") {
             @helper.CSRF.formField
 
             @components.error_summary(form.errors)
 
-            @components.heading(title = messages("declaration.choice.description"))
+            @components.heading(title = messages("declaration.type.description"))
 
             @components.fields.field_radio(
                 field = form("value"),
                 legend = "",
                 inputs = Seq(
-                    RadioOption("Create declaration", CreateDec, messages(s"declaration.choice.$CreateDec")),
-                    RadioOption("Submissions", Submissions, messages(s"declaration.choice.$Submissions")),
-                    RadioOption("Continue declaration", ContinueDec, messages(s"declaration.choice.$ContinueDec")),
-                    RadioOption("Cancel declaration", CancelDec, messages(s"declaration.choice.$CancelDec"))
-                ).filter(radioOption => appConfig.availableJourneys().contains(radioOption.value))
+                    RadioOption("Standard declaration", DeclarationType.STANDARD.toString, messages(s"declaration.type.standard"), Some(messages(s"declaration.type.standard.hint"))),
+                    RadioOption("Simplified declaration", DeclarationType.SIMPLIFIED.toString, messages(s"declaration.type.simplified"), Some(messages(s"declaration.type.simplified.hint"))),
+                    RadioOption("Supplementary declaration", DeclarationType.SUPPLEMENTARY.toString, messages(s"declaration.type.supplementary"), Some(messages(s"declaration.type.supplementary.hint")))
+                ).filter(radioOption => appConfig.availableDeclarations().contains(radioOption.value))
             )
 
             @components.submit_button()

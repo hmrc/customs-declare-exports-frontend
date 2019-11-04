@@ -146,12 +146,21 @@ cancellation.reason.noLongerRequired = No longer required
 
 
 declaration.choice.description = What do you want to do?
-declaration.choice.SMP = Make a supplementary declaration
-declaration.choice.STD = Make a standard declaration
-declaration.choice.SIM = Make a simplified declaration
+
+declaration.choice.CRT = Create a declaration
 declaration.choice.CAN = Cancel a declaration
 declaration.choice.CON = Continue a saved declaration
 declaration.choice.SUB = View declarations
+
+declaration.type.description = Which type of declaration do you want to create?
+declaration.type.standard = Standard declaration
+declaration.type.standard.hint = This is a full declaration
+declaration.type.simplified = Simplified declaration
+declaration.type.simplified.hint = This is a shorter version of the full declaration that requires specific authorisation and a follow-up supplementary declaration
+declaration.type.supplementary = Supplementary declaration
+declaration.type.supplementary.hint = This needs to be completed within one calendar month of submitting a simplified declaration and requires specific authorisation
+
+declaration.type.error = Please choose a valid option
 
 startPage.title.sectionHeader = Guidance
 startPage.title = Declare goods you’re exporting using the Customs Declaration Service

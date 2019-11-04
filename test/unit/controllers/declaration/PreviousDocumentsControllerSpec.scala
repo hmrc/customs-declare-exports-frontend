@@ -18,7 +18,6 @@ package unit.controllers.declaration
 
 import controllers.declaration.PreviousDocumentsController
 import controllers.util.Remove
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.{Document, PreviousDocumentsData}
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor

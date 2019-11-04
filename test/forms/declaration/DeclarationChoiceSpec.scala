@@ -14,48 +14,50 @@
  * limitations under the License.
  */
 
-package forms.common
-import forms.Choice
+package forms.declaration
+
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-class YesNoAnswerSpec extends WordSpec with MustMatchers {
-  import YesNoAnswerSpec._
-  "Validation defined in YesNoAnswer mapping" should {
+class DeclarationChoiceSpec extends WordSpec with MustMatchers {
+  import DeclarationChoiceSpec._
+
+  "Validation defined in DeclarationChoice mapping" should {
 
     "attach errors to form" when {
-      "provided with empty input" in {
-        val form = YesNoAnswer.form().bind(emptyYesNoAnswerJSON)
+      "provided with  empty input" in {
+        val form = DeclarationChoice.form().bind(emptyChoiceJSON)
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
-        form.errors.head.message must equal("error.yesNo.required")
+        form.errors.head.message must equal("declaration.type.error")
       }
 
-      "provided with an incorrect value" in {
-        val form = YesNoAnswer.form().bind(incorrectYesNoAnswerJSON)
+      "provided with a value not defined in AllowedChoiceValues" in {
+        val form = DeclarationChoice.form().bind(incorrectChoiceJSON)
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
-        form.errors.head.message must equal("error.yesNo.required")
+        form.errors.head.message must equal("declaration.type.error")
       }
     }
 
     "not attach any error" when {
       "provided with valid input" in {
-        val form = YesNoAnswer.form().bind(correctYesNoAnswerJSON)
+        val form = DeclarationChoice.form().bind(correctChoiceJSON)
 
         form.hasErrors must be(false)
       }
     }
   }
+
 }
 
-object YesNoAnswerSpec {
+object DeclarationChoiceSpec {
 
-  val correctYesNoAnswerJSON: JsValue = createYesNoJSON("Yes")
-  val incorrectYesNoAnswerJSON: JsValue = createYesNoJSON("InvalidChoice")
-  val emptyYesNoAnswerJSON: JsValue = createYesNoJSON()
+  val correctChoiceJSON: JsValue = createChoiceJSON("STANDARD")
+  val incorrectChoiceJSON: JsValue = createChoiceJSON("InvalidChoice")
+  val emptyChoiceJSON: JsValue = createChoiceJSON()
 
-  def createYesNoJSON(answer: String = ""): JsValue = JsObject(Map("yesNo" -> JsString(answer)))
+  def createChoiceJSON(choiceValue: String = ""): JsValue = JsObject(Map("value" -> JsString(choiceValue)))
 }

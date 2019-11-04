@@ -24,6 +24,7 @@ import features.FeatureStatus.FeatureStatus
 import features.{Feature, FeatureStatus}
 import forms.Choice
 import javax.inject.Named
+import models.DeclarationType
 import play.api.i18n.Lang
 import play.api.mvc.Call
 import play.api.{Configuration, Environment, Logger}
@@ -106,7 +107,14 @@ class AppConfig @Inject()(
     runModeConfiguration
       .getOptional[String]("list-of-available-journeys")
       .map(_.split(","))
-      .getOrElse(Array(Choice.AllowedChoiceValues.SupplementaryDec))
+      .getOrElse(Array(Choice.AllowedChoiceValues.Submissions))
+      .toSeq
+
+  def availableDeclarations(): Seq[String] =
+    runModeConfiguration
+      .getOptional[String]("list-of-available-declarations")
+      .map(_.split(","))
+      .getOrElse(Array(DeclarationType.STANDARD.toString))
       .toSeq
 
   def featureStatus(feature: Feature): FeatureStatus =

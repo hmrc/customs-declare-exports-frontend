@@ -17,7 +17,6 @@
 package unit.controllers.declaration
 
 import controllers.declaration.DispatchLocationController
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.DispatchLocation
 import forms.declaration.DispatchLocation.AllowedDispatchLocations._
 import models.{DeclarationType, Mode}

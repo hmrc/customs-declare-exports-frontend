@@ -19,9 +19,8 @@ package unit.controllers
 import controllers.ChoiceController
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
+import models.DeclarationType
 import models.DeclarationType.DeclarationType
-import models.requests.ExportsSessionKeys
-import models.{DeclarationStatus, DeclarationType, ExportsDeclaration}
 import org.scalatest.OptionValues
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Request}
@@ -37,13 +36,10 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues {
   private def existingDeclaration(choice: DeclarationType = DeclarationType.SUPPLEMENTARY) =
     aDeclaration(withId("existingDeclarationId"), withType(choice))
 
-  private val newDeclaration =
-    aDeclaration(withId("newDeclarationId"), withType(DeclarationType.SUPPLEMENTARY))
-
   val choicePage = new choice_page(mainTemplate, minimalAppConfig)
 
   val controller =
-    new ChoiceController(mockAuthAction, mockExportsCacheService, stubMessagesControllerComponents(), choicePage)(ec)
+    new ChoiceController(mockAuthAction, stubMessagesControllerComponents(), choicePage)(ec)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -99,19 +95,6 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    "pre-select declaration type " when {
-
-      "choice parameter not given" in {
-        withNewCaching(existingDeclaration(DeclarationType.SUPPLEMENTARY))
-
-        val request = getRequest()
-        val result = controller.displayPage(None)(request)
-        var form = Choice.form().fill(Choice(SupplementaryDec))
-
-        viewOf(result) must be(choicePage(form)(request, controller.messagesApi.preferred(request)))
-      }
-    }
-
     "not select any choice " when {
 
       "choice parameter not given and cache empty" in {
@@ -139,62 +122,17 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    "redirect to Dispatch Location page" when {
+    "redirect to Declaration choice page" when {
 
-      "user chooses Supplementary Dec for new declaration" in {
-        withCreateResponse(newDeclaration)
+      "user chooses Create Dec " in {
 
-        val result = controller.submitChoice()(postChoiceRequest(supplementaryChoice))
-
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.declaration.routes.DispatchLocationController.displayPage().url))
-        session(result).get(ExportsSessionKeys.declarationId).value mustEqual newDeclaration.id
-        val created = theCacheModelCreated
-        created.id mustBe None
-        created.status mustBe DeclarationStatus.DRAFT
-        created.`type` mustBe DeclarationType.SUPPLEMENTARY
-        created.sourceId mustBe None
-      }
-
-      "user chooses Supplementary Dec for existing Standard Dec" in {
-        val existingDec = existingDeclaration(DeclarationType.STANDARD)
-        withNewCaching(existingDec)
-
-        val result = controller.submitChoice()(postRequest(supplementaryChoice, existingDec))
+        val result = controller.submitChoice()(postChoiceRequest(createChoice))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.declaration.routes.DispatchLocationController.displayPage().url))
-        val updated: ExportsDeclaration = theCacheModelUpdated
-        updated.id mustBe existingDec.id
-        updated.`type` mustBe DeclarationType.SUPPLEMENTARY
+        redirectLocation(result) must be(Some(controllers.declaration.routes.DeclarationChoiceController.displayPage().url))
+        verifyTheCacheIsUnchanged()
       }
 
-      "user chooses Standard Dec for new declaration" in {
-        withCreateResponse(newDeclaration)
-
-        val result = controller.submitChoice()(postChoiceRequest(standardChoice))
-
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.declaration.routes.DispatchLocationController.displayPage().url))
-        session(result).get(ExportsSessionKeys.declarationId).value mustEqual newDeclaration.id
-        val created = theCacheModelCreated
-        created.id mustBe None
-        created.status mustBe DeclarationStatus.DRAFT
-        created.`type` mustBe DeclarationType.STANDARD
-      }
-
-      "user chooses Standard Dec for existing Supplementary Dec" in {
-        val existingDec = existingDeclaration(DeclarationType.SUPPLEMENTARY)
-        withNewCaching(existingDec)
-
-        val result = controller.submitChoice()(postRequest(standardChoice, existingDec))
-
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.declaration.routes.DispatchLocationController.displayPage().url))
-        val updated = theCacheModelUpdated
-        updated.id mustBe existingDec.id
-        updated.`type` mustBe DeclarationType.STANDARD
-      }
     }
 
     "redirect to Cancel Declaration page" when {
@@ -237,8 +175,7 @@ class ChoiceControllerSpec extends ControllerSpec with OptionValues {
 
 object ChoiceControllerSpec {
   val incorrectChoice: JsValue = Json.toJson(Choice("Incorrect Choice"))
-  val supplementaryChoice: JsValue = Json.toJson(Choice(SupplementaryDec))
-  val standardChoice: JsValue = Json.toJson(Choice(StandardDec))
+  val createChoice: JsValue = Json.toJson(Choice(CreateDec))
   val cancelChoice: JsValue = Json.toJson(Choice(CancelDec))
   val submissionsChoice: JsValue = Json.toJson(Choice(Submissions))
   val continueDeclarationChoice: JsValue = Json.toJson(Choice(ContinueDec))

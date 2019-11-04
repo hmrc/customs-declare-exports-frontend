@@ -18,7 +18,6 @@ package unit.controllers.declaration
 
 import controllers.declaration.PackageInformationController
 import controllers.util.{Add, SaveAndContinue}
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.PackageInformation
 import models.{DeclarationType, Mode}
 import play.api.test.Helpers._

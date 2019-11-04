@@ -1,3 +1,10 @@
+
+# Declaration Choice Page
+
+GET         /declaration-choice                 controllers.declaration.DeclarationChoiceController.displayPage()
+
+POST        /declaration-choice                 controllers.declaration.DeclarationChoiceController.submitChoice()
+
 # Declaration type
 
 GET         /dispatch-location                   controllers.declaration.DispatchLocationController.displayPage(mode: models.Mode ?= models.Mode.Normal)

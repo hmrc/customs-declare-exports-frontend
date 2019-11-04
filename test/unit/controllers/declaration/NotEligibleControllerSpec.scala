@@ -17,7 +17,6 @@
 package unit.controllers.declaration
 
 import controllers.declaration.NotEligibleController
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import models.DeclarationType
 import play.api.test.Helpers._
 import unit.base.ControllerSpec

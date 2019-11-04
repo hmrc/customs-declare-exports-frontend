@@ -19,7 +19,6 @@ package unit.controllers.declaration
 import base.TestHelper
 import controllers.declaration.DeclarationAdditionalActorsController
 import controllers.util.Remove
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.DeclarationAdditionalActors
 import models.{DeclarationType, Mode}
 import models.declaration.DeclarationAdditionalActorsData

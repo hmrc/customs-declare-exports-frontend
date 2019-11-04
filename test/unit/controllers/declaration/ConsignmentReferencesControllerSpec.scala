@@ -17,7 +17,6 @@
 package unit.controllers.declaration
 
 import controllers.declaration.ConsignmentReferencesController
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.{Ducr, Lrn}
 import forms.declaration.ConsignmentReferences
 import models.{DeclarationType, Mode}

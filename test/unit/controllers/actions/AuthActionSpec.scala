@@ -28,7 +28,7 @@ class AuthActionSpec extends ControllerSpec {
   val choicePage = new choice_page(mainTemplate, minimalAppConfig)
 
   val controller =
-    new ChoiceController(mockAuthAction, mockExportsCacheService, stubMessagesControllerComponents(), choicePage)(ec)
+    new ChoiceController(mockAuthAction, stubMessagesControllerComponents(), choicePage)(ec)
 
   "Auth Action" should {
 

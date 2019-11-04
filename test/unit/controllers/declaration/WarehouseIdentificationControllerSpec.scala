@@ -17,7 +17,6 @@
 package unit.controllers.declaration
 
 import controllers.declaration.WarehouseIdentificationController
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.TransportCodes.Maritime
 import helpers.views.declaration.WarehouseIdentificationMessages
 import models.{DeclarationType, Mode}

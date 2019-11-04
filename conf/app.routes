@@ -40,7 +40,7 @@ POST        /saved-declarations/:id/remove                 controllers.RemoveSav
 
 GET         /start                                         controllers.StartController.displayStartPage()
 
-# Declaration Choice Page
+# Choice Page
 
 GET         /choice                                        controllers.ChoiceController.displayPage(previousChoice: Option[forms.Choice] ?= None)
 

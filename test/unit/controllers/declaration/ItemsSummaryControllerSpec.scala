@@ -18,7 +18,6 @@ package unit.controllers.declaration
 
 import controllers.declaration.ItemsSummaryController
 import controllers.util.{Add, SaveAndContinue, SaveAndReturn}
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import models.{DeclarationType, Mode}
 import models.declaration.ExportItem
 import org.mockito.ArgumentCaptor

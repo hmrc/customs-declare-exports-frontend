@@ -17,7 +17,6 @@
 package unit.controllers.declaration
 
 import controllers.declaration.OfficeOfExitController
-import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.officeOfExit.{OfficeOfExitStandard, OfficeOfExitSupplementary}
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
