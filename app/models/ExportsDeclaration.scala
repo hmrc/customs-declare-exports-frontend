@@ -45,10 +45,10 @@ case class ExportsDeclaration(
   previousDocuments: Option[PreviousDocumentsData] = None,
   natureOfTransaction: Option[NatureOfTransaction] = None
 ) {
-  def isComplete: Boolean = status == DeclarationStatus.COMPLETE
-
   val lrn: Option[String] = consignmentReferences.map(_.lrn.value)
   val ducr: Option[String] = consignmentReferences.map(_.ducr.ducr)
+
+  def isComplete: Boolean = status == DeclarationStatus.COMPLETE
 
   def updatedItem(itemId: String, update: ExportItem => ExportItem): ExportsDeclaration =
     itemBy(itemId).fold(this) { item =>
@@ -58,9 +58,9 @@ case class ExportsDeclaration(
 
   def itemBy(itemId: String): Option[ExportItem] = items.find(_.id.equalsIgnoreCase(itemId))
 
-  def containers: Seq[Container] = containerData.map(_.containers).getOrElse(Seq.empty)
-
   def containerBy(containerId: String): Option[Container] = containers.find(_.id.equalsIgnoreCase(containerId))
+
+  def containers: Seq[Container] = containerData.map(_.containers).getOrElse(Seq.empty)
 
   def amend()(implicit clock: Clock = Clock.systemUTC()): ExportsDeclaration = {
     val currentTime = Instant.now(clock)
@@ -69,19 +69,26 @@ case class ExportsDeclaration(
 }
 
 object ExportsDeclaration {
-  implicit val formatInstant: OFormat[Instant] = new OFormat[Instant] {
-    override def writes(datetime: Instant): JsObject =
-      Json.obj("$date" -> datetime.toEpochMilli)
 
-    override def reads(json: JsValue): JsResult[Instant] =
-      json match {
-        case JsObject(map) if map.contains("$date") =>
-          map("$date") match {
-            case JsNumber(v) => JsSuccess(Instant.ofEpochMilli(v.toLong))
-            case _           => JsError("Unexpected Date Format. Expected a Number (Epoch Milliseconds)")
-          }
-        case _ => JsError("Unexpected Date Format. Expected an object containing a $date field.")
-      }
+  object Audit {
+    implicit val format: OFormat[ExportsDeclaration] = Json.format[ExportsDeclaration]
   }
-  implicit val format: OFormat[ExportsDeclaration] = Json.format[ExportsDeclaration]
+
+  object Mongo {
+    implicit val formatInstant: OFormat[Instant] = new OFormat[Instant] {
+      override def writes(datetime: Instant): JsObject =
+        Json.obj("$date" -> datetime.toEpochMilli)
+
+      override def reads(json: JsValue): JsResult[Instant] =
+        json match {
+          case JsObject(map) if map.contains("$date") =>
+            map("$date") match {
+              case JsNumber(v) => JsSuccess(Instant.ofEpochMilli(v.toLong))
+              case _           => JsError("Unexpected Date Format. Expected a Number (Epoch Milliseconds)")
+            }
+          case _ => JsError("Unexpected Date Format. Expected an object containing a $date field.")
+        }
+    }
+    implicit val format: OFormat[ExportsDeclaration] = Json.format[ExportsDeclaration]
+  }
 }
