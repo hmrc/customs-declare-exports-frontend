@@ -153,7 +153,7 @@ class AdditionalInformationViewSpec
 
     "display one row with data in table" which {
 
-      val view = page(Mode.Normal, itemId, form, Seq(AdditionalInformation("12345", "12345")))(journeyRequest(DeclarationType.STANDARD), messages)
+      val view = page(Mode.Normal, itemId, form, Seq(AdditionalInformation("12345", "12345678")))(journeyRequest(DeclarationType.STANDARD), messages)
 
       "has Code header" in {
         view.select("#additional_information thead .code-header").first().text() mustBe "supplementary.additionalInformation.table.headers.code"
