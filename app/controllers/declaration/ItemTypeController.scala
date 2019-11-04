@@ -57,20 +57,20 @@ class ItemTypeController @Inject()(
               itemTypePage(
                 mode,
                 item,
-                ItemTypeForm.form().fill(fromItemType(itemType)),
+                ItemTypeForm.form(request.declarationType).fill(fromItemType(itemType)),
                 itemType.taricAdditionalCodes,
                 itemType.nationalAdditionalCodes
               )
             )
           case None =>
-            Ok(itemTypePage(mode, item, ItemTypeForm.form()))
+            Ok(itemTypePage(mode, item, ItemTypeForm.form(request.declarationType)))
         }
       }
       .getOrElse(Redirect(routes.ItemsSummaryController.displayPage()))
   }
 
   def submitItemType(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val inputForm = ItemTypeForm.form().bindFromRequest()
+    val inputForm = ItemTypeForm.form(request.declarationType).bindFromRequest()
     val itemTypeInput: ItemTypeForm = inputForm.value.getOrElse(ItemTypeForm.empty)
 
     request.cacheModel
@@ -108,7 +108,7 @@ class ItemTypeController @Inject()(
         }
       case Invalid(errors) =>
         val formWithErrors =
-          errors.foldLeft(ItemTypeForm.form().fill(itemTypeInput))((form, error) => form.withError(error))
+          errors.foldLeft(ItemTypeForm.form(request.declarationType).fill(itemTypeInput))((form, error) => form.withError(error))
         Future.successful(
           BadRequest(itemTypePage(mode, item, formWithErrors, itemTypeCache.taricAdditionalCodes, itemTypeCache.nationalAdditionalCodes))
         )
@@ -158,9 +158,9 @@ class ItemTypeController @Inject()(
       .map { item =>
         item.itemType match {
           case Some(cachedData) =>
-            Ok(itemTypePage(mode, item, ItemTypeForm.form().fill(itemTypeInput), cachedData.taricAdditionalCodes, cachedData.nationalAdditionalCodes))
+            Ok(itemTypePage(mode, item, ItemTypeForm.form(request.declarationType).fill(itemTypeInput), cachedData.taricAdditionalCodes, cachedData.nationalAdditionalCodes))
           case _ =>
-            Ok(itemTypePage(mode, item, ItemTypeForm.form()))
+            Ok(itemTypePage(mode, item, ItemTypeForm.form(request.declarationType)))
         }
       }
       .getOrElse(Redirect(routes.ItemsSummaryController.displayPage(mode)))
@@ -181,7 +181,7 @@ class ItemTypeController @Inject()(
         }
       case Invalid(errors) =>
         val formWithErrors =
-          errors.foldLeft(ItemTypeForm.form().fill(itemTypeInput))((form, error) => form.withError(error))
+          errors.foldLeft(ItemTypeForm.form(request.declarationType).fill(itemTypeInput))((form, error) => form.withError(error))
         Future.successful(
           BadRequest(itemTypePage(mode, item, formWithErrors, itemTypeCache.taricAdditionalCodes, itemTypeCache.nationalAdditionalCodes))
         )

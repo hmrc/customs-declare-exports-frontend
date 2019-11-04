@@ -135,7 +135,7 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       }
 
       "Combined Nomenclature Code is longer than 8 characters" in {
-        val itemType = buildItemType(combinedNomenclatureCode = "ABCD12345")
+        val itemType = buildItemType(combinedNomenclatureCode = Some("ABCD12345"))
         val expectedValidationResult =
           Invalid(errors = Seq(FormError(combinedNomenclatureCodeKey, "declaration.itemType.combinedNomenclatureCode.error.length")))
 
@@ -143,7 +143,7 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       }
 
       "Combined Nomenclature Code contains special characters" in {
-        val itemType = buildItemType(combinedNomenclatureCode = "1234!@#$")
+        val itemType = buildItemType(combinedNomenclatureCode = Some("1234!@#$"))
         val expectedValidationResult =
           Invalid(errors = Seq(FormError(combinedNomenclatureCodeKey, "declaration.itemType.combinedNomenclatureCode.error.specialCharacters")))
 
@@ -294,7 +294,7 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
 
       "provided with correct data with single value for every field" in {
         val itemType = ItemType(
-          combinedNomenclatureCode = "12345678",
+          combinedNomenclatureCode = Some("12345678"),
           taricAdditionalCodes = Seq("11AA"),
           nationalAdditionalCodes = Seq("VATE"),
           descriptionOfGoods = "Test description",
@@ -308,7 +308,7 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
 
       "provided with correct data with multiple values where possible" in {
         val itemType = ItemType(
-          combinedNomenclatureCode = "12345678",
+          combinedNomenclatureCode = Some("12345678"),
           taricAdditionalCodes = Seq("11AA", "22BB", "33CC"),
           nationalAdditionalCodes = Seq("VATE", "VATR"),
           descriptionOfGoods = "Test description",
@@ -322,7 +322,7 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
 
       "provided with correct data for mandatory fields only" in {
         val itemType = ItemType(
-          combinedNomenclatureCode = "12345678",
+          combinedNomenclatureCode = Some("12345678"),
           taricAdditionalCodes = Seq.empty,
           nationalAdditionalCodes = Seq.empty,
           descriptionOfGoods = "Test description",
@@ -346,7 +346,7 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
 
 object ItemTypeValidatorSpec {
   def buildItemType(
-    combinedNomenclatureCode: String = "",
+    combinedNomenclatureCode: Option[String] = None,
     taricAdditionalCode: Seq[String] = Seq.empty,
     nationalAdditionalCode: Seq[String] = Seq.empty,
     descriptionOfGoods: String = "",

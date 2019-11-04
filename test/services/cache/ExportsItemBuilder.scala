@@ -67,7 +67,7 @@ trait ExportsItemBuilder {
   def withoutItemType(): ItemModifier = _.copy(itemType = None)
 
   def withItemType(
-    combinedNomenclatureCode: String = "",
+    combinedNomenclatureCode: Option[String] = None,
     taricAdditionalCodes: Seq[String] = Seq.empty,
     nationalAdditionalCodes: Seq[String] = Seq.empty,
     descriptionOfGoods: String = "",

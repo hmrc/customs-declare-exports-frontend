@@ -18,6 +18,7 @@ package forms.declaration
 
 import forms.declaration.ItemTypeForm._
 import forms.declaration.ItemTypeFormSpec.correctItemTypeMap
+import models.DeclarationType
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.FormError
 
@@ -27,7 +28,7 @@ class ItemTypeFormSpec extends WordSpec with MustMatchers {
 
     "return form without errors" when {
       "provided with valid values" in {
-        val form = ItemTypeForm.form().bind(correctItemTypeMap)
+        val form = ItemTypeForm.form(DeclarationType.STANDARD).bind(correctItemTypeMap)
 
         form.hasErrors must be(false)
       }
@@ -36,19 +37,19 @@ class ItemTypeFormSpec extends WordSpec with MustMatchers {
     "return form with errors" when {
 
       "combinedNomenclatureCode is missing" in {
-        val form = ItemTypeForm.form().bind(correctItemTypeMap - "combinedNomenclatureCode")
+        val form = ItemTypeForm.form(DeclarationType.STANDARD).bind(correctItemTypeMap - "combinedNomenclatureCode")
 
         form.errors mustBe Seq(FormError("combinedNomenclatureCode", "error.required"))
       }
 
       "descriptionOfGoods is missing" in {
-        val form = ItemTypeForm.form().bind(correctItemTypeMap - "descriptionOfGoods")
+        val form = ItemTypeForm.form(DeclarationType.STANDARD).bind(correctItemTypeMap - "descriptionOfGoods")
 
         form.errors mustBe Seq(FormError("descriptionOfGoods", "error.required"))
       }
 
       "statisticalValue is missing" in {
-        val form = ItemTypeForm.form().bind(correctItemTypeMap - "statisticalValue")
+        val form = ItemTypeForm.form(DeclarationType.STANDARD).bind(correctItemTypeMap - "statisticalValue")
 
         form.errors mustBe Seq(FormError("statisticalValue", "error.required"))
       }

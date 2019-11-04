@@ -47,10 +47,12 @@ object ItemTypeValidator extends Validator[ItemType] {
       .fillAndValidate(element)
       .fold[ValidationResult](formWithErrors => Invalid(formWithErrors.errors), _ => Valid)
 
-  private val mappingCombinedNomenclatureCode = text()
+  private val mappingCombinedNomenclatureCode = optional(
+    text()
     .verifying("declaration.itemType.combinedNomenclatureCode.error.empty", nonEmpty)
     .verifying("declaration.itemType.combinedNomenclatureCode.error.length", isEmpty or noLongerThan(combinedNomenclatureCodeMaxLength))
     .verifying("declaration.itemType.combinedNomenclatureCode.error.specialCharacters", isEmpty or isAlphanumeric)
+  )
 
   private val mappingTARICAdditionalCode = seq(
     text()
@@ -93,7 +95,7 @@ object ItemTypeValidator extends Validator[ItemType] {
     )
 
   val mappingWithValidationForAddition = Forms.mapping(
-    combinedNomenclatureCodeKey -> text(),
+    combinedNomenclatureCodeKey -> optional(text()),
     taricAdditionalCodeKey -> mappingTARICAdditionalCode,
     nationalAdditionalCodeKey -> mappingNationalAdditionalCode,
     descriptionOfGoodsKey -> text(),

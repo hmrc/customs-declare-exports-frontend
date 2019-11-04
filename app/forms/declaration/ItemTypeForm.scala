@@ -16,12 +16,14 @@
 
 package forms.declaration
 
+import models.DeclarationType
+import models.DeclarationType.DeclarationType
 import models.declaration.ItemType
 import play.api.data.Forms.{optional, text}
-import play.api.data.{Form, Forms}
+import play.api.data.{Form, Forms, Mapping}
 
 case class ItemTypeForm(
-  combinedNomenclatureCode: String,
+  combinedNomenclatureCode: Option[String],
   taricAdditionalCode: Option[String],
   nationalAdditionalCode: Option[String],
   descriptionOfGoods: String,
@@ -40,8 +42,18 @@ object ItemTypeForm {
   val unDangerousGoodsCodeKey = "unDangerousGoodsCode"
   val statisticalValueKey = "statisticalValue"
 
-  val mapping = Forms.mapping(
-    combinedNomenclatureCodeKey -> text(),
+  private val mapping: Mapping[ItemTypeForm] = Forms.mapping(
+    combinedNomenclatureCodeKey -> optional(text()),
+    taricAdditionalCodeKey -> optional(text()),
+    nationalAdditionalCodeKey -> optional(text()),
+    descriptionOfGoodsKey -> text(),
+    cusCodeKey -> optional(text()),
+    unDangerousGoodsCodeKey -> optional(text()),
+    statisticalValueKey -> text()
+  )(ItemTypeForm.apply)(ItemTypeForm.unapply)
+
+  private val mappingSimplified: Mapping[ItemTypeForm] = Forms.mapping(
+    combinedNomenclatureCodeKey -> optional(text()),
     taricAdditionalCodeKey -> optional(text()),
     nationalAdditionalCodeKey -> optional(text()),
     descriptionOfGoodsKey -> text(),
@@ -52,9 +64,14 @@ object ItemTypeForm {
 
   val id = "ItemType"
 
-  def form(): Form[ItemTypeForm] = Form(mapping)
+  def form(`type`: DeclarationType): Form[ItemTypeForm] = Form {
+    `type` match {
+      case DeclarationType.SIMPLIFIED => mappingSimplified
+      case _                          => mapping
+    }
+  }
 
-  val empty: ItemTypeForm = ItemTypeForm("", None, None, "", None, None, "")
+  val empty: ItemTypeForm = ItemTypeForm(None, None, None, "", None, None, "")
 
   def fromItemType(model: ItemType) =
     ItemTypeForm(
