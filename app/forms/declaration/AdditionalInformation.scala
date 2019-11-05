@@ -37,7 +37,6 @@ object AdditionalInformation {
         .verifying("supplementary.additionalInformation.code.error", isEmpty or (isAlphanumeric and hasSpecificLength(5))),
     "description" ->
       text()
-        .verifying("supplementary.additionalInformation.description.empty", nonEmpty)
         .verifying(
           "supplementary.additionalInformation.description.error",
           isEmpty or (noLongerThan(70) and isAlphanumericWithAllowedSpecialCharacters)

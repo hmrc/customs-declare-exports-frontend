@@ -20,7 +20,7 @@ import controllers.declaration.{routes, AdditionalInformationController}
 import controllers.util.Remove
 import forms.Choice
 import forms.declaration.AdditionalInformation
-import models.{DeclarationType, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import models.declaration.{AdditionalInformationData, ExportItem}
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
@@ -29,44 +29,51 @@ import views.html.declaration.additional_information
 
 class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
-  trait SetUp {
+  val additionalInformationPage = new additional_information(mainTemplate)
 
-    val additionalInformationPage = new additional_information(mainTemplate)
+  val controller = new AdditionalInformationController(
+    mockAuthAction,
+    mockJourneyAction,
+    mockErrorHandler,
+    mockExportsCacheService,
+    navigator,
+    stubMessagesControllerComponents(),
+    additionalInformationPage
+  )(ec)
 
-    val controller = new AdditionalInformationController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockErrorHandler,
-      mockExportsCacheService,
-      navigator,
-      stubMessagesControllerComponents(),
-      additionalInformationPage
-    )(ec)
+  val standardDeclaration = aDeclaration(withType(DeclarationType.STANDARD))
 
-    setupErrorHandler()
-    authorizedUser()
-    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
+  val supplementaryDeclaration = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
+
+  val simplifiedDeclaration = aDeclaration(withType(DeclarationType.SIMPLIFIED))
+
+  def journeyFor[A](declaration: ExportsDeclaration)(test: => A): A = {
+    withNewCaching(declaration)
+    test
   }
 
-  "Additional information controller" should {
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+    setupErrorHandler()
+    authorizedUser()
+  }
 
+  val itemCacheData =
+    ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("12345", "description")))))
+
+  val itemWith99InformationCacheData =
+    ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq.fill(99)(AdditionalInformation("12345", "description")))))
+
+  def journeyPageController(declaration: ExportsDeclaration): Unit = {
     "return 200 (OK)" when {
 
-      "display page method is invoked with empty cache" in new SetUp {
-
+      "display page method is invoked with empty cache" in journeyFor(declaration) {
         val result = controller.displayPage(Mode.Normal, "itemId")(getRequest())
 
         status(result) must be(OK)
       }
 
-      "display page method is invoked with data in cache" in new SetUp {
-
-        val itemCacheData =
-          ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("12345", "description")))))
-        val cachedData =
-          aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
-        withNewCaching(cachedData)
-
+      "display page method is invoked with data in cache" in journeyFor(aDeclarationAfter(declaration, withItem(itemCacheData))) {
         val result = controller.displayPage(Mode.Normal, "itemId")(getRequest())
 
         status(result) must be(OK)
@@ -75,8 +82,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
     "return 400 (BAD_REQUEST)" when {
 
-      "user provide wrong action" in new SetUp {
-
+      "user provide wrong action" in journeyFor(declaration) {
         val wrongAction = Seq(("code", "12345"), ("description", "text"), ("WrongAction", ""))
 
         val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(wrongAction: _*))
@@ -87,24 +93,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
     "return 400 (BAD_REQUEST) during adding" when {
 
-      "user put incorrect data" in new SetUp {
-
-        val incorrectForm = Seq(("code", "12345"), ("description", ""), addActionUrlEncoded())
-
-        val result =
-          controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(incorrectForm: _*))
-
-        status(result) must be(BAD_REQUEST)
-      }
-
-      "user put duplicated item" in new SetUp {
-
-        val itemCacheData =
-          ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("12345", "description")))))
-        val cachedData =
-          aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
-        withNewCaching(cachedData)
-
+      "user put duplicated item" in journeyFor(aDeclarationAfter(declaration, withItem(itemCacheData))) {
         val duplicatedForm = Seq(("code", "12345"), ("description", "description"), addActionUrlEncoded())
 
         val result =
@@ -113,14 +102,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
         status(result) must be(BAD_REQUEST)
       }
 
-      "user reach maximum amount of items" in new SetUp {
-
-        val itemCacheData =
-          ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq.fill(99)(AdditionalInformation("12345", "description")))))
-        val cachedData =
-          aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
-        withNewCaching(cachedData)
-
+      "user reach maximum amount of items" in journeyFor(aDeclarationAfter(declaration, withItem(itemWith99InformationCacheData))) {
         val form = Seq(("code", "12345"), ("description", "text"), addActionUrlEncoded())
 
         val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(form: _*))
@@ -131,9 +113,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
     "return 400 (BAD_REQUEST) during saving" when {
 
-      "user put incorrect data" in new SetUp {
-
-        val incorrectForm = Seq(("code", "12345"), ("description", ""), saveAndContinueActionUrlEncoded)
+      "user put incorrect data" in journeyFor(declaration) {
+        val incorrectForm = Seq(("code", "111"), ("description", ""), saveAndContinueActionUrlEncoded)
 
         val result =
           controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(incorrectForm: _*))
@@ -141,14 +122,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
         status(result) must be(BAD_REQUEST)
       }
 
-      "user put duplicated item" in new SetUp {
-
-        val itemCacheData =
-          ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("12345", "description")))))
-        val cachedData =
-          aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
-        withNewCaching(cachedData)
-
+      "user put duplicated item" in journeyFor(aDeclarationAfter(declaration, withItem(itemCacheData))) {
         val duplicatedForm = Seq(("code", "12345"), ("description", "description"), saveAndContinueActionUrlEncoded)
 
         val result =
@@ -157,14 +131,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
         status(result) must be(BAD_REQUEST)
       }
 
-      "user reach maximum amount of items" in new SetUp {
-
-        val itemCacheData =
-          ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq.fill(99)(AdditionalInformation("12345", "description")))))
-        val cachedData =
-          aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
-        withNewCaching(cachedData)
-
+      "user reach maximum amount of items" in journeyFor(aDeclarationAfter(declaration, withItem(itemWith99InformationCacheData))) {
         val form = Seq(("code", "12345"), ("description", "text"), saveAndContinueActionUrlEncoded)
 
         val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(form: _*))
@@ -175,8 +142,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
     "return 303 (SEE_OTHER)" when {
 
-      "user correctly add new item" in new SetUp {
-
+      "user correctly add new item" in journeyFor(declaration) {
         val correctForm = Seq(("code", "12345"), ("description", "text"), addActionUrlEncoded())
 
         val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(correctForm: _*))
@@ -184,8 +150,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
         status(result) must be(SEE_OTHER)
       }
 
-      "user save correct data" in new SetUp {
-
+      "user save correct data" in journeyFor(declaration) {
         val correctForm = Seq(("code", "12345"), ("description", "text"), saveAndContinueActionUrlEncoded)
 
         val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(correctForm: _*))
@@ -194,14 +159,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
         thePageNavigatedTo mustBe routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId")
       }
 
-      "user save correct data without new item" in new SetUp {
-
-        val itemCacheData =
-          ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq.fill(99)(AdditionalInformation("12345", "description")))))
-        val cachedData =
-          aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
-        withNewCaching(cachedData)
-
+      "user save correct data without new item" in journeyFor(aDeclarationAfter(declaration, withItem(itemWith99InformationCacheData))) {
         val correctForm = saveAndContinueActionUrlEncoded
 
         val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(correctForm))
@@ -210,14 +168,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
         thePageNavigatedTo mustBe routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId")
       }
 
-      "user remove existing item" in new SetUp {
-
-        val itemCacheData =
-          ExportItem("itemId", additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("12345", "description")))))
-        val cachedData =
-          aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
-        withNewCaching(cachedData)
-
+      "user remove existing item" in journeyFor(declaration) {
         val removeForm = (Remove.toString, "0")
 
         val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(removeForm))
@@ -227,4 +178,17 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
     }
   }
 
+  "Additional information controller" when {
+    "we are on Supplementary journey" should {
+      behave like journeyPageController(supplementaryDeclaration)
+    }
+
+    "we are on Standard journey" should {
+      behave like journeyPageController(standardDeclaration)
+    }
+
+    "we are on Simplified journey" should {
+      behave like journeyPageController(simplifiedDeclaration)
+    }
+  }
 }

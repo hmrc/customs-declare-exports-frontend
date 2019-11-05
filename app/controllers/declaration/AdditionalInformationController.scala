@@ -89,7 +89,7 @@ class AdditionalInformationController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
-      .saveAndContinue(boundForm, cachedData, true, elementLimit)
+      .saveAndContinue(boundForm, cachedData, isMandatory = false, elementLimit)
       .fold(
         formWithErrors => Future.successful(BadRequest(additionalInformationPage(mode: Mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
@@ -115,12 +115,5 @@ class AdditionalInformationController @Inject()(
   private def updateCache(itemId: String, updatedAdditionalInformation: AdditionalInformationData)(
     implicit r: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => {
-      val itemList = model.items
-        .find(item => item.id.equals(itemId))
-        .map(_.copy(additionalInformation = Some(updatedAdditionalInformation)))
-        .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
-
-      model.copy(items = itemList)
-    })
+    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(additionalInformation = Some(updatedAdditionalInformation))))
 }
