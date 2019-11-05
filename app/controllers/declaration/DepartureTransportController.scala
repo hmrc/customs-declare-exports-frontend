@@ -43,7 +43,7 @@ class DepartureTransportController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.borderTransport match {
+    request.cacheModel.departureTransport match {
       case Some(data) => Ok(departureTransportPage(mode, form().fill(data)))
       case _          => Ok(departureTransportPage(mode, form()))
     }
@@ -61,5 +61,5 @@ class DepartureTransportController @Inject()(
   }
 
   private def updateCache(formData: DepartureTransport)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(_.copy(borderTransport = Some(formData)))
+    updateExportsDeclarationSyncDirect(_.copy(departureTransport = Some(formData)))
 }
