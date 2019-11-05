@@ -62,7 +62,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "display page method is invoked and cache contains data" in new SetUp {
 
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withBorderTransport(Maritime, WagonNumber, "FAA")))
+        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withDepartureTransport(Maritime, WagonNumber, "FAA")))
 
         val result: Future[Result] = controller.displayPage(Mode.Normal)(getRequest())
 

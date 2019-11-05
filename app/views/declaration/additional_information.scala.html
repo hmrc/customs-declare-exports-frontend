@@ -19,19 +19,28 @@
 @import forms.declaration.AdditionalInformation
 @import uk.gov.hmrc.play.views.html._
 @import views.components.fields.LabelledValue
+@import models.requests.JourneyRequest
 
 @import forms.declaration.CommodityMeasure
 @import views.Title
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, itemId: String, form: Form[AdditionalInformation], items: Seq[AdditionalInformation])(implicit request: Request[_], messages: Messages)
+
+@(mode: Mode, itemId: String, form: Form[AdditionalInformation], items: Seq[AdditionalInformation])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
     title = Title("supplementary.additionalInformation.title", "supplementary.summary.yourReferences.header")
 ) {
 
-    @components.back_link(CommodityMeasureController.displayPage(mode, itemId), mode)
+    @{
+        request.declarationType match {
+            case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
+                components.back_link(controllers.declaration.routes.CommodityMeasureController.displayPage(mode, itemId), mode)
+            case DeclarationType.SIMPLIFIED =>
+                components.back_link(controllers.declaration.routes.PackageInformationController.displayPage(mode, itemId), mode)
+        }
+    }
 
     @components.error_summary(form.errors)
 

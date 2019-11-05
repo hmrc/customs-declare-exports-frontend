@@ -53,25 +53,49 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
   "Package Information Controller" should {
 
     "return 200 (OK)" when {
+      "on Supplementary journey" when {
 
-      "display page method is invoked and cache is empty" in new SetUp {
+        "display page method is invoked and cache is empty" in new SetUp {
 
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
+          withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
 
-        val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
-        status(result) must be(OK)
+          status(result) must be(OK)
+        }
+
+        "display page method is invoked and cache contain some data" in new SetUp {
+
+          val itemWithPackageInformation =
+            anItem(withPackageInformation(typesOfPackages = "12", numberOfPackages = 10, shippingMarks = "123"))
+          withNewCaching(aDeclaration(withItem(itemWithPackageInformation)))
+
+          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+
+          status(result) must be(OK)
+        }
       }
+      "on Simplified journey" when {
 
-      "display page method is invoked and cache contain some data" in new SetUp {
+        "display page method is invoked and cache is empty" in new SetUp {
 
-        val itemWithPackageInformation =
-          anItem(withPackageInformation(typesOfPackages = "12", numberOfPackages = 10, shippingMarks = "123"))
-        withNewCaching(aDeclaration(withItem(itemWithPackageInformation)))
+          withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED)))
 
-        val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
-        status(result) must be(OK)
+          status(result) must be(OK)
+        }
+
+        "display page method is invoked and cache contain some data" in new SetUp {
+
+          val itemWithPackageInformation =
+            anItem(withPackageInformation(typesOfPackages = "12", numberOfPackages = 10, shippingMarks = "123"))
+          withNewCaching(aDeclaration(withItem(itemWithPackageInformation), withType((DeclarationType.SIMPLIFIED))))
+
+          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+
+          status(result) must be(OK)
+        }
       }
     }
 
@@ -141,32 +165,62 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
     }
 
     "return 303 (SEE_OTHER)" when {
+      "on Supplementary journey" when {
 
-      "user added correct item" in new SetUp {
+        "user added correct item" in new SetUp {
 
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
+          withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
 
-        val body =
-          Seq(("typesOfPackages", "NT"), ("numberOfPackages", "1"), ("shippingMarks", "value"), (Add.toString, ""))
+          val body =
+            Seq(("typesOfPackages", "NT"), ("numberOfPackages", "1"), ("shippingMarks", "value"), (Add.toString, ""))
 
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body: _*))
+          val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body: _*))
 
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, itemId).url))
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) must be(Some(controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, itemId).url))
+        }
+
+        "user clicked continue with item in a cache" in new SetUp {
+
+          val item = anItem(withPackageInformation(typesOfPackages = "NT", numberOfPackages = 1, shippingMarks = "value"))
+          withNewCaching(aDeclaration(withItem(item)))
+
+          val body = (SaveAndContinue.toString, "")
+
+          val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.CommodityMeasureController
+            .displayPage(Mode.Normal, itemId)
+        }
       }
+      "on Simplified journey" when {
 
-      "user clicked continue with item in a cache" in new SetUp {
+        "user added correct item" in new SetUp {
 
-        val item = anItem(withPackageInformation(typesOfPackages = "NT", numberOfPackages = 1, shippingMarks = "value"))
-        withNewCaching(aDeclaration(withItem(item)))
+          withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED)))
 
-        val body = (SaveAndContinue.toString, "")
+          val body =
+            Seq(("typesOfPackages", "NT"), ("numberOfPackages", "1"), ("shippingMarks", "value"), (Add.toString, ""))
 
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body))
+          val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body: _*))
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.CommodityMeasureController
-          .displayPage(Mode.Normal, itemId)
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) must be(Some(controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, itemId).url))
+        }
+
+        "user clicked continue with item in a cache" in new SetUp {
+
+          val item = anItem(withPackageInformation(typesOfPackages = "NT", numberOfPackages = 1, shippingMarks = "value"))
+          withNewCaching(aDeclaration(withItem(item), withType(DeclarationType.SIMPLIFIED)))
+
+          val body = (SaveAndContinue.toString, "")
+
+          val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, itemId)
+        }
       }
     }
   }

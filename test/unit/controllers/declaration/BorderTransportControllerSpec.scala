@@ -56,7 +56,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
       "display page method is invoked and cache is not empty" in new SetUp {
 
-        withNewCaching(aDeclaration(withTransportDetails()))
+        withNewCaching(aDeclaration(withBorderTransport()))
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
 

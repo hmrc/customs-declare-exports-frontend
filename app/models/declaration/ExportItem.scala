@@ -18,6 +18,8 @@ package models.declaration
 
 import forms.declaration.{AdditionalFiscalReferencesData, CommodityMeasure, FiscalInformation, PackageInformation}
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers.yes
+import models.DeclarationType
+import models.DeclarationType.DeclarationType
 import play.api.libs.json.Json
 
 case class ExportItem(
@@ -35,9 +37,15 @@ case class ExportItem(
   def hasFiscalReferences: Boolean =
     fiscalInformation.exists(_.onwardSupplyRelief == FiscalInformation.AllowedFiscalInformationAnswers.yes)
 
-  def isCompleted: Boolean =
-    procedureCodes.isDefined && isFiscalInformationCompleted && itemType.isDefined &&
-      packageInformation.nonEmpty && commodityMeasure.isDefined && additionalInformation.isDefined
+  val isCompleted: PartialFunction[DeclarationType, Boolean] = {
+    case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
+      procedureCodes.isDefined && isFiscalInformationCompleted && itemType.isDefined &&
+        packageInformation.nonEmpty && commodityMeasure.isDefined && additionalInformation.isDefined
+
+    case DeclarationType.SIMPLIFIED =>
+      procedureCodes.isDefined && isFiscalInformationCompleted && itemType.isDefined &&
+        packageInformation.nonEmpty && additionalInformation.isDefined
+  }
 
   private def isFiscalInformationCompleted: Boolean =
     if (fiscalInformation.exists(_.onwardSupplyRelief == yes)) additionalFiscalReferencesData.isDefined

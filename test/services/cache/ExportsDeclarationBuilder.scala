@@ -149,15 +149,15 @@ trait ExportsDeclarationBuilder {
   def withDeclarationHolders(holders: DeclarationHolder*): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders))))
 
-  def withoutBorderTransport(): ExportsDeclarationModifier = _.copy(borderTransport = None)
+  def withoutDepartureTransport(): ExportsDeclarationModifier = _.copy(departureTransport = None)
 
-  def withBorderTransport(
+  def withDepartureTransport(
     borderModeOfTransportCode: String = "",
     meansOfTransportOnDepartureType: String = "",
     meansOfTransportOnDepartureIDNumber: String = ""
   ): ExportsDeclarationModifier =
     _.copy(
-      borderTransport = Some(DepartureTransport(borderModeOfTransportCode, meansOfTransportOnDepartureType, meansOfTransportOnDepartureIDNumber))
+      departureTransport = Some(DepartureTransport(borderModeOfTransportCode, meansOfTransportOnDepartureType, meansOfTransportOnDepartureIDNumber))
     )
 
   def withConsignmentReferences(ducr: String = DUCR, lrn: String = LRN.value): ExportsDeclarationModifier =
@@ -204,12 +204,12 @@ trait ExportsDeclarationBuilder {
   def withNatureOfTransaction(natureType: String): ExportsDeclarationModifier =
     _.copy(natureOfTransaction = Some(NatureOfTransaction(natureType)))
 
-  def withoutTransportDetails(): ExportsDeclarationModifier = _.copy(transportDetails = None)
+  def withoutBorderTransport(): ExportsDeclarationModifier = _.copy(borderTransport = None)
 
-  def withTransportDetails(details: BorderTransport): ExportsDeclarationModifier =
-    _.copy(transportDetails = Some(details))
+  def withBorderTransport(details: BorderTransport): ExportsDeclarationModifier =
+    _.copy(borderTransport = Some(details))
 
-  def withTransportDetails(
+  def withBorderTransport(
     meansOfTransportCrossingTheBorderNationality: Option[String] = None,
     container: Boolean = false,
     meansOfTransportCrossingTheBorderType: String = "",
@@ -217,7 +217,7 @@ trait ExportsDeclarationBuilder {
     paymentMethod: Option[String] = None
   ): ExportsDeclarationModifier =
     _.copy(
-      transportDetails = Some(
+      borderTransport = Some(
         BorderTransport(
           meansOfTransportCrossingTheBorderNationality = meansOfTransportCrossingTheBorderNationality,
           container = container,

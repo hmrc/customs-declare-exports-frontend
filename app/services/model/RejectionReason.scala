@@ -56,7 +56,11 @@ object RejectionReason {
           error.validationCode,
           getCdsErrorDescription(error.validationCode),
           getExportsErrorDescription(error.validationCode),
-          error.pointer.filter(p => messages.isDefinedAt(p.messageKey))
+          error.pointer.filter { p =>
+            val defined = messages.isDefinedAt(p.messageKey)
+            if (!defined) logger.warn("Missing error message key: " + p.messageKey)
+            defined
+          }
         )
       }
     }.getOrElse(Seq.empty)

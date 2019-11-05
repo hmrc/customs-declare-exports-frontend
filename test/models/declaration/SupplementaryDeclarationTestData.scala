@@ -164,6 +164,8 @@ class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
 }
 
 object TransportInformationContainerSpec {
+  private val containerId = "id"
+
   val correctTransportInformationContainerData =
     TransportInformationContainerData(Seq(Container(id = "M1l3s", Seq.empty)))
   val emptyTransportInformationContainerData = TransportInformationContainer("")
@@ -171,7 +173,6 @@ object TransportInformationContainerSpec {
   val incorrectTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("123456789012345678")))
   val emptyTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("")))
   val correctTransportInformationContainerDataJSON: JsValue = Json.toJson(correctTransportInformationContainerData)
-  private val containerId = "id"
 }
 
 object SupplementaryDeclarationTestData {
@@ -180,11 +181,11 @@ object SupplementaryDeclarationTestData {
     dispatchLocation = Some(correctDispatchLocation),
     additionalDeclarationType = Some(correctAdditionalDeclarationTypeSupplementaryDec),
     consignmentReferences = Some(correctConsignmentReferences),
-    transportDetails = Some(BorderTransport(Some("Portugal"), true, "40", "1234567878ui", Some("A"))),
+    borderTransport = Some(BorderTransport(Some("Portugal"), true, "40", "1234567878ui", Some("A"))),
     containerData = Some(correctTransportInformationContainerData),
     natureOfTransaction = Some(correctNatureOfTransaction),
     totalNumberOfItems = Some(correctTotalNumberOfItemsDecimalValues),
-    borderTransport = Some(DepartureTransport("3", "10", "123112yu78")),
+    departureTransport = Some(DepartureTransport("3", "10", "123112yu78")),
     parties = Parties(
       exporterDetails = Some(correctExporterDetails),
       declarantDetails = Some(correctDeclarantDetailsEORIOnly),

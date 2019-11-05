@@ -20,24 +20,27 @@ import base.Injector
 import controllers.util.{Add, SaveAndContinue, SaveAndReturn}
 import forms.declaration.AdditionalInformation
 import helpers.views.declaration.{AdditionalInformationMessages, CommonMessages}
-import models.Mode
+import models.DeclarationType.DeclarationType
+import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
+import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.additional_information
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalInformationViewSpec extends UnitViewSpec with AdditionalInformationMessages with CommonMessages with Stubs with Injector {
+class AdditionalInformationViewSpec
+    extends UnitViewSpec with AdditionalInformationMessages with ExportsTestData with CommonMessages with Stubs with Injector {
 
   val itemId = "a7sc78"
   private val form: Form[AdditionalInformation] = AdditionalInformation.form()
-  private val additionalInformationPage = new additional_information(mainTemplate)
-  private def createView(form: Form[AdditionalInformation] = form): Html =
-    additionalInformationPage(Mode.Normal, itemId, form, Seq())(request, messages)
+  private val page = new additional_information(mainTemplate)
+  private def createView(declarationType: DeclarationType = DeclarationType.STANDARD, form: Form[AdditionalInformation] = form): Html =
+    page(Mode.Normal, itemId, form, Seq())(journeyRequest(declarationType), messages)
 
   "Additional Information View" should {
 
@@ -85,12 +88,22 @@ class AdditionalInformationViewSpec extends UnitViewSpec with AdditionalInformat
       view.getElementById("description").attr("value") mustBe empty
     }
 
-    "display 'Back' button that links to 'Commodity measure' page" in {
+    "display 'Back' button that links to 'Commodity measure' page" when {
+      "on the Standard journey" in {
 
-      val backButton = createView().getElementById("link-back")
+        val backButton = createView().getElementById("link-back")
 
-      backButton.text() mustBe messages(backCaption)
-      backButton.attr("href") must endWith(s"/items/$itemId/commodity-measure")
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") must endWith(s"/items/$itemId/commodity-measure")
+      }
+
+      "on the Simplified journey" in {
+
+        val backButton = createView(declarationType = DeclarationType.SIMPLIFIED).getElementById("link-back")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") must endWith(s"/items/$itemId/package-information")
+      }
     }
 
     "display 'Save and continue' button" in {
@@ -113,7 +126,7 @@ class AdditionalInformationViewSpec extends UnitViewSpec with AdditionalInformat
 
     "display data in both inputs" in {
 
-      val view = createView(AdditionalInformation.form.fill(AdditionalInformation("12345", "12345")))
+      val view = createView(form = AdditionalInformation.form.fill(AdditionalInformation("12345", "12345")))
 
       view.getElementById("code").attr("value") mustBe "12345"
       view.getElementById("description").text() mustBe "12345"
@@ -122,7 +135,7 @@ class AdditionalInformationViewSpec extends UnitViewSpec with AdditionalInformat
 
     "display data in code input" in {
 
-      val view = createView(AdditionalInformation.form.fill(AdditionalInformation("12345", "")))
+      val view = createView(form = AdditionalInformation.form.fill(AdditionalInformation("12345", "")))
 
       view.getElementById("code").attr("value") mustBe "12345"
       view.getElementById("description").text() mustBe empty
@@ -130,7 +143,7 @@ class AdditionalInformationViewSpec extends UnitViewSpec with AdditionalInformat
 
     "display data in description input" in {
 
-      val view = createView(AdditionalInformation.form.fill(AdditionalInformation("", "12345")))
+      val view = createView(form = AdditionalInformation.form.fill(AdditionalInformation("", "12345")))
 
       view.getElementById("code").attr("value") mustBe empty
       view.getElementById("description").text() mustBe "12345"
@@ -138,7 +151,7 @@ class AdditionalInformationViewSpec extends UnitViewSpec with AdditionalInformat
 
     "display one row with data in table" in {
 
-      val view = additionalInformationPage(Mode.Normal, itemId, form, Seq(AdditionalInformation("12345", "12345")))
+      val view = page(Mode.Normal, itemId, form, Seq(AdditionalInformation("12345", "12345")))(journeyRequest(DeclarationType.STANDARD), messages)
 
       view.select("table>tbody>tr>th:nth-child(1)").text() mustBe "12345-12345"
 

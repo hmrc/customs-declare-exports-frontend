@@ -16,8 +16,9 @@
 
 package services.cache
 
-import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, CommodityMeasure, FiscalInformation}
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
+import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, CommodityMeasure, FiscalInformation}
+import models.DeclarationType
 import unit.base.UnitSpec
 
 class ExportItemSpec extends UnitSpec with ExportsItemBuilder {
@@ -42,58 +43,98 @@ class ExportItemSpec extends UnitSpec with ExportsItemBuilder {
     }
 
     "return correct information about item completeness" when {
+      "on Standard or Supplementary journey" when {
 
-      "item is not completed" in {
+        "item is not completed" in {
 
-        val notCompletedItem = anItem(withItemId("id"))
+          val notCompletedItem = anItem(withItemId("id"))
 
-        notCompletedItem.isCompleted mustBe false
+          notCompletedItem.isCompleted(DeclarationType.STANDARD) mustBe false
+        }
+
+        "item contain Yes in fiscal information but without additional fiscal references" in {
+
+          val completedItem = anItem(
+            withItemId("id"),
+            withProcedureCodes(),
+            withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
+            withItemType(),
+            withPackageInformation(),
+            withCommodityMeasure(CommodityMeasure(None, "100", "100")),
+            withAdditionalInformation("code", "description")
+          ).copy(additionalFiscalReferencesData = None)
+
+          completedItem.isCompleted(DeclarationType.STANDARD) mustBe false
+        }
+
+        "item contain No in fiscal information and doesn't contain additional fiscal references" in {
+
+          val completedItem = anItem(
+            withItemId("id"),
+            withProcedureCodes(),
+            withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.no)),
+            withItemType(),
+            withPackageInformation(),
+            withCommodityMeasure(CommodityMeasure(None, "100", "100")),
+            withAdditionalInformation("code", "description")
+          )
+
+          completedItem.isCompleted(DeclarationType.STANDARD) mustBe true
+        }
+
+        "item is completed" in {
+
+          val completedItem = anItem(
+            withItemId("id"),
+            withProcedureCodes(),
+            withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
+            withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12")))),
+            withItemType(),
+            withPackageInformation(),
+            withCommodityMeasure(CommodityMeasure(None, "100", "100")),
+            withAdditionalInformation("code", "description")
+          )
+
+          completedItem.isCompleted(DeclarationType.STANDARD) mustBe true
+        }
       }
+      "on Simplified journey" when {
 
-      "item contain Yes in fiscal information but without additional fiscal references" in {
+        "item is not completed" in {
 
-        val completedItem = anItem(
-          withItemId("id"),
-          withProcedureCodes(),
-          withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
-          withItemType(),
-          withPackageInformation(),
-          withCommodityMeasure(CommodityMeasure(None, "100", "100")),
-          withAdditionalInformation("code", "description")
-        ).copy(additionalFiscalReferencesData = None)
+          val notCompletedItem = anItem(withItemId("id"))
 
-        completedItem.isCompleted mustBe false
-      }
+          notCompletedItem.isCompleted(DeclarationType.SIMPLIFIED) mustBe false
+        }
 
-      "item contain No in fiscal information and doesn't contain additional fiscal references" in {
+        "item contain Yes in fiscal information but without additional fiscal references" in {
 
-        val completedItem = anItem(
-          withItemId("id"),
-          withProcedureCodes(),
-          withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.no)),
-          withItemType(),
-          withPackageInformation(),
-          withCommodityMeasure(CommodityMeasure(None, "100", "100")),
-          withAdditionalInformation("code", "description")
-        )
+          val completedItem = anItem(
+            withItemId("id"),
+            withProcedureCodes(),
+            withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
+            withItemType(),
+            withPackageInformation(),
+            withAdditionalInformation("code", "description")
+          ).copy(additionalFiscalReferencesData = None)
 
-        completedItem.isCompleted mustBe true
-      }
+          completedItem.isCompleted(DeclarationType.SIMPLIFIED) mustBe false
+        }
 
-      "item is completed" in {
+        "item is completed" in {
 
-        val completedItem = anItem(
-          withItemId("id"),
-          withProcedureCodes(),
-          withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
-          withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12")))),
-          withItemType(),
-          withPackageInformation(),
-          withCommodityMeasure(CommodityMeasure(None, "100", "100")),
-          withAdditionalInformation("code", "description")
-        )
+          val completedItem = anItem(
+            withItemId("id"),
+            withProcedureCodes(),
+            withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
+            withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12")))),
+            withItemType(),
+            withPackageInformation(),
+            withAdditionalInformation("code", "description")
+          )
 
-        completedItem.isCompleted mustBe true
+          completedItem.isCompleted(DeclarationType.SIMPLIFIED) mustBe true
+        }
       }
     }
   }

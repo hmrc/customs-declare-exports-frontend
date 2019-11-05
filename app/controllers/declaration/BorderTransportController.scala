@@ -43,7 +43,7 @@ class BorderTransportController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.transportDetails match {
+    request.cacheModel.borderTransport match {
       case Some(data) => Ok(borderTransport(mode, form().fill(data)))
       case _          => Ok(borderTransport(mode, form()))
     }
@@ -54,15 +54,15 @@ class BorderTransportController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[BorderTransport]) => Future.successful(BadRequest(borderTransport(mode, formWithErrors))),
-        transportDetails => updateCache(transportDetails).map(_ => redirect(mode, transportDetails))
+        borderTransport => updateCache(borderTransport).map(_ => redirect(mode, borderTransport))
       )
   }
 
-  private def redirect(mode: Mode, transportDetails: BorderTransport)(implicit request: JourneyRequest[AnyContent]): Result =
-    if (transportDetails.container)
+  private def redirect(mode: Mode, borderTransport: BorderTransport)(implicit request: JourneyRequest[AnyContent]): Result =
+    if (borderTransport.container)
       navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode))
     else navigator.continueTo(controllers.declaration.routes.SummaryController.displayPage(Mode.Normal))
 
   private def updateCache(formData: BorderTransport)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.copy(transportDetails = Some(formData)))
+    updateExportsDeclarationSyncDirect(model => model.copy(borderTransport = Some(formData)))
 }

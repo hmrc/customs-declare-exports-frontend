@@ -20,6 +20,7 @@ import com.google.inject.Inject
 import config.AppConfig
 import forms.CancelDeclaration
 import models.ExportsDeclaration
+import models.ExportsDeclaration.Audit.format
 import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 import services.audit.AuditTypes.Audit
