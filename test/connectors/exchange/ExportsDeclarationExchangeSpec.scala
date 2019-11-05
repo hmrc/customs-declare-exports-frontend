@@ -20,7 +20,6 @@ import java.time.Instant
 
 import forms.{Ducr, Lrn}
 import forms.declaration._
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import models.declaration.{ExportItem, Locations, Parties, TransportInformationContainerData}
 import models.{DeclarationStatus, DeclarationType, ExportsDeclaration}
@@ -44,8 +43,8 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
   when(consignmentReferences.ducr).thenReturn(Ducr(""))
   when(consignmentReferences.lrn).thenReturn(Lrn(""))
 
-  private val borderTransport = mock[DepartureTransport]
-  private val transportDetails = mock[BorderTransport]
+  private val departureTransport = mock[DepartureTransport]
+  private val borderTransport = mock[BorderTransport]
   private val containers = mock[TransportInformationContainerData]
   private val parties = mock[Parties]
   private val locations = mock[Locations]
@@ -64,8 +63,8 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
     dispatchLocation = Some(dispatchLocation),
     additionalDeclarationType = Some(additionalDeclarationType),
     consignmentReferences = Some(consignmentReferences),
+    departureTransport = Some(departureTransport),
     borderTransport = Some(borderTransport),
-    transportDetails = Some(transportDetails),
     containerData = Some(containers),
     parties = parties,
     locations = locations,
@@ -85,8 +84,8 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
     dispatchLocation = Some(dispatchLocation),
     additionalDeclarationType = Some(additionalDeclarationType),
     consignmentReferences = Some(consignmentReferences),
+    departureTransport = Some(departureTransport),
     borderTransport = Some(borderTransport),
-    transportDetails = Some(transportDetails),
     containerData = Some(containers),
     parties = parties,
     locations = locations,
