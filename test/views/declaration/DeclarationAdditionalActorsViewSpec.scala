@@ -19,7 +19,6 @@ package views.declaration
 import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.DeclarationAdditionalActors
 import helpers.views.declaration.{CommonMessages, DeclarationAdditionalActorsMessages}
 import models.{DeclarationType, Mode}

@@ -18,7 +18,6 @@ package unit.controllers.declaration
 
 import controllers.declaration.SealController
 import controllers.util.{Remove, SaveAndContinue, SaveAndReturn}
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.Seal
 import models.{DeclarationType, Mode}
 import models.declaration.Container

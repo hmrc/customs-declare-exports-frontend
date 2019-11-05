@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit
 import com.typesafe.config.{Config, ConfigFactory}
 import features.{Feature, FeatureStatus}
 import forms.Choice
+import models.DeclarationType
 import play.api.Mode.Test
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
@@ -49,7 +50,8 @@ class AppConfigSpec extends UnitSpec {
         |google-analytics.host=localhostGoogle
         |countryCodesCsvFilename=code-lists/mdg-country-codes.csv
         |countryCodesJsonFilename=code-lists/location-autocomplete-canonical-list.json
-        |list-of-available-journeys="SMP,STD,CAN,SUB"
+        |list-of-available-journeys="CRT,CAN,SUB"
+        |list-of-available-declarations="STANDARD,SUPPLEMENTARY"
         |draft.timeToLive=30d
         |pagination.itemsPerPage=10
         |microservice.services.nrs.host=localhostnrs
@@ -127,12 +129,19 @@ class AppConfigSpec extends UnitSpec {
 
     "load the Choice options when list-of-available-journeys is defined" in {
       val choices = validConfigService.availableJourneys()
-      choices.size must be(4)
+      choices.size must be(3)
 
-      choices must contain(Choice.AllowedChoiceValues.StandardDec)
-      choices must contain(Choice.AllowedChoiceValues.SupplementaryDec)
+      choices must contain(Choice.AllowedChoiceValues.CreateDec)
       choices must contain(Choice.AllowedChoiceValues.CancelDec)
       choices must contain(Choice.AllowedChoiceValues.Submissions)
+    }
+
+    "load the Declaration options when list-of-available-declarations is defined" in {
+      val choices = validConfigService.availableDeclarations()
+      choices.size must be(2)
+
+      choices must contain(DeclarationType.STANDARD.toString)
+      choices must contain(DeclarationType.SUPPLEMENTARY.toString)
     }
 
     "have login continue URL" in {
@@ -214,7 +223,12 @@ class AppConfigSpec extends UnitSpec {
 
   "empty Choice options when list-of-available-journeys is not defined" in {
     emptyConfigService.availableJourneys().size must be(1)
-    emptyConfigService.availableJourneys() must contain(Choice.AllowedChoiceValues.SupplementaryDec)
+    emptyConfigService.availableJourneys() must contain(Choice.AllowedChoiceValues.Submissions)
+  }
+
+  "empty Declaration type options when list-of-available-declarations is not defined" in {
+    emptyConfigService.availableDeclarations().size must be(1)
+    emptyConfigService.availableDeclarations() must contain(DeclarationType.STANDARD.toString)
   }
 
   "throw an exception when google-analytics.host is missing" in {

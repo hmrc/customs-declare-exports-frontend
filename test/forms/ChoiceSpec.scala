@@ -17,7 +17,6 @@
 package forms
 
 import forms.Choice.AllowedChoiceValues._
-import models.DeclarationType
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
@@ -46,33 +45,20 @@ class ChoiceSpec extends WordSpec with MustMatchers {
 
     "not attach any error" when {
       "provided with valid input" in {
-        val form = Choice.form().bind(correctSupplementaryChoiceJSON)
+        val form = Choice.form().bind(correctChoiceJSON)
 
         form.hasErrors must be(false)
       }
     }
   }
 
-  "to declaration type" should {
-    "convert to dec type" in {
-      Choice(Choice.AllowedChoiceValues.StandardDec).toDeclarationType mustBe Some(DeclarationType.STANDARD)
-      Choice(Choice.AllowedChoiceValues.SupplementaryDec).toDeclarationType mustBe Some(DeclarationType.SUPPLEMENTARY)
-      Choice(Choice.AllowedChoiceValues.Submissions).toDeclarationType mustBe None
-      Choice(Choice.AllowedChoiceValues.CancelDec).toDeclarationType mustBe None
-      Choice(Choice.AllowedChoiceValues.ContinueDec).toDeclarationType mustBe None
-    }
-  }
-
 }
 
 object ChoiceSpec {
-  val supplementaryChoice = Choice(SupplementaryDec)
-  val standardChoice = Choice(StandardDec)
   val incorrectChoice = Choice("InvalidChoice")
   val emptyChoice = Choice("")
 
-  val correctSupplementaryChoiceJSON: JsValue = createChoiceJSON(SupplementaryDec)
-  val correctStandardChoiceJSON: JsValue = createChoiceJSON(StandardDec)
+  val correctChoiceJSON: JsValue = createChoiceJSON(CreateDec)
   val incorrectChoiceJSON: JsValue = createChoiceJSON("InvalidChoice")
   val emptyChoiceJSON: JsValue = createChoiceJSON()
 

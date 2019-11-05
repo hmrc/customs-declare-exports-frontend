@@ -1,0 +1,54 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import forms.Choice.AllowedChoiceValues._
+@import models.DeclarationType
+@import models.DeclarationType.DeclarationType
+@import views.Title
+@import views.components.inputs.RadioOption
+@import forms.Choice
+
+@this(main_template: views.html.main_template, appConfig: AppConfig)
+
+@(form: Form[_])(implicit request: Request[_], messages: Messages)
+
+    @main_template(
+        title = Title("declaration.type.description")
+    ) {
+
+        @components.back_link(controllers.routes.ChoiceController.displayPage(Some(Choice(CreateDec))))
+
+        @helper.form(controllers.declaration.routes.DeclarationChoiceController.submitChoice(), 'autoComplete -> "off") {
+            @helper.CSRF.formField
+
+            @components.error_summary(form.errors)
+
+            @components.heading(title = messages("declaration.type.description"))
+
+            @components.fields.field_radio(
+                field = form("type"),
+                legend = "",
+                inputs = Seq(
+                    RadioOption("Standard declaration", DeclarationType.STANDARD.toString, messages(s"declaration.type.standard"), Some(messages(s"declaration.type.standard.hint"))),
+                    RadioOption("Simplified declaration", DeclarationType.SIMPLIFIED.toString, messages(s"declaration.type.simplified"), Some(messages(s"declaration.type.simplified.hint"))),
+                    RadioOption("Supplementary declaration", DeclarationType.SUPPLEMENTARY.toString, messages(s"declaration.type.supplementary"), Some(messages(s"declaration.type.supplementary.hint")))
+                ).filter(radioOption => appConfig.availableDeclarations().contains(radioOption.value))
+            )
+
+            @components.submit_button()
+        }
+    }

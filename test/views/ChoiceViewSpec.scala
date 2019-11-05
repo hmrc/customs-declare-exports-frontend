@@ -54,34 +54,32 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
       val view = createView(Choice.form().fill(Choice("")))
       ensureAllLabelTextIsCorrect(view)
 
-      ensureRadioIsUnChecked(view, "Supplementary declaration")
-      ensureRadioIsUnChecked(view, "Standard declaration")
-      ensureRadioIsUnChecked(view, "Simplified declaration")
+      ensureRadioIsUnChecked(view, "Create declaration")
       ensureRadioIsUnChecked(view, "Cancel declaration")
       ensureRadioIsUnChecked(view, "Submissions")
       ensureRadioIsUnChecked(view, "Continue declaration")
     }
 
-    "display only Supplementary radio button with description" in {
+    "display only Create radio button with description" in {
 
-      val supplementaryConfig: Config =
+      val config: Config =
         ConfigFactory.parseString("""
-        |list-of-available-journeys="SMP"
-        |google-analytics.token=N/A
-        |google-analytics.host=localhostGoogle
-      """.stripMargin)
+                                    |list-of-available-journeys="CRT"
+                                    |google-analytics.token=N/A
+                                    |google-analytics.host=localhostGoogle
+                                  """.stripMargin)
 
-      val conf: Configuration = Configuration(supplementaryConfig)
+      val conf: Configuration = Configuration(config)
       val runMode: RunMode = new RunMode(conf, Test)
       val servicesConfig = new ServicesConfig(conf, runMode)
-      val supplementaryAppConfig = new AppConfig(conf, Environment.simple(), servicesConfig, "AppName")
+      val appConfig = new AppConfig(conf, Environment.simple(), servicesConfig, "AppName")
 
-      val page = new choice_page(mainTemplate, supplementaryAppConfig)
+      val page = new choice_page(mainTemplate, appConfig)
 
-      val view = page(Choice.form().fill(Choice("SMP")))(request, messages)
-      ensureSupplementaryLabelIsCorrect(view)
+      val view = page(Choice.form().fill(Choice("CRT")))(request, messages)
+      ensureCreateLabelIsCorrect(view)
 
-      ensureRadioIsChecked(view, "Supplementary declaration")
+      ensureRadioIsChecked(view, "Create declaration")
     }
 
     "display 'Back' button that links to 'Make an export declaration' page" in {
@@ -126,37 +124,11 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
 
   "Choice View when filled" should {
 
-    "display selected radio button - Supplementary (SMP)" in {
-      val view = createView(Choice.form().fill(Choice("SMP")))
+    "display selected radio button - Create (CRT)" in {
+      val view = createView(Choice.form().fill(Choice("CRT")))
       ensureAllLabelTextIsCorrect(view)
 
-      ensureRadioIsChecked(view, "Supplementary declaration")
-      ensureRadioIsUnChecked(view, "Standard declaration")
-      ensureRadioIsUnChecked(view, "Simplified declaration")
-      ensureRadioIsUnChecked(view, "Cancel declaration")
-      ensureRadioIsUnChecked(view, "Submissions")
-      ensureRadioIsUnChecked(view, "Continue declaration")
-    }
-
-    "display selected radio button - Standard (STD)" in {
-      val view = createView(Choice.form().fill(Choice("STD")))
-      ensureAllLabelTextIsCorrect(view)
-
-      ensureRadioIsUnChecked(view, "Supplementary declaration")
-      ensureRadioIsChecked(view, "Standard declaration")
-      ensureRadioIsUnChecked(view, "Simplified declaration")
-      ensureRadioIsUnChecked(view, "Cancel declaration")
-      ensureRadioIsUnChecked(view, "Submissions")
-      ensureRadioIsUnChecked(view, "Continue declaration")
-    }
-
-    "display selected radio button - Simplified (SIM)" in {
-      val view = createView(Choice.form().fill(Choice("SIM")))
-      ensureAllLabelTextIsCorrect(view)
-
-      ensureRadioIsUnChecked(view, "Supplementary declaration")
-      ensureRadioIsUnChecked(view, "Standard declaration")
-      ensureRadioIsChecked(view, "Simplified declaration")
+      ensureRadioIsChecked(view, "Create declaration")
       ensureRadioIsUnChecked(view, "Cancel declaration")
       ensureRadioIsUnChecked(view, "Submissions")
       ensureRadioIsUnChecked(view, "Continue declaration")
@@ -166,9 +138,7 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
       val view = createView(Choice.form().fill(Choice("CAN")))
       ensureAllLabelTextIsCorrect(view)
 
-      ensureRadioIsUnChecked(view, "Supplementary declaration")
-      ensureRadioIsUnChecked(view, "Standard declaration")
-      ensureRadioIsUnChecked(view, "Simplified declaration")
+      ensureRadioIsUnChecked(view, "Create declaration")
       ensureRadioIsChecked(view, "Cancel declaration")
       ensureRadioIsUnChecked(view, "Submissions")
       ensureRadioIsUnChecked(view, "Continue declaration")
@@ -179,9 +149,7 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
 
       ensureAllLabelTextIsCorrect(view)
 
-      ensureRadioIsUnChecked(view, "Supplementary declaration")
-      ensureRadioIsUnChecked(view, "Standard declaration")
-      ensureRadioIsUnChecked(view, "Simplified declaration")
+      ensureRadioIsUnChecked(view, "Create declaration")
       ensureRadioIsUnChecked(view, "Cancel declaration")
       ensureRadioIsChecked(view, "Submissions")
       ensureRadioIsUnChecked(view, "Continue declaration")
@@ -192,27 +160,23 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
 
       ensureAllLabelTextIsCorrect(view)
 
-      ensureRadioIsUnChecked(view, "Supplementary declaration")
-      ensureRadioIsUnChecked(view, "Standard declaration")
-      ensureRadioIsUnChecked(view, "Simplified declaration")
+      ensureRadioIsUnChecked(view, "Create declaration")
       ensureRadioIsUnChecked(view, "Cancel declaration")
       ensureRadioIsUnChecked(view, "Submissions")
       ensureRadioIsChecked(view, "Continue declaration")
     }
   }
   private def ensureAllLabelTextIsCorrect(view: Document): Unit = {
-    view.getElementsByTag("label").size mustBe 6
-    view.getElementById("Standard declaration-label").text() mustBe standardDec
-    view.getElementById("Supplementary declaration-label").text() mustBe supplementaryDec
-    view.getElementById("Simplified declaration-label").text() mustBe simplifiedDec
+    view.getElementsByTag("label").size mustBe 4
+    view.getElementById("Create declaration-label").text() mustBe createDec
     view.getElementById("Submissions-label").text() mustBe recentDec
     view.getElementById("Continue declaration-label").text() mustBe continueDec
     view.getElementById("Cancel declaration-label").text() mustBe cancelDec
   }
 
-  private def ensureSupplementaryLabelIsCorrect(view: Document): Unit = {
+  private def ensureCreateLabelIsCorrect(view: Document): Unit = {
     view.getElementsByTag("label").size mustBe 1
-    view.getElementById("Supplementary declaration-label").text() mustBe supplementaryDec
+    view.getElementById("Create declaration-label").text() mustBe createDec
   }
 
   private def ensureRadioIsChecked(view: Document, elementId: String): Unit = {

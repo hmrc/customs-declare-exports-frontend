@@ -17,7 +17,6 @@
 package unit.controllers.declaration
 
 import controllers.declaration.BorderTransportController
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.TransportCodes.{cash, IMOShipIDNumber}
 import forms.declaration.BorderTransport
 import models.{DeclarationType, Mode}

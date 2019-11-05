@@ -17,7 +17,6 @@
 package unit.controllers.declaration
 
 import controllers.declaration.{routes, FiscalInformationController}
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.FiscalInformation
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers._
 import models.{DeclarationType, Mode}

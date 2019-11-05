@@ -41,9 +41,7 @@
                 field = form("value"),
                 legend = "",
                 inputs = Seq(
-                    RadioOption("Standard declaration", StandardDec, messages(s"declaration.choice.$StandardDec")),
-                    RadioOption("Simplified declaration", SimplifiedDec, messages(s"declaration.choice.$SimplifiedDec")),
-                    RadioOption("Supplementary declaration", SupplementaryDec, messages(s"declaration.choice.$SupplementaryDec")),
+                    RadioOption("Create declaration", CreateDec, messages(s"declaration.choice.$CreateDec")),
                     RadioOption("Submissions", Submissions, messages(s"declaration.choice.$Submissions")),
                     RadioOption("Continue declaration", ContinueDec, messages(s"declaration.choice.$ContinueDec")),
                     RadioOption("Cancel declaration", CancelDec, messages(s"declaration.choice.$CancelDec"))

@@ -56,6 +56,8 @@ case class ExportsDeclaration(
       copy(items = items.filterNot(_.id.equalsIgnoreCase(itemId)) + updated)
     }
 
+  def updateType(`type`: DeclarationType): ExportsDeclaration = copy(`type` = `type`)
+
   def itemBy(itemId: String): Option[ExportItem] = items.find(_.id.equalsIgnoreCase(itemId))
 
   def containerBy(containerId: String): Option[Container] = containers.find(_.id.equalsIgnoreCase(containerId))

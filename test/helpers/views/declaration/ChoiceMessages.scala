@@ -23,9 +23,7 @@ trait ChoiceMessages {
   // TODO: description is used as title
   val title: String = declarationChoice + ".description"
 
-  val supplementaryDec: String = "declaration.choice.SMP"
-  val standardDec: String = "declaration.choice.STD"
-  val simplifiedDec: String = "declaration.choice.SIM"
+  val createDec: String = "declaration.choice.CRT"
   val arrivalDec: String = declarationChoice + ".EAL"
   val departureDec: String = declarationChoice + ".EDL"
   val cancelDec: String = "declaration.choice.CAN"

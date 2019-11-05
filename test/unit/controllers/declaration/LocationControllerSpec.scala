@@ -17,7 +17,6 @@
 package unit.controllers.declaration
 
 import controllers.declaration.LocationController
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.GoodsLocation
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor

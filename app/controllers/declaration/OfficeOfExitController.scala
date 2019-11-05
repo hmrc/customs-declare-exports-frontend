@@ -18,7 +18,6 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.Choice.AllowedChoiceValues.{SimplifiedDec, StandardDec, SupplementaryDec}
 import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitStandard, OfficeOfExitSupplementary}
 import javax.inject.Inject
 import models.{DeclarationType, ExportsDeclaration, Mode}

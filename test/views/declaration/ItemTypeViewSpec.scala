@@ -17,7 +17,6 @@
 package views.declaration
 
 import base.Injector
-import forms.Choice.AllowedChoiceValues
 import forms.declaration.ItemTypeForm
 import models.{DeclarationType, Mode}
 import models.declaration.ExportItem
@@ -37,7 +36,6 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
   private val page = new item_type(mainTemplate)
   private val form: Form[ItemTypeForm] = ItemTypeForm.form()
   private def createView(
-    journeyType: String = AllowedChoiceValues.StandardDec,
     mode: Mode = Mode.Normal,
     item: ExportItem = ExportItem(id = "itemId", sequenceId = 1),
     form: Form[ItemTypeForm] = form,
@@ -147,7 +145,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display 'Back' button that links to 'fiscal-information' page" in {
 
-        val backButton = createView(journeyType = AllowedChoiceValues.StandardDec).getElementById("link-back")
+        val backButton = createView().getElementById("link-back")
 
         backButton.text() mustBe "site.back"
         backButton.getElementById("link-back") must haveHref(
@@ -156,13 +154,13 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       }
 
       "display 'Save and continue' button" in {
-        val view = createView(journeyType = AllowedChoiceValues.StandardDec)
+        val view = createView()
         val saveButton = view.getElementById("submit")
         saveButton.text() mustBe "site.save_and_continue"
       }
 
       "display 'Save and return' button" in {
-        val view = createView(journeyType = AllowedChoiceValues.StandardDec)
+        val view = createView()
         val saveButton = view.getElementById("submit_and_return")
         saveButton.text() mustBe "site.save_and_come_back_later"
       }
@@ -171,11 +169,11 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
     "used for Simplified Declaration journey" should {
 
       "display same page title as header" in {
-        val viewWithMessage = createView(journeyType = AllowedChoiceValues.SimplifiedDec, messages = realMessagesApi.preferred(request))
+        val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
         viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
       }
 
-      val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec)
+      val view = createView()
 
       "display section header" in {
         view.getElementById("section-header").text() must include("supplementary.items")
@@ -246,7 +244,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display 'Back' button that links to 'fiscal-information' page" in {
 
-        val backButton = createView(journeyType = AllowedChoiceValues.SimplifiedDec).getElementById("link-back")
+        val backButton = createView().getElementById("link-back")
 
         backButton.text() mustBe "site.back"
         backButton.getElementById("link-back") must haveHref(
@@ -255,13 +253,13 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       }
 
       "display 'Save and continue' button" in {
-        val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec)
+        val view = createView()
         val saveButton = view.getElementById("submit")
         saveButton.text() mustBe "site.save_and_continue"
       }
 
       "display 'Save and return' button" in {
-        val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec)
+        val view = createView()
         val saveButton = view.getElementById("submit_and_return")
         saveButton.text() mustBe "site.save_and_come_back_later"
       }
@@ -271,14 +269,14 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display page title" in {
 
-        createView(journeyType = AllowedChoiceValues.SupplementaryDec)
+        createView()
           .getElementById("title")
           .text() mustBe "declaration.itemType.title"
       }
 
       "display empty input with label for CNC" in {
 
-        val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
+        val view = createView()
 
         view
           .getElementById("combinedNomenclatureCode-label")
@@ -291,7 +289,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display empty input with label for TARIC" in {
 
-        val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
+        val view = createView()
 
         view
           .getElementById("taricAdditionalCode-label")
@@ -304,7 +302,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display empty input with label for NAC" in {
 
-        val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
+        val view = createView()
 
         view
           .getElementById("nationalAdditionalCode-label")
@@ -317,7 +315,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display empty input with label for Description" in {
 
-        val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
+        val view = createView()
 
         view.getElementById("descriptionOfGoods-label").text() mustBe "declaration.itemType.description.header"
         view.getElementById("descriptionOfGoods-hint").text() mustBe "declaration.itemType.description.header.hint"
@@ -326,7 +324,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display empty input with label for CUS" in {
 
-        val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
+        val view = createView()
 
         view.getElementById("cusCode-label").text() mustBe "declaration.itemType.cusCode.header"
         view.getElementById("cusCode-hint").text() mustBe "declaration.itemType.cusCode.header.hint"
@@ -335,7 +333,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display empty input with label for Statistical Value" in {
 
-        val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
+        val view = createView()
 
         view.getElementById("statisticalValue-label").text() mustBe "declaration.itemType.statisticalValue.header"
         view.getElementById("statisticalValue-hint").text() mustBe "declaration.itemType.statisticalValue.header.hint"
@@ -344,13 +342,13 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display two 'Add' buttons" in {
 
-        createView(journeyType = AllowedChoiceValues.SupplementaryDec).getElementsByAttributeValue("name", "AddField").size() must be(2)
+        createView().getElementsByAttributeValue("name", "AddField").size() must be(2)
       }
 
       "display 'Back' button that links to 'fiscal-information' page" in {
 
         val backButton =
-          createView(journeyType = AllowedChoiceValues.SupplementaryDec).getElementById("link-back")
+          createView().getElementById("link-back")
 
         backButton.text() mustBe "site.back"
         backButton.getElementById("link-back") must haveHref(
@@ -359,13 +357,13 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       }
 
       "display 'Save and continue' button" in {
-        val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
+        val view = createView()
         val saveButton = view.getElementById("submit")
         saveButton.text() mustBe "site.save_and_continue"
       }
 
       "display 'Save and return' button" in {
-        val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
+        val view = createView()
         val saveButton = view.getElementById("submit_and_return")
         saveButton.text() mustBe "site.save_and_come_back_later"
       }
@@ -430,7 +428,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       "display data in CNC input" in {
 
         val itemType = ItemTypeForm(Some("12345"), None, None, "", None, None, "")
-        val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec, form = ItemTypeForm.form().fill(itemType))
+        val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
@@ -438,7 +436,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       "display data in Description input" in {
 
         val itemType = ItemTypeForm(None, None, Some(""), "Description", None, None, "")
-        val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec, form = ItemTypeForm.form().fill(itemType))
+        val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
@@ -446,7 +444,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       "display data in CUS input" in {
 
         val itemType = ItemTypeForm(None, None, Some(""), "", Some("1234"), None, "")
-        val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec, form = ItemTypeForm.form().fill(itemType))
+        val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
@@ -454,7 +452,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       "display data in UN Dangerous Goods Code input" in {
 
         val itemType = ItemTypeForm(None, None, Some(""), "", None, Some("1234"), "12345")
-        val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec, form = ItemTypeForm.form().fill(itemType))
+        val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
@@ -462,7 +460,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       "display data in Statistical Value input" in {
 
         val itemType = ItemTypeForm(None, None, Some(""), "", None, None, "12345")
-        val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec, form = ItemTypeForm.form().fill(itemType))
+        val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
@@ -481,7 +479,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       "display data in CNC input" in {
 
         val itemType = ItemTypeForm(Some("12345"), None, None, "", None, None, "")
-        val view = createView(form = ItemTypeForm.form().fill(itemType), journeyType = AllowedChoiceValues.SupplementaryDec)
+        val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
@@ -489,7 +487,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       "display data in Description input" in {
 
         val itemType = ItemTypeForm(None, None, Some(""), "Description", None, None, "")
-        val view = createView(form = ItemTypeForm.form().fill(itemType), journeyType = AllowedChoiceValues.SupplementaryDec)
+        val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
@@ -497,7 +495,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       "display data in CUS input" in {
 
         val itemType = ItemTypeForm(None, None, Some(""), "", Some("1234"), None, "")
-        val view = createView(form = ItemTypeForm.form().fill(itemType), journeyType = AllowedChoiceValues.SupplementaryDec)
+        val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
@@ -505,7 +503,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       "display data in Statistical Value input" in {
 
         val itemType = ItemTypeForm(None, None, Some(""), "", None, None, "12345")
-        val view = createView(form = ItemTypeForm.form().fill(itemType), journeyType = AllowedChoiceValues.SupplementaryDec)
+        val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }

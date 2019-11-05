@@ -16,105 +16,45 @@
 
 package controllers
 
-import java.time.Instant
-
-import connectors.exchange.ExportsDeclarationExchange
 import controllers.actions.AuthAction
-import controllers.declaration.ModelCacheable
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import forms.Choice._
 import javax.inject.Inject
-import models.DeclarationType.DeclarationType
-import models.requests.ExportsSessionKeys
-import models.{DeclarationStatus, ExportsDeclaration, Mode}
-import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.cache.ExportsCacheService
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.choice_page
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
-class ChoiceController @Inject()(
-  authenticate: AuthAction,
-  override val exportsCacheService: ExportsCacheService,
-  mcc: MessagesControllerComponents,
-  choicePage: choice_page
-)(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+class ChoiceController @Inject()(authenticate: AuthAction, mcc: MessagesControllerComponents, choicePage: choice_page)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport {
 
-  private val logger = Logger(this.getClass)
-
-  def displayPage(previousChoice: Option[Choice]): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayPage(previousChoice: Option[Choice]): Action[AnyContent] = authenticate { implicit request =>
     def pageForPreviousChoice(previousChoice: Option[Choice]) = {
       val form = Choice.form()
       choicePage(previousChoice.fold(form)(form.fill))
     }
-
-    request.declarationId match {
-      case Some(id) if previousChoice.isEmpty =>
-        exportsCacheService.get(id).map(_.map(_.`type`)).map {
-          case Some(data) => Ok(choicePage(Choice.form().fill(Choice(data))))
-          case _          => Ok(choicePage(Choice.form()))
-        }
-      case _ => Future.successful(Ok(pageForPreviousChoice(previousChoice)))
-    }
-
+    Ok(pageForPreviousChoice(previousChoice))
   }
 
-  def submitChoice(): Action[AnyContent] = authenticate.async { implicit request =>
+  def submitChoice(): Action[AnyContent] = authenticate { implicit request =>
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[Choice]) => Future.successful(BadRequest(choicePage(formWithErrors))),
+        (formWithErrors: Form[Choice]) => BadRequest(choicePage(formWithErrors)),
         choice =>
           choice.value match {
-            case SupplementaryDec | StandardDec | SimplifiedDec =>
-              val declarationType = choice.toDeclarationType
-                .getOrElse(throw new IllegalArgumentException(s"Cannot deduce Declaration Type from Choice [${choice.value}]"))
-              request.declarationId match {
-                case Some(id) =>
-                  updateDeclarationType(id, declarationType).map { _ =>
-                    Redirect(controllers.declaration.routes.DispatchLocationController.displayPage(Mode.Normal))
-                  }
-                case _ =>
-                  create(declarationType) map { created =>
-                    Redirect(controllers.declaration.routes.DispatchLocationController.displayPage(Mode.Normal))
-                      .addingToSession(ExportsSessionKeys.declarationId -> created.id)
-                  }
-              }
+            case CreateDec => Redirect(controllers.declaration.routes.DeclarationChoiceController.displayPage())
             case CancelDec =>
-              Future.successful(Redirect(controllers.routes.CancelDeclarationController.displayPage()))
+              Redirect(controllers.routes.CancelDeclarationController.displayPage())
             case ContinueDec =>
-              Future.successful(Redirect(controllers.routes.SavedDeclarationsController.displayDeclarations()))
+              Redirect(controllers.routes.SavedDeclarationsController.displayDeclarations())
             case Submissions =>
-              Future.successful(Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions()))
+              Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
         }
       )
   }
-
-  private def updateDeclarationType(id: String, `type`: DeclarationType)(implicit hc: HeaderCarrier) =
-    exportsCacheService.get(id).map(_.map(_.copy(`type` = `type`))).flatMap {
-      case Some(declaration) => exportsCacheService.update(declaration)
-      case None =>
-        logger.error(s"Failed to find declaration for id $id")
-        Future.successful(None)
-    }
-
-  private def create(`type`: DeclarationType)(implicit hc: HeaderCarrier) =
-    exportsCacheService
-      .create(
-        ExportsDeclarationExchange(
-          None,
-          DeclarationStatus.DRAFT,
-          createdDateTime = Instant.now,
-          updatedDateTime = Instant.now,
-          sourceId = None,
-          `type`
-        )
-      )
 }

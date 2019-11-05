@@ -18,7 +18,6 @@ package unit.controllers.declaration
 
 import controllers.declaration.DocumentsProducedController
 import controllers.util.Remove
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.additionaldocuments.DocumentsProduced
 import models.{DeclarationType, Mode}
 import models.declaration.DocumentsProducedData

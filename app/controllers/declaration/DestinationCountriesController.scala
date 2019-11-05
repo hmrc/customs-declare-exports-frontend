@@ -20,7 +20,6 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.remove
 import controllers.util._
-import forms.Choice.AllowedChoiceValues.{SimplifiedDec, StandardDec, SupplementaryDec}
 import forms.declaration.destinationCountries.DestinationCountries.{Standard, Supplementary}
 import forms.declaration.destinationCountries._
 import handlers.ErrorHandler

@@ -16,22 +16,13 @@
 
 package forms
 
-import models.DeclarationType
-import models.DeclarationType.DeclarationType
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.QueryStringBindable
 import utils.validators.forms.FieldValidator.isContainedIn
 
-case class Choice(value: String) {
-  def toDeclarationType: Option[DeclarationType] = value match {
-    case Choice.AllowedChoiceValues.SupplementaryDec => Some(DeclarationType.SUPPLEMENTARY)
-    case Choice.AllowedChoiceValues.StandardDec      => Some(DeclarationType.STANDARD)
-    case Choice.AllowedChoiceValues.SimplifiedDec    => Some(DeclarationType.SIMPLIFIED)
-    case _                                           => None
-  }
-}
+case class Choice(value: String)
 
 object Choice {
   implicit val format: OFormat[Choice] = Json.format[Choice]
@@ -39,7 +30,7 @@ object Choice {
   val choiceId = "Choice"
 
   import AllowedChoiceValues._
-  private val correctChoices = Set(SupplementaryDec, StandardDec, SimplifiedDec, ContinueDec, CancelDec, Submissions)
+  private val correctChoices = Set(CreateDec, ContinueDec, CancelDec, Submissions)
 
   val choiceMapping: Mapping[Choice] = Forms.single(
     "value" -> optional(
@@ -49,18 +40,10 @@ object Choice {
       .transform[Choice](choice => Choice(choice.getOrElse("")), choice => Some(choice.value))
   )
 
-  def apply(`type`: DeclarationType): Choice = `type` match {
-    case DeclarationType.STANDARD      => Choice(StandardDec)
-    case DeclarationType.SUPPLEMENTARY => Choice(SupplementaryDec)
-    case DeclarationType.SIMPLIFIED    => Choice(SimplifiedDec)
-  }
-
   def form(): Form[Choice] = Form(choiceMapping)
 
   object AllowedChoiceValues {
-    val SupplementaryDec = "SMP"
-    val StandardDec = "STD"
-    val SimplifiedDec = "SIM"
+    val CreateDec = "CRT"
     val ContinueDec = "CON"
     val CancelDec = "CAN"
     val Submissions = "SUB"

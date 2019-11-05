@@ -17,7 +17,6 @@
 package unit.controllers.declaration
 
 import controllers.declaration.DeclarantDetailsController
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.{DeclarantDetails, EntityDetails}
 import models.{DeclarationType, Mode}
 import play.api.libs.json.Json

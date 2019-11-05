@@ -17,7 +17,6 @@
 package unit.controllers.declaration
 
 import controllers.declaration.NatureOfTransactionController
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.NatureOfTransaction
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor

@@ -18,7 +18,6 @@ package unit.controllers.declaration
 
 import controllers.declaration.ProcedureCodesController
 import controllers.util.Remove
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.ProcedureCodes
 import models.{DeclarationType, Mode}
 import models.declaration.{ExportItem, ProcedureCodesData}
