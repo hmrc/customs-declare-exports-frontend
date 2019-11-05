@@ -36,12 +36,6 @@ class ItemTypeFormSpec extends WordSpec with MustMatchers {
 
     "return form with errors" when {
 
-      "combinedNomenclatureCode is missing" in {
-        val form = ItemTypeForm.form(DeclarationType.STANDARD).bind(correctItemTypeMap - "combinedNomenclatureCode")
-
-        form.errors mustBe Seq(FormError("combinedNomenclatureCode", "error.required"))
-      }
-
       "descriptionOfGoods is missing" in {
         val form = ItemTypeForm.form(DeclarationType.STANDARD).bind(correctItemTypeMap - "descriptionOfGoods")
 

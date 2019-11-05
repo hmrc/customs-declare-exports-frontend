@@ -417,7 +417,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       }
 
       def assertViewDataEntered(view: Document, itemType: ItemTypeForm): Unit = {
-        view.getElementById("combinedNomenclatureCode").attr("value") must equal(itemType.combinedNomenclatureCode)
+        view.getElementById("combinedNomenclatureCode").attr("value") must equal(itemType.combinedNomenclatureCode.getOrElse(""))
         view.getElementById("descriptionOfGoods").text() must equal(itemType.descriptionOfGoods)
         view.getElementById("cusCode").attr("value") must equal(itemType.cusCode.getOrElse(""))
         view.getElementById("unDangerousGoodsCode").attr("value") must equal(itemType.unDangerousGoodsCode.getOrElse(""))
@@ -468,7 +468,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       }
 
       def assertViewDataEntered(view: Document, itemType: ItemTypeForm): Unit = {
-        view.getElementById("combinedNomenclatureCode").attr("value") must equal(itemType.combinedNomenclatureCode)
+        view.getElementById("combinedNomenclatureCode").attr("value") must equal(itemType.combinedNomenclatureCode.getOrElse(""))
         view.getElementById("descriptionOfGoods").text() must equal(itemType.descriptionOfGoods)
         view.getElementById("cusCode").attr("value") must equal(itemType.cusCode.getOrElse(""))
         view.getElementById("unDangerousGoodsCode").attr("value") must equal(itemType.unDangerousGoodsCode.getOrElse(""))
@@ -511,7 +511,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       }
 
       def assertViewDataEntered(view: Document, itemType: ItemTypeForm): Unit = {
-        view.getElementById("combinedNomenclatureCode").attr("value") must equal(itemType.combinedNomenclatureCode)
+        view.getElementById("combinedNomenclatureCode").attr("value") must equal(itemType.combinedNomenclatureCode.getOrElse(""))
         view.getElementById("descriptionOfGoods").text() must equal(itemType.descriptionOfGoods)
         view.getElementById("cusCode").attr("value") must equal(itemType.cusCode.getOrElse(""))
         view.getElementById("statisticalValue").attr("value") must equal(itemType.statisticalValue)

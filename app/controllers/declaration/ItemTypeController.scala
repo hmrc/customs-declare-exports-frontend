@@ -158,7 +158,15 @@ class ItemTypeController @Inject()(
       .map { item =>
         item.itemType match {
           case Some(cachedData) =>
-            Ok(itemTypePage(mode, item, ItemTypeForm.form(request.declarationType).fill(itemTypeInput), cachedData.taricAdditionalCodes, cachedData.nationalAdditionalCodes))
+            Ok(
+              itemTypePage(
+                mode,
+                item,
+                ItemTypeForm.form(request.declarationType).fill(itemTypeInput),
+                cachedData.taricAdditionalCodes,
+                cachedData.nationalAdditionalCodes
+              )
+            )
           case _ =>
             Ok(itemTypePage(mode, item, ItemTypeForm.form(request.declarationType)))
         }

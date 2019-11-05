@@ -16,9 +16,12 @@
 
 package utils.validators.forms
 
+import models.requests.JourneyRequest
+import play.api.mvc.AnyContent
+
 trait Validator[T] {
 
-  def validateOnAddition(element: T): ValidationResult
+  def validateOnAddition(element: T)(implicit request: JourneyRequest[AnyContent]): ValidationResult
 
-  def validateOnSaveAndContinue(element: T): ValidationResult
+  def validateOnSaveAndContinue(element: T)(implicit request: JourneyRequest[AnyContent]): ValidationResult
 }

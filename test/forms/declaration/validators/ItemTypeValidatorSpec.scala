@@ -18,16 +18,24 @@ package forms.declaration.validators
 
 import base.TestHelper
 import forms.declaration.ItemTypeForm._
+import models.{DeclarationType, IdentityData, SignedInUser}
+import models.DeclarationType.DeclarationType
 import models.declaration.ItemType
+import models.requests.{AuthenticatedRequest, JourneyRequest}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.FormError
+import play.api.mvc.AnyContent
+import play.api.test.FakeRequest
+import services.cache.ExportsDeclarationBuilder
+import uk.gov.hmrc.auth.core.Enrolments
 import utils.validators.forms.supplementary.ItemTypeValidator
 import utils.validators.forms.{Invalid, Valid}
 
-class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
+class ItemTypeValidatorSpec extends WordSpec with MustMatchers with ExportsDeclarationBuilder {
   import ItemTypeValidatorSpec._
 
-  "ItemTypeValidator on validateOnAddition" should {
+  "validateOnAddition" should {
+    implicit val `type`: DeclarationType = DeclarationType.STANDARD
 
     "return Invalid result with errors" when {
 
@@ -93,6 +101,18 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
 
     "return Valid result" when {
 
+      "Combined Nomenclature Code is none for Simplified Dec" in {
+        val itemType = buildItemType(combinedNomenclatureCode = None)
+
+        ItemTypeValidator.validateOnAddition(itemType)(req(DeclarationType.SIMPLIFIED)) must be(Valid)
+      }
+
+      "Combined Nomenclature Code is empty for Simplified Dec" in {
+        val itemType = buildItemType(combinedNomenclatureCode = Some(""))
+
+        ItemTypeValidator.validateOnAddition(itemType)(req(DeclarationType.SIMPLIFIED)) must be(Valid)
+      }
+
       "provided with correct data with single value for multi-value fields" in {
         val itemType = buildItemType(taricAdditionalCode = Seq("AB12"), nationalAdditionalCode = Seq("VATE"))
 
@@ -122,7 +142,8 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       }
   }
 
-  "ItemTypeValidator on validateOnSaveAndContinue" should {
+  "validateOnSaveAndContinue" should {
+    implicit val `type`: DeclarationType = DeclarationType.STANDARD
 
     "return Failure result with errors" when {
 
@@ -291,6 +312,21 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
     }
 
     "return Valid result" when {
+      implicit val `type`: models.DeclarationType.Value = DeclarationType.STANDARD
+
+      "Combined Nomenclature Code is empty for Simplified Dec" in {
+        val itemType = ItemType(
+          combinedNomenclatureCode = Some(""),
+          taricAdditionalCodes = Seq("11AA"),
+          nationalAdditionalCodes = Seq("VATE"),
+          descriptionOfGoods = "Test description",
+          cusCode = Some("12345678"),
+          unDangerousGoodsCode = Some("1234"),
+          statisticalValue = "1234567890.12"
+        )
+
+        ItemTypeValidator.validateOnSaveAndContinue(itemType)(req(DeclarationType.SIMPLIFIED)) must be(Valid)
+      }
 
       "provided with correct data with single value for every field" in {
         val itemType = ItemType(
@@ -335,12 +371,17 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       }
     }
 
-    def testFailedValidationOnSaveAndContinue(input: ItemType, expectedResult: Invalid): Unit =
+    def testFailedValidationOnSaveAndContinue(input: ItemType, expectedResult: Invalid)(implicit req: JourneyRequest[AnyContent]): Unit =
       ItemTypeValidator.validateOnSaveAndContinue(input) match {
         case validationResult: Invalid => expectedResult.errors.foreach(validationResult.errors must contain(_))
         case Valid                     => fail()
       }
   }
+
+  private implicit def req(implicit `type`: DeclarationType): JourneyRequest[AnyContent] = new JourneyRequest[AnyContent](
+    new AuthenticatedRequest[AnyContent](FakeRequest(), SignedInUser("eori", Enrolments(Set.empty), IdentityData())),
+    aDeclaration(withType(`type`))
+  )
 
 }
 

@@ -52,24 +52,9 @@ object ItemTypeForm {
     statisticalValueKey -> text()
   )(ItemTypeForm.apply)(ItemTypeForm.unapply)
 
-  private val mappingSimplified: Mapping[ItemTypeForm] = Forms.mapping(
-    combinedNomenclatureCodeKey -> optional(text()),
-    taricAdditionalCodeKey -> optional(text()),
-    nationalAdditionalCodeKey -> optional(text()),
-    descriptionOfGoodsKey -> text(),
-    cusCodeKey -> optional(text()),
-    unDangerousGoodsCodeKey -> optional(text()),
-    statisticalValueKey -> text()
-  )(ItemTypeForm.apply)(ItemTypeForm.unapply)
-
   val id = "ItemType"
 
-  def form(`type`: DeclarationType): Form[ItemTypeForm] = Form {
-    `type` match {
-      case DeclarationType.SIMPLIFIED => mappingSimplified
-      case _                          => mapping
-    }
-  }
+  def form(`type`: DeclarationType): Form[ItemTypeForm] = Form(mapping)
 
   val empty: ItemTypeForm = ItemTypeForm(None, None, None, "", None, None, "")
 
