@@ -148,7 +148,7 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers with ExportsDecla
     "return Failure result with errors" when {
 
       "Combined Nomenclature Code is empty" in {
-        val itemType = buildItemType()
+        val itemType = buildItemType(combinedNomenclatureCode = None)
         val expectedValidationResult =
           Invalid(errors = Seq(FormError(combinedNomenclatureCodeKey, "declaration.itemType.combinedNomenclatureCode.error.empty")))
 

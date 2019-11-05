@@ -49,8 +49,11 @@ object FieldValidator {
 
   private val allowedHyphenChar = Set('-')
 
-  def when[T](condition: Boolean)(constraint: T => Boolean): T => Boolean = value => if (condition) constraint(value) else true
-  def whenNot[T](condition: Boolean)(constraint: T => Boolean): T => Boolean = value => if (!condition) constraint(value) else true
+  def when[T](condition: Boolean)(constraint: T => Boolean): T => Boolean =
+    value =>
+      if (condition) {
+        constraint(value)
+      } else true
 
   val isPresent: Option[_] => Boolean = _.nonEmpty
 

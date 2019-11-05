@@ -56,7 +56,7 @@ object ItemTypeValidator extends Validator[ItemType] {
         .verifying("declaration.itemType.combinedNomenclatureCode.error.empty", when(request.declarationType != DeclarationType.SIMPLIFIED)(nonEmpty))
         .verifying("declaration.itemType.combinedNomenclatureCode.error.length", isEmpty or noLongerThan(combinedNomenclatureCodeMaxLength))
         .verifying("declaration.itemType.combinedNomenclatureCode.error.specialCharacters", isEmpty or isAlphanumeric)
-    ).verifying("declaration.itemType.combinedNomenclatureCode.error.empty", isPresent)
+    ).verifying("declaration.itemType.combinedNomenclatureCode.error.empty", when(request.declarationType != DeclarationType.SIMPLIFIED)(isPresent))
 
   private val mappingTARICAdditionalCode = seq(
     text()
