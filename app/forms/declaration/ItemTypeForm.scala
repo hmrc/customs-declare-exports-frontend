@@ -54,7 +54,7 @@ object ItemTypeForm {
 
   val id = "ItemType"
 
-  def form(`type`: DeclarationType): Form[ItemTypeForm] = Form(mapping)
+  def form(): Form[ItemTypeForm] = Form(mapping)
 
   val empty: ItemTypeForm = ItemTypeForm(None, None, None, "", None, None, "")
 

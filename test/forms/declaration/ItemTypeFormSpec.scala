@@ -28,7 +28,7 @@ class ItemTypeFormSpec extends WordSpec with MustMatchers {
 
     "return form without errors" when {
       "provided with valid values" in {
-        val form = ItemTypeForm.form(DeclarationType.STANDARD).bind(correctItemTypeMap)
+        val form = ItemTypeForm.form().bind(correctItemTypeMap)
 
         form.hasErrors must be(false)
       }
@@ -37,13 +37,13 @@ class ItemTypeFormSpec extends WordSpec with MustMatchers {
     "return form with errors" when {
 
       "descriptionOfGoods is missing" in {
-        val form = ItemTypeForm.form(DeclarationType.STANDARD).bind(correctItemTypeMap - "descriptionOfGoods")
+        val form = ItemTypeForm.form().bind(correctItemTypeMap - "descriptionOfGoods")
 
         form.errors mustBe Seq(FormError("descriptionOfGoods", "error.required"))
       }
 
       "statisticalValue is missing" in {
-        val form = ItemTypeForm.form(DeclarationType.STANDARD).bind(correctItemTypeMap - "statisticalValue")
+        val form = ItemTypeForm.form().bind(correctItemTypeMap - "statisticalValue")
 
         form.errors mustBe Seq(FormError("statisticalValue", "error.required"))
       }

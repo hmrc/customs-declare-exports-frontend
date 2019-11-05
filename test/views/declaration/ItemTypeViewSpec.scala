@@ -35,7 +35,7 @@ import views.tags.ViewTest
 class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = new item_type(mainTemplate)
-  private val form: Form[ItemTypeForm] = ItemTypeForm.form(DeclarationType.STANDARD)
+  private val form: Form[ItemTypeForm] = ItemTypeForm.form()
   private def createView(
     journeyType: String = AllowedChoiceValues.StandardDec,
     mode: Mode = Mode.Normal,
@@ -379,7 +379,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       "display data in CNC input" in {
 
         val itemType = ItemTypeForm(Some("12345"), None, None, "", None, None, "")
-        val view = createView(form = ItemTypeForm.form(DeclarationType.STANDARD).fill(itemType))
+        val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
@@ -387,7 +387,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       "display data in Description input" in {
 
         val itemType = ItemTypeForm(None, None, Some(""), "Description", None, None, "")
-        val view = createView(form = ItemTypeForm.form(DeclarationType.STANDARD).fill(itemType))
+        val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
@@ -395,7 +395,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       "display data in CUS input" in {
 
         val itemType = ItemTypeForm(None, None, Some(""), "", Some("1234"), None, "")
-        val view = createView(form = ItemTypeForm.form(DeclarationType.STANDARD).fill(itemType))
+        val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
@@ -403,7 +403,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       "display data in UN Dangerous Goods Code input" in {
 
         val itemType = ItemTypeForm(None, None, Some(""), "", None, Some("1234"), "12345")
-        val view = createView(form = ItemTypeForm.form(DeclarationType.STANDARD).fill(itemType))
+        val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
@@ -411,7 +411,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       "display data in Statistical Value input" in {
 
         val itemType = ItemTypeForm(None, None, Some(""), "", None, None, "12345")
-        val view = createView(form = ItemTypeForm.form(DeclarationType.STANDARD).fill(itemType))
+        val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
@@ -430,7 +430,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       "display data in CNC input" in {
 
         val itemType = ItemTypeForm(Some("12345"), None, None, "", None, None, "")
-        val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec, form = ItemTypeForm.form(DeclarationType.STANDARD).fill(itemType))
+        val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec, form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
@@ -438,7 +438,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       "display data in Description input" in {
 
         val itemType = ItemTypeForm(None, None, Some(""), "Description", None, None, "")
-        val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec, form = ItemTypeForm.form(DeclarationType.STANDARD).fill(itemType))
+        val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec, form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
@@ -446,7 +446,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       "display data in CUS input" in {
 
         val itemType = ItemTypeForm(None, None, Some(""), "", Some("1234"), None, "")
-        val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec, form = ItemTypeForm.form(DeclarationType.STANDARD).fill(itemType))
+        val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec, form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
@@ -454,7 +454,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       "display data in UN Dangerous Goods Code input" in {
 
         val itemType = ItemTypeForm(None, None, Some(""), "", None, Some("1234"), "12345")
-        val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec, form = ItemTypeForm.form(DeclarationType.STANDARD).fill(itemType))
+        val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec, form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
@@ -462,7 +462,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       "display data in Statistical Value input" in {
 
         val itemType = ItemTypeForm(None, None, Some(""), "", None, None, "12345")
-        val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec, form = ItemTypeForm.form(DeclarationType.STANDARD).fill(itemType))
+        val view = createView(journeyType = AllowedChoiceValues.SimplifiedDec, form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
@@ -481,7 +481,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       "display data in CNC input" in {
 
         val itemType = ItemTypeForm(Some("12345"), None, None, "", None, None, "")
-        val view = createView(form = ItemTypeForm.form(DeclarationType.STANDARD).fill(itemType), journeyType = AllowedChoiceValues.SupplementaryDec)
+        val view = createView(form = ItemTypeForm.form().fill(itemType), journeyType = AllowedChoiceValues.SupplementaryDec)
 
         assertViewDataEntered(view, itemType)
       }
@@ -489,7 +489,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       "display data in Description input" in {
 
         val itemType = ItemTypeForm(None, None, Some(""), "Description", None, None, "")
-        val view = createView(form = ItemTypeForm.form(DeclarationType.STANDARD).fill(itemType), journeyType = AllowedChoiceValues.SupplementaryDec)
+        val view = createView(form = ItemTypeForm.form().fill(itemType), journeyType = AllowedChoiceValues.SupplementaryDec)
 
         assertViewDataEntered(view, itemType)
       }
@@ -497,7 +497,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       "display data in CUS input" in {
 
         val itemType = ItemTypeForm(None, None, Some(""), "", Some("1234"), None, "")
-        val view = createView(form = ItemTypeForm.form(DeclarationType.STANDARD).fill(itemType), journeyType = AllowedChoiceValues.SupplementaryDec)
+        val view = createView(form = ItemTypeForm.form().fill(itemType), journeyType = AllowedChoiceValues.SupplementaryDec)
 
         assertViewDataEntered(view, itemType)
       }
@@ -505,7 +505,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       "display data in Statistical Value input" in {
 
         val itemType = ItemTypeForm(None, None, Some(""), "", None, None, "12345")
-        val view = createView(form = ItemTypeForm.form(DeclarationType.STANDARD).fill(itemType), journeyType = AllowedChoiceValues.SupplementaryDec)
+        val view = createView(form = ItemTypeForm.form().fill(itemType), journeyType = AllowedChoiceValues.SupplementaryDec)
 
         assertViewDataEntered(view, itemType)
       }
