@@ -82,19 +82,19 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with ChoiceMessages with Co
       val view = createView(DeclarationChoice.form().bind(Map[String, String]()))
 
       view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("value", "#value")
+      view must haveFieldErrorLink("type", "#type")
 
-      view.select("#error-message-value-input").text() mustBe messages("error.required")
+      view.select("#error-message-type-input").text() mustBe messages("error.required")
     }
 
     "display error when choice is incorrect" in {
 
-      val view = createView(DeclarationChoice.form().bind(Map("value" -> "incorrect")))
+      val view = createView(DeclarationChoice.form().bind(Map("type" -> "incorrect")))
 
       view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("value", "#value")
+      view must haveFieldErrorLink("type", "#type")
 
-      view.select("#error-message-value-input").text() mustBe messages("declaration.type.error")
+      view.select("#error-message-type-input").text() mustBe messages("declaration.type.error")
     }
   }
 

@@ -30,7 +30,7 @@ class DeclarationChoiceSpec extends WordSpec with MustMatchers {
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
-        form.errors.head.message must equal("declaration.type.error")
+        form.errors.head.message must equal("error.required")
       }
 
       "provided with a value not defined in AllowedChoiceValues" in {
@@ -57,7 +57,7 @@ object DeclarationChoiceSpec {
 
   val correctChoiceJSON: JsValue = createChoiceJSON("STANDARD")
   val incorrectChoiceJSON: JsValue = createChoiceJSON("InvalidChoice")
-  val emptyChoiceJSON: JsValue = createChoiceJSON()
+  val emptyChoiceJSON: JsValue = JsString("")
 
-  def createChoiceJSON(choiceValue: String = ""): JsValue = JsObject(Map("value" -> JsString(choiceValue)))
+  def createChoiceJSON(choiceValue: String = ""): JsValue = JsObject(Map("type" -> JsString(choiceValue)))
 }
