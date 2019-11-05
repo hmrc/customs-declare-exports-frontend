@@ -18,9 +18,10 @@ package unit.controllers.declaration
 
 import controllers.declaration.ItemsSummaryController
 import controllers.util.{Add, SaveAndContinue, SaveAndReturn}
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
-import models.{DeclarationType, Mode}
+import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
+import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation}
 import models.declaration.ExportItem
+import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -48,6 +49,12 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
 
   val itemId = "ItemId12345"
 
+  def theResponseForm: List[ExportItem] = {
+    val captor = ArgumentCaptor.forClass(classOf[List[ExportItem]])
+    verify(mockItemsSummaryPage).apply(any(), captor.capture(), any())(any(), any())
+    captor.getValue
+  }
+
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
@@ -60,12 +67,6 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
     reset(mockItemsSummaryPage)
     reset(mockExportIdGeneratorService)
     super.afterEach()
-  }
-
-  def theResponseForm: List[ExportItem] = {
-    val captor = ArgumentCaptor.forClass(classOf[List[ExportItem]])
-    verify(mockItemsSummaryPage).apply(any(), captor.capture(), any())(any(), any())
-    captor.getValue
   }
 
   "Display" should {
@@ -84,51 +85,103 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
     }
   }
 
-  "Submit" should {
+  "Submit" when {
+    "on Supplementary Journey" should {
 
-    "return 303 (SEE_OTHER) and redirect to Procedure Codes page" when {
-      "use add new item" in {
-        val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(Add.toString -> ""))
+      "return 303 (SEE_OTHER) and redirect to Procedure Codes page" when {
+        "use add new item" in {
+          val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(Add.toString -> ""))
 
-        status(result) mustBe SEE_OTHER
-        verify(mockItemsSummaryPage, times(0)).apply(any(), any(), any())(any(), any())
-        redirectLocation(result).value must endWith(s"/items/${itemId}/procedure-codes")
+          status(result) mustBe SEE_OTHER
+          verify(mockItemsSummaryPage, times(0)).apply(any(), any(), any())(any(), any())
+          redirectLocation(result).value must endWith(s"/items/${itemId}/procedure-codes")
+        }
+      }
+
+      "return 303 (SEE_OTHER) and continue" when {
+        "user save and continues" in {
+          val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(SaveAndContinue.toString -> ""))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController
+            .displayPage(Mode.Normal)
+        }
+
+        "user save and returns" in {
+          val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(SaveAndReturn.toString -> ""))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController
+            .displayPage(Mode.Normal)
+        }
+      }
+
+      "return 400 (BAD_REQUEST)" when {
+
+        "there is not completed item in the cache" in {
+
+          val cachedData = aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(anItem(withItemId("id"))))
+          withNewCaching(cachedData)
+
+          val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(SaveAndContinue.toString -> ""))
+
+          status(result) mustBe BAD_REQUEST
+          verify(mockItemsSummaryPage).apply(any(), any(), any())(any(), any())
+        }
       }
     }
 
-    "return 303 (SEE_OTHER) and continue" when {
-      "user save and continues" in {
-        val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(SaveAndContinue.toString -> ""))
+    "on Simplified Journey" should {
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController
-          .displayPage(Mode.Normal)
+      val simplifiedJourneyItem = withItem(
+        anItem(
+          withItemId("id"),
+          withProcedureCodes(),
+          withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
+          withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12")))),
+          withItemType(),
+          withPackageInformation(),
+          withAdditionalInformation("code", "description")
+        )
+      )
+
+      "return 303 (SEE_OTHER) and redirect to Procedure Codes page" when {
+        "use add new item" in {
+          val cachedData = aDeclaration(withType(DeclarationType.SIMPLIFIED), simplifiedJourneyItem)
+          withNewCaching(cachedData)
+          val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(Add.toString -> ""))
+
+          status(result) mustBe SEE_OTHER
+          verify(mockItemsSummaryPage, times(0)).apply(any(), any(), any())(any(), any())
+          redirectLocation(result).value must endWith(s"/items/${itemId}/procedure-codes")
+        }
       }
 
-      "user save and returns" in {
-        val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(SaveAndReturn.toString -> ""))
+      "return 303 (SEE_OTHER) and continue" when {
+        "user save and continues" in {
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController
-          .displayPage(Mode.Normal)
-      }
-    }
+          val cachedData = aDeclaration(withType(DeclarationType.SIMPLIFIED), simplifiedJourneyItem)
+          withNewCaching(cachedData)
+          val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(SaveAndContinue.toString -> ""))
 
-    "return 400 (BAD_REQUEST)" when {
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController
+            .displayPage(Mode.Normal)
+        }
 
-      "there is not completed item in the cache" in {
+        "user save and returns" in {
 
-        val cachedData = aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(anItem(withItemId("id"))))
-        withNewCaching(cachedData)
+          val cachedData = aDeclaration(withType(DeclarationType.SIMPLIFIED), simplifiedJourneyItem)
+          withNewCaching(cachedData)
+          val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(SaveAndReturn.toString -> ""))
 
-        val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(SaveAndContinue.toString -> ""))
-
-        status(result) mustBe BAD_REQUEST
-        verify(mockItemsSummaryPage).apply(any(), any(), any())(any(), any())
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController
+            .displayPage(Mode.Normal)
+        }
       }
     }
   }
-
   "Remove" should {
 
     "return 303 (SEE_OTHER) and redirect to the same page during removing" when {

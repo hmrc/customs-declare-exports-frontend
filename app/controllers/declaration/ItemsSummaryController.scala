@@ -22,6 +22,7 @@ import controllers.util.{Add, FormAction, SaveAndContinue, SaveAndReturn}
 import javax.inject.Inject
 import models.Mode
 import models.declaration.ExportItem
+import models.requests.JourneyRequest
 import play.api.data.FormError
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -49,7 +50,7 @@ class ItemsSummaryController @Inject()(
   //TODO Should we add validation for POST without items?
   def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val action = FormAction.bindFromRequest()
-    val incorrectItems = buildIncorrectItemsErrors(request.cacheModel.items.toSeq)
+    val incorrectItems = buildIncorrectItemsErrors(request)
 
     action match {
       case Add =>
@@ -67,8 +68,8 @@ class ItemsSummaryController @Inject()(
     }
   }
 
-  private def buildIncorrectItemsErrors(items: Seq[ExportItem]): Seq[FormError] =
-    items.zipWithIndex.filterNot { case (item, _) => item.isCompleted }.map {
+  private def buildIncorrectItemsErrors(request: JourneyRequest[AnyContent]): Seq[FormError] =
+    request.cacheModel.items.toSeq.zipWithIndex.filterNot { case (item, _) => item.isCompleted(request.declarationType) }.map {
       case (item, index) =>
         FormError("item_" + index, "declaration.itemsSummary.item.incorrect", Seq(item.sequenceId.toString))
     }
