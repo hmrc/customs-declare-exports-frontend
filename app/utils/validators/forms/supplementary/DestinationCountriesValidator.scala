@@ -17,20 +17,22 @@
 package utils.validators.forms.supplementary
 
 import forms.declaration.destinationCountries.DestinationCountries
+import models.requests.JourneyRequest
 import play.api.data.Forms.{seq, text}
 import play.api.data.{Form, Forms}
+import play.api.mvc.AnyContent
 import services.Countries.allCountries
 import utils.validators.forms.FieldValidator.areAllElementsUnique
 import utils.validators.forms.{Invalid, Valid, ValidationResult, Validator}
 
 object DestinationCountriesValidator extends Validator[DestinationCountries] {
 
-  override def validateOnAddition(element: DestinationCountries): ValidationResult =
+  override def validateOnAddition(element: DestinationCountries)(implicit request: JourneyRequest[AnyContent]): ValidationResult =
     Form(mappingWithValidationForAddition)
       .fillAndValidate(element)
       .fold[ValidationResult](formWithErrors => Invalid(formWithErrors.errors), _ => Valid)
 
-  override def validateOnSaveAndContinue(element: DestinationCountries): ValidationResult =
+  override def validateOnSaveAndContinue(element: DestinationCountries)(implicit request: JourneyRequest[AnyContent]): ValidationResult =
     Form(mappingWithValidation)
       .fillAndValidate(element)
       .fold[ValidationResult](formWithErrors => Invalid(formWithErrors.errors), _ => Valid)

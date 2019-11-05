@@ -16,11 +16,18 @@
 
 package utils.validators.forms.supplementary
 import forms.declaration.destinationCountries.DestinationCountries
+import models.DeclarationType
+import models.requests.{AuthenticatedRequest, JourneyRequest}
 import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.FormError
+import play.api.mvc.AnyContent
+import services.cache.ExportsDeclarationBuilder
 import utils.validators.forms.{Invalid, Valid}
 
-class DestinationCountriesValidatorSpec extends WordSpec with MustMatchers {
+class DestinationCountriesValidatorSpec extends WordSpec with MustMatchers with MockitoSugar with ExportsDeclarationBuilder {
+  private implicit val request: JourneyRequest[AnyContent] =
+    new JourneyRequest(mock[AuthenticatedRequest[AnyContent]], aDeclaration(withType(DeclarationType.STANDARD)))
 
   "DestinationCountriesValidator validateOnAddition" should {
     "return valid" when {

@@ -17,9 +17,12 @@
 package utils.validators.forms.supplementary
 
 import forms.declaration.ItemTypeForm._
+import models.DeclarationType
 import models.declaration.ItemType
+import models.requests.JourneyRequest
 import play.api.data.Forms.{optional, seq, text}
-import play.api.data.{Form, Forms}
+import play.api.data.{Form, Forms, Mapping}
+import play.api.mvc.AnyContent
 import services.NationalAdditionalCode
 import utils.validators.forms.FieldValidator._
 import utils.validators.forms.{Invalid, Valid, ValidationResult, Validator}
@@ -37,20 +40,23 @@ object ItemTypeValidator extends Validator[ItemType] {
   private val statisticalValueMaxLength = 15
   private val statisticalValueDecimalPlaces = 2
 
-  override def validateOnAddition(element: ItemType): ValidationResult =
-    Form(mappingWithValidationForAddition)
+  override def validateOnAddition(element: ItemType)(implicit request: JourneyRequest[AnyContent]): ValidationResult =
+    Form(addValidation)
       .fillAndValidate(element)
       .fold[ValidationResult](formWithErrors => Invalid(formWithErrors.errors), _ => Valid)
 
-  override def validateOnSaveAndContinue(element: ItemType): ValidationResult =
-    Form(mappingWithValidation)
+  override def validateOnSaveAndContinue(element: ItemType)(implicit request: JourneyRequest[AnyContent]): ValidationResult =
+    Form(submitValidation)
       .fillAndValidate(element)
       .fold[ValidationResult](formWithErrors => Invalid(formWithErrors.errors), _ => Valid)
 
-  private val mappingCombinedNomenclatureCode = text()
-    .verifying("declaration.itemType.combinedNomenclatureCode.error.empty", nonEmpty)
-    .verifying("declaration.itemType.combinedNomenclatureCode.error.length", isEmpty or noLongerThan(combinedNomenclatureCodeMaxLength))
-    .verifying("declaration.itemType.combinedNomenclatureCode.error.specialCharacters", isEmpty or isAlphanumeric)
+  private def mappingCombinedNomenclatureCode(implicit request: JourneyRequest[AnyContent]): Mapping[Option[String]] =
+    optional(
+      text()
+        .verifying("declaration.itemType.combinedNomenclatureCode.error.empty", when(request.declarationType != DeclarationType.SIMPLIFIED)(nonEmpty))
+        .verifying("declaration.itemType.combinedNomenclatureCode.error.length", isEmpty or noLongerThan(combinedNomenclatureCodeMaxLength))
+        .verifying("declaration.itemType.combinedNomenclatureCode.error.specialCharacters", isEmpty or isAlphanumeric)
+    ).verifying("declaration.itemType.combinedNomenclatureCode.error.empty", when(request.declarationType != DeclarationType.SIMPLIFIED)(isPresent))
 
   private val mappingTARICAdditionalCode = seq(
     text()
@@ -92,8 +98,8 @@ object ItemTypeValidator extends Validator[ItemType] {
       isEmpty or isDecimalWithNoMoreDecimalPlacesThan(statisticalValueDecimalPlaces)
     )
 
-  val mappingWithValidationForAddition = Forms.mapping(
-    combinedNomenclatureCodeKey -> text(),
+  private val addValidation = Forms.mapping(
+    combinedNomenclatureCodeKey -> optional(text()),
     taricAdditionalCodeKey -> mappingTARICAdditionalCode,
     nationalAdditionalCodeKey -> mappingNationalAdditionalCode,
     descriptionOfGoodsKey -> text(),
@@ -102,14 +108,15 @@ object ItemTypeValidator extends Validator[ItemType] {
     statisticalValueKey -> text()
   )(ItemType.apply)(ItemType.unapply)
 
-  val mappingWithValidation = Forms.mapping(
-    combinedNomenclatureCodeKey -> mappingCombinedNomenclatureCode,
-    taricAdditionalCodeKey -> mappingTARICAdditionalCode,
-    nationalAdditionalCodeKey -> mappingNationalAdditionalCode,
-    descriptionOfGoodsKey -> mappingDescriptionOfGoods,
-    cusCodeKey -> mappingCUSCode,
-    unDangerousGoodsCodeKey -> mappingUNDangerousGoodsCode,
-    statisticalValueKey -> mappingStatisticalValue
-  )(ItemType.apply)(ItemType.unapply)
+  private def submitValidation(implicit request: JourneyRequest[AnyContent]) =
+    Forms.mapping(
+      combinedNomenclatureCodeKey -> mappingCombinedNomenclatureCode,
+      taricAdditionalCodeKey -> mappingTARICAdditionalCode,
+      nationalAdditionalCodeKey -> mappingNationalAdditionalCode,
+      descriptionOfGoodsKey -> mappingDescriptionOfGoods,
+      cusCodeKey -> mappingCUSCode,
+      unDangerousGoodsCodeKey -> mappingUNDangerousGoodsCode,
+      statisticalValueKey -> mappingStatisticalValue
+    )(ItemType.apply)(ItemType.unapply)
 
 }
