@@ -19,7 +19,7 @@ import play.api.libs.functional.syntax.{unlift, _}
 import play.api.libs.json.{JsPath, Reads, Writes}
 
 case class ItemType(
-  combinedNomenclatureCode: String,
+  combinedNomenclatureCode: Option[String],
   taricAdditionalCodes: Seq[String],
   nationalAdditionalCodes: Seq[String],
   descriptionOfGoods: String,
@@ -31,7 +31,7 @@ case class ItemType(
 object ItemType {
 
   implicit val reads: Reads[ItemType] = (
-    (JsPath \ "combinedNomenclatureCode").read[String] and
+    (JsPath \ "combinedNomenclatureCode").readNullable[String] and
       (JsPath \ "taricAdditionalCode").read[Seq[String]] and
       (JsPath \ "nationalAdditionalCode").read[Seq[String]] and
       (JsPath \ "descriptionOfGoods").read[String] and
@@ -41,7 +41,7 @@ object ItemType {
   )(ItemType.apply _)
 
   implicit val writes: Writes[ItemType] = (
-    (JsPath \ "combinedNomenclatureCode").write[String] and
+    (JsPath \ "combinedNomenclatureCode").writeNullable[String] and
       (JsPath \ "taricAdditionalCode").write[Seq[String]] and
       (JsPath \ "nationalAdditionalCode").write[Seq[String]] and
       (JsPath \ "descriptionOfGoods").write[String] and
@@ -50,5 +50,5 @@ object ItemType {
       (JsPath \ "statisticalValue").write[String]
   )(unlift(ItemType.unapply))
 
-  val empty: ItemType = ItemType("", Nil, Nil, "", None, None, "")
+  val empty: ItemType = ItemType(None, Nil, Nil, "", None, None, "")
 }

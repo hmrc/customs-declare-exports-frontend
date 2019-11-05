@@ -212,7 +212,7 @@ object SupplementaryDeclarationTestData {
         sequenceId = 1,
         itemType = Some(
           ItemType(
-            combinedNomenclatureCode = "classificationsId",
+            combinedNomenclatureCode = Some("classificationsId"),
             taricAdditionalCodes = Seq("taricAdditionalCodes"),
             nationalAdditionalCodes = Seq("nationalAdditionalCodes"),
             descriptionOfGoods = "commodityDescription",

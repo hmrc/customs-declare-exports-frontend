@@ -18,6 +18,7 @@ package forms.declaration
 
 import forms.declaration.ItemTypeForm._
 import forms.declaration.ItemTypeFormSpec.correctItemTypeMap
+import models.DeclarationType
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.FormError
 
@@ -34,12 +35,6 @@ class ItemTypeFormSpec extends WordSpec with MustMatchers {
     }
 
     "return form with errors" when {
-
-      "combinedNomenclatureCode is missing" in {
-        val form = ItemTypeForm.form().bind(correctItemTypeMap - "combinedNomenclatureCode")
-
-        form.errors mustBe Seq(FormError("combinedNomenclatureCode", "error.required"))
-      }
 
       "descriptionOfGoods is missing" in {
         val form = ItemTypeForm.form().bind(correctItemTypeMap - "descriptionOfGoods")

@@ -18,7 +18,7 @@ package views.declaration
 
 import base.Injector
 import forms.declaration.ItemTypeForm
-import models.Mode
+import models.{DeclarationType, Mode}
 import models.declaration.ExportItem
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -376,7 +376,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in CNC input" in {
 
-        val itemType = ItemTypeForm("12345", None, None, "", None, None, "")
+        val itemType = ItemTypeForm(Some("12345"), None, None, "", None, None, "")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
@@ -384,7 +384,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in Description input" in {
 
-        val itemType = ItemTypeForm("", None, Some(""), "Description", None, None, "")
+        val itemType = ItemTypeForm(None, None, Some(""), "Description", None, None, "")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
@@ -392,7 +392,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in CUS input" in {
 
-        val itemType = ItemTypeForm("", None, Some(""), "", Some("1234"), None, "")
+        val itemType = ItemTypeForm(None, None, Some(""), "", Some("1234"), None, "")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
@@ -400,7 +400,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in UN Dangerous Goods Code input" in {
 
-        val itemType = ItemTypeForm("", None, Some(""), "", None, Some("1234"), "12345")
+        val itemType = ItemTypeForm(None, None, Some(""), "", None, Some("1234"), "12345")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
@@ -408,14 +408,14 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in Statistical Value input" in {
 
-        val itemType = ItemTypeForm("", None, Some(""), "", None, None, "12345")
+        val itemType = ItemTypeForm(None, None, Some(""), "", None, None, "12345")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
 
       def assertViewDataEntered(view: Document, itemType: ItemTypeForm): Unit = {
-        view.getElementById("combinedNomenclatureCode").attr("value") must equal(itemType.combinedNomenclatureCode)
+        view.getElementById("combinedNomenclatureCode").attr("value") must equal(itemType.combinedNomenclatureCode.getOrElse(""))
         view.getElementById("descriptionOfGoods").text() must equal(itemType.descriptionOfGoods)
         view.getElementById("cusCode").attr("value") must equal(itemType.cusCode.getOrElse(""))
         view.getElementById("unDangerousGoodsCode").attr("value") must equal(itemType.unDangerousGoodsCode.getOrElse(""))
@@ -427,7 +427,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in CNC input" in {
 
-        val itemType = ItemTypeForm("12345", None, None, "", None, None, "")
+        val itemType = ItemTypeForm(Some("12345"), None, None, "", None, None, "")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
@@ -435,7 +435,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in Description input" in {
 
-        val itemType = ItemTypeForm("", None, Some(""), "Description", None, None, "")
+        val itemType = ItemTypeForm(None, None, Some(""), "Description", None, None, "")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
@@ -443,7 +443,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in CUS input" in {
 
-        val itemType = ItemTypeForm("", None, Some(""), "", Some("1234"), None, "")
+        val itemType = ItemTypeForm(None, None, Some(""), "", Some("1234"), None, "")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
@@ -451,7 +451,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in UN Dangerous Goods Code input" in {
 
-        val itemType = ItemTypeForm("", None, Some(""), "", None, Some("1234"), "12345")
+        val itemType = ItemTypeForm(None, None, Some(""), "", None, Some("1234"), "12345")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
@@ -459,14 +459,14 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in Statistical Value input" in {
 
-        val itemType = ItemTypeForm("", None, Some(""), "", None, None, "12345")
+        val itemType = ItemTypeForm(None, None, Some(""), "", None, None, "12345")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
 
       def assertViewDataEntered(view: Document, itemType: ItemTypeForm): Unit = {
-        view.getElementById("combinedNomenclatureCode").attr("value") must equal(itemType.combinedNomenclatureCode)
+        view.getElementById("combinedNomenclatureCode").attr("value") must equal(itemType.combinedNomenclatureCode.getOrElse(""))
         view.getElementById("descriptionOfGoods").text() must equal(itemType.descriptionOfGoods)
         view.getElementById("cusCode").attr("value") must equal(itemType.cusCode.getOrElse(""))
         view.getElementById("unDangerousGoodsCode").attr("value") must equal(itemType.unDangerousGoodsCode.getOrElse(""))
@@ -478,7 +478,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in CNC input" in {
 
-        val itemType = ItemTypeForm("12345", None, None, "", None, None, "")
+        val itemType = ItemTypeForm(Some("12345"), None, None, "", None, None, "")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
@@ -486,7 +486,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in Description input" in {
 
-        val itemType = ItemTypeForm("", None, Some(""), "Description", None, None, "")
+        val itemType = ItemTypeForm(None, None, Some(""), "Description", None, None, "")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
@@ -494,7 +494,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in CUS input" in {
 
-        val itemType = ItemTypeForm("", None, Some(""), "", Some("1234"), None, "")
+        val itemType = ItemTypeForm(None, None, Some(""), "", Some("1234"), None, "")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
@@ -502,14 +502,14 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in Statistical Value input" in {
 
-        val itemType = ItemTypeForm("", None, Some(""), "", None, None, "12345")
+        val itemType = ItemTypeForm(None, None, Some(""), "", None, None, "12345")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
 
       def assertViewDataEntered(view: Document, itemType: ItemTypeForm): Unit = {
-        view.getElementById("combinedNomenclatureCode").attr("value") must equal(itemType.combinedNomenclatureCode)
+        view.getElementById("combinedNomenclatureCode").attr("value") must equal(itemType.combinedNomenclatureCode.getOrElse(""))
         view.getElementById("descriptionOfGoods").text() must equal(itemType.descriptionOfGoods)
         view.getElementById("cusCode").attr("value") must equal(itemType.cusCode.getOrElse(""))
         view.getElementById("statisticalValue").attr("value") must equal(itemType.statisticalValue)
