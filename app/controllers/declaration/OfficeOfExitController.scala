@@ -78,7 +78,7 @@ class OfficeOfExitController @Inject()(
         (formWithErrors: Form[OfficeOfExitSupplementary]) => Future.successful(BadRequest(officeOfExitSupplementaryPage(mode, formWithErrors))),
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode)))
+            .map(_ => navigator.continueTo(nextPage(mode, request)))
       )
 
   private def saveStandardOffice(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
@@ -92,7 +92,7 @@ class OfficeOfExitController @Inject()(
         },
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode)))
+            .map(_ => navigator.continueTo(nextPage(mode, request)))
       )
 
   private def updateCache(formData: OfficeOfExitSupplementary)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
@@ -100,4 +100,12 @@ class OfficeOfExitController @Inject()(
 
   private def updateCache(formData: OfficeOfExitStandard)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData)))))
+
+  private def nextPage(mode: Mode, request: JourneyRequest[AnyContent]) =
+    request.declarationType match {
+      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
+        controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode)
+      case DeclarationType.SIMPLIFIED =>
+        controllers.declaration.routes.PreviousDocumentsController.displayPage(mode)
+    }
 }
