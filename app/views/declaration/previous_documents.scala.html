@@ -17,7 +17,6 @@
 @import controllers.declaration.routes._
 @import controllers.navigation.Navigator
 @import forms.declaration.Document
-@import forms.declaration.PreviousDocumentsData
 @import forms.declaration.Document.AllowedValues._
 @import uk.gov.hmrc.play.views.html._
 @import views.components.inputs.RadioOption
@@ -35,7 +34,7 @@
     title = Title("supplementary.previousDocuments.title", "supplementary.consignmentReferences.heading")
 ) {
 
-    @components.back_link(Navigator.backLink(PreviousDocumentsData)(request)(mode), mode)
+    @components.back_link(Navigator.backLink(Document)(request)(mode), mode)
 
     @components.error_summary(form.errors)
 

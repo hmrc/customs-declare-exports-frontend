@@ -17,14 +17,15 @@
 package views.declaration.summary
 
 import base.ExportsTestData.newUser
-import forms.Choice
 import forms.declaration.{GoodsLocation, LegalDeclaration}
+import models.DeclarationType.DeclarationType
 import models.declaration.{Container, SupplementaryDeclarationData}
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import org.jsoup.nodes.Document
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.Form
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
@@ -36,25 +37,10 @@ import views.html.declaration.summary.{summary_page, summary_page_no_data}
 class SummaryPageViewSpec extends WordSpec with MustMatchers with ExportsDeclarationBuilder with ExportsItemBuilder with Stubs with ViewMatchers {
 
   private val form: Form[LegalDeclaration] = LegalDeclaration.form()
-
-  val declaration = aDeclaration(
-    withConsignmentReferences(),
-    withDestinationCountries(),
-    withGoodsLocation(GoodsLocation("PL", "type", "id", Some("a"), Some("b"), Some("c"), Some("d"), Some("e"))),
-    withWarehouseIdentification(Some("a"), Some("b"), Some("c"), Some("d")),
-    withOfficeOfExit("id", Some("code")),
-    withContainerData(Container("id", Seq.empty)),
-    withTotalNumberOfItems(Some("123"), Some("123")),
-    withNatureOfTransaction("nature"),
-    withItem(anItem())
-  )
-  val request =
-    new JourneyRequest(new AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration)
-  val summaryPage = contentAsString(
-    new summary_page(mainTemplate)(Mode.Normal, SupplementaryDeclarationData(declaration), form)(request, stubMessages(), minimalAppConfig)
-  )
+  val declaration: ExportsDeclaration = createDeclaration()
+  val request: JourneyRequest[AnyContentAsEmpty.type] = createJourneyRequest(declaration)
+  val summaryPage: String = createPage(request, declaration)
   val summaryNoDataPage = contentAsString(new summary_page_no_data(mainTemplate)()(request, stubMessages()))
-
   val amendSummaryPage = contentAsString(
     new summary_page(mainTemplate)(Mode.Amend, SupplementaryDeclarationData(declaration), form)(request, stubMessages(), minimalAppConfig)
   )
@@ -138,27 +124,27 @@ class SummaryPageViewSpec extends WordSpec with MustMatchers with ExportsDeclara
       }
     }
 
-    "has correct main buttons" in {
+    "have correct main buttons" in {
 
       summaryPage must include("site.back")
       summaryPage must include("site.acceptAndSubmitDeclaration")
       summaryPage must include("button id=\"submit\" class=\"button\"")
     }
 
-    "has correct declaration type" in {
+    "have correct declaration type" in {
 
       summaryPage must include("supplementary.summary.declarationType.header")
       summaryPage must include("supplementary.summary.declarationType.dispatchLocation")
       summaryPage must include("supplementary.summary.declarationType.supplementaryDeclarationType")
     }
 
-    "has correct your references" in {
+    "have correct your references" in {
       summaryPage must include("supplementary.summary.yourReferences.header")
       summaryPage must include("supplementary.summary.yourReferences.ducr")
       summaryPage must include("supplementary.summary.yourReferences.lrn")
     }
 
-    "has correct parties" in {
+    "have correct parties" in {
       summaryPage must include("supplementary.summary.parties.header")
       summaryPage must include("supplementary.summary.parties.exporterId")
       summaryPage must include("supplementary.summary.parties.exporterAddress")
@@ -172,7 +158,7 @@ class SummaryPageViewSpec extends WordSpec with MustMatchers with ExportsDeclara
       summaryPage must include("supplementary.summary.parties.authorizedPartyEori")
     }
 
-    "has correct locations" in {
+    "have correct locations" in {
       summaryPage must include("declaration.summary.locations.header")
       summaryPage must include("supplementary.summary.locations.dispatchCountry")
       summaryPage must include("supplementary.summary.locations.destinationCountry")
@@ -186,15 +172,41 @@ class SummaryPageViewSpec extends WordSpec with MustMatchers with ExportsDeclara
       summaryPage must include("supplementary.summary.locations.officeOfExit")
     }
 
-    "has correct items" in {
+    "have correct items" when {
+      "on Standard journey" in {
 
-      summaryPage must include("declaration.itemType.title")
-      summaryPage must include("supplementary.summary.items.amountInvoiced")
-      summaryPage must include("supplementary.summary.items.exchangeRate")
-      summaryPage must include("supplementary.summary.items.transactionType")
+        summaryPage must include("declaration.itemType.title")
+        summaryPage must include("supplementary.summary.items.amountInvoiced")
+        summaryPage must include("supplementary.summary.items.exchangeRate")
+        summaryPage must include("supplementary.summary.items.numberOfPackages")
+        summaryPage must include("supplementary.summary.items.transactionType")
+      }
+
+      "on Supplementary journey" in {
+        val supplementaryDeclaration: ExportsDeclaration = createDeclaration(DeclarationType.SUPPLEMENTARY)
+        val supplementaryRequest: JourneyRequest[AnyContentAsEmpty.type] = createJourneyRequest(supplementaryDeclaration)
+        val supplementarySummaryPage: String = createPage(supplementaryRequest, supplementaryDeclaration)
+        supplementarySummaryPage must include("declaration.itemType.title")
+        supplementarySummaryPage must include("supplementary.summary.items.amountInvoiced")
+        supplementarySummaryPage must include("supplementary.summary.items.exchangeRate")
+        supplementarySummaryPage must include("supplementary.summary.items.numberOfPackages")
+        supplementarySummaryPage must include("supplementary.summary.items.transactionType")
+      }
+
+      "on Simplified journey" in {
+        val simplifiedDeclaration: ExportsDeclaration = createDeclaration(DeclarationType.SIMPLIFIED)
+        val simplifiedRequest: JourneyRequest[AnyContentAsEmpty.type] = createJourneyRequest(simplifiedDeclaration)
+        val simplifiedSummaryPage: String = createPage(simplifiedRequest, simplifiedDeclaration)
+
+        simplifiedSummaryPage must include("declaration.itemType.title")
+        simplifiedSummaryPage must not(include("supplementary.summary.items.amountInvoiced"))
+        simplifiedSummaryPage must not(include("supplementary.summary.items.exchangeRate"))
+        simplifiedSummaryPage must not(include("supplementary.summary.items.numberOfPackages"))
+        simplifiedSummaryPage must include("supplementary.summary.items.transactionType")
+      }
     }
 
-    "has correct transport info" in {
+    "have correct transport info" in {
 
       summaryPage must include("supplementary.transportInfo.containers.title")
       summaryPage must include("supplementary.transportInfo.containerId.title")
@@ -216,4 +228,28 @@ class SummaryPageViewSpec extends WordSpec with MustMatchers with ExportsDeclara
       amendSummaryPage must include("summary.amend.information")
     }
   }
+
+  private def createDeclaration(declarationType: DeclarationType = DeclarationType.STANDARD): ExportsDeclaration = {
+    val declaration = aDeclaration(
+      withType(declarationType),
+      withConsignmentReferences(),
+      withDestinationCountries(),
+      withGoodsLocation(GoodsLocation("PL", "type", "id", Some("a"), Some("b"), Some("c"), Some("d"), Some("e"))),
+      withWarehouseIdentification(Some("a"), Some("b"), Some("c"), Some("d")),
+      withOfficeOfExit("id", Some("code")),
+      withContainerData(Container("id", Seq.empty)),
+      withTotalNumberOfItems(Some("123"), Some("123")),
+      withNatureOfTransaction("nature"),
+      withItem(anItem())
+    )
+    declaration
+  }
+
+  private def createJourneyRequest(declaration: ExportsDeclaration) =
+    new JourneyRequest(new AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration)
+
+  private def createPage(request: JourneyRequest[AnyContentAsEmpty.type], declaration: ExportsDeclaration) =
+    contentAsString(
+      new summary_page(mainTemplate)(Mode.Normal, SupplementaryDeclarationData(declaration), form)(request, stubMessages(), minimalAppConfig)
+    )
 }

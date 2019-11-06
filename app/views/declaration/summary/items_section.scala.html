@@ -16,22 +16,27 @@
 
 @import models.declaration.Items
 @import models.viewmodels.HtmlTableRow
+@import models.DeclarationType.DeclarationType
 
-@(items: Option[Items])(implicit messages: Messages)
+@(items: Option[Items], declarationType: DeclarationType)(implicit messages: Messages)
+
+@journeysThatRequireItemInfo = @{Set(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)}
 
 @components.summary_list(Some(messages("declaration.itemType.title", 1))) {
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.items.amountInvoiced"),
-        value = items.flatMap(_.totalNumberOfItems).map(_.totalAmountInvoiced)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.items.exchangeRate"),
-        value = items.flatMap(_.totalNumberOfItems).map(_.exchangeRate)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.items.numberOfPackages"),
-        value = items.flatMap(_.totalNumberOfItems).map(_.totalPackage)
-    ))
+    @if(journeysThatRequireItemInfo.contains(declarationType)) {
+        @components.table_row_no_change_link(HtmlTableRow(
+            label = messages("supplementary.summary.items.amountInvoiced"),
+            value = items.flatMap(_.totalNumberOfItems).map(_.totalAmountInvoiced)
+        ))
+        @components.table_row_no_change_link(HtmlTableRow(
+            label = messages("supplementary.summary.items.exchangeRate"),
+            value = items.flatMap(_.totalNumberOfItems).map(_.exchangeRate)
+        ))
+        @components.table_row_no_change_link(HtmlTableRow(
+            label = messages("supplementary.summary.items.numberOfPackages"),
+            value = items.flatMap(_.totalNumberOfItems).map(_.totalPackage)
+        ))
+    }
 
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.transactionType"),

@@ -108,7 +108,7 @@
 
     @transport_containers_section(suppDecData.transportInformationContainerData)
 
-    @items_section(suppDecData.items)
+    @items_section(suppDecData.items, request.declarationType)
 
     @if(mode == Mode.Amend) {
         <br/>

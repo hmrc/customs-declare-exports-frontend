@@ -16,7 +16,7 @@
 
 package forms.declaration
 
-import forms.DeclarationFieldCompanion
+import forms.DeclarationPage
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{JsValue, Json}
@@ -27,7 +27,7 @@ case class Document(documentCategory: String, documentType: String, documentRefe
   def toJson: JsValue = Json.toJson(this)(Document.format)
 }
 
-object Document {
+object Document extends DeclarationPage {
   def fromJsonString(value: String): Option[Document] = Json.fromJson(Json.parse(value)).asOpt
 
   implicit val format = Json.format[Document]
@@ -63,7 +63,7 @@ object Document {
 
 case class PreviousDocumentsData(documents: Seq[Document])
 
-object PreviousDocumentsData extends DeclarationFieldCompanion {
+object PreviousDocumentsData {
   implicit val format = Json.format[PreviousDocumentsData]
 
   val maxAmountOfItems = 99
