@@ -16,6 +16,7 @@
 
 package forms.declaration
 
+import forms.DeclarationFieldCompanion
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{JsValue, Json}
@@ -62,7 +63,7 @@ object Document {
 
 case class PreviousDocumentsData(documents: Seq[Document])
 
-object PreviousDocumentsData {
+object PreviousDocumentsData extends DeclarationFieldCompanion {
   implicit val format = Json.format[PreviousDocumentsData]
 
   val maxAmountOfItems = 99

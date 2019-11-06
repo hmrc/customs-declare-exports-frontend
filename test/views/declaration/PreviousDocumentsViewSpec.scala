@@ -118,12 +118,20 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
         backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.NatureOfTransactionController.displayPage(Mode.Normal))
       }
 
+      "on the Supplementary journey" in {
+
+        val backButton = createView(declarationType = DeclarationType.SUPPLEMENTARY).getElementById("link-back")
+
+        backButton.text() must be("site.back")
+        backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.NatureOfTransactionController.displayPage(Mode.Normal))
+      }
+
       "on the Simplified journey" in {
 
         val backButton = createView(declarationType = DeclarationType.SIMPLIFIED).getElementById("link-back")
 
         backButton.text() must be("site.back")
-        backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage(Mode.Normal))
+        backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Normal))
       }
     }
 
