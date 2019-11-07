@@ -16,4 +16,4 @@
 
 package forms
 
-trait DeclarationFieldCompanion
+trait DeclarationPage

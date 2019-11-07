@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      0.10
+// @version      1.1
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -127,9 +127,9 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs("/customs-declare-exports/declaration/location-of-goods")) {
-        document.getElementById('typeOfLocation').value ='B';
-        document.getElementById('qualifierOfIdentification').value ='Y';
-        document.getElementById('identificationOfLocation').value ='FXT';
+        document.getElementById('typeOfLocation').value ='A';
+        document.getElementById('qualifierOfIdentification').value ='U';
+        document.getElementById('identificationOfLocation').value ='FXTFXTFXT';
         document.getElementById('additionalIdentifier').value ='123';
         selectFromAutoPredict(document.getElementById('country-container'), "United Kingdom");
         document.getElementsByClassName('button')[0].click()
@@ -219,7 +219,7 @@ function completePage() {
     }
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/add-document')) {
         document.getElementById('documentTypeCode').value ='C501';
-        document.getElementById('documentIdentifier').value ='GBAEOC71757250450281';
+        document.getElementById('documentIdentifier').value ='GBAEOC717572504502811';
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/warehouse')) {

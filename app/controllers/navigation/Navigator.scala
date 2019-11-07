@@ -18,11 +18,11 @@ package controllers.navigation
 
 import config.AppConfig
 import controllers.util.{FormAction, SaveAndReturn}
-import forms.DeclarationFieldCompanion
-import forms.declaration.BorderTransport
+import forms.DeclarationPage
+import forms.declaration.{BorderTransport, Document}
 import javax.inject.Inject
-import models.{DeclarationType, Mode}
 import models.DeclarationType._
+import models.Mode
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
 import play.api.mvc.{AnyContent, Call, Result, Results}
@@ -52,22 +52,23 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
 
 object Navigator {
 
-  val standard: PartialFunction[DeclarationFieldCompanion, Mode => Call] = {
+  val standard: PartialFunction[DeclarationPage, Mode => Call] = {
     case BorderTransport => controllers.declaration.routes.DepartureTransportController.displayPage
-    case _               => ???
+    case Document        => controllers.declaration.routes.NatureOfTransactionController.displayPage
+    case _               => throw new IllegalArgumentException("Navigator back-link route not implemented")
   }
-
-  val supplementary: PartialFunction[DeclarationFieldCompanion, Mode => Call] = {
+  val supplementary: PartialFunction[DeclarationPage, Mode => Call] = {
     case BorderTransport => controllers.declaration.routes.DepartureTransportController.displayPage
-    case _               => ???
+    case Document        => controllers.declaration.routes.NatureOfTransactionController.displayPage
+    case _               => throw new IllegalArgumentException("Navigator back-link route not implemented")
   }
-
-  val simplified: PartialFunction[DeclarationFieldCompanion, Mode => Call] = {
+  val simplified: PartialFunction[DeclarationPage, Mode => Call] = {
     case BorderTransport => controllers.declaration.routes.WarehouseIdentificationController.displayPage
-    case _               => ???
+    case Document        => controllers.declaration.routes.OfficeOfExitController.displayPage
+    case _               => throw new IllegalArgumentException("Navigator back-link route not implemented")
   }
 
-  def backLink(page: DeclarationFieldCompanion)(implicit request: JourneyRequest[_]): Mode => Call =
+  def backLink(page: DeclarationPage)(implicit request: JourneyRequest[_]): Mode => Call =
     request.declarationType match {
       case STANDARD      => standard(page)
       case SUPPLEMENTARY => supplementary(page)
