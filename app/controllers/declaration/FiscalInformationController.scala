@@ -43,7 +43,9 @@ class FiscalInformationController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode, itemId: String, fastForward: Boolean): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    if (fastForward && request.cacheModel.itemBy(itemId).exists(_.additionalFiscalReferencesData.exists(_.references.nonEmpty))) {
+    def cacheContainsFiscalReferenceData = request.cacheModel.itemBy(itemId).exists(_.additionalFiscalReferencesData.exists(_.references.nonEmpty))
+
+    if (fastForward && cacheContainsFiscalReferenceData) {
       navigator.continueTo(routes.AdditionalFiscalReferencesController.displayPage(mode, itemId))
     } else {
       request.cacheModel.itemBy(itemId).flatMap(_.fiscalInformation) match {
