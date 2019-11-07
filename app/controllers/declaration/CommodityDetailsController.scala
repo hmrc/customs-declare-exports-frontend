@@ -63,13 +63,9 @@ class CommodityDetailsController @Inject()(
   }
 
   private def updateExportsCache(itemId: String, updatedItem: CommodityDetails)(
-    implicit r: JourneyRequest[AnyContent]
+    implicit request: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => {
-      val itemList = model.items
-        .find(item => item.id.equals(itemId))
-        .map(_.copy(commodityDetails = Some(updatedItem)))
-        .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
-      model.copy(items = itemList)
-    })
+    updateExportsDeclarationSyncDirect { model =>
+      model.updatedItem(itemId, item => item.copy(commodityDetails = Some(updatedItem)))
+    }
 }
