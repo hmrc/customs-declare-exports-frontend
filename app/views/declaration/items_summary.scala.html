@@ -60,7 +60,7 @@
                 <tr id="item_@index">
                     <td id="item_@index--sequence_id" scope="row">@item.sequenceId</td>
                     <td id="item_@index--procedure_code" scope="row">@item.procedureCodes.map(_.procedureCode).getOrElse("") </td>
-                    <td id="item_@index--item_type" scope="row">@item.itemType.map(_.combinedNomenclatureCode) </td>
+                    <td id="item_@index--item_type" scope="row">@item.commodityDetails.map(_.combinedNomenclatureCode) </td>
                     <td id="item_@index--package_count" scope="row">
                         <ol type="1">@item.packageInformation.map(a =>
                             <li>{a.numberOfPackages}</li>

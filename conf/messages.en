@@ -583,11 +583,6 @@ supplementary.goodItemNumber.error = Incorrect item number
 supplementary.goodItemNumber.hint = The number assigned to the item in the declaration
 
 declaration.itemType.title = Details of declaration item {0}
-declaration.itemType.combinedNomenclatureCode.header = What is the Commodity Code for this item?
-declaration.itemType.combinedNomenclatureCode.header.hint = Up to 8 digits
-declaration.itemType.combinedNomenclatureCode.error.empty = Combined Nomenclature Commodity Code cannot be empty
-declaration.itemType.combinedNomenclatureCode.error.length = Combined Nomenclature Commodity Code cannot be longer than 8 characters
-declaration.itemType.combinedNomenclatureCode.error.specialCharacters = Combined Nomenclature Commodity Code cannot contain special characters
 declaration.itemType.taricAdditionalCodes.header = Do you need to enter any TARIC additional codes?
 declaration.itemType.taricAdditionalCodes.header.hint = This is 4 digits. If no additional code is required, leave blank
 declaration.itemType.taricAdditionalCodes.error.length = TARIC additional code must be exactly 4 characters long
@@ -603,10 +598,6 @@ declaration.itemType.nationalAdditionalCode.error.maxAmount = You cannot add mor
 declaration.itemType.nationalAdditionalCode.error.duplicate = National Additional Codes cannot contain duplicates
 declaration.itemType.nationalAdditionalCode.add.hint = Add National Additional Code
 declaration.itemType.nationalAdditionalCode.remove.hint = Remove National Additional Code {0}
-declaration.itemType.description.header = Enter the trade description of the goods
-declaration.itemType.description.header.hint = Include information on size, weight or other physical criteria where this is required by the commodity code
-declaration.itemType.description.error.empty = Description cannot be empty
-declaration.itemType.description.error.length = Description cannot be longer than 280 characters
 declaration.itemType.cusCode.header = What is the CUS Code for this item?
 declaration.itemType.cusCode.header.hint = A customs union and statistics number (CUS code) is required for chemicals classified in chapters 28, 29 and some in chapter 38 of the UK Trade Tariff. You can find this using the <a href="https://ec.europa.eu/taxation_customs/dds2/ecics/chemicalsubstance_consultation.jsp" target="blank">ECICS chemical substance information tool.</a>
 declaration.itemType.cusCode.error.length = CUS Code must be exactly 8 characters long
@@ -620,6 +611,24 @@ declaration.itemType.statisticalValue.header.hint = The approximate value of the
 declaration.itemType.statisticalValue.error.empty = The statistical value cannot be empty
 declaration.itemType.statisticalValue.error.length = Entered statistical value is too long
 declaration.itemType.statisticalValue.error.wrongFormat = Format of this value is incorrect
+
+declaration.commodityDetails.title = Commodity details
+declaration.commodityDetails.combinedNomenclatureCode.header = What is the commodity code?
+declaration.commodityDetails.combinedNomenclatureCode.header.hint = A commodity code is an eight digit number specifically allocated to goods to classify them when moved outside the EU.  For example, 12345678.
+declaration.commodityDetails.combinedNomenclatureCode.error.empty = Commodity code cannot be empty
+declaration.commodityDetails.combinedNomenclatureCode.error.length = Enter a valid commodity code
+declaration.commodityDetails.combinedNomenclatureCode.error.specialCharacters = Commodity code cannot contain special characters
+declaration.commodityDetails.description.header = Describe the goods
+declaration.commodityDetails.description.header.hint = Try to be as specific as you can. For example, 'Copper pipe 15mm x 3m'
+declaration.commodityDetails.description.error.empty = Description cannot be empty
+declaration.commodityDetails.description.error.length = Description cannot be longer than 280 characters
+declaration.commodityDetails.how.header = How do I find a commodity code?
+declaration.commodityDetails.how.step1 = Go to the <a href='https://www.gov.uk/trade-tariff' target='_blank'>UK Trade Tariff</a>.
+declaration.commodityDetails.how.step2 = Type your goods into the search bar. It will present you with multiple options. Select the one that most closely resembles your goods.
+declaration.commodityDetails.how.step3 = This will take you to a table with more options. Select 'open all headings' (top left of the table) and browse through the list to find the description that most closely resembles your goods.
+declaration.commodityDetails.how.step4 = Keep selecting options until you have a full ten-digit number in the right-hand column. (Note, at this point it will tell you if the goods require a supplementary unit in the column next to it).
+declaration.commodityDetails.how.step5 = This number is your commodity code. Click on it and click on the exports tab halfway down the page. This will give you specific information such as licences, quota tariff, and CUS codes.
+declaration.commodityDetails.how.summary = It is important to get it right. If you need help confirming your commodity code, you can contact the <a href='https://www.gov.uk/guidance/ask-hmrc-for-advice-on-classifying-your-goods' target='_blank'>classification team</a>.
 
 supplementary.previousDocuments = Previous documents
 supplementary.previousDocuments.title = Add any documents or MUCRs and DUCRs to this declaration

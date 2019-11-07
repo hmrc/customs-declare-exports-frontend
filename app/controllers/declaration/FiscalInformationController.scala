@@ -22,7 +22,6 @@ import forms.declaration.FiscalInformation
 import forms.declaration.FiscalInformation.form
 import javax.inject.Inject
 import models.Mode
-import models.declaration.ExportItem
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -43,11 +42,14 @@ class FiscalInformationController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.itemBy(itemId) match {
-      case Some(ExportItem(_, _, _, Some(fiscalInformation), _, _, _, _, _, _)) =>
-        Ok(fiscalInformationPage(mode, itemId, form().fill(fiscalInformation)))
-      case response => Ok(fiscalInformationPage(mode, itemId, form()))
+  def displayPage(mode: Mode, itemId: String, fastForward: Boolean): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    if (fastForward && request.cacheModel.itemBy(itemId).exists(_.additionalFiscalReferencesData.exists(_.references.nonEmpty))) {
+      navigator.continueTo(routes.AdditionalFiscalReferencesController.displayPage(mode, itemId))
+    } else {
+      request.cacheModel.itemBy(itemId).flatMap(_.fiscalInformation) match {
+        case Some(fiscalInformation) => Ok(fiscalInformationPage(mode, itemId, form().fill(fiscalInformation)))
+        case _                       => Ok(fiscalInformationPage(mode, itemId, form()))
+      }
     }
   }
 
@@ -64,7 +66,7 @@ class FiscalInformationController @Inject()(
               }
             case FiscalInformation.AllowedFiscalInformationAnswers.no =>
               updateCacheForNo(itemId, formData) map { _ =>
-                navigator.continueTo(routes.ItemTypeController.displayPage(mode, itemId))
+                navigator.continueTo(routes.CommodityDetailsController.displayPage(mode, itemId))
               }
         }
       )

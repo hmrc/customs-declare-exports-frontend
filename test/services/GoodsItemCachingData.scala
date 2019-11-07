@@ -57,10 +57,8 @@ trait GoodsItemCachingData {
     DocumentWriteOff(measurementUnit = Some(createRandomAlphanumericString(4)), documentQuantity = Some(BigDecimal(123)))
 
   def createItemType(): ItemType = ItemType(
-    Some(createRandomAlphanumericString(8)),
     getDataSeq(Random.nextInt(10), createRandomAlphanumericString, 4),
     getDataSeq(Random.nextInt(10), createRandomAlphanumericString, 4),
-    createRandomString(70),
     Some(createRandomAlphanumericString(8)),
     Some(createRandomAlphanumericString(4)),
     decimalString()

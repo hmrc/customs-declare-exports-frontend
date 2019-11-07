@@ -212,10 +212,8 @@ object SupplementaryDeclarationTestData {
         sequenceId = 1,
         itemType = Some(
           ItemType(
-            combinedNomenclatureCode = Some("classificationsId"),
             taricAdditionalCodes = Seq("taricAdditionalCodes"),
             nationalAdditionalCodes = Seq("nationalAdditionalCodes"),
-            descriptionOfGoods = "commodityDescription",
             cusCode = Some("cusCode"),
             unDangerousGoodsCode = Some("999"),
             statisticalValue = "100"

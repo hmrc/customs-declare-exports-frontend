@@ -18,10 +18,8 @@ package views.declaration.spec
 
 import base.Injector
 import org.jsoup.nodes.Document
-import play.api.i18n.{Messages, MessagesApi}
 import org.scalatest.matchers.{BeMatcher, MatchResult}
 import play.api.i18n.{Lang, Messages, MessagesApi}
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.{FakeRequest, Helpers}
 import unit.base.UnitSpec
@@ -35,6 +33,9 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
   implicit val messages: Messages = Helpers.stubMessages()
 
   val realMessagesApi = UnitViewSpec.realMessagesApi
+
+  def validatedMessages(implicit request: Request[_]): Messages =
+    new AllMessageKeysAreMandatoryMessages(realMessagesApi.preferred(request))
 
   def checkErrorsSummary(view: Document) = {
     view.getElementById("error-summary-heading").text() must be("error.summary.title")
@@ -65,4 +66,27 @@ object MessagesKeyMatcher {
 
 object UnitViewSpec extends Injector {
   val realMessagesApi: MessagesApi = instanceOf[MessagesApi]
+}
+
+/*
+    Fails the test if a view is configured with a message key that doesnt exist in the messages file
+ */
+private class AllMessageKeysAreMandatoryMessages(msg: Messages) extends Messages {
+  override def messages: Messages = msg.messages
+
+  override def lang: Lang = msg.lang
+
+  override def apply(key: String, args: Any*): String =
+    if (msg.isDefinedAt(key))
+      msg.apply(key, args: _*)
+    else throw new AssertionError(s"Message Key is not configured for {$key}")
+
+  override def apply(keys: Seq[String], args: Any*): String =
+    if (keys.exists(key => !msg.isDefinedAt(key)))
+      msg.apply(keys, args)
+    else throw new AssertionError(s"Message Key is not configured for {$keys}")
+
+  override def translate(key: String, args: Seq[Any]): Option[String] = msg.translate(key, args)
+
+  override def isDefinedAt(key: String): Boolean = msg.isDefinedAt(key)
 }

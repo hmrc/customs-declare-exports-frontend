@@ -18,7 +18,7 @@ package views.declaration
 
 import base.Injector
 import controllers.declaration.routes
-import forms.declaration.PackageInformation
+import forms.declaration.{CommodityDetails, PackageInformation}
 import models.Mode
 import models.declaration.{ExportItem, ItemType, ProcedureCodesData}
 import org.jsoup.nodes.Document
@@ -85,14 +85,16 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
               "id2",
               sequenceId = 2,
               procedureCodes = Some(ProcedureCodesData(Some("procedure-code2"), Seq.empty)),
-              itemType = Some(ItemType(Some("item-type2"), Seq.empty, Seq.empty, "", None, None, "")),
+              itemType = Some(ItemType(Seq.empty, Seq.empty, None, None, "")),
+              commodityDetails = Some(CommodityDetails(Some("item-type2"), "")),
               packageInformation = List(PackageInformation("", 2, ""))
             ),
             ExportItem(
               "id1",
               sequenceId = 1,
               procedureCodes = Some(ProcedureCodesData(Some("procedure-code1"), Seq.empty)),
-              itemType = Some(ItemType(Some("item-type1"), Seq.empty, Seq.empty, "", None, None, "")),
+              itemType = Some(ItemType(Seq.empty, Seq.empty, None, None, "")),
+              commodityDetails = Some(CommodityDetails(Some("item-type1"), "")),
               packageInformation = List(PackageInformation("", 1, ""))
             )
           )

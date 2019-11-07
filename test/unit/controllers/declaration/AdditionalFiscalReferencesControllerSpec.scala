@@ -228,7 +228,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
           controller.saveReferences(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.ItemTypeController.displayPage(Mode.Normal, item.id)
+        thePageNavigatedTo mustBe routes.CommodityDetailsController.displayPage(Mode.Normal, item.id)
       }
 
       "user save correct data without new item" in new SetUp {
@@ -246,7 +246,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
           controller.saveReferences(Mode.Normal, itemCacheData.id)(postRequestAsFormUrlEncoded(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.ItemTypeController.displayPage(Mode.Normal, "itemId")
+        thePageNavigatedTo mustBe routes.CommodityDetailsController.displayPage(Mode.Normal, "itemId")
       }
 
       "user remove existing item" in new SetUp {

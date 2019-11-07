@@ -67,7 +67,7 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Ad
       val backButton = view.getElementById("link-back")
 
       backButton.text() mustBe backCaption
-      backButton must haveHref(controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId))
+      backButton must haveHref(controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId, fastForward = false))
     }
 
     "display 'Save and continue' button" in {

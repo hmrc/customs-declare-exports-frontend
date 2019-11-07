@@ -77,7 +77,7 @@
     title = Title("declaration.additionalFiscalReferences.title", "declaration.fiscalInformation.header")
 ) {
 
-    @components.back_link(routes.FiscalInformationController.displayPage(mode, itemId), mode)
+    @components.back_link(routes.FiscalInformationController.displayPage(mode, itemId, fastForward = false), mode)
 
     @components.error_summary(form.errors)
 

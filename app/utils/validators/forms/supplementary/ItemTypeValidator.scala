@@ -17,11 +17,10 @@
 package utils.validators.forms.supplementary
 
 import forms.declaration.ItemTypeForm._
-import models.DeclarationType
 import models.declaration.ItemType
 import models.requests.JourneyRequest
 import play.api.data.Forms.{optional, seq, text}
-import play.api.data.{Form, Forms, Mapping}
+import play.api.data.{Form, Forms}
 import play.api.mvc.AnyContent
 import services.NationalAdditionalCode
 import utils.validators.forms.FieldValidator._
@@ -29,12 +28,10 @@ import utils.validators.forms.{Invalid, Valid, ValidationResult, Validator}
 
 object ItemTypeValidator extends Validator[ItemType] {
 
-  private val combinedNomenclatureCodeMaxLength = 8
   private val taricAdditionalCodeLength = 4
   private val taricAdditionalCodesMaxAmount = 99
   private val nationalAdditionalCodeMaxLength = 4
   private val nationalAdditionalCodesMaxAmount = 99
-  private val descriptionOfGoodsMaxLength = 280
   private val cusCodeLength = 8
   private val unDangerousGoodsCodeLength = 4
   private val statisticalValueMaxLength = 15
@@ -50,14 +47,6 @@ object ItemTypeValidator extends Validator[ItemType] {
       .fillAndValidate(element)
       .fold[ValidationResult](formWithErrors => Invalid(formWithErrors.errors), _ => Valid)
 
-  private def mappingCombinedNomenclatureCode(implicit request: JourneyRequest[AnyContent]): Mapping[Option[String]] =
-    optional(
-      text()
-        .verifying("declaration.itemType.combinedNomenclatureCode.error.empty", when(request.declarationType != DeclarationType.SIMPLIFIED)(nonEmpty))
-        .verifying("declaration.itemType.combinedNomenclatureCode.error.length", isEmpty or noLongerThan(combinedNomenclatureCodeMaxLength))
-        .verifying("declaration.itemType.combinedNomenclatureCode.error.specialCharacters", isEmpty or isAlphanumeric)
-    ).verifying("declaration.itemType.combinedNomenclatureCode.error.empty", when(request.declarationType != DeclarationType.SIMPLIFIED)(isPresent))
-
   private val mappingTARICAdditionalCode = seq(
     text()
       .verifying("declaration.itemType.taricAdditionalCodes.error.length", hasSpecificLength(taricAdditionalCodeLength))
@@ -70,10 +59,6 @@ object ItemTypeValidator extends Validator[ItemType] {
       .verifying("declaration.itemType.nationalAdditionalCode.error.invalid", isContainedIn(NationalAdditionalCode.all.map(_.value)))
   ).verifying("declaration.itemType.nationalAdditionalCode.error.maxAmount", codes => codes.size <= nationalAdditionalCodesMaxAmount)
     .verifying("declaration.itemType.nationalAdditionalCode.error.duplicate", areAllElementsUnique)
-
-  private val mappingDescriptionOfGoods = text()
-    .verifying("declaration.itemType.description.error.empty", nonEmpty)
-    .verifying("declaration.itemType.description.error.length", isEmpty or noLongerThan(descriptionOfGoodsMaxLength))
 
   private val mappingCUSCode = optional(
     text()
@@ -99,10 +84,8 @@ object ItemTypeValidator extends Validator[ItemType] {
     )
 
   private val addValidation = Forms.mapping(
-    combinedNomenclatureCodeKey -> optional(text()),
     taricAdditionalCodeKey -> mappingTARICAdditionalCode,
     nationalAdditionalCodeKey -> mappingNationalAdditionalCode,
-    descriptionOfGoodsKey -> text(),
     cusCodeKey -> optional(text()),
     unDangerousGoodsCodeKey -> optional(text()),
     statisticalValueKey -> text()
@@ -110,10 +93,8 @@ object ItemTypeValidator extends Validator[ItemType] {
 
   private def submitValidation(implicit request: JourneyRequest[AnyContent]) =
     Forms.mapping(
-      combinedNomenclatureCodeKey -> mappingCombinedNomenclatureCode,
       taricAdditionalCodeKey -> mappingTARICAdditionalCode,
       nationalAdditionalCodeKey -> mappingNationalAdditionalCode,
-      descriptionOfGoodsKey -> mappingDescriptionOfGoods,
       cusCodeKey -> mappingCUSCode,
       unDangerousGoodsCodeKey -> mappingUNDangerousGoodsCode,
       statisticalValueKey -> mappingStatisticalValue
