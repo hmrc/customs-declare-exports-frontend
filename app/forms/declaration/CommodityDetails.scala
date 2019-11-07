@@ -18,8 +18,8 @@ package forms.declaration
 import forms.DeclarationFieldCompanion
 import models.DeclarationType
 import models.DeclarationType.DeclarationType
-import play.api.data.Forms.{optional, text}
-import play.api.data.{Form, Forms, Mapping}
+import play.api.data.Forms.{mapping, optional, text}
+import play.api.data.{Form, Mapping}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
@@ -31,8 +31,6 @@ object CommodityDetails extends DeclarationFieldCompanion {
 
   val combinedNomenclatureCodeKey = "combinedNomenclatureCode"
   val descriptionOfGoodsKey = "descriptionOfGoods"
-
-  val id = "CommodityDetails"
 
   private val combinedNomenclatureCodeMaxLength = 8
   private val descriptionOfGoodsMaxLength = 280
@@ -58,12 +56,12 @@ object CommodityDetails extends DeclarationFieldCompanion {
     .verifying("declaration.commodityDetails.description.error.length", isEmpty or noLongerThan(descriptionOfGoodsMaxLength))
 
   private val mappingRequiredCode: Mapping[CommodityDetails] =
-    Forms.mapping(combinedNomenclatureCodeKey -> mappingCombinedNomenclatureCodeRequired, descriptionOfGoodsKey -> mappingDescriptionOfGoods)(
+    mapping(combinedNomenclatureCodeKey -> mappingCombinedNomenclatureCodeRequired, descriptionOfGoodsKey -> mappingDescriptionOfGoods)(
       CommodityDetails.apply
     )(CommodityDetails.unapply)
 
   private val mappingOptionalCode: Mapping[CommodityDetails] =
-    Forms.mapping(combinedNomenclatureCodeKey -> mappingCombinedNomenclatureCodeOptional, descriptionOfGoodsKey -> mappingDescriptionOfGoods)(
+    mapping(combinedNomenclatureCodeKey -> mappingCombinedNomenclatureCodeOptional, descriptionOfGoodsKey -> mappingDescriptionOfGoods)(
       CommodityDetails.apply
     )(CommodityDetails.unapply)
 

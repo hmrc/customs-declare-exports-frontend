@@ -68,9 +68,6 @@ object UnitViewSpec extends Injector {
   val realMessagesApi: MessagesApi = instanceOf[MessagesApi]
 }
 
-/*
-    Fails the test if a view is configured with a message key that doesnt exist in the messages file
- */
 private class AllMessageKeysAreMandatoryMessages(msg: Messages) extends Messages {
   override def messages: Messages = msg.messages
 
