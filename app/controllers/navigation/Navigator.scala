@@ -62,8 +62,9 @@ object Navigator {
     case Document        => controllers.declaration.routes.NatureOfTransactionController.displayPage
     case _               => throw new IllegalArgumentException("Navigator back-link route not implemented")
   }
+
   val simplified: PartialFunction[DeclarationPage, Mode => Call] = {
-    case BorderTransport => controllers.declaration.routes.WarehouseIdentificationController.displayPage
+    case BorderTransport => controllers.declaration.routes.WarehouseDetailsController.displayPage
     case Document        => controllers.declaration.routes.OfficeOfExitController.displayPage
     case _               => throw new IllegalArgumentException("Navigator back-link route not implemented")
   }

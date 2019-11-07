@@ -31,30 +31,30 @@ import views.html.declaration.warehouse_details
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class WarehouseIdentificationController @Inject()(
+class WarehouseDetailsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
-  warehouseIdentificationPage: warehouse_details
+  warehouseDetailsPage: warehouse_details
 )(implicit ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   import forms.declaration.WarehouseDetails._
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.locations.warehouseIdentification match {
-      case Some(data) => Ok(warehouseIdentificationPage(mode, form().fill(data)))
-      case _ => Ok(warehouseIdentificationPage(mode, form()))
+      case Some(data) => Ok(warehouseDetailsPage(mode, form().fill(data)))
+      case _          => Ok(warehouseDetailsPage(mode, form()))
     }
   }
 
-  def saveInput(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def saveWarehouse(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[WarehouseDetails]) => Future.successful(BadRequest(warehouseIdentificationPage(mode, formWithErrors))),
+        (formWithErrors: Form[WarehouseDetails]) => Future.successful(BadRequest(warehouseDetailsPage(mode, formWithErrors))),
         form => {
           val nextStep = request.cacheModel.`type` match {
             case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>

@@ -64,7 +64,7 @@ class ItemsSummaryController @Inject()(
       case SaveAndContinue if incorrectItems.nonEmpty =>
         Future.successful(BadRequest(itemsSummaryPage(mode, request.cacheModel.items.toList, incorrectItems)))
       case SaveAndReturn | SaveAndContinue =>
-        Future.successful(navigator.continueTo(controllers.declaration.routes.WarehouseIdentificationController.displayPage(mode)))
+        Future.successful(navigator.continueTo(controllers.declaration.routes.WarehouseDetailsController.displayPage(mode)))
     }
   }
 

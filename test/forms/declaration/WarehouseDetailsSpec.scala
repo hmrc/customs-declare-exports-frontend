@@ -22,41 +22,39 @@ import helpers.views.declaration.WarehouseIdentificationMessages
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import unit.base.UnitSpec
 
-class WarehouseIdentificationSpec extends UnitSpec with WarehouseIdentificationMessages {
+class WarehouseDetailsSpec extends UnitSpec with WarehouseIdentificationMessages {
 
-  import WarehouseIdentification._
+  import WarehouseDetails._
 
   "Warehouse Identification Form" should {
     "validate identification type" in {
-      val incorrectWarehouseIdentification: JsValue =
+      val incorrectWarehouseDetails: JsValue =
         JsObject(Map("identificationType" -> JsString(TestHelper.createRandomAlphanumericString(2))))
 
-      form().bind(incorrectWarehouseIdentification).errors.map(_.message) must contain(identificationTypeError)
+      form().bind(incorrectWarehouseDetails).errors.map(_.message) must contain(identificationTypeError)
     }
 
     "validate identification type present and number missing" in {
 
-      val incorrectWarehouseIdentification: JsValue =
-        JsObject(
-          Map("identificationType" -> JsString(WarehouseIdentification.IdentifierType.PUBLIC_CUSTOMS_1), "identificationNumber" -> JsString(""))
-        )
+      val incorrectWarehouseDetails: JsValue =
+        JsObject(Map("identificationType" -> JsString(WarehouseDetails.IdentifierType.PUBLIC_CUSTOMS_1), "identificationNumber" -> JsString("")))
 
-      form().bind(incorrectWarehouseIdentification).errors.map(_.message) must contain(identificationTypeNoNumber)
+      form().bind(incorrectWarehouseDetails).errors.map(_.message) must contain(identificationTypeNoNumber)
     }
 
     "validate identification number present and type missing" in {
 
-      val incorrectWarehouseIdentification: JsValue =
+      val incorrectWarehouseDetails: JsValue =
         JsObject(Map("identificationType" -> JsString(""), "identificationNumber" -> JsString(TestHelper.createRandomAlphanumericString(2))))
 
-      form().bind(incorrectWarehouseIdentification).errors.map(_.message) must contain(identificationNumberNoType)
+      form().bind(incorrectWarehouseDetails).errors.map(_.message) must contain(identificationNumberNoType)
     }
 
     "validate identification number - more than 35 characters" in {
-      val incorrectWarehouseIdentification: JsValue =
+      val incorrectWarehouseDetails: JsValue =
         JsObject(Map("identificationNumber" -> JsString(TestHelper.createRandomAlphanumericString(36))))
 
-      form().bind(incorrectWarehouseIdentification).errors.map(_.message) must contain(identificationNumberError)
+      form().bind(incorrectWarehouseDetails).errors.map(_.message) must contain(identificationNumberError)
     }
 
     "validate supervising customs office - invalid" in {
@@ -78,16 +76,11 @@ class WarehouseIdentificationSpec extends UnitSpec with WarehouseIdentificationM
   }
 }
 
-object WarehouseIdentificationSpec {
-  private val warehouseTypeCode = "R"
-  private val warehouseId = "1234567GB"
-  private val office = "Office"
-  private val inlandModeOfTransportCode = Maritime
-
-  val correctWarehouseIdentification =
-    WarehouseIdentification(Some(office), Some(warehouseTypeCode), Some(warehouseId), Some(inlandModeOfTransportCode))
-  val emptyWarehouseIdentification = WarehouseIdentification(None, None, None, None)
-  val correctWarehouseIdentificationJSON: JsValue =
+object WarehouseDetailsSpec {
+  val correctWarehouseDetails =
+    WarehouseDetails(Some(office), Some(warehouseTypeCode), Some(warehouseId), Some(inlandModeOfTransportCode))
+  val emptyWarehouseDetails = WarehouseDetails(None, None, None, None)
+  val correctWarehouseDetailsJSON: JsValue =
     JsObject(
       Map(
         "supervisingCustomsOffice" -> JsString("12345678"),
@@ -96,7 +89,7 @@ object WarehouseIdentificationSpec {
         "inlandModeOfTransportCode" -> JsString(Rail)
       )
     )
-  val emptyWarehouseIdentificationJSON: JsValue =
+  val emptyWarehouseDetailsJSON: JsValue =
     JsObject(
       Map(
         "supervisingCustomsOffice" -> JsString(""),
@@ -105,4 +98,8 @@ object WarehouseIdentificationSpec {
         "inlandModeOfTransportCode" -> JsString("")
       )
     )
+  private val warehouseTypeCode = "R"
+  private val warehouseId = "1234567GB"
+  private val office = "Office"
+  private val inlandModeOfTransportCode = Maritime
 }
