@@ -67,6 +67,8 @@ trait Stubs {
       |draft.timeToLive=1d
       |list-of-available-journeys = "SMP,STD,CAN,SUB,CON"
       |microservice.services.features.use-improved-error-messages=true
+      |urls.tradeTariff=tradeTariff
+      |urls.classificationHelp=classificationHelp
     """.stripMargin)
 
   val minimalConfiguration = Configuration(minimalConfig)

@@ -18,16 +18,12 @@
 @import controllers.util.SaveAndContinue
 @import forms.Choice.AllowedChoiceValues
 @import forms.declaration.CommodityDetails
-@import forms.declaration.CommodityDetails._
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.play.views.html._
-@import services.NationalAdditionalCode
-@import services.view.AutoCompleteItem
-@import forms.declaration.AdditionalFiscalReference
-@import models.declaration.ExportItem
 @import views.Title
+@import config.AppConfig
 
-@this(main_template: views.html.main_template)
+@this(main_template: views.html.main_template, appConfig: AppConfig)
 
 @(
         mode: Mode,
@@ -74,13 +70,18 @@
             </summary>
             <div class="grey-border-left">
                 <ol class="list list-number">
-                    <li>@Html(messages("declaration.commodityDetails.how.step1"))</li>
-                    <li>@Html(messages("declaration.commodityDetails.how.step2"))</li>
-                    <li>@Html(messages("declaration.commodityDetails.how.step3"))</li>
-                    <li>@Html(messages("declaration.commodityDetails.how.step4"))</li>
-                    <li>@Html(messages("declaration.commodityDetails.how.step5"))</li>
+                    <li>@messages("declaration.commodityDetails.how.step1")
+                        <a href="@appConfig.tradeTariffUrl" target="_blank">@messages("declaration.commodityDetails.how.tradeTariff")</a>
+                    </li>
+                    <li>@messages("declaration.commodityDetails.how.step2")</li>
+                    <li>@messages("declaration.commodityDetails.how.step3")</li>
+                    <li>@messages("declaration.commodityDetails.how.step4")</li>
+                    <li>@messages("declaration.commodityDetails.how.step5")</li>
                 </ol>
-                <p>@Html(messages("declaration.commodityDetails.how.summary"))</p>
+                <p>
+                    @messages("declaration.commodityDetails.how.summary")
+                    <a href="@appConfig.classificationHelpUrl" target="_blank">@messages("declaration.commodityDetails.how.classificationTeam")</a>
+                </p>
             </div>
         </details>
 

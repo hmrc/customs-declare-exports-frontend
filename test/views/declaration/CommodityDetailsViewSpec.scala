@@ -18,9 +18,9 @@ package views.declaration
 
 import forms.declaration.CommodityDetails
 import helpers.views.declaration.CommonMessages
+import models.DeclarationType.DeclarationType
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
-import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -30,22 +30,30 @@ import views.tags.ViewTest
 @ViewTest
 class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages {
 
-  private val page = new commodity_details(mainTemplate)
-  private val form: Form[CommodityDetails] = CommodityDetails.form(DeclarationType.STANDARD)
+  private val page = new commodity_details(mainTemplate, minimalAppConfig)
   private val itemId = "item1"
   private val realMessages = validatedMessages
-  private def createView(mode: Mode = Mode.Normal, itemId: String = itemId, form: Form[CommodityDetails] = form): Document =
-    page(mode, itemId, form)(journeyRequest(), realMessages)
+  private def createView(mode: Mode = Mode.Normal, itemId: String = itemId, declarationType: DeclarationType = DeclarationType.STANDARD): Document =
+    page(mode, itemId, CommodityDetails.form(declarationType))(journeyRequest(), realMessages)
 
-  "Commodity Details View on empty page" should {
+  def commodityDetailsView(declarationType: DeclarationType): Unit = {
+    val view = createView(declarationType = declarationType)
 
     "display page title" in {
 
-      createView().getElementById("title").text() mustBe realMessages("declaration.commodityDetails.title")
+      view.getElementById("title").text() mustBe realMessages("declaration.commodityDetails.title")
+    }
+
+    "display commodity code field" in {
+      view.getElementById(CommodityDetails.combinedNomenclatureCodeKey).attr("value") mustBe empty
+    }
+
+    "display description field" in {
+      view.getElementById(CommodityDetails.descriptionOfGoodsKey).attr("value") mustBe empty
     }
 
     "display 'Back' button that links to 'Package Information' page" in {
-      val backButton = createView().getElementById("link-back")
+      val backButton = view.getElementById("link-back")
 
       backButton.getElementById("link-back") must haveHref(
         controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId)
@@ -54,10 +62,20 @@ class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
 
     "display 'Save and continue' button on page" in {
 
-      val view = createView()
-
       val saveButton = view.select("#submit")
       saveButton.text() mustBe realMessages(saveAndContinueCaption)
+    }
+  }
+
+  "Commodity Details View on empty page" when {
+    "we are on Standard journey" should {
+      behave like commodityDetailsView(DeclarationType.STANDARD)
+    }
+    "we are on Supplementary journey" should {
+      behave like commodityDetailsView(DeclarationType.SUPPLEMENTARY)
+    }
+    "we are on Simplified journey" should {
+      behave like commodityDetailsView(DeclarationType.SIMPLIFIED)
     }
   }
 }
