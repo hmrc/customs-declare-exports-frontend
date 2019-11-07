@@ -18,8 +18,8 @@ package views.declaration
 
 import base.Injector
 import forms.declaration.BorderTransport
-import models.{DeclarationType, Mode}
 import models.requests.JourneyRequest
+import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -35,9 +35,6 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
 
   private val page = new border_transport(mainTemplate)
   private val form: Form[BorderTransport] = BorderTransport.form()
-
-  private def createView(mode: Mode = Mode.Normal, form: Form[BorderTransport] = form, request: JourneyRequest[_] = journeyRequest()): Document =
-    page(mode, form)(request, stubMessages())
 
   def borderView(view: Document): Unit = {
     "have proper messages for labels" in {
@@ -187,6 +184,9 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
       }
     }
 
+  private def createView(mode: Mode = Mode.Normal, form: Form[BorderTransport] = form, request: JourneyRequest[_] = journeyRequest()): Document =
+    page(mode, form)(request, stubMessages())
+
   "TransportDetails View" when {
     "we are on Standard journey" should {
       val requrestOnStandard = journeyRequest(DeclarationType.STANDARD)
@@ -222,14 +222,12 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
     "we are on Simplified journey" should {
       val requestOnSimplified = journeyRequest(DeclarationType.SIMPLIFIED)
       val view = createView(request = requestOnSimplified)
-      "display 'Back' button that links to 'Warehouse' pagfe" in {
+      "display 'Back' button that links to 'Warehouse' page" in {
         val viewForStandard = view
         val backButton = viewForStandard.getElementById("link-back")
 
         backButton.text() mustBe "site.back"
-        backButton.getElementById("link-back") must haveHref(
-          controllers.declaration.routes.WarehouseIdentificationController.displayPage(Mode.Normal)
-        )
+        backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.WarehouseDetailsController.displayPage(Mode.Normal))
       }
       behave like borderView(view)
       behave like havingMeansOfTransport(view)

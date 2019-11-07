@@ -24,10 +24,9 @@ import forms.declaration.DispatchLocation.AllowedDispatchLocations.OutsideEU
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.officeOfExit.OfficeOfExit
-import forms.{Choice, Ducr, Lrn}
+import forms.{Ducr, Lrn}
 import models.DeclarationStatus.DeclarationStatus
 import models.DeclarationType.DeclarationType
 import models.declaration._
@@ -36,11 +35,9 @@ import models.{DeclarationStatus, DeclarationType, ExportsDeclaration}
 //noinspection ScalaStyle
 trait ExportsDeclarationBuilder {
 
+  private type ExportsDeclarationModifier = ExportsDeclaration => ExportsDeclaration
   protected val DUCR = "5GB123456789000-123ABC456DEFIIIII"
   protected val LRN = Lrn("FG7676767889")
-
-  private def uuid: String = UUID.randomUUID().toString
-
   private val modelWithDefaults: ExportsDeclaration = ExportsDeclaration(
     uuid,
     status = DeclarationStatus.COMPLETE,
@@ -50,17 +47,15 @@ trait ExportsDeclarationBuilder {
     sourceId = None
   )
 
-  private type ExportsDeclarationModifier = ExportsDeclaration => ExportsDeclaration
-
   def aDeclaration(modifiers: ExportsDeclarationModifier*): ExportsDeclaration =
     modifiers.foldLeft(modelWithDefaults)((current, modifier) => modifier(current))
 
   def aDeclarationAfter(declaration: ExportsDeclaration, modifiers: ExportsDeclarationModifier*): ExportsDeclaration =
     modifiers.foldLeft(declaration)((current, modifier) => modifier(current))
 
-  // ************************************************* Builders ********************************************************
-
   def withId(id: String = uuid): ExportsDeclarationModifier = _.copy(id = id)
+
+  // ************************************************* Builders ********************************************************
 
   def withStatus(status: DeclarationStatus): ExportsDeclarationModifier = _.copy(status = status)
 
@@ -114,6 +109,7 @@ trait ExportsDeclarationBuilder {
       m.copy(locations = location)
     }
   }
+
   def withoutItems(): ExportsDeclarationModifier = _.copy(items = Set.empty)
 
   def withItem(item: ExportItem = ExportItem(uuid)): ExportsDeclarationModifier =
@@ -124,6 +120,8 @@ trait ExportsDeclarationBuilder {
 
   def withItems(count: Int): ExportsDeclarationModifier =
     cache => cache.copy(items = cache.items ++ (1 to count).map(_ => ExportItem(id = uuid)).toSet)
+
+  private def uuid: String = UUID.randomUUID().toString
 
   def withoutExporterDetails(): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(exporterDetails = None))
@@ -254,18 +252,16 @@ trait ExportsDeclarationBuilder {
   def withoutWarehouseIdentification(): ExportsDeclarationModifier =
     cache => cache.copy(locations = cache.locations.copy(warehouseIdentification = None))
 
-  def withWarehouseIdentification(warehouseIdentification: WarehouseIdentification): ExportsDeclarationModifier =
-    cache => cache.copy(locations = cache.locations.copy(warehouseIdentification = Some(warehouseIdentification)))
-
   def withWarehouseIdentification(
     supervisingCustomsOffice: Option[String] = None,
     identificationType: Option[String] = None,
     identificationNumber: Option[String] = None,
     inlandModeOfTransportCode: Option[String] = None
   ): ExportsDeclarationModifier =
-    withWarehouseIdentification(
-      WarehouseIdentification(supervisingCustomsOffice, identificationType, identificationNumber, inlandModeOfTransportCode)
-    )
+    withWarehouseIdentification(WarehouseDetails(supervisingCustomsOffice, identificationType, identificationNumber, inlandModeOfTransportCode))
+
+  def withWarehouseIdentification(warehouseDetails: WarehouseDetails): ExportsDeclarationModifier =
+    cache => cache.copy(locations = cache.locations.copy(warehouseIdentification = Some(warehouseDetails)))
 
   def withoutOfficeOfExit(): ExportsDeclarationModifier =
     cache => cache.copy(locations = cache.locations.copy(officeOfExit = None))

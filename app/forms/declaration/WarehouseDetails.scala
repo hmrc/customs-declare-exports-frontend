@@ -22,15 +22,15 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class WarehouseIdentification(
+case class WarehouseDetails(
   supervisingCustomsOffice: Option[String],
   identificationType: Option[String],
   identificationNumber: Option[String],
   inlandModeOfTransportCode: Option[String]
 )
 
-object WarehouseIdentification {
-  implicit val format = Json.format[WarehouseIdentification]
+object WarehouseDetails {
+  implicit val format = Json.format[WarehouseDetails]
 
   val formId = "IdentificationOfWarehouse"
 
@@ -48,17 +48,17 @@ object WarehouseIdentification {
         text()
           .verifying("supplementary.warehouse.inlandTransportMode.error.incorrect", isContainedIn(allowedModeOfTransportCodes))
       )
-    )(WarehouseIdentification.apply)(WarehouseIdentification.unapply)
+    )(WarehouseDetails.apply)(WarehouseDetails.unapply)
     .verifying("supplementary.warehouse.identificationNumberNoType.error", typeSelectedWhenNumberIsPopulated)
     .verifying("supplementary.warehouse.identificationTypeNoNumber.error", idNumberIsPopulatedWhenIDTypeIsSelected)
 
-  private def typeSelectedWhenNumberIsPopulated: WarehouseIdentification => Boolean =
+  private def typeSelectedWhenNumberIsPopulated: WarehouseDetails => Boolean =
     warehouseIdentification => warehouseIdentification.identificationNumber.isEmpty || warehouseIdentification.identificationType.exists(_.nonEmpty)
 
-  private def idNumberIsPopulatedWhenIDTypeIsSelected: WarehouseIdentification => Boolean =
+  private def idNumberIsPopulatedWhenIDTypeIsSelected: WarehouseDetails => Boolean =
     warehouseIdentification => warehouseIdentification.identificationType.isEmpty || warehouseIdentification.identificationNumber.exists(_.nonEmpty)
 
-  def form(): Form[WarehouseIdentification] = Form(mapping)
+  def form(): Form[WarehouseDetails] = Form(mapping)
 
   object IdentifierType {
     val PUBLIC_CUSTOMS_1 = "R"

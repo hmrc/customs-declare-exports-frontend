@@ -85,7 +85,7 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
     "display 'Back' button that links to 'Warehouse' page" in {
       val backButton = view.getElementById("link-back")
       backButton.text() mustBe messages(backCaption)
-      backButton must haveHref(routes.WarehouseIdentificationController.displayPage())
+      backButton must haveHref(routes.WarehouseDetailsController.displayPage())
     }
 
     "display 'Save and continue' button on page" in {

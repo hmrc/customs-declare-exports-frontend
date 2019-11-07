@@ -16,7 +16,7 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.WarehouseIdentificationController
+import controllers.declaration.WarehouseDetailsController
 import forms.declaration.TransportCodes.Maritime
 import helpers.views.declaration.WarehouseIdentificationMessages
 import models.{DeclarationType, Mode}
@@ -28,32 +28,32 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import views.html.declaration.warehouse_identification
+import views.html.declaration.warehouse_details
 
-class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAndAfterEach with WarehouseIdentificationMessages with OptionValues {
+class WarehouseDetailsControllerSpec extends ControllerSpec with BeforeAndAfterEach with WarehouseIdentificationMessages with OptionValues {
 
-  val warehouseIdentificationTemplate: warehouse_identification = mock[warehouse_identification]
+  val warehouseIdentificationTemplate: warehouse_details = mock[warehouse_details]
 
-  val controller = new WarehouseIdentificationController(
+  val controller = new WarehouseDetailsController(
     authenticate = mockAuthAction,
     journeyType = mockJourneyAction,
     navigator,
     exportsCacheService = mockExportsCacheService,
     mcc = stubMessagesControllerComponents(),
-    warehouseIdentificationPage = warehouseIdentificationTemplate
+    warehouseDetailsPage = warehouseIdentificationTemplate
   )
 
   val exampleCustomsOfficeIdentifier = "A1B2C3D4"
-  val exampleWarehauseIdentificationType = "R"
-  val exampleWarehauseIdentificationNumber = "SecretStash"
+  val exampleWarehouseIdentificationType = "R"
+  val exampleWarehouseIdentificationNumber = "SecretStash"
   val exampleTransportMode = Maritime
 
   private val standardCacheModel = aDeclaration(
     withType(DeclarationType.STANDARD),
     withWarehouseIdentification(
       Some(exampleCustomsOfficeIdentifier),
-      Some(exampleWarehauseIdentificationType),
-      Some(exampleWarehauseIdentificationNumber),
+      Some(exampleWarehouseIdentificationType),
+      Some(exampleWarehouseIdentificationNumber),
       Some(exampleTransportMode)
     )
   )
@@ -62,8 +62,8 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
     withType(DeclarationType.SUPPLEMENTARY),
     withWarehouseIdentification(
       Some(exampleCustomsOfficeIdentifier),
-      Some(exampleWarehauseIdentificationType),
-      Some(exampleWarehauseIdentificationNumber),
+      Some(exampleWarehouseIdentificationType),
+      Some(exampleWarehouseIdentificationNumber),
       Some(exampleTransportMode)
     )
   )
@@ -72,8 +72,8 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
     withType(DeclarationType.SIMPLIFIED),
     withWarehouseIdentification(
       Some(exampleCustomsOfficeIdentifier),
-      Some(exampleWarehauseIdentificationType),
-      Some(exampleWarehauseIdentificationNumber),
+      Some(exampleWarehouseIdentificationType),
+      Some(exampleWarehouseIdentificationNumber),
       Some(exampleTransportMode)
     )
   )
@@ -89,7 +89,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
     super.afterEach()
   }
 
-  "WerehouseIdentificationController on GET request" should {
+  "WarehouseIdentificationController on GET request" should {
     "return 200 OK" in {
       withNewCaching(suplementaryCacheModel)
       val response = controller.displayPage(Mode.Normal).apply(getRequest())
@@ -108,8 +108,8 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
 
     val body = Json.obj(
       "supervisingCustomsOffice" -> exampleCustomsOfficeIdentifier,
-      "identificationType" -> exampleWarehauseIdentificationType,
-      "identificationNumber" -> exampleWarehauseIdentificationNumber,
+      "identificationType" -> exampleWarehouseIdentificationType,
+      "identificationNumber" -> exampleWarehouseIdentificationNumber,
       "inlandModeOfTransportCode" -> exampleTransportMode
     )
 
@@ -128,8 +128,8 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
         await(result)
         val updatedWarehouse = theCacheModelUpdated.locations.warehouseIdentification.value
         updatedWarehouse.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
-        updatedWarehouse.identificationType.value mustBe exampleWarehauseIdentificationType
-        updatedWarehouse.identificationNumber.value mustBe exampleWarehauseIdentificationNumber
+        updatedWarehouse.identificationType.value mustBe exampleWarehouseIdentificationType
+        updatedWarehouse.identificationNumber.value mustBe exampleWarehouseIdentificationNumber
         updatedWarehouse.inlandModeOfTransportCode.value mustBe exampleTransportMode
       }
 
@@ -156,8 +156,8 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
         await(result)
         val updatedWarehouse = theCacheModelUpdated.locations.warehouseIdentification.value
         updatedWarehouse.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
-        updatedWarehouse.identificationType.value mustBe exampleWarehauseIdentificationType
-        updatedWarehouse.identificationNumber.value mustBe exampleWarehauseIdentificationNumber
+        updatedWarehouse.identificationType.value mustBe exampleWarehouseIdentificationType
+        updatedWarehouse.identificationNumber.value mustBe exampleWarehouseIdentificationNumber
         updatedWarehouse.inlandModeOfTransportCode.value mustBe exampleTransportMode
       }
 
@@ -184,8 +184,8 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
         await(result)
         val updatedWarehouse = theCacheModelUpdated.locations.warehouseIdentification.value
         updatedWarehouse.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
-        updatedWarehouse.identificationType.value mustBe exampleWarehauseIdentificationType
-        updatedWarehouse.identificationNumber.value mustBe exampleWarehauseIdentificationNumber
+        updatedWarehouse.identificationType.value mustBe exampleWarehouseIdentificationType
+        updatedWarehouse.identificationNumber.value mustBe exampleWarehouseIdentificationNumber
         updatedWarehouse.inlandModeOfTransportCode.value mustBe exampleTransportMode
       }
 

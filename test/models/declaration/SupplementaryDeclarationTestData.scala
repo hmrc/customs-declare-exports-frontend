@@ -33,7 +33,7 @@ import forms.declaration.OfficeOfExitSupplementarySpec._
 import forms.declaration.RepresentativeDetailsSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
 import forms.declaration.TransportCodes.Rail
-import forms.declaration.WarehouseIdentificationSpec._
+import forms.declaration.WarehouseDetailsSpec._
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
@@ -198,7 +198,7 @@ object SupplementaryDeclarationTestData {
     locations = Locations(
       destinationCountries = Some(DestinationCountriesSpec.correctDestinationCountries),
       goodsLocation = Some(correctGoodsLocation),
-      warehouseIdentification = Some(correctWarehouseIdentification),
+      warehouseIdentification = Some(correctWarehouseDetails),
       officeOfExit = Some(correctOfficeOfExit)
     )
   )
@@ -261,7 +261,7 @@ object SupplementaryDeclarationTestData {
     locations = Locations(
       destinationCountries = Some(DestinationCountriesSpec.correctDestinationCountries),
       goodsLocation = Some(correctGoodsLocation),
-      warehouseIdentification = Some(WarehouseIdentification(Some("12345678"), Some("R"), Some("1234567GB"), Some(Rail))),
+      warehouseIdentification = Some(WarehouseDetails(Some("12345678"), Some("R"), Some("1234567GB"), Some(Rail))),
       officeOfExit = Some(correctOfficeOfExit)
     ),
     previousDocuments = Some(PreviousDocumentsData(Seq(Document("X", "MCR", "DocumentReference", Some("123")))))
@@ -287,7 +287,7 @@ object SupplementaryDeclarationTestData {
       Locations(
         destinationCountries = Some(correctDestinationCountries),
         goodsLocation = Some(correctGoodsLocation),
-        warehouseIdentification = Some(correctWarehouseIdentification),
+        warehouseIdentification = Some(correctWarehouseDetails),
         officeOfExit = Some(correctOfficeOfExit)
       )
     ),
