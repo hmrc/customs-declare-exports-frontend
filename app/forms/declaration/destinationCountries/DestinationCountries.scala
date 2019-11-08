@@ -84,7 +84,6 @@ object DestinationCountries {
         "countryOfDispatch" -> ignored(countryOfDispatch),
         "countriesOfRouting" -> default(seq(text()), Seq.empty),
         "countryOfDestination" -> text()
-          .verifying("declaration.destinationCountries.countryOfDestination.empty", _.trim.nonEmpty)
           .verifying("declaration.destinationCountries.countryOfDestination.error", emptyOrValidCountry)
       )(DestinationCountries.apply)(DestinationCountries.unapply)
     )

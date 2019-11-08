@@ -356,12 +356,12 @@ supplementary.declarationHolders.duplicated = You cannot add the same holder
 supplementary.declarationHolders.add.hint = Add authorised party
         
 declaration.originationCountry.title = Origination country
-declaration.originationCountry.heading = Section 3 of 6
+declaration.originationCountry.heading = Locations
 declaration.originationCountry.question = Where did the goods start their journey?
 declaration.originationCountry.empty = Enter the country the goods started their journey
 declaration.originationCountry.error = Country is incorrect
 
-declaration.destinationCountries.title = Countries of dispatch and destination
+declaration.destinationCountries.title = Countries of destination
 declaration.destinationCountries.countryOfDestination = What is the destination country?
 declaration.destinationCountries.countryOfDestination.hint = The country where the goods are being exported to.
 declaration.destinationCountries.countryOfDestination.error = Country of destination is incorrect
