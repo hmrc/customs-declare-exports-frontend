@@ -61,9 +61,8 @@ class OriginationCountryController @Inject()(
           val updatedCache =
             request.cacheModel.locations.destinationCountries.getOrElse(DestinationCountries.empty()).copy(countryOfDispatch = validCountry)
 
-          updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(destinationCountries = Some(updatedCache)))).map {
-            _ =>
-              navigator.continueTo(controllers.declaration.routes.DestinationCountriesController.displayPage(mode))
+          updateExportsDeclarationSyncDirect(_.updateDestinationCountries(updatedCache)).map { _ =>
+            navigator.continueTo(controllers.declaration.routes.DestinationCountriesController.displayPage(mode))
           }
         }
       )
