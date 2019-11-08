@@ -15,7 +15,7 @@
  */
 
 package forms.declaration
-import forms.DeclarationFieldCompanion
+import forms.DeclarationPage
 import models.DeclarationType
 import models.DeclarationType.DeclarationType
 import play.api.data.Forms.{mapping, optional, text}
@@ -25,7 +25,7 @@ import utils.validators.forms.FieldValidator._
 
 case class CommodityDetails(combinedNomenclatureCode: Option[String], descriptionOfGoods: String)
 
-object CommodityDetails extends DeclarationFieldCompanion {
+object CommodityDetails extends DeclarationPage {
 
   implicit val format = Json.format[CommodityDetails]
 

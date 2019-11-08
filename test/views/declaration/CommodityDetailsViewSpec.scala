@@ -33,8 +33,8 @@ class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
   private val page = new commodity_details(mainTemplate, minimalAppConfig)
   private val itemId = "item1"
   private val realMessages = validatedMessages
-  private def createView(mode: Mode = Mode.Normal, itemId: String = itemId, declarationType: DeclarationType = DeclarationType.STANDARD): Document =
-    page(mode, itemId, CommodityDetails.form(declarationType))(journeyRequest(), realMessages)
+  private def createView(declarationType: DeclarationType = DeclarationType.STANDARD): Document =
+    page(Mode.Normal, itemId, CommodityDetails.form(declarationType))(journeyRequest(), realMessages)
 
   def commodityDetailsView(declarationType: DeclarationType): Unit = {
     val view = createView(declarationType = declarationType)
