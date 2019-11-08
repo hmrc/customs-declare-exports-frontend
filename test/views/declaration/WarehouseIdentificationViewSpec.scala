@@ -26,32 +26,26 @@ import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.warehouse_details
+import views.html.declaration.warehouse_identification
 import views.tags.ViewTest
 
 @ViewTest
-class WarehouseDetailsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  private val page = new warehouse_details(mainTemplate)
+  private val page = new warehouse_identification(mainTemplate)
   private val form: Form[WarehouseDetails] = WarehouseDetails.form()
 
   private def createView(mode: Mode = Mode.Normal, form: Form[WarehouseDetails] = form, messages: Messages = stubMessages()): Document =
     page(mode, form)(journeyRequest(), messages)
 
-  "Warehouse Details View" should {
+  "Warehouse Identification Number View" should {
     val view = createView()
 
     "have proper messages for labels" in {
       val messages = instanceOf[MessagesApi].preferred(journeyRequest())
-      messages must haveTranslationFor("supplementary.warehouse.title")
-      messages must haveTranslationFor("supplementary.warehouse.title.hint")
-      messages must haveTranslationFor("supplementary.warehouse.identificationType")
-      messages must haveTranslationFor("supplementary.warehouse.identificationType.error")
-      messages must haveTranslationFor("supplementary.warehouse.supervisingCustomsOffice")
-      messages must haveTranslationFor("supplementary.warehouse.supervisingCustomsOffice.error")
-      messages must haveTranslationFor("supplementary.warehouse.inlandTransportMode.header")
-      messages must haveTranslationFor("supplementary.warehouse.inlandTransportMode.header.hint")
-      messages must haveTranslationFor("supplementary.warehouse.inlandTransportMode.error.incorrect")
+      messages must haveTranslationFor("declaration.warehouse.identification.sectionHeader")
+      messages must haveTranslationFor("declaration.warehouse.identification.title")
+      messages must haveTranslationFor("declaration.warehouse.identification.hint")
     }
 
     "display same page title as header" in {
@@ -59,11 +53,23 @@ class WarehouseDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
       viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
     }
 
-    "display 'Back' button that links to 'Warehouse Identification Number' page" in {
+    "have the correct section header" in {
+      view.getElementById("section-header").text() must include("declaration.warehouse.identification.sectionHeader")
+    }
+
+    "have the correct page title" in {
+      view.getElementById("title").text() mustBe "declaration.warehouse.identification.title"
+    }
+
+    "have the correct hint" in {
+      view.getElementById("hint").text() mustBe "declaration.warehouse.identification.hint"
+    }
+
+    "display 'Back' button that links to 'Items Summary' page" in {
       val backButton = view.getElementById("link-back")
 
       backButton.text() mustBe "site.back"
-      backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.WarehouseIdentificationController.displayPage(Mode.Normal))
+      backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.ItemsSummaryController.displayPage(Mode.Normal))
     }
 
     "display 'Save and continue' button on page" in {

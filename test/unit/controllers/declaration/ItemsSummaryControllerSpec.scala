@@ -103,7 +103,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(SaveAndContinue.toString -> ""))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseDetailsController
+          thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController
             .displayPage(Mode.Normal)
         }
 
@@ -111,7 +111,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(SaveAndReturn.toString -> ""))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseDetailsController
+          thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController
             .displayPage(Mode.Normal)
         }
       }
@@ -165,7 +165,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(SaveAndContinue.toString -> ""))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseDetailsController
+          thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController
             .displayPage(Mode.Normal)
         }
 
@@ -176,7 +176,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.submit(Mode.Normal)(postRequestAsFormUrlEncoded(SaveAndReturn.toString -> ""))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseDetailsController
+          thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseIdentificationController
             .displayPage(Mode.Normal)
         }
       }

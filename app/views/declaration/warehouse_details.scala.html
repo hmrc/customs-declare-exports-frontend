@@ -52,15 +52,6 @@
                 items = AutoCompleteItem.fromSupervisingCustomsOffice(CustomsOffices.all))
 
             @components.fields.field_radio(
-                field = form("identificationType"),
-                legend = messages("supplementary.warehouse.identificationType"),
-                hint = None,
-                inputs = WarehouseDetails.IdentifierType.all.map(v =>
-                    RadioOption(s"identification_type_${v.toLowerCase}", v, messages(s"supplementary.warehouse.identificationType.${v.toLowerCase}"))
-                ) :+ RadioOption("identification_type_none", "", "supplementary.warehouse.identificationType.none")
-            )
-
-            @components.fields.field_radio(
                 field = form("inlandModeOfTransportCode"),
                 legend = messages("supplementary.warehouse.inlandTransportMode.header"),
                 hint = Some(messages("supplementary.warehouse.inlandTransportMode.header.hint")),

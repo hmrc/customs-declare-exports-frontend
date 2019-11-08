@@ -70,7 +70,21 @@ class WarehouseDetailsController @Inject()(
 
   private def updateCache(formData: WarehouseDetails)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>
-      val updatedLocations = model.locations.copy(warehouseIdentification = Some(formData))
-      model.copy(locations = updatedLocations)
+      val warehouseDetails = model.locations.warehouseIdentification
+        .map(
+          dbWarehouseDetails =>
+            WarehouseDetails(
+              identificationNumber = dbWarehouseDetails.identificationNumber,
+              supervisingCustomsOffice = formData.supervisingCustomsOffice,
+              inlandModeOfTransportCode = formData.inlandModeOfTransportCode
+          )
+        )
+        .getOrElse(
+          WarehouseDetails(
+            supervisingCustomsOffice = formData.supervisingCustomsOffice,
+            inlandModeOfTransportCode = formData.inlandModeOfTransportCode
+          )
+        )
+      model.copy(locations = model.locations.copy(warehouseIdentification = Some(warehouseDetails)))
     }
 }
