@@ -221,30 +221,6 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers with ExportsDecla
         testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
       }
 
-      "UN Dangerous Goods Code is longer than 4 characters" in {
-        val itemType = buildItemType(unDangerousGoodsCode = Some("ABCD5"))
-        val expectedValidationResult =
-          Invalid(errors = Seq(FormError(unDangerousGoodsCodeKey, "declaration.itemType.unDangerousGoodsCode.error.length")))
-
-        testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
-      }
-
-      "UN Dangerous Goods Code is shorter than 4 characters" in {
-        val itemType = buildItemType(unDangerousGoodsCode = Some("123"))
-        val expectedValidationResult =
-          Invalid(errors = Seq(FormError(unDangerousGoodsCodeKey, "declaration.itemType.unDangerousGoodsCode.error.length")))
-
-        testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
-      }
-
-      "UN Dangerous Goods Code contains special characters" in {
-        val itemType = buildItemType(unDangerousGoodsCode = Some("A7#$"))
-        val expectedValidationResult =
-          Invalid(errors = Seq(FormError(unDangerousGoodsCodeKey, "declaration.itemType.unDangerousGoodsCode.error.specialCharacters")))
-
-        testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
-      }
-
       "Statistical value is empty" in {
         val itemType = buildItemType()
         val expectedValidationResult =
@@ -279,7 +255,6 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers with ExportsDecla
           taricAdditionalCodes = Seq("11AA"),
           nationalAdditionalCodes = Seq("VATE"),
           cusCode = Some("12345678"),
-          unDangerousGoodsCode = Some("1234"),
           statisticalValue = "1234567890.12"
         )
 
@@ -291,7 +266,6 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers with ExportsDecla
           taricAdditionalCodes = Seq("11AA"),
           nationalAdditionalCodes = Seq("VATE"),
           cusCode = Some("12345678"),
-          unDangerousGoodsCode = Some("1234"),
           statisticalValue = "1234567890.12"
         )
 
@@ -303,7 +277,6 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers with ExportsDecla
           taricAdditionalCodes = Seq("11AA", "22BB", "33CC"),
           nationalAdditionalCodes = Seq("VATE", "VATR"),
           cusCode = Some("12345678"),
-          unDangerousGoodsCode = Some("1234"),
           statisticalValue = "1234567890.12"
         )
 
@@ -311,13 +284,8 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers with ExportsDecla
       }
 
       "provided with correct data for mandatory fields only" in {
-        val itemType = ItemType(
-          taricAdditionalCodes = Seq.empty,
-          nationalAdditionalCodes = Seq.empty,
-          cusCode = None,
-          unDangerousGoodsCode = None,
-          statisticalValue = "1234567890.12"
-        )
+        val itemType =
+          ItemType(taricAdditionalCodes = Seq.empty, nationalAdditionalCodes = Seq.empty, cusCode = None, statisticalValue = "1234567890.12")
 
         ItemTypeValidator.validateOnSaveAndContinue(itemType) must be(Valid)
       }
@@ -350,7 +318,6 @@ object ItemTypeValidatorSpec {
     taricAdditionalCodes = taricAdditionalCode,
     nationalAdditionalCodes = nationalAdditionalCode,
     cusCode = cusCode,
-    unDangerousGoodsCode = unDangerousGoodsCode,
     statisticalValue = statisticalValue
   )
 }

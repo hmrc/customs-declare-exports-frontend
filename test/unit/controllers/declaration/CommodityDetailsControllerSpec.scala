@@ -113,7 +113,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ItemTypeController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
         verify(mockCommodityDetailsPage, times(0)).apply(any(), any(), any())(any(), any())
       }
 
@@ -124,7 +124,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ItemTypeController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
         verify(mockCommodityDetailsPage, times(0)).apply(any(), any(), any())(any(), any())
       }
     }

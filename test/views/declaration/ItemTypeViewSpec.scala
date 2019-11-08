@@ -59,8 +59,6 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       messages must haveTranslationFor("declaration.itemType.statisticalValue.header")
       messages must haveTranslationFor("declaration.itemType.statisticalValue.header.hint")
       messages must haveTranslationFor("declaration.itemType.cusCode.header")
-      messages must haveTranslationFor("declaration.itemType.unDangerousGoodsCode.header")
-      messages must haveTranslationFor("declaration.itemType.unDangerousGoodsCode.header.hint")
     }
 
     val view = createView()
@@ -108,28 +106,18 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         view.getElementById("cusCode").attr("value") mustBe empty
       }
 
-      "display empty input with label for UN Dangerous Goods Code" in {
-        view
-          .getElementById("unDangerousGoodsCode-label")
-          .text() mustBe "declaration.itemType.unDangerousGoodsCode.header"
-        view
-          .getElementById("unDangerousGoodsCode-hint")
-          .text() mustBe "declaration.itemType.unDangerousGoodsCode.header.hint"
-        view.getElementById("unDangerousGoodsCode").attr("value") mustBe empty
-      }
-
       "display two 'Add' buttons" in {
 
         view.getElementsByAttributeValue("name", "AddField").size() must be(2)
       }
 
-      "display 'Back' button that links to 'fiscal-information' page" in {
+      "display 'Back' button that links to 'UN Dangerous Goods' page" in {
 
         val backButton = createView().getElementById("link-back")
 
         backButton.text() mustBe "site.back"
         backButton.getElementById("link-back") must haveHref(
-          controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, itemId = "itemId")
+          controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId = "itemId")
         )
       }
 
@@ -191,28 +179,18 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         view.getElementById("cusCode").attr("value") mustBe empty
       }
 
-      "display empty input with label for UN Dangerous Goods Code" in {
-        view
-          .getElementById("unDangerousGoodsCode-label")
-          .text() mustBe "declaration.itemType.unDangerousGoodsCode.header"
-        view
-          .getElementById("unDangerousGoodsCode-hint")
-          .text() mustBe "declaration.itemType.unDangerousGoodsCode.header.hint"
-        view.getElementById("unDangerousGoodsCode").attr("value") mustBe empty
-      }
-
       "display two 'Add' buttons" in {
 
         view.getElementsByAttributeValue("name", "AddField").size() must be(2)
       }
 
-      "display 'Back' button that links to 'commodity-details' page" in {
+      "display 'Back' button that links to 'UN Dangerous Goods' page" in {
 
         val backButton = createView().getElementById("link-back")
 
         backButton.text() mustBe "site.back"
         backButton.getElementById("link-back") must haveHref(
-          controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, itemId = "itemId")
+          controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId = "itemId")
         )
       }
 
@@ -287,14 +265,14 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         createView().getElementsByAttributeValue("name", "AddField").size() must be(2)
       }
 
-      "display 'Back' button that links to 'commodity-details' page" in {
+      "display 'Back' button that links to 'UN Dangerous Goods' page" in {
 
         val backButton =
           createView().getElementById("link-back")
 
         backButton.text() mustBe "site.back"
         backButton.getElementById("link-back") must haveHref(
-          controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, itemId = "itemId")
+          controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId = "itemId")
         )
       }
 
@@ -318,7 +296,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in CNC input" in {
 
-        val itemType = ItemTypeForm(None, None, None, None, "")
+        val itemType = ItemTypeForm(None, None, None, "")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
@@ -326,7 +304,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in Description input" in {
 
-        val itemType = ItemTypeForm(None, Some(""), None, None, "")
+        val itemType = ItemTypeForm(None, Some(""), None, "")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
@@ -334,15 +312,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in CUS input" in {
 
-        val itemType = ItemTypeForm(None, Some(""), Some("1234"), None, "")
-        val view = createView(form = ItemTypeForm.form().fill(itemType))
-
-        assertViewDataEntered(view, itemType)
-      }
-
-      "display data in UN Dangerous Goods Code input" in {
-
-        val itemType = ItemTypeForm(None, Some(""), None, Some("1234"), "12345")
+        val itemType = ItemTypeForm(None, Some(""), Some("1234"), "")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
@@ -350,7 +320,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in Statistical Value input" in {
 
-        val itemType = ItemTypeForm(None, Some(""), None, None, "12345")
+        val itemType = ItemTypeForm(None, Some(""), None, "12345")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
@@ -358,7 +328,6 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       def assertViewDataEntered(view: Document, itemType: ItemTypeForm): Unit = {
         view.getElementById("cusCode").attr("value") must equal(itemType.cusCode.getOrElse(""))
-        view.getElementById("unDangerousGoodsCode").attr("value") must equal(itemType.unDangerousGoodsCode.getOrElse(""))
         view.getElementById("statisticalValue").attr("value") must equal(itemType.statisticalValue)
       }
     }
@@ -367,7 +336,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in CNC input" in {
 
-        val itemType = ItemTypeForm(None, None, None, None, "")
+        val itemType = ItemTypeForm(None, None, None, "")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
@@ -375,7 +344,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in Description input" in {
 
-        val itemType = ItemTypeForm(None, Some(""), None, None, "")
+        val itemType = ItemTypeForm(None, Some(""), None, "")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
@@ -383,15 +352,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in CUS input" in {
 
-        val itemType = ItemTypeForm(None, Some(""), Some("1234"), None, "")
-        val view = createView(form = ItemTypeForm.form().fill(itemType))
-
-        assertViewDataEntered(view, itemType)
-      }
-
-      "display data in UN Dangerous Goods Code input" in {
-
-        val itemType = ItemTypeForm(None, Some(""), None, Some("1234"), "12345")
+        val itemType = ItemTypeForm(None, Some(""), Some("1234"), "")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
@@ -399,7 +360,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in Statistical Value input" in {
 
-        val itemType = ItemTypeForm(None, Some(""), None, None, "12345")
+        val itemType = ItemTypeForm(None, Some(""), None, "12345")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
@@ -407,7 +368,6 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       def assertViewDataEntered(view: Document, itemType: ItemTypeForm): Unit = {
         view.getElementById("cusCode").attr("value") must equal(itemType.cusCode.getOrElse(""))
-        view.getElementById("unDangerousGoodsCode").attr("value") must equal(itemType.unDangerousGoodsCode.getOrElse(""))
         view.getElementById("statisticalValue").attr("value") must equal(itemType.statisticalValue)
       }
     }
@@ -416,7 +376,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in CNC input" in {
 
-        val itemType = ItemTypeForm(None, None, None, None, "")
+        val itemType = ItemTypeForm(None, None, None, "")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
@@ -424,7 +384,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in Description input" in {
 
-        val itemType = ItemTypeForm(None, Some(""), None, None, "")
+        val itemType = ItemTypeForm(None, Some(""), None, "")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
@@ -432,7 +392,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in CUS input" in {
 
-        val itemType = ItemTypeForm(None, Some(""), Some("1234"), None, "")
+        val itemType = ItemTypeForm(None, Some(""), Some("1234"), "")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
@@ -440,7 +400,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in Statistical Value input" in {
 
-        val itemType = ItemTypeForm(None, Some(""), None, None, "12345")
+        val itemType = ItemTypeForm(None, Some(""), None, "12345")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)

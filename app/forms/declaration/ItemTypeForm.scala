@@ -24,7 +24,6 @@ case class ItemTypeForm(
   taricAdditionalCode: Option[String],
   nationalAdditionalCode: Option[String],
   cusCode: Option[String],
-  unDangerousGoodsCode: Option[String],
   statisticalValue: String
 )
 
@@ -33,14 +32,12 @@ object ItemTypeForm {
   val taricAdditionalCodeKey = "taricAdditionalCode"
   val nationalAdditionalCodeKey = "nationalAdditionalCode"
   val cusCodeKey = "cusCode"
-  val unDangerousGoodsCodeKey = "unDangerousGoodsCode"
   val statisticalValueKey = "statisticalValue"
 
   private val mapping: Mapping[ItemTypeForm] = Forms.mapping(
     taricAdditionalCodeKey -> optional(text()),
     nationalAdditionalCodeKey -> optional(text()),
     cusCodeKey -> optional(text()),
-    unDangerousGoodsCodeKey -> optional(text()),
     statisticalValueKey -> text()
   )(ItemTypeForm.apply)(ItemTypeForm.unapply)
 
@@ -48,8 +45,8 @@ object ItemTypeForm {
 
   def form(): Form[ItemTypeForm] = Form(mapping)
 
-  val empty: ItemTypeForm = ItemTypeForm(None, None, None, None, "")
+  val empty: ItemTypeForm = ItemTypeForm(None, None, None, "")
 
   def fromItemType(model: ItemType) =
-    ItemTypeForm(None, None, model.cusCode, model.unDangerousGoodsCode, model.statisticalValue)
+    ItemTypeForm(None, None, model.cusCode, model.statisticalValue)
 }

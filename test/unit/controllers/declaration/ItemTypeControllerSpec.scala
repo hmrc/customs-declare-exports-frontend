@@ -107,7 +107,6 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
           ("nationalAdditionalCode", "VATE"),
           ("descriptionOfGoods", "description"),
           ("cusCode", "12345678"),
-          ("unDangerousGoodsCode", "4321"),
           ("statisticalValue", "999"),
           addActionUrlEncoded(ItemTypeForm.taricAdditionalCodeKey)
         )
@@ -122,7 +121,6 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
             taricAdditionalCodes = Seq("1234"),
             nationalAdditionalCodes = Seq.empty, // NOT added to the cache model after an Add for TARIC codes - see bug CEDS-1094
             cusCode = Some("12345678"),
-            unDangerousGoodsCode = Some("4321"),
             statisticalValue = "999"
           )
         )
@@ -136,7 +134,6 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
           ("taricAdditionalCode", "5356"),
           ("nationalAdditionalCode", "X611"),
           ("cusCode", "56353789"),
-          ("unDangerousGoodsCode", "6468"),
           ("statisticalValue", "435"),
           addActionUrlEncoded(ItemTypeForm.nationalAdditionalCodeKey)
         )
@@ -151,7 +148,6 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
             taricAdditionalCodes = Seq.empty, // NOT added to the cache model after an Add for TARIC codes - see bug CEDS-1094
             nationalAdditionalCodes = Seq("X611"),
             cusCode = Some("56353789"),
-            unDangerousGoodsCode = Some("6468"),
             statisticalValue = "435"
           )
         )
@@ -165,7 +161,7 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
         withNewCaching(aDeclaration())
 
         val correctForm =
-          Json.toJson(ItemType(Seq("code"), Seq("code"), Some("code"), Some("code"), "1234"))
+          Json.toJson(ItemType(Seq("code"), Seq("code"), Some("code"), "1234"))
 
         val result = controller.submitItemType(Mode.Normal, itemId)(postRequest(correctForm))
 

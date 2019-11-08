@@ -1,0 +1,79 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.declaration.routes
+@import controllers.util.SaveAndContinue
+@import forms.declaration.UNDangerousGoodsCode
+@import forms.declaration.UNDangerousGoodsCode._
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.play.views.html._
+@import views.Title
+@import config.AppConfig
+@import views.components.inputs.RadioOption
+
+@this(main_template: views.html.main_template, appConfig: AppConfig)
+
+@(
+        mode: Mode,
+        itemId: String,
+        form: Form[UNDangerousGoodsCode]
+)(implicit request: JourneyRequest[_], messages: Messages)
+
+@main_template(
+    title = Title("declaration.unDangerousGoodsCode.header", "supplementary.items")
+) {
+
+    @helper.form(routes.UNDangerousGoodsCodeController.submitForm(mode, itemId), 'autocomplete -> "off") {
+        @helper.CSRF.formField
+
+        @components.back_link(routes.CommodityDetailsController.displayPage(mode, itemId), mode)
+
+        @components.error_summary(form.errors)
+
+        @components.heading(
+            sectionHeader = messages("supplementary.items"),
+            title = messages("declaration.unDangerousGoodsCode.header"),
+            hint = messages("declaration.unDangerousGoodsCode.header.hint")
+        )
+
+
+        @components.fields.field_radio(
+            field = form(hasDangerousGoodsCodeKey),
+            legend = "",
+            inputs = Seq(
+                RadioOption(
+                    id = "code_yes",
+                    value = "Yes",
+                    messageKey = "declaration.unDangerousGoodsCode.hasCode",
+                    revealComponent = Some(components.fields.field_text(
+                        field = form(dangerousGoodsCodeKey),
+                        label = messages("declaration.unDangerousGoodsCode.label")
+                    ))
+                ),
+                RadioOption(
+                    id = "code_no",
+                    value = "No",
+                    messageKey = "declaration.unDangerousGoodsCode.noCode"
+                )
+            )
+        )
+
+
+        @components.submit_button()
+        @components.buttons.save_and_return_later_button()
+    }
+
+}

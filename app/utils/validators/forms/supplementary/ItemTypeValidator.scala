@@ -33,7 +33,6 @@ object ItemTypeValidator extends Validator[ItemType] {
   private val nationalAdditionalCodeMaxLength = 4
   private val nationalAdditionalCodesMaxAmount = 99
   private val cusCodeLength = 8
-  private val unDangerousGoodsCodeLength = 4
   private val statisticalValueMaxLength = 15
   private val statisticalValueDecimalPlaces = 2
 
@@ -66,12 +65,6 @@ object ItemTypeValidator extends Validator[ItemType] {
       .verifying("declaration.itemType.cusCode.error.specialCharacters", isAlphanumeric)
   )
 
-  private val mappingUNDangerousGoodsCode = optional(
-    text()
-      .verifying("declaration.itemType.unDangerousGoodsCode.error.length", hasSpecificLength(unDangerousGoodsCodeLength))
-      .verifying("declaration.itemType.unDangerousGoodsCode.error.specialCharacters", isAlphanumeric)
-  )
-
   private val mappingStatisticalValue = text()
     .verifying("declaration.itemType.statisticalValue.error.empty", nonEmpty)
     .verifying(
@@ -87,7 +80,6 @@ object ItemTypeValidator extends Validator[ItemType] {
     taricAdditionalCodeKey -> mappingTARICAdditionalCode,
     nationalAdditionalCodeKey -> mappingNationalAdditionalCode,
     cusCodeKey -> optional(text()),
-    unDangerousGoodsCodeKey -> optional(text()),
     statisticalValueKey -> text()
   )(ItemType.apply)(ItemType.unapply)
 
@@ -96,7 +88,6 @@ object ItemTypeValidator extends Validator[ItemType] {
       taricAdditionalCodeKey -> mappingTARICAdditionalCode,
       nationalAdditionalCodeKey -> mappingNationalAdditionalCode,
       cusCodeKey -> mappingCUSCode,
-      unDangerousGoodsCodeKey -> mappingUNDangerousGoodsCode,
       statisticalValueKey -> mappingStatisticalValue
     )(ItemType.apply)(ItemType.unapply)
 

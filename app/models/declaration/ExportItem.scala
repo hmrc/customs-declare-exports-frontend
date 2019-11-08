@@ -30,6 +30,7 @@ case class ExportItem(
   additionalFiscalReferencesData: Option[AdditionalFiscalReferencesData] = None,
   itemType: Option[ItemType] = None,
   commodityDetails: Option[CommodityDetails] = None,
+  dangerousGoodsCode: Option[UNDangerousGoodsCode] = None,
   packageInformation: List[PackageInformation] = Nil,
   commodityMeasure: Option[CommodityMeasure] = None,
   additionalInformation: Option[AdditionalInformationData] = None,

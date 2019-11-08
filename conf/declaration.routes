@@ -155,6 +155,12 @@ GET         /items/:itemId/commodity-details                   controllers.decla
 
 POST        /items/:itemId/commodity-details                   controllers.declaration.CommodityDetailsController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
 
+# UN Dangerous Goods Code
+
+GET         /items/:itemId/un-dangerous-goods-code             controllers.declaration.UNDangerousGoodsCodeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+POST        /items/:itemId/un-dangerous-goods-code              controllers.declaration.UNDangerousGoodsCodeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+
 # Package Information
 
 GET         /items/:itemId/package-information                 controllers.declaration.PackageInformationController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)

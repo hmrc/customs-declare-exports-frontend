@@ -37,17 +37,27 @@
             }
         </legend>
         @for(input <- inputs) {
-            <div class="multiple-choice">
-                <input id="@{input.id}" type="radio" name="@{field.id}" value="@{input.value}" @if(field.value== Some(input.value)){checked="checked" }
-                    @if(trackGa){data-journey-click="customs-decex-frontend:click:@{input.id}"}/>
+            @defining(input.id.replace('.', '_')) { target =>
+                <div class="multiple-choice" data-target="@{target}-hidden">
+                    <input id="@{input.id}" type="radio" name="@{field.id}" value="@{input.value}" @if(field.value== Some(input.value)){checked="checked" }
+                        @if(trackGa){data-journey-click="customs-decex-frontend:click:@{input.id}"}
+                        @if(input.revealComponent.isDefined){aria-controls="@{input.id}-hidden" aria-expanded="false"}
+                    />
 
-                <label class="block-label selection-button-radio" for="@{input.id}">
-                    <span id="@{input.id}-label" >@messages(input.messageKey)</span>
-                    @if(input.hint.nonEmpty){
-                        <span id="@{input.id}-hint" class="form-hint">@{input.hint.get}</span>
-                    }
-                </label>
-            </div>
+                    <label class="block-label selection-button-radio" for="@{input.id}">
+                        <span id="@{input.id}-label" >@messages(input.messageKey)</span>
+                        @if(input.hint.nonEmpty){
+                            <span id="@{input.id}-hint" class="form-hint">@{input.hint.get}</span>
+                        }
+                    </label>
+                </div>
+
+                @input.revealComponent.map{ hiddenHtml =>
+                    <div id="@{input.id}-hidden" class="panel panel-border-narrow js-hidden" aria-hidden="false">
+                    @hiddenHtml
+                    </div>
+                }
+            }
         }
     </fieldset>
 </div>
