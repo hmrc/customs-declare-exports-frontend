@@ -29,7 +29,7 @@
 @main_template(
     title = Title("declaration.destinationCountries.title", "declaration.summary.locations.header")
 ) {
-    @components.back_link(controllers.declaration.routes.DeclarationHolderController.displayPage(mode), mode)
+    @components.back_link(controllers.declaration.routes.OriginationCountryController.displayPage(mode), mode)
 
     @components.error_summary(form.errors)
 
@@ -40,17 +40,6 @@
 
     @helper.form(routes.DestinationCountriesController.saveCountries(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
-
-        <div id="country-of-dispatch-field" class="inline-block form-group">
-            @components.fields.field_autocomplete(
-                form("countryOfDispatch"),
-                "declaration.destinationCountries.countryOfDispatch",
-                Some("form-label-bold"),
-                Some(messages("declaration.destinationCountries.countryOfDispatch.hint")),
-                messages("declaration.destinationCountries.countryOfDispatch.empty"),
-                AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
-            )
-        </div>
 
         <div id="country-of-destination-field" class="inline-block form-group">
             @components.fields.field_autocomplete(

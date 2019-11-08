@@ -51,33 +51,35 @@ class DestinationCountriesController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.declarationType match {
-      case DeclarationType.SUPPLEMENTARY                         => displayPageSupplementary(mode)
-      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED => displayPageStandard(mode)
+    request.cacheModel.locations.destinationCountries match {
+      case Some(data) =>
+        request.declarationType match {
+          case DeclarationType.SUPPLEMENTARY =>
+            Ok(destinationCountriesSupplementaryPage(mode, Supplementary.form(data.countryOfDispatch).fill(data)))
+          case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED =>
+            Ok(destinationCountriesStandardPage(mode, Standard.form(data.countryOfDispatch).fill(data), data.countriesOfRouting))
+        }
+      case None => Redirect(controllers.declaration.routes.OriginationCountryController.displayPage(mode))
     }
   }
-
-  private def displayPageSupplementary(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
-    request.cacheModel.locations.destinationCountries match {
-      case Some(data) => Ok(destinationCountriesSupplementaryPage(mode, Supplementary.form.fill(data)))
-      case _          => Ok(destinationCountriesSupplementaryPage(mode, Supplementary.form))
-    }
-
-  private def displayPageStandard(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
-    request.cacheModel.locations.destinationCountries match {
-      case Some(data) => Ok(destinationCountriesStandardPage(mode, Standard.form.fill(data), data.countriesOfRouting))
-      case _          => Ok(destinationCountriesStandardPage(mode, Standard.form, Seq.empty))
-    }
 
   def saveCountries(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    request.declarationType match {
-      case DeclarationType.SUPPLEMENTARY                         => handleSubmitSupplementary(mode)
-      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED => handleSubmitStandard(mode)
+    request.cacheModel.locations.destinationCountries match {
+      case Some(data) =>
+        request.declarationType match {
+          case DeclarationType.SUPPLEMENTARY                         => handleSubmitSupplementary(mode, data.countryOfDispatch)
+          case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED => handleSubmitStandard(mode, data.countryOfDispatch)
+        }
+      case None => Future.successful(Redirect(controllers.declaration.routes.OriginationCountryController.displayPage(mode)))
     }
   }
 
-  private def handleSubmitSupplementary(mode: Mode)(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] =
-    Supplementary.form
+  private def handleSubmitSupplementary(
+    mode: Mode,
+    countryOfDispatch: String
+  )(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] =
+    Supplementary
+      .form(countryOfDispatch)
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[DestinationCountries]) => Future.successful(BadRequest(destinationCountriesSupplementaryPage(mode, formWithErrors))),
@@ -86,9 +88,9 @@ class DestinationCountriesController @Inject()(
             .map(_ => navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode)))
       )
 
-  private def handleSubmitStandard(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
+  private def handleSubmitStandard(mode: Mode, countryOfDispatch: String)(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
     val actionTypeOpt = FormAction.bindFromRequest()
-    val boundForm = Standard.form.bindFromRequest
+    val boundForm = Standard.form(countryOfDispatch).bindFromRequest
 
     val cache = request.cacheModel.locations.destinationCountries.getOrElse(DestinationCountries.empty())
 
@@ -104,7 +106,7 @@ class DestinationCountriesController @Inject()(
     mode: Mode,
     cachedData: DestinationCountries
   )(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] = {
-    val countriesStandardForm = Standard.form.bindFromRequest()
+    val countriesStandardForm = Standard.form(cachedData.countryOfDispatch).bindFromRequest()
     val countriesStandardInput = countriesStandardForm.value.getOrElse(DestinationCountries.empty())
     val countriesStandardUpdated =
       cachedData.copy(countriesOfRouting = cachedData.countriesOfRouting ++ countriesStandardInput.countriesOfRouting)
@@ -114,9 +116,9 @@ class DestinationCountriesController @Inject()(
         updateCache(countriesStandardUpdated).map {
           _.flatMap(_.locations.destinationCountries) match {
             case Some(model) =>
-              Ok(destinationCountriesStandardPage(mode, Standard.form.fill(model), model.countriesOfRouting))
+              Ok(destinationCountriesStandardPage(mode, Standard.form(cachedData.countryOfDispatch).fill(model), model.countriesOfRouting))
             case _ =>
-              Ok(destinationCountriesStandardPage(mode, Standard.form))
+              Ok(destinationCountriesStandardPage(mode, Standard.form(cachedData.countryOfDispatch)))
           }
         }
 
@@ -137,7 +139,7 @@ class DestinationCountriesController @Inject()(
     mode: Mode,
     cachedData: DestinationCountries
   )(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] = {
-    val countriesStandardForm = Standard.form.bindFromRequest()
+    val countriesStandardForm = Standard.form(cachedData.countryOfDispatch).bindFromRequest()
     val countriesStandardInput = countriesStandardForm.value.getOrElse(DestinationCountries.empty())
     val countriesStandardUpdated =
       countriesStandardInput.copy(countriesOfRouting = cachedData.countriesOfRouting ++ countriesStandardInput.countriesOfRouting)

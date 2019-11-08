@@ -1,0 +1,60 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.declaration.routes
+@import services.Countries
+@import services.view.AutoCompleteItem
+@import views.Title
+
+@this(main_template: views.html.main_template)
+
+@(mode: Mode, form: Form[String])(implicit request: Request[AnyContent], messages: Messages)
+
+@main_template(
+    title = Title("declaration.originationCountry.title", "declaration.originationCountry.heading")
+) {
+
+    @components.back_link(routes.DeclarationHolderController.displayPage(), mode)
+
+    @components.error_summary(form.errors)
+
+    @components.heading(
+        title = messages("declaration.originationCountry.question"),
+        sectionHeader = messages("declaration.originationCountry.heading")
+    )
+
+    @helper.form(routes.OriginationCountryController.submit(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
+        <div id="origination-country-field">
+        @components.fields.field_autocomplete(
+            form("country"),
+            "",
+            None,
+            None,
+            messages("declaration.originationCountry.empty"),
+            AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
+        )
+        </div>
+
+        <div class="section mb-0">
+            @components.buttons.save_and_continue_button()
+        </div>
+        <div class="section">
+            @components.buttons.save_and_return_later_button()
+        </div>
+    }
+}
