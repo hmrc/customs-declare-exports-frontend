@@ -18,10 +18,10 @@ package forms.declaration.validators
 
 import base.TestHelper
 import forms.declaration.ItemTypeForm._
-import models.{DeclarationType, IdentityData, SignedInUser}
 import models.DeclarationType.DeclarationType
 import models.declaration.ItemType
 import models.requests.{AuthenticatedRequest, JourneyRequest}
+import models.{DeclarationType, IdentityData, SignedInUser}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.FormError
 import play.api.mvc.AnyContent
@@ -147,30 +147,6 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers with ExportsDecla
 
     "return Failure result with errors" when {
 
-      "Combined Nomenclature Code is empty" in {
-        val itemType = buildItemType(combinedNomenclatureCode = None)
-        val expectedValidationResult =
-          Invalid(errors = Seq(FormError(combinedNomenclatureCodeKey, "declaration.itemType.combinedNomenclatureCode.error.empty")))
-
-        testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
-      }
-
-      "Combined Nomenclature Code is longer than 8 characters" in {
-        val itemType = buildItemType(combinedNomenclatureCode = Some("ABCD12345"))
-        val expectedValidationResult =
-          Invalid(errors = Seq(FormError(combinedNomenclatureCodeKey, "declaration.itemType.combinedNomenclatureCode.error.length")))
-
-        testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
-      }
-
-      "Combined Nomenclature Code contains special characters" in {
-        val itemType = buildItemType(combinedNomenclatureCode = Some("1234!@#$"))
-        val expectedValidationResult =
-          Invalid(errors = Seq(FormError(combinedNomenclatureCodeKey, "declaration.itemType.combinedNomenclatureCode.error.specialCharacters")))
-
-        testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
-      }
-
       "any TARIC additional code is not 4 characters long" in {
         val itemType = buildItemType(taricAdditionalCode = Seq("1111", "2222", "333", "4444"))
         val expectedValidationResult =
@@ -225,22 +201,6 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers with ExportsDecla
         val itemType = buildItemType(nationalAdditionalCode = Seq("1111", "1111"))
         val expectedValidationResult =
           Invalid(errors = Seq(FormError(nationalAdditionalCodeKey, "declaration.itemType.nationalAdditionalCode.error.duplicate")))
-
-        testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
-      }
-
-      "Description of goods is empty" in {
-        val itemType = buildItemType()
-        val expectedValidationResult =
-          Invalid(errors = Seq(FormError(descriptionOfGoodsKey, "declaration.itemType.description.error.empty")))
-
-        testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
-      }
-
-      "Description of goods is longer than 280 characters" in {
-        val itemType = buildItemType(descriptionOfGoods = TestHelper.createRandomAlphanumericString(281))
-        val expectedValidationResult =
-          Invalid(errors = Seq(FormError(descriptionOfGoodsKey, "declaration.itemType.description.error.length")))
 
         testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
       }
@@ -316,10 +276,8 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers with ExportsDecla
 
       "Combined Nomenclature Code is empty for Simplified Dec" in {
         val itemType = ItemType(
-          combinedNomenclatureCode = Some(""),
           taricAdditionalCodes = Seq("11AA"),
           nationalAdditionalCodes = Seq("VATE"),
-          descriptionOfGoods = "Test description",
           cusCode = Some("12345678"),
           unDangerousGoodsCode = Some("1234"),
           statisticalValue = "1234567890.12"
@@ -330,10 +288,8 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers with ExportsDecla
 
       "provided with correct data with single value for every field" in {
         val itemType = ItemType(
-          combinedNomenclatureCode = Some("12345678"),
           taricAdditionalCodes = Seq("11AA"),
           nationalAdditionalCodes = Seq("VATE"),
-          descriptionOfGoods = "Test description",
           cusCode = Some("12345678"),
           unDangerousGoodsCode = Some("1234"),
           statisticalValue = "1234567890.12"
@@ -344,10 +300,8 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers with ExportsDecla
 
       "provided with correct data with multiple values where possible" in {
         val itemType = ItemType(
-          combinedNomenclatureCode = Some("12345678"),
           taricAdditionalCodes = Seq("11AA", "22BB", "33CC"),
           nationalAdditionalCodes = Seq("VATE", "VATR"),
-          descriptionOfGoods = "Test description",
           cusCode = Some("12345678"),
           unDangerousGoodsCode = Some("1234"),
           statisticalValue = "1234567890.12"
@@ -358,10 +312,8 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers with ExportsDecla
 
       "provided with correct data for mandatory fields only" in {
         val itemType = ItemType(
-          combinedNomenclatureCode = Some("12345678"),
           taricAdditionalCodes = Seq.empty,
           nationalAdditionalCodes = Seq.empty,
-          descriptionOfGoods = "Test description",
           cusCode = None,
           unDangerousGoodsCode = None,
           statisticalValue = "1234567890.12"
@@ -395,10 +347,8 @@ object ItemTypeValidatorSpec {
     unDangerousGoodsCode: Option[String] = None,
     statisticalValue: String = ""
   ): ItemType = ItemType(
-    combinedNomenclatureCode = combinedNomenclatureCode,
     taricAdditionalCodes = taricAdditionalCode,
     nationalAdditionalCodes = nationalAdditionalCode,
-    descriptionOfGoods = descriptionOfGoods,
     cusCode = cusCode,
     unDangerousGoodsCode = unDangerousGoodsCode,
     statisticalValue = statisticalValue

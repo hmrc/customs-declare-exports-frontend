@@ -70,7 +70,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
 
       "display page method is invoked and cache is empty" in {
 
-        val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+        val result = controller.displayPage(Mode.Normal, itemId, fastForward = true)(getRequest())
 
         status(result) mustBe OK
         verify(mockFiscalInformationPage, times(1)).apply(any(), any(), any())(any(), any())
@@ -82,7 +82,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         val item = anItem(withFiscalInformation(FiscalInformation(yes)))
         withNewCaching(aDeclaration(withItems(item)))
 
-        val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
+        val result = controller.displayPage(Mode.Normal, item.id, fastForward = true)(getRequest())
 
         status(result) mustBe OK
         verify(mockFiscalInformationPage, times(1)).apply(any(), any(), any())(any(), any())
@@ -125,7 +125,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.saveFiscalInformation(Mode.Normal, itemId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ItemTypeController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, itemId)
         verify(mockFiscalInformationPage, times(0)).apply(any(), any(), any())(any(), any())
       }
     }

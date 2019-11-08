@@ -16,7 +16,7 @@
 
 package models.declaration
 
-import forms.declaration.{AdditionalFiscalReferencesData, CommodityMeasure, FiscalInformation, PackageInformation}
+import forms.declaration._
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers.yes
 import models.DeclarationType
 import models.DeclarationType.DeclarationType
@@ -29,6 +29,7 @@ case class ExportItem(
   fiscalInformation: Option[FiscalInformation] = None,
   additionalFiscalReferencesData: Option[AdditionalFiscalReferencesData] = None,
   itemType: Option[ItemType] = None,
+  commodityDetails: Option[CommodityDetails] = None,
   packageInformation: List[PackageInformation] = Nil,
   commodityMeasure: Option[CommodityMeasure] = None,
   additionalInformation: Option[AdditionalInformationData] = None,

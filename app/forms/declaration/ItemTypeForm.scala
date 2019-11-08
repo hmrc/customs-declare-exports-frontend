@@ -16,17 +16,13 @@
 
 package forms.declaration
 
-import models.DeclarationType
-import models.DeclarationType.DeclarationType
 import models.declaration.ItemType
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
 
 case class ItemTypeForm(
-  combinedNomenclatureCode: Option[String],
   taricAdditionalCode: Option[String],
   nationalAdditionalCode: Option[String],
-  descriptionOfGoods: String,
   cusCode: Option[String],
   unDangerousGoodsCode: Option[String],
   statisticalValue: String
@@ -34,19 +30,15 @@ case class ItemTypeForm(
 
 object ItemTypeForm {
 
-  val combinedNomenclatureCodeKey = "combinedNomenclatureCode"
   val taricAdditionalCodeKey = "taricAdditionalCode"
   val nationalAdditionalCodeKey = "nationalAdditionalCode"
-  val descriptionOfGoodsKey = "descriptionOfGoods"
   val cusCodeKey = "cusCode"
   val unDangerousGoodsCodeKey = "unDangerousGoodsCode"
   val statisticalValueKey = "statisticalValue"
 
   private val mapping: Mapping[ItemTypeForm] = Forms.mapping(
-    combinedNomenclatureCodeKey -> optional(text()),
     taricAdditionalCodeKey -> optional(text()),
     nationalAdditionalCodeKey -> optional(text()),
-    descriptionOfGoodsKey -> text(),
     cusCodeKey -> optional(text()),
     unDangerousGoodsCodeKey -> optional(text()),
     statisticalValueKey -> text()
@@ -56,16 +48,8 @@ object ItemTypeForm {
 
   def form(): Form[ItemTypeForm] = Form(mapping)
 
-  val empty: ItemTypeForm = ItemTypeForm(None, None, None, "", None, None, "")
+  val empty: ItemTypeForm = ItemTypeForm(None, None, None, None, "")
 
   def fromItemType(model: ItemType) =
-    ItemTypeForm(
-      model.combinedNomenclatureCode,
-      None,
-      None,
-      model.descriptionOfGoods,
-      model.cusCode,
-      model.unDangerousGoodsCode,
-      model.statisticalValue
-    )
+    ItemTypeForm(None, None, model.cusCode, model.unDangerousGoodsCode, model.statisticalValue)
 }

@@ -130,7 +130,7 @@ POST        /items/:itemId/procedure-codes        controllers.declaration.Proced
 
 # Fiscal Information
 
-GET          /items/:itemId/fiscal-information    controllers.declaration.FiscalInformationController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET          /items/:itemId/fiscal-information    controllers.declaration.FiscalInformationController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, fastForward: Boolean ?= true)
 
 POST         /items/:itemId/fiscal-information   controllers.declaration.FiscalInformationController.saveFiscalInformation(mode: models.Mode ?= models.Mode.Normal, itemId)
 
@@ -148,6 +148,12 @@ POST        /items/:itemId/additional-fiscal-references/:reference  controllers.
 GET         /items/:itemId/item-type                           controllers.declaration.ItemTypeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
 
 POST        /items/:itemId/item-type                           controllers.declaration.ItemTypeController.submitItemType(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+# Commodity Details
+
+GET         /items/:itemId/commodity-details                   controllers.declaration.CommodityDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+POST        /items/:itemId/commodity-details                   controllers.declaration.CommodityDetailsController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
 
 # Package Information
 

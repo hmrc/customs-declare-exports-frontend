@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -188,9 +188,7 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/item-type')) {
-        document.getElementById('combinedNomenclatureCode').value ='46021910';
         document.getElementById('statisticalValue').value ='1000';
-        document.getElementById('descriptionOfGoods').value ='Straw for bottles';
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/package-information')) {

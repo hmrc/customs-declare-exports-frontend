@@ -140,10 +140,8 @@ class ItemTypeController @Inject()(
     }
 
     ItemType(
-      combinedNomenclatureCode = itemTypeInput.combinedNomenclatureCode,
       taricAdditionalCodes = updatedTaricCodes,
       nationalAdditionalCodes = updatedNationalCodes,
-      descriptionOfGoods = itemTypeInput.descriptionOfGoods,
       cusCode = itemTypeInput.cusCode,
       unDangerousGoodsCode = itemTypeInput.unDangerousGoodsCode,
       statisticalValue = itemTypeInput.statisticalValue

@@ -86,8 +86,8 @@ class AdditionalFiscalReferencesController @Inject()(
         updatedCache =>
           if (updatedCache != cachedData.references)
             updateExportsCache(itemId, AdditionalFiscalReferencesData(updatedCache))
-              .map(_ => navigator.continueTo(routes.ItemTypeController.displayPage(mode, itemId)))
-          else Future.successful(navigator.continueTo(routes.ItemTypeController.displayPage(mode, itemId)))
+              .map(_ => navigator.continueTo(routes.CommodityDetailsController.displayPage(mode, itemId)))
+          else Future.successful(navigator.continueTo(routes.CommodityDetailsController.displayPage(mode, itemId)))
       )
 
   def removeReference(mode: Mode, itemId: String, value: String) = itemAction(itemId).async { implicit request =>
