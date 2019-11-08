@@ -28,10 +28,10 @@
 @(mode: Mode, form: Form[WarehouseDetails])(implicit request: Request[_], messages: Messages)
 
     @main_template(
-        title = Title("declaration.warehouseIdentification.title")
+        title = Title("declaration.warehouse.identification.title")
     ) {
 
-        @helper.form(routes.WarehouseIdentificationController.saveInput(mode), 'autoComplete -> "off") {
+        @helper.form(routes.WarehouseIdentificationController.saveIdentificationNumber(mode), 'autoComplete -> "off") {
             @helper.CSRF.formField
 
             @components.back_link(controllers.declaration.routes.ItemsSummaryController.displayPage(mode), mode)
@@ -39,9 +39,9 @@
             @components.error_summary(form.errors)
 
             @components.heading(
-                sectionHeader = messages("declaration.warehouseIdentification.sectionHeader"),
-                title = messages("declaration.warehouseIdentification.title"),
-                hint = messages("declaration.warehouse.title.hint")
+                sectionHeader = messages("declaration.warehouse.identification.sectionHeader"),
+                title = messages("declaration.warehouse.identification.title"),
+                hint = messages("declaration.warehouse.identification.hint")
             )
 
             @components.fields.field_text(field = form("identificationNumber"))

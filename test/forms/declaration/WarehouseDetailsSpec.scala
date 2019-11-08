@@ -42,19 +42,18 @@ class WarehouseDetailsSpec extends UnitSpec with WarehouseIdentificationMessages
       form().bind(incorrectWarehouseDetails).errors.map(_.message) must contain(identificationTypeNoNumber)
     }
 
-    "validate identification number present and type missing" in {
-
-      val incorrectWarehouseDetails: JsValue =
-        JsObject(Map("identificationType" -> JsString(""), "identificationNumber" -> JsString(TestHelper.createRandomAlphanumericString(2))))
-
-      form().bind(incorrectWarehouseDetails).errors.map(_.message) must contain(identificationNumberNoType)
-    }
-
     "validate identification number - more than 35 characters" in {
       val incorrectWarehouseDetails: JsValue =
         JsObject(Map("identificationNumber" -> JsString(TestHelper.createRandomAlphanumericString(36))))
 
       form().bind(incorrectWarehouseDetails).errors.map(_.message) must contain(identificationNumberError)
+    }
+
+    "validate correct identification number" in {
+      val incorrectWarehouseDetails: JsValue =
+        JsObject(Map("identificationNumber" -> JsString(TestHelper.createRandomAlphanumericString(34))))
+
+      form().bind(incorrectWarehouseDetails).errors.size mustBe 0
     }
 
     "validate supervising customs office - invalid" in {
