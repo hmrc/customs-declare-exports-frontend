@@ -25,22 +25,22 @@
 }
     @components.fields.field_text(
         field = form(s"$addressPrefix.fullName"),
-        label = messages("supplementary.address.fullName")
+        label = Some(messages("supplementary.address.fullName"))
     )
 
     @components.fields.field_text(
         field = form(s"$addressPrefix.addressLine"),
-        label = messages("supplementary.address.addressLine")
+        label = Some(messages("supplementary.address.addressLine"))
     )
 
     @components.fields.field_text(
         field = form(s"$addressPrefix.townOrCity"),
-        label = messages("supplementary.address.townOrCity")
+        label = Some(messages("supplementary.address.townOrCity"))
     )
 
     @components.fields.field_text(
         field = form(s"$addressPrefix.postCode"),
-        label = messages("supplementary.address.postCode")
+        label = Some(messages("supplementary.address.postCode"))
     )
 
     @components.fields.field_autocomplete(

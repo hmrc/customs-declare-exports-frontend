@@ -103,14 +103,14 @@
 
         @components.fields.field_text(
             field = form("documentReference"),
-            label = messages("supplementary.previousDocuments.documentReference"),
+            label = Some(messages("supplementary.previousDocuments.documentReference")),
             hint = Some(messages("supplementary.previousDocuments.documentReference.hint")),
             labelClass = Some("bold-small")
         )
 
         @components.fields.field_text(
             field = form("goodsItemIdentifier"),
-            label = messages("supplementary.previousDocuments.goodsItemIdentifier"),
+            label = Some(messages("supplementary.previousDocuments.goodsItemIdentifier")),
             hint = Some(messages("supplementary.previousDocuments.goodsItemIdentifier.hint")),
             labelClass = Some("bold-small")
         )

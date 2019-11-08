@@ -40,21 +40,21 @@
 
         @components.fields.field_text(
             field = form("totalAmountInvoiced"),
-            label = messages("supplementary.totalAmountInvoiced"),
+            label = Some(messages("supplementary.totalAmountInvoiced")),
             hint = Some(messages("supplementary.totalAmountInvoiced.hint")),
             labelClass = Some("form-label-bold")
         )
 
         @components.fields.field_text(
             field = form("exchangeRate"),
-            label = messages("supplementary.exchangeRate"),
+            label = Some(messages("supplementary.exchangeRate")),
             hint = Some(messages("supplementary.exchangeRate.hint")),
             labelClass = Some("form-label-bold")
         )
 
         @components.fields.field_text(
             field = form("totalPackage"),
-            label = messages("supplementary.totalPackageQuantity"),
+            label = Some(messages("supplementary.totalPackageQuantity")),
             labelClass = Some("form-label-bold")
         )
 

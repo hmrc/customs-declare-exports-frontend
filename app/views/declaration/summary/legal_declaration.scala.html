@@ -30,17 +30,17 @@
 
 @components.fields.field_text(
  field = form("fullName"),
- label = messages("legal.declaration.fullName")
+ label = Some(messages("legal.declaration.fullName"))
 )
 
 @components.fields.field_text(
  field = form("jobRole"),
- label = messages("legal.declaration.jobRole")
+ label = Some(messages("legal.declaration.jobRole"))
 )
 
 @components.fields.field_text(
  field = form("email"),
- label = messages("legal.declaration.email")
+ label = Some(messages("legal.declaration.email"))
 )
 
 @components.fields.field_checkbox(
