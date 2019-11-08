@@ -18,7 +18,7 @@
 
 @(
     field: Field,
-    label: String,
+    label: Option[String] = None,
     inputClass: Option[String] = None,
     hint: Option[String] = None,
     hintHtml: Option[Html] = None,
@@ -27,16 +27,21 @@
 
 <div class="form-group @if(field.hasErrors){form-field--error}">
     <label class="form-label" for="@{field.id}">
-        <span id="@{field.id}-label" class="@if(labelClass.nonEmpty){@labelClass}">@label</span>
-        @if(hint.nonEmpty){
-        <span id="@{field.id}-hint" class="form-hint">@hint</span>
+        @if(label.nonEmpty){
+            <span id="@{field.id}-label" class="@if(labelClass.nonEmpty){@labelClass}">@label</span>
         }
+
+        @if(hint.nonEmpty){
+            <span id="@{field.id}-hint" class="form-hint">@hint</span>
+        }
+
         @hintHtml.map { hintContent =>
             <span id="@{field.id}-hint" class="form-hint">@hintContent</span>
         }
         @field.errors.map { error =>
-        <span class="error-notification"
-              id="error-message-@{field.id}-input">@messages(error.message, error.args: _*)</span>
+            <span class="error-notification" id="error-message-@{field.id}-input">
+                @messages(error.message, error.args: _*)
+            </span>
         }
     </label>
     <div class="form-control-wrapper">

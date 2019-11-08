@@ -34,7 +34,7 @@
         @helper.form(routes.WarehouseDetailsController.saveWarehouse(mode), 'autoComplete -> "off") {
             @helper.CSRF.formField
 
-            @components.back_link(controllers.declaration.routes.ItemsSummaryController.displayPage(mode), mode)
+            @components.back_link(controllers.declaration.routes.WarehouseIdentificationController.displayPage(mode), mode)
 
             @components.error_summary(form.errors)
 
@@ -58,13 +58,6 @@
                 inputs = WarehouseDetails.IdentifierType.all.map(v =>
                     RadioOption(s"identification_type_${v.toLowerCase}", v, messages(s"supplementary.warehouse.identificationType.${v.toLowerCase}"))
                 ) :+ RadioOption("identification_type_none", "", "supplementary.warehouse.identificationType.none")
-            )
-
-            @components.fields.field_text(
-                field = form("identificationNumber"),
-                label = messages("supplementary.warehouse.identificationNumber"),
-                hint = Some(messages("supplementary.warehouse.identificationNumber.hint")),
-                labelClass = Some("bold-small")
             )
 
             @components.fields.field_radio(

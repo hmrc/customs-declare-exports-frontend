@@ -59,7 +59,7 @@
 
         @components.fields.field_text(
             field = form("eori"),
-            label = messages("supplementary.declarationHolder.eori"),
+            label = Some(messages("supplementary.declarationHolder.eori")),
             hint = Some(messages("supplementary.eori.hint")),
             labelClass = Some("form-label-bold")
         )

@@ -94,13 +94,13 @@
 
         @components.fields.field_text(
             field = form("numberOfPackages"),
-            label = messages("supplementary.packageInformation.numberOfPackages"),
+            label = Some(messages("supplementary.packageInformation.numberOfPackages")),
             labelClass = Some("bold-small")
         )
 
         @components.fields.field_text(
             field = form("shippingMarks"),
-            label = messages("supplementary.packageInformation.shippingMarks"),
+            label = Some(messages("supplementary.packageInformation.shippingMarks")),
             hint = Some(messages("supplementary.packageInformation.shippingMarks.hint")),
             labelClass = Some("bold-small")
         )

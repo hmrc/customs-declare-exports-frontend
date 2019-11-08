@@ -49,7 +49,7 @@
 
         @components.fields.field_text(
             field = form(CommodityDetails.combinedNomenclatureCodeKey),
-            label = messages("declaration.commodityDetails.combinedNomenclatureCode.header"),
+            label = Some(messages("declaration.commodityDetails.combinedNomenclatureCode.header")),
             hint = Some(messages("declaration.commodityDetails.combinedNomenclatureCode.header.hint")),
             labelClass = Some("bold-small")
         )
