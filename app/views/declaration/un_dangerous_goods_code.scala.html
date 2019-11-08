@@ -32,6 +32,11 @@
         form: Form[UNDangerousGoodsCode]
 )(implicit request: JourneyRequest[_], messages: Messages)
 
+@hintHtml = {
+    @messages("declaration.unDangerousGoodsCode.header.hint")
+    <a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.unDangerousGoodsCode.header.hint.link")</a>
+}
+
 @main_template(
     title = Title("declaration.unDangerousGoodsCode.header", "supplementary.items")
 ) {
@@ -46,7 +51,7 @@
         @components.heading(
             sectionHeader = messages("supplementary.items"),
             title = messages("declaration.unDangerousGoodsCode.header"),
-            hint = messages("declaration.unDangerousGoodsCode.header.hint")
+            hintHtml = Some(hintHtml)
         )
 
 

@@ -629,13 +629,14 @@ declaration.commodityDetails.how.summary = It is important to get it right. If y
 declaration.commodityDetails.how.classificationTeam = classification team.
 
 declaration.unDangerousGoodsCode.header = Does the item have a UN dangerous goods code?
-declaration.unDangerousGoodsCode.header.hint = You can find this in 'Export measures and restrictions' tab of the commodity code in the UK Trade Tariff
+declaration.unDangerousGoodsCode.header.hint = You can find this in ‘Export measures and restrictions’ tab of the commodity code in the
+declaration.unDangerousGoodsCode.header.hint.link = UK Trade Tariff
 declaration.unDangerousGoodsCode.label = UN dangerous goods code
 declaration.unDangerousGoodsCode.hasCode = Yes
 declaration.unDangerousGoodsCode.noCode = No
-
+declaration.unDangerousGoodsCode.error.empty = Enter a UN dangerous goods code
 declaration.unDangerousGoodsCode.error.length = The code must be 4 characters
-declaration.unDangerousGoodsCode.error.specialCharacters = Enter a UN Dangerous Goods Code in the correct format
+declaration.unDangerousGoodsCode.error.specialCharacters = Enter a UN dangerous goods code in the correct format
 
 
 supplementary.previousDocuments = Previous documents

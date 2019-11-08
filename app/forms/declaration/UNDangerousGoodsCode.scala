@@ -16,10 +16,12 @@
 
 package forms.declaration
 import forms.DeclarationPage
-import play.api.data.Forms.{optional, text}
+import forms.Mapping.requiredRadio
+import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import utils.validators.forms.FieldValidator.{hasSpecificLength, isAlphanumeric}
+import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
+import utils.validators.forms.FieldValidator._
 
 case class UNDangerousGoodsCode(dangerousGoodsCode: Option[String])
 
@@ -46,14 +48,18 @@ object UNDangerousGoodsCode extends DeclarationPage {
         case None       => Some(("No", None))
     }
 
-  private val mappingUNDangerousGoodsCode = optional(
-    text()
-      .verifying("declaration.unDangerousGoodsCode.error.length", hasSpecificLength(unDangerousGoodsCodeLength))
-      .verifying("declaration.unDangerousGoodsCode.error.specialCharacters", isAlphanumeric)
-  )
-
   val mapping =
-    Forms.mapping(hasDangerousGoodsCodeKey -> text(), dangerousGoodsCodeKey -> mappingUNDangerousGoodsCode)(form2Model)(model2Form)
+    Forms.mapping(
+      hasDangerousGoodsCodeKey -> requiredRadio("error.yesNo.required"),
+      dangerousGoodsCodeKey -> mandatoryIfEqual(
+        hasDangerousGoodsCodeKey,
+        "Yes",
+        text()
+          .verifying("declaration.unDangerousGoodsCode.error.empty", nonEmpty)
+          .verifying("declaration.unDangerousGoodsCode.error.length", isEmpty or hasSpecificLength(unDangerousGoodsCodeLength))
+          .verifying("declaration.unDangerousGoodsCode.error.specialCharacters", isEmpty or isAlphanumeric)
+      )
+    )(form2Model)(model2Form)
 
   def form(): Form[UNDangerousGoodsCode] = Form(mapping)
 }

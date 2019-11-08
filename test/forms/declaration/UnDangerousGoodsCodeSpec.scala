@@ -23,34 +23,40 @@ import play.api.libs.json.{JsObject, JsString}
 
 class UnDangerousGoodsCodeSpec extends WordSpec with MustMatchers {
 
-  def formData(code: Option[String]) =
-    JsObject(Map(dangerousGoodsCodeKey -> JsString(code.getOrElse("")), hasDangerousGoodsCodeKey -> JsString(code.map(_ => "Yes").getOrElse("No"))))
+  def formData(hasCode: String, code: Option[String]) =
+    JsObject(Map(hasDangerousGoodsCodeKey -> JsString(hasCode), dangerousGoodsCodeKey -> JsString(code.getOrElse(""))))
 
   "UNDangerousGoodsCode mapping" should {
 
     "return form with errors" when {
       "provided with code too long" in {
-        val form = UNDangerousGoodsCode.form.bind(formData(Some("A12344")))
+        val form = UNDangerousGoodsCode.form.bind(formData("Yes", Some("A12344")))
 
         form.errors mustBe Seq(FormError(dangerousGoodsCodeKey, "declaration.unDangerousGoodsCode.error.length"))
       }
 
       "provided with non-alphanumeric code" in {
-        val form = UNDangerousGoodsCode.form.bind(formData(Some("!234")))
+        val form = UNDangerousGoodsCode.form.bind(formData("Yes", Some("!234")))
 
         form.errors mustBe Seq(FormError(dangerousGoodsCodeKey, "declaration.unDangerousGoodsCode.error.specialCharacters"))
+      }
+
+      "provided with no code when user said yes" in {
+        val form = UNDangerousGoodsCode.form.bind(formData("Yes", None))
+
+        form.errors mustBe Seq(FormError(dangerousGoodsCodeKey, "declaration.unDangerousGoodsCode.error.empty"))
       }
     }
 
     "return form without errors" when {
-      "provided with valid input" in {
-        val form = UNDangerousGoodsCode.form.bind(formData(Some("1234")))
+      "provided with valid input when user said Yes" in {
+        val form = UNDangerousGoodsCode.form.bind(formData("Yes", Some("1234")))
 
         form.hasErrors must be(false)
       }
 
-      "provided with no input" in {
-        val form = UNDangerousGoodsCode.form.bind(formData(None))
+      "provided with no input when user said No" in {
+        val form = UNDangerousGoodsCode.form.bind(formData("No", None))
 
         form.hasErrors must be(false)
       }
