@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.1
+// @version      1.2
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -185,6 +185,16 @@ function completePage() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/additional-fiscal-references')) {
         selectFromAutoPredict(document.getElementById("country-container"), 'GB');
         document.getElementById("reference").value = '1234';
+        document.getElementsByClassName('button')[0].click()
+    }
+    if (currentPageIs('/customs-declare-exports/declaration/items/.*/commodity-details')) {
+        document.getElementById('combinedNomenclatureCode').value ='12345678';
+        document.getElementById('descriptionOfGoods').value ='Copper pipe (15mm x 3m)';
+        document.getElementsByClassName('button')[0].click()
+    }
+    if (currentPageIs('/customs-declare-exports/declaration/items/.*/un-dangerous-goods-code')) {
+        document.getElementById('code_yes').checked = 'checked';
+        document.getElementById('dangerousGoodsCode').value ='GB34';
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/item-type')) {
