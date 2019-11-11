@@ -770,7 +770,6 @@ supplementary.summary.locations.locationCode = Location code
 supplementary.summary.locations.additionalIdentifier = Additional identifier
 supplementary.summary.locations.procedureCode = Procedure code
 supplementary.summary.locations.additionalProcedureCodes = Additional procedure codes
-supplementary.summary.locations.warehouseType = Warehouse Type
 supplementary.summary.locations.warehouseId = Warehouse ID
 supplementary.summary.locations.inlandModeOfTransportCode = Inland mode of transport code
 supplementary.summary.locations.supervisingCustomsOffice = Supervising customs office
