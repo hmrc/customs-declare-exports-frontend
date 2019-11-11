@@ -19,18 +19,19 @@ package views.declaration.destinationCountries
 import controllers.declaration.routes
 import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.destinationCountries.DestinationCountries.DestinationCountryPage
-import models.Mode
+import models.{DeclarationType, Mode}
 import play.api.data.Form
+import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.destinationCountries.destination_country
 
-class DestinationCountryViewSpec extends UnitViewSpec with Stubs {
+class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
 
   val form: Form[String] = DestinationCountries.form(DestinationCountryPage)
 
   val destinationCountryPage = new destination_country(mainTemplate)
-  val view = destinationCountryPage(Mode.Normal, form)
+  val view = destinationCountryPage(Mode.Normal, form)(journeyRequest(), messages)
 
   "Destination country view spec" should {
 
@@ -54,12 +55,37 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs {
       view.getElementById("section-header").text() must include(messages("declaration.destinationCountry.heading"))
     }
 
-    "display back button that links to 'Origination country' page" in {
+    "display back button that links to 'Origination country' page" when {
 
-      val backButton = view.getElementById("link-back")
+      "user is during Standard journey" in {
 
-      backButton.text() mustBe messages("site.back")
-      backButton must haveHref(routes.OriginationCountryController.displayPage())
+        val standardView = destinationCountryPage(Mode.Normal, form)(journeyRequest(DeclarationType.STANDARD), messages)
+        val backButton = standardView.getElementById("link-back")
+
+        backButton.text() mustBe messages("site.back")
+        backButton must haveHref(routes.OriginationCountryController.displayPage())
+      }
+
+      "user is during Supplementary journey" in {
+
+        val supplementaryView = destinationCountryPage(Mode.Normal, form)(journeyRequest(DeclarationType.SUPPLEMENTARY), messages)
+        val backButton = supplementaryView.getElementById("link-back")
+
+        backButton.text() mustBe messages("site.back")
+        backButton must haveHref(routes.OriginationCountryController.displayPage())
+      }
+    }
+
+    "display back button that links to `Declaration holder` page" when {
+
+      "user is during Simplified journey" in {
+
+        val simplifiedView = destinationCountryPage(Mode.Normal, form)(journeyRequest(DeclarationType.SIMPLIFIED), messages)
+        val backButton = simplifiedView.getElementById("link-back")
+
+        backButton.text() mustBe messages("site.back")
+        backButton must haveHref(routes.DeclarationHolderController.displayPage())
+      }
     }
 
     "display 'Save and continue' button" in {

@@ -119,11 +119,11 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs("/customs-declare-exports/declaration/origination-country")) {
-        selectFromAutoPredict(document.getElementById("countryOfDispatch-container"), "GB");
+        selectFromAutoPredict(document.getElementById("country-container"), "GB");
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs("/customs-declare-exports/declaration/destination-country")) {
-        selectFromAutoPredict(document.getElementById("countryOfDestination-container"), "GB");
+        selectFromAutoPredict(document.getElementById("country-container"), "GB");
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs("/customs-declare-exports/declaration/destination-countries")) {

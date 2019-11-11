@@ -19,7 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.DeclarationHolderController
 import controllers.util.Remove
 import forms.declaration.DeclarationHolder
-import models.Mode
+import models.{DeclarationType, Mode}
 import models.declaration.DeclarationHoldersData
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
@@ -199,6 +199,48 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
         val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(removeAction))
 
         status(result) must be(OK)
+      }
+    }
+
+    "should redirect to Origination Country page" when {
+
+      "user is during Supplementary journey" in new SetUp {
+
+        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
+
+        val correctForm = Seq(("authorisationTypeCode", "ACT"), ("eori", "GB654321"), saveAndContinueActionUrlEncoded)
+
+        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.OriginationCountryController.displayPage()
+      }
+
+      "user is during Standard journey" in new SetUp {
+
+        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
+
+        val correctForm = Seq(("authorisationTypeCode", "ACT"), ("eori", "GB654321"), saveAndContinueActionUrlEncoded)
+
+        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.OriginationCountryController.displayPage()
+      }
+    }
+
+    "should redirect to Destination Country page" when {
+
+      "user is during Simplified journey" in new SetUp {
+
+        withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED)))
+
+        val correctForm = Seq(("authorisationTypeCode", "ACT"), ("eori", "GB654321"), saveAndContinueActionUrlEncoded)
+
+        val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.DestinationCountryController.displayPage()
       }
     }
   }
