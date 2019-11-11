@@ -18,9 +18,10 @@ package views.declaration
 
 import forms.declaration.CommodityDetails
 import helpers.views.declaration.CommonMessages
-import models.DeclarationType.DeclarationType
-import models.{DeclarationType, Mode}
+import models.DeclarationType.{DeclarationType, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.Mode
 import org.jsoup.nodes.Document
+import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -33,49 +34,68 @@ class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
   private val page = new commodity_details(mainTemplate, minimalAppConfig)
   private val itemId = "item1"
   private val realMessages = validatedMessages
-  private def createView(declarationType: DeclarationType = DeclarationType.STANDARD): Document =
-    page(Mode.Normal, itemId, CommodityDetails.form(declarationType))(journeyRequest(), realMessages)
+  private def createView(declarationType: DeclarationType, form: Form[CommodityDetails]): Document =
+    page(Mode.Normal, itemId, form)(journeyRequest(declarationType), realMessages)
 
-  def commodityDetailsView(declarationType: DeclarationType): Unit = {
-    val view = createView(declarationType = declarationType)
+  def commodityDetailsView(
+    declarationType: DeclarationType,
+    form: Form[CommodityDetails],
+    commodityDetails: Option[CommodityDetails] = None
+  ): Unit = {
+    val view = createView(declarationType, commodityDetails.fold(form)(form.fill(_)))
 
     "display page title" in {
-
       view.getElementById("title").text() mustBe realMessages("declaration.commodityDetails.title")
     }
 
-    "display commodity code field" in {
-      view.getElementById(CommodityDetails.combinedNomenclatureCodeKey).attr("value") mustBe empty
+    "display commodity code input field" in {
+      val expectedCode = commodityDetails.flatMap(_.combinedNomenclatureCode).getOrElse("")
+      view.getElementById(CommodityDetails.combinedNomenclatureCodeKey).attr("value") mustBe expectedCode
     }
 
-    "display description field" in {
-      view.getElementById(CommodityDetails.descriptionOfGoodsKey).attr("value") mustBe empty
+    "display description textarea field" in {
+      val expectedDescription = commodityDetails.map(_.descriptionOfGoods).getOrElse("")
+      view.getElementById(CommodityDetails.descriptionOfGoodsKey).text() mustBe expectedDescription
     }
 
     "display 'Back' button that links to 'Package Information' page" in {
       val backButton = view.getElementById("link-back")
-
       backButton.getElementById("link-back") must haveHref(
         controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId)
       )
     }
 
     "display 'Save and continue' button on page" in {
-
       val saveButton = view.select("#submit")
       saveButton.text() mustBe realMessages(saveAndContinueCaption)
     }
   }
 
   "Commodity Details View on empty page" when {
+
     "we are on Standard journey" should {
-      behave like commodityDetailsView(DeclarationType.STANDARD)
+      behave like commodityDetailsView(STANDARD, CommodityDetails.form(STANDARD))
     }
     "we are on Supplementary journey" should {
-      behave like commodityDetailsView(DeclarationType.SUPPLEMENTARY)
+      behave like commodityDetailsView(SUPPLEMENTARY, CommodityDetails.form(SUPPLEMENTARY))
     }
     "we are on Simplified journey" should {
-      behave like commodityDetailsView(DeclarationType.SIMPLIFIED)
+      behave like commodityDetailsView(SIMPLIFIED, CommodityDetails.form(SIMPLIFIED))
+    }
+  }
+
+  "Commodity Details View on populated page" when {
+
+    val details = Some(CommodityDetails(Some("12345678"), "Description"))
+
+    "we are on Standard journey" should {
+      behave like commodityDetailsView(STANDARD, CommodityDetails.form(STANDARD), details)
+    }
+    "we are on Supplementary journey" should {
+      behave like commodityDetailsView(SUPPLEMENTARY, CommodityDetails.form(SUPPLEMENTARY), details)
+    }
+    "we are on Simplified journey" should {
+      behave like commodityDetailsView(SIMPLIFIED, CommodityDetails.form(SIMPLIFIED), details)
     }
   }
 }

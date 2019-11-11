@@ -18,13 +18,7 @@ package models.declaration
 import play.api.libs.functional.syntax.{unlift, _}
 import play.api.libs.json.{JsPath, Reads, Writes}
 
-case class ItemType(
-  taricAdditionalCodes: Seq[String],
-  nationalAdditionalCodes: Seq[String],
-  cusCode: Option[String],
-  unDangerousGoodsCode: Option[String],
-  statisticalValue: String
-)
+case class ItemType(taricAdditionalCodes: Seq[String], nationalAdditionalCodes: Seq[String], cusCode: Option[String], statisticalValue: String)
 
 object ItemType {
 
@@ -32,7 +26,6 @@ object ItemType {
     (JsPath \ "taricAdditionalCode").read[Seq[String]] and
       (JsPath \ "nationalAdditionalCode").read[Seq[String]] and
       (JsPath \ "cusCode").readNullable[String] and
-      (JsPath \ "unDangerousGoodsCode").readNullable[String] and
       (JsPath \ "statisticalValue").read[String]
   )(ItemType.apply _)
 
@@ -40,9 +33,8 @@ object ItemType {
     (JsPath \ "taricAdditionalCode").write[Seq[String]] and
       (JsPath \ "nationalAdditionalCode").write[Seq[String]] and
       (JsPath \ "cusCode").writeNullable[String] and
-      (JsPath \ "unDangerousGoodsCode").writeNullable[String] and
       (JsPath \ "statisticalValue").write[String]
   )(unlift(ItemType.unapply))
 
-  val empty: ItemType = ItemType(Nil, Nil, None, None, "")
+  val empty: ItemType = ItemType(Nil, Nil, None, "")
 }

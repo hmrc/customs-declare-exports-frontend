@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@(title: String = "", sectionHeader: String = "", hint: String = "")
+@(title: String = "", sectionHeader: String = "", hint: String = "", hintHtml: Option[Html] = None)
 
 <header class="page-heading">
     @if(sectionHeader.nonEmpty) {
@@ -28,7 +28,8 @@
         <h1 class="title" id="title">@title</h1>
     }
 
-    @if(hint.nonEmpty) {
-        <span id="hint" class="form-hint">@hint</span>
+    @if(hint.nonEmpty || hintHtml.isDefined) {
+        <span id="hint" class="form-hint">@hintHtml.getOrElse(hint)</span>
     }
+
 </header>

@@ -44,7 +44,7 @@
     @helper.form(routes.ItemTypeController.submitItemType(mode, item.id), 'autocomplete -> "off") {
         @helper.CSRF.formField
 
-        @components.back_link(routes.CommodityDetailsController.displayPage(mode, item.id), mode)
+        @components.back_link(routes.UNDangerousGoodsCodeController.displayPage(mode, item.id), mode)
 
         @components.error_summary(form.errors)
 
@@ -95,15 +95,6 @@
             hintHtml = Some(Html( messages("declaration.itemType.cusCode.header.hint"))),
             labelClass = Some("bold-small")
         )
-
-        @if(request.isType(DeclarationType.STANDARD) || request.isType(DeclarationType.SIMPLIFIED)) @{
-            components.fields.field_text(
-                field = form(unDangerousGoodsCodeKey),
-                label = messages("declaration.itemType.unDangerousGoodsCode.header"),
-                hint = Some(messages("declaration.itemType.unDangerousGoodsCode.header.hint")),
-                labelClass = Some("bold-small")
-            )
-        }
 
       <div class="section mb-0">
           @components.buttons.save_and_continue_button()

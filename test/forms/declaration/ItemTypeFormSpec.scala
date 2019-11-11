@@ -49,7 +49,6 @@ object ItemTypeFormSpec {
   private val taricAdditionalCode = "AB12"
   private val nationalAdditionalCode = "VATE"
   private val cusCode = "QWER0987"
-  private val unDangerousGoodsCode = "12CD"
   private val statisticalValue = "1234567890123.45"
 
   val correctItemTypeMap: Map[String, String] =
@@ -57,7 +56,6 @@ object ItemTypeFormSpec {
       taricAdditionalCodeKey -> taricAdditionalCode,
       nationalAdditionalCodeKey -> nationalAdditionalCode,
       cusCodeKey -> cusCode,
-      statisticalValueKey -> statisticalValue,
-      unDangerousGoodsCodeKey -> unDangerousGoodsCode
+      statisticalValueKey -> statisticalValue
     )
 }

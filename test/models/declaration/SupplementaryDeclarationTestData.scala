@@ -215,7 +215,6 @@ object SupplementaryDeclarationTestData {
             taricAdditionalCodes = Seq("taricAdditionalCodes"),
             nationalAdditionalCodes = Seq("nationalAdditionalCodes"),
             cusCode = Some("cusCode"),
-            unDangerousGoodsCode = Some("999"),
             statisticalValue = "100"
           )
         ),

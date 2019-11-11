@@ -143,7 +143,6 @@ class ItemTypeController @Inject()(
       taricAdditionalCodes = updatedTaricCodes,
       nationalAdditionalCodes = updatedNationalCodes,
       cusCode = itemTypeInput.cusCode,
-      unDangerousGoodsCode = itemTypeInput.unDangerousGoodsCode,
       statisticalValue = itemTypeInput.statisticalValue
     )
   }

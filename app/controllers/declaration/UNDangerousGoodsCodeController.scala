@@ -18,8 +18,8 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.CommodityDetails
-import forms.declaration.CommodityDetails.form
+import forms.declaration.UNDangerousGoodsCode
+import forms.declaration.UNDangerousGoodsCode.form
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -28,44 +28,44 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.commodity_details
+import views.html.declaration.un_dangerous_goods_code
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CommodityDetailsController @Inject()(
+class UNDangerousGoodsCodeController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  commodityDetailsPage: commodity_details
+  unDangerousGoodsCodePage: un_dangerous_goods_code
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.itemBy(itemId).flatMap(_.commodityDetails) match {
-      case Some(commodityDetails) => Ok(commodityDetailsPage(mode, itemId, form(request.declarationType).fill(commodityDetails)))
-      case _                      => Ok(commodityDetailsPage(mode, itemId, form(request.declarationType)))
+    request.cacheModel.itemBy(itemId).flatMap(_.dangerousGoodsCode) match {
+      case Some(dangerousGoodsCode) => Ok(unDangerousGoodsCodePage(mode, itemId, form.fill(dangerousGoodsCode)))
+      case _                        => Ok(unDangerousGoodsCodePage(mode, itemId, form))
     }
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form(request.declarationType)
+    form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[CommodityDetails]) => Future.successful(BadRequest(commodityDetailsPage(mode, itemId, formWithErrors))),
+        (formWithErrors: Form[UNDangerousGoodsCode]) => Future.successful(BadRequest(unDangerousGoodsCodePage(mode, itemId, formWithErrors))),
         validForm =>
           updateExportsCache(itemId, validForm).map { _ =>
             navigator
-              .continueTo(controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(mode, itemId))
+              .continueTo(controllers.declaration.routes.ItemTypeController.displayPage(mode, itemId))
         }
       )
   }
 
-  private def updateExportsCache(itemId: String, updatedItem: CommodityDetails)(
+  private def updateExportsCache(itemId: String, updatedItem: UNDangerousGoodsCode)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>
-      model.updatedItem(itemId, item => item.copy(commodityDetails = Some(updatedItem)))
+      model.updatedItem(itemId, item => item.copy(dangerousGoodsCode = Some(updatedItem)))
     }
 }
