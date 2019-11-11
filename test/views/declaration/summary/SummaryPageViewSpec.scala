@@ -166,7 +166,6 @@ class SummaryPageViewSpec extends WordSpec with MustMatchers with ExportsDeclara
       summaryPage must include("supplementary.summary.locations.goodsExaminationLocationType")
       summaryPage must include("supplementary.summary.locations.qualifierCode")
       summaryPage must include("supplementary.summary.locations.additionalIdentifier")
-      summaryPage must include("supplementary.summary.locations.warehouseType")
       summaryPage must include("supplementary.summary.locations.warehouseId")
       summaryPage must include("supplementary.summary.locations.supervisingCustomsOffice")
       summaryPage must include("supplementary.summary.locations.officeOfExit")
