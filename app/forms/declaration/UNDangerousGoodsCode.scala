@@ -43,8 +43,8 @@ object UNDangerousGoodsCode extends DeclarationPage {
   private def form2Model: (String, Option[String]) => UNDangerousGoodsCode = {
     case (hasCode, codeValue) =>
       hasCode match {
-        case yes => UNDangerousGoodsCode(codeValue)
-        case no  => UNDangerousGoodsCode(None)
+        case AllowedUNDangerousGoodsCodeAnswers.yes => UNDangerousGoodsCode(codeValue)
+        case AllowedUNDangerousGoodsCodeAnswers.no  => UNDangerousGoodsCode(None)
       }
   }
 
