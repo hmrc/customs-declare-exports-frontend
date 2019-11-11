@@ -19,50 +19,55 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.destinationCountries.DestinationCountries
-import forms.declaration.destinationCountries.DestinationCountries.OriginationCountryPage
+import forms.declaration.destinationCountries.DestinationCountries.DestinationCountryPage
 import javax.inject.{Inject, Singleton}
-import models.Mode
+import models.{DeclarationType, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.destinationCountries.origination_country
+import views.html.declaration.destinationCountries.destination_country
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class OriginationCountryController @Inject()(
+class DestinationCountryController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  originationCountryPage: origination_country
+  destinationCountryPage: destination_country
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val form = request.cacheModel.locations.destinationCountries match {
-      case Some(DestinationCountries(originateCountry, _, _)) =>
-        DestinationCountries.form(OriginationCountryPage).fill(originateCountry)
-      case None => DestinationCountries.form(OriginationCountryPage)
+      case Some(DestinationCountries(_, _, destinationCountry)) =>
+        DestinationCountries.form(DestinationCountryPage).fill(destinationCountry)
+      case None => DestinationCountries.form(DestinationCountryPage)
     }
 
-    Ok(originationCountryPage(mode, form))
+    Ok(destinationCountryPage(mode, form))
   }
 
   def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     DestinationCountries
-      .form(OriginationCountryPage)
+      .form(DestinationCountryPage)
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(originationCountryPage(mode, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(destinationCountryPage(mode, formWithErrors))),
         validCountry => {
           val updatedCache =
-            request.cacheModel.destinationCountries.copy(countryOfDispatch = validCountry)
+            request.cacheModel.destinationCountries.copy(countryOfDestination = validCountry)
 
           updateExportsDeclarationSyncDirect(_.updateDestinationCountries(updatedCache)).map { _ =>
-            navigator.continueTo(controllers.declaration.routes.DestinationCountryController.displayPage(mode))
+            request.declarationType match {
+              case DeclarationType.SUPPLEMENTARY =>
+                navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode))
+              case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED =>
+                navigator.continueTo(controllers.declaration.routes.DestinationCountriesController.displayPage(mode))
+            }
           }
         }
       )

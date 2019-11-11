@@ -24,12 +24,11 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
-import views.html.declaration.{destination_countries_standard, destination_countries_supplementary}
+import views.html.declaration.destination_countries_standard
 
 class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
   trait SetUp {
-    val destinationCountriesSupplementaryPage = new destination_countries_supplementary(mainTemplate)
     val destinationCountriesStandardPage = new destination_countries_standard(mainTemplate)
 
     val controller = new DestinationCountriesController(
@@ -39,7 +38,6 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
       mockExportsCacheService,
       navigator,
       stubMessagesControllerComponents(),
-      destinationCountriesSupplementaryPage,
       destinationCountriesStandardPage
     )(ec)
 

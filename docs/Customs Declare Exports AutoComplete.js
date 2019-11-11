@@ -118,12 +118,18 @@ function completePage() {
         document.getElementById('eori').value = 'GB717572504502811';
         document.getElementsByClassName('button')[0].click()
     }
-    if (currentPageIs("/customs-declare-exports/declaration/destination-countries")) {
+    if (currentPageIs("/customs-declare-exports/declaration/origination-country")) {
         selectFromAutoPredict(document.getElementById("countryOfDispatch-container"), "GB");
+        document.getElementsByClassName('button')[0].click()
+    }
+    if (currentPageIs("/customs-declare-exports/declaration/destination-country")) {
+        selectFromAutoPredict(document.getElementById("countryOfDestination-container"), "GB");
+        document.getElementsByClassName('button')[0].click()
+    }
+    if (currentPageIs("/customs-declare-exports/declaration/destination-countries")) {
         if(document.getElementById("countriesOfRouting-container")){
             selectFromAutoPredict(document.getElementById("countriesOfRouting-container"), "GB")
         }
-        selectFromAutoPredict(document.getElementById("countryOfDestination-container"), "US");
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs("/customs-declare-exports/declaration/location-of-goods")) {
