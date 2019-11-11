@@ -85,12 +85,17 @@ GET         /location-of-goods                   controllers.declaration.Locatio
 
 POST        /location-of-goods                   controllers.declaration.LocationController.saveLocation(mode: models.Mode ?= models.Mode.Normal)
 
-
 # Identification of a Warehouse
 
-GET         /warehouse                           controllers.declaration.WarehouseIdentificationController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /warehouse-identification            controllers.declaration.WarehouseIdentificationController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /warehouse                           controllers.declaration.WarehouseIdentificationController.saveWarehouse(mode: models.Mode ?= models.Mode.Normal)
+POST        /warehouse-identification            controllers.declaration.WarehouseIdentificationController.saveIdentificationNumber(mode: models.Mode ?= models.Mode.Normal)
+
+# Details of a Warehouse
+
+GET         /warehouse                           controllers.declaration.WarehouseDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /warehouse                           controllers.declaration.WarehouseDetailsController.saveWarehouse(mode: models.Mode ?= models.Mode.Normal)
 
 # Office of exit
 

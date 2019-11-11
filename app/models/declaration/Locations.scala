@@ -25,7 +25,7 @@ import play.api.libs.json.Json
 case class Locations(
   destinationCountries: Option[DestinationCountries] = None,
   goodsLocation: Option[GoodsLocation] = None,
-  warehouseIdentification: Option[WarehouseIdentification] = None,
+  warehouseIdentification: Option[WarehouseDetails] = None,
   officeOfExit: Option[OfficeOfExit] = None
 ) extends SummaryContainer {
 

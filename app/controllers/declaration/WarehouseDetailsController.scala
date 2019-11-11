@@ -21,23 +21,23 @@ import controllers.navigation.Navigator
 import forms.declaration.WarehouseDetails
 import javax.inject.Inject
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.warehouse_identification
+import views.html.declaration.warehouse_details
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class WarehouseIdentificationController @Inject()(
+class WarehouseDetailsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
-  warehouseIdentificationPage: warehouse_identification
+  warehouseDetailsPage: warehouse_details
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
@@ -45,19 +45,25 @@ class WarehouseIdentificationController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.locations.warehouseIdentification match {
-      case Some(data) => Ok(warehouseIdentificationPage(mode, form().fill(data)))
-      case _          => Ok(warehouseIdentificationPage(mode, form()))
+      case Some(data) => Ok(warehouseDetailsPage(mode, form().fill(data)))
+      case _          => Ok(warehouseDetailsPage(mode, form()))
     }
   }
 
-  def saveIdentificationNumber(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def saveWarehouse(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[WarehouseDetails]) => Future.successful(BadRequest(warehouseIdentificationPage(mode, formWithErrors))),
+        (formWithErrors: Form[WarehouseDetails]) => Future.successful(BadRequest(warehouseDetailsPage(mode, formWithErrors))),
         form => {
+          val nextStep = request.cacheModel.`type` match {
+            case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
+              controllers.declaration.routes.DepartureTransportController.displayPage(mode)
+            case DeclarationType.SIMPLIFIED =>
+              controllers.declaration.routes.BorderTransportController.displayPage(mode)
+          }
           updateCache(form)
-            .map(_ => navigator.continueTo(controllers.declaration.routes.WarehouseDetailsController.displayPage(mode)))
+            .map(_ => navigator.continueTo(nextStep))
         }
       )
   }
@@ -68,12 +74,17 @@ class WarehouseIdentificationController @Inject()(
         .map(
           dbWarehouseDetails =>
             WarehouseDetails(
-              identificationNumber = formData.identificationNumber,
-              supervisingCustomsOffice = dbWarehouseDetails.supervisingCustomsOffice,
-              inlandModeOfTransportCode = dbWarehouseDetails.inlandModeOfTransportCode
+              identificationNumber = dbWarehouseDetails.identificationNumber,
+              supervisingCustomsOffice = formData.supervisingCustomsOffice,
+              inlandModeOfTransportCode = formData.inlandModeOfTransportCode
           )
         )
-        .getOrElse(WarehouseDetails(identificationNumber = formData.identificationNumber))
+        .getOrElse(
+          WarehouseDetails(
+            supervisingCustomsOffice = formData.supervisingCustomsOffice,
+            inlandModeOfTransportCode = formData.inlandModeOfTransportCode
+          )
+        )
       model.copy(locations = model.locations.copy(warehouseIdentification = Some(warehouseDetails)))
     }
 }

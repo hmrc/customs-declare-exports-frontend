@@ -77,14 +77,14 @@
 
         @components.fields.field_text(
             field = form(documentTypeCodeKey),
-            label = messages("supplementary.addDocument.documentTypeCode"),
+            label = Some(messages("supplementary.addDocument.documentTypeCode")),
             labelClass = Some("bold-small")
         )
 
 
         @components.fields.field_text(
             field = form(documentIdentifierKey),
-            label = messages("supplementary.addDocument.documentIdentifier"),
+            label = Some(messages("supplementary.addDocument.documentIdentifier")),
             labelClass = Some("bold-small"),
             hint = Some(messages("supplementary.addDocument.documentIdentifier.hint"))
         )
@@ -92,19 +92,19 @@
 
         @components.fields.field_text(
             field = form(documentStatusKey),
-            label = messages("supplementary.addDocument.documentStatus"),
+            label = Some(messages("supplementary.addDocument.documentStatus")),
             labelClass = Some("bold-small")
         )
 
         @components.fields.field_text(
             field = form(documentStatusReasonKey),
-            label = messages("supplementary.addDocument.documentStatusReason"),
+            label = Some(messages("supplementary.addDocument.documentStatusReason")),
             labelClass = Some("bold-small")
         )
 
         @components.fields.field_text(
             field = form(issuingAuthorityNameKey),
-            label = messages("supplementary.addDocument.issuingAuthorityName"),
+            label = Some(messages("supplementary.addDocument.issuingAuthorityName")),
             labelClass = Some("bold-small")
         )
 
@@ -118,13 +118,13 @@
 
             @components.fields.field_text(
                 field = form(s"$documentWriteOffKey.$measurementUnitKey"),
-                label = messages("supplementary.addDocument.measurementUnit"),
+                label = Some(messages("supplementary.addDocument.measurementUnit")),
                 labelClass = Some("bold-small")
             )
 
             @components.fields.field_text(
                 field = form(s"$documentWriteOffKey.$documentQuantityKey"),
-                label = messages("supplementary.addDocument.documentQuantity"),
+                label = Some(messages("supplementary.addDocument.documentQuantity")),
                 labelClass = Some("bold-small")
             )
         }

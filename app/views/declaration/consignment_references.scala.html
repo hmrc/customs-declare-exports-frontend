@@ -40,14 +40,14 @@
 
       @components.fields.field_text(
           field = form("ducr.ducr"),
-          label = messages("supplementary.consignmentReferences.ducr.info"),
+          label = Some(messages("supplementary.consignmentReferences.ducr.info")),
           hint = Some(messages("supplementary.consignmentReferences.ducr.hint")),
           labelClass = Some("heading-24")
       )
 
       @components.fields.field_text(
           field = form("lrn"),
-          label = messages("supplementary.consignmentReferences.lrn.info"),
+          label = Some(messages("supplementary.consignmentReferences.lrn.info")),
           hint = Some(messages("supplementary.consignmentReferences.lrn.hint")),
           labelClass = Some("heading-24")
       )

@@ -44,13 +44,13 @@
 
         @components.fields.field_text(
             field = form("functionalReferenceId"),
-            label = messages("cancellation.functionalReferenceId"),
+            label = Some(messages("cancellation.functionalReferenceId")),
             labelClass = Some("bold-small")
         )
 
         @components.fields.field_text(
             field = form("mrn"),
-            label = messages("cancellation.mrn"),
+            label = Some(messages("cancellation.mrn")),
             labelClass = Some("bold-small")
         )
 

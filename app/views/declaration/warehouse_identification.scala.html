@@ -16,7 +16,7 @@
 
 @import controllers.declaration.routes
 @import forms.declaration.TransportCodes._
-@import forms.declaration.WarehouseIdentification
+@import forms.declaration.WarehouseDetails
 @import services.CustomsOffices
 @import services.view.AutoCompleteItem
 @import uk.gov.hmrc.play.views.html._
@@ -25,13 +25,13 @@
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[WarehouseIdentification])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, form: Form[WarehouseDetails])(implicit request: Request[_], messages: Messages)
 
     @main_template(
-        title = Title("supplementary.warehouse.title")
+        title = Title("declaration.warehouse.identification.title")
     ) {
 
-        @helper.form(routes.WarehouseIdentificationController.saveWarehouse(mode), 'autoComplete -> "off") {
+        @helper.form(routes.WarehouseIdentificationController.saveIdentificationNumber(mode), 'autoComplete -> "off") {
             @helper.CSRF.formField
 
             @components.back_link(controllers.declaration.routes.ItemsSummaryController.displayPage(mode), mode)
@@ -39,49 +39,12 @@
             @components.error_summary(form.errors)
 
             @components.heading(
-                hint = messages("supplementary.warehouse.title.hint"),
-                title = messages("supplementary.warehouse.title")
+                sectionHeader = messages("declaration.warehouse.identification.sectionHeader"),
+                title = messages("declaration.warehouse.identification.title"),
+                hint = messages("declaration.warehouse.identification.hint")
             )
 
-            @components.fields.field_autocomplete(
-                field = form("supervisingCustomsOffice"),
-                label = messages("supplementary.warehouse.supervisingCustomsOffice"),
-                labelClass = Some("form-label-bold"),
-                hintText = None,
-                emptySelectValue = messages("supplementary.packageInformation.typesOfPackages.empty"),
-                items = AutoCompleteItem.fromSupervisingCustomsOffice(CustomsOffices.all))
-
-            @components.fields.field_radio(
-                field = form("identificationType"),
-                legend = messages("supplementary.warehouse.identificationType"),
-                hint = None,
-                inputs = WarehouseIdentification.IdentifierType.all.map(v =>
-                    RadioOption(s"identification_type_${v.toLowerCase}", v, messages(s"supplementary.warehouse.identificationType.${v.toLowerCase}"))
-                ) :+ RadioOption("identification_type_none", "", "supplementary.warehouse.identificationType.none")
-            )
-
-            @components.fields.field_text(
-                field = form("identificationNumber"),
-                label = messages("supplementary.warehouse.identificationNumber"),
-                hint = Some(messages("supplementary.warehouse.identificationNumber.hint")),
-                labelClass = Some("bold-small")
-            )
-
-            @components.fields.field_radio(
-                field = form("inlandModeOfTransportCode"),
-                legend = messages("supplementary.warehouse.inlandTransportMode.header"),
-                hint = Some(messages("supplementary.warehouse.inlandTransportMode.header.hint")),
-                inputs = Seq(
-                    RadioOption("Inland_Sea", Maritime, messages("supplementary.transportInfo.transportMode.sea")),
-                    RadioOption("Inland_Rail", Rail, messages("supplementary.transportInfo.transportMode.rail")),
-                    RadioOption("Inland_Road", Road, messages("supplementary.transportInfo.transportMode.road")),
-                    RadioOption("Inland_Air", Air, messages("supplementary.transportInfo.transportMode.air")),
-                    RadioOption("Inland_PostalOrMail", PostalConsignment, messages("supplementary.transportInfo.transportMode.postalOrMail")),
-                    RadioOption("Inland_FixedTransportInstallations", FixedTransportInstallations, messages("supplementary.transportInfo.transportMode.fixedTransportInstallations")),
-                    RadioOption("Inland_InlandWaterway", InlandWaterway, messages("supplementary.transportInfo.transportMode.inlandWaterway")),
-                    RadioOption("Inland_Unknown", Unknown, messages("supplementary.transportInfo.transportMode.unknown"))
-                )
-            )
+            @components.fields.field_text(field = form("identificationNumber"))
 
             @components.submit_button()
             @components.buttons.save_and_return_later_button()
