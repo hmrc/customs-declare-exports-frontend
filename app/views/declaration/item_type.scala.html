@@ -89,13 +89,6 @@
             labelClass = Some("bold-small")
         )
 
-        @components.fields.field_text(
-            field = form(cusCodeKey),
-            label = messages("declaration.itemType.cusCode.header"),
-            hintHtml = Some(Html( messages("declaration.itemType.cusCode.header.hint"))),
-            labelClass = Some("bold-small")
-        )
-
       <div class="section mb-0">
           @components.buttons.save_and_continue_button()
       </div>

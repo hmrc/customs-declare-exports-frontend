@@ -600,10 +600,6 @@ declaration.itemType.nationalAdditionalCode.error.maxAmount = You cannot add mor
 declaration.itemType.nationalAdditionalCode.error.duplicate = National Additional Codes cannot contain duplicates
 declaration.itemType.nationalAdditionalCode.add.hint = Add National Additional Code
 declaration.itemType.nationalAdditionalCode.remove.hint = Remove National Additional Code {0}
-declaration.itemType.cusCode.header = What is the CUS Code for this item?
-declaration.itemType.cusCode.header.hint = A customs union and statistics number (CUS code) is required for chemicals classified in chapters 28, 29 and some in chapter 38 of the UK Trade Tariff. You can find this using the <a href="https://ec.europa.eu/taxation_customs/dds2/ecics/chemicalsubstance_consultation.jsp" target="blank">ECICS chemical substance information tool.</a>
-declaration.itemType.cusCode.error.length = CUS Code must be exactly 8 characters long
-declaration.itemType.cusCode.error.specialCharacters = CUS Code cannot contain special characters
 declaration.itemType.statisticalValue.header = What is the statistical value of the items?
 declaration.itemType.statisticalValue.header.hint = The approximate value of the goods at the time they leave the EU. It should be entered in GBP only.
 declaration.itemType.statisticalValue.error.empty = The statistical value cannot be empty
@@ -639,6 +635,18 @@ declaration.unDangerousGoodsCode.noCode = No
 declaration.unDangerousGoodsCode.error.empty = Enter a UN dangerous goods code
 declaration.unDangerousGoodsCode.error.length = The code must be 4 characters
 declaration.unDangerousGoodsCode.error.specialCharacters = Enter a UN dangerous goods code in the correct format
+
+declaration.cusCode.header = Do these goods have a CUS Code?
+declaration.cusCode.header.hint1 = A customs union and statistics number (CUS code) is required for chemicals classified in chapters 28, 29 and some in chapter 38 of the
+declaration.cusCode.header.hint1.link = UK Trade Tariff
+declaration.cusCode.header.hint2 =You can find this using the
+declaration.cusCode.header.hint2.link = ECICS chemical substance information tool
+declaration.cusCode.label = CUS code
+declaration.cusCode.hasCode = Yes
+declaration.cusCode.noCode = No
+declaration.cusCode.error.empty = Enter a CUS code
+declaration.cusCode.error.length = CUS Code must be exactly 8 characters long
+declaration.cusCode.error.specialCharacters = CUS Code cannot contain special characters
 
 
 supplementary.previousDocuments = Previous documents
