@@ -33,19 +33,26 @@ object UNDangerousGoodsCode extends DeclarationPage {
   val dangerousGoodsCodeKey = "dangerousGoodsCode"
   private val unDangerousGoodsCodeLength = 4
 
+  object AllowedUNDangerousGoodsCodeAnswers {
+    val yes = "Yes"
+    val no = "No"
+  }
+
+  import AllowedUNDangerousGoodsCodeAnswers._
+
   private def form2Model: (String, Option[String]) => UNDangerousGoodsCode = {
     case (hasCode, codeValue) =>
       hasCode match {
-        case "Yes" => UNDangerousGoodsCode(codeValue)
-        case "No"  => UNDangerousGoodsCode(None)
+        case yes => UNDangerousGoodsCode(codeValue)
+        case no => UNDangerousGoodsCode(None)
       }
   }
 
   private def model2Form: UNDangerousGoodsCode => Option[(String, Option[String])] =
     model =>
       model.dangerousGoodsCode match {
-        case Some(code) => Some(("Yes", Some(code)))
-        case None       => Some(("No", None))
+        case Some(code) => Some((yes, Some(code)))
+        case None       => Some((no, None))
     }
 
   val mapping =
@@ -53,7 +60,7 @@ object UNDangerousGoodsCode extends DeclarationPage {
       hasDangerousGoodsCodeKey -> requiredRadio("error.yesNo.required"),
       dangerousGoodsCodeKey -> mandatoryIfEqual(
         hasDangerousGoodsCodeKey,
-        "Yes",
+        yes,
         text()
           .verifying("declaration.unDangerousGoodsCode.error.empty", nonEmpty)
           .verifying("declaration.unDangerousGoodsCode.error.length", isEmpty or hasSpecificLength(unDangerousGoodsCodeLength))

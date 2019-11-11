@@ -61,7 +61,7 @@
             inputs = Seq(
                 RadioOption(
                     id = "code_yes",
-                    value = "Yes",
+                    value = AllowedUNDangerousGoodsCodeAnswers.yes,
                     messageKey = "declaration.unDangerousGoodsCode.hasCode",
                     revealComponent = Some(components.fields.field_text(
                         field = form(dangerousGoodsCodeKey),
@@ -70,7 +70,7 @@
                 ),
                 RadioOption(
                     id = "code_no",
-                    value = "No",
+                    value = AllowedUNDangerousGoodsCodeAnswers.no,
                     messageKey = "declaration.unDangerousGoodsCode.noCode"
                 )
             )
