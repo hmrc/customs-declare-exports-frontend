@@ -44,7 +44,7 @@ object UNDangerousGoodsCode extends DeclarationPage {
     case (hasCode, codeValue) =>
       hasCode match {
         case yes => UNDangerousGoodsCode(codeValue)
-        case no => UNDangerousGoodsCode(None)
+        case no  => UNDangerousGoodsCode(None)
       }
   }
 
