@@ -16,9 +16,9 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.UNDangerousGoodsCodeController
-import forms.declaration.UNDangerousGoodsCode
-import forms.declaration.UNDangerousGoodsCode.{dangerousGoodsCodeKey, hasDangerousGoodsCodeKey}
+import controllers.declaration.CUSCodeController
+import forms.declaration.CUSCode
+import forms.declaration.CUSCode._
 import models.DeclarationType.DeclarationType
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
@@ -31,20 +31,14 @@ import play.api.mvc.Call
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import views.html.declaration.un_dangerous_goods_code
+import views.html.declaration.cus_code
 
-class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValues {
+class CUSControllerSpec extends ControllerSpec with OptionValues {
 
-  val mockPage = mock[un_dangerous_goods_code]
+  val mockPage = mock[cus_code]
 
-  val controller = new UNDangerousGoodsCodeController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    stubMessagesControllerComponents(),
-    mockPage
-  )(ec)
+  val controller =
+    new CUSCodeController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, stubMessagesControllerComponents(), mockPage)(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -60,15 +54,15 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
 
   val itemId = "itemId"
 
-  def theResponseForm: Form[UNDangerousGoodsCode] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[UNDangerousGoodsCode]])
+  def theResponseForm: Form[CUSCode] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[CUSCode]])
     verify(mockPage).apply(any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
-  private def formData(code: String) = JsObject(Map(dangerousGoodsCodeKey -> JsString(code), hasDangerousGoodsCodeKey -> JsString("Yes")))
+  private def formData(code: String) = JsObject(Map(cusCodeKey -> JsString(code), hasCusCodeKey -> JsString("Yes")))
 
-  "UNDangerousGoodsCode controller" should {
+  "CUSCode controller" should {
 
     "return 200 (OK)" when {
 
@@ -83,8 +77,8 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
       }
 
       "display page method is invoked and cache contains data" in {
-        val dangerousGoodsCode = UNDangerousGoodsCode(Some("1234"))
-        val item = anItem(withUNDangerousGoodsCode(dangerousGoodsCode))
+        val cusCode = CUSCode(Some("12345678"))
+        val item = anItem(withCUSCode(cusCode))
         withNewCaching(aDeclaration(withItems(item)))
 
         val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
@@ -92,7 +86,7 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
         status(result) mustBe OK
         verify(mockPage, times(1)).apply(any(), any(), any())(any(), any())
 
-        theResponseForm.value mustBe Some(dangerousGoodsCode)
+        theResponseForm.value mustBe Some(cusCode)
       }
     }
 
@@ -111,12 +105,12 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
 
     "return 303 (SEE_OTHER)" when {
 
-      val cusCodePage: Call = controllers.declaration.routes.CUSCodeController.displayPage(Mode.Normal, itemId)
+      val itemTypePage: Call = controllers.declaration.routes.ItemTypeController.displayPage(Mode.Normal, itemId)
 
-      def controllerRedirectsToNextPage(decType: DeclarationType, call: Call = cusCodePage): Unit =
+      def controllerRedirectsToNextPage(decType: DeclarationType, call: Call = itemTypePage): Unit =
         "accept submission and redirect" in {
           withNewCaching(aDeclaration(withType(decType)))
-          val correctForm = formData("1234")
+          val correctForm = formData("12345678")
 
           val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
 

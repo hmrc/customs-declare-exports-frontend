@@ -17,8 +17,8 @@
 package forms.declaration
 import forms.DeclarationPage
 import forms.Mapping.requiredRadio
-import play.api.data.{Form, Forms}
 import play.api.data.Forms.text
+import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
@@ -43,8 +43,8 @@ object CUSCode extends DeclarationPage {
   private def form2Model: (String, Option[String]) => CUSCode = {
     case (hasCode, codeValue) =>
       hasCode match {
-        case `yes` => CUSCode(codeValue)
-        case `no`  => CUSCode(None)
+        case AllowedCUSCodeAnswers.yes => CUSCode(codeValue)
+        case AllowedCUSCodeAnswers.no  => CUSCode(None)
       }
   }
 
@@ -53,7 +53,7 @@ object CUSCode extends DeclarationPage {
       model.cusCode match {
         case Some(code) => Some((yes, Some(code)))
         case None       => Some((no, None))
-      }
+    }
 
   val mapping =
     Forms.mapping(
@@ -62,7 +62,7 @@ object CUSCode extends DeclarationPage {
         hasCusCodeKey,
         yes,
         text()
-          .verifying("declaration.cusCode.error.empty ", nonEmpty)
+          .verifying("declaration.cusCode.error.empty", nonEmpty)
           .verifying("declaration.cusCode.error.length", isEmpty or hasSpecificLength(cusCodeLength))
           .verifying("declaration.cusCode.error.specialCharacters", isEmpty or isAlphanumeric)
       )
@@ -70,4 +70,3 @@ object CUSCode extends DeclarationPage {
 
   def form(): Form[CUSCode] = Form(mapping)
 }
-

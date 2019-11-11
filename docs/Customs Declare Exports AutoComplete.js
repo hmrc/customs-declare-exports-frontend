@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.2
+// @version      1.3
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -194,7 +194,7 @@ function completePage() {
     }
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/un-dangerous-goods-code')) {
         document.getElementById('code_yes').checked = 'checked';
-        document.getElementById('dangerousGoodsCode').value ='GB34';
+        document.getElementById('dangerousGoodsCode').value ='1234';
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/item-type')) {
