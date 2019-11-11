@@ -91,6 +91,13 @@ GET         /warehouse-identification            controllers.declaration.Warehou
 
 POST        /warehouse-identification            controllers.declaration.WarehouseIdentificationController.saveIdentificationNumber(mode: models.Mode ?= models.Mode.Normal)
 
+# Supervising Customs Office
+
+GET         /supervising-customs-office          controllers.declaration.SupervisingCustomsOfficeController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /supervising-customs-office          controllers.declaration.SupervisingCustomsOfficeController.submit(mode: models.Mode ?= models.Mode.Normal)
+
+
 # Details of a Warehouse
 
 GET         /warehouse                           controllers.declaration.WarehouseDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)

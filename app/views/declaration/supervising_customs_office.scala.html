@@ -1,0 +1,58 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.declaration.routes
+@import forms.declaration.TransportCodes._
+@import forms.declaration.WarehouseDetails
+@import services.CustomsOffices
+@import services.view.AutoCompleteItem
+@import uk.gov.hmrc.play.views.html._
+@import views.components.inputs.RadioOption
+@import views.Title
+
+@this(main_template: views.html.main_template)
+
+@(mode: Mode, form: Form[WarehouseDetails])(implicit request: Request[_], messages: Messages)
+
+    @main_template(
+        title = Title("declaration.warehouse.supervisingCustomsOffice.title")
+    ) {
+
+        @helper.form(routes.SupervisingCustomsOfficeController.submit(mode), 'autoComplete -> "off") {
+            @helper.CSRF.formField
+
+            @components.back_link(controllers.declaration.routes.WarehouseIdentificationController.displayPage(mode), mode)
+
+            @components.error_summary(form.errors)
+
+            @components.heading(
+                sectionHeader = messages("declaration.warehouse.supervisingCustomsOffice.sectionHeader"),
+                title = messages("declaration.warehouse.supervisingCustomsOffice.title"),
+                hint = messages("declaration.warehouse.supervisingCustomsOffice.hint")
+            )
+
+            @components.fields.field_autocomplete(
+                field = form("supervisingCustomsOffice"),
+                label = messages(""),
+                labelClass = Some("form-label-bold"),
+                hintText = None,
+                emptySelectValue = messages("supplementary.packageInformation.typesOfPackages.empty"),
+                items = AutoCompleteItem.fromSupervisingCustomsOffice(CustomsOffices.all))
+
+            @components.submit_button()
+            @components.buttons.save_and_return_later_button()
+        }
+    }
