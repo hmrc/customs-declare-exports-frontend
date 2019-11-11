@@ -15,39 +15,38 @@
  *@
 
 @import controllers.declaration.routes
-@import forms.declaration.destinationCountries.DestinationCountries
-@import models.requests.JourneyRequest
 @import services.Countries
 @import services.view.AutoCompleteItem
-@import uk.gov.hmrc.play.views.html._
 @import views.Title
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[DestinationCountries])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[String])(implicit request: Request[AnyContent], messages: Messages)
 
 @main_template(
-    title = Title("declaration.destinationCountries.title", "declaration.summary.locations.header")
+    title = Title("declaration.originationCountry.title", "declaration.originationCountry.heading")
 ) {
-    @components.back_link(controllers.declaration.routes.OriginationCountryController.displayPage(mode), mode)
+
+    @components.back_link(routes.DeclarationHolderController.displayPage(), mode)
 
     @components.error_summary(form.errors)
 
     @components.heading(
-        title = messages("declaration.destinationCountries.title"),
-        sectionHeader = messages("declaration.summary.locations.header")
+        title = messages("declaration.originationCountry.question"),
+        sectionHeader = messages("declaration.originationCountry.heading")
     )
 
-    @helper.form(routes.DestinationCountriesController.saveCountries(mode), 'autoComplete -> "off") {
+    @helper.form(routes.OriginationCountryController.submit(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
-        <div id="country-of-destination-field" class="inline-block form-group">
+      @*TODO move id to field_autocomplete*@
+        <div id="origination-country-field">
             @components.fields.field_autocomplete(
-                form("countryOfDestination"),
-                "declaration.destinationCountries.countryOfDestination",
-                Some("form-label-bold"),
-                Some(messages("declaration.destinationCountries.countryOfDestination.hint")),
-                messages("declaration.destinationCountries.countryOfDestination.empty"),
+                form("country"),
+                "",
+                None,
+                None,
+                messages("declaration.originationCountry.empty"),
                 AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
             )
         </div>

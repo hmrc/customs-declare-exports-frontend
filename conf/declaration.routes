@@ -73,6 +73,12 @@ GET         /destination-countries               controllers.declaration.Destina
 
 POST        /destination-countries               controllers.declaration.DestinationCountriesController.saveCountries(mode: models.Mode ?= models.Mode.Normal)
 
+# Destination countries - new endpoint
+
+GET         /origination-country                 controllers.declaration.OriginationCountryController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /origination-country                 controllers.declaration.OriginationCountryController.submit(mode: models.Mode ?= models.Mode.Normal)
+
 # Location of goods
 
 GET         /location-of-goods                   controllers.declaration.LocationController.displayPage(mode: models.Mode ?= models.Mode.Normal)

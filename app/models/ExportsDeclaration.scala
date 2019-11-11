@@ -20,6 +20,7 @@ import java.time.{Clock, Instant}
 
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+import forms.declaration.destinationCountries.DestinationCountries
 import models.DeclarationStatus.DeclarationStatus
 import models.DeclarationType.DeclarationType
 import models.declaration._
@@ -57,6 +58,9 @@ case class ExportsDeclaration(
     }
 
   def updateType(`type`: DeclarationType): ExportsDeclaration = copy(`type` = `type`)
+
+  def updateDestinationCountries(destinationCountries: DestinationCountries): ExportsDeclaration =
+    copy(locations = locations.copy(destinationCountries = Some(destinationCountries)))
 
   def itemBy(itemId: String): Option[ExportItem] = items.find(_.id.equalsIgnoreCase(itemId))
 

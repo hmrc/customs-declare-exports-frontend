@@ -119,14 +119,14 @@ class DeclarationHolderController @Inject()(
   ): Future[Result] =
     (userInput, cachedData.holders) match {
       case (DeclarationHolder(None, None), _) =>
-        Future.successful(navigator.continueTo(routes.DestinationCountriesController.displayPage(mode)))
+        Future.successful(navigator.continueTo(routes.OriginationCountryController.displayPage(mode)))
 
       case (holder, Seq()) =>
         holder match {
           case DeclarationHolder(Some(typeCode), Some(eori)) =>
             val updatedCache = DeclarationHoldersData(Seq(DeclarationHolder(Some(typeCode), Some(eori))))
             updateCache(updatedCache)
-              .map(_ => navigator.continueTo(controllers.declaration.routes.DestinationCountriesController.displayPage(mode)))
+              .map(_ => navigator.continueTo(controllers.declaration.routes.OriginationCountryController.displayPage(mode)))
 
           case DeclarationHolder(maybeTypeCode, maybeEori) =>
             val typeCodeError = maybeTypeCode.fold(Seq(("authorisationTypeCode", "supplementary.declarationHolder.authorisationCode.empty")))(
@@ -150,7 +150,7 @@ class DeclarationHolderController @Inject()(
             val updatedHolders = if (holder.authorisationTypeCode.isDefined) holders :+ holder else holders
             val updatedCache = DeclarationHoldersData(updatedHolders)
             updateCache(updatedCache)
-              .map(_ => navigator.continueTo(controllers.declaration.routes.DestinationCountriesController.displayPage(mode)))
+              .map(_ => navigator.continueTo(controllers.declaration.routes.OriginationCountryController.displayPage(mode)))
 
           case DeclarationHolder(maybeTypeCode, maybeEori) =>
             val typeCodeError = maybeTypeCode.fold(Seq(("authorisationTypeCode", "supplementary.declarationHolder.authorisationCode.empty")))(

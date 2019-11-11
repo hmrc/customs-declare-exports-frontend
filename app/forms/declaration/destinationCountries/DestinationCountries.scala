@@ -16,7 +16,7 @@
 
 package forms.declaration.destinationCountries
 
-import play.api.data.Forms.{default, seq, text}
+import play.api.data.Forms.{default, ignored, seq, single, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import services.Countries.allCountries
@@ -24,14 +24,36 @@ import services.Countries.allCountries
 case class DestinationCountries(countryOfDispatch: String, countriesOfRouting: Seq[String], countryOfDestination: String)
 
 object DestinationCountries {
+
+  /**
+    * New structure foe handling Destination Countries
+    */
+  sealed trait CountryPage {
+    val id: String
+  }
+
+  case object OriginationCountryPage extends CountryPage {
+    override val id = "originationCountry"
+  }
+
+  case object DestinationCountryPage extends CountryPage {
+    override val id = "destinationCountry"
+  }
+
+  def form(page: CountryPage): Form[String] = Form(
+    single(
+      "country" -> text()
+        .verifying(s"declaration.${page.id}.empty", _.trim.nonEmpty)
+        .verifying(s"declaration.${page.id}.error", emptyOrValidCountry)
+    )
+  )
+
+  /**
+    * Old structure that is only for time being during migration screens to new structure
+    */
   val limit = 99
 
-  val formId = "DestinationCountries"
-
   implicit val format: OFormat[DestinationCountries] = Json.format[DestinationCountries]
-
-  def apply(countryOfDispatch: String, countryOfDestination: String): DestinationCountries =
-    DestinationCountries(countryOfDispatch, Seq.empty, countryOfDestination)
 
   private def emptyOrValidCountry: String => Boolean = { input =>
     input.isEmpty || allCountries.exists(_.countryCode == input)
@@ -46,28 +68,25 @@ object DestinationCountries {
     private def object2Form: DestinationCountries => Option[(String, String)] =
       d => Some((d.countryOfDispatch, d.countryOfDestination))
 
-    val mapping: Mapping[DestinationCountries] = Forms.mapping(
-      "countryOfDispatch" -> text()
-        .verifying("declaration.destinationCountries.countryOfDispatch.empty", _.trim.nonEmpty)
-        .verifying("declaration.destinationCountries.countryOfDispatch.error", emptyOrValidCountry),
-      "countryOfDestination" -> text()
-        .verifying("declaration.destinationCountries.countryOfDestination.empty", _.trim.nonEmpty)
-        .verifying("declaration.destinationCountries.countryOfDestination.error", emptyOrValidCountry)
-    )(form2Object)(object2Form)
-
-    def form: Form[DestinationCountries] = Form(mapping)
+    def form(countryOfDispatch: String): Form[DestinationCountries] = Form(
+      Forms.mapping(
+        "countryOfDispatch" -> ignored(countryOfDispatch),
+        "countryOfDestination" -> text()
+          .verifying("declaration.destinationCountries.countryOfDestination.empty", _.trim.nonEmpty)
+          .verifying("declaration.destinationCountries.countryOfDestination.error", emptyOrValidCountry)
+      )(form2Object)(object2Form)
+    )
   }
 
   object Standard {
-    def form: Form[DestinationCountries] = Form(mapping)
-
-    val mapping: Mapping[DestinationCountries] = Forms.mapping(
-      "countryOfDispatch" -> text()
-        .verifying("declaration.destinationCountries.countryOfDispatch.error", emptyOrValidCountry),
-      "countriesOfRouting" -> default(seq(text()), Seq.empty),
-      "countryOfDestination" -> text()
-        .verifying("declaration.destinationCountries.countryOfDispatch.error", emptyOrValidCountry)
-    )(DestinationCountries.apply)(DestinationCountries.unapply)
+    def form(countryOfDispatch: String): Form[DestinationCountries] = Form(
+      Forms.mapping(
+        "countryOfDispatch" -> ignored(countryOfDispatch),
+        "countriesOfRouting" -> default(seq(text()), Seq.empty),
+        "countryOfDestination" -> text()
+          .verifying("declaration.destinationCountries.countryOfDestination.error", emptyOrValidCountry)
+      )(DestinationCountries.apply)(DestinationCountries.unapply)
+    )
   }
 
   def empty(): DestinationCountries = DestinationCountries("", Seq.empty, "")

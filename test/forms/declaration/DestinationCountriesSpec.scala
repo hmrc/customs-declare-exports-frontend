@@ -20,11 +20,12 @@ import forms.declaration.destinationCountries.DestinationCountries
 import play.api.libs.json.{JsArray, JsObject, JsString, JsValue, Json}
 
 object DestinationCountriesSpec {
-  val correctDestinationCountries = DestinationCountries("PL", "PL")
+  val correctDestinationCountries = DestinationCountries("PL", Seq.empty, "PL")
 
   val correctDestinationCountriesJSON: JsValue = JsObject(
     Map("countryOfDestination" -> JsString("PL"), "countriesOfRouting" -> JsArray(), "countryOfDispatch" -> JsString("PL"))
   )
+
   val emptyDestinationCountriesJSON: JsValue = JsObject(
     Map("countryOfDestination" -> JsString(""), "countriesOfRouting" -> JsArray(), "countryOfDispatch" -> JsString(""))
   )
