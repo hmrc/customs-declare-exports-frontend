@@ -232,6 +232,10 @@ function completePage() {
         document.getElementById('documentIdentifier').value ='GBAEOC717572504502811';
         document.getElementsByClassName('button')[0].click()
     }
+    if (currentPageIs('/customs-declare-exports/declaration/warehouse-identification')) {
+        document.getElementById('identificationNumber').value ='12';
+        document.getElementsByClassName('button')[0].click()
+    }
     if (currentPageIs('/customs-declare-exports/declaration/warehouse')) {
         selectFromAutoPredict(document.getElementById('supervisingCustomsOffice-container'), "GBLBA001");
         selectRadioOption(document.getElementById('inlandModeOfTransportCode'), 0);
