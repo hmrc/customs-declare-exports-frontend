@@ -176,7 +176,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
         val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DestinationCountriesController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.OriginationCountryController.displayPage()
       }
 
       "user save correct data without new item" in new SetUp {
@@ -187,7 +187,7 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
           controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DestinationCountriesController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.OriginationCountryController.displayPage()
       }
 
       "user remove existing item" in new SetUp {

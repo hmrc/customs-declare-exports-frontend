@@ -61,14 +61,37 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
   "Destination Countries controller" should {
 
-    "return 200 (OK) during supplementary journey" when {
+    "redirect to origination country controller for simplified journey" when {
 
-      "display page method is invoked with empty cache" in new SupplementarySetUp {
+      "cache is empty" in new SimplifiedSetUp {
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
-        status(result) must be(OK)
+        status(result) must be(SEE_OTHER)
       }
+    }
+
+    "redirect to origination country controller for standard journey" when {
+
+      "cache is empty" in new StandardSetUp {
+
+        val result = controller.displayPage(Mode.Normal)(getRequest())
+
+        status(result) must be(SEE_OTHER)
+      }
+    }
+
+    "redirect to origination country controller for supplementary journey" when {
+
+      "cache is empty" in new SupplementarySetUp {
+
+        val result = controller.displayPage(Mode.Normal)(getRequest())
+
+        status(result) must be(SEE_OTHER)
+      }
+    }
+
+    "return 200 (OK) during supplementary journey" when {
 
       "display page method is invoked with data in cache" in new SupplementarySetUp {
 
@@ -82,13 +105,6 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
     "return 200 (OK) during standard journey" when {
 
-      "display page method is invoked with empty cache" in new StandardSetUp {
-
-        val result = controller.displayPage(Mode.Normal)(getRequest())
-
-        status(result) must be(OK)
-      }
-
       "display page method is invoked with data in cache" in new StandardSetUp {
 
         withNewCaching(aDeclaration(withDestinationCountries()))
@@ -100,13 +116,6 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
     }
 
     "return 200 (OK) during simplified journey" when {
-
-      "display page method is invoked with empty cache" in new SimplifiedSetUp {
-
-        val result = controller.displayPage(Mode.Normal)(getRequest())
-
-        status(result) must be(OK)
-      }
 
       "display page method is invoked with data in cache" in new SimplifiedSetUp {
 
@@ -122,6 +131,8 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
       "user put incorrect data" in new SupplementarySetUp {
 
+        withNewCaching(aDeclaration(withDestinationCountries()))
+
         val incorrectForm = Json.toJson(DestinationCountries("incorrect", Seq.empty, "incorrect"))
 
         val result = controller.saveCountries(Mode.Normal)(postRequest(incorrectForm))
@@ -134,6 +145,8 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
       "user provide wrong action" in new StandardSetUp {
 
+        withNewCaching(aDeclaration(withDestinationCountries()))
+
         val wrongAction = Seq(("countryOfDispatch", "GB"), ("countriesOfRouting[]", "US"), ("countryOfDestination", "PL"), ("WrongAction", ""))
 
         val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(wrongAction: _*))
@@ -142,6 +155,8 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
       }
 
       "user provide incorrect data during adding" in new StandardSetUp {
+
+        withNewCaching(aDeclaration(withDestinationCountries()))
 
         val incorrectForm =
           Seq(("countryOfDispatch", "incorrect"), ("countriesOfRouting[]", "incorrect"), ("countryOfDestination", "incorrect"), addActionUrlEncoded())
@@ -152,6 +167,8 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
       }
 
       "user provide incorrect data during saving" in new StandardSetUp {
+
+        withNewCaching(aDeclaration(withDestinationCountries()))
 
         val incorrectForm = Seq(
           ("countryOfDispatch", "incorrect"),
@@ -216,6 +233,8 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
       "user provide wrong action" in new SimplifiedSetUp {
 
+        withNewCaching(aDeclaration(withDestinationCountries()))
+
         val wrongAction = Seq(("countryOfDispatch", "GB"), ("countriesOfRouting[]", "US"), ("countryOfDestination", "PL"), ("WrongAction", ""))
 
         val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(wrongAction: _*))
@@ -224,6 +243,8 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
       }
 
       "user provide incorrect data during adding" in new SimplifiedSetUp {
+
+        withNewCaching(aDeclaration(withDestinationCountries()))
 
         val incorrectForm =
           Seq(("countryOfDispatch", "incorrect"), ("countriesOfRouting[]", "incorrect"), ("countryOfDestination", "incorrect"), addActionUrlEncoded())
@@ -234,6 +255,8 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
       }
 
       "user provide incorrect data during saving" in new SimplifiedSetUp {
+
+        withNewCaching(aDeclaration(withDestinationCountries()))
 
         val incorrectForm = Seq(
           ("countryOfDispatch", "incorrect"),
@@ -294,22 +317,11 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
       }
     }
 
-    "return 303 (SEE_OTHER) during supplementary journey" when {
-
-      "user put correct data" in new SupplementarySetUp {
-
-        val correctForm = Json.toJson(DestinationCountries("GB", Seq.empty, "PL"))
-
-        val result = controller.saveCountries(Mode.Normal)(postRequest(correctForm))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.LocationController.displayPage()
-      }
-    }
-
     "return 303 (SEE_OTHER) during standard journey" when {
 
       "user correctly add new item" in new StandardSetUp {
+
+        withNewCaching(aDeclaration(withDestinationCountries()))
 
         val correctForm = Seq(("countryOfDispatch", "GB"), ("countriesOfRouting[]", "US"), ("countryOfDestination", "PL"), addActionUrlEncoded())
 
@@ -319,6 +331,8 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
       }
 
       "user save correct data with empty cache" in new StandardSetUp {
+
+        withNewCaching(aDeclaration(withDestinationCountries()))
 
         val correctForm =
           Seq(("countryOfDispatch", "GB"), ("countriesOfRouting[]", "US"), ("countryOfDestination", "PL"), saveAndContinueActionUrlEncoded)
@@ -358,6 +372,8 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
 
       "user correctly add new item" in new SimplifiedSetUp {
 
+        withNewCaching(aDeclaration(withDestinationCountries()))
+
         val correctForm = Seq(("countryOfDispatch", "GB"), ("countriesOfRouting[]", "US"), ("countryOfDestination", "PL"), addActionUrlEncoded())
 
         val result = controller.saveCountries(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
@@ -366,6 +382,8 @@ class DestinationCountriesControllerSpec extends ControllerSpec with ErrorHandle
       }
 
       "user save correct data with empty cache" in new SimplifiedSetUp {
+
+        withNewCaching(aDeclaration(withDestinationCountries()))
 
         val correctForm =
           Seq(("countryOfDispatch", "GB"), ("countriesOfRouting[]", "US"), ("countryOfDestination", "PL"), saveAndContinueActionUrlEncoded)
