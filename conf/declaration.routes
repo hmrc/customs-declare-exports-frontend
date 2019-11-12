@@ -97,7 +97,6 @@ GET         /supervising-customs-office          controllers.declaration.Supervi
 
 POST        /supervising-customs-office          controllers.declaration.SupervisingCustomsOfficeController.submit(mode: models.Mode ?= models.Mode.Normal)
 
-
 # Details of a Warehouse
 
 GET         /warehouse                           controllers.declaration.WarehouseDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)

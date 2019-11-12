@@ -71,13 +71,12 @@ class SupervisingCustomsOfficeController @Inject()(
             WarehouseDetails(
               identificationNumber = dbWarehouseDetails.identificationNumber,
               supervisingCustomsOffice = formData.supervisingCustomsOffice,
-              inlandModeOfTransportCode = formData.inlandModeOfTransportCode
+              inlandModeOfTransportCode = dbWarehouseDetails.inlandModeOfTransportCode
             )
         )
         .getOrElse(
           WarehouseDetails(
-            supervisingCustomsOffice = formData.supervisingCustomsOffice,
-            inlandModeOfTransportCode = formData.inlandModeOfTransportCode
+            supervisingCustomsOffice = formData.supervisingCustomsOffice
           )
         )
       model.copy(locations = model.locations.copy(warehouseIdentification = Some(warehouseDetails)))
