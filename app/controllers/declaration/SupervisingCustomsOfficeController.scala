@@ -57,14 +57,8 @@ class SupervisingCustomsOfficeController @Inject()(
       .fold(
         (formWithErrors: Form[WarehouseDetails]) => Future.successful(BadRequest(supervisingCustomsOfficePage(mode, formWithErrors))),
         form => {
-          val nextStep = request.cacheModel.`type` match {
-            case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
-              controllers.declaration.routes.DepartureTransportController.displayPage(mode)
-            case DeclarationType.SIMPLIFIED =>
-              controllers.declaration.routes.BorderTransportController.displayPage(mode)
-          }
           updateCache(form)
-            .map(_ => navigator.continueTo(nextStep))
+            .map(_ => navigator.continueTo(controllers.declaration.routes.WarehouseDetailsController.displayPage(mode)))
         }
       )
   }
