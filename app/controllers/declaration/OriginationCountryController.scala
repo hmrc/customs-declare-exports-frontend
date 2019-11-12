@@ -57,13 +57,9 @@ class OriginationCountryController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(originationCountryPage(mode, formWithErrors))),
-        validCountry => {
-          val updatedCache =
-            request.cacheModel.destinationCountries.copy(countryOfDispatch = validCountry)
-
-          updateExportsDeclarationSyncDirect(_.updateDestinationCountries(updatedCache)).map { _ =>
+        validCountry =>
+          updateExportsDeclarationSyncDirect(_.updateCountryOfDispatch(validCountry)).map { _ =>
             navigator.continueTo(controllers.declaration.routes.DestinationCountryController.displayPage(mode))
-          }
         }
       )
   }

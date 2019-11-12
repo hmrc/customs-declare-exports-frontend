@@ -21,9 +21,10 @@ import controllers.navigation.Navigator
 import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.destinationCountries.DestinationCountries.DestinationCountryPage
 import javax.inject.{Inject, Singleton}
+import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.destinationCountries.destination_country
@@ -57,19 +58,18 @@ class DestinationCountryController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(destinationCountryPage(mode, formWithErrors))),
-        validCountry => {
-          val updatedCache =
-            request.cacheModel.destinationCountries.copy(countryOfDestination = validCountry)
-
-          updateExportsDeclarationSyncDirect(_.updateDestinationCountries(updatedCache)).map { _ =>
-            request.declarationType match {
-              case DeclarationType.SUPPLEMENTARY =>
-                navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode))
-              case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED =>
-                navigator.continueTo(controllers.declaration.routes.DestinationCountriesController.displayPage(mode))
-            }
-          }
+        validCountry =>
+          updateExportsDeclarationSyncDirect(_.updateCountryOfDestination(validCountry)).map { _ =>
+            redirectToNextPage(mode)
         }
       )
   }
+
+  private def redirectToNextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
+    request.declarationType match {
+      case DeclarationType.SUPPLEMENTARY =>
+        navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode))
+      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED =>
+        navigator.continueTo(controllers.declaration.routes.DestinationCountriesController.displayPage(mode))
+    }
 }

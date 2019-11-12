@@ -16,6 +16,7 @@
 
 package forms.declaration.destinationCountries
 
+import forms.DeclarationPage
 import play.api.data.Forms.{default, ignored, seq, single, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
@@ -28,7 +29,7 @@ object DestinationCountries {
   /**
     * New structure foe handling Destination Countries
     */
-  sealed trait CountryPage {
+  sealed trait CountryPage extends DeclarationPage {
     val id: String
   }
 

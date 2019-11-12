@@ -15,6 +15,8 @@
  *@
 
 @import controllers.declaration.routes
+@import controllers.navigation.Navigator
+@import forms.declaration.destinationCountries.DestinationCountries.DestinationCountryPage
 @import models.requests.JourneyRequest
 @import services.Countries
 @import services.view.AutoCompleteItem
@@ -28,11 +30,7 @@
     title = Title("declaration.destinationCountry.title", "declaration.destinationCountry.heading")
 ) {
 
-    @if(request.isType(DeclarationType.SIMPLIFIED)) {
-        @components.back_link(routes.DeclarationHolderController.displayPage(), mode)
-    } else {
-        @components.back_link(routes.OriginationCountryController.displayPage(), mode)
-    }
+    @components.back_link(Navigator.backLink(DestinationCountryPage)(request)(mode), mode)
 
     @components.error_summary(form.errors)
 
