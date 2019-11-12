@@ -32,12 +32,8 @@
         form: Form[CUSCode]
 )(implicit request: JourneyRequest[_], messages: Messages)
 
-@hintHtml = {
-    @messages("declaration.cusCode.header.hint1")
-    <a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.cusCode.header.hint1.link")</a>.
-    @messages("declaration.cusCode.header.hint2")
-    <a target="_blank" href=@appConfig.ecicsToolUrl>@messages("declaration.cusCode.header.hint2.link")</a>.
-}
+@tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.cusCode.header.tradeTariff.link")</a>}
+@ecicsToolLink = {<a target="_blank" href=@appConfig.ecicsToolUrl>@messages("declaration.cusCode.header.ecicsTool.link")</a>}
 
 @main_template(
     title = Title("declaration.cusCode.header", "supplementary.items")
@@ -53,7 +49,7 @@
         @components.heading(
             sectionHeader = messages("supplementary.items"),
             title = messages("declaration.cusCode.header"),
-            hintHtml = Some(hintHtml)
+            hintHtml = Some(Html(messages("declaration.cusCode.header.hint", tradeTariffLink, ecicsToolLink)))
         )
 
 
