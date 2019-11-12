@@ -19,26 +19,25 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.WarehouseDetails
-import forms.declaration.WarehouseDetails.form
 import javax.inject.Inject
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.{supervising_customs_office, warehouse_identification}
+import views.html.declaration.supervising_customs_office
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class SupervisingCustomsOfficeController @Inject()(
-                                                    authenticate: AuthAction,
-                                                    journeyType: JourneyAction,
-                                                    navigator: Navigator,
-                                                    override val exportsCacheService: ExportsCacheService,
-                                                    mcc: MessagesControllerComponents,
-                                                    supervisingCustomsOfficePage: supervising_customs_office
+  authenticate: AuthAction,
+  journeyType: JourneyAction,
+  navigator: Navigator,
+  override val exportsCacheService: ExportsCacheService,
+  mcc: MessagesControllerComponents,
+  supervisingCustomsOfficePage: supervising_customs_office
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
@@ -72,13 +71,9 @@ class SupervisingCustomsOfficeController @Inject()(
               identificationNumber = dbWarehouseDetails.identificationNumber,
               supervisingCustomsOffice = formData.supervisingCustomsOffice,
               inlandModeOfTransportCode = dbWarehouseDetails.inlandModeOfTransportCode
-            )
-        )
-        .getOrElse(
-          WarehouseDetails(
-            supervisingCustomsOffice = formData.supervisingCustomsOffice
           )
         )
+        .getOrElse(WarehouseDetails(supervisingCustomsOffice = formData.supervisingCustomsOffice))
       model.copy(locations = model.locations.copy(warehouseIdentification = Some(warehouseDetails)))
     }
 }

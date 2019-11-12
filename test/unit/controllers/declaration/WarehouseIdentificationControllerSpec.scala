@@ -100,7 +100,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
         updatedWarehouse.identificationNumber.value mustBe exampleWarehouseIdentificationNumber
       }
 
-      "return Bad Request if payload is not compatibile with model" in {
+      "return Bad Request if payload is not compatible with model" in {
         withNewCaching(standardCacheModel)
         val body = Json.obj("supervisingCustomsOffice" -> "A")
         val result = controller.saveIdentificationNumber(Mode.Normal).apply(postRequest(body))
