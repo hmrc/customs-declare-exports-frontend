@@ -42,7 +42,7 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestData
     val view = createView()
 
     "have proper messages for labels" in {
-      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
+      val messages = realMessagesApi.preferred(journeyRequest())
       messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.sectionHeader")
       messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.title")
       messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.hint")

@@ -54,7 +54,7 @@ class SupervisingCustomsOfficeController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[WarehouseDetails]) => Future.successful(BadRequest(supervisingCustomsOfficePage(mode, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(supervisingCustomsOfficePage(mode, formWithErrors))),
         form => {
           updateCache(form)
             .map(_ => navigator.continueTo(controllers.declaration.routes.WarehouseDetailsController.displayPage(mode)))
