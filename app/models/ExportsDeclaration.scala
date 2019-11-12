@@ -62,6 +62,14 @@ case class ExportsDeclaration(
   def updateDestinationCountries(destinationCountries: DestinationCountries): ExportsDeclaration =
     copy(locations = locations.copy(destinationCountries = Some(destinationCountries)))
 
+  private def destinationCountries: DestinationCountries = locations.destinationCountries.getOrElse(DestinationCountries.empty())
+
+  def updateCountryOfDispatch(countryOfDispatch: String): ExportsDeclaration =
+    updateDestinationCountries(destinationCountries.copy(countryOfDispatch = countryOfDispatch))
+
+  def updateCountryOfDestination(countryOfDestination: String): ExportsDeclaration =
+    updateDestinationCountries(destinationCountries.copy(countryOfDestination = countryOfDestination))
+
   def itemBy(itemId: String): Option[ExportItem] = items.find(_.id.equalsIgnoreCase(itemId))
 
   def containerBy(containerId: String): Option[Container] = containers.find(_.id.equalsIgnoreCase(containerId))

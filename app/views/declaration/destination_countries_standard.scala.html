@@ -30,7 +30,7 @@
     title = Title("declaration.destinationCountries.title", "declaration.summary.locations.header")
 ) {
 
-    @components.back_link(routes.OriginationCountryController.displayPage(), mode)
+    @components.back_link(routes.DestinationCountryController.displayPage(), mode)
 
     @components.error_summary(form.errors)
 
@@ -56,17 +56,6 @@
                 ),
                 addHint = "declaration.destinationCountries.add.hint",
                 removeHint = "declaration.destinationCountries.remove.hint"
-            )
-        </div>
-
-        <div id="country-of-destination-field">
-            @components.fields.field_autocomplete(
-                form("countryOfDestination"),
-                "declaration.destinationCountries.countryOfDestination",
-                Some("form-label-bold"),
-                None,
-                messages("declaration.destinationCountries.countryOfDestination.empty"),
-                AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
             )
         </div>
 

@@ -361,15 +361,15 @@ declaration.originationCountry.question = Where did the goods start their journe
 declaration.originationCountry.empty = Enter the country the goods started their journey
 declaration.originationCountry.error = Country is incorrect
 
-declaration.destinationCountries.title = Countries of destination
-declaration.destinationCountries.countryOfDestination = What is the destination country?
-declaration.destinationCountries.countryOfDestination.hint = The country where the goods are being exported to.
-declaration.destinationCountries.countryOfDestination.error = Country of destination is incorrect
-declaration.destinationCountries.countryOfDestination.empty = Country of destination cannot be empty
+declaration.destinationCountry.title = Destination country
+declaration.destinationCountry.heading = Locations
+declaration.destinationCountry.question = Which country will the goods be sent to?
+declaration.destinationCountry.empty = Enter the country where the goods were sent to
+declaration.destinationCountry.error = Country is incorrect
+
+declaration.destinationCountries.title = Countries of routing
 declaration.destinationCountries.routing = Which countries will the goods stop at before reaching their destination?
 declaration.destinationCountries.routing.hint = You can leave this answer blank if the goods will not be stopping en-route.
-declaration.destinationCountries.countriesOfRouting = 5/18 Enter the country of routing codes
-declaration.destinationCountries.countriesOfRouting.hint = Enter the countries in the order that the goods pass through
 declaration.destinationCountries.countriesOfRouting.error = Country of routing is incorrect
 declaration.destinationCountries.countriesOfRouting.empty = Enter a country code
 declaration.destinationCountries.add.hint = Add country of routing

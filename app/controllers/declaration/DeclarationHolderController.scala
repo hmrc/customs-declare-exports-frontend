@@ -26,7 +26,7 @@ import javax.inject.Inject
 import models.declaration.DeclarationHoldersData
 import models.declaration.DeclarationHoldersData.limitOfHolders
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -119,14 +119,14 @@ class DeclarationHolderController @Inject()(
   ): Future[Result] =
     (userInput, cachedData.holders) match {
       case (DeclarationHolder(None, None), _) =>
-        Future.successful(navigator.continueTo(routes.OriginationCountryController.displayPage(mode)))
+        Future.successful(navigateToNextPage(mode))
 
       case (holder, Seq()) =>
         holder match {
           case DeclarationHolder(Some(typeCode), Some(eori)) =>
             val updatedCache = DeclarationHoldersData(Seq(DeclarationHolder(Some(typeCode), Some(eori))))
             updateCache(updatedCache)
-              .map(_ => navigator.continueTo(controllers.declaration.routes.OriginationCountryController.displayPage(mode)))
+              .map(_ => navigateToNextPage(mode))
 
           case DeclarationHolder(maybeTypeCode, maybeEori) =>
             val typeCodeError = maybeTypeCode.fold(Seq(("authorisationTypeCode", "supplementary.declarationHolder.authorisationCode.empty")))(
@@ -150,7 +150,7 @@ class DeclarationHolderController @Inject()(
             val updatedHolders = if (holder.authorisationTypeCode.isDefined) holders :+ holder else holders
             val updatedCache = DeclarationHoldersData(updatedHolders)
             updateCache(updatedCache)
-              .map(_ => navigator.continueTo(controllers.declaration.routes.OriginationCountryController.displayPage(mode)))
+              .map(_ => navigateToNextPage(mode))
 
           case DeclarationHolder(maybeTypeCode, maybeEori) =>
             val typeCodeError = maybeTypeCode.fold(Seq(("authorisationTypeCode", "supplementary.declarationHolder.authorisationCode.empty")))(
@@ -175,4 +175,12 @@ class DeclarationHolderController @Inject()(
 
   private def retrieveHolder(values: Seq[String]): DeclarationHolder =
     DeclarationHolder.buildFromString(values.headOption.getOrElse(""))
+
+  private def navigateToNextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
+    request.declarationType match {
+      case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
+        navigator.continueTo(controllers.declaration.routes.OriginationCountryController.displayPage(mode))
+      case DeclarationType.SIMPLIFIED => navigator.continueTo(controllers.declaration.routes.DestinationCountryController.displayPage(mode))
+    }
+
 }
