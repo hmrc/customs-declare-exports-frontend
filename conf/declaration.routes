@@ -170,7 +170,13 @@ POST        /items/:itemId/commodity-details                   controllers.decla
 
 GET         /items/:itemId/un-dangerous-goods-code             controllers.declaration.UNDangerousGoodsCodeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
 
-POST        /items/:itemId/un-dangerous-goods-code              controllers.declaration.UNDangerousGoodsCodeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/un-dangerous-goods-code             controllers.declaration.UNDangerousGoodsCodeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+# CUS Code
+
+GET         /items/:itemId/cus-code                            controllers.declaration.CUSCodeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+POST        /items/:itemId/cus-code                            controllers.declaration.CUSCodeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
 
 # Package Information
 

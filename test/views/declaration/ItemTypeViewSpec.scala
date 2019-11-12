@@ -58,7 +58,6 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       messages must haveTranslationFor("declaration.itemType.nationalAdditionalCode.header.hint")
       messages must haveTranslationFor("declaration.itemType.statisticalValue.header")
       messages must haveTranslationFor("declaration.itemType.statisticalValue.header.hint")
-      messages must haveTranslationFor("declaration.itemType.cusCode.header")
     }
 
     val view = createView()
@@ -100,12 +99,6 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         view.getElementById("statisticalValue").attr("value") mustBe empty
       }
 
-      "display empty input with label for CUS" in {
-        view.getElementById("cusCode-label").text() mustBe "declaration.itemType.cusCode.header"
-        view.getElementById("cusCode-hint").text() mustBe "declaration.itemType.cusCode.header.hint"
-        view.getElementById("cusCode").attr("value") mustBe empty
-      }
-
       "display two 'Add' buttons" in {
 
         view.getElementsByAttributeValue("name", "AddField").size() must be(2)
@@ -117,7 +110,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
         backButton.text() mustBe "site.back"
         backButton.getElementById("link-back") must haveHref(
-          controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId = "itemId")
+          controllers.declaration.routes.CUSCodeController.displayPage(Mode.Normal, itemId = "itemId")
         )
       }
 
@@ -173,12 +166,6 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         view.getElementById("statisticalValue").attr("value") mustBe empty
       }
 
-      "display empty input with label for CUS" in {
-        view.getElementById("cusCode-label").text() mustBe "declaration.itemType.cusCode.header"
-        view.getElementById("cusCode-hint").text() mustBe "declaration.itemType.cusCode.header.hint"
-        view.getElementById("cusCode").attr("value") mustBe empty
-      }
-
       "display two 'Add' buttons" in {
 
         view.getElementsByAttributeValue("name", "AddField").size() must be(2)
@@ -190,7 +177,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
         backButton.text() mustBe "site.back"
         backButton.getElementById("link-back") must haveHref(
-          controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId = "itemId")
+          controllers.declaration.routes.CUSCodeController.displayPage(Mode.Normal, itemId = "itemId")
         )
       }
 
@@ -242,15 +229,6 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         view.getElementById("nationalAdditionalCode").attr("value") mustBe empty
       }
 
-      "display empty input with label for CUS" in {
-
-        val view = createView()
-
-        view.getElementById("cusCode-label").text() mustBe "declaration.itemType.cusCode.header"
-        view.getElementById("cusCode-hint").text() mustBe "declaration.itemType.cusCode.header.hint"
-        view.getElementById("cusCode").attr("value") mustBe empty
-      }
-
       "display empty input with label for Statistical Value" in {
 
         val view = createView()
@@ -272,7 +250,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
         backButton.text() mustBe "site.back"
         backButton.getElementById("link-back") must haveHref(
-          controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId = "itemId")
+          controllers.declaration.routes.CUSCodeController.displayPage(Mode.Normal, itemId = "itemId")
         )
       }
 
@@ -294,122 +272,44 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
     "used for Standard Declaration journey" should {
 
-      "display data in CNC input" in {
-
-        val itemType = ItemTypeForm(None, None, None, "")
-        val view = createView(form = ItemTypeForm.form().fill(itemType))
-
-        assertViewDataEntered(view, itemType)
-      }
-
-      "display data in Description input" in {
-
-        val itemType = ItemTypeForm(None, Some(""), None, "")
-        val view = createView(form = ItemTypeForm.form().fill(itemType))
-
-        assertViewDataEntered(view, itemType)
-      }
-
-      "display data in CUS input" in {
-
-        val itemType = ItemTypeForm(None, Some(""), Some("1234"), "")
-        val view = createView(form = ItemTypeForm.form().fill(itemType))
-
-        assertViewDataEntered(view, itemType)
-      }
-
       "display data in Statistical Value input" in {
 
-        val itemType = ItemTypeForm(None, Some(""), None, "12345")
+        val itemType = ItemTypeForm(None, Some(""), "12345")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
 
-      def assertViewDataEntered(view: Document, itemType: ItemTypeForm): Unit = {
-        view.getElementById("cusCode").attr("value") must equal(itemType.cusCode.getOrElse(""))
+      def assertViewDataEntered(view: Document, itemType: ItemTypeForm): Unit =
         view.getElementById("statisticalValue").attr("value") must equal(itemType.statisticalValue)
-      }
     }
 
     "used for Simplified Declaration journey" should {
 
-      "display data in CNC input" in {
-
-        val itemType = ItemTypeForm(None, None, None, "")
-        val view = createView(form = ItemTypeForm.form().fill(itemType))
-
-        assertViewDataEntered(view, itemType)
-      }
-
-      "display data in Description input" in {
-
-        val itemType = ItemTypeForm(None, Some(""), None, "")
-        val view = createView(form = ItemTypeForm.form().fill(itemType))
-
-        assertViewDataEntered(view, itemType)
-      }
-
-      "display data in CUS input" in {
-
-        val itemType = ItemTypeForm(None, Some(""), Some("1234"), "")
-        val view = createView(form = ItemTypeForm.form().fill(itemType))
-
-        assertViewDataEntered(view, itemType)
-      }
-
       "display data in Statistical Value input" in {
 
-        val itemType = ItemTypeForm(None, Some(""), None, "12345")
+        val itemType = ItemTypeForm(None, Some(""), "12345")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
 
-      def assertViewDataEntered(view: Document, itemType: ItemTypeForm): Unit = {
-        view.getElementById("cusCode").attr("value") must equal(itemType.cusCode.getOrElse(""))
+      def assertViewDataEntered(view: Document, itemType: ItemTypeForm): Unit =
         view.getElementById("statisticalValue").attr("value") must equal(itemType.statisticalValue)
-      }
     }
 
     "used for Supplementary Declaration journey" should {
 
-      "display data in CNC input" in {
-
-        val itemType = ItemTypeForm(None, None, None, "")
-        val view = createView(form = ItemTypeForm.form().fill(itemType))
-
-        assertViewDataEntered(view, itemType)
-      }
-
-      "display data in Description input" in {
-
-        val itemType = ItemTypeForm(None, Some(""), None, "")
-        val view = createView(form = ItemTypeForm.form().fill(itemType))
-
-        assertViewDataEntered(view, itemType)
-      }
-
-      "display data in CUS input" in {
-
-        val itemType = ItemTypeForm(None, Some(""), Some("1234"), "")
-        val view = createView(form = ItemTypeForm.form().fill(itemType))
-
-        assertViewDataEntered(view, itemType)
-      }
-
       "display data in Statistical Value input" in {
 
-        val itemType = ItemTypeForm(None, Some(""), None, "12345")
+        val itemType = ItemTypeForm(None, Some(""), "12345")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
 
-      def assertViewDataEntered(view: Document, itemType: ItemTypeForm): Unit = {
-        view.getElementById("cusCode").attr("value") must equal(itemType.cusCode.getOrElse(""))
+      def assertViewDataEntered(view: Document, itemType: ItemTypeForm): Unit =
         view.getElementById("statisticalValue").attr("value") must equal(itemType.statisticalValue)
-      }
     }
 
   }

@@ -31,6 +31,7 @@ case class ExportItem(
   itemType: Option[ItemType] = None,
   commodityDetails: Option[CommodityDetails] = None,
   dangerousGoodsCode: Option[UNDangerousGoodsCode] = None,
+  cusCode: Option[CUSCode] = None,
   packageInformation: List[PackageInformation] = Nil,
   commodityMeasure: Option[CommodityMeasure] = None,
   additionalInformation: Option[AdditionalInformationData] = None,

@@ -44,7 +44,7 @@
     @helper.form(routes.ItemTypeController.submitItemType(mode, item.id), 'autocomplete -> "off") {
         @helper.CSRF.formField
 
-        @components.back_link(routes.UNDangerousGoodsCodeController.displayPage(mode, item.id), mode)
+        @components.back_link(routes.CUSCodeController.displayPage(mode, item.id), mode)
 
         @components.error_summary(form.errors)
 
@@ -86,13 +86,6 @@
             field = form("statisticalValue"),
             label = Some(messages("declaration.itemType.statisticalValue.header")),
             hint = Some(messages("declaration.itemType.statisticalValue.header.hint")),
-            labelClass = Some("bold-small")
-        )
-
-        @components.fields.field_text(
-            field = form(cusCodeKey),
-            label = Some(messages("declaration.itemType.cusCode.header")),
-            hintHtml = Some(Html( messages("declaration.itemType.cusCode.header.hint"))),
             labelClass = Some("bold-small")
         )
 

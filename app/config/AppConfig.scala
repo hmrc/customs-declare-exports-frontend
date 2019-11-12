@@ -60,6 +60,7 @@ class AppConfig @Inject()(
 
   lazy val tradeTariffUrl = loadConfig("urls.tradeTariff")
   lazy val classificationHelpUrl = loadConfig("urls.classificationHelp")
+  lazy val ecicsToolUrl = loadConfig("urls.ecicsTool")
 
   lazy val customsDeclareExports = servicesConfig.baseUrl("customs-declare-exports")
 
