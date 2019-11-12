@@ -31,6 +31,9 @@
         form: Form[CommodityDetails]
 )(implicit request: JourneyRequest[_], messages: Messages)
 
+@tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.commodityDetails.how.tradeTariff")</a>}
+@classificationTeamLink = {<a target="_blank" href=@appConfig.classificationHelpUrl>@messages("declaration.commodityDetails.how.classificationTeam")</a>}
+
 @main_template(
     title = Title("declaration.commodityDetails.title", "supplementary.items")
 ) {
@@ -70,17 +73,14 @@
             </summary>
             <div class="grey-border-left">
                 <ol class="list list-number">
-                    <li>@messages("declaration.commodityDetails.how.step1")
-                        <a href="@appConfig.tradeTariffUrl" target="_blank">@messages("declaration.commodityDetails.how.tradeTariff")</a>
-                    </li>
+                    <li>@Html(messages("declaration.commodityDetails.how.step1", tradeTariffLink))</li>
                     <li>@messages("declaration.commodityDetails.how.step2")</li>
                     <li>@messages("declaration.commodityDetails.how.step3")</li>
                     <li>@messages("declaration.commodityDetails.how.step4")</li>
                     <li>@messages("declaration.commodityDetails.how.step5")</li>
                 </ol>
                 <p>
-                    @messages("declaration.commodityDetails.how.summary")
-                    <a href="@appConfig.classificationHelpUrl" target="_blank">@messages("declaration.commodityDetails.how.classificationTeam")</a>
+                    @Html(messages("declaration.commodityDetails.how.summary", classificationTeamLink))
                 </p>
             </div>
         </details>

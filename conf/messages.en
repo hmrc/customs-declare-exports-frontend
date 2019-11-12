@@ -593,10 +593,6 @@ declaration.itemType.nationalAdditionalCode.error.maxAmount = You cannot add mor
 declaration.itemType.nationalAdditionalCode.error.duplicate = National Additional Codes cannot contain duplicates
 declaration.itemType.nationalAdditionalCode.add.hint = Add National Additional Code
 declaration.itemType.nationalAdditionalCode.remove.hint = Remove National Additional Code {0}
-declaration.itemType.cusCode.header = What is the CUS Code for this item?
-declaration.itemType.cusCode.header.hint = A customs union and statistics number (CUS code) is required for chemicals classified in chapters 28, 29 and some in chapter 38 of the UK Trade Tariff. You can find this using the <a href="https://ec.europa.eu/taxation_customs/dds2/ecics/chemicalsubstance_consultation.jsp" target="blank">ECICS chemical substance information tool.</a>
-declaration.itemType.cusCode.error.length = CUS Code must be exactly 8 characters long
-declaration.itemType.cusCode.error.specialCharacters = CUS Code cannot contain special characters
 declaration.itemType.statisticalValue.header = What is the statistical value of the items?
 declaration.itemType.statisticalValue.header.hint = The approximate value of the goods at the time they leave the EU. It should be entered in GBP only.
 declaration.itemType.statisticalValue.error.empty = The statistical value cannot be empty
@@ -614,24 +610,35 @@ declaration.commodityDetails.description.header.hint = Try to be as specific as 
 declaration.commodityDetails.description.error.empty = Description cannot be empty
 declaration.commodityDetails.description.error.length = Description cannot be longer than 280 characters
 declaration.commodityDetails.how.header = How do I find a commodity code?
-declaration.commodityDetails.how.step1 = Go to the UK 
-declaration.commodityDetails.how.tradeTariff = Trade Tariff.
+declaration.commodityDetails.how.step1 = Go to the UK {0}.
+declaration.commodityDetails.how.tradeTariff = Trade Tariff
 declaration.commodityDetails.how.step2 = Type your goods into the search bar. It will present you with multiple options. Select the one that most closely resembles your goods.
 declaration.commodityDetails.how.step3 = This will take you to a table with more options. Select 'open all headings' (top left of the table) and browse through the list to find the description that most closely resembles your goods.
 declaration.commodityDetails.how.step4 = Keep selecting options until you have a full ten-digit number in the right-hand column. (Note, at this point it will tell you if the goods require a supplementary unit in the column next to it).
 declaration.commodityDetails.how.step5 = This number is your commodity code. Click on it and click on the exports tab halfway down the page. This will give you specific information such as licences, quota tariff, and CUS codes.
-declaration.commodityDetails.how.summary = It is important to get it right. If you need help confirming your commodity code, you can contact the
-declaration.commodityDetails.how.classificationTeam = classification team.
+declaration.commodityDetails.how.summary = It is important to get it right. If you need help confirming your commodity code, you can contact the {0}.
+declaration.commodityDetails.how.classificationTeam = classification team
 
 declaration.unDangerousGoodsCode.header = Does the item have a UN dangerous goods code?
-declaration.unDangerousGoodsCode.header.hint = You can find this in ‘Export measures and restrictions’ tab of the commodity code in the
-declaration.unDangerousGoodsCode.header.hint.link = UK Trade Tariff
+declaration.unDangerousGoodsCode.header.hint = You can find this in ‘Export measures and restrictions’ tab of the commodity code in the {0}.
+declaration.unDangerousGoodsCode.traderTariff.link = UK Trade Tariff
 declaration.unDangerousGoodsCode.label = UN dangerous goods code
 declaration.unDangerousGoodsCode.hasCode = Yes
 declaration.unDangerousGoodsCode.noCode = No
 declaration.unDangerousGoodsCode.error.empty = Enter a UN dangerous goods code
 declaration.unDangerousGoodsCode.error.length = The code must be 4 characters
 declaration.unDangerousGoodsCode.error.specialCharacters = Enter a UN dangerous goods code in the correct format
+
+declaration.cusCode.header = Do these goods have a CUS Code?
+declaration.cusCode.header.hint = A customs union and statistics number (CUS code) is required for chemicals classified in chapters 28, 29 and some in chapter 38 of the {0}. You can find this using the {1}.
+declaration.cusCode.header.tradeTariff.link = UK Trade Tariff
+declaration.cusCode.header.ecicsTool.link = ECICS chemical substance information tool
+declaration.cusCode.label = CUS code
+declaration.cusCode.hasCode = Yes
+declaration.cusCode.noCode = No
+declaration.cusCode.error.empty = Enter a CUS code
+declaration.cusCode.error.length = CUS Code must be exactly 8 characters long
+declaration.cusCode.error.specialCharacters = CUS Code cannot contain special characters
 
 
 supplementary.previousDocuments = Previous documents

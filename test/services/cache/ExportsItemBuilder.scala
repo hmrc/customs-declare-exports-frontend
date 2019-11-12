@@ -72,15 +72,17 @@ trait ExportsItemBuilder {
   def withUNDangerousGoodsCode(data: UNDangerousGoodsCode): ItemModifier =
     _.copy(dangerousGoodsCode = Some(data))
 
+  def withCUSCode(data: CUSCode): ItemModifier =
+    _.copy(cusCode = Some(data))
+
   def withItemType(
     combinedNomenclatureCode: Option[String] = None,
     taricAdditionalCodes: Seq[String] = Seq.empty,
     nationalAdditionalCodes: Seq[String] = Seq.empty,
     descriptionOfGoods: String = "",
-    cusCode: Option[String] = None,
     statisticalValue: String = ""
   ): ItemModifier =
-    withItemType(ItemType(taricAdditionalCodes, nationalAdditionalCodes, cusCode, statisticalValue))
+    withItemType(ItemType(taricAdditionalCodes, nationalAdditionalCodes, statisticalValue))
 
   def withItemType(data: ItemType): ItemModifier = _.copy(itemType = Some(data))
 

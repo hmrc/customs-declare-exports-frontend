@@ -16,8 +16,8 @@
 
 @import controllers.declaration.routes
 @import controllers.util.SaveAndContinue
-@import forms.declaration.UNDangerousGoodsCode
-@import forms.declaration.UNDangerousGoodsCode._
+@import forms.declaration.CUSCode
+@import forms.declaration.CUSCode._
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.play.views.html._
 @import views.Title
@@ -29,46 +29,47 @@
 @(
         mode: Mode,
         itemId: String,
-        form: Form[UNDangerousGoodsCode]
+        form: Form[CUSCode]
 )(implicit request: JourneyRequest[_], messages: Messages)
 
-@tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.unDangerousGoodsCode.traderTariff.link")</a>}
+@tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.cusCode.header.tradeTariff.link")</a>}
+@ecicsToolLink = {<a target="_blank" href=@appConfig.ecicsToolUrl>@messages("declaration.cusCode.header.ecicsTool.link")</a>}
 
 @main_template(
-    title = Title("declaration.unDangerousGoodsCode.header", "supplementary.items")
+    title = Title("declaration.cusCode.header", "supplementary.items")
 ) {
 
-    @helper.form(routes.UNDangerousGoodsCodeController.submitForm(mode, itemId), 'autocomplete -> "off") {
+    @helper.form(routes.CUSCodeController.submitForm(mode, itemId), 'autocomplete -> "off") {
         @helper.CSRF.formField
 
-        @components.back_link(routes.CommodityDetailsController.displayPage(mode, itemId), mode)
+        @components.back_link(routes.UNDangerousGoodsCodeController.displayPage(mode, itemId), mode)
 
         @components.error_summary(form.errors)
 
         @components.heading(
             sectionHeader = messages("supplementary.items"),
-            title = messages("declaration.unDangerousGoodsCode.header"),
-            hintHtml = Some(Html(messages("declaration.unDangerousGoodsCode.header.hint", tradeTariffLink)))
+            title = messages("declaration.cusCode.header"),
+            hintHtml = Some(Html(messages("declaration.cusCode.header.hint", tradeTariffLink, ecicsToolLink)))
         )
 
 
         @components.fields.field_radio(
-            field = form(hasDangerousGoodsCodeKey),
+            field = form(hasCusCodeKey),
             legend = "",
             inputs = Seq(
                 RadioOption(
                     id = "code_yes",
-                    value = AllowedUNDangerousGoodsCodeAnswers.yes,
-                    messageKey = "declaration.unDangerousGoodsCode.hasCode",
+                    value = AllowedCUSCodeAnswers.yes,
+                    messageKey = "declaration.cusCode.hasCode",
                     revealComponent = Some(components.fields.field_text(
-                        field = form(dangerousGoodsCodeKey),
-                        label = Some(messages("declaration.unDangerousGoodsCode.label"))
+                        field = form(cusCodeKey),
+                        label = Some(messages("declaration.cusCode.label"))
                     ))
                 ),
                 RadioOption(
                     id = "code_no",
-                    value = AllowedUNDangerousGoodsCodeAnswers.no,
-                    messageKey = "declaration.unDangerousGoodsCode.noCode"
+                    value = AllowedCUSCodeAnswers.no,
+                    messageKey = "declaration.cusCode.noCode"
                 )
             )
         )

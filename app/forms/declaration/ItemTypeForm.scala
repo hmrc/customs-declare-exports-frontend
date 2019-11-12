@@ -20,33 +20,25 @@ import models.declaration.ItemType
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
 
-case class ItemTypeForm(
-  taricAdditionalCode: Option[String],
-  nationalAdditionalCode: Option[String],
-  cusCode: Option[String],
-  statisticalValue: String
-)
+case class ItemTypeForm(taricAdditionalCode: Option[String], nationalAdditionalCode: Option[String], statisticalValue: String)
 
 object ItemTypeForm {
 
   val taricAdditionalCodeKey = "taricAdditionalCode"
   val nationalAdditionalCodeKey = "nationalAdditionalCode"
-  val cusCodeKey = "cusCode"
   val statisticalValueKey = "statisticalValue"
 
-  private val mapping: Mapping[ItemTypeForm] = Forms.mapping(
-    taricAdditionalCodeKey -> optional(text()),
-    nationalAdditionalCodeKey -> optional(text()),
-    cusCodeKey -> optional(text()),
-    statisticalValueKey -> text()
-  )(ItemTypeForm.apply)(ItemTypeForm.unapply)
+  private val mapping: Mapping[ItemTypeForm] =
+    Forms.mapping(taricAdditionalCodeKey -> optional(text()), nationalAdditionalCodeKey -> optional(text()), statisticalValueKey -> text())(
+      ItemTypeForm.apply
+    )(ItemTypeForm.unapply)
 
   val id = "ItemType"
 
   def form(): Form[ItemTypeForm] = Form(mapping)
 
-  val empty: ItemTypeForm = ItemTypeForm(None, None, None, "")
+  val empty: ItemTypeForm = ItemTypeForm(None, None, "")
 
   def fromItemType(model: ItemType) =
-    ItemTypeForm(None, None, model.cusCode, model.statisticalValue)
+    ItemTypeForm(None, None, model.statisticalValue)
 }

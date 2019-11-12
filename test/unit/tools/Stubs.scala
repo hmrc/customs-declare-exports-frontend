@@ -69,6 +69,7 @@ trait Stubs {
       |microservice.services.features.use-improved-error-messages=true
       |urls.tradeTariff=tradeTariff
       |urls.classificationHelp=classificationHelp
+      |urls.ecicsTool=ecicsTool
     """.stripMargin)
 
   val minimalConfiguration = Configuration(minimalConfig)

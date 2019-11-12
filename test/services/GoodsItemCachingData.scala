@@ -59,7 +59,6 @@ trait GoodsItemCachingData {
   def createItemType(): ItemType = ItemType(
     getDataSeq(Random.nextInt(10), createRandomAlphanumericString, 4),
     getDataSeq(Random.nextInt(10), createRandomAlphanumericString, 4),
-    Some(createRandomAlphanumericString(8)),
     decimalString()
   )
 

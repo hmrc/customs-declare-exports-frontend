@@ -32,7 +32,6 @@ object ItemTypeValidator extends Validator[ItemType] {
   private val taricAdditionalCodesMaxAmount = 99
   private val nationalAdditionalCodeMaxLength = 4
   private val nationalAdditionalCodesMaxAmount = 99
-  private val cusCodeLength = 8
   private val statisticalValueMaxLength = 15
   private val statisticalValueDecimalPlaces = 2
 
@@ -59,12 +58,6 @@ object ItemTypeValidator extends Validator[ItemType] {
   ).verifying("declaration.itemType.nationalAdditionalCode.error.maxAmount", codes => codes.size <= nationalAdditionalCodesMaxAmount)
     .verifying("declaration.itemType.nationalAdditionalCode.error.duplicate", areAllElementsUnique)
 
-  private val mappingCUSCode = optional(
-    text()
-      .verifying("declaration.itemType.cusCode.error.length", hasSpecificLength(cusCodeLength))
-      .verifying("declaration.itemType.cusCode.error.specialCharacters", isAlphanumeric)
-  )
-
   private val mappingStatisticalValue = text()
     .verifying("declaration.itemType.statisticalValue.error.empty", nonEmpty)
     .verifying(
@@ -79,7 +72,6 @@ object ItemTypeValidator extends Validator[ItemType] {
   private val addValidation = Forms.mapping(
     taricAdditionalCodeKey -> mappingTARICAdditionalCode,
     nationalAdditionalCodeKey -> mappingNationalAdditionalCode,
-    cusCodeKey -> optional(text()),
     statisticalValueKey -> text()
   )(ItemType.apply)(ItemType.unapply)
 
@@ -87,7 +79,6 @@ object ItemTypeValidator extends Validator[ItemType] {
     Forms.mapping(
       taricAdditionalCodeKey -> mappingTARICAdditionalCode,
       nationalAdditionalCodeKey -> mappingNationalAdditionalCode,
-      cusCodeKey -> mappingCUSCode,
       statisticalValueKey -> mappingStatisticalValue
     )(ItemType.apply)(ItemType.unapply)
 

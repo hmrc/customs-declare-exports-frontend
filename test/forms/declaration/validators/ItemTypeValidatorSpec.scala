@@ -205,22 +205,6 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers with ExportsDecla
         testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
       }
 
-      "CUS code is not 8 characters long" in {
-        val itemType = buildItemType(cusCode = Some("ABC123"))
-        val expectedValidationResult =
-          Invalid(errors = Seq(FormError(cusCodeKey, "declaration.itemType.cusCode.error.length")))
-
-        testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
-      }
-
-      "CUS code contains special characters" in {
-        val itemType = buildItemType(cusCode = Some("ABC123#$"))
-        val expectedValidationResult =
-          Invalid(errors = Seq(FormError(cusCodeKey, "declaration.itemType.cusCode.error.specialCharacters")))
-
-        testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
-      }
-
       "Statistical value is empty" in {
         val itemType = buildItemType()
         val expectedValidationResult =
@@ -251,23 +235,13 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers with ExportsDecla
       implicit val `type`: models.DeclarationType.Value = DeclarationType.STANDARD
 
       "Combined Nomenclature Code is empty for Simplified Dec" in {
-        val itemType = ItemType(
-          taricAdditionalCodes = Seq("11AA"),
-          nationalAdditionalCodes = Seq("VATE"),
-          cusCode = Some("12345678"),
-          statisticalValue = "1234567890.12"
-        )
+        val itemType = ItemType(taricAdditionalCodes = Seq("11AA"), nationalAdditionalCodes = Seq("VATE"), statisticalValue = "1234567890.12")
 
         ItemTypeValidator.validateOnSaveAndContinue(itemType)(req(DeclarationType.SIMPLIFIED)) must be(Valid)
       }
 
       "provided with correct data with single value for every field" in {
-        val itemType = ItemType(
-          taricAdditionalCodes = Seq("11AA"),
-          nationalAdditionalCodes = Seq("VATE"),
-          cusCode = Some("12345678"),
-          statisticalValue = "1234567890.12"
-        )
+        val itemType = ItemType(taricAdditionalCodes = Seq("11AA"), nationalAdditionalCodes = Seq("VATE"), statisticalValue = "1234567890.12")
 
         ItemTypeValidator.validateOnSaveAndContinue(itemType) must be(Valid)
       }
@@ -276,7 +250,6 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers with ExportsDecla
         val itemType = ItemType(
           taricAdditionalCodes = Seq("11AA", "22BB", "33CC"),
           nationalAdditionalCodes = Seq("VATE", "VATR"),
-          cusCode = Some("12345678"),
           statisticalValue = "1234567890.12"
         )
 
@@ -285,7 +258,7 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers with ExportsDecla
 
       "provided with correct data for mandatory fields only" in {
         val itemType =
-          ItemType(taricAdditionalCodes = Seq.empty, nationalAdditionalCodes = Seq.empty, cusCode = None, statisticalValue = "1234567890.12")
+          ItemType(taricAdditionalCodes = Seq.empty, nationalAdditionalCodes = Seq.empty, statisticalValue = "1234567890.12")
 
         ItemTypeValidator.validateOnSaveAndContinue(itemType) must be(Valid)
       }
@@ -314,10 +287,6 @@ object ItemTypeValidatorSpec {
     cusCode: Option[String] = None,
     unDangerousGoodsCode: Option[String] = None,
     statisticalValue: String = ""
-  ): ItemType = ItemType(
-    taricAdditionalCodes = taricAdditionalCode,
-    nationalAdditionalCodes = nationalAdditionalCode,
-    cusCode = cusCode,
-    statisticalValue = statisticalValue
-  )
+  ): ItemType =
+    ItemType(taricAdditionalCodes = taricAdditionalCode, nationalAdditionalCodes = nationalAdditionalCode, statisticalValue = statisticalValue)
 }

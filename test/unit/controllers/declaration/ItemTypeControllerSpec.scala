@@ -102,11 +102,8 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
         withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
 
         val correctForm = Seq(
-          ("combinedNomenclatureCode", "nomCode"),
           ("taricAdditionalCode", "1234"),
           ("nationalAdditionalCode", "VATE"),
-          ("descriptionOfGoods", "description"),
-          ("cusCode", "12345678"),
           ("statisticalValue", "999"),
           addActionUrlEncoded(ItemTypeForm.taricAdditionalCodeKey)
         )
@@ -120,7 +117,6 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
           ItemType(
             taricAdditionalCodes = Seq("1234"),
             nationalAdditionalCodes = Seq.empty, // NOT added to the cache model after an Add for TARIC codes - see bug CEDS-1094
-            cusCode = Some("12345678"),
             statisticalValue = "999"
           )
         )
@@ -133,7 +129,6 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
         val correctForm = Seq(
           ("taricAdditionalCode", "5356"),
           ("nationalAdditionalCode", "X611"),
-          ("cusCode", "56353789"),
           ("statisticalValue", "435"),
           addActionUrlEncoded(ItemTypeForm.nationalAdditionalCodeKey)
         )
@@ -147,7 +142,6 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
           ItemType(
             taricAdditionalCodes = Seq.empty, // NOT added to the cache model after an Add for TARIC codes - see bug CEDS-1094
             nationalAdditionalCodes = Seq("X611"),
-            cusCode = Some("56353789"),
             statisticalValue = "435"
           )
         )
@@ -161,7 +155,7 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
         withNewCaching(aDeclaration())
 
         val correctForm =
-          Json.toJson(ItemType(Seq("code"), Seq("code"), Some("code"), "1234"))
+          Json.toJson(ItemType(Seq("code"), Seq("code"), "1234"))
 
         val result = controller.submitItemType(Mode.Normal, itemId)(postRequest(correctForm))
 
