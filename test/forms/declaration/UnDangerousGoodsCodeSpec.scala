@@ -30,13 +30,13 @@ class UnDangerousGoodsCodeSpec extends WordSpec with MustMatchers {
 
     "return form with errors" when {
       "provided with code too long" in {
-        val form = UNDangerousGoodsCode.form.bind(formData("Yes", Some("A12344")))
+        val form = UNDangerousGoodsCode.form.bind(formData("Yes", Some("12345")))
 
         form.errors mustBe Seq(FormError(dangerousGoodsCodeKey, "declaration.unDangerousGoodsCode.error.length"))
       }
 
-      "provided with non-alphanumeric code" in {
-        val form = UNDangerousGoodsCode.form.bind(formData("Yes", Some("!234")))
+      "provided with non-numeric code" in {
+        val form = UNDangerousGoodsCode.form.bind(formData("Yes", Some("12E4")))
 
         form.errors mustBe Seq(FormError(dangerousGoodsCodeKey, "declaration.unDangerousGoodsCode.error.specialCharacters"))
       }
