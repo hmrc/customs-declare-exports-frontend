@@ -46,6 +46,8 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestData
       messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.sectionHeader")
       messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.title")
       messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.hint")
+      messages must haveTranslationFor("declaration.warehouse.supervisingCustomsOffice.error")
+
     }
 
     "display same page title as header" in {

@@ -85,11 +85,11 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
 
     "we are on standard declaration journey" should {
 
-      "redirect to Warehouse Details page" in {
+      "redirect to Supervising Customs Office page" in {
         withNewCaching(standardCacheModel)
         val result = controller.saveIdentificationNumber(Mode.Normal).apply(postRequest(body))
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseDetailsController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage()
       }
 
       "update cache after successful bind" in {
@@ -110,11 +110,11 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
     }
 
     "we are on supplementary declaration journey" should {
-      "redirect to Warehouse Details page" in {
+      "redirect to Supervising Customs Office page" in {
         withNewCaching(suplementaryCacheModel)
         val result = controller.saveIdentificationNumber(Mode.Normal).apply(postRequest(body))
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseDetailsController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage()
       }
 
       "update cache after successful bind" in {
@@ -135,11 +135,11 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
     }
 
     "we are on simplified declaration journey" should {
-      "redirect to Warehouse Details page" in {
+      "redirect to Supervising Customs Office page" in {
         withNewCaching(simplifiedCacheModel)
         val result = controller.saveIdentificationNumber(Mode.Normal).apply(postRequest(body))
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseDetailsController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage()
       }
 
       "update cache after successful bind" in {

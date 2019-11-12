@@ -46,6 +46,8 @@ class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestData 
       messages must haveTranslationFor("declaration.warehouse.identification.sectionHeader")
       messages must haveTranslationFor("declaration.warehouse.identification.title")
       messages must haveTranslationFor("declaration.warehouse.identification.hint")
+      messages must haveTranslationFor("declaration.warehouse.identification.identificationNumber.error")
+      messages must haveTranslationFor("declaration.warehouse.identification.identificationNumber.empty")
     }
 
     "display same page title as header" in {
