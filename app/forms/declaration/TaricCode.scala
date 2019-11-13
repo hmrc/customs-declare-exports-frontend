@@ -35,7 +35,7 @@ object TaricCode extends DeclarationPage {
     Forms.mapping(
       taricCodeKey ->
         text()
-          .verifying("empty", nonEmpty)
+          .verifying("declaration.taricAdditionalCodes.error.empty", nonEmpty)
           .verifying("declaration.taricAdditionalCodes.error.length", isEmpty or hasSpecificLength(taricCodeLength))
           .verifying("declaration.taricAdditionalCodes.error.specialCharacters", isEmpty or isAlphanumeric)
     )(TaricCode.apply)(TaricCode.unapply)

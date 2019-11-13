@@ -55,8 +55,8 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
   }
 
   override protected def afterEach(): Unit = {
-    super.afterEach()
     reset(mockPage)
+    super.afterEach()
   }
 
   def theTaricCodes: List[TaricCode] = {
@@ -65,7 +65,7 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
     captor.getValue
   }
 
-  private def verifyPageInvoked(numberOdTimes: Int) = verify(mockPage, times(numberOdTimes)).apply(any(), any(), any(), any())(any(), any())
+  private def verifyPageInvoked(numberOfTimes: Int = 1) = verify(mockPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
   "TARIC Code controller" should {
 
@@ -79,7 +79,7 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
           val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
 
           status(result) mustBe OK
-          verifyPageInvoked(1)
+          verifyPageInvoked()
 
           theTaricCodes mustBe empty
         }
@@ -92,7 +92,7 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
           val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
 
           status(result) mustBe OK
-          verifyPageInvoked(1)
+          verifyPageInvoked()
 
           theTaricCodes must contain(taricCode)
         }
@@ -124,7 +124,7 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
           val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(body: _*))
 
           status(result) mustBe BAD_REQUEST
-          verifyPageInvoked(1)
+          verifyPageInvoked()
         }
 
         "user adds duplicate code" in {
@@ -137,7 +137,7 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
           val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(body: _*))
 
           status(result) mustBe BAD_REQUEST
-          verifyPageInvoked(1)
+          verifyPageInvoked()
         }
 
         "user adds too many codes" in {
@@ -150,7 +150,7 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
           val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(body: _*))
 
           status(result) mustBe BAD_REQUEST
-          verifyPageInvoked(1)
+          verifyPageInvoked()
         }
       }
 

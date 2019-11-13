@@ -52,7 +52,7 @@ class TaricCodeSpec extends WordSpec with MustMatchers {
       "provided with valid input" in {
         val form = TaricCode.form.bind(formData(Some("1234")))
 
-        form.hasErrors must be(false)
+        form.errors mustBe empty
       }
 
     }

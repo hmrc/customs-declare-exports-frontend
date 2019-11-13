@@ -635,6 +635,7 @@ declaration.cusCode.error.specialCharacters = CUS Code cannot contain special ch
 
 declaration.taricAdditionalCodes.header = Are there additional TARIC codes?
 declaration.taricAdditionalCodes.header.hint = This will be the four digits that come after the commodity code in the {0}. If no additional codes are required, leave blank.
+declaration.taricAdditionalCodes.error.empty = Enter a TARIC code
 declaration.taricAdditionalCodes.error.length = TARIC code must be exactly 4 characters long
 declaration.taricAdditionalCodes.error.specialCharacters = TARIC code cannot contain specialCharacters
 declaration.taricAdditionalCodes.add.hint = Add TARIC code
