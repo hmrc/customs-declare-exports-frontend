@@ -57,7 +57,7 @@ class CUSCodeController @Inject()(
         validForm =>
           updateExportsCache(itemId, validForm).map { _ =>
             navigator
-              .continueTo(controllers.declaration.routes.ItemTypeController.displayPage(mode, itemId))
+              .continueTo(controllers.declaration.routes.TaricCodeController.displayPage(mode, itemId))
         }
       )
   }

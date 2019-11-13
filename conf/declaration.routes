@@ -182,6 +182,12 @@ GET         /items/:itemId/cus-code                            controllers.decla
 
 POST        /items/:itemId/cus-code                            controllers.declaration.CUSCodeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
 
+# Item Type
+
+GET         /items/:itemId/taric-codes                         controllers.declaration.TaricCodeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+POST        /items/:itemId/taric-codes                         controllers.declaration.TaricCodeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+
 # Package Information
 
 GET         /items/:itemId/package-information                 controllers.declaration.PackageInformationController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)

@@ -1,0 +1,78 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.declaration.routes
+@import controllers.util.SaveAndContinue
+@import forms.Choice.AllowedChoiceValues
+@import forms.declaration.TaricCode
+@import forms.declaration.TaricCode._
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.play.views.html._
+@import services.NationalAdditionalCode
+@import services.view.AutoCompleteItem
+@import forms.declaration.AdditionalFiscalReference
+@import models.declaration.ExportItem
+@import views.Title
+
+@this(main_template: views.html.main_template, appConfig: AppConfig)
+
+@(
+        mode: Mode,
+        itemId: String,
+        form: Form[TaricCode],
+        taricCodes: Seq[TaricCode] = Seq.empty
+)(implicit request: JourneyRequest[_], messages: Messages)
+
+@tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.cusCode.header.tradeTariff.link")</a>}
+
+@main_template(
+    title = Title("declaration.taricAdditionalCodes.header", "supplementary.items")
+) {
+
+    @helper.form(routes.TaricCodeController.submitForm(mode, itemId), 'autocomplete -> "off") {
+        @helper.CSRF.formField
+
+        @components.back_link(routes.CUSCodeController.displayPage(mode, itemId), mode)
+
+        @components.error_summary(form.errors)
+
+
+        @components.heading(
+            sectionHeader = messages("supplementary.items"),
+            title = messages("declaration.taricAdditionalCodes.header"),
+            hintHtml = Some(Html(messages("declaration.taricAdditionalCodes.header.hint", tradeTariffLink)))
+        )
+
+        @components.fields.field_text_multiple_values(
+            field = form(taricCodeKey),
+            label = "",
+            elements = taricCodes.map(_.taricCode),
+            labelClass = Some("bold-small"),
+            addHint = "declaration.taricAdditionalCodes.add.hint",
+            removeHint = "declaration.taricAdditionalCodes.remove.hint"
+        )
+
+
+        <div class="section mb-0">
+        @components.buttons.save_and_continue_button()
+        </div>
+        <div class="section">
+        @components.buttons.save_and_return_later_button()
+        </div>
+    }
+
+}

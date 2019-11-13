@@ -19,7 +19,7 @@ package utils.validators.forms.supplementary
 import forms.declaration.ItemTypeForm._
 import models.declaration.ItemType
 import models.requests.JourneyRequest
-import play.api.data.Forms.{optional, seq, text}
+import play.api.data.Forms.{seq, text}
 import play.api.data.{Form, Forms}
 import play.api.mvc.AnyContent
 import services.NationalAdditionalCode
@@ -28,8 +28,6 @@ import utils.validators.forms.{Invalid, Valid, ValidationResult, Validator}
 
 object ItemTypeValidator extends Validator[ItemType] {
 
-  private val taricAdditionalCodeLength = 4
-  private val taricAdditionalCodesMaxAmount = 99
   private val nationalAdditionalCodeMaxLength = 4
   private val nationalAdditionalCodesMaxAmount = 99
   private val statisticalValueMaxLength = 15
@@ -44,13 +42,6 @@ object ItemTypeValidator extends Validator[ItemType] {
     Form(submitValidation)
       .fillAndValidate(element)
       .fold[ValidationResult](formWithErrors => Invalid(formWithErrors.errors), _ => Valid)
-
-  private val mappingTARICAdditionalCode = seq(
-    text()
-      .verifying("declaration.itemType.taricAdditionalCodes.error.length", hasSpecificLength(taricAdditionalCodeLength))
-      .verifying("declaration.itemType.taricAdditionalCodes.error.specialCharacters", isAlphanumeric)
-  ).verifying("declaration.itemType.taricAdditionalCodes.error.maxAmount", codes => codes.size <= taricAdditionalCodesMaxAmount)
-    .verifying("declaration.itemType.taricAdditionalCodes.error.duplicate", areAllElementsUnique)
 
   private val mappingNationalAdditionalCode = seq(
     text()
@@ -69,17 +60,12 @@ object ItemTypeValidator extends Validator[ItemType] {
       isEmpty or isDecimalWithNoMoreDecimalPlacesThan(statisticalValueDecimalPlaces)
     )
 
-  private val addValidation = Forms.mapping(
-    taricAdditionalCodeKey -> mappingTARICAdditionalCode,
-    nationalAdditionalCodeKey -> mappingNationalAdditionalCode,
-    statisticalValueKey -> text()
-  )(ItemType.apply)(ItemType.unapply)
+  private val addValidation =
+    Forms.mapping(nationalAdditionalCodeKey -> mappingNationalAdditionalCode, statisticalValueKey -> text())(ItemType.apply)(ItemType.unapply)
 
   private def submitValidation(implicit request: JourneyRequest[AnyContent]) =
-    Forms.mapping(
-      taricAdditionalCodeKey -> mappingTARICAdditionalCode,
-      nationalAdditionalCodeKey -> mappingNationalAdditionalCode,
-      statisticalValueKey -> mappingStatisticalValue
-    )(ItemType.apply)(ItemType.unapply)
+    Forms.mapping(nationalAdditionalCodeKey -> mappingNationalAdditionalCode, statisticalValueKey -> mappingStatisticalValue)(ItemType.apply)(
+      ItemType.unapply
+    )
 
 }

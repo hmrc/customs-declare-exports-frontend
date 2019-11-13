@@ -16,8 +16,8 @@
 
 package models.declaration
 
-import forms.declaration._
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers.yes
+import forms.declaration._
 import models.DeclarationType
 import models.DeclarationType.DeclarationType
 import play.api.libs.json.Json
@@ -32,6 +32,7 @@ case class ExportItem(
   commodityDetails: Option[CommodityDetails] = None,
   dangerousGoodsCode: Option[UNDangerousGoodsCode] = None,
   cusCode: Option[CUSCode] = None,
+  taricCodes: List[TaricCode] = Nil,
   packageInformation: List[PackageInformation] = Nil,
   commodityMeasure: Option[CommodityMeasure] = None,
   additionalInformation: Option[AdditionalInformationData] = None,

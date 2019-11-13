@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.4
+// @version      1.5
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -206,6 +206,9 @@ function completePage() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/cus-code')) {
         document.getElementById('code_yes').checked = 'checked';
         document.getElementById('cusCode').value ='12345678';
+        document.getElementsByClassName('button')[0].click()
+    }
+    if (currentPageIs('/customs-declare-exports/declaration/items/.*/taric-codes')) {
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/item-type')) {

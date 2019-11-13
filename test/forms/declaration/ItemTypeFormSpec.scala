@@ -46,10 +46,9 @@ class ItemTypeFormSpec extends WordSpec with MustMatchers {
 }
 
 object ItemTypeFormSpec {
-  private val taricAdditionalCode = "AB12"
   private val nationalAdditionalCode = "VATE"
   private val statisticalValue = "1234567890123.45"
 
   val correctItemTypeMap: Map[String, String] =
-    Map(taricAdditionalCodeKey -> taricAdditionalCode, nationalAdditionalCodeKey -> nationalAdditionalCode, statisticalValueKey -> statisticalValue)
+    Map(nationalAdditionalCodeKey -> nationalAdditionalCode, statisticalValueKey -> statisticalValue)
 }
