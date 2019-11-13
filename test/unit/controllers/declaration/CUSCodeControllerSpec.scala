@@ -33,7 +33,7 @@ import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.declaration.cus_code
 
-class CUSControllerSpec extends ControllerSpec with OptionValues {
+class CUSCodeControllerSpec extends ControllerSpec with OptionValues {
 
   val mockPage = mock[cus_code]
 
@@ -105,9 +105,9 @@ class CUSControllerSpec extends ControllerSpec with OptionValues {
 
     "return 303 (SEE_OTHER)" when {
 
-      val itemTypePage: Call = controllers.declaration.routes.ItemTypeController.displayPage(Mode.Normal, itemId)
+      val nextPage: Call = controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, itemId)
 
-      def controllerRedirectsToNextPage(decType: DeclarationType, call: Call = itemTypePage): Unit =
+      def controllerRedirectsToNextPage(decType: DeclarationType, call: Call = nextPage): Unit =
         "accept submission and redirect" in {
           withNewCaching(aDeclaration(withType(decType)))
           val correctForm = formData("12345678")

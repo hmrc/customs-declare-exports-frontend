@@ -578,14 +578,7 @@ supplementary.goodItemNumber.error = Incorrect item number
 supplementary.goodItemNumber.hint = The number assigned to the item in the declaration
 
 declaration.itemType.title = Details of declaration item {0}
-declaration.itemType.taricAdditionalCodes.header = Do you need to enter any TARIC additional codes?
-declaration.itemType.taricAdditionalCodes.header.hint = This is 4 digits. If no additional code is required, leave blank
-declaration.itemType.taricAdditionalCodes.error.length = TARIC additional code must be exactly 4 characters long
-declaration.itemType.taricAdditionalCodes.error.specialCharacters = TARIC additional code cannot contain specialCharacters
-declaration.itemType.taricAdditionalCodes.error.maxAmount = You cannot add more codes
-declaration.itemType.taricAdditionalCodes.error.duplicate = TARIC additional codes cannot contain duplicates
-declaration.itemType.taricAdditionalCodes.add.hint = Add TARIC code
-declaration.itemType.taricAdditionalCodes.remove.hint = Remove TARIC code {0}
+
 declaration.itemType.nationalAdditionalCode.header = Enter the National Additional Code
 declaration.itemType.nationalAdditionalCode.header.hint = If no additional code is required, leave blank
 declaration.itemType.nationalAdditionalCode.error.invalid = National Additional Code must be valid
@@ -640,6 +633,12 @@ declaration.cusCode.error.empty = Enter a CUS code
 declaration.cusCode.error.length = CUS Code must be exactly 8 characters long
 declaration.cusCode.error.specialCharacters = CUS Code cannot contain special characters
 
+declaration.taricAdditionalCodes.header = Are there additional TARIC codes?
+declaration.taricAdditionalCodes.header.hint = This will be the four digits that come after the commodity code in the {0}. If no additional codes are required, leave blank.
+declaration.taricAdditionalCodes.error.length = TARIC code must be exactly 4 characters long
+declaration.taricAdditionalCodes.error.specialCharacters = TARIC code cannot contain specialCharacters
+declaration.taricAdditionalCodes.add.hint = Add TARIC code
+declaration.taricAdditionalCodes.remove.hint = Remove TARIC code {0}
 
 supplementary.previousDocuments = Previous documents
 supplementary.previousDocuments.title = Add any documents or MUCRs and DUCRs to this declaration

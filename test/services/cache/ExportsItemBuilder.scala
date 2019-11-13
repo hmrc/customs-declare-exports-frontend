@@ -75,14 +75,19 @@ trait ExportsItemBuilder {
   def withCUSCode(data: CUSCode): ItemModifier =
     _.copy(cusCode = Some(data))
 
+  def withTaricCodes(first: TaricCode, others: TaricCode*): ItemModifier =
+    withTaricCodes(List(first) ++ others.toList)
+
+  def withTaricCodes(codes: List[TaricCode]): ItemModifier =
+    _.copy(taricCodes = codes)
+
   def withItemType(
     combinedNomenclatureCode: Option[String] = None,
-    taricAdditionalCodes: Seq[String] = Seq.empty,
     nationalAdditionalCodes: Seq[String] = Seq.empty,
     descriptionOfGoods: String = "",
     statisticalValue: String = ""
   ): ItemModifier =
-    withItemType(ItemType(taricAdditionalCodes, nationalAdditionalCodes, statisticalValue))
+    withItemType(ItemType(nationalAdditionalCodes, statisticalValue))
 
   def withItemType(data: ItemType): ItemModifier = _.copy(itemType = Some(data))
 

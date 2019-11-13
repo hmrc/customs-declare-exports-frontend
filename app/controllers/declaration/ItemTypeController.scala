@@ -53,15 +53,7 @@ class ItemTypeController @Inject()(
       .map { item =>
         item.itemType match {
           case Some(itemType) =>
-            Ok(
-              itemTypePage(
-                mode,
-                item,
-                ItemTypeForm.form().fill(fromItemType(itemType)),
-                itemType.taricAdditionalCodes,
-                itemType.nationalAdditionalCodes
-              )
-            )
+            Ok(itemTypePage(mode, item, ItemTypeForm.form().fill(fromItemType(itemType)), itemType.nationalAdditionalCodes))
           case None =>
             Ok(itemTypePage(mode, item, ItemTypeForm.form()))
         }
@@ -109,27 +101,17 @@ class ItemTypeController @Inject()(
       case Invalid(errors) =>
         val formWithErrors =
           errors.foldLeft(ItemTypeForm.form().fill(itemTypeInput))((form, error) => form.withError(error))
-        Future.successful(
-          BadRequest(itemTypePage(mode, item, formWithErrors, itemTypeCache.taricAdditionalCodes, itemTypeCache.nationalAdditionalCodes))
-        )
+        Future.successful(BadRequest(itemTypePage(mode, item, formWithErrors, itemTypeCache.nationalAdditionalCodes)))
     }
   }
 
   private def itemTypeInputForAdd(field: String, itemTypeInput: ItemTypeForm) = field match {
-    case `taricAdditionalCodeKey` =>
-      itemTypeInput.copy(taricAdditionalCode = None)
     case `nationalAdditionalCodeKey` =>
       itemTypeInput.copy(nationalAdditionalCode = None)
     case _ => itemTypeInput
   }
 
   private def updateCachedItemType(itemTypeInput: ItemTypeForm, itemTypeCache: ItemType, addField: Option[String]): ItemType = {
-
-    val updatedTaricCodes = addField match {
-      case Some(`taricAdditionalCodeKey`) | None =>
-        itemTypeInput.taricAdditionalCode.map(code => itemTypeCache.taricAdditionalCodes :+ code).getOrElse(itemTypeCache.taricAdditionalCodes)
-      case _ => itemTypeCache.taricAdditionalCodes
-    }
 
     val updatedNationalCodes = addField match {
       case Some(`nationalAdditionalCodeKey`) | None =>
@@ -139,11 +121,7 @@ class ItemTypeController @Inject()(
       case _ => itemTypeCache.nationalAdditionalCodes
     }
 
-    ItemType(
-      taricAdditionalCodes = updatedTaricCodes,
-      nationalAdditionalCodes = updatedNationalCodes,
-      statisticalValue = itemTypeInput.statisticalValue
-    )
+    ItemType(nationalAdditionalCodes = updatedNationalCodes, statisticalValue = itemTypeInput.statisticalValue)
   }
 
   private def refreshPage(mode: Mode, itemId: String, itemTypeInput: ItemTypeForm, model: ExportsDeclaration)(
@@ -154,7 +132,7 @@ class ItemTypeController @Inject()(
       .map { item =>
         item.itemType match {
           case Some(cachedData) =>
-            Ok(itemTypePage(mode, item, ItemTypeForm.form().fill(itemTypeInput), cachedData.taricAdditionalCodes, cachedData.nationalAdditionalCodes))
+            Ok(itemTypePage(mode, item, ItemTypeForm.form().fill(itemTypeInput), cachedData.nationalAdditionalCodes))
           case _ =>
             Ok(itemTypePage(mode, item, ItemTypeForm.form()))
         }
@@ -178,9 +156,7 @@ class ItemTypeController @Inject()(
       case Invalid(errors) =>
         val formWithErrors =
           errors.foldLeft(ItemTypeForm.form().fill(itemTypeInput))((form, error) => form.withError(error))
-        Future.successful(
-          BadRequest(itemTypePage(mode, item, formWithErrors, itemTypeCache.taricAdditionalCodes, itemTypeCache.nationalAdditionalCodes))
-        )
+        Future.successful(BadRequest(itemTypePage(mode, item, formWithErrors, itemTypeCache.nationalAdditionalCodes)))
     }
   }
 
@@ -191,8 +167,6 @@ class ItemTypeController @Inject()(
     val label = Label(key)
 
     val itemTypeUpdated = label.name match {
-      case `taricAdditionalCodeKey` =>
-        itemTypeCached.copy(taricAdditionalCodes = removeElement(itemTypeCached.taricAdditionalCodes, label.value))
       case `nationalAdditionalCodeKey` =>
         itemTypeCached.copy(nationalAdditionalCodes = removeElement(itemTypeCached.nationalAdditionalCodes, label.value))
     }

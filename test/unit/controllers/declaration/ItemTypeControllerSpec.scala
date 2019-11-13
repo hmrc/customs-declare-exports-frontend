@@ -52,7 +52,7 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    when(mockItemTypePage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockItemTypePage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   val itemId = new ExportItemIdGeneratorService().generateItemId()
@@ -64,7 +64,7 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
 
   def theResponseForm: Form[ItemTypeForm] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[ItemTypeForm]])
-    verify(mockItemTypePage).apply(any(), any(), captor.capture(), any(), any())(any(), any())
+    verify(mockItemTypePage).apply(any(), any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
@@ -97,54 +97,19 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
         theResponseForm.value mustBe empty
       }
 
-      "correct item type is added for add TARIC code and declaration model exist in the cache" in {
-
-        withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
-
-        val correctForm = Seq(
-          ("taricAdditionalCode", "1234"),
-          ("nationalAdditionalCode", "VATE"),
-          ("statisticalValue", "999"),
-          addActionUrlEncoded(ItemTypeForm.taricAdditionalCodeKey)
-        )
-
-        val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
-
-        status(result) mustBe OK
-        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any(), any())(any(), any())
-
-        validateCache(
-          ItemType(
-            taricAdditionalCodes = Seq("1234"),
-            nationalAdditionalCodes = Seq.empty, // NOT added to the cache model after an Add for TARIC codes - see bug CEDS-1094
-            statisticalValue = "999"
-          )
-        )
-      }
-
       "correct item type is added for add National code and declaration model exist in the cache" in {
 
         withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
 
-        val correctForm = Seq(
-          ("taricAdditionalCode", "5356"),
-          ("nationalAdditionalCode", "X611"),
-          ("statisticalValue", "435"),
-          addActionUrlEncoded(ItemTypeForm.nationalAdditionalCodeKey)
-        )
+        val correctForm =
+          Seq(("nationalAdditionalCode", "X611"), ("statisticalValue", "435"), addActionUrlEncoded(ItemTypeForm.nationalAdditionalCodeKey))
 
         val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) mustBe OK
-        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any(), any())(any(), any())
+        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any())(any(), any())
 
-        validateCache(
-          ItemType(
-            taricAdditionalCodes = Seq.empty, // NOT added to the cache model after an Add for TARIC codes - see bug CEDS-1094
-            nationalAdditionalCodes = Seq("X611"),
-            statisticalValue = "435"
-          )
-        )
+        validateCache(ItemType(nationalAdditionalCodes = Seq("X611"), statisticalValue = "435"))
       }
     }
 
@@ -155,73 +120,49 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
         withNewCaching(aDeclaration())
 
         val correctForm =
-          Json.toJson(ItemType(Seq("code"), Seq("code"), "1234"))
+          Json.toJson(ItemType(Seq("code"), "1234"))
 
         val result = controller.submitItemType(Mode.Normal, itemId)(postRequest(correctForm))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any(), any())(any(), any())
+        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any())(any(), any())
       }
 
       "form action from user is incorrect" in {
 
         withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
 
-        val wrongAction = Seq(
-          ("taricAdditionalCode", ""),
-          ("nationalAdditionalCode", ""),
-          ("cusCode", ""),
-          ("unDangerousGoodsCode", ""),
-          ("statisticalValue", "value"),
-          ("WrongAction", "")
-        )
+        val wrongAction = Seq(("nationalAdditionalCode", ""), ("unDangerousGoodsCode", ""), ("statisticalValue", "value"), ("WrongAction", ""))
 
         val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(wrongAction: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any(), any())(any(), any())
+        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any())(any(), any())
       }
 
       "information from user is incorrect during adding" in {
 
         withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
 
-        val incorrectForm = Seq(
-          ("combinedNomenclatureCode", "!@#$$%"),
-          ("taricAdditionalCode", "!@#$$%"),
-          ("nationalAdditionalCode", "!@#$$%"),
-          ("descriptionOfGoods", "!@#$$%"),
-          ("cusCode", "!@#$$%"),
-          ("unDangerousGoodsCode", "!@#$$%"),
-          ("statisticalValue", "!@#$$%"),
-          addActionUrlEncoded(ItemTypeForm.taricAdditionalCodeKey)
-        )
+        val incorrectForm =
+          Seq(("nationalAdditionalCode", "!@#$$%"), ("statisticalValue", "!@#$$%"), addActionUrlEncoded(ItemTypeForm.nationalAdditionalCodeKey))
 
         val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any(), any())(any(), any())
+        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any())(any(), any())
       }
 
       "information from user is incorrect during saving" in {
 
         withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
 
-        val incorrectForm = Seq(
-          ("combinedNomenclatureCode", ""),
-          ("taricAdditionalCode", "!@#$$%"),
-          ("nationalAdditionalCode", ""),
-          ("descriptionOfGoods", ""),
-          ("cusCode", ""),
-          ("unDangerousGoodsCode", ""),
-          ("statisticalValue", ""),
-          saveAndContinueActionUrlEncoded
-        )
+        val incorrectForm = Seq(("nationalAdditionalCode", ""), ("statisticalValue", ""), saveAndContinueActionUrlEncoded)
 
         val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any(), any())(any(), any())
+        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any())(any(), any())
       }
     }
 
@@ -234,42 +175,33 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
         val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
         status(result) mustBe SEE_OTHER
-        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any(), any())(any(), any())
+        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any())(any(), any())
       }
 
       "correct item type is added during saving" in {
 
         withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
 
-        val correctForm = Seq(
-          ("combinedNomenclatureCode", "code"),
-          ("taricAdditionalCode", "1234"),
-          ("nationalAdditionalCode", "VATR"),
-          ("descriptionOfGoods", "description"),
-          ("cusCode", ""),
-          ("unDangerousGoodsCode", ""),
-          ("statisticalValue", "1234"),
-          saveAndContinueActionUrlEncoded
-        )
+        val correctForm = Seq(("nationalAdditionalCode", "VATR"), ("statisticalValue", "1234"), saveAndContinueActionUrlEncoded)
 
         val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationController
           .displayPage(Mode.Normal, itemId)
-        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any(), any())(any(), any())
+        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any())(any(), any())
       }
 
       "item type has been removed and there is exisitng data in cache" in {
 
-        withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId), withItemType(taricAdditionalCodes = Seq("1234"))))))
+        withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId), withItemType()))))
 
-        val removeAction = (Remove.toString, "taricAdditionalCode_0")
+        val removeAction = (Remove.toString, "nationalAdditionalCode_0")
 
         val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(removeAction))
 
         status(result) mustBe OK
-        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any(), any())(any(), any())
+        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any())(any(), any())
       }
     }
   }

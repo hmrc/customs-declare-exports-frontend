@@ -39,11 +39,10 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
     mode: Mode = Mode.Normal,
     item: ExportItem = ExportItem(id = "itemId", sequenceId = 1),
     form: Form[ItemTypeForm] = form,
-    taricAdditionalCodes: Seq[String] = Seq.empty,
     nationalAdditionalCodes: Seq[String] = Seq.empty,
     messages: Messages = stubMessages()
   ): Document =
-    page(mode, item, form, taricAdditionalCodes, nationalAdditionalCodes)(journeyRequest(), messages)
+    page(mode, item, form, nationalAdditionalCodes)(journeyRequest(), messages)
 
   "Item Type View on empty page" when {
 
@@ -52,8 +51,6 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       messages must haveTranslationFor("declaration.itemType.title")
       messages must haveTranslationFor("supplementary.items")
       messages must haveTranslationFor("declaration.itemType.title")
-      messages must haveTranslationFor("declaration.itemType.taricAdditionalCodes.header")
-      messages must haveTranslationFor("declaration.itemType.taricAdditionalCodes.header.hint")
       messages must haveTranslationFor("declaration.itemType.nationalAdditionalCode.header")
       messages must haveTranslationFor("declaration.itemType.nationalAdditionalCode.header.hint")
       messages must haveTranslationFor("declaration.itemType.statisticalValue.header")
@@ -73,16 +70,6 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         view.getElementById("section-header").text() must include("supplementary.items")
       }
 
-      "display empty input with label for TARIC" in {
-        view
-          .getElementById("taricAdditionalCode-label")
-          .text() mustBe "declaration.itemType.taricAdditionalCodes.header"
-        view
-          .getElementById("taricAdditionalCode-hint")
-          .text() mustBe "declaration.itemType.taricAdditionalCodes.header.hint"
-        view.getElementById("taricAdditionalCode").attr("value") mustBe empty
-      }
-
       "display empty input with label for NAC" in {
         view
           .getElementById("nationalAdditionalCode-label")
@@ -99,18 +86,18 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         view.getElementById("statisticalValue").attr("value") mustBe empty
       }
 
-      "display two 'Add' buttons" in {
+      "display one 'Add' buttons" in {
 
-        view.getElementsByAttributeValue("name", "AddField").size() must be(2)
+        view.getElementsByAttributeValue("name", "AddField").size() must be(1)
       }
 
-      "display 'Back' button that links to 'UN Dangerous Goods' page" in {
+      "display 'Back' button that links to 'TARIC Codes' page" in {
 
         val backButton = createView().getElementById("link-back")
 
         backButton.text() mustBe "site.back"
         backButton.getElementById("link-back") must haveHref(
-          controllers.declaration.routes.CUSCodeController.displayPage(Mode.Normal, itemId = "itemId")
+          controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, itemId = "itemId")
         )
       }
 
@@ -140,16 +127,6 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         view.getElementById("section-header").text() must include("supplementary.items")
       }
 
-      "display empty input with label for TARIC" in {
-        view
-          .getElementById("taricAdditionalCode-label")
-          .text() mustBe "declaration.itemType.taricAdditionalCodes.header"
-        view
-          .getElementById("taricAdditionalCode-hint")
-          .text() mustBe "declaration.itemType.taricAdditionalCodes.header.hint"
-        view.getElementById("taricAdditionalCode").attr("value") mustBe empty
-      }
-
       "display empty input with label for NAC" in {
         view
           .getElementById("nationalAdditionalCode-label")
@@ -166,18 +143,18 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         view.getElementById("statisticalValue").attr("value") mustBe empty
       }
 
-      "display two 'Add' buttons" in {
+      "display one 'Add' buttons" in {
 
-        view.getElementsByAttributeValue("name", "AddField").size() must be(2)
+        view.getElementsByAttributeValue("name", "AddField").size() must be(1)
       }
 
-      "display 'Back' button that links to 'UN Dangerous Goods' page" in {
+      "display 'Back' button that links to 'TARIC Codes' page" in {
 
         val backButton = createView().getElementById("link-back")
 
         backButton.text() mustBe "site.back"
         backButton.getElementById("link-back") must haveHref(
-          controllers.declaration.routes.CUSCodeController.displayPage(Mode.Normal, itemId = "itemId")
+          controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, itemId = "itemId")
         )
       }
 
@@ -203,19 +180,6 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
           .text() mustBe "declaration.itemType.title"
       }
 
-      "display empty input with label for TARIC" in {
-
-        val view = createView()
-
-        view
-          .getElementById("taricAdditionalCode-label")
-          .text() mustBe "declaration.itemType.taricAdditionalCodes.header"
-        view
-          .getElementById("taricAdditionalCode-hint")
-          .text() mustBe "declaration.itemType.taricAdditionalCodes.header.hint"
-        view.getElementById("taricAdditionalCode").attr("value") mustBe empty
-      }
-
       "display empty input with label for NAC" in {
 
         val view = createView()
@@ -238,19 +202,19 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         view.getElementById("statisticalValue").attr("value") mustBe empty
       }
 
-      "display two 'Add' buttons" in {
+      "display one 'Add' buttons" in {
 
-        createView().getElementsByAttributeValue("name", "AddField").size() must be(2)
+        createView().getElementsByAttributeValue("name", "AddField").size() must be(1)
       }
 
-      "display 'Back' button that links to 'UN Dangerous Goods' page" in {
+      "display 'Back' button that links to 'TARIC Codes' page" in {
 
         val backButton =
           createView().getElementById("link-back")
 
         backButton.text() mustBe "site.back"
         backButton.getElementById("link-back") must haveHref(
-          controllers.declaration.routes.CUSCodeController.displayPage(Mode.Normal, itemId = "itemId")
+          controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, itemId = "itemId")
         )
       }
 
@@ -274,7 +238,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in Statistical Value input" in {
 
-        val itemType = ItemTypeForm(None, Some(""), "12345")
+        val itemType = ItemTypeForm(Some(""), "12345")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
@@ -288,7 +252,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in Statistical Value input" in {
 
-        val itemType = ItemTypeForm(None, Some(""), "12345")
+        val itemType = ItemTypeForm(Some(""), "12345")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
@@ -302,7 +266,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in Statistical Value input" in {
 
-        val itemType = ItemTypeForm(None, Some(""), "12345")
+        val itemType = ItemTypeForm(Some(""), "12345")
         val view = createView(form = ItemTypeForm.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)

@@ -39,39 +39,6 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers with ExportsDecla
 
     "return Invalid result with errors" when {
 
-      "any TARIC additional code is not 4 characters long" in {
-        val itemType = buildItemType(taricAdditionalCode = Seq("1111", "2222", "333", "4444"))
-        val expectedValidationResult =
-          Invalid(errors = Seq(FormError(s"$taricAdditionalCodeKey[2]", "declaration.itemType.taricAdditionalCodes.error.length")))
-
-        testFailedValidationOnAddition(itemType, expectedValidationResult)
-      }
-
-      "any TARIC additional code contains special characters" in {
-        val itemType = buildItemType(taricAdditionalCode = Seq("1111", "2222", "333$", "4444"))
-        val expectedValidationResult =
-          Invalid(errors = Seq(FormError(s"$taricAdditionalCodeKey[2]", "declaration.itemType.taricAdditionalCodes.error.specialCharacters")))
-
-        testFailedValidationOnAddition(itemType, expectedValidationResult)
-      }
-
-      "there is more than 99 TARIC additional codes" in {
-        val itemType =
-          buildItemType(taricAdditionalCode = (1 to 100).map(_ => TestHelper.createRandomAlphanumericString(4)))
-        val expectedValidationResult =
-          Invalid(errors = Seq(FormError(taricAdditionalCodeKey, "declaration.itemType.taricAdditionalCodes.error.maxAmount")))
-
-        testFailedValidationOnAddition(itemType, expectedValidationResult)
-      }
-
-      "there is duplicated TARIC additional code" in {
-        val itemType = buildItemType(taricAdditionalCode = Seq("1111", "1111"))
-        val expectedValidationResult =
-          Invalid(errors = Seq(FormError(taricAdditionalCodeKey, "declaration.itemType.taricAdditionalCodes.error.duplicate")))
-
-        testFailedValidationOnAddition(itemType, expectedValidationResult)
-      }
-
       "any National additional code not in list" in {
         val itemType = buildItemType(nationalAdditionalCode = Seq("VATE", "ABC"))
         val expectedValidationResult =
@@ -147,39 +114,6 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers with ExportsDecla
 
     "return Failure result with errors" when {
 
-      "any TARIC additional code is not 4 characters long" in {
-        val itemType = buildItemType(taricAdditionalCode = Seq("1111", "2222", "333", "4444"))
-        val expectedValidationResult =
-          Invalid(errors = Seq(FormError(s"$taricAdditionalCodeKey[2]", "declaration.itemType.taricAdditionalCodes.error.length")))
-
-        testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
-      }
-
-      "any TARIC additional code contains special characters" in {
-        val itemType = buildItemType(taricAdditionalCode = Seq("1111", "2222", "333$", "4444"))
-        val expectedValidationResult =
-          Invalid(errors = Seq(FormError(s"$taricAdditionalCodeKey[2]", "declaration.itemType.taricAdditionalCodes.error.specialCharacters")))
-
-        testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
-      }
-
-      "there is more than 99 TARIC additional codes" in {
-        val itemType =
-          buildItemType(taricAdditionalCode = (1 to 100).map(_ => TestHelper.createRandomAlphanumericString(4)))
-        val expectedValidationResult =
-          Invalid(errors = Seq(FormError(taricAdditionalCodeKey, "declaration.itemType.taricAdditionalCodes.error.maxAmount")))
-
-        testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
-      }
-
-      "there is duplicated TARIC additional code" in {
-        val itemType = buildItemType(taricAdditionalCode = Seq("1111", "1111"))
-        val expectedValidationResult =
-          Invalid(errors = Seq(FormError(taricAdditionalCodeKey, "declaration.itemType.taricAdditionalCodes.error.duplicate")))
-
-        testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
-      }
-
       "any National additional code is not in list" in {
         val itemType = buildItemType(nationalAdditionalCode = Seq("VATE", "ABC"))
         val expectedValidationResult =
@@ -235,30 +169,26 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers with ExportsDecla
       implicit val `type`: models.DeclarationType.Value = DeclarationType.STANDARD
 
       "Combined Nomenclature Code is empty for Simplified Dec" in {
-        val itemType = ItemType(taricAdditionalCodes = Seq("11AA"), nationalAdditionalCodes = Seq("VATE"), statisticalValue = "1234567890.12")
+        val itemType = ItemType(nationalAdditionalCodes = Seq("VATE"), statisticalValue = "1234567890.12")
 
         ItemTypeValidator.validateOnSaveAndContinue(itemType)(req(DeclarationType.SIMPLIFIED)) must be(Valid)
       }
 
       "provided with correct data with single value for every field" in {
-        val itemType = ItemType(taricAdditionalCodes = Seq("11AA"), nationalAdditionalCodes = Seq("VATE"), statisticalValue = "1234567890.12")
+        val itemType = ItemType(nationalAdditionalCodes = Seq("VATE"), statisticalValue = "1234567890.12")
 
         ItemTypeValidator.validateOnSaveAndContinue(itemType) must be(Valid)
       }
 
       "provided with correct data with multiple values where possible" in {
-        val itemType = ItemType(
-          taricAdditionalCodes = Seq("11AA", "22BB", "33CC"),
-          nationalAdditionalCodes = Seq("VATE", "VATR"),
-          statisticalValue = "1234567890.12"
-        )
+        val itemType = ItemType(nationalAdditionalCodes = Seq("VATE", "VATR"), statisticalValue = "1234567890.12")
 
         ItemTypeValidator.validateOnSaveAndContinue(itemType) must be(Valid)
       }
 
       "provided with correct data for mandatory fields only" in {
         val itemType =
-          ItemType(taricAdditionalCodes = Seq.empty, nationalAdditionalCodes = Seq.empty, statisticalValue = "1234567890.12")
+          ItemType(nationalAdditionalCodes = Seq.empty, statisticalValue = "1234567890.12")
 
         ItemTypeValidator.validateOnSaveAndContinue(itemType) must be(Valid)
       }
@@ -288,5 +218,5 @@ object ItemTypeValidatorSpec {
     unDangerousGoodsCode: Option[String] = None,
     statisticalValue: String = ""
   ): ItemType =
-    ItemType(taricAdditionalCodes = taricAdditionalCode, nationalAdditionalCodes = nationalAdditionalCode, statisticalValue = statisticalValue)
+    ItemType(nationalAdditionalCodes = nationalAdditionalCode, statisticalValue = statisticalValue)
 }

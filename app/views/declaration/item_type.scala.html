@@ -33,7 +33,6 @@
         mode: Mode,
         item: ExportItem,
         form: Form[ItemTypeForm],
-        taricAdditionalCodes: Seq[String] = Seq.empty,
         nationalAdditionalCodes: Seq[String] = Seq.empty
 )(implicit request: JourneyRequest[_], messages: Messages)
 
@@ -44,25 +43,13 @@
     @helper.form(routes.ItemTypeController.submitItemType(mode, item.id), 'autocomplete -> "off") {
         @helper.CSRF.formField
 
-        @components.back_link(routes.CUSCodeController.displayPage(mode, item.id), mode)
+        @components.back_link(routes.TaricCodeController.displayPage(mode, item.id), mode)
 
         @components.error_summary(form.errors)
 
         @components.heading(
             sectionHeader = messages("supplementary.items"),
             title = messages("declaration.itemType.title", item.sequenceId)
-        )
-
-        @components.fields.field_text_multiple_values(
-            field = form(taricAdditionalCodeKey),
-            label = messages("declaration.itemType.taricAdditionalCodes.header"),
-            hint = Some(messages("declaration.itemType.taricAdditionalCodes.header.hint")),
-            elements = taricAdditionalCodes,
-            labelClass = Some("bold-small"),
-            valuePrefix = Some(taricAdditionalCodeKey+"_"),
-            addField = Some(taricAdditionalCodeKey),
-            addHint = "declaration.itemType.taricAdditionalCodes.add.hint",
-            removeHint = "declaration.itemType.taricAdditionalCodes.remove.hint"
         )
 
         @components.fields.field_multiple_values(

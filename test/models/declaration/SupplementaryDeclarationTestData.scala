@@ -210,13 +210,7 @@ object SupplementaryDeclarationTestData {
       ExportItem(
         "itemid",
         sequenceId = 1,
-        itemType = Some(
-          ItemType(
-            taricAdditionalCodes = Seq("taricAdditionalCodes"),
-            nationalAdditionalCodes = Seq("nationalAdditionalCodes"),
-            statisticalValue = "100"
-          )
-        ),
+        itemType = Some(ItemType(nationalAdditionalCodes = Seq("nationalAdditionalCodes"), statisticalValue = "100")),
         documentsProducedData = Some(
           DocumentsProducedData(
             Seq(
