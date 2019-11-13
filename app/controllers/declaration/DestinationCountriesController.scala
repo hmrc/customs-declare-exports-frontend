@@ -62,64 +62,59 @@ class DestinationCountriesController @Inject()(
 
   def saveCountries(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     request.declarationType match {
-      case DeclarationType.SUPPLEMENTARY                         => Future.successful(Redirect(routes.DestinationCountryController.displayPage()))
+      case DeclarationType.SUPPLEMENTARY => Future.successful(Redirect(routes.DestinationCountryController.displayPage()))
       case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED =>
         handleSubmitStandard(mode)
     }
   }
 
-  private def handleSubmitStandard(mode: Mode)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] = {
+  private def handleSubmitStandard(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
     val actionTypeOpt = FormAction.bindFromRequest()
     val boundForm = DestinationCountries.form(DestinationCountries.RoutingCountriesPage).bindFromRequest()
 
     val cache = request.cacheModel.locations.routingCountries
 
     actionTypeOpt match {
-      case Add if !boundForm.hasErrors                             => addRoutingCountry(mode, cache, boundForm)
+      case Add if !boundForm.hasErrors     => addRoutingCountry(mode, cache, boundForm)
       case SaveAndContinue | SaveAndReturn => saveAndContinue(mode, cache, boundForm)
-      case Remove(values)                                          => removeRoutingCountry(mode, values, boundForm, cache)
-      case _                                                       => Future.successful(BadRequest(destinationCountriesStandardPage(mode, boundForm)))
+      case Remove(values)                  => removeRoutingCountry(mode, values, boundForm, cache)
+      case _                               => Future.successful(BadRequest(destinationCountriesStandardPage(mode, boundForm)))
     }
   }
 
-  private def addRoutingCountry(
-    mode: Mode,
-    cachedData: Seq[String],
-    boundForm: Form[String],
-    withRedirection: Boolean = false
-  )(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] = {
+  private def addRoutingCountry(mode: Mode, cachedData: Seq[String], boundForm: Form[String], withRedirection: Boolean = false)(
+    implicit request: JourneyRequest[AnyContent],
+    hc: HeaderCarrier
+  ): Future[Result] = {
     val newRoutingCountry = boundForm.value.getOrElse("")
 
-    if(cachedData.contains(newRoutingCountry)) {
+    if (cachedData.contains(newRoutingCountry)) {
       val formWithError = boundForm.copy(errors = Seq(FormError("country", "declaration.destinationCountries.duplication")))
       Future.successful(BadRequest(destinationCountriesStandardPage(mode, formWithError, cachedData)))
     } else {
       val newCountries = cachedData :+ newRoutingCountry
 
       updateCache(newCountries).map { _ =>
-      if(withRedirection)
-        navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode))
-      else Ok(destinationCountriesStandardPage(mode, DestinationCountries.form(DestinationCountries.RoutingCountriesPage), newCountries))
+        if (withRedirection)
+          navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode))
+        else Ok(destinationCountriesStandardPage(mode, DestinationCountries.form(DestinationCountries.RoutingCountriesPage), newCountries))
       }
     }
   }
 
-  private def saveAndContinue(
-    mode: Mode,
-    cachedData: Seq[String],
-    boundForm: Form[String]
-  )(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] = {
+  private def saveAndContinue(mode: Mode, cachedData: Seq[String], boundForm: Form[String])(
+    implicit request: JourneyRequest[AnyContent],
+    hc: HeaderCarrier
+  ): Future[Result] = {
 
     val formWithoutEmptyError = boundForm.copy(errors = boundForm.errors.filterNot(_.message contains "empty"))
 
-    if(formWithoutEmptyError.errors.nonEmpty) {
+    if (formWithoutEmptyError.errors.nonEmpty) {
       Future.successful(BadRequest(destinationCountriesStandardPage(mode, formWithoutEmptyError, cachedData)))
     } else {
       boundForm.value match {
         case Some(country) if country.nonEmpty => addRoutingCountry(mode, cachedData, boundForm, true)
-        case _ => Future.successful(navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode)))
+        case _                                 => Future.successful(navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode)))
       }
     }
   }
