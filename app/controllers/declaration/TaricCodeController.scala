@@ -54,9 +54,7 @@ class TaricCodeController @Inject()(
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val actionTypeOpt = FormAction.bindFromRequest()
     val boundForm = form().bindFromRequest()
-    val x = request.cacheModel.itemBy(itemId)
-    val y = x.map(_.taricCodes)
-    val taricCodes = y.getOrElse(Seq.empty)
+    val taricCodes = request.cacheModel.itemBy(itemId).map(_.taricCodes).getOrElse(Seq.empty)
     actionTypeOpt match {
       case Add                             => addItem(mode, itemId, boundForm, taricCodes)
       case Remove(values)                  => removeItem(mode, itemId, values, boundForm, taricCodes)
