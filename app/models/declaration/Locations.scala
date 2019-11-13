@@ -23,17 +23,19 @@ import models.ExportsDeclaration
 import play.api.libs.json.Json
 
 case class Locations(
-  destinationCountries: Option[DestinationCountries] = None,
+  originationCountry: Option[String] = None,
+  destinationCountry: Option[String] = None,
+  hasRoutingCountries: Option[Boolean] = None,
+  routingCountries: Seq[String] = Seq.empty,
   goodsLocation: Option[GoodsLocation] = None,
   warehouseIdentification: Option[WarehouseDetails] = None,
   officeOfExit: Option[OfficeOfExit] = None
 ) extends SummaryContainer {
 
+  // TODO Add hasRoutingCountries field when screen will be ready and added
   def isEmpty: Boolean =
-    destinationCountries.isEmpty &&
-      goodsLocation.isEmpty &&
-      warehouseIdentification.isEmpty &&
-      officeOfExit.isEmpty
+    originationCountry.isEmpty && destinationCountry.isEmpty && routingCountries.isEmpty && goodsLocation.isEmpty &&
+      warehouseIdentification.isEmpty && officeOfExit.isEmpty
 }
 
 object Locations {
@@ -42,7 +44,10 @@ object Locations {
   implicit val format = Json.format[Locations]
 
   def apply(cacheData: ExportsDeclaration): Locations = Locations(
-    destinationCountries = cacheData.locations.destinationCountries,
+    originationCountry = cacheData.locations.originationCountry,
+    destinationCountry = cacheData.locations.destinationCountry,
+    hasRoutingCountries = cacheData.locations.hasRoutingCountries,
+    routingCountries = cacheData.locations.routingCountries,
     goodsLocation = cacheData.locations.goodsLocation,
     warehouseIdentification = cacheData.locations.warehouseIdentification,
     officeOfExit = cacheData.locations.officeOfExit

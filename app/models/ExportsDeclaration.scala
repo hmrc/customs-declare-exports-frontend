@@ -59,16 +59,14 @@ case class ExportsDeclaration(
 
   def updateType(`type`: DeclarationType): ExportsDeclaration = copy(`type` = `type`)
 
-  def updateDestinationCountries(destinationCountries: DestinationCountries): ExportsDeclaration =
-    copy(locations = locations.copy(destinationCountries = Some(destinationCountries)))
+  def updateCountriesOfRouting(routingCountries: Seq[String]): ExportsDeclaration =
+    copy(locations = locations.copy(routingCountries = routingCountries))
 
-  private def destinationCountries: DestinationCountries = locations.destinationCountries.getOrElse(DestinationCountries.empty())
+  def updateOriginationCountry(originationCountry: String): ExportsDeclaration =
+    copy(locations = locations.copy(originationCountry = Some(originationCountry)))
 
-  def updateCountryOfDispatch(countryOfDispatch: String): ExportsDeclaration =
-    updateDestinationCountries(destinationCountries.copy(countryOfDispatch = countryOfDispatch))
-
-  def updateCountryOfDestination(countryOfDestination: String): ExportsDeclaration =
-    updateDestinationCountries(destinationCountries.copy(countryOfDestination = countryOfDestination))
+  def updateDestinationCountry(destinationCountry: String): ExportsDeclaration =
+    copy(locations = locations.copy(destinationCountry = Some(destinationCountry)))
 
   def itemBy(itemId: String): Option[ExportItem] = items.find(_.id.equalsIgnoreCase(itemId))
 

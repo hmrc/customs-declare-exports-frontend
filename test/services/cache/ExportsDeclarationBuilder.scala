@@ -103,12 +103,23 @@ trait ExportsDeclarationBuilder {
     m.copy(locations = m.locations.copy(goodsLocation = Some(goodsLocation)))
   }
 
-  def withDestinationCountries(destinationCountries: Option[DestinationCountries]): ExportsDeclarationModifier = { m =>
-    {
-      val location: Locations = m.locations.copy(destinationCountries = destinationCountries)
-      m.copy(locations = location)
-    }
-  }
+  def withOriginationCountry(originationCountry: String = "GB"): ExportsDeclarationModifier =
+    model => model.copy(locations = model.locations.copy(originationCountry = Some(originationCountry)))
+
+  def withoutOriginationCountry(): ExportsDeclarationModifier =
+    model => model.copy(locations = model.locations.copy(originationCountry = None))
+
+  def withDestinationCountry(destinationCountry: String = "GB"): ExportsDeclarationModifier =
+    model => model.copy(locations = model.locations.copy(destinationCountry = Some(destinationCountry)))
+
+  def withoutDestinationCountry(): ExportsDeclarationModifier =
+    model => model.copy(locations = model.locations.copy(destinationCountry = None))
+
+  def withRoutingCountries(routingCountries: Seq[String] = Seq("FR", "GB")): ExportsDeclarationModifier =
+    model => model.copy(locations = model.locations.copy(routingCountries = routingCountries))
+
+  def withoutRoutingCountries(routingCountries: Seq[String] = Seq("FR", "GB")): ExportsDeclarationModifier =
+    model => model.copy(locations = model.locations.copy(routingCountries = Seq.empty))
 
   def withoutItems(): ExportsDeclarationModifier = _.copy(items = Set.empty)
 
@@ -229,18 +240,14 @@ trait ExportsDeclarationBuilder {
       )
     )
 
-  def withoutDestinationCountries(): ExportsDeclarationModifier =
-    cache => cache.copy(locations = cache.locations.copy(destinationCountries = None))
-
   def withDestinationCountries(
     countryOfDispatch: String = "GB",
     countriesOfRouting: Seq[String] = Seq.empty,
     countryOfDestination: String = "US"
-  ): ExportsDeclarationModifier =
-    withDestinationCountries(DestinationCountries(countryOfDispatch, countriesOfRouting, countryOfDestination))
-
-  def withDestinationCountries(destinationCountries: DestinationCountries): ExportsDeclarationModifier = { m =>
-    m.copy(locations = m.locations.copy(destinationCountries = Some(destinationCountries)))
+  ): ExportsDeclarationModifier = {
+    withOriginationCountry(countryOfDispatch)
+    withDestinationCountry(countryOfDestination)
+    withRoutingCountries(countriesOfRouting)
   }
 
   def withoutCarrierDetails(): ExportsDeclarationModifier =

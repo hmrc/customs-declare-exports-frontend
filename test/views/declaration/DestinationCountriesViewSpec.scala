@@ -20,6 +20,7 @@ import base.Injector
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.declaration.destinationCountries.DestinationCountries
+import forms.declaration.destinationCountries.DestinationCountries.OriginationCountryPage
 import helpers.views.declaration.CommonMessages
 import models.Mode
 import org.jsoup.nodes.Document
@@ -34,10 +35,10 @@ import views.tags.ViewTest
 @ViewTest
 class DestinationCountriesViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
 
-  private val form: Form[DestinationCountries] = DestinationCountries.Standard.form("GB", "PL")
-  private val destiantionCountriesSupplementaryPage = new destination_countries_standard(mainTemplate)
+  private val form: Form[String] = DestinationCountries.form(OriginationCountryPage)
+  private val destiantionCountriesStandardPage = new destination_countries_standard(mainTemplate)
   private val view: Document =
-    destiantionCountriesSupplementaryPage(Mode.Normal, form)(journeyRequest(), messages)
+    destiantionCountriesStandardPage(Mode.Normal, form)(journeyRequest(), messages)
 
   "Destination countries" should {
 
@@ -62,8 +63,8 @@ class DestinationCountriesViewSpec extends UnitViewSpec with ExportsTestData wit
 
     "display empty input with label for routing countries" in {
 
-      view.getElementById("countriesOfRouting-hint").text() mustBe messages("declaration.destinationCountries.routing.hint")
-      view.getElementById("countriesOfRouting-label").ownText() mustBe messages("declaration.destinationCountries.routing")
+      view.getElementById("country-hint").text() mustBe messages("declaration.destinationCountries.routing.hint")
+      view.getElementById("country-label").ownText() mustBe messages("declaration.destinationCountries.routing")
     }
 
     "display 'Back' button that links to 'Origination Country' page" in {

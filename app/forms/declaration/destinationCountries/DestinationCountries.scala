@@ -41,6 +41,10 @@ object DestinationCountries {
     override val id = "destinationCountry"
   }
 
+  case object RoutingCountriesPage extends CountryPage {
+    override val id = "routingCountries"
+  }
+
   def form(page: CountryPage): Form[String] = Form(
     single(
       "country" -> text()
