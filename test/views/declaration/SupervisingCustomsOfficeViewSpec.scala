@@ -30,7 +30,7 @@ import views.html.declaration.supervising_customs_office
 import views.tags.ViewTest
 
 @ViewTest
-class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestData with Stubs {
 
   private val page = new supervising_customs_office(mainTemplate)
   private val form: Form[WarehouseDetails] = WarehouseDetails.form()

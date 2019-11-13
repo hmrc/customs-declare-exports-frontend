@@ -31,9 +31,9 @@ import views.html.declaration.supervising_customs_office
 
 class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeAndAfterEach with WarehouseIdentificationMessages with OptionValues {
 
-  val supervisingCustomsOfficeTemplate: supervising_customs_office = mock[supervising_customs_office]
+  private val supervisingCustomsOfficeTemplate: supervising_customs_office = mock[supervising_customs_office]
 
-  val controller = new SupervisingCustomsOfficeController(
+  private val controller = new SupervisingCustomsOfficeController(
     authenticate = mockAuthAction,
     journeyType = mockJourneyAction,
     navigator = navigator,
@@ -42,8 +42,8 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
     supervisingCustomsOfficePage = supervisingCustomsOfficeTemplate
   )
 
-  val exampleCustomsOfficeIdentifier = "A1B2C3D4"
-  val exampleWarehouseIdentificationNumber = "SecretStash"
+  private val exampleCustomsOfficeIdentifier = "A1B2C3D4"
+  private val exampleWarehouseIdentificationNumber = "SecretStash"
 
   private val standardCacheModel = aDeclaration(
     withType(DeclarationType.STANDARD),
@@ -84,8 +84,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
     "read item from cache and display it" in {
       withNewCaching(supplementaryCacheModel)
 
-      val result = controller.displayPage(Mode.Normal).apply(getRequest())
-      await(result)
+      await(controller.displayPage(Mode.Normal)(getRequest()))
 
       verify(mockExportsCacheService).get(any())(any())
       verify(supervisingCustomsOfficeTemplate).apply(any(), any())(any(), any())
@@ -100,17 +99,16 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
       "redirect to Warehouse Details" in {
         withNewCaching(standardCacheModel)
 
-        val result = controller.submit(Mode.Normal).apply(postRequest(body))
+        val result = await(controller.submit(Mode.Normal)(postRequest(body)))
 
-        await(result) mustBe aRedirectToTheNextPage
+        result mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseDetailsController.displayPage()
       }
 
       "update cache after successful bind" in {
         withNewCaching(standardCacheModel)
 
-        val result = controller.submit(Mode.Normal).apply(postRequest(body))
-        await(result)
+        await(controller.submit(Mode.Normal)(postRequest(body)))
 
         val updatedWarehouse = theCacheModelUpdated.locations.warehouseIdentification.value
 
@@ -122,7 +120,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
         withNewCaching(standardCacheModel)
 
         val body = Json.obj("supervisingCustomsOffice" -> "A")
-        val result = controller.submit(Mode.Normal).apply(postRequest(body))
+        val result = controller.submit(Mode.Normal)(postRequest(body))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -133,17 +131,16 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
       "redirect to Warehouse Details" in {
         withNewCaching(supplementaryCacheModel)
 
-        val result = controller.submit(Mode.Normal).apply(postRequest(body))
+        val result = await(controller.submit(Mode.Normal)(postRequest(body)))
 
-        await(result) mustBe aRedirectToTheNextPage
+        result mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseDetailsController.displayPage()
       }
 
       "update cache after successful bind" in {
         withNewCaching(supplementaryCacheModel)
 
-        val result = controller.submit(Mode.Normal).apply(postRequest(body))
-        await(result)
+        await(controller.submit(Mode.Normal)(postRequest(body)))
 
         val updatedWarehouse = theCacheModelUpdated.locations.warehouseIdentification.value
 
@@ -155,7 +152,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
         withNewCaching(supplementaryCacheModel)
 
         val body = Json.obj("supervisingCustomsOffice" -> "A")
-        val result = controller.submit(Mode.Normal).apply(postRequest(body))
+        val result = controller.submit(Mode.Normal)(postRequest(body))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -166,17 +163,16 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
       "redirect to Warehouse Details" in {
         withNewCaching(simplifiedCacheModel)
 
-        val result = controller.submit(Mode.Normal).apply(postRequest(body))
+        val result = await(controller.submit(Mode.Normal).apply(postRequest(body)))
 
-        await(result) mustBe aRedirectToTheNextPage
+        result mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseDetailsController.displayPage()
       }
 
       "update cache after successful bind" in {
         withNewCaching(simplifiedCacheModel)
 
-        val result = controller.submit(Mode.Normal).apply(postRequest(body))
-        await(result)
+        await(controller.submit(Mode.Normal)(postRequest(body)))
 
         val updatedWarehouse = theCacheModelUpdated.locations.warehouseIdentification.value
 
@@ -188,7 +184,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
         withNewCaching(simplifiedCacheModel)
 
         val body = Json.obj("supervisingCustomsOffice" -> "A")
-        val result = controller.submit(Mode.Normal).apply(postRequest(body))
+        val result = controller.submit(Mode.Normal)(postRequest(body))
 
         status(result) mustBe BAD_REQUEST
       }
