@@ -45,10 +45,6 @@ class WarehouseDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
       val messages = instanceOf[MessagesApi].preferred(journeyRequest())
       messages must haveTranslationFor("supplementary.warehouse.title")
       messages must haveTranslationFor("supplementary.warehouse.title.hint")
-      messages must haveTranslationFor("supplementary.warehouse.identificationType")
-      messages must haveTranslationFor("supplementary.warehouse.identificationType.error")
-      messages must haveTranslationFor("supplementary.warehouse.supervisingCustomsOffice")
-      messages must haveTranslationFor("supplementary.warehouse.supervisingCustomsOffice.error")
       messages must haveTranslationFor("supplementary.warehouse.inlandTransportMode.header")
       messages must haveTranslationFor("supplementary.warehouse.inlandTransportMode.header.hint")
       messages must haveTranslationFor("supplementary.warehouse.inlandTransportMode.error.incorrect")
@@ -59,11 +55,11 @@ class WarehouseDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
       viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
     }
 
-    "display 'Back' button that links to 'Warehouse Identification Number' page" in {
+    "display 'Back' button that links to 'Supervising Customs Office' page" in {
       val backButton = view.getElementById("link-back")
 
       backButton.text() mustBe "site.back"
-      backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.WarehouseIdentificationController.displayPage(Mode.Normal))
+      backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal))
     }
 
     "display 'Save and continue' button on page" in {
