@@ -250,8 +250,11 @@ function completePage() {
         document.getElementById('identificationNumber').value ='12';
         document.getElementsByClassName('button')[0].click()
     }
-    if (currentPageIs('/customs-declare-exports/declaration/warehouse')) {
+    if (currentPageIs('/customs-declare-exports/declaration/supervising-customs-office')) {
         selectFromAutoPredict(document.getElementById('supervisingCustomsOffice-container'), "GBLBA001");
+        document.getElementsByClassName('button')[0].click()
+    }
+    if (currentPageIs('/customs-declare-exports/declaration/warehouse')) {
         selectRadioOption(document.getElementById('inlandModeOfTransportCode'), 0);
         document.getElementsByClassName('button')[0].click()
     }
