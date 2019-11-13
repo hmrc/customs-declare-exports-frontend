@@ -151,7 +151,9 @@ class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
 
           supplementaryDeclarationData.parties.get.declarationHoldersData must be(defined)
           supplementaryDeclarationData.locations must be(defined)
-          supplementaryDeclarationData.locations.get.destinationCountries must be(defined)
+          supplementaryDeclarationData.locations.get.originationCountry must be(defined)
+          supplementaryDeclarationData.locations.get.destinationCountry must be(defined)
+          supplementaryDeclarationData.locations.get.routingCountries mustNot be(empty)
           supplementaryDeclarationData.locations.get.goodsLocation must be(defined)
           supplementaryDeclarationData.locations.get.warehouseIdentification must be(defined)
           supplementaryDeclarationData.locations.get.officeOfExit must be(defined)
@@ -196,7 +198,10 @@ object SupplementaryDeclarationTestData {
       carrierDetails = Some(CarrierDetails(EntityDetailsSpec.correctEntityDetails))
     ),
     locations = Locations(
-      destinationCountries = Some(DestinationCountriesSpec.correctDestinationCountries),
+      originationCountry = Some("GB"),
+      destinationCountry = Some("PL"),
+      hasRoutingCountries = Some(true),
+      routingCountries = Seq("FR"),
       goodsLocation = Some(correctGoodsLocation),
       warehouseIdentification = Some(correctWarehouseDetails),
       officeOfExit = Some(correctOfficeOfExit)
@@ -252,7 +257,10 @@ object SupplementaryDeclarationTestData {
       carrierDetails = Some(CarrierDetails(EntityDetailsSpec.correctEntityDetails))
     ),
     locations = Locations(
-      destinationCountries = Some(DestinationCountriesSpec.correctDestinationCountries),
+      originationCountry = Some("GB"),
+      destinationCountry = Some("PL"),
+      hasRoutingCountries = Some(true),
+      routingCountries = Seq("FR"),
       goodsLocation = Some(correctGoodsLocation),
       warehouseIdentification = Some(WarehouseDetails(Some("12345678"), Some("R"), Some("1234567GB"), Some(Rail))),
       officeOfExit = Some(correctOfficeOfExit)
@@ -278,7 +286,10 @@ object SupplementaryDeclarationTestData {
     ),
     locations = Some(
       Locations(
-        destinationCountries = Some(correctDestinationCountries),
+        originationCountry = Some("GB"),
+        destinationCountry = Some("PL"),
+        hasRoutingCountries = Some(true),
+        routingCountries = Seq("FR"),
         goodsLocation = Some(correctGoodsLocation),
         warehouseIdentification = Some(correctWarehouseDetails),
         officeOfExit = Some(correctOfficeOfExit)

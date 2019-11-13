@@ -20,7 +20,6 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.remove
 import controllers.util._
-import forms.declaration.destinationCountries.DestinationCountries.Standard
 import forms.declaration.destinationCountries._
 import handlers.ErrorHandler
 import javax.inject.Inject
@@ -32,8 +31,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.validators.forms.supplementary.DestinationCountriesValidator
-import utils.validators.forms.{Invalid, Valid}
 import views.html.declaration.destination_countries_standard
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -50,139 +47,89 @@ class DestinationCountriesController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.locations.destinationCountries match {
-      case Some(data) =>
-        request.declarationType match {
-          case DeclarationType.SUPPLEMENTARY => Redirect(routes.DestinationCountryController.displayPage())
-          case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED =>
-            Ok(
-              destinationCountriesStandardPage(
-                mode,
-                Standard.form(data.countryOfDispatch, data.countryOfDestination).fill(data),
-                data.countriesOfRouting
-              )
-            )
-        }
-      case None => Redirect(controllers.declaration.routes.OriginationCountryController.displayPage(mode))
+    request.declarationType match {
+      case DeclarationType.SUPPLEMENTARY => Redirect(routes.DestinationCountryController.displayPage())
+      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED =>
+        Ok(
+          destinationCountriesStandardPage(
+            mode,
+            DestinationCountries.form(DestinationCountries.RoutingCountriesPage),
+            request.cacheModel.locations.routingCountries
+          )
+        )
     }
   }
 
   def saveCountries(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    request.cacheModel.locations.destinationCountries match {
-      case Some(data) =>
-        request.declarationType match {
-          case DeclarationType.SUPPLEMENTARY                         => Future.successful(Redirect(routes.DestinationCountryController.displayPage()))
-          case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED => handleSubmitStandard(mode, data.countryOfDispatch, data.countryOfDestination)
-        }
-      case None => Future.successful(Redirect(controllers.declaration.routes.OriginationCountryController.displayPage(mode)))
+    request.declarationType match {
+      case DeclarationType.SUPPLEMENTARY => Future.successful(Redirect(routes.DestinationCountryController.displayPage()))
+      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED =>
+        handleSubmitStandard(mode)
     }
   }
 
-  private def handleSubmitStandard(mode: Mode, countryOfDispatch: String, countryOfDestination: String)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] = {
+  private def handleSubmitStandard(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
     val actionTypeOpt = FormAction.bindFromRequest()
-    val boundForm = Standard.form(countryOfDispatch, countryOfDestination).bindFromRequest
+    val boundForm = DestinationCountries.form(DestinationCountries.RoutingCountriesPage).bindFromRequest()
 
-    val cache = request.cacheModel.locations.destinationCountries.getOrElse(DestinationCountries.empty())
+    val cache = request.cacheModel.locations.routingCountries
 
     actionTypeOpt match {
-      case Add if !boundForm.hasErrors                             => addRoutingCountry(mode, cache)
-      case SaveAndContinue | SaveAndReturn if !boundForm.hasErrors => saveAndContinue(mode, cache)
-      case Remove(values)                                          => removeRoutingCountry(mode, values, boundForm, cache)
-      case _                                                       => Future.successful(BadRequest(destinationCountriesStandardPage(mode, boundForm)))
+      case Add if !boundForm.hasErrors     => addRoutingCountry(mode, cache, boundForm)
+      case SaveAndContinue | SaveAndReturn => saveAndContinue(mode, cache, boundForm)
+      case Remove(values)                  => removeRoutingCountry(mode, values, boundForm, cache)
+      case _                               => Future.successful(BadRequest(destinationCountriesStandardPage(mode, boundForm)))
     }
   }
 
-  private def addRoutingCountry(
-    mode: Mode,
-    cachedData: DestinationCountries
-  )(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] = {
-    val countriesStandardForm = Standard.form(cachedData.countryOfDispatch, cachedData.countryOfDestination).bindFromRequest()
-    val countriesStandardInput = countriesStandardForm.value.getOrElse(DestinationCountries.empty())
-    val countriesStandardUpdated =
-      cachedData.copy(countriesOfRouting = cachedData.countriesOfRouting ++ countriesStandardInput.countriesOfRouting)
+  private def addRoutingCountry(mode: Mode, cachedData: Seq[String], boundForm: Form[String], withRedirection: Boolean = false)(
+    implicit request: JourneyRequest[AnyContent],
+    hc: HeaderCarrier
+  ): Future[Result] = {
+    val newRoutingCountry = boundForm.value.getOrElse("")
 
-    DestinationCountriesValidator.validateOnAddition(countriesStandardUpdated) match {
-      case Valid =>
-        updateCache(countriesStandardUpdated).map {
-          _.flatMap(_.locations.destinationCountries) match {
-            case Some(model) =>
-              Ok(
-                destinationCountriesStandardPage(
-                  mode,
-                  Standard.form(cachedData.countryOfDispatch, cachedData.countryOfDestination).fill(model),
-                  model.countriesOfRouting
-                )
-              )
-            case _ =>
-              Ok(destinationCountriesStandardPage(mode, Standard.form(cachedData.countryOfDispatch, cachedData.countryOfDestination)))
-          }
-        }
+    if (cachedData.contains(newRoutingCountry)) {
+      val formWithError = boundForm.copy(errors = Seq(FormError("country", "declaration.destinationCountries.duplication")))
+      Future.successful(BadRequest(destinationCountriesStandardPage(mode, formWithError, cachedData)))
+    } else {
+      val newCountries = cachedData :+ newRoutingCountry
 
-      case Invalid(errors) =>
-        Future.successful(
-          BadRequest(
-            destinationCountriesStandardPage(
-              mode,
-              adjustDataKeys(countriesStandardForm).copy(errors = errors.map(adjustErrorKey)),
-              cachedData.countriesOfRouting
-            )
-          )
-        )
+      updateCache(newCountries).map { _ =>
+        if (withRedirection)
+          navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode))
+        else Ok(destinationCountriesStandardPage(mode, DestinationCountries.form(DestinationCountries.RoutingCountriesPage), newCountries))
+      }
     }
   }
 
-  private def saveAndContinue(
-    mode: Mode,
-    cachedData: DestinationCountries
-  )(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] = {
-    val countriesStandardForm = Standard.form(cachedData.countryOfDispatch, cachedData.countryOfDestination).bindFromRequest()
-    val countriesStandardInput = countriesStandardForm.value.getOrElse(DestinationCountries.empty())
-    val countriesStandardUpdated =
-      countriesStandardInput.copy(countriesOfRouting = cachedData.countriesOfRouting ++ countriesStandardInput.countriesOfRouting)
+  private def saveAndContinue(mode: Mode, cachedData: Seq[String], boundForm: Form[String])(
+    implicit request: JourneyRequest[AnyContent],
+    hc: HeaderCarrier
+  ): Future[Result] = {
 
-    DestinationCountriesValidator.validateOnSaveAndContinue(countriesStandardUpdated) match {
-      case Valid =>
-        updateCache(countriesStandardUpdated)
-          .map(_ => navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode)))
-      case Invalid(errors) =>
-        Future.successful(
-          BadRequest(
-            destinationCountriesStandardPage(
-              mode,
-              adjustDataKeys(countriesStandardForm).copy(errors = errors.map(adjustErrorKey)),
-              cachedData.countriesOfRouting
-            )
-          )
-        )
+    val formWithoutEmptyError = boundForm.copy(errors = boundForm.errors.filterNot(_.message contains "empty"))
+
+    if (formWithoutEmptyError.errors.nonEmpty) {
+      Future.successful(BadRequest(destinationCountriesStandardPage(mode, formWithoutEmptyError, cachedData)))
+    } else {
+      boundForm.value match {
+        case Some(country) if country.nonEmpty => addRoutingCountry(mode, cachedData, boundForm, true)
+        case _                                 => Future.successful(navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode)))
+      }
     }
   }
 
-  private def adjustErrorKey(error: FormError): FormError =
-    if (error.key.contains("countriesOfRouting"))
-      error.copy(key = error.key.replaceAll("\\[.*?\\]", "").concat("[]"))
-    else
-      error
-
-  private def adjustDataKeys(form: Form[DestinationCountries]): Form[DestinationCountries] =
-    form.copy(data = form.data.map {
-      case (key, value) if key.contains("countriesOfRouting") => ("countriesOfRouting[]", value)
-      case (key, value)                                       => (key, value)
-    })
-
-  private def removeRoutingCountry(mode: Mode, keys: Seq[String], userInput: Form[DestinationCountries], cachedData: DestinationCountries)(
+  private def removeRoutingCountry(mode: Mode, keys: Seq[String], userInput: Form[String], cachedData: Seq[String])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] = {
 
-    val updatedCountries = remove(cachedData.countriesOfRouting, keys.contains(_: String))
-    val updatedCache = cachedData.copy(countriesOfRouting = updatedCountries)
+    val updatedCountries = remove(cachedData, keys.contains(_: String))
 
-    updateCache(updatedCache)
-      .map(_ => Ok(destinationCountriesStandardPage(mode, userInput.discardingErrors, updatedCache.countriesOfRouting)))
+    updateCache(updatedCountries)
+      .map(_ => Ok(destinationCountriesStandardPage(mode, userInput.discardingErrors, updatedCountries)))
   }
 
-  private def updateCache(formData: DestinationCountries)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(destinationCountries = Some(formData))))
+  private def updateCache(formData: Seq[String])(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(routingCountries = formData)))
 
 }

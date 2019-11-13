@@ -42,8 +42,8 @@ class OriginationCountryController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val form = request.cacheModel.locations.destinationCountries match {
-      case Some(DestinationCountries(originateCountry, _, _)) =>
+    val form = request.cacheModel.locations.originationCountry match {
+      case Some(originateCountry) =>
         DestinationCountries.form(OriginationCountryPage).fill(originateCountry)
       case None => DestinationCountries.form(OriginationCountryPage)
     }
@@ -58,7 +58,7 @@ class OriginationCountryController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(originationCountryPage(mode, formWithErrors))),
         validCountry =>
-          updateExportsDeclarationSyncDirect(_.updateCountryOfDispatch(validCountry)).map { _ =>
+          updateExportsDeclarationSyncDirect(_.updateOriginationCountry(validCountry)).map { _ =>
             navigator.continueTo(controllers.declaration.routes.DestinationCountryController.displayPage(mode))
         }
       )
