@@ -15,19 +15,22 @@
  *@
 
 @import controllers.declaration.routes
+@import controllers.navigation.Navigator
+@import forms.declaration.destinationCountries.DestinationCountries.OriginationCountryPage
+@import models.requests.JourneyRequest
 @import services.Countries
 @import services.view.AutoCompleteItem
 @import views.Title
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[String])(implicit request: Request[AnyContent], messages: Messages)
+@(mode: Mode, form: Form[String])(implicit request: JourneyRequest[AnyContent], messages: Messages)
 
 @main_template(
     title = Title("declaration.originationCountry.title", "declaration.originationCountry.heading")
 ) {
 
-    @components.back_link(routes.DeclarationHolderController.displayPage(), mode)
+    @components.back_link(Navigator.backLink(OriginationCountryPage)(request)(mode), mode)
 
     @components.error_summary(form.errors)
 

@@ -17,6 +17,7 @@
 package utils.validators.forms.supplementary
 
 import forms.declaration.destinationCountries.DestinationCountries
+import models.DeclarationType
 import models.requests.JourneyRequest
 import play.api.data.Forms.{seq, text}
 import play.api.data.{Form, Forms}
@@ -33,7 +34,7 @@ object DestinationCountriesValidator extends Validator[DestinationCountries] {
       .fold[ValidationResult](formWithErrors => Invalid(formWithErrors.errors), _ => Valid)
 
   override def validateOnSaveAndContinue(element: DestinationCountries)(implicit request: JourneyRequest[AnyContent]): ValidationResult =
-    Form(mappingWithValidation)
+    Form(if (request.isType(DeclarationType.SIMPLIFIED)) simplifiedMapping else standardAndSuppMapping)
       .fillAndValidate(element)
       .fold[ValidationResult](formWithErrors => Invalid(formWithErrors.errors), _ => Valid)
 
@@ -51,7 +52,25 @@ object DestinationCountriesValidator extends Validator[DestinationCountries] {
     "countryOfDestination" -> text()
   )(DestinationCountries.apply)(DestinationCountries.unapply)
 
-  val mappingWithValidation = Forms.mapping(
+  val simplifiedMapping = Forms.mapping(
+    "countryOfDispatch" -> text(),
+    "countriesOfRouting" -> seq(
+      text()
+        .verifying(
+          "declaration.destinationCountries.countriesOfRouting.error",
+          input => input.isEmpty || allCountries.exists(country => country.countryCode == input)
+        )
+    ).verifying("supplementary.duplication", areAllElementsUnique)
+      .verifying("supplementary.limit", countries => countries.size <= DestinationCountries.limit),
+    "countryOfDestination" -> text()
+      .verifying("declaration.destinationCountries.countryOfDestination.empty", _.trim.nonEmpty)
+      .verifying(
+        "declaration.destinationCountries.countryOfDestination.error",
+        input => input.isEmpty || allCountries.exists(country => country.countryCode == input)
+      )
+  )(DestinationCountries.apply)(DestinationCountries.unapply)
+
+  val standardAndSuppMapping = Forms.mapping(
     "countryOfDispatch" -> text()
       .verifying("declaration.destinationCountries.countryOfDispatch.empty", _.trim.nonEmpty)
       .verifying(

@@ -23,6 +23,7 @@ import models.DeclarationType
 import models.DeclarationType.DeclarationType
 import models.declaration.Container
 import models.requests.{AuthenticatedRequest, JourneyRequest}
+import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import utils.FakeRequestCSRFSupport._
 
@@ -41,6 +42,6 @@ trait ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder 
     withItem(anItem())
   )
 
-  protected def journeyRequest(`type`: DeclarationType = DeclarationType.STANDARD) =
+  protected def journeyRequest(`type`: DeclarationType = DeclarationType.STANDARD): JourneyRequest[AnyContent] =
     new JourneyRequest(new AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration(`type`))
 }

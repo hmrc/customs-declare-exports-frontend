@@ -16,6 +16,7 @@
 
 package forms.declaration.destinationCountries
 
+import forms.DeclarationPage
 import play.api.data.Forms.{default, ignored, seq, single, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
@@ -28,7 +29,7 @@ object DestinationCountries {
   /**
     * New structure foe handling Destination Countries
     */
-  sealed trait CountryPage {
+  sealed trait CountryPage extends DeclarationPage {
     val id: String
   }
 
@@ -59,32 +60,12 @@ object DestinationCountries {
     input.isEmpty || allCountries.exists(_.countryCode == input)
   }
 
-  object Supplementary {
-    private def form2Object: (String, String) => DestinationCountries = {
-      case (countryOfDispatch, countryOfDestination) =>
-        DestinationCountries(countryOfDispatch, Seq.empty, countryOfDestination)
-    }
-
-    private def object2Form: DestinationCountries => Option[(String, String)] =
-      d => Some((d.countryOfDispatch, d.countryOfDestination))
-
-    def form(countryOfDispatch: String): Form[DestinationCountries] = Form(
-      Forms.mapping(
-        "countryOfDispatch" -> ignored(countryOfDispatch),
-        "countryOfDestination" -> text()
-          .verifying("declaration.destinationCountries.countryOfDestination.empty", _.trim.nonEmpty)
-          .verifying("declaration.destinationCountries.countryOfDestination.error", emptyOrValidCountry)
-      )(form2Object)(object2Form)
-    )
-  }
-
   object Standard {
-    def form(countryOfDispatch: String): Form[DestinationCountries] = Form(
+    def form(countryOfDispatch: String, countryOfDestination: String): Form[DestinationCountries] = Form(
       Forms.mapping(
         "countryOfDispatch" -> ignored(countryOfDispatch),
         "countriesOfRouting" -> default(seq(text()), Seq.empty),
-        "countryOfDestination" -> text()
-          .verifying("declaration.destinationCountries.countryOfDestination.error", emptyOrValidCountry)
+        "countryOfDestination" -> ignored(countryOfDestination)
       )(DestinationCountries.apply)(DestinationCountries.unapply)
     )
   }

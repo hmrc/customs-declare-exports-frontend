@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.3
+// @version      1.5
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -118,12 +118,18 @@ function completePage() {
         document.getElementById('eori').value = 'GB717572504502811';
         document.getElementsByClassName('button')[0].click()
     }
+    if (currentPageIs("/customs-declare-exports/declaration/origination-country")) {
+        selectFromAutoPredict(document.getElementById("country-container"), "GB");
+        document.getElementsByClassName('button')[0].click()
+    }
+    if (currentPageIs("/customs-declare-exports/declaration/destination-country")) {
+        selectFromAutoPredict(document.getElementById("country-container"), "GB");
+        document.getElementsByClassName('button')[0].click()
+    }
     if (currentPageIs("/customs-declare-exports/declaration/destination-countries")) {
-        selectFromAutoPredict(document.getElementById("countryOfDispatch-container"), "GB");
         if(document.getElementById("countriesOfRouting-container")){
             selectFromAutoPredict(document.getElementById("countriesOfRouting-container"), "GB")
         }
-        selectFromAutoPredict(document.getElementById("countryOfDestination-container"), "US");
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs("/customs-declare-exports/declaration/location-of-goods")) {
@@ -195,6 +201,11 @@ function completePage() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/un-dangerous-goods-code')) {
         document.getElementById('code_yes').checked = 'checked';
         document.getElementById('dangerousGoodsCode').value ='1234';
+        document.getElementsByClassName('button')[0].click()
+    }
+    if (currentPageIs('/customs-declare-exports/declaration/items/.*/cus-code')) {
+        document.getElementById('code_yes').checked = 'checked';
+        document.getElementById('cusCode').value ='12345678';
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/taric-codes')) {

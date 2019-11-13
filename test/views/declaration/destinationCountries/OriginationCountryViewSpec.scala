@@ -21,16 +21,17 @@ import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.destinationCountries.DestinationCountries.OriginationCountryPage
 import models.Mode
 import play.api.data.Form
+import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.destinationCountries.origination_country
 
-class OriginationCountryViewSpec extends UnitViewSpec with Stubs {
+class OriginationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
 
   val form: Form[String] = DestinationCountries.form(OriginationCountryPage)
 
   val originationCountryPage = new origination_country(mainTemplate)
-  val view = originationCountryPage(Mode.Normal, form)
+  val view = originationCountryPage(Mode.Normal, form)(journeyRequest(), messages)
 
   "Origination country view spec" should {
 

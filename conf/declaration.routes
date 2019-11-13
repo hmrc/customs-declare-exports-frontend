@@ -79,6 +79,10 @@ GET         /origination-country                 controllers.declaration.Origina
 
 POST        /origination-country                 controllers.declaration.OriginationCountryController.submit(mode: models.Mode ?= models.Mode.Normal)
 
+GET         /destination-country                 controllers.declaration.DestinationCountryController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /destination-country                 controllers.declaration.DestinationCountryController.submit(mode: models.Mode ?= models.Mode.Normal)
+
 # Location of goods
 
 GET         /location-of-goods                   controllers.declaration.LocationController.displayPage(mode: models.Mode ?= models.Mode.Normal)
