@@ -375,6 +375,10 @@ declaration.destinationCountries.countriesOfRouting.empty = Enter a country code
 declaration.destinationCountries.add.hint = Add country of routing
 declaration.destinationCountries.remove.hint = Remove country of routing {0}
 
+declaration.routingCountries.empty = You need to add at least one country
+declaration.destinationCountries.missingCountries = You need to provide at least one country or choose `No` on previous page
+declaration.destinationCountries.duplication = You cannot add duplicated country
+
 supplementary.goodsLocation.title = Which port will the goods leave the UK from?
 supplementary.goodsLocation.hint = Enter the location where the goods left the UK.
 supplementary.goodsLocation.typeOfLocation = Location Type
@@ -432,12 +436,15 @@ declaration.warehouse.identification.hint = Because you entered 07, 71, or 78 in
 declaration.warehouse.identification.identificationNumber.error = Incorrect Identification Number
 declaration.warehouse.identification.identificationNumber.empty = Enter the warehouse identification number
 
+declaration.warehouse.supervisingCustomsOffice.sectionHeader = Locations
+declaration.warehouse.supervisingCustomsOffice.title = Where is the supervising customs office?
+declaration.warehouse.supervisingCustomsOffice.hint = If your goods have been altered or are being sent out to be altered, this is the office that gives authorisation for that procedure.
+declaration.warehouse.supervisingCustomsOffice.error = Supervising customs office is incorrect
+
 supplementary.warehouse.title =  Enter more details about the warehouse
 supplementary.warehouse.title.hint = Locations
 supplementary.warehouse.identificationType = Warehouse type
 supplementary.warehouse.identificationType.error = Please choose a valid warehouse type
-supplementary.warehouse.supervisingCustomsOffice = Where is the supervising customs office?
-supplementary.warehouse.supervisingCustomsOffice.error = Supervising customs office is incorrect
 supplementary.warehouse.inlandTransportMode.header = What is the inland mode of transport?
 supplementary.warehouse.inlandTransportMode.header.hint = The type of transport that will move the goods from a warehouse to the port where they will depart the EU.
 supplementary.warehouse.inlandTransportMode.error.incorrect = Please, choose valid inland mode of transport

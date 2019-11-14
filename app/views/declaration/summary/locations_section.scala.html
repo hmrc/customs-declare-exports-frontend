@@ -23,15 +23,15 @@
 
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.dispatchCountry"),
-        value = locations.flatMap(_.destinationCountries).map(_.countryOfDispatch)
+        value = locations.flatMap(_.originationCountry)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.routingCountries"),
-        value = locations.flatMap(_.destinationCountries).map(_.countriesOfRouting.mkString(", "))
+        value = locations.map(_.routingCountries.mkString(", "))
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.destinationCountry"),
-        value = locations.flatMap(_.destinationCountries).map(_.countryOfDestination)
+        value = locations.flatMap(_.destinationCountry)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.goodsExaminationLocationType"),

@@ -24,7 +24,7 @@
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[DestinationCountries], routingCountries: Seq[String] = Seq.empty)(implicit request: Request[_], messages: Messages)
+@(mode: Mode, form: Form[String], routingCountries: Seq[String] = Seq.empty)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = Title("declaration.destinationCountries.title", "declaration.summary.locations.header")
@@ -44,13 +44,13 @@
 
         <div id="country-of-routing-field">
             @components.fields.field_multiple_values(
-                field = form("countriesOfRouting"),
+                field = form("country"),
                 label = messages("declaration.destinationCountries.routing"),
                 hint = Some(messages("declaration.destinationCountries.routing.hint")),
                 elements = routingCountries,
                 labelClass = Some("bold-small"),
                 input = components.inputs.input_autocomplete(
-                    field = form("countriesOfRouting[]"),
+                    field = form("country"),
                     emptySelectValue = messages("declaration.destinationCountries.countriesOfRouting.empty"),
                     items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
                 ),
