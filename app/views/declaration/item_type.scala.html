@@ -17,56 +17,37 @@
 @import controllers.declaration.routes
 @import controllers.util.SaveAndContinue
 @import forms.Choice.AllowedChoiceValues
-@import forms.declaration.ItemTypeForm
-@import forms.declaration.ItemTypeForm._
+@import forms.declaration.ItemType
+@import forms.declaration.ItemType._
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.play.views.html._
 @import services.NationalAdditionalCode
 @import services.view.AutoCompleteItem
 @import forms.declaration.AdditionalFiscalReference
-@import models.declaration.ExportItem
 @import views.Title
 
 @this(main_template: views.html.main_template)
 
 @(
         mode: Mode,
-        item: ExportItem,
-        form: Form[ItemTypeForm],
-        nationalAdditionalCodes: Seq[String] = Seq.empty
+        itemId: String,
+        form: Form[ItemType]
 )(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
-    title = Title(messages("declaration.itemType.title", item.sequenceId), "supplementary.items")
+    title = Title(messages("declaration.itemType.title", itemId), "supplementary.items")
 ) {
 
-    @helper.form(routes.ItemTypeController.submitItemType(mode, item.id), 'autocomplete -> "off") {
+    @helper.form(routes.ItemTypeController.submitItemType(mode, itemId), 'autocomplete -> "off") {
         @helper.CSRF.formField
 
-        @components.back_link(routes.TaricCodeController.displayPage(mode, item.id), mode)
+        @components.back_link(routes.NactCodeController.displayPage(mode, itemId), mode)
 
         @components.error_summary(form.errors)
 
         @components.heading(
             sectionHeader = messages("supplementary.items"),
-            title = messages("declaration.itemType.title", item.sequenceId)
-        )
-
-        @components.fields.field_multiple_values(
-            field = form(nationalAdditionalCodeKey),
-            label = messages("declaration.itemType.nationalAdditionalCode.header"),
-            hint = Some(messages("declaration.itemType.nationalAdditionalCode.header.hint")),
-            elements = nationalAdditionalCodes,
-            labelClass = Some("bold-small"),
-            input = components.inputs.input_autocomplete(
-                field = form(nationalAdditionalCodeKey),
-                emptySelectValue = messages("declaration.itemType.nationalAdditionalCode.error.empty"),
-                items = AutoCompleteItem.fromNationalAdditionalCode(NationalAdditionalCode.all)
-            ),
-            valuePrefix = Some(nationalAdditionalCodeKey+"_"),
-            addField = Some(nationalAdditionalCodeKey),
-            addHint = "declaration.itemType.nationalAdditionalCode.add.hint",
-            removeHint = "declaration.itemType.nationalAdditionalCode.remove.hint"
+            title = messages("declaration.itemType.title", itemId)
         )
 
         @components.fields.field_text(
@@ -76,12 +57,8 @@
             labelClass = Some("bold-small")
         )
 
-      <div class="section mb-0">
-          @components.buttons.save_and_continue_button()
-      </div>
-      <div class="section">
-          @components.buttons.save_and_return_later_button()
-      </div>
+        @components.submit_button()
+        @components.buttons.save_and_return_later_button()
     }
 
 }

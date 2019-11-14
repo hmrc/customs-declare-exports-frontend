@@ -16,7 +16,7 @@
 
 package forms.declaration
 
-import forms.declaration.ItemTypeForm._
+import forms.declaration.ItemType._
 import forms.declaration.ItemTypeFormSpec.correctItemTypeMap
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.FormError
@@ -27,7 +27,7 @@ class ItemTypeFormSpec extends WordSpec with MustMatchers {
 
     "return form without errors" when {
       "provided with valid values" in {
-        val form = ItemTypeForm.form().bind(correctItemTypeMap)
+        val form = ItemType.form().bind(correctItemTypeMap)
 
         form.hasErrors must be(false)
       }
@@ -36,7 +36,7 @@ class ItemTypeFormSpec extends WordSpec with MustMatchers {
     "return form with errors" when {
 
       "statisticalValue is missing" in {
-        val form = ItemTypeForm.form().bind(correctItemTypeMap - "statisticalValue")
+        val form = ItemType.form().bind(correctItemTypeMap - "statisticalValue")
 
         form.errors mustBe Seq(FormError("statisticalValue", "error.required"))
       }
@@ -46,9 +46,8 @@ class ItemTypeFormSpec extends WordSpec with MustMatchers {
 }
 
 object ItemTypeFormSpec {
-  private val nationalAdditionalCode = "VATE"
   private val statisticalValue = "1234567890123.45"
 
   val correctItemTypeMap: Map[String, String] =
-    Map(nationalAdditionalCodeKey -> nationalAdditionalCode, statisticalValueKey -> statisticalValue)
+    Map(statisticalValueKey -> statisticalValue)
 }

@@ -188,11 +188,17 @@ GET         /items/:itemId/cus-code                            controllers.decla
 
 POST        /items/:itemId/cus-code                            controllers.declaration.CUSCodeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
 
-# Item Type
+# TARIC Code
 
 GET         /items/:itemId/taric-codes                         controllers.declaration.TaricCodeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
 
 POST        /items/:itemId/taric-codes                         controllers.declaration.TaricCodeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+# NACT Code
+
+GET         /items/:itemId/nact-codes                          controllers.declaration.NactCodeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+POST        /items/:itemId/nact-codes                          controllers.declaration.NactCodeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
 
 # Package Information
 

@@ -20,7 +20,7 @@ import base.TestHelper._
 import forms.common.DateSpec.correctDate
 import forms.declaration._
 import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
-import models.declaration.{AdditionalInformationData, DocumentsProducedData, ItemType, ProcedureCodesData}
+import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
 
 import scala.util.Random
 
@@ -56,7 +56,7 @@ trait GoodsItemCachingData {
   private def createDocumentWriteOff(): DocumentWriteOff =
     DocumentWriteOff(measurementUnit = Some(createRandomAlphanumericString(4)), documentQuantity = Some(BigDecimal(123)))
 
-  def createItemType(): ItemType = ItemType(getDataSeq(Random.nextInt(10), createRandomAlphanumericString, 4), decimalString())
+  def createItemType(): ItemType = ItemType(decimalString())
 
   def createAdditionalInformation(): forms.declaration.AdditionalInformation =
     forms.declaration.AdditionalInformation(createRandomAlphanumericString(5), createRandomString(70))

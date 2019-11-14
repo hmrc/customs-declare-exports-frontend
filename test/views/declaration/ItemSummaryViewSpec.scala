@@ -18,9 +18,9 @@ package views.declaration
 
 import base.Injector
 import controllers.declaration.routes
-import forms.declaration.{CommodityDetails, PackageInformation}
+import forms.declaration.{CommodityDetails, ItemType, PackageInformation}
 import models.Mode
-import models.declaration.{ExportItem, ItemType, ProcedureCodesData}
+import models.declaration.{ExportItem, ProcedureCodesData}
 import org.jsoup.nodes.Document
 import play.api.data.FormError
 import play.api.i18n.MessagesApi
@@ -85,7 +85,7 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
               "id2",
               sequenceId = 2,
               procedureCodes = Some(ProcedureCodesData(Some("procedure-code2"), Seq.empty)),
-              itemType = Some(ItemType(Seq.empty, "")),
+              itemType = Some(ItemType("")),
               commodityDetails = Some(CommodityDetails(Some("item-type2"), "")),
               packageInformation = List(PackageInformation("", 2, ""))
             ),
@@ -93,7 +93,7 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
               "id1",
               sequenceId = 1,
               procedureCodes = Some(ProcedureCodesData(Some("procedure-code1"), Seq.empty)),
-              itemType = Some(ItemType(Seq.empty, "")),
+              itemType = Some(ItemType("")),
               commodityDetails = Some(CommodityDetails(Some("item-type1"), "")),
               packageInformation = List(PackageInformation("", 1, ""))
             )

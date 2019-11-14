@@ -18,8 +18,8 @@
 @import controllers.declaration.routes
 @import controllers.util.SaveAndContinue
 @import forms.Choice.AllowedChoiceValues
-@import forms.declaration.TaricCode
-@import forms.declaration.TaricCode._
+@import forms.declaration.NactCode
+@import forms.declaration.NactCode._
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.play.views.html._
 @import services.NationalAdditionalCode
@@ -33,39 +33,43 @@
 @(
         mode: Mode,
         itemId: String,
-        form: Form[TaricCode],
-        taricCodes: Seq[TaricCode] = Seq.empty
+        form: Form[NactCode],
+        nactCodes: Seq[NactCode] = Seq.empty
 )(implicit request: JourneyRequest[_], messages: Messages)
 
-@tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.taricAdditionalCodes.header.tradeTariff.link")</a>}
+@tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.nationalAdditionalCode.header.tradeTariff.link")</a>}
 
 @main_template(
-    title = Title("declaration.taricAdditionalCodes.header", "supplementary.items")
+    title = Title("declaration.nationalAdditionalCode.header", "supplementary.items")
 ) {
 
-    @helper.form(routes.TaricCodeController.submitForm(mode, itemId), 'autocomplete -> "off") {
+    @helper.form(routes.NactCodeController.submitForm(mode, itemId), 'autocomplete -> "off") {
         @helper.CSRF.formField
 
-        @components.back_link(routes.CUSCodeController.displayPage(mode, itemId), mode)
+        @components.back_link(routes.TaricCodeController.displayPage(mode, itemId), mode)
 
         @components.error_summary(form.errors)
 
 
         @components.heading(
             sectionHeader = messages("supplementary.items"),
-            title = messages("declaration.taricAdditionalCodes.header"),
-            hintHtml = Some(Html(messages("declaration.taricAdditionalCodes.header.hint", tradeTariffLink)))
+            title = messages("declaration.nationalAdditionalCode.header"),
+            hintHtml = Some(Html(messages("declaration.nationalAdditionalCode.header.hint", tradeTariffLink)))
         )
 
-        @components.fields.field_text_multiple_values(
-            field = form(taricCodeKey),
+        @components.fields.field_multiple_values(
+            field = form(nactCodeKey),
             label = "",
-            elements = taricCodes.map(_.taricCode),
+            elements = nactCodes.map(_.nactCode),
             labelClass = Some("bold-small"),
-            addHint = "declaration.taricAdditionalCodes.add.hint",
-            removeHint = "declaration.taricAdditionalCodes.remove.hint"
+            input = components.inputs.input_autocomplete(
+                field = form(nactCodeKey),
+                emptySelectValue = messages("declaration.nationalAdditionalCode.error.empty"),
+                items = AutoCompleteItem.fromNationalAdditionalCode(NationalAdditionalCode.all)
+            ),
+            addHint = "declaration.nationalAdditionalCode.add.hint",
+            removeHint = "declaration.nationalAdditionalCode.remove.hint"
         )
-
 
         <div class="section mb-0">
         @components.buttons.save_and_continue_button()

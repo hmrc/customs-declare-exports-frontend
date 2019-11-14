@@ -17,10 +17,8 @@
 package unit.controllers.declaration
 
 import controllers.declaration.ItemTypeController
-import controllers.util.Remove
-import forms.declaration.ItemTypeForm
+import forms.declaration.ItemType
 import models.Mode
-import models.declaration.ItemType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -52,7 +50,7 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    when(mockItemTypePage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockItemTypePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   val itemId = new ExportItemIdGeneratorService().generateItemId()
@@ -62,15 +60,15 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
     super.afterEach()
   }
 
-  def theResponseForm: Form[ItemTypeForm] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[ItemTypeForm]])
-    verify(mockItemTypePage).apply(any(), any(), captor.capture(), any())(any(), any())
+  def theResponseForm: Form[ItemType] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[ItemType]])
+    verify(mockItemTypePage).apply(any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   def validateCache(itemType: ItemType) = {
-    val cacheItemType = theCacheModelUpdated.items.head.itemType.getOrElse(ItemType.empty)
-    cacheItemType mustBe (itemType)
+    val cacheItemType = theCacheModelUpdated.items.head.itemType.getOrElse(ItemType(""))
+    cacheItemType mustBe itemType
   }
 
   "Item Type Controller" should {
@@ -97,112 +95,42 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
         theResponseForm.value mustBe empty
       }
 
-      "correct item type is added for add National code and declaration model exist in the cache" in {
-
-        withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
-
-        val correctForm =
-          Seq(("nationalAdditionalCode", "X611"), ("statisticalValue", "435"), addActionUrlEncoded(ItemTypeForm.nationalAdditionalCodeKey))
-
-        val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
-
-        status(result) mustBe OK
-        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any())(any(), any())
-
-        validateCache(ItemType(nationalAdditionalCodes = Seq("X611"), statisticalValue = "435"))
-      }
     }
 
     "return 400 (BAD_REQUEST)" when {
 
-      "there is not item in the cache during submitting" in {
-
-        withNewCaching(aDeclaration())
-
-        val correctForm =
-          Json.toJson(ItemType(Seq("code"), "1234"))
-
-        val result = controller.submitItemType(Mode.Normal, itemId)(postRequest(correctForm))
-
-        status(result) mustBe BAD_REQUEST
-        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any())(any(), any())
-      }
-
-      "form action from user is incorrect" in {
+      "invalid data is posted" in {
 
         withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
 
-        val wrongAction = Seq(("nationalAdditionalCode", ""), ("unDangerousGoodsCode", ""), ("statisticalValue", "value"), ("WrongAction", ""))
+        val badData = Json.toJson(ItemType("Seven"))
 
-        val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(wrongAction: _*))
-
-        status(result) mustBe BAD_REQUEST
-        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any())(any(), any())
-      }
-
-      "information from user is incorrect during adding" in {
-
-        withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
-
-        val incorrectForm =
-          Seq(("nationalAdditionalCode", "!@#$$%"), ("statisticalValue", "!@#$$%"), addActionUrlEncoded(ItemTypeForm.nationalAdditionalCodeKey))
-
-        val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result = controller.submitItemType(Mode.Normal, itemId)(postRequest(badData))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any())(any(), any())
+        verify(mockItemTypePage, times(1)).apply(any(), any(), any())(any(), any())
       }
 
-      "information from user is incorrect during saving" in {
-
-        withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
-
-        val incorrectForm = Seq(("nationalAdditionalCode", ""), ("statisticalValue", ""), saveAndContinueActionUrlEncoded)
-
-        val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
-
-        status(result) mustBe BAD_REQUEST
-        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any())(any(), any())
-      }
     }
 
     "return 303 (SEE_OTHER)" when {
 
-      "item doesn't exists in the cache" in {
-
-        withNewCaching(aDeclaration())
-
-        val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
-
-        status(result) mustBe SEE_OTHER
-        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any())(any(), any())
-      }
-
-      "correct item type is added during saving" in {
+      "valid data is posted" in {
 
         withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
 
-        val correctForm = Seq(("nationalAdditionalCode", "VATR"), ("statisticalValue", "1234"), saveAndContinueActionUrlEncoded)
+        val badData = Json.toJson(ItemType("7"))
 
-        val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result = controller.submitItemType(Mode.Normal, itemId)(postRequest(badData))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationController
           .displayPage(Mode.Normal, itemId)
-        verify(mockItemTypePage, times(0)).apply(any(), any(), any(), any())(any(), any())
+        verify(mockItemTypePage, times(0)).apply(any(), any(), any())(any(), any())
+
+        validateCache(ItemType("7"))
       }
 
-      "item type has been removed and there is exisitng data in cache" in {
-
-        withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId), withItemType()))))
-
-        val removeAction = (Remove.toString, "nationalAdditionalCode_0")
-
-        val result = controller.submitItemType(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(removeAction))
-
-        status(result) mustBe OK
-        verify(mockItemTypePage, times(1)).apply(any(), any(), any(), any())(any(), any())
-      }
     }
   }
 }

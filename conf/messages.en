@@ -586,13 +586,6 @@ supplementary.goodItemNumber.hint = The number assigned to the item in the decla
 
 declaration.itemType.title = Details of declaration item {0}
 
-declaration.itemType.nationalAdditionalCode.header = Enter the National Additional Code
-declaration.itemType.nationalAdditionalCode.header.hint = If no additional code is required, leave blank
-declaration.itemType.nationalAdditionalCode.error.invalid = National Additional Code must be valid
-declaration.itemType.nationalAdditionalCode.error.maxAmount = You cannot add more codes
-declaration.itemType.nationalAdditionalCode.error.duplicate = National Additional Codes cannot contain duplicates
-declaration.itemType.nationalAdditionalCode.add.hint = Add National Additional Code
-declaration.itemType.nationalAdditionalCode.remove.hint = Remove National Additional Code {0}
 declaration.itemType.statisticalValue.header = What is the statistical value of the items?
 declaration.itemType.statisticalValue.header.hint = The approximate value of the goods at the time they leave the EU. It should be entered in GBP only.
 declaration.itemType.statisticalValue.error.empty = The statistical value cannot be empty
@@ -614,7 +607,7 @@ declaration.commodityDetails.how.step1 = Go to the UK {0}.
 declaration.commodityDetails.how.tradeTariff = Trade Tariff
 declaration.commodityDetails.how.step2 = Type your goods into the search bar. It will present you with multiple options. Select the one that most closely resembles your goods.
 declaration.commodityDetails.how.step3 = This will take you to a table with more options. Select 'open all headings' (top left of the table) and browse through the list to find the description that most closely resembles your goods.
-declaration.commodityDetails.how.step4 = Keep selecting options until you have a full ten-digit number in the right-hand column. (Note, at this point it will tell you if the goods require a supplementary unit in the column next to it).
+declaration.commodityDetails.how.step4 = Keep selecting options until you have a full eight-digit number in the right-hand column. (Note, at this point it will tell you if the goods require a supplementary unit in the column next to it).
 declaration.commodityDetails.how.step5 = This number is your commodity code. Click on it and click on the exports tab halfway down the page. This will give you specific information such as licences, quota tariff, and CUS codes.
 declaration.commodityDetails.how.summary = It is important to get it right. If you need help confirming your commodity code, you can contact the {0}.
 declaration.commodityDetails.how.classificationTeam = classification team
@@ -640,13 +633,24 @@ declaration.cusCode.error.empty = Enter a CUS code
 declaration.cusCode.error.length = CUS Code must be exactly 8 characters long
 declaration.cusCode.error.specialCharacters = CUS Code cannot contain special characters
 
-declaration.taricAdditionalCodes.header = Are there additional TARIC codes?
+declaration.taricAdditionalCodes.header = Is there an additional TARIC code?
 declaration.taricAdditionalCodes.header.hint = This will be the four digits that come after the commodity code in the {0}. If no additional codes are required, leave blank.
+declaration.taricAdditionalCodes.header.tradeTariff.link = UK Trade Tariff
 declaration.taricAdditionalCodes.error.empty = Enter a TARIC code
 declaration.taricAdditionalCodes.error.length = TARIC code must be exactly 4 characters long
 declaration.taricAdditionalCodes.error.specialCharacters = TARIC code cannot contain specialCharacters
 declaration.taricAdditionalCodes.add.hint = Add TARIC code
 declaration.taricAdditionalCodes.remove.hint = Remove TARIC code {0}
+
+declaration.nationalAdditionalCode.header = Do these goods require a national additional (NACT) code?
+declaration.nationalAdditionalCode.header.hint = You can find this in ‘Export measures and restrictions’ tab in the {0}. If no additional code is required, leave blank.
+declaration.nationalAdditionalCode.header.tradeTariff.link = UK Trade Tariff
+declaration.nationalAdditionalCode.error.empty = Enter a National Additional Code
+declaration.nationalAdditionalCode.error.invalid = National Additional Code must be valid
+declaration.nationalAdditionalCode.error.maxAmount = You cannot add more codes
+declaration.nationalAdditionalCode.error.duplicate = National Additional Codes cannot contain duplicates
+declaration.nationalAdditionalCode.add.hint = Add National Additional Code
+declaration.nationalAdditionalCode.remove.hint = Remove National Additional Code {0}
 
 supplementary.previousDocuments = Previous documents
 supplementary.previousDocuments.title = Add any documents or MUCRs and DUCRs to this declaration

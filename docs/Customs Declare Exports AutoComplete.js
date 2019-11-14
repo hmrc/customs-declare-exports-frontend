@@ -211,6 +211,9 @@ function completePage() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/taric-codes')) {
         document.getElementsByClassName('button')[0].click()
     }
+    if (currentPageIs('/customs-declare-exports/declaration/items/.*/nact-codes')) {
+        document.getElementsByClassName('button')[0].click()
+    }
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/item-type')) {
         document.getElementById('statisticalValue').value ='1000';
         document.getElementsByClassName('button')[0].click()

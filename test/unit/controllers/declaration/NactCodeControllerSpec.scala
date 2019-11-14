@@ -17,10 +17,10 @@
 package unit.controllers.declaration
 
 import base.TestHelper
-import controllers.declaration.TaricCodeController
+import controllers.declaration.NactCodeController
 import controllers.util.{Add, SaveAndContinue}
-import forms.declaration.TaricCode
-import forms.declaration.TaricCode.taricCodeKey
+import forms.declaration.NactCode
+import forms.declaration.NactCode.nactCodeKey
 import models.DeclarationType.DeclarationType
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
@@ -31,14 +31,14 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
-import views.html.declaration.taric_codes
+import views.html.declaration.nact_codes
 
-class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with OptionValues {
+class NactCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with OptionValues {
 
-  val mockPage = mock[taric_codes]
+  val mockPage = mock[nact_codes]
 
   val controller =
-    new TaricCodeController(
+    new NactCodeController(
       mockAuthAction,
       mockJourneyAction,
       mockErrorHandler,
@@ -59,15 +59,15 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
     super.afterEach()
   }
 
-  def theTaricCodes: List[TaricCode] = {
-    val captor = ArgumentCaptor.forClass(classOf[List[TaricCode]])
+  def theNactCodes: List[NactCode] = {
+    val captor = ArgumentCaptor.forClass(classOf[List[NactCode]])
     verify(mockPage).apply(any(), any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1) = verify(mockPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
-  "TARIC Code controller" should {
+  "NACT Code controller" should {
 
     "return 200 (OK)" when {
 
@@ -81,12 +81,12 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
           status(result) mustBe OK
           verifyPageInvoked()
 
-          theTaricCodes mustBe empty
+          theNactCodes mustBe empty
         }
 
         "display page method is invoked and cache contains data" in {
-          val taricCode = TaricCode("1234")
-          val item = anItem(withTaricCodes(taricCode))
+          val nactCode = NactCode("VATE")
+          val item = anItem(withNactCodes(nactCode))
           withNewCaching(aDeclaration(withType(decType), withItems(item)))
 
           val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
@@ -94,7 +94,7 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
           status(result) mustBe OK
           verifyPageInvoked()
 
-          theTaricCodes must contain(taricCode)
+          theNactCodes must contain(nactCode)
         }
       }
 
@@ -119,7 +119,7 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
           val item = anItem()
           withNewCaching(aDeclaration(withType(decType), withItems(item)))
 
-          val body = Seq((taricCodeKey, "invalidCode"), (Add.toString, ""))
+          val body = Seq((nactCodeKey, "invalidCode"), (Add.toString, ""))
 
           val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(body: _*))
 
@@ -128,11 +128,11 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
         }
 
         "user adds duplicate code" in {
-          val taricCode = TaricCode("1234")
-          val item = anItem(withTaricCodes(taricCode))
+          val nactCode = NactCode("VATE")
+          val item = anItem(withNactCodes(nactCode))
           withNewCaching(aDeclaration(withType(decType), withItems(item)))
 
-          val body = Seq((taricCodeKey, "1234"), (Add.toString, ""))
+          val body = Seq((nactCodeKey, "VATE"), (Add.toString, ""))
 
           val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(body: _*))
 
@@ -141,11 +141,11 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
         }
 
         "user adds too many codes" in {
-          val taricCodes = List.fill(99)(TaricCode(TestHelper.createRandomAlphanumericString(4)))
-          val item = anItem(withTaricCodes(taricCodes))
+          val nactCodes = List.fill(99)(NactCode(TestHelper.createRandomAlphanumericString(4)))
+          val item = anItem(withNactCodes(nactCodes))
           withNewCaching(aDeclaration(withType(decType), withItems(item)))
 
-          val body = Seq((taricCodeKey, "1234"), (Add.toString, ""))
+          val body = Seq((nactCodeKey, "VATE"), (Add.toString, ""))
 
           val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(body: _*))
 
@@ -174,12 +174,12 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
           val item = anItem(withItemId("itemId"))
           withNewCaching(aDeclaration(withType(decType), withItems(item)))
 
-          val body = Seq((taricCodeKey, "1234"), (SaveAndContinue.toString, ""))
+          val body = Seq((nactCodeKey, "VATE"), (SaveAndContinue.toString, ""))
 
           val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(body: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, "itemId")
+          thePageNavigatedTo mustBe controllers.declaration.routes.ItemTypeController.displayPage(Mode.Normal, "itemId")
           verifyPageInvoked(0)
         }
 
