@@ -643,7 +643,7 @@ declaration.taricAdditionalCodes.add.hint = Add TARIC code
 declaration.taricAdditionalCodes.remove.hint = Remove TARIC code {0}
 
 declaration.nationalAdditionalCode.header = Do these goods require a national additional (NACT) code?
-declaration.nationalAdditionalCode.header.hint = You can find this in ‘Export measures and restrictions’ tab in the {0}.  If no additional code is required, leave blank.
+declaration.nationalAdditionalCode.header.hint = You can find this in ‘Export measures and restrictions’ tab in the {0}. If no additional code is required, leave blank.
 declaration.nationalAdditionalCode.header.tradeTariff.link = UK Trade Tariff
 declaration.nationalAdditionalCode.error.empty = Enter a National Additional Code
 declaration.nationalAdditionalCode.error.invalid = National Additional Code must be valid
