@@ -17,7 +17,7 @@
 package views.declaration
 
 import base.Injector
-import forms.declaration.ItemTypeForm
+import forms.declaration.ItemType
 import models.Mode
 import models.declaration.ExportItem
 import org.jsoup.nodes.Document
@@ -34,15 +34,14 @@ import views.tags.ViewTest
 class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = new item_type(mainTemplate)
-  private val form: Form[ItemTypeForm] = ItemTypeForm.form()
+  private val form: Form[ItemType] = ItemType.form()
   private def createView(
     mode: Mode = Mode.Normal,
     item: ExportItem = ExportItem(id = "itemId", sequenceId = 1),
-    form: Form[ItemTypeForm] = form,
-    nationalAdditionalCodes: Seq[String] = Seq.empty,
+    form: Form[ItemType] = form,
     messages: Messages = stubMessages()
   ): Document =
-    page(mode, item, form, nationalAdditionalCodes)(journeyRequest(), messages)
+    page(mode, item.id, form)(journeyRequest(), messages)
 
   "Item Type View on empty page" when {
 
@@ -51,10 +50,6 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       messages must haveTranslationFor("declaration.itemType.title")
       messages must haveTranslationFor("supplementary.items")
       messages must haveTranslationFor("declaration.itemType.title")
-      messages must haveTranslationFor("declaration.itemType.nationalAdditionalCode.header")
-      messages must haveTranslationFor("declaration.itemType.nationalAdditionalCode.header.hint")
-      messages must haveTranslationFor("declaration.itemType.statisticalValue.header")
-      messages must haveTranslationFor("declaration.itemType.statisticalValue.header.hint")
     }
 
     val view = createView()
@@ -70,25 +65,10 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         view.getElementById("section-header").text() must include("supplementary.items")
       }
 
-      "display empty input with label for NAC" in {
-        view
-          .getElementById("nationalAdditionalCode-label")
-          .text() mustBe "declaration.itemType.nationalAdditionalCode.header"
-        view
-          .getElementById("nationalAdditionalCode-hint")
-          .text() mustBe "declaration.itemType.nationalAdditionalCode.header.hint"
-        view.getElementById("nationalAdditionalCode").attr("value") mustBe empty
-      }
-
       "display empty input with label for Statistical Value" in {
         view.getElementById("statisticalValue-label").text() mustBe "declaration.itemType.statisticalValue.header"
         view.getElementById("statisticalValue-hint").text() mustBe "declaration.itemType.statisticalValue.header.hint"
         view.getElementById("statisticalValue").attr("value") mustBe empty
-      }
-
-      "display one 'Add' buttons" in {
-
-        view.getElementsByAttributeValue("name", "AddField").size() must be(1)
       }
 
       "display 'Back' button that links to 'TARIC Codes' page" in {
@@ -97,7 +77,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
         backButton.text() mustBe "site.back"
         backButton.getElementById("link-back") must haveHref(
-          controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, itemId = "itemId")
+          controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, itemId = "itemId")
         )
       }
 
@@ -127,25 +107,10 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         view.getElementById("section-header").text() must include("supplementary.items")
       }
 
-      "display empty input with label for NAC" in {
-        view
-          .getElementById("nationalAdditionalCode-label")
-          .text() mustBe "declaration.itemType.nationalAdditionalCode.header"
-        view
-          .getElementById("nationalAdditionalCode-hint")
-          .text() mustBe "declaration.itemType.nationalAdditionalCode.header.hint"
-        view.getElementById("nationalAdditionalCode").attr("value") mustBe empty
-      }
-
       "display empty input with label for Statistical Value" in {
         view.getElementById("statisticalValue-label").text() mustBe "declaration.itemType.statisticalValue.header"
         view.getElementById("statisticalValue-hint").text() mustBe "declaration.itemType.statisticalValue.header.hint"
         view.getElementById("statisticalValue").attr("value") mustBe empty
-      }
-
-      "display one 'Add' buttons" in {
-
-        view.getElementsByAttributeValue("name", "AddField").size() must be(1)
       }
 
       "display 'Back' button that links to 'TARIC Codes' page" in {
@@ -154,7 +119,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
         backButton.text() mustBe "site.back"
         backButton.getElementById("link-back") must haveHref(
-          controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, itemId = "itemId")
+          controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, itemId = "itemId")
         )
       }
 
@@ -180,19 +145,6 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
           .text() mustBe "declaration.itemType.title"
       }
 
-      "display empty input with label for NAC" in {
-
-        val view = createView()
-
-        view
-          .getElementById("nationalAdditionalCode-label")
-          .text() mustBe "declaration.itemType.nationalAdditionalCode.header"
-        view
-          .getElementById("nationalAdditionalCode-hint")
-          .text() mustBe "declaration.itemType.nationalAdditionalCode.header.hint"
-        view.getElementById("nationalAdditionalCode").attr("value") mustBe empty
-      }
-
       "display empty input with label for Statistical Value" in {
 
         val view = createView()
@@ -202,11 +154,6 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         view.getElementById("statisticalValue").attr("value") mustBe empty
       }
 
-      "display one 'Add' buttons" in {
-
-        createView().getElementsByAttributeValue("name", "AddField").size() must be(1)
-      }
-
       "display 'Back' button that links to 'TARIC Codes' page" in {
 
         val backButton =
@@ -214,7 +161,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
         backButton.text() mustBe "site.back"
         backButton.getElementById("link-back") must haveHref(
-          controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, itemId = "itemId")
+          controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, itemId = "itemId")
         )
       }
 
@@ -238,13 +185,13 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in Statistical Value input" in {
 
-        val itemType = ItemTypeForm(Some(""), "12345")
-        val view = createView(form = ItemTypeForm.form().fill(itemType))
+        val itemType = ItemType("12345")
+        val view = createView(form = ItemType.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
 
-      def assertViewDataEntered(view: Document, itemType: ItemTypeForm): Unit =
+      def assertViewDataEntered(view: Document, itemType: ItemType): Unit =
         view.getElementById("statisticalValue").attr("value") must equal(itemType.statisticalValue)
     }
 
@@ -252,13 +199,13 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in Statistical Value input" in {
 
-        val itemType = ItemTypeForm(Some(""), "12345")
-        val view = createView(form = ItemTypeForm.form().fill(itemType))
+        val itemType = ItemType("12345")
+        val view = createView(form = ItemType.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
 
-      def assertViewDataEntered(view: Document, itemType: ItemTypeForm): Unit =
+      def assertViewDataEntered(view: Document, itemType: ItemType): Unit =
         view.getElementById("statisticalValue").attr("value") must equal(itemType.statisticalValue)
     }
 
@@ -266,13 +213,13 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in Statistical Value input" in {
 
-        val itemType = ItemTypeForm(Some(""), "12345")
-        val view = createView(form = ItemTypeForm.form().fill(itemType))
+        val itemType = ItemType("12345")
+        val view = createView(form = ItemType.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
 
-      def assertViewDataEntered(view: Document, itemType: ItemTypeForm): Unit =
+      def assertViewDataEntered(view: Document, itemType: ItemType): Unit =
         view.getElementById("statisticalValue").attr("value") must equal(itemType.statisticalValue)
     }
 

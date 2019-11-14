@@ -20,8 +20,8 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.remove
 import controllers.util._
-import forms.declaration.TaricCode
-import forms.declaration.TaricCode.{form, taricCodeLimit}
+import forms.declaration.NactCode
+import forms.declaration.NactCode.{form, nactCodeLimit}
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.requests.JourneyRequest
@@ -31,66 +31,66 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.taric_codes
+import views.html.declaration.nact_codes
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class TaricCodeController @Inject()(
+class NactCodeController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  taricCodesPage: taric_codes
+  nactCodesPage: nact_codes
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val taricCodes = request.cacheModel.itemBy(itemId).map(_.taricCodes).getOrElse(Seq.empty)
-    Ok(taricCodesPage(mode, itemId, form(), taricCodes))
+    val nactCodes = request.cacheModel.itemBy(itemId).map(_.nactCodes).getOrElse(Seq.empty)
+    Ok(nactCodesPage(mode, itemId, form(), nactCodes))
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val actionTypeOpt = FormAction.bindFromRequest()
     val boundForm = form().bindFromRequest()
-    val taricCodes = request.cacheModel.itemBy(itemId).map(_.taricCodes).getOrElse(Seq.empty)
+    val nactCodes = request.cacheModel.itemBy(itemId).map(_.nactCodes).getOrElse(Seq.empty)
     actionTypeOpt match {
-      case Add                             => addItem(mode, itemId, boundForm, taricCodes)
-      case Remove(values)                  => removeItem(mode, itemId, values, boundForm, taricCodes)
-      case SaveAndContinue | SaveAndReturn => saveAndContinue(mode, itemId, boundForm, taricCodes)
+      case Add                             => addItem(mode, itemId, boundForm, nactCodes)
+      case Remove(values)                  => removeItem(mode, itemId, values, boundForm, nactCodes)
+      case SaveAndContinue | SaveAndReturn => saveAndContinue(mode, itemId, boundForm, nactCodes)
       case _                               => errorHandler.displayErrorPage()
     }
   }
 
-  private def addItem(mode: Mode, itemId: String, boundForm: Form[TaricCode], cachedData: Seq[TaricCode])(
+  private def addItem(mode: Mode, itemId: String, boundForm: Form[NactCode], cachedData: Seq[NactCode])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
-      .add(boundForm, cachedData, taricCodeLimit)
+      .add(boundForm, cachedData, nactCodeLimit)
       .fold(
-        formWithErrors => Future.successful(BadRequest(taricCodesPage(mode, itemId, formWithErrors, cachedData))),
+        formWithErrors => Future.successful(BadRequest(nactCodesPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
           updateExportsCache(itemId, updatedCache)
-            .map(_ => Redirect(controllers.declaration.routes.TaricCodeController.displayPage(mode, itemId)))
+            .map(_ => Redirect(controllers.declaration.routes.NactCodeController.displayPage(mode, itemId)))
       )
 
-  private def removeItem(mode: Mode, itemId: String, values: Seq[String], boundForm: Form[TaricCode], items: Seq[TaricCode])(
+  private def removeItem(mode: Mode, itemId: String, values: Seq[String], boundForm: Form[NactCode], items: Seq[NactCode])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] = {
-    val itemToRemove = items.find(_.taricCode.equals(values.head))
-    val updatedCache = remove(items, itemToRemove.contains(_: TaricCode))
+    val itemToRemove = items.find(_.nactCode.equals(values.head))
+    val updatedCache = remove(items, itemToRemove.contains(_: NactCode))
     updateExportsCache(itemId, updatedCache)
-      .map(_ => Ok(taricCodesPage(mode, itemId, boundForm.discardingErrors, updatedCache)))
+      .map(_ => Ok(nactCodesPage(mode, itemId, boundForm.discardingErrors, updatedCache)))
   }
 
-  private def saveAndContinue(mode: Mode, itemId: String, boundForm: Form[TaricCode], cachedData: Seq[TaricCode])(
+  private def saveAndContinue(mode: Mode, itemId: String, boundForm: Form[NactCode], cachedData: Seq[NactCode])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
-      .saveAndContinue(boundForm, cachedData, isMandatory = false, taricCodeLimit)
+      .saveAndContinue(boundForm, cachedData, isMandatory = false, nactCodeLimit)
       .fold(
-        formWithErrors => Future.successful(BadRequest(taricCodesPage(mode, itemId, formWithErrors, cachedData))),
+        formWithErrors => Future.successful(BadRequest(nactCodesPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
           if (updatedCache != cachedData)
             updateExportsCache(itemId, updatedCache)
@@ -101,11 +101,11 @@ class TaricCodeController @Inject()(
       )
 
   private def nextPage(mode: Mode, itemId: String) =
-    controllers.declaration.routes.NactCodeController.displayPage(mode, itemId)
+    controllers.declaration.routes.ItemTypeController.displayPage(mode, itemId)
 
-  private def updateExportsCache(itemId: String, updatedCache: Seq[TaricCode])(
+  private def updateExportsCache(itemId: String, updatedCache: Seq[NactCode])(
     implicit r: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(taricCodes = updatedCache.toList)))
+    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(nactCodes = updatedCache.toList)))
 
 }

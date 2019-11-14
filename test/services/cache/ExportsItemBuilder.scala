@@ -81,13 +81,14 @@ trait ExportsItemBuilder {
   def withTaricCodes(codes: List[TaricCode]): ItemModifier =
     _.copy(taricCodes = codes)
 
-  def withItemType(
-    combinedNomenclatureCode: Option[String] = None,
-    nationalAdditionalCodes: Seq[String] = Seq.empty,
-    descriptionOfGoods: String = "",
-    statisticalValue: String = ""
-  ): ItemModifier =
-    withItemType(ItemType(nationalAdditionalCodes, statisticalValue))
+  def withNactCodes(first: NactCode, others: NactCode*): ItemModifier =
+    withNactCodes(List(first) ++ others.toList)
+
+  def withNactCodes(codes: List[NactCode]): ItemModifier =
+    _.copy(nactCodes = codes)
+
+  def withItemType(statisticalValue: String = ""): ItemModifier =
+    withItemType(ItemType(statisticalValue))
 
   def withItemType(data: ItemType): ItemModifier = _.copy(itemType = Some(data))
 

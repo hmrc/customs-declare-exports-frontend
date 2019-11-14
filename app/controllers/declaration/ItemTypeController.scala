@@ -18,20 +18,17 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import controllers.util._
-import forms.declaration.ItemTypeForm
-import forms.declaration.ItemTypeForm._
+import forms.declaration.ItemType
+import forms.declaration.ItemType.form
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.declaration.{ExportItem, ItemType}
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
+import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.validators.forms.supplementary.ItemTypeValidator
-import utils.validators.forms.{Invalid, Valid}
 import views.html.declaration.item_type
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -48,146 +45,29 @@ class ItemTypeController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel
-      .itemBy(itemId)
-      .map { item =>
-        item.itemType match {
-          case Some(itemType) =>
-            Ok(itemTypePage(mode, item, ItemTypeForm.form().fill(fromItemType(itemType)), itemType.nationalAdditionalCodes))
-          case None =>
-            Ok(itemTypePage(mode, item, ItemTypeForm.form()))
-        }
-      }
-      .getOrElse(Redirect(routes.ItemsSummaryController.displayPage()))
+    request.cacheModel.itemBy(itemId).flatMap(_.itemType) match {
+      case Some(itemType) => Ok(itemTypePage(mode, itemId, ItemType.form.fill(itemType)))
+      case _              => Ok(itemTypePage(mode, itemId, ItemType.form))
+    }
   }
 
   def submitItemType(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val inputForm = ItemTypeForm.form().bindFromRequest()
-    val itemTypeInput: ItemTypeForm = inputForm.value.getOrElse(ItemTypeForm.empty)
-
-    request.cacheModel
-      .itemBy(itemId)
-      .map { item =>
-        val itemTypeCache = item.itemType.getOrElse(ItemType.empty)
-        val formAction = FormAction.bindFromRequest()
-        formAction match {
-          case AddField(field) =>
-            handleAddition(mode, item, field, itemTypeInput, itemTypeCache)
-          case SaveAndContinue | SaveAndReturn =>
-            handleSaveAndContinue(mode, item, itemTypeInput, itemTypeCache)
-          case Remove(keys) =>
-            handleRemoval(mode, item, keys, itemTypeInput, itemTypeCache)
-          case _ =>
-            errorHandler.displayErrorPage()
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[ItemType]) => Future.successful(BadRequest(itemTypePage(mode, itemId, formWithErrors))),
+        validForm =>
+          updateExportsCache(itemId, validForm).map { _ =>
+            navigator
+              .continueTo(controllers.declaration.routes.PackageInformationController.displayPage(mode, itemId))
         }
-      }
-      .getOrElse(errorHandler.displayErrorPage())
+      )
   }
-
-  private def handleAddition(mode: Mode, item: ExportItem, field: String, itemTypeInput: ItemTypeForm, itemTypeCache: ItemType)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] = {
-
-    val itemTypeUpdated = updateCachedItemType(itemTypeInput, itemTypeCache, Some(field))
-
-    ItemTypeValidator.validateOnAddition(itemTypeUpdated) match {
-      case Valid =>
-        updateExportsCache(item.id, itemTypeUpdated).map {
-          case Some(model) =>
-            refreshPage(mode, item.id, itemTypeInputForAdd(field, itemTypeInput), model)
-          case None =>
-            Redirect(routes.ItemsSummaryController.displayPage(mode))
-        }
-      case Invalid(errors) =>
-        val formWithErrors =
-          errors.foldLeft(ItemTypeForm.form().fill(itemTypeInput))((form, error) => form.withError(error))
-        Future.successful(BadRequest(itemTypePage(mode, item, formWithErrors, itemTypeCache.nationalAdditionalCodes)))
-    }
-  }
-
-  private def itemTypeInputForAdd(field: String, itemTypeInput: ItemTypeForm) = field match {
-    case `nationalAdditionalCodeKey` =>
-      itemTypeInput.copy(nationalAdditionalCode = None)
-    case _ => itemTypeInput
-  }
-
-  private def updateCachedItemType(itemTypeInput: ItemTypeForm, itemTypeCache: ItemType, addField: Option[String]): ItemType = {
-
-    val updatedNationalCodes = addField match {
-      case Some(`nationalAdditionalCodeKey`) | None =>
-        itemTypeInput.nationalAdditionalCode
-          .map(code => itemTypeCache.nationalAdditionalCodes :+ code)
-          .getOrElse(itemTypeCache.nationalAdditionalCodes)
-      case _ => itemTypeCache.nationalAdditionalCodes
-    }
-
-    ItemType(nationalAdditionalCodes = updatedNationalCodes, statisticalValue = itemTypeInput.statisticalValue)
-  }
-
-  private def refreshPage(mode: Mode, itemId: String, itemTypeInput: ItemTypeForm, model: ExportsDeclaration)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Result =
-    model
-      .itemBy(itemId)
-      .map { item =>
-        item.itemType match {
-          case Some(cachedData) =>
-            Ok(itemTypePage(mode, item, ItemTypeForm.form().fill(itemTypeInput), cachedData.nationalAdditionalCodes))
-          case _ =>
-            Ok(itemTypePage(mode, item, ItemTypeForm.form()))
-        }
-      }
-      .getOrElse(Redirect(routes.ItemsSummaryController.displayPage(mode)))
 
   private def updateExportsCache(itemId: String, updatedItem: ItemType)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(itemType = Some(updatedItem))))
-
-  private def handleSaveAndContinue(mode: Mode, item: ExportItem, itemTypeInput: ItemTypeForm, itemTypeCache: ItemType)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] = {
-    val itemTypeUpdated = updateCachedItemType(itemTypeInput, itemTypeCache, None)
-    ItemTypeValidator.validateOnSaveAndContinue(itemTypeUpdated) match {
-      case Valid =>
-        updateExportsCache(item.id, itemTypeUpdated).map { _ =>
-          navigator.continueTo(controllers.declaration.routes.PackageInformationController.displayPage(mode, item.id))
-        }
-      case Invalid(errors) =>
-        val formWithErrors =
-          errors.foldLeft(ItemTypeForm.form().fill(itemTypeInput))((form, error) => form.withError(error))
-        Future.successful(BadRequest(itemTypePage(mode, item, formWithErrors, itemTypeCache.nationalAdditionalCodes)))
+    updateExportsDeclarationSyncDirect { model =>
+      model.updatedItem(itemId, item => item.copy(itemType = Some(updatedItem)))
     }
-  }
-
-  private def handleRemoval(mode: Mode, item: ExportItem, keys: Seq[String], itemTypeInput: ItemTypeForm, itemTypeCached: ItemType)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] = {
-    val key = keys.headOption.getOrElse("")
-    val label = Label(key)
-
-    val itemTypeUpdated = label.name match {
-      case `nationalAdditionalCodeKey` =>
-        itemTypeCached.copy(nationalAdditionalCodes = removeElement(itemTypeCached.nationalAdditionalCodes, label.value))
-    }
-    updateExportsCache(item.id, itemTypeUpdated).map {
-      case Some(model) =>
-        refreshPage(mode, item.id, itemTypeInput, model)
-      case None =>
-        Redirect(routes.ItemsSummaryController.displayPage(mode))
-    }
-  }
-
-  private def removeElement(collection: Seq[String], valueToRemove: String): Seq[String] =
-    MultipleItemsHelper.remove(collection, (_: String) == valueToRemove)
-
-  private case class Label(name: String, value: String)
-
-  private object Label {
-
-    def apply(str: String): Label = {
-      val Array(name, value) = str.split("_")
-      Label(name, value)
-    }
-  }
 }
