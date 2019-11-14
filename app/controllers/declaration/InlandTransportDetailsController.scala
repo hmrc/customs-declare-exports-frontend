@@ -32,12 +32,12 @@ import views.html.declaration.inland_transport_details
 import scala.concurrent.{ExecutionContext, Future}
 
 class InlandTransportDetailsController @Inject()(
-                                                  authenticate: AuthAction,
-                                                  journeyType: JourneyAction,
-                                                  navigator: Navigator,
-                                                  override val exportsCacheService: ExportsCacheService,
-                                                  mcc: MessagesControllerComponents,
-                                                  inlandTransportDetailsPage: inland_transport_details
+  authenticate: AuthAction,
+  journeyType: JourneyAction,
+  navigator: Navigator,
+  override val exportsCacheService: ExportsCacheService,
+  mcc: MessagesControllerComponents,
+  inlandTransportDetailsPage: inland_transport_details
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 

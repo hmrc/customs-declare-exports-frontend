@@ -28,7 +28,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import views.html.declaration.{inland_transport_details, warehouse_details}
+import views.html.declaration.inland_transport_details
 
 class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAndAfterEach with WarehouseIdentificationMessages with OptionValues {
 
@@ -49,32 +49,17 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
 
   private val standardCacheModel = aDeclaration(
     withType(DeclarationType.STANDARD),
-    withWarehouseIdentification(
-      Some(exampleCustomsOfficeIdentifier),
-      None,
-      Some(exampleWarehouseIdentificationNumber),
-      None
-    )
+    withWarehouseIdentification(Some(exampleCustomsOfficeIdentifier), None, Some(exampleWarehouseIdentificationNumber), None)
   )
 
   private val supplementaryCacheModel = aDeclaration(
     withType(DeclarationType.SUPPLEMENTARY),
-    withWarehouseIdentification(
-      Some(exampleCustomsOfficeIdentifier),
-      None,
-      Some(exampleWarehouseIdentificationNumber),
-      None
-    )
+    withWarehouseIdentification(Some(exampleCustomsOfficeIdentifier), None, Some(exampleWarehouseIdentificationNumber), None)
   )
 
   private val simplifiedCacheModel = aDeclaration(
     withType(DeclarationType.SIMPLIFIED),
-    withWarehouseIdentification(
-      Some(exampleCustomsOfficeIdentifier),
-      None,
-      Some(exampleWarehouseIdentificationNumber),
-      None
-    )
+    withWarehouseIdentification(Some(exampleCustomsOfficeIdentifier), None, Some(exampleWarehouseIdentificationNumber), None)
   )
 
   override protected def beforeEach(): Unit = {
