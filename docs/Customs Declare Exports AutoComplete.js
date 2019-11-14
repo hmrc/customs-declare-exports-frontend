@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.5
+// @version      1.6
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -214,7 +214,7 @@ function completePage() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/nact-codes')) {
         document.getElementsByClassName('button')[0].click()
     }
-    if (currentPageIs('/customs-declare-exports/declaration/items/.*/item-type')) {
+    if (currentPageIs('/customs-declare-exports/declaration/items/.*/statistical-value')) {
         document.getElementById('statisticalValue').value ='1000';
         document.getElementsByClassName('button')[0].click()
     }

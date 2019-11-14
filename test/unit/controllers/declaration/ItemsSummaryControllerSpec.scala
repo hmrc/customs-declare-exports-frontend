@@ -139,7 +139,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
           withProcedureCodes(),
           withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
           withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12")))),
-          withItemType(),
+          withStatisticalValue(),
           withPackageInformation(),
           withAdditionalInformation("code", "description")
         )

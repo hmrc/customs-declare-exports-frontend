@@ -16,7 +16,8 @@
 
 package forms.declaration
 
-import play.api.data.Forms.{number, optional, text}
+import forms.DeclarationPage
+import play.api.data.Forms.{number, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{JsValue, Json}
 import services.PackageTypes
@@ -26,7 +27,7 @@ case class PackageInformation(typesOfPackages: String, numberOfPackages: Int, sh
   def toJson: JsValue = Json.toJson(this)(PackageInformation.format)
 }
 
-object PackageInformation {
+object PackageInformation extends DeclarationPage {
 
   def fromJsonString(value: String): Option[PackageInformation] = Json.fromJson(Json.parse(value)).asOpt
 

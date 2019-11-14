@@ -16,8 +16,8 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.ItemTypeController
-import forms.declaration.ItemType
+import controllers.declaration.StatisticalValueController
+import forms.declaration.StatisticalValue
 import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -30,13 +30,13 @@ import play.twirl.api.HtmlFormat
 import services.cache.ExportItemIdGeneratorService
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
-import views.html.declaration.item_type
+import views.html.declaration.statistical_value
 
-class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with OptionValues {
+class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMocks with OptionValues {
 
-  val mockItemTypePage = mock[item_type]
+  val mockItemTypePage = mock[statistical_value]
 
-  val controller = new ItemTypeController(
+  val controller = new StatisticalValueController(
     mockAuthAction,
     mockJourneyAction,
     mockErrorHandler,
@@ -60,14 +60,14 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
     super.afterEach()
   }
 
-  def theResponseForm: Form[ItemType] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[ItemType]])
+  def theResponseForm: Form[StatisticalValue] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[StatisticalValue]])
     verify(mockItemTypePage).apply(any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
-  def validateCache(itemType: ItemType) = {
-    val cacheItemType = theCacheModelUpdated.items.head.itemType.getOrElse(ItemType(""))
+  def validateCache(itemType: StatisticalValue) = {
+    val cacheItemType = theCacheModelUpdated.items.head.statisticalValue.getOrElse(StatisticalValue(""))
     cacheItemType mustBe itemType
   }
 
@@ -77,7 +77,7 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
 
       "item type exists in the cache and item type is defined" in {
 
-        withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId), withItemType()))))
+        withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId), withStatisticalValue()))))
 
         val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
@@ -103,7 +103,7 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
 
         withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
 
-        val badData = Json.toJson(ItemType("Seven"))
+        val badData = Json.toJson(StatisticalValue("Seven"))
 
         val result = controller.submitItemType(Mode.Normal, itemId)(postRequest(badData))
 
@@ -119,7 +119,7 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
 
         withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
 
-        val badData = Json.toJson(ItemType("7"))
+        val badData = Json.toJson(StatisticalValue("7"))
 
         val result = controller.submitItemType(Mode.Normal, itemId)(postRequest(badData))
 
@@ -128,7 +128,7 @@ class ItemTypeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
           .displayPage(Mode.Normal, itemId)
         verify(mockItemTypePage, times(0)).apply(any(), any(), any())(any(), any())
 
-        validateCache(ItemType("7"))
+        validateCache(StatisticalValue("7"))
       }
 
     }

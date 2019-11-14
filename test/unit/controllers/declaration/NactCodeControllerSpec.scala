@@ -171,6 +171,12 @@ class NactCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
 
       def controllerRedirectsToNextPage(decType: DeclarationType): Unit =
         "user submits valid code" in {
+
+          def nextPage = decType match {
+            case DeclarationType.SIMPLIFIED => controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, "itemId")
+            case _                          => controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, "itemId")
+          }
+
           val item = anItem(withItemId("itemId"))
           withNewCaching(aDeclaration(withType(decType), withItems(item)))
 
@@ -179,7 +185,8 @@ class NactCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
           val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(body: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.ItemTypeController.displayPage(Mode.Normal, "itemId")
+
+          thePageNavigatedTo mustBe nextPage
           verifyPageInvoked(0)
         }
 

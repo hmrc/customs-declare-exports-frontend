@@ -21,11 +21,11 @@ import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class ItemType(statisticalValue: String)
+case class StatisticalValue(statisticalValue: String)
 
-object ItemType {
+object StatisticalValue {
 
-  implicit val format = Json.format[ItemType]
+  implicit val format = Json.format[StatisticalValue]
 
   val statisticalValueKey = "statisticalValue"
 
@@ -33,19 +33,16 @@ object ItemType {
   private val statisticalValueDecimalPlaces = 2
 
   private val mappingStatisticalValue = text()
-    .verifying("declaration.itemType.statisticalValue.error.empty", nonEmpty)
+    .verifying("declaration.statisticalValue.error.empty", nonEmpty)
     .verifying(
-      "declaration.itemType.statisticalValue.error.length",
+      "declaration.statisticalValue.error.length",
       input => input.isEmpty || noLongerThan(statisticalValueMaxLength)(input.replaceAll("\\.", ""))
     )
-    .verifying(
-      "declaration.itemType.statisticalValue.error.wrongFormat",
-      isEmpty or isDecimalWithNoMoreDecimalPlacesThan(statisticalValueDecimalPlaces)
-    )
+    .verifying("declaration.statisticalValue.error.wrongFormat", isEmpty or isDecimalWithNoMoreDecimalPlacesThan(statisticalValueDecimalPlaces))
 
-  private val mapping: Mapping[ItemType] =
-    Forms.mapping(statisticalValueKey -> mappingStatisticalValue)(ItemType.apply)(ItemType.unapply)
+  private val mapping: Mapping[StatisticalValue] =
+    Forms.mapping(statisticalValueKey -> mappingStatisticalValue)(StatisticalValue.apply)(StatisticalValue.unapply)
 
-  def form(): Form[ItemType] = Form(mapping)
+  def form(): Form[StatisticalValue] = Form(mapping)
 
 }

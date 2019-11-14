@@ -58,7 +58,7 @@ class ExportItemSpec extends UnitSpec with ExportsItemBuilder {
             withItemId("id"),
             withProcedureCodes(),
             withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
-            withItemType(),
+            withStatisticalValue(),
             withPackageInformation(),
             withCommodityMeasure(CommodityMeasure(None, "100", "100")),
             withAdditionalInformation("code", "description")
@@ -73,7 +73,7 @@ class ExportItemSpec extends UnitSpec with ExportsItemBuilder {
             withItemId("id"),
             withProcedureCodes(),
             withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.no)),
-            withItemType(),
+            withStatisticalValue(),
             withPackageInformation(),
             withCommodityMeasure(CommodityMeasure(None, "100", "100")),
             withAdditionalInformation("code", "description")
@@ -89,7 +89,7 @@ class ExportItemSpec extends UnitSpec with ExportsItemBuilder {
             withProcedureCodes(),
             withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
             withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12")))),
-            withItemType(),
+            withStatisticalValue(),
             withPackageInformation(),
             withCommodityMeasure(CommodityMeasure(None, "100", "100")),
             withAdditionalInformation("code", "description")
@@ -113,7 +113,7 @@ class ExportItemSpec extends UnitSpec with ExportsItemBuilder {
             withItemId("id"),
             withProcedureCodes(),
             withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
-            withItemType(),
+            withStatisticalValue(),
             withPackageInformation(),
             withAdditionalInformation("code", "description")
           ).copy(additionalFiscalReferencesData = None)
@@ -128,7 +128,7 @@ class ExportItemSpec extends UnitSpec with ExportsItemBuilder {
             withProcedureCodes(),
             withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
             withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12")))),
-            withItemType(),
+            withStatisticalValue(),
             withPackageInformation(),
             withAdditionalInformation("code", "description")
           )

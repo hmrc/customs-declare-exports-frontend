@@ -586,12 +586,6 @@ supplementary.goodItemNumber.hint = The number assigned to the item in the decla
 
 declaration.itemType.title = Details of declaration item {0}
 
-declaration.itemType.statisticalValue.header = What is the statistical value of the items?
-declaration.itemType.statisticalValue.header.hint = The approximate value of the goods at the time they leave the EU. It should be entered in GBP only.
-declaration.itemType.statisticalValue.error.empty = The statistical value cannot be empty
-declaration.itemType.statisticalValue.error.length = Entered statistical value is too long
-declaration.itemType.statisticalValue.error.wrongFormat = Format of this value is incorrect
-
 declaration.commodityDetails.title = Commodity details
 declaration.commodityDetails.combinedNomenclatureCode.header = What is the commodity code?
 declaration.commodityDetails.combinedNomenclatureCode.header.hint = A commodity code is an eight digit number specifically allocated to goods to classify them when moved outside the EU.  For example, 12345678.
@@ -651,6 +645,12 @@ declaration.nationalAdditionalCode.error.maxAmount = You cannot add more codes
 declaration.nationalAdditionalCode.error.duplicate = National Additional Codes cannot contain duplicates
 declaration.nationalAdditionalCode.add.hint = Add National Additional Code
 declaration.nationalAdditionalCode.remove.hint = Remove National Additional Code {0}
+
+declaration.statisticalValue.header = What is the total value of this item’s goods?
+declaration.statisticalValue.header.hint = This is includes the transactional value of the goods as well as all transport involved in moving them.
+declaration.statisticalValue.error.empty = The statistical value cannot be empty
+declaration.statisticalValue.error.length = Entered statistical value is too long
+declaration.statisticalValue.error.wrongFormat = Format of this value is incorrect
 
 supplementary.previousDocuments = Previous documents
 supplementary.previousDocuments.title = Add any documents or MUCRs and DUCRs to this declaration

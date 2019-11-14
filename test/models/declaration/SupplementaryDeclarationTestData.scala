@@ -215,7 +215,7 @@ object SupplementaryDeclarationTestData {
       ExportItem(
         "itemid",
         sequenceId = 1,
-        itemType = Some(ItemType(statisticalValue = "100")),
+        statisticalValue = Some(StatisticalValue(statisticalValue = "100")),
         documentsProducedData = Some(
           DocumentsProducedData(
             Seq(

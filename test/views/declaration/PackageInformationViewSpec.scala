@@ -18,7 +18,8 @@ package views.declaration
 
 import base.Injector
 import forms.declaration.PackageInformation
-import models.Mode
+import models.DeclarationType.DeclarationType
+import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -38,9 +39,10 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
 
   private def createView(
     mode: Mode = Mode.Normal,
+    decType: DeclarationType = DeclarationType.STANDARD,
     form: Form[PackageInformation] = form,
     packages: Seq[PackageInformation] = Seq(packageInformation)
-  ): Document = page(mode, "itemId", form, packages)(journeyRequest(), stubMessages())
+  ): Document = page(mode, "itemId", form, packages)(journeyRequest(decType), stubMessages())
 
   "have proper messages for labels" in {
     val messages = instanceOf[MessagesApi].preferred(journeyRequest())
@@ -55,13 +57,29 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
     messages must haveTranslationFor("supplementary.packageInformation.table.multiple.heading")
   }
 
+  "Package Information View back link" should {
+
+    "display back link for Standard declaration" in {
+      val view = createView(decType = DeclarationType.STANDARD)
+      view must containElementWithID("link-back")
+      view.getElementById("link-back") must haveHref(controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, "itemId"))
+    }
+
+    "display back link for Supplementary declaration" in {
+      val view = createView(decType = DeclarationType.SUPPLEMENTARY)
+      view must containElementWithID("link-back")
+      view.getElementById("link-back") must haveHref(controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, "itemId"))
+    }
+
+    "display back link for Simplified declaration" in {
+      val view = createView(decType = DeclarationType.SIMPLIFIED)
+      view must containElementWithID("link-back")
+      view.getElementById("link-back") must haveHref(controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, "itemId"))
+    }
+  }
+
   "Package Information View on empty page" should {
     val view = createView()
-
-    "display back link" in {
-      view must containElementWithID("link-back")
-      view.getElementById("link-back") must haveHref(controllers.declaration.routes.ItemTypeController.displayPage(Mode.Normal, "itemId"))
-    }
 
     "display page title" in {
       view.getElementById("title").text() mustBe "supplementary.packageInformation.title"

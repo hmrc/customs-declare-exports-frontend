@@ -64,8 +64,6 @@ trait ExportsItemBuilder {
       cache.copy(additionalInformation = Some(AdditionalInformationData(existing ++ Seq(info1) ++ other)))
     }
 
-  def withoutItemType(): ItemModifier = _.copy(itemType = None)
-
   def withCommodityDetails(data: CommodityDetails): ItemModifier =
     _.copy(commodityDetails = Some(data))
 
@@ -87,10 +85,10 @@ trait ExportsItemBuilder {
   def withNactCodes(codes: List[NactCode]): ItemModifier =
     _.copy(nactCodes = codes)
 
-  def withItemType(statisticalValue: String = ""): ItemModifier =
-    withItemType(ItemType(statisticalValue))
+  def withStatisticalValue(statisticalValue: String = ""): ItemModifier =
+    withStatisticalValue(StatisticalValue(statisticalValue))
 
-  def withItemType(data: ItemType): ItemModifier = _.copy(itemType = Some(data))
+  def withStatisticalValue(data: StatisticalValue): ItemModifier = _.copy(statisticalValue = Some(data))
 
   def withoutPackageInformation(): ItemModifier = _.copy(packageInformation = List.empty)
 

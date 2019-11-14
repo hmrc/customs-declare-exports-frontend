@@ -164,12 +164,6 @@ POST        /items/:itemId/additional-fiscal-references             controllers.
 
 POST        /items/:itemId/additional-fiscal-references/:reference  controllers.declaration.AdditionalFiscalReferencesController.removeReference(mode: models.Mode ?= models.Mode.Normal, itemId, reference)
 
-# Item Type
-
-GET         /items/:itemId/item-type                           controllers.declaration.ItemTypeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
-
-POST        /items/:itemId/item-type                           controllers.declaration.ItemTypeController.submitItemType(mode: models.Mode ?= models.Mode.Normal, itemId)
-
 # Commodity Details
 
 GET         /items/:itemId/commodity-details                   controllers.declaration.CommodityDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
@@ -199,6 +193,12 @@ POST        /items/:itemId/taric-codes                         controllers.decla
 GET         /items/:itemId/nact-codes                          controllers.declaration.NactCodeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
 
 POST        /items/:itemId/nact-codes                          controllers.declaration.NactCodeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+# Statistical Value
+
+GET         /items/:itemId/statistical-value                   controllers.declaration.StatisticalValueController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+POST        /items/:itemId/statistical-value                   controllers.declaration.StatisticalValueController.submitItemType(mode: models.Mode ?= models.Mode.Normal, itemId)
 
 # Package Information
 

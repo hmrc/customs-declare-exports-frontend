@@ -28,7 +28,7 @@ case class ExportItem(
   procedureCodes: Option[ProcedureCodesData] = None,
   fiscalInformation: Option[FiscalInformation] = None,
   additionalFiscalReferencesData: Option[AdditionalFiscalReferencesData] = None,
-  itemType: Option[ItemType] = None,
+  statisticalValue: Option[StatisticalValue] = None,
   commodityDetails: Option[CommodityDetails] = None,
   dangerousGoodsCode: Option[UNDangerousGoodsCode] = None,
   cusCode: Option[CUSCode] = None,
@@ -44,11 +44,11 @@ case class ExportItem(
 
   val isCompleted: PartialFunction[DeclarationType, Boolean] = {
     case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
-      procedureCodes.isDefined && isFiscalInformationCompleted && itemType.isDefined &&
+      procedureCodes.isDefined && isFiscalInformationCompleted && statisticalValue.isDefined &&
         packageInformation.nonEmpty && commodityMeasure.isDefined && additionalInformation.isDefined
 
     case DeclarationType.SIMPLIFIED =>
-      procedureCodes.isDefined && isFiscalInformationCompleted && itemType.isDefined &&
+      procedureCodes.isDefined && isFiscalInformationCompleted && statisticalValue.isDefined &&
         packageInformation.nonEmpty && additionalInformation.isDefined
   }
 

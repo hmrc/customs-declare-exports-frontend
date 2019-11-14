@@ -56,7 +56,7 @@ trait GoodsItemCachingData {
   private def createDocumentWriteOff(): DocumentWriteOff =
     DocumentWriteOff(measurementUnit = Some(createRandomAlphanumericString(4)), documentQuantity = Some(BigDecimal(123)))
 
-  def createItemType(): ItemType = ItemType(decimalString())
+  def createItemType(): StatisticalValue = StatisticalValue(decimalString())
 
   def createAdditionalInformation(): forms.declaration.AdditionalInformation =
     forms.declaration.AdditionalInformation(createRandomAlphanumericString(5), createRandomString(70))
