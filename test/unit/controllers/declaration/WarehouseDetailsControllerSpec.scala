@@ -22,7 +22,7 @@ import helpers.views.declaration.WarehouseIdentificationMessages
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{verify, when}
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -106,12 +106,7 @@ class WarehouseDetailsControllerSpec extends ControllerSpec with BeforeAndAfterE
   }
   "Warehouse Identification Controller on POST" when {
 
-    val body = Json.obj(
-      "supervisingCustomsOffice" -> exampleCustomsOfficeIdentifier,
-      "identificationType" -> exampleWarehouseIdentificationType,
-      "identificationNumber" -> exampleWarehouseIdentificationNumber,
-      "inlandModeOfTransportCode" -> exampleTransportMode
-    )
+    val body = Json.obj("inlandModeOfTransportCode" -> exampleTransportMode)
 
     "we are on standard declaration journey" should {
 
@@ -194,7 +189,5 @@ class WarehouseDetailsControllerSpec extends ControllerSpec with BeforeAndAfterE
         status(result) mustBe BAD_REQUEST
       }
     }
-
   }
-
 }
