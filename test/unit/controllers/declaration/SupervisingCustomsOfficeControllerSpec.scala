@@ -96,13 +96,13 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
     "we are on standard declaration journey" should {
 
-      "redirect to Warehouse Details" in {
+      "redirect to Inland Transport" in {
         withNewCaching(standardCacheModel)
 
         val result = await(controller.submit(Mode.Normal)(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseDetailsController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.InlandTransportDetailsController.displayPage()
       }
 
       "update cache after successful bind" in {
@@ -128,13 +128,13 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
     "we are on supplementary declaration journey" should {
 
-      "redirect to Warehouse Details" in {
+      "redirect to Inland Transport" in {
         withNewCaching(supplementaryCacheModel)
 
         val result = await(controller.submit(Mode.Normal)(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseDetailsController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.InlandTransportDetailsController.displayPage()
       }
 
       "update cache after successful bind" in {
@@ -160,13 +160,13 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
     "we are on simplified declaration journey" should {
 
-      "redirect to Warehouse Details" in {
+      "redirect to Inland Transport" in {
         withNewCaching(simplifiedCacheModel)
 
         val result = await(controller.submit(Mode.Normal).apply(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.WarehouseDetailsController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.InlandTransportDetailsController.displayPage()
       }
 
       "update cache after successful bind" in {

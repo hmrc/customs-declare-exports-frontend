@@ -28,10 +28,10 @@
 @(mode: Mode, form: Form[WarehouseDetails])(implicit request: Request[_], messages: Messages)
 
     @main_template(
-        title = Title("supplementary.warehouse.title")
+        title = Title("declaration.warehouse.inlandTransportDetails.title")
     ) {
 
-        @helper.form(routes.WarehouseDetailsController.saveWarehouse(mode), 'autoComplete -> "off") {
+        @helper.form(routes.InlandTransportDetailsController.submit(mode), 'autoComplete -> "off") {
             @helper.CSRF.formField
 
             @components.back_link(controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(mode), mode)
@@ -39,10 +39,10 @@
             @components.error_summary(form.errors)
 
             @components.heading(
-                hint = messages("supplementary.warehouse.title.hint"),
-                title = messages("supplementary.warehouse.title")
+                sectionHeader = messages("declaration.warehouse.inlandTransportDetails.sectionHeader"),
+                title = messages("declaration.warehouse.inlandTransportDetails.title"),
+                hint = messages("declaration.warehouse.inlandTransportDetails.hint")
             )
-
 
             @components.fields.field_radio(
                 field = form("inlandModeOfTransportCode"),

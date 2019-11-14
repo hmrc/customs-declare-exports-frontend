@@ -57,7 +57,7 @@ class SupervisingCustomsOfficeController @Inject()(
         formWithErrors => Future.successful(BadRequest(supervisingCustomsOfficePage(mode, formWithErrors))),
         form => {
           updateCache(form)
-            .map(_ => navigator.continueTo(controllers.declaration.routes.WarehouseDetailsController.displayPage(mode)))
+            .map(_ => navigator.continueTo(controllers.declaration.routes.InlandTransportDetailsController.displayPage(mode)))
         }
       )
   }

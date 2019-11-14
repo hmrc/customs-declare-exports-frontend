@@ -26,13 +26,13 @@ import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.warehouse_details
+import views.html.declaration.inland_transport_details
 import views.tags.ViewTest
 
 @ViewTest
-class WarehouseDetailsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  private val page = new warehouse_details(mainTemplate)
+  private val page = new inland_transport_details(mainTemplate)
   private val form: Form[WarehouseDetails] = WarehouseDetails.form()
 
   private def createView(mode: Mode = Mode.Normal, form: Form[WarehouseDetails] = form, messages: Messages = stubMessages()): Document =
