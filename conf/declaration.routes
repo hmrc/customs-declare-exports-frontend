@@ -101,11 +101,11 @@ GET         /supervising-customs-office          controllers.declaration.Supervi
 
 POST        /supervising-customs-office          controllers.declaration.SupervisingCustomsOfficeController.submit(mode: models.Mode ?= models.Mode.Normal)
 
-# Details of a Warehouse
+# Inland Transport Details
 
-GET         /warehouse                           controllers.declaration.WarehouseDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /inland-transport-details            controllers.declaration.InlandTransportDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /warehouse                           controllers.declaration.WarehouseDetailsController.saveWarehouse(mode: models.Mode ?= models.Mode.Normal)
+POST        /inland-transport-details            controllers.declaration.InlandTransportDetailsController.submit(mode: models.Mode ?= models.Mode.Normal)
 
 # Office of exit
 

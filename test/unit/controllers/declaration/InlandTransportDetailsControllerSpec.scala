@@ -16,7 +16,7 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.WarehouseDetailsController
+import controllers.declaration.InlandTransportDetailsController
 import forms.declaration.TransportCodes.Maritime
 import helpers.views.declaration.WarehouseIdentificationMessages
 import models.{DeclarationType, Mode}
@@ -30,11 +30,11 @@ import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.declaration.warehouse_details
 
-class WarehouseDetailsControllerSpec extends ControllerSpec with BeforeAndAfterEach with WarehouseIdentificationMessages with OptionValues {
+class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAndAfterEach with WarehouseIdentificationMessages with OptionValues {
 
   val warehouseDetailsTemplate: warehouse_details = mock[warehouse_details]
 
-  val controller = new WarehouseDetailsController(
+  val controller = new InlandTransportDetailsController(
     authenticate = mockAuthAction,
     journeyType = mockJourneyAction,
     navigator,

@@ -31,7 +31,7 @@ import views.html.declaration.warehouse_details
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class WarehouseDetailsController @Inject()(
+class InlandTransportDetailsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
@@ -50,7 +50,7 @@ class WarehouseDetailsController @Inject()(
     }
   }
 
-  def saveWarehouse(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
