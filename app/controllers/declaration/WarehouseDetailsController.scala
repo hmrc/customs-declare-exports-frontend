@@ -75,16 +75,11 @@ class WarehouseDetailsController @Inject()(
           dbWarehouseDetails =>
             WarehouseDetails(
               identificationNumber = dbWarehouseDetails.identificationNumber,
-              supervisingCustomsOffice = formData.supervisingCustomsOffice,
+              supervisingCustomsOffice = dbWarehouseDetails.supervisingCustomsOffice,
               inlandModeOfTransportCode = formData.inlandModeOfTransportCode
           )
         )
-        .getOrElse(
-          WarehouseDetails(
-            supervisingCustomsOffice = formData.supervisingCustomsOffice,
-            inlandModeOfTransportCode = formData.inlandModeOfTransportCode
-          )
-        )
+        .getOrElse(WarehouseDetails(inlandModeOfTransportCode = formData.inlandModeOfTransportCode))
       model.copy(locations = model.locations.copy(warehouseIdentification = Some(warehouseDetails)))
     }
 }
