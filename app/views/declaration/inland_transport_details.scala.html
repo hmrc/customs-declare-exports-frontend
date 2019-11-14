@@ -46,8 +46,7 @@
 
             @components.fields.field_radio(
                 field = form("inlandModeOfTransportCode"),
-                legend = messages("supplementary.warehouse.inlandTransportMode.header"),
-                hint = Some(messages("supplementary.warehouse.inlandTransportMode.header.hint")),
+                legend = "",
                 inputs = Seq(
                     RadioOption("Inland_Sea", Maritime, messages("supplementary.transportInfo.transportMode.sea")),
                     RadioOption("Inland_Rail", Rail, messages("supplementary.transportInfo.transportMode.rail")),

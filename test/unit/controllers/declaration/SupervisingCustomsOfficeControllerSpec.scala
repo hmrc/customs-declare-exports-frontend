@@ -96,7 +96,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
     "we are on standard declaration journey" should {
 
-      "redirect to Inland Transport" in {
+      "redirect to Inland Transport Details" in {
         withNewCaching(standardCacheModel)
 
         val result = await(controller.submit(Mode.Normal)(postRequest(body)))

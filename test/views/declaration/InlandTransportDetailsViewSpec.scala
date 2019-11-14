@@ -30,7 +30,7 @@ import views.html.declaration.inland_transport_details
 import views.tags.ViewTest
 
 @ViewTest
-class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData with Stubs {
 
   private val page = new inland_transport_details(mainTemplate)
   private val form: Form[WarehouseDetails] = WarehouseDetails.form()
@@ -38,16 +38,15 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData w
   private def createView(mode: Mode = Mode.Normal, form: Form[WarehouseDetails] = form, messages: Messages = stubMessages()): Document =
     page(mode, form)(journeyRequest(), messages)
 
-  "Warehouse Details View" should {
+  "Inland Transport Details View" should {
     val view = createView()
 
     "have proper messages for labels" in {
-      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
-      messages must haveTranslationFor("supplementary.warehouse.title")
-      messages must haveTranslationFor("supplementary.warehouse.title.hint")
-      messages must haveTranslationFor("supplementary.warehouse.inlandTransportMode.header")
-      messages must haveTranslationFor("supplementary.warehouse.inlandTransportMode.header.hint")
-      messages must haveTranslationFor("supplementary.warehouse.inlandTransportMode.error.incorrect")
+      val messages = realMessagesApi.preferred(journeyRequest())
+      messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.sectionHeader")
+      messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.title")
+      messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.hint")
+      messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.error.incorrect")
     }
 
     "display same page title as header" in {
