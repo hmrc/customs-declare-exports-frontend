@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.5
+// @version      1.6
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -257,7 +257,7 @@ function completePage() {
         selectFromAutoPredict(document.getElementById('supervisingCustomsOffice-container'), "GBLBA001");
         document.getElementsByClassName('button')[0].click()
     }
-    if (currentPageIs('/customs-declare-exports/declaration/warehouse')) {
+    if (currentPageIs('/customs-declare-exports/declaration/inland-transport-details')) {
         selectRadioOption(document.getElementById('inlandModeOfTransportCode'), 0);
         document.getElementsByClassName('button')[0].click()
     }
