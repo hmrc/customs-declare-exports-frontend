@@ -53,7 +53,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
       Some(exampleCustomsOfficeIdentifier),
       None,
       Some(exampleWarehouseIdentificationNumber),
-      Some(exampleTransportMode)
+      None
     )
   )
 
@@ -63,7 +63,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
       Some(exampleCustomsOfficeIdentifier),
       None,
       Some(exampleWarehouseIdentificationNumber),
-      Some(exampleTransportMode)
+      None
     )
   )
 
@@ -73,7 +73,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
       Some(exampleCustomsOfficeIdentifier),
       None,
       Some(exampleWarehouseIdentificationNumber),
-      Some(exampleTransportMode)
+      None
     )
   )
 
