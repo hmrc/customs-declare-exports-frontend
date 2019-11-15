@@ -257,7 +257,7 @@ function completePage() {
         selectFromAutoPredict(document.getElementById('supervisingCustomsOffice-container'), "GBLBA001");
         document.getElementsByClassName('button')[0].click()
     }
-    if (currentPageIs('/customs-declare-exports/declaration/warehouse')) {
+    if (currentPageIs('/customs-declare-exports/declaration/inland-transport-details')) {
         selectRadioOption(document.getElementById('inlandModeOfTransportCode'), 0);
         document.getElementsByClassName('button')[0].click()
     }

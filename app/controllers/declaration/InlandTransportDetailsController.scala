@@ -27,17 +27,17 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.warehouse_details
+import views.html.declaration.inland_transport_details
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class WarehouseDetailsController @Inject()(
+class InlandTransportDetailsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
-  warehouseDetailsPage: warehouse_details
+  inlandTransportDetailsPage: inland_transport_details
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
@@ -45,16 +45,16 @@ class WarehouseDetailsController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.locations.warehouseIdentification match {
-      case Some(data) => Ok(warehouseDetailsPage(mode, form().fill(data)))
-      case _          => Ok(warehouseDetailsPage(mode, form()))
+      case Some(data) => Ok(inlandTransportDetailsPage(mode, form().fill(data)))
+      case _          => Ok(inlandTransportDetailsPage(mode, form()))
     }
   }
 
-  def saveWarehouse(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[WarehouseDetails]) => Future.successful(BadRequest(warehouseDetailsPage(mode, formWithErrors))),
+        (formWithErrors: Form[WarehouseDetails]) => Future.successful(BadRequest(inlandTransportDetailsPage(mode, formWithErrors))),
         form => {
           val nextStep = request.cacheModel.`type` match {
             case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>

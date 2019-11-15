@@ -16,7 +16,7 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.WarehouseDetailsController
+import controllers.declaration.InlandTransportDetailsController
 import forms.declaration.TransportCodes.Maritime
 import helpers.views.declaration.WarehouseIdentificationMessages
 import models.{DeclarationType, Mode}
@@ -28,83 +28,71 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import views.html.declaration.warehouse_details
+import views.html.declaration.inland_transport_details
 
-class WarehouseDetailsControllerSpec extends ControllerSpec with BeforeAndAfterEach with WarehouseIdentificationMessages with OptionValues {
+class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAndAfterEach with WarehouseIdentificationMessages with OptionValues {
 
-  val warehouseDetailsTemplate: warehouse_details = mock[warehouse_details]
+  private val inlandTransportDetails = mock[inland_transport_details]
 
-  val controller = new WarehouseDetailsController(
+  private val controller = new InlandTransportDetailsController(
     authenticate = mockAuthAction,
     journeyType = mockJourneyAction,
-    navigator,
+    navigator = navigator,
     exportsCacheService = mockExportsCacheService,
     mcc = stubMessagesControllerComponents(),
-    warehouseDetailsPage = warehouseDetailsTemplate
+    inlandTransportDetailsPage = inlandTransportDetails
   )
 
-  val exampleCustomsOfficeIdentifier = "A1B2C3D4"
-  val exampleWarehouseIdentificationType = "R"
-  val exampleWarehouseIdentificationNumber = "SecretStash"
-  val exampleTransportMode = Maritime
+  private val exampleCustomsOfficeIdentifier = "A1B2C3D4"
+  private val exampleWarehouseIdentificationNumber = "SecretStash"
+  private val exampleTransportMode = Maritime
 
   private val standardCacheModel = aDeclaration(
     withType(DeclarationType.STANDARD),
-    withWarehouseIdentification(
-      Some(exampleCustomsOfficeIdentifier),
-      Some(exampleWarehouseIdentificationType),
-      Some(exampleWarehouseIdentificationNumber),
-      Some(exampleTransportMode)
-    )
+    withWarehouseIdentification(Some(exampleCustomsOfficeIdentifier), None, Some(exampleWarehouseIdentificationNumber), None)
   )
 
-  private val suplementaryCacheModel = aDeclaration(
+  private val supplementaryCacheModel = aDeclaration(
     withType(DeclarationType.SUPPLEMENTARY),
-    withWarehouseIdentification(
-      Some(exampleCustomsOfficeIdentifier),
-      Some(exampleWarehouseIdentificationType),
-      Some(exampleWarehouseIdentificationNumber),
-      Some(exampleTransportMode)
-    )
+    withWarehouseIdentification(Some(exampleCustomsOfficeIdentifier), None, Some(exampleWarehouseIdentificationNumber), None)
   )
 
   private val simplifiedCacheModel = aDeclaration(
     withType(DeclarationType.SIMPLIFIED),
-    withWarehouseIdentification(
-      Some(exampleCustomsOfficeIdentifier),
-      Some(exampleWarehouseIdentificationType),
-      Some(exampleWarehouseIdentificationNumber),
-      Some(exampleTransportMode)
-    )
+    withWarehouseIdentification(Some(exampleCustomsOfficeIdentifier), None, Some(exampleWarehouseIdentificationNumber), None)
   )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(warehouseDetailsTemplate.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(inlandTransportDetails.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    Mockito.reset(warehouseDetailsTemplate)
+    Mockito.reset(inlandTransportDetails)
     super.afterEach()
   }
 
-  "WarehouseIdentificationController on GET request" should {
+  "Inland Transport Details Controller on GET request" should {
+
     "return 200 OK" in {
-      withNewCaching(suplementaryCacheModel)
+      withNewCaching(supplementaryCacheModel)
+
       val response = controller.displayPage(Mode.Normal).apply(getRequest())
+
       status(response) must be(OK)
     }
 
     "read item from cache and display it" in {
-      withNewCaching(suplementaryCacheModel)
-      val result = controller.displayPage(Mode.Normal).apply(getRequest())
-      await(result)
+      withNewCaching(supplementaryCacheModel)
+
+      await(controller.displayPage(Mode.Normal)(getRequest()))
+
       verify(mockExportsCacheService).get(any())(any())
-      verify(warehouseDetailsTemplate).apply(any(), any())(any(), any())
+      verify(inlandTransportDetails).apply(any(), any())(any(), any())
     }
   }
-  "Warehouse Identification Controller on POST" when {
+  "Inland Transport Details Controller on POST" when {
 
     val body = Json.obj("inlandModeOfTransportCode" -> exampleTransportMode)
 
@@ -112,25 +100,29 @@ class WarehouseDetailsControllerSpec extends ControllerSpec with BeforeAndAfterE
 
       "redirect to Departure Transport" in {
         withNewCaching(standardCacheModel)
-        val result = controller.saveWarehouse(Mode.Normal).apply(postRequest(body))
-        await(result) mustBe aRedirectToTheNextPage
+
+        val result = await(controller.submit(Mode.Normal)(postRequest(body)))
+
+        result mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.DepartureTransportController.displayPage()
       }
 
       "update cache after successful bind" in {
         withNewCaching(standardCacheModel)
-        val result = controller.saveWarehouse(Mode.Normal).apply(postRequest(body))
-        await(result)
+
+        await(controller.submit(Mode.Normal)(postRequest(body)))
         val updatedWarehouse = theCacheModelUpdated.locations.warehouseIdentification.value
+
         updatedWarehouse.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
         updatedWarehouse.identificationNumber.value mustBe exampleWarehouseIdentificationNumber
         updatedWarehouse.inlandModeOfTransportCode.value mustBe exampleTransportMode
       }
 
-      "return Bad Request if payload is not compatibile with model" in {
+      "return Bad Request if payload is not compatible with model" in {
         withNewCaching(standardCacheModel)
+
         val body = Json.obj("supervisingCustomsOffice" -> "A")
-        val result = controller.saveWarehouse(Mode.Normal).apply(postRequest(body))
+        val result = controller.submit(Mode.Normal)(postRequest(body))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -138,26 +130,30 @@ class WarehouseDetailsControllerSpec extends ControllerSpec with BeforeAndAfterE
 
     "we are on supplementary declaration journey" should {
       "redirect to Departure Transport" in {
-        withNewCaching(suplementaryCacheModel)
-        val result = controller.saveWarehouse(Mode.Normal).apply(postRequest(body))
-        await(result) mustBe aRedirectToTheNextPage
+        withNewCaching(supplementaryCacheModel)
+
+        val result = await(controller.submit(Mode.Normal)(postRequest(body)))
+
+        result mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.DepartureTransportController.displayPage()
       }
 
       "update cache after successful bind" in {
-        withNewCaching(suplementaryCacheModel)
-        val result = controller.saveWarehouse(Mode.Normal).apply(postRequest(body))
-        await(result)
+        withNewCaching(supplementaryCacheModel)
+
+        await(controller.submit(Mode.Normal).apply(postRequest(body)))
         val updatedWarehouse = theCacheModelUpdated.locations.warehouseIdentification.value
+
         updatedWarehouse.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
         updatedWarehouse.identificationNumber.value mustBe exampleWarehouseIdentificationNumber
         updatedWarehouse.inlandModeOfTransportCode.value mustBe exampleTransportMode
       }
 
       "return Bad Request if payload is not compatible with model" in {
-        withNewCaching(suplementaryCacheModel)
+        withNewCaching(supplementaryCacheModel)
+
         val body = Json.obj("supervisingCustomsOffice" -> "A")
-        val result = controller.saveWarehouse(Mode.Normal).apply(postRequest(body))
+        val result = controller.submit(Mode.Normal)(postRequest(body))
 
         status(result) mustBe BAD_REQUEST
       }
@@ -166,16 +162,19 @@ class WarehouseDetailsControllerSpec extends ControllerSpec with BeforeAndAfterE
     "we are on simplified declaration journey" should {
       "redirect to Border Transport" in {
         withNewCaching(simplifiedCacheModel)
-        val result = controller.saveWarehouse(Mode.Normal).apply(postRequest(body))
-        await(result) mustBe aRedirectToTheNextPage
+
+        val result = await(controller.submit(Mode.Normal)(postRequest(body)))
+
+        result mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.BorderTransportController.displayPage()
       }
 
       "update cache after successful bind" in {
         withNewCaching(simplifiedCacheModel)
-        val result = controller.saveWarehouse(Mode.Normal).apply(postRequest(body))
-        await(result)
+
+        await(controller.submit(Mode.Normal).apply(postRequest(body)))
         val updatedWarehouse = theCacheModelUpdated.locations.warehouseIdentification.value
+
         updatedWarehouse.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
         updatedWarehouse.identificationNumber.value mustBe exampleWarehouseIdentificationNumber
         updatedWarehouse.inlandModeOfTransportCode.value mustBe exampleTransportMode
@@ -183,8 +182,9 @@ class WarehouseDetailsControllerSpec extends ControllerSpec with BeforeAndAfterE
 
       "return Bad Request if payload is not compatible with model" in {
         withNewCaching(simplifiedCacheModel)
+
         val body = Json.obj("supervisingCustomsOffice" -> "A")
-        val result = controller.saveWarehouse(Mode.Normal).apply(postRequest(body))
+        val result = controller.submit(Mode.Normal)(postRequest(body))
 
         status(result) mustBe BAD_REQUEST
       }
