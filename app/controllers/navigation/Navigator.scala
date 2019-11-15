@@ -51,6 +51,8 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
 
 }
 
+case class ItemId(id: String)
+
 object Navigator {
 
   val standard: PartialFunction[DeclarationPage, Mode => Call] = {
@@ -88,17 +90,17 @@ object Navigator {
     case _                  => throw new IllegalArgumentException("Navigator back-link route not implemented")
   }
 
-  def backLink(page: DeclarationPage)(implicit request: JourneyRequest[_]): Mode => Call =
+  def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
     request.declarationType match {
-      case STANDARD      => standard(page)
-      case SUPPLEMENTARY => supplementary(page)
-      case SIMPLIFIED    => simplified(page)
+      case STANDARD      => standard(page)(mode)
+      case SUPPLEMENTARY => supplementary(page)(mode)
+      case SIMPLIFIED    => simplified(page)(mode)
     }
 
-  def backLinkItemPage(page: DeclarationPage)(implicit request: JourneyRequest[_]): (Mode, String) => Call =
+  def backLink(page: DeclarationPage, mode: Mode, itemId: ItemId)(implicit request: JourneyRequest[_]): Call =
     request.declarationType match {
-      case STANDARD      => standardItemPage(page)
-      case SUPPLEMENTARY => supplementaryItemPage(page)
-      case SIMPLIFIED    => simplifiedItemPage(page)
+      case STANDARD      => standardItemPage(page)(mode, itemId.id)
+      case SUPPLEMENTARY => supplementaryItemPage(page)(mode, itemId.id)
+      case SIMPLIFIED    => simplifiedItemPage(page)(mode, itemId.id)
     }
 }

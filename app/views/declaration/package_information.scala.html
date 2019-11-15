@@ -25,6 +25,7 @@
 @import services.view.AutoCompleteItem
 @import views.Title
 @import views.components.fields.LabelledValue
+@import controllers.navigation.ItemId
 
 @this(main_template: views.html.main_template)
 
@@ -42,7 +43,7 @@
     title = Title("supplementary.packageInformation.title", "supplementary.items")
 ) {
 
-    @components.back_link(Navigator.backLinkItemPage(PackageInformation)(request)(mode, itemId), mode)
+    @components.back_link(Navigator.backLink(PackageInformation, mode, ItemId(itemId)))
 
     @components.error_summary(form.errors)
 

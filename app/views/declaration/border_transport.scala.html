@@ -35,7 +35,7 @@
     title = Title("supplementary.transportInfo.active.title")
 ) {
 
-    @components.back_link(Navigator.backLink(BorderTransport)(request)(mode), mode)
+    @components.back_link(Navigator.backLink(BorderTransport, mode))
 
     @helper.form(BorderTransportController.submitForm(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
