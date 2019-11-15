@@ -48,7 +48,7 @@ case class ExportItem(
         packageInformation.nonEmpty && commodityMeasure.isDefined && additionalInformation.isDefined
 
     case DeclarationType.SIMPLIFIED =>
-      procedureCodes.isDefined && isFiscalInformationCompleted && statisticalValue.isDefined &&
+      procedureCodes.isDefined && isFiscalInformationCompleted &&
         packageInformation.nonEmpty && additionalInformation.isDefined
   }
 
