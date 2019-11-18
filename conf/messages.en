@@ -931,6 +931,7 @@ field.declaration.parties.declarationHolders.$.authorisationTypeCode = <ol><li>D
 field.declaration.borderTransport.meansOfTransportCrossingTheBorderIDNumber = Active means of transport reference
 field.declaration.borderTransport.meansOfTransportCrossingTheBorderType = Active means of transport type
 field.declaration.borderTransport.meansOfTransportCrossingTheBorderNationality = Active means of transport nationality
+declaration.parties.carrierDetails.details.eori = Carrier's EORI
 field.declaration.parties.carrierDetails.details.address.fullName = Carrier's name
 field.declaration.parties.carrierDetails.details.address.townOrCity = Carrier's town or city
 field.declaration.parties.carrierDetails.details.address.country = Carrier's country
