@@ -69,12 +69,6 @@ POST        /holder-of-authorisation             controllers.declaration.Declara
 
 # Destination countries
 
-GET         /destination-countries               controllers.declaration.DestinationCountriesController.displayPage(mode: models.Mode ?= models.Mode.Normal)
-
-POST        /destination-countries               controllers.declaration.DestinationCountriesController.saveCountries(mode: models.Mode ?= models.Mode.Normal)
-
-# Destination countries - new endpoint
-
 GET         /origination-country                 controllers.declaration.OriginationCountryController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
 POST        /origination-country                 controllers.declaration.OriginationCountryController.submit(mode: models.Mode ?= models.Mode.Normal)
