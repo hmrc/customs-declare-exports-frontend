@@ -43,12 +43,12 @@ object Countries {
 
   val allCountries: List[Country] = countries
 
+  val countryCodeMap: Map[String, Country] = countries.map(country => (country.countryCode, country)).toMap
+
   def retrieveCountryNameFromCode(code: String): Option[String] =
     allCountries.find(_.countryCode == code).map(_.countryName)
 
-  // TODO improve method? can be less iterations through sequence
-  def retrieveCountriesFromCodes(codes: Seq[String]): Seq[Country] =
-    codes.flatMap(code => allCountries.find(_.countryCode.equals(code)))
+  def retrieveCountriesFromCodes(codes: Seq[String]): Seq[Country] = codes.map(countryCodeMap(_))
 
   lazy val euCountries: List[String] =
     FileReader("code-lists/eu-countries.csv")

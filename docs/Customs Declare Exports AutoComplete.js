@@ -126,10 +126,8 @@ function completePage() {
         selectFromAutoPredict(document.getElementById("country-container"), "GB");
         document.getElementsByClassName('button')[0].click()
     }
-    if (currentPageIs("/customs-declare-exports/declaration/destination-countries")) {
-        if(document.getElementById("countriesOfRouting-container")){
-            selectFromAutoPredict(document.getElementById("countriesOfRouting-container"), "GB")
-        }
+    if (currentPageIs("/customs-declare-exports/declaration/country-of-routing")) {
+        document.getElementById('No').click()
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs("/customs-declare-exports/declaration/location-of-goods")) {
