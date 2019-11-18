@@ -30,7 +30,7 @@
     title = Title("declaration.originationCountry.title", "declaration.originationCountry.heading")
 ) {
 
-    @components.back_link(Navigator.backLink(OriginationCountryPage)(request)(mode), mode)
+    @components.back_link(Navigator.backLink(OriginationCountryPage, mode))
 
     @components.error_summary(form.errors)
 

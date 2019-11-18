@@ -18,8 +18,8 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.ItemType
-import forms.declaration.ItemType.form
+import forms.declaration.StatisticalValue
+import forms.declaration.StatisticalValue.form
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.requests.JourneyRequest
@@ -29,25 +29,25 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.item_type
+import views.html.declaration.statistical_value
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ItemTypeController @Inject()(
+class StatisticalValueController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  itemTypePage: item_type
+  itemTypePage: statistical_value
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.itemBy(itemId).flatMap(_.itemType) match {
-      case Some(itemType) => Ok(itemTypePage(mode, itemId, ItemType.form.fill(itemType)))
-      case _              => Ok(itemTypePage(mode, itemId, ItemType.form))
+    request.cacheModel.itemBy(itemId).flatMap(_.statisticalValue) match {
+      case Some(itemType) => Ok(itemTypePage(mode, itemId, StatisticalValue.form.fill(itemType)))
+      case _              => Ok(itemTypePage(mode, itemId, StatisticalValue.form))
     }
   }
 
@@ -55,7 +55,7 @@ class ItemTypeController @Inject()(
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ItemType]) => Future.successful(BadRequest(itemTypePage(mode, itemId, formWithErrors))),
+        (formWithErrors: Form[StatisticalValue]) => Future.successful(BadRequest(itemTypePage(mode, itemId, formWithErrors))),
         validForm =>
           updateExportsCache(itemId, validForm).map { _ =>
             navigator
@@ -64,10 +64,10 @@ class ItemTypeController @Inject()(
       )
   }
 
-  private def updateExportsCache(itemId: String, updatedItem: ItemType)(
+  private def updateExportsCache(itemId: String, updatedItem: StatisticalValue)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>
-      model.updatedItem(itemId, item => item.copy(itemType = Some(updatedItem)))
+      model.updatedItem(itemId, item => item.copy(statisticalValue = Some(updatedItem)))
     }
 }

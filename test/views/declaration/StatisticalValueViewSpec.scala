@@ -17,7 +17,7 @@
 package views.declaration
 
 import base.Injector
-import forms.declaration.ItemType
+import forms.declaration.StatisticalValue
 import models.Mode
 import models.declaration.ExportItem
 import org.jsoup.nodes.Document
@@ -27,18 +27,18 @@ import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.item_type
+import views.html.declaration.statistical_value
 import views.tags.ViewTest
 
 @ViewTest
-class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  private val page = new item_type(mainTemplate)
-  private val form: Form[ItemType] = ItemType.form()
+  private val page = new statistical_value(mainTemplate)
+  private val form: Form[StatisticalValue] = StatisticalValue.form()
   private def createView(
     mode: Mode = Mode.Normal,
     item: ExportItem = ExportItem(id = "itemId", sequenceId = 1),
-    form: Form[ItemType] = form,
+    form: Form[StatisticalValue] = form,
     messages: Messages = stubMessages()
   ): Document =
     page(mode, item.id, form)(journeyRequest(), messages)
@@ -47,9 +47,9 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
     "have proper messages for labels" in {
       val messages = instanceOf[MessagesApi].preferred(journeyRequest())
-      messages must haveTranslationFor("declaration.itemType.title")
+      messages must haveTranslationFor("declaration.statisticalValue.header")
       messages must haveTranslationFor("supplementary.items")
-      messages must haveTranslationFor("declaration.itemType.title")
+      messages must haveTranslationFor("declaration.statisticalValue.header.hint")
     }
 
     val view = createView()
@@ -66,8 +66,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       }
 
       "display empty input with label for Statistical Value" in {
-        view.getElementById("statisticalValue-label").text() mustBe "declaration.itemType.statisticalValue.header"
-        view.getElementById("statisticalValue-hint").text() mustBe "declaration.itemType.statisticalValue.header.hint"
+        view.getElementById("statisticalValue-hint").text() mustBe "declaration.statisticalValue.header.hint"
         view.getElementById("statisticalValue").attr("value") mustBe empty
       }
 
@@ -108,8 +107,7 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       }
 
       "display empty input with label for Statistical Value" in {
-        view.getElementById("statisticalValue-label").text() mustBe "declaration.itemType.statisticalValue.header"
-        view.getElementById("statisticalValue-hint").text() mustBe "declaration.itemType.statisticalValue.header.hint"
+        view.getElementById("statisticalValue-hint").text() mustBe "declaration.statisticalValue.header.hint"
         view.getElementById("statisticalValue").attr("value") mustBe empty
       }
 
@@ -142,15 +140,14 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
         createView()
           .getElementById("title")
-          .text() mustBe "declaration.itemType.title"
+          .text() mustBe "declaration.statisticalValue.header"
       }
 
       "display empty input with label for Statistical Value" in {
 
         val view = createView()
 
-        view.getElementById("statisticalValue-label").text() mustBe "declaration.itemType.statisticalValue.header"
-        view.getElementById("statisticalValue-hint").text() mustBe "declaration.itemType.statisticalValue.header.hint"
+        view.getElementById("statisticalValue-hint").text() mustBe "declaration.statisticalValue.header.hint"
         view.getElementById("statisticalValue").attr("value") mustBe empty
       }
 
@@ -185,13 +182,13 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in Statistical Value input" in {
 
-        val itemType = ItemType("12345")
-        val view = createView(form = ItemType.form().fill(itemType))
+        val itemType = StatisticalValue("12345")
+        val view = createView(form = StatisticalValue.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
 
-      def assertViewDataEntered(view: Document, itemType: ItemType): Unit =
+      def assertViewDataEntered(view: Document, itemType: StatisticalValue): Unit =
         view.getElementById("statisticalValue").attr("value") must equal(itemType.statisticalValue)
     }
 
@@ -199,13 +196,13 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in Statistical Value input" in {
 
-        val itemType = ItemType("12345")
-        val view = createView(form = ItemType.form().fill(itemType))
+        val itemType = StatisticalValue("12345")
+        val view = createView(form = StatisticalValue.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
 
-      def assertViewDataEntered(view: Document, itemType: ItemType): Unit =
+      def assertViewDataEntered(view: Document, itemType: StatisticalValue): Unit =
         view.getElementById("statisticalValue").attr("value") must equal(itemType.statisticalValue)
     }
 
@@ -213,13 +210,13 @@ class ItemTypeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
       "display data in Statistical Value input" in {
 
-        val itemType = ItemType("12345")
-        val view = createView(form = ItemType.form().fill(itemType))
+        val itemType = StatisticalValue("12345")
+        val view = createView(form = StatisticalValue.form().fill(itemType))
 
         assertViewDataEntered(view, itemType)
       }
 
-      def assertViewDataEntered(view: Document, itemType: ItemType): Unit =
+      def assertViewDataEntered(view: Document, itemType: StatisticalValue): Unit =
         view.getElementById("statisticalValue").attr("value") must equal(itemType.statisticalValue)
     }
 

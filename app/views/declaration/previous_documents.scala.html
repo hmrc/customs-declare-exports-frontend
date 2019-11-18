@@ -34,7 +34,7 @@
     title = Title("supplementary.previousDocuments.title", "supplementary.consignmentReferences.heading")
 ) {
 
-    @components.back_link(Navigator.backLink(Document)(request)(mode), mode)
+    @components.back_link(Navigator.backLink(Document, mode))
 
     @components.error_summary(form.errors)
 

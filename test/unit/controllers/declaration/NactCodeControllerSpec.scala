@@ -27,6 +27,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
+import play.api.mvc.Call
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -169,8 +170,9 @@ class NactCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
 
     "return 303 (SEE_OTHER)" when {
 
-      def controllerRedirectsToNextPage(decType: DeclarationType): Unit =
+      def controllerRedirectsToNextPage(decType: DeclarationType, nextPage: Call): Unit =
         "user submits valid code" in {
+
           val item = anItem(withItemId("itemId"))
           withNewCaching(aDeclaration(withType(decType), withItems(item)))
 
@@ -179,20 +181,30 @@ class NactCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
           val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(body: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.ItemTypeController.displayPage(Mode.Normal, "itemId")
+
+          thePageNavigatedTo mustBe nextPage
           verifyPageInvoked(0)
         }
 
       "we are on standard journey" should {
-        behave like controllerRedirectsToNextPage(DeclarationType.STANDARD)
+        behave like controllerRedirectsToNextPage(
+          DeclarationType.STANDARD,
+          controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, "itemId")
+        )
       }
 
       "we are on simplified journey" should {
-        behave like controllerRedirectsToNextPage(DeclarationType.SIMPLIFIED)
+        behave like controllerRedirectsToNextPage(
+          DeclarationType.SIMPLIFIED,
+          controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, "itemId")
+        )
       }
 
       "we are on supplementary journey" should {
-        behave like controllerRedirectsToNextPage(DeclarationType.SUPPLEMENTARY)
+        behave like controllerRedirectsToNextPage(
+          DeclarationType.SUPPLEMENTARY,
+          controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, "itemId")
+        )
       }
     }
   }

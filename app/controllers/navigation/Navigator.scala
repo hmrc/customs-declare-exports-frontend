@@ -20,7 +20,7 @@ import config.AppConfig
 import controllers.util.{FormAction, SaveAndReturn}
 import forms.DeclarationPage
 import forms.declaration.destinationCountries.DestinationCountries.{DestinationCountryPage, OriginationCountryPage}
-import forms.declaration.{BorderTransport, Document}
+import forms.declaration.{BorderTransport, Document, PackageInformation}
 import javax.inject.Inject
 import models.DeclarationType._
 import models.Mode
@@ -51,6 +51,8 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
 
 }
 
+case class ItemId(id: String)
+
 object Navigator {
 
   val standard: PartialFunction[DeclarationPage, Mode => Call] = {
@@ -60,12 +62,21 @@ object Navigator {
     case DestinationCountryPage => controllers.declaration.routes.OriginationCountryController.displayPage
     case _                      => throw new IllegalArgumentException("Navigator back-link route not implemented")
   }
+  val standardItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
+    case PackageInformation => controllers.declaration.routes.StatisticalValueController.displayPage
+    case _                  => throw new IllegalArgumentException("Navigator back-link route not implemented")
+  }
+
   val supplementary: PartialFunction[DeclarationPage, Mode => Call] = {
     case BorderTransport        => controllers.declaration.routes.DepartureTransportController.displayPage
     case Document               => controllers.declaration.routes.NatureOfTransactionController.displayPage
     case OriginationCountryPage => controllers.declaration.routes.DeclarationHolderController.displayPage
     case DestinationCountryPage => controllers.declaration.routes.OriginationCountryController.displayPage
     case _                      => throw new IllegalArgumentException("Navigator back-link route not implemented")
+  }
+  val supplementaryItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
+    case PackageInformation => controllers.declaration.routes.StatisticalValueController.displayPage
+    case _                  => throw new IllegalArgumentException("Navigator back-link route not implemented")
   }
 
   val simplified: PartialFunction[DeclarationPage, Mode => Call] = {
@@ -74,11 +85,22 @@ object Navigator {
     case DestinationCountryPage => controllers.declaration.routes.DeclarationHolderController.displayPage
     case _                      => throw new IllegalArgumentException("Navigator back-link route not implemented")
   }
+  val simplifiedItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
+    case PackageInformation => controllers.declaration.routes.NactCodeController.displayPage
+    case _                  => throw new IllegalArgumentException("Navigator back-link route not implemented")
+  }
 
-  def backLink(page: DeclarationPage)(implicit request: JourneyRequest[_]): Mode => Call =
+  def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
     request.declarationType match {
-      case STANDARD      => standard(page)
-      case SUPPLEMENTARY => supplementary(page)
-      case SIMPLIFIED    => simplified(page)
+      case STANDARD      => standard(page)(mode)
+      case SUPPLEMENTARY => supplementary(page)(mode)
+      case SIMPLIFIED    => simplified(page)(mode)
+    }
+
+  def backLink(page: DeclarationPage, mode: Mode, itemId: ItemId)(implicit request: JourneyRequest[_]): Call =
+    request.declarationType match {
+      case STANDARD      => standardItemPage(page)(mode, itemId.id)
+      case SUPPLEMENTARY => supplementaryItemPage(page)(mode, itemId.id)
+      case SIMPLIFIED    => simplifiedItemPage(page)(mode, itemId.id)
     }
 }
