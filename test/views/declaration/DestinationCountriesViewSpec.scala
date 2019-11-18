@@ -72,7 +72,7 @@ class DestinationCountriesViewSpec extends UnitViewSpec with ExportsTestData wit
       val backButton = view.getElementById("link-back")
 
       backButton.text() mustBe messages(backCaption)
-      backButton.attr("href") mustBe routes.DestinationCountryController.displayPage().url
+      backButton.attr("href") mustBe routes.RoutingCountriesController.displayRoutingQuestion(fastForward = false).url
     }
 
     "display 'Save and continue' button" in {

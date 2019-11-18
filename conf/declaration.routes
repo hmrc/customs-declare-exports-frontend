@@ -83,6 +83,18 @@ GET         /destination-country                 controllers.declaration.Destina
 
 POST        /destination-country                 controllers.declaration.DestinationCountryController.submit(mode: models.Mode ?= models.Mode.Normal)
 
+GET         /country-of-routing                  controllers.declaration.RoutingCountriesController.displayRoutingQuestion(mode: models.Mode ?= models.Mode.Normal, fastForward: Boolean ?= true)
+
+POST        /country-of-routing                  controllers.declaration.RoutingCountriesController.submitRoutingAnswer(mode: models.Mode ?= models.Mode.Normal)
+
+GET         /countries-of-routing                controllers.declaration.RoutingCountriesController.displayRoutingCountry(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /countries-of-routing                controllers.declaration.RoutingCountriesController.submitRoutingCountry(mode: models.Mode ?= models.Mode.Normal)
+
+GET         /countries-summary                   controllers.declaration.RoutingCountriesSummaryController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /countries-summary                   controllers.declaration.RoutingCountriesSummaryController.submit(mode: models.Mode ?= models.Mode.Normal)
+
 # Location of goods
 
 GET         /location-of-goods                   controllers.declaration.LocationController.displayPage(mode: models.Mode ?= models.Mode.Normal)

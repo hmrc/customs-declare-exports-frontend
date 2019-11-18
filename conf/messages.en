@@ -367,6 +367,25 @@ declaration.destinationCountry.question = Which country will the goods be sent t
 declaration.destinationCountry.empty = Enter the country where the goods were sent to
 declaration.destinationCountry.error = Country is incorrect
 
+declaration.routingQuestion.title = Routing question
+declaration.routingQuestion.heading = Locations
+declaration.routingQuestion.question = Will the goods pass through customs in any other countries before arriving in {0}?
+declaration.routingQuestion.empty = Select if the goods passed through any other countries
+declaration.routingQuestion.error = This option is incorrect, please choose Yes or No
+
+declaration.routingCountry.title = Routing country
+declaration.routingCountry.heading = Locations
+declaration.routingCountry.question = Where will the goods be sent through next?
+declaration.firstRoutingCountry.question = Where will the goods be sent through first?
+declaration.routingCountry.empty = Enter the country where the goods went through next
+declaration.firstRoutingCountry.empty = Enter the country where the goods went through first
+
+declaration.routingCountries.summary.title = Countries of routing
+declaration.routingCountries.summary.heading = Locations
+declaration.routingCountries.summary.header = You have added {0} countries of routing
+declaration.routingCountries.summary.question = Do you need to add any more countries?
+declaration.routingCountries.summary.table.code = Country code
+
 declaration.destinationCountries.title = Countries of routing
 declaration.destinationCountries.routing = Which countries will the goods stop at before reaching their destination?
 declaration.destinationCountries.routing.hint = You can leave this answer blank if the goods will not be stopping en-route.

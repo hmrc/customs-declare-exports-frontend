@@ -30,7 +30,7 @@
     title = Title("declaration.destinationCountries.title", "declaration.summary.locations.header")
 ) {
 
-    @components.back_link(routes.DestinationCountryController.displayPage(), mode)
+    @components.back_link(routes.RoutingCountriesController.displayRoutingQuestion(mode, fastForward = false), mode)
 
     @components.error_summary(form.errors)
 

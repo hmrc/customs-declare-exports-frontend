@@ -1,0 +1,64 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.declaration.routes
+@import controllers.navigation.Navigator
+@import forms.declaration.destinationCountries.DestinationCountries.FirstRoutingCountryPage
+@import models.requests.JourneyRequest
+@import services.Countries
+@import services.view.AutoCompleteItem
+@import views.Title
+
+@this(main_template: views.html.main_template)
+
+@(mode: Mode, form: Form[String], id: String)(implicit request: JourneyRequest[AnyContent], messages: Messages)
+
+@main_template(
+    title = Title("declaration.routingCountry.title", "declaration.routingCountry.heading")
+) {
+
+    @components.back_link(routes.RoutingCountriesController.displayRoutingQuestion())
+
+    @components.error_summary(form.errors)
+
+    @components.heading(
+        title = messages(s"declaration.$id.question"),
+        sectionHeader = messages("declaration.routingCountry.heading")
+    )
+
+    @helper.form(routes.RoutingCountriesController.submitRoutingCountry(mode), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
+        @*TODO move id to field_autocomplete*@
+        <div id="origination-country-field">
+            @components.fields.field_autocomplete(
+            form("country"),
+            "",
+            None,
+            None,
+            messages(s"declaration.$id.empty"),
+            AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
+            )
+        </div>
+
+        <div class="section mb-0">
+            @components.buttons.save_and_continue_button()
+        </div>
+        <div class="section">
+            @components.buttons.save_and_return_later_button()
+        </div>
+    }
+}

@@ -53,7 +53,7 @@ class DestinationCountriesController @Inject()(
         Ok(
           destinationCountriesStandardPage(
             mode,
-            DestinationCountries.form(DestinationCountries.RoutingCountriesPage),
+            DestinationCountries.form(DestinationCountries.FirstRoutingCountryPage),
             request.cacheModel.locations.routingCountries
           )
         )
@@ -70,7 +70,7 @@ class DestinationCountriesController @Inject()(
 
   private def handleSubmitStandard(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
     val actionTypeOpt = FormAction.bindFromRequest()
-    val boundForm = DestinationCountries.form(DestinationCountries.RoutingCountriesPage).bindFromRequest()
+    val boundForm = DestinationCountries.form(DestinationCountries.FirstRoutingCountryPage).bindFromRequest()
 
     val cache = request.cacheModel.locations.routingCountries
 
@@ -97,7 +97,7 @@ class DestinationCountriesController @Inject()(
       updateCache(newCountries).map { _ =>
         if (withRedirection)
           navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode))
-        else Ok(destinationCountriesStandardPage(mode, DestinationCountries.form(DestinationCountries.RoutingCountriesPage), newCountries))
+        else Ok(destinationCountriesStandardPage(mode, DestinationCountries.form(DestinationCountries.FirstRoutingCountryPage), newCountries))
       }
     }
   }
