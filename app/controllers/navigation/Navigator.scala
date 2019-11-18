@@ -85,7 +85,7 @@ object Navigator {
     case BorderTransport        => controllers.declaration.routes.InlandTransportDetailsController.displayPage
     case Document               => controllers.declaration.routes.OfficeOfExitController.displayPage
     case DestinationCountryPage => controllers.declaration.routes.DeclarationHolderController.displayPage
-    case RoutingQuestionPage     => controllers.declaration.routes.DestinationCountryController.displayPage
+    case RoutingQuestionPage    => controllers.declaration.routes.DestinationCountryController.displayPage
     case _                      => throw new IllegalArgumentException("Navigator back-link route not implemented")
   }
   val simplifiedItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {

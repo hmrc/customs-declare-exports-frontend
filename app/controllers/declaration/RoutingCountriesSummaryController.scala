@@ -43,15 +43,15 @@ class RoutingCountriesSummaryController @Inject()(
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.declarationType match {
       case DeclarationType.SUPPLEMENTARY =>
-        Redirect(controllers.declaration.routes.DestinationCountryController.displayPage(mode))
+        navigator.continueTo(controllers.declaration.routes.DestinationCountryController.displayPage(mode))
       case _ =>
         val countryCodes = request.cacheModel.locations.routingCountries
         val countries = retrieveCountriesFromCodes(countryCodes).map(_.toString())
 
-        if(countries.nonEmpty) {
+        if (countries.nonEmpty) {
           Ok(routingCountriesSummaryPage(mode, RoutingQuestion.form(), countries))
         } else {
-          Redirect(controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(mode))
+          navigator.continueTo(controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(mode))
         }
     }
   }
@@ -60,12 +60,15 @@ class RoutingCountriesSummaryController @Inject()(
     val countryCodes = request.cacheModel.locations.routingCountries
     val countries = retrieveCountriesFromCodes(countryCodes).map(_.toString())
 
-    RoutingQuestion.form().bindFromRequest().fold(
-      formWithErrors => BadRequest(routingCountriesSummaryPage(mode, formWithErrors, countries)),
-      validAnswer =>
-        if(validAnswer.toBoolean) Redirect(controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(mode))
-        else Redirect(controllers.declaration.routes.LocationController.displayPage(mode))
-    )
+    RoutingQuestion
+      .form()
+      .bindFromRequest()
+      .fold(
+        formWithErrors => BadRequest(routingCountriesSummaryPage(mode, formWithErrors, countries)),
+        validAnswer =>
+          if (validAnswer.toBoolean) navigator.continueTo(controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(mode))
+          else navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode))
+      )
   }
 
   def displayRemoveCountryPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>

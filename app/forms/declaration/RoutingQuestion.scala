@@ -37,7 +37,7 @@ object RoutingQuestion {
   val no = "No"
 
   val answerFromBoolean: Boolean => RoutingQuestion =
-    (boolean: Boolean) => if(boolean) RoutingQuestion(yes) else RoutingQuestion(no)
+    (boolean: Boolean) => if (boolean) RoutingQuestion(yes) else RoutingQuestion(no)
 
   val answerToBoolean: RoutingQuestion => Boolean =
     (routingCountry: RoutingQuestion) => routingCountry.hasRoutingCountries == yes
@@ -47,7 +47,7 @@ object RoutingQuestion {
   def form(): Form[RoutingQuestion] = Form(
     Forms.mapping(
       "hasRoutingCountries" -> requiredRadio("declaration.routingQuestion.empty")
-          .verifying("declaration.routingQuestion.error", isContainedIn(allowedValues))
+        .verifying("declaration.routingQuestion.error", isContainedIn(allowedValues))
     )(RoutingQuestion.apply)(RoutingQuestion.unapply)
   )
 }

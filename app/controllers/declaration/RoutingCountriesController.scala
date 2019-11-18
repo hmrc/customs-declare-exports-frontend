@@ -82,7 +82,7 @@ class RoutingCountriesController @Inject()(
 
   def displayRoutingCountry(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val routingAnswer = request.cacheModel.locations.hasRoutingCountries
-    val page = if(request.cacheModel.locations.routingCountries.nonEmpty) NextRoutingCountryPage else FirstRoutingCountryPage
+    val page = if (request.cacheModel.locations.routingCountries.nonEmpty) NextRoutingCountryPage else FirstRoutingCountryPage
 
     routingAnswer match {
       case Some(answer) if answer => Ok(countryOfRoutingPage(mode, DestinationCountries.form(page), page.id))
@@ -92,7 +92,7 @@ class RoutingCountriesController @Inject()(
 
   def submitRoutingCountry(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val hasCountriesAdded = request.cacheModel.locations.routingCountries.nonEmpty
-    val page = if(hasCountriesAdded) NextRoutingCountryPage else FirstRoutingCountryPage
+    val page = if (hasCountriesAdded) NextRoutingCountryPage else FirstRoutingCountryPage
 
     DestinationCountries
       .form(page)
