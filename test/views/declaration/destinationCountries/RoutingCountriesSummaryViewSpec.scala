@@ -21,13 +21,14 @@ import forms.declaration.RoutingQuestion
 import models.Mode
 import play.api.data.Form
 import services.cache.ExportsTestData
+import services.model.Country
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.destinationCountries.routing_countries_summary
 
 class RoutingCountriesSummaryViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
 
-  val countries = Seq("GB", "PL")
+  val countries = Seq(Country("France", "FR"), Country("Poland", "PL"))
   val form: Form[RoutingQuestion] = RoutingQuestion.form()
 
   val routingCountriesSummaryPage = new routing_countries_summary(mainTemplate)

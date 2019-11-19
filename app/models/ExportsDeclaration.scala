@@ -20,7 +20,6 @@ import java.time.{Clock, Instant}
 
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
-import forms.declaration.destinationCountries.DestinationCountries
 import models.DeclarationStatus.DeclarationStatus
 import models.DeclarationType.DeclarationType
 import models.declaration._
@@ -61,6 +60,9 @@ case class ExportsDeclaration(
 
   def updateCountriesOfRouting(routingCountries: Seq[String]): ExportsDeclaration =
     copy(locations = locations.copy(routingCountries = routingCountries))
+
+  def removeCountryOfRouting(countryCode: String): ExportsDeclaration =
+    copy(locations = locations.copy(routingCountries = locations.routingCountries.filterNot(_ == countryCode)))
 
   def updateOriginationCountry(originationCountry: String): ExportsDeclaration =
     copy(locations = locations.copy(originationCountry = Some(originationCountry)))

@@ -31,6 +31,8 @@ object RoutingQuestion {
 
   case object RoutingQuestionPage extends DeclarationPage
 
+  case object RemoveCountryPage extends DeclarationPage
+
   implicit val format: OFormat[RoutingQuestion] = Json.format[RoutingQuestion]
 
   val yes = "Yes"

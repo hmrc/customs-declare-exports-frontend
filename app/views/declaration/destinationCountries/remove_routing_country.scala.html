@@ -1,0 +1,71 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.declaration.routes
+@import controllers.navigation.Navigator
+@import forms.declaration.RoutingQuestion
+@import forms.declaration.RoutingQuestion.{no, RemoveCountryPage, yes}
+@import models.requests.JourneyRequest
+@import services.model.Country
+@import views.components.inputs.RadioOption
+@import views.Title
+
+@this(main_template: views.html.main_template)
+
+@(mode: Mode, form: Form[RoutingQuestion], countryToRemove: Country)(implicit request: JourneyRequest[AnyContent], messages: Messages)
+
+@main_template(
+    title = Title("declaration.routingCountries.remove.title", "declaration.routingCountries.remove.heading")
+) {
+
+    @components.back_link(Navigator.backLink(RemoveCountryPage)(request)(mode), mode)
+
+    @components.error_summary(form.errors)
+
+    @components.heading(
+        title = messages("declaration.routingCountries.remove.question"),
+        sectionHeader = messages("declaration.routingCountries.remove.heading")
+    )
+
+    <table id="remove-country-table" class="form-group">
+        <thead>
+            <th class="table-head" id="country">Country</th>
+        </thead>
+        <tbody>
+            <td class="table-cell">@countryToRemove.toString()</td>
+        </tbody>
+    </table>
+
+    @helper.form(routes.RoutingCountriesSummaryController.submitRemoveCountry(mode, countryToRemove.countryCode), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
+        @components.fields.field_radio(
+            field = form("hasRoutingCountries"),
+            legend = "",
+            inputs = Seq(
+                RadioOption("Yes", yes, messages("site.yes")),
+                RadioOption("No", no, messages("site.no"))
+            )
+        )
+
+        <div class="section mb-0">
+            @components.buttons.save_and_continue_button()
+        </div>
+        <div class="section">
+            @components.buttons.save_and_return_later_button()
+        </div>
+    }
+}

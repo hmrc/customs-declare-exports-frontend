@@ -19,12 +19,13 @@
 @import forms.declaration.RoutingQuestion
 @import forms.declaration.RoutingQuestion.{no, RoutingQuestionPage, yes}
 @import models.requests.JourneyRequest
+@import services.model.Country
 @import views.components.inputs.RadioOption
 @import views.Title
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[RoutingQuestion], countriesOfRouting: Seq[String])(implicit request: JourneyRequest[AnyContent], messages: Messages)
+@(mode: Mode, form: Form[RoutingQuestion], countriesOfRouting: Seq[Country])(implicit request: JourneyRequest[AnyContent], messages: Messages)
 
 @main_template(
     title = Title("declaration.routingCountries.summary.title", "declaration.routingCountries.summary.heading")
@@ -44,9 +45,14 @@
             @countriesOfRouting.zipWithIndex.map { case (country, index) =>
                 <tr class="table-row">
                     <th class="table-head" id="country_code_@index">@messages("declaration.routingCountries.summary.table.code")</th>
-                    <td class="table-cell" id="country_@index">@country</td>
+                    <td class="table-cell" id="country_@index">@country.toString()</td>
                     <td class="table-cell" id="change_country_@index">Change button</td>
-                    <td class="table-cell" id="remove_country_@index">Remove country</td>
+                    <td class="table-cell" id="remove_country_@index">
+                        <a id="country_remove_@index" href="@routes.RoutingCountriesSummaryController.displayRemoveCountryPage(mode, country.countryCode)">
+                            <span aria-hidden="true">@messages("site.remove")</span>
+                            <span class="visuallyhidden">@messages("declaration.routingCountries.summary.remove.hint", country.countryName)</span>
+                        </a>
+                    </td>
                 </tr>
             }
         </tbody>

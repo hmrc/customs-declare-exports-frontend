@@ -385,6 +385,13 @@ declaration.routingCountries.summary.heading = Locations
 declaration.routingCountries.summary.header = You have added {0} countries of routing
 declaration.routingCountries.summary.question = Do you need to add any more countries?
 declaration.routingCountries.summary.table.code = Country code
+declaration.routingCountries.summary.change.hint = Change country {0}
+declaration.routingCountries.summary.remove.hint = Remove country {0}
+
+declaration.routingCountries.remove.title = Remove routing country
+declaration.routingCountries.remove.heading = Locations
+declaration.routingCountries.remove.question = Are you sure you want to remove this routing country?
+
 
 declaration.destinationCountries.title = Countries of routing
 declaration.destinationCountries.routing = Which countries will the goods stop at before reaching their destination?

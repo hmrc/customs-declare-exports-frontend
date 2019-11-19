@@ -89,6 +89,10 @@ GET         /countries-summary                   controllers.declaration.Routing
 
 POST        /countries-summary                   controllers.declaration.RoutingCountriesSummaryController.submit(mode: models.Mode ?= models.Mode.Normal)
 
+GET         /country-of-routing/:code/remove     controllers.declaration.RoutingCountriesSummaryController.displayRemoveCountryPage(mode: models.Mode ?= models.Mode.Normal, code: String)
+
+POST        /country-of-routing/:code/remove     controllers.declaration.RoutingCountriesSummaryController.submitRemoveCountry(mode: models.Mode ?= models.Mode.Normal, code: String)
+
 # Location of goods
 
 GET         /location-of-goods                   controllers.declaration.LocationController.displayPage(mode: models.Mode ?= models.Mode.Normal)

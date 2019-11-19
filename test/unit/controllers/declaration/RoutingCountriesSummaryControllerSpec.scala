@@ -26,12 +26,14 @@ import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import services.model.Country
 import unit.base.ControllerSpec
-import views.html.declaration.destinationCountries.routing_countries_summary
+import views.html.declaration.destinationCountries.{remove_routing_country, routing_countries_summary}
 
 class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
 
   val mockRoutingCountriesSummaryPage = mock[routing_countries_summary]
+  val mockRoutingRemovePage = mock[remove_routing_country]
 
   val controller = new RoutingCountriesSummaryController(
     mockAuthAction,
@@ -39,7 +41,8 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
-    mockRoutingCountriesSummaryPage
+    mockRoutingCountriesSummaryPage,
+    mockRoutingRemovePage
   )(ec)
 
   override protected def beforeEach(): Unit = {
@@ -47,17 +50,24 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
 
     authorizedUser()
     when(mockRoutingCountriesSummaryPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockRoutingRemovePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockRoutingCountriesSummaryPage)
+    reset(mockRoutingCountriesSummaryPage, mockRoutingRemovePage)
 
     super.afterEach()
   }
 
-  def theResponseForm: Form[RoutingQuestion] = {
+  def theResponseSummaryForm: Form[RoutingQuestion] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[RoutingQuestion]])
     verify(mockRoutingCountriesSummaryPage).apply(any(), captor.capture(), any())(any(), any())
+    captor.getValue
+  }
+
+  def theCountryToRemove: Country = {
+    val captor = ArgumentCaptor.forClass(classOf[Country])
+    verify(mockRoutingRemovePage).apply(any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -72,7 +82,20 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
-        theResponseForm.value mustBe empty
+        theResponseSummaryForm.value mustBe empty
+      }
+    }
+
+    "return 200 (OK) for display remove country page" when {
+
+      "user try to remove country that exists in cache" in {
+
+        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withRoutingCountries(Seq("PL", "GB"))))
+
+        val result = controller.displayRemoveCountryPage(Mode.Normal, "PL")(getRequest())
+
+        status(result) mustBe OK
+        theCountryToRemove.countryCode mustBe "PL"
       }
     }
 
@@ -103,7 +126,58 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
       }
     }
 
-    "return 400 (BAD_REQUETS) for submit method" when {
+    "deturn 303 (SEE_OTHER) for removing country" when {
+
+      "user try to remove country that didn't added" in {
+
+        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withRoutingCountries(Seq("PL", "GB"))))
+
+        val result = controller.displayRemoveCountryPage(Mode.Normal, "FR")(getRequest())
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
+      }
+
+      "user remove country that exists in cache" in {
+
+        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withRoutingCountries(Seq("PL", "GB"))))
+
+        val correctForm = JsObject(Seq("hasRoutingCountries" -> JsString("Yes")))
+
+        val result = controller.submitRemoveCountry(Mode.Normal, "PL")(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
+      }
+
+      "user decided to not remove country" in {
+
+        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withRoutingCountries(Seq("PL", "GB"))))
+
+        val correctForm = JsObject(Seq("hasRoutingCountries" -> JsString("No")))
+
+        val result = controller.submitRemoveCountry(Mode.Normal, "PL")(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
+      }
+    }
+
+    "return 400 (BAD_REQUEST) for submit method" when {
+
+      "form is incorrect" in {
+
+        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withRoutingCountries()))
+
+        val incorrectAnswer = JsObject(Seq("hasRoutingCountries" -> JsString("incorrect")))
+
+        val result = controller.submit(Mode.Normal)(postRequest(incorrectAnswer))
+
+        status(result) mustBe BAD_REQUEST
+      }
+    }
+
+    "return 400 (BAD_REQUEST) for removing country" when {
 
       "form is incorrect" in {
 
