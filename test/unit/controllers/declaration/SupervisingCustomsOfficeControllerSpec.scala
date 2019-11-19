@@ -45,20 +45,11 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
   private val exampleCustomsOfficeIdentifier = "A1B2C3D4"
   private val exampleWarehouseIdentificationNumber = "SecretStash"
 
-  private val standardCacheModel = aDeclaration(
-    withType(DeclarationType.STANDARD),
-    withWarehouseIdentification(Some(exampleCustomsOfficeIdentifier), None, Some(exampleWarehouseIdentificationNumber), None)
-  )
+  private val standardCacheModel = aDeclaration(withType(DeclarationType.STANDARD))
 
-  private val supplementaryCacheModel = aDeclaration(
-    withType(DeclarationType.SUPPLEMENTARY),
-    withWarehouseIdentification(Some(exampleCustomsOfficeIdentifier), None, Some(exampleWarehouseIdentificationNumber), None)
-  )
+  private val supplementaryCacheModel = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
 
-  private val simplifiedCacheModel = aDeclaration(
-    withType(DeclarationType.SIMPLIFIED),
-    withWarehouseIdentification(Some(exampleCustomsOfficeIdentifier), None, Some(exampleWarehouseIdentificationNumber), None)
-  )
+  private val simplifiedCacheModel = aDeclaration(withType(DeclarationType.SIMPLIFIED))
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -110,10 +101,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
         await(controller.submit(Mode.Normal)(postRequest(body)))
 
-        val updatedWarehouse = theCacheModelUpdated.locations.warehouseIdentification.value
-
-        updatedWarehouse.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
-        updatedWarehouse.identificationNumber.value mustBe exampleWarehouseIdentificationNumber
+        theCacheModelUpdated.locations.supervisingCustomsOffice.value.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
       }
 
       "return Bad Request if payload is not compatible with model" in {
@@ -142,10 +130,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
         await(controller.submit(Mode.Normal)(postRequest(body)))
 
-        val updatedWarehouse = theCacheModelUpdated.locations.warehouseIdentification.value
-
-        updatedWarehouse.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
-        updatedWarehouse.identificationNumber.value mustBe exampleWarehouseIdentificationNumber
+        theCacheModelUpdated.locations.supervisingCustomsOffice.value.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
       }
 
       "return Bad Request if payload is not compatible with model" in {
@@ -174,10 +159,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
         await(controller.submit(Mode.Normal)(postRequest(body)))
 
-        val updatedWarehouse = theCacheModelUpdated.locations.warehouseIdentification.value
-
-        updatedWarehouse.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
-        updatedWarehouse.identificationNumber.value mustBe exampleWarehouseIdentificationNumber
+        theCacheModelUpdated.locations.supervisingCustomsOffice.value.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
       }
 
       "return Bad Request if payload is not compatible with model" in {

@@ -18,11 +18,10 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.WarehouseDetails
+import forms.declaration.SupervisingCustomsOffice
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
-import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -41,10 +40,10 @@ class SupervisingCustomsOfficeController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  import forms.declaration.WarehouseDetails._
+  import forms.declaration.SupervisingCustomsOffice._
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.locations.warehouseIdentification match {
+    request.cacheModel.locations.supervisingCustomsOffice match {
       case Some(data) => Ok(supervisingCustomsOfficePage(mode, form().fill(data)))
       case _          => Ok(supervisingCustomsOfficePage(mode, form()))
     }
@@ -62,18 +61,6 @@ class SupervisingCustomsOfficeController @Inject()(
       )
   }
 
-  private def updateCache(formData: WarehouseDetails)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect { model =>
-      val warehouseDetails = model.locations.warehouseIdentification
-        .map(
-          dbWarehouseDetails =>
-            WarehouseDetails(
-              identificationNumber = dbWarehouseDetails.identificationNumber,
-              supervisingCustomsOffice = formData.supervisingCustomsOffice,
-              inlandModeOfTransportCode = dbWarehouseDetails.inlandModeOfTransportCode
-          )
-        )
-        .getOrElse(WarehouseDetails(supervisingCustomsOffice = formData.supervisingCustomsOffice))
-      model.copy(locations = model.locations.copy(warehouseIdentification = Some(warehouseDetails)))
-    }
+  private def updateCache(formData: SupervisingCustomsOffice)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(supervisingCustomsOffice = Some(formData))))
 }

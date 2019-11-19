@@ -16,12 +16,11 @@
 
 package views.declaration
 
-import base.Injector
-import forms.declaration.WarehouseDetails
+import forms.declaration.SupervisingCustomsOffice
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
@@ -33,9 +32,9 @@ import views.tags.ViewTest
 class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestData with Stubs {
 
   private val page = new supervising_customs_office(mainTemplate)
-  private val form: Form[WarehouseDetails] = WarehouseDetails.form()
+  private val form: Form[SupervisingCustomsOffice] = SupervisingCustomsOffice.form()
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[WarehouseDetails] = form, messages: Messages = stubMessages()): Document =
+  private def createView(mode: Mode = Mode.Normal, form: Form[SupervisingCustomsOffice] = form, messages: Messages = stubMessages()): Document =
     page(mode, form)(journeyRequest(), messages)
 
   "Supervising Customs Office View" should {
