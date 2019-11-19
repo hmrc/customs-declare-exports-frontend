@@ -21,7 +21,9 @@ import controllers.util.{FormAction, SaveAndReturn}
 import forms.DeclarationPage
 import forms.declaration.RoutingQuestionYesNo.{RemoveCountryPage, RoutingQuestionPage}
 import forms.declaration.destinationCountries.DestinationCountries.{DestinationCountryPage, OriginationCountryPage}
+
 import forms.declaration.{BorderTransport, Document, PackageInformation, _}
+
 import javax.inject.Inject
 import models.DeclarationType._
 import models.Mode

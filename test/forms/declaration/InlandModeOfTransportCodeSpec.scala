@@ -21,6 +21,7 @@ import helpers.views.declaration.WarehouseIdentificationMessages
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import unit.base.UnitSpec
 
+
 class InlandModeOfTransportCodeSpec extends UnitSpec with WarehouseIdentificationMessages with LightFormMatchers {
 
   import InlandModeOfTransportCode._

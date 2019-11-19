@@ -159,6 +159,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
         await(controller.submit(Mode.Normal)(postRequest(body)))
 
+
         theCacheModelUpdated.locations.supervisingCustomsOffice.value.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
       }
 

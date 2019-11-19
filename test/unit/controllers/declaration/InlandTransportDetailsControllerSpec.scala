@@ -100,6 +100,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
         withNewCaching(standardCacheModel)
 
         await(controller.submit(Mode.Normal)(postRequest(body)))
+
         theCacheModelUpdated.locations.inlandModeOfTransportCode.value.inlandModeOfTransportCode.value mustBe exampleTransportMode
       }
 
@@ -127,6 +128,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
         withNewCaching(supplementaryCacheModel)
 
         await(controller.submit(Mode.Normal).apply(postRequest(body)))
+
         theCacheModelUpdated.locations.inlandModeOfTransportCode.value.inlandModeOfTransportCode.value mustBe exampleTransportMode
       }
 
@@ -154,6 +156,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
         withNewCaching(simplifiedCacheModel)
 
         await(controller.submit(Mode.Normal).apply(postRequest(body)))
+
         theCacheModelUpdated.locations.inlandModeOfTransportCode.value.inlandModeOfTransportCode.value mustBe exampleTransportMode
       }
 

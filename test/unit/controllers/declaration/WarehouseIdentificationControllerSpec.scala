@@ -96,6 +96,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
         withNewCaching(standardCacheModel)
         val result = controller.saveIdentificationNumber(Mode.Normal).apply(postRequest(body))
         await(result)
+
         theCacheModelUpdated.locations.warehouseIdentification.value.identificationNumber.value mustBe exampleWarehouseIdentificationNumber
       }
 
@@ -120,6 +121,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
         withNewCaching(suplementaryCacheModel)
         val result = controller.saveIdentificationNumber(Mode.Normal).apply(postRequest(body))
         await(result)
+
         theCacheModelUpdated.locations.warehouseIdentification.value.identificationNumber.value mustBe exampleWarehouseIdentificationNumber
       }
 
@@ -144,6 +146,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
         withNewCaching(simplifiedCacheModel)
         val result = controller.saveIdentificationNumber(Mode.Normal).apply(postRequest(body))
         await(result)
+
         theCacheModelUpdated.locations.warehouseIdentification.value.identificationNumber.value mustBe exampleWarehouseIdentificationNumber
       }
 
