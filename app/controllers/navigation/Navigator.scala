@@ -91,7 +91,7 @@ object Navigator {
   }
 
   val simplified: PartialFunction[DeclarationPage, Mode => Call] = {
-    case BorderTransport           => controllers.declaration.routes.InlandTransportDetailsController.displayPage
+    case BorderTransport           => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case Document                  => controllers.declaration.routes.OfficeOfExitController.displayPage
     case DestinationCountryPage    => controllers.declaration.routes.DeclarationHolderController.displayPage
     case RoutingQuestionPage       => controllers.declaration.routes.DestinationCountryController.displayPage
