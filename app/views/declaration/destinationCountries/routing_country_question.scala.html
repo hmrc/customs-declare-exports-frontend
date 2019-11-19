@@ -30,7 +30,7 @@
     title = Title("declaration.routingQuestion.title", "declaration.routingQuestion.heading")
 ) {
 
-    @components.back_link(Navigator.backLink(RoutingQuestionPage)(request)(mode), mode)
+    @components.back_link(Navigator.backLink(RoutingQuestionPage, mode), mode)
 
     @components.error_summary(form.errors)
 

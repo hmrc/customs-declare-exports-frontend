@@ -31,7 +31,7 @@
     title = Title("declaration.routingCountries.summary.title", "declaration.routingCountries.summary.heading")
 ) {
 
-    @components.back_link(Navigator.backLink(RoutingQuestionPage)(request)(mode), mode)
+    @components.back_link(Navigator.backLink(RoutingQuestionPage, mode), mode)
 
     @components.error_summary(form.errors)
 

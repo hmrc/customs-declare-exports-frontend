@@ -31,7 +31,7 @@
     title = Title("declaration.routingCountries.remove.title", "declaration.routingCountries.remove.heading")
 ) {
 
-    @components.back_link(Navigator.backLink(RemoveCountryPage)(request)(mode), mode)
+    @components.back_link(Navigator.backLink(RemoveCountryPage, mode), mode)
 
     @components.error_summary(form.errors)
 
