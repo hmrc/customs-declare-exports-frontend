@@ -18,11 +18,10 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.WarehouseDetails
+import forms.declaration.InlandModeOfTransportCode
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
-import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -41,20 +40,21 @@ class InlandTransportDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  import forms.declaration.WarehouseDetails._
+  import forms.declaration.InlandModeOfTransportCode._
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.locations.warehouseIdentification match {
+    request.cacheModel.locations.inlandModeOfTransportCode match {
       case Some(data) => Ok(inlandTransportDetailsPage(mode, form().fill(data)))
       case _          => Ok(inlandTransportDetailsPage(mode, form()))
     }
   }
 
   def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form()
+    InlandModeOfTransportCode
+      .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[WarehouseDetails]) => Future.successful(BadRequest(inlandTransportDetailsPage(mode, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(inlandTransportDetailsPage(mode, formWithErrors))),
         form => {
           val nextStep = request.cacheModel.`type` match {
             case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
@@ -68,18 +68,6 @@ class InlandTransportDetailsController @Inject()(
       )
   }
 
-  private def updateCache(formData: WarehouseDetails)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect { model =>
-      val warehouseDetails = model.locations.warehouseIdentification
-        .map(
-          dbWarehouseDetails =>
-            WarehouseDetails(
-              identificationNumber = dbWarehouseDetails.identificationNumber,
-              supervisingCustomsOffice = dbWarehouseDetails.supervisingCustomsOffice,
-              inlandModeOfTransportCode = formData.inlandModeOfTransportCode
-          )
-        )
-        .getOrElse(WarehouseDetails(inlandModeOfTransportCode = formData.inlandModeOfTransportCode))
-      model.copy(locations = model.locations.copy(warehouseIdentification = Some(warehouseDetails)))
-    }
+  private def updateCache(formData: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(inlandModeOfTransportCode = Some(formData))))
 }

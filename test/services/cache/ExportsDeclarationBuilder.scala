@@ -24,7 +24,6 @@ import forms.declaration.DispatchLocation.AllowedDispatchLocations.OutsideEU
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
-import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Ducr, Lrn}
 import models.DeclarationStatus.DeclarationStatus
@@ -265,16 +264,14 @@ trait ExportsDeclarationBuilder {
   def withoutWarehouseIdentification(): ExportsDeclarationModifier =
     cache => cache.copy(locations = cache.locations.copy(warehouseIdentification = None))
 
-  def withWarehouseIdentification(
-    supervisingCustomsOffice: Option[String] = None,
-    identificationType: Option[String] = None,
-    identificationNumber: Option[String] = None,
-    inlandModeOfTransportCode: Option[String] = None
-  ): ExportsDeclarationModifier =
-    withWarehouseIdentification(WarehouseDetails(supervisingCustomsOffice, identificationType, identificationNumber, inlandModeOfTransportCode))
+  def withSupervisingCustomsOffice(supervisingCustomsOffice: Option[SupervisingCustomsOffice]): ExportsDeclarationModifier =
+    cache => cache.copy(locations = cache.locations.copy(supervisingCustomsOffice = supervisingCustomsOffice))
 
-  def withWarehouseIdentification(warehouseDetails: WarehouseDetails): ExportsDeclarationModifier =
-    cache => cache.copy(locations = cache.locations.copy(warehouseIdentification = Some(warehouseDetails)))
+  def withInlandModeOfTransportCode(inlandModeOfTransportCode: Option[InlandModeOfTransportCode]): ExportsDeclarationModifier =
+    cache => cache.copy(locations = cache.locations.copy(inlandModeOfTransportCode = inlandModeOfTransportCode))
+
+  def withWarehouseIdentification(warehouseIdentification: Option[WarehouseIdentification] = None): ExportsDeclarationModifier =
+    cache => cache.copy(locations = cache.locations.copy(warehouseIdentification = warehouseIdentification))
 
   def withoutOfficeOfExit(): ExportsDeclarationModifier =
     cache => cache.copy(locations = cache.locations.copy(officeOfExit = None))

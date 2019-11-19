@@ -17,7 +17,6 @@
 package models.declaration
 
 import forms.declaration._
-import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.officeOfExit.OfficeOfExit
 import models.ExportsDeclaration
 import play.api.libs.json.Json
@@ -28,14 +27,16 @@ case class Locations(
   hasRoutingCountries: Option[Boolean] = None,
   routingCountries: Seq[String] = Seq.empty,
   goodsLocation: Option[GoodsLocation] = None,
-  warehouseIdentification: Option[WarehouseDetails] = None,
-  officeOfExit: Option[OfficeOfExit] = None
+  officeOfExit: Option[OfficeOfExit] = None,
+  supervisingCustomsOffice: Option[SupervisingCustomsOffice] = None,
+  warehouseIdentification: Option[WarehouseIdentification] = None,
+  inlandModeOfTransportCode: Option[InlandModeOfTransportCode] = None
 ) extends SummaryContainer {
 
   // TODO Add hasRoutingCountries field when screen will be ready and added
   def isEmpty: Boolean =
     originationCountry.isEmpty && destinationCountry.isEmpty && routingCountries.isEmpty && goodsLocation.isEmpty &&
-      warehouseIdentification.isEmpty && officeOfExit.isEmpty
+      officeOfExit.isEmpty && warehouseIdentification.isEmpty && inlandModeOfTransportCode.isEmpty && supervisingCustomsOffice.isEmpty
 }
 
 object Locations {
@@ -49,7 +50,9 @@ object Locations {
     hasRoutingCountries = cacheData.locations.hasRoutingCountries,
     routingCountries = cacheData.locations.routingCountries,
     goodsLocation = cacheData.locations.goodsLocation,
+    officeOfExit = cacheData.locations.officeOfExit,
+    supervisingCustomsOffice = cacheData.locations.supervisingCustomsOffice,
     warehouseIdentification = cacheData.locations.warehouseIdentification,
-    officeOfExit = cacheData.locations.officeOfExit
+    inlandModeOfTransportCode = cacheData.locations.inlandModeOfTransportCode
   )
 }
