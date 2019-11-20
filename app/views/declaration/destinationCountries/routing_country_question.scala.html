@@ -16,7 +16,6 @@
 
 @import controllers.declaration.routes
 @import controllers.navigation.Navigator
-@import forms.declaration.RoutingQuestionYesNo
 @import forms.declaration.RoutingQuestionYesNo.{no, RoutingQuestionPage, yes}
 @import models.requests.JourneyRequest
 @import views.components.inputs.RadioOption
@@ -24,7 +23,7 @@
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[RoutingQuestionYesNo], countryOfDestination: String)(implicit request: JourneyRequest[AnyContent], messages: Messages)
+@(mode: Mode, form: Form[Boolean], countryOfDestination: String)(implicit request: JourneyRequest[AnyContent], messages: Messages)
 
 @main_template(
     title = Title("declaration.routingQuestion.title", "declaration.routingQuestion.heading")

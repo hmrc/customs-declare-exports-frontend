@@ -28,7 +28,7 @@ import views.html.declaration.destinationCountries.routing_country_question
 class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
 
   val countryOfDestination = "Poland"
-  val form: Form[RoutingQuestionYesNo] = RoutingQuestionYesNo.form()
+  val form: Form[Boolean] = RoutingQuestionYesNo.form()
 
   val routingQuestionPage = new routing_country_question(mainTemplate)
   val view = routingQuestionPage(Mode.Normal, form, countryOfDestination)(journeyRequest(), messages)

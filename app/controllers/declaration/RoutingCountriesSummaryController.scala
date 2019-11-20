@@ -23,7 +23,7 @@ import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import services.Countries.retrieveCountriesFromCodes
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -68,7 +68,7 @@ class RoutingCountriesSummaryController @Inject()(
       .fold(
         formWithErrors => BadRequest(routingCountriesSummaryPage(mode, formWithErrors, countries)),
         validAnswer =>
-          if (validAnswer.answer)
+          if (validAnswer)
             navigator.continueTo(controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(mode))
           else navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode))
       )
@@ -91,7 +91,7 @@ class RoutingCountriesSummaryController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(removeRoutingCountryPage(mode, formWithErrors, country))),
         validAnswer =>
-          if (validAnswer.answer) {
+          if (validAnswer) {
             removeCountry(countryCode).map { _ =>
               navigator.continueTo(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(mode))
             }

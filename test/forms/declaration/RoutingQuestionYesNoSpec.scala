@@ -16,31 +16,17 @@
 
 package forms.declaration
 
-import forms.declaration.RoutingQuestionYesNo
 import play.api.data.FormError
-import play.api.libs.json.{JsObject, JsString}
 import unit.base.UnitSpec
 
 class RoutingQuestionYesNoSpec extends UnitSpec {
 
   "Routing Country model" should {
 
-    "return correct value for apply method" in {
-
-      RoutingQuestionYesNo(RoutingQuestionYesNo.yes).answer mustBe true
-      RoutingQuestionYesNo(RoutingQuestionYesNo.no).answer mustBe false
-    }
-
     "should have defined two options for form" in {
 
       RoutingQuestionYesNo.yes mustBe "Yes"
       RoutingQuestionYesNo.no mustBe "No"
-    }
-
-    "return correct value form unapplyToString method" in {
-
-      RoutingQuestionYesNo.unapplyToString(RoutingQuestionYesNo(true)) mustBe Some(RoutingQuestionYesNo.yes)
-      RoutingQuestionYesNo.unapplyToString(RoutingQuestionYesNo(false)) mustBe Some(RoutingQuestionYesNo.no)
     }
 
     "contains correct list of allowedValues" in {

@@ -16,7 +16,6 @@
 
 @import controllers.declaration.routes
 @import controllers.navigation.Navigator
-@import forms.declaration.RoutingQuestionYesNo
 @import forms.declaration.RoutingQuestionYesNo.{no, RemoveCountryPage, yes}
 @import models.requests.JourneyRequest
 @import services.model.Country
@@ -25,7 +24,7 @@
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[RoutingQuestionYesNo], countryToRemove: Country)(implicit request: JourneyRequest[AnyContent], messages: Messages)
+@(mode: Mode, form: Form[Boolean], countryToRemove: Country)(implicit request: JourneyRequest[AnyContent], messages: Messages)
 
 @main_template(
     title = Title("declaration.routingCountries.remove.title", "declaration.routingCountries.remove.heading")

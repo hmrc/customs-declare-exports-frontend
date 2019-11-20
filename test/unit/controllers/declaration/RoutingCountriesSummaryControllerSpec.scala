@@ -59,8 +59,8 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
     super.afterEach()
   }
 
-  def theResponseSummaryForm: Form[RoutingQuestionYesNo] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[RoutingQuestionYesNo]])
+  def theResponseSummaryForm: Form[Boolean] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[Boolean]])
     verify(mockRoutingCountriesSummaryPage).apply(any(), captor.capture(), any())(any(), any())
     captor.getValue
   }

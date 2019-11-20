@@ -18,7 +18,6 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.RoutingQuestionYesNo
 import forms.declaration.RoutingQuestionYesNo._
 import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.destinationCountries.DestinationCountries.{FirstRoutingCountryPage, NextRoutingCountryPage}
@@ -54,7 +53,7 @@ class RoutingCountriesController @Inject()(
       val destinationCountryCode = request.cacheModel.locations.destinationCountry
       val destinationCountryName = destinationCountryCode.map(retrieveCountryNameFromCode(_)).map(_.countryName).getOrElse("")
 
-      request.cacheModel.locations.hasRoutingCountries.map(RoutingQuestionYesNo(_)) match {
+      request.cacheModel.locations.hasRoutingCountries match {
         case Some(answer) => Ok(routingQuestionPage(mode, form.fill(answer), destinationCountryName))
         case None         => Ok(routingQuestionPage(mode, form, destinationCountryName))
       }
@@ -72,14 +71,12 @@ class RoutingCountriesController @Inject()(
       )
   }
 
-  private def updateRoutingAnswer(
-    routingQuestion: RoutingQuestionYesNo
-  )(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    if (routingQuestion.answer) updateExportsDeclarationSyncDirect(_.updateRoutingQuestion(routingQuestion.answer))
+  private def updateRoutingAnswer(answer: Boolean)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+    if (answer) updateExportsDeclarationSyncDirect(_.updateRoutingQuestion(answer))
     else updateExportsDeclarationSyncDirect(_.clearRoutingCountries)
 
-  private def redirectFromRoutingAnswer(mode: Mode, routingQuestion: RoutingQuestionYesNo)(implicit request: JourneyRequest[AnyContent]): Result =
-    if (routingQuestion.answer) navigator.continueTo(controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(mode))
+  private def redirectFromRoutingAnswer(mode: Mode, answer: Boolean)(implicit request: JourneyRequest[AnyContent]): Result =
+    if (answer) navigator.continueTo(controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(mode))
     else navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode))
 
   def displayRoutingCountry(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>

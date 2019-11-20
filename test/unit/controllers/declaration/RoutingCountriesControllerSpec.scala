@@ -17,7 +17,6 @@
 package unit.controllers.declaration
 
 import controllers.declaration.RoutingCountriesController
-import forms.declaration.RoutingQuestionYesNo
 import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -58,8 +57,8 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
     super.afterEach()
   }
 
-  def theRoutingQuestionForm: Form[RoutingQuestionYesNo] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[RoutingQuestionYesNo]])
+  def theRoutingQuestionForm: Form[Boolean] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[Boolean]])
     verify(mockRoutingQuestionPage).apply(any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
@@ -178,7 +177,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
       "user try to get Routing Countries when answered No for Routing Question" in {
 
-        withNewCaching(aDeclaration(withRoutingQuestion(RoutingQuestionYesNo("No"))))
+        withNewCaching(aDeclaration(withRoutingQuestion(false)))
 
         val result = controller.displayRoutingCountry(Mode.Normal)(getRequest())
 

@@ -29,7 +29,7 @@ import views.html.declaration.destinationCountries.routing_countries_summary
 class RoutingCountriesSummaryViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
 
   val countries = Seq(Country("France", "FR"), Country("Poland", "PL"))
-  val form: Form[RoutingQuestionYesNo] = RoutingQuestionYesNo.form()
+  val form: Form[Boolean] = RoutingQuestionYesNo.form()
 
   val routingCountriesSummaryPage = new routing_countries_summary(mainTemplate)
   val view = routingCountriesSummaryPage(Mode.Normal, form, countries)(journeyRequest(), messages)
