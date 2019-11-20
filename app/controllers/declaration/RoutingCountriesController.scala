@@ -45,9 +45,7 @@ class RoutingCountriesController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayRoutingQuestion(mode: Mode, fastForward: Boolean): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val containsRoutingCountries: Boolean = request.cacheModel.locations.routingCountries.nonEmpty
-
-    if (fastForward && containsRoutingCountries) {
+    if (fastForward && request.cacheModel.containRoutingCountries) {
       navigator.continueTo(routes.RoutingCountriesSummaryController.displayPage(mode))
     } else {
       val destinationCountryCode = request.cacheModel.locations.destinationCountry

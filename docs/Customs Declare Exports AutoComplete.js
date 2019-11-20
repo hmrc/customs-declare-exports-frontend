@@ -130,6 +130,14 @@ function completePage() {
         document.getElementById('No').click()
         document.getElementsByClassName('button')[0].click()
     }
+    if (currentPageIs("/customs-declare-exports/declaration/countries-of-routing")) {
+        selectFromAutoPredict(document.getElementById("country-container"), "FR");
+        document.getElementsByClassName('button')[0].click()
+    }
+    if (currentPageIs("/customs-declare-exports/declaration/countries-summary")) {
+        document.getElementById('No').click()
+        document.getElementsByClassName('button')[0].click()
+    }
     if (currentPageIs("/customs-declare-exports/declaration/location-of-goods")) {
         document.getElementById('typeOfLocation').value ='A';
         document.getElementById('qualifierOfIdentification').value ='U';
