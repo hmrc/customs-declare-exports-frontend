@@ -17,18 +17,12 @@
 package forms.declaration.destinationCountries
 
 import forms.DeclarationPage
-import play.api.data.Forms.{default, ignored, seq, single, text}
-import play.api.data.{Form, Forms, Mapping}
-import play.api.libs.json.{Json, OFormat}
+import play.api.data.Form
+import play.api.data.Forms.{single, text}
 import services.Countries.allCountries
-
-case class DestinationCountries(countryOfDispatch: String, countriesOfRouting: Seq[String], countryOfDestination: String)
 
 object DestinationCountries {
 
-  /**
-    * New structure foe handling Destination Countries
-    */
   sealed trait CountryPage extends DeclarationPage {
     val id: String
   }
@@ -41,8 +35,12 @@ object DestinationCountries {
     override val id = "destinationCountry"
   }
 
-  case object RoutingCountriesPage extends CountryPage {
-    override val id = "routingCountries"
+  case object FirstRoutingCountryPage extends CountryPage {
+    override val id = "firstRoutingCountry"
+  }
+
+  case object NextRoutingCountryPage extends CountryPage {
+    override val id = "routingCountry"
   }
 
   def form(page: CountryPage): Form[String] = Form(
@@ -53,26 +51,9 @@ object DestinationCountries {
     )
   )
 
-  /**
-    * Old structure that is only for time being during migration screens to new structure
-    */
   val limit = 99
-
-  implicit val format: OFormat[DestinationCountries] = Json.format[DestinationCountries]
 
   private def emptyOrValidCountry: String => Boolean = { input =>
     input.isEmpty || allCountries.exists(_.countryCode == input)
   }
-
-  object Standard {
-    def form(countryOfDispatch: String, countryOfDestination: String): Form[DestinationCountries] = Form(
-      Forms.mapping(
-        "countryOfDispatch" -> ignored(countryOfDispatch),
-        "countriesOfRouting" -> default(seq(text()), Seq.empty),
-        "countryOfDestination" -> ignored(countryOfDestination)
-      )(DestinationCountries.apply)(DestinationCountries.unapply)
-    )
-  }
-
-  def empty(): DestinationCountries = DestinationCountries("", Seq.empty, "")
 }

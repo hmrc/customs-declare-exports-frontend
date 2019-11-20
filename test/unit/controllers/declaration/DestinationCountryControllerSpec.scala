@@ -103,7 +103,7 @@ class DestinationCountryControllerSpec extends ControllerSpec {
         val result = controller.submit(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DestinationCountriesController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion()
       }
     }
 
@@ -118,7 +118,7 @@ class DestinationCountryControllerSpec extends ControllerSpec {
         val result = controller.submit(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DestinationCountriesController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion()
       }
     }
 

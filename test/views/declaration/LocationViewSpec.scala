@@ -129,7 +129,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       val backButton = view.getElementById("link-back")
 
       backButton.text() mustBe "site.back"
-      backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.DestinationCountriesController.displayPage(Mode.Normal))
+      backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(Mode.Normal))
     }
 
     "display 'Save and continue' button" in {

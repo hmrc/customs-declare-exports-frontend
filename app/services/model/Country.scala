@@ -22,4 +22,7 @@ case object Country {
   implicit val formats = Json.format[Country]
 }
 
-case class Country(countryName: String, countryCode: String)
+case class Country(countryName: String, countryCode: String) {
+
+  def asString(): String = s"$countryName ($countryCode)"
+}

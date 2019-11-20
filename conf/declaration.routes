@@ -69,12 +69,6 @@ POST        /holder-of-authorisation             controllers.declaration.Declara
 
 # Destination countries
 
-GET         /destination-countries               controllers.declaration.DestinationCountriesController.displayPage(mode: models.Mode ?= models.Mode.Normal)
-
-POST        /destination-countries               controllers.declaration.DestinationCountriesController.saveCountries(mode: models.Mode ?= models.Mode.Normal)
-
-# Destination countries - new endpoint
-
 GET         /origination-country                 controllers.declaration.OriginationCountryController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
 POST        /origination-country                 controllers.declaration.OriginationCountryController.submit(mode: models.Mode ?= models.Mode.Normal)
@@ -82,6 +76,22 @@ POST        /origination-country                 controllers.declaration.Origina
 GET         /destination-country                 controllers.declaration.DestinationCountryController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
 POST        /destination-country                 controllers.declaration.DestinationCountryController.submit(mode: models.Mode ?= models.Mode.Normal)
+
+GET         /country-of-routing                  controllers.declaration.RoutingCountriesController.displayRoutingQuestion(mode: models.Mode ?= models.Mode.Normal, fastForward: Boolean ?= true)
+
+POST        /country-of-routing                  controllers.declaration.RoutingCountriesController.submitRoutingAnswer(mode: models.Mode ?= models.Mode.Normal)
+
+GET         /countries-of-routing                controllers.declaration.RoutingCountriesController.displayRoutingCountry(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /countries-of-routing                controllers.declaration.RoutingCountriesController.submitRoutingCountry(mode: models.Mode ?= models.Mode.Normal)
+
+GET         /countries-summary                   controllers.declaration.RoutingCountriesSummaryController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /countries-summary                   controllers.declaration.RoutingCountriesSummaryController.submit(mode: models.Mode ?= models.Mode.Normal)
+
+GET         /country-of-routing/:code/remove     controllers.declaration.RoutingCountriesSummaryController.displayRemoveCountryPage(mode: models.Mode ?= models.Mode.Normal, code: String)
+
+POST        /country-of-routing/:code/remove     controllers.declaration.RoutingCountriesSummaryController.submitRemoveCountry(mode: models.Mode ?= models.Mode.Normal, code: String)
 
 # Location of goods
 

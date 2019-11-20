@@ -19,7 +19,8 @@ package controllers.navigation
 import config.AppConfig
 import controllers.util.{FormAction, SaveAndReturn}
 import forms.DeclarationPage
-import forms.declaration.destinationCountries.DestinationCountries.{DestinationCountryPage, OriginationCountryPage}
+import forms.declaration.RoutingQuestionYesNo.{RemoveCountryPage, RoutingQuestionPage}
+import forms.declaration.destinationCountries.DestinationCountries.{DestinationCountryPage, FirstRoutingCountryPage, OriginationCountryPage}
 import forms.declaration.{BorderTransport, Document, PackageInformation}
 import javax.inject.Inject
 import models.DeclarationType._
@@ -60,6 +61,8 @@ object Navigator {
     case Document               => controllers.declaration.routes.NatureOfTransactionController.displayPage
     case OriginationCountryPage => controllers.declaration.routes.DeclarationHolderController.displayPage
     case DestinationCountryPage => controllers.declaration.routes.OriginationCountryController.displayPage
+    case RoutingQuestionPage    => controllers.declaration.routes.DestinationCountryController.displayPage
+    case RemoveCountryPage      => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case _                      => throw new IllegalArgumentException("Navigator back-link route not implemented")
   }
   val standardItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
@@ -83,6 +86,8 @@ object Navigator {
     case BorderTransport        => controllers.declaration.routes.InlandTransportDetailsController.displayPage
     case Document               => controllers.declaration.routes.OfficeOfExitController.displayPage
     case DestinationCountryPage => controllers.declaration.routes.DeclarationHolderController.displayPage
+    case RoutingQuestionPage    => controllers.declaration.routes.DestinationCountryController.displayPage
+    case RemoveCountryPage      => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case _                      => throw new IllegalArgumentException("Navigator back-link route not implemented")
   }
   val simplifiedItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {

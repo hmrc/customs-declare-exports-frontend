@@ -23,7 +23,6 @@ import forms.common.Date
 import forms.declaration.ConsignmentReferencesSpec._
 import forms.declaration.DeclarantDetailsSpec._
 import forms.declaration.DeclarationAdditionalActorsSpec.correctAdditionalActors1
-import forms.declaration.DestinationCountriesSpec._
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
 import forms.declaration.DispatchLocationSpec._
 import forms.declaration.ExporterDetailsSpec._
