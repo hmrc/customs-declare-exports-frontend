@@ -16,11 +16,8 @@
 
 @import models.declaration.Locations
 @import models.viewmodels.HtmlTableRow
-@import models.DeclarationType.DeclarationType
 
-@(locations: Option[Locations], declarationType: DeclarationType)(implicit messages: Messages)
-
-@journeysThatRequireInlandTransportMode = @{Set(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)}
+@(locations: Option[Locations])(implicit messages: Messages)
 
 @components.summary_list(Some(messages("declaration.summary.locations.header"))) {
 
@@ -71,12 +68,10 @@
         label = messages("supplementary.summary.locations.warehouseId"),
         value = locations.flatMap(_.warehouseIdentification).map(_.identificationNumber)
     ))
-    @if(journeysThatRequireInlandTransportMode.contains(declarationType)) {
-        @components.table_row_no_change_link(HtmlTableRow(
-            label = messages("supplementary.summary.locations.inlandModeOfTransportCode"),
-            value = locations.flatMap(_.inlandModeOfTransportCode).map(_.inlandModeOfTransportCode)
-        ))
-    }
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.locations.inlandModeOfTransportCode"),
+        value = locations.flatMap(_.inlandModeOfTransportCode).map(_.inlandModeOfTransportCode)
+    ))
 
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.officeOfExit"),
