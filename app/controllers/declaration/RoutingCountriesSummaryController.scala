@@ -101,12 +101,4 @@ class RoutingCountriesSummaryController @Inject()(
 
   private def removeCountry(countryCode: String)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(_.removeCountryOfRouting(countryCode))
-
-  def displayChangeCountryPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    ???
-  }
-
-  def submitChangeCountry(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    ???
-  }
 }

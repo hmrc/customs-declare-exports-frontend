@@ -42,10 +42,10 @@
 
     <table id="remove-country-table" class="form-group">
         <thead>
-            <th class="table-head" id="country-header">Country</th>
+            <th class="table-head" id="country-header">@messages("declaration.routingCountries.remove.countryHeader")</th>
         </thead>
         <tbody>
-            <td class="table-cell">@countryToRemove.toString()</td>
+            <td class="table-cell" id="country-to-remove">@countryToRemove.asString()</td>
         </tbody>
     </table>
 

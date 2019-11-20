@@ -391,6 +391,7 @@ declaration.routingCountries.summary.remove.hint = Remove country {0}
 declaration.routingCountries.remove.title = Remove routing country
 declaration.routingCountries.remove.heading = Locations
 declaration.routingCountries.remove.question = Are you sure you want to remove this routing country?
+declaration.routingCountries.remove.countryHeader = Country
 
 
 declaration.destinationCountries.title = Countries of routing
