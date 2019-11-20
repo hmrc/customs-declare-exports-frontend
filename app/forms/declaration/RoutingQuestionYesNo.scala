@@ -22,34 +22,32 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
 
-case class RoutingQuestion(hasRoutingCountries: String) {
+case class RoutingQuestionYesNo(answer: Boolean) {
 
-  def toBoolean: Boolean = RoutingQuestion.answerToBoolean(this)
+  def extractValue(): Option[String] = RoutingQuestionYesNo.unapplyToString(this)
 }
 
-object RoutingQuestion {
+object RoutingQuestionYesNo {
 
   case object RoutingQuestionPage extends DeclarationPage
 
   case object RemoveCountryPage extends DeclarationPage
 
-  implicit val format: OFormat[RoutingQuestion] = Json.format[RoutingQuestion]
+  implicit val format: OFormat[RoutingQuestionYesNo] = Json.format[RoutingQuestionYesNo]
 
   val yes = "Yes"
   val no = "No"
 
-  val answerFromBoolean: Boolean => RoutingQuestion =
-    (boolean: Boolean) => if (boolean) RoutingQuestion(yes) else RoutingQuestion(no)
+  def apply(answer: String): RoutingQuestionYesNo = RoutingQuestionYesNo(if (answer == yes) true else false)
 
-  val answerToBoolean: RoutingQuestion => Boolean =
-    (routingCountry: RoutingQuestion) => routingCountry.hasRoutingCountries == yes
+  def unapplyToString(routingQuestion: RoutingQuestionYesNo): Option[String] = if (routingQuestion.answer) Some(yes) else Some(no)
 
   val allowedValues: Seq[String] = Seq(yes, no)
 
-  def form(): Form[RoutingQuestion] = Form(
+  def form(): Form[RoutingQuestionYesNo] = Form(
     Forms.mapping(
-      "hasRoutingCountries" -> requiredRadio("declaration.routingQuestion.empty")
+      "answer" -> requiredRadio("declaration.routingQuestion.empty")
         .verifying("declaration.routingQuestion.error", isContainedIn(allowedValues))
-    )(RoutingQuestion.apply)(RoutingQuestion.unapply)
+    )(RoutingQuestionYesNo.apply)(RoutingQuestionYesNo.unapplyToString)
   )
 }

@@ -16,8 +16,8 @@
 
 @import controllers.declaration.routes
 @import controllers.navigation.Navigator
-@import forms.declaration.RoutingQuestion
-@import forms.declaration.RoutingQuestion.{no, RemoveCountryPage, yes}
+@import forms.declaration.RoutingQuestionYesNo
+@import forms.declaration.RoutingQuestionYesNo.{no, RemoveCountryPage, yes}
 @import models.requests.JourneyRequest
 @import services.model.Country
 @import views.components.inputs.RadioOption
@@ -25,7 +25,7 @@
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[RoutingQuestion], countryToRemove: Country)(implicit request: JourneyRequest[AnyContent], messages: Messages)
+@(mode: Mode, form: Form[RoutingQuestionYesNo], countryToRemove: Country)(implicit request: JourneyRequest[AnyContent], messages: Messages)
 
 @main_template(
     title = Title("declaration.routingCountries.remove.title", "declaration.routingCountries.remove.heading")
@@ -42,7 +42,7 @@
 
     <table id="remove-country-table" class="form-group">
         <thead>
-            <th class="table-head" id="country">Country</th>
+            <th class="table-head" id="country-header">Country</th>
         </thead>
         <tbody>
             <td class="table-cell">@countryToRemove.toString()</td>
@@ -53,7 +53,7 @@
         @helper.CSRF.formField
 
         @components.fields.field_radio(
-            field = form("hasRoutingCountries"),
+            field = form("answer"),
             legend = "",
             inputs = Seq(
                 RadioOption("Yes", yes, messages("site.yes")),

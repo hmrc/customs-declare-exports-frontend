@@ -16,8 +16,8 @@
 
 @import controllers.declaration.routes
 @import controllers.navigation.Navigator
-@import forms.declaration.RoutingQuestion
-@import forms.declaration.RoutingQuestion.{no, RoutingQuestionPage, yes}
+@import forms.declaration.RoutingQuestionYesNo
+@import forms.declaration.RoutingQuestionYesNo.{no, RoutingQuestionPage, yes}
 @import models.requests.JourneyRequest
 @import services.model.Country
 @import views.components.inputs.RadioOption
@@ -25,7 +25,7 @@
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[RoutingQuestion], countriesOfRouting: Seq[Country])(implicit request: JourneyRequest[AnyContent], messages: Messages)
+@(mode: Mode, form: Form[RoutingQuestionYesNo], countriesOfRouting: Seq[Country])(implicit request: JourneyRequest[AnyContent], messages: Messages)
 
 @main_template(
     title = Title("declaration.routingCountries.summary.title", "declaration.routingCountries.summary.heading")
@@ -44,8 +44,8 @@
         <tbody>
             @countriesOfRouting.zipWithIndex.map { case (country, index) =>
                 <tr class="table-row">
-                    <th class="table-head" id="country_code_@index">@messages("declaration.routingCountries.summary.table.code")</th>
-                    <td class="table-cell" id="country_@index">@country.toString()</td>
+                    <th class="table-head" scope="row" id="country_code_@index">@messages("declaration.routingCountries.summary.table.code")</th>
+                    <td class="table-cell" id="country_@index">@country.asString()</td>
                     <td class="table-cell" id="change_country_@index">Change button</td>
                     <td class="table-cell" id="remove_country_@index">
                         <a id="country_remove_@index" href="@routes.RoutingCountriesSummaryController.displayRemoveCountryPage(mode, country.countryCode)">
@@ -62,7 +62,7 @@
         @helper.CSRF.formField
 
         @components.fields.field_radio(
-            field = form("hasRoutingCountries"),
+            field = form("answer"),
             legend = messages("declaration.routingCountries.summary.question"),
             inputs = Seq(
                 RadioOption("Yes", yes, messages("site.yes")),

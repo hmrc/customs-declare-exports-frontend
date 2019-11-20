@@ -376,8 +376,8 @@ declaration.routingQuestion.error = This option is incorrect, please choose Yes 
 declaration.routingCountry.title = Routing country
 declaration.routingCountry.heading = Locations
 declaration.routingCountry.question = Where will the goods be sent through next?
-declaration.firstRoutingCountry.question = Where will the goods be sent through first?
 declaration.routingCountry.empty = Enter the country where the goods went through next
+declaration.firstRoutingCountry.question = Where will the goods be sent through first?
 declaration.firstRoutingCountry.empty = Enter the country where the goods went through first
 
 declaration.routingCountries.summary.title = Countries of routing

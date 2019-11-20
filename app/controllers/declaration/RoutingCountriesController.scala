@@ -18,8 +18,8 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.RoutingQuestion
-import forms.declaration.RoutingQuestion._
+import forms.declaration.RoutingQuestionYesNo
+import forms.declaration.RoutingQuestionYesNo._
 import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.destinationCountries.DestinationCountries.{FirstRoutingCountryPage, NextRoutingCountryPage}
 import javax.inject.Inject
@@ -52,9 +52,9 @@ class RoutingCountriesController @Inject()(
       navigator.continueTo(routes.RoutingCountriesSummaryController.displayPage(mode))
     } else {
       val destinationCountryCode = request.cacheModel.locations.destinationCountry
-      val destinationCountryName = destinationCountryCode.flatMap(retrieveCountryNameFromCode(_)).getOrElse("")
+      val destinationCountryName = destinationCountryCode.map(retrieveCountryNameFromCode(_)).map(_.countryName).getOrElse("")
 
-      request.cacheModel.locations.hasRoutingCountries.map(answerFromBoolean) match {
+      request.cacheModel.locations.hasRoutingCountries.map(RoutingQuestionYesNo(_)) match {
         case Some(answer) => Ok(routingQuestionPage(mode, form.fill(answer), destinationCountryName))
         case None         => Ok(routingQuestionPage(mode, form, destinationCountryName))
       }
@@ -72,12 +72,14 @@ class RoutingCountriesController @Inject()(
       )
   }
 
-  private def updateRoutingAnswer(answer: RoutingQuestion)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    if (answer.toBoolean) updateExportsDeclarationSyncDirect(_.updateRoutingQuestion(answerToBoolean(answer)))
+  private def updateRoutingAnswer(
+    routingQuestion: RoutingQuestionYesNo
+  )(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+    if (routingQuestion.answer) updateExportsDeclarationSyncDirect(_.updateRoutingQuestion(routingQuestion.answer))
     else updateExportsDeclarationSyncDirect(_.clearRoutingCountries)
 
-  private def redirectFromRoutingAnswer(mode: Mode, answer: RoutingQuestion)(implicit request: JourneyRequest[AnyContent]): Result =
-    if (answer.toBoolean) navigator.continueTo(controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(mode))
+  private def redirectFromRoutingAnswer(mode: Mode, routingQuestion: RoutingQuestionYesNo)(implicit request: JourneyRequest[AnyContent]): Result =
+    if (routingQuestion.answer) navigator.continueTo(controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(mode))
     else navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode))
 
   def displayRoutingCountry(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
@@ -85,7 +87,7 @@ class RoutingCountriesController @Inject()(
     val page = if (request.cacheModel.locations.routingCountries.nonEmpty) NextRoutingCountryPage else FirstRoutingCountryPage
 
     routingAnswer match {
-      case Some(answer) if answer => Ok(countryOfRoutingPage(mode, DestinationCountries.form(page), page.id))
+      case Some(answer) if answer => Ok(countryOfRoutingPage(mode, DestinationCountries.form(page), page))
       case _                      => navigator.continueTo(controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(mode, false))
     }
   }
@@ -98,7 +100,7 @@ class RoutingCountriesController @Inject()(
       .form(page)
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(countryOfRoutingPage(mode, formWithErrors, page.id))),
+        formWithErrors => Future.successful(BadRequest(countryOfRoutingPage(mode, formWithErrors, page))),
         validCountry => {
           val newRoutingCountries = request.cacheModel.locations.routingCountries :+ validCountry
 

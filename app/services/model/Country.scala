@@ -24,5 +24,5 @@ case object Country {
 
 case class Country(countryName: String, countryCode: String) {
 
-  override def toString(): String = s"$countryName ($countryCode)"
+  def asString(): String = s"$countryName ($countryCode)"
 }

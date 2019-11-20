@@ -1,0 +1,83 @@
+/*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package forms.declaration
+
+import forms.declaration.RoutingQuestionYesNo
+import play.api.data.FormError
+import play.api.libs.json.{JsObject, JsString}
+import unit.base.UnitSpec
+
+class RoutingQuestionYesNoSpec extends UnitSpec {
+
+  "Routing Country model" should {
+
+    "return correct value for apply method" in {
+
+      RoutingQuestionYesNo(RoutingQuestionYesNo.yes).answer mustBe true
+      RoutingQuestionYesNo(RoutingQuestionYesNo.no).answer mustBe false
+    }
+
+    "should have defined two options for form" in {
+
+      RoutingQuestionYesNo.yes mustBe "Yes"
+      RoutingQuestionYesNo.no mustBe "No"
+    }
+
+    "return correct value form unapplyToString method" in {
+
+      RoutingQuestionYesNo.unapplyToString(RoutingQuestionYesNo(true)) mustBe Some(RoutingQuestionYesNo.yes)
+      RoutingQuestionYesNo.unapplyToString(RoutingQuestionYesNo(false)) mustBe Some(RoutingQuestionYesNo.no)
+    }
+
+    "contains correct list of allowedValues" in {
+
+      RoutingQuestionYesNo.allowedValues mustBe Seq(RoutingQuestionYesNo.yes, RoutingQuestionYesNo.no)
+    }
+
+    "contains errors after form validation" when {
+
+      "input is empty" in {
+
+        val incorrectForm = Map("answer" -> "")
+
+        val result = RoutingQuestionYesNo.form().bind(incorrectForm)
+
+        result.errors.length mustBe 1
+        result.errors.head mustBe FormError("answer", "declaration.routingQuestion.empty")
+      }
+
+      "input is incorrect" in {
+
+        val incorrectForm = Map("answer" -> "incorrect")
+
+        val result = RoutingQuestionYesNo.form().bind(incorrectForm)
+
+        result.errors.length mustBe 1
+        result.errors.head mustBe FormError("answer", "declaration.routingQuestion.error")
+      }
+    }
+
+    "doesn't have any errors when value is correct" in {
+
+      val correctForm = Map("answer" -> "Yes")
+
+      val result = RoutingQuestionYesNo.form().bind(correctForm)
+
+      result.errors mustBe empty
+    }
+  }
+}

@@ -115,8 +115,8 @@ trait ExportsDeclarationBuilder {
   def withoutDestinationCountry(): ExportsDeclarationModifier =
     model => model.copy(locations = model.locations.copy(destinationCountry = None))
 
-  def withRoutingQuestion(routingQuestion: RoutingQuestion = RoutingQuestion("Yes")): ExportsDeclarationModifier =
-    model => model.copy(locations = model.locations.copy(hasRoutingCountries = Some(routingQuestion.toBoolean)))
+  def withRoutingQuestion(routingQuestion: RoutingQuestionYesNo = RoutingQuestionYesNo("Yes")): ExportsDeclarationModifier =
+    model => model.copy(locations = model.locations.copy(hasRoutingCountries = Some(routingQuestion.answer)))
 
   def withoutRoutingQuestion(): ExportsDeclarationModifier =
     model => model.copy(locations = model.locations.copy(hasRoutingCountries = None))

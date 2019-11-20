@@ -17,7 +17,7 @@
 package views.declaration.destinationCountries
 
 import controllers.declaration.routes
-import forms.declaration.RoutingQuestion
+import forms.declaration.RoutingQuestionYesNo
 import models.Mode
 import play.api.data.Form
 import services.cache.ExportsTestData
@@ -29,7 +29,7 @@ import views.html.declaration.destinationCountries.routing_countries_summary
 class RoutingCountriesSummaryViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
 
   val countries = Seq(Country("France", "FR"), Country("Poland", "PL"))
-  val form: Form[RoutingQuestion] = RoutingQuestion.form()
+  val form: Form[RoutingQuestionYesNo] = RoutingQuestionYesNo.form()
 
   val routingCountriesSummaryPage = new routing_countries_summary(mainTemplate)
   val view = routingCountriesSummaryPage(Mode.Normal, form, countries)(journeyRequest(), messages)
@@ -58,7 +58,7 @@ class RoutingCountriesSummaryViewSpec extends UnitViewSpec with Stubs with Expor
 
     "display page question" in {
 
-      view.getElementById("hasRoutingCountries-label").text() mustBe messages("declaration.routingCountries.summary.question")
+      view.getElementById("answer-label").text() mustBe messages("declaration.routingCountries.summary.question")
     }
 
     "have Yes/No answers" in {

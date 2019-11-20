@@ -17,7 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.RoutingCountriesController
-import forms.declaration.RoutingQuestion
+import forms.declaration.RoutingQuestionYesNo
 import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -58,8 +58,8 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
     super.afterEach()
   }
 
-  def theRoutingQuestionForm: Form[RoutingQuestion] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[RoutingQuestion]])
+  def theRoutingQuestionForm: Form[RoutingQuestionYesNo] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[RoutingQuestionYesNo]])
     verify(mockRoutingQuestionPage).apply(any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
@@ -111,7 +111,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withDestinationCountry()))
 
-        val incorrectForm = JsObject(Seq("hasRoutingCountries" -> JsString("incorrect")))
+        val incorrectForm = JsObject(Seq("answer" -> JsString("incorrect")))
 
         val result = controller.submitRoutingAnswer(Mode.Normal)(postRequest(incorrectForm))
 
@@ -146,7 +146,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withDestinationCountry()))
 
-        val correctForm = JsObject(Seq("hasRoutingCountries" -> JsString("Yes")))
+        val correctForm = JsObject(Seq("answer" -> JsString("Yes")))
 
         val result = controller.submitRoutingAnswer(Mode.Normal)(postRequest(correctForm))
 
@@ -158,7 +158,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withDestinationCountry()))
 
-        val correctForm = JsObject(Seq("hasRoutingCountries" -> JsString("No")))
+        val correctForm = JsObject(Seq("answer" -> JsString("No")))
 
         val result = controller.submitRoutingAnswer(Mode.Normal)(postRequest(correctForm))
 
@@ -178,7 +178,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
       "user try to get Routing Countries when answered No for Routing Question" in {
 
-        withNewCaching(aDeclaration(withRoutingQuestion(RoutingQuestion("No"))))
+        withNewCaching(aDeclaration(withRoutingQuestion(RoutingQuestionYesNo("No"))))
 
         val result = controller.displayRoutingCountry(Mode.Normal)(getRequest())
 

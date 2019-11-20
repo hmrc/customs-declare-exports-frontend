@@ -17,7 +17,7 @@
 package views.declaration.destinationCountries
 
 import controllers.declaration.routes
-import forms.declaration.RoutingQuestion
+import forms.declaration.RoutingQuestionYesNo
 import models.Mode
 import play.api.data.Form
 import services.cache.ExportsTestData
@@ -28,7 +28,7 @@ import views.html.declaration.destinationCountries.routing_country_question
 class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
 
   val countryOfDestination = "Poland"
-  val form: Form[RoutingQuestion] = RoutingQuestion.form()
+  val form: Form[RoutingQuestionYesNo] = RoutingQuestionYesNo.form()
 
   val routingQuestionPage = new routing_country_question(mainTemplate)
   val view = routingQuestionPage(Mode.Normal, form, countryOfDestination)(journeyRequest(), messages)

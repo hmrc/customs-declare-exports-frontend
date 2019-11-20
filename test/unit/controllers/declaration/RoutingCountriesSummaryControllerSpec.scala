@@ -17,7 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.RoutingCountriesSummaryController
-import forms.declaration.RoutingQuestion
+import forms.declaration.RoutingQuestionYesNo
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -59,8 +59,8 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
     super.afterEach()
   }
 
-  def theResponseSummaryForm: Form[RoutingQuestion] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[RoutingQuestion]])
+  def theResponseSummaryForm: Form[RoutingQuestionYesNo] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[RoutingQuestionYesNo]])
     verify(mockRoutingCountriesSummaryPage).apply(any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
@@ -142,7 +142,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withRoutingCountries(Seq("PL", "GB"))))
 
-        val correctForm = JsObject(Seq("hasRoutingCountries" -> JsString("Yes")))
+        val correctForm = JsObject(Seq("answer" -> JsString("Yes")))
 
         val result = controller.submitRemoveCountry(Mode.Normal, "PL")(postRequest(correctForm))
 
@@ -154,7 +154,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withRoutingCountries(Seq("PL", "GB"))))
 
-        val correctForm = JsObject(Seq("hasRoutingCountries" -> JsString("No")))
+        val correctForm = JsObject(Seq("answer" -> JsString("No")))
 
         val result = controller.submitRemoveCountry(Mode.Normal, "PL")(postRequest(correctForm))
 
@@ -169,7 +169,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withRoutingCountries()))
 
-        val incorrectAnswer = JsObject(Seq("hasRoutingCountries" -> JsString("incorrect")))
+        val incorrectAnswer = JsObject(Seq("answer" -> JsString("incorrect")))
 
         val result = controller.submit(Mode.Normal)(postRequest(incorrectAnswer))
 
@@ -183,7 +183,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withRoutingCountries()))
 
-        val incorrectAnswer = JsObject(Seq("hasRoutingCountries" -> JsString("incorrect")))
+        val incorrectAnswer = JsObject(Seq("answer" -> JsString("incorrect")))
 
         val result = controller.submit(Mode.Normal)(postRequest(incorrectAnswer))
 
@@ -197,7 +197,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withRoutingCountries()))
 
-        val correctAnswer = JsObject(Seq("hasRoutingCountries" -> JsString("Yes")))
+        val correctAnswer = JsObject(Seq("answer" -> JsString("Yes")))
 
         val result = controller.submit(Mode.Normal)(postRequest(correctAnswer))
 
@@ -212,7 +212,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withRoutingCountries()))
 
-        val correctAnswer = JsObject(Seq("hasRoutingCountries" -> JsString("No")))
+        val correctAnswer = JsObject(Seq("answer" -> JsString("No")))
 
         val result = controller.submit(Mode.Normal)(postRequest(correctAnswer))
 

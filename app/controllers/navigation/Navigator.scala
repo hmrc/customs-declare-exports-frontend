@@ -19,7 +19,7 @@ package controllers.navigation
 import config.AppConfig
 import controllers.util.{FormAction, SaveAndReturn}
 import forms.DeclarationPage
-import forms.declaration.RoutingQuestion.{RemoveCountryPage, RoutingQuestionPage}
+import forms.declaration.RoutingQuestionYesNo.{RemoveCountryPage, RoutingQuestionPage}
 import forms.declaration.destinationCountries.DestinationCountries.{DestinationCountryPage, FirstRoutingCountryPage, OriginationCountryPage}
 import forms.declaration.{BorderTransport, Document, PackageInformation}
 import javax.inject.Inject

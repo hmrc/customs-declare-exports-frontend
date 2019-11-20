@@ -32,8 +32,8 @@ class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestD
   val nextRoutingForm: Form[String] = DestinationCountries.form(NextRoutingCountryPage)
 
   val countryOfRoutingPage = new country_of_routing(mainTemplate)
-  val firstRoutingView = countryOfRoutingPage(Mode.Normal, firstRoutingForm, FirstRoutingCountryPage.id)(journeyRequest(), messages)
-  val nextRoutingView = countryOfRoutingPage(Mode.Normal, nextRoutingForm, NextRoutingCountryPage.id)(journeyRequest(), messages)
+  val firstRoutingView = countryOfRoutingPage(Mode.Normal, firstRoutingForm, FirstRoutingCountryPage)(journeyRequest(), messages)
+  val nextRoutingView = countryOfRoutingPage(Mode.Normal, nextRoutingForm, NextRoutingCountryPage)(journeyRequest(), messages)
 
   "Routing Country view" should {
 

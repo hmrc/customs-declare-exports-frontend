@@ -16,7 +16,7 @@
 
 @import controllers.declaration.routes
 @import controllers.navigation.Navigator
-@import forms.declaration.destinationCountries.DestinationCountries.FirstRoutingCountryPage
+@import forms.declaration.destinationCountries.DestinationCountries.{CountryPage, FirstRoutingCountryPage}
 @import models.requests.JourneyRequest
 @import services.Countries
 @import services.view.AutoCompleteItem
@@ -24,7 +24,7 @@
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[String], id: String)(implicit request: JourneyRequest[AnyContent], messages: Messages)
+@(mode: Mode, form: Form[String], page: CountryPage)(implicit request: JourneyRequest[AnyContent], messages: Messages)
 
 @main_template(
     title = Title("declaration.routingCountry.title", "declaration.routingCountry.heading")
@@ -35,7 +35,7 @@
     @components.error_summary(form.errors)
 
     @components.heading(
-        title = messages(s"declaration.$id.question"),
+        title = messages(s"declaration.${page.id}.question"),
         sectionHeader = messages("declaration.routingCountry.heading")
     )
 
@@ -45,12 +45,12 @@
         @*TODO move id to field_autocomplete*@
         <div id="origination-country-field">
             @components.fields.field_autocomplete(
-            form("country"),
-            "",
-            None,
-            None,
-            messages(s"declaration.$id.empty"),
-            AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
+                form("country"),
+                "",
+                None,
+                None,
+                messages(s"declaration.${page.id}.empty"),
+                AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
             )
         </div>
 

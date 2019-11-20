@@ -70,8 +70,8 @@ case class ExportsDeclaration(
   def updateDestinationCountry(destinationCountry: String): ExportsDeclaration =
     copy(locations = locations.copy(destinationCountry = Some(destinationCountry)))
 
-  def updateRoutingQuestion(hasRoutingCountries: Boolean): ExportsDeclaration =
-    copy(locations = locations.copy(hasRoutingCountries = Some(hasRoutingCountries)))
+  def updateRoutingQuestion(answer: Boolean): ExportsDeclaration =
+    copy(locations = locations.copy(hasRoutingCountries = Some(answer)))
 
   def clearRoutingCountries(): ExportsDeclaration =
     copy(locations = locations.copy(hasRoutingCountries = Some(false), routingCountries = Seq.empty))
