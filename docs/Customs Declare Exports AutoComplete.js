@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.8
+// @version      1.9
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -127,6 +127,14 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs("/customs-declare-exports/declaration/country-of-routing")) {
+        document.getElementById('No').click()
+        document.getElementsByClassName('button')[0].click()
+    }
+    if (currentPageIs("/customs-declare-exports/declaration/countries-of-routing")) {
+        selectFromAutoPredict(document.getElementById("country-container"), "FR");
+        document.getElementsByClassName('button')[0].click()
+    }
+    if (currentPageIs("/customs-declare-exports/declaration/countries-summary")) {
         document.getElementById('No').click()
         document.getElementsByClassName('button')[0].click()
     }

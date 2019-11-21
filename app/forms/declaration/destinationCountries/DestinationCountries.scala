@@ -43,11 +43,13 @@ object DestinationCountries {
     override val id = "routingCountry"
   }
 
-  def form(page: CountryPage): Form[String] = Form(
+  def form(page: CountryPage, cachedCountries: Seq[String] = Seq.empty): Form[String] = Form(
     single(
       "country" -> text()
         .verifying(s"declaration.${page.id}.empty", _.trim.nonEmpty)
         .verifying(s"declaration.${page.id}.error", emptyOrValidCountry)
+        .verifying(s"declaration.routingCountries.duplication", !cachedCountries.contains(_))
+        .verifying(s"declaration.routingCountries.limit", _ => cachedCountries.length < limit)
     )
   )
 
