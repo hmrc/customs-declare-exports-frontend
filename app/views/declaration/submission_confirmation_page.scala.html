@@ -21,27 +21,25 @@
 
 @()(implicit request: Request[_], flash: Flash, messages: Messages)
 
+@titleKey = @{ s"declaration.confirmation.${flash.get(FlashKeys.decType).getOrElse("default").toLowerCase}.title" }
+@viewDeclarationsLink = {<a id="submissions-link" href="@routes.SubmissionsController.displayListOfSubmissions()">@messages("declaration.confirmation.info.link")</a>}
+@lrnMessage(lrn: String) = {<div class="font-large">@messages("declaration.confirmation.lrn")</div> <div id="lrn-number" class="font-large bold">@lrn</div>}
+
 @main_template(
-    title = Title("supplementary.confirmation.title")
+    title = Title(titleKey)
 ) {
 
     <div class="govuk-box-highlight">
         <h1 class="heading-xlarge">
-            @messages("supplementary.confirmation.header")
+            @messages(titleKey)
         </h1>
-        <p class="font-large">@flash.get(FlashKeys.lrn).getOrElse("-")</p>
+
+        @flash.get(FlashKeys.lrn).map(lrn => lrnMessage(lrn))
     </div>
 
-    <p>@messages("supplementary.confirmation.info")</p>
-
-    <h1 class="heading-medium">@messages("supplementary.confirmation.whatHappensNext")</h1>
-
     <p>
-        @messages("supplementary.confirmation.explanation")
-        <a id="submissions-link" href="@routes.SubmissionsController.displayListOfSubmissions()">
-            @messages("supplementary.confirmation.explanation.linkText")
-        </a>
+      @Html(messages("declaration.confirmation.info", viewDeclarationsLink))
     </p>
 
-    @components.button_link(messageKey = "supplementary.confirmation.submitAnotherDeclaration", href=routes.ChoiceController.displayPage().url)
+    @components.button_link(messageKey = "declaration.confirmation.submitAnotherDeclaration", href=routes.ChoiceController.displayPage().url)
 }

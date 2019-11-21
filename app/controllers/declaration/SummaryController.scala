@@ -23,6 +23,7 @@ import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.SupplementaryDeclarationData
 import models.requests.ExportsSessionKeys
+import models.responses.FlashKeys
 import models.{ExportsDeclaration, Mode}
 import play.api.Logger
 import play.api.data.Form
@@ -71,7 +72,7 @@ class SummaryController @Inject()(
           submissionService.submit(request.eori, request.cacheModel, legalDeclaration).map {
             case Some(lrn) =>
               Redirect(controllers.declaration.routes.ConfirmationController.displaySubmissionConfirmation())
-                .flashing(Flash(Map("LRN" -> lrn)))
+                .flashing(Flash(Map(FlashKeys.lrn -> lrn, FlashKeys.decType -> request.declarationType.toString())))
                 .removingFromSession(ExportsSessionKeys.declarationId)
             case _ => handleError(s"Error from Customs Declarations API")
           }

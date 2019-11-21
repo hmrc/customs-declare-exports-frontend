@@ -31,29 +31,35 @@ import views.tags.ViewTest
 class DraftConfirmationViewSpec extends UnitViewSpec with CommonMessages with Stubs {
 
   private val page = new draft_confirmation_page(mainTemplate)
-  private def createView(flash: (String, String)*): Html = page()(request, Flash(Map(flash: _*)), messages)
+  private val realMessages = validatedMessages
+  private def createView(flash: (String, String)*): Html = page()(request, Flash(Map(flash: _*)), realMessages)
 
   "View" should {
     "render expiry date" when {
       "present in flash" in {
         val date = LocalDateTime.of(2019, 1, 1, 1, 1).toInstant(ZoneOffset.UTC)
         val view = createView(FlashKeys.expiryDate -> date.toEpochMilli.toString)
-        view.getElementById("draft_confirmation-expiry").text() mustBe "1 Jan 2019"
+        view.getElementById("draft_confirmation-expiry") must containText("1 Jan 2019")
       }
 
       "missing from flash" in {
-        createView().getElementById("draft_confirmation-expiry").text() mustBe "-"
+        createView().getElementById("draft_confirmation-expiry") must containText("-")
       }
     }
 
     "render continue link" in {
       val link = createView().getElementById("draft_confirmation-continue_dec_link")
-      link.attr("href") mustBe controllers.routes.SavedDeclarationsController.displayDeclarations().url
+      link must haveHref(controllers.routes.SavedDeclarationsController.displayDeclarations().url)
     }
 
     "render start new link" in {
       val link = createView().getElementById("draft_confirmation-create_dec_link")
-      link.attr("href") mustBe controllers.routes.ChoiceController.displayPage().url
+      link must haveHref(controllers.routes.ChoiceController.displayPage().url)
+    }
+
+    "render start again button" in {
+      val button = createView().getElementsByClass("button").first()
+      button must haveHref(controllers.routes.ChoiceController.displayPage().url)
     }
   }
 }
