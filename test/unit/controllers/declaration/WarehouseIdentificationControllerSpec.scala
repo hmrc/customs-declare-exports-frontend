@@ -45,13 +45,13 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
   val exampleWarehouseIdentificationNumber = "12341234"
 
   private val standardCacheModel =
-    aDeclaration(withType(DeclarationType.STANDARD), withWarehouseIdentification(None, None, Some(exampleWarehouseIdentificationNumber), None))
+    aDeclaration(withType(DeclarationType.STANDARD))
 
   private val suplementaryCacheModel =
-    aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withWarehouseIdentification(None, None, Some(exampleWarehouseIdentificationNumber), None))
+    aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
 
   private val simplifiedCacheModel =
-    aDeclaration(withType(DeclarationType.SIMPLIFIED), withWarehouseIdentification(None, None, Some(exampleWarehouseIdentificationNumber), None))
+    aDeclaration(withType(DeclarationType.SIMPLIFIED))
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -96,13 +96,12 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
         withNewCaching(standardCacheModel)
         val result = controller.saveIdentificationNumber(Mode.Normal).apply(postRequest(body))
         await(result)
-        val updatedWarehouse = theCacheModelUpdated.locations.warehouseIdentification.value
-        updatedWarehouse.identificationNumber.value mustBe exampleWarehouseIdentificationNumber
+        theCacheModelUpdated.locations.warehouseIdentification.value.identificationNumber.value mustBe exampleWarehouseIdentificationNumber
       }
 
       "return Bad Request if payload is not compatible with model" in {
         withNewCaching(standardCacheModel)
-        val body = Json.obj("supervisingCustomsOffice" -> "A")
+        val body = Json.obj("identificationNumber" -> "$$$$$$")
         val result = controller.saveIdentificationNumber(Mode.Normal).apply(postRequest(body))
 
         status(result) mustBe BAD_REQUEST
@@ -121,13 +120,12 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
         withNewCaching(suplementaryCacheModel)
         val result = controller.saveIdentificationNumber(Mode.Normal).apply(postRequest(body))
         await(result)
-        val updatedWarehouse = theCacheModelUpdated.locations.warehouseIdentification.value
-        updatedWarehouse.identificationNumber.value mustBe exampleWarehouseIdentificationNumber
+        theCacheModelUpdated.locations.warehouseIdentification.value.identificationNumber.value mustBe exampleWarehouseIdentificationNumber
       }
 
       "return Bad Request if payload is not compatible with model" in {
         withNewCaching(suplementaryCacheModel)
-        val body = Json.obj("supervisingCustomsOffice" -> "A")
+        val body = Json.obj("identificationNumber" -> "$$$$$")
         val result = controller.saveIdentificationNumber(Mode.Normal).apply(postRequest(body))
 
         status(result) mustBe BAD_REQUEST
@@ -146,13 +144,12 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
         withNewCaching(simplifiedCacheModel)
         val result = controller.saveIdentificationNumber(Mode.Normal).apply(postRequest(body))
         await(result)
-        val updatedWarehouse = theCacheModelUpdated.locations.warehouseIdentification.value
-        updatedWarehouse.identificationNumber.value mustBe exampleWarehouseIdentificationNumber
+        theCacheModelUpdated.locations.warehouseIdentification.value.identificationNumber.value mustBe exampleWarehouseIdentificationNumber
       }
 
       "return Bad Request if payload is not compatible with model" in {
         withNewCaching(simplifiedCacheModel)
-        val body = Json.obj("supervisingCustomsOffice" -> "A")
+        val body = Json.obj("identificationNumber" -> "$$$$$$")
         val result = controller.saveIdentificationNumber(Mode.Normal).apply(postRequest(body))
 
         status(result) mustBe BAD_REQUEST

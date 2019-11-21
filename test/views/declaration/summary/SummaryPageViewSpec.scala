@@ -17,7 +17,7 @@
 package views.declaration.summary
 
 import base.ExportsTestData.newUser
-import forms.declaration.{GoodsLocation, LegalDeclaration}
+import forms.declaration._
 import models.DeclarationType.DeclarationType
 import models.declaration.{Container, SupplementaryDeclarationData}
 import models.requests.{AuthenticatedRequest, JourneyRequest}
@@ -234,7 +234,9 @@ class SummaryPageViewSpec extends WordSpec with MustMatchers with ExportsDeclara
       withConsignmentReferences(),
       withDestinationCountries(),
       withGoodsLocation(GoodsLocation("PL", "type", "id", Some("a"), Some("b"), Some("c"), Some("d"), Some("e"))),
-      withWarehouseIdentification(Some("a"), Some("b"), Some("c"), Some("d")),
+      withWarehouseIdentification(Some(WarehouseIdentification(Some("a")))),
+      withSupervisingCustomsOffice(Some(SupervisingCustomsOffice(Some("b")))),
+      withInlandModeOfTransportCode(Some(InlandModeOfTransportCode(Some("c")))),
       withOfficeOfExit("id", Some("code")),
       withContainerData(Container("id", Seq.empty)),
       withTotalNumberOfItems(Some("123"), Some("123")),

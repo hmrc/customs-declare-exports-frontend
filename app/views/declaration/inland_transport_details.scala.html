@@ -15,17 +15,16 @@
  *@
 
 @import controllers.declaration.routes
+@import controllers.navigation.Navigator
+@import models.requests.JourneyRequest
 @import forms.declaration.TransportCodes._
-@import forms.declaration.WarehouseDetails
-@import services.CustomsOffices
-@import services.view.AutoCompleteItem
-@import uk.gov.hmrc.play.views.html._
+@import forms.declaration.InlandModeOfTransportCode
 @import views.components.inputs.RadioOption
 @import views.Title
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[WarehouseDetails])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, form: Form[InlandModeOfTransportCode])(implicit request: JourneyRequest[_], messages: Messages)
 
     @main_template(
         title = Title("declaration.warehouse.inlandTransportDetails.title")
@@ -34,7 +33,7 @@
         @helper.form(routes.InlandTransportDetailsController.submit(mode), 'autoComplete -> "off") {
             @helper.CSRF.formField
 
-            @components.back_link(controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(mode), mode)
+            @components.back_link(Navigator.backLink(InlandModeOfTransportCode, mode)(request))
 
             @components.error_summary(form.errors)
 

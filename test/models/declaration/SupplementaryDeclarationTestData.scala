@@ -31,8 +31,6 @@ import forms.declaration.NatureOfTransactionSpec._
 import forms.declaration.OfficeOfExitSupplementarySpec._
 import forms.declaration.RepresentativeDetailsSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
-import forms.declaration.TransportCodes.Rail
-import forms.declaration.WarehouseDetailsSpec._
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
@@ -202,8 +200,10 @@ object SupplementaryDeclarationTestData {
       hasRoutingCountries = Some(true),
       routingCountries = Seq("FR"),
       goodsLocation = Some(correctGoodsLocation),
-      warehouseIdentification = Some(correctWarehouseDetails),
-      officeOfExit = Some(correctOfficeOfExit)
+      officeOfExit = Some(correctOfficeOfExit),
+      warehouseIdentification = Some(WarehouseIdentificationSpec.correctWarehouseDetails),
+      supervisingCustomsOffice = Some(SupervisingCustomsOfficeSpec.correctSupervisingCustomsOffice),
+      inlandModeOfTransportCode = Some(InlandModeOfTransportCodeSpec.correctInlandModeOfTransportCode)
     )
   )
 
@@ -261,8 +261,10 @@ object SupplementaryDeclarationTestData {
       hasRoutingCountries = Some(true),
       routingCountries = Seq("FR"),
       goodsLocation = Some(correctGoodsLocation),
-      warehouseIdentification = Some(WarehouseDetails(Some("12345678"), Some("R"), Some("1234567GB"), Some(Rail))),
-      officeOfExit = Some(correctOfficeOfExit)
+      officeOfExit = Some(correctOfficeOfExit),
+      warehouseIdentification = Some(WarehouseIdentificationSpec.correctWarehouseDetails),
+      supervisingCustomsOffice = Some(SupervisingCustomsOfficeSpec.correctSupervisingCustomsOffice),
+      inlandModeOfTransportCode = Some(InlandModeOfTransportCodeSpec.correctInlandModeOfTransportCode)
     ),
     previousDocuments = Some(PreviousDocumentsData(Seq(Document("X", "MCR", "DocumentReference", Some("123")))))
   )
@@ -290,8 +292,10 @@ object SupplementaryDeclarationTestData {
         hasRoutingCountries = Some(true),
         routingCountries = Seq("FR"),
         goodsLocation = Some(correctGoodsLocation),
-        warehouseIdentification = Some(correctWarehouseDetails),
-        officeOfExit = Some(correctOfficeOfExit)
+        officeOfExit = Some(correctOfficeOfExit),
+        warehouseIdentification = Some(WarehouseIdentificationSpec.correctWarehouseDetails),
+        supervisingCustomsOffice = Some(SupervisingCustomsOfficeSpec.correctSupervisingCustomsOffice),
+        inlandModeOfTransportCode = Some(InlandModeOfTransportCodeSpec.correctInlandModeOfTransportCode)
       )
     ),
     transportInformationContainerData = Some(correctTransportInformationContainerData),

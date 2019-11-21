@@ -17,7 +17,7 @@
 package views.declaration
 
 import base.Injector
-import forms.declaration.WarehouseDetails
+import forms.declaration.WarehouseIdentification
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -33,9 +33,9 @@ import views.tags.ViewTest
 class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = new warehouse_identification(mainTemplate)
-  private val form: Form[WarehouseDetails] = WarehouseDetails.form()
+  private val form: Form[WarehouseIdentification] = WarehouseIdentification.form()
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[WarehouseDetails] = form, messages: Messages = stubMessages()): Document =
+  private def createView(mode: Mode = Mode.Normal, form: Form[WarehouseIdentification] = form, messages: Messages = stubMessages()): Document =
     page(mode, form)(journeyRequest(), messages)
 
   "Warehouse Identification Number View" should {

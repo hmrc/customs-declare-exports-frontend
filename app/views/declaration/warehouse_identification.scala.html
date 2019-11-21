@@ -15,17 +15,14 @@
  *@
 
 @import controllers.declaration.routes
-@import forms.declaration.TransportCodes._
-@import forms.declaration.WarehouseDetails
-@import services.CustomsOffices
-@import services.view.AutoCompleteItem
-@import uk.gov.hmrc.play.views.html._
-@import views.components.inputs.RadioOption
+@import models.requests.JourneyRequest
+@import forms.declaration.WarehouseIdentification
+@import controllers.navigation.Navigator
 @import views.Title
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[WarehouseDetails])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, form: Form[WarehouseIdentification])(implicit request: JourneyRequest[_], messages: Messages)
 
     @main_template(
         title = Title("declaration.warehouse.identification.title")
@@ -34,7 +31,7 @@
         @helper.form(routes.WarehouseIdentificationController.saveIdentificationNumber(mode), 'autoComplete -> "off") {
             @helper.CSRF.formField
 
-            @components.back_link(controllers.declaration.routes.ItemsSummaryController.displayPage(mode), mode)
+            @components.back_link(Navigator.backLink(WarehouseIdentification, mode)(request))
 
             @components.error_summary(form.errors)
 
