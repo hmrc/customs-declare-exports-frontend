@@ -42,7 +42,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
     warehouseIdentificationPage = warehouseIdentificationTemplate
   )
 
-  val exampleWarehouseIdentificationNumber = "12341234"
+  val exampleWarehouseIdentificationNumber = "R12341234"
 
   private val standardCacheModel =
     aDeclaration(withType(DeclarationType.STANDARD))

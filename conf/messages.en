@@ -459,8 +459,8 @@ standard.officeOfExit.circumstancesCode.error = Circumstance code is incorrect
 
 declaration.warehouse.identification.sectionHeader = Locations
 declaration.warehouse.identification.title =  What is the warehouse identification number?
-declaration.warehouse.identification.hint = Because you entered 07, 71, or 78 in your procedure code, we need to know more about the type of warehouse your goods were held in.
-declaration.warehouse.identification.identificationNumber.error = Incorrect Identification Number
+declaration.warehouse.identification.hint = Because you entered 07, 71, or 78 in your procedure code, we need to know more about the type of warehouse your goods were held in. For example, R1234567GB. If the goods were not held in a warehouse you can leave this blank.
+declaration.warehouse.identification.identificationNumber.error = Enter a valid warehouse identification number in the correct format. It must be no more than 36 characters.
 declaration.warehouse.identification.identificationNumber.empty = Enter the warehouse identification number
 
 declaration.warehouse.supervisingCustomsOffice.sectionHeader = Locations

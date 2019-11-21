@@ -29,10 +29,17 @@ object WarehouseIdentification extends DeclarationPage {
 
   val formId = "WarehouseIdentification"
 
+  val validWarehouseTypes = Set('R', 'S', 'T', 'U', 'Y', 'Z')
+
   val mapping = Forms
     .mapping(
       "identificationNumber" ->
-        optional(text().verifying("supplementary.warehouse.identificationNumber.error", noShorterThan(1) and noLongerThan(35) and isAlphanumeric))
+        optional(
+          text().verifying(
+            "declaration.warehouse.identification.identificationNumber.error",
+            startsWith(validWarehouseTypes) and noShorterThan(2) and noLongerThan(35) and isAlphanumeric
+          )
+        )
     )(WarehouseIdentification.apply)(WarehouseIdentification.unapply)
 
   def form(): Form[WarehouseIdentification] = Form(mapping)

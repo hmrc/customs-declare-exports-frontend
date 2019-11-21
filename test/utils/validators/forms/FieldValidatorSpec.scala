@@ -881,4 +881,24 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
       }
     }
   }
+
+  "FieldValidator startsWith" should {
+
+    "return false" when {
+      "input does not start with allowed character" in {
+        startsWith(Set('A', 'B', 'C'))("The Test") must be(false)
+      }
+
+      "input empty" in {
+        startsWith(Set('A', 'B', 'C'))("") must be(false)
+      }
+    }
+    "return true" when {
+      "input starts with allowed character" in {
+        startsWith(Set('A', 'B', 'C'))("A Test") must be(true)
+        startsWith(Set('A', 'B', 'C'))("B Test") must be(true)
+        startsWith(Set('A', 'B', 'C'))("C Test") must be(true)
+      }
+    }
+  }
 }

@@ -43,11 +43,11 @@ class InlandModeOfTransportCodeSpec extends UnitSpec with WarehouseIdentificatio
 }
 
 object InlandModeOfTransportCodeSpec {
+  private val inlandModeOfTransportCode = TransportCodes.Rail
   val correctInlandModeOfTransportCode =
     InlandModeOfTransportCode(Some(inlandModeOfTransportCode))
   val correctInlandModeOfTransportCodeJSON: JsValue =
     JsObject(Map("inlandModeOfTransportCode" -> JsString(inlandModeOfTransportCode)))
   val emptyInlandModeOfTransportCodeJSON: JsValue =
     JsObject(Map("inlandModeOfTransportCode" -> JsString("")))
-  private val inlandModeOfTransportCode = TransportCodes.Rail
 }
