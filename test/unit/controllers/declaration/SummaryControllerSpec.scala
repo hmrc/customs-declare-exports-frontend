@@ -21,6 +21,7 @@ import controllers.declaration.SummaryController
 import forms.declaration.LegalDeclaration
 import models.declaration.SupplementaryDeclarationData
 import models.requests.ExportsSessionKeys
+import models.responses.FlashKeys
 import models.{ExportsDeclaration, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -120,7 +121,8 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
 
     "Redirect to confirmation" when {
       "valid submission" in {
-        withNewCaching(aDeclaration())
+        val declaration = aDeclaration()
+        withNewCaching(declaration)
         when(
           mockSubmissionService
             .submit(any(), any[ExportsDeclaration], any[LegalDeclaration])(any[HeaderCarrier], any[ExecutionContext])
@@ -132,7 +134,10 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
         status(result) must be(SEE_OTHER)
         session(result).get(ExportsSessionKeys.declarationId) must be(None)
         redirectLocation(result) must be(Some(controllers.declaration.routes.ConfirmationController.displaySubmissionConfirmation().url))
-        flash(result).get("LRN") must be(Some("123LRN"))
+
+        flash(result).get(FlashKeys.lrn) must be(Some("123LRN"))
+        flash(result).get(FlashKeys.decType) must be(Some(declaration.`type`.toString))
+
         verify(mockSubmissionService).submit(any(), any[ExportsDeclaration], any[LegalDeclaration])(any[HeaderCarrier], any[ExecutionContext])
       }
     }
