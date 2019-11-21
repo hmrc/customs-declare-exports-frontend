@@ -36,7 +36,7 @@ class WarehouseIdentificationSpec extends UnitSpec with LightFormMatchers {
     "validate - missing identification number" in {
       val incorrectWarehouseDetails = warehouseIdentification(warehouseTypeCode)
 
-      form().bind(incorrectWarehouseDetails).errors.map(_.message) must contain(identificationNumberError)
+      form().bind(incorrectWarehouseDetails).errors.map(_.message) must contain("declaration.warehouse.identification.identificationNumber.error")
     }
 
     "validate - missing warehouse type" in {

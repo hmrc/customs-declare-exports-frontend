@@ -17,11 +17,10 @@
 package forms.declaration
 
 import forms.LightFormMatchers
-import helpers.views.declaration.WarehouseIdentificationMessages
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import unit.base.UnitSpec
 
-class InlandModeOfTransportCodeSpec extends UnitSpec with WarehouseIdentificationMessages with LightFormMatchers {
+class InlandModeOfTransportCodeSpec extends UnitSpec with LightFormMatchers {
 
   import InlandModeOfTransportCode._
 
@@ -30,7 +29,7 @@ class InlandModeOfTransportCodeSpec extends UnitSpec with WarehouseIdentificatio
       val incorrectTransportCode: JsValue =
         JsObject(Map("inlandModeOfTransportCode" -> JsString("Incorrect more")))
 
-      form().bind(incorrectTransportCode).errors.map(_.message) must contain(inlandTransportModeError)
+      form().bind(incorrectTransportCode).errors.map(_.message) must contain("declaration.warehouse.inlandTransportDetails.error.incorrect")
     }
 
     "validate inland mode transport code - correct choice" in {

@@ -18,7 +18,6 @@ package unit.controllers.declaration
 
 import controllers.declaration.InlandTransportDetailsController
 import forms.declaration.TransportCodes.Maritime
-import helpers.views.declaration.WarehouseIdentificationMessages
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
@@ -30,7 +29,7 @@ import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.declaration.inland_transport_details
 
-class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAndAfterEach with WarehouseIdentificationMessages with OptionValues {
+class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAndAfterEach with OptionValues {
 
   private val inlandTransportDetails = mock[inland_transport_details]
 
@@ -100,6 +99,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
         withNewCaching(standardCacheModel)
 
         await(controller.submit(Mode.Normal)(postRequest(body)))
+
         theCacheModelUpdated.locations.inlandModeOfTransportCode.value.inlandModeOfTransportCode.value mustBe exampleTransportMode
       }
 
@@ -127,6 +127,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
         withNewCaching(supplementaryCacheModel)
 
         await(controller.submit(Mode.Normal).apply(postRequest(body)))
+
         theCacheModelUpdated.locations.inlandModeOfTransportCode.value.inlandModeOfTransportCode.value mustBe exampleTransportMode
       }
 
@@ -154,6 +155,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
         withNewCaching(simplifiedCacheModel)
 
         await(controller.submit(Mode.Normal).apply(postRequest(body)))
+
         theCacheModelUpdated.locations.inlandModeOfTransportCode.value.inlandModeOfTransportCode.value mustBe exampleTransportMode
       }
 

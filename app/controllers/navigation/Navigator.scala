@@ -21,7 +21,9 @@ import controllers.util.{FormAction, SaveAndReturn}
 import forms.DeclarationPage
 import forms.declaration.RoutingQuestionYesNo.{RemoveCountryPage, RoutingQuestionPage}
 import forms.declaration.destinationCountries.DestinationCountries.{DestinationCountryPage, OriginationCountryPage}
+
 import forms.declaration.{BorderTransport, Document, PackageInformation, _}
+
 import javax.inject.Inject
 import models.DeclarationType._
 import models.Mode
@@ -89,7 +91,7 @@ object Navigator {
   }
 
   val simplified: PartialFunction[DeclarationPage, Mode => Call] = {
-    case BorderTransport           => controllers.declaration.routes.InlandTransportDetailsController.displayPage
+    case BorderTransport           => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case Document                  => controllers.declaration.routes.OfficeOfExitController.displayPage
     case DestinationCountryPage    => controllers.declaration.routes.DeclarationHolderController.displayPage
     case RoutingQuestionPage       => controllers.declaration.routes.DestinationCountryController.displayPage

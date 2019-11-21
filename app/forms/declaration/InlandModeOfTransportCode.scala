@@ -34,7 +34,7 @@ object InlandModeOfTransportCode extends DeclarationPage {
     .mapping(
       "inlandModeOfTransportCode" -> optional(
         text()
-          .verifying("supplementary.warehouse.inlandTransportMode.error.incorrect", isContainedIn(allowedModeOfTransportCodes))
+          .verifying("declaration.warehouse.inlandTransportDetails.error.incorrect", isContainedIn(allowedModeOfTransportCodes))
       )
     )(InlandModeOfTransportCode.apply)(InlandModeOfTransportCode.unapply)
 
