@@ -18,6 +18,6 @@ package models.responses
 
 object FlashKeys {
   val lrn: String = "LRN"
-  val decType: String = "DECTYPE"
+  val decType: String = "DecType"
   val expiryDate: String = "ExpiryDate"
 }
