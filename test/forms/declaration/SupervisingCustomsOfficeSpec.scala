@@ -16,13 +16,11 @@
 
 package forms.declaration
 
-
 import forms.LightFormMatchers
-import helpers.views.declaration.WarehouseIdentificationMessages
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import unit.base.UnitSpec
 
-class SupervisingCustomsOfficeSpec extends UnitSpec with WarehouseIdentificationMessages with LightFormMatchers {
+class SupervisingCustomsOfficeSpec extends UnitSpec with LightFormMatchers {
 
   import SupervisingCustomsOffice._
 
@@ -31,7 +29,7 @@ class SupervisingCustomsOfficeSpec extends UnitSpec with WarehouseIdentification
       val incorrectWarehouseOffice: JsValue =
         JsObject(Map("supervisingCustomsOffice" -> JsString("SOMEWRONGCODE")))
 
-      form().bind(incorrectWarehouseOffice).errors.map(_.message) must contain(supervisingCustomsOfficeError)
+      form().bind(incorrectWarehouseOffice).errors.map(_.message) must contain("declaration.warehouse.supervisingCustomsOffice.error")
     }
 
     "accept a valid supervising customs office" in {

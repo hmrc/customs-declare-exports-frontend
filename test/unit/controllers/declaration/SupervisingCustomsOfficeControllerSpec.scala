@@ -17,7 +17,6 @@
 package unit.controllers.declaration
 
 import controllers.declaration.SupervisingCustomsOfficeController
-import helpers.views.declaration.WarehouseIdentificationMessages
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
@@ -29,7 +28,7 @@ import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.declaration.supervising_customs_office
 
-class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeAndAfterEach with WarehouseIdentificationMessages with OptionValues {
+class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeAndAfterEach with OptionValues {
 
   private val supervisingCustomsOfficeTemplate: supervising_customs_office = mock[supervising_customs_office]
 
@@ -158,7 +157,6 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
         withNewCaching(simplifiedCacheModel)
 
         await(controller.submit(Mode.Normal)(postRequest(body)))
-
 
         theCacheModelUpdated.locations.supervisingCustomsOffice.value.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
       }

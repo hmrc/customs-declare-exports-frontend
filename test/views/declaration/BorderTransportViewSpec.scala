@@ -228,7 +228,9 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
         val backButton = viewForStandard.getElementById("link-back")
 
         backButton.text() mustBe "site.back"
-        backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal))
+        backButton.getElementById("link-back") must haveHref(
+          controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal)
+        )
       }
       behave like borderView(view)
       behave like havingMeansOfTransport(view)
