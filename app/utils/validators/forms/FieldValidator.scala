@@ -86,6 +86,9 @@ object FieldValidator {
   val isAlphanumericWithSpecialCharacters: Set[Char] => String => Boolean = (allowedChars: Set[Char]) =>
     (input: String) => input.filter(!_.isLetterOrDigit).forall(allowedChars)
 
+  val startsWith: Set[Char] => String => Boolean = (allowedChars: Set[Char]) =>
+    (input: String) => input.headOption.exists(firstChar => allowedChars.contains(firstChar))
+
   val isAlphanumericWithAllowedSpecialCharacters: String => Boolean = (input: String) => input.filter(!_.isLetterOrDigit).forall(allowedSpecialChars)
 
   val isAlphanumericWithAllowedHyphenCharacter: String => Boolean = (input: String) => input.filter(!_.isLetterOrDigit).forall(allowedHyphenChar)

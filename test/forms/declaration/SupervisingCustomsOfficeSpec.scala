@@ -43,10 +43,10 @@ class SupervisingCustomsOfficeSpec extends UnitSpec with WarehouseIdentification
 }
 
 object SupervisingCustomsOfficeSpec {
+  private val office = "12345678"
   val correctSupervisingCustomsOffice = SupervisingCustomsOffice(Some(office))
   val correctSupervisingCustomsOfficeJSON: JsValue =
     JsObject(Map("supervisingCustomsOffice" -> JsString(office)))
   val emptySupervisingCustomsOfficeJSON: JsValue =
     JsObject(Map("supervisingCustomsOffice" -> JsString("")))
-  private val office = "12345678"
 }
