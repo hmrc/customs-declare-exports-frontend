@@ -865,15 +865,6 @@ supplementary.summary.additionalDocumentation.documentStatus = Status
 supplementary.summary.additionalDocumentation.documentStatusReason = Status reason
 supplementary.summary.additionalDocumentation.documentQuantity = Quantity
 
-supplementary.confirmation.title = Supplementary Declaration submission confirmation
-supplementary.confirmation.header = Your LRN is
-supplementary.confirmation.info = You declaration has been received.
-supplementary.confirmation.whatHappensNext = What happens next?
-supplementary.confirmation.explanation = Your MRN will be provided in a notification.
-supplementary.confirmation.explanation.linkText = Check your notification status in the dashboard.
-supplementary.confirmation.submitAnotherDeclaration = Submit another declaration
-supplementary.confirmation.rejection.header = Your declaration has been rejected
-
 supplementary.limit = You cannot add more items
 supplementary.duplication = You cannot add duplicated value
 supplementary.continue.error = Use Add button before continue to next page
@@ -906,6 +897,15 @@ standard.seal.remove.hint=Remove security seal {0}
 standard.transport.sealId.empty.error= Please provide seal Id
 standard.transport.sealId.alphaNumeric.error= Seal identification number must be 20 characters or less
 standard.transport.sealId.longer.error= Seal identification number must be 20 characters or less
+
+declaration.confirmation.default.title = Declaration has been submitted
+declaration.confirmation.standard.title = Standard declaration has been submitted
+declaration.confirmation.supplementary.title = Supplementary declaration has been submitted
+declaration.confirmation.simplified.title = Simplified declaration has been submitted
+declaration.confirmation.lrn = The LRN is
+declaration.confirmation.info = To view the status of this and any other declarations, visit {0}.
+declaration.confirmation.info.link = view declarations
+declaration.confirmation.submitAnotherDeclaration = Back to start
 
 confirmation.draft.title=Your declaration has been saved
 confirmation.draft.info=Your information is held until
