@@ -394,6 +394,7 @@ declaration.routingCountries.remove.question = Are you sure you want to remove t
 declaration.routingCountries.remove.countryHeader = Country
 
 declaration.routingCountries.duplication = You cannot add duplicated country
+declaration.routingCountries.limit = You cannot add more than 99 countries
 
 declaration.destinationCountries.title = Countries of routing
 declaration.destinationCountries.routing = Which countries will the goods stop at before reaching their destination?

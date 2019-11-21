@@ -49,10 +49,8 @@ class DestinationCountriesSpec extends UnitSpec {
 
     "check if the country is duplicated" in {
 
-      val form = DestinationCountries.form(OriginationCountryPage).fillAndValidate("PL")
       val cachedCountries = Seq("PL")
-
-      val result = DestinationCountries.validateCountryDuplication(form, cachedCountries)
+      val result = DestinationCountries.form(OriginationCountryPage, cachedCountries).fillAndValidate("PL")
 
       result.errors mustBe Seq(FormError("country", "declaration.routingCountries.duplication"))
     }
@@ -60,9 +58,7 @@ class DestinationCountriesSpec extends UnitSpec {
     "validate if country limit is reached" in {
 
       val cachedCountries = Seq.fill(99)("PL")
-      val form = RoutingQuestionYesNo.form()
-
-      val result = DestinationCountries.validateCountriesLimit(form, cachedCountries)
+      val result = DestinationCountries.form(OriginationCountryPage, cachedCountries).fillAndValidate("GB")
 
       result.errors mustBe Seq(FormError("country", "declaration.routingCountries.limit"))
     }

@@ -64,23 +64,20 @@ class RoutingCountriesSummaryController @Inject()(
     val countries = retrieveCountriesFromCodes(countryCodes)
 
     RoutingQuestionYesNo
-      .form()
+      .form(countryCodes)
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(routingCountriesSummaryPage(mode, formWithErrors, countries)),
-        validAnswer => {
-          val validatedForm = DestinationCountries.validateCountriesLimit(RoutingQuestionYesNo.form().fill(validAnswer), countryCodes)
-
-          validatedForm.fold(formWithErrors => BadRequest(routingCountriesSummaryPage(mode, formWithErrors, countries)), _ => {
-            redirectFromSummaryPage(mode, validAnswer)
-          })
-        }
+        validAnswer => redirectFromSummaryPage(mode, validAnswer)
       )
   }
 
   private def redirectFromSummaryPage(mode: Mode, answer: Boolean)(implicit request: JourneyRequest[AnyContent]): Result =
-    if (answer) navigator.continueTo(controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(mode))
-    else navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode))
+    if (answer) {
+      navigator.continueTo(controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(mode))
+    } else {
+      navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode))
+    }
 
   def displayRemoveCountryPage(mode: Mode, countryCode: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val isCountryPresentedInCache = request.cacheModel.locations.routingCountries.contains(countryCode)

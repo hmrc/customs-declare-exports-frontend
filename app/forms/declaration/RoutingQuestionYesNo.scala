@@ -18,8 +18,8 @@ package forms.declaration
 
 import forms.DeclarationPage
 import forms.Mapping.requiredRadio
+import forms.declaration.destinationCountries.DestinationCountries
 import play.api.data.{Form, Forms}
-import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
 
 object RoutingQuestionYesNo {
@@ -33,10 +33,11 @@ object RoutingQuestionYesNo {
 
   val allowedValues: Seq[String] = Seq(yes, no)
 
-  def form(): Form[Boolean] = Form(
+  def form(cachedCountries: Seq[String] = Seq.empty): Form[Boolean] = Form(
     Forms.mapping(
       "answer" -> requiredRadio("declaration.routingQuestion.empty")
         .verifying("declaration.routingQuestion.error", isContainedIn(allowedValues))
+        .verifying(s"declaration.routingCountries.limit", answer => answer == no || cachedCountries.length < DestinationCountries.limit)
     )(answer => if (answer == yes) true else false)(answer => if (answer) Some(yes) else Some(no))
   )
 }

@@ -17,7 +17,7 @@
 package forms.declaration.destinationCountries
 
 import forms.DeclarationPage
-import play.api.data.{Form, FormError}
+import play.api.data.Form
 import play.api.data.Forms.{single, text}
 import services.Countries.allCountries
 
@@ -43,26 +43,17 @@ object DestinationCountries {
     override val id = "routingCountry"
   }
 
-  def form(page: CountryPage): Form[String] = Form(
+  def form(page: CountryPage, cachedCountries: Seq[String] = Seq.empty): Form[String] = Form(
     single(
       "country" -> text()
         .verifying(s"declaration.${page.id}.empty", _.trim.nonEmpty)
         .verifying(s"declaration.${page.id}.error", emptyOrValidCountry)
+        .verifying(s"declaration.routingCountries.duplication", !cachedCountries.contains(_))
+        .verifying(s"declaration.routingCountries.limit", _ => cachedCountries.length < limit)
     )
   )
 
-  def validateCountryDuplication(form: Form[String], cachedCountries: Seq[String]): Form[String] = {
-    val isCountryDuplicated = form.value.exists(cachedCountries.contains(_))
-
-    if (isCountryDuplicated) form.copy(errors = Seq(FormError("country", "declaration.routingCountries.duplication")))
-    else form
-  }
-
-  def validateCountriesLimit(questionForm: Form[Boolean], cachedCountries: Seq[String]): Form[Boolean] =
-    if (cachedCountries.length >= limit) questionForm.copy(errors = Seq(FormError("country", "declaration.routingCountries.limit")))
-    else questionForm
-
-  private val limit = 99
+  val limit = 99
 
   private def emptyOrValidCountry: String => Boolean = { input =>
     input.isEmpty || allCountries.exists(_.countryCode == input)

@@ -45,23 +45,24 @@ class RoutingCountriesController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayRoutingQuestion(mode: Mode, fastForward: Boolean): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    if (fastForward && request.cacheModel.containRoutingCountries) {
+    if (fastForward && request.cacheModel.containRoutingCountries()) {
       navigator.continueTo(routes.RoutingCountriesSummaryController.displayPage(mode))
     } else {
       val destinationCountryCode = request.cacheModel.locations.destinationCountry
       val destinationCountryName = destinationCountryCode.map(retrieveCountryNameFromCode(_)).map(_.countryName).getOrElse("")
 
       request.cacheModel.locations.hasRoutingCountries match {
-        case Some(answer) => Ok(routingQuestionPage(mode, form.fill(answer), destinationCountryName))
-        case None         => Ok(routingQuestionPage(mode, form, destinationCountryName))
+        case Some(answer) => Ok(routingQuestionPage(mode, form().fill(answer), destinationCountryName))
+        case None         => Ok(routingQuestionPage(mode, form(), destinationCountryName))
       }
     }
   }
 
   def submitRoutingAnswer(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val destinationCountry = request.cacheModel.locations.destinationCountry.getOrElse("-")
+    val cachedCountries = request.cacheModel.locations.routingCountries
 
-    form
+    form(cachedCountries)
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(routingQuestionPage(mode, formWithErrors, destinationCountry))),
@@ -70,12 +71,18 @@ class RoutingCountriesController @Inject()(
   }
 
   private def updateRoutingAnswer(answer: Boolean)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    if (answer) updateExportsDeclarationSyncDirect(_.updateRoutingQuestion(answer))
-    else updateExportsDeclarationSyncDirect(_.clearRoutingCountries)
+    if (answer) {
+      updateExportsDeclarationSyncDirect(_.updateRoutingQuestion(answer))
+    } else {
+      updateExportsDeclarationSyncDirect(_.clearRoutingCountries)
+    }
 
   private def redirectFromRoutingAnswer(mode: Mode, answer: Boolean)(implicit request: JourneyRequest[AnyContent]): Result =
-    if (answer) navigator.continueTo(controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(mode))
-    else navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode))
+    if (answer) {
+      navigator.continueTo(controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(mode))
+    } else {
+      navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode))
+    }
 
   def displayRoutingCountry(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val routingAnswer = request.cacheModel.locations.hasRoutingCountries
@@ -89,24 +96,20 @@ class RoutingCountriesController @Inject()(
 
   def submitRoutingCountry(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val hasCountriesAdded = request.cacheModel.locations.routingCountries.nonEmpty
+    val cachedCountries = request.cacheModel.locations.routingCountries
     val page = if (hasCountriesAdded) NextRoutingCountryPage else FirstRoutingCountryPage
 
     DestinationCountries
-      .form(page)
+      .form(page, cachedCountries)
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(countryOfRoutingPage(mode, formWithErrors, page))),
         validCountry => {
-          val cachedCountries = request.cacheModel.locations.routingCountries
-          val validatedForm = DestinationCountries.validateCountryDuplication(DestinationCountries.form(page).fill(validCountry), cachedCountries)
+          val newRoutingCountries = request.cacheModel.locations.routingCountries :+ validCountry
 
-          validatedForm.fold(formWithErrors => Future.successful(BadRequest(countryOfRoutingPage(mode, formWithErrors, page))), _ => {
-            val newRoutingCountries = request.cacheModel.locations.routingCountries :+ validCountry
-
-            updateRoutingCountries(newRoutingCountries).map { _ =>
-              navigator.continueTo(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(mode))
-            }
-          })
+          updateRoutingCountries(newRoutingCountries).map { _ =>
+            navigator.continueTo(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(mode))
+          }
         }
       )
   }
