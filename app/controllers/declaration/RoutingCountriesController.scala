@@ -97,11 +97,16 @@ class RoutingCountriesController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(countryOfRoutingPage(mode, formWithErrors, page))),
         validCountry => {
-          val newRoutingCountries = request.cacheModel.locations.routingCountries :+ validCountry
+          val cachedCountries = request.cacheModel.locations.routingCountries
+          val validatedForm = DestinationCountries.validateCountryDuplication(DestinationCountries.form(page).fill(validCountry), cachedCountries)
 
-          updateRoutingCountries(newRoutingCountries).map { _ =>
-            navigator.continueTo(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(mode))
-          }
+          validatedForm.fold(formWithErrors => Future.successful(BadRequest(countryOfRoutingPage(mode, formWithErrors, page))), _ => {
+            val newRoutingCountries = request.cacheModel.locations.routingCountries :+ validCountry
+
+            updateRoutingCountries(newRoutingCountries).map { _ =>
+              navigator.continueTo(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(mode))
+            }
+          })
         }
       )
   }

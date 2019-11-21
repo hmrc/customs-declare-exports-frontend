@@ -127,6 +127,17 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
         status(result) mustBe BAD_REQUEST
       }
+
+      "user submitted duplicated country in Routing Countries page" in {
+
+        withNewCaching(aDeclaration(withRoutingCountries(Seq("PL"))))
+
+        val duplicatedForm = JsObject(Seq("country" -> JsString("PL")))
+
+        val result = controller.submitRoutingAnswer(Mode.Normal)(postRequest(duplicatedForm))
+
+        status(result) mustBe BAD_REQUEST
+      }
     }
 
     "return 303 (SEE_OTHER)" when {

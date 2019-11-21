@@ -19,11 +19,12 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.RoutingQuestionYesNo
+import forms.declaration.destinationCountries.DestinationCountries
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
 import services.Countries.retrieveCountriesFromCodes
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -67,12 +68,19 @@ class RoutingCountriesSummaryController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(routingCountriesSummaryPage(mode, formWithErrors, countries)),
-        validAnswer =>
-          if (validAnswer)
-            navigator.continueTo(controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(mode))
-          else navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode))
+        validAnswer => {
+          val validatedForm = DestinationCountries.validateCountriesLimit(RoutingQuestionYesNo.form().fill(validAnswer), countryCodes)
+
+          validatedForm.fold(formWithErrors => BadRequest(routingCountriesSummaryPage(mode, formWithErrors, countries)), _ => {
+            redirectFromSummaryPage(mode, validAnswer)
+          })
+        }
       )
   }
+
+  private def redirectFromSummaryPage(mode: Mode, answer: Boolean)(implicit request: JourneyRequest[AnyContent]): Result =
+    if (answer) navigator.continueTo(controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(mode))
+    else navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode))
 
   def displayRemoveCountryPage(mode: Mode, countryCode: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val isCountryPresentedInCache = request.cacheModel.locations.routingCountries.contains(countryCode)

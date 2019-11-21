@@ -17,7 +17,7 @@
 package forms.declaration.destinationCountries
 
 import forms.DeclarationPage
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import play.api.data.Forms.{single, text}
 import services.Countries.allCountries
 
@@ -51,7 +51,18 @@ object DestinationCountries {
     )
   )
 
-  val limit = 99
+  def validateCountryDuplication(form: Form[String], cachedCountries: Seq[String]): Form[String] = {
+    val isCountryDuplicated = form.value.exists(cachedCountries.contains(_))
+
+    if (isCountryDuplicated) form.copy(errors = Seq(FormError("country", "declaration.routingCountries.duplication")))
+    else form
+  }
+
+  def validateCountriesLimit(questionForm: Form[Boolean], cachedCountries: Seq[String]): Form[Boolean] =
+    if (cachedCountries.length >= limit) questionForm.copy(errors = Seq(FormError("country", "declaration.routingCountries.limit")))
+    else questionForm
+
+  private val limit = 99
 
   private def emptyOrValidCountry: String => Boolean = { input =>
     input.isEmpty || allCountries.exists(_.countryCode == input)
