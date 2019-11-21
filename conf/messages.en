@@ -475,11 +475,6 @@ declaration.warehouse.inlandTransportDetails.title = What is the inland mode of 
 declaration.warehouse.inlandTransportDetails.hint = The type of transport that will move the goods from a warehouse to the port where they will depart the EU.
 declaration.warehouse.inlandTransportDetails.error.incorrect = Please, choose valid inland mode of transport
 
-supplementary.warehouse.title =  Enter more details about the warehouse
-supplementary.warehouse.title.hint = Locations
-supplementary.warehouse.identificationType = Warehouse type
-supplementary.warehouse.identificationType.error = Please choose a valid warehouse type
-
 declaration.fiscalInformation.title = Onward Supply Relief (OSR)
 declaration.fiscalInformation.question = Do you want to claim OSR?
 declaration.fiscalInformation.onwardSupplyRelief.empty = Please select yes or no
