@@ -281,4 +281,18 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
       }
     }
   }
+
+  "Routing countries controller" should {
+
+    "handle duplication during changing the country" in {
+
+      withNewCaching(aDeclaration(withRoutingCountries(Seq("PL", "DZ", "AD"))))
+
+      val duplicatedCountry = JsObject(Seq("country" -> JsString("PL")))
+
+      val result = controller.submitChangeCountry(Mode.Normal, "DZ")(postRequest(duplicatedCountry))
+
+      status(result) mustBe BAD_REQUEST
+    }
+  }
 }
