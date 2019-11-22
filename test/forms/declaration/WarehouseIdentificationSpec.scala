@@ -27,8 +27,8 @@ class WarehouseIdentificationSpec extends UnitSpec with LightFormMatchers {
   import WarehouseIdentification._
 
   "Warehouse Identification Form" should {
-    "validate - more than 35 characters" in {
-      val incorrectWarehouseDetails = warehouseIdentification(warehouseTypeCode + createRandomAlphanumericString(35))
+    "validate - more than 35 characters after type code" in {
+      val incorrectWarehouseDetails = warehouseIdentification(warehouseTypeCode + createRandomAlphanumericString(36))
 
       form().bind(incorrectWarehouseDetails).errors.map(_.message) must contain(identificationNumberError)
     }
@@ -52,15 +52,21 @@ class WarehouseIdentificationSpec extends UnitSpec with LightFormMatchers {
     }
 
     "validate correct empty identification" in {
-      val incorrectWarehouseDetails = warehouseIdentification("")
+      val correctWarehouseDetails = warehouseIdentification("")
 
-      form().bind(incorrectWarehouseDetails) mustBe errorless
+      form().bind(correctWarehouseDetails) mustBe errorless
     }
 
     "validate correct ware house type and number" in {
-      val incorrectWarehouseDetails: JsValue = warehouseIdentification("R" + warehouseId)
+      val correctWarehouseDetails: JsValue = warehouseIdentification("R" + warehouseId)
 
-      form().bind(incorrectWarehouseDetails) mustBe errorless
+      form().bind(correctWarehouseDetails) mustBe errorless
+    }
+
+    "validate max length" in {
+      val correctWarehouseDetails = warehouseIdentification(warehouseTypeCode + createRandomAlphanumericString(35))
+
+      form().bind(correctWarehouseDetails) mustBe errorless
     }
   }
 }
