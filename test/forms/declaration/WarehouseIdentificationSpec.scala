@@ -27,7 +27,7 @@ class WarehouseIdentificationSpec extends UnitSpec with LightFormMatchers {
   import WarehouseIdentification._
 
   "Warehouse Identification Form" should {
-    "validate - more than 35 characters" in {
+    "validate - more than 35 characters after type code" in {
       val incorrectWarehouseDetails = warehouseIdentification(warehouseTypeCode + createRandomAlphanumericString(36))
 
       form().bind(incorrectWarehouseDetails).errors.map(_.message) must contain(identificationNumberError)
