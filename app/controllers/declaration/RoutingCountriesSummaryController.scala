@@ -122,7 +122,7 @@ class RoutingCountriesSummaryController @Inject()(
 
   def submitChangeCountry(mode: Mode, countryToChange: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val cachedCountries = request.cacheModel.locations.routingCountries
-    val countriesForValidation = cachedCountries.filter(_ == countryToChange)
+    val countriesForValidation = cachedCountries.filterNot(_ == countryToChange)
     val countryIndex = cachedCountries.indexOf(countryToChange)
     val page = if (countryIndex > 0) NextRoutingCountryPage else FirstRoutingCountryPage
 
