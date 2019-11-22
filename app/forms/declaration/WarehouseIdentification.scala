@@ -37,7 +37,7 @@ object WarehouseIdentification extends DeclarationPage {
         optional(
           text().verifying(
             "declaration.warehouse.identification.identificationNumber.error",
-            startsWith(validWarehouseTypes) and noShorterThan(2) and noLongerThan(35) and isAlphanumeric
+            startsWith(validWarehouseTypes) and noShorterThan(2) and noLongerThan(36) and isAlphanumeric
           )
         )
     )(WarehouseIdentification.apply)(WarehouseIdentification.unapply)
