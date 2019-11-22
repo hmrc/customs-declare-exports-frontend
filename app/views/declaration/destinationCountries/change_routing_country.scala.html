@@ -43,17 +43,14 @@
     @helper.form(routes.RoutingCountriesSummaryController.submitChangeCountry(mode, countryToChange), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
-        @*TODO move id to field_autocomplete*@
-        <div id="origination-country-field">
-            @components.fields.field_autocomplete(
-                form("country"),
-                "",
-                None,
-                None,
-                messages(s"declaration.${page.id}.empty"),
-                AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
-            )
-        </div>
+        @components.fields.field_autocomplete(
+            form("country"),
+            "",
+            None,
+            None,
+            messages(s"declaration.${page.id}.empty"),
+            AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
+        )
 
         <div class="section mb-0">
             @components.buttons.save_and_continue_button()
