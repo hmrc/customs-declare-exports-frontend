@@ -28,6 +28,8 @@ object RoutingQuestionYesNo {
 
   case object RemoveCountryPage extends DeclarationPage
 
+  case object ChangeCountryPage extends DeclarationPage
+
   val yes = "Yes"
   val no = "No"
 

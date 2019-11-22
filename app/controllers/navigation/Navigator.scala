@@ -19,7 +19,7 @@ package controllers.navigation
 import config.AppConfig
 import controllers.util.{FormAction, SaveAndReturn}
 import forms.DeclarationPage
-import forms.declaration.RoutingQuestionYesNo.{RemoveCountryPage, RoutingQuestionPage}
+import forms.declaration.RoutingQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingQuestionPage}
 import forms.declaration.destinationCountries.DestinationCountries.{DestinationCountryPage, OriginationCountryPage}
 
 import forms.declaration.{BorderTransport, Document, PackageInformation, _}
@@ -65,6 +65,7 @@ object Navigator {
     case DestinationCountryPage    => controllers.declaration.routes.OriginationCountryController.displayPage
     case RoutingQuestionPage       => controllers.declaration.routes.DestinationCountryController.displayPage
     case RemoveCountryPage         => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
+    case ChangeCountryPage         => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case SupervisingCustomsOffice  => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case InlandModeOfTransportCode => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case WarehouseIdentification   => controllers.declaration.routes.ItemsSummaryController.displayPage
@@ -96,6 +97,7 @@ object Navigator {
     case DestinationCountryPage    => controllers.declaration.routes.DeclarationHolderController.displayPage
     case RoutingQuestionPage       => controllers.declaration.routes.DestinationCountryController.displayPage
     case RemoveCountryPage         => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
+    case ChangeCountryPage         => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case SupervisingCustomsOffice  => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case InlandModeOfTransportCode => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case WarehouseIdentification   => controllers.declaration.routes.ItemsSummaryController.displayPage
