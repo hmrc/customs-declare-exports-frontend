@@ -13,6 +13,8 @@ object AppDependencies {
     "uk.gov.hmrc" %% "play-ui" % "8.0.0-play-26",
     "uk.gov.hmrc" %% "bootstrap-play-26" % "0.46.0",
     "uk.gov.hmrc" %% "auth-client" % "2.27.0-play-26",
+    "uk.gov.hmrc" %% "play-frontend-govuk" % "0.30.0-play-26",
+    "org.webjars.npm" % "govuk-frontend" % "3.3.0",
     "ai.x" %% "play-json-extensions" % "0.40.2",
     "uk.gov.hmrc" %% "play-whitelist-filter" % "3.1.0-play-26",
     "com.typesafe.play" %% "play-json-joda" % "2.6.10",
