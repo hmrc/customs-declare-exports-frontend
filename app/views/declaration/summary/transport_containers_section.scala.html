@@ -14,10 +14,10 @@
  * limitations under the License.
  *@
 
-@import models.declaration.TransportInformationContainerData
+@import models.declaration.Containers
 @import models.viewmodels.HtmlTableRow
 
-@(containersData: Option[TransportInformationContainerData])(implicit messages: Messages)
+@(containersData: Option[Containers])(implicit messages: Messages)
 
 @components.summary_list(Some(messages("supplementary.transportInfo.containers.title"))) {
     @if(containersData.map(_.containers.nonEmpty)) {

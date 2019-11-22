@@ -15,12 +15,12 @@
  */
 
 package models.declaration
-
+import forms.declaration.TransportPayment
 import play.api.libs.json.Json
 
-case class TransportInformationContainerData(containers: Seq[Container]) {
+case class TransportData(transportPayment: Option[TransportPayment] = None, containers: Seq[Container] = Seq.empty) {
 
-  def addOrUpdate(updatedContainer: Container): Seq[Container] =
+  def addOrUpdateContainer(updatedContainer: Container): Seq[Container] =
     if (containers.isEmpty) {
       Seq(updatedContainer)
     } else if (!containers.exists(_.id == updatedContainer.id)) {
@@ -33,10 +33,6 @@ case class TransportInformationContainerData(containers: Seq[Container]) {
     }
 }
 
-object TransportInformationContainerData {
-  implicit val format = Json.format[TransportInformationContainerData]
-
-  val id = "TransportInformationContainerData"
-
-  val maxNumberOfItems = 9999
+object TransportData {
+  implicit val format = Json.format[TransportData]
 }

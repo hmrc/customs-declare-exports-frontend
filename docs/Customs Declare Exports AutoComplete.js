@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.9
+// @version      2.0
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -282,22 +282,23 @@ function completePage() {
         selectFromAutoPredict(document.getElementById('meansOfTransportCrossingTheBorderNationality-container'), "United Kingdom");
         selectRadioOption(document.getElementById('meansOfTransportCrossingTheBorderType'), 1);
         document.getElementById("meansOfTransportCrossingTheBorderIDNumber").value = 'BOAT1';
-        selectRadioOption(document.getElementById('container'), 0);
-        if(document.getElementById('paymentMethod')){
-            selectRadioOption(document.getElementById('paymentMethod'), 4)
-        }
         document.getElementsByClassName('button')[0].click()
     }
-    if (currentPageIs('/customs-declare-exports/declaration/containers/add')) {
-        document.getElementById('id').value = '123456';
+    if (currentPageIs('/customs-declare-exports/declaration/transport-payment')) {
+        selectRadioOption(document.getElementById('paymentMethod'), 4)
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/containers/123456/seals')) {
-        selectRadioOption(document.getElementById('yesNo'), 1);
+        document.getElementById('No').checked = 'checked';
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/containers')) {
         selectRadioOption(document.getElementById('yesNo'), 1);
+        document.getElementsByClassName('button')[0].click()
+    }
+    if (currentPageIs('/customs-declare-exports/declaration/container')) {
+        document.getElementById('code_yes').checked = 'checked';
+        document.getElementById('id').value = '123456';
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/summary')) {

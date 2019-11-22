@@ -17,7 +17,6 @@
 package models.declaration
 
 import java.time.Instant
-import java.time.temporal.ChronoUnit
 
 import forms.declaration._
 import models.ExportsDeclaration
@@ -28,7 +27,7 @@ case class SupplementaryDeclarationData(
   consignmentReferences: Option[ConsignmentReferences] = None,
   parties: Option[Parties] = None,
   locations: Option[Locations] = None,
-  transportInformationContainerData: Option[TransportInformationContainerData] = None,
+  transportInformationContainerData: Option[Containers] = None,
   items: Option[Items] = None,
   createDate: Option[Instant] = None,
   updatedDate: Option[Instant] = None
@@ -42,7 +41,7 @@ object SupplementaryDeclarationData {
       consignmentReferences = cacheData.consignmentReferences,
       parties = flattenIfEmpty(Parties(cacheData)),
       locations = flattenIfEmpty(Locations(cacheData)),
-      transportInformationContainerData = cacheData.containerData,
+      transportInformationContainerData = cacheData.transportData.map(_.containers).map(Containers(_)),
       items = flattenIfEmpty(Items(cacheData)),
       createDate = Some(cacheData.createdDateTime),
       updatedDate = Some(cacheData.updatedDateTime)

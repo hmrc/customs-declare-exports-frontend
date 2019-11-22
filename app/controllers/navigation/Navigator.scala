@@ -58,6 +58,9 @@ object Navigator {
 
   val standard: PartialFunction[DeclarationPage, Mode => Call] = {
     case BorderTransport           => controllers.declaration.routes.DepartureTransportController.displayPage
+    case TransportPayment          => controllers.declaration.routes.BorderTransportController.displayPage
+    case ContainerYesNo            => controllers.declaration.routes.TransportPaymentController.displayPage
+    case ContainerAdd              => controllers.declaration.routes.TransportContainerController.displayContainerSummary
     case Document                  => controllers.declaration.routes.NatureOfTransactionController.displayPage
     case OriginationCountryPage    => controllers.declaration.routes.DeclarationHolderController.displayPage
     case DestinationCountryPage    => controllers.declaration.routes.OriginationCountryController.displayPage
@@ -75,6 +78,8 @@ object Navigator {
 
   val supplementary: PartialFunction[DeclarationPage, Mode => Call] = {
     case BorderTransport           => controllers.declaration.routes.DepartureTransportController.displayPage
+    case ContainerYesNo            => controllers.declaration.routes.BorderTransportController.displayPage
+    case ContainerAdd              => controllers.declaration.routes.TransportContainerController.displayContainerSummary
     case Document                  => controllers.declaration.routes.NatureOfTransactionController.displayPage
     case OriginationCountryPage    => controllers.declaration.routes.DeclarationHolderController.displayPage
     case DestinationCountryPage    => controllers.declaration.routes.OriginationCountryController.displayPage
@@ -90,6 +95,9 @@ object Navigator {
 
   val simplified: PartialFunction[DeclarationPage, Mode => Call] = {
     case BorderTransport           => controllers.declaration.routes.InlandTransportDetailsController.displayPage
+    case TransportPayment          => controllers.declaration.routes.BorderTransportController.displayPage
+    case ContainerYesNo            => controllers.declaration.routes.TransportPaymentController.displayPage
+    case ContainerAdd              => controllers.declaration.routes.TransportContainerController.displayContainerSummary
     case Document                  => controllers.declaration.routes.OfficeOfExitController.displayPage
     case DestinationCountryPage    => controllers.declaration.routes.DeclarationHolderController.displayPage
     case RoutingQuestionPage       => controllers.declaration.routes.DestinationCountryController.displayPage

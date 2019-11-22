@@ -549,6 +549,17 @@ supplementary.transportInfo.transportMode.fixedTransportInstallations = Fixed tr
 supplementary.transportInfo.transportMode.inlandWaterway = Inland waterway transport
 supplementary.transportInfo.transportMode.unknown = Mode unknown, for example own propulsion
 
+declaration.transportData.transportPayment.paymentMethod = How is the transport paid for?
+declaration.transportData.transportPayment.paymentMethod.hint = If you are not submitting an express consignment, you can leave this blank.
+declaration.transportData.transportPayment.paymentMethod.cash = Payment in cash
+declaration.transportData.transportPayment.paymentMethod.creditCard = Payment by credit card
+declaration.transportData.transportPayment.paymentMethod.cheque = Payment by cheque
+declaration.transportData.transportPayment.paymentMethod.other = Other (e.g. Direct debit to cash account)
+declaration.transportData.transportPayment.paymentMethod.eFunds = Electronic funds transfer
+declaration.transportData.transportPayment.paymentMethod.accHolder = Account holder with carrier
+declaration.transportData.transportPayment.paymentMethod.notPrePaid = Not pre-paid
+declaration.transportData.transportPayment.paymentMethod.error= Input is not valid
+
 supplementary.transportInfo.meansOfTransport.departure.header = What are the chosen transport’s details?
 supplementary.transportInfo.meansOfTransport.departure.header.hint = Select the type of identification used for the chosen transport and enter the reference
 supplementary.transportInfo.meansOfTransport.departure.error.empty = Please, choose transport details
@@ -579,6 +590,8 @@ supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.em
 supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.length = Reference should be less than 35 alpha numeric characters
 supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid = Reference cannot contain invalid characters
 
+
+#TODO - change supplementary -> declaration
 supplementary.transportInfo.container = Were the goods in a container?
 supplementary.transportInfo.container.error.empty = Please select an option
 supplementary.transportInfo.containers.title = Container information 
@@ -590,19 +603,16 @@ supplementary.transportInfo.containers.remove.hint = Remove container {0}
 supplementary.transportInfo.containers.change = Change seals
 supplementary.transportInfo.containers.change.hint = Change seals for container {0}
 supplementary.transportInfo.container.remove.title=Are you sure you want to remove this container?
-supplementary.transportInfo.containerId.empty = Container ID cannot be empty
-supplementary.transportInfo.containerId.error.alphanumeric = Only alphanumeric characters allowed
-supplementary.transportInfo.containerId.error.length = Only 17 alphanumeric characters are allowed
+declaration.transportInfo.containerId.empty = Container ID cannot be empty
+declaration.transportInfo.containerId.error.alphanumeric = Only alphanumeric characters allowed
+declaration.transportInfo.containerId.error.length = Only 17 alphanumeric characters are allowed
 supplementary.transportInfo.containerId.error = Container ID is incorrect
-standard.transportDetails.paymentMethod = Enter transport charges method of payment
-standard.transportDetails.paymentMethod.cash = Payment in cash
-standard.transportDetails.paymentMethod.creditCard = Payment by credit card
-standard.transportDetails.paymentMethod.cheque = Payment by cheque
-standard.transportDetails.paymentMethod.other = Other (e.g. Direct debit to cash account)
-standard.transportDetails.paymentMethod.eFunds = Electronic funds transfer
-standard.transportDetails.paymentMethod.accHolder = Account holder with carrier
-standard.transportDetails.paymentMethod.notPrePaid = Not pre-paid
-standard.transportDetails.paymentMethod.error= Input is not valid
+
+declaration.transportInfo.containers.first.title = Are the goods in a container?
+declaration.transportInfo.containers.yes = Yes
+declaration.transportInfo.containers.no = No
+declaration.transportInfo.containerId = Enter the container ID
+
 
 supplementary.totalAmountInvoiced.error = Total amount of invoiced items is incorrect
 supplementary.totalAmountInvoiced = Total amount invoiced

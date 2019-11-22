@@ -16,7 +16,7 @@
 
 package unit.forms.declaration
 
-import forms.declaration.{BorderTransport, TransportCodes}
+import forms.declaration.BorderTransport
 import unit.base.FormSpec
 
 class BorderTransportSpec extends FormSpec {
@@ -29,7 +29,7 @@ class BorderTransportSpec extends FormSpec {
 
       "only mandatory fields are provided with correct data" in {
 
-        val correctForm = BorderTransport(None, false, "40", "reference", None)
+        val correctForm = BorderTransport(None, "40", "reference")
 
         val result = form.fillAndValidate(correctForm)
 
@@ -39,7 +39,7 @@ class BorderTransportSpec extends FormSpec {
       "all fields contains correct data" in {
 
         val correctForm =
-          BorderTransport(Some("United Kingdom"), false, "40", "Id.Number", Some(TransportCodes.cash))
+          BorderTransport(Some("United Kingdom"), "40", "Id.Number")
 
         val result = form.fillAndValidate(correctForm)
 

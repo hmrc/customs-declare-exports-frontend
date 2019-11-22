@@ -15,21 +15,20 @@
  *@
 
 @import controllers.declaration.routes._
-@import controllers.util.Remove
-@import forms.declaration.TransportInformationContainer
-@import uk.gov.hmrc.play.views.html._
-@import views.components.fields.LabelledValue
+@import controllers.navigation.Navigator
+@import forms.declaration.ContainerAdd
+@import models.requests.JourneyRequest
 @import views.Title
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[TransportInformationContainer])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, form: Form[ContainerAdd])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
     title = Title("supplementary.transportInfo.containers.title")
 ) {
 
-    @components.back_link(controllers.declaration.routes.BorderTransportController.displayPage(mode), mode)
+    @components.back_link(Navigator.backLink(ContainerAdd, mode))
 
     @components.error_summary(form.errors)
 

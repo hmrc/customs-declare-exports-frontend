@@ -37,7 +37,7 @@ case class ExportsDeclaration(
   consignmentReferences: Option[ConsignmentReferences] = None,
   departureTransport: Option[DepartureTransport] = None,
   borderTransport: Option[BorderTransport] = None,
-  containerData: Option[TransportInformationContainerData] = None,
+  transportData: Option[TransportData] = None,
   parties: Parties = Parties(),
   locations: Locations = Locations(),
   items: Set[ExportItem] = Set.empty,
@@ -82,7 +82,9 @@ case class ExportsDeclaration(
 
   def containerBy(containerId: String): Option[Container] = containers.find(_.id.equalsIgnoreCase(containerId))
 
-  def containers: Seq[Container] = containerData.map(_.containers).getOrElse(Seq.empty)
+  def hasContainers:Boolean = containers.nonEmpty
+
+  def containers: Seq[Container] = transportData.map(_.containers).getOrElse(Seq.empty)
 
   def amend()(implicit clock: Clock = Clock.systemUTC()): ExportsDeclaration = {
     val currentTime = Instant.now(clock)

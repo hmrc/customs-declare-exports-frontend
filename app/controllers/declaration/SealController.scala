@@ -26,7 +26,7 @@ import forms.declaration.Seal
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.Mode
-import models.declaration.{Container, TransportInformationContainerData}
+import models.declaration.{Container, TransportData}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -144,10 +144,10 @@ class SealController @Inject()(
   private def updateCache(updatedContainer: Container)(implicit req: JourneyRequest[AnyContent]) =
     updateExportsDeclarationSyncDirect(model => {
 
-      val updatedContainers = model.containerData
-        .fold(Seq(updatedContainer))(_.addOrUpdate(updatedContainer))
+      val updatedContainers = model.transportData
+        .fold(Seq(updatedContainer))(_.addOrUpdateContainer(updatedContainer))
 
-      model.copy(containerData = Some(TransportInformationContainerData(updatedContainers)))
+      model.copy(transportData = Some(model.transportData.getOrElse(new TransportData).copy(containers = updatedContainers)))
     })
 
 }

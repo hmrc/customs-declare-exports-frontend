@@ -249,15 +249,21 @@ GET         /border-transport                   controllers.declaration.BorderTr
 
 POST        /border-transport                   controllers.declaration.BorderTransportController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
+# Transport Payment
+
+GET         /transport-payment                   controllers.declaration.TransportPaymentController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /transport-payment                   controllers.declaration.TransportPaymentController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
 # Transport Containers & Seals
 
 GET         /containers                          controllers.declaration.TransportContainerController.displayContainerSummary(mode: models.Mode ?= models.Mode.Normal)
 
 POST        /containers                          controllers.declaration.TransportContainerController.submitSummaryAction(mode: models.Mode ?= models.Mode.Normal)
 
-GET         /containers/add                      controllers.declaration.TransportContainerController.displayAddContainer(mode: models.Mode ?= models.Mode.Normal)
+GET         /container                           controllers.declaration.TransportContainerController.displayAddContainer(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /containers/add                      controllers.declaration.TransportContainerController.submitAddContainer(mode: models.Mode ?= models.Mode.Normal)
+POST        /container                           controllers.declaration.TransportContainerController.submitAddContainer(mode: models.Mode ?= models.Mode.Normal)
 
 GET         /containers/:containerId/remove      controllers.declaration.TransportContainerController.displayContainerRemove(mode: models.Mode ?= models.Mode.Normal, containerId)
 

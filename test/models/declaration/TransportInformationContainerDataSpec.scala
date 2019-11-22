@@ -26,7 +26,7 @@ class TransportInformationContainerDataSpec extends WordSpec with MustMatchers {
     "add container to empty TransportInformationContainerData" in {
       val container1 = Container("cont1", Seq.empty)
 
-      val data = TransportInformationContainerData(Seq.empty)
+      val data = Containers(Seq.empty)
 
       data.addOrUpdate(container1) mustBe Seq(container1)
     }
@@ -36,7 +36,7 @@ class TransportInformationContainerDataSpec extends WordSpec with MustMatchers {
       val container2 = Container("cont2", Seq(Seal("seal1")))
       val containerNew = Container("contNew", Seq.empty)
 
-      val data = TransportInformationContainerData(Seq(container1, container2))
+      val data = Containers(Seq(container1, container2))
 
       data.addOrUpdate(containerNew) mustBe Seq(container1, container2, containerNew)
     }
@@ -46,7 +46,7 @@ class TransportInformationContainerDataSpec extends WordSpec with MustMatchers {
       val container2 = Container("cont2", Seq(Seal("seal1")))
       val container1Updated = Container("cont1", Seq.empty)
 
-      val data = TransportInformationContainerData(Seq(container1, container2))
+      val data = Containers(Seq(container1, container2))
 
       data.addOrUpdate(container1Updated) mustBe Seq(container1Updated, container2)
     }

@@ -16,25 +16,26 @@
 
 package views.declaration
 
-import forms.declaration.TransportInformationContainer
+import forms.declaration.ContainerAdd
 import helpers.views.declaration.CommonMessages
 import models.Mode
 import org.jsoup.nodes.Document
 import org.scalatest.MustMatchers
 import play.api.data.Form
+import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.transport_container_add
 import views.tags.ViewTest
 
 @ViewTest
-class TransportContainerAddViewSpec extends UnitViewSpec with Stubs with MustMatchers with CommonMessages {
+class TransportContainerAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs with MustMatchers with CommonMessages {
 
-  private val form: Form[TransportInformationContainer] = TransportInformationContainer.form()
+  private val form: Form[ContainerAdd] = ContainerAdd.form()
   private val page = new transport_container_add(mainTemplate)
 
-  private def createView(form: Form[TransportInformationContainer] = form): Document =
-    page(Mode.Normal, form)
+  private def createView(form: Form[ContainerAdd] = form): Document =
+    page(Mode.Normal, form)(journeyRequest(), messages)
 
   "Transport Containers Add View" should {
     val view = createView()
@@ -64,13 +65,13 @@ class TransportContainerAddViewSpec extends UnitViewSpec with Stubs with MustMat
   "Transport Containers Add View for invalid input" should {
 
     "display error if nothing is entered" in {
-      val view = createView(TransportInformationContainer.form().bind(Map[String, String]()))
+      val view = createView(ContainerAdd.form().bind(Map[String, String]()))
 
       view.select("#error-message-id-input").text() must be(messages("error.required"))
     }
 
     "display error if incorrect containerId is entered" in {
-      val view = createView(TransportInformationContainer.form().fillAndValidate(TransportInformationContainer("12345678901234567890")))
+      val view = createView(ContainerAdd.form().fillAndValidate(ContainerAdd(Some("12345678901234567890"))))
 
       view.select("#error-message-id-input").text() must be(messages("supplementary.transportInfo.containerId.error.length"))
     }
@@ -81,7 +82,7 @@ class TransportContainerAddViewSpec extends UnitViewSpec with Stubs with MustMat
 
     "display data in Container ID input" in {
 
-      val view = createView(TransportInformationContainer.form().fill(TransportInformationContainer("Test")))
+      val view = createView(ContainerAdd.form().fill(ContainerAdd(Some("Test"))))
 
       view.getElementById("id").attr("value") must be("Test")
     }

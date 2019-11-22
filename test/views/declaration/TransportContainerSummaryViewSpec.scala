@@ -24,13 +24,14 @@ import models.declaration.Container
 import org.jsoup.nodes.Document
 import org.scalatest.MustMatchers
 import play.api.data.Form
+import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.transport_container_summary
 import views.tags.ViewTest
 
 @ViewTest
-class TransportContainerSummaryViewSpec extends UnitViewSpec with Stubs with MustMatchers with CommonMessages {
+class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs with MustMatchers with CommonMessages {
 
   val containerId = "212374"
   val sealId = "76434574"
@@ -39,7 +40,7 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with Stubs with Mus
   private val page = new transport_container_summary(mainTemplate)
 
   private def createView(form: Form[YesNoAnswer] = form, containers: Seq[Container] = Seq(container), showSeals: Boolean = true): Document =
-    page(Mode.Normal, form, containers, showSeals)
+    page(Mode.Normal, form, containers, showSeals)(journeyRequest(), messages)
 
   "Transport Containers Summary View" should {
     val view = createView()

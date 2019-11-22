@@ -16,27 +16,28 @@
 
 package forms.declaration
 
-import play.api.data.Forms.text
+import forms.DeclarationPage
+import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class TransportInformationContainer(id: String)
+case class ContainerAdd(id: Option[String])
 
-object TransportInformationContainer {
-  implicit val format = Json.format[TransportInformationContainer]
+object ContainerAdd extends DeclarationPage  {
+  implicit val format = Json.format[ContainerAdd]
 
   val formId = "TransportInformationContainer"
 
   val maxContainerIdLength = 17
 
   val mapping = Forms.mapping(
-    "id" ->
+    "id" -> optional(
       text()
-        .verifying("supplementary.transportInfo.containerId.empty", nonEmpty)
-        .verifying("supplementary.transportInfo.containerId.error.alphanumeric", isAlphanumeric)
-        .verifying("supplementary.transportInfo.containerId.error.length", noLongerThan(maxContainerIdLength))
-  )(TransportInformationContainer.apply)(TransportInformationContainer.unapply)
+        .verifying("declaration.transportInfo.containerId.error.alphanumeric", isEmpty or isAlphanumeric)
+        .verifying("declaration.transportInfo.containerId.error.length", isEmpty or noLongerThan(maxContainerIdLength))
+    ).verifying("declaration.transportInfo.containerId.empty", isPresent(_))
+  )(ContainerAdd.apply)(ContainerAdd.unapply)
 
-  def form(): Form[TransportInformationContainer] = Form(mapping)
+  def form(): Form[ContainerAdd] = Form(mapping)
 }

@@ -19,8 +19,8 @@ package unit.controllers.declaration
 import controllers.declaration.SealController
 import controllers.util.{Remove, SaveAndContinue, SaveAndReturn}
 import forms.declaration.Seal
-import models.{DeclarationType, Mode}
 import models.declaration.Container
+import models.{DeclarationType, Mode}
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
@@ -233,7 +233,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
       "remove seal confirmation" when {
         "user confirms that they want to remove" in new SetUp {
 
-          withNewCaching(aDeclaration(withContainerData(Container(containerId, Seq(Seal(sealId))), Container("containerB", Seq(Seal("sealB"))))))
+          withNewCaching(aDeclaration(withContainerData(Seq(Container(containerId, Seq(Seal(sealId))), Container("containerB", Seq(Seal("sealB")))))))
           val body = Seq(("yesNo", "Yes"))
 
           val result =
