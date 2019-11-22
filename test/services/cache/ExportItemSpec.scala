@@ -60,8 +60,7 @@ class ExportItemSpec extends UnitSpec with ExportsItemBuilder {
             withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
             withStatisticalValue(),
             withPackageInformation(),
-            withCommodityMeasure(CommodityMeasure(None, "100", "100")),
-            withAdditionalInformation("code", "description")
+            withCommodityMeasure(CommodityMeasure(None, "100", "100"))
           ).copy(additionalFiscalReferencesData = None)
 
           completedItem.isCompleted(DeclarationType.STANDARD) mustBe false
@@ -75,8 +74,7 @@ class ExportItemSpec extends UnitSpec with ExportsItemBuilder {
             withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.no)),
             withStatisticalValue(),
             withPackageInformation(),
-            withCommodityMeasure(CommodityMeasure(None, "100", "100")),
-            withAdditionalInformation("code", "description")
+            withCommodityMeasure(CommodityMeasure(None, "100", "100"))
           )
 
           completedItem.isCompleted(DeclarationType.STANDARD) mustBe true
@@ -91,8 +89,7 @@ class ExportItemSpec extends UnitSpec with ExportsItemBuilder {
             withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12")))),
             withStatisticalValue(),
             withPackageInformation(),
-            withCommodityMeasure(CommodityMeasure(None, "100", "100")),
-            withAdditionalInformation("code", "description")
+            withCommodityMeasure(CommodityMeasure(None, "100", "100"))
           )
 
           completedItem.isCompleted(DeclarationType.STANDARD) mustBe true
@@ -127,8 +124,7 @@ class ExportItemSpec extends UnitSpec with ExportsItemBuilder {
             withProcedureCodes(),
             withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
             withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12")))),
-            withPackageInformation(),
-            withAdditionalInformation("code", "description")
+            withPackageInformation()
           )
 
           completedItem.isCompleted(DeclarationType.SIMPLIFIED) mustBe true
