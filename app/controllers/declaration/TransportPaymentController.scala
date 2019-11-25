@@ -21,10 +21,8 @@ import controllers.navigation.Navigator
 import forms.declaration.TransportPayment._
 import forms.declaration.{BorderTransport, TransportPayment}
 import javax.inject.Inject
-import models.declaration.TransportData
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
-import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
@@ -54,7 +52,7 @@ class TransportPaymentController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[TransportPayment]) => Future.successful(BadRequest(transportPayment(mode, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(transportPayment(mode, formWithErrors))),
         transportPayment => updateCache(transportPayment).map(_ => nextPage(mode, request.cacheModel.borderTransport))
       )
   }
@@ -62,12 +60,7 @@ class TransportPaymentController @Inject()(
   private def nextPage(mode: Mode, borderTransport: Option[BorderTransport])(implicit request: JourneyRequest[AnyContent]): Result =
     navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode))
 
-  private def updateCache(formData: TransportPayment)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] = {
-    def update(model: ExportsDeclaration) = {
-      val data = model.transportData.getOrElse(TransportData())
-      model.copy(transportData = Some(data.copy(transportPayment = Some(formData))))
-    }
-    updateExportsDeclarationSyncDirect(model => update(model))
-  }
+  private def updateCache(formData: TransportPayment)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(_.updateTransportPayment(formData))
 
 }

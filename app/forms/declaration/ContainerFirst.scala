@@ -24,10 +24,10 @@ import play.api.libs.json.Json
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator.{isAlphanumeric, noLongerThan, nonEmpty}
 
-case class ContainerYesNo(id: Option[String])
+case class ContainerFirst(id: Option[String])
 
-object ContainerYesNo extends DeclarationPage {
-  implicit val format = Json.format[ContainerYesNo]
+object ContainerFirst extends DeclarationPage {
+  implicit val format = Json.format[ContainerFirst]
 
   val hasContainerKey = "hasContainer"
   val containerIdKey = "id"
@@ -39,15 +39,15 @@ object ContainerYesNo extends DeclarationPage {
 
   import HasContainerAnswers._
 
-  private def form2Model: (String, Option[String]) => ContainerYesNo = {
+  private def form2Model: (String, Option[String]) => ContainerFirst = {
     case (hasContainer, containerId) =>
       hasContainer match {
-        case HasContainerAnswers.yes => ContainerYesNo(containerId)
-        case HasContainerAnswers.no  => ContainerYesNo(None)
+        case HasContainerAnswers.yes => ContainerFirst(containerId)
+        case HasContainerAnswers.no  => ContainerFirst(None)
       }
   }
 
-  private def model2Form: ContainerYesNo => Option[(String, Option[String])] =
+  private def model2Form: ContainerFirst => Option[(String, Option[String])] =
     model =>
       model.id match {
         case Some(id) => Some((yes, Some(id)))
@@ -66,5 +66,5 @@ object ContainerYesNo extends DeclarationPage {
     )
   )(form2Model)(model2Form)
 
-  def form(): Form[ContainerYesNo] = Form(mapping)
+  def form(): Form[ContainerFirst] = Form(mapping)
 }

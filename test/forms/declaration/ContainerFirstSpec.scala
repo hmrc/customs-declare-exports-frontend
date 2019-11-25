@@ -16,12 +16,12 @@
 
 package forms.declaration
 
-import forms.declaration.ContainerYesNo._
+import forms.declaration.ContainerFirst._
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString}
 
-class ContainerYesNoSpec extends WordSpec with MustMatchers {
+class ContainerFirstSpec extends WordSpec with MustMatchers {
 
   def formData(hasContainer: String, containerId: Option[String]) =
     JsObject(Map(hasContainerKey -> JsString(hasContainer), containerIdKey -> JsString(containerId.getOrElse(""))))
@@ -30,25 +30,25 @@ class ContainerYesNoSpec extends WordSpec with MustMatchers {
 
     "return form with errors" when {
       "provided with id too long" in {
-        val form = ContainerYesNo.form.bind(formData("Yes", Some("123456789012345678")))
+        val form = ContainerFirst.form.bind(formData("Yes", Some("123456789012345678")))
 
         form.errors mustBe Seq(FormError(containerIdKey, "declaration.transportInfo.containerId.error.length"))
       }
 
       "provided with non-alphanumeric id" in {
-        val form = ContainerYesNo.form.bind(formData("Yes", Some("!2345678")))
+        val form = ContainerFirst.form.bind(formData("Yes", Some("!2345678")))
 
         form.errors mustBe Seq(FormError(containerIdKey, "declaration.transportInfo.containerId.error.alphanumeric"))
       }
 
       "provided with no id when user said yes" in {
-        val form = ContainerYesNo.form.bind(formData("Yes", None))
+        val form = ContainerFirst.form.bind(formData("Yes", None))
 
         form.errors mustBe Seq(FormError(containerIdKey, "declaration.transportInfo.containerId.empty"))
       }
 
       "no answer for yes/no" in {
-        val form = ContainerYesNo.form.bind(formData("", None))
+        val form = ContainerFirst.form.bind(formData("", None))
 
         form.errors mustBe Seq(FormError(hasContainerKey, "error.yesNo.required"))
       }
@@ -56,13 +56,13 @@ class ContainerYesNoSpec extends WordSpec with MustMatchers {
 
     "return form without errors" when {
       "provided with valid input when user said Yes" in {
-        val form = ContainerYesNo.form.bind(formData("Yes", Some("1234ABCD")))
+        val form = ContainerFirst.form.bind(formData("Yes", Some("1234ABCD")))
 
         form.hasErrors must be(false)
       }
 
       "provided with no input when user said No" in {
-        val form = ContainerYesNo.form.bind(formData("No", None))
+        val form = ContainerFirst.form.bind(formData("No", None))
 
         form.hasErrors must be(false)
       }

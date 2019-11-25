@@ -16,21 +16,21 @@
 
 @import controllers.declaration.routes._
 @import controllers.navigation.Navigator
-@import forms.declaration.ContainerYesNo
-@import forms.declaration.ContainerYesNo._
+@import forms.declaration.ContainerFirst
+@import forms.declaration.ContainerFirst._
 @import models.requests.JourneyRequest
 @import views.Title
 @import views.components.inputs.RadioOption
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[ContainerYesNo])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[ContainerFirst])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
     title = Title("declaration.transportInfo.containers.first.title")
 ) {
 
-    @components.back_link(Navigator.backLink(ContainerYesNo, mode))
+    @components.back_link(Navigator.backLink(ContainerFirst, mode))
 
     @components.error_summary(form.errors)
 

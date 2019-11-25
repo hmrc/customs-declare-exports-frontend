@@ -15,21 +15,24 @@
  */
 
 package models.declaration
+
 import forms.declaration.TransportPayment
 import play.api.libs.json.Json
 
 case class TransportData(transportPayment: Option[TransportPayment] = None, containers: Seq[Container] = Seq.empty) {
 
+  private def hasContainer(id: String) = containers.exists(_.id == id)
+
   def addOrUpdateContainer(updatedContainer: Container): Seq[Container] =
     if (containers.isEmpty) {
       Seq(updatedContainer)
-    } else if (!containers.exists(_.id == updatedContainer.id)) {
-      containers :+ updatedContainer
-    } else {
+    } else if (hasContainer(updatedContainer.id)) {
       containers.map {
         case container if updatedContainer.id == container.id => updatedContainer
         case otherContainer                                   => otherContainer
       }
+    } else {
+      containers :+ updatedContainer
     }
 }
 

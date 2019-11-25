@@ -21,11 +21,11 @@ import controllers.navigation.Navigator
 import controllers.util.{FormAction, Remove}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.{form, YesNoAnswers}
-import forms.declaration.{ContainerAdd, ContainerYesNo}
+import forms.declaration.{ContainerAdd, ContainerFirst}
 import handlers.ErrorHandler
 import javax.inject.Inject
+import models.declaration.Container
 import models.declaration.Container.maxNumberOfItems
-import models.declaration.{Container, TransportData}
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.{Form, FormError}
@@ -35,7 +35,6 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.{transport_container_add, transport_container_add_first, transport_container_remove, transport_container_summary}
 
-import scala.concurrent.Future.successful
 import scala.concurrent.{ExecutionContext, Future}
 
 class TransportContainerController @Inject()(
@@ -56,7 +55,7 @@ class TransportContainerController @Inject()(
     if (request.cacheModel.hasContainers) {
       Ok(addPage(mode, ContainerAdd.form()))
     } else {
-      Ok(addFirstPage(mode, ContainerYesNo.form()))
+      Ok(addFirstPage(mode, ContainerFirst.form()))
     }
   }
 
@@ -66,14 +65,14 @@ class TransportContainerController @Inject()(
       saveAdditionalContainer(mode, boundForm, maxNumberOfItems, request.cacheModel.containers)
     } else {
 
-      ContainerYesNo.form
+      ContainerFirst.form
         .bindFromRequest()
         .fold(
-          (formWithErrors: Form[ContainerYesNo]) => Future.successful(BadRequest(addFirstPage(mode, formWithErrors))),
+          (formWithErrors: Form[ContainerFirst]) => Future.successful(BadRequest(addFirstPage(mode, formWithErrors))),
           validForm =>
             validForm.id match {
               case Some(containerId) => saveFirstContainer(mode, containerId)
-              case _                 => successful(navigator.continueTo(routes.SummaryController.displayPage(Mode.Normal)))
+              case _                 => Future.successful(navigator.continueTo(routes.SummaryController.displayPage(Mode.Normal)))
           }
         )
     }
@@ -90,7 +89,7 @@ class TransportContainerController @Inject()(
   def submitSummaryAction(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     FormAction.bindFromRequest() match {
       case Remove(values) =>
-        successful(navigator.continueTo(routes.TransportContainerController.displayContainerRemove(mode, containerId(values))))
+        Future.successful(navigator.continueTo(routes.TransportContainerController.displayContainerRemove(mode, containerId(values))))
       case _ => addContainerAnswer(mode)
     }
   }
@@ -117,13 +116,13 @@ class TransportContainerController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ) =
     prepare(boundForm, elementLimit, cache) fold (
-      formWithErrors => successful(BadRequest(addPage(mode, formWithErrors))),
+      formWithErrors => Future.successful(BadRequest(addPage(mode, formWithErrors))),
       updatedCache =>
         if (updatedCache != cache)
           updateCache(updatedCache)
             .map(_ => redirectAfterAdd(mode, updatedCache.last.id))
         else
-          successful(
+          Future.successful(
             navigator
               .continueTo(routes.TransportContainerController.displayContainerSummary(mode))
         )
@@ -151,13 +150,14 @@ class TransportContainerController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[YesNoAnswer]) => successful(BadRequest(summaryPage(mode, formWithErrors, request.cacheModel.containers, allowSeals))),
+        (formWithErrors: Form[YesNoAnswer]) =>
+          Future.successful(BadRequest(summaryPage(mode, formWithErrors, request.cacheModel.containers, allowSeals))),
         formData =>
           formData.answer match {
             case YesNoAnswers.yes =>
-              successful(navigator.continueTo(routes.TransportContainerController.displayAddContainer(mode)))
+              Future.successful(navigator.continueTo(routes.TransportContainerController.displayAddContainer(mode)))
             case YesNoAnswers.no =>
-              successful(navigator.continueTo(routes.SummaryController.displayPage(Mode.Normal)))
+              Future.successful(navigator.continueTo(routes.SummaryController.displayPage(Mode.Normal)))
         }
       )
 
@@ -166,13 +166,13 @@ class TransportContainerController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[YesNoAnswer]) =>
-          successful(BadRequest(removePage(mode, formWithErrors, request.cacheModel.containers.filter(_.id == containerId).head))),
+          Future.successful(BadRequest(removePage(mode, formWithErrors, request.cacheModel.containers.filter(_.id == containerId).head))),
         formData => {
           formData.answer match {
             case YesNoAnswers.yes =>
               removeContainer(containerId, mode)
             case YesNoAnswers.no =>
-              successful(navigator.continueTo(routes.TransportContainerController.displayContainerSummary(mode)))
+              Future.successful(navigator.continueTo(routes.TransportContainerController.displayContainerSummary(mode)))
           }
         }
       )
@@ -184,9 +184,7 @@ class TransportContainerController @Inject()(
   private def containerId(values: Seq[String]): String = values.headOption.getOrElse("")
 
   private def updateCache(updatedContainers: Seq[Container])(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(
-      model => model.copy(transportData = Some(model.transportData.getOrElse(new TransportData).copy(containers = updatedContainers)))
-    )
+    updateExportsDeclarationSyncDirect(_.updateContainers(updatedContainers))
 
   private def redirectAfterAdd(mode: Mode, containerId: String)(implicit request: JourneyRequest[AnyContent]) =
     if (allowSeals)

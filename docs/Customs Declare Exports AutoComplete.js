@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      2.0
+// @version      1.10
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*/customs-declare-exports*

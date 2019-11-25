@@ -16,7 +16,7 @@
 
 package views.declaration
 
-import forms.declaration.ContainerYesNo
+import forms.declaration.ContainerFirst
 import helpers.views.declaration.CommonMessages
 import models.Mode
 import org.jsoup.nodes.Document
@@ -31,11 +31,11 @@ import views.tags.ViewTest
 @ViewTest
 class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestData with Stubs with MustMatchers with CommonMessages {
 
-  private val form: Form[ContainerYesNo] = ContainerYesNo.form()
+  private val form: Form[ContainerFirst] = ContainerFirst.form()
   private val page = new transport_container_add_first(mainTemplate)
   private val realMessages = validatedMessages
 
-  private def createView(form: Form[ContainerYesNo] = form): Document =
+  private def createView(form: Form[ContainerFirst] = form): Document =
     page(Mode.Normal, form)(journeyRequest(), realMessages)
 
   "Transport Containers Add First View" should {
@@ -65,7 +65,7 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestDa
   "Transport Containers Add View for invalid input" should {
 
     "display errors" in {
-      val view = createView(ContainerYesNo.form().fillAndValidate(ContainerYesNo(Some("12345678901234567890"))))
+      val view = createView(ContainerFirst.form().fillAndValidate(ContainerFirst(Some("12345678901234567890"))))
 
       view.select("#error-message-id-input").text() must be(realMessages("declaration.transportInfo.containerId.error.length"))
     }
@@ -76,7 +76,7 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestDa
 
     "display data in Container ID input" in {
 
-      val view = createView(ContainerYesNo.form().fill(ContainerYesNo(Some("Test"))))
+      val view = createView(ContainerFirst.form().fill(ContainerFirst(Some("Test"))))
 
       view.getElementById("id").attr("value") must be("Test")
     }

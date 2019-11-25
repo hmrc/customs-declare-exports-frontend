@@ -76,6 +76,12 @@ case class ExportsDeclaration(
   def clearRoutingCountries(): ExportsDeclaration =
     copy(locations = locations.copy(hasRoutingCountries = Some(false), routingCountries = Seq.empty))
 
+  def updateContainers(containers: Seq[Container]) =
+    copy(transportData = Some(transportData.getOrElse(new TransportData).copy(containers = containers)))
+
+  def updateTransportPayment(payment: TransportPayment) =
+    copy(transportData = Some(transportData.getOrElse(new TransportData).copy(transportPayment = Some(payment))))
+
   def containRoutingCountries(): Boolean = locations.routingCountries.nonEmpty
 
   def itemBy(itemId: String): Option[ExportItem] = items.find(_.id.equalsIgnoreCase(itemId))

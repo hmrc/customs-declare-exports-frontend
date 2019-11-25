@@ -18,7 +18,7 @@ package unit.controllers.declaration
 
 import controllers.declaration.TransportContainerController
 import controllers.util.Remove
-import forms.declaration.{ContainerAdd, ContainerYesNo, Seal}
+import forms.declaration.{ContainerAdd, ContainerFirst, Seal}
 import models.declaration.Container
 import models.{DeclarationType, Mode}
 import play.api.test.Helpers._
@@ -124,7 +124,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
     "add first container and redirect to add seal page" when {
 
-      val requestBody = Seq(ContainerYesNo.hasContainerKey -> "Yes", ContainerYesNo.containerIdKey -> "value")
+      val requestBody = Seq(ContainerFirst.hasContainerKey -> "Yes", ContainerFirst.containerIdKey -> "value")
 
       "working on standard declaration with cache empty" in new SetUp {
         withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
