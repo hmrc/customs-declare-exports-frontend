@@ -33,7 +33,7 @@ object SupervisingCustomsOffice extends DeclarationPage {
     .mapping(
       "supervisingCustomsOffice" -> optional(
         text()
-          .verifying("supplementary.warehouse.supervisingCustomsOffice.error", isAlphanumeric and hasSpecificLength(8))
+          .verifying("declaration.warehouse.supervisingCustomsOffice.error", isAlphanumeric and hasSpecificLength(8))
       )
     )(SupervisingCustomsOffice.apply)(SupervisingCustomsOffice.unapply)
 

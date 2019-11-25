@@ -177,12 +177,15 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
     "we are on Simplified journey" should {
       val requestOnSimplified = journeyRequest(DeclarationType.SIMPLIFIED)
       val view = createView(request = requestOnSimplified)
-      "display 'Back' button that links to 'Inland Transport' page" in {
+
+      "display 'Back' button that links to 'Supervising Customs Office' page" in {
         val viewForStandard = view
         val backButton = viewForStandard.getElementById("link-back")
 
         backButton must containText(realMessages(backCaption))
-        backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.InlandTransportDetailsController.displayPage(Mode.Normal))
+        backButton.getElementById("link-back") must haveHref(
+          controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal)
+        )
       }
       behave like borderView(view)
       behave like havingMeansOfTransport(view)

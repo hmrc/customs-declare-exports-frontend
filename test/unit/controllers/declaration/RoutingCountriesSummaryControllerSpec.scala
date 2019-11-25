@@ -28,12 +28,13 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.model.Country
 import unit.base.ControllerSpec
-import views.html.declaration.destinationCountries.{remove_routing_country, routing_countries_summary}
+import views.html.declaration.destinationCountries.{change_routing_country, remove_routing_country, routing_countries_summary}
 
 class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
 
-  val mockRoutingCountriesSummaryPage = mock[routing_countries_summary]
-  val mockRoutingRemovePage = mock[remove_routing_country]
+  val routingCountriesSummaryPage = mock[routing_countries_summary]
+  val routingRemovePage = mock[remove_routing_country]
+  val changeRoutingPage = mock[change_routing_country]
 
   val controller = new RoutingCountriesSummaryController(
     mockAuthAction,
@@ -41,33 +42,41 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
-    mockRoutingCountriesSummaryPage,
-    mockRoutingRemovePage
+    routingCountriesSummaryPage,
+    routingRemovePage,
+    changeRoutingPage
   )(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
     authorizedUser()
-    when(mockRoutingCountriesSummaryPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(mockRoutingRemovePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(routingCountriesSummaryPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(routingRemovePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(changeRoutingPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockRoutingCountriesSummaryPage, mockRoutingRemovePage)
+    reset(routingCountriesSummaryPage, routingRemovePage, changeRoutingPage)
 
     super.afterEach()
   }
 
   def theResponseSummaryForm: Form[Boolean] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[Boolean]])
-    verify(mockRoutingCountriesSummaryPage).apply(any(), captor.capture(), any())(any(), any())
+    verify(routingCountriesSummaryPage).apply(any(), captor.capture(), any())(any(), any())
     captor.getValue
   }
 
   def theCountryToRemove: Country = {
     val captor = ArgumentCaptor.forClass(classOf[Country])
-    verify(mockRoutingRemovePage).apply(any(), any(), captor.capture())(any(), any())
+    verify(routingRemovePage).apply(any(), any(), captor.capture())(any(), any())
+    captor.getValue
+  }
+
+  def theChangeCountry: Form[String] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[String]])
+    verify(changeRoutingPage).apply(any(), captor.capture(), any(), any())(any(), any())
     captor.getValue
   }
 
@@ -99,6 +108,19 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
       }
     }
 
+    "return 200 (OK) for display change routing country page" when {
+
+      "user change country that exists in cache" in {
+
+        withNewCaching(aDeclaration(withRoutingCountries(Seq("PL"))))
+
+        val result = controller.displayChangeCountryPage(Mode.Normal, "PL")(getRequest())
+
+        status(result) mustBe OK
+        theChangeCountry.value mustBe Some("PL")
+      }
+    }
+
     "return 303 (SEE_OTHER) for display page method" when {
 
       "declaration type is Supplementary" in {
@@ -110,7 +132,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.DestinationCountryController.displayPage()
 
-        verify(mockRoutingCountriesSummaryPage, times(0)).apply(any(), any(), any())(any(), any())
+        verify(routingCountriesSummaryPage, times(0)).apply(any(), any(), any())(any(), any())
       }
 
       "declaration type is different than Supplementary but cache doesn't contain countries" in {
@@ -122,7 +144,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion()
 
-        verify(mockRoutingCountriesSummaryPage, times(0)).apply(any(), any(), any())(any(), any())
+        verify(routingCountriesSummaryPage, times(0)).apply(any(), any(), any())(any(), any())
       }
     }
 
@@ -163,6 +185,30 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
       }
     }
 
+    "return 303 (SEE_OTHER) for change country" when {
+
+      "user try to change non existing in cache country" in {
+
+        withNewCaching(aDeclaration(withoutRoutingQuestion()))
+
+        val result = controller.displayChangeCountryPage(Mode.Normal, "PL")(getRequest())
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
+      }
+
+      "user succesfully update a country" in {
+
+        withNewCaching(aDeclaration(withRoutingCountries(Seq("PL"))))
+
+        val correctForm = JsObject(Seq("country" -> JsString("GB")))
+
+        val result = controller.submitChangeCountry(Mode.Normal, "PL")(postRequest(correctForm))
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
+      }
+    }
+
     "return 400 (BAD_REQUEST) for submit method" when {
 
       "form is incorrect" in {
@@ -182,6 +228,20 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
       "form is incorrect" in {
 
         withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withRoutingCountries()))
+
+        val incorrectAnswer = JsObject(Seq("answer" -> JsString("incorrect")))
+
+        val result = controller.submit(Mode.Normal)(postRequest(incorrectAnswer))
+
+        status(result) mustBe BAD_REQUEST
+      }
+    }
+
+    "return 400 (BAD_REQUEST) for changing country" when {
+
+      "form is incorrect" in {
+
+        withNewCaching(aDeclaration(withRoutingCountries()))
 
         val incorrectAnswer = JsObject(Seq("answer" -> JsString("incorrect")))
 
@@ -219,6 +279,20 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.LocationController.displayPage()
       }
+    }
+  }
+
+  "Routing countries controller" should {
+
+    "handle duplication during changing the country" in {
+
+      withNewCaching(aDeclaration(withRoutingCountries(Seq("PL", "DZ", "AD"))))
+
+      val duplicatedCountry = JsObject(Seq("country" -> JsString("PL")))
+
+      val result = controller.submitChangeCountry(Mode.Normal, "DZ")(postRequest(duplicatedCountry))
+
+      status(result) mustBe BAD_REQUEST
     }
   }
 }

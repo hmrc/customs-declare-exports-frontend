@@ -68,7 +68,6 @@
         label = messages("supplementary.summary.locations.warehouseId"),
         value = locations.flatMap(_.warehouseIdentification).map(_.identificationNumber)
     ))
-
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.inlandModeOfTransportCode"),
         value = locations.flatMap(_.inlandModeOfTransportCode).map(_.inlandModeOfTransportCode)

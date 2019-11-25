@@ -45,11 +45,10 @@ case class ExportItem(
   val isCompleted: PartialFunction[DeclarationType, Boolean] = {
     case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
       procedureCodes.isDefined && isFiscalInformationCompleted && statisticalValue.isDefined &&
-        packageInformation.nonEmpty && commodityMeasure.isDefined && additionalInformation.isDefined
+        packageInformation.nonEmpty && commodityMeasure.isDefined
 
     case DeclarationType.SIMPLIFIED =>
-      procedureCodes.isDefined && isFiscalInformationCompleted &&
-        packageInformation.nonEmpty && additionalInformation.isDefined
+      procedureCodes.isDefined && isFiscalInformationCompleted && packageInformation.nonEmpty
   }
 
   private def isFiscalInformationCompleted: Boolean =

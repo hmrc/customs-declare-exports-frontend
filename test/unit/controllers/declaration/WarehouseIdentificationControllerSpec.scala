@@ -17,7 +17,6 @@
 package unit.controllers.declaration
 
 import controllers.declaration.WarehouseIdentificationController
-import helpers.views.declaration.WarehouseIdentificationMessages
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
@@ -29,7 +28,7 @@ import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.declaration.warehouse_identification
 
-class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAndAfterEach with WarehouseIdentificationMessages with OptionValues {
+class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAndAfterEach with OptionValues {
 
   val warehouseIdentificationTemplate: warehouse_identification = mock[warehouse_identification]
 
@@ -96,6 +95,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
         withNewCaching(standardCacheModel)
         val result = controller.saveIdentificationNumber(Mode.Normal).apply(postRequest(body))
         await(result)
+
         theCacheModelUpdated.locations.warehouseIdentification.value.identificationNumber.value mustBe exampleWarehouseIdentificationNumber
       }
 
@@ -120,6 +120,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
         withNewCaching(suplementaryCacheModel)
         val result = controller.saveIdentificationNumber(Mode.Normal).apply(postRequest(body))
         await(result)
+
         theCacheModelUpdated.locations.warehouseIdentification.value.identificationNumber.value mustBe exampleWarehouseIdentificationNumber
       }
 
@@ -144,6 +145,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
         withNewCaching(simplifiedCacheModel)
         val result = controller.saveIdentificationNumber(Mode.Normal).apply(postRequest(body))
         await(result)
+
         theCacheModelUpdated.locations.warehouseIdentification.value.identificationNumber.value mustBe exampleWarehouseIdentificationNumber
       }
 

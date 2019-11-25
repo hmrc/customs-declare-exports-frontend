@@ -461,7 +461,7 @@ standard.officeOfExit.circumstancesCode.error = Circumstance code is incorrect
 
 declaration.warehouse.identification.sectionHeader = Locations
 declaration.warehouse.identification.title =  What is the warehouse identification number?
-declaration.warehouse.identification.hint = Because you entered 07, 71, or 78 in your procedure code, we need to know more about the type of warehouse your goods were held in. For example, R1234567GB. If the goods were not held in a warehouse you can leave this blank.
+declaration.warehouse.identification.hint = For example, R1234567GB. If the goods were not held in a warehouse you can leave this blank.
 declaration.warehouse.identification.identificationNumber.error = Enter a valid warehouse identification number in the correct format. It must be no more than 36 characters.
 declaration.warehouse.identification.identificationNumber.empty = Enter the warehouse identification number
 
@@ -474,11 +474,6 @@ declaration.warehouse.inlandTransportDetails.sectionHeader = Locations
 declaration.warehouse.inlandTransportDetails.title = What is the inland mode of transport?
 declaration.warehouse.inlandTransportDetails.hint = The type of transport that will move the goods from a warehouse to the port where they will depart the EU.
 declaration.warehouse.inlandTransportDetails.error.incorrect = Please, choose valid inland mode of transport
-
-supplementary.warehouse.title =  Enter more details about the warehouse
-supplementary.warehouse.title.hint = Locations
-supplementary.warehouse.identificationType = Warehouse type
-supplementary.warehouse.identificationType.error = Please choose a valid warehouse type
 
 declaration.fiscalInformation.title = Onward Supply Relief (OSR)
 declaration.fiscalInformation.question = Do you want to claim OSR?

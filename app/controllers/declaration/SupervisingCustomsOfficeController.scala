@@ -21,7 +21,7 @@ import controllers.navigation.Navigator
 import forms.declaration.SupervisingCustomsOffice
 import javax.inject.Inject
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -56,10 +56,18 @@ class SupervisingCustomsOfficeController @Inject()(
         formWithErrors => Future.successful(BadRequest(supervisingCustomsOfficePage(mode, formWithErrors))),
         form => {
           updateCache(form)
-            .map(_ => navigator.continueTo(controllers.declaration.routes.InlandTransportDetailsController.displayPage(mode)))
+            .map(_ => navigator.continueTo(nextPage(mode, request)))
         }
       )
   }
+
+  private def nextPage(mode: Mode, request: JourneyRequest[AnyContent]) =
+    request.declarationType match {
+      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
+        controllers.declaration.routes.InlandTransportDetailsController.displayPage(mode)
+      case DeclarationType.SIMPLIFIED =>
+        controllers.declaration.routes.BorderTransportController.displayPage(mode)
+    }
 
   private def updateCache(formData: SupervisingCustomsOffice)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(supervisingCustomsOffice = Some(formData))))
