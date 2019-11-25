@@ -19,14 +19,14 @@ package models.declaration
 import forms.declaration.Seal
 import org.scalatest.{MustMatchers, WordSpec}
 
-class TransportDataSpec extends WordSpec with MustMatchers {
+class TransportInformationSpec extends WordSpec with MustMatchers {
 
   "TransportData" should {
 
     "add container to empty collection" in {
       val container1 = Container("cont1", Seq.empty)
 
-      val data = TransportData(containers = Seq.empty)
+      val data = TransportInformation(containers = Seq.empty)
 
       data.addOrUpdateContainer(container1) mustBe Seq(container1)
     }
@@ -36,7 +36,7 @@ class TransportDataSpec extends WordSpec with MustMatchers {
       val container2 = Container("cont2", Seq(Seal("seal1")))
       val containerNew = Container("contNew", Seq.empty)
 
-      val data = TransportData(containers = Seq(container1, container2))
+      val data = TransportInformation(containers = Seq(container1, container2))
 
       data.addOrUpdateContainer(containerNew) mustBe Seq(container1, container2, containerNew)
     }
@@ -46,7 +46,7 @@ class TransportDataSpec extends WordSpec with MustMatchers {
       val container2 = Container("cont2", Seq(Seal("seal1")))
       val container1Updated = Container("cont1", Seq.empty)
 
-      val data = TransportData(containers = Seq(container1, container2))
+      val data = TransportInformation(containers = Seq(container1, container2))
 
       data.addOrUpdateContainer(container1Updated) mustBe Seq(container1Updated, container2)
     }

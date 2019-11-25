@@ -19,7 +19,7 @@ package models.declaration
 import forms.declaration.TransportPayment
 import play.api.libs.json.Json
 
-case class TransportData(transportPayment: Option[TransportPayment] = None, containers: Seq[Container] = Seq.empty) {
+case class TransportInformation(transportPayment: Option[TransportPayment] = None, containers: Seq[Container] = Seq.empty) {
 
   private def hasContainer(id: String) = containers.exists(_.id == id)
 
@@ -36,6 +36,6 @@ case class TransportData(transportPayment: Option[TransportPayment] = None, cont
     }
 }
 
-object TransportData {
-  implicit val format = Json.format[TransportData]
+object TransportInformation {
+  implicit val format = Json.format[TransportInformation]
 }

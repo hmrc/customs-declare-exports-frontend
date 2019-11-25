@@ -41,7 +41,7 @@ object SupplementaryDeclarationData {
       consignmentReferences = cacheData.consignmentReferences,
       parties = flattenIfEmpty(Parties(cacheData)),
       locations = flattenIfEmpty(Locations(cacheData)),
-      containers = cacheData.transportData.map(_.containers).getOrElse(Seq.empty),
+      containers = cacheData.transportInformation.map(_.containers).getOrElse(Seq.empty),
       items = flattenIfEmpty(Items(cacheData)),
       createDate = Some(cacheData.createdDateTime),
       updatedDate = Some(cacheData.updatedDateTime)

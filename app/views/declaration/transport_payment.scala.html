@@ -32,7 +32,7 @@
 @(mode: Mode, form: Form[TransportPayment])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
-    title = Title("declaration.transportData.transportPayment.paymentMethod")
+    title = Title("declaration.transportInformation.transportPayment.paymentMethod")
 ) {
 
     @components.back_link(Navigator.backLink(TransportPayment, mode))
@@ -43,21 +43,21 @@
         @components.error_summary(form.errors)
 
         @components.heading(
-            title = messages("declaration.transportData.transportPayment.paymentMethod"),
-            hint = messages("declaration.transportData.transportPayment.paymentMethod.hint")
+            title = messages("declaration.transportInformation.transportPayment.paymentMethod"),
+            hint = messages("declaration.transportInformation.transportPayment.paymentMethod.hint")
         )
 
         @components.fields.field_radio(
             field = form("paymentMethod"),
             legend = "",
             inputs = Seq(
-                RadioOption("cash", cash, messages("declaration.transportData.transportPayment.paymentMethod.cash")),
-                RadioOption("creditCard", creditCard, messages("declaration.transportData.transportPayment.paymentMethod.creditCard")),
-                RadioOption("cheque", cheque, messages("declaration.transportData.transportPayment.paymentMethod.cheque")),
-                RadioOption("other", other, messages("declaration.transportData.transportPayment.paymentMethod.other")),
-                RadioOption("eFunds", eFunds, messages("declaration.transportData.transportPayment.paymentMethod.eFunds")),
-                RadioOption("accHolder", accHolder, messages("declaration.transportData.transportPayment.paymentMethod.accHolder")),
-                RadioOption("notPrePaid", notPrePaid, messages("declaration.transportData.transportPayment.paymentMethod.notPrePaid"))
+                RadioOption("cash", cash, messages("declaration.transportInformation.transportPayment.paymentMethod.cash")),
+                RadioOption("creditCard", creditCard, messages("declaration.transportInformation.transportPayment.paymentMethod.creditCard")),
+                RadioOption("cheque", cheque, messages("declaration.transportInformation.transportPayment.paymentMethod.cheque")),
+                RadioOption("other", other, messages("declaration.transportInformation.transportPayment.paymentMethod.other")),
+                RadioOption("eFunds", eFunds, messages("declaration.transportInformation.transportPayment.paymentMethod.eFunds")),
+                RadioOption("accHolder", accHolder, messages("declaration.transportInformation.transportPayment.paymentMethod.accHolder")),
+                RadioOption("notPrePaid", notPrePaid, messages("declaration.transportInformation.transportPayment.paymentMethod.notPrePaid"))
             )
         )
 

@@ -37,7 +37,7 @@ case class ExportsDeclaration(
   consignmentReferences: Option[ConsignmentReferences] = None,
   departureTransport: Option[DepartureTransport] = None,
   borderTransport: Option[BorderTransport] = None,
-  transportData: Option[TransportData] = None,
+  transportInformation: Option[TransportInformation] = None,
   parties: Parties = Parties(),
   locations: Locations = Locations(),
   items: Set[ExportItem] = Set.empty,
@@ -77,10 +77,10 @@ case class ExportsDeclaration(
     copy(locations = locations.copy(hasRoutingCountries = Some(false), routingCountries = Seq.empty))
 
   def updateContainers(containers: Seq[Container]) =
-    copy(transportData = Some(transportData.getOrElse(new TransportData).copy(containers = containers)))
+    copy(transportInformation = Some(transportInformation.getOrElse(new TransportInformation).copy(containers = containers)))
 
   def updateTransportPayment(payment: TransportPayment) =
-    copy(transportData = Some(transportData.getOrElse(new TransportData).copy(transportPayment = Some(payment))))
+    copy(transportInformation = Some(transportInformation.getOrElse(new TransportInformation).copy(transportPayment = Some(payment))))
 
   def containRoutingCountries(): Boolean = locations.routingCountries.nonEmpty
 
@@ -90,7 +90,7 @@ case class ExportsDeclaration(
 
   def hasContainers: Boolean = containers.nonEmpty
 
-  def containers: Seq[Container] = transportData.map(_.containers).getOrElse(Seq.empty)
+  def containers: Seq[Container] = transportInformation.map(_.containers).getOrElse(Seq.empty)
 
   def amend()(implicit clock: Clock = Clock.systemUTC()): ExportsDeclaration = {
     val currentTime = Instant.now(clock)

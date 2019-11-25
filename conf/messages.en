@@ -544,16 +544,16 @@ supplementary.transportInfo.transportMode.fixedTransportInstallations = Fixed tr
 supplementary.transportInfo.transportMode.inlandWaterway = Inland waterway transport
 supplementary.transportInfo.transportMode.unknown = Mode unknown, for example own propulsion
 
-declaration.transportData.transportPayment.paymentMethod = How is the transport paid for?
-declaration.transportData.transportPayment.paymentMethod.hint = If you are not submitting an express consignment, you can leave this blank.
-declaration.transportData.transportPayment.paymentMethod.cash = Payment in cash
-declaration.transportData.transportPayment.paymentMethod.creditCard = Payment by credit card
-declaration.transportData.transportPayment.paymentMethod.cheque = Payment by cheque
-declaration.transportData.transportPayment.paymentMethod.other = Other (e.g. Direct debit to cash account)
-declaration.transportData.transportPayment.paymentMethod.eFunds = Electronic funds transfer
-declaration.transportData.transportPayment.paymentMethod.accHolder = Account holder with carrier
-declaration.transportData.transportPayment.paymentMethod.notPrePaid = Not pre-paid
-declaration.transportData.transportPayment.paymentMethod.error= Input is not valid
+declaration.transportInformation.transportPayment.paymentMethod = How is the transport paid for?
+declaration.transportInformation.transportPayment.paymentMethod.hint = If you are not submitting an express consignment, you can leave this blank.
+declaration.transportInformation.transportPayment.paymentMethod.cash = Payment in cash
+declaration.transportInformation.transportPayment.paymentMethod.creditCard = Payment by credit card
+declaration.transportInformation.transportPayment.paymentMethod.cheque = Payment by cheque
+declaration.transportInformation.transportPayment.paymentMethod.other = Other (e.g. Direct debit to cash account)
+declaration.transportInformation.transportPayment.paymentMethod.eFunds = Electronic funds transfer
+declaration.transportInformation.transportPayment.paymentMethod.accHolder = Account holder with carrier
+declaration.transportInformation.transportPayment.paymentMethod.notPrePaid = Not pre-paid
+declaration.transportInformation.transportPayment.paymentMethod.error= Input is not valid
 
 supplementary.transportInfo.meansOfTransport.departure.header = What are the chosen transport’s details?
 supplementary.transportInfo.meansOfTransport.departure.header.hint = Select the type of identification used for the chosen transport and enter the reference

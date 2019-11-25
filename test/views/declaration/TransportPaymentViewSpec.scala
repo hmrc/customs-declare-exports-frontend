@@ -40,7 +40,7 @@ class TransportPaymentViewSpec extends UnitViewSpec with ExportsTestData with St
     val view = createView
 
     "display page title" in {
-      view.getElementById("title").text() must be(realMessages("declaration.transportData.transportPayment.paymentMethod"))
+      view.getElementById("title").text() must be(realMessages("declaration.transportInformation.transportPayment.paymentMethod"))
     }
 
     "display 'Back' button that links to 'border transport' page" in {
@@ -52,13 +52,13 @@ class TransportPaymentViewSpec extends UnitViewSpec with ExportsTestData with St
 
     "display choices for payment method" in {
       val choices = view.getElementById("paymentMethod")
-      choices must containText(realMessages("declaration.transportData.transportPayment.paymentMethod.cash"))
-      choices must containText(realMessages("declaration.transportData.transportPayment.paymentMethod.creditCard"))
-      choices must containText(realMessages("declaration.transportData.transportPayment.paymentMethod.cheque"))
-      choices must containText(realMessages("declaration.transportData.transportPayment.paymentMethod.other"))
-      choices must containText(realMessages("declaration.transportData.transportPayment.paymentMethod.eFunds"))
-      choices must containText(realMessages("declaration.transportData.transportPayment.paymentMethod.accHolder"))
-      choices must containText(realMessages("declaration.transportData.transportPayment.paymentMethod.notPrePaid"))
+      choices must containText(realMessages("declaration.transportInformation.transportPayment.paymentMethod.cash"))
+      choices must containText(realMessages("declaration.transportInformation.transportPayment.paymentMethod.creditCard"))
+      choices must containText(realMessages("declaration.transportInformation.transportPayment.paymentMethod.cheque"))
+      choices must containText(realMessages("declaration.transportInformation.transportPayment.paymentMethod.other"))
+      choices must containText(realMessages("declaration.transportInformation.transportPayment.paymentMethod.eFunds"))
+      choices must containText(realMessages("declaration.transportInformation.transportPayment.paymentMethod.accHolder"))
+      choices must containText(realMessages("declaration.transportInformation.transportPayment.paymentMethod.notPrePaid"))
     }
 
     "display 'Save and continue' button on page" in {

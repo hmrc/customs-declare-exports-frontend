@@ -42,7 +42,7 @@ class TransportPaymentController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.transportData.flatMap(_.transportPayment) match {
+    request.cacheModel.transportInformation.flatMap(_.transportPayment) match {
       case Some(data) => Ok(transportPayment(mode, form().fill(data)))
       case _          => Ok(transportPayment(mode, form()))
     }

@@ -277,17 +277,19 @@ trait ExportsDeclarationBuilder {
 
   def withTransportPayment(data: Option[TransportPayment]): ExportsDeclarationModifier =
     cache => {
-      cache.copy(transportData = Some(cache.transportData.getOrElse(new TransportData).copy(transportPayment = data)))
+      cache.copy(transportInformation = Some(cache.transportInformation.getOrElse(new TransportInformation).copy(transportPayment = data)))
     }
 
   def withContainerData(data: Container): ExportsDeclarationModifier = withContainerData(Seq(data))
 
   def withContainerData(data: Seq[Container]): ExportsDeclarationModifier =
     cache => {
-      val existingContainers = cache.transportData.map(_.containers).getOrElse(Seq.empty)
-      cache.copy(transportData = Some(cache.transportData.getOrElse(new TransportData).copy(containers = existingContainers ++ data)))
+      val existingContainers = cache.transportInformation.map(_.containers).getOrElse(Seq.empty)
+      cache.copy(
+        transportInformation = Some(cache.transportInformation.getOrElse(new TransportInformation).copy(containers = existingContainers ++ data))
+      )
     }
   def withoutContainerData(): ExportsDeclarationModifier =
-    cache => cache.copy(transportData = Some(cache.transportData.getOrElse(new TransportData).copy(containers = Seq.empty)))
+    cache => cache.copy(transportInformation = Some(cache.transportInformation.getOrElse(new TransportInformation).copy(containers = Seq.empty)))
 
 }
