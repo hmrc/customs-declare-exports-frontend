@@ -14,13 +14,13 @@
  * limitations under the License.
  *@
 
-@import models.declaration.Containers
+@import models.declaration.Container
 @import models.viewmodels.HtmlTableRow
 
-@(containersData: Option[Containers])(implicit messages: Messages)
+@(containers: Seq[Container])(implicit messages: Messages)
 
 @components.summary_list(Some(messages("declaration.transportInfo.containers.title"))) {
-    @if(containersData.map(_.containers.nonEmpty)) {
+    @if(containers.nonEmpty) {
         <table class="form-group">
             <thead>
                 <tr>
@@ -28,7 +28,7 @@
                 </tr>
             </thead>
             <tbody>
-            @for(container <- containersData.map(_.containers).get) {
+            @for(container <- containers) {
                 <tr>
                     <td scope="row">@container.id</td>
                 </tr>

@@ -24,7 +24,7 @@ import forms.common.YesNoAnswer.{form, YesNoAnswers}
 import forms.declaration.{ContainerAdd, ContainerYesNo}
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.declaration.Containers.maxNumberOfItems
+import models.declaration.Container.maxNumberOfItems
 import models.declaration.{Container, TransportData}
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}

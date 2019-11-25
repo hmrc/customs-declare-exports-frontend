@@ -275,6 +275,11 @@ trait ExportsDeclarationBuilder {
   def withOfficeOfExit(officeId: String = "", circumstancesCode: Option[String] = None): ExportsDeclarationModifier =
     cache => cache.copy(locations = cache.locations.copy(officeOfExit = Some(OfficeOfExit(officeId, circumstancesCode))))
 
+  def withTransportPayment(data: Option[TransportPayment]): ExportsDeclarationModifier =
+    cache => {
+      cache.copy(transportData = Some(cache.transportData.getOrElse(new TransportData).copy(transportPayment = data)))
+    }
+
   def withContainerData(data: Container): ExportsDeclarationModifier = withContainerData(Seq(data))
 
   def withContainerData(data: Seq[Container]): ExportsDeclarationModifier =

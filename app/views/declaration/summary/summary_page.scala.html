@@ -16,14 +16,13 @@
 
 @import config.AppConfig
 @import controllers.declaration.routes
-@import controllers.navigation.Navigator
-@import forms.declaration.{LegalDeclaration, ContainerAdd}
+@import forms.declaration.LegalDeclaration
 @import models.Mode
 @import models.declaration.SupplementaryDeclarationData
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
+@import views.html.declaration.summary._
 @import views.{Title, ViewDates}
-@import views.html.declaration.summary.{legal_declaration, _}
 
 @this(main_template: views.html.main_template)
 
@@ -101,7 +100,7 @@
 
     @locations_section(suppDecData.locations)
 
-    @transport_containers_section(suppDecData.transportInformationContainerData)
+    @transport_containers_section(suppDecData.containers)
 
     @items_section(suppDecData.items, request.declarationType)
 

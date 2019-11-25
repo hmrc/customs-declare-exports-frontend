@@ -19,7 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.TransportContainerController
 import controllers.util.Remove
 import forms.declaration.{ContainerAdd, ContainerYesNo, Seal}
-import models.declaration.{Container, Containers}
+import models.declaration.Container
 import models.{DeclarationType, Mode}
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
@@ -56,7 +56,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
   val sealId = "287345"
 
   val containerData = Container(containerId, Seq(Seal(sealId)))
-  val maxContainerData = Seq.fill(Containers.maxNumberOfItems)(Container("id", Seq.empty))
+  val maxContainerData = Seq.fill(Container.maxNumberOfItems)(Container("id", Seq.empty))
 
   "Transport Container controller display add page" should {
 

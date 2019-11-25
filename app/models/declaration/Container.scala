@@ -21,4 +21,6 @@ case class Container(id: String, seals: Seq[forms.declaration.Seal])
 
 object Container {
   implicit val format: OFormat[Container] = Json.format[Container]
+
+  val maxNumberOfItems = 9999
 }
