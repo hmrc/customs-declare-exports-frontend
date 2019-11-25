@@ -17,23 +17,18 @@
 package unit.forms.declaration
 
 import base.TestHelper
-import forms.declaration.TransportInformationContainer
+import forms.declaration.ContainerAdd
 import org.scalatest.{MustMatchers, WordSpec}
 
 class TransportInformationContainerSpec extends WordSpec with MustMatchers {
 
-  val form = TransportInformationContainer.form
+  val form = ContainerAdd.form
 
   "Transport Information Container" should {
 
-    "has correct form id" in {
-
-      TransportInformationContainer.formId must be("TransportInformationContainer")
-    }
-
     "has max container Id length equal to 17" in {
 
-      TransportInformationContainer.maxContainerIdLength must be(17)
+      ContainerAdd.maxContainerIdLength must be(17)
     }
   }
 
@@ -43,7 +38,7 @@ class TransportInformationContainerSpec extends WordSpec with MustMatchers {
 
       "id field contains correct value" in {
 
-        val correctForm = TransportInformationContainer("12345")
+        val correctForm = ContainerAdd(Some("12345"))
 
         val result = form.fill(correctForm)
 
@@ -62,7 +57,7 @@ class TransportInformationContainerSpec extends WordSpec with MustMatchers {
 
         result.errors.length must be(1)
         error.key must be("id")
-        error.message must be("supplementary.transportInfo.containerId.empty")
+        error.message must be("declaration.transportInfo.containerId.empty")
       }
 
       "id field is not alphanumeric" in {
@@ -73,19 +68,19 @@ class TransportInformationContainerSpec extends WordSpec with MustMatchers {
         val error = result.errors.head
 
         error.key must be("id")
-        error.message must be("supplementary.transportInfo.containerId.error.alphanumeric")
+        error.message must be("declaration.transportInfo.containerId.error.alphanumeric")
       }
 
       "id field is longer than allowed" in {
 
-        val limit = TransportInformationContainer.maxContainerIdLength
+        val limit = ContainerAdd.maxContainerIdLength
         val emptyForm = Map("id" -> TestHelper.createRandomAlphanumericString(limit + 1))
 
         val result = form.bind(emptyForm)
         val error = result.errors.head
 
         error.key must be("id")
-        error.message must be("supplementary.transportInfo.containerId.error.length")
+        error.message must be("declaration.transportInfo.containerId.error.length")
       }
     }
   }

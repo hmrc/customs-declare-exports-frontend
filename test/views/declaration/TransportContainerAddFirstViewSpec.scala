@@ -16,7 +16,7 @@
 
 package views.declaration
 
-import forms.declaration.ContainerAdd
+import forms.declaration.ContainerFirst
 import helpers.views.declaration.CommonMessages
 import models.Mode
 import org.jsoup.nodes.Document
@@ -25,32 +25,30 @@ import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.transport_container_add
+import views.html.declaration.transport_container_add_first
 import views.tags.ViewTest
 
 @ViewTest
-class TransportContainerAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs with MustMatchers with CommonMessages {
+class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestData with Stubs with MustMatchers with CommonMessages {
 
-  private val form: Form[ContainerAdd] = ContainerAdd.form()
-  private val page = new transport_container_add(mainTemplate)
+  private val form: Form[ContainerFirst] = ContainerFirst.form()
+  private val page = new transport_container_add_first(mainTemplate)
   private val realMessages = validatedMessages
 
-  private def createView(form: Form[ContainerAdd] = form): Document =
+  private def createView(form: Form[ContainerFirst] = form): Document =
     page(Mode.Normal, form)(journeyRequest(), realMessages)
 
-  "Transport Containers Add View" should {
+  "Transport Containers Add First View" should {
     val view = createView()
 
     "display page title" in {
-      view.getElementById("title").text() must be(realMessages("declaration.transportInfo.containers.title"))
+      view.getElementById("title").text() must be(realMessages("declaration.transportInfo.containers.first.title"))
     }
 
-    "display 'Back' button that links to 'containers summary' page" in {
+    "display 'Back' button that links to 'transport payment' page" in {
       val backLinkContainer = view.getElementById("link-back")
 
-      backLinkContainer.getElementById("link-back") must haveHref(
-        controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
-      )
+      backLinkContainer.getElementById("link-back") must haveHref(controllers.declaration.routes.TransportPaymentController.displayPage(Mode.Normal))
     }
 
     "display 'Save and continue' button on page" in {
@@ -66,14 +64,8 @@ class TransportContainerAddViewSpec extends UnitViewSpec with ExportsTestData wi
 
   "Transport Containers Add View for invalid input" should {
 
-    "display error if nothing is entered" in {
-      val view = createView(ContainerAdd.form().bind(Map[String, String]()))
-
-      view.select("#error-message-id-input").text() must be(realMessages("declaration.transportInfo.containerId.empty"))
-    }
-
-    "display error if incorrect containerId is entered" in {
-      val view = createView(ContainerAdd.form().fillAndValidate(ContainerAdd(Some("12345678901234567890"))))
+    "display errors" in {
+      val view = createView(ContainerFirst.form().fillAndValidate(ContainerFirst(Some("12345678901234567890"))))
 
       view.select("#error-message-id-input").text() must be(realMessages("declaration.transportInfo.containerId.error.length"))
     }
@@ -84,7 +76,7 @@ class TransportContainerAddViewSpec extends UnitViewSpec with ExportsTestData wi
 
     "display data in Container ID input" in {
 
-      val view = createView(ContainerAdd.form().fill(ContainerAdd(Some("Test"))))
+      val view = createView(ContainerFirst.form().fill(ContainerFirst(Some("Test"))))
 
       view.getElementById("id").attr("value") must be("Test")
     }

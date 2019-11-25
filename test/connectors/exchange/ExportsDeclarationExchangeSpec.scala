@@ -18,14 +18,14 @@ package connectors.exchange
 
 import java.time.Instant
 
-import forms.{Ducr, Lrn}
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
-import models.declaration.{ExportItem, Locations, Parties, TransportInformationContainerData}
+import forms.{Ducr, Lrn}
+import models.declaration.{ExportItem, Locations, Parties}
 import models.{DeclarationStatus, DeclarationType, ExportsDeclaration}
-import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.Mockito.when
 import org.scalatest.{Matchers, WordSpec}
+import org.scalatestplus.mockito.MockitoSugar
 import services.cache.ExportsDeclarationBuilder
 
 class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with ExportsDeclarationBuilder with MockitoSugar {
@@ -45,7 +45,6 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
 
   private val departureTransport = mock[DepartureTransport]
   private val borderTransport = mock[BorderTransport]
-  private val containers = mock[TransportInformationContainerData]
   private val parties = mock[Parties]
   private val locations = mock[Locations]
   private val item = mock[ExportItem]
@@ -65,7 +64,6 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
     consignmentReferences = Some(consignmentReferences),
     departureTransport = Some(departureTransport),
     borderTransport = Some(borderTransport),
-    containerData = Some(containers),
     parties = parties,
     locations = locations,
     items = Set(item),
@@ -86,7 +84,6 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
     consignmentReferences = Some(consignmentReferences),
     departureTransport = Some(departureTransport),
     borderTransport = Some(borderTransport),
-    containerData = Some(containers),
     parties = parties,
     locations = locations,
     items = Set(item),

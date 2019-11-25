@@ -18,7 +18,7 @@ package forms.declaration
 import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import forms.declaration.TransportCodes._
-import play.api.data.Forms.{boolean, mapping, optional, text}
+import play.api.data.Forms.{mapping, optional, text}
 import play.api.data.{Form, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import services.Countries.allCountries
@@ -26,15 +26,11 @@ import utils.validators.forms.FieldValidator.{isContainedIn, noLongerThan, _}
 
 case class BorderTransport(
   meansOfTransportCrossingTheBorderNationality: Option[String],
-  container: Boolean,
   meansOfTransportCrossingTheBorderType: String,
-  meansOfTransportCrossingTheBorderIDNumber: String,
-  paymentMethod: Option[String] = None
+  meansOfTransportCrossingTheBorderIDNumber: String
 )
 
 object BorderTransport extends DeclarationPage {
-
-  val formId = "TransportDetails"
 
   implicit val formats: OFormat[BorderTransport] = Json.format[BorderTransport]
 
@@ -46,19 +42,12 @@ object BorderTransport extends DeclarationPage {
           isContainedIn(allCountries.map(_.countryName))
         )
     ),
-    "container" -> optional(boolean)
-      .verifying("supplementary.transportInfo.container.error.empty", _.isDefined)
-      .transform(_.get, (b: Boolean) => Some(b)),
     "meansOfTransportCrossingTheBorderType" -> requiredRadio("supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty")
       .verifying("supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.incorrect", isContainedIn(allowedMeansOfTransportTypeCodes)),
     "meansOfTransportCrossingTheBorderIDNumber" -> text()
       .verifying("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.empty", nonEmpty)
       .verifying("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.length", noLongerThan(35))
-      .verifying("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid", isAlphanumericWithAllowedSpecialCharacters),
-    "paymentMethod" -> optional(
-      text()
-        .verifying("standard.transportDetails.paymentMethod.error", isContainedIn(paymentMethods.keys))
-    )
+      .verifying("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid", isAlphanumericWithAllowedSpecialCharacters)
   )(BorderTransport.apply)(BorderTransport.unapply)
 
   def form(): Form[BorderTransport] = Form(BorderTransport.formMapping)

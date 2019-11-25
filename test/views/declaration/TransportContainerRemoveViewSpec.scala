@@ -35,17 +35,18 @@ class TransportContainerRemoveViewSpec extends UnitViewSpec with Stubs with Must
   val containerId = "434732435324"
   val sealId = "934545754"
   val container = Container(containerId, Seq(Seal(sealId)))
+  private val realMessages = validatedMessages
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val page = new transport_container_remove(mainTemplate)
 
   private def createView(form: Form[YesNoAnswer] = form, container: Container = container): Document =
-    page(Mode.Normal, form, container)
+    page(Mode.Normal, form, container)(request, realMessages)
 
   "Transport Containers Remove View" should {
     val view = createView()
 
     "display page title" in {
-      view.getElementById("title").text() must be(messages("supplementary.transportInfo.container.remove.title"))
+      view.getElementById("title").text() must be(realMessages("declaration.transportInfo.container.remove.title"))
     }
 
     "display container and seal to remove" in {
@@ -56,7 +57,7 @@ class TransportContainerRemoveViewSpec extends UnitViewSpec with Stubs with Must
     "display 'Back' button that links to 'container summary' page" in {
       val backLinkContainer = view.getElementById("link-back")
 
-      backLinkContainer.text() must be(messages(backCaption))
+      backLinkContainer must containText(realMessages(backCaption))
       backLinkContainer.getElementById("link-back") must haveHref(
         controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
       )
@@ -64,12 +65,12 @@ class TransportContainerRemoveViewSpec extends UnitViewSpec with Stubs with Must
 
     "display 'Save and continue' button on page" in {
       val saveButton = view.getElementById("submit")
-      saveButton.text() must be(messages(saveAndContinueCaption))
+      saveButton must containText(realMessages(saveAndContinueCaption))
     }
 
     "display 'Save and return' button on page" in {
       val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton.text() must be(messages(saveAndReturnCaption))
+      saveAndReturnButton must containText(realMessages(saveAndReturnCaption))
     }
   }
 
@@ -78,7 +79,7 @@ class TransportContainerRemoveViewSpec extends UnitViewSpec with Stubs with Must
     "display error if nothing is entered" in {
       val view = createView(YesNoAnswer.form().bind(Map[String, String]()))
 
-      view.select("#error-message-yesNo-input").text() must be(messages("error.yesNo.required"))
+      view.select("#error-message-yesNo-input").text() must be(realMessages("error.yesNo.required"))
     }
 
   }

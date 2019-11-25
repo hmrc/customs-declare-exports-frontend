@@ -18,17 +18,18 @@ package unit.controllers.declaration
 
 import controllers.declaration.TransportContainerController
 import controllers.util.Remove
-import forms.declaration.Seal
+import forms.declaration.{ContainerAdd, ContainerFirst, Seal}
+import models.declaration.Container
 import models.{DeclarationType, Mode}
-import models.declaration.{Container, TransportInformationContainerData}
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
-import views.html.declaration.{transport_container_add, transport_container_remove, transport_container_summary}
+import views.html.declaration._
 
 class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
   trait SetUp {
+    val transportContainersAddFirstPage = new transport_container_add_first(mainTemplate)
     val transportContainersAddPage = new transport_container_add(mainTemplate)
     val transportContainersRemovePage = new transport_container_remove(mainTemplate)
     val transportContainersSummaryPage = new transport_container_summary(mainTemplate)
@@ -40,6 +41,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
       mockErrorHandler,
       mockExportsCacheService,
       stubMessagesControllerComponents(),
+      transportContainersAddFirstPage,
       transportContainersAddPage,
       transportContainersSummaryPage,
       transportContainersRemovePage
@@ -53,8 +55,8 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
   val containerId = "434335468"
   val sealId = "287345"
 
-  val containerData = TransportInformationContainerData(Seq(Container(containerId, Seq(Seal(sealId)))))
-  val maxContainerData = TransportInformationContainerData(Seq.fill(TransportInformationContainerData.maxNumberOfItems)(Container("id", Seq.empty)))
+  val containerData = Container(containerId, Seq(Seal(sealId)))
+  val maxContainerData = Seq.fill(Container.maxNumberOfItems)(Container("id", Seq.empty))
 
   "Transport Container controller display add page" should {
 
@@ -120,12 +122,14 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
   "Transport Container submit add page" should {
 
-    "add new container and redirect to add seal page" when {
+    "add first container and redirect to add seal page" when {
+
+      val requestBody = Seq(ContainerFirst.hasContainerKey -> "Yes", ContainerFirst.containerIdKey -> "value")
+
       "working on standard declaration with cache empty" in new SetUp {
         withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
-        val body = Seq("id" -> "value")
 
-        val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
+        val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.SealController
@@ -136,9 +140,8 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "working on supplementary declaration with cache empty" in new SetUp {
         withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
-        val body = Seq("id" -> "value")
 
-        val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
+        val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.SealController
@@ -149,15 +152,58 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "working on simplified declaration with cache empty" in new SetUp {
         withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED)))
-        val body = Seq("id" -> "value")
 
-        val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(body: _*))
+        val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.SealController
           .displaySealSummary(Mode.Normal, "value")
 
         theCacheModelUpdated.containers mustBe Seq(Container("value", Seq.empty))
+      }
+    }
+
+    "add another container and redirect to add seal page" when {
+
+      val requestBody = Seq(ContainerAdd.containerIdKey -> "C2")
+
+      "working on standard declaration with existing container" in new SetUp {
+
+        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withContainerData(Container("C1", Seq.empty))))
+
+        val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.SealController
+          .displaySealSummary(Mode.Normal, "C2")
+
+        theCacheModelUpdated.containers mustBe Seq(Container("C1", Seq.empty), Container("C2", Seq.empty))
+      }
+
+      "working on supplementary declaration with existing container" in new SetUp {
+
+        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withContainerData(Container("C1", Seq.empty))))
+
+        val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.SealController
+          .displaySealSummary(Mode.Normal, "C2")
+
+        theCacheModelUpdated.containers mustBe Seq(Container("C1", Seq.empty), Container("C2", Seq.empty))
+      }
+
+      "working on simplified declaration with existing container" in new SetUp {
+
+        withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED), withContainerData(Container("C1", Seq.empty))))
+
+        val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.SealController
+          .displaySealSummary(Mode.Normal, "C2")
+
+        theCacheModelUpdated.containers mustBe Seq(Container("C1", Seq.empty), Container("C2", Seq.empty))
       }
     }
 

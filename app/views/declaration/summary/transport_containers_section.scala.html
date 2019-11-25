@@ -14,21 +14,21 @@
  * limitations under the License.
  *@
 
-@import models.declaration.TransportInformationContainerData
+@import models.declaration.Container
 @import models.viewmodels.HtmlTableRow
 
-@(containersData: Option[TransportInformationContainerData])(implicit messages: Messages)
+@(containers: Seq[Container])(implicit messages: Messages)
 
-@components.summary_list(Some(messages("supplementary.transportInfo.containers.title"))) {
-    @if(containersData.map(_.containers.nonEmpty)) {
+@components.summary_list(Some(messages("declaration.transportInfo.containers.title"))) {
+    @if(containers.nonEmpty) {
         <table class="form-group">
             <thead>
                 <tr>
-                    <th scope="col">@messages("supplementary.transportInfo.containerId.title")</th>
+                    <th scope="col">@messages("declaration.transportInfo.containerId.title")</th>
                 </tr>
             </thead>
             <tbody>
-            @for(container <- containersData.map(_.containers).get) {
+            @for(container <- containers) {
                 <tr>
                     <td scope="row">@container.id</td>
                 </tr>

@@ -24,7 +24,6 @@ import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
-import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString}
 import play.api.mvc.Call
@@ -33,7 +32,7 @@ import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.declaration.cus_code
 
-class CUSCodeControllerSpec extends ControllerSpec with OptionValues {
+class CUSCodeControllerSpec extends ControllerSpec {
 
   val mockPage = mock[cus_code]
 

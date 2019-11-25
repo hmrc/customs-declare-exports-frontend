@@ -37,7 +37,7 @@ case class ExportsDeclaration(
   consignmentReferences: Option[ConsignmentReferences] = None,
   departureTransport: Option[DepartureTransport] = None,
   borderTransport: Option[BorderTransport] = None,
-  containerData: Option[TransportInformationContainerData] = None,
+  transportInformation: Option[TransportInformation] = None,
   parties: Parties = Parties(),
   locations: Locations = Locations(),
   items: Set[ExportItem] = Set.empty,
@@ -76,13 +76,21 @@ case class ExportsDeclaration(
   def clearRoutingCountries(): ExportsDeclaration =
     copy(locations = locations.copy(hasRoutingCountries = Some(false), routingCountries = Seq.empty))
 
+  def updateContainers(containers: Seq[Container]) =
+    copy(transportInformation = Some(transportInformation.getOrElse(new TransportInformation).copy(containers = containers)))
+
+  def updateTransportPayment(payment: TransportPayment) =
+    copy(transportInformation = Some(transportInformation.getOrElse(new TransportInformation).copy(transportPayment = Some(payment))))
+
   def containRoutingCountries(): Boolean = locations.routingCountries.nonEmpty
 
   def itemBy(itemId: String): Option[ExportItem] = items.find(_.id.equalsIgnoreCase(itemId))
 
   def containerBy(containerId: String): Option[Container] = containers.find(_.id.equalsIgnoreCase(containerId))
 
-  def containers: Seq[Container] = containerData.map(_.containers).getOrElse(Seq.empty)
+  def hasContainers: Boolean = containers.nonEmpty
+
+  def containers: Seq[Container] = transportInformation.map(_.containers).getOrElse(Seq.empty)
 
   def amend()(implicit clock: Clock = Clock.systemUTC()): ExportsDeclaration = {
     val currentTime = Instant.now(clock)

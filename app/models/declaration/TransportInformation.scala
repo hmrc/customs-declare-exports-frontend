@@ -16,27 +16,26 @@
 
 package models.declaration
 
+import forms.declaration.TransportPayment
 import play.api.libs.json.Json
 
-case class TransportInformationContainerData(containers: Seq[Container]) {
+case class TransportInformation(transportPayment: Option[TransportPayment] = None, containers: Seq[Container] = Seq.empty) {
 
-  def addOrUpdate(updatedContainer: Container): Seq[Container] =
+  private def hasContainer(id: String) = containers.exists(_.id == id)
+
+  def addOrUpdateContainer(updatedContainer: Container): Seq[Container] =
     if (containers.isEmpty) {
       Seq(updatedContainer)
-    } else if (!containers.exists(_.id == updatedContainer.id)) {
-      containers :+ updatedContainer
-    } else {
+    } else if (hasContainer(updatedContainer.id)) {
       containers.map {
         case container if updatedContainer.id == container.id => updatedContainer
         case otherContainer                                   => otherContainer
       }
+    } else {
+      containers :+ updatedContainer
     }
 }
 
-object TransportInformationContainerData {
-  implicit val format = Json.format[TransportInformationContainerData]
-
-  val id = "TransportInformationContainerData"
-
-  val maxNumberOfItems = 9999
+object TransportInformation {
+  implicit val format = Json.format[TransportInformation]
 }

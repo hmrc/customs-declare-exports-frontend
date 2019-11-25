@@ -228,19 +228,15 @@ trait ExportsDeclarationBuilder {
 
   def withBorderTransport(
     meansOfTransportCrossingTheBorderNationality: Option[String] = None,
-    container: Boolean = false,
     meansOfTransportCrossingTheBorderType: String = "",
-    meansOfTransportCrossingTheBorderIDNumber: String = "",
-    paymentMethod: Option[String] = None
+    meansOfTransportCrossingTheBorderIDNumber: String = ""
   ): ExportsDeclarationModifier =
     _.copy(
       borderTransport = Some(
         BorderTransport(
           meansOfTransportCrossingTheBorderNationality = meansOfTransportCrossingTheBorderNationality,
-          container = container,
           meansOfTransportCrossingTheBorderType = meansOfTransportCrossingTheBorderType,
-          meansOfTransportCrossingTheBorderIDNumber = meansOfTransportCrossingTheBorderIDNumber,
-          paymentMethod = paymentMethod
+          meansOfTransportCrossingTheBorderIDNumber = meansOfTransportCrossingTheBorderIDNumber
         )
       )
     )
@@ -279,12 +275,21 @@ trait ExportsDeclarationBuilder {
   def withOfficeOfExit(officeId: String = "", circumstancesCode: Option[String] = None): ExportsDeclarationModifier =
     cache => cache.copy(locations = cache.locations.copy(officeOfExit = Some(OfficeOfExit(officeId, circumstancesCode))))
 
-  def withContainerData(data: TransportInformationContainerData): ExportsDeclarationModifier =
-    _.copy(containerData = Some(data))
+  def withTransportPayment(data: Option[TransportPayment]): ExportsDeclarationModifier =
+    cache => {
+      cache.copy(transportInformation = Some(cache.transportInformation.getOrElse(new TransportInformation).copy(transportPayment = data)))
+    }
 
-  def withContainerData(data: Container*): ExportsDeclarationModifier =
-    cache => cache.copy(containerData = Some(TransportInformationContainerData(cache.containerData.map(_.containers).getOrElse(Seq.empty) ++ data)))
+  def withContainerData(data: Container): ExportsDeclarationModifier = withContainerData(Seq(data))
 
-  def withoutContainerData(): ExportsDeclarationModifier = _.copy(containerData = None)
+  def withContainerData(data: Seq[Container]): ExportsDeclarationModifier =
+    cache => {
+      val existingContainers = cache.transportInformation.map(_.containers).getOrElse(Seq.empty)
+      cache.copy(
+        transportInformation = Some(cache.transportInformation.getOrElse(new TransportInformation).copy(containers = existingContainers ++ data))
+      )
+    }
+  def withoutContainerData(): ExportsDeclarationModifier =
+    cache => cache.copy(transportInformation = Some(cache.transportInformation.getOrElse(new TransportInformation).copy(containers = Seq.empty)))
 
 }

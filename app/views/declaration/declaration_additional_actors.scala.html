@@ -85,10 +85,10 @@
             legend = messages("supplementary.additionalActors.partyType"),
             legendClass = Some("heading-24"),
             inputs = Seq(
-                RadioOption("supplementary.partyType", Consolidator),
-                RadioOption("supplementary.partyType", Manufacturer),
-                RadioOption("supplementary.partyType", FreightForwarder),
-                RadioOption("supplementary.partyType", WarehouseKeeper)
+                RadioOption(s"supplementary.partyType.$Consolidator", Consolidator, messages(s"supplementary.partyType.$Consolidator")),
+                RadioOption(s"supplementary.partyType.$Manufacturer", Manufacturer, messages(s"supplementary.partyType.$Manufacturer")),
+                RadioOption(s"supplementary.partyType.$FreightForwarder", FreightForwarder, messages(s"supplementary.partyType.$FreightForwarder")),
+                RadioOption(s"supplementary.partyType.$WarehouseKeeper", WarehouseKeeper, messages(s"supplementary.partyType.$WarehouseKeeper"))
             )
         )
 

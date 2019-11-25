@@ -39,7 +39,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.Add
 import models.DeclarationStatus.DeclarationStatus
 import models.DeclarationType.DeclarationType
 import models.ExportsDeclaration
-import models.declaration.{ExportItem, Locations, Parties, TransportInformationContainerData}
+import models.declaration._
 import play.api.libs.json.{Json, OFormat}
 
 case class ExportsDeclarationExchange(
@@ -54,7 +54,7 @@ case class ExportsDeclarationExchange(
   consignmentReferences: Option[ConsignmentReferences] = None,
   departureTransport: Option[DepartureTransport] = None,
   borderTransport: Option[BorderTransport] = None,
-  containerData: Option[TransportInformationContainerData] = None,
+  transportData: Option[TransportInformation] = None,
   parties: Parties = Parties(),
   locations: Locations = Locations(),
   items: Set[ExportItem] = Set.empty[ExportItem],
@@ -74,7 +74,7 @@ case class ExportsDeclarationExchange(
     consignmentReferences = this.consignmentReferences,
     departureTransport = this.departureTransport,
     borderTransport = this.borderTransport,
-    containerData = this.containerData,
+    transportInformation = this.transportData,
     parties = this.parties,
     locations = this.locations,
     items = this.items,
@@ -100,7 +100,7 @@ object ExportsDeclarationExchange {
       consignmentReferences = declaration.consignmentReferences,
       departureTransport = declaration.departureTransport,
       borderTransport = declaration.borderTransport,
-      containerData = declaration.containerData,
+      transportData = declaration.transportInformation,
       parties = declaration.parties,
       locations = declaration.locations,
       items = declaration.items,

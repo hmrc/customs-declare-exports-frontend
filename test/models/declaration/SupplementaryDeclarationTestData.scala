@@ -59,7 +59,7 @@ class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
           supplementaryDeclarationData.consignmentReferences mustNot be(defined)
           supplementaryDeclarationData.parties mustNot be(defined)
           supplementaryDeclarationData.locations mustNot be(defined)
-          supplementaryDeclarationData.transportInformationContainerData mustNot be(defined)
+          supplementaryDeclarationData.containers must be(Seq.empty)
         }
       }
 
@@ -154,7 +154,7 @@ class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
           supplementaryDeclarationData.locations.get.goodsLocation must be(defined)
           supplementaryDeclarationData.locations.get.warehouseIdentification must be(defined)
           supplementaryDeclarationData.locations.get.officeOfExit must be(defined)
-          supplementaryDeclarationData.transportInformationContainerData must be(defined)
+          supplementaryDeclarationData.containers mustNot be(Seq.empty)
         }
       }
 
@@ -165,9 +165,8 @@ class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
 object TransportInformationContainerSpec {
   private val containerId = "id"
 
-  val correctTransportInformationContainerData =
-    TransportInformationContainerData(Seq(Container(id = "M1l3s", Seq.empty)))
-  val emptyTransportInformationContainerData = TransportInformationContainer("")
+  val correctTransportInformationContainerData = Seq(Container(id = "M1l3s", Seq.empty))
+  val emptyTransportInformationContainerData = ContainerAdd(None)
   val correctTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("container-M1l3s")))
   val incorrectTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("123456789012345678")))
   val emptyTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("")))
@@ -180,8 +179,8 @@ object SupplementaryDeclarationTestData {
     dispatchLocation = Some(correctDispatchLocation),
     additionalDeclarationType = Some(correctAdditionalDeclarationTypeSupplementaryDec),
     consignmentReferences = Some(correctConsignmentReferences),
-    borderTransport = Some(BorderTransport(Some("Portugal"), true, "40", "1234567878ui", Some("A"))),
-    containerData = Some(correctTransportInformationContainerData),
+    borderTransport = Some(BorderTransport(Some("Portugal"), "40", "1234567878ui")),
+    transportInformation = Some(TransportInformation(containers = correctTransportInformationContainerData)),
     natureOfTransaction = Some(correctNatureOfTransaction),
     totalNumberOfItems = Some(correctTotalNumberOfItemsDecimalValues),
     departureTransport = Some(DepartureTransport("3", "10", "123112yu78")),
@@ -298,7 +297,7 @@ object SupplementaryDeclarationTestData {
         inlandModeOfTransportCode = Some(InlandModeOfTransportCodeSpec.correctInlandModeOfTransportCode)
       )
     ),
-    transportInformationContainerData = Some(correctTransportInformationContainerData),
+    containers = correctTransportInformationContainerData,
     items = Some(Items(totalNumberOfItems = Some(correctTotalNumberOfItemsDecimalValues), natureOfTransaction = Some(correctNatureOfTransaction)))
   )
   val date = Date(Some(12), Some(12), Some(2019))

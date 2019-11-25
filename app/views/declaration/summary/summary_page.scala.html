@@ -16,16 +16,13 @@
 
 @import config.AppConfig
 @import controllers.declaration.routes
-@import forms.Choice.AllowedChoiceValues._
 @import forms.declaration.LegalDeclaration
 @import models.Mode
 @import models.declaration.SupplementaryDeclarationData
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 @import views.html.declaration.summary._
-@import views.html.declaration.summary.legal_declaration
-@import views.ViewDates
-@import views.Title
+@import views.{Title, ViewDates}
 
 @this(main_template: views.html.main_template)
 
@@ -49,11 +46,8 @@
       case Mode.Draft => {
           @components.back_link(controllers.routes.SavedDeclarationsController.displayDeclarations(), mode)
       }
-      case _ if suppDecData.transportInformationContainerData.fold(false)(_.containers.nonEmpty) => {
-          @components.back_link(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode), mode)
-      }
       case _ => {
-          @components.back_link(controllers.declaration.routes.BorderTransportController.displayPage(mode), mode)
+          @components.back_link(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode), mode)
       }
     }
 
@@ -106,7 +100,7 @@
 
     @locations_section(suppDecData.locations)
 
-    @transport_containers_section(suppDecData.transportInformationContainerData)
+    @transport_containers_section(suppDecData.containers)
 
     @items_section(suppDecData.items, request.declarationType)
 

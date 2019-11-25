@@ -1,0 +1,68 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.declaration.routes._
+@import forms.declaration.TransportPayment
+@import forms.declaration.TransportPayment._
+@import uk.gov.hmrc.play.views.html._
+@import views.components.inputs.RadioOption
+@import models.requests.JourneyRequest
+@import forms.Choice.AllowedChoiceValues
+@import services.model.Country
+@import services.Countries
+@import services.view.AutoCompleteItem
+@import controllers.navigation.Navigator
+@import views.Title
+
+@this(main_template: views.html.main_template)
+
+@(mode: Mode, form: Form[TransportPayment])(implicit request: JourneyRequest[_], messages: Messages)
+
+@main_template(
+    title = Title("declaration.transportInformation.transportPayment.paymentMethod")
+) {
+
+    @components.back_link(Navigator.backLink(TransportPayment, mode))
+
+    @helper.form(TransportPaymentController.submitForm(mode), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
+        @components.error_summary(form.errors)
+
+        @components.heading(
+            title = messages("declaration.transportInformation.transportPayment.paymentMethod"),
+            hint = messages("declaration.transportInformation.transportPayment.paymentMethod.hint")
+        )
+
+        @components.fields.field_radio(
+            field = form("paymentMethod"),
+            legend = "",
+            inputs = Seq(
+                RadioOption("cash", cash, messages("declaration.transportInformation.transportPayment.paymentMethod.cash")),
+                RadioOption("creditCard", creditCard, messages("declaration.transportInformation.transportPayment.paymentMethod.creditCard")),
+                RadioOption("cheque", cheque, messages("declaration.transportInformation.transportPayment.paymentMethod.cheque")),
+                RadioOption("other", other, messages("declaration.transportInformation.transportPayment.paymentMethod.other")),
+                RadioOption("eFunds", eFunds, messages("declaration.transportInformation.transportPayment.paymentMethod.eFunds")),
+                RadioOption("accHolder", accHolder, messages("declaration.transportInformation.transportPayment.paymentMethod.accHolder")),
+                RadioOption("notPrePaid", notPrePaid, messages("declaration.transportInformation.transportPayment.paymentMethod.notPrePaid"))
+            )
+        )
+
+        @components.submit_button()
+        @components.buttons.save_and_return_later_button()
+    }
+
+}

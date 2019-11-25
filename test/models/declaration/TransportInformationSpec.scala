@@ -19,36 +19,36 @@ package models.declaration
 import forms.declaration.Seal
 import org.scalatest.{MustMatchers, WordSpec}
 
-class TransportInformationContainerDataSpec extends WordSpec with MustMatchers {
+class TransportInformationSpec extends WordSpec with MustMatchers {
 
-  "TransportInformationContainerData" should {
+  "TransportData" should {
 
-    "add container to empty TransportInformationContainerData" in {
+    "add container to empty collection" in {
       val container1 = Container("cont1", Seq.empty)
 
-      val data = TransportInformationContainerData(Seq.empty)
+      val data = TransportInformation(containers = Seq.empty)
 
-      data.addOrUpdate(container1) mustBe Seq(container1)
+      data.addOrUpdateContainer(container1) mustBe Seq(container1)
     }
 
-    "add new container to TransportInformationContainerData" in {
+    "add new container to collection" in {
       val container1 = Container("cont1", Seq.empty)
       val container2 = Container("cont2", Seq(Seal("seal1")))
       val containerNew = Container("contNew", Seq.empty)
 
-      val data = TransportInformationContainerData(Seq(container1, container2))
+      val data = TransportInformation(containers = Seq(container1, container2))
 
-      data.addOrUpdate(containerNew) mustBe Seq(container1, container2, containerNew)
+      data.addOrUpdateContainer(containerNew) mustBe Seq(container1, container2, containerNew)
     }
 
-    "replace container in TransportInformationContainerData" in {
+    "replace container in collection" in {
       val container1 = Container("cont1", Seq.empty)
       val container2 = Container("cont2", Seq(Seal("seal1")))
       val container1Updated = Container("cont1", Seq.empty)
 
-      val data = TransportInformationContainerData(Seq(container1, container2))
+      val data = TransportInformation(containers = Seq(container1, container2))
 
-      data.addOrUpdate(container1Updated) mustBe Seq(container1Updated, container2)
+      data.addOrUpdateContainer(container1Updated) mustBe Seq(container1Updated, container2)
     }
   }
 }
