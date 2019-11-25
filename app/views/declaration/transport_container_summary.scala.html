@@ -92,8 +92,8 @@
             field = form("yesNo"),
             legend = messages("declaration.transportInfo.containers.add"),
             inputs = Seq(
-                RadioOption("Yes", yes, "site.yes"),
-                RadioOption("No", no, "site.no")
+                RadioOption("Yes", yes, messages("site.yes")),
+                RadioOption("No", no, messages("site.no"))
             )
         )
 
