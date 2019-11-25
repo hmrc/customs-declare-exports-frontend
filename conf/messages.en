@@ -591,23 +591,18 @@ supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.le
 supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid = Reference cannot contain invalid characters
 
 
-#TODO - change supplementary -> declaration
-supplementary.transportInfo.container = Were the goods in a container?
-supplementary.transportInfo.container.error.empty = Please select an option
-supplementary.transportInfo.containers.title = Container information 
-supplementary.transportInfo.containers.add = Do you need to add another container? 
-supplementary.transportInfo.containerId = What is the container ID?
-supplementary.transportInfo.containerId.title = Container ID
-supplementary.transportInfo.containers.remove = Remove container
-supplementary.transportInfo.containers.remove.hint = Remove container {0}
-supplementary.transportInfo.containers.change = Change seals
-supplementary.transportInfo.containers.change.hint = Change seals for container {0}
-supplementary.transportInfo.container.remove.title=Are you sure you want to remove this container?
+declaration.transportInfo.containers.title = Container information 
+declaration.transportInfo.containers.add = Do you need to add another container? 
+declaration.transportInfo.containers.add.label = What is the container ID?
+declaration.transportInfo.containerId.title = Container ID
+declaration.transportInfo.containers.remove = Remove container
+declaration.transportInfo.containers.remove.hint = Remove container {0}
+declaration.transportInfo.containers.change = Change seals
+declaration.transportInfo.containers.change.hint = Change seals for container {0}
+declaration.transportInfo.container.remove.title=Are you sure you want to remove this container?
 declaration.transportInfo.containerId.empty = Container ID cannot be empty
 declaration.transportInfo.containerId.error.alphanumeric = Only alphanumeric characters allowed
 declaration.transportInfo.containerId.error.length = Only 17 alphanumeric characters are allowed
-supplementary.transportInfo.containerId.error = Container ID is incorrect
-
 declaration.transportInfo.containers.first.title = Are the goods in a container?
 declaration.transportInfo.containers.yes = Yes
 declaration.transportInfo.containers.no = No

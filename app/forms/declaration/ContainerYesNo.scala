@@ -51,7 +51,7 @@ object ContainerYesNo extends DeclarationPage {
     model =>
       model.id match {
         case Some(id) => Some((yes, Some(id)))
-        case None       => Some((no, None))
+        case None     => Some((no, None))
     }
 
   val mapping = Forms.mapping(

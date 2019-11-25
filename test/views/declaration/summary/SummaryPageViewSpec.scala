@@ -72,7 +72,7 @@ class SummaryPageViewSpec extends WordSpec with MustMatchers with ExportsDeclara
       }
 
       "Normal Mode" when {
-        "standard declaration with containers" in {
+        "standard declaration with containers links back to container summary" in {
           val model = aDeclaration(withType(DeclarationType.STANDARD), withContainerData(Container("1234", Seq.empty)))
           val document = view(Mode.Normal, model)
           document must containElementWithID("link-back")
@@ -82,14 +82,16 @@ class SummaryPageViewSpec extends WordSpec with MustMatchers with ExportsDeclara
           document.getElementById("link-back") must containText("site.back")
         }
 
-        "standard declaration without containers" in {
+        "standard declaration without containers links back to container summary (which then re-directs to containers yes/no)" in {
           val model = aDeclaration(withType(DeclarationType.STANDARD))
           val document = view(Mode.Normal, model)
           document must containElementWithID("link-back")
-          document.getElementById("link-back") must haveHref(controllers.declaration.routes.BorderTransportController.displayPage(Mode.Normal))
+          document.getElementById("link-back") must haveHref(
+            controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
+          )
         }
 
-        "supplementary declaration with containers" in {
+        "supplementary declaration with containers links back to container summary" in {
           val model = aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withContainerData(Container("1234", Seq.empty)))
           val document = view(Mode.Normal, model)
           document must containElementWithID("link-back")
@@ -98,11 +100,13 @@ class SummaryPageViewSpec extends WordSpec with MustMatchers with ExportsDeclara
           )
         }
 
-        "supplementary declaration without containers" in {
+        "supplementary declaration without containers links back to container summary" in {
           val model = aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withoutContainerData())
           val document = view(Mode.Normal, model)
           document must containElementWithID("link-back")
-          document.getElementById("link-back") must haveHref(controllers.declaration.routes.BorderTransportController.displayPage(Mode.Normal))
+          document.getElementById("link-back") must haveHref(
+            controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
+          )
         }
       }
 
@@ -207,8 +211,8 @@ class SummaryPageViewSpec extends WordSpec with MustMatchers with ExportsDeclara
 
     "have correct transport info" in {
 
-      summaryPage must include("supplementary.transportInfo.containers.title")
-      summaryPage must include("supplementary.transportInfo.containerId.title")
+      summaryPage must include("declaration.transportInfo.containers.title")
+      summaryPage must include("declaration.transportInfo.containerId.title")
     }
 
     "return no data page" when {

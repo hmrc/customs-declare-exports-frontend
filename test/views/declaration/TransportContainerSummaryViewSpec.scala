@@ -36,17 +36,18 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestDat
   val containerId = "212374"
   val sealId = "76434574"
   val container = Container(containerId, Seq(Seal(sealId)))
+  private val realMessages = validatedMessages
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val page = new transport_container_summary(mainTemplate)
 
   private def createView(form: Form[YesNoAnswer] = form, containers: Seq[Container] = Seq(container), showSeals: Boolean = true): Document =
-    page(Mode.Normal, form, containers, showSeals)(journeyRequest(), messages)
+    page(Mode.Normal, form, containers, showSeals)(journeyRequest(), realMessages)
 
   "Transport Containers Summary View" should {
     val view = createView()
 
     "display page title" in {
-      view.getElementById("title").text() must be(messages("supplementary.transportInfo.containers.title"))
+      view.getElementById("title").text() must be(realMessages("declaration.transportInfo.containers.title"))
     }
 
     "display summary of container with seals" in {
@@ -65,24 +66,24 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestDat
       val view = createView(containers = Seq(Container(containerId, Seq.empty)))
 
       view.getElementById("containers-row0-container").text() must be(containerId)
-      view.getElementById("containers-row0-seals").text() must be(messages("standard.seal.summary.noSeals"))
+      view.getElementById("containers-row0-seals").text() must be(realMessages("standard.seal.summary.noSeals"))
     }
 
-    "display 'Back' button that links to 'transport details' page" in {
+    "display 'Back' button that links to 'transport payment' page" in {
       val backLinkContainer = view.getElementById("link-back")
 
-      backLinkContainer.text() must be(messages(backCaption))
-      backLinkContainer.getElementById("link-back") must haveHref(controllers.declaration.routes.BorderTransportController.displayPage(Mode.Normal))
+      backLinkContainer.text() must be(realMessages(backCaption))
+      backLinkContainer.getElementById("link-back") must haveHref(controllers.declaration.routes.TransportPaymentController.displayPage(Mode.Normal))
     }
 
     "display 'Save and continue' button on page" in {
       val saveButton = view.getElementById("submit")
-      saveButton.text() must be(messages(saveAndContinueCaption))
+      saveButton.text() must be(realMessages(saveAndContinueCaption))
     }
 
     "display 'Save and return' button on page" in {
       val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton.text() must be(messages(saveAndReturnCaption))
+      saveAndReturnButton.text() must be(realMessages(saveAndReturnCaption))
     }
   }
 
@@ -91,7 +92,7 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestDat
     "display error if nothing is entered" in {
       val view = createView(YesNoAnswer.form().bind(Map[String, String]()))
 
-      view.select("#error-message-yesNo-input").text() must be(messages("error.yesNo.required"))
+      view.select("#error-message-yesNo-input").text() must be(realMessages("error.yesNo.required"))
     }
 
   }

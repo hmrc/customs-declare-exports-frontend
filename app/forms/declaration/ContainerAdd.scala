@@ -24,12 +24,11 @@ import utils.validators.forms.FieldValidator._
 
 case class ContainerAdd(id: Option[String])
 
-object ContainerAdd extends DeclarationPage  {
+object ContainerAdd extends DeclarationPage {
   implicit val format = Json.format[ContainerAdd]
 
-  val formId = "TransportInformationContainer"
-
   val maxContainerIdLength = 17
+  val containerIdKey = "id"
 
   val mapping = Forms.mapping(
     "id" -> optional(

@@ -17,7 +17,7 @@
 package views.components.inputs
 import play.twirl.api.Html
 
-case class RadioOption(id: String, value: String, messageKey: String, hint: Option[String] = None, revealComponent: Option[Html] = None)
+case class RadioOption(id: String, value: String, message: String, hint: Option[String] = None, revealComponent: Option[Html] = None)
 
 object RadioOption {
   def apply(keyPrefix: String, option: String): RadioOption =

@@ -24,7 +24,7 @@ import play.api.libs.json.{JsObject, JsString}
 class ContainerYesNoSpec extends WordSpec with MustMatchers {
 
   def formData(hasContainer: String, containerId: Option[String]) =
-    JsObject(Map(hasContainerKey-> JsString(hasContainer), containerIdKey -> JsString(containerId.getOrElse(""))))
+    JsObject(Map(hasContainerKey -> JsString(hasContainer), containerIdKey -> JsString(containerId.getOrElse(""))))
 
   "ContainerYesNo mapping" should {
 

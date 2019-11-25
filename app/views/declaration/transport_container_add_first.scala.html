@@ -46,7 +46,7 @@
                 RadioOption(
                     id = "code_yes",
                     value = HasContainerAnswers.yes,
-                    messageKey = "declaration.transportInfo.containers.yes",
+                    message = messages("declaration.transportInfo.containers.yes"),
                     revealComponent = Some(components.fields.field_text(
                         field = form(containerIdKey),
                         label = Some(messages("declaration.transportInfo.containerId"))
@@ -55,7 +55,7 @@
                 RadioOption(
                     id = "code_no",
                     value = HasContainerAnswers.no,
-                    messageKey = "declaration.transportInfo.containers.no"
+                    message = messages("declaration.transportInfo.containers.no")
                 )
             )
         )

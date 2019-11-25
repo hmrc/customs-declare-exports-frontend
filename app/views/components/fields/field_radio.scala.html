@@ -45,7 +45,7 @@
                     />
 
                     <label class="block-label selection-button-radio" for="@{input.id}">
-                        <span id="@{input.id}-label" >@messages(input.messageKey)</span>
+                        <span id="@{input.id}-label" >@{input.message}</span>
                         @if(input.hint.nonEmpty){
                             <span id="@{input.id}-hint" class="form-hint">@{input.hint.get}</span>
                         }

@@ -27,7 +27,6 @@ object TransportPayment extends DeclarationPage {
 
   implicit val formats: OFormat[TransportPayment] = Json.format[TransportPayment]
 
-  // TODO - replace with enum?
   val cash = "A"
   val creditCard = "B"
   val cheque = "C"
@@ -36,24 +35,15 @@ object TransportPayment extends DeclarationPage {
   val accHolder = "Y"
   val notPrePaid = "Z"
 
-  val paymentMethods = Map(
-    cash -> "standard.transportDetails.paymentMethod.cash",
-    creditCard -> "standard.transportDetails.paymentMethod.creditCard",
-    cheque -> "standard.transportDetails.paymentMethod.cheque",
-    other -> "standard.transportDetails.paymentMethod.other",
-    eFunds -> "standard.transportDetails.paymentMethod.eFunds",
-    accHolder -> "standard.transportDetails.paymentMethod.accHolder",
-    notPrePaid -> "standard.transportDetails.paymentMethod.notPrePaid"
-  )
+  val validPaymentMethods = Set(cash, creditCard, cheque, other, eFunds, accHolder, notPrePaid)
 
   val formMapping: Mapping[TransportPayment] = mapping(
     "paymentMethod" -> optional(
       text()
-        .verifying("standard.transportDetails.paymentMethod.error", isContainedIn(paymentMethods.keys))
+        .verifying("standard.transportDetails.paymentMethod.error", isContainedIn(validPaymentMethods))
     )
   )(TransportPayment.apply)(TransportPayment.unapply)
 
   def form(): Form[TransportPayment] = Form(formMapping)
-
 
 }

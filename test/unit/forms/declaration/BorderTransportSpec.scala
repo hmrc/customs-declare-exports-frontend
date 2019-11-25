@@ -54,10 +54,6 @@ class BorderTransportSpec extends FormSpec {
         )
       }
 
-      "sending no container info" in {
-        form.bind(Map.empty[String, String]).errors must contain("supplementary.transportInfo.container.error.empty")
-      }
-
       "sending no information about transport type" in {
         form.bind(Map.empty[String, String]).errors must contain("supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty")
       }
@@ -90,9 +86,6 @@ class BorderTransportSpec extends FormSpec {
         )
       }
 
-      "sending non existing payment method" in {
-        form.bind(Map("paymentMethod" -> "$#@!")).errors must contain("standard.transportDetails.paymentMethod.error")
-      }
     }
   }
 }

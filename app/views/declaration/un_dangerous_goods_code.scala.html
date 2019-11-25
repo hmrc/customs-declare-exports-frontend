@@ -59,7 +59,7 @@
                 RadioOption(
                     id = "code_yes",
                     value = AllowedUNDangerousGoodsCodeAnswers.yes,
-                    messageKey = "declaration.unDangerousGoodsCode.hasCode",
+                    message = messages("declaration.unDangerousGoodsCode.hasCode"),
                     revealComponent = Some(components.fields.field_text(
                         field = form(dangerousGoodsCodeKey),
                         label = Some(messages("declaration.unDangerousGoodsCode.label"))
@@ -68,7 +68,7 @@
                 RadioOption(
                     id = "code_no",
                     value = AllowedUNDangerousGoodsCodeAnswers.no,
-                    messageKey = "declaration.unDangerousGoodsCode.noCode"
+                    message = messages("declaration.unDangerousGoodsCode.noCode")
                 )
             )
         )

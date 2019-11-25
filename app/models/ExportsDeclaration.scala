@@ -82,7 +82,7 @@ case class ExportsDeclaration(
 
   def containerBy(containerId: String): Option[Container] = containers.find(_.id.equalsIgnoreCase(containerId))
 
-  def hasContainers:Boolean = containers.nonEmpty
+  def hasContainers: Boolean = containers.nonEmpty
 
   def containers: Seq[Container] = transportData.map(_.containers).getOrElse(Seq.empty)
 
