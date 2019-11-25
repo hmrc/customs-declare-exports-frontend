@@ -19,12 +19,12 @@
 
 @(containers: Seq[Container])(implicit messages: Messages)
 
-@components.summary_list(Some(messages("declaration.transportInfo.containers.title"))) {
+@components.summary_list(Some(messages("declaration.transportInformation.containers.title"))) {
     @if(containers.nonEmpty) {
         <table class="form-group">
             <thead>
                 <tr>
-                    <th scope="col">@messages("declaration.transportInfo.containerId.title")</th>
+                    <th scope="col">@messages("declaration.transportInformation.containerId.title")</th>
                 </tr>
             </thead>
             <tbody>

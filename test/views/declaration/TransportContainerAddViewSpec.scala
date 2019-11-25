@@ -42,7 +42,7 @@ class TransportContainerAddViewSpec extends UnitViewSpec with ExportsTestData wi
     val view = createView()
 
     "display page title" in {
-      view.getElementById("title").text() must be(realMessages("declaration.transportInfo.containers.title"))
+      view.getElementById("title").text() must be(realMessages("declaration.transportInformation.containers.title"))
     }
 
     "display 'Back' button that links to 'containers summary' page" in {
@@ -69,13 +69,13 @@ class TransportContainerAddViewSpec extends UnitViewSpec with ExportsTestData wi
     "display error if nothing is entered" in {
       val view = createView(ContainerAdd.form().bind(Map[String, String]()))
 
-      view.select("#error-message-id-input").text() must be(realMessages("declaration.transportInfo.containerId.empty"))
+      view.select("#error-message-id-input").text() must be(realMessages("declaration.transportInformation.containerId.empty"))
     }
 
     "display error if incorrect containerId is entered" in {
       val view = createView(ContainerAdd.form().fillAndValidate(ContainerAdd(Some("12345678901234567890"))))
 
-      view.select("#error-message-id-input").text() must be(realMessages("declaration.transportInfo.containerId.error.length"))
+      view.select("#error-message-id-input").text() must be(realMessages("declaration.transportInformation.containerId.error.length"))
     }
 
   }

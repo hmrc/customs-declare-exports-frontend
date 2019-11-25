@@ -31,14 +31,14 @@
 @(mode: Mode, form: Form[YesNoAnswer], containers: Seq[Container], showSeals: Boolean)(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
-    title = Title("declaration.transportInfo.containers.title")
+    title = Title("declaration.transportInformation.containers.title")
 ) {
 
     @components.back_link(Navigator.backLink(ContainerFirst, mode))
 
     @components.error_summary(form.errors)
 
-    @components.heading(title = messages("declaration.transportInfo.containers.title"))
+    @components.heading(title = messages("declaration.transportInformation.containers.title"))
 
     @helper.form(TransportContainerController.submitSummaryAction(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
@@ -49,7 +49,7 @@
                 <table id="container-table">
                   <thead>
                       <tr>
-                        <th>@messages("declaration.transportInfo.containerId.title")</th>
+                        <th>@messages("declaration.transportInformation.containerId.title")</th>
                           @if(showSeals) {
                               <th>@messages("standard.seal.summary.heading")</th>
                           }
@@ -71,13 +71,13 @@
                             }
                         }
                         <td id="containers-row@index-remove_button">
-                            @remove_button(element = LabelledValue(container.id), buttonClass="button-link", label="declaration.transportInfo.containers.remove", hint="declaration.transportInfo.containers.remove.hint")
+                            @remove_button(element = LabelledValue(container.id), buttonClass="button-link", label="declaration.transportInformation.containers.remove", hint="declaration.transportInformation.containers.remove.hint")
                         </td>
                         @if(showSeals) {
                             <td>
                                 <a class="button-link" href="@SealController.displaySealSummary(mode, container.id)">
-                                    <span aria-hidden="true">@messages("declaration.transportInfo.containers.change")</span>
-                                    <span class="visually-hidden">@messages("declaration.transportInfo.containers.change.hint", container.id)</span>
+                                    <span aria-hidden="true">@messages("declaration.transportInformation.containers.change")</span>
+                                    <span class="visually-hidden">@messages("declaration.transportInformation.containers.change.hint", container.id)</span>
                                 </a>
                             </td>
                         }
@@ -90,7 +90,7 @@
 
         @components.fields.field_radio(
             field = form("yesNo"),
-            legend = messages("declaration.transportInfo.containers.add"),
+            legend = messages("declaration.transportInformation.containers.add"),
             inputs = Seq(
                 RadioOption("Yes", yes, messages("site.yes")),
                 RadioOption("No", no, messages("site.no"))

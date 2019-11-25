@@ -38,16 +38,16 @@ object BorderTransport extends DeclarationPage {
     "meansOfTransportCrossingTheBorderNationality" -> optional(
       text()
         .verifying(
-          "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.error.incorrect",
+          "declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.error.incorrect",
           isContainedIn(allCountries.map(_.countryName))
         )
     ),
-    "meansOfTransportCrossingTheBorderType" -> requiredRadio("supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty")
-      .verifying("supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.incorrect", isContainedIn(allowedMeansOfTransportTypeCodes)),
+    "meansOfTransportCrossingTheBorderType" -> requiredRadio("declaration.transportInformation.meansOfTransport.crossingTheBorder.error.empty")
+      .verifying("declaration.transportInformation.meansOfTransport.crossingTheBorder.error.incorrect", isContainedIn(allowedMeansOfTransportTypeCodes)),
     "meansOfTransportCrossingTheBorderIDNumber" -> text()
-      .verifying("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.empty", nonEmpty)
-      .verifying("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.length", noLongerThan(35))
-      .verifying("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid", isAlphanumericWithAllowedSpecialCharacters)
+      .verifying("declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.empty", nonEmpty)
+      .verifying("declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.length", noLongerThan(35))
+      .verifying("declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid", isAlphanumericWithAllowedSpecialCharacters)
   )(BorderTransport.apply)(BorderTransport.unapply)
 
   def form(): Form[BorderTransport] = Form(BorderTransport.formMapping)

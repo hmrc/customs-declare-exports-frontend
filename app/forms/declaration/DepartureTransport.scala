@@ -31,14 +31,14 @@ object DepartureTransport {
   implicit val formats = Json.format[DepartureTransport]
 
   val formMapping = mapping(
-    "borderModeOfTransportCode" -> requiredRadio("supplementary.transportInfo.borderTransportMode.error.empty")
-      .verifying("supplementary.transportInfo.borderTransportMode.error.incorrect", isContainedIn(allowedModeOfTransportCodes)),
-    "meansOfTransportOnDepartureType" -> requiredRadio("supplementary.transportInfo.meansOfTransport.departure.error.empty")
-      .verifying("supplementary.transportInfo.meansOfTransport.departure.error.incorrect", isContainedIn(allowedMeansOfTransportTypeCodes)),
+    "borderModeOfTransportCode" -> requiredRadio("declaration.transportInformation.borderTransportMode.error.empty")
+      .verifying("declaration.transportInformation.borderTransportMode.error.incorrect", isContainedIn(allowedModeOfTransportCodes)),
+    "meansOfTransportOnDepartureType" -> requiredRadio("declaration.transportInformation.meansOfTransport.departure.error.empty")
+      .verifying("declaration.transportInformation.meansOfTransport.departure.error.incorrect", isContainedIn(allowedMeansOfTransportTypeCodes)),
     "meansOfTransportOnDepartureIDNumber" -> text()
-      .verifying("supplementary.transportInfo.meansOfTransport.reference.error.empty", nonEmpty)
-      .verifying("supplementary.transportInfo.meansOfTransport.reference.error.length", noLongerThan(27))
-      .verifying("supplementary.transportInfo.meansOfTransport.reference.error.invalid", isAlphanumericWithAllowedSpecialCharacters)
+      .verifying("declaration.transportInformation.meansOfTransport.reference.error.empty", nonEmpty)
+      .verifying("declaration.transportInformation.meansOfTransport.reference.error.length", noLongerThan(27))
+      .verifying("declaration.transportInformation.meansOfTransport.reference.error.invalid", isAlphanumericWithAllowedSpecialCharacters)
   )(DepartureTransport.apply)(DepartureTransport.unapply)
 
   def form(): Form[DepartureTransport] = Form(DepartureTransport.formMapping)

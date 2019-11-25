@@ -50,17 +50,17 @@ class BorderTransportSpec extends FormSpec {
     "has errors" when {
       "sending incorrect nationality" in {
         form.bind(Map("meansOfTransportCrossingTheBorderNationality" -> "fizz")).errors must contain(
-          "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.error.incorrect"
+          "declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.error.incorrect"
         )
       }
 
       "sending no information about transport type" in {
-        form.bind(Map.empty[String, String]).errors must contain("supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty")
+        form.bind(Map.empty[String, String]).errors must contain("declaration.transportInformation.meansOfTransport.crossingTheBorder.error.empty")
       }
 
       "sending non existing transport type" in {
         form.bind(Map("meansOfTransportCrossingTheBorderType" -> "donkey")).errors must contain(
-          "supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.incorrect"
+          "declaration.transportInformation.meansOfTransport.crossingTheBorder.error.incorrect"
         )
       }
 
@@ -70,19 +70,19 @@ class BorderTransportSpec extends FormSpec {
 
       "sending empty transport type reference" in {
         form.bind(Map("meansOfTransportCrossingTheBorderIDNumber" -> "")).errors must contain(
-          "supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.empty"
+          "declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.empty"
         )
       }
 
       "sending very long transport type reference" in {
         form.bind(Map("meansOfTransportCrossingTheBorderIDNumber" -> "a" * 128)).errors must contain(
-          "supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.length"
+          "declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.length"
         )
       }
 
       "sending reference with special characters" in {
         form.bind(Map("meansOfTransportCrossingTheBorderIDNumber" -> "$#@!")).errors must contain(
-          "supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid"
+          "declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid"
         )
       }
 

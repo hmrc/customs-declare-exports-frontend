@@ -46,7 +46,7 @@ class TransportContainerRemoveViewSpec extends UnitViewSpec with Stubs with Must
     val view = createView()
 
     "display page title" in {
-      view.getElementById("title").text() must be(realMessages("declaration.transportInfo.container.remove.title"))
+      view.getElementById("title").text() must be(realMessages("declaration.transportInformation.container.remove.title"))
     }
 
     "display container and seal to remove" in {

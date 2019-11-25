@@ -40,23 +40,23 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
   def borderView(view: Document): Unit = {
     "have proper messages for labels" in {
       val messages = instanceOf[MessagesApi].preferred(journeyRequest())
-      messages must haveTranslationFor("supplementary.transportInfo.active.title")
-      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.crossingTheBorder.header")
-      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.header")
-      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.crossingTheBorder.header.hint")
-      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.IMOShipIDNumber")
-      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.nameOfVessel")
-      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.wagonNumber")
-      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.vehicleRegistrationNumber")
-      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.IATAFlightNumber")
-      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.aircraftRegistrationNumber")
-      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.europeanVesselIDNumber")
-      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel")
-      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.header")
+      messages must haveTranslationFor("declaration.transportInformation.active.title")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.crossingTheBorder.header")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.crossingTheBorder.header.hint")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IMOShipIDNumber")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.nameOfVessel")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.wagonNumber")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IATAFlightNumber")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.europeanVesselIDNumber")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.header")
     }
 
     "display page title" in {
-      view.getElementById("title") must containText(realMessages("supplementary.transportInfo.active.title"))
+      view.getElementById("title") must containText(realMessages("declaration.transportInformation.active.title"))
     }
 
     "display 'Save and continue' button on page" in {
@@ -73,69 +73,69 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
       "nationality picker" in {
         view
           .getElementById("meansOfTransportCrossingTheBorderNationality-label") must containText(
-          realMessages("supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.header")
+          realMessages("declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header")
         )
       }
       "has label" in {
         view
           .getElementById("meansOfTransportCrossingTheBorderType-label") must containText(
-          realMessages("supplementary.transportInfo.meansOfTransport.crossingTheBorder.header")
+          realMessages("declaration.transportInformation.meansOfTransport.crossingTheBorder.header")
         )
       }
       "has hint" in {
         view
           .getElementById("meansOfTransportCrossingTheBorderType-hint") must containText(
-          realMessages("supplementary.transportInfo.meansOfTransport.crossingTheBorder.header.hint")
+          realMessages("declaration.transportInformation.meansOfTransport.crossingTheBorder.header.hint")
         )
       }
       "has 'Ship' section" in {
         view
           .getElementById("Border_IMOShipIDNumber-label") must containText(
-          realMessages("supplementary.transportInfo.meansOfTransport.IMOShipIDNumber")
+          realMessages("declaration.transportInformation.meansOfTransport.IMOShipIDNumber")
         )
       }
       "has 'Vessel' section" in {
         view
-          .getElementById("Border_NameOfVessel-label") must containText(realMessages("supplementary.transportInfo.meansOfTransport.nameOfVessel"))
+          .getElementById("Border_NameOfVessel-label") must containText(realMessages("declaration.transportInformation.meansOfTransport.nameOfVessel"))
       }
       "has 'Vagon' section" in {
         view
-          .getElementById("Border_WagonNumber-label") must containText(realMessages("supplementary.transportInfo.meansOfTransport.wagonNumber"))
+          .getElementById("Border_WagonNumber-label") must containText(realMessages("declaration.transportInformation.meansOfTransport.wagonNumber"))
       }
       "has 'Register Vehicle' section" in {
         view
           .getElementById("Border_VehicleRegistrationNumber-label") must containText(
-          realMessages("supplementary.transportInfo.meansOfTransport.vehicleRegistrationNumber")
+          realMessages("declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber")
         )
       }
       "has 'Fligh number' section" in {
         view
           .getElementById("Border_IATAFlightNumber-label") must containText(
-          realMessages("supplementary.transportInfo.meansOfTransport.IATAFlightNumber")
+          realMessages("declaration.transportInformation.meansOfTransport.IATAFlightNumber")
         )
       }
       "has 'Aircraft Number' section" in {
         view
           .getElementById("Border_AircraftRegistrationNumber-label") must containText(
-          realMessages("supplementary.transportInfo.meansOfTransport.aircraftRegistrationNumber")
+          realMessages("declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber")
         )
       }
       "has 'European Vessel' section" in {
         view
           .getElementById("Border_EuropeanVesselIDNumber-label") must containText(
-          realMessages("supplementary.transportInfo.meansOfTransport.europeanVesselIDNumber")
+          realMessages("declaration.transportInformation.meansOfTransport.europeanVesselIDNumber")
         )
       }
       "has 'Inland waterway vessel' section " in {
         view
           .getElementById("Border_NameOfInlandWaterwayVessel-label") must containText(
-          realMessages("supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel")
+          realMessages("declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel")
         )
       }
       "has Reference input text" in {
         view
           .getElementById("meansOfTransportCrossingTheBorderIDNumber-label") must containText(
-          realMessages("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.header")
+          realMessages("declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.header")
         )
       }
     }
