@@ -32,18 +32,19 @@ import scala.concurrent.Future
 
 class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
-  trait SetUp {
-    val borderTransportPage = new departure_transport(mainTemplate)
+  val borderTransportPage = new departure_transport(mainTemplate)
 
-    val controller = new DepartureTransportController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockExportsCacheService,
-      navigator,
-      stubMessagesControllerComponents(),
-      borderTransportPage
-    )(ec)
+  val controller = new DepartureTransportController(
+    mockAuthAction,
+    mockJourneyAction,
+    mockExportsCacheService,
+    navigator,
+    stubMessagesControllerComponents(),
+    borderTransportPage
+  )(ec)
 
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
     setupErrorHandler()
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
@@ -53,14 +54,14 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
     "return 200 (OK)" when {
 
-      "display page method is invoked and cache is empty" in new SetUp {
+      "display page method is invoked and cache is empty" in {
 
         val result: Future[Result] = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
 
-      "display page method is invoked and cache contains data" in new SetUp {
+      "display page method is invoked and cache contains data" in  {
 
         withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withDepartureTransport(Maritime, WagonNumber, "FAA")))
 
@@ -72,7 +73,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
     "return 400 (BAD_REQUEST)" when {
 
-      "form is incorrect" in new SetUp {
+      "form is incorrect" in  {
 
         val incorrectForm: JsValue = Json.toJson(DepartureTransport("wrongValue", "wrongValue", "FAA"))
 
@@ -84,7 +85,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
     "return 303 (SEE_OTHER)" when {
 
-      "information provided by user are correct" in new SetUp {
+      "information provided by user are correct" in {
 
         val correctForm: JsValue = Json.toJson(DepartureTransport(Maritime, WagonNumber, "FAA"))
 
@@ -95,4 +96,6 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
       }
     }
   }
+
+
 }
