@@ -88,19 +88,28 @@ object BorderTransport extends DeclarationPage {
     case (
         nationality,
         transportType,
-        transportRef1,
-        transportRef2,
-        transportRef3,
-        transportRef4,
-        transportRef5,
-        transportRef6,
-        transportRef7,
-        transportRef8
+        shipIdNumber,
+        nameOfVessel,
+        wagonNumber,
+        vehicleRegistrationNumber,
+        flightNumber,
+        aircraftRegistrationNumber,
+        europeanVesselIDNumber,
+        nameOfInlandWaterwayVessel
         ) =>
       BorderTransport(
         nationality,
         transportType,
-        form2Ref(transportRef1, transportRef2, transportRef3, transportRef4, transportRef5, transportRef6, transportRef7, transportRef8)
+        form2Ref(
+          shipIdNumber,
+          nameOfVessel,
+          wagonNumber,
+          vehicleRegistrationNumber,
+          flightNumber,
+          aircraftRegistrationNumber,
+          europeanVesselIDNumber,
+          nameOfInlandWaterwayVessel
+        )
       )
   }
 
