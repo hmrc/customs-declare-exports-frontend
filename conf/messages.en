@@ -4,6 +4,9 @@ date.year = Year
 
 service.name=Customs Export Declaration Service
 
+feedback=This is a new service - your {0} will help us to improve it.
+feedback.link=feedback
+
 title.format={0} - {1} - GOV.UK
 title.withSection.format={0} - {1} - {2} - GOV.UK
 
@@ -55,7 +58,7 @@ site.yes = Yes
 site.save_and_continue = Save and continue
 site.acceptAndSubmitDeclaration = Accept and submit declaration
 site.save_and_come_back_later = Save and come back later
-site.service_name = Declare an Export
+site.service_name = Exports Declaration Service
 site.textarea.char_limit = (Limit is {0} characters)
 site.submit = Submit
 site.backToChoice = Back to choice page
