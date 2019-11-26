@@ -45,7 +45,13 @@ object Countries {
 
   val countryCodeMap: Map[String, Country] = countries.map(country => (country.countryCode, country)).toMap
 
-  def retrieveCountryNameFromCode(code: String): Country = countryCodeMap(code)
+  val countryNameMap: Map[String, Country] = countries.map(country => (country.countryName, country)).toMap
+
+  def retrieveCountryFromCode(code: String): Country = countryCodeMap(code)
+
+  def retrieveCountryFromName(name: String): Country = countryNameMap(name)
+
+  def retrieveCountryFromCode(code: Option[String]): Option[Country] = code.map(countryCodeMap(_))
 
   def retrieveCountriesFromCodes(codes: Seq[String]): Seq[Country] = codes.map(countryCodeMap(_))
 

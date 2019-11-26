@@ -14,67 +14,27 @@
  * limitations under the License.
  *@
 
-@import models.declaration.Locations
 @import models.viewmodels.HtmlTableRow
 
-@(locations: Option[Locations])(implicit messages: Messages)
+@(declarationData: ExportsDeclaration)(implicit messages: Messages)
 
-@components.summary_list(Some(messages("declaration.summary.locations.header"))) {
-
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.locations.dispatchCountry"),
-        value = locations.flatMap(_.originationCountry)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.locations.routingCountries"),
-        value = locations.map(_.routingCountries.mkString(", "))
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.locations.destinationCountry"),
-        value = locations.flatMap(_.destinationCountry)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.locations.goodsExaminationLocationType"),
-        value = locations.flatMap(_.goodsLocation).map(_.typeOfLocation)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.locations.qualifierCode"),
-        value = locations.flatMap(_.goodsLocation).map(_.qualifierOfIdentification)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.locations.locationCode"),
-        value = locations.flatMap(_.goodsLocation).map(_.identificationOfLocation)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.locations.additionalIdentifier"),
-        value = locations.flatMap(_.goodsLocation).map(_.additionalIdentifier)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.locations.goodsExaminationAddress"),
-        value = Seq(
-            locations.flatMap(_.goodsLocation).flatMap(_.addressLine),
-            locations.flatMap(_.goodsLocation).flatMap(_.city),
-            locations.flatMap(_.goodsLocation).flatMap(_.postCode),
-            locations.flatMap(_.goodsLocation).map(_.country)
-        )
-    ))
-
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.locations.supervisingCustomsOffice"),
-        value = locations.flatMap(_.supervisingCustomsOffice).map(_.supervisingCustomsOffice)
-    ))
-
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.locations.warehouseId"),
-        value = locations.flatMap(_.warehouseIdentification).map(_.identificationNumber)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.locations.inlandModeOfTransportCode"),
-        value = locations.flatMap(_.inlandModeOfTransportCode).map(_.inlandModeOfTransportCode)
-    ))
-
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.locations.officeOfExit"),
-        value = locations.flatMap(_.officeOfExit).map(_.officeId)
-    ))
-}
+<div id="declaration-locations-summary">
+    @components.summary_list(Some(messages("declaration.summary.locations"))) {
+        @components.table_row("location-code", HtmlTableRow(
+            label = messages("declaration.summary.locations.goodsLocationCode"),
+            value = declarationData.locations.goodsLocation.map(_.extractLocationCode).toSeq
+        ))
+        @components.table_row("location-address", HtmlTableRow(
+            label = messages("declaration.summary.locations.goodsLocationAddress"),
+            value = declarationData.locations.goodsLocation.map(_.extractAddressValues).getOrElse(Seq.empty)
+        ))
+        @components.table_row("location-officeOfExit", HtmlTableRow(
+            label = messages("declaration.summary.locations.officeOfExit"),
+            value = declarationData.locations.officeOfExit.map(_.officeId).getOrElse("")
+        ))
+        @components.table_row("location-expressConsignment", HtmlTableRow(
+            label = messages("declaration.summary.locations.expressConsignment"),
+            value = declarationData.locations.officeOfExit.flatMap(_.circumstancesCode).getOrElse("")
+        ))
+    }
+</div>

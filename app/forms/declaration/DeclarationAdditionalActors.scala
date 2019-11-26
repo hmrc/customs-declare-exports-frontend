@@ -17,6 +17,7 @@
 package forms.declaration
 
 import forms.DeclarationPage
+import forms.declaration.DeclarationAdditionalActors.PartyType
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{JsValue, Json}
@@ -28,6 +29,15 @@ case class DeclarationAdditionalActors(eori: Option[String], partyType: Option[S
   def isDefined: Boolean = eori.isDefined && partyType.isDefined
 
   def toJson: JsValue = Json.toJson(this)(DeclarationAdditionalActors.format)
+
+  def extractPartyType: String =
+    partyType.map {
+      case PartyType.Consolidator     => "Consolidator"
+      case PartyType.Manufacturer     => "Manufacturer"
+      case PartyType.FreightForwarder => "Freight forwarder"
+      case PartyType.WarehouseKeeper  => "Warehouse keeper"
+      case party                      => party
+    }.getOrElse("")
 
 }
 

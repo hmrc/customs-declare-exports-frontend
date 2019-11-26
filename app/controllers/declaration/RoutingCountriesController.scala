@@ -26,7 +26,7 @@ import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.Countries.retrieveCountryNameFromCode
+import services.Countries.retrieveCountryFromCode
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.destinationCountries.{country_of_routing, routing_country_question}
@@ -49,7 +49,7 @@ class RoutingCountriesController @Inject()(
       navigator.continueTo(routes.RoutingCountriesSummaryController.displayPage(mode))
     } else {
       val destinationCountryCode = request.cacheModel.locations.destinationCountry
-      val destinationCountryName = destinationCountryCode.map(retrieveCountryNameFromCode(_)).map(_.countryName).getOrElse("")
+      val destinationCountryName = destinationCountryCode.map(retrieveCountryFromCode(_)).map(_.countryName).getOrElse("")
 
       request.cacheModel.locations.hasRoutingCountries match {
         case Some(answer) => Ok(routingQuestionPage(mode, form().fill(answer), destinationCountryName))

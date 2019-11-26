@@ -17,8 +17,7 @@
 @import config.AppConfig
 @import controllers.declaration.routes
 @import forms.declaration.LegalDeclaration
-@import models.Mode
-@import models.declaration.SupplementaryDeclarationData
+@import models.{ExportsDeclaration, Mode}
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 @import views.html.declaration.summary._
@@ -26,7 +25,7 @@
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, suppDecData: SupplementaryDeclarationData, legalDeclarationForm: Form[LegalDeclaration])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(mode: Mode, declarationData: ExportsDeclaration, legalDeclarationForm: Form[LegalDeclaration])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @titleMsg = @{mode match {
     case Mode.Normal => Title("supplementary.summary.normal-header")
@@ -56,53 +55,22 @@
     @components.heading(title = messages(titleMsg.headingKey))
 
     @if(mode == Mode.Draft) {
-        <p>@messages("saved.declarations.summary.intro")</p>
-
-        @components.summary_list(None) {
-            @components.table_row_no_change_link(HtmlTableRow(
-                label = messages("supplementary.summary.yourReferences.ducr"),
-                value = Seq(suppDecData.consignmentReferences.map(_.ducr.ducr))
-            ))
-            @components.table_row_no_change_link(HtmlTableRow(
-                label = messages("saved.declarations.summary.createdDate"),
-                value = Seq(suppDecData.createDate.map(ViewDates.formatDateAtTime(_)))
-            ))
-            @components.table_row_no_change_link(HtmlTableRow(
-                label = messages("saved.declarations.summary.expireDate"),
-                value = Seq(suppDecData.updatedDate.map(createDate => createDate.plusSeconds(appConfig.draftTimeToLive.toSeconds)).map(ViewDates.formatDateAtTime(_)))
-            ))
-        }
+        @draft_info_section(declarationData)
     }
 
-    @components.summary_list(Some(messages("supplementary.summary.declarationType.header"))) {
-        @components.table_row_no_change_link(HtmlTableRow(
-            label = messages("supplementary.summary.declarationType.dispatchLocation"),
-            value = suppDecData.declarationType.flatMap(_.dispatchLocation).map(_.dispatchLocation)
-        ))
-        @components.table_row_no_change_link(HtmlTableRow(
-            label = messages("supplementary.summary.declarationType.supplementaryDeclarationType"),
-            value = suppDecData.declarationType.flatMap(_.additionalDeclarationType).map(_.toString)
-        ))
-    }
+    @references_section(declarationData)
 
-    @components.summary_list(Some(messages("supplementary.summary.yourReferences.header"))) {
-        @components.table_row_no_change_link(HtmlTableRow(
-            label = messages("supplementary.summary.yourReferences.ducr"),
-            value = Seq(suppDecData.consignmentReferences.map(_.ducr.ducr))
-        ))
-        @components.table_row_no_change_link(HtmlTableRow(
-            label = messages("supplementary.summary.yourReferences.lrn"),
-            value = Seq(suppDecData.consignmentReferences.map(_.lrn.value))
-        ))
-    }
+    @parties_section(declarationData)
 
-    @parties_section(suppDecData.parties)
+    @countries_section(declarationData)
 
-    @locations_section(suppDecData.locations)
+    @locations_section(declarationData)
 
-    @transport_containers_section(suppDecData.containers)
+    @transaction_section(declarationData)
 
-    @items_section(suppDecData.items, request.declarationType)
+    @warehouse_section(declarationData)
+
+    @transport_section(declarationData)
 
     @if(mode == Mode.Amend) {
         <br/>

@@ -17,13 +17,17 @@
 package forms.declaration
 
 import forms.Mapping.requiredRadio
+import forms.declaration.DispatchLocation.AllowedDispatchLocations
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
 
 case class DispatchLocation(
   dispatchLocation: String // 2 upper case alphabetic characters
-)
+) {
+
+  def summaryValue: String = if (dispatchLocation == AllowedDispatchLocations.OutsideEU) "Yes" else "No"
+}
 
 object DispatchLocation {
   implicit val format: OFormat[DispatchLocation] = Json.format[DispatchLocation]
