@@ -22,24 +22,29 @@ import forms.declaration.TransportCodes.IMOShipIDNumber
 import models.{DeclarationType, Mode}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.declaration.border_transport
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 
 class BorderTransportControllerSpec extends ControllerSpec {
 
-  trait SetUp {
-    val borderTransportPage = new border_transport(mainTemplate)
+  val borderTransportPage = mock[border_transport]
 
-    val controller = new BorderTransportController(
-      mockAuthAction,
-      mockJourneyAction,
-      navigator,
-      mockExportsCacheService,
-      stubMessagesControllerComponents(),
-      borderTransportPage
-    )(ec)
+  val controller = new BorderTransportController(
+    mockAuthAction,
+    mockJourneyAction,
+    navigator,
+    mockExportsCacheService,
+    stubMessagesControllerComponents(),
+    borderTransportPage
+  )(ec)
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     authorizedUser()
+    when(borderTransportPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
   }
 
@@ -47,14 +52,14 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
     "return 200 (OK)" when {
 
-      "display page method is invoked and cache is empty" in new SetUp {
+      "display page method is invoked and cache is empty" in {
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
 
-      "display page method is invoked and cache is not empty" in new SetUp {
+      "display page method is invoked and cache is not empty" in {
 
         withNewCaching(aDeclaration(withBorderTransport()))
 
@@ -66,7 +71,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
     "return 400 (BAD_REQUEST)" when {
 
-      "form contains incorrect values" in new SetUp {
+      "form contains incorrect values" in {
 
         val incorrectForm = Json.toJson(BorderTransport(Some("incorrect"), "", ""))
 
@@ -77,7 +82,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
     }
 
     "return 303 (SEE_OTHER)" when {
-      "valid options are selected" in new SetUp {
+      "valid options are selected" in {
         val correctForm =
           Json.toJson(BorderTransport(Some("United Kingdom"), IMOShipIDNumber, "correct"))
 
