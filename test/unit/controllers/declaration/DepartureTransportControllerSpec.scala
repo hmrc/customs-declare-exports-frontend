@@ -16,11 +16,11 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.{routes, DepartureTransportController}
+import controllers.declaration.{DepartureTransportController, routes}
 import forms.Choice
 import forms.declaration.DepartureTransport
 import forms.declaration.TransportCodes.{Maritime, WagonNumber}
-import models.{DeclarationType, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers._
@@ -50,11 +50,9 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
   }
 
-  val declaration = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
 
 
-  "Border transport controller" should {
-
+  def departureTransportController(declaration: ExportsDeclaration): Unit = {
     "return 200 (OK)" when {
       withNewCaching(declaration)
       "display page method is invoked and cache is empty" in {
@@ -66,7 +64,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "display page method is invoked and cache contains data" in  {
 
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withDepartureTransport(Maritime, WagonNumber, "FAA")))
+        withNewCaching(aDeclarationAfter(declaration, withDepartureTransport(Maritime, WagonNumber, "FAA")))
 
         val result: Future[Result] = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -99,6 +97,13 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.BorderTransportController.displayPage()
       }
+    }
+  }
+
+
+  "Border transport controller" when {
+    "we are on supplementary declaration journey" should {
+      behave like departureTransportController(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
     }
   }
 
