@@ -19,7 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.BorderTransportController
 import forms.declaration.BorderTransport
 import forms.declaration.TransportCodes.IMOShipIDNumber
-import models.{DeclarationType, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -45,14 +45,13 @@ class BorderTransportControllerSpec extends ControllerSpec {
     super.beforeEach()
     authorizedUser()
     when(borderTransportPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
   }
 
-  "Transport Details Controller" should {
-
+  def borderTransportController(declarationFactory: () => ExportsDeclaration): Unit = {
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in {
+        withNewCaching(declarationFactory())
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -60,8 +59,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
       }
 
       "display page method is invoked and cache is not empty" in {
-
-        withNewCaching(aDeclaration(withBorderTransport()))
+        withNewCaching(aDeclarationAfter(declarationFactory(), withBorderTransport()))
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -72,6 +70,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
     "return 400 (BAD_REQUEST)" when {
 
       "form contains incorrect values" in {
+        withNewCaching(declarationFactory())
 
         val incorrectForm = Json.toJson(BorderTransport(Some("incorrect"), "", ""))
 
@@ -81,18 +80,70 @@ class BorderTransportControllerSpec extends ControllerSpec {
       }
     }
 
-    "return 303 (SEE_OTHER)" when {
-      "valid options are selected" in {
-        val correctForm =
-          Json.toJson(BorderTransport(Some("United Kingdom"), IMOShipIDNumber, "correct"))
 
-        val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
+  }
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
-          .displayContainerSummary(Mode.Draft)
+  "Transport Details Controller" when {
+    "we are on supplementary declaration journey" should {
+      def declarationFactory() = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
+      behave like borderTransportController(declarationFactory)
+
+      "return 303 (SEE_OTHER) to Containers" when {
+        "valid options are selected" in {
+          withNewCaching(declarationFactory())
+
+          val correctForm =
+            Json.toJson(BorderTransport(Some("United Kingdom"), IMOShipIDNumber, "correct"))
+
+          val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
+            .displayContainerSummary(Mode.Draft)
+        }
+
       }
-
     }
+    "we are on standard declaration journey" should {
+      def declarationFactory() = aDeclaration(withType(DeclarationType.STANDARD))
+      behave like borderTransportController(declarationFactory)
+
+      "return 303 (SEE_OTHER) to TransportPayment" when {
+        "valid options are selected" in {
+          withNewCaching(declarationFactory())
+
+          val correctForm =
+            Json.toJson(BorderTransport(Some("United Kingdom"), IMOShipIDNumber, "correct"))
+
+          val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.TransportPaymentController
+            .displayPage(Mode.Draft)
+        }
+
+      }
+    }
+    "we are on simplified declaration journey" should {
+      def declarationFactory() = aDeclaration(withType(DeclarationType.SIMPLIFIED))
+      behave like borderTransportController(declarationFactory)
+
+      "return 303 (SEE_OTHER) to TransportPayment" when {
+        "valid options are selected" in {
+          withNewCaching(declarationFactory())
+
+          val correctForm =
+            Json.toJson(BorderTransport(Some("United Kingdom"), IMOShipIDNumber, "correct"))
+
+          val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.TransportPaymentController
+            .displayPage(Mode.Draft)
+        }
+
+      }
+    }
+
   }
 }
