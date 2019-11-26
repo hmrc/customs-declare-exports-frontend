@@ -21,7 +21,7 @@ import java.time.Instant
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.{Ducr, Lrn}
-import models.declaration.{ExportItem, Locations, Parties}
+import models.declaration.{ExportItem, Locations, Parties, TransportInformation}
 import models.{DeclarationStatus, DeclarationType, ExportsDeclaration}
 import org.mockito.Mockito.when
 import org.scalatest.{Matchers, WordSpec}
@@ -51,6 +51,7 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
   private val totalNumberOfItems = mock[TotalNumberOfItems]
   private val previousDocuments = mock[PreviousDocumentsData]
   private val natureOfTransaction = mock[NatureOfTransaction]
+  private val transportInformation = mock[TransportInformation]
 
   private val request = ExportsDeclarationExchange(
     id = Some(id),
@@ -64,6 +65,7 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
     consignmentReferences = Some(consignmentReferences),
     departureTransport = Some(departureTransport),
     borderTransport = Some(borderTransport),
+    transportInformation = Some(transportInformation),
     parties = parties,
     locations = locations,
     items = Set(item),
@@ -84,6 +86,7 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
     consignmentReferences = Some(consignmentReferences),
     departureTransport = Some(departureTransport),
     borderTransport = Some(borderTransport),
+    transportInformation = Some(transportInformation),
     parties = parties,
     locations = locations,
     items = Set(item),
