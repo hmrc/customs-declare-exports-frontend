@@ -4,8 +4,7 @@ date.year = Year
 
 service.name=Customs Export Declaration Service
 
-feedback.before=This is a new service - your 
-feedback.after=will help us to improve it.
+feedback=This is a new service - your {0} will help us to improve it.
 feedback.link=feedback
 
 title.format={0} - {1} - GOV.UK

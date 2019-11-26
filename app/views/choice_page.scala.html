@@ -16,23 +16,25 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import forms.Choice.AllowedChoiceValues._
-@import views.ViewUtils._
 @import config.AppConfig
+@import views.Title
 
 @this(  govukLayout: views.html.gds_design_system_main_template,
-        govukButton: GovukButton,
-        govukRadios: GovukRadios,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
-        appConfig: AppConfig)
+govukButton: GovukButton,
+govukRadios: GovukRadios,
+errorSummary: components.errorSummary,
+formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+appConfig: AppConfig)
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
-    pageTitle = Some(title(form, "declaration.choice.description")),
+    title = Title("declaration.choice.description"),
+    backButtonTitle = messages("site.back"),
     backButtonUrl = controllers.routes.StartController.displayStartPage().url) {
 
     @formHelper(action = routes.ChoiceController.submitChoice(), 'autoComplete -> "off") {
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
         @govukRadios(Radios(
             name = "value",
@@ -68,7 +70,7 @@
                     content = Text(messages(s"declaration.choice.$CancelDec")),
                     checked = form("value").value.contains(CancelDec.toString)
                 )
-            ),
+            ).filter(radioOption => appConfig.availableJourneys().contains(radioOption.value.get)),
             errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
         @govukButton(Button(content = Text(messages("site.save_and_continue"))))

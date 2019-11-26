@@ -18,7 +18,9 @@ object AppDependencies {
     "ai.x" %% "play-json-extensions" % "0.40.2",
     "uk.gov.hmrc" %% "play-whitelist-filter" % "3.1.0-play-26",
     "com.typesafe.play" %% "play-json-joda" % "2.6.10",
-    "com.github.tototoshi" %% "scala-csv" % "1.3.6"
+    "com.github.tototoshi" %% "scala-csv" % "1.3.6",
+    "org.pegdown" % "pegdown" % "1.6.0"
+
   )
 
   val test: Seq[ModuleID] = Seq(

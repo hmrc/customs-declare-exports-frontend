@@ -21,11 +21,14 @@ import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import models.DeclarationType
 import models.DeclarationType.DeclarationType
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.OptionValues
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import utils.FakeRequestCSRFSupport._
 import views.html.choice_page
@@ -33,23 +36,28 @@ import views.html.choice_page
 class ChoiceControllerSpec extends ControllerSpec with OptionValues {
   import ChoiceControllerSpec._
 
-  private def existingDeclaration(choice: DeclarationType = DeclarationType.SUPPLEMENTARY) =
-    aDeclaration(withId("existingDeclarationId"), withType(choice))
-
-  val choicePage = new choice_page(mainTemplate, minimalAppConfig)
-
+  val choicePage = mock[choice_page]
   val controller =
     new ChoiceController(mockAuthAction, stubMessagesControllerComponents(), choicePage)(ec)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
+    when(choicePage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(choicePage)
+    super.afterEach()
   }
 
   def postChoiceRequest(body: JsValue): Request[AnyContentAsJson] =
     FakeRequest("POST", "")
       .withJsonBody(body)
       .withCSRFToken
+
+  private def existingDeclaration(choice: DeclarationType = DeclarationType.SUPPLEMENTARY) =
+    aDeclaration(withId("existingDeclarationId"), withType(choice))
 
   "Display" should {
 
