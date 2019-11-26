@@ -47,15 +47,13 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
     super.beforeEach()
     setupErrorHandler()
     authorizedUser()
-
   }
 
-
-
-  def departureTransportController(declaration: ExportsDeclaration): Unit = {
+  def departureTransportController(declaration: () => ExportsDeclaration): Unit = {
     "return 200 (OK)" when {
-      withNewCaching(declaration)
+
       "display page method is invoked and cache is empty" in {
+        withNewCaching(declaration())
 
         val result: Future[Result] = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -64,7 +62,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "display page method is invoked and cache contains data" in  {
 
-        withNewCaching(aDeclarationAfter(declaration, withDepartureTransport(Maritime, WagonNumber, "FAA")))
+        withNewCaching(aDeclarationAfter(declaration(), withDepartureTransport(Maritime, WagonNumber, "FAA")))
 
         val result: Future[Result] = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -75,7 +73,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
     "return 400 (BAD_REQUEST)" when {
 
       "form is incorrect" in  {
-        withNewCaching(declaration)
+        withNewCaching(declaration())
 
         val incorrectForm: JsValue = Json.toJson(DepartureTransport("wrongValue", "wrongValue", "FAA"))
 
@@ -88,7 +86,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
     "return 303 (SEE_OTHER)" when {
 
       "information provided by user are correct" in {
-        withNewCaching(declaration)
+        withNewCaching(declaration())
 
         val correctForm: JsValue = Json.toJson(DepartureTransport(Maritime, WagonNumber, "FAA"))
 
@@ -102,8 +100,14 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
 
   "Border transport controller" when {
+    "we are on standard declaration journey" should {
+      behave like departureTransportController(() => aDeclaration(withType(DeclarationType.STANDARD)))
+    }
     "we are on supplementary declaration journey" should {
-      behave like departureTransportController(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
+      behave like departureTransportController(() => aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
+    }
+    "we are on simplified declaration journey" should {
+      behave like departureTransportController(() => aDeclaration(withType(DeclarationType.SIMPLIFIED)))
     }
   }
 
