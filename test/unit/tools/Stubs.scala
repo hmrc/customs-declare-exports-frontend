@@ -25,11 +25,14 @@ import play.api.mvc._
 import play.api.test.Helpers._
 import play.api.test.NoMaterializer
 import play.api.{Configuration, Environment}
+import uk.gov.hmrc.govukfrontend.views.html.components
+import uk.gov.hmrc.govukfrontend.views.html.components.{GovukHeader, Footer => _, _}
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 import uk.gov.hmrc.play.config.{AssetsConfig, GTMConfig, OptimizelyConfig}
 import uk.gov.hmrc.play.views.html.layouts._
+import views.html.components.{phaseBanner, siteHeader}
 import views.html.layouts.GovUkTemplate
-import views.html.{govuk_wrapper, main_template}
+import views.html.{gds_design_system_main_template, govuk_wrapper, main_template}
 
 import scala.concurrent.ExecutionContext
 
@@ -103,4 +106,23 @@ trait Stubs {
   )
 
   val mainTemplate: main_template = new main_template(govukWrapper, new Sidebar(), new Article())
+
+  val gdsGovukLayout = new GovukLayout(
+    new components.GovukTemplate(govukHeader = new GovukHeader(), govukFooter = new GovukFooter(), new GovukSkipLink()),
+    new GovukHeader(),
+    new GovukFooter(),
+    new GovukBackLink()
+  )
+
+  val govukHeader = new GovukHeader()
+  val sHeader = new siteHeader(govukHeader)
+  val pBanner = new phaseBanner(new GovukPhaseBanner(new govukTag()))
+  val gdsMainTemplate = new gds_design_system_main_template(
+    govukHeader = govukHeader,
+    govukLayout = gdsGovukLayout,
+    govukPhaseBanner = new components.GovukPhaseBanner(new govukTag()),
+    govukBackLink = new components.GovukBackLink(),
+    siteHeader = sHeader,
+    phaseBanner = pBanner
+  )
 }

@@ -48,6 +48,8 @@ trait ViewMatchers {
 
   def containElementWithClass(name: String): Matcher[Element] = new ContainElementWithClassMatcher(name)
 
+  def containErrorElementWithTagAndHref(tag: String, href: String): Matcher[Element] = new ContainErrorElementWithClassMatcher(tag, href)
+
   def containElementWithAttribute(key: String, value: String): Matcher[Element] =
     new ContainElementWithAttribute(key, value)
 
@@ -84,6 +86,10 @@ trait ViewMatchers {
     new ElementContainsFieldErrorLink(fieldName, link)
 
   def haveGlobalErrorSummary: Matcher[Document] = new ContainElementWithIDMatcher("error-summary-heading")
+
+  def haveGovukGlobalErrorSummary: Matcher[Document] = new ContainElementWithClassMatcher("govuk-error-summary")
+
+  def test: Matcher[Document] = new ContainErrorElementWithClassMatcher("govuk-list govuk-error-summary__list", "#value")
 
   def haveTranslationFor(key: String): Matcher[Messages] = new TranslationKeyMatcher(key)
 
@@ -128,6 +134,15 @@ trait ViewMatchers {
         left != null && left.getElementsByClass(name).size() > 0,
         s"Document did not contain element with class {$name}\n${actualContentWas(left)}",
         s"Document contained an element with class {$name}"
+      )
+  }
+
+  class ContainErrorElementWithClassMatcher(tag: String, href: String) extends Matcher[Element] {
+    override def apply(left: Element): MatchResult =
+      MatchResult(
+        left != null && left.getElementsByClass("govuk-list govuk-error-summary__list").get(0).getElementsByTag(tag).attr("href") == href,
+        s"Document did not contain element with class {$tag}\n${actualContentWas(left)}",
+        s"Document contained an element with class {$tag}"
       )
   }
 

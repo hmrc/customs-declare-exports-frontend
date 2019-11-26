@@ -28,17 +28,20 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.api.{Configuration, Environment}
+import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukRadios}
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
+import uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.choice_page
+import views.html.components.errorSummary
 import views.tags.ViewTest
 
 @ViewTest
 class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessages with Stubs with Injector {
 
   private val form: Form[Choice] = Choice.form()
-  private val choicePage = new choice_page(mainTemplate, instanceOf[AppConfig])
+  private val choicePage = instanceOf[choice_page]
   private def createView(form: Form[Choice] = form, messages: Messages = stubMessages()): Document =
     choicePage(form)(request, messages)
 
@@ -54,10 +57,10 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
       val view = createView(Choice.form().fill(Choice("")))
       ensureAllLabelTextIsCorrect(view)
 
-      ensureRadioIsUnChecked(view, "Create declaration")
-      ensureRadioIsUnChecked(view, "Cancel declaration")
-      ensureRadioIsUnChecked(view, "Submissions")
-      ensureRadioIsUnChecked(view, "Continue declaration")
+      ensureRadioIsUnChecked(view, "CRT")
+      ensureRadioIsUnChecked(view, "CAN")
+      ensureRadioIsUnChecked(view, "SUB")
+      ensureRadioIsUnChecked(view, "CON")
     }
 
     "display only Create radio button with description" in {
@@ -74,27 +77,34 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
       val servicesConfig = new ServicesConfig(conf, runMode)
       val appConfig = new AppConfig(conf, Environment.simple(), servicesConfig, "AppName")
 
-      val page = new choice_page(mainTemplate, appConfig)
+      val page = new choice_page(
+        gdsMainTemplate,
+        instanceOf[GovukButton],
+        instanceOf[GovukRadios],
+        instanceOf[errorSummary],
+        instanceOf[FormWithCSRF],
+        appConfig
+      )
 
       val view = page(Choice.form().fill(Choice("CRT")))(request, messages)
       ensureCreateLabelIsCorrect(view)
 
-      ensureRadioIsChecked(view, "Create declaration")
+      ensureRadioIsChecked(view, "CRT")
     }
 
     "display 'Back' button that links to 'Make an export declaration' page" in {
 
-      val backButton = createView().getElementById("link-back")
+      val backButton = createView().getElementById("back-link")
 
       backButton.text() mustBe messages(backCaption)
-      backButton.getElementById("link-back") must haveHref(controllers.routes.StartController.displayStartPage())
+      backButton.getElementById("back-link") must haveHref(controllers.routes.StartController.displayStartPage())
     }
 
     "display 'Save and continue' button on page" in {
 
       val view = createView()
 
-      val saveButton = view.select("#submit")
+      val saveButton = view.getElementsByClass("govuk-button")
       saveButton.text() mustBe messages(saveAndContinueCaption)
     }
   }
@@ -105,20 +115,20 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
 
       val view = createView(Choice.form().bind(Map[String, String]()))
 
-      view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("value", "#value")
+      view must haveGovukGlobalErrorSummary
+      view must containErrorElementWithTagAndHref("a", "#value")
 
-      view.select("#error-message-value-input").text() mustBe messages(choiceEmpty)
+      view.getElementsByClass("#govuk-error-message").text() contains messages(choiceEmpty)
     }
 
     "display error when choice is incorrect" in {
 
       val view = createView(Choice.form().bind(Map("value" -> "incorrect")))
 
-      view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("value", "#value")
+      view must haveGovukGlobalErrorSummary
+      view must containErrorElementWithTagAndHref("a", "#value")
 
-      view.select("#error-message-value-input").text() mustBe messages(choiceError)
+      view.getElementsByClass("#govuk-error-message").text() contains messages(choiceError)
     }
   }
 
@@ -128,20 +138,20 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
       val view = createView(Choice.form().fill(Choice("CRT")))
       ensureAllLabelTextIsCorrect(view)
 
-      ensureRadioIsChecked(view, "Create declaration")
-      ensureRadioIsUnChecked(view, "Cancel declaration")
-      ensureRadioIsUnChecked(view, "Submissions")
-      ensureRadioIsUnChecked(view, "Continue declaration")
+      ensureRadioIsChecked(view, "CRT")
+      ensureRadioIsUnChecked(view, "CAN")
+      ensureRadioIsUnChecked(view, "SUB")
+      ensureRadioIsUnChecked(view, "CON")
     }
 
-    "display selected radio button - Cancel declaration (CAN)" in {
+    "display selected radio button - CAN (CAN)" in {
       val view = createView(Choice.form().fill(Choice("CAN")))
       ensureAllLabelTextIsCorrect(view)
 
-      ensureRadioIsUnChecked(view, "Create declaration")
-      ensureRadioIsChecked(view, "Cancel declaration")
-      ensureRadioIsUnChecked(view, "Submissions")
-      ensureRadioIsUnChecked(view, "Continue declaration")
+      ensureRadioIsUnChecked(view, "CRT")
+      ensureRadioIsChecked(view, "CAN")
+      ensureRadioIsUnChecked(view, "SUB")
+      ensureRadioIsUnChecked(view, "CON")
     }
 
     "display selected radio button - View recent declarations (SUB)" in {
@@ -149,10 +159,10 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
 
       ensureAllLabelTextIsCorrect(view)
 
-      ensureRadioIsUnChecked(view, "Create declaration")
-      ensureRadioIsUnChecked(view, "Cancel declaration")
-      ensureRadioIsChecked(view, "Submissions")
-      ensureRadioIsUnChecked(view, "Continue declaration")
+      ensureRadioIsUnChecked(view, "CRT")
+      ensureRadioIsUnChecked(view, "CAN")
+      ensureRadioIsChecked(view, "SUB")
+      ensureRadioIsUnChecked(view, "CON")
     }
 
     "display selected radio button - Continue saved declaration (Con)" in {
@@ -160,28 +170,28 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
 
       ensureAllLabelTextIsCorrect(view)
 
-      ensureRadioIsUnChecked(view, "Create declaration")
-      ensureRadioIsUnChecked(view, "Cancel declaration")
-      ensureRadioIsUnChecked(view, "Submissions")
-      ensureRadioIsChecked(view, "Continue declaration")
+      ensureRadioIsUnChecked(view, "CRT")
+      ensureRadioIsUnChecked(view, "CAN")
+      ensureRadioIsUnChecked(view, "SUB")
+      ensureRadioIsChecked(view, "CON")
     }
   }
   private def ensureAllLabelTextIsCorrect(view: Document): Unit = {
     view.getElementsByTag("label").size mustBe 4
-    view.getElementById("Create declaration-label").text() mustBe createDec
-    view.getElementById("Submissions-label").text() mustBe recentDec
-    view.getElementById("Continue declaration-label").text() mustBe continueDec
-    view.getElementById("Cancel declaration-label").text() mustBe cancelDec
+    view.getElementsByAttributeValue("for", "CRT").text() mustBe createDec
+    view.getElementsByAttributeValue("for", "SUB").text() mustBe recentDec
+    view.getElementsByAttributeValue("for", "CAN").text() mustBe cancelDec
+    view.getElementsByAttributeValue("for", "CON").text() mustBe continueDec
   }
 
   private def ensureCreateLabelIsCorrect(view: Document): Unit = {
     view.getElementsByTag("label").size mustBe 1
-    view.getElementById("Create declaration-label").text() mustBe createDec
+    view.getElementsByAttributeValue("for", "CRT").text() mustBe createDec
   }
 
   private def ensureRadioIsChecked(view: Document, elementId: String): Unit = {
-    val option = view.getElementById(elementId)
-    option.attr("checked") mustBe "checked"
+    val option = view.getElementById(elementId).getElementsByAttribute("checked")
+    option.size() mustBe 1
   }
 
   private def ensureRadioIsUnChecked(view: Document, elementId: String): Unit = {
