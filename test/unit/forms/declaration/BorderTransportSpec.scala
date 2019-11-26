@@ -16,7 +16,7 @@
 
 package unit.forms.declaration
 
-import forms.declaration.BorderTransport
+import forms.declaration.{BorderTransport, TransportCodes}
 import unit.base.FormSpec
 
 class BorderTransportSpec extends FormSpec {
@@ -49,7 +49,7 @@ class BorderTransportSpec extends FormSpec {
 
     "has errors" when {
       "sending incorrect nationality" in {
-        form.bind(Map("meansOfTransportCrossingTheBorderNationality" -> "fizz")).errors must contain(
+        form.bind(Map("borderTransportNationality" -> "fizz")).errors must contain(
           "declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.error.incorrect"
         )
       }
@@ -59,31 +59,34 @@ class BorderTransportSpec extends FormSpec {
       }
 
       "sending non existing transport type" in {
-        form.bind(Map("meansOfTransportCrossingTheBorderType" -> "donkey")).errors must contain(
+        form.bind(Map("borderTransportType" -> "donkey")).errors must contain(
           "declaration.transportInformation.meansOfTransport.crossingTheBorder.error.incorrect"
         )
       }
 
-      "sending no transport type reference" in {
-        form.bind(Map.empty[String, String]).errors must contain("error.required")
-      }
-
       "sending empty transport type reference" in {
-        form.bind(Map("meansOfTransportCrossingTheBorderIDNumber" -> "")).errors must contain(
+        form.bind(Map("borderTransportType" -> TransportCodes.IMOShipIDNumber, "borderTransportReference_IMOShipIDNumber" -> "")).errors must contain(
           "declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.empty"
         )
       }
 
       "sending very long transport type reference" in {
-        form.bind(Map("meansOfTransportCrossingTheBorderIDNumber" -> "a" * 128)).errors must contain(
-          "declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.length"
-        )
+        form
+          .bind(
+            Map(
+              "borderTransportType" -> TransportCodes.AircraftRegistrationNumber,
+              "borderTransportReference_aircraftRegistrationNumber" -> "a" * 128
+            )
+          )
+          .errors must contain("declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.length")
       }
 
       "sending reference with special characters" in {
-        form.bind(Map("meansOfTransportCrossingTheBorderIDNumber" -> "$#@!")).errors must contain(
-          "declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid"
-        )
+        form
+          .bind(
+            Map("borderTransportType" -> TransportCodes.VehicleRegistrationNumber, "borderTransportReference_vehicleRegistrationNumber" -> "$#@!")
+          )
+          .errors must contain("declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.error.invalid")
       }
 
     }
