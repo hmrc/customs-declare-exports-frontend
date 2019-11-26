@@ -50,6 +50,8 @@ case class ExportsDeclaration(
 
   def isComplete: Boolean = status == DeclarationStatus.COMPLETE
 
+  def capitalizedType: String = `type`.toString().toLowerCase().capitalize
+
   def updatedItem(itemId: String, update: ExportItem => ExportItem): ExportsDeclaration =
     itemBy(itemId).fold(this) { item =>
       val updated = update(item)

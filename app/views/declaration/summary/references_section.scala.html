@@ -1,0 +1,46 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
+@import models.viewmodels.HtmlTableRow
+@import views.ViewDates
+
+@(declarationData: ExportsDeclaration)(implicit messages: Messages)
+
+<div id="declaration-references-summary">
+    @components.summary_list(Some(messages("declaration.summary.references"))) {
+        @components.table_row("declarationType-label", HtmlTableRow(
+            label = messages("declaration.summary.references.type"),
+            value = declarationData.capitalizedType
+        ))
+        @components.table_row("location-label", HtmlTableRow(
+            label = messages("declaration.summary.references.location"),
+            value = declarationData.dispatchLocation.map(_.summaryValue).getOrElse("")
+        ))
+        @components.table_row("additionalType-label", HtmlTableRow(
+            label = messages("declaration.summary.references.additionalType"),
+            value = declarationData.additionalDeclarationType.map(AdditionalDeclarationType.asText(_)).getOrElse("")
+        ))
+        @components.table_row("ducr-label", HtmlTableRow(
+            label = messages("declaration.summary.references.ducr"),
+            value = declarationData.consignmentReferences.map(_.ducr.ducr).getOrElse("")
+        ))
+        @components.table_row("lrn-label", HtmlTableRow(
+            label = messages("declaration.summary.references.lrn"),
+            value = declarationData.consignmentReferences.map(_.lrn.value).getOrElse("")
+        ))
+    }
+</div>

@@ -31,6 +31,8 @@ case class Address(
 ) {
   def isDefined(): Boolean =
     fullName.nonEmpty || addressLine.nonEmpty || townOrCity.nonEmpty || postCode.nonEmpty || country.nonEmpty
+
+  def extractValues: Seq[String] = Seq(fullName, addressLine, townOrCity, postCode, country)
 }
 
 object Address {

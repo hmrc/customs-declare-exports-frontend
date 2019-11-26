@@ -22,9 +22,12 @@ class HtmlTableRow(val label: String, val values: Seq[Option[String]])
 
 object HtmlTableRow {
 
-  def apply(label: String, value: Iterable[_]): HtmlTableRow = new HtmlTableRow(label, adjust(value))
+  def apply[T](label: String, value: Iterable[T]): HtmlTableRow = new HtmlTableRow(label, adjust(value))
 
-  private def adjust(iterable: Iterable[_]): Seq[Option[String]] = iterable match {
+  def apply(label: String, value: String): HtmlTableRow = new HtmlTableRow(label, Seq(Some(value)))
+
+  // TODO review adjust method, working wrong
+  private def adjust[T](iterable: Iterable[T]): Seq[Option[String]] = iterable match {
     case Nil => Seq.empty
     case _ =>
       iterable.map {

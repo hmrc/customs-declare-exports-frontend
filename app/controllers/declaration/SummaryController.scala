@@ -21,7 +21,6 @@ import controllers.actions.{AuthAction, JourneyAction}
 import forms.declaration.LegalDeclaration
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.declaration.SupplementaryDeclarationData
 import models.requests.ExportsSessionKeys
 import models.responses.FlashKeys
 import models.{ExportsDeclaration, Mode}
@@ -52,7 +51,7 @@ class SummaryController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (containsMandatoryData(request.cacheModel, mode)) {
-      Ok(summaryPage(mode, SupplementaryDeclarationData(request.cacheModel), LegalDeclaration.form()))
+      Ok(summaryPage(mode, request.cacheModel, LegalDeclaration.form()))
     } else {
       Ok(summaryPageNoData())
     }
@@ -66,8 +65,7 @@ class SummaryController @Inject()(
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[LegalDeclaration]) =>
-          Future.successful(BadRequest(summaryPage(Mode.Normal, SupplementaryDeclarationData(request.cacheModel), formWithErrors))),
+        (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(summaryPage(Mode.Normal, request.cacheModel, formWithErrors))),
         legalDeclaration => {
           submissionService.submit(request.eori, request.cacheModel, legalDeclaration).map {
             case Some(lrn) =>

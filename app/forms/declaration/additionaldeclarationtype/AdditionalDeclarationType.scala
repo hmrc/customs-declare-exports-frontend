@@ -38,4 +38,11 @@ object AdditionalDeclarationType extends Enumeration {
   val SIMPLIFIED_PRE_LODGED = Value("F")
 
   def from(string: String): Option[AdditionalDeclarationType] = AdditionalDeclarationType.values.find(_.toString == string)
+
+  def asText(additionalDeclarationType: AdditionalDeclarationType): String = additionalDeclarationType match {
+    case STANDARD_PRE_LODGED | SIMPLIFIED_PRE_LODGED => "Pre-lodged"
+    case STANDARD_FRONTIER | SIMPLIFIED_FRONTIER     => "Frontier"
+    case SUPPLEMENTARY_EIDR                          => "Z" //TODO Don't know what's this
+    case SUPPLEMENTARY_SIMPLIFIED                    => "Simplified"
+  }
 }

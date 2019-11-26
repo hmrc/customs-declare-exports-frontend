@@ -18,7 +18,10 @@ package services
 
 import utils.JsonFile
 
-case class DocumentType(description: String, code: String)
+case class DocumentType(description: String, code: String) {
+
+  def asText: String = description + " - " + code
+}
 
 object DocumentType {
 
@@ -27,4 +30,11 @@ object DocumentType {
   val allDocuments: List[DocumentType] = JsonFile
     .readFromJsonFile("/code-lists/document-type-autocomplete-list.json", deserialiser)
     .sortBy(_.description.toLowerCase)
+
+  val documentCodesMap: Map[String, DocumentType] =
+    allDocuments.map(documentType => (documentType.code, documentType)).toMap
+
+  def retrieveDocumentTypeFromCode(code: String): DocumentType = documentCodesMap(code)
+
+  def retrieveDocumentTypesFromCodes(codes: Seq[String]): Seq[DocumentType] = codes.map(documentCodesMap(_))
 }
