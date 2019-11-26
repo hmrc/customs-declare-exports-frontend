@@ -16,7 +16,7 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.{DepartureTransportController, routes}
+import controllers.declaration.{routes, DepartureTransportController}
 import forms.Choice
 import forms.declaration.DepartureTransport
 import forms.declaration.TransportCodes.{Maritime, WagonNumber}
@@ -60,7 +60,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         status(result) must be(OK)
       }
 
-      "display page method is invoked and cache contains data" in  {
+      "display page method is invoked and cache contains data" in {
 
         withNewCaching(aDeclarationAfter(declaration(), withDepartureTransport(Maritime, WagonNumber, "FAA")))
 
@@ -72,7 +72,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
     "return 400 (BAD_REQUEST)" when {
 
-      "form is incorrect" in  {
+      "form is incorrect" in {
         withNewCaching(declaration())
 
         val incorrectForm: JsValue = Json.toJson(DepartureTransport("wrongValue", "wrongValue", "FAA"))
@@ -98,7 +98,6 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
     }
   }
 
-
   "Border transport controller" when {
     "we are on standard declaration journey" should {
       behave like departureTransportController(() => aDeclaration(withType(DeclarationType.STANDARD)))
@@ -110,6 +109,5 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
       behave like departureTransportController(() => aDeclaration(withType(DeclarationType.SIMPLIFIED)))
     }
   }
-
 
 }

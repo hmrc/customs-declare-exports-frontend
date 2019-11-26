@@ -80,7 +80,6 @@ class BorderTransportControllerSpec extends ControllerSpec {
       }
     }
 
-
   }
 
   "Transport Details Controller" when {
