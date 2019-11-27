@@ -115,7 +115,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CarrierDetailsMessages wi
 
     "display 'Back' button that links to 'Representative Details' page" in {
 
-      val backButton = createView().getElementById("link-back")
+      val backButton = createView().getElementById("back-link")
 
       backButton.text() mustBe messages(backCaption)
       backButton.attr("href") mustBe routes.RepresentativeDetailsController.displayPage().url

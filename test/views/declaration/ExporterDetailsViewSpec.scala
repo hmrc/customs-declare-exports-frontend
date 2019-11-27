@@ -102,7 +102,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with ExporterDetailsMessages 
 
     "display 'Back' button that links to 'Consignment References' page" in {
 
-      val backButton = createView().getElementById("link-back")
+      val backButton = createView().getElementById("back-link")
 
       backButton.text() mustBe messages(backCaption)
       backButton.attr("href") mustBe routes.ConsignmentReferencesController.displayPage().url

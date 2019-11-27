@@ -55,10 +55,10 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestData
     }
 
     "display 'Back' button that links to 'Warehouse Identification Number' page" in {
-      val backButton = view.getElementById("link-back")
+      val backButton = view.getElementById("back-link")
 
       backButton.text() mustBe "site.back"
-      backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.WarehouseIdentificationController.displayPage(Mode.Normal))
+      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.WarehouseIdentificationController.displayPage(Mode.Normal))
     }
 
     "display 'Save and continue' button on page" in {

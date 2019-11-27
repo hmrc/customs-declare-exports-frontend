@@ -93,7 +93,7 @@ class AdditionalInformationViewSpec
     "display 'Back' button that links to 'Commodity measure' page" when {
       "on the Standard journey" in {
 
-        val backButton = createView().getElementById("link-back")
+        val backButton = createView().getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
         backButton.attr("href") must endWith(s"/items/$itemId/commodity-measure")
@@ -101,7 +101,7 @@ class AdditionalInformationViewSpec
 
       "on the Simplified journey" in {
 
-        val backButton = createView(declarationType = DeclarationType.SIMPLIFIED).getElementById("link-back")
+        val backButton = createView(declarationType = DeclarationType.SIMPLIFIED).getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
         backButton.attr("href") must endWith(s"/items/$itemId/package-information")

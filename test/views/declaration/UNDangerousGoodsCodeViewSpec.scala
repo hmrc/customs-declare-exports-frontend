@@ -56,9 +56,9 @@ class UNDangerousGoodsCodeViewSpec extends UnitViewSpec with ExportsTestData wit
     }
 
     "display 'Back' button that links to 'Package Information' page" in {
-      val backButton = view.getElementById("link-back")
+      val backButton = view.getElementById("back-link")
 
-      backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, itemId))
+      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, itemId))
     }
 
     "display 'Save and continue' button on page" in {

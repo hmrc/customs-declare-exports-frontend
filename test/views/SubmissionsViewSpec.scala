@@ -154,7 +154,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
     }
 
     "display 'Back' button that links to 'Choice' page with Submissions selected" in {
-      val backButton = view.getElementById("link-back")
+      val backButton = view.getElementById("back-link")
 
       backButton must containText("site.back")
       backButton must haveHref(routes.ChoiceController.displayPage(Some(Choice(Submissions))))

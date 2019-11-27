@@ -60,10 +60,10 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with ChoiceMessages with Co
 
     "display 'Back' button that links to 'Choice' page" in {
 
-      val backButton = createView().getElementById("link-back")
+      val backButton = createView().getElementById("back-link")
 
       backButton.text() mustBe messages(backCaption)
-      backButton.getElementById("link-back") must haveHref(controllers.routes.ChoiceController.displayPage(Some(Choice(CreateDec))))
+      backButton.getElementById("back-link") must haveHref(controllers.routes.ChoiceController.displayPage(Some(Choice(CreateDec))))
     }
 
     "display 'Save and continue' button on page" in {

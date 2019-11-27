@@ -54,10 +54,10 @@ class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData w
     }
 
     "display 'Back' button that links to 'Supervising Customs Office' page" in {
-      val backButton = view.getElementById("link-back")
+      val backButton = view.getElementById("back-link")
 
       backButton.text() mustBe "site.back"
-      backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal))
+      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal))
     }
 
     "display 'Save and continue' button on page" in {

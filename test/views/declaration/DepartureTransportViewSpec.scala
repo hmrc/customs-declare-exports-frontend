@@ -83,7 +83,7 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
     }
 
     "display 'Back' button that links to 'Inland Transport Details' page" in {
-      val backButton = view.getElementById("link-back")
+      val backButton = view.getElementById("back-link")
       backButton.text() mustBe messages(backCaption)
       backButton must haveHref(routes.InlandTransportDetailsController.displayPage())
     }

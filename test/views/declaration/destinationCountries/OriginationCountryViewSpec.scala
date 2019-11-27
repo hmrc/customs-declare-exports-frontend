@@ -57,7 +57,7 @@ class OriginationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
 
     "display back button that links to 'Declaration Holder' page" in {
 
-      val backButton = view.getElementById("link-back")
+      val backButton = view.getElementById("back-link")
 
       backButton.text() mustBe messages("site.back")
       backButton must haveHref(routes.DeclarationHolderController.displayPage())

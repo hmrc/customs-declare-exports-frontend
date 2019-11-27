@@ -62,7 +62,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
 
     "have correct back link" in {
 
-      val backLink = defaultView.getElementById("link-back")
+      val backLink = defaultView.getElementById("back-link")
 
       backLink.text() mustBe messages("site.back")
       backLink.attr("href") mustBe routes.SubmissionsController.displayListOfSubmissions().url

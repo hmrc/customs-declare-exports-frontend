@@ -97,7 +97,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommodityMeasureMessage
 
     "display 'Back' button that links to 'Package Information' page" in {
 
-      val backButton = createView().getElementById("link-back")
+      val backButton = createView().getElementById("back-link")
 
       backButton.text() mustBe messages(backCaption)
       backButton.attr("href") must endWith(s"/items/$itemId/package-information")

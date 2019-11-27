@@ -55,10 +55,10 @@ class TransportContainerRemoveViewSpec extends UnitViewSpec with Stubs with Must
     }
 
     "display 'Back' button that links to 'container summary' page" in {
-      val backLinkContainer = view.getElementById("link-back")
+      val backLinkContainer = view.getElementById("back-link")
 
       backLinkContainer must containText(realMessages(backCaption))
-      backLinkContainer.getElementById("link-back") must haveHref(
+      backLinkContainer.getElementById("back-link") must haveHref(
         controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
       )
     }
