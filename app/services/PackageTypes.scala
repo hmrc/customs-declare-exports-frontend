@@ -30,4 +30,8 @@ object PackageTypes {
       case regex(code: String, description: String) =>
         PackageType(code, description)
     }.sortBy(_.description)
+
+  val packageTypeCodeMap: Map[String, PackageType] = all.map(packageType => (packageType.code, packageType)).toMap
+
+  def getPackageType(code: String): PackageType = packageTypeCodeMap(code)
 }
