@@ -15,9 +15,10 @@
  *@
 
 @import forms.declaration.AdditionalInformation
+@import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 
-@(additionalInformation: Seq[AdditionalInformation])(implicit messages: Messages)
+@(additionalInformation: Seq[AdditionalInformation])(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
 @if(additionalInformation.nonEmpty){
     <caption class="heading-small">@messages("declaration.summary.items.item.additionalInformation")</caption>

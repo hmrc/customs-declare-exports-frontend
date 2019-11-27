@@ -15,10 +15,11 @@
  *@
 
 @import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
+@import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 @import views.ViewDates
 
-@(declarationData: ExportsDeclaration)(implicit messages: Messages)
+@(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
 <div id="declaration-references-summary">
     @components.summary_list(Some(messages("declaration.summary.references"))) {

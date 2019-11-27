@@ -15,9 +15,10 @@
  *@
 
 @import forms.declaration.PackageInformation
+@import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 
-@(packageInformation: Seq[PackageInformation])(implicit messages: Messages)
+@(packageInformation: Seq[PackageInformation])(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
 @if(packageInformation.nonEmpty){
     <caption class="heading-small">@messages("declaration.summary.items.item.packageInformation")</caption>

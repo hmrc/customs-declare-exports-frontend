@@ -15,9 +15,10 @@
  *@
 
 @import models.declaration.Container
+@import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 
-@(containers: Seq[Container])(implicit messages: Messages)
+@(containers: Seq[Container])(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
 @if(containers.nonEmpty){
     <caption class="heading-small">@messages("declaration.summary.container")</caption>

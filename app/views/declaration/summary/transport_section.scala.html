@@ -14,9 +14,10 @@
  * limitations under the License.
  *@
 
+@import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 
-@(declarationData: ExportsDeclaration)(implicit messages: Messages)
+@(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
 <div id="declaration-transport-section">
     @components.summary_list(Some(messages("declaration.summary.transport"))) {

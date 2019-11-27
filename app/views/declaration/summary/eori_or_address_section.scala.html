@@ -15,9 +15,10 @@
  *@
 
 @import forms.common.Address
+@import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 
-@(id: String, eoriOption: Option[String], eoriLabel: String, address: Seq[String], addressLabel: String, isEoriDefault: Boolean = true)(implicit messages: Messages)
+@(id: String, eoriOption: Option[String], eoriLabel: String, address: Seq[String], addressLabel: String, isEoriDefault: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
 @if(eoriOption.isEmpty && address.isEmpty && isEoriDefault) {
     @components.table_row(s"$id-eori-label", HtmlTableRow(
