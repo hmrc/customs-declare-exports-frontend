@@ -73,7 +73,7 @@ class AdditionalFiscalReferencesController @Inject()(
         formWithErrors => Future.successful(badRequest(mode, itemId, formWithErrors, cachedData.references)),
         updatedCache =>
           updateExportsCache(itemId, AdditionalFiscalReferencesData(updatedCache))
-            .map(_ => Redirect(routes.AdditionalFiscalReferencesController.displayPage(mode, itemId)))
+            .map(_ => navigator.continueTo(routes.AdditionalFiscalReferencesController.displayPage(mode, itemId)))
       )
 
   private def saveAndContinue(mode: Mode, itemId: String, form: Form[AdditionalFiscalReference], cachedData: AdditionalFiscalReferencesData)(
@@ -98,7 +98,7 @@ class AdditionalFiscalReferencesController @Inject()(
     updateExportsCache(itemId, updatedCache).map {
       case Some(_) =>
         Ok(additionalFiscalReferencesPage(mode, itemId, valueOnPage.discardingErrors, updatedCache.references))
-      case None => Redirect(routes.ItemsSummaryController.displayPage())
+      case None => navigator.continueTo(routes.ItemsSummaryController.displayPage())
     }
   }
 

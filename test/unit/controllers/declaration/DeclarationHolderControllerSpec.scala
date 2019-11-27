@@ -198,7 +198,8 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
         val result = controller.submitHoldersOfAuthorisation(Mode.Normal)(postRequestAsFormUrlEncoded(removeAction))
 
-        status(result) must be(OK)
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderController.displayPage(Mode.Normal)
       }
     }
 

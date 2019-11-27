@@ -90,7 +90,7 @@ class DeclarationAdditionalActorsController @Inject()(
         if (actor.isDefined) {
           val updatedCache = DeclarationAdditionalActorsData(actors :+ actor)
           updateCache(updatedCache)
-            .map(_ => Redirect(routes.DeclarationAdditionalActorsController.displayPage(mode)))
+            .map(_ => navigator.continueTo(routes.DeclarationAdditionalActorsController.displayPage(mode)))
         } else
           handleErrorPage(mode, Seq(("eori", "supplementary.additionalActors.eori.isNotDefined")), userInput, cachedData.actors)
     }
@@ -155,6 +155,6 @@ class DeclarationAdditionalActorsController @Inject()(
     val updatedCache =
       cachedData.copy(actors = remove(cachedData.actors, actorToRemove.contains(_: DeclarationAdditionalActors)))
     updateCache(updatedCache)
-      .map(_ => Ok(declarationAdditionalActorsPage(mode, formData.discardingErrors, updatedCache.actors)))
+      .map(_ => navigator.continueTo(routes.DeclarationAdditionalActorsController.displayPage(mode)))
   }
 }

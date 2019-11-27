@@ -273,8 +273,8 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
 
         val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(removeAction))
 
-        status(result) mustBe OK
-        verify(mockProcedureCodesPage, times(1)).apply(any(), any(), any(), any())(any(), any())
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, itemId)
       }
     }
   }

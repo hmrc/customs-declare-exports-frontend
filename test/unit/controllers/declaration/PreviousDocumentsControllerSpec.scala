@@ -289,12 +289,8 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
 
         val result = controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(removeAction))
 
-        status(result) mustBe OK
-        verify(mockPreviousDocumentsPage, times(1)).apply(any(), any(), any())(any(), any())
-
-        val (responseForm, responseSeq) = theResponse
-        responseForm.value mustBe empty
-        responseSeq mustBe Seq.empty
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage(Mode.Normal)
       }
     }
   }
