@@ -95,8 +95,7 @@ object Navigator {
   }
 
   val simplified: PartialFunction[DeclarationPage, Mode => Call] = {
-    case BorderTransport           => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
-    case TransportPayment          => controllers.declaration.routes.BorderTransportController.displayPage
+    case TransportPayment          => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case ContainerFirst            => controllers.declaration.routes.TransportPaymentController.displayPage
     case ContainerAdd              => controllers.declaration.routes.TransportContainerController.displayContainerSummary
     case Document                  => controllers.declaration.routes.OfficeOfExitController.displayPage
@@ -109,6 +108,7 @@ object Navigator {
     case WarehouseIdentification   => controllers.declaration.routes.ItemsSummaryController.displayPage
     case _                         => throw new IllegalArgumentException("Navigator back-link route not implemented")
   }
+
   val simplifiedItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
     case PackageInformation => controllers.declaration.routes.NactCodeController.displayPage
     case _                  => throw new IllegalArgumentException("Navigator back-link route not implemented")
