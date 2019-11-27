@@ -109,7 +109,7 @@ class AdditionalInformationController @Inject()(
   ): Future[Result] = {
     val updatedCache = remove(items, (addItem: AdditionalInformation) => addItem.toString == ids.head)
     updateCache(itemId, AdditionalInformationData(updatedCache))
-      .map(_ => Ok(additionalInformationPage(mode, itemId, boundForm.discardingErrors, updatedCache)))
+      .map(_ => navigator.continueTo(controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId)))
   }
 
   private def updateCache(itemId: String, updatedAdditionalInformation: AdditionalInformationData)(

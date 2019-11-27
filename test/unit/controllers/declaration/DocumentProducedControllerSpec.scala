@@ -228,10 +228,10 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
         val removeAction = (Remove.toString, "0")
 
-        val result = controller.saveForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(removeAction))
+        val result = await(controller.saveForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(removeAction)))
 
-        status(result) mustBe OK
-        verify(mockDocumentProducedPage, times(1)).apply(refEq(Mode.Normal), any(), any(), any())(any(), any())
+        result mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, itemId)
       }
     }
   }

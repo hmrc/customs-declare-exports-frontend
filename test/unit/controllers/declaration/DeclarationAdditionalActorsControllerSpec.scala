@@ -199,7 +199,8 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
         val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(removeForm))
 
-        status(result) must be(OK)
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage(Mode.Normal)
       }
     }
   }

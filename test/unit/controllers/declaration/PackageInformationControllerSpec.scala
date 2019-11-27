@@ -176,8 +176,8 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
           val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body: _*))
 
-          status(result) must be(SEE_OTHER)
-          redirectLocation(result) must be(Some(controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, itemId).url))
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, itemId)
         }
 
         "user clicked continue with item in a cache" in new SetUp {
@@ -205,8 +205,8 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
           val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body: _*))
 
-          status(result) must be(SEE_OTHER)
-          redirectLocation(result) must be(Some(controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, itemId).url))
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, itemId)
         }
 
         "user clicked continue with item in a cache" in new SetUp {

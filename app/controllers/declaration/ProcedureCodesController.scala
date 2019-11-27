@@ -120,7 +120,7 @@ class ProcedureCodesController @Inject()(
     val updatedCache =
       cachedData.copy(additionalProcedureCodes = remove(cachedData.additionalProcedureCodes, (_: String) == code))
     updateCache(itemId, updatedCache)
-      .map(_ => Ok(procedureCodesPage(mode, itemId, userInput.discardingErrors, updatedCache.additionalProcedureCodes)))
+      .map(_ => navigator.continueTo(routes.ProcedureCodesController.displayPage(mode, itemId)))
   }
 
   private def updateCache(itemId: String, updatedProcedureCodes: ProcedureCodesData)(
