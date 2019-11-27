@@ -803,10 +803,6 @@ supplementary.commodityMeasure.supplementaryUnits.item = 6/2 Supplementary units
 supplementary.commodityMeasure.supplementaryUnits.hint = Enter the quantity in the unit specified by the commodity code, for example 1,000 kWh
 supplementary.commodityMeasure.supplementaryUnits.error = Supplementary units should be a decimal value and should be less than or equal to 99999999999999.99 with 2 decimals
 
-
-
-
-
 declaration.summary.draft.ducr = DUCR
 declaration.summary.draft.createdDate = Date created
 declaration.summary.draft.expireDate = Expiry date
@@ -842,7 +838,6 @@ declaration.summary.countries.countryOfDestination = Destination country
 declaration.summary.locations = Locations involved in this export
 declaration.summary.locations.goodsLocationCode = Goods location code
 declaration.summary.locations.goodsLocationAddress = Goods location address
-declaration.summary.locations.officeOfPresentation = Office of presentation
 declaration.summary.locations.officeOfExit = Office of exit
 declaration.summary.locations.expressConsignment = Express consignment
 declaration.summary.transaction = About this transaction
@@ -853,7 +848,6 @@ declaration.summary.transaction.natureOfTransaction = Nature of transaction
 declaration.summary.transaction.previousDocuments = Documents related to this declaration
 declaration.summary.transaction.previousDocuments.type = Document type
 declaration.summary.transaction.previousDocuments.reference = Document reference
-
 declaration.summary.items = About the items
 declaration.summary.items.empty = You have not added any items yet
 declaration.summary.items.item.sequenceId = Declaration item {0}
@@ -880,107 +874,13 @@ declaration.summary.items.item.additionalInformation.information = Required info
 declaration.summary.items.item.supportingDocuments = Supporting documents
 declaration.summary.items.item.supportingDocuments.code = Additional document type
 declaration.summary.items.item.supportingDocuments.information = Additional document identifier
-
-
-
-
 declaration.summary.warehouse = Warehouse information
 declaration.summary.warehouse.id = Warehouse ID
 declaration.summary.warehouse.supervisingOffice = Customs supervising office
 declaration.summary.warehouse.inlandModeOfTransport = Inland mode of transport
-
 declaration.summary.transport = Transportation of the goods
 declaration.summary.transport.borderTransport = Transport type at the border
 declaration.summary.transport.transportReference = Transport reference
-
-
-
-
-supplementary.summary.back = Back to Submissions
-supplementary.summary.normal-header = Check your answers before making this declaration
-supplementary.summary.amend-header = Check your answers
-supplementary.summary.saved-header = Continue saved declaration
-supplementary.summary.noData.header = No information for supplementary declaration found
-supplementary.summary.noData.header.secondary = Please, go back and provide necessary information before proceeding
-supplementary.summary.declarationType.header = Declaration type
-supplementary.summary.declarationType.dispatchLocation = Dispatch location
-supplementary.summary.declarationType.supplementaryDeclarationType = Supplementary declaration type
-supplementary.summary.yourReferences.header = Your references
-supplementary.summary.yourReferences.ducr = DUCR
-supplementary.summary.yourReferences.lrn = LRN
-supplementary.summary.parties.header = Parties
-supplementary.summary.parties.exporterId = Exporter ID
-supplementary.summary.parties.exporterAddress = Exporter address
-supplementary.summary.parties.consigneeId = Consignee ID
-supplementary.summary.parties.consigneeAddress = Consignee address
-supplementary.summary.parties.declarantId = Declarant ID
-supplementary.summary.parties.declarantAddress = Declarant address
-supplementary.summary.parties.representativeId = Representative ID
-supplementary.summary.parties.representativeAddress = Representative address
-supplementary.summary.parties.representationType = Representation type
-supplementary.summary.parties.idStatusNumberAuthorisationCode = ID status number authorisation code
-supplementary.summary.parties.authorizedPartyEori = Authorised party EORI
-supplementary.summary.parties.additionalParties.header = Additional parties
-supplementary.summary.parties.additionalParties.id = Additional parties ID
-supplementary.summary.parties.additionalParties.type = Additional parties type
-declaration.summary.locations.header = Locations
-supplementary.summary.locations.dispatchCountry = Dispatch country
-supplementary.summary.locations.routingCountries = Routing countries
-supplementary.summary.locations.destinationCountry = Destination country
-supplementary.summary.locations.goodsExaminationAddress = Address where the goods will be examined
-supplementary.summary.locations.goodsExaminationLocationType = Location type where the goods will be examined
-supplementary.summary.locations.qualifierCode = Qualifier code
-supplementary.summary.locations.locationCode = Location code
-supplementary.summary.locations.additionalIdentifier = Additional identifier
-supplementary.summary.locations.procedureCode = Procedure code
-supplementary.summary.locations.additionalProcedureCodes = Additional procedure codes
-supplementary.summary.locations.warehouseId = Warehouse ID
-supplementary.summary.locations.inlandModeOfTransportCode = Inland mode of transport code
-supplementary.summary.locations.supervisingCustomsOffice = Supervising customs office
-supplementary.summary.locations.officeOfExit = Office of exit
-supplementary.summary.transport.header = Transport
-supplementary.summary.transport.inlandTransportMode = Inland transport mode
-supplementary.summary.transport.borderTransportMode = Transport mode at the border
-supplementary.summary.transport.meansOfTransportOnDepartureType = Transport on departure type
-supplementary.summary.transport.meansOfTransportOnDepartureId = Transport on departure ID
-supplementary.summary.transport.meansOfTransportCrossingBorderType = Transport crossing the border type
-supplementary.summary.transport.meansOfTransportCrossingBorderId = Transport crossing the border ID
-supplementary.summary.transport.meansOfTransportCrossingBorderNationality = Nationality of transport crossing the border
-supplementary.summary.transport.containerId = Container ID
-supplementary.summary.items.header = Item
-supplementary.summary.items.numberOfItems = Number of items
-supplementary.summary.items.amountInvoiced = Amount invoiced
-supplementary.summary.items.exchangeRate = Exchange rate used
-supplementary.summary.items.numberOfPackages = Number of packages
-supplementary.summary.items.transactionType = Transaction type
-supplementary.summary.items.itemNumber = Item number
-supplementary.summary.items.commodityCode = Combined Nomenclature Commodity Code
-supplementary.summary.items.taricAdditionalCodes = TARIC additional codes
-supplementary.summary.items.nationalAdditionalCode = National Additional Code
-supplementary.summary.items.tradeDescription = Trade description
-supplementary.summary.items.cusCode = CUS code
-supplementary.summary.items.statisticalValue = Statistical value
-supplementary.summary.items.itemPackaging = Item packaging
-supplementary.summary.items.packageType = Number of this package type
-supplementary.summary.items.supplementaryUnits = Supplementary units
-supplementary.summary.items.shippingMarks = Shipping marks
-supplementary.summary.items.netWeight = Net weight
-supplementary.summary.items.grossWeight = Gross weight
-supplementary.summary.previousDocuments.header = Previous documents
-supplementary.summary.previousDocuments.documentCategory = Category
-supplementary.summary.previousDocuments.documentType = Type
-supplementary.summary.previousDocuments.documentReference = Reference
-supplementary.summary.previousDocuments.goodsItemIdentifier = Goods item ID
-supplementary.summary.additionalInformation.header = Additional information
-supplementary.summary.additionalInformation.code = Code
-supplementary.summary.additionalInformation.description = Description
-supplementary.summary.additionalDocumentation.header = Additional documentation
-supplementary.summary.additionalDocumentation.documentTypeCode = Type code
-supplementary.summary.additionalDocumentation.documentId = Identifier
-supplementary.summary.additionalDocumentation.documentPart = Document part
-supplementary.summary.additionalDocumentation.documentStatus = Status
-supplementary.summary.additionalDocumentation.documentStatusReason = Status reason
-supplementary.summary.additionalDocumentation.documentQuantity = Quantity
 
 supplementary.limit = You cannot add more items
 supplementary.duplication = You cannot add duplicated value
