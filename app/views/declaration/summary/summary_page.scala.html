@@ -28,9 +28,9 @@
 @(mode: Mode, declarationData: ExportsDeclaration, legalDeclarationForm: Form[LegalDeclaration])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @titleMsg = @{mode match {
-    case Mode.Normal => Title("supplementary.summary.normal-header")
-    case Mode.Amend => Title("supplementary.summary.amend-header")
-    case Mode.Draft => Title("supplementary.summary.saved-header")
+    case Mode.Normal => Title("declaration.summary.normal-header")
+    case Mode.Amend => Title("declaration.summary.amend-header")
+    case Mode.Draft => Title("declaration.summary.saved-header")
     }
 }
 
