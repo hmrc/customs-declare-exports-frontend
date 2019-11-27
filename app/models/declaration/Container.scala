@@ -15,6 +15,7 @@
  */
 
 package models.declaration
+
 import play.api.libs.json.{Json, OFormat}
 
 case class Container(id: String, seals: Seq[forms.declaration.Seal])

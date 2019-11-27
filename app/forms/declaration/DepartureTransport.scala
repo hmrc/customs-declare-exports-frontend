@@ -23,7 +23,24 @@ import play.api.data.Forms.{mapping, optional, text}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator.{isContainedIn, noLongerThan, _}
 
-case class DepartureTransport(borderModeOfTransportCode: String, meansOfTransportOnDepartureType: String, meansOfTransportOnDepartureIDNumber: String)
+case class DepartureTransport(
+  borderModeOfTransportCode: String,
+  meansOfTransportOnDepartureType: String,
+  meansOfTransportOnDepartureIDNumber: String
+) {
+
+  def extractModeValue: String = borderModeOfTransportCode match {
+    case Maritime                    => "Sea transport"
+    case Rail                        => "Rail transport"
+    case Road                        => "Road transport"
+    case Air                         => "Air transport"
+    case PostalConsignment           => "Postal or Mail"
+    case FixedTransportInstallations => "Fixed transport installations"
+    case InlandWaterway              => "Inland waterway transport"
+    case Unknown                     => "Mode unknown, for example own propulsion"
+    case _                           => "Incorrect"
+  }
+}
 
 object DepartureTransport {
   val formId = "BorderTransport"

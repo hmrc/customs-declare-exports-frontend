@@ -22,11 +22,35 @@
     @components.summary_list(Some(messages("declaration.summary.transport"))) {
         @components.table_row("border-transport", HtmlTableRow(
             label = messages("declaration.summary.transport.borderTransport"),
-            value = declarationData.departureTransport.map(_.borderModeOfTransportCode).getOrElse("")
+            value = declarationData.departureTransport.map(_.extractModeValue).getOrElse("")
         ))
         @components.table_row("transport-reference", HtmlTableRow(
             label = messages("declaration.summary.transport.transportReference"),
             value = declarationData.departureTransport.map(_.meansOfTransportOnDepartureIDNumber).getOrElse("")
         ))
+        @components.table_row("active-transport-nationality", HtmlTableRow(
+            label = messages("declaration.summary.transport.activeTransportNationality"),
+            value = declarationData.borderTransport.flatMap(_.meansOfTransportCrossingTheBorderNationality).getOrElse("")
+        ))
+        @components.table_row("active-transport-type", HtmlTableRow(
+            label = messages("declaration.summary.transport.activeTransportType"),
+            value = declarationData.borderTransport.map(_.extractModeValue).getOrElse("")
+        ))
+        @components.table_row("active-transport-reference", HtmlTableRow(
+            label = messages("declaration.summary.transport.activeTransportReference"),
+            value = declarationData.borderTransport.map(_.meansOfTransportCrossingTheBorderIDNumber).getOrElse("")
+        ))
+        @components.table_row("transport-payment", HtmlTableRow(
+            label = messages("declaration.summary.transport.payment"),
+            value = declarationData.transportInformation.flatMap(_.transportPayment.flatMap(_.extractPaymentType)).getOrElse("")
+        ))
+        @components.table_row("containers", HtmlTableRow(
+            label = messages("declaration.summary.transport.containers"),
+            value = declarationData.transportInformation.map(_.hasContainers).getOrElse("")
+        ))
+
+
+
+        @containers(declarationData.transportInformation.map(_.containers).getOrElse(Seq.empty))
     }
 </div>

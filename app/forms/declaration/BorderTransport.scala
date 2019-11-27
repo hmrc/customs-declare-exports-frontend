@@ -15,6 +15,7 @@
  */
 
 package forms.declaration
+
 import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import forms.declaration.TransportCodes._
@@ -29,7 +30,20 @@ case class BorderTransport(
   meansOfTransportCrossingTheBorderNationality: Option[String],
   meansOfTransportCrossingTheBorderType: String,
   meansOfTransportCrossingTheBorderIDNumber: String
-)
+) {
+
+  def extractModeValue: String = meansOfTransportCrossingTheBorderType match {
+    case IMOShipIDNumber            => "Ship IMO number"
+    case NameOfVessel               => "Ship name"
+    case WagonNumber                => "Train"
+    case VehicleRegistrationNumber  => "Vehicle registration"
+    case IATAFlightNumber           => "Flight number"
+    case AircraftRegistrationNumber => "Aircraft number"
+    case EuropeanVesselIDNumber     => "European vessel number (ENI)"
+    case NameOfInlandWaterwayVessel => "Inland vessel's name"
+    case _                          => "Incorrect"
+  }
+}
 
 object BorderTransport extends DeclarationPage {
 

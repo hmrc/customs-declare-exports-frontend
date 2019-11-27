@@ -796,6 +796,9 @@ supplementary.commodityMeasure.supplementaryUnits.item = 6/2 Supplementary units
 supplementary.commodityMeasure.supplementaryUnits.hint = Enter the quantity in the unit specified by the commodity code, for example 1,000 kWh
 supplementary.commodityMeasure.supplementaryUnits.error = Supplementary units should be a decimal value and should be less than or equal to 99999999999999.99 with 2 decimals
 
+declaration.summary.normal-header = Check your answers before making this declaration
+declaration.summary.amend-header = Check your answers
+declaration.summary.saved-header = No information for supplementary declaration found
 declaration.summary.draft.ducr = DUCR
 declaration.summary.draft.createdDate = Date created
 declaration.summary.draft.expireDate = Expiry date
@@ -874,6 +877,14 @@ declaration.summary.warehouse.inlandModeOfTransport = Inland mode of transport
 declaration.summary.transport = Transportation of the goods
 declaration.summary.transport.borderTransport = Transport type at the border
 declaration.summary.transport.transportReference = Transport reference
+declaration.summary.transport.activeTransportNationality = Active means of transport nationality
+declaration.summary.transport.activeTransportType = Active means of transport type
+declaration.summary.transport.activeTransportReference = Active means of transport reference
+declaration.summary.transport.payment = Method of payment for transport
+declaration.summary.transport.containers = Goods in a container
+declaration.summary.container = Container information
+declaration.summary.container.id = Container ID
+declaration.summary.container.securitySeals = Security seals
 
 supplementary.limit = You cannot add more items
 supplementary.duplication = You cannot add duplicated value
