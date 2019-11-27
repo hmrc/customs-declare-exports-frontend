@@ -15,10 +15,11 @@
  *@
 
 @import forms.declaration.Document
+@import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 @import services.DocumentType
 
-@(documents: Seq[Document])(implicit messages: Messages)
+@(documents: Seq[Document])(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
 @if(documents.isEmpty) {
     @components.table_row("previous-documents", HtmlTableRow(

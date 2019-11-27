@@ -25,7 +25,7 @@
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, declarationData: ExportsDeclaration, legalDeclarationForm: Form[LegalDeclaration])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(mode: Mode, declarationData: ExportsDeclaration, legalDeclarationForm: Form[LegalDeclaration])(implicit request: JourneyRequest[AnyContent], messages: Messages, appConfig: AppConfig)
 
 @titleMsg = @{mode match {
     case Mode.Normal => Title("declaration.summary.normal-header")

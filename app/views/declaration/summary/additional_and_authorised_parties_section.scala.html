@@ -15,9 +15,10 @@
  *@
 
 @import forms.declaration.{DeclarationAdditionalActors, DeclarationHolder}
+@import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 
-@(additionalActors: Seq[DeclarationAdditionalActors], holders: Seq[DeclarationHolder])(implicit messages: Messages)
+@(additionalActors: Seq[DeclarationAdditionalActors], holders: Seq[DeclarationHolder])(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
 @if(additionalActors.isEmpty) {
     @components.table_row("additionalActors", HtmlTableRow(

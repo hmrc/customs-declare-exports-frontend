@@ -15,9 +15,10 @@
  *@
 
 @import models.declaration.ExportItem
+@import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 
-@(item: ExportItem)(implicit messages: Messages)
+@(item: ExportItem)(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
 <div id="item-@item.sequenceId">
     <caption class="heading-small">@messages("declaration.summary.items.item.sequenceId", item.sequenceId)</caption>

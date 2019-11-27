@@ -17,9 +17,10 @@
 @import forms.declaration.AdditionalFiscalReference
 @import forms.declaration.FiscalInformation
 @import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers.yes
+@import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 
-@(itemId: Int, fiscalInformation: Option[FiscalInformation], additionalFiscalReferences: Seq[AdditionalFiscalReference])(implicit messages: Messages)
+@(itemId: Int, fiscalInformation: Option[FiscalInformation], additionalFiscalReferences: Seq[AdditionalFiscalReference])(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
 @components.table_row(s"item-$itemId-onwardSupplyRelief-label", HtmlTableRow(
     label = messages("declaration.summary.items.item.onwardSupplyRelief"),

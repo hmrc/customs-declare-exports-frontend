@@ -15,9 +15,10 @@
  *@
 
 @import forms.declaration.additionaldocuments.DocumentsProduced
+@import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 
-@(supportingDocuments: Seq[DocumentsProduced])(implicit messages: Messages)
+@(supportingDocuments: Seq[DocumentsProduced])(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
 @if(supportingDocuments.nonEmpty){
     <caption class="heading-small">@messages("declaration.summary.items.item.supportingDocuments")</caption>
