@@ -23,7 +23,6 @@ import forms.common.Date
 import forms.declaration.ConsignmentReferencesSpec._
 import forms.declaration.DeclarantDetailsSpec._
 import forms.declaration.DeclarationAdditionalActorsSpec.correctAdditionalActors1
-import forms.declaration.DispatchLocation.AllowedDispatchLocations
 import forms.declaration.DispatchLocationSpec._
 import forms.declaration.ExporterDetailsSpec._
 import forms.declaration.GoodsLocationTestData._
@@ -32,137 +31,18 @@ import forms.declaration.OfficeOfExitSupplementarySpec._
 import forms.declaration.RepresentativeDetailsSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
 import forms.declaration._
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
 import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
 import forms.{CancelDeclaration, Lrn}
 import models.declaration.DeclarationAdditionalActorsDataSpec._
 import models.declaration.DeclarationHoldersDataSpec._
-import models.declaration.dectype.DeclarationTypeSupplementarySpec._
 import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.{Amount, GovernmentAgencyGoodsItem}
 import models.{DeclarationStatus, DeclarationType, ExportsDeclaration}
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json._
 
-class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
-  import SupplementaryDeclarationTestData._
+object ExportDeclarationTestData {
 
-  "Method apply(CacheMap)" should {
-    "return SupplementaryDeclarationDataSpec" which {
-
-      "has all fields equal to None" when {
-        "CacheMap is empty" in {
-          val supplementaryDeclarationData = SupplementaryDeclarationData(declaration)
-
-          supplementaryDeclarationData.declarationType mustNot be(defined)
-          supplementaryDeclarationData.consignmentReferences mustNot be(defined)
-          supplementaryDeclarationData.parties mustNot be(defined)
-          supplementaryDeclarationData.locations mustNot be(defined)
-          supplementaryDeclarationData.containers must be(Seq.empty)
-        }
-      }
-
-      "has properly formatted DeclarationType field" when {
-        "CacheMap contains record for DispatchLocation only" in {
-          val supplementaryDeclarationData =
-            SupplementaryDeclarationData(declaration.copy(dispatchLocation = Some(correctDispatchLocation)))
-
-          supplementaryDeclarationData.declarationType must be(defined)
-          supplementaryDeclarationData.declarationType.get.dispatchLocation.get.dispatchLocation must equal(AllowedDispatchLocations.OutsideEU)
-          supplementaryDeclarationData.declarationType.get.additionalDeclarationType mustNot be(defined)
-        }
-
-        "CacheMap contains record for AdditionalDeclarationType only" in {
-          val supplementaryDeclarationData =
-            SupplementaryDeclarationData(declaration.copy(additionalDeclarationType = Some(correctAdditionalDeclarationTypeSupplementaryDec)))
-
-          supplementaryDeclarationData.declarationType must be(defined)
-          supplementaryDeclarationData.declarationType.get.dispatchLocation mustNot be(defined)
-          supplementaryDeclarationData.declarationType.get.additionalDeclarationType.get.toString must equal(
-            AllowedAdditionalDeclarationTypes.Simplified
-          )
-        }
-
-        "CacheMap contains records for both DispatchLocation and AdditionalDeclarationType" in {
-          val supplementaryDeclarationData = SupplementaryDeclarationData(
-            declaration.copy(
-              additionalDeclarationType = Some(correctAdditionalDeclarationTypeSupplementaryDec),
-              dispatchLocation = Some(correctDispatchLocation)
-            )
-          )
-
-          supplementaryDeclarationData.declarationType must be(defined)
-          supplementaryDeclarationData.declarationType.get.dispatchLocation.get.dispatchLocation must equal(AllowedDispatchLocations.OutsideEU)
-          supplementaryDeclarationData.declarationType.get.additionalDeclarationType.get.toString must equal(
-            AllowedAdditionalDeclarationTypes.Simplified
-          )
-        }
-
-        "CacheMap contains records for neither DispatchLocation nor AdditionalDeclarationType" in {
-          val supplementaryDeclarationData = SupplementaryDeclarationData(declaration)
-
-          supplementaryDeclarationData.declarationType mustNot be(defined)
-        }
-      }
-
-      "has properly mapped fields" when {
-        "CacheMap contains single record" in {
-          val consignmentReferences = Json.fromJson[ConsignmentReferences](correctConsignmentReferencesJSON).get
-
-          val supplementaryDeclarationData =
-            SupplementaryDeclarationData(declaration.copy(consignmentReferences = Some(correctConsignmentReferences)))
-
-          supplementaryDeclarationData.consignmentReferences must be(defined)
-          supplementaryDeclarationData.consignmentReferences.get.lrn must equal(consignmentReferences.lrn)
-          supplementaryDeclarationData.consignmentReferences.get.ducr must equal(consignmentReferences.ducr)
-        }
-
-        "CacheMap contains 2 records" in {
-          val consignmentReferences = Json.fromJson[ConsignmentReferences](correctConsignmentReferencesJSON).get
-          val exporterDetails = Json.fromJson[ExporterDetails](correctExporterDetailsJSON).get
-
-          val supplementaryDeclarationData = SupplementaryDeclarationData(
-            declaration
-              .copy(consignmentReferences = Some(correctConsignmentReferences), parties = Parties(exporterDetails = Some(correctExporterDetails)))
-          )
-
-          supplementaryDeclarationData.consignmentReferences must be(defined)
-          supplementaryDeclarationData.consignmentReferences.get.lrn must equal(consignmentReferences.lrn)
-          supplementaryDeclarationData.consignmentReferences.get.ducr must equal(consignmentReferences.ducr)
-          supplementaryDeclarationData.parties must be(defined)
-          supplementaryDeclarationData.parties.get.exporterDetails must be(defined)
-          supplementaryDeclarationData.parties.get.exporterDetails.get must equal(exporterDetails)
-        }
-
-        "CacheMap contains all records" in {
-          val supplementaryDeclarationData = SupplementaryDeclarationData(allRecords)
-
-          supplementaryDeclarationData.declarationType must be(defined)
-          supplementaryDeclarationData.consignmentReferences must be(defined)
-          supplementaryDeclarationData.parties must be(defined)
-          supplementaryDeclarationData.parties.get.exporterDetails must be(defined)
-          supplementaryDeclarationData.parties.get.declarantDetails must be(defined)
-          supplementaryDeclarationData.parties.get.representativeDetails must be(defined)
-          supplementaryDeclarationData.parties.get.declarationAdditionalActorsData must be(defined)
-
-          supplementaryDeclarationData.parties.get.declarationHoldersData must be(defined)
-          supplementaryDeclarationData.locations must be(defined)
-          supplementaryDeclarationData.locations.get.originationCountry must be(defined)
-          supplementaryDeclarationData.locations.get.destinationCountry must be(defined)
-          supplementaryDeclarationData.locations.get.routingCountries mustNot be(empty)
-          supplementaryDeclarationData.locations.get.goodsLocation must be(defined)
-          supplementaryDeclarationData.locations.get.warehouseIdentification must be(defined)
-          supplementaryDeclarationData.locations.get.officeOfExit must be(defined)
-          supplementaryDeclarationData.containers mustNot be(Seq.empty)
-        }
-      }
-
-    }
-  }
-}
-
-object TransportInformationContainerSpec {
   private val containerId = "id"
 
   val correctTransportInformationContainerData = Seq(Container(id = "M1l3s", Seq.empty))
@@ -171,10 +51,7 @@ object TransportInformationContainerSpec {
   val incorrectTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("123456789012345678")))
   val emptyTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("")))
   val correctTransportInformationContainerDataJSON: JsValue = Json.toJson(correctTransportInformationContainerData)
-}
 
-object SupplementaryDeclarationTestData {
-  import TransportInformationContainerSpec._
   lazy val allRecords = declaration.copy(
     dispatchLocation = Some(correctDispatchLocation),
     additionalDeclarationType = Some(correctAdditionalDeclarationTypeSupplementaryDec),
@@ -272,34 +149,6 @@ object SupplementaryDeclarationTestData {
   lazy val correctStatisticalValueAmountJSON: JsValue =
     JsObject(Map("currencyId" -> JsString("GBP"), "value" -> JsString("44")))
   lazy val correctPackageInformationJSON: JsValue = JsArray(Seq(correctPackageInformationJSON))
-  lazy val supplementaryDeclarationDataAllValues = SupplementaryDeclarationData(
-    declarationType = Some(correctDeclarationType),
-    consignmentReferences = Some(correctConsignmentReferences),
-    parties = Some(
-      Parties(
-        exporterDetails = Some(correctExporterDetails),
-        declarantDetails = Some(correctDeclarantDetails),
-        representativeDetails = Some(correctRepresentativeDetails),
-        declarationAdditionalActorsData = Some(correctAdditionalActorsData),
-        declarationHoldersData = Some(correctDeclarationHoldersData)
-      )
-    ),
-    locations = Some(
-      Locations(
-        originationCountry = Some("GB"),
-        destinationCountry = Some("PL"),
-        hasRoutingCountries = Some(true),
-        routingCountries = Seq("FR"),
-        goodsLocation = Some(correctGoodsLocation),
-        officeOfExit = Some(correctOfficeOfExit),
-        warehouseIdentification = Some(WarehouseIdentificationSpec.correctWarehouseDetails),
-        supervisingCustomsOffice = Some(SupervisingCustomsOfficeSpec.correctSupervisingCustomsOffice),
-        inlandModeOfTransportCode = Some(InlandModeOfTransportCodeSpec.correctInlandModeOfTransportCode)
-      )
-    ),
-    containers = correctTransportInformationContainerData,
-    items = Some(Items(totalNumberOfItems = Some(correctTotalNumberOfItemsDecimalValues), natureOfTransaction = Some(correctNatureOfTransaction)))
-  )
   val date = Date(Some(12), Some(12), Some(2019))
   val correctPackingJSON: JsValue = JsObject(
     Map("sequenceNumeric" -> JsString("0"), "marksNumbersId" -> JsString("wefdsf"), "typeCode" -> JsString("22"))
