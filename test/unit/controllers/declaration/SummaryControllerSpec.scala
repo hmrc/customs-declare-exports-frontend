@@ -19,7 +19,6 @@ package unit.controllers.declaration
 import config.AppConfig
 import controllers.declaration.SummaryController
 import forms.declaration.LegalDeclaration
-import models.declaration.SupplementaryDeclarationData
 import models.requests.ExportsSessionKeys
 import models.responses.FlashKeys
 import models.{ExportsDeclaration, Mode}
@@ -68,8 +67,8 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
     super.afterEach()
   }
 
-  def theResponseData: SupplementaryDeclarationData = {
-    val captor = ArgumentCaptor.forClass(classOf[SupplementaryDeclarationData])
+  def theResponseData: ExportsDeclaration = {
+    val captor = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
     verify(mockSummaryPage).apply(any(), captor.capture(), any())(any(), any(), any())
     captor.getValue
   }
