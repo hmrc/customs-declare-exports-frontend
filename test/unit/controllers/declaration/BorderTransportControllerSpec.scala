@@ -17,10 +17,11 @@
 package unit.controllers.declaration
 
 import controllers.declaration.BorderTransportController
-import forms.declaration.BorderTransport
 import forms.declaration.TransportCodes.IMOShipIDNumber
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.libs.json.Json
+import models.{DeclarationType, Mode}
+import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -47,39 +48,64 @@ class BorderTransportControllerSpec extends ControllerSpec {
     when(borderTransportPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
+  private def formData(transportType: String, reference: String, nationality: String) =
+    JsObject(
+      Map(
+        "borderTransportType" -> JsString(transportType),
+        "borderTransportReference_IMOShipIDNumber" -> JsString(reference),
+        "borderTransportReference_nameOfVessel" -> JsString(reference),
+        "borderTransportReference_wagonNumber" -> JsString(reference),
+        "borderTransportReference_vehicleRegistrationNumber" -> JsString(reference),
+        "borderTransportReference_IATAFlightNumber" -> JsString(reference),
+        "borderTransportReference_aircraftRegistrationNumber" -> JsString(reference),
+        "borderTransportReference_europeanVesselIDNumber" -> JsString(reference),
+        "borderTransportReference_nameOfInlandWaterwayVessel" -> JsString(reference),
+        "borderTransportNationality" -> JsString(nationality)
+      )
+    )
+
   def borderTransportController(declarationFactory: () => ExportsDeclaration): Unit = {
-    "return 200 (OK)" when {
 
-      "display page method is invoked and cache is empty" in {
-        withNewCaching(declarationFactory())
+    "Transport Details Controller" should {
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+      "return 200 (OK)" when {
 
-        status(result) must be(OK)
+        "display page method is invoked and cache is empty" in {
+          withNewCaching(declarationFactory())
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) must be(OK)
+        }
+
+        "display page method is invoked and cache is not empty" in {
+          withNewCaching(aDeclarationAfter(declarationFactory(), withBorderTransport()))
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) must be(OK)
+        }
       }
 
-      "display page method is invoked and cache is not empty" in {
-        withNewCaching(aDeclarationAfter(declarationFactory(), withBorderTransport()))
+      "return 400 (BAD_REQUEST)" when {
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        "form contains incorrect values" in {
+          withNewCaching(declarationFactory())
 
-        status(result) must be(OK)
+          val incorrectForm = formData("incorrect", "", "")
+
+          val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+
+          status(result) must be(BAD_REQUEST)
+        }
+      }
+
+      "return 303 (SEE_OTHER)" when {
+        "valid options are selected" in {
+          val correctForm = formData(IMOShipIDNumber, "SHIP001", "United Kingdom")
+        }
       }
     }
-
-    "return 400 (BAD_REQUEST)" when {
-
-      "form contains incorrect values" in {
-        withNewCaching(declarationFactory())
-
-        val incorrectForm = Json.toJson(BorderTransport(Some("incorrect"), "", ""))
-
-        val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
-
-        status(result) must be(BAD_REQUEST)
-      }
-    }
-
   }
 
   "Transport Details Controller" when {
@@ -91,8 +117,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
         "valid options are selected" in {
           withNewCaching(declarationFactory())
 
-          val correctForm =
-            Json.toJson(BorderTransport(Some("United Kingdom"), IMOShipIDNumber, "correct"))
+          val correctForm = formData(IMOShipIDNumber, "SHIP001", "United Kingdom")
 
           val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
 
@@ -111,8 +136,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
         "valid options are selected" in {
           withNewCaching(declarationFactory())
 
-          val correctForm =
-            Json.toJson(BorderTransport(Some("United Kingdom"), IMOShipIDNumber, "correct"))
+          val correctForm = formData(IMOShipIDNumber, "SHIP001", "United Kingdom")
 
           val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
 
@@ -131,8 +155,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
         "valid options are selected" in {
           withNewCaching(declarationFactory())
 
-          val correctForm =
-            Json.toJson(BorderTransport(Some("United Kingdom"), IMOShipIDNumber, "correct"))
+          val correctForm = formData(IMOShipIDNumber, "SHIP001", "United Kingdom")
 
           val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
 

@@ -14,12 +14,23 @@
  * limitations under the License.
  *@
 
-@import models.Mode
-@import models.Mode._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@* mode is not currently used but will be once we add "change field" links to the summary page *@
-@(href: Call, mode: Mode = Mode.Normal, backMessage: String = "site.back")(implicit messages: Messages)
+@this(govukErrorSummary: GovukErrorSummary)
 
-<div class="js-visible">
-    <a id="back-link" class="link-back" href="@href">@messages(backMessage)</a>
-</div>
+@(errors: Seq[FormError], errorFieldName: Option[String] = None)(implicit messages: Messages)
+
+@errorList = @{errors.map { error =>
+    ErrorLink(
+        href = Some(s"#${errorFieldName.getOrElse(error.key)}"),
+        content = Text(messages(error.message, error.args: _*))
+    )
+}}
+
+@if(errorList.nonEmpty) {
+    @govukErrorSummary(
+        ErrorSummary(
+            errorList = errorList,
+            title = Text(messages("error.summary.title"))
+        ))
+}

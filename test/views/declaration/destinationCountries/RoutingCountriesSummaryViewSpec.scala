@@ -69,7 +69,7 @@ class RoutingCountriesSummaryViewSpec extends UnitViewSpec with Stubs with Expor
 
     "display back button that links to 'Destination country' page" in {
 
-      val backButton = view.getElementById("link-back")
+      val backButton = view.getElementById("back-link")
 
       backButton.text() mustBe messages("site.back")
       backButton must haveHref(routes.DestinationCountryController.displayPage())

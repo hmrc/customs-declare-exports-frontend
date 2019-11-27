@@ -68,13 +68,13 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
 
   def onSimplified(f: JourneyRequest[_] => Unit): Unit = {
     "on Supplementary journey render view" that {
-      f(UnitViewSpec.supplementaryRequest)
+      f(UnitViewSpec.simplifiedRequest)
     }
   }
 
   def onSupplementary(f: JourneyRequest[_] => Unit): Unit = {
     "on Simplified journey render view" that {
-      f(UnitViewSpec.simplifiedRequest)
+      f(UnitViewSpec.supplementaryRequest)
     }
   }
 }

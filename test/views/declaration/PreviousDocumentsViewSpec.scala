@@ -112,26 +112,26 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
     "display 'Back' button that links to 'Transaction Type' page" when {
       "on the Standard journey" in {
 
-        val backButton = view.getElementById("link-back")
+        val backButton = view.getElementById("back-link")
 
         backButton.text() must be("site.back")
-        backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.NatureOfTransactionController.displayPage(Mode.Normal))
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.NatureOfTransactionController.displayPage(Mode.Normal))
       }
 
       "on the Supplementary journey" in {
 
-        val backButton = createView(declarationType = DeclarationType.SUPPLEMENTARY).getElementById("link-back")
+        val backButton = createView(declarationType = DeclarationType.SUPPLEMENTARY).getElementById("back-link")
 
         backButton.text() must be("site.back")
-        backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.NatureOfTransactionController.displayPage(Mode.Normal))
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.NatureOfTransactionController.displayPage(Mode.Normal))
       }
 
       "on the Simplified journey" in {
 
-        val backButton = createView(declarationType = DeclarationType.SIMPLIFIED).getElementById("link-back")
+        val backButton = createView(declarationType = DeclarationType.SIMPLIFIED).getElementById("back-link")
 
         backButton.text() must be("site.back")
-        backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Normal))
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Normal))
       }
     }
 

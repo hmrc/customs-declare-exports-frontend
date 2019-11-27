@@ -109,7 +109,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with ConsigneeDetailsMessage
 
     "display 'Back' button that links to 'Exporter Details' page" in {
 
-      val backButton = createView().getElementById("link-back")
+      val backButton = createView().getElementById("back-link")
 
       backButton.text() mustBe messages(backCaption)
       backButton.attr("href") mustBe routes.ExporterDetailsController.displayPage().url

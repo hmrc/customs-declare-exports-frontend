@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.10
+// @version      1.12
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -11,13 +11,19 @@
 
 (function() {
     'use strict';
-    document.getElementById('global-header').appendChild(createQuickButton());
+    document.getElementsByTagName("body")[0].appendChild(createQuickButton());
 })();
 
 function createQuickButton() {
     let button = document.createElement('button');
     button.id="quickSubmit";
-    button.classList.add('button-start');
+    if (!!document.getElementById('global-header')) {
+        button.classList.add('button-start');
+    } else {
+        button.classList.add('govuk-button');
+    }
+    button.style.position = "absolute"
+    button.style.top = "50px"
     button.innerHTML = 'Quick Submit';
     button.onclick = () => completePage();
     return button;
@@ -61,7 +67,7 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if(currentPageIs("/customs-declare-exports/choice")){
-        selectRadioOption(document.getElementById("value"), 0);
+        document.getElementById("CRT").checked = true
         document.getElementsByClassName('button')[0].click()
     }
     if(currentPageIs("/customs-declare-exports/declaration/declaration-choice")){
@@ -279,9 +285,9 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/border-transport')) {
-        selectFromAutoPredict(document.getElementById('meansOfTransportCrossingTheBorderNationality-container'), "United Kingdom");
-        selectRadioOption(document.getElementById('meansOfTransportCrossingTheBorderType'), 1);
-        document.getElementById("meansOfTransportCrossingTheBorderIDNumber").value = 'BOAT1';
+        selectFromAutoPredict(document.getElementById('borderTransportNationality-container'), "United Kingdom");
+        document.getElementById('nameOfVessel').checked = 'checked';
+        document.getElementById("borderTransportReference_nameOfVessel").value = 'Boaty McBoatface';
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/transport-payment')) {

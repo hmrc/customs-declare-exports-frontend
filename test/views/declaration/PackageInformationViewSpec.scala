@@ -61,20 +61,20 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
 
     "display back link for Standard declaration" in {
       val view = createView(decType = DeclarationType.STANDARD)
-      view must containElementWithID("link-back")
-      view.getElementById("link-back") must haveHref(controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, "itemId"))
+      view must containElementWithID("back-link")
+      view.getElementById("back-link") must haveHref(controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, "itemId"))
     }
 
     "display back link for Supplementary declaration" in {
       val view = createView(decType = DeclarationType.SUPPLEMENTARY)
-      view must containElementWithID("link-back")
-      view.getElementById("link-back") must haveHref(controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, "itemId"))
+      view must containElementWithID("back-link")
+      view.getElementById("back-link") must haveHref(controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, "itemId"))
     }
 
     "display back link for Simplified declaration" in {
       val view = createView(decType = DeclarationType.SIMPLIFIED)
-      view must containElementWithID("link-back")
-      view.getElementById("link-back") must haveHref(controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, "itemId"))
+      view must containElementWithID("back-link")
+      view.getElementById("back-link") must haveHref(controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, "itemId"))
     }
   }
 

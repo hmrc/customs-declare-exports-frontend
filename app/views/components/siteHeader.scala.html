@@ -14,12 +14,18 @@
  * limitations under the License.
  *@
 
-@import models.Mode
-@import models.Mode._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukHeader
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.header.Header
 
-@* mode is not currently used but will be once we add "change field" links to the summary page *@
-@(href: Call, mode: Mode = Mode.Normal, backMessage: String = "site.back")(implicit messages: Messages)
+@this(govukHeader: GovukHeader)
 
-<div class="js-visible">
-    <a id="back-link" class="link-back" href="@href">@messages(backMessage)</a>
-</div>
+@()(implicit request: Request[_], messages: Messages)
+
+@govukHeader(Header(
+    homepageUrl = None,
+    serviceName = Some(messages("site.service_name")),
+    serviceUrl = None,
+    containerClasses = Some("govuk-width-container"),
+    navigation = None
+))

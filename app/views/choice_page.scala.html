@@ -14,40 +14,65 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
-@import controllers.routes._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import forms.Choice.AllowedChoiceValues._
+@import config.AppConfig
 @import views.Title
-@import views.components.inputs.RadioOption
 
-@this(main_template: views.html.main_template, appConfig: AppConfig)
+@this(  govukLayout: views.html.gds_design_system_main_template,
+govukButton: GovukButton,
+govukRadios: GovukRadios,
+errorSummary: components.errorSummary,
+formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+appConfig: AppConfig)
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
-    @main_template(
-        title = Title("declaration.choice.description")
-    ) {
+@govukLayout(
+    title = Title("declaration.choice.description"),
+    backButtonTitle = messages("site.back"),
+    backButtonUrl = controllers.routes.StartController.displayStartPage().url) {
 
-        @components.back_link(controllers.routes.StartController.displayStartPage())
+    @formHelper(action = routes.ChoiceController.submitChoice(), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-        @helper.form(ChoiceController.submitChoice(), 'autoComplete -> "off") {
-            @helper.CSRF.formField
-
-            @components.error_summary(form.errors)
-
-            @components.heading(title = messages("declaration.choice.description"))
-
-            @components.fields.field_radio(
-                field = form("value"),
-                legend = "",
-                inputs = Seq(
-                    RadioOption("Create declaration", CreateDec, messages(s"declaration.choice.$CreateDec")),
-                    RadioOption("Submissions", Submissions, messages(s"declaration.choice.$Submissions")),
-                    RadioOption("Continue declaration", ContinueDec, messages(s"declaration.choice.$ContinueDec")),
-                    RadioOption("Cancel declaration", CancelDec, messages(s"declaration.choice.$CancelDec"))
-                ).filter(radioOption => appConfig.availableJourneys().contains(radioOption.value))
-            )
-
-            @components.submit_button()
-        }
+        @govukRadios(Radios(
+            name = "value",
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("declaration.choice.description")),
+                    isPageHeading = true,
+                    classes = "govuk-fieldset__legend--xl"
+                ))
+            )),
+            items = Seq(
+                RadioItem(
+                    id = Some(CreateDec.toString),
+                    value = Some(CreateDec.toString),
+                    content = Text(messages(s"declaration.choice.$CreateDec")),
+                    checked = form("value").value.contains(CreateDec.toString)
+                ),
+                RadioItem(
+                    id = Some(Submissions.toString),
+                    value = Some(Submissions.toString),
+                    content = Text(messages(s"declaration.choice.$Submissions")),
+                    checked = form("value").value.contains(Submissions.toString)
+                ),
+                RadioItem(
+                    id = Some(ContinueDec.toString),
+                    value = Some(ContinueDec.toString),
+                    content = Text(messages(s"declaration.choice.$ContinueDec")),
+                    checked = form("value").value.contains(ContinueDec.toString)
+                ),
+                RadioItem(
+                    id = Some(CancelDec.toString),
+                    value = Some(CancelDec.toString),
+                    content = Text(messages(s"declaration.choice.$CancelDec")),
+                    checked = form("value").value.contains(CancelDec.toString)
+                )
+            ).filter(radioOption => appConfig.availableJourneys().contains(radioOption.value.get)),
+            errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
+        @govukButton(Button(content = Text(messages("site.save_and_continue"))))
     }
+}

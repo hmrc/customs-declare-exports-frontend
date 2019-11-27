@@ -72,7 +72,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
     "display 'Back' button that links to 'Dispatch Location' page" when {
 
       "used for Standard Declaration journey" in {
-        val backButton = createView(formStandard, DeclarationType.STANDARD).getElementById("link-back")
+        val backButton = createView(formStandard, DeclarationType.STANDARD).getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
         backButton.attr("href") mustBe routes.DispatchLocationController.displayPage().url
@@ -80,14 +80,14 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
 
       "used for Supplementary Declaration journey" in {
 
-        val backButton = createView(formSupplementary, DeclarationType.SUPPLEMENTARY).getElementById("link-back")
+        val backButton = createView(formSupplementary, DeclarationType.SUPPLEMENTARY).getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
         backButton.attr("href") mustBe routes.DispatchLocationController.displayPage().url
       }
 
       "used for Simplified Declaration journey" in {
-        val backButton = createView(formSimplified, DeclarationType.SIMPLIFIED).getElementById("link-back")
+        val backButton = createView(formSimplified, DeclarationType.SIMPLIFIED).getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
         backButton.attr("href") mustBe routes.DispatchLocationController.displayPage().url

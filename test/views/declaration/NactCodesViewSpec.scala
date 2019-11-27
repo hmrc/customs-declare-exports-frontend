@@ -70,9 +70,9 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
     }
 
     "display 'Back' button that links to 'TARIC Code' page" in {
-      val backButton = view.getElementById("link-back")
+      val backButton = view.getElementById("back-link")
 
-      backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, itemId))
+      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, itemId))
     }
 
     "display 'Save and continue' button on page" in {

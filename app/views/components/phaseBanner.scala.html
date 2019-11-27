@@ -14,12 +14,19 @@
  * limitations under the License.
  *@
 
-@import models.Mode
-@import models.Mode._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@* mode is not currently used but will be once we add "change field" links to the summary page *@
-@(href: Call, mode: Mode = Mode.Normal, backMessage: String = "site.back")(implicit messages: Messages)
+@this(govukPhaseBanner: GovukPhaseBanner)
 
-<div class="js-visible">
-    <a id="back-link" class="link-back" href="@href">@messages(backMessage)</a>
-</div>
+@(phase: String)(implicit request: Request[_], messages: Messages)
+
+
+@link = {<a href="todo">@messages("feedback.link")</a>}
+@feedbackBanner = {
+ @Html(messages("feedback", link))
+}
+
+@govukPhaseBanner(PhaseBanner(
+    tag = Some(Tag(content = Text(phase))),
+    content = HtmlContent(feedbackBanner)
+))

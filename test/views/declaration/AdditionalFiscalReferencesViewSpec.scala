@@ -64,7 +64,7 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Ad
 
     "display 'Back' button to Fiscal Information page" in {
 
-      val backButton = view.getElementById("link-back")
+      val backButton = view.getElementById("back-link")
 
       backButton.text() mustBe backCaption
       backButton must haveHref(controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId, fastForward = false))

@@ -42,13 +42,13 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestDa
     val view = createView()
 
     "display page title" in {
-      view.getElementById("title").text() must be(realMessages("declaration.transportInfo.containers.first.title"))
+      view.getElementById("title").text() must be(realMessages("declaration.transportInformation.containers.first.title"))
     }
 
     "display 'Back' button that links to 'transport payment' page" in {
-      val backLinkContainer = view.getElementById("link-back")
+      val backLinkContainer = view.getElementById("back-link")
 
-      backLinkContainer.getElementById("link-back") must haveHref(controllers.declaration.routes.TransportPaymentController.displayPage(Mode.Normal))
+      backLinkContainer.getElementById("back-link") must haveHref(controllers.declaration.routes.TransportPaymentController.displayPage(Mode.Normal))
     }
 
     "display 'Save and continue' button on page" in {
@@ -67,7 +67,7 @@ class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestDa
     "display errors" in {
       val view = createView(ContainerFirst.form().fillAndValidate(ContainerFirst(Some("12345678901234567890"))))
 
-      view.select("#error-message-id-input").text() must be(realMessages("declaration.transportInfo.containerId.error.length"))
+      view.select("#error-message-id-input").text() must be(realMessages("declaration.transportInformation.containerId.error.length"))
     }
 
   }

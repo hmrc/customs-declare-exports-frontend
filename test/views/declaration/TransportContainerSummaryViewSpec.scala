@@ -47,7 +47,7 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestDat
     val view = createView()
 
     "display page title" in {
-      view.getElementById("title").text() must be(realMessages("declaration.transportInfo.containers.title"))
+      view.getElementById("title").text() must be(realMessages("declaration.transportInformation.containers.title"))
     }
 
     "display summary of container with seals" in {
@@ -70,10 +70,10 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestDat
     }
 
     "display 'Back' button that links to 'transport payment' page" in {
-      val backLinkContainer = view.getElementById("link-back")
+      val backLinkContainer = view.getElementById("back-link")
 
       backLinkContainer.text() must be(realMessages(backCaption))
-      backLinkContainer.getElementById("link-back") must haveHref(controllers.declaration.routes.TransportPaymentController.displayPage(Mode.Normal))
+      backLinkContainer.getElementById("back-link") must haveHref(controllers.declaration.routes.TransportPaymentController.displayPage(Mode.Normal))
     }
 
     "display 'Save and continue' button on page" in {

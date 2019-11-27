@@ -27,14 +27,14 @@
 @(mode: Mode, form: Form[ContainerFirst])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
-    title = Title("declaration.transportInfo.containers.first.title")
+    title = Title("declaration.transportInformation.containers.first.title")
 ) {
 
     @components.back_link(Navigator.backLink(ContainerFirst, mode))
 
     @components.error_summary(form.errors)
 
-    @components.heading(title = messages("declaration.transportInfo.containers.first.title"))
+    @components.heading(title = messages("declaration.transportInformation.containers.first.title"))
 
     @helper.form(TransportContainerController.submitAddContainer(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
@@ -46,16 +46,16 @@
                 RadioOption(
                     id = "code_yes",
                     value = HasContainerAnswers.yes,
-                    message = messages("declaration.transportInfo.containers.yes"),
+                    message = messages("declaration.transportInformation.containers.yes"),
                     revealComponent = Some(components.fields.field_text(
                         field = form(containerIdKey),
-                        label = Some(messages("declaration.transportInfo.containerId"))
+                        label = Some(messages("declaration.transportInformation.containerId"))
                     ))
                 ),
                 RadioOption(
                     id = "code_no",
                     value = HasContainerAnswers.no,
-                    message = messages("declaration.transportInfo.containers.no")
+                    message = messages("declaration.transportInformation.containers.no")
                 )
             )
         )

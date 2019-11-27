@@ -60,7 +60,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
       "user is during Standard journey" in {
 
         val standardView = destinationCountryPage(Mode.Normal, form)(journeyRequest(DeclarationType.STANDARD), messages)
-        val backButton = standardView.getElementById("link-back")
+        val backButton = standardView.getElementById("back-link")
 
         backButton.text() mustBe messages("site.back")
         backButton must haveHref(routes.OriginationCountryController.displayPage())
@@ -69,7 +69,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
       "user is during Supplementary journey" in {
 
         val supplementaryView = destinationCountryPage(Mode.Normal, form)(journeyRequest(DeclarationType.SUPPLEMENTARY), messages)
-        val backButton = supplementaryView.getElementById("link-back")
+        val backButton = supplementaryView.getElementById("back-link")
 
         backButton.text() mustBe messages("site.back")
         backButton must haveHref(routes.OriginationCountryController.displayPage())
@@ -81,7 +81,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
       "user is during Simplified journey" in {
 
         val simplifiedView = destinationCountryPage(Mode.Normal, form)(journeyRequest(DeclarationType.SIMPLIFIED), messages)
-        val backButton = simplifiedView.getElementById("link-back")
+        val backButton = simplifiedView.getElementById("back-link")
 
         backButton.text() mustBe messages("site.back")
         backButton must haveHref(routes.DeclarationHolderController.displayPage())

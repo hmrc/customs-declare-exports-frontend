@@ -59,8 +59,8 @@ class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
     }
 
     "display 'Back' button that links to 'Package Information' page" in {
-      val backButton = view.getElementById("link-back")
-      backButton.getElementById("link-back") must haveHref(
+      val backButton = view.getElementById("back-link")
+      backButton.getElementById("back-link") must haveHref(
         controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId)
       )
     }

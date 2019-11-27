@@ -46,7 +46,7 @@ class TransportContainerRemoveViewSpec extends UnitViewSpec with Stubs with Must
     val view = createView()
 
     "display page title" in {
-      view.getElementById("title").text() must be(realMessages("declaration.transportInfo.container.remove.title"))
+      view.getElementById("title").text() must be(realMessages("declaration.transportInformation.container.remove.title"))
     }
 
     "display container and seal to remove" in {
@@ -55,10 +55,10 @@ class TransportContainerRemoveViewSpec extends UnitViewSpec with Stubs with Must
     }
 
     "display 'Back' button that links to 'container summary' page" in {
-      val backLinkContainer = view.getElementById("link-back")
+      val backLinkContainer = view.getElementById("back-link")
 
       backLinkContainer must containText(realMessages(backCaption))
-      backLinkContainer.getElementById("link-back") must haveHref(
+      backLinkContainer.getElementById("back-link") must haveHref(
         controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
       )
     }

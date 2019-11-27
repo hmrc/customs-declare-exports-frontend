@@ -137,7 +137,7 @@ class DocumentsProducedViewSpec
 
     "display 'Back' button that links to 'Additional Information' page" in {
 
-      val backButton = view.getElementById("link-back")
+      val backButton = view.getElementById("back-link")
 
       backButton.text() mustBe messagesKey(backCaption)
       backButton must haveHref(routes.AdditionalInformationController.displayPage(mode, itemId))

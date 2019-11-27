@@ -71,24 +71,22 @@ class TransportPaymentViewSpec extends UnitViewSpec with ExportsTestData with St
       val view = createView(request)
 
       "display 'Back' button that links to 'border transport' page" in {
-        val backLinkContainer = view.getElementById("link-back")
+        val backLinkContainer = view.getElementById("back-link")
 
         backLinkContainer must containText(realMessages(backCaption))
-        backLinkContainer.getElementById("link-back") must haveHref(controllers.declaration.routes.BorderTransportController.displayPage(Mode.Normal))
+        backLinkContainer.getElementById("back-link") must haveHref(controllers.declaration.routes.BorderTransportController.displayPage(Mode.Normal))
       }
-
     }
 
     onSimplified { request =>
       val view = createView(request)
 
-      "display 'Back' button that links to 'border transport' page" in {
-        val backLinkContainer = view.getElementById("link-back")
+      "display 'Back' button that links to 'warehouse identification' page" in {
+        val backLinkContainer = view.getElementById("back-link")
 
         backLinkContainer must containText(realMessages(backCaption))
-        backLinkContainer.getElementById("link-back") must haveHref(controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal))
+        backLinkContainer.getElementById("back-link") must haveHref(controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal))
       }
-
     }
   }
 }

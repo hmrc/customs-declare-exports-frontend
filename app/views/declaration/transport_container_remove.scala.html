@@ -29,14 +29,14 @@
 
 
 @main_template(
-    title = Title("declaration.transportInfo.container.remove.title")
+    title = Title("declaration.transportInformation.container.remove.title")
 ) {
 
     @components.back_link(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode), mode)
 
     @components.error_summary(form.errors)
 
-    @components.heading(title = messages("declaration.transportInfo.container.remove.title"))
+    @components.heading(title = messages("declaration.transportInformation.container.remove.title"))
 
     @helper.form(TransportContainerController.submitContainerRemove(mode, container.id), 'autoComplete -> "off") {
         @helper.CSRF.formField
@@ -45,7 +45,7 @@
             <table id="container-table">
                 <thead>
                     <tr>
-                        <th>@messages("declaration.transportInfo.containerId.title")</th>
+                        <th>@messages("declaration.transportInformation.containerId.title")</th>
                         <th>@messages("standard.seal.summary.heading")</th>
                     </tr>
                 </thead>
