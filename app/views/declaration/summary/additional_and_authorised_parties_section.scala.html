@@ -34,29 +34,29 @@
 }
 
 @if(additionalActors.nonEmpty) {
-    <caption class="heading-small">@messages("declaration.summary.parties.additional")</caption>
+    <caption class="heading-small" id="additionalActors">@messages("declaration.summary.parties.additional")</caption>
     <tr class="section">
-        <td class="bold">@messages("declaration.summary.parties.additional.type")</td>
-        <td class="bold">@messages("declaration.summary.parties.additional.eori")</td>
+        <td class="bold" id="additionalActors-type">@messages("declaration.summary.parties.additional.type")</td>
+        <td class="bold" id="additionalActors-eori">@messages("declaration.summary.parties.additional.eori")</td>
     </tr>
-    @additionalActors.map { actor =>
+    @additionalActors.zipWithIndex.map { case (actor, index) =>
         <tr class="section">
-            <td>@actor.extractPartyType</td>
-            <td>@actor.eori.getOrElse("")</td>
+            <td id="additionalActor-type-@index">@actor.extractPartyType</td>
+            <td id="additionalActor-eori-@index">@actor.eori.getOrElse("")</td>
         </tr>
     }
 }
 
 @if(holders.nonEmpty) {
-    <caption class="heading-small">@messages("declaration.summary.parties.holders")</caption>
+    <caption class="heading-small" id="holders">@messages("declaration.summary.parties.holders")</caption>
     <tr class="section">
-        <td class="bold">@messages("declaration.summary.parties.holders.type")</td>
-        <td class="bold">@messages("declaration.summary.parties.holders.eori")</td>
+        <td class="bold" id="holders-type">@messages("declaration.summary.parties.holders.type")</td>
+        <td class="bold" id="holders-eori">@messages("declaration.summary.parties.holders.eori")</td>
     </tr>
-    @holders.map { holder =>
+    @holders.zipWithIndex.map { case (holder, index) =>
         <tr class="section">
-            <td>@holder.authorisationTypeCode.getOrElse("")</td>
-            <td>@holder.eori.getOrElse("")</td>
+            <td id="holder-type-@index">@holder.authorisationTypeCode.getOrElse("")</td>
+            <td id="holder-eori-@index">@holder.eori.getOrElse("")</td>
         </tr>
     }
 }

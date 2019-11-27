@@ -21,15 +21,15 @@
 @(supportingDocuments: Seq[DocumentsProduced])(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
 @if(supportingDocuments.nonEmpty){
-    <caption class="heading-small">@messages("declaration.summary.items.item.supportingDocuments")</caption>
+    <caption class="heading-small" id="supporting-documents">@messages("declaration.summary.items.item.supportingDocuments")</caption>
     <tr class="section">
-        <td class="bold">@messages("declaration.summary.items.item.supportingDocuments.code")</td>
-        <td class="bold">@messages("declaration.summary.items.item.supportingDocuments.information")</td>
+        <td class="bold" id="supporting-documents-code">@messages("declaration.summary.items.item.supportingDocuments.code")</td>
+        <td class="bold" id="supporting-documents-information">@messages("declaration.summary.items.item.supportingDocuments.information")</td>
     </tr>
-    @supportingDocuments.map { document =>
+    @supportingDocuments.zipWithIndex.map { case (document, index) =>
         <tr class="section">
-            <td>@document.documentTypeCode.getOrElse("")</td>
-            <td>@document.documentIdentifier.getOrElse("")</td>
+            <td id="supporting-document-@index-code">@document.documentTypeCode.getOrElse("")</td>
+            <td id="supporting-document-@index-information">@document.documentIdentifier.getOrElse("")</td>
         </tr>
     }
 }

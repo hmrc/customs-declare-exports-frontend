@@ -49,9 +49,6 @@
             label = messages("declaration.summary.transport.containers"),
             value = declarationData.transportInformation.map(_.hasContainers).getOrElse("")
         ))
-
-
-
         @containers(declarationData.transportInformation.map(_.containers).getOrElse(Seq.empty))
     }
 </div>

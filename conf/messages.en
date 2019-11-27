@@ -803,6 +803,10 @@ supplementary.commodityMeasure.supplementaryUnits.item = 6/2 Supplementary units
 supplementary.commodityMeasure.supplementaryUnits.hint = Enter the quantity in the unit specified by the commodity code, for example 1,000 kWh
 supplementary.commodityMeasure.supplementaryUnits.error = Supplementary units should be a decimal value and should be less than or equal to 99999999999999.99 with 2 decimals
 
+declaration.summary.locations.header = Locations
+supplementary.summary.parties.header = Parties
+supplementary.summary.yourReferences.header = Your references
+
 declaration.summary.normal-header = Check your answers before making this declaration
 declaration.summary.amend-header = Check your answers
 declaration.summary.saved-header = No information for supplementary declaration found

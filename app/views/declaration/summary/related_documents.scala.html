@@ -29,15 +29,15 @@
 }
 
 @if(documents.nonEmpty) {
-    <caption class="heading-small">@messages("declaration.summary.transaction.previousDocuments")</caption>
+    <caption class="heading-small" id="previous-documents">@messages("declaration.summary.transaction.previousDocuments")</caption>
             <tr class="section">
-                <td class="bold">@messages("declaration.summary.transaction.previousDocuments.type")</td>
-                <td class="bold">@messages("declaration.summary.transaction.previousDocuments.reference")</td>
+                <td class="bold" id="previous-documents-type">@messages("declaration.summary.transaction.previousDocuments.type")</td>
+                <td class="bold" id="previous-documents-reference">@messages("declaration.summary.transaction.previousDocuments.reference")</td>
             </tr>
-    @documents.map { document =>
+    @documents.zipWithIndex.map { case (document, index) =>
         <tr class="section">
-            <td>@DocumentType.retrieveDocumentTypeFromCode(document.documentType).asText</td>
-            <td>@document.documentReference</td>
+            <td id="previous-document-@index-type">@DocumentType.retrieveDocumentTypeFromCode(document.documentType).asText</td>
+            <td id="previous-document-@index-reference">@document.documentReference</td>
         </tr>
     }
 }

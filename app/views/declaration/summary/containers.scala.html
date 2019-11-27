@@ -21,15 +21,15 @@
 @(containers: Seq[Container])(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
 @if(containers.nonEmpty){
-    <caption class="heading-small">@messages("declaration.summary.container")</caption>
+    <caption class="heading-small" id="container">@messages("declaration.summary.container")</caption>
     <tr class="section">
-        <td class="bold">@messages("declaration.summary.container.id")</td>
-        <td class="bold">@messages("declaration.summary.container.securitySeals")</td>
+        <td class="bold" id="container-id">@messages("declaration.summary.container.id")</td>
+        <td class="bold" id="container-seals">@messages("declaration.summary.container.securitySeals")</td>
     </tr>
-    @containers.map { container =>
+    @containers.zipWithIndex.map { case (container, index) =>
         <tr class="section">
-            <td>@container.id</td>
-            <td>@container.seals.map(_.id).mkString(", ")</td>
+            <td id="container-@index-id">@container.id</td>
+            <td id="container-@index-seals">@container.seals.map(_.id).mkString(", ")</td>
         </tr>
     }
 }
