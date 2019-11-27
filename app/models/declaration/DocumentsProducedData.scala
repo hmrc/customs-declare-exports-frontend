@@ -15,6 +15,7 @@
  */
 
 package models.declaration
+
 import forms.declaration.additionaldocuments.DocumentsProduced
 import play.api.libs.json.Json
 

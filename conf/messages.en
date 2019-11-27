@@ -847,6 +847,35 @@ declaration.summary.transaction.previousDocuments = Documents related to this de
 declaration.summary.transaction.previousDocuments.type = Document type
 declaration.summary.transaction.previousDocuments.reference = Document reference
 
+declaration.summary.items = About the items
+declaration.summary.items.empty = You have not added any items yet
+declaration.summary.items.item.sequenceId = Declaration item {0}
+declaration.summary.items.item.procedureCode = Procedure code
+declaration.summary.items.item.onwardSupplyRelief = Onward Supply Relief (OSR)
+declaration.summary.items.item.VATdetails = VAT details
+declaration.summary.items.item.commodityCode = Commodity code
+declaration.summary.items.item.goodsDescription = Goods description
+declaration.summary.items.item.unDangerousGoodsCode = UN dangerous goods code
+declaration.summary.items.item.cusCode = CUS code
+declaration.summary.items.item.taricAdditionalCodes = TARIC additional code(s)
+declaration.summary.items.item.nationalAdditionalCodes = National additional code(s)
+declaration.summary.items.item.itemValue = Item value
+declaration.summary.items.item.supplementaryUnits = Supplementary units
+declaration.summary.items.item.grossWeight = Gross Weight
+declaration.summary.items.item.netWeight = Net Weight
+declaration.summary.items.item.packageInformation = Package information
+declaration.summary.items.item.packageInformation.type = Package type
+declaration.summary.items.item.packageInformation.number = Number of package type
+declaration.summary.items.item.packageInformation.markings = Packaging markings
+declaration.summary.items.item.additionalInformation = Union and national codes
+declaration.summary.items.item.additionalInformation.code = Union or national code
+declaration.summary.items.item.additionalInformation.information = Required information
+declaration.summary.items.item.supportingDocuments = Supporting documents
+declaration.summary.items.item.supportingDocuments.code = Additional document type
+declaration.summary.items.item.supportingDocuments.information = Additional document identifier
+
+
+
 
 declaration.summary.warehouse = Warehouse information
 declaration.summary.warehouse.id = Warehouse ID
