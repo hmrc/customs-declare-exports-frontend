@@ -64,8 +64,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
       )
     )
 
-  def borderTransportController(declarationFactory: () => ExportsDeclaration): Unit = {
-
+  def borderTransportController(declarationFactory: () => ExportsDeclaration): Unit =
     "Transport Details Controller" should {
 
       "return 200 (OK)" when {
@@ -106,7 +105,6 @@ class BorderTransportControllerSpec extends ControllerSpec {
         }
       }
     }
-  }
 
   "Transport Details Controller" when {
     "we are on supplementary declaration journey" should {

@@ -85,7 +85,9 @@ class TransportPaymentViewSpec extends UnitViewSpec with ExportsTestData with St
         val backLinkContainer = view.getElementById("back-link")
 
         backLinkContainer must containText(realMessages(backCaption))
-        backLinkContainer.getElementById("back-link") must haveHref(controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal))
+        backLinkContainer.getElementById("back-link") must haveHref(
+          controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal)
+        )
       }
     }
   }

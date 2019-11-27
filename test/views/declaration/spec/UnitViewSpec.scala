@@ -48,35 +48,30 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
 
   def messagesKey(key: String): BeMatcher[String] = new MessagesKeyMatcher(key)
 
-  def onEveryDeclarationJourney(f: JourneyRequest[_] => Unit): Unit = {
+  def onEveryDeclarationJourney(f: JourneyRequest[_] => Unit): Unit =
     onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED)(f)
-  }
 
-  def onJourney(types: DeclarationType*)(f: JourneyRequest[_] => Unit): Unit = {
+  def onJourney(types: DeclarationType*)(f: JourneyRequest[_] => Unit): Unit =
     types.foreach {
-      case DeclarationType.STANDARD => onStandard(f)
+      case DeclarationType.STANDARD      => onStandard(f)
       case DeclarationType.SUPPLEMENTARY => onSupplementary(f)
-      case DeclarationType.SIMPLIFIED => onSimplified(f)
+      case DeclarationType.SIMPLIFIED    => onSimplified(f)
     }
-  }
 
-  def onStandard(f: JourneyRequest[_] => Unit): Unit = {
+  def onStandard(f: JourneyRequest[_] => Unit): Unit =
     "on Standard journey render view" that {
       f(UnitViewSpec.standardRequest)
     }
-  }
 
-  def onSimplified(f: JourneyRequest[_] => Unit): Unit = {
+  def onSimplified(f: JourneyRequest[_] => Unit): Unit =
     "on Supplementary journey render view" that {
       f(UnitViewSpec.simplifiedRequest)
     }
-  }
 
-  def onSupplementary(f: JourneyRequest[_] => Unit): Unit = {
+  def onSupplementary(f: JourneyRequest[_] => Unit): Unit =
     "on Simplified journey render view" that {
       f(UnitViewSpec.supplementaryRequest)
     }
-  }
 }
 
 class MessagesKeyMatcher(key: String) extends BeMatcher[String] {
