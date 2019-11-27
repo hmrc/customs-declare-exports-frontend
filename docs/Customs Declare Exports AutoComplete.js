@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.10
+// @version      1.11
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -279,9 +279,9 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/border-transport')) {
-        selectFromAutoPredict(document.getElementById('meansOfTransportCrossingTheBorderNationality-container'), "United Kingdom");
-        selectRadioOption(document.getElementById('meansOfTransportCrossingTheBorderType'), 1);
-        document.getElementById("meansOfTransportCrossingTheBorderIDNumber").value = 'BOAT1';
+        selectFromAutoPredict(document.getElementById('borderTransportNationality-container'), "United Kingdom");
+        document.getElementById('nameOfVessel').checked = 'checked';
+        document.getElementById("borderTransportReference_nameOfVessel").value = 'Boaty McBoatface';
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/transport-payment')) {

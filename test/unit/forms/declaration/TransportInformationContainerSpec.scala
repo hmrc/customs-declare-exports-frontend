@@ -57,7 +57,7 @@ class TransportInformationContainerSpec extends WordSpec with MustMatchers {
 
         result.errors.length must be(1)
         error.key must be("id")
-        error.message must be("declaration.transportInfo.containerId.empty")
+        error.message must be("declaration.transportInformation.containerId.empty")
       }
 
       "id field is not alphanumeric" in {
@@ -68,7 +68,7 @@ class TransportInformationContainerSpec extends WordSpec with MustMatchers {
         val error = result.errors.head
 
         error.key must be("id")
-        error.message must be("declaration.transportInfo.containerId.error.alphanumeric")
+        error.message must be("declaration.transportInformation.containerId.error.alphanumeric")
       }
 
       "id field is longer than allowed" in {
@@ -80,7 +80,7 @@ class TransportInformationContainerSpec extends WordSpec with MustMatchers {
         val error = result.errors.head
 
         error.key must be("id")
-        error.message must be("declaration.transportInfo.containerId.error.length")
+        error.message must be("declaration.transportInformation.containerId.error.length")
       }
     }
   }

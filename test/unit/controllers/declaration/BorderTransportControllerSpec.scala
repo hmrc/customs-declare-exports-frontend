@@ -17,10 +17,9 @@
 package unit.controllers.declaration
 
 import controllers.declaration.BorderTransportController
-import forms.declaration.BorderTransport
 import forms.declaration.TransportCodes.IMOShipIDNumber
 import models.{DeclarationType, Mode}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import views.html.declaration.border_transport
@@ -42,6 +41,22 @@ class BorderTransportControllerSpec extends ControllerSpec {
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
   }
+
+  private def formData(transportType: String, reference: String, nationality: String) =
+    JsObject(
+      Map(
+        "borderTransportType" -> JsString(transportType),
+        "borderTransportReference_IMOShipIDNumber" -> JsString(reference),
+        "borderTransportReference_nameOfVessel" -> JsString(reference),
+        "borderTransportReference_wagonNumber" -> JsString(reference),
+        "borderTransportReference_vehicleRegistrationNumber" -> JsString(reference),
+        "borderTransportReference_IATAFlightNumber" -> JsString(reference),
+        "borderTransportReference_aircraftRegistrationNumber" -> JsString(reference),
+        "borderTransportReference_europeanVesselIDNumber" -> JsString(reference),
+        "borderTransportReference_nameOfInlandWaterwayVessel" -> JsString(reference),
+        "borderTransportNationality" -> JsString(nationality)
+      )
+    )
 
   "Transport Details Controller" should {
 
@@ -68,7 +83,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
       "form contains incorrect values" in new SetUp {
 
-        val incorrectForm = Json.toJson(BorderTransport(Some("incorrect"), "", ""))
+        val incorrectForm = formData("incorrect", "", "")
 
         val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
 
@@ -78,8 +93,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
     "return 303 (SEE_OTHER)" when {
       "valid options are selected" in new SetUp {
-        val correctForm =
-          Json.toJson(BorderTransport(Some("United Kingdom"), IMOShipIDNumber, "correct"))
+        val correctForm = formData(IMOShipIDNumber, "SHIP001", "United Kingdom")
 
         val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
 

@@ -31,8 +31,18 @@
 
 @(mode: Mode, form: Form[BorderTransport])(implicit request: JourneyRequest[_], messages: Messages)
 
+@radioOption(id: String, value: String) = @{RadioOption(
+    id = id,
+    value = value,
+    message = messages(s"declaration.transportInformation.meansOfTransport.$id"),
+    revealComponent = Some(components.fields.field_text(
+        field = form(s"borderTransportReference_$id"),
+        label = Some(messages(s"declaration.transportInformation.meansOfTransport.$id.label"))
+    )
+))}
+
 @main_template(
-    title = Title("supplementary.transportInfo.active.title")
+    title = Title("declaration.transportInformation.active.title")
 ) {
 
     @components.back_link(Navigator.backLink(BorderTransport, mode))
@@ -42,11 +52,27 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading(title = messages("supplementary.transportInfo.active.title"))
+        @components.heading(title = messages("declaration.transportInformation.active.title"))
+
+        @components.fields.field_radio(
+            field = form("borderTransportType"),
+            legend = messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.header"),
+            hint = Some(messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.header.hint")),
+            inputs = Seq(
+                radioOption("IMOShipIDNumber",IMOShipIDNumber),
+                radioOption("nameOfVessel",NameOfVessel),
+                radioOption("wagonNumber", WagonNumber),
+                radioOption("vehicleRegistrationNumber", VehicleRegistrationNumber),
+                radioOption("IATAFlightNumber", IATAFlightNumber),
+                radioOption("aircraftRegistrationNumber", AircraftRegistrationNumber),
+                radioOption("europeanVesselIDNumber", EuropeanVesselIDNumber),
+                radioOption("nameOfInlandWaterwayVessel", NameOfInlandWaterwayVessel)
+            )
+        )
 
         @components.fields.field_autocomplete(
-            form("meansOfTransportCrossingTheBorderNationality"),
-            "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.header",
+            form("borderTransportNationality"),
+            "declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header",
             Some("form-label-bold"),
             None,
             messages("declaration.destinationCountries.countriesOfRouting.empty"),
@@ -59,28 +85,6 @@
             'ariaowns -> "suggestions-list",
             'ariaactivedescendant -> "true",
             'otherErrorFields -> Seq("countryCode")
-        )
-
-        @components.fields.field_radio(
-            field = form("meansOfTransportCrossingTheBorderType"),
-            legend = messages("supplementary.transportInfo.meansOfTransport.crossingTheBorder.header"),
-            hint = Some(messages("supplementary.transportInfo.meansOfTransport.crossingTheBorder.header.hint")),
-            inputs = Seq(
-                RadioOption("Border_IMOShipIDNumber", IMOShipIDNumber, messages("supplementary.transportInfo.meansOfTransport.IMOShipIDNumber")),
-                RadioOption("Border_NameOfVessel", NameOfVessel, messages("supplementary.transportInfo.meansOfTransport.nameOfVessel")),
-                RadioOption("Border_WagonNumber", WagonNumber, messages("supplementary.transportInfo.meansOfTransport.wagonNumber")),
-                RadioOption("Border_VehicleRegistrationNumber", VehicleRegistrationNumber, messages("supplementary.transportInfo.meansOfTransport.vehicleRegistrationNumber")),
-                RadioOption("Border_IATAFlightNumber", IATAFlightNumber, messages("supplementary.transportInfo.meansOfTransport.IATAFlightNumber")),
-                RadioOption("Border_AircraftRegistrationNumber", AircraftRegistrationNumber, messages("supplementary.transportInfo.meansOfTransport.aircraftRegistrationNumber")),
-                RadioOption("Border_EuropeanVesselIDNumber", EuropeanVesselIDNumber, messages("supplementary.transportInfo.meansOfTransport.europeanVesselIDNumber")),
-                RadioOption("Border_NameOfInlandWaterwayVessel", NameOfInlandWaterwayVessel, messages("supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel"))
-            )
-        )
-        @components.fields.field_text(
-            field = form("meansOfTransportCrossingTheBorderIDNumber"),
-            hint = Some(messages("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.hint")),
-            label = Some(messages("supplementary.transportInfo.meansOfTransport.CrossingTheBorder.IDNumber.header")),
-            labelClass = Some("bold-small")
         )
 
         @components.submit_button()

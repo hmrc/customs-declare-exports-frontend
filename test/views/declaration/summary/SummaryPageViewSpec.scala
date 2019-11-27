@@ -211,8 +211,8 @@ class SummaryPageViewSpec extends WordSpec with MustMatchers with ExportsDeclara
 
     "have correct transport info" in {
 
-      summaryPage must include("declaration.transportInfo.containers.title")
-      summaryPage must include("declaration.transportInfo.containerId.title")
+      summaryPage must include("declaration.transportInformation.containers.title")
+      summaryPage must include("declaration.transportInformation.containerId.title")
     }
 
     "return no data page" when {

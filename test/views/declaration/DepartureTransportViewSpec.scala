@@ -47,39 +47,39 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
 
     "have defined translation for used labels" in {
       val messages = realMessagesApi.preferred(request)
-      messages must haveTranslationFor("supplementary.transportInfo.title")
-      messages must haveTranslationFor("supplementary.transportInfo.title")
+      messages must haveTranslationFor("declaration.transportInformation.title")
+      messages must haveTranslationFor("declaration.transportInformation.title")
       messages must haveTranslationFor(backCaption)
       messages must haveTranslationFor(saveAndContinueCaption)
       messages must haveTranslationFor(saveAndReturnCaption)
-      messages must haveTranslationFor("supplementary.transportInfo.borderTransportMode.header.hint")
-      messages must haveTranslationFor("supplementary.transportInfo.borderTransportMode.header")
-      messages must haveTranslationFor("supplementary.transportInfo.transportMode.sea")
-      messages must haveTranslationFor("supplementary.transportInfo.transportMode.road")
-      messages must haveTranslationFor("supplementary.transportInfo.transportMode.rail")
-      messages must haveTranslationFor("supplementary.transportInfo.transportMode.air")
-      messages must haveTranslationFor("supplementary.transportInfo.transportMode.postalOrMail")
-      messages must haveTranslationFor("supplementary.transportInfo.transportMode.fixedTransportInstallations")
-      messages must haveTranslationFor("supplementary.transportInfo.transportMode.inlandWaterway")
-      messages must haveTranslationFor("supplementary.transportInfo.transportMode.unknown")
+      messages must haveTranslationFor("declaration.transportInformation.borderTransportMode.header.hint")
+      messages must haveTranslationFor("declaration.transportInformation.borderTransportMode.header")
+      messages must haveTranslationFor("declaration.transportInformation.transportMode.sea")
+      messages must haveTranslationFor("declaration.transportInformation.transportMode.road")
+      messages must haveTranslationFor("declaration.transportInformation.transportMode.rail")
+      messages must haveTranslationFor("declaration.transportInformation.transportMode.air")
+      messages must haveTranslationFor("declaration.transportInformation.transportMode.postalOrMail")
+      messages must haveTranslationFor("declaration.transportInformation.transportMode.fixedTransportInstallations")
+      messages must haveTranslationFor("declaration.transportInformation.transportMode.inlandWaterway")
+      messages must haveTranslationFor("declaration.transportInformation.transportMode.unknown")
 
-      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.departure.header")
-      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.departure.header.hint")
-      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.IMOShipIDNumber")
-      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.nameOfVessel")
-      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.wagonNumber")
-      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.vehicleRegistrationNumber")
-      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.IATAFlightNumber")
-      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.aircraftRegistrationNumber")
-      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.europeanVesselIDNumber")
-      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.departure.header")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.departure.header.hint")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IMOShipIDNumber")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.nameOfVessel")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.wagonNumber")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IATAFlightNumber")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.europeanVesselIDNumber")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel")
 
-      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.reference.header")
-      messages must haveTranslationFor("supplementary.transportInfo.meansOfTransport.reference.hint")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.reference.header")
+      messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.reference.hint")
     }
 
     "display page title" in {
-      view.getElementById("title").text() mustBe messages("supplementary.transportInfo.title")
+      view.getElementById("title").text() mustBe messages("declaration.transportInformation.title")
     }
 
     "display 'Back' button that links to 'Inland Transport Details' page" in {
@@ -105,53 +105,53 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
       "have correct hint" in {
         section
           .getElementsByClass("form-hint")
-          .text() mustBe messages("supplementary.transportInfo.borderTransportMode.header.hint")
+          .text() mustBe messages("declaration.transportInformation.borderTransportMode.header.hint")
       }
 
       "have correct legend" in {
         section
           .getElementsByTag("legend")
-          .text() must startWith(messages("supplementary.transportInfo.borderTransportMode.header"))
+          .text() must startWith(messages("declaration.transportInformation.borderTransportMode.header"))
       }
 
       "have 'Sea' option" in {
-        section.getElementById("Border_Sea-label").text() mustBe "supplementary.transportInfo.transportMode.sea"
+        section.getElementById("Border_Sea-label").text() mustBe "declaration.transportInformation.transportMode.sea"
       }
 
       "have 'Road' option" in {
-        section.getElementById("Border_Road-label").text() mustBe "supplementary.transportInfo.transportMode.road"
+        section.getElementById("Border_Road-label").text() mustBe "declaration.transportInformation.transportMode.road"
       }
 
       "have 'Rail' option" in {
-        section.getElementById("Border_Rail-label").text() mustBe "supplementary.transportInfo.transportMode.rail"
+        section.getElementById("Border_Rail-label").text() mustBe "declaration.transportInformation.transportMode.rail"
       }
 
       "have 'Air' option" in {
-        section.getElementById("Border_Air-label").text() mustBe "supplementary.transportInfo.transportMode.air"
+        section.getElementById("Border_Air-label").text() mustBe "declaration.transportInformation.transportMode.air"
       }
 
       "have 'Postal or Mail' option" in {
         section
           .getElementById("Border_PostalOrMail-label")
-          .text() mustBe "supplementary.transportInfo.transportMode.postalOrMail"
+          .text() mustBe "declaration.transportInformation.transportMode.postalOrMail"
       }
 
       "have 'Fixed transport installations' option" in {
         section
           .getElementById("Border_FixedTransportInstallations-label")
-          .text() mustBe "supplementary.transportInfo.transportMode.fixedTransportInstallations"
+          .text() mustBe "declaration.transportInformation.transportMode.fixedTransportInstallations"
       }
 
       "have 'Inland waterway transport' option" in {
         section
           .getElementById("Border_InlandWaterway-label")
-          .text() mustBe "supplementary.transportInfo.transportMode.inlandWaterway"
+          .text() mustBe "declaration.transportInformation.transportMode.inlandWaterway"
       }
 
       "have 'Mode unknown' option" in {
         section
           .getElementById("Border_Unknown-label")
-          .text() mustBe "supplementary.transportInfo.transportMode.unknown"
+          .text() mustBe "declaration.transportInformation.transportMode.unknown"
       }
     }
 
@@ -162,61 +162,61 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
       "have label" in {
         section
           .getElementById("meansOfTransportOnDepartureType-label")
-          .text() mustBe "supplementary.transportInfo.meansOfTransport.departure.header"
+          .text() mustBe "declaration.transportInformation.meansOfTransport.departure.header"
       }
 
       "have hint" in {
         section
           .getElementById("meansOfTransportOnDepartureType-hint")
-          .text() mustBe "supplementary.transportInfo.meansOfTransport.departure.header.hint"
+          .text() mustBe "declaration.transportInformation.meansOfTransport.departure.header.hint"
       }
 
       "have 'Ship number' option" in {
         section
           .getElementById("Departure_IMOShipIDNumber-label")
-          .text() mustBe "supplementary.transportInfo.meansOfTransport.IMOShipIDNumber"
+          .text() mustBe "declaration.transportInformation.meansOfTransport.IMOShipIDNumber"
       }
 
       "have 'Name of vessel' option" in {
         section
           .getElementById("Departure_NameOfVessel-label")
-          .text() mustBe "supplementary.transportInfo.meansOfTransport.nameOfVessel"
+          .text() mustBe "declaration.transportInformation.meansOfTransport.nameOfVessel"
       }
 
       "have 'Vagon number' option" in {
         section
           .getElementById("Departure_WagonNumber-label")
-          .text() mustBe "supplementary.transportInfo.meansOfTransport.wagonNumber"
+          .text() mustBe "declaration.transportInformation.meansOfTransport.wagonNumber"
       }
 
       "have 'Vehice number' option" in {
         section
           .getElementById("Departure_VehicleRegistrationNumber-label")
-          .text() mustBe "supplementary.transportInfo.meansOfTransport.vehicleRegistrationNumber"
+          .text() mustBe "declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber"
       }
 
       "have 'flight number' option" in {
         section
           .getElementById("Departure_IATAFlightNumber-label")
-          .text() mustBe "supplementary.transportInfo.meansOfTransport.IATAFlightNumber"
+          .text() mustBe "declaration.transportInformation.meansOfTransport.IATAFlightNumber"
       }
 
       "have 'aircraft registration' option" in {
         section
           .getElementById("Departure_AircraftRegistrationNumber-label")
-          .text() mustBe "supplementary.transportInfo.meansOfTransport.aircraftRegistrationNumber"
+          .text() mustBe "declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber"
       }
 
       "have 'eni code' optopn" in {
         section
           .getElementById("Departure_EuropeanVesselIDNumber-label")
-          .text() mustBe "supplementary.transportInfo.meansOfTransport.europeanVesselIDNumber"
+          .text() mustBe "declaration.transportInformation.meansOfTransport.europeanVesselIDNumber"
       }
 
       "have 'inland waterway' option" in {
         section
           .getElementById("Departure_NameOfInlandWaterwayVessel-label")
-          .text() mustBe "supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel"
+          .text() mustBe "declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel"
       }
     }
 
@@ -224,12 +224,12 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
       "have label" in {
         view
           .getElementById("meansOfTransportOnDepartureIDNumber-label")
-          .text() mustBe "supplementary.transportInfo.meansOfTransport.reference.header"
+          .text() mustBe "declaration.transportInformation.meansOfTransport.reference.header"
       }
       "have hint" in {
         view
           .getElementById("meansOfTransportOnDepartureIDNumber-hint")
-          .text() mustBe "supplementary.transportInfo.meansOfTransport.reference.hint"
+          .text() mustBe "declaration.transportInformation.meansOfTransport.reference.hint"
       }
     }
   }

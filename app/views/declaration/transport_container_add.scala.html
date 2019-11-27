@@ -26,21 +26,21 @@
 @(mode: Mode, form: Form[ContainerAdd])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
-    title = Title("declaration.transportInfo.containers.title")
+    title = Title("declaration.transportInformation.containers.title")
 ) {
 
     @components.back_link(Navigator.backLink(ContainerAdd, mode))
 
     @components.error_summary(form.errors)
 
-    @components.heading(title = messages("declaration.transportInfo.containers.title"))
+    @components.heading(title = messages("declaration.transportInformation.containers.title"))
 
     @helper.form(TransportContainerController.submitAddContainer(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         @components.fields.field_text(
             field = form(containerIdKey),
-            label = Some(messages("declaration.transportInfo.containers.add.label")),
+            label = Some(messages("declaration.transportInformation.containers.add.label")),
             labelClass = Some("bold-small")
         )
 

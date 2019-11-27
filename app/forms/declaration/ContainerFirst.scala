@@ -60,9 +60,9 @@ object ContainerFirst extends DeclarationPage {
       hasContainerKey,
       yes,
       text()
-        .verifying("declaration.transportInfo.containerId.empty", nonEmpty)
-        .verifying("declaration.transportInfo.containerId.error.alphanumeric", isAlphanumeric)
-        .verifying("declaration.transportInfo.containerId.error.length", noLongerThan(maxContainerIdLength))
+        .verifying("declaration.transportInformation.containerId.empty", nonEmpty)
+        .verifying("declaration.transportInformation.containerId.error.alphanumeric", isAlphanumeric)
+        .verifying("declaration.transportInformation.containerId.error.length", noLongerThan(maxContainerIdLength))
     )
   )(form2Model)(model2Form)
 

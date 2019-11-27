@@ -47,7 +47,7 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestDat
     val view = createView()
 
     "display page title" in {
-      view.getElementById("title").text() must be(realMessages("declaration.transportInfo.containers.title"))
+      view.getElementById("title").text() must be(realMessages("declaration.transportInformation.containers.title"))
     }
 
     "display summary of container with seals" in {

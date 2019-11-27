@@ -79,9 +79,9 @@ class DepartureTransportSpec extends WordSpec with MustMatchers {
         errorKeys must be(List("borderModeOfTransportCode", "meansOfTransportOnDepartureType", "meansOfTransportOnDepartureIDNumber"))
         errorMessages must be(
           List(
-            "supplementary.transportInfo.borderTransportMode.error.empty",
-            "supplementary.transportInfo.meansOfTransport.departure.error.empty",
-            "supplementary.transportInfo.meansOfTransport.reference.error.empty"
+            "declaration.transportInformation.borderTransportMode.error.empty",
+            "declaration.transportInformation.meansOfTransport.departure.error.empty",
+            "declaration.transportInformation.meansOfTransport.reference.error.empty"
           )
         )
       }
@@ -101,8 +101,8 @@ class DepartureTransportSpec extends WordSpec with MustMatchers {
         errorKeys must be(List("borderModeOfTransportCode", "meansOfTransportOnDepartureType"))
         errorMessages must be(
           List(
-            "supplementary.transportInfo.borderTransportMode.error.incorrect",
-            "supplementary.transportInfo.meansOfTransport.departure.error.incorrect"
+            "declaration.transportInformation.borderTransportMode.error.incorrect",
+            "declaration.transportInformation.meansOfTransport.departure.error.incorrect"
           )
         )
       }
@@ -121,7 +121,7 @@ class DepartureTransportSpec extends WordSpec with MustMatchers {
         val error = result.errors.head
 
         error.key must be("meansOfTransportOnDepartureIDNumber")
-        error.message must be("supplementary.transportInfo.meansOfTransport.reference.error.empty")
+        error.message must be("declaration.transportInformation.meansOfTransport.reference.error.empty")
       }
 
       "means of transport on departure id number is too long" in {
@@ -139,7 +139,7 @@ class DepartureTransportSpec extends WordSpec with MustMatchers {
         val error = result.errors.head
 
         error.key must be("meansOfTransportOnDepartureIDNumber")
-        error.message must be("supplementary.transportInfo.meansOfTransport.reference.error.length")
+        error.message must be("declaration.transportInformation.meansOfTransport.reference.error.length")
       }
 
       "means of transport on departure id number contains invalid special characters" in {
@@ -157,7 +157,7 @@ class DepartureTransportSpec extends WordSpec with MustMatchers {
         val error = result.errors.head
 
         error.key must be("meansOfTransportOnDepartureIDNumber")
-        error.message must be("supplementary.transportInfo.meansOfTransport.reference.error.invalid")
+        error.message must be("declaration.transportInformation.meansOfTransport.reference.error.invalid")
       }
     }
   }
