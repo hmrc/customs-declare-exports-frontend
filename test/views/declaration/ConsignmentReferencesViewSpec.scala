@@ -92,7 +92,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with ConsignmentReferen
 
     "display 'Back' button that links to 'Declaration Type' page" in {
 
-      val backButton = createView().getElementById("link-back")
+      val backButton = createView().getElementById("back-link")
 
       backButton.text() mustBe messages(backCaption)
       backButton.attr("href") mustBe routes.AdditionalDeclarationTypeController.displayPage().url

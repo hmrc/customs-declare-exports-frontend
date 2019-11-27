@@ -56,9 +56,9 @@ class CUSCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with 
     }
 
     "display 'Back' button that links to 'UN Dangerous Goods Code' page" in {
-      val backButton = view.getElementById("link-back")
+      val backButton = view.getElementById("back-link")
 
-      backButton.getElementById("link-back") must haveHref(
+      backButton.getElementById("back-link") must haveHref(
         controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
       )
     }

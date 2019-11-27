@@ -149,10 +149,10 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
 
       val view = createView(request = requrestOnStandard)
       "display 'Back' button that links to 'Departure' page" in {
-        val backButton = view.getElementById("link-back")
+        val backButton = view.getElementById("back-link")
 
         backButton must containText(realMessages(backCaption))
-        backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.DepartureTransportController.displayPage(Mode.Normal))
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.DepartureTransportController.displayPage(Mode.Normal))
       }
 
       behave like borderView(view)
@@ -164,10 +164,10 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
       val view = createView(request = requrestOnSupplementary)
 
       "display 'Back' button that links to 'Departure' page" in {
-        val backButton = view.getElementById("link-back")
+        val backButton = view.getElementById("back-link")
 
         backButton must containText(realMessages(backCaption))
-        backButton.getElementById("link-back") must haveHref(controllers.declaration.routes.DepartureTransportController.displayPage(Mode.Normal))
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.DepartureTransportController.displayPage(Mode.Normal))
       }
 
       behave like havingMeansOfTransport(view)
@@ -180,10 +180,10 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
 
       "display 'Back' button that links to 'Supervising Customs Office' page" in {
         val viewForStandard = view
-        val backButton = viewForStandard.getElementById("link-back")
+        val backButton = viewForStandard.getElementById("back-link")
 
         backButton must containText(realMessages(backCaption))
-        backButton.getElementById("link-back") must haveHref(
+        backButton.getElementById("back-link") must haveHref(
           controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal)
         )
       }

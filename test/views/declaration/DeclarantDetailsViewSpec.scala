@@ -63,7 +63,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with De
     "display 'Back' button that links to 'Consignee Details' page" in {
 
       val view = declarantDetailsPage(Mode.Normal, form)(journeyRequest(), messages)
-      val backButton = view.getElementById("link-back")
+      val backButton = view.getElementById("back-link")
 
       backButton.text() mustBe messages(backCaption)
       backButton.attr("href") mustBe routes.ConsigneeDetailsController.displayPage().url

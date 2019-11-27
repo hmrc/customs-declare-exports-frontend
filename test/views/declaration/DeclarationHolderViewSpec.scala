@@ -87,7 +87,7 @@ class DeclarationHolderViewSpec extends UnitViewSpec with DeclarationHolderMessa
 
     "display 'Back' button that links to 'Additional Information' page" in {
 
-      val backButton = createView().getElementById("link-back")
+      val backButton = createView().getElementById("back-link")
 
       backButton.text() mustBe messages(backCaption)
       backButton.attr("href") mustBe routes.DeclarationAdditionalActorsController.displayPage().url

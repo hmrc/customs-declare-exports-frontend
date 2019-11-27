@@ -83,21 +83,21 @@ class DispatchLocationViewSpec extends UnitViewSpec with DispatchLocationMessage
 
     "display 'Back' button" when {
       "normal mode" in {
-        val backButton = createView(mode = Mode.Normal).getElementById("link-back")
+        val backButton = createView(mode = Mode.Normal).getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
         backButton.attr("href") mustBe controllers.declaration.routes.DeclarationChoiceController.displayPage().url
       }
 
       "draft mode" in {
-        val backButton = createView(mode = Mode.Draft).getElementById("link-back")
+        val backButton = createView(mode = Mode.Draft).getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
         backButton.attr("href") mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Draft).url
       }
 
       "amend mode" in {
-        val backButton = createView(mode = Mode.Amend).getElementById("link-back")
+        val backButton = createView(mode = Mode.Amend).getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
         backButton.attr("href") mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Amend).url

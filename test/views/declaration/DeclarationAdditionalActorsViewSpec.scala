@@ -116,7 +116,7 @@ class DeclarationAdditionalActorsViewSpec
 
       val view = declarationAdditionalActorsPage(Mode.Normal, form, Seq())(journeyRequest(DeclarationType.SUPPLEMENTARY), messages)
 
-      val backButton = view.getElementById("link-back")
+      val backButton = view.getElementById("back-link")
 
       backButton.text() mustBe messages(backCaption)
       backButton.attr("href") mustBe routes.RepresentativeDetailsController.displayPage().url
@@ -125,7 +125,7 @@ class DeclarationAdditionalActorsViewSpec
     "display 'Back' button that links to 'Carrier Details' page if on Standard Journey" in {
 
       val view = declarationAdditionalActorsPage(Mode.Normal, form, Seq())(journeyRequest(DeclarationType.STANDARD), messages)
-      val backButton = view.getElementById("link-back")
+      val backButton = view.getElementById("back-link")
 
       backButton.text() mustBe messages(backCaption)
       backButton.attr("href") mustBe routes.CarrierDetailsController.displayPage().url
@@ -134,7 +134,7 @@ class DeclarationAdditionalActorsViewSpec
     "display 'Back' button that links to 'Carrier Details' page if on Simplified Journey" in {
 
       val view = declarationAdditionalActorsPage(Mode.Normal, form, Seq())(journeyRequest(DeclarationType.SIMPLIFIED), messages)
-      val backButton = view.getElementById("link-back")
+      val backButton = view.getElementById("back-link")
 
       backButton.text() mustBe messages(backCaption)
       backButton.attr("href") mustBe routes.CarrierDetailsController.displayPage().url

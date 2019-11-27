@@ -72,10 +72,10 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
 
       "display 'Back' button that links to 'TARIC Codes' page" in {
 
-        val backButton = createView().getElementById("link-back")
+        val backButton = createView().getElementById("back-link")
 
         backButton.text() mustBe "site.back"
-        backButton.getElementById("link-back") must haveHref(
+        backButton.getElementById("back-link") must haveHref(
           controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, itemId = "itemId")
         )
       }
@@ -113,10 +113,10 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
 
       "display 'Back' button that links to 'TARIC Codes' page" in {
 
-        val backButton = createView().getElementById("link-back")
+        val backButton = createView().getElementById("back-link")
 
         backButton.text() mustBe "site.back"
-        backButton.getElementById("link-back") must haveHref(
+        backButton.getElementById("back-link") must haveHref(
           controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, itemId = "itemId")
         )
       }
@@ -154,10 +154,10 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
       "display 'Back' button that links to 'TARIC Codes' page" in {
 
         val backButton =
-          createView().getElementById("link-back")
+          createView().getElementById("back-link")
 
         backButton.text() mustBe "site.back"
-        backButton.getElementById("link-back") must haveHref(
+        backButton.getElementById("back-link") must haveHref(
           controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, itemId = "itemId")
         )
       }

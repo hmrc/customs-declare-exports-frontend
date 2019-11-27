@@ -56,7 +56,7 @@ class ChangeRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsT
 
     "display back button that links to 'Countries summary' for first routing country page" in {
 
-      val backButton = firstRoutingView.getElementById("link-back")
+      val backButton = firstRoutingView.getElementById("back-link")
 
       backButton.text() mustBe messages("site.back")
       backButton must haveHref(routes.RoutingCountriesSummaryController.displayPage())
@@ -64,7 +64,7 @@ class ChangeRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsT
 
     "display back button that links to 'Countries summary' for next routing country page" in {
 
-      val backButton = firstRoutingView.getElementById("link-back")
+      val backButton = firstRoutingView.getElementById("back-link")
 
       backButton.text() mustBe messages("site.back")
       backButton must haveHref(routes.RoutingCountriesSummaryController.displayPage())

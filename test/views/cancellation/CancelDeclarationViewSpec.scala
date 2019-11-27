@@ -128,7 +128,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
     }
 
     "display 'Back' button that links to 'Choice' page with Cancel declaration selected" in {
-      val backButton = createView().getElementById("link-back")
+      val backButton = createView().getElementById("back-link")
 
       backButton must containText("site.back")
       backButton must haveHref(routes.ChoiceController.displayPage(Some(Choice(CancelDec))))

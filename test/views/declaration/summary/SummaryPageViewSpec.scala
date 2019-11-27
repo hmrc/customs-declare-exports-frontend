@@ -56,18 +56,18 @@ class SummaryPageViewSpec extends WordSpec with MustMatchers with ExportsDeclara
     "contain back button" when {
       "Draft Mode" in {
         val document = view(Mode.Draft)
-        document must containElementWithID("link-back")
-        document.getElementById("link-back") must haveHref(controllers.routes.SavedDeclarationsController.displayDeclarations())
-        document.getElementById("link-back") must containText("site.back")
+        document must containElementWithID("back-link")
+        document.getElementById("back-link") must haveHref(controllers.routes.SavedDeclarationsController.displayDeclarations())
+        document.getElementById("back-link") must containText("site.back")
       }
 
       "Amend Mode" when {
         "source id populated" in {
           val model = aDeclaration(withSourceId("source-id"))
           val document = view(Mode.Amend, model)
-          document must containElementWithID("link-back")
-          document.getElementById("link-back") must haveHref(controllers.routes.SubmissionsController.displayListOfSubmissions())
-          document.getElementById("link-back") must containText("supplementary.summary.back")
+          document must containElementWithID("back-link")
+          document.getElementById("back-link") must haveHref(controllers.routes.SubmissionsController.displayListOfSubmissions())
+          document.getElementById("back-link") must containText("supplementary.summary.back")
         }
       }
 
@@ -75,18 +75,18 @@ class SummaryPageViewSpec extends WordSpec with MustMatchers with ExportsDeclara
         "standard declaration with containers links back to container summary" in {
           val model = aDeclaration(withType(DeclarationType.STANDARD), withContainerData(Container("1234", Seq.empty)))
           val document = view(Mode.Normal, model)
-          document must containElementWithID("link-back")
-          document.getElementById("link-back") must haveHref(
+          document must containElementWithID("back-link")
+          document.getElementById("back-link") must haveHref(
             controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
           )
-          document.getElementById("link-back") must containText("site.back")
+          document.getElementById("back-link") must containText("site.back")
         }
 
         "standard declaration without containers links back to container summary (which then re-directs to containers yes/no)" in {
           val model = aDeclaration(withType(DeclarationType.STANDARD))
           val document = view(Mode.Normal, model)
-          document must containElementWithID("link-back")
-          document.getElementById("link-back") must haveHref(
+          document must containElementWithID("back-link")
+          document.getElementById("back-link") must haveHref(
             controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
           )
         }
@@ -94,8 +94,8 @@ class SummaryPageViewSpec extends WordSpec with MustMatchers with ExportsDeclara
         "supplementary declaration with containers links back to container summary" in {
           val model = aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withContainerData(Container("1234", Seq.empty)))
           val document = view(Mode.Normal, model)
-          document must containElementWithID("link-back")
-          document.getElementById("link-back") must haveHref(
+          document must containElementWithID("back-link")
+          document.getElementById("back-link") must haveHref(
             controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
           )
         }
@@ -103,8 +103,8 @@ class SummaryPageViewSpec extends WordSpec with MustMatchers with ExportsDeclara
         "supplementary declaration without containers links back to container summary" in {
           val model = aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withoutContainerData())
           val document = view(Mode.Normal, model)
-          document must containElementWithID("link-back")
-          document.getElementById("link-back") must haveHref(
+          document must containElementWithID("back-link")
+          document.getElementById("back-link") must haveHref(
             controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
           )
         }
