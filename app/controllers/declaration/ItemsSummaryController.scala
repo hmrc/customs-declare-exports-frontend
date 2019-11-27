@@ -60,7 +60,7 @@ class ItemsSummaryController @Inject()(
             request.cacheModel
               .copy(items = request.cacheModel.items + newItem.copy(sequenceId = request.cacheModel.items.size + 1))
           )
-          .map(_ => Redirect(controllers.declaration.routes.ProcedureCodesController.displayPage(mode, newItem.id)))
+          .map(_ => navigator.continueTo(controllers.declaration.routes.ProcedureCodesController.displayPage(mode, newItem.id)))
       case SaveAndContinue if incorrectItems.nonEmpty =>
         Future.successful(BadRequest(itemsSummaryPage(mode, request.cacheModel.items.toList, incorrectItems)))
       case SaveAndReturn | SaveAndContinue =>
@@ -82,7 +82,7 @@ class ItemsSummaryController @Inject()(
             case (item, index) => item.copy(sequenceId = index + 1)
           }
         exportsCacheService.update(request.cacheModel.copy(items = updatedItems)).map { _ =>
-          Redirect(routes.ItemsSummaryController.displayPage(mode))
+          navigator.continueTo(routes.ItemsSummaryController.displayPage(mode))
         }
       case _ =>
         Future.successful(Redirect(routes.ItemsSummaryController.displayPage(mode)))

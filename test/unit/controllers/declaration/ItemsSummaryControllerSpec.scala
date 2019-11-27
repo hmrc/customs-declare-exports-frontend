@@ -94,7 +94,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
 
           status(result) mustBe SEE_OTHER
           verify(mockItemsSummaryPage, times(0)).apply(any(), any(), any())(any(), any())
-          redirectLocation(result).value must endWith(s"/items/${itemId}/procedure-codes")
+          thePageNavigatedTo mustBe controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, itemId)
         }
       }
 
@@ -153,7 +153,7 @@ class ItemsSummaryControllerSpec extends ControllerSpec with OptionValues {
 
           status(result) mustBe SEE_OTHER
           verify(mockItemsSummaryPage, times(0)).apply(any(), any(), any())(any(), any())
-          redirectLocation(result).value must endWith(s"/items/${itemId}/procedure-codes")
+          thePageNavigatedTo mustBe controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, itemId)
         }
       }
 

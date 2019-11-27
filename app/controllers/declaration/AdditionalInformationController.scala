@@ -82,7 +82,7 @@ class AdditionalInformationController @Inject()(
         formWithErrors => Future.successful(BadRequest(additionalInformationPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
           updateCache(itemId, AdditionalInformationData(updatedCache))
-            .map(_ => Redirect(controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId)))
+            .map(_ => navigator.continueTo(controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId)))
       )
 
   private def handleSaveAndContinue(mode: Mode, itemId: String, boundForm: Form[AdditionalInformation], cachedData: Seq[AdditionalInformation])(
