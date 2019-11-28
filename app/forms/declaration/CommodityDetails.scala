@@ -66,7 +66,7 @@ object CommodityDetails extends DeclarationPage {
     )(CommodityDetails.unapply)
 
   def form(declarationType: DeclarationType): Form[CommodityDetails] = declarationType match {
-    case DeclarationType.SIMPLIFIED => Form(mappingOptionalCode)
-    case _                          => Form(mappingRequiredCode)
+    case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL => Form(mappingOptionalCode)
+    case _                                                       => Form(mappingRequiredCode)
   }
 }
