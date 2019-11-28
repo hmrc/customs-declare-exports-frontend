@@ -124,7 +124,7 @@ class DocumentsProducedController @Inject()(
       case (document, documents) =>
         if (document.isDefined) {
           updateCache(itemId, DocumentsProducedData(documents :+ document))
-            .map(_ => Redirect(routes.DocumentsProducedController.displayPage(mode, itemId)))
+            .map(_ => navigator.continueTo(routes.DocumentsProducedController.displayPage(mode, itemId)))
         } else
           handleErrorPage(mode, itemId, Seq(("", "supplementary.addDocument.error.notDefined")), userInput, cachedData.documents)
     }
@@ -136,7 +136,7 @@ class DocumentsProducedController @Inject()(
     val itemToRemove = DocumentsProduced.fromJsonString(values.head)
     val updatedCache =
       cachedData.copy(documents = remove(cachedData.documents, itemToRemove.contains(_: DocumentsProduced)))
-    updateCache(itemId, updatedCache).map(_ => Ok(documentProducedPage(mode, itemId, boundForm.discardingErrors, updatedCache.documents)))
+    updateCache(itemId, updatedCache).map(_ => navigator.continueTo(routes.DocumentsProducedController.displayPage(mode, itemId)))
   }
 
   private def handleErrorPage(

@@ -18,7 +18,8 @@ package views.declaration
 
 import forms.declaration.TransportPayment
 import helpers.views.declaration.CommonMessages
-import models.Mode
+import models.requests.JourneyRequest
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
@@ -33,42 +34,61 @@ class TransportPaymentViewSpec extends UnitViewSpec with ExportsTestData with St
   private val page = new transport_payment(mainTemplate)
   private val form: Form[TransportPayment] = TransportPayment.form()
   private val realMessages = validatedMessages
-  private def createView: Document =
-    page(Mode.Normal, form)(journeyRequest(), realMessages)
+  private def createView(request: JourneyRequest[_]): Document =
+    page(Mode.Normal, form)(request, realMessages)
 
-  "Transport Payment View" should {
-    val view = createView
+  "Transport Payment View" must {
+    onJourney(DeclarationType.SIMPLIFIED, DeclarationType.STANDARD) { request =>
+      val view = createView(request)
 
-    "display page title" in {
-      view.getElementById("title").text() must be(realMessages("declaration.transportInformation.transportPayment.paymentMethod"))
+      "display page title" in {
+        view.getElementById("title").text() must be(realMessages("declaration.transportInformation.transportPayment.paymentMethod"))
+      }
+
+      "display choices for payment method" in {
+        val choices = view.getElementById("paymentMethod")
+        choices must containText(realMessages("declaration.transportInformation.transportPayment.paymentMethod.cash"))
+        choices must containText(realMessages("declaration.transportInformation.transportPayment.paymentMethod.creditCard"))
+        choices must containText(realMessages("declaration.transportInformation.transportPayment.paymentMethod.cheque"))
+        choices must containText(realMessages("declaration.transportInformation.transportPayment.paymentMethod.other"))
+        choices must containText(realMessages("declaration.transportInformation.transportPayment.paymentMethod.eFunds"))
+        choices must containText(realMessages("declaration.transportInformation.transportPayment.paymentMethod.accHolder"))
+        choices must containText(realMessages("declaration.transportInformation.transportPayment.paymentMethod.notPrePaid"))
+      }
+
+      "display 'Save and continue' button on page" in {
+        val saveButton = view.getElementById("submit")
+        saveButton must containText(realMessages(saveAndContinueCaption))
+      }
+
+      "display 'Save and return' button on page" in {
+        val saveAndReturnButton = view.getElementById("submit_and_return")
+        saveAndReturnButton must containText(realMessages(saveAndReturnCaption))
+      }
     }
 
-    "display 'Back' button that links to 'border transport' page" in {
-      val backLinkContainer = view.getElementById("back-link")
+    onStandard { request =>
+      val view = createView(request)
 
-      backLinkContainer must containText(realMessages(backCaption))
-      backLinkContainer.getElementById("back-link") must haveHref(controllers.declaration.routes.BorderTransportController.displayPage(Mode.Normal))
+      "display 'Back' button that links to 'border transport' page" in {
+        val backLinkContainer = view.getElementById("back-link")
+
+        backLinkContainer must containText(realMessages(backCaption))
+        backLinkContainer.getElementById("back-link") must haveHref(controllers.declaration.routes.BorderTransportController.displayPage(Mode.Normal))
+      }
     }
 
-    "display choices for payment method" in {
-      val choices = view.getElementById("paymentMethod")
-      choices must containText(realMessages("declaration.transportInformation.transportPayment.paymentMethod.cash"))
-      choices must containText(realMessages("declaration.transportInformation.transportPayment.paymentMethod.creditCard"))
-      choices must containText(realMessages("declaration.transportInformation.transportPayment.paymentMethod.cheque"))
-      choices must containText(realMessages("declaration.transportInformation.transportPayment.paymentMethod.other"))
-      choices must containText(realMessages("declaration.transportInformation.transportPayment.paymentMethod.eFunds"))
-      choices must containText(realMessages("declaration.transportInformation.transportPayment.paymentMethod.accHolder"))
-      choices must containText(realMessages("declaration.transportInformation.transportPayment.paymentMethod.notPrePaid"))
-    }
+    onSimplified { request =>
+      val view = createView(request)
 
-    "display 'Save and continue' button on page" in {
-      val saveButton = view.getElementById("submit")
-      saveButton must containText(realMessages(saveAndContinueCaption))
-    }
+      "display 'Back' button that links to 'warehouse identification' page" in {
+        val backLinkContainer = view.getElementById("back-link")
 
-    "display 'Save and return' button on page" in {
-      val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton must containText(realMessages(saveAndReturnCaption))
+        backLinkContainer must containText(realMessages(backCaption))
+        backLinkContainer.getElementById("back-link") must haveHref(
+          controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal)
+        )
+      }
     }
   }
 }

@@ -166,7 +166,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
         val result = controller.saveAdditionalInfo(Mode.Normal, "itemId")(postRequestAsFormUrlEncoded(removeForm))
 
-        status(result) must be(OK)
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, "itemId")
       }
     }
   }

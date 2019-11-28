@@ -70,14 +70,14 @@ class PackageInformationController @Inject()(
     val itemToRemove = PackageInformation.fromJsonString(values.head)
     val updatedCache = remove(items, itemToRemove.contains(_: PackageInformation))
     updateExportsCache(itemId, updatedCache)
-      .map(_ => Ok(packageInformationPage(mode, itemId, boundForm.discardingErrors, updatedCache)))
+      .map(_ => navigator.continueTo(routes.PackageInformationController.displayPage(mode, itemId)))
   }
 
   private def saveAndContinue(mode: Mode, itemId: String, boundForm: Form[PackageInformation], cachedData: Seq[PackageInformation])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
-      .saveAndContinue(boundForm, cachedData, true, PackageInformation.limit)
+      .saveAndContinue(boundForm, cachedData, isMandatory = true, PackageInformation.limit)
       .fold(
         formWithErrors => Future.successful(BadRequest(packageInformationPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
@@ -111,6 +111,6 @@ class PackageInformationController @Inject()(
         formWithErrors => Future.successful(BadRequest(packageInformationPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
           updateExportsCache(itemId, updatedCache)
-            .map(_ => Redirect(controllers.declaration.routes.PackageInformationController.displayPage(mode, itemId)))
+            .map(_ => navigator.continueTo(controllers.declaration.routes.PackageInformationController.displayPage(mode, itemId)))
       )
 }

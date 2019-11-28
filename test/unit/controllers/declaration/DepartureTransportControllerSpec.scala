@@ -20,7 +20,7 @@ import controllers.declaration.{routes, DepartureTransportController}
 import forms.Choice
 import forms.declaration.DepartureTransport
 import forms.declaration.TransportCodes.{Maritime, WagonNumber}
-import models.{DeclarationType, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers._
@@ -32,37 +32,37 @@ import scala.concurrent.Future
 
 class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
-  trait SetUp {
-    val borderTransportPage = new departure_transport(mainTemplate)
+  val borderTransportPage = new departure_transport(mainTemplate)
 
-    val controller = new DepartureTransportController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockExportsCacheService,
-      navigator,
-      stubMessagesControllerComponents(),
-      borderTransportPage
-    )(ec)
+  val controller = new DepartureTransportController(
+    mockAuthAction,
+    mockJourneyAction,
+    mockExportsCacheService,
+    navigator,
+    stubMessagesControllerComponents(),
+    borderTransportPage
+  )(ec)
 
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
     setupErrorHandler()
     authorizedUser()
-    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
   }
 
-  "Border transport controller" should {
-
+  def departureTransportController(declaration: () => ExportsDeclaration): Unit = {
     "return 200 (OK)" when {
 
-      "display page method is invoked and cache is empty" in new SetUp {
+      "display page method is invoked and cache is empty" in {
+        withNewCaching(declaration())
 
         val result: Future[Result] = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
 
-      "display page method is invoked and cache contains data" in new SetUp {
+      "display page method is invoked and cache contains data" in {
 
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withDepartureTransport(Maritime, WagonNumber, "FAA")))
+        withNewCaching(aDeclarationAfter(declaration(), withDepartureTransport(Maritime, WagonNumber, "FAA")))
 
         val result: Future[Result] = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -72,7 +72,8 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
     "return 400 (BAD_REQUEST)" when {
 
-      "form is incorrect" in new SetUp {
+      "form is incorrect" in {
+        withNewCaching(declaration())
 
         val incorrectForm: JsValue = Json.toJson(DepartureTransport("wrongValue", "wrongValue", "FAA"))
 
@@ -84,7 +85,8 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
     "return 303 (SEE_OTHER)" when {
 
-      "information provided by user are correct" in new SetUp {
+      "information provided by user are correct" in {
+        withNewCaching(declaration())
 
         val correctForm: JsValue = Json.toJson(DepartureTransport(Maritime, WagonNumber, "FAA"))
 
@@ -95,4 +97,17 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
       }
     }
   }
+
+  "Border transport controller" when {
+    "we are on standard declaration journey" should {
+      behave like departureTransportController(() => aDeclaration(withType(DeclarationType.STANDARD)))
+    }
+    "we are on supplementary declaration journey" should {
+      behave like departureTransportController(() => aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
+    }
+    "we are on simplified declaration journey" should {
+      behave like departureTransportController(() => aDeclaration(withType(DeclarationType.SIMPLIFIED)))
+    }
+  }
+
 }

@@ -150,7 +150,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
         val result = await(controller.submit(Mode.Normal).apply(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.BorderTransportController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.TransportPaymentController.displayPage()
       }
 
       "update cache after successful bind" in {

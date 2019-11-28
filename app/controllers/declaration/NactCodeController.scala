@@ -72,7 +72,7 @@ class NactCodeController @Inject()(
         formWithErrors => Future.successful(BadRequest(nactCodesPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
           updateExportsCache(itemId, updatedCache)
-            .map(_ => Redirect(controllers.declaration.routes.NactCodeController.displayPage(mode, itemId)))
+            .map(_ => navigator.continueTo(controllers.declaration.routes.NactCodeController.displayPage(mode, itemId)))
       )
 
   private def removeItem(mode: Mode, itemId: String, values: Seq[String], boundForm: Form[NactCode], items: Seq[NactCode])(
@@ -81,7 +81,7 @@ class NactCodeController @Inject()(
     val itemToRemove = items.find(_.nactCode.equals(values.head))
     val updatedCache = remove(items, itemToRemove.contains(_: NactCode))
     updateExportsCache(itemId, updatedCache)
-      .map(_ => Ok(nactCodesPage(mode, itemId, boundForm.discardingErrors, updatedCache)))
+      .map(_ => navigator.continueTo(routes.NactCodeController.displayPage(mode, itemId)))
   }
 
   private def saveAndContinue(mode: Mode, itemId: String, boundForm: Form[NactCode], cachedData: Seq[NactCode])(

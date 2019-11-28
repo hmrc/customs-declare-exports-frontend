@@ -84,7 +84,7 @@ class PreviousDocumentsController @Inject()(
         val itemToRemove = Document.fromJsonString(ids.head)
         val updatedDocuments = MultipleItemsHelper.remove(cache.documents, itemToRemove.contains(_: Document))
         updateCache(PreviousDocumentsData(updatedDocuments))
-          .map(_ => Ok(previousDocumentsPage(mode, boundForm.discardingErrors, updatedDocuments)))
+          .map(_ => navigator.continueTo(routes.PreviousDocumentsController.displayPage(mode)))
 
       case _ => Future.successful(BadRequest(previousDocumentsPage(mode, boundForm, cache.documents)))
     }

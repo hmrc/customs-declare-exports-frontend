@@ -17,11 +17,15 @@
 package views.declaration.spec
 
 import base.Injector
+import models.DeclarationType.DeclarationType
+import models.requests.JourneyRequest
+import models.{DeclarationType, ExportsDeclaration}
 import org.jsoup.nodes.Document
 import org.scalatest.matchers.{BeMatcher, MatchResult}
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.{FakeRequest, Helpers}
+import services.cache.{ExportsDeclarationBuilder, ExportsTestData}
 import unit.base.UnitSpec
 
 class UnitViewSpec extends UnitSpec with ViewMatchers {
@@ -43,6 +47,31 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
   }
 
   def messagesKey(key: String): BeMatcher[String] = new MessagesKeyMatcher(key)
+
+  def onEveryDeclarationJourney(f: JourneyRequest[_] => Unit): Unit =
+    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED)(f)
+
+  def onJourney(types: DeclarationType*)(f: JourneyRequest[_] => Unit): Unit =
+    types.foreach {
+      case DeclarationType.STANDARD      => onStandard(f)
+      case DeclarationType.SUPPLEMENTARY => onSupplementary(f)
+      case DeclarationType.SIMPLIFIED    => onSimplified(f)
+    }
+
+  def onStandard(f: JourneyRequest[_] => Unit): Unit =
+    "on Standard journey render view" that {
+      f(UnitViewSpec.standardRequest)
+    }
+
+  def onSimplified(f: JourneyRequest[_] => Unit): Unit =
+    "on Supplementary journey render view" that {
+      f(UnitViewSpec.simplifiedRequest)
+    }
+
+  def onSupplementary(f: JourneyRequest[_] => Unit): Unit =
+    "on Simplified journey render view" that {
+      f(UnitViewSpec.supplementaryRequest)
+    }
 }
 
 class MessagesKeyMatcher(key: String) extends BeMatcher[String] {
@@ -64,8 +93,14 @@ object MessagesKeyMatcher {
   val langs: Seq[Lang] = Seq(Lang("en"))
 }
 
-object UnitViewSpec extends Injector {
+object UnitViewSpec extends Injector with ExportsTestData {
   val realMessagesApi: MessagesApi = instanceOf[MessagesApi]
+
+  val standardRequest: JourneyRequest[AnyContent] = journeyRequest(DeclarationType.STANDARD)
+
+  val supplementaryRequest: JourneyRequest[AnyContent] = journeyRequest(DeclarationType.SUPPLEMENTARY)
+
+  val simplifiedRequest: JourneyRequest[AnyContent] = journeyRequest(DeclarationType.SIMPLIFIED)
 }
 
 private class AllMessageKeysAreMandatoryMessages(msg: Messages) extends Messages {
