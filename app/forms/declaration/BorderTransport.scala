@@ -32,17 +32,9 @@ case class BorderTransport(
   meansOfTransportCrossingTheBorderIDNumber: String
 ) {
 
-  def extractModeValue: String = meansOfTransportCrossingTheBorderType match {
-    case IMOShipIDNumber            => "Ship IMO number"
-    case NameOfVessel               => "Ship name"
-    case WagonNumber                => "Train"
-    case VehicleRegistrationNumber  => "Vehicle registration"
-    case IATAFlightNumber           => "Flight number"
-    case AircraftRegistrationNumber => "Aircraft number"
-    case EuropeanVesselIDNumber     => "European vessel number (ENI)"
-    case NameOfInlandWaterwayVessel => "Inland vessel's name"
-    case _                          => "Incorrect"
-  }
+  def extractModeValue: String = TransportCodes.extractBorderTransportValue(meansOfTransportCrossingTheBorderType)
+
+  def transportLeavingBorder: Seq[String] = Seq(extractModeValue, meansOfTransportCrossingTheBorderIDNumber)
 }
 
 object BorderTransport extends DeclarationPage {
