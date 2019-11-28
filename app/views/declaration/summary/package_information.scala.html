@@ -21,17 +21,17 @@
 @(packageInformation: Seq[PackageInformation])(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
 @if(packageInformation.nonEmpty){
-    <caption class="heading-small">@messages("declaration.summary.items.item.packageInformation")</caption>
+    <caption class="heading-small"><span id="package-information">@messages("declaration.summary.items.item.packageInformation")</span></caption>
     <tr class="section">
-        <td class="bold">@messages("declaration.summary.items.item.packageInformation.type")</td>
-        <td class="bold">@messages("declaration.summary.items.item.packageInformation.number")</td>
-        <td class="bold">@messages("declaration.summary.items.item.packageInformation.markings")</td>
+        <td class="bold"><span id="package-information-type">@messages("declaration.summary.items.item.packageInformation.type")</span></td>
+        <td class="bold"><span id="package-information-number">@messages("declaration.summary.items.item.packageInformation.number")</span></td>
+        <td class="bold"><span id="package-information-markings">@messages("declaration.summary.items.item.packageInformation.markings")</span></td>
     </tr>
-    @packageInformation.map { information =>
+    @packageInformation.zipWithIndex.map { case (information, index) =>
         <tr class="section">
-            <td>@information.typesOfPackagesText</td>
-            <td>@information.numberOfPackages</td>
-            <td>@information.shippingMarks</td>
+            <td><span id="package-information-@index-code">@information.typesOfPackagesText</span></td>
+            <td><span id="package-information-@index-number">@information.numberOfPackages</span></td>
+            <td><span id="package-information-@index-marks">@information.shippingMarks</span></td>
         </tr>
     }
 }

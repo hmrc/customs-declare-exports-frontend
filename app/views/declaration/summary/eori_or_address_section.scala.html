@@ -21,26 +21,26 @@
 @(id: String, eoriOption: Option[String], eoriLabel: String, address: Seq[String], addressLabel: String, isEoriDefault: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
 @if(eoriOption.isEmpty && address.isEmpty && isEoriDefault) {
-    @components.table_row(s"$id-eori-label", HtmlTableRow(
+    @components.table_row(s"$id-eori", HtmlTableRow(
         label = messages(eoriLabel),
         value = Seq.empty
     ))
 } else if(eoriOption.isEmpty && address.isEmpty) {
-    @components.table_row(s"$id-address-label", HtmlTableRow(
+    @components.table_row(s"$id-address", HtmlTableRow(
         label = messages(addressLabel),
         value = Seq.empty
     ))
 }
 
 @eoriOption.map { eori =>
-    @components.table_row(s"$id-eori-label", HtmlTableRow(
+    @components.table_row(s"$id-eori", HtmlTableRow(
         label = messages(eoriLabel),
-        value = Seq(eori)
+        value = eori
     ))
 }
 
 @if(address.nonEmpty) {
-    @components.table_row(s"$id-address-label", HtmlTableRow(
+    @components.table_row(s"$id-address", HtmlTableRow(
         label = messages(addressLabel),
         value = address
     ))

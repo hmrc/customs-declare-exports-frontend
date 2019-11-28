@@ -34,29 +34,29 @@
 }
 
 @if(additionalActors.nonEmpty) {
-    <caption class="heading-small" id="additionalActors">@messages("declaration.summary.parties.additional")</caption>
+    <caption class="heading-small"><span id="additionalActors">@messages("declaration.summary.parties.additional")</span></caption>
     <tr class="section">
-        <td class="bold" id="additionalActors-type">@messages("declaration.summary.parties.additional.type")</td>
-        <td class="bold" id="additionalActors-eori">@messages("declaration.summary.parties.additional.eori")</td>
+        <td class="bold"><span id="additionalActors-type">@messages("declaration.summary.parties.additional.type")</span></td>
+        <td class="bold"><span id="additionalActors-eori">@messages("declaration.summary.parties.additional.eori")</span></td>
     </tr>
     @additionalActors.zipWithIndex.map { case (actor, index) =>
         <tr class="section">
-            <td id="additionalActor-type-@index">@actor.extractPartyType</td>
-            <td id="additionalActor-eori-@index">@actor.eori.getOrElse("")</td>
+            <td><span id="additionalActor-type-@index">@actor.extractPartyType</span></td>
+            <td><span id="additionalActor-eori-@index">@actor.eori.getOrElse("")</span></td>
         </tr>
     }
 }
 
 @if(holders.nonEmpty) {
-    <caption class="heading-small" id="holders">@messages("declaration.summary.parties.holders")</caption>
+    <caption class="heading-small"><span id="holders">@messages("declaration.summary.parties.holders")</span></caption>
     <tr class="section">
-        <td class="bold" id="holders-type">@messages("declaration.summary.parties.holders.type")</td>
-        <td class="bold" id="holders-eori">@messages("declaration.summary.parties.holders.eori")</td>
+        <td class="bold"><span id="holders-type">@messages("declaration.summary.parties.holders.type")</span></td>
+        <td class="bold"><span id="holders-eori">@messages("declaration.summary.parties.holders.eori")</span></td>
     </tr>
     @holders.zipWithIndex.map { case (holder, index) =>
         <tr class="section">
-            <td id="holder-type-@index">@holder.authorisationTypeCode.getOrElse("")</td>
-            <td id="holder-eori-@index">@holder.eori.getOrElse("")</td>
+            <td><span id="holder-type-@index">@holder.authorisationTypeCode.getOrElse("")</span></td>
+            <td><span id="holder-eori-@index">@holder.eori.getOrElse("")</span></td>
         </tr>
     }
 }

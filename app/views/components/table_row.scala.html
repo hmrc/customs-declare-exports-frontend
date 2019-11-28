@@ -19,7 +19,7 @@
 @(id: String, tableRow: HtmlTableRow)
 
 <tr class="section">
-    <td class="bold">@tableRow.label</td>
+    <td class="bold"><span id="@id-label">@tableRow.label</span></td>
     <td>
         @if(tableRow.values.drop(1).isEmpty) {
             <span id="@id">@tableRow.values.headOption.flatten.getOrElse("")<br/></span>

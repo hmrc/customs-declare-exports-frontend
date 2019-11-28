@@ -22,9 +22,9 @@
 <div id="declaration-items-summary">
     @components.summary_list(Some(messages("declaration.summary.items"))) {
         @if(declarationData.items.isEmpty) {
-            @messages("declaration.summary.items.empty")
+            <span id="empty-items">@messages("declaration.summary.items.empty")</span>
         } else {
-            @declarationData.items.map { item =>
+            @declarationData.items.toSeq.sortBy(_.sequenceId).map { item =>
                 @item_section(item)
             }
         }

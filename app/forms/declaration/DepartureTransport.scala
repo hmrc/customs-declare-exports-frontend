@@ -65,7 +65,7 @@ object TransportCodes {
   val InlandWaterway = "8"
   val Unknown = "9"
 
-  val extractModeOfTransportValue: String => String = _ match {
+  val extractModeOfTransportValue: PartialFunction[String, String] = {
     case Maritime                    => "Sea transport"
     case Rail                        => "Rail transport"
     case Road                        => "Road transport"
@@ -86,7 +86,7 @@ object TransportCodes {
   val EuropeanVesselIDNumber = "80"
   val NameOfInlandWaterwayVessel = "81"
 
-  val extractBorderTransportValue: String => String = _ match {
+  val extractBorderTransportValue: PartialFunction[String, String] =  {
     case IMOShipIDNumber            => "Ship IMO number"
     case NameOfVessel               => "Ship name"
     case WagonNumber                => "Train"
