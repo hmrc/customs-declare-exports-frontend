@@ -162,6 +162,8 @@ declaration.type.simplified = Simplified declaration
 declaration.type.simplified.hint = This is a shorter version of the full declaration that requires specific authorisation and a follow-up supplementary declaration
 declaration.type.supplementary = Supplementary declaration
 declaration.type.supplementary.hint = This needs to be completed within one calendar month of submitting a simplified declaration and requires specific authorisation
+declaration.type.occasional = Simplified declaration for occasional use
+declaration.type.occasional.hint = This is a shorter version of the full declaration that is only permitted in special circumstances. No follow-up declaration is required.
 
 declaration.type.error = Please choose a valid option
 
@@ -215,6 +217,7 @@ declaration.declarationType.title = Declaration Type
 declaration.declarationType.header.supplementary = 1/2 Which of the following best describes you?
 declaration.declarationType.header.standard = What type of standard declaration do you want to make?
 declaration.declarationType.header.simplified = What type of simplified declaration do you want to make?
+declaration.declarationType.header.occasional = What type of occasional simplified declaration do you want to make?
 declaration.declarationType.header.hint = Hint text if needed here
 declaration.declarationType.inputText.supplementary.simplified = I am completing a supplementary declaration for goods that have been under a Simplified Declaration procedure (SDP)
 declaration.declarationType.inputText.supplementary.standard = I am completing a supplementary declaration for goods that have been under EIDR procedures
@@ -226,6 +229,10 @@ declaration.declarationType.inputText.simplified.preLodged = Pre-lodged declarat
 declaration.declarationType.inputText.simplified.preLodged.hint = This is made before the goods have been sent
 declaration.declarationType.inputText.simplified.frontier = Frontier declaration
 declaration.declarationType.inputText.simplified.frontier.hint = This is made when the goods have arrived at the port
+declaration.declarationType.inputText.occasional.preLodged = Pre-lodged declaration
+declaration.declarationType.inputText.occasional.preLodged.hint = This is made before the goods have been sent
+declaration.declarationType.inputText.occasional.frontier = Frontier declaration
+declaration.declarationType.inputText.occasional.frontier.hint = This is made when the goods have arrived at the port
 declaration.declarationType.inputText.error.empty = Please, choose declaration type
 declaration.declarationType.inputText.error.incorrect = Please, choose valid declaration type
 
@@ -919,6 +926,7 @@ declaration.confirmation.default.title = Declaration has been submitted
 declaration.confirmation.standard.title = Standard declaration has been submitted
 declaration.confirmation.supplementary.title = Supplementary declaration has been submitted
 declaration.confirmation.simplified.title = Simplified declaration has been submitted
+declaration.confirmation.occasional.title = Occasional simplified declaration has been submitted
 declaration.confirmation.lrn = The LRN is
 declaration.confirmation.info = To view the status of this and any other declarations, visit {0}.
 declaration.confirmation.info.link = view declarations

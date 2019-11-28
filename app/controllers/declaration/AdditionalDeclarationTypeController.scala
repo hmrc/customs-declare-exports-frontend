@@ -67,6 +67,7 @@ class AdditionalDeclarationTypeController @Inject()(
       case DeclarationType.SUPPLEMENTARY => AdditionalDeclarationTypeSupplementaryDec
       case DeclarationType.STANDARD      => AdditionalDeclarationTypeStandardDec
       case DeclarationType.SIMPLIFIED    => AdditionalDeclarationTypeSimplifiedDec
+      case DeclarationType.OCCASIONAL    => AdditionalDeclarationTypeOccasionalDec
     }
 
   private def updateCache(formData: AdditionalDeclarationType)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =

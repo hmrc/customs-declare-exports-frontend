@@ -16,6 +16,7 @@
 
 package forms.declaration
 
+import forms.DeclarationPage
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
@@ -25,7 +26,7 @@ case class AdditionalInformation(code: String, description: String) {
   override def toString: String = s"${code}-${description}"
 }
 
-object AdditionalInformation {
+object AdditionalInformation extends DeclarationPage {
   implicit val format = Json.format[AdditionalInformation]
 
   val formId = "AdditionalInformation"

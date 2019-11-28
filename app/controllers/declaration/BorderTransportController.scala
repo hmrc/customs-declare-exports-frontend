@@ -21,9 +21,8 @@ import controllers.navigation.Navigator
 import forms.declaration.BorderTransport
 import forms.declaration.BorderTransport._
 import javax.inject.Inject
-import models.DeclarationType._
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -61,9 +60,9 @@ class BorderTransportController @Inject()(
 
   private def nextPage(mode: Mode, borderTransport: BorderTransport)(implicit request: JourneyRequest[AnyContent]): Result =
     request.declarationType match {
-      case STANDARD | SIMPLIFIED =>
+      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
         navigator.continueTo(controllers.declaration.routes.TransportPaymentController.displayPage(mode))
-      case SUPPLEMENTARY =>
+      case DeclarationType.SUPPLEMENTARY =>
         navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode))
     }
 

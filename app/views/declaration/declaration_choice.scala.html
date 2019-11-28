@@ -43,9 +43,10 @@
                 field = form("type"),
                 legend = "",
                 inputs = Seq(
-                    RadioOption("Standard declaration", DeclarationType.STANDARD.toString, messages(s"declaration.type.standard"), Some(messages(s"declaration.type.standard.hint"))),
-                    RadioOption("Simplified declaration", DeclarationType.SIMPLIFIED.toString, messages(s"declaration.type.simplified"), Some(messages(s"declaration.type.simplified.hint"))),
-                    RadioOption("Supplementary declaration", DeclarationType.SUPPLEMENTARY.toString, messages(s"declaration.type.supplementary"), Some(messages(s"declaration.type.supplementary.hint")))
+                    RadioOption(DeclarationType.STANDARD.toString, DeclarationType.STANDARD.toString, messages("declaration.type.standard"), Some(messages("declaration.type.standard.hint"))),
+                    RadioOption(DeclarationType.SIMPLIFIED.toString, DeclarationType.SIMPLIFIED.toString, messages("declaration.type.simplified"), Some(messages("declaration.type.simplified.hint"))),
+                    RadioOption(DeclarationType.SUPPLEMENTARY.toString, DeclarationType.SUPPLEMENTARY.toString, messages("declaration.type.supplementary"), Some(messages("declaration.type.supplementary.hint"))),
+                    RadioOption(DeclarationType.OCCASIONAL.toString, DeclarationType.OCCASIONAL.toString, messages("declaration.type.occasional"), Some(messages("declaration.type.occasional.hint")))
                 ).filter(radioOption => appConfig.availableDeclarations().contains(radioOption.value))
             )
 
