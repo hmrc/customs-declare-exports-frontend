@@ -26,20 +26,16 @@
             value = declarationData.departureTransport.map(_.extractModeValue).getOrElse("")
         ))
         @components.table_row("transport-reference", HtmlTableRow(
-            label = messages("declaration.summary.transport.transportReference"),
-            value = declarationData.departureTransport.map(_.meansOfTransportOnDepartureIDNumber).getOrElse("")
+            label = messages("declaration.summary.transport.transportDetails"),
+            value = declarationData.departureTransport.map(_.transportDetails).getOrElse(Seq.empty)
+        ))
+        @components.table_row("active-transport-type", HtmlTableRow(
+            label = messages("declaration.summary.transport.transportLeavingBorder"),
+            value = declarationData.borderTransport.map(_.transportLeavingBorder).getOrElse(Seq.empty)
         ))
         @components.table_row("active-transport-nationality", HtmlTableRow(
             label = messages("declaration.summary.transport.activeTransportNationality"),
             value = declarationData.borderTransport.flatMap(_.meansOfTransportCrossingTheBorderNationality).getOrElse("")
-        ))
-        @components.table_row("active-transport-type", HtmlTableRow(
-            label = messages("declaration.summary.transport.activeTransportType"),
-            value = declarationData.borderTransport.map(_.extractModeValue).getOrElse("")
-        ))
-        @components.table_row("active-transport-reference", HtmlTableRow(
-            label = messages("declaration.summary.transport.activeTransportReference"),
-            value = declarationData.borderTransport.map(_.meansOfTransportCrossingTheBorderIDNumber).getOrElse("")
         ))
         @components.table_row("transport-payment", HtmlTableRow(
             label = messages("declaration.summary.transport.payment"),

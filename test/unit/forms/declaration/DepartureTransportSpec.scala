@@ -25,14 +25,6 @@ class DepartureTransportSpec extends WordSpec with MustMatchers {
 
   val form = DepartureTransport.form
 
-  "Border Transport" should {
-
-    "has correct form id" in {
-
-      DepartureTransport.formId must be("BorderTransport")
-    }
-  }
-
   "Border Transport form" should {
 
     "allow all mode transport codes" in {
