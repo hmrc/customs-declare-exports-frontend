@@ -21,15 +21,15 @@
 @(additionalInformation: Seq[AdditionalInformation])(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
 @if(additionalInformation.nonEmpty){
-    <caption class="heading-small" id="additional-information">@messages("declaration.summary.items.item.additionalInformation")</caption>
+    <caption class="heading-small"><span id="additional-information">@messages("declaration.summary.items.item.additionalInformation")</span></caption>
     <tr class="section">
-        <td class="bold" id="additional-information-code">@messages("declaration.summary.items.item.additionalInformation.code")</td>
-        <td class="bold" id="additional-information-information">@messages("declaration.summary.items.item.additionalInformation.information")</td>
+        <td class="bold"><span id="additional-information-code">@messages("declaration.summary.items.item.additionalInformation.code")</span></td>
+        <td class="bold"><span id="additional-information-information">@messages("declaration.summary.items.item.additionalInformation.information")</span></td>
     </tr>
     @additionalInformation.zipWithIndex.map { case (information, index) =>
         <tr class="section">
-            <td id="additional-information-@index-code">@information.code</td>
-            <td id="additional-information-@index-information">@information.description</td>
+            <td><span id="additional-information-@index-code">@information.code</span></td>
+            <td><span id="additional-information-@index-information">@information.description</span></td>
         </tr>
     }
 }

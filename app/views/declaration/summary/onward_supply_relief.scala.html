@@ -22,13 +22,13 @@
 
 @(itemId: Int, fiscalInformation: Option[FiscalInformation], additionalFiscalReferences: Seq[AdditionalFiscalReference])(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
-@components.table_row(s"item-$itemId-onwardSupplyRelief-label", HtmlTableRow(
+@components.table_row(s"item-$itemId-onwardSupplyRelief", HtmlTableRow(
     label = messages("declaration.summary.items.item.onwardSupplyRelief"),
     value = fiscalInformation.map(_.onwardSupplyRelief).getOrElse("")
 ))
 
 @if(fiscalInformation.map(_.onwardSupplyRelief) == Some(yes)) {
-    @components.table_row(s"item-$itemId-VATdetails-label", HtmlTableRow(
+    @components.table_row(s"item-$itemId-VATdetails", HtmlTableRow(
         label = messages("declaration.summary.items.item.VATdetails"),
         value = additionalFiscalReferences.map(_.asString).mkString(", ")
     ))

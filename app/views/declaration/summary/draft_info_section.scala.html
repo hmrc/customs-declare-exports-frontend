@@ -21,18 +21,18 @@
 @(declarationData: ExportsDeclaration)(implicit messages: Messages, appConfig: AppConfig)
 
 <div id="draft-information">
-    <p>@messages("declaration.summary.draft")</p>
+    <span id="draft-info-header">@messages("declaration.summary.draft")</span>
 
     @components.summary_list(None) {
-        @components.table_row("draft-ducr-label", HtmlTableRow(
+        @components.table_row("draft-ducr", HtmlTableRow(
             label = messages("declaration.summary.draft.ducr"),
             value = declarationData.consignmentReferences.map(_.ducr.ducr).toSeq
         ))
-        @components.table_row("draft-createdDate-label", HtmlTableRow(
+        @components.table_row("draft-createdDate", HtmlTableRow(
             label = messages("declaration.summary.draft.createdDate"),
             value = Seq(ViewDates.formatDateAtTime(declarationData.createdDateTime))
         ))
-        @components.table_row("draft-expireDate-label", HtmlTableRow(
+        @components.table_row("draft-expireDate", HtmlTableRow(
             label = messages("declaration.summary.draft.expireDate"),
             value = Seq(ViewDates.formatDateAtTime(declarationData.updatedDateTime.plusSeconds(appConfig.draftTimeToLive.toSeconds)))
         ))

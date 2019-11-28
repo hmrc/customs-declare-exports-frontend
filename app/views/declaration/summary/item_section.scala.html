@@ -21,8 +21,8 @@
 @(item: ExportItem)(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
 <div id="item-@item.sequenceId">
-    <caption class="heading-small">@messages("declaration.summary.items.item.sequenceId", item.sequenceId)</caption>
-    @components.table_row(s"item-${item.sequenceId}-procedureCode-label", HtmlTableRow(
+    <caption class="heading-small"><span id="item-@item.sequenceId-header">@messages("declaration.summary.items.item.sequenceId", item.sequenceId)</span></caption>
+    @components.table_row(s"item-${item.sequenceId}-procedureCode", HtmlTableRow(
         label = messages("declaration.summary.items.item.procedureCode"),
         value = item.procedureCodes.map(_.summaryValue).getOrElse("")
     ))
