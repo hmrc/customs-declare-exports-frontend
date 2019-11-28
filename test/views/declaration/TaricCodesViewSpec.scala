@@ -83,14 +83,11 @@ class TaricCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wi
   }
 
   "Taric Code View on empty page" when {
-    "we are on Standard journey" should {
-      behave like taricCodeView(DeclarationType.STANDARD)
-    }
-    "we are on Supplementary journey" should {
-      behave like taricCodeView(DeclarationType.SUPPLEMENTARY)
-    }
-    "we are on Simplified journey" should {
-      behave like taricCodeView(DeclarationType.SIMPLIFIED)
+
+    for (decType <- DeclarationType.values) {
+      s"we are on $decType journey" should {
+        behave like taricCodeView(decType)
+      }
     }
   }
 
@@ -98,14 +95,10 @@ class TaricCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wi
     val taricCode = Some(TaricCode("1234"))
     val existingCodes = List(TaricCode("ABCD"), TaricCode("4321"))
 
-    "we are on Standard journey" should {
-      behave like taricCodeView(DeclarationType.STANDARD, taricCode, existingCodes)
-    }
-    "we are on Supplementary journey" should {
-      behave like taricCodeView(DeclarationType.SUPPLEMENTARY, taricCode, existingCodes)
-    }
-    "we are on Simplified journey" should {
-      behave like taricCodeView(DeclarationType.SIMPLIFIED, taricCode, existingCodes)
+    for (decType <- DeclarationType.values) {
+      s"we are on $decType journey" should {
+        behave like taricCodeView(decType, taricCode, existingCodes)
+      }
     }
   }
 }

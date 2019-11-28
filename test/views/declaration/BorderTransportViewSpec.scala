@@ -173,5 +173,22 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
       behave like borderView(view)
       behave like havingMeansOfTransport(view)
     }
+
+    "we are on Occasional journey" should {
+      val requestOnSimplified = journeyRequest(DeclarationType.OCCASIONAL)
+      val view = createView(request = requestOnSimplified)
+
+      "display 'Back' button that links to 'Supervising Customs Office' page" in {
+        val viewForStandard = view
+        val backButton = viewForStandard.getElementById("back-link")
+
+        backButton must containText(realMessages(backCaption))
+        backButton.getElementById("back-link") must haveHref(
+          controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal)
+        )
+      }
+      behave like borderView(view)
+      behave like havingMeansOfTransport(view)
+    }
   }
 }

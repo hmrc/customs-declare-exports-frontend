@@ -186,26 +186,24 @@ class NactCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
           verifyPageInvoked(0)
         }
 
-      "we are on standard journey" should {
-        behave like controllerRedirectsToNextPage(
-          DeclarationType.STANDARD,
-          controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, "itemId")
-        )
+      for (decType <- Set(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)) {
+        s"we are on $decType journey" should {
+          behave like controllerRedirectsToNextPage(
+            decType,
+            controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, "itemId")
+          )
+        }
       }
 
-      "we are on simplified journey" should {
-        behave like controllerRedirectsToNextPage(
-          DeclarationType.SIMPLIFIED,
-          controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, "itemId")
-        )
+      for (decType <- Set(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)) {
+        s"we are on $decType journey" should {
+          behave like controllerRedirectsToNextPage(
+            decType,
+            controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, "itemId")
+          )
+        }
       }
 
-      "we are on supplementary journey" should {
-        behave like controllerRedirectsToNextPage(
-          DeclarationType.SUPPLEMENTARY,
-          controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, "itemId")
-        )
-      }
     }
   }
 }

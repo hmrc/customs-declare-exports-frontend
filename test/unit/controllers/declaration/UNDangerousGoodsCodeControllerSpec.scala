@@ -125,16 +125,10 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
           verify(mockPage, times(0)).apply(any(), any(), any())(any(), any())
         }
 
-      "we are on standard journey" should {
-        behave like controllerRedirectsToNextPage(DeclarationType.STANDARD)
-      }
-
-      "we are on simplified journey" should {
-        behave like controllerRedirectsToNextPage(DeclarationType.SIMPLIFIED)
-      }
-
-      "we are on supplementary journey" should {
-        behave like controllerRedirectsToNextPage(DeclarationType.SUPPLEMENTARY)
+      for (decType <- DeclarationType.values) {
+        s"we are on $decType journey" should {
+          behave like controllerRedirectsToNextPage(decType)
+        }
       }
     }
   }

@@ -115,19 +115,15 @@ class TransportPaymentControllerSpec extends ControllerSpec {
           verify(transportPaymentPage, times(0)).apply(any(), any())(any(), any())
         }
 
-      "we are on standard journey" should {
-        behave like controllerRedirectsToNextPage(
-          DeclarationType.STANDARD,
-          controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
-        )
+      for (decType <- DeclarationType.values) {
+        s"we are on $decType journey" should {
+          behave like controllerRedirectsToNextPage(
+            decType,
+            controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
+          )
+        }
       }
 
-      "we are on simplified journey" should {
-        behave like controllerRedirectsToNextPage(
-          DeclarationType.SIMPLIFIED,
-          controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
-        )
-      }
     }
   }
 }

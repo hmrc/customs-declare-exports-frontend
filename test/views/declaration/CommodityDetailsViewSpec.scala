@@ -18,8 +18,8 @@ package views.declaration
 
 import forms.declaration.CommodityDetails
 import helpers.views.declaration.CommonMessages
-import models.DeclarationType.{DeclarationType, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
-import models.Mode
+import models.DeclarationType.DeclarationType
+import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
@@ -73,14 +73,10 @@ class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
 
   "Commodity Details View on empty page" when {
 
-    "we are on Standard journey" should {
-      behave like commodityDetailsView(STANDARD, CommodityDetails.form(STANDARD))
-    }
-    "we are on Supplementary journey" should {
-      behave like commodityDetailsView(SUPPLEMENTARY, CommodityDetails.form(SUPPLEMENTARY))
-    }
-    "we are on Simplified journey" should {
-      behave like commodityDetailsView(SIMPLIFIED, CommodityDetails.form(SIMPLIFIED))
+    for (decType <- DeclarationType.values) {
+      s"we are on $decType journey" should {
+        behave like commodityDetailsView(decType, CommodityDetails.form(decType))
+      }
     }
   }
 
@@ -88,14 +84,10 @@ class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
 
     val details = Some(CommodityDetails(Some("12345678"), "Description"))
 
-    "we are on Standard journey" should {
-      behave like commodityDetailsView(STANDARD, CommodityDetails.form(STANDARD), details)
-    }
-    "we are on Supplementary journey" should {
-      behave like commodityDetailsView(SUPPLEMENTARY, CommodityDetails.form(SUPPLEMENTARY), details)
-    }
-    "we are on Simplified journey" should {
-      behave like commodityDetailsView(SIMPLIFIED, CommodityDetails.form(SIMPLIFIED), details)
+    for (decType <- DeclarationType.values) {
+      s"we are on $decType journey" should {
+        behave like commodityDetailsView(decType, CommodityDetails.form(decType), details)
+      }
     }
   }
 }

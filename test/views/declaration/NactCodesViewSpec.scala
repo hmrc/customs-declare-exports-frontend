@@ -83,29 +83,24 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
   }
 
   "NACT Code View on empty page" when {
-    "we are on Standard journey" should {
-      behave like nactCodeView(DeclarationType.STANDARD)
+
+    for (decType <- DeclarationType.values) {
+      s"we are on $decType journey" should {
+        behave like nactCodeView(decType)
+      }
     }
-    "we are on Supplementary journey" should {
-      behave like nactCodeView(DeclarationType.SUPPLEMENTARY)
-    }
-    "we are on Simplified journey" should {
-      behave like nactCodeView(DeclarationType.SIMPLIFIED)
-    }
+
   }
 
   "NACT Code View on populated page" when {
     val nactCode = Some(NactCode("1234"))
     val existingCodes = List(NactCode("ABCD"), NactCode("4321"))
 
-    "we are on Standard journey" should {
-      behave like nactCodeView(DeclarationType.STANDARD, nactCode, existingCodes)
+    for (decType <- DeclarationType.values) {
+      s"we are on $decType journey" should {
+        behave like nactCodeView(decType, nactCode, existingCodes)
+      }
     }
-    "we are on Supplementary journey" should {
-      behave like nactCodeView(DeclarationType.SUPPLEMENTARY, nactCode, existingCodes)
-    }
-    "we are on Simplified journey" should {
-      behave like nactCodeView(DeclarationType.SIMPLIFIED, nactCode, existingCodes)
-    }
+
   }
 }

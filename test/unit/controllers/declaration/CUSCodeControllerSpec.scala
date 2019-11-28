@@ -118,17 +118,12 @@ class CUSCodeControllerSpec extends ControllerSpec {
           verify(mockPage, times(0)).apply(any(), any(), any())(any(), any())
         }
 
-      "we are on standard journey" should {
-        behave like controllerRedirectsToNextPage(DeclarationType.STANDARD)
+      for (decType <- DeclarationType.values) {
+        s"we are on $decType journey" should {
+          behave like controllerRedirectsToNextPage(decType)
+        }
       }
 
-      "we are on simplified journey" should {
-        behave like controllerRedirectsToNextPage(DeclarationType.SIMPLIFIED)
-      }
-
-      "we are on supplementary journey" should {
-        behave like controllerRedirectsToNextPage(DeclarationType.SUPPLEMENTARY)
-      }
     }
   }
 }
