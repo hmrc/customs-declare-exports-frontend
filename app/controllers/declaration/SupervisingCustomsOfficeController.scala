@@ -66,7 +66,7 @@ class SupervisingCustomsOfficeController @Inject()(
       case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
         controllers.declaration.routes.InlandTransportDetailsController.displayPage(mode)
       case DeclarationType.SIMPLIFIED =>
-        controllers.declaration.routes.BorderTransportController.displayPage(mode)
+        controllers.declaration.routes.TransportPaymentController.displayPage(mode)
     }
 
   private def updateCache(formData: SupervisingCustomsOffice)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =

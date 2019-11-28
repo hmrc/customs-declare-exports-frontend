@@ -70,11 +70,11 @@ object Navigator {
     case SupervisingCustomsOffice  => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case InlandModeOfTransportCode => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case WarehouseIdentification   => controllers.declaration.routes.ItemsSummaryController.displayPage
-    case _                         => throw new IllegalArgumentException("Navigator back-link route not implemented")
+    case page                      => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
   val standardItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
     case PackageInformation => controllers.declaration.routes.StatisticalValueController.displayPage
-    case _                  => throw new IllegalArgumentException("Navigator back-link route not implemented")
+    case page               => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
 
   val supplementary: PartialFunction[DeclarationPage, Mode => Call] = {
@@ -87,16 +87,15 @@ object Navigator {
     case SupervisingCustomsOffice  => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case InlandModeOfTransportCode => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case WarehouseIdentification   => controllers.declaration.routes.ItemsSummaryController.displayPage
-    case _                         => throw new IllegalArgumentException("Navigator back-link route not implemented")
+    case page                      => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
   }
   val supplementaryItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
     case PackageInformation => controllers.declaration.routes.StatisticalValueController.displayPage
-    case _                  => throw new IllegalArgumentException("Navigator back-link route not implemented")
+    case page               => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
   }
 
   val simplified: PartialFunction[DeclarationPage, Mode => Call] = {
-    case BorderTransport           => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
-    case TransportPayment          => controllers.declaration.routes.BorderTransportController.displayPage
+    case TransportPayment          => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case ContainerFirst            => controllers.declaration.routes.TransportPaymentController.displayPage
     case ContainerAdd              => controllers.declaration.routes.TransportContainerController.displayContainerSummary
     case Document                  => controllers.declaration.routes.OfficeOfExitController.displayPage
@@ -107,11 +106,12 @@ object Navigator {
     case SupervisingCustomsOffice  => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case InlandModeOfTransportCode => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case WarehouseIdentification   => controllers.declaration.routes.ItemsSummaryController.displayPage
-    case _                         => throw new IllegalArgumentException("Navigator back-link route not implemented")
+    case page                      => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
   }
+
   val simplifiedItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
     case PackageInformation => controllers.declaration.routes.NactCodeController.displayPage
-    case _                  => throw new IllegalArgumentException("Navigator back-link route not implemented")
+    case page               => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
   }
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =

@@ -19,8 +19,8 @@ package views.declaration
 import base.Injector
 import forms.declaration.BorderTransport
 import helpers.views.declaration.CommonMessages
+import models.Mode
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -68,7 +68,16 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
     }
   }
 
-  def havingMeansOfTransport(view: Document): Unit =
+  val havingMeansOfTransport: Document => Unit = (view: Document) => {
+    def hasSectionFor(view: Document, transportType: String) = {
+      view
+        .getElementById(s"$transportType-label") must containText(realMessages(s"declaration.transportInformation.meansOfTransport.$transportType"))
+      view
+        .getElementById(s"borderTransportReference_$transportType-label") must containText(
+        realMessages(s"declaration.transportInformation.meansOfTransport.$transportType.label")
+      )
+    }
+
     "display 'Means of Transport' section" which {
       "nationality picker" in {
         view
@@ -113,24 +122,15 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
         hasSectionFor(view, "nameOfInlandWaterwayVessel")
       }
     }
-
-  private def hasSectionFor(view: Document, transportType: String) = {
-    view
-      .getElementById(s"$transportType-label") must containText(realMessages(s"declaration.transportInformation.meansOfTransport.$transportType"))
-    view
-      .getElementById(s"borderTransportReference_$transportType-label") must containText(
-      realMessages(s"declaration.transportInformation.meansOfTransport.$transportType.label")
-    )
   }
 
   private def createView(mode: Mode = Mode.Normal, form: Form[BorderTransport] = form, request: JourneyRequest[_] = journeyRequest()): Document =
     page(mode, form)(request, realMessages)
 
-  "TransportDetails View" when {
-    "we are on Standard journey" should {
-      val requrestOnStandard = journeyRequest(DeclarationType.STANDARD)
+  "TransportDetails View" must {
 
-      val view = createView(request = requrestOnStandard)
+    onStandard { standard =>
+      val view = createView(request = standard)
       "display 'Back' button that links to 'Departure' page" in {
         val backButton = view.getElementById("back-link")
 
@@ -142,9 +142,8 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
       behave like havingMeansOfTransport(view)
     }
 
-    "we are on Supplementary journey" should {
-      val requrestOnSupplementary = journeyRequest(DeclarationType.SUPPLEMENTARY)
-      val view = createView(request = requrestOnSupplementary)
+    onSupplementary { supplementary =>
+      val view = createView(request = supplementary)
 
       "display 'Back' button that links to 'Departure' page" in {
         val backButton = view.getElementById("back-link")
@@ -155,23 +154,6 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
 
       behave like havingMeansOfTransport(view)
       behave like borderView(view)
-    }
-
-    "we are on Simplified journey" should {
-      val requestOnSimplified = journeyRequest(DeclarationType.SIMPLIFIED)
-      val view = createView(request = requestOnSimplified)
-
-      "display 'Back' button that links to 'Supervising Customs Office' page" in {
-        val viewForStandard = view
-        val backButton = viewForStandard.getElementById("back-link")
-
-        backButton must containText(realMessages(backCaption))
-        backButton.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage(Mode.Normal)
-        )
-      }
-      behave like borderView(view)
-      behave like havingMeansOfTransport(view)
     }
   }
 }
