@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.12
+// @version      1.13
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -68,7 +68,7 @@ function completePage() {
     }
     if(currentPageIs("/customs-declare-exports/choice")){
         document.getElementById("CRT").checked = true
-        document.getElementsByClassName('button')[0].click()
+        document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("/customs-declare-exports/declaration/declaration-choice")){
         selectRadioOption(document.getElementById("type"), 0);
