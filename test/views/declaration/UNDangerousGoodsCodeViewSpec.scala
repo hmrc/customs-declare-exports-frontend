@@ -69,28 +69,21 @@ class UNDangerousGoodsCodeViewSpec extends UnitViewSpec with ExportsTestData wit
   }
 
   "UN Dangerous Goods Code View on empty page" when {
-    "we are on Standard journey" should {
-      behave like uNDangerousGoodsCodeView(DeclarationType.STANDARD)
-    }
-    "we are on Supplementary journey" should {
-      behave like uNDangerousGoodsCodeView(DeclarationType.SUPPLEMENTARY)
-    }
-    "we are on Simplified journey" should {
-      behave like uNDangerousGoodsCodeView(DeclarationType.SIMPLIFIED)
+
+    for (decType <- DeclarationType.values) {
+      s"we are on $decType journey" should {
+        behave like uNDangerousGoodsCodeView(decType)
+      }
     }
   }
 
   "UN Dangerous Goods Code View on populated page" when {
     val dangerousGoodsCode = Some(UNDangerousGoodsCode(Some("1234")))
 
-    "we are on Standard journey" should {
-      behave like uNDangerousGoodsCodeView(DeclarationType.STANDARD, dangerousGoodsCode)
-    }
-    "we are on Supplementary journey" should {
-      behave like uNDangerousGoodsCodeView(DeclarationType.SUPPLEMENTARY, dangerousGoodsCode)
-    }
-    "we are on Simplified journey" should {
-      behave like uNDangerousGoodsCodeView(DeclarationType.SIMPLIFIED, dangerousGoodsCode)
+    for (decType <- DeclarationType.values) {
+      s"we are on $decType journey" should {
+        behave like uNDangerousGoodsCodeView(decType, dangerousGoodsCode)
+      }
     }
   }
 }

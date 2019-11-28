@@ -28,6 +28,10 @@ class AdditionalDeclarationTypeSpec extends WordSpec with MustMatchers {
       Json.toJson(AdditionalDeclarationType.STANDARD_PRE_LODGED) mustBe JsString("D")
       Json.toJson(AdditionalDeclarationType.SUPPLEMENTARY_SIMPLIFIED) mustBe JsString("Y")
       Json.toJson(AdditionalDeclarationType.SUPPLEMENTARY_EIDR) mustBe JsString("Z")
+      Json.toJson(AdditionalDeclarationType.SIMPLIFIED_FRONTIER) mustBe JsString("C")
+      Json.toJson(AdditionalDeclarationType.SIMPLIFIED_PRE_LODGED) mustBe JsString("F")
+      Json.toJson(AdditionalDeclarationType.OCCASIONAL_FRONTIER) mustBe JsString("B")
+      Json.toJson(AdditionalDeclarationType.OCCASIONAL_PRE_LODGED) mustBe JsString("E")
     }
 
     "map from json" in {
@@ -35,6 +39,11 @@ class AdditionalDeclarationTypeSpec extends WordSpec with MustMatchers {
       Json.fromJson[AdditionalDeclarationType](JsString("D")) mustBe JsSuccess(AdditionalDeclarationType.STANDARD_PRE_LODGED)
       Json.fromJson[AdditionalDeclarationType](JsString("Y")) mustBe JsSuccess(AdditionalDeclarationType.SUPPLEMENTARY_SIMPLIFIED)
       Json.fromJson[AdditionalDeclarationType](JsString("Z")) mustBe JsSuccess(AdditionalDeclarationType.SUPPLEMENTARY_EIDR)
+      Json.fromJson[AdditionalDeclarationType](JsString("C")) mustBe JsSuccess(AdditionalDeclarationType.SIMPLIFIED_FRONTIER)
+      Json.fromJson[AdditionalDeclarationType](JsString("F")) mustBe JsSuccess(AdditionalDeclarationType.SIMPLIFIED_PRE_LODGED)
+      Json.fromJson[AdditionalDeclarationType](JsString("B")) mustBe JsSuccess(AdditionalDeclarationType.OCCASIONAL_FRONTIER)
+      Json.fromJson[AdditionalDeclarationType](JsString("E")) mustBe JsSuccess(AdditionalDeclarationType.OCCASIONAL_PRE_LODGED)
+
       Json.fromJson[AdditionalDeclarationType](JsString("other")) mustBe an[JsError]
     }
   }

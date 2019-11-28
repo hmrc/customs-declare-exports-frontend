@@ -65,7 +65,7 @@ class SupervisingCustomsOfficeController @Inject()(
     request.declarationType match {
       case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
         controllers.declaration.routes.InlandTransportDetailsController.displayPage(mode)
-      case DeclarationType.SIMPLIFIED =>
+      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
         controllers.declaration.routes.TransportPaymentController.displayPage(mode)
     }
 

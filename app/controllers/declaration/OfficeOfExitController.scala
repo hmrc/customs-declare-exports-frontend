@@ -20,8 +20,8 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitStandard, OfficeOfExitSupplementary}
 import javax.inject.Inject
-import models.{DeclarationType, ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -47,8 +47,8 @@ class OfficeOfExitController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.declarationType match {
-      case DeclarationType.SUPPLEMENTARY                         => Ok(supplementaryPage(mode))
-      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED => Ok(standardPage(mode))
+      case DeclarationType.SUPPLEMENTARY                                                      => Ok(supplementaryPage(mode))
+      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL => Ok(standardPage(mode))
     }
   }
 
@@ -66,8 +66,8 @@ class OfficeOfExitController @Inject()(
 
   def saveOffice(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     request.declarationType match {
-      case DeclarationType.SUPPLEMENTARY                         => saveSupplementaryOffice(mode)
-      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED => saveStandardOffice(mode)
+      case DeclarationType.SUPPLEMENTARY                                                      => saveSupplementaryOffice(mode)
+      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL => saveStandardOffice(mode)
     }
   }
 
@@ -105,7 +105,7 @@ class OfficeOfExitController @Inject()(
     request.declarationType match {
       case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
         controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode)
-      case DeclarationType.SIMPLIFIED =>
+      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
         controllers.declaration.routes.PreviousDocumentsController.displayPage(mode)
     }
 }

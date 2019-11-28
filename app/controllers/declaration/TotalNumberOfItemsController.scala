@@ -62,7 +62,7 @@ class TotalNumberOfItemsController @Inject()(
     request.declarationType match {
       case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
         controllers.declaration.routes.NatureOfTransactionController.displayPage(mode)
-      case DeclarationType.SIMPLIFIED =>
+      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
         controllers.declaration.routes.PreviousDocumentsController.displayPage(mode)
     }
 

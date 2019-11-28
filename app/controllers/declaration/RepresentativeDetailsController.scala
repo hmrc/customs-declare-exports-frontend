@@ -64,7 +64,7 @@ class RepresentativeDetailsController @Inject()(
     request.declarationType match {
       case DeclarationType.SUPPLEMENTARY =>
         controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage(mode)
-      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED =>
+      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
         controllers.declaration.routes.CarrierDetailsController.displayPage(mode)
     }
 

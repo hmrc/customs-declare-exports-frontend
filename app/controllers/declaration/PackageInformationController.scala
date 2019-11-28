@@ -98,7 +98,7 @@ class PackageInformationController @Inject()(
     request.declarationType match {
       case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
         controllers.declaration.routes.CommodityMeasureController.displayPage(mode, itemId)
-      case DeclarationType.SIMPLIFIED =>
+      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
         controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId)
     }
 

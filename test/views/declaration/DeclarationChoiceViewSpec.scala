@@ -44,7 +44,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with ChoiceMessages with Co
   "Declaration Choice View on empty page" should {
 
     "display same page title as header" in {
-      val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+      val viewWithMessage = createView(messages = validatedMessages(request))
       viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
     }
 
@@ -53,9 +53,10 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with ChoiceMessages with Co
       val view = createView(DeclarationChoice.form())
       ensureAllLabelTextIsCorrect(view)
 
-      ensureRadioIsUnChecked(view, "Supplementary declaration")
-      ensureRadioIsUnChecked(view, "Standard declaration")
-      ensureRadioIsUnChecked(view, "Simplified declaration")
+      ensureRadioIsUnChecked(view, "SUPPLEMENTARY")
+      ensureRadioIsUnChecked(view, "STANDARD")
+      ensureRadioIsUnChecked(view, "SIMPLIFIED")
+      ensureRadioIsUnChecked(view, "OCCASIONAL")
     }
 
     "display 'Back' button that links to 'Choice' page" in {
@@ -104,17 +105,19 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with ChoiceMessages with Co
       val view = createView(DeclarationChoice.form().fill(DeclarationChoice(DeclarationType.SUPPLEMENTARY)))
       ensureAllLabelTextIsCorrect(view)
 
-      ensureRadioIsChecked(view, "Supplementary declaration")
-      ensureRadioIsUnChecked(view, "Standard declaration")
-      ensureRadioIsUnChecked(view, "Simplified declaration")
+      ensureRadioIsChecked(view, "SUPPLEMENTARY")
+      ensureRadioIsUnChecked(view, "STANDARD")
+      ensureRadioIsUnChecked(view, "SIMPLIFIED")
+      ensureRadioIsUnChecked(view, "OCCASIONAL")
     }
 
   }
   private def ensureAllLabelTextIsCorrect(view: Document): Unit = {
-    view.getElementsByTag("label").size mustBe 3
-    view.getElementById("Standard declaration-label").text() mustBe "declaration.type.standard"
-    view.getElementById("Supplementary declaration-label").text() mustBe "declaration.type.supplementary"
-    view.getElementById("Simplified declaration-label").text() mustBe "declaration.type.simplified"
+    view.getElementsByTag("label").size mustBe 4
+    view.getElementById("STANDARD-label").text() mustBe "declaration.type.standard"
+    view.getElementById("SUPPLEMENTARY-label").text() mustBe "declaration.type.supplementary"
+    view.getElementById("SIMPLIFIED-label").text() mustBe "declaration.type.simplified"
+    view.getElementById("OCCASIONAL-label").text() mustBe "declaration.type.occasional"
   }
 
   private def ensureRadioIsChecked(view: Document, elementId: String): Unit = {

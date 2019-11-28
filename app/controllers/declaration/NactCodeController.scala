@@ -24,9 +24,8 @@ import forms.declaration.NactCode
 import forms.declaration.NactCode.{form, nactCodeLimit}
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.DeclarationType.{SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -103,9 +102,10 @@ class NactCodeController @Inject()(
 
   private def nextPage(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]) =
     request.declarationType match {
-      case SUPPLEMENTARY | STANDARD =>
+      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
         controllers.declaration.routes.StatisticalValueController.displayPage(mode, itemId)
-      case SIMPLIFIED => controllers.declaration.routes.PackageInformationController.displayPage(mode, itemId)
+      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
+        controllers.declaration.routes.PackageInformationController.displayPage(mode, itemId)
     }
 
   private def updateExportsCache(itemId: String, updatedCache: Seq[NactCode])(

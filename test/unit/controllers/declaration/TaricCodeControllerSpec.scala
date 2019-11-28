@@ -98,16 +98,10 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
         }
       }
 
-      "we are on standard journey" should {
-        behave like controllerDisplaysPage(DeclarationType.STANDARD)
-      }
-
-      "we are on simplified journey" should {
-        behave like controllerDisplaysPage(DeclarationType.SIMPLIFIED)
-      }
-
-      "we are on supplementary journey" should {
-        behave like controllerDisplaysPage(DeclarationType.SUPPLEMENTARY)
+      for (decType <- DeclarationType.values) {
+        s"we are on $decType journey" should {
+          behave like controllerDisplaysPage(decType)
+        }
       }
     }
 
@@ -153,17 +147,10 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
           verifyPageInvoked()
         }
       }
-
-      "we are on standard journey" should {
-        behave like controllerErrors(DeclarationType.STANDARD)
-      }
-
-      "we are on simplified journey" should {
-        behave like controllerErrors(DeclarationType.SIMPLIFIED)
-      }
-
-      "we are on supplementary journey" should {
-        behave like controllerErrors(DeclarationType.SUPPLEMENTARY)
+      for (decType <- DeclarationType.values) {
+        s"we are on $decType journey" should {
+          behave like controllerErrors(decType)
+        }
       }
     }
 
@@ -183,16 +170,10 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
           verifyPageInvoked(0)
         }
 
-      "we are on standard journey" should {
-        behave like controllerRedirectsToNextPage(DeclarationType.STANDARD)
-      }
-
-      "we are on simplified journey" should {
-        behave like controllerRedirectsToNextPage(DeclarationType.SIMPLIFIED)
-      }
-
-      "we are on supplementary journey" should {
-        behave like controllerRedirectsToNextPage(DeclarationType.SUPPLEMENTARY)
+      for (decType <- DeclarationType.values) {
+        s"we are on $decType journey" should {
+          behave like controllerRedirectsToNextPage(decType)
+        }
       }
     }
   }

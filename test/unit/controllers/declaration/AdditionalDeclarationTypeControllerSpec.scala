@@ -87,6 +87,16 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
 
           status(result) must be(OK)
         }
+
+        "during occasional journey" in new SetUp {
+          withNewCaching(
+            aDeclaration(withType(DeclarationType.OCCASIONAL), withAdditionalDeclarationType(AdditionalDeclarationType.OCCASIONAL_FRONTIER))
+          )
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) must be(OK)
+        }
       }
     }
   }
@@ -129,6 +139,16 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
         withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED)))
 
         val correctForm = Seq("additionalDeclarationType" -> "F", SaveAndContinue.toString -> "")
+        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.ConsignmentReferencesController.displayPage()
+      }
+
+      "during occasional journey" in new SetUp {
+        withNewCaching(aDeclaration(withType(DeclarationType.OCCASIONAL)))
+
+        val correctForm = Seq("additionalDeclarationType" -> "B", SaveAndContinue.toString -> "")
         val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage

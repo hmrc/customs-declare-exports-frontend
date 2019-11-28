@@ -20,12 +20,7 @@ import base.Injector
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
-import forms.declaration.additionaldeclarationtype.{
-  AdditionalDeclarationType,
-  AdditionalDeclarationTypeSimplifiedDec,
-  AdditionalDeclarationTypeStandardDec,
-  AdditionalDeclarationTypeSupplementaryDec
-}
+import forms.declaration.additionaldeclarationtype._
 import helpers.views.declaration.{CommonMessages, DeclarationTypeMessages}
 import models.DeclarationType.DeclarationType
 import models.{DeclarationType, Mode}
@@ -45,6 +40,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
   private val formStandard: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeStandardDec.form()
   private val formSupplementary: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeSupplementaryDec.form()
   private val formSimplified: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeSimplifiedDec.form()
+  private val formOccasional: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeOccasionalDec.form()
   private val declarationTypePage = new declaration_type(mainTemplate)
   private def createView(form: Form[AdditionalDeclarationType], journeyType: DeclarationType, messages: Messages = stubMessages()): Document =
     declarationTypePage(Mode.Normal, form)(journeyRequest(journeyType), messages)
@@ -65,6 +61,11 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
 
       "used for Simplified Declaration journey" in {
         val viewWithMessage = createView(formSimplified, DeclarationType.SIMPLIFIED, realMessagesApi.preferred(request))
+        viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
+      }
+
+      "used for Occasional Declaration journey" in {
+        val viewWithMessage = createView(formOccasional, DeclarationType.OCCASIONAL, realMessagesApi.preferred(request))
         viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
       }
     }
@@ -92,6 +93,13 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         backButton.text() mustBe messages(backCaption)
         backButton.attr("href") mustBe routes.DispatchLocationController.displayPage().url
       }
+
+      "used for Occasional Declaration journey" in {
+        val backButton = createView(formOccasional, DeclarationType.OCCASIONAL).getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.DispatchLocationController.displayPage().url
+      }
     }
 
     "display 'Save and continue' button" when {
@@ -108,6 +116,11 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
 
       "used for Simplified Declaration journey" in {
         val view: Document = createView(formSimplified, DeclarationType.SIMPLIFIED)
+        view.getElementById("submit").text() mustBe messages(saveAndContinueCaption)
+      }
+
+      "used for Occasional Declaration journey" in {
+        val view: Document = createView(formOccasional, DeclarationType.OCCASIONAL)
         view.getElementById("submit").text() mustBe messages(saveAndContinueCaption)
       }
     }
@@ -130,6 +143,13 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
 
       "used for Simplified Declaration journey" in {
         val view: Document = createView(formSimplified, DeclarationType.SIMPLIFIED)
+        val button = view.getElementById("submit_and_return")
+        button.text() mustBe messages(saveAndReturnCaption)
+        button must haveAttribute("name", SaveAndReturn.toString)
+      }
+
+      "used for Occasional Declaration journey" in {
+        val view: Document = createView(formOccasional, DeclarationType.OCCASIONAL)
         val button = view.getElementById("submit_and_return")
         button.text() mustBe messages(saveAndReturnCaption)
         button must haveAttribute("name", SaveAndReturn.toString)
@@ -157,6 +177,13 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         val view = createView(formSimplified, DeclarationType.SIMPLIFIED)
 
         view.getElementById("title").text() mustBe messages(headerSimplifiedDec)
+      }
+
+      "used for Occasional Declaration journey" in {
+
+        val view = createView(formOccasional, DeclarationType.OCCASIONAL)
+
+        view.getElementById("title").text() mustBe messages(headerOccasionalDec)
       }
     }
 
@@ -212,6 +239,23 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         val optionTwoLabel = view.getElementById("Frontier-label")
         optionTwoLabel.text() mustBe messages(simplifiedFrontier)
       }
+
+      "used for Occasional Declaration journey" in {
+
+        val view = createView(formOccasional, DeclarationType.OCCASIONAL)
+
+        val optionOne = view.getElementById("PreLodged")
+        optionOne.attr("checked") mustBe empty
+
+        val optionOneLabel = view.getElementById("PreLodged-label")
+        optionOneLabel.text() mustBe messages(occasionalPreLodged)
+
+        val optionTwo = view.getElementById("Frontier")
+        optionTwo.attr("checked") mustBe empty
+
+        val optionTwoLabel = view.getElementById("Frontier-label")
+        optionTwoLabel.text() mustBe messages(occasionalFrontier)
+      }
     }
 
   }
@@ -249,6 +293,16 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
 
         view.select("#error-message-additionalDeclarationType-input").text() mustBe messages(errorMessageEmpty)
       }
+
+      "used for Occasional Declaration journey" in {
+
+        val view = createView(formOccasional.bind(Map[String, String]()), DeclarationType.OCCASIONAL)
+
+        checkErrorsSummary(view)
+        view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
+
+        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages(errorMessageEmpty)
+      }
     }
 
     "display error if incorrect declaration is selected" when {
@@ -276,6 +330,16 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
       "used for Simplified Declaration journey" in {
 
         val view = createView(formSimplified.bind(Map("additionalDeclarationType" -> "#")), DeclarationType.SIMPLIFIED)
+
+        checkErrorsSummary(view)
+        view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
+
+        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages(errorMessageIncorrect)
+      }
+
+      "used for Occasional Declaration journey" in {
+
+        val view = createView(formOccasional.bind(Map("additionalDeclarationType" -> "#")), DeclarationType.OCCASIONAL)
 
         checkErrorsSummary(view)
         view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
@@ -322,6 +386,17 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         val optionTwo = view.getElementById("Frontier")
         optionTwo.attr("checked") mustBe empty
       }
+
+      "used for Occasional Declaration journey - Pre-lodged (E)" in {
+
+        val view = createView(formOccasional.fill(AdditionalDeclarationType.OCCASIONAL_PRE_LODGED), DeclarationType.OCCASIONAL)
+
+        val optionOne = view.getElementById("PreLodged")
+        optionOne.attr("checked") mustBe "checked"
+
+        val optionTwo = view.getElementById("Frontier")
+        optionTwo.attr("checked") mustBe empty
+      }
     }
 
     "display selected second radio button" when {
@@ -351,6 +426,17 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
       "used for Simplified Declaration journey - Frontier (C)" in {
 
         val view = createView(formSimplified.fill(AdditionalDeclarationType.SIMPLIFIED_FRONTIER), DeclarationType.SIMPLIFIED)
+
+        val optionOne = view.getElementById("PreLodged")
+        optionOne.attr("checked") mustBe empty
+
+        val optionTwo = view.getElementById("Frontier")
+        optionTwo.attr("checked") mustBe "checked"
+      }
+
+      "used for Occasional Declaration journey - Frontier (B)" in {
+
+        val view = createView(formOccasional.fill(AdditionalDeclarationType.OCCASIONAL_FRONTIER), DeclarationType.OCCASIONAL)
 
         val optionOne = view.getElementById("PreLodged")
         optionOne.attr("checked") mustBe empty

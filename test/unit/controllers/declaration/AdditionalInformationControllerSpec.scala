@@ -18,10 +18,9 @@ package unit.controllers.declaration
 
 import controllers.declaration.{routes, AdditionalInformationController}
 import controllers.util.Remove
-import forms.Choice
 import forms.declaration.AdditionalInformation
-import models.{DeclarationType, ExportsDeclaration, Mode}
 import models.declaration.{AdditionalInformationData, ExportItem}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
@@ -40,12 +39,6 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
     stubMessagesControllerComponents(),
     additionalInformationPage
   )(ec)
-
-  val standardDeclaration = aDeclaration(withType(DeclarationType.STANDARD))
-
-  val supplementaryDeclaration = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
-
-  val simplifiedDeclaration = aDeclaration(withType(DeclarationType.SIMPLIFIED))
 
   def journeyFor[A](declaration: ExportsDeclaration)(test: => A): A = {
     withNewCaching(declaration)
@@ -180,16 +173,11 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
   }
 
   "Additional information controller" when {
-    "we are on Supplementary journey" should {
-      behave like journeyPageController(supplementaryDeclaration)
-    }
 
-    "we are on Standard journey" should {
-      behave like journeyPageController(standardDeclaration)
-    }
-
-    "we are on Simplified journey" should {
-      behave like journeyPageController(simplifiedDeclaration)
+    for (decType <- DeclarationType.values) {
+      s"we are on $decType journey" should {
+        behave like journeyPageController(aDeclaration(withType(decType)))
+      }
     }
   }
 }
