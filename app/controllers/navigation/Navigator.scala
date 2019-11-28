@@ -57,67 +57,67 @@ case class ItemId(id: String)
 object Navigator {
 
   val standard: PartialFunction[DeclarationPage, Mode => Call] = {
-    case BorderTransport           => controllers.declaration.routes.DepartureTransportController.displayPage
-    case TransportPayment          => controllers.declaration.routes.BorderTransportController.displayPage
-    case ContainerFirst            => controllers.declaration.routes.TransportPaymentController.displayPage
-    case ContainerAdd              => controllers.declaration.routes.TransportContainerController.displayContainerSummary
-    case Document                  => controllers.declaration.routes.NatureOfTransactionController.displayPage
-    case OriginationCountryPage    => controllers.declaration.routes.DeclarationHolderController.displayPage
-    case DestinationCountryPage    => controllers.declaration.routes.OriginationCountryController.displayPage
-    case RoutingQuestionPage       => controllers.declaration.routes.DestinationCountryController.displayPage
-    case RemoveCountryPage         => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
-    case ChangeCountryPage         => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
-    case SupervisingCustomsOffice  => controllers.declaration.routes.WarehouseIdentificationController.displayPage
-    case InlandModeOfTransportCode => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
-    case WarehouseIdentification   => controllers.declaration.routes.ItemsSummaryController.displayPage
+    case BorderTransport             => controllers.declaration.routes.DepartureTransportController.displayPage
+    case TransportPayment            => controllers.declaration.routes.BorderTransportController.displayPage
+    case ContainerFirst              => controllers.declaration.routes.TransportPaymentController.displayPage
+    case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
+    case Document                    => controllers.declaration.routes.NatureOfTransactionController.displayPage
+    case OriginationCountryPage      => controllers.declaration.routes.DeclarationHolderController.displayPage
+    case DestinationCountryPage      => controllers.declaration.routes.OriginationCountryController.displayPage
+    case RoutingQuestionPage         => controllers.declaration.routes.DestinationCountryController.displayPage
+    case RemoveCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
+    case ChangeCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
+    case SupervisingCustomsOffice    => controllers.declaration.routes.WarehouseIdentificationController.displayPage
+    case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
+    case WarehouseIdentification     => controllers.declaration.routes.ItemsSummaryController.displayPage
     case DeclarationAdditionalActors => controllers.declaration.routes.CarrierDetailsController.displayPage
-    case page                      => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
+    case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
   val standardItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
-    case PackageInformation => controllers.declaration.routes.StatisticalValueController.displayPage
+    case PackageInformation    => controllers.declaration.routes.StatisticalValueController.displayPage
     case AdditionalInformation => controllers.declaration.routes.CommodityMeasureController.displayPage
-    case page               => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
+    case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
 
   val supplementary: PartialFunction[DeclarationPage, Mode => Call] = {
-    case BorderTransport           => controllers.declaration.routes.DepartureTransportController.displayPage
-    case ContainerFirst            => controllers.declaration.routes.BorderTransportController.displayPage
-    case ContainerAdd              => controllers.declaration.routes.TransportContainerController.displayContainerSummary
-    case Document                  => controllers.declaration.routes.NatureOfTransactionController.displayPage
-    case OriginationCountryPage    => controllers.declaration.routes.DeclarationHolderController.displayPage
-    case DestinationCountryPage    => controllers.declaration.routes.OriginationCountryController.displayPage
-    case SupervisingCustomsOffice  => controllers.declaration.routes.WarehouseIdentificationController.displayPage
-    case InlandModeOfTransportCode => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
-    case WarehouseIdentification   => controllers.declaration.routes.ItemsSummaryController.displayPage
+    case BorderTransport             => controllers.declaration.routes.DepartureTransportController.displayPage
+    case ContainerFirst              => controllers.declaration.routes.BorderTransportController.displayPage
+    case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
+    case Document                    => controllers.declaration.routes.NatureOfTransactionController.displayPage
+    case OriginationCountryPage      => controllers.declaration.routes.DeclarationHolderController.displayPage
+    case DestinationCountryPage      => controllers.declaration.routes.OriginationCountryController.displayPage
+    case SupervisingCustomsOffice    => controllers.declaration.routes.WarehouseIdentificationController.displayPage
+    case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
+    case WarehouseIdentification     => controllers.declaration.routes.ItemsSummaryController.displayPage
     case DeclarationAdditionalActors => controllers.declaration.routes.RepresentativeDetailsController.displayPage
-    case page                      => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
+    case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
   }
   val supplementaryItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
-    case PackageInformation => controllers.declaration.routes.StatisticalValueController.displayPage
+    case PackageInformation    => controllers.declaration.routes.StatisticalValueController.displayPage
     case AdditionalInformation => controllers.declaration.routes.CommodityMeasureController.displayPage
-    case page               => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
+    case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
   }
 
   val simplified: PartialFunction[DeclarationPage, Mode => Call] = {
     case BorderTransport             => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
-    case TransportPayment          => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
-    case ContainerFirst            => controllers.declaration.routes.TransportPaymentController.displayPage
-    case ContainerAdd              => controllers.declaration.routes.TransportContainerController.displayContainerSummary
-    case Document                  => controllers.declaration.routes.OfficeOfExitController.displayPage
-    case DestinationCountryPage    => controllers.declaration.routes.DeclarationHolderController.displayPage
-    case RoutingQuestionPage       => controllers.declaration.routes.DestinationCountryController.displayPage
-    case RemoveCountryPage         => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
-    case ChangeCountryPage         => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
-    case SupervisingCustomsOffice  => controllers.declaration.routes.WarehouseIdentificationController.displayPage
-    case InlandModeOfTransportCode => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
-    case WarehouseIdentification   => controllers.declaration.routes.ItemsSummaryController.displayPage
+    case TransportPayment            => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
+    case ContainerFirst              => controllers.declaration.routes.TransportPaymentController.displayPage
+    case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
+    case Document                    => controllers.declaration.routes.OfficeOfExitController.displayPage
+    case DestinationCountryPage      => controllers.declaration.routes.DeclarationHolderController.displayPage
+    case RoutingQuestionPage         => controllers.declaration.routes.DestinationCountryController.displayPage
+    case RemoveCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
+    case ChangeCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
+    case SupervisingCustomsOffice    => controllers.declaration.routes.WarehouseIdentificationController.displayPage
+    case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
+    case WarehouseIdentification     => controllers.declaration.routes.ItemsSummaryController.displayPage
     case DeclarationAdditionalActors => controllers.declaration.routes.CarrierDetailsController.displayPage
-    case page                      => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
+    case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
   }
   val simplifiedItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
-    case PackageInformation => controllers.declaration.routes.NactCodeController.displayPage
+    case PackageInformation    => controllers.declaration.routes.NactCodeController.displayPage
     case AdditionalInformation => controllers.declaration.routes.PackageInformationController.displayPage
-    case page               => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
+    case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
   }
 
   val occasional: PartialFunction[DeclarationPage, Mode => Call] = {
@@ -134,12 +134,12 @@ object Navigator {
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case WarehouseIdentification     => controllers.declaration.routes.ItemsSummaryController.displayPage
     case DeclarationAdditionalActors => controllers.declaration.routes.CarrierDetailsController.displayPage
-    case page                      => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
+    case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
   }
   val occasionalItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
     case PackageInformation    => controllers.declaration.routes.NactCodeController.displayPage
     case AdditionalInformation => controllers.declaration.routes.PackageInformationController.displayPage
-    case page               => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
+    case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
   }
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
