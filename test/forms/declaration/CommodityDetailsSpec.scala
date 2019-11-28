@@ -25,81 +25,86 @@ import play.api.libs.json.{JsObject, JsString}
 class CommodityDetailsSpec extends WordSpec with MustMatchers {
   import CommodityDetailsSpec._
 
-  "CommodityDetails mapping used for standard declaration" should {
+  "CommodityDetails mapping used for declarations where code required" should {
 
-    "return form with errors" when {
-      "provided with invalid commodity code" in {
-        val form = CommodityDetails.form(DeclarationType.STANDARD).bind(formData("A1234", "description"))
+    for (decType <- Set(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)) {
 
-        form.errors mustBe Seq(
-          FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.specialCharacters")
-        )
+      s"return form with errors for $decType" when {
+        "provided with invalid commodity code" in {
+          val form = CommodityDetails.form(decType).bind(formData("A1234", "description"))
+
+          form.errors mustBe Seq(
+            FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.specialCharacters")
+          )
+        }
+
+        "provided with commodity code too long" in {
+          val form = CommodityDetails.form(decType).bind(formData("1234567890", "description"))
+
+          form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
+        }
+
+        "provided with missing commodity code" in {
+          val form = CommodityDetails.form(decType).bind(formData("", "some text"))
+
+          form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.empty"))
+        }
+
+        "provided with missing description" in {
+          val form = CommodityDetails.form(decType).bind(formData("12345678", ""))
+
+          form.errors mustBe Seq(FormError(descriptionOfGoodsKey, "declaration.commodityDetails.description.error.empty"))
+        }
       }
 
-      "provided with commodity code too long" in {
-        val form = CommodityDetails.form(DeclarationType.STANDARD).bind(formData("1234567890", "description"))
+      s"return form without errors for $decType" when {
+        "provided with valid input" in {
+          val form = CommodityDetails.form(decType).bind(formData("12345678", "description"))
 
-        form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
+          form.hasErrors must be(false)
+        }
       }
-
-      "provided with missing commodity code" in {
-        val form = CommodityDetails.form(DeclarationType.STANDARD).bind(formData("", "some text"))
-
-        form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.empty"))
-      }
-
-      "provided with missing description" in {
-        val form = CommodityDetails.form(DeclarationType.STANDARD).bind(formData("12345678", ""))
-
-        form.errors mustBe Seq(FormError(descriptionOfGoodsKey, "declaration.commodityDetails.description.error.empty"))
-      }
-    }
-
-    "return form without errors" when {
-      "provided with valid input" in {
-        val form = CommodityDetails.form(DeclarationType.STANDARD).bind(formData("12345678", "description"))
-
-        form.hasErrors must be(false)
-      }
-
     }
   }
 
-  "CommodityDetails mapping used for simplified declaration" should {
+  "CommodityDetails mapping used for declarations where code is optional" should {
 
-    "return form with errors" when {
-      "provided with invalid commodity code" in {
-        val form = CommodityDetails.form(DeclarationType.SIMPLIFIED).bind(formData("#1234", "description"))
+    for (decType <- Set(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)) {
 
-        form.errors mustBe Seq(
-          FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.specialCharacters")
-        )
+      s"return form with errors for $decType" when {
+        "provided with invalid commodity code" in {
+          val form = CommodityDetails.form(decType).bind(formData("#1234", "description"))
+
+          form.errors mustBe Seq(
+            FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.specialCharacters")
+          )
+        }
+
+        "provided with commodity code too long" in {
+          val form = CommodityDetails.form(decType).bind(formData("1234567890", "description"))
+
+          form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
+        }
+
+        "provided with missing description" in {
+          val form = CommodityDetails.form(decType).bind(formData("12345678", ""))
+
+          form.errors mustBe Seq(FormError(descriptionOfGoodsKey, "declaration.commodityDetails.description.error.empty"))
+        }
       }
 
-      "provided with commodity code too long" in {
-        val form = CommodityDetails.form(DeclarationType.SIMPLIFIED).bind(formData("1234567890", "description"))
+      s"return form without errors for $decType" when {
+        "provided with valid input" in {
+          val form = CommodityDetails.form(decType).bind(formData("12345678", "description"))
 
-        form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
-      }
+          form.hasErrors must be(false)
+        }
 
-      "provided with missing description" in {
-        val form = CommodityDetails.form(DeclarationType.SIMPLIFIED).bind(formData("12345678", ""))
+        "provided with missing commodity code" in {
+          val form = CommodityDetails.form(decType).bind(formData("", "description"))
 
-        form.errors mustBe Seq(FormError(descriptionOfGoodsKey, "declaration.commodityDetails.description.error.empty"))
-      }
-    }
-
-    "return form without errors" when {
-      "provided with valid input" in {
-        val form = CommodityDetails.form(DeclarationType.SIMPLIFIED).bind(formData("12345678", "description"))
-
-        form.hasErrors must be(false)
-      }
-
-      "provided with missing commodity code" in {
-        val form = CommodityDetails.form(DeclarationType.SIMPLIFIED).bind(formData("", "description"))
-
-        form.hasErrors must be(false)
+          form.hasErrors must be(false)
+        }
       }
     }
   }
