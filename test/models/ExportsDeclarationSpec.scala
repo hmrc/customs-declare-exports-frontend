@@ -18,6 +18,7 @@ package models
 
 import java.time.{Clock, Instant, LocalDate, ZoneOffset}
 
+import models.declaration.ProcedureCodesData
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import services.cache.ExportsDeclarationBuilder
 
@@ -35,6 +36,21 @@ class ExportsDeclarationSpec extends WordSpec with MustMatchers with ExportsDecl
       amendedDeclaration.createdDateTime mustBe currentTime
       amendedDeclaration.updatedDateTime mustBe currentTime
       amendedDeclaration.sourceId.value mustBe declaration.id
+    }
+  }
+
+  "Update Item" should {
+    "preserve item sequence" in {
+
+      val declaration = aDeclaration(withItems(2))
+
+      declaration.items.map(_.sequenceId).toSeq must be(Seq(1, 2))
+
+      val firstId = declaration.items.head.id
+
+      val updatedDeclaration = declaration.updatedItem(firstId, item => item.copy(procedureCodes = Some(ProcedureCodesData(Some("code"), Seq.empty))))
+
+      updatedDeclaration.items.map(_.sequenceId).toSeq must be(Seq(1, 2))
     }
   }
 

@@ -56,7 +56,7 @@
             </thead>
             <tbody>
 
-         @items.sortBy(_.sequenceId).zipWithIndex.map { case (item, index) =>
+         @items.zipWithIndex.map { case (item, index) =>
                 <tr id="item_@index">
                     <td id="item_@index--sequence_id" scope="row">@item.sequenceId</td>
                     <td id="item_@index--procedure_code" scope="row">@item.procedureCodes.map(_.procedureCode).getOrElse("") </td>

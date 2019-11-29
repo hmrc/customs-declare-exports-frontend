@@ -135,7 +135,7 @@ trait ExportsDeclarationBuilder {
     _.copy(items = Set(item1) ++ others)
 
   def withItems(count: Int): ExportsDeclarationModifier =
-    cache => cache.copy(items = cache.items ++ (1 to count).map(_ => ExportItem(id = uuid)).toSet)
+    cache => cache.copy(items = cache.items ++ (1 to count).map(index => ExportItem(id = uuid, sequenceId = index)).toSet)
 
   private def uuid: String = UUID.randomUUID().toString
 

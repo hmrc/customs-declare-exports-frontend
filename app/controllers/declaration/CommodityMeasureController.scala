@@ -21,8 +21,8 @@ import controllers.navigation.Navigator
 import forms.declaration.CommodityMeasure
 import forms.declaration.CommodityMeasure.form
 import javax.inject.Inject
-import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -72,10 +72,6 @@ class CommodityMeasureController @Inject()(
     implicit r: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
-      val itemList = model.items
-        .find(item => item.id.equals(itemId))
-        .map(_.copy(commodityMeasure = Some(updatedItem)))
-        .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
-      model.copy(items = itemList)
+      model.updatedItem(itemId, item => item.copy(commodityMeasure = Some(updatedItem)))
     })
 }
