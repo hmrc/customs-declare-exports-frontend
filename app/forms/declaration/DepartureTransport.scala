@@ -23,11 +23,7 @@ import play.api.data.Forms.{mapping, optional, text}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator.{isContainedIn, noLongerThan, _}
 
-case class DepartureTransport(
-  borderModeOfTransportCode: String,
-  meansOfTransportOnDepartureType: String,
-  meansOfTransportOnDepartureIDNumber: String
-)
+case class DepartureTransport(borderModeOfTransportCode: String, meansOfTransportOnDepartureType: String, meansOfTransportOnDepartureIDNumber: String)
 
 object DepartureTransport {
 

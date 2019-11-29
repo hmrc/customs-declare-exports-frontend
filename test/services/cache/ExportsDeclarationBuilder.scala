@@ -201,7 +201,8 @@ trait ExportsDeclarationBuilder {
     cache => cache.copy(parties = cache.parties.copy(declarationAdditionalActorsData = Some(declarationAdditionalActorsData)))
 
   def withRepresentativeDetails(eori: Option[String], address: Option[Address], statusCode: Option[String]): ExportsDeclarationModifier =
-    cache => cache.copy(parties = cache.parties.copy(representativeDetails = Some(RepresentativeDetails(Some(EntityDetails(eori, address)), statusCode))))
+    cache =>
+      cache.copy(parties = cache.parties.copy(representativeDetails = Some(RepresentativeDetails(Some(EntityDetails(eori, address)), statusCode))))
 
   def withRepresentativeDetails(representativeDetails: RepresentativeDetails): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(representativeDetails = Some(representativeDetails)))

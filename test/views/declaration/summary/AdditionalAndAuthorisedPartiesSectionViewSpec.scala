@@ -48,10 +48,8 @@ class AdditionalAndAuthorisedPartiesSectionViewSpec extends UnitViewSpec with Ex
       val eori2 = "eori2"
       val partyType2 = "partyType2"
 
-      val additionalActors = Seq(
-        DeclarationAdditionalActors(Some(eori1), Some(partyType1)),
-        DeclarationAdditionalActors(Some(eori2), Some(partyType2))
-      )
+      val additionalActors =
+        Seq(DeclarationAdditionalActors(Some(eori1), Some(partyType1)), DeclarationAdditionalActors(Some(eori2), Some(partyType2)))
 
       val view = additional_and_authorised_parties_section(additionalActors, Seq.empty)(messages, journeyRequest())
 
@@ -71,10 +69,7 @@ class AdditionalAndAuthorisedPartiesSectionViewSpec extends UnitViewSpec with Ex
       val eori2 = "eori2"
       val authorisationTypeCode2 = "partyType2"
 
-      val holders = Seq(
-        DeclarationHolder(Some(authorisationTypeCode1), Some(eori1)),
-        DeclarationHolder(Some(authorisationTypeCode2), Some(eori2))
-      )
+      val holders = Seq(DeclarationHolder(Some(authorisationTypeCode1), Some(eori1)), DeclarationHolder(Some(authorisationTypeCode2), Some(eori2)))
 
       val view = additional_and_authorised_parties_section(Seq.empty, holders)(messages, journeyRequest())
 

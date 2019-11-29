@@ -32,10 +32,7 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData {
 
     "display package information section with multiple package information" in {
 
-      val data = Seq(
-        PackageInformation("PB", 123, "first-marks"),
-        PackageInformation("QF", 321, "second-marks")
-      )
+      val data = Seq(PackageInformation("PB", 123, "first-marks"), PackageInformation("QF", 321, "second-marks"))
 
       val view = package_information(data)(messages, journeyRequest())
 

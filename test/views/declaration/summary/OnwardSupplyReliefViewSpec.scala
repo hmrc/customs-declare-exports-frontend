@@ -23,30 +23,31 @@ import views.html.declaration.summary.onward_supply_relief
 
 class OnwardSupplyReliefViewSpec extends UnitViewSpec with ExportsTestData {
 
- "Onward supply relief" should {
+  "Onward supply relief" should {
 
-   "display just onward supply answer" when {
+    "display just onward supply answer" when {
 
-     "answer is No" in {
+      "answer is No" in {
 
-       val view = onward_supply_relief(1, Some(FiscalInformation("No")), Seq.empty)(messages, journeyRequest())
+        val view = onward_supply_relief(1, Some(FiscalInformation("No")), Seq.empty)(messages, journeyRequest())
 
-       view.getElementById("item-1-onwardSupplyRelief-label").text() mustBe messages("declaration.summary.items.item.onwardSupplyRelief")
-       view.getElementById("item-1-onwardSupplyRelief").text() mustBe "No"
-     }
-   }
+        view.getElementById("item-1-onwardSupplyRelief-label").text() mustBe messages("declaration.summary.items.item.onwardSupplyRelief")
+        view.getElementById("item-1-onwardSupplyRelief").text() mustBe "No"
+      }
+    }
 
-   "display onward supply relief field and VAT details" when {
+    "display onward supply relief field and VAT details" when {
 
-     "answer is Yes and user provided Additional VAT Details" in {
+      "answer is Yes and user provided Additional VAT Details" in {
 
-       val view = onward_supply_relief(1, Some(FiscalInformation("Yes")), Seq(AdditionalFiscalReference("GB", "123456789")))(messages, journeyRequest())
+        val view =
+          onward_supply_relief(1, Some(FiscalInformation("Yes")), Seq(AdditionalFiscalReference("GB", "123456789")))(messages, journeyRequest())
 
-       view.getElementById("item-1-onwardSupplyRelief-label").text() mustBe messages("declaration.summary.items.item.onwardSupplyRelief")
-       view.getElementById("item-1-onwardSupplyRelief").text() mustBe "Yes"
-       view.getElementById("item-1-VATdetails-label").text() mustBe messages("declaration.summary.items.item.VATdetails")
-       view.getElementById("item-1-VATdetails").text() mustBe "GB123456789"
-     }
-   }
- }
+        view.getElementById("item-1-onwardSupplyRelief-label").text() mustBe messages("declaration.summary.items.item.onwardSupplyRelief")
+        view.getElementById("item-1-onwardSupplyRelief").text() mustBe "Yes"
+        view.getElementById("item-1-VATdetails-label").text() mustBe messages("declaration.summary.items.item.VATdetails")
+        view.getElementById("item-1-VATdetails").text() mustBe "GB123456789"
+      }
+    }
+  }
 }
