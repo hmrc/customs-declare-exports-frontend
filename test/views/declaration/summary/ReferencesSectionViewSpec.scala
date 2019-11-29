@@ -44,7 +44,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData {
     "have dispatch location" in {
 
       view.getElementById("location-label").text() mustBe messages("declaration.summary.references.location")
-      view.getElementById("location").text() mustBe "Yes"
+      view.getElementById("location").text() mustBe messages("site.yes")
     }
 
     "have additional declaration type" in {
