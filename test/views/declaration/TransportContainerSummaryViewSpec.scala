@@ -40,8 +40,8 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestDat
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
   private val page = new transport_container_summary(mainTemplate)
 
-  private def createView(form: Form[YesNoAnswer] = form, containers: Seq[Container] = Seq(container), showSeals: Boolean = true): Document =
-    page(Mode.Normal, form, containers, showSeals)(journeyRequest(), realMessages)
+  private def createView(form: Form[YesNoAnswer] = form, containers: Seq[Container] = Seq(container)): Document =
+    page(Mode.Normal, form, containers)(journeyRequest(), realMessages)
 
   "Transport Containers Summary View" should {
     val view = createView()
@@ -53,13 +53,6 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestDat
     "display summary of container with seals" in {
       view.getElementById("containers-row0-container").text() must be(containerId)
       view.getElementById("containers-row0-seals").text() must be(sealId)
-    }
-
-    "display summary of container without seals" in {
-      val view = createView(showSeals = false)
-
-      view.getElementById("containers-row0-container").text() must be(containerId)
-      view.getElementById("containers-row0-seals") must be(null)
     }
 
     "display summary of container with no seals" in {

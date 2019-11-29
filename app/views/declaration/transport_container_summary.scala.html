@@ -28,7 +28,7 @@
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[YesNoAnswer], containers: Seq[Container], showSeals: Boolean)(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[YesNoAnswer], containers: Seq[Container])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
     title = Title("declaration.transportInformation.containers.title")
@@ -50,37 +50,29 @@
                   <thead>
                       <tr>
                         <th>@messages("declaration.transportInformation.containerId.title")</th>
-                          @if(showSeals) {
-                              <th>@messages("standard.seal.summary.heading")</th>
-                          }
+                          <th>@messages("standard.seal.summary.heading")</th>
                           <th></th>
-                          @if(showSeals) {
-                            <th></th>
-                          }
+                          <th></th>
                       </tr>
                   </thead>
                   <tbody>
                   @for((container, index) <- containers.zipWithIndex) {
                     <tr id="containers-row@index">
                         <td id="containers-row@index-container">@{container.id}</td>
-                        @if(showSeals) {
-                            @if(container.seals.isEmpty){
-                                <td id="containers-row@index-seals">@messages("standard.seal.summary.noSeals")</td>
-                            } else {
-                                <td id="containers-row@index-seals">@Html(container.seals.map(_.id).mkString("<br/>"))</td>
-                            }
+                        @if(container.seals.isEmpty){
+                            <td id="containers-row@index-seals">@messages("standard.seal.summary.noSeals")</td>
+                        } else {
+                            <td id="containers-row@index-seals">@Html(container.seals.map(_.id).mkString("<br/>"))</td>
                         }
                         <td id="containers-row@index-remove_button">
                             @remove_button(element = LabelledValue(container.id), buttonClass="button-link", label="declaration.transportInformation.containers.remove", hint="declaration.transportInformation.containers.remove.hint")
                         </td>
-                        @if(showSeals) {
-                            <td>
-                                <a class="button-link" href="@SealController.displaySealSummary(mode, container.id)">
-                                    <span aria-hidden="true">@messages("declaration.transportInformation.containers.change")</span>
-                                    <span class="visually-hidden">@messages("declaration.transportInformation.containers.change.hint", container.id)</span>
-                                </a>
-                            </td>
-                        }
+                        <td>
+                            <a class="button-link" href="@SealController.displaySealSummary(mode, container.id)">
+                                <span aria-hidden="true">@messages("declaration.transportInformation.containers.change")</span>
+                                <span class="visually-hidden">@messages("declaration.transportInformation.containers.change.hint", container.id)</span>
+                            </a>
+                        </td>
                     </tr>
                   }
                   </tbody>
