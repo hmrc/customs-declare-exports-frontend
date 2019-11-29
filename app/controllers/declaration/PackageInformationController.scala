@@ -92,7 +92,7 @@ class PackageInformationController @Inject()(
   private def updateExportsCache(itemId: String, updatedCache: Seq[PackageInformation])(
     implicit r: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.updateItem(itemId, _.copy(packageInformation = updatedCache.toList)))
+    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(packageInformation = updatedCache.toList)))
 
   private def nextPage(mode: Mode, itemId: String, request: JourneyRequest[AnyContent]) =
     request.declarationType match {

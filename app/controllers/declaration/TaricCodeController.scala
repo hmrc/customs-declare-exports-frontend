@@ -106,6 +106,6 @@ class TaricCodeController @Inject()(
   private def updateExportsCache(itemId: String, updatedCache: Seq[TaricCode])(
     implicit r: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.updateItem(itemId, _.copy(taricCodes = updatedCache.toList)))
+    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(taricCodes = updatedCache.toList)))
 
 }

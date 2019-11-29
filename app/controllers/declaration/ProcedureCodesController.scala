@@ -127,7 +127,7 @@ class ProcedureCodesController @Inject()(
     implicit r: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
-      model.updateItem(itemId, item => item.copy(procedureCodes = Some(updatedProcedureCodes)))
+      model.updatedItem(itemId, item => item.copy(procedureCodes = Some(updatedProcedureCodes)))
     })
 
   //scalastyle:off method.length

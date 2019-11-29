@@ -157,6 +157,6 @@ class DocumentsProducedController @Inject()(
     implicit req: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
-      model.updateItem(itemId, item => item.copy(documentsProducedData = Some(updatedData)))
+      model.updatedItem(itemId, item => item.copy(documentsProducedData = Some(updatedData)))
     })
 }

@@ -72,6 +72,6 @@ class CommodityMeasureController @Inject()(
     implicit r: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
-      model.updateItem(itemId, item => item.copy(commodityMeasure = Some(updatedItem)))
+      model.updatedItem(itemId, item => item.copy(commodityMeasure = Some(updatedItem)))
     })
 }

@@ -48,7 +48,7 @@ class ExportsDeclarationSpec extends WordSpec with MustMatchers with ExportsDecl
 
       val firstId = declaration.items.head.id
 
-      val updatedDeclaration = declaration.updateItem(firstId, item => item.copy(procedureCodes = Some(ProcedureCodesData(Some("code"), Seq.empty))))
+      val updatedDeclaration = declaration.updatedItem(firstId, item => item.copy(procedureCodes = Some(ProcedureCodesData(Some("code"), Seq.empty))))
 
       updatedDeclaration.items.map(_.sequenceId).toSeq must be(Seq(1, 2))
     }

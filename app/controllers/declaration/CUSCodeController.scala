@@ -66,6 +66,6 @@ class CUSCodeController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>
-      model.updateItem(itemId, item => item.copy(cusCode = Some(updatedItem)))
+      model.updatedItem(itemId, item => item.copy(cusCode = Some(updatedItem)))
     }
 }

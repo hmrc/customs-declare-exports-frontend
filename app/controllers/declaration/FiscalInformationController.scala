@@ -77,12 +77,12 @@ class FiscalInformationController @Inject()(
   //TODO Use one method instead of updateCacheForYes and updateCacheForNo
   private def updateCacheForYes(itemId: String, updatedFiscalInformation: FiscalInformation)(implicit req: JourneyRequest[AnyContent]): Future[Unit] =
     updateExportsDeclarationSyncDirect(model => {
-      model.updateItem(itemId, item => item.copy(fiscalInformation = Some(updatedFiscalInformation)))
+      model.updatedItem(itemId, item => item.copy(fiscalInformation = Some(updatedFiscalInformation)))
     }).map(_ => ())
 
   private def updateCacheForNo(itemId: String, updatedFiscalInformation: FiscalInformation)(implicit req: JourneyRequest[AnyContent]): Future[Unit] =
     updateExportsDeclarationSyncDirect(model => {
-      model.updateItem(itemId, item => item.copy(fiscalInformation = Some(updatedFiscalInformation), additionalFiscalReferencesData = None))
+      model.updatedItem(itemId, item => item.copy(fiscalInformation = Some(updatedFiscalInformation), additionalFiscalReferencesData = None))
     }).map(_ => ())
 
 }
