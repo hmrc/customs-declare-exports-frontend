@@ -26,7 +26,7 @@ case class DispatchLocation(
   dispatchLocation: String // 2 upper case alphabetic characters
 ) {
 
-  def summaryValue: String = if (dispatchLocation == AllowedDispatchLocations.OutsideEU) "Yes" else "No"
+  def isOutsideEU: Boolean = dispatchLocation == AllowedDispatchLocations.OutsideEU
 }
 
 object DispatchLocation {

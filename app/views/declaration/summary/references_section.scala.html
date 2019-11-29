@@ -29,7 +29,13 @@
         ))
         @components.table_row("location", HtmlTableRow(
             label = messages("declaration.summary.references.location"),
-            value = declarationData.dispatchLocation.map(_.summaryValue).getOrElse("")
+            value = Seq(declarationData.dispatchLocation.map(dispatchLocation =>
+                if(dispatchLocation.isOutsideEU){
+                  messages("site.yes")
+                } else {
+                  messages("site.no")
+                }
+            ).getOrElse(""))
         ))
         @components.table_row("additionalType", HtmlTableRow(
             label = messages("declaration.summary.references.additionalType"),
