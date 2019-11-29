@@ -115,5 +115,5 @@ class AdditionalInformationController @Inject()(
   private def updateCache(itemId: String, updatedAdditionalInformation: AdditionalInformationData)(
     implicit r: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(additionalInformation = Some(updatedAdditionalInformation))))
+    updateExportsDeclarationSyncDirect(model => model.updateItem(itemId, _.copy(additionalInformation = Some(updatedAdditionalInformation))))
 }

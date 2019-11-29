@@ -66,6 +66,6 @@ class CommodityDetailsController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>
-      model.updatedItem(itemId, item => item.copy(commodityDetails = Some(updatedItem)))
+      model.updateItem(itemId, item => item.copy(commodityDetails = Some(updatedItem)))
     }
 }

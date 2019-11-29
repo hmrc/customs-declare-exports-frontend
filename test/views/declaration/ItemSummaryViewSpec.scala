@@ -77,18 +77,10 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
       }
     }
 
-    "render item table sorted by sequenceId" when {
+    "render item table as supplied to view" when {
       "some items" in {
         val view = createView(
           items = List(
-            ExportItem(
-              "id2",
-              sequenceId = 2,
-              procedureCodes = Some(ProcedureCodesData(Some("procedure-code2"), Seq.empty)),
-              statisticalValue = Some(StatisticalValue("")),
-              commodityDetails = Some(CommodityDetails(Some("item-type2"), "")),
-              packageInformation = List(PackageInformation("", 2, ""))
-            ),
             ExportItem(
               "id1",
               sequenceId = 1,
@@ -96,6 +88,14 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
               statisticalValue = Some(StatisticalValue("")),
               commodityDetails = Some(CommodityDetails(Some("item-type1"), "")),
               packageInformation = List(PackageInformation("", 1, ""))
+            ),
+            ExportItem(
+              "id2",
+              sequenceId = 2,
+              procedureCodes = Some(ProcedureCodesData(Some("procedure-code2"), Seq.empty)),
+              statisticalValue = Some(StatisticalValue("")),
+              commodityDetails = Some(CommodityDetails(Some("item-type2"), "")),
+              packageInformation = List(PackageInformation("", 2, ""))
             )
           )
         )

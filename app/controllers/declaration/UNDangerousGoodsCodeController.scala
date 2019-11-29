@@ -66,6 +66,6 @@ class UNDangerousGoodsCodeController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>
-      model.updatedItem(itemId, item => item.copy(dangerousGoodsCode = Some(updatedItem)))
+      model.updateItem(itemId, item => item.copy(dangerousGoodsCode = Some(updatedItem)))
     }
 }

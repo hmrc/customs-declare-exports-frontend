@@ -68,6 +68,6 @@ class StatisticalValueController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>
-      model.updatedItem(itemId, item => item.copy(statisticalValue = Some(updatedItem)))
+      model.updateItem(itemId, item => item.copy(statisticalValue = Some(updatedItem)))
     }
 }

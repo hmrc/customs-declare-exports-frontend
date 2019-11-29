@@ -111,6 +111,6 @@ class AdditionalFiscalReferencesController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>
-      model.updatedItem(itemId, item => item.copy(additionalFiscalReferencesData = Some(updatedAdditionalFiscalReferencesData)))
+      model.updateItem(itemId, item => item.copy(additionalFiscalReferencesData = Some(updatedAdditionalFiscalReferencesData)))
     }
 }

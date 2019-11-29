@@ -50,10 +50,9 @@ case class ExportsDeclaration(
 
   def isComplete: Boolean = status == DeclarationStatus.COMPLETE
 
-  def updatedItem(itemId: String, update: ExportItem => ExportItem): ExportsDeclaration =
-    itemBy(itemId).fold(this) { item =>
-      val updated = update(item)
-      copy(items = items.filterNot(_.id.equalsIgnoreCase(itemId)) + updated)
+  def updateItem(itemId: String, update: ExportItem => ExportItem): ExportsDeclaration =
+    itemBy(itemId).fold(this) { itemToReplace =>
+      copy(items = items.map(item => if (item.equals(itemToReplace)) update(itemToReplace) else item))
     }
 
   def updateType(`type`: DeclarationType): ExportsDeclaration = copy(`type` = `type`)

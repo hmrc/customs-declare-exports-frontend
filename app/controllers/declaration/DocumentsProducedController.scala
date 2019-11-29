@@ -24,8 +24,8 @@ import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.additionaldocuments.DocumentsProduced.form
 import handlers.ErrorHandler
 import javax.inject.Inject
+import models.declaration.DocumentsProducedData
 import models.declaration.DocumentsProducedData.maxNumberOfItems
-import models.declaration.{DocumentsProducedData, ExportItem}
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.data.{Form, FormError}
@@ -157,10 +157,6 @@ class DocumentsProducedController @Inject()(
     implicit req: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
-      val item: Option[ExportItem] = model.items
-        .find(item => item.id.equals(itemId))
-        .map(_.copy(documentsProducedData = Some(updatedData)))
-      val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
-      model.copy(items = itemList)
+      model.updateItem(itemId, item => item.copy(documentsProducedData = Some(updatedData)))
     })
 }
