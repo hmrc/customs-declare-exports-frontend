@@ -27,13 +27,7 @@ case class DepartureTransport(
   borderModeOfTransportCode: String,
   meansOfTransportOnDepartureType: String,
   meansOfTransportOnDepartureIDNumber: String
-) {
-
-  val extractModeValue: String = TransportCodes.extractModeOfTransportValue(borderModeOfTransportCode)
-  val extractTypeMode: String = TransportCodes.extractBorderTransportValue(meansOfTransportOnDepartureType)
-
-  def transportDetails: Seq[String] = Seq(extractTypeMode, meansOfTransportOnDepartureIDNumber)
-}
+)
 
 object DepartureTransport {
 
@@ -65,18 +59,6 @@ object TransportCodes {
   val InlandWaterway = "8"
   val Unknown = "9"
 
-  val extractModeOfTransportValue: PartialFunction[String, String] = {
-    case Maritime                    => "Sea transport"
-    case Rail                        => "Rail transport"
-    case Road                        => "Road transport"
-    case Air                         => "Air transport"
-    case PostalConsignment           => "Postal or Mail"
-    case FixedTransportInstallations => "Fixed transport installations"
-    case InlandWaterway              => "Inland waterway transport"
-    case Unknown                     => "Mode unknown, for example own propulsion"
-    case _                           => "Incorrect"
-  }
-
   val IMOShipIDNumber = "10"
   val NameOfVessel = "11"
   val WagonNumber = "20"
@@ -85,18 +67,6 @@ object TransportCodes {
   val AircraftRegistrationNumber = "41"
   val EuropeanVesselIDNumber = "80"
   val NameOfInlandWaterwayVessel = "81"
-
-  val extractBorderTransportValue: PartialFunction[String, String] =  {
-    case IMOShipIDNumber            => "Ship IMO number"
-    case NameOfVessel               => "Ship name"
-    case WagonNumber                => "Train"
-    case VehicleRegistrationNumber  => "Vehicle registration"
-    case IATAFlightNumber           => "Flight number"
-    case AircraftRegistrationNumber => "Aircraft number"
-    case EuropeanVesselIDNumber     => "European vessel number (ENI)"
-    case NameOfInlandWaterwayVessel => "Inland vessel's name"
-    case _                          => "Incorrect"
-  }
 
   val allowedModeOfTransportCodes =
     Set(Maritime, Rail, Road, Air, PostalConsignment, FixedTransportInstallations, InlandWaterway, Unknown)

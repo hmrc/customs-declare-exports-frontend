@@ -24,6 +24,8 @@ object HtmlTableRow {
 
   def apply[T](label: String, value: Iterable[T]): HtmlTableRow = new HtmlTableRow(label, adjust(value))
 
+  def apply[T](label: String, value: Seq[String]): HtmlTableRow = new HtmlTableRow(label, value.map(Option.apply))
+
   def apply(label: String, value: String): HtmlTableRow = new HtmlTableRow(label, Seq(Some(value)))
 
   // TODO review adjust method, working wrong

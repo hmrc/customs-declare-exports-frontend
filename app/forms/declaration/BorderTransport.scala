@@ -30,12 +30,7 @@ case class BorderTransport(
   meansOfTransportCrossingTheBorderNationality: Option[String],
   meansOfTransportCrossingTheBorderType: String,
   meansOfTransportCrossingTheBorderIDNumber: String
-) {
-
-  def extractModeValue: String = TransportCodes.extractBorderTransportValue(meansOfTransportCrossingTheBorderType)
-
-  def transportLeavingBorder: Seq[String] = Seq(extractModeValue, meansOfTransportCrossingTheBorderIDNumber)
-}
+)
 
 object BorderTransport extends DeclarationPage {
 
