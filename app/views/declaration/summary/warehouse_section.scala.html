@@ -19,7 +19,7 @@
 
 @(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
-<div id="declaration-warehourse-section">
+<div id="declaration-warehouse-summary">
     @components.summary_list(Some(messages("declaration.summary.warehouse"))) {
         @components.table_row("warehouse-id", HtmlTableRow(
             label = messages("declaration.summary.warehouse.id"),

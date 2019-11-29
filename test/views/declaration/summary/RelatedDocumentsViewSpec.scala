@@ -16,6 +16,7 @@
 
 package views.declaration.summary
 
+import forms.declaration.Document
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.related_documents
@@ -39,6 +40,17 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
 
       "documents exists" in {
 
+        val data = Seq(Document("X", "325", "123456", None), Document("X", "271", "654321", None))
+
+        val view = related_documents(data)(messages, journeyRequest())
+
+        view.getElementById("previous-documents").text() mustBe messages("declaration.summary.transaction.previousDocuments")
+        view.getElementById("previous-documents-type").text() mustBe messages("declaration.summary.transaction.previousDocuments.type")
+        view.getElementById("previous-documents-reference").text() mustBe messages("declaration.summary.transaction.previousDocuments.reference")
+        view.getElementById("previous-document-0-type").text() mustBe "Proforma Invoice - 325"
+        view.getElementById("previous-document-0-reference").text() mustBe "123456"
+        view.getElementById("previous-document-1-type").text() mustBe "Packing List - 271"
+        view.getElementById("previous-document-1-reference").text() mustBe "654321"
       }
     }
   }

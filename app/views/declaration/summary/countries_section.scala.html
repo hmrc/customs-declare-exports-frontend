@@ -20,7 +20,7 @@
 
 @(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
-<div id="declaration-countries-section">
+<div id="declaration-countries-summary">
     @components.summary_list(Some(messages("declaration.summary.countries"))) {
         @components.table_row("countryOfDispatch", HtmlTableRow(
             label = messages("declaration.summary.countries.countryOfDispatch"),
