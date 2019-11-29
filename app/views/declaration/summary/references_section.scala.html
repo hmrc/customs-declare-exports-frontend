@@ -23,23 +23,23 @@
 
 <div id="declaration-references-summary">
     @components.summary_list(Some(messages("declaration.summary.references"))) {
-        @components.table_row("declarationType-label", HtmlTableRow(
+        @components.table_row("declarationType", HtmlTableRow(
             label = messages("declaration.summary.references.type"),
             value = declarationData.capitalizedType
         ))
-        @components.table_row("location-label", HtmlTableRow(
+        @components.table_row("location", HtmlTableRow(
             label = messages("declaration.summary.references.location"),
             value = declarationData.dispatchLocation.map(_.summaryValue).getOrElse("")
         ))
-        @components.table_row("additionalType-label", HtmlTableRow(
+        @components.table_row("additionalType", HtmlTableRow(
             label = messages("declaration.summary.references.additionalType"),
             value = declarationData.additionalDeclarationType.map(AdditionalDeclarationType.asText(_)).getOrElse("")
         ))
-        @components.table_row("ducr-label", HtmlTableRow(
+        @components.table_row("ducr", HtmlTableRow(
             label = messages("declaration.summary.references.ducr"),
             value = declarationData.consignmentReferences.map(_.ducr.ducr).getOrElse("")
         ))
-        @components.table_row("lrn-label", HtmlTableRow(
+        @components.table_row("lrn", HtmlTableRow(
             label = messages("declaration.summary.references.lrn"),
             value = declarationData.consignmentReferences.map(_.lrn.value).getOrElse("")
         ))

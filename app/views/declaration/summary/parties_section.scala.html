@@ -44,7 +44,7 @@
             addressLabel = messages("declaration.summary.parties.declarant.address")
         )
         @eori_or_address_section(
-            id = "declarant",
+            id = "representative",
             eoriOption = declarationData.parties.representativeDetails.flatMap(_.details.flatMap(_.eori)),
             eoriLabel = messages("declaration.summary.parties.representative.eori"),
             address = declarationData.parties.representativeDetails.flatMap(_.details.flatMap(_.address.map(_.extractValues))).getOrElse(Seq.empty),
