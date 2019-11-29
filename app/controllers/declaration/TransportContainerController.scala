@@ -80,7 +80,7 @@ class TransportContainerController @Inject()(
 
   def displayContainerSummary(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.containers match {
-      case containers if containers.nonEmpty => Ok(summaryPage(mode, YesNoAnswer.form(), containers, allowSeals))
+      case containers if containers.nonEmpty => Ok(summaryPage(mode, YesNoAnswer.form(), containers))
       case _ =>
         navigator.continueTo(routes.TransportContainerController.displayAddContainer(mode))
     }
@@ -150,8 +150,7 @@ class TransportContainerController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[YesNoAnswer]) =>
-          Future.successful(BadRequest(summaryPage(mode, formWithErrors, request.cacheModel.containers, allowSeals))),
+        (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(summaryPage(mode, formWithErrors, request.cacheModel.containers))),
         formData =>
           formData.answer match {
             case YesNoAnswers.yes =>
@@ -187,12 +186,6 @@ class TransportContainerController @Inject()(
     updateExportsDeclarationSyncDirect(_.updateContainers(updatedContainers))
 
   private def redirectAfterAdd(mode: Mode, containerId: String)(implicit request: JourneyRequest[AnyContent]) =
-    if (allowSeals)
-      navigator.continueTo(routes.SealController.displaySealSummary(mode, containerId))
-    else
-      navigator.continueTo(routes.TransportContainerController.displayContainerSummary(mode))
-
-  private def allowSeals(implicit request: JourneyRequest[AnyContent]) =
-    request.isType(DeclarationType.STANDARD) || request.isType(DeclarationType.SUPPLEMENTARY) || request.isType(DeclarationType.SIMPLIFIED)
+    navigator.continueTo(routes.SealController.displaySealSummary(mode, containerId))
 
 }
