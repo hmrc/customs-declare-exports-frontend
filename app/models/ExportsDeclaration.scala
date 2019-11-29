@@ -52,7 +52,7 @@ case class ExportsDeclaration(
 
   def updateItem(itemId: String, update: ExportItem => ExportItem): ExportsDeclaration =
     itemBy(itemId).fold(this) { itemToReplace =>
-      copy(items = items.map(item => if (item.equals(itemToReplace)) update(itemToReplace) else item))
+      copy(items = items.map(item => if (item == itemToReplace) update(itemToReplace) else item))
     }
 
   def updateType(`type`: DeclarationType): ExportsDeclaration = copy(`type` = `type`)

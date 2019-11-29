@@ -18,7 +18,6 @@ package models
 
 import java.time.{Clock, Instant, LocalDate, ZoneOffset}
 
-import forms.declaration.ProcedureCodes
 import models.declaration.ProcedureCodesData
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import services.cache.ExportsDeclarationBuilder
