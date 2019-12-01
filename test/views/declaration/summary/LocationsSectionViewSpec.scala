@@ -52,7 +52,7 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData {
       view.getElementById("location-officeOfExit").text() mustBe "123"
     }
 
-    "have express confignment answer" in {
+    "have express consignment answer" in {
 
       view.getElementById("location-expressConsignment-label").text() mustBe messages("declaration.summary.locations.expressConsignment")
       view.getElementById("location-expressConsignment").text() mustBe "12"
