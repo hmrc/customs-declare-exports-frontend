@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@(messageKey: String = "", href: String, id: String = "back-link")(implicit messages: Messages)
+@(messageKey: String = "", href: String, id: String = "link")(implicit messages: Messages)
 
 <div class="section">
     <a href="@href" role="button" class="button" id="@id">@messages(messageKey)</a>
