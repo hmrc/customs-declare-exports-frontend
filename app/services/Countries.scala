@@ -45,9 +45,13 @@ object Countries {
 
   val countryCodeMap: Map[String, Country] = countries.map(country => (country.countryCode, country)).toMap
 
-  def retrieveCountryNameFromCode(code: String): Country = countryCodeMap(code)
+  val countryNameMap: Map[String, Country] = countries.map(country => (country.countryName, country)).toMap
 
-  def retrieveCountriesFromCodes(codes: Seq[String]): Seq[Country] = codes.map(countryCodeMap(_))
+  def findByCode(code: String): Country = countryCodeMap(code)
+
+  def findByName(name: String): Country = countryNameMap(name)
+
+  def findByCodes(codes: Seq[String]): Seq[Country] = codes.map(countryCodeMap(_))
 
   lazy val euCountries: List[String] =
     FileReader("code-lists/eu-countries.csv")

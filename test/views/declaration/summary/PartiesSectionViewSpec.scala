@@ -16,342 +16,74 @@
 
 package views.declaration.summary
 
-import base.Injector
 import forms.common.Address
-import forms.declaration.ConsigneeDetailsSpec.{correctConsigneeDetailsAddressOnly, correctConsigneeDetailsEORIOnly}
-import forms.declaration.DeclarantDetailsSpec.{correctDeclarantDetailsAddressOnly, correctDeclarantDetailsEORIOnly}
-import forms.declaration.DeclarationHolder
-import forms.declaration.ExporterDetailsSpec.{correctExporterDetailsAddressOnly, correctExporterDetailsEORIOnly}
-import forms.declaration.RepresentativeDetailsSpec.{correctRepresentativeDetailsAddressOnly, correctRepresentativeDetailsEORIOnly}
-import models.declaration.DeclarationAdditionalActorsDataSpec.correctAdditionalActorsData
-import models.declaration.{DeclarationHoldersData, Parties}
-import play.api.i18n.MessagesApi
-import play.twirl.api.Html
+import models.declaration.DeclarationAdditionalActorsData
 import services.cache.ExportsTestData
-import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.parties_section
-import views.tags.ViewTest
 
-@ViewTest
-class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
-  private lazy val emptyView = createView()
+  val exampleEori = "GB123456"
+  val exampleAddress = Address("fullName", "addressLine", "townOrCity", "postCode", "GB")
+  val data = aDeclaration(
+    withExporterDetails(Some(exampleEori), Some(exampleAddress)),
+    withConsigneeDetails(Some(exampleEori), Some(exampleAddress)),
+    withDeclarantDetails(Some(exampleEori), Some(exampleAddress)),
+    withRepresentativeDetails(Some(exampleEori), Some(exampleAddress), Some("1")),
+    withCarrierDetails(Some(exampleEori), Some(exampleAddress)),
+    withDeclarationAdditionalActors(DeclarationAdditionalActorsData(Seq.empty)),
+    withDeclarationHolders()
+  )
 
-  private def createView(partiesOpt: Option[Parties] = None): Html = parties_section(partiesOpt)
+  val view = parties_section(data)(messages, journeyRequest())
 
-  private def extractAddress(address: Address): String =
-    Seq(address.fullName, address.addressLine, address.townOrCity, address.postCode, address.country).mkString(" ")
+  "Parties section" should {
 
-  "Parties Section View" when {
+    "contains exporter details" in {
 
-    "have correct message keys" in {
-      val messages = instanceOf[MessagesApi].preferred(request)
-
-      messages must haveTranslationFor("supplementary.summary.parties.header")
-      messages must haveTranslationFor("supplementary.summary.parties.exporterId")
-      messages must haveTranslationFor("supplementary.summary.parties.exporterAddress")
-      messages must haveTranslationFor("supplementary.summary.parties.consigneeId")
-      messages must haveTranslationFor("supplementary.summary.parties.consigneeAddress")
-      messages must haveTranslationFor("supplementary.summary.parties.declarantId")
-      messages must haveTranslationFor("supplementary.summary.parties.declarantAddress")
-      messages must haveTranslationFor("supplementary.summary.parties.representativeId")
-      messages must haveTranslationFor("supplementary.summary.parties.representativeAddress")
-      messages must haveTranslationFor("supplementary.summary.parties.representationType")
-      messages must haveTranslationFor("supplementary.summary.parties.idStatusNumberAuthorisationCode")
-      messages must haveTranslationFor("supplementary.summary.parties.authorizedPartyEori")
-      messages must haveTranslationFor("supplementary.summary.parties.additionalParties.header")
-      messages must haveTranslationFor("supplementary.summary.parties.additionalParties.id")
-      messages must haveTranslationFor("supplementary.summary.parties.additionalParties.type")
+      view.getElementById("exporter-eori-label").text() mustBe messages("declaration.summary.parties.exporter.eori")
+      view.getElementById("exporter-address-label").text() mustBe messages("declaration.summary.parties.exporter.address")
     }
 
-    "provided with empty Parties data" should {
+    "contains consignee details" in {
 
-      "display Parties header" in {
-        emptyView.select("table:nth-child(1)>caption").text() mustBe "supplementary.summary.parties.header"
-      }
-
-      "display 'Exporter ID' table row with no value" in {
-
-        emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(1)")
-          .text() mustBe "supplementary.summary.parties.exporterId"
-        emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(2)")
-          .text() mustBe empty
-      }
-
-      "display 'Exporter address' table row with no value" in {
-
-        emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(2)>td:nth-child(1)")
-          .text() mustBe "supplementary.summary.parties.exporterAddress"
-        emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(2)>td:nth-child(2)")
-          .text() mustBe empty
-      }
-
-      "display 'Consignee ID' table row with no value" in {
-
-        emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(3)>td:nth-child(1)")
-          .text() mustBe "supplementary.summary.parties.consigneeId"
-        emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(3)>td:nth-child(2)")
-          .text() mustBe empty
-      }
-
-      "display 'Consignee address' table row with no value" in {
-
-        emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(4)>td:nth-child(1)")
-          .text() mustBe "supplementary.summary.parties.consigneeAddress"
-        emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(4)>td:nth-child(2)")
-          .text() mustBe empty
-      }
-
-      "display 'Declarant ID' table row with no value" in {
-
-        emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(5)>td:nth-child(1)")
-          .text() mustBe "supplementary.summary.parties.declarantId"
-        emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(5)>td:nth-child(2)")
-          .text() mustBe empty
-      }
-
-      "display 'Representative ID' table row with no value" in {
-
-        emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(6)>td:nth-child(1)")
-          .text() mustBe "supplementary.summary.parties.representativeId"
-        emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(6)>td:nth-child(2)")
-          .text() mustBe empty
-      }
-
-      "display 'Representative address' table row with no value" in {
-
-        emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(1)")
-          .text() mustBe "supplementary.summary.parties.representativeAddress"
-        emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(2)")
-          .text() mustBe empty
-      }
-
-      "display 'Representation type' table row with no value" in {
-
-        emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(1)")
-          .text() mustBe "supplementary.summary.parties.representationType"
-        emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(2)")
-          .text() mustBe empty
-      }
-
-      "display 'Authorised party EORI' table row with no value" in {
-
-        emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(1)")
-          .text() mustBe "supplementary.summary.parties.authorizedPartyEori"
-        emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(2)")
-          .text() mustBe empty
-      }
-
-      "display 'ID status number authorisation code' table row with no value" in {
-
-        emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(10)>td:nth-child(1)")
-          .text() mustBe "supplementary.summary.parties.idStatusNumberAuthorisationCode"
-        emptyView
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(10)>td:nth-child(2)")
-          .text() mustBe empty
-      }
-
-      "display Additional Parties header" in {
-
-        emptyView
-          .select("table:nth-child(2)>caption:nth-child(1)")
-          .text() mustBe "supplementary.summary.parties.additionalParties.header"
-      }
-
-      "display 'Additional parties ID' table header" in {
-
-        emptyView
-          .select(".form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(1)")
-          .text() mustBe "supplementary.summary.parties.additionalParties.id"
-      }
-
-      "display 'Additional parties type' table header" in {
-
-        emptyView
-          .select(".form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(2)")
-          .text() mustBe "supplementary.summary.parties.additionalParties.type"
-      }
-
-      "not display data row in Additional Parties table" in {
-
-        emptyView.select(".form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(1)").size() mustBe 0
-      }
-
+      view.getElementById("consignee-eori-label").text() mustBe messages("declaration.summary.parties.consignee.eori")
+      view.getElementById("consignee-address-label").text() mustBe messages("declaration.summary.parties.consignee.address")
     }
 
-    "provided with Parties data" should {
+    "contains declarant details" in {
 
-      "display 'Exporter ID' table row with proper value" in {
+      view.getElementById("declarant-eori-label").text() mustBe messages("declaration.summary.parties.declarant.eori")
+      view.getElementById("declarant-address-label").text() mustBe messages("declaration.summary.parties.declarant.address")
+    }
 
-        val exporterDetails = correctExporterDetailsEORIOnly
-        val view = createView(Some(Parties(exporterDetails = Some(exporterDetails))))
+    "contains representative details" in {
 
-        view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(1)")
-          .text() mustBe "supplementary.summary.parties.exporterId"
-        view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(2)")
-          .text() mustBe exporterDetails.details.eori.get
-      }
+      view.getElementById("representative-eori-label").text() mustBe messages("declaration.summary.parties.representative.eori")
+      view.getElementById("representative-address-label").text() mustBe messages("declaration.summary.parties.representative.address")
+    }
 
-      "display 'Exporter address' table row with proper value" in {
+    "contains carrier details" in {
 
-        val exporterDetails = correctExporterDetailsAddressOnly
-        val view = createView(Some(Parties(exporterDetails = Some(exporterDetails))))
+      view.getElementById("carrier-eori-label").text() mustBe messages("declaration.summary.parties.carrier.eori")
+      view.getElementById("carrier-address-label").text() mustBe messages("declaration.summary.parties.carrier.address")
+    }
 
-        view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(2)>td:nth-child(1)")
-          .text() mustBe "supplementary.summary.parties.exporterAddress"
-        view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(2)>td:nth-child(2)")
-          .text() must equal(extractAddress(exporterDetails.details.address.get))
-      }
+    "display status code" in {
 
-      "display 'Consignee ID' table row with proper value" in {
+      view.getElementById("representationType-label").text() mustBe messages("declaration.summary.parties.representative.type")
+      view.getElementById("representationType").text() mustBe messages("declaration.summary.parties.representative.type.1")
+    }
 
-        val consigneeDetails = correctConsigneeDetailsEORIOnly
-        val view = createView(Some(Parties(consigneeDetails = Some(consigneeDetails))))
+    "display additional actors section" in {
 
-        view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(3)>td:nth-child(1)")
-          .text() mustBe "supplementary.summary.parties.consigneeId"
-        view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(3)>td:nth-child(2)")
-          .text() must equal(consigneeDetails.details.eori.get)
-      }
+      view.getElementById("additionalActors-label").text() mustBe messages("declaration.summary.parties.additional")
+    }
 
-      "display 'Consignee address' table row with proper value" in {
+    "display holders section" in {
 
-        val consigneeDetails = correctConsigneeDetailsAddressOnly
-        val view = createView(Some(Parties(consigneeDetails = Some(consigneeDetails))))
-
-        view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(4)>td:nth-child(1)")
-          .text() mustBe "supplementary.summary.parties.consigneeAddress"
-        view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(4)>td:nth-child(2)")
-          .text() must equal(extractAddress(consigneeDetails.details.address.get))
-      }
-
-      "display 'Declarant ID' table row with proper value" in {
-
-        val declarantDetails = correctDeclarantDetailsEORIOnly
-        val view = createView(Some(Parties(declarantDetails = Some(declarantDetails))))
-
-        view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(5)>td:nth-child(1)")
-          .text() mustBe "supplementary.summary.parties.declarantId"
-        view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(5)>td:nth-child(2)")
-          .text() must equal(declarantDetails.details.eori.get)
-      }
-
-      "display 'Representative ID' table row with proper value" in {
-
-        val representativeDetails = correctRepresentativeDetailsEORIOnly
-        val view = createView(Some(Parties(representativeDetails = Some(representativeDetails))))
-
-        view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(6)>td:nth-child(1)")
-          .text() mustBe "supplementary.summary.parties.representativeId"
-        view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(6)>td:nth-child(2)")
-          .text() must equal(representativeDetails.details.flatMap(_.eori).get)
-      }
-
-      "display 'Representative address' table row with proper value" in {
-
-        val representativeDetails = correctRepresentativeDetailsAddressOnly
-        val view = createView(Some(Parties(representativeDetails = Some(representativeDetails))))
-
-        view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(1)")
-          .text() mustBe "supplementary.summary.parties.representativeAddress"
-        view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(2)")
-          .text() must equal(extractAddress(representativeDetails.details.flatMap(_.address).get))
-      }
-
-      "display 'Representation type' table row with proper value" in {
-
-        val representativeDetails = correctRepresentativeDetailsEORIOnly
-        val view = createView(Some(Parties(representativeDetails = Some(representativeDetails))))
-
-        view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(1)")
-          .text() mustBe "supplementary.summary.parties.representationType"
-        view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(2)")
-          .text() must equal(representativeDetails.statusCode.get)
-      }
-
-      "display 'Authorised party EORI' table row with proper value" in {
-
-        val declarationHoldersData =
-          DeclarationHoldersData(Seq(DeclarationHolder(authorisationTypeCode = None, eori = Some("PL213472539481923"))))
-        val view = createView(Some(Parties(declarationHoldersData = Some(declarationHoldersData))))
-
-        view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(1)")
-          .text() mustBe "supplementary.summary.parties.authorizedPartyEori"
-        view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(2)")
-          .text() must equal(declarationHoldersData.holders.head.eori.get)
-      }
-
-      "display 'ID status number authorisation code' table row with proper value" in {
-
-        val declarationHoldersData =
-          DeclarationHoldersData(Seq(DeclarationHolder(authorisationTypeCode = Some("1234"), eori = None)))
-        val view = createView(Some(Parties(declarationHoldersData = Some(declarationHoldersData))))
-
-        view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(10)>td:nth-child(1)")
-          .text() mustBe "supplementary.summary.parties.idStatusNumberAuthorisationCode"
-        view
-          .select("table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(10)>td:nth-child(2)")
-          .text() mustBe declarationHoldersData.holders.head.authorisationTypeCode.get
-      }
-
-      "display 2 data rows in Additional Parties table" in {
-
-        val additionalActorsData = correctAdditionalActorsData
-        val view = createView(Some(Parties(declarationAdditionalActorsData = Some(additionalActorsData))))
-
-        view
-          .select(".form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(1)")
-          .text() mustBe additionalActorsData.actors.head.eori.get
-        view
-          .select(".form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(2)")
-          .text() mustBe additionalActorsData.actors.head.partyType.get
-        view
-          .select(".form-group>tbody:nth-child(2)>tr:nth-child(2)>td:nth-child(1)")
-          .text() mustBe additionalActorsData.actors(1).eori.get
-        view
-          .select(".form-group>tbody:nth-child(2)>tr:nth-child(2)>td:nth-child(2)")
-          .text() mustBe additionalActorsData.actors(1).partyType.get
-      }
+      view.getElementById("holders-label").text() mustBe messages("declaration.summary.parties.holders")
     }
   }
-
 }

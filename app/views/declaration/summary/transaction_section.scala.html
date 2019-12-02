@@ -1,0 +1,42 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.requests.JourneyRequest
+@import models.viewmodels.HtmlTableRow
+
+@(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
+
+<div id="declaration-transaction-summary">
+    @components.summary_list(Some(messages("declaration.summary.transaction"))) {
+        @components.table_row("item-amount", HtmlTableRow(
+            label = messages("declaration.summary.transaction.itemAmount"),
+            value = declarationData.totalNumberOfItems.flatMap(_.totalAmountInvoiced).getOrElse("")
+        ))
+        @components.table_row("exchange-rate", HtmlTableRow(
+            label = messages("declaration.summary.transaction.exchangeRate"),
+            value = declarationData.totalNumberOfItems.flatMap(_.exchangeRate).getOrElse("")
+        ))
+        @components.table_row("total-no-of-packages", HtmlTableRow(
+            label = messages("declaration.summary.transaction.totalNoOfPackages"),
+            value = declarationData.totalNumberOfItems.map(_.totalPackage).getOrElse("")
+        ))
+        @components.table_row("nature-of-transaction", HtmlTableRow(
+            label = messages("declaration.summary.transaction.natureOfTransaction"),
+            value = declarationData.natureOfTransaction.map(natureType => messages(s"declaration.summary.transaction.natureOfTransaction.${natureType.natureType}")).getOrElse("")
+        ))
+        @related_documents(declarationData.previousDocuments.map(_.documents).getOrElse(Seq.empty))
+    }
+</div>

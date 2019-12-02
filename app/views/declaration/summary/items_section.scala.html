@@ -14,33 +14,19 @@
  * limitations under the License.
  *@
 
-@import models.declaration.Items
+@import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
-@import models.DeclarationType.DeclarationType
 
-@(items: Option[Items], declarationType: DeclarationType)(implicit messages: Messages)
+@(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
-@journeysThatRequireItemInfo = @{Set(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)}
-
-@components.summary_list(Some(messages("declaration.itemType.title", 1))) {
-    @if(journeysThatRequireItemInfo.contains(declarationType)) {
-        @components.table_row_no_change_link(HtmlTableRow(
-            label = messages("supplementary.summary.items.amountInvoiced"),
-            value = items.flatMap(_.totalNumberOfItems).map(_.totalAmountInvoiced)
-        ))
-        @components.table_row_no_change_link(HtmlTableRow(
-            label = messages("supplementary.summary.items.exchangeRate"),
-            value = items.flatMap(_.totalNumberOfItems).map(_.exchangeRate)
-        ))
-        @components.table_row_no_change_link(HtmlTableRow(
-            label = messages("supplementary.summary.items.numberOfPackages"),
-            value = items.flatMap(_.totalNumberOfItems).map(_.totalPackage)
-        ))
+<div id="declaration-items-summary">
+    @components.summary_list(Some(messages("declaration.summary.items"))) {
+        @if(declarationData.items.isEmpty) {
+            <span id="empty-items">@messages("declaration.summary.items.empty")</span>
+        } else {
+            @declarationData.items.toSeq.sortBy(_.sequenceId).map { item =>
+                @item_section(item)
+            }
+        }
     }
-
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.items.transactionType"),
-        value = items.flatMap(_.natureOfTransaction).map(_.natureType)
-
-    ))
-}
+</div>

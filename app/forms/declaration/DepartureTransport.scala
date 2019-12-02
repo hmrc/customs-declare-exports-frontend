@@ -26,7 +26,6 @@ import utils.validators.forms.FieldValidator.{isContainedIn, noLongerThan, _}
 case class DepartureTransport(borderModeOfTransportCode: String, meansOfTransportOnDepartureType: String, meansOfTransportOnDepartureIDNumber: String)
 
 object DepartureTransport {
-  val formId = "BorderTransport"
 
   implicit val formats = Json.format[DepartureTransport]
 

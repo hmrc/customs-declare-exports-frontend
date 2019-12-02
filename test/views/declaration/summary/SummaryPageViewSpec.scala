@@ -16,245 +16,113 @@
 
 package views.declaration.summary
 
-import base.ExportsTestData.newUser
-import forms.declaration._
-import models.DeclarationType.DeclarationType
-import models.declaration.{Container, SupplementaryDeclarationData}
-import models.requests.{AuthenticatedRequest, JourneyRequest}
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import config.AppConfig
+import forms.declaration.LegalDeclaration
+import models.Mode
+import models.Mode._
 import org.jsoup.nodes.Document
-import org.scalatest.{MustMatchers, WordSpec}
-import play.api.data.Form
-import play.api.mvc.AnyContentAsEmpty
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
+import org.mockito.Mockito.when
+import services.cache.ExportsTestData
 import unit.tools.Stubs
-import utils.FakeRequestCSRFSupport._
-import views.declaration.spec.ViewMatchers
-import views.html.declaration.summary.{summary_page, summary_page_no_data}
+import views.declaration.spec.UnitViewSpec
+import views.html.declaration.summary.{draft_info_section, summary_page}
 
-class SummaryPageViewSpec extends WordSpec with MustMatchers with ExportsDeclarationBuilder with ExportsItemBuilder with Stubs with ViewMatchers {
+import scala.concurrent.duration.FiniteDuration
 
-  private val form: Form[LegalDeclaration] = LegalDeclaration.form()
-  val declaration: ExportsDeclaration = createDeclaration()
-  val request: JourneyRequest[AnyContentAsEmpty.type] = createJourneyRequest(declaration)
-  val summaryPage: String = createPage(request, declaration)
-  val summaryNoDataPage = contentAsString(new summary_page_no_data(mainTemplate)()(request, stubMessages()))
-  val amendSummaryPage = contentAsString(
-    new summary_page(mainTemplate)(Mode.Amend, SupplementaryDeclarationData(declaration), form)(request, stubMessages(), minimalAppConfig)
-  )
+class SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
+
+  val appConfig = mock[AppConfig]
+  when(appConfig.draftTimeToLive).thenReturn(FiniteDuration(30, "day"))
+  val draftInfoPage = new draft_info_section(appConfig)
+
+  val summaryPage = new summary_page(mainTemplate, draftInfoPage)
+  def view(mode: Mode = Normal): Document = summaryPage(mode, LegalDeclaration.form())(journeyRequest(aDeclaration()), messages, minimalAppConfig)
 
   "Summary page" should {
-    def view(mode: Mode, declaration: ExportsDeclaration = declaration, legalForm: Form[LegalDeclaration] = form): Document =
-      new summary_page(mainTemplate)(mode, SupplementaryDeclarationData(declaration), legalForm)(
-        new JourneyRequest(new AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration),
-        stubMessages(),
-        minimalAppConfig
-      )
 
-    "contain back button" when {
-      "Draft Mode" in {
-        val document = view(Mode.Draft)
-        document must containElementWithID("back-link")
-        document.getElementById("back-link") must haveHref(controllers.routes.SavedDeclarationsController.displayDeclarations())
-        document.getElementById("back-link") must containText("site.back")
+    "should display correct title" when {
+
+      "mode is normal" in {
+
+        view().getElementById("title").text() must include("declaration.summary.normal-header")
       }
 
-      "Amend Mode" when {
-        "source id populated" in {
-          val model = aDeclaration(withSourceId("source-id"))
-          val document = view(Mode.Amend, model)
-          document must containElementWithID("back-link")
-          document.getElementById("back-link") must haveHref(controllers.routes.SubmissionsController.displayListOfSubmissions())
-          document.getElementById("back-link") must containText("supplementary.summary.back")
-        }
+      "mode is amend" in {
+
+        view(Amend).getElementById("title").text() must include("declaration.summary.amend-header")
       }
 
-      "Normal Mode" when {
-        "standard declaration with containers links back to container summary" in {
-          val model = aDeclaration(withType(DeclarationType.STANDARD), withContainerData(Container("1234", Seq.empty)))
-          val document = view(Mode.Normal, model)
-          document must containElementWithID("back-link")
-          document.getElementById("back-link") must haveHref(
-            controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
-          )
-          document.getElementById("back-link") must containText("site.back")
-        }
+      "mode is draft" in {
 
-        "standard declaration without containers links back to container summary (which then re-directs to containers yes/no)" in {
-          val model = aDeclaration(withType(DeclarationType.STANDARD))
-          val document = view(Mode.Normal, model)
-          document must containElementWithID("back-link")
-          document.getElementById("back-link") must haveHref(
-            controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
-          )
-        }
-
-        "supplementary declaration with containers links back to container summary" in {
-          val model = aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withContainerData(Container("1234", Seq.empty)))
-          val document = view(Mode.Normal, model)
-          document must containElementWithID("back-link")
-          document.getElementById("back-link") must haveHref(
-            controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
-          )
-        }
-
-        "supplementary declaration without containers links back to container summary" in {
-          val model = aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withoutContainerData())
-          val document = view(Mode.Normal, model)
-          document must containElementWithID("back-link")
-          document.getElementById("back-link") must haveHref(
-            controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
-          )
-        }
-      }
-
-      "contains errors summary" when {
-
-        "legal declaration form is incorrect" in {
-
-          val formWithErrors: Form[LegalDeclaration] =
-            LegalDeclaration.form().fillAndValidate(LegalDeclaration("", "", "", false))
-
-          val document = view(Mode.Normal, legalForm = formWithErrors)
-
-          document must containElementWithID("error-summary-heading")
-          document must containElementWithID("fullName-error")
-          document must containElementWithID("jobRole-error")
-          document must containElementWithID("email-error")
-          document must containElementWithID("confirmation-error")
-        }
+        view(Draft).getElementById("title").text() must include("declaration.summary.saved-header")
       }
     }
 
-    "have correct main buttons" in {
+    "should display correct back link" when {
 
-      summaryPage must include("site.back")
-      summaryPage must include("site.acceptAndSubmitDeclaration")
-      summaryPage must include("button id=\"submit\" class=\"button\"")
-    }
+      "mode is normal" in {
 
-    "have correct declaration type" in {
+        val backButton = view().getElementById("back-link")
 
-      summaryPage must include("supplementary.summary.declarationType.header")
-      summaryPage must include("supplementary.summary.declarationType.dispatchLocation")
-      summaryPage must include("supplementary.summary.declarationType.supplementaryDeclarationType")
-    }
-
-    "have correct your references" in {
-      summaryPage must include("supplementary.summary.yourReferences.header")
-      summaryPage must include("supplementary.summary.yourReferences.ducr")
-      summaryPage must include("supplementary.summary.yourReferences.lrn")
-    }
-
-    "have correct parties" in {
-      summaryPage must include("supplementary.summary.parties.header")
-      summaryPage must include("supplementary.summary.parties.exporterId")
-      summaryPage must include("supplementary.summary.parties.exporterAddress")
-      summaryPage must include("supplementary.summary.parties.declarantId")
-      summaryPage must include("supplementary.summary.parties.representativeId")
-      summaryPage must include("supplementary.summary.parties.representativeAddress")
-      summaryPage must include("supplementary.summary.parties.representationType")
-      summaryPage must include("supplementary.summary.parties.additionalParties.id")
-      summaryPage must include("supplementary.summary.parties.additionalParties.type")
-      summaryPage must include("supplementary.summary.parties.idStatusNumberAuthorisationCode")
-      summaryPage must include("supplementary.summary.parties.authorizedPartyEori")
-    }
-
-    "have correct locations" in {
-      summaryPage must include("declaration.summary.locations.header")
-      summaryPage must include("supplementary.summary.locations.dispatchCountry")
-      summaryPage must include("supplementary.summary.locations.destinationCountry")
-      summaryPage must include("supplementary.summary.locations.goodsExaminationAddress")
-      summaryPage must include("supplementary.summary.locations.goodsExaminationLocationType")
-      summaryPage must include("supplementary.summary.locations.qualifierCode")
-      summaryPage must include("supplementary.summary.locations.additionalIdentifier")
-      summaryPage must include("supplementary.summary.locations.warehouseId")
-      summaryPage must include("supplementary.summary.locations.supervisingCustomsOffice")
-      summaryPage must include("supplementary.summary.locations.officeOfExit")
-    }
-
-    "have correct items" when {
-      "on Standard journey" in {
-
-        summaryPage must include("declaration.itemType.title")
-        summaryPage must include("supplementary.summary.items.amountInvoiced")
-        summaryPage must include("supplementary.summary.items.exchangeRate")
-        summaryPage must include("supplementary.summary.items.numberOfPackages")
-        summaryPage must include("supplementary.summary.items.transactionType")
+        backButton.text() mustBe messages("site.back")
+        backButton must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary(Normal))
       }
 
-      "on Supplementary journey" in {
-        val supplementaryDeclaration: ExportsDeclaration = createDeclaration(DeclarationType.SUPPLEMENTARY)
-        val supplementaryRequest: JourneyRequest[AnyContentAsEmpty.type] = createJourneyRequest(supplementaryDeclaration)
-        val supplementarySummaryPage: String = createPage(supplementaryRequest, supplementaryDeclaration)
-        supplementarySummaryPage must include("declaration.itemType.title")
-        supplementarySummaryPage must include("supplementary.summary.items.amountInvoiced")
-        supplementarySummaryPage must include("supplementary.summary.items.exchangeRate")
-        supplementarySummaryPage must include("supplementary.summary.items.numberOfPackages")
-        supplementarySummaryPage must include("supplementary.summary.items.transactionType")
+      "mode is amend" in {
+
+        val backButton = view(Amend).getElementById("back-link")
+
+        backButton.text() mustBe messages("supplementary.summary.back")
+        backButton must haveHref(controllers.routes.SubmissionsController.displayListOfSubmissions())
       }
 
-      "on Simplified journey" in {
-        val simplifiedDeclaration: ExportsDeclaration = createDeclaration(DeclarationType.SIMPLIFIED)
-        val simplifiedRequest: JourneyRequest[AnyContentAsEmpty.type] = createJourneyRequest(simplifiedDeclaration)
-        val simplifiedSummaryPage: String = createPage(simplifiedRequest, simplifiedDeclaration)
+      "mode is draft" in {
 
-        simplifiedSummaryPage must include("declaration.itemType.title")
-        simplifiedSummaryPage must not(include("supplementary.summary.items.amountInvoiced"))
-        simplifiedSummaryPage must not(include("supplementary.summary.items.exchangeRate"))
-        simplifiedSummaryPage must not(include("supplementary.summary.items.numberOfPackages"))
-        simplifiedSummaryPage must include("supplementary.summary.items.transactionType")
+        val backButton = view(Draft).getElementById("back-link")
+
+        backButton.text() mustBe messages("site.back")
+        backButton must haveHref(controllers.routes.SavedDeclarationsController.displayDeclarations())
       }
     }
 
-    "have correct transport info" in {
+    "have references section" in {
 
-      summaryPage must include("declaration.transportInformation.containers.title")
-      summaryPage must include("declaration.transportInformation.containerId.title")
+      view().getElementById("declaration-references-summary").text() mustNot be(empty)
     }
 
-    "return no data page" when {
+    "have parties section" in {
 
-      "there is no mandatory information" in {
-
-        summaryNoDataPage must include("supplementary.summary.noData.header")
-        summaryNoDataPage must include("supplementary.summary.noData.header.secondary")
-        summaryNoDataPage must include("Make an export declaration")
-        summaryNoDataPage must include("/customs-declare-exports/start")
-      }
+      view().getElementById("declaration-parties-summary").text() mustNot be(empty)
     }
 
-    "amend summary page must include information about starting declaration from the beginning" in {
+    "have countries section" in {
 
-      amendSummaryPage must include("summary.amend.information")
+      view().getElementById("declaration-countries-summary").text() mustNot be(empty)
+    }
+
+    "have locations section" in {
+
+      view().getElementById("declaration-locations-summary").text() mustNot be(empty)
+    }
+
+    "have transaction section" in {
+
+      view().getElementById("declaration-transaction-summary").text() mustNot be(empty)
+    }
+
+    "have items section" in {
+
+      view().getElementById("declaration-items-summary").text() mustNot be(empty)
+    }
+
+    "have warehouse section" in {
+
+      view().getElementById("declaration-warehouse-summary").text() mustNot be(empty)
+    }
+
+    "have transport section" in {
+
+      view().getElementById("declaration-transport-summary").text() mustNot be(empty)
     }
   }
-
-  private def createDeclaration(declarationType: DeclarationType = DeclarationType.STANDARD): ExportsDeclaration = {
-    val declaration = aDeclaration(
-      withType(declarationType),
-      withConsignmentReferences(),
-      withDestinationCountries(),
-      withGoodsLocation(GoodsLocation("PL", "type", "id", Some("a"), Some("b"), Some("c"), Some("d"), Some("e"))),
-      withWarehouseIdentification(Some(WarehouseIdentification(Some("a")))),
-      withSupervisingCustomsOffice(Some(SupervisingCustomsOffice(Some("b")))),
-      withInlandModeOfTransportCode(Some(InlandModeOfTransportCode(Some("c")))),
-      withOfficeOfExit("id", Some("code")),
-      withContainerData(Container("id", Seq.empty)),
-      withTotalNumberOfItems(Some("123"), Some("123")),
-      withNatureOfTransaction("nature"),
-      withItem(anItem())
-    )
-    declaration
-  }
-
-  private def createJourneyRequest(declaration: ExportsDeclaration) =
-    new JourneyRequest(new AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration)
-
-  private def createPage(request: JourneyRequest[AnyContentAsEmpty.type], declaration: ExportsDeclaration) =
-    contentAsString(
-      new summary_page(mainTemplate)(Mode.Normal, SupplementaryDeclarationData(declaration), form)(request, stubMessages(), minimalAppConfig)
-    )
 }

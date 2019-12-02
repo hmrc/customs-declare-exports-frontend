@@ -1,0 +1,67 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.requests.JourneyRequest
+@import models.viewmodels.HtmlTableRow
+
+@import forms.declaration.DepartureTransport
+@import forms.declaration.BorderTransport
+
+@(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
+
+@messagesForDepartureMeansOfTransport(departure: Option[DepartureTransport]) = @{
+  departure.map(transport =>
+    Seq(messages(s"declaration.summary.transport.departure.meansOfTransport.${transport.meansOfTransportOnDepartureType}"), transport.meansOfTransportOnDepartureIDNumber)
+  ).getOrElse(Seq.empty)
+}
+
+@messagesForBorderMeansOfTransport(border: Option[BorderTransport]) = @{
+  border.map(transport =>
+    Seq(messages(s"declaration.summary.transport.border.meansOfTransport.${transport.meansOfTransportCrossingTheBorderType}"), transport.meansOfTransportCrossingTheBorderIDNumber)
+  ).getOrElse(Seq.empty)
+}
+
+<div id="declaration-transport-summary">
+    @components.summary_list(Some(messages("declaration.summary.transport"))) {
+        @components.table_row("border-transport", HtmlTableRow(
+            label = messages("declaration.summary.transport.departure.transportCode.header"),
+            value = declarationData.departureTransport.map(departure =>
+                Seq(messages(s"declaration.summary.transport.departure.transportCode.${departure.borderModeOfTransportCode}"))
+            ).getOrElse(Seq.empty)
+        ))
+        @components.table_row("transport-reference", HtmlTableRow(
+            label = messages("declaration.summary.transport.departure.meansOfTransport.header"),
+            value = messagesForDepartureMeansOfTransport(declarationData.departureTransport)
+        ))
+        @components.table_row("active-transport-type", HtmlTableRow(
+            label = messages("declaration.summary.transport.border.meansOfTransport.header"),
+            value = messagesForBorderMeansOfTransport(declarationData.borderTransport)
+        ))
+        @components.table_row("active-transport-nationality", HtmlTableRow(
+            label = messages("declaration.summary.transport.activeTransportNationality"),
+            value = declarationData.borderTransport.flatMap(_.meansOfTransportCrossingTheBorderNationality).getOrElse("")
+        ))
+        @components.table_row("transport-payment", HtmlTableRow(
+            label = messages("declaration.summary.transport.payment"),
+            value = declarationData.transportInformation.flatMap(_.transportPayment.flatMap(_.paymentMethod.map(code => messages(s"declaration.summary.transport.payment.$code")))).getOrElse("")
+        ))
+        @components.table_row("containers", HtmlTableRow(
+            label = messages("declaration.summary.transport.containers"),
+            value = messages(declarationData.transportInformation.map(info => if(info.containers.nonEmpty) "site.yes" else "site.no").getOrElse(""))
+        ))
+        @containers(declarationData.transportInformation.map(_.containers).getOrElse(Seq.empty))
+    }
+</div>

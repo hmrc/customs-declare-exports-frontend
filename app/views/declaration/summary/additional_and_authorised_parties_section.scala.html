@@ -1,0 +1,62 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import forms.declaration.{DeclarationAdditionalActors, DeclarationHolder}
+@import models.requests.JourneyRequest
+@import models.viewmodels.HtmlTableRow
+
+@(additionalActors: Seq[DeclarationAdditionalActors], holders: Seq[DeclarationHolder])(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
+
+@if(additionalActors.isEmpty) {
+    @components.table_row("additionalActors", HtmlTableRow(
+        label = messages("declaration.summary.parties.additional"),
+        value = messages("site.no")
+    ))
+}
+@if(holders.isEmpty) {
+    @components.table_row("holders", HtmlTableRow(
+        label = messages("declaration.summary.parties.holders"),
+        value = messages("site.no")
+    ))
+}
+
+@if(additionalActors.nonEmpty) {
+    <caption class="heading-small"><span id="additionalActors">@messages("declaration.summary.parties.additional")</span></caption>
+    <tr class="section">
+        <td class="bold"><span id="additionalActors-type">@messages("declaration.summary.parties.additional.type")</span></td>
+        <td class="bold"><span id="additionalActors-eori">@messages("declaration.summary.parties.additional.eori")</span></td>
+    </tr>
+    @additionalActors.zipWithIndex.map { case (actor, index) =>
+        <tr class="section">
+            <td><span id="additionalActor-type-@index">@actor.partyType.map(partyType => messages(s"declaration.summary.parties.additional.$partyType")).getOrElse("")</span></td>
+            <td><span id="additionalActor-eori-@index">@actor.eori.getOrElse("")</span></td>
+        </tr>
+    }
+}
+
+@if(holders.nonEmpty) {
+    <caption class="heading-small"><span id="holders">@messages("declaration.summary.parties.holders")</span></caption>
+    <tr class="section">
+        <td class="bold"><span id="holders-type">@messages("declaration.summary.parties.holders.type")</span></td>
+        <td class="bold"><span id="holders-eori">@messages("declaration.summary.parties.holders.eori")</span></td>
+    </tr>
+    @holders.zipWithIndex.map { case (holder, index) =>
+        <tr class="section">
+            <td><span id="holder-type-@index">@holder.authorisationTypeCode.getOrElse("")</span></td>
+            <td><span id="holder-eori-@index">@holder.eori.getOrElse("")</span></td>
+        </tr>
+    }
+}

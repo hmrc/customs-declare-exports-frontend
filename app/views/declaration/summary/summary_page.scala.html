@@ -17,21 +17,20 @@
 @import config.AppConfig
 @import controllers.declaration.routes
 @import forms.declaration.LegalDeclaration
-@import models.Mode
-@import models.declaration.SupplementaryDeclarationData
+@import models.{ExportsDeclaration, Mode}
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 @import views.html.declaration.summary._
 @import views.{Title, ViewDates}
 
-@this(main_template: views.html.main_template)
+@this(main_template: views.html.main_template, draftInfoSection: draft_info_section)
 
-@(mode: Mode, suppDecData: SupplementaryDeclarationData, legalDeclarationForm: Form[LegalDeclaration])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(mode: Mode, legalDeclarationForm: Form[LegalDeclaration])(implicit request: JourneyRequest[AnyContent], messages: Messages, appConfig: AppConfig)
 
 @titleMsg = @{mode match {
-    case Mode.Normal => Title("supplementary.summary.normal-header")
-    case Mode.Amend => Title("supplementary.summary.amend-header")
-    case Mode.Draft => Title("supplementary.summary.saved-header")
+    case Mode.Normal => Title("declaration.summary.normal-header")
+    case Mode.Amend => Title("declaration.summary.amend-header")
+    case Mode.Draft => Title("declaration.summary.saved-header")
     }
 }
 
@@ -56,53 +55,24 @@
     @components.heading(title = messages(titleMsg.headingKey))
 
     @if(mode == Mode.Draft) {
-        <p>@messages("saved.declarations.summary.intro")</p>
-
-        @components.summary_list(None) {
-            @components.table_row_no_change_link(HtmlTableRow(
-                label = messages("supplementary.summary.yourReferences.ducr"),
-                value = Seq(suppDecData.consignmentReferences.map(_.ducr.ducr))
-            ))
-            @components.table_row_no_change_link(HtmlTableRow(
-                label = messages("saved.declarations.summary.createdDate"),
-                value = Seq(suppDecData.createDate.map(ViewDates.formatDateAtTime(_)))
-            ))
-            @components.table_row_no_change_link(HtmlTableRow(
-                label = messages("saved.declarations.summary.expireDate"),
-                value = Seq(suppDecData.updatedDate.map(createDate => createDate.plusSeconds(appConfig.draftTimeToLive.toSeconds)).map(ViewDates.formatDateAtTime(_)))
-            ))
-        }
+        @draftInfoSection(request.cacheModel)
     }
 
-    @components.summary_list(Some(messages("supplementary.summary.declarationType.header"))) {
-        @components.table_row_no_change_link(HtmlTableRow(
-            label = messages("supplementary.summary.declarationType.dispatchLocation"),
-            value = suppDecData.declarationType.flatMap(_.dispatchLocation).map(_.dispatchLocation)
-        ))
-        @components.table_row_no_change_link(HtmlTableRow(
-            label = messages("supplementary.summary.declarationType.supplementaryDeclarationType"),
-            value = suppDecData.declarationType.flatMap(_.additionalDeclarationType).map(_.toString)
-        ))
-    }
+    @references_section(request.cacheModel)
 
-    @components.summary_list(Some(messages("supplementary.summary.yourReferences.header"))) {
-        @components.table_row_no_change_link(HtmlTableRow(
-            label = messages("supplementary.summary.yourReferences.ducr"),
-            value = Seq(suppDecData.consignmentReferences.map(_.ducr.ducr))
-        ))
-        @components.table_row_no_change_link(HtmlTableRow(
-            label = messages("supplementary.summary.yourReferences.lrn"),
-            value = Seq(suppDecData.consignmentReferences.map(_.lrn.value))
-        ))
-    }
+    @parties_section(request.cacheModel)
 
-    @parties_section(suppDecData.parties)
+    @countries_section(request.cacheModel)
 
-    @locations_section(suppDecData.locations)
+    @locations_section(request.cacheModel)
 
-    @transport_containers_section(suppDecData.containers)
+    @transaction_section(request.cacheModel)
 
-    @items_section(suppDecData.items, request.declarationType)
+    @items_section(request.cacheModel)
+
+    @warehouse_section(request.cacheModel)
+
+    @transport_section(request.cacheModel)
 
     @if(mode == Mode.Amend) {
         <br/>

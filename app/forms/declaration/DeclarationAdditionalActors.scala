@@ -17,6 +17,7 @@
 package forms.declaration
 
 import forms.DeclarationPage
+import forms.declaration.DeclarationAdditionalActors.PartyType
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{JsValue, Json}
@@ -28,7 +29,6 @@ case class DeclarationAdditionalActors(eori: Option[String], partyType: Option[S
   def isDefined: Boolean = eori.isDefined && partyType.isDefined
 
   def toJson: JsValue = Json.toJson(this)(DeclarationAdditionalActors.format)
-
 }
 
 object DeclarationAdditionalActors extends DeclarationPage {

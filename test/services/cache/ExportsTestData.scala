@@ -18,7 +18,7 @@ package services.cache
 
 import base.ExportsTestData.newUser
 import forms.declaration.{GoodsLocation, InlandModeOfTransportCode, SupervisingCustomsOffice, WarehouseIdentification}
-import models.DeclarationType
+import models.{DeclarationType, ExportsDeclaration}
 import models.DeclarationType.DeclarationType
 import models.declaration.Container
 import models.requests.{AuthenticatedRequest, JourneyRequest}
@@ -28,7 +28,7 @@ import utils.FakeRequestCSRFSupport._
 
 trait ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder {
 
-  private def declaration(`type`: DeclarationType) = aDeclaration(
+  private def declaration(`type`: DeclarationType): ExportsDeclaration = aDeclaration(
     withType(`type`),
     withConsignmentReferences(),
     withDestinationCountries(),
@@ -45,4 +45,7 @@ trait ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder 
 
   protected def journeyRequest(`type`: DeclarationType = DeclarationType.STANDARD): JourneyRequest[AnyContent] =
     new JourneyRequest(new AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration(`type`))
+
+  protected def journeyRequest(declaration: ExportsDeclaration): JourneyRequest[AnyContent] =
+    new JourneyRequest(new AuthenticatedRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration)
 }

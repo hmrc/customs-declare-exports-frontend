@@ -19,14 +19,14 @@ package unit.controllers.declaration
 import config.AppConfig
 import controllers.declaration.SummaryController
 import forms.declaration.LegalDeclaration
-import models.declaration.SupplementaryDeclarationData
-import models.requests.ExportsSessionKeys
+import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
 import models.{ExportsDeclaration, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
+import play.api.mvc.AnyContent
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.SubmissionService
@@ -59,19 +59,13 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    when(mockSummaryPage.apply(any(), any(), any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockSummaryPage.apply(any(), any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
     when(mockSummaryPageNoData.apply()(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     reset(mockSummaryPage, mockSummaryPageNoData, mockSubmissionService)
     super.afterEach()
-  }
-
-  def theResponseData: SupplementaryDeclarationData = {
-    val captor = ArgumentCaptor.forClass(classOf[SupplementaryDeclarationData])
-    verify(mockSummaryPage).apply(any(), captor.capture(), any())(any(), any(), any())
-    captor.getValue
   }
 
   "Display" should {
@@ -85,10 +79,8 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
-        verify(mockSummaryPage, times(1)).apply(any(), any(), any())(any(), any(), any())
+        verify(mockSummaryPage, times(1)).apply(any(), any())(any(), any(), any())
         verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
-
-        theResponseData.consignmentReferences.value.lrn mustBe LRN
       }
 
       "declaration doesn't contain mandatory data" in {
@@ -98,7 +90,7 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
-        verify(mockSummaryPage, times(0)).apply(any(), any(), any())(any(), any(), any())
+        verify(mockSummaryPage, times(0)).apply(any(), any())(any(), any(), any())
         verify(mockSummaryPageNoData, times(1)).apply()(any(), any())
       }
     }
@@ -114,7 +106,7 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
         val result = controller.submitDeclaration()(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) mustBe INTERNAL_SERVER_ERROR
-        verify(mockSummaryPage, times(0)).apply(any(), any(), any())(any(), any(), any())
+        verify(mockSummaryPage, times(0)).apply(any(), any())(any(), any(), any())
         verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
       }
     }

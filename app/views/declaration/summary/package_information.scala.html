@@ -1,0 +1,37 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import forms.declaration.PackageInformation
+@import models.requests.JourneyRequest
+@import models.viewmodels.HtmlTableRow
+
+@(packageInformation: Seq[PackageInformation])(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
+
+@if(packageInformation.nonEmpty){
+    <caption class="heading-small"><span id="package-information">@messages("declaration.summary.items.item.packageInformation")</span></caption>
+    <tr class="section">
+        <td class="bold"><span id="package-information-type">@messages("declaration.summary.items.item.packageInformation.type")</span></td>
+        <td class="bold"><span id="package-information-number">@messages("declaration.summary.items.item.packageInformation.number")</span></td>
+        <td class="bold"><span id="package-information-markings">@messages("declaration.summary.items.item.packageInformation.markings")</span></td>
+    </tr>
+    @packageInformation.zipWithIndex.map { case (information, index) =>
+        <tr class="section">
+            <td><span id="package-information-@index-code">@information.typesOfPackagesText</span></td>
+            <td><span id="package-information-@index-number">@information.numberOfPackages</span></td>
+            <td><span id="package-information-@index-marks">@information.shippingMarks</span></td>
+        </tr>
+    }
+}

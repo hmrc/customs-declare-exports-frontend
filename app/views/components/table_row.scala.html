@@ -16,16 +16,23 @@
 
 @import models.viewmodels.HtmlTableRow
 
-@(tableRow: HtmlTableRow)
+@(id: String, tableRow: HtmlTableRow)
 
 <tr class="section">
-    <td class="previous-question-title bold">@tableRow.label</td>
-    <td class="previous-question-body">
-    @for(value <- tableRow.values){
-        @value.getOrElse("None")<br/>
-    }
+    <td class="bold"><span id="@id-label">@tableRow.label</span></td>
+    <td>
+        @if(tableRow.values.drop(1).isEmpty) {
+            <span id="@id">@tableRow.values.headOption.flatten.getOrElse("")<br/></span>
+        } else {
+            @for((value, idx) <- tableRow.values.zipWithIndex){
+                <span id="@id-@idx">@value.getOrElse("")<br/></span>
+            }
+        }
     </td>
-    <td class="link-right">
-        <a href="">Change</a>
-    </td>
+    @*Remove hidden below when links will be ready*@
+    @*Add correct href*@
+    @*<td class="hidden link-right">*@
+    @*<a href="">Change</a>*@
+    @*</td>*@
 </tr>
+

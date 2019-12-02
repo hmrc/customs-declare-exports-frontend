@@ -21,13 +21,13 @@
 @()(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = Title("supplementary.summary.noData.header")
+    title = Title("declaration.summary.noData.header")
 ) {
 
     @components.heading(
-        title = messages("supplementary.summary.noData.header"),
-        hint = messages("supplementary.summary.noData.header.secondary")
+        title = messages("declaration.summary.noData.header"),
+        hint = messages("declaration.summary.noData.header.secondary")
     )
 
-    @components.button_link("Make an export declaration", "/customs-declare-exports/start")
+    @components.button_link("declaration.summary.noData.button", "/customs-declare-exports/start", "summary-back-link")
 }
