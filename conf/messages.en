@@ -809,7 +809,7 @@ supplementary.summary.yourReferences.header = Your references
 
 declaration.summary.normal-header = Check your answers before making this declaration
 declaration.summary.amend-header = Check your answers
-declaration.summary.saved-header = No information for supplementary declaration found
+declaration.summary.saved-header = Continue saved declaration
 declaration.summary.noData.header = No information for supplementary declaration found
 declaration.summary.noData.header.secondary = Please, go back and provide necessary information before proceeding
 declaration.summary.noData.button = Make an export declaration
