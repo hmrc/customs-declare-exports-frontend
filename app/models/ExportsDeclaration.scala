@@ -50,8 +50,6 @@ case class ExportsDeclaration(
 
   def isComplete: Boolean = status == DeclarationStatus.COMPLETE
 
-  def capitalizedType: String = `type`.toString().toLowerCase().capitalize
-
   def updatedItem(itemId: String, update: ExportItem => ExportItem): ExportsDeclaration =
     copy(items = items.map(item => if (item.id == itemId) update(item) else item))
 

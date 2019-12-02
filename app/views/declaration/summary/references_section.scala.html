@@ -25,7 +25,7 @@
     @components.summary_list(Some(messages("declaration.summary.references"))) {
         @components.table_row("declarationType", HtmlTableRow(
             label = messages("declaration.summary.references.type"),
-            value = declarationData.capitalizedType
+            value = declarationData.`type`.toString().toLowerCase().capitalize
         ))
         @components.table_row("location", HtmlTableRow(
             label = messages("declaration.summary.references.location"),
@@ -39,7 +39,7 @@
         ))
         @components.table_row("additionalType", HtmlTableRow(
             label = messages("declaration.summary.references.additionalType"),
-            value = declarationData.additionalDeclarationType.map(AdditionalDeclarationType.asText(_)).getOrElse("")
+            value = declarationData.additionalDeclarationType.map(decType => messages(s"declaration.summary.references.additionalType.${decType.toString}")).getOrElse("")
         ))
         @components.table_row("ducr", HtmlTableRow(
             label = messages("declaration.summary.references.ducr"),

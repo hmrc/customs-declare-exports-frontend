@@ -29,16 +29,6 @@ case class DeclarationAdditionalActors(eori: Option[String], partyType: Option[S
   def isDefined: Boolean = eori.isDefined && partyType.isDefined
 
   def toJson: JsValue = Json.toJson(this)(DeclarationAdditionalActors.format)
-
-  def extractPartyType: String =
-    partyType.map {
-      case PartyType.Consolidator     => "Consolidator"
-      case PartyType.Manufacturer     => "Manufacturer"
-      case PartyType.FreightForwarder => "Freight forwarder"
-      case PartyType.WarehouseKeeper  => "Warehouse keeper"
-      case party                      => party
-    }.getOrElse("")
-
 }
 
 object DeclarationAdditionalActors extends DeclarationPage {

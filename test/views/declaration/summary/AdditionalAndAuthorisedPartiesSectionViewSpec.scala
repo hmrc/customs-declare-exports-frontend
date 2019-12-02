@@ -44,9 +44,9 @@ class AdditionalAndAuthorisedPartiesSectionViewSpec extends UnitViewSpec with Ex
     "display additional actors if exists" in {
 
       val eori1 = "eori1"
-      val partyType1 = "partyType1"
+      val partyType1 = "CS"
       val eori2 = "eori2"
-      val partyType2 = "partyType2"
+      val partyType2 = "MF"
 
       val additionalActors =
         Seq(DeclarationAdditionalActors(Some(eori1), Some(partyType1)), DeclarationAdditionalActors(Some(eori2), Some(partyType2)))
@@ -56,9 +56,9 @@ class AdditionalAndAuthorisedPartiesSectionViewSpec extends UnitViewSpec with Ex
       view.getElementById("additionalActors").text() mustBe messages("declaration.summary.parties.additional")
       view.getElementById("additionalActors-type").text() mustBe messages("declaration.summary.parties.additional.type")
       view.getElementById("additionalActors-eori").text() mustBe messages("declaration.summary.parties.additional.eori")
-      view.getElementById("additionalActor-type-0").text() mustBe messages(partyType1)
+      view.getElementById("additionalActor-type-0").text() mustBe messages("declaration.summary.parties.additional.CS")
       view.getElementById("additionalActor-eori-0").text() mustBe messages(eori1)
-      view.getElementById("additionalActor-type-1").text() mustBe messages(partyType2)
+      view.getElementById("additionalActor-type-1").text() mustBe messages("declaration.summary.parties.additional.MF")
       view.getElementById("additionalActor-eori-1").text() mustBe messages(eori2)
     }
 

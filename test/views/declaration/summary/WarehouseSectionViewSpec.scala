@@ -47,7 +47,7 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData {
     "display mode of transport" in {
 
       view.getElementById("mode-of-transport-label").text() mustBe messages("declaration.summary.warehouse.inlandModeOfTransport")
-      view.getElementById("mode-of-transport").text() mustBe "Sea transport"
+      view.getElementById("mode-of-transport").text() mustBe messages("declaration.summary.warehouse.inlandModeOfTransport.1")
     }
   }
 }

@@ -19,7 +19,7 @@ package forms.declaration
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import services.Countries.{allCountries, retrieveCountryFromName}
+import services.Countries.{allCountries, findByName}
 import utils.validators.forms.FieldValidator._
 
 case class GoodsLocation(
@@ -33,8 +33,8 @@ case class GoodsLocation(
   city: Option[String]
 ) {
 
-  def extractLocationCode: String =
-    retrieveCountryFromName(country).countryCode + typeOfLocation + qualifierOfIdentification + identificationOfLocation.getOrElse("")
+  def locationCode: String =
+    findByName(country).countryCode + typeOfLocation + qualifierOfIdentification + identificationOfLocation.getOrElse("")
 
   def extractAddressValues: Seq[String] = {
     val address = Seq(addressLine, city, postCode, Some(country)).flatten

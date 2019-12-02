@@ -21,19 +21,7 @@ import play.api.data.{Form, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
 
-case class TransportPayment(paymentMethod: Option[String] = None) {
-
-  def extractPaymentType: Option[String] = paymentMethod.map {
-    case TransportPayment.cash       => "Payment in cash"
-    case TransportPayment.creditCard => "Payment by credit card"
-    case TransportPayment.cheque     => "Payment by cheque"
-    case TransportPayment.other      => "Other (e.g. Direct debit to cash account)"
-    case TransportPayment.eFunds     => "Electronic funds transfer"
-    case TransportPayment.accHolder  => "Account holder with carrier"
-    case TransportPayment.notPrePaid => "Not pre-paid"
-    case _                           => "Incorrect"
-  }
-}
+case class TransportPayment(paymentMethod: Option[String] = None)
 
 object TransportPayment extends DeclarationPage {
 

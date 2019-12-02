@@ -25,14 +25,14 @@
             id = "exporter",
             eoriOption = declarationData.parties.exporterDetails.flatMap(_.details.eori),
             eoriLabel = messages("declaration.summary.parties.exporter.eori"),
-            address = declarationData.parties.exporterDetails.flatMap(_.details.address.map(_.extractValues)).getOrElse(Seq.empty),
+            address = declarationData.parties.exporterDetails.flatMap(_.details.address),
             addressLabel = messages("declaration.summary.parties.exporter.address")
         )
         @eori_or_address_section(
             id = "consignee",
             eoriOption = declarationData.parties.consigneeDetails.flatMap(_.details.eori),
             eoriLabel = messages("declaration.summary.parties.consignee.eori"),
-            address = declarationData.parties.consigneeDetails.flatMap(_.details.address.map(_.extractValues)).getOrElse(Seq.empty),
+            address = declarationData.parties.consigneeDetails.flatMap(_.details.address),
             addressLabel = messages("declaration.summary.parties.consignee.address"),
             isEoriDefault = false
         )
@@ -40,25 +40,25 @@
             id = "declarant",
             eoriOption = declarationData.parties.declarantDetails.flatMap(_.details.eori),
             eoriLabel = messages("declaration.summary.parties.declarant.eori"),
-            address = declarationData.parties.declarantDetails.flatMap(_.details.address.map(_.extractValues)).getOrElse(Seq.empty),
+            address = declarationData.parties.declarantDetails.flatMap(_.details.address),
             addressLabel = messages("declaration.summary.parties.declarant.address")
         )
         @eori_or_address_section(
             id = "representative",
             eoriOption = declarationData.parties.representativeDetails.flatMap(_.details.flatMap(_.eori)),
             eoriLabel = messages("declaration.summary.parties.representative.eori"),
-            address = declarationData.parties.representativeDetails.flatMap(_.details.flatMap(_.address.map(_.extractValues))).getOrElse(Seq.empty),
+            address = declarationData.parties.representativeDetails.flatMap(_.details.flatMap(_.address)),
             addressLabel = messages("declaration.summary.parties.representative.address")
         )
         @components.table_row("representationType", HtmlTableRow(
             label = messages("declaration.summary.parties.representative.type"),
-            value = declarationData.parties.representativeDetails.flatMap(_.extractStatusCodeValue).getOrElse("")
+            value = declarationData.parties.representativeDetails.flatMap(_.statusCode.map(code => messages(s"declaration.summary.parties.representative.type.$code"))).getOrElse("")
         ))
         @eori_or_address_section(
             id = "carrier",
             eoriOption = declarationData.parties.carrierDetails.flatMap(_.details.eori),
             eoriLabel = messages("declaration.summary.parties.carrier.eori"),
-            address = declarationData.parties.carrierDetails.flatMap(_.details.address.map(_.extractValues)).getOrElse(Seq.empty),
+            address = declarationData.parties.carrierDetails.flatMap(_.details.address),
             addressLabel = messages("declaration.summary.parties.carrier.address"),
             isEoriDefault = false
         )

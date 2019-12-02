@@ -41,7 +41,7 @@
     </tr>
     @additionalActors.zipWithIndex.map { case (actor, index) =>
         <tr class="section">
-            <td><span id="additionalActor-type-@index">@actor.extractPartyType</span></td>
+            <td><span id="additionalActor-type-@index">@actor.partyType.map(partyType => messages(s"declaration.summary.parties.additional.$partyType")).getOrElse("")</span></td>
             <td><span id="additionalActor-eori-@index">@actor.eori.getOrElse("")</span></td>
         </tr>
     }

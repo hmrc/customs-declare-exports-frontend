@@ -24,7 +24,7 @@
     <caption class="heading-small"><span id="item-@item.sequenceId-header">@messages("declaration.summary.items.item.sequenceId", item.sequenceId)</span></caption>
     @components.table_row(s"item-${item.sequenceId}-procedureCode", HtmlTableRow(
         label = messages("declaration.summary.items.item.procedureCode"),
-        value = item.procedureCodes.map(_.summaryValue).getOrElse("")
+        value = item.procedureCodes.map(data => data.procedureCode.fold("")(code => (Seq(code) ++ data.additionalProcedureCodes).mkString(" "))).getOrElse("")
     ))
     @onward_supply_relief(item.sequenceId, item.fiscalInformation, item.additionalFiscalReferencesData.map(_.references).getOrElse(Seq.empty))
     @components.table_row(s"item-${item.sequenceId}-commodityCode", HtmlTableRow(

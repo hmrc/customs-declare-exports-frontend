@@ -64,13 +64,13 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
     "display transport payment" in {
 
       view.getElementById("transport-payment-label").text() mustBe messages("declaration.summary.transport.payment")
-      view.getElementById("transport-payment").text() mustBe "Payment in cash"
+      view.getElementById("transport-payment").text() mustBe messages("declaration.summary.transport.payment.A")
     }
 
     "display information about containers" in {
 
       view.getElementById("containers-label").text() mustBe messages("declaration.summary.transport.containers")
-      view.getElementById("containers").text() mustBe "Yes"
+      view.getElementById("containers").text() mustBe "site.yes"
     }
 
     "skip containers part if empty" in {

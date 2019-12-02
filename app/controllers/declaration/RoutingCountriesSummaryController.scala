@@ -27,7 +27,7 @@ import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
-import services.Countries.retrieveCountriesFromCodes
+import services.Countries.findByCodes
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.destinationCountries.{change_routing_country, remove_routing_country, routing_countries_summary}
 
@@ -51,7 +51,7 @@ class RoutingCountriesSummaryController @Inject()(
         navigator.continueTo(controllers.declaration.routes.DestinationCountryController.displayPage(mode))
       case _ =>
         val countryCodes = request.cacheModel.locations.routingCountries
-        val countries = retrieveCountriesFromCodes(countryCodes)
+        val countries = findByCodes(countryCodes)
 
         if (countries.nonEmpty) {
           Ok(routingCountriesSummaryPage(mode, RoutingQuestionYesNo.form(), countries))
@@ -63,7 +63,7 @@ class RoutingCountriesSummaryController @Inject()(
 
   def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val countryCodes = request.cacheModel.locations.routingCountries
-    val countries = retrieveCountriesFromCodes(countryCodes)
+    val countries = findByCodes(countryCodes)
 
     RoutingQuestionYesNo
       .form(countryCodes)

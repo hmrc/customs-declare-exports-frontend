@@ -21,7 +21,6 @@ import play.api.data.Forms.{mapping, text}
 import play.api.data.validation.Constraints.pattern
 import play.api.libs.json.Json
 
-// TODO change argument name from 'ducr' to 'value', this change is incompatible with backend
 case class Ducr(ducr: String)
 
 object Ducr {

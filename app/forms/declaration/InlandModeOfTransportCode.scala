@@ -23,21 +23,7 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator.isContainedIn
 
-case class InlandModeOfTransportCode(inlandModeOfTransportCode: Option[String] = None) {
-  import TransportCodes._
-
-  def extractModeValue: Option[String] = inlandModeOfTransportCode.map {
-    case Maritime                    => "Sea transport"
-    case Rail                        => "Rail transport"
-    case Road                        => "Road transport"
-    case Air                         => "Air transport"
-    case PostalConsignment           => "Postal or Mail"
-    case FixedTransportInstallations => "Fixed transport installations"
-    case InlandWaterway              => "Inland waterway transport"
-    case Unknown                     => "Mode unknown, for example own propulsion"
-    case _                           => "Incorrect"
-  }
-}
+case class InlandModeOfTransportCode(inlandModeOfTransportCode: Option[String] = None)
 
 object InlandModeOfTransportCode extends DeclarationPage {
   implicit val format = Json.format[InlandModeOfTransportCode]

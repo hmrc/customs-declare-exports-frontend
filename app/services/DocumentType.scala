@@ -34,7 +34,7 @@ object DocumentType {
   val documentCodesMap: Map[String, DocumentType] =
     allDocuments.map(documentType => (documentType.code, documentType)).toMap
 
-  def retrieveDocumentTypeFromCode(code: String): DocumentType = documentCodesMap(code)
+  def findByCode(code: String): DocumentType = documentCodesMap(code)
 
-  def retrieveDocumentTypesFromCodes(codes: Seq[String]): Seq[DocumentType] = codes.map(documentCodesMap(_))
+  def findByCodes(codes: Seq[String]): Seq[DocumentType] = codes.map(documentCodesMap(_))
 }

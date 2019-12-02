@@ -23,8 +23,6 @@ case class TransportInformation(transportPayment: Option[TransportPayment] = Non
 
   private def hasContainer(id: String) = containers.exists(_.id == id)
 
-  val hasContainers: String = if (containers.nonEmpty) "Yes" else "No"
-
   def addOrUpdateContainer(updatedContainer: Container): Seq[Container] =
     if (containers.isEmpty) {
       Seq(updatedContainer)

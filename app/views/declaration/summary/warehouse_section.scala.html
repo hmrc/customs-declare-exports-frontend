@@ -31,7 +31,7 @@
         ))
         @components.table_row("mode-of-transport", HtmlTableRow(
             label = messages("declaration.summary.warehouse.inlandModeOfTransport"),
-            value = declarationData.locations.inlandModeOfTransportCode.flatMap(_.extractModeValue).getOrElse("")
+            value = declarationData.locations.inlandModeOfTransportCode.flatMap(_.inlandModeOfTransportCode.map(code => messages(s"declaration.summary.warehouse.inlandModeOfTransport.$code"))).getOrElse("")
         ))
     }
 </div>

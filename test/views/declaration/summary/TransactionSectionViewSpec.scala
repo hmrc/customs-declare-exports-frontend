@@ -49,7 +49,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData {
     "have nature of transaction" in {
 
       view.getElementById("nature-of-transaction-label").text() mustBe messages("declaration.summary.transaction.natureOfTransaction")
-      view.getElementById("nature-of-transaction").text() mustBe "Return"
+      view.getElementById("nature-of-transaction").text() mustBe messages("declaration.summary.transaction.natureOfTransaction.2")
     }
 
     "have related documents section" in {

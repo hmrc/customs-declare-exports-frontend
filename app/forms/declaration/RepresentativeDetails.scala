@@ -21,15 +21,7 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator.isContainedIn
 
-case class RepresentativeDetails(details: Option[EntityDetails], statusCode: Option[String]) {
-
-  def extractStatusCodeValue: Option[String] = statusCode.map {
-    case "1"  => "Declarant"
-    case "2"  => "Direct"
-    case "3"  => "Indirect"
-    case code => code
-  }
-}
+case class RepresentativeDetails(details: Option[EntityDetails], statusCode: Option[String])
 
 object RepresentativeDetails {
   implicit val format = Json.format[RepresentativeDetails]

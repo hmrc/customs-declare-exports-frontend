@@ -24,15 +24,15 @@
     @components.summary_list(Some(messages("declaration.summary.countries"))) {
         @components.table_row("countryOfDispatch", HtmlTableRow(
             label = messages("declaration.summary.countries.countryOfDispatch"),
-            value = Seq(Countries.retrieveCountryFromCode(declarationData.locations.originationCountry).map(_.asString()).getOrElse(""))
+            value = declarationData.locations.originationCountry.map(code => Countries.findByCode(code).asString()).getOrElse("")
         ))
         @components.table_row("countriesOfRouting", HtmlTableRow(
             label = messages("declaration.summary.countries.routingCountries"),
-            value = Seq(Countries.retrieveCountriesFromCodes(declarationData.locations.routingCountries).map(_.asString()).mkString(", "))
+            value = Seq(Countries.findByCodes(declarationData.locations.routingCountries).map(_.asString()).mkString(", "))
         ))
         @components.table_row("countryOfDestination", HtmlTableRow(
             label = messages("declaration.summary.countries.countryOfDestination"),
-            value = Seq(Countries.retrieveCountryFromCode(declarationData.locations.destinationCountry).map(_.asString()).getOrElse(""))
+            value = declarationData.locations.destinationCountry.map(code => Countries.findByCode(code).asString()).getOrElse("")
         ))
     }
 </div>

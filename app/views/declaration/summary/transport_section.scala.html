@@ -56,11 +56,11 @@
         ))
         @components.table_row("transport-payment", HtmlTableRow(
             label = messages("declaration.summary.transport.payment"),
-            value = declarationData.transportInformation.flatMap(_.transportPayment.flatMap(_.extractPaymentType)).getOrElse("")
+            value = declarationData.transportInformation.flatMap(_.transportPayment.flatMap(_.paymentMethod.map(code => messages(s"declaration.summary.transport.payment.$code")))).getOrElse("")
         ))
         @components.table_row("containers", HtmlTableRow(
             label = messages("declaration.summary.transport.containers"),
-            value = declarationData.transportInformation.map(_.hasContainers).getOrElse("")
+            value = messages(declarationData.transportInformation.map(info => if(info.containers.nonEmpty) "site.yes" else "site.no").getOrElse(""))
         ))
         @containers(declarationData.transportInformation.map(_.containers).getOrElse(Seq.empty))
     }

@@ -73,7 +73,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData {
     "display status code" in {
 
       view.getElementById("representationType-label").text() mustBe messages("declaration.summary.parties.representative.type")
-      view.getElementById("representationType").text() mustBe "Declarant"
+      view.getElementById("representationType").text() mustBe messages("declaration.summary.parties.representative.type.1")
     }
 
     "display additional actors section" in {

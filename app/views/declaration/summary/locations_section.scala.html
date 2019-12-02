@@ -14,20 +14,36 @@
  * limitations under the License.
  *@
 
+@import forms.declaration.GoodsLocation
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
+@import services.Countries._
 
 @(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
+
+@locationCode(locationOpt: Option[GoodsLocation]) = @{
+  locationOpt.map { location =>
+      findByName(location.country).countryCode + location.typeOfLocation + location.qualifierOfIdentification + location.identificationOfLocation.getOrElse("")
+  }
+}
+
+@address(locationOpt: Option[GoodsLocation]) = @{
+  locationOpt.map { location =>
+      val address = Seq(location.addressLine, location.city, location.postCode, Some(location.country)).flatten
+
+      if (address.length > 3) address else Seq.empty
+  }
+}
 
 <div id="declaration-locations-summary">
     @components.summary_list(Some(messages("declaration.summary.locations"))) {
         @components.table_row("location-code", HtmlTableRow(
             label = messages("declaration.summary.locations.goodsLocationCode"),
-            value = declarationData.locations.goodsLocation.map(_.extractLocationCode).toSeq
+            value = locationCode(declarationData.locations.goodsLocation).toSeq
         ))
         @components.table_row("location-address", HtmlTableRow(
             label = messages("declaration.summary.locations.goodsLocationAddress"),
-            value = declarationData.locations.goodsLocation.map(_.extractAddressValues).getOrElse(Seq.empty)
+            value = address(declarationData.locations.goodsLocation).getOrElse(Seq.empty)
         ))
         @components.table_row("location-officeOfExit", HtmlTableRow(
             label = messages("declaration.summary.locations.officeOfExit"),

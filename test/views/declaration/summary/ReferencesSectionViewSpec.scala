@@ -50,7 +50,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData {
     "have additional declaration type" in {
 
       view.getElementById("additionalType-label").text() mustBe messages("declaration.summary.references.additionalType")
-      view.getElementById("additionalType").text() mustBe "Frontier"
+      view.getElementById("additionalType").text() mustBe messages("declaration.summary.references.additionalType.A")
     }
 
     "have ducr" in {

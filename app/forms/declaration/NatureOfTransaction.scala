@@ -21,22 +21,7 @@ import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
 
-case class NatureOfTransaction(natureType: String) {
-  import NatureOfTransaction._
-
-  def extractNatureType: String = natureType match {
-    case Purchase         => "Purchase"
-    case Return           => "Return"
-    case Donation         => "Donation"
-    case Processing       => "Processing"
-    case Processed        => "Processed"
-    case NationalPurposes => "National purposes"
-    case Military         => "Military"
-    case Construction     => "Construction"
-    case Other            => "Other"
-    case _                => "Invalid"
-  }
-}
+case class NatureOfTransaction(natureType: String)
 
 object NatureOfTransaction {
   implicit val format: OFormat[NatureOfTransaction] = Json.format[NatureOfTransaction]
