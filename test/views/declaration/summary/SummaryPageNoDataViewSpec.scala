@@ -40,7 +40,7 @@ class SummaryPageNoDataViewSpec extends UnitViewSpec with Stubs with ExportsTest
 
     "display back link which redirect to start page" in {
 
-      val backButton = view.getElementById("link-back")
+      val backButton = view.getElementById("summary-back-link")
 
       backButton.text() mustBe messages("declaration.summary.noData.button")
       backButton must haveHref("/customs-declare-exports/start")

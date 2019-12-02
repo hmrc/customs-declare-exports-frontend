@@ -51,7 +51,7 @@ class SummaryController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (containsMandatoryData(request.cacheModel, mode)) {
-      Ok(summaryPage(mode, request.cacheModel, LegalDeclaration.form()))
+      Ok(summaryPage(mode, LegalDeclaration.form()))
     } else {
       Ok(summaryPageNoData())
     }
@@ -65,7 +65,7 @@ class SummaryController @Inject()(
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(summaryPage(Mode.Normal, request.cacheModel, formWithErrors))),
+        (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(summaryPage(Mode.Normal, formWithErrors))),
         legalDeclaration => {
           submissionService.submit(request.eori, request.cacheModel, legalDeclaration).map {
             case Some(lrn) =>

@@ -20,7 +20,7 @@ class HtmlTableRow(val label: String, val values: Seq[Option[String]])
 
 object HtmlTableRow {
 
-  def apply[T](label: String, value: Seq[String]): HtmlTableRow = new HtmlTableRow(label, value.map(Option.apply))
+  def apply(label: String, value: Seq[String]): HtmlTableRow = new HtmlTableRow(label, value.map(Option.apply))
 
   def apply(label: String, value: String): HtmlTableRow = new HtmlTableRow(label, Seq(Some(value)))
 }

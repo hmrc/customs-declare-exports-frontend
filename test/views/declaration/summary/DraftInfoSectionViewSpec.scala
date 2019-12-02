@@ -44,7 +44,8 @@ class DraftInfoSectionViewSpec extends UnitViewSpec with ExportsTestData with Mo
       val expectedCreatedTime = "28 Nov 2019 at 14:48"
       val expectedUpdatedTime = "28 Dec 2019 at 14:48"
 
-      val view = draft_info_section(data)(messages, appConfig)
+      val draftInfoPage = new draft_info_section(appConfig)
+      val view = draftInfoPage(data)(messages)
 
       view.getElementById("draft-ducr-label").text() mustBe messages("declaration.summary.draft.ducr")
       view.getElementById("draft-ducr").text() mustBe ducr

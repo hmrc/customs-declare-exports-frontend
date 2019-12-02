@@ -16,19 +16,27 @@
 
 package views.declaration.summary
 
+import config.AppConfig
 import forms.declaration.LegalDeclaration
 import models.Mode
 import models.Mode._
 import org.jsoup.nodes.Document
+import org.mockito.Mockito.when
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.summary_page
+import views.html.declaration.summary.{draft_info_section, summary_page}
+
+import scala.concurrent.duration.FiniteDuration
 
 class SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
 
-  val summaryPage = new summary_page(mainTemplate)
-  def view(mode: Mode = Normal): Document = summaryPage(mode, aDeclaration(), LegalDeclaration.form())(journeyRequest(), messages, minimalAppConfig)
+  val appConfig = mock[AppConfig]
+  when(appConfig.draftTimeToLive).thenReturn(FiniteDuration(30, "day"))
+  val draftInfoPage = new draft_info_section(appConfig)
+
+  val summaryPage = new summary_page(mainTemplate, draftInfoPage)
+  def view(mode: Mode = Normal): Document = summaryPage(mode, LegalDeclaration.form())(journeyRequest(aDeclaration()), messages, minimalAppConfig)
 
   "Summary page" should {
 

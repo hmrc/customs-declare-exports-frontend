@@ -18,7 +18,9 @@
 @import models.viewmodels.HtmlTableRow
 @import views.ViewDates
 
-@(declarationData: ExportsDeclaration)(implicit messages: Messages, appConfig: AppConfig)
+@this(appConfig: AppConfig)
+
+@(declarationData: ExportsDeclaration)(implicit messages: Messages)
 
 <div id="draft-information">
     <span id="draft-info-header">@messages("declaration.summary.draft")</span>
