@@ -23,13 +23,15 @@
 @if(additionalActors.isEmpty) {
     @components.table_row("additionalActors", HtmlTableRow(
         label = messages("declaration.summary.parties.additional"),
-        value = messages("site.no")
+        value = messages("site.no"),
+        call = Some(controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage())
     ))
 }
 @if(holders.isEmpty) {
     @components.table_row("holders", HtmlTableRow(
         label = messages("declaration.summary.parties.holders"),
-        value = messages("site.no")
+        value = messages("site.no"),
+        call = Some(controllers.declaration.routes.DeclarationHolderController.displayPage())
     ))
 }
 
@@ -38,11 +40,15 @@
     <tr class="section">
         <td class="bold"><span id="additionalActors-type">@messages("declaration.summary.parties.additional.type")</span></td>
         <td class="bold"><span id="additionalActors-eori">@messages("declaration.summary.parties.additional.eori")</span></td>
+        <td></td>
     </tr>
     @additionalActors.zipWithIndex.map { case (actor, index) =>
         <tr class="section">
             <td><span id="additionalActor-type-@index">@actor.partyType.map(partyType => messages(s"declaration.summary.parties.additional.$partyType")).getOrElse("")</span></td>
             <td><span id="additionalActor-eori-@index">@actor.eori.getOrElse("")</span></td>
+            <td class="link-right">
+                <a href="@controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage()" id="additionalActor-@index-change">@messages("site.change")</a>
+            </td>
         </tr>
     }
 }
@@ -52,11 +58,15 @@
     <tr class="section">
         <td class="bold"><span id="holders-type">@messages("declaration.summary.parties.holders.type")</span></td>
         <td class="bold"><span id="holders-eori">@messages("declaration.summary.parties.holders.eori")</span></td>
+        <td></td>
     </tr>
     @holders.zipWithIndex.map { case (holder, index) =>
         <tr class="section">
             <td><span id="holder-type-@index">@holder.authorisationTypeCode.getOrElse("")</span></td>
             <td><span id="holder-eori-@index">@holder.eori.getOrElse("")</span></td>
+            <td class="link-right">
+                <a href="@controllers.declaration.routes.DeclarationHolderController.displayPage()" id="holder-@index-change">@messages("site.change")</a>
+            </td>
         </tr>
     }
 }

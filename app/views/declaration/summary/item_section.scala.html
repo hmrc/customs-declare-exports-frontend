@@ -17,6 +17,7 @@
 @import models.declaration.ExportItem
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
+@import models.Mode
 
 @(item: ExportItem)(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
@@ -24,50 +25,61 @@
     <caption class="heading-small"><span id="item-@item.sequenceId-header">@messages("declaration.summary.items.item.sequenceId", item.sequenceId)</span></caption>
     @components.table_row(s"item-${item.sequenceId}-procedureCode", HtmlTableRow(
         label = messages("declaration.summary.items.item.procedureCode"),
-        value = item.procedureCodes.map(data => data.procedureCode.fold("")(code => (Seq(code) ++ data.additionalProcedureCodes).mkString(" "))).getOrElse("")
+        value = item.procedureCodes.map(data => data.procedureCode.fold("")(code => (Seq(code) ++ data.additionalProcedureCodes).mkString(" "))).getOrElse(""),
+        call = Some(controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, item.id))
     ))
-    @onward_supply_relief(item.sequenceId, item.fiscalInformation, item.additionalFiscalReferencesData.map(_.references).getOrElse(Seq.empty))
+    @onward_supply_relief(item.id, item.sequenceId, item.fiscalInformation, item.additionalFiscalReferencesData.map(_.references).getOrElse(Seq.empty))
     @components.table_row(s"item-${item.sequenceId}-commodityCode", HtmlTableRow(
         label = messages("declaration.summary.items.item.commodityCode"),
-        value = item.commodityDetails.flatMap(_.combinedNomenclatureCode).getOrElse("")
+        value = item.commodityDetails.flatMap(_.combinedNomenclatureCode).getOrElse(""),
+        call = Some(controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, item.id))
     ))
     @components.table_row(s"item-${item.sequenceId}-goodsDescription", HtmlTableRow(
         label = messages("declaration.summary.items.item.goodsDescription"),
-        value = item.commodityDetails.map(_.descriptionOfGoods).getOrElse("")
+        value = item.commodityDetails.map(_.descriptionOfGoods).getOrElse(""),
+        call = Some(controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, item.id))
     ))
     @components.table_row(s"item-${item.sequenceId}-unDangerousGoodsCode", HtmlTableRow(
         label = messages("declaration.summary.items.item.unDangerousGoodsCode"),
-        value = item.dangerousGoodsCode.flatMap(_.dangerousGoodsCode).getOrElse("")
+        value = item.dangerousGoodsCode.flatMap(_.dangerousGoodsCode).getOrElse(""),
+        call = Some(controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, item.id))
     ))
     @components.table_row(s"item-${item.sequenceId}-cusCode", HtmlTableRow(
         label = messages("declaration.summary.items.item.cusCode"),
-        value = item.cusCode.flatMap(_.cusCode).getOrElse("")
+        value = item.cusCode.flatMap(_.cusCode).getOrElse(""),
+        call = Some(controllers.declaration.routes.CUSCodeController.displayPage(Mode.Normal, item.id))
     ))
     @components.table_row(s"item-${item.sequenceId}-taricAdditionalCodes", HtmlTableRow(
         label = messages("declaration.summary.items.item.taricAdditionalCodes"),
-        value = item.taricCodes.map(_.taricCode).mkString(", ")
+        value = item.taricCodes.map(_.taricCode).mkString(", "),
+        call = Some(controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, item.id))
     ))
     @components.table_row(s"item-${item.sequenceId}-nationalAdditionalCodes", HtmlTableRow(
         label = messages("declaration.summary.items.item.nationalAdditionalCodes"),
-        value = item.nactCodes.map(_.nactCode).mkString(", ")
+        value = item.nactCodes.map(_.nactCode).mkString(", "),
+        call = Some(controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, item.id))
     ))
     @components.table_row(s"item-${item.sequenceId}-itemValue", HtmlTableRow(
         label = messages("declaration.summary.items.item.itemValue"),
-        value = item.statisticalValue.map(_.statisticalValue).getOrElse("")
+        value = item.statisticalValue.map(_.statisticalValue).getOrElse(""),
+        call = Some(controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, item.id))
     ))
     @components.table_row(s"item-${item.sequenceId}-supplementaryUnits", HtmlTableRow(
         label = messages("declaration.summary.items.item.supplementaryUnits"),
-        value = item.commodityMeasure.flatMap(_.supplementaryUnits).getOrElse("")
+        value = item.commodityMeasure.flatMap(_.supplementaryUnits).getOrElse(""),
+        call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, item.id))
     ))
     @components.table_row(s"item-${item.sequenceId}-grossWeight", HtmlTableRow(
         label = messages("declaration.summary.items.item.grossWeight"),
-        value = item.commodityMeasure.map(_.grossMass).getOrElse("")
+        value = item.commodityMeasure.map(_.grossMass).getOrElse(""),
+        call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, item.id))
     ))
     @components.table_row(s"item-${item.sequenceId}-netWeight", HtmlTableRow(
         label = messages("declaration.summary.items.item.netWeight"),
-        value = item.commodityMeasure.map(_.netMass).getOrElse("")
+        value = item.commodityMeasure.map(_.netMass).getOrElse(""),
+        call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, item.id))
     ))
-    @package_information(item.packageInformation)
-    @union_and_national_codes(item.additionalInformation.map(_.items).getOrElse(Seq.empty))
-    @supporting_documents(item.documentsProducedData.map(_.documents).getOrElse(Seq.empty))
+    @package_information(item.id, item.packageInformation)
+    @union_and_national_codes(item.id, item.additionalInformation.map(_.items).getOrElse(Seq.empty))
+    @supporting_documents(item.id, item.documentsProducedData.map(_.documents).getOrElse(Seq.empty))
 </div>

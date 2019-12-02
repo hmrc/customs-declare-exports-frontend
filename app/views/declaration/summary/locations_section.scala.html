@@ -39,19 +39,23 @@
     @components.summary_list(Some(messages("declaration.summary.locations"))) {
         @components.table_row("location-code", HtmlTableRow(
             label = messages("declaration.summary.locations.goodsLocationCode"),
-            value = locationCode(declarationData.locations.goodsLocation).toSeq
+            value = locationCode(declarationData.locations.goodsLocation).toSeq,
+            call = Some(controllers.declaration.routes.LocationController.displayPage())
         ))
         @components.table_row("location-address", HtmlTableRow(
             label = messages("declaration.summary.locations.goodsLocationAddress"),
-            value = address(declarationData.locations.goodsLocation).getOrElse(Seq.empty)
+            value = address(declarationData.locations.goodsLocation).getOrElse(Seq.empty),
+            call = Some(controllers.declaration.routes.LocationController.displayPage())
         ))
         @components.table_row("location-officeOfExit", HtmlTableRow(
             label = messages("declaration.summary.locations.officeOfExit"),
-            value = declarationData.locations.officeOfExit.map(_.officeId).getOrElse("")
+            value = declarationData.locations.officeOfExit.map(_.officeId).getOrElse(""),
+            call = Some(controllers.declaration.routes.OfficeOfExitController.displayPage())
         ))
         @components.table_row("location-expressConsignment", HtmlTableRow(
             label = messages("declaration.summary.locations.expressConsignment"),
-            value = declarationData.locations.officeOfExit.flatMap(_.circumstancesCode).getOrElse("")
+            value = declarationData.locations.officeOfExit.flatMap(_.circumstancesCode).getOrElse(""),
+            call = Some(controllers.declaration.routes.OfficeOfExitController.displayPage())
         ))
     }
 </div>

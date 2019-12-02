@@ -40,40 +40,62 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
   "Parties section" should {
 
-    "contains exporter details" in {
+    "contains exporter details with change button" in {
 
       view.getElementById("exporter-eori-label").text() mustBe messages("declaration.summary.parties.exporter.eori")
       view.getElementById("exporter-address-label").text() mustBe messages("declaration.summary.parties.exporter.address")
+      view.getElementById("exporter-eori-change").text() mustBe messages("site.change")
+      view.getElementById("exporter-eori-change") must haveHref(controllers.declaration.routes.ExporterDetailsController.displayPage())
+      view.getElementById("exporter-address-change").text() mustBe messages("site.change")
+      view.getElementById("exporter-address-change") must haveHref(controllers.declaration.routes.ExporterDetailsController.displayPage())
     }
 
-    "contains consignee details" in {
+    "contains consignee details with change button" in {
 
       view.getElementById("consignee-eori-label").text() mustBe messages("declaration.summary.parties.consignee.eori")
       view.getElementById("consignee-address-label").text() mustBe messages("declaration.summary.parties.consignee.address")
+      view.getElementById("consignee-eori-change").text() mustBe messages("site.change")
+      view.getElementById("consignee-eori-change") must haveHref(controllers.declaration.routes.ConsigneeDetailsController.displayPage())
+      view.getElementById("consignee-address-change").text() mustBe messages("site.change")
+      view.getElementById("consignee-address-change") must haveHref(controllers.declaration.routes.ConsigneeDetailsController.displayPage())
     }
 
-    "contains declarant details" in {
+    "contains declarant details with change button" in {
 
       view.getElementById("declarant-eori-label").text() mustBe messages("declaration.summary.parties.declarant.eori")
       view.getElementById("declarant-address-label").text() mustBe messages("declaration.summary.parties.declarant.address")
+      view.getElementById("declarant-eori-change").text() mustBe messages("site.change")
+      view.getElementById("declarant-eori-change") must haveHref(controllers.declaration.routes.DeclarantDetailsController.displayPage())
+      view.getElementById("declarant-address-change").text() mustBe messages("site.change")
+      view.getElementById("declarant-address-change") must haveHref(controllers.declaration.routes.DeclarantDetailsController.displayPage())
     }
 
-    "contains representative details" in {
+    "contains representative details with change button" in {
 
       view.getElementById("representative-eori-label").text() mustBe messages("declaration.summary.parties.representative.eori")
       view.getElementById("representative-address-label").text() mustBe messages("declaration.summary.parties.representative.address")
+      view.getElementById("representative-eori-change").text() mustBe messages("site.change")
+      view.getElementById("representative-eori-change") must haveHref(controllers.declaration.routes.RepresentativeDetailsController.displayPage())
+      view.getElementById("representative-address-change").text() mustBe messages("site.change")
+      view.getElementById("representative-address-change") must haveHref(controllers.declaration.routes.RepresentativeDetailsController.displayPage())
     }
 
-    "contains carrier details" in {
+    "contains carrier details with change button" in {
 
       view.getElementById("carrier-eori-label").text() mustBe messages("declaration.summary.parties.carrier.eori")
       view.getElementById("carrier-address-label").text() mustBe messages("declaration.summary.parties.carrier.address")
+      view.getElementById("carrier-eori-change").text() mustBe messages("site.change")
+      view.getElementById("carrier-eori-change") must haveHref(controllers.declaration.routes.CarrierDetailsController.displayPage())
+      view.getElementById("carrier-address-change").text() mustBe messages("site.change")
+      view.getElementById("carrier-address-change") must haveHref(controllers.declaration.routes.CarrierDetailsController.displayPage())
     }
 
-    "display status code" in {
+    "display status code with change button" in {
 
       view.getElementById("representationType-label").text() mustBe messages("declaration.summary.parties.representative.type")
       view.getElementById("representationType").text() mustBe messages("declaration.summary.parties.representative.type.1")
+      view.getElementById("representationType-change").text() mustBe messages("site.change")
+      view.getElementById("representationType-change") must haveHref(controllers.declaration.routes.RepresentativeDetailsController.displayPage())
     }
 
     "display additional actors section" in {

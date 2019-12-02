@@ -20,23 +20,23 @@ import forms.declaration.Seal
 import models.declaration.Container
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
+import views.html.declaration.summary
 
 class ContainersViewSpec extends UnitViewSpec with ExportsTestData {
+
+  val firstContainerID = "951357"
+  val secondContainerID = "456789"
+  val firstSeal = "1254"
+  val secondSeal = "98745"
+  val containerWithoutSeals = Container(firstContainerID, Seq.empty)
+  val containerWithSeals = Container(secondContainerID, Seq(Seal(firstSeal), Seal(secondSeal)))
+  val containers = Seq(containerWithoutSeals, containerWithSeals)
 
   "Containers" should {
 
     "display all containers and seals" in {
 
-      val firstContainerID = "951357"
-      val secondContainerID = "456789"
-      val firstSeal = "1254"
-      val secondSeal = "98745"
-      val containerWithoutSeals = Container(firstContainerID, Seq.empty)
-      val containerWithSeals = Container(secondContainerID, Seq(Seal(firstSeal), Seal(secondSeal)))
-
-      val containers = Seq(containerWithoutSeals, containerWithSeals)
-
-      val view = views.html.declaration.summary.containers(containers)(messages, journeyRequest())
+      val view = summary.containers(containers)(messages, journeyRequest())
 
       view.getElementById("container").text() mustBe messages("declaration.summary.container")
       view.getElementById("container-id").text() mustBe messages("declaration.summary.container.id")
@@ -45,6 +45,16 @@ class ContainersViewSpec extends UnitViewSpec with ExportsTestData {
       view.getElementById("container-0-seals").text() mustBe empty
       view.getElementById("container-1-id").text() mustBe secondContainerID
       view.getElementById("container-1-seals").text() mustBe s"$firstSeal, $secondSeal"
+    }
+
+    "display change buttons for every container" in {
+
+      val view = summary.containers(containers)(messages, journeyRequest())
+
+      view.getElementById("container-0-change").text() mustBe messages("site.change")
+      view.getElementById("container-0-change") must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary())
+      view.getElementById("container-1-change").text() mustBe messages("site.change")
+      view.getElementById("container-1-change") must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary())
     }
   }
 }

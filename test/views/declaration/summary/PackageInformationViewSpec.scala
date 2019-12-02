@@ -17,6 +17,7 @@
 package views.declaration.summary
 
 import forms.declaration.PackageInformation
+import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.package_information
@@ -27,14 +28,14 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData {
 
     "be empty if Sequence is empty" in {
 
-      package_information(Seq.empty)(messages, journeyRequest()).text() mustBe empty
+      package_information("itemId", Seq.empty)(messages, journeyRequest()).text() mustBe empty
     }
 
-    "display package information section with multiple package information" in {
+    "display package information section with multiple package information and change buttons" in {
 
       val data = Seq(PackageInformation("PB", 123, "first-marks"), PackageInformation("QF", 321, "second-marks"))
 
-      val view = package_information(data)(messages, journeyRequest())
+      val view = package_information("itemId", data)(messages, journeyRequest())
 
       view.getElementById("package-information").text() mustBe messages("declaration.summary.items.item.packageInformation")
       view.getElementById("package-information-type").text() mustBe messages("declaration.summary.items.item.packageInformation.type")
@@ -43,9 +44,17 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData {
       view.getElementById("package-information-0-code").text() mustBe "Open-ended box and pallet"
       view.getElementById("package-information-0-number").text() mustBe "123"
       view.getElementById("package-information-0-marks").text() mustBe "first-marks"
+      view.getElementById("package-information-0-change").text() mustBe messages("site.change")
+      view.getElementById("package-information-0-change") must haveHref(
+        controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, "itemId")
+      )
       view.getElementById("package-information-1-code").text() mustBe "Drum, plastic, non-removable head"
       view.getElementById("package-information-1-number").text() mustBe "321"
       view.getElementById("package-information-1-marks").text() mustBe "second-marks"
+      view.getElementById("package-information-1-change").text() mustBe messages("site.change")
+      view.getElementById("package-information-1-change") must haveHref(
+        controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, "itemId")
+      )
     }
   }
 }

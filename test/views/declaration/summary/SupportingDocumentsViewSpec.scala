@@ -17,6 +17,7 @@
 package views.declaration.summary
 
 import forms.declaration.additionaldocuments.DocumentsProduced
+import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.supporting_documents
@@ -29,25 +30,33 @@ class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
 
       "there is no documents" in {
 
-        supporting_documents(Seq.empty)(messages, journeyRequest()).text() mustBe empty
+        supporting_documents("itemId", Seq.empty)(messages, journeyRequest()).text() mustBe empty
       }
     }
 
-    "display all supporting documents" in {
+    "display all supporting documents with change buttons" in {
 
       val documents = Seq(
         DocumentsProduced(Some("typ1"), Some("identifier1"), None, None, None, None, None),
         DocumentsProduced(Some("typ2"), Some("identifier2"), None, None, None, None, None)
       )
-      val view = supporting_documents(documents)(messages, journeyRequest())
+      val view = supporting_documents("itemId", documents)(messages, journeyRequest())
 
       view.getElementById("supporting-documents").text() mustBe messages("declaration.summary.items.item.supportingDocuments")
       view.getElementById("supporting-documents-code").text() mustBe messages("declaration.summary.items.item.supportingDocuments.code")
       view.getElementById("supporting-documents-information").text() mustBe messages("declaration.summary.items.item.supportingDocuments.information")
       view.getElementById("supporting-document-0-code").text() mustBe "typ1"
       view.getElementById("supporting-document-0-information").text() mustBe "identifier1"
+      view.getElementById("supporting-document-0-change").text() mustBe messages("site.change")
+      view.getElementById("supporting-document-0-change") must haveHref(
+        controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId")
+      )
       view.getElementById("supporting-document-1-code").text() mustBe "typ2"
       view.getElementById("supporting-document-1-information").text() mustBe "identifier2"
+      view.getElementById("supporting-document-1-change").text() mustBe messages("site.change")
+      view.getElementById("supporting-document-1-change") must haveHref(
+        controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId")
+      )
     }
   }
 }

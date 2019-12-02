@@ -32,22 +32,28 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
   "Warehouse section" should {
 
-    "display warehouse id" in {
+    "display warehouse id with change button" in {
 
       view.getElementById("warehouse-id-label").text() mustBe messages("declaration.summary.warehouse.id")
       view.getElementById("warehouse-id").text() mustBe "12345"
+      view.getElementById("warehouse-id-change").text() mustBe messages("site.change")
+      view.getElementById("warehouse-id-change") must haveHref(controllers.declaration.routes.WarehouseIdentificationController.displayPage())
     }
 
-    "display supervising office" in {
+    "display supervising office with change button" in {
 
       view.getElementById("supervising-office-label").text() mustBe messages("declaration.summary.warehouse.supervisingOffice")
       view.getElementById("supervising-office").text() mustBe "23456"
+      view.getElementById("supervising-office-change").text() mustBe messages("site.change")
+      view.getElementById("supervising-office-change") must haveHref(controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage())
     }
 
-    "display mode of transport" in {
+    "display mode of transport with change button" in {
 
       view.getElementById("mode-of-transport-label").text() mustBe messages("declaration.summary.warehouse.inlandModeOfTransport")
       view.getElementById("mode-of-transport").text() mustBe messages("declaration.summary.warehouse.inlandModeOfTransport.1")
+      view.getElementById("mode-of-transport-change").text() mustBe messages("site.change")
+      view.getElementById("mode-of-transport-change") must haveHref(controllers.declaration.routes.InlandTransportDetailsController.displayPage())
     }
   }
 }

@@ -46,7 +46,6 @@ class PackageInformationController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  // TODO Future[Option[List[PackageInformation]]]...
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val items = request.cacheModel.itemBy(itemId).map(_.packageInformation).getOrElse(Nil)
     Ok(packageInformationPage(mode, itemId, form(), items))

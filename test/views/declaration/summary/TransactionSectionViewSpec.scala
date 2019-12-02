@@ -28,28 +28,36 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
   "Transaction section" should {
 
-    "have total amount invoiced" in {
+    "have total amount invoiced with change button" in {
 
       view.getElementById("item-amount-label").text() mustBe messages("declaration.summary.transaction.itemAmount")
       view.getElementById("item-amount").text() mustBe "123"
+      view.getElementById("item-amount-change").text() mustBe messages("site.change")
+      view.getElementById("item-amount-change") must haveHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage())
     }
 
-    "have exchange rate" in {
+    "have exchange rate with change button" in {
 
       view.getElementById("exchange-rate-label").text() mustBe messages("declaration.summary.transaction.exchangeRate")
       view.getElementById("exchange-rate").text() mustBe "1.23"
+      view.getElementById("exchange-rate-change").text() mustBe messages("site.change")
+      view.getElementById("exchange-rate-change") must haveHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage())
     }
 
-    "have total package" in {
+    "have total package with change button" in {
 
       view.getElementById("total-no-of-packages-label").text() mustBe messages("declaration.summary.transaction.totalNoOfPackages")
       view.getElementById("total-no-of-packages").text() mustBe "12"
+      view.getElementById("total-no-of-packages-change").text() mustBe messages("site.change")
+      view.getElementById("total-no-of-packages-change") must haveHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage())
     }
 
-    "have nature of transaction" in {
+    "have nature of transaction with change button" in {
 
       view.getElementById("nature-of-transaction-label").text() mustBe messages("declaration.summary.transaction.natureOfTransaction")
       view.getElementById("nature-of-transaction").text() mustBe messages("declaration.summary.transaction.natureOfTransaction.2")
+      view.getElementById("nature-of-transaction-change").text() mustBe messages("site.change")
+      view.getElementById("nature-of-transaction-change") must haveHref(controllers.declaration.routes.NatureOfTransactionController.displayPage())
     }
 
     "have related documents section" in {

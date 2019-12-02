@@ -25,7 +25,7 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
 
   "Related documents" should {
 
-    "display row with No value" when {
+    "display row with No value with change button" when {
 
       "documents are empty" in {
 
@@ -33,10 +33,12 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("previous-documents-label").text() mustBe messages("declaration.summary.transaction.previousDocuments")
         view.getElementById("previous-documents").text() mustBe messages("site.no")
+        view.getElementById("previous-documents-change").text() mustBe messages("site.change")
+        view.getElementById("previous-documents-change") must haveHref(controllers.declaration.routes.PreviousDocumentsController.displayPage())
       }
     }
 
-    "diplay documents" when {
+    "display documents with change button" when {
 
       "documents exists" in {
 
@@ -49,8 +51,12 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
         view.getElementById("previous-documents-reference").text() mustBe messages("declaration.summary.transaction.previousDocuments.reference")
         view.getElementById("previous-document-0-type").text() mustBe "Proforma Invoice - 325"
         view.getElementById("previous-document-0-reference").text() mustBe "123456"
+        view.getElementById("previous-document-0-change").text() mustBe messages("site.change")
+        view.getElementById("previous-document-0-change") must haveHref(controllers.declaration.routes.PreviousDocumentsController.displayPage())
         view.getElementById("previous-document-1-type").text() mustBe "Packing List - 271"
         view.getElementById("previous-document-1-reference").text() mustBe "654321"
+        view.getElementById("previous-document-1-change").text() mustBe messages("site.change")
+        view.getElementById("previous-document-1-change") must haveHref(controllers.declaration.routes.PreviousDocumentsController.displayPage())
       }
     }
   }
