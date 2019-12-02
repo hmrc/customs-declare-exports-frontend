@@ -262,7 +262,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
         val result: Future[Result] =
           controller.removeReference(Mode.Normal, itemCacheData.id, "12345")(postRequestAsFormUrlEncoded(removeForm))
 
-        status(result) must be(OK)
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe routes.AdditionalFiscalReferencesController.displayPage(Mode.Normal, itemCacheData.id)
       }
     }
   }

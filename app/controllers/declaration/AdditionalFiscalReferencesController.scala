@@ -94,10 +94,9 @@ class AdditionalFiscalReferencesController @Inject()(
     val cacheModel = request.item.additionalFiscalReferencesData
       .getOrElse(AdditionalFiscalReferencesData(Seq.empty))
     val updatedCache = cacheModel.removeReference(value)
-    val valueOnPage = form().bindFromRequest()
     updateExportsCache(itemId, updatedCache).map {
       case Some(_) =>
-        Ok(additionalFiscalReferencesPage(mode, itemId, valueOnPage.discardingErrors, updatedCache.references))
+        navigator.continueTo(routes.AdditionalFiscalReferencesController.displayPage(mode, itemId))
       case None => navigator.continueTo(routes.ItemsSummaryController.displayPage())
     }
   }
