@@ -35,7 +35,7 @@
         ))
         @components.table_row("nature-of-transaction", HtmlTableRow(
             label = messages("declaration.summary.transaction.natureOfTransaction"),
-            value = declarationData.natureOfTransaction.map(natureType => messages(s"declaration.summary.transaction.natureOfTransaction.${natureType.natureType}"))
+            value = declarationData.natureOfTransaction.map(natureType => messages(s"declaration.summary.transaction.natureOfTransaction.${natureType.natureType}")).getOrElse("")
         ))
         @related_documents(declarationData.previousDocuments.map(_.documents).getOrElse(Seq.empty))
     }

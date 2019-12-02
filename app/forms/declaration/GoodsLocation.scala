@@ -31,17 +31,7 @@ case class GoodsLocation(
   addressLine: Option[String],
   postCode: Option[String],
   city: Option[String]
-) {
-
-  def locationCode: String =
-    findByName(country).countryCode + typeOfLocation + qualifierOfIdentification + identificationOfLocation.getOrElse("")
-
-  def extractAddressValues: Seq[String] = {
-    val address = Seq(addressLine, city, postCode, Some(country)).flatten
-
-    if (address.length > 3) address else Seq.empty
-  }
-}
+)
 
 object GoodsLocation {
   implicit val format = Json.format[GoodsLocation]

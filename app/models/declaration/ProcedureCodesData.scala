@@ -24,8 +24,6 @@ case class ProcedureCodesData(procedureCode: Option[String], additionalProcedure
   def toProcedureCode(): ProcedureCodes = ProcedureCodes(procedureCode, None)
 
   def containsAdditionalCode(code: String): Boolean = additionalProcedureCodes.contains(code)
-
-  def summaryValue: String = procedureCode.fold("")(code => (Seq(code) ++ additionalProcedureCodes).mkString(" "))
 }
 
 object ProcedureCodesData {
