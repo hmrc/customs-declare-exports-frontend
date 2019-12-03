@@ -19,17 +19,20 @@
 @import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers.yes
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
+@import models.Mode
 
-@(itemId: Int, fiscalInformation: Option[FiscalInformation], additionalFiscalReferences: Seq[AdditionalFiscalReference])(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
+@(itemId: String, itemNo: Int, fiscalInformation: Option[FiscalInformation], additionalFiscalReferences: Seq[AdditionalFiscalReference])(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
-@components.table_row(s"item-$itemId-onwardSupplyRelief", HtmlTableRow(
+@components.table_row(s"item-$itemNo-onwardSupplyRelief", HtmlTableRow(
     label = messages("declaration.summary.items.item.onwardSupplyRelief"),
-    value = fiscalInformation.map(_.onwardSupplyRelief).getOrElse("")
+    value = fiscalInformation.map(_.onwardSupplyRelief).getOrElse(""),
+    call = Some(controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId))
 ))
 
 @if(fiscalInformation.map(_.onwardSupplyRelief) == Some(yes)) {
-    @components.table_row(s"item-$itemId-VATdetails", HtmlTableRow(
+    @components.table_row(s"item-$itemNo-VATdetails", HtmlTableRow(
         label = messages("declaration.summary.items.item.VATdetails"),
-        value = additionalFiscalReferences.map(_.asString).mkString(", ")
+        value = additionalFiscalReferences.map(_.asString).mkString(", "),
+        call = Some(controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(Mode.Normal, itemId))
     ))
 }

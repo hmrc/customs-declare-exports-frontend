@@ -24,7 +24,8 @@
 @if(documents.isEmpty) {
     @components.table_row("previous-documents", HtmlTableRow(
         label = messages("declaration.summary.transaction.previousDocuments"),
-        value = messages("site.no")
+        value = messages("site.no"),
+        call = Some(controllers.declaration.routes.PreviousDocumentsController.displayPage())
     ))
 }
 
@@ -33,11 +34,15 @@
             <tr class="section">
                 <td class="bold"><span id="previous-documents-type">@messages("declaration.summary.transaction.previousDocuments.type")</span></td>
                 <td class="bold"><span id="previous-documents-reference">@messages("declaration.summary.transaction.previousDocuments.reference")</span></td>
+                <td></td>
             </tr>
     @documents.zipWithIndex.map { case (document, index) =>
         <tr class="section">
             <td><span id="previous-document-@index-type">@DocumentType.findByCode(document.documentType).asText</span></td>
             <td><span id="previous-document-@index-reference">@document.documentReference</span></td>
+            <td class="link-right">
+                <a href="@controllers.declaration.routes.PreviousDocumentsController.displayPage()" id="previous-document-@index-change">@messages("site.change")</a>
+            </td>
         </tr>
     }
 }

@@ -17,6 +17,7 @@
 package views.declaration.summary
 
 import forms.declaration.AdditionalInformation
+import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.union_and_national_codes
@@ -29,14 +30,14 @@ class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestData {
 
       "there is no additional information" in {
 
-        union_and_national_codes(Seq.empty)(messages, journeyRequest()).text() mustBe empty
+        union_and_national_codes("itemId", Seq.empty)(messages, journeyRequest()).text() mustBe empty
       }
     }
 
-    "display additional information" in {
+    "display additional information with change buttons" in {
 
       val data = Seq(AdditionalInformation("12345", "description1"), AdditionalInformation("23456", "description2"))
-      val view = union_and_national_codes(data)(messages, journeyRequest())
+      val view = union_and_national_codes("itemId", data)(messages, journeyRequest())
 
       view.getElementById("additional-information").text() mustBe messages("declaration.summary.items.item.additionalInformation")
       view.getElementById("additional-information-code").text() mustBe messages("declaration.summary.items.item.additionalInformation.code")
@@ -45,8 +46,16 @@ class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestData {
       )
       view.getElementById("additional-information-0-code").text() mustBe "12345"
       view.getElementById("additional-information-0-information").text() mustBe "description1"
+      view.getElementById("additional-information-0-change").text() mustBe messages("site.change")
+      view.getElementById("additional-information-0-change") must haveHref(
+        controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, "itemId")
+      )
       view.getElementById("additional-information-1-code").text() mustBe "23456"
       view.getElementById("additional-information-1-information").text() mustBe "description2"
+      view.getElementById("additional-information-1-change").text() mustBe messages("site.change")
+      view.getElementById("additional-information-1-change") must haveHref(
+        controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, "itemId")
+      )
     }
   }
 }

@@ -25,7 +25,8 @@
     @components.summary_list(Some(messages("declaration.summary.references"))) {
         @components.table_row("declarationType", HtmlTableRow(
             label = messages("declaration.summary.references.type"),
-            value = declarationData.`type`.toString().toLowerCase().capitalize
+            value = declarationData.`type`.toString().toLowerCase().capitalize,
+            call = Some(controllers.declaration.routes.DeclarationChoiceController.displayPage())
         ))
         @components.table_row("location", HtmlTableRow(
             label = messages("declaration.summary.references.location"),
@@ -35,19 +36,23 @@
                 } else {
                   messages("site.no")
                 }
-            ).getOrElse(""))
+            ).getOrElse("")),
+            call = Some(controllers.declaration.routes.DispatchLocationController.displayPage())
         ))
         @components.table_row("additionalType", HtmlTableRow(
             label = messages("declaration.summary.references.additionalType"),
-            value = declarationData.additionalDeclarationType.map(decType => messages(s"declaration.summary.references.additionalType.${decType.toString}")).getOrElse("")
+            value = declarationData.additionalDeclarationType.map(decType => messages(s"declaration.summary.references.additionalType.${decType.toString}")).getOrElse(""),
+            call = Some(controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage())
         ))
         @components.table_row("ducr", HtmlTableRow(
             label = messages("declaration.summary.references.ducr"),
-            value = declarationData.consignmentReferences.map(_.ducr.ducr).getOrElse("")
+            value = declarationData.consignmentReferences.map(_.ducr.ducr).getOrElse(""),
+            call = Some(controllers.declaration.routes.ConsignmentReferencesController.displayPage())
         ))
         @components.table_row("lrn", HtmlTableRow(
             label = messages("declaration.summary.references.lrn"),
-            value = declarationData.consignmentReferences.map(_.lrn.value).getOrElse("")
+            value = declarationData.consignmentReferences.map(_.lrn.value).getOrElse(""),
+            call = Some(controllers.declaration.routes.ConsignmentReferencesController.displayPage())
         ))
     }
 </div>

@@ -17,19 +17,24 @@
 @import forms.declaration.AdditionalInformation
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
+@import models.Mode
 
-@(additionalInformation: Seq[AdditionalInformation])(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
+@(itemId: String, additionalInformation: Seq[AdditionalInformation])(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
 @if(additionalInformation.nonEmpty){
     <caption class="heading-small"><span id="additional-information">@messages("declaration.summary.items.item.additionalInformation")</span></caption>
     <tr class="section">
         <td class="bold"><span id="additional-information-code">@messages("declaration.summary.items.item.additionalInformation.code")</span></td>
         <td class="bold"><span id="additional-information-information">@messages("declaration.summary.items.item.additionalInformation.information")</span></td>
+        <td></td>
     </tr>
     @additionalInformation.zipWithIndex.map { case (information, index) =>
         <tr class="section">
             <td><span id="additional-information-@index-code">@information.code</span></td>
             <td><span id="additional-information-@index-information">@information.description</span></td>
+            <td class="link-right">
+                <a href="@controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, itemId)" id="additional-information-@index-change">@messages("site.change")</a>
+            </td>
         </tr>
     }
 }

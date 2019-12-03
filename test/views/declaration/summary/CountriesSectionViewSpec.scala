@@ -107,5 +107,35 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
       view.getElementById("countryOfDestination-label").text() mustBe messages("declaration.summary.countries.countryOfDestination")
       view.getElementById("countryOfDestination").text() mustBe expectedCountry
     }
+
+    "display change button for country of dispatch" in {
+
+      val data = aDeclaration(withoutOriginationCountry())
+
+      val view = countries_section(data)(messages, journeyRequest())
+
+      view.getElementById("countryOfDispatch-change").text() mustBe messages("site.change")
+      view.getElementById("countryOfDispatch-change") must haveHref(controllers.declaration.routes.OriginationCountryController.displayPage())
+    }
+
+    "display change button for countries of routing" in {
+
+      val data = aDeclaration(withoutRoutingCountries())
+
+      val view = countries_section(data)(messages, journeyRequest())
+
+      view.getElementById("countriesOfRouting-change").text() mustBe messages("site.change")
+      view.getElementById("countriesOfRouting-change") must haveHref(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage())
+    }
+
+    "display change button for country of destination" in {
+
+      val data = aDeclaration(withoutOriginationCountry())
+
+      val view = countries_section(data)(messages, journeyRequest())
+
+      view.getElementById("countryOfDestination-change").text() mustBe messages("site.change")
+      view.getElementById("countryOfDestination-change") must haveHref(controllers.declaration.routes.DestinationCountryController.displayPage())
+    }
   }
 }

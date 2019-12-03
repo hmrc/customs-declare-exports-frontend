@@ -17,8 +17,9 @@
 @import forms.common.Address
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
+@import play.api.mvc.Call
 
-@(id: String, eoriOption: Option[String], eoriLabel: String, address: Option[Address], addressLabel: String, isEoriDefault: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
+@(id: String, eoriOption: Option[String], eoriLabel: String, address: Option[Address], addressLabel: String, call: Option[Call], isEoriDefault: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
 @extractAddressValues(addressOpt: Option[Address]) = @{
     addressOpt.map { values =>
@@ -29,25 +30,29 @@
 @if(eoriOption.isEmpty && address.isEmpty && isEoriDefault) {
     @components.table_row(s"$id-eori", HtmlTableRow(
         label = messages(eoriLabel),
-        value = Seq.empty
+        value = Seq.empty,
+        call = call
     ))
 } else if(eoriOption.isEmpty && address.isEmpty) {
     @components.table_row(s"$id-address", HtmlTableRow(
         label = messages(addressLabel),
-        value = Seq.empty
+        value = Seq.empty,
+        call = call
     ))
 }
 
 @eoriOption.map { eori =>
     @components.table_row(s"$id-eori", HtmlTableRow(
         label = messages(eoriLabel),
-        value = eori
+        value = eori,
+        call = call
     ))
 }
 
 @if(address.nonEmpty) {
     @components.table_row(s"$id-address", HtmlTableRow(
         label = messages(addressLabel),
-        value = extractAddressValues(address)
+        value = extractAddressValues(address),
+        call = call
     ))
 }

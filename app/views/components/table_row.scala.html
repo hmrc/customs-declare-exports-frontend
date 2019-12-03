@@ -15,8 +15,15 @@
  *@
 
 @import models.viewmodels.HtmlTableRow
+@import play.api.mvc.Call
 
-@(id: String, tableRow: HtmlTableRow)
+@(id: String, tableRow: HtmlTableRow)(implicit messages: Messages)
+
+@changeLink(callOpt: Option[Call]) = {
+  @callOpt.map { call =>
+      <td><a href="@call" id="@id-change">@messages("site.change")</a></td>
+  }.getOrElse("")
+}
 
 <tr class="section">
     <td class="bold"><span id="@id-label">@tableRow.label</span></td>
@@ -29,10 +36,6 @@
             }
         }
     </td>
-    @*Remove hidden below when links will be ready*@
-    @*Add correct href*@
-    @*<td class="hidden link-right">*@
-    @*<a href="">Change</a>*@
-    @*</td>*@
+    @changeLink(tableRow.call)
 </tr>
 
