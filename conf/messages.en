@@ -687,6 +687,7 @@ declaration.taricAdditionalCodes.error.empty = Enter a TARIC code
 declaration.taricAdditionalCodes.error.length = TARIC code must be exactly 4 characters long
 declaration.taricAdditionalCodes.error.specialCharacters = TARIC code cannot contain specialCharacters
 declaration.taricAdditionalCodes.add.hint = Add TARIC code
+declaration.taricAdditionalCodes.table.header = TARIC code
 declaration.taricAdditionalCodes.remove.hint = Remove TARIC code {0}
 
 declaration.nationalAdditionalCode.header = Do these goods require a national additional (NACT) code?
@@ -697,6 +698,7 @@ declaration.nationalAdditionalCode.error.invalid = National Additional Code must
 declaration.nationalAdditionalCode.error.maxAmount = You cannot add more codes
 declaration.nationalAdditionalCode.error.duplicate = National Additional Codes cannot contain duplicates
 declaration.nationalAdditionalCode.add.hint = Add National Additional Code
+declaration.nationalAdditionalCode.table.header = NACT Code
 declaration.nationalAdditionalCode.remove.hint = Remove National Additional Code {0}
 
 declaration.statisticalValue.header = What is the total value of this item’s goods?

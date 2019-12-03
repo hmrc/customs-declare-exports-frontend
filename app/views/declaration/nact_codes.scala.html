@@ -61,6 +61,7 @@
             field = form(nactCodeKey),
             label = "",
             elements = nactCodes.map(_.nactCode),
+            elementsTableHeading = Some(messages("declaration.nationalAdditionalCode.table.header")),
             labelClass = Some("bold-small"),
             input = components.inputs.input_autocomplete(
                 field = form(nactCodeKey),

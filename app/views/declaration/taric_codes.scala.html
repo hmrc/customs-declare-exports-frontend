@@ -60,6 +60,7 @@
         @components.fields.field_text_multiple_values(
             field = form(taricCodeKey),
             label = "",
+            elementsTableHeading = Some(messages("declaration.taricAdditionalCodes.table.header")),
             elements = taricCodes.map(_.taricCode),
             labelClass = Some("bold-small"),
             addHint = "declaration.taricAdditionalCodes.add.hint",
