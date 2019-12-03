@@ -40,17 +40,17 @@
 
     <table>
         <tr class="table-row">
-            <th class="table-cell table-head">@messages("submissions.ducr")</th>
-            <th class="table-cell table-head">@messages("submissions.lrn")</th>
-            <th class="table-cell table-head">@messages("submissions.mrn")</th>
-            <th class="table-cell table-head">@messages("submissions.submittedTimestamp")</th>
-            <th class="table-cell table-head">@messages("submissions.status")</th>
-            <th class="table-cell table-head">@messages("submissions.noOfNotifications")</th>
+            <th class="table-cell table-head" scope="col">@messages("submissions.ducr")</th>
+            <th class="table-cell table-head" scope="col">@messages("submissions.lrn")</th>
+            <th class="table-cell table-head" scope="col">@messages("submissions.mrn")</th>
+            <th class="table-cell table-head" scope="col">@messages("submissions.submittedTimestamp")</th>
+            <th class="table-cell table-head" scope="col">@messages("submissions.status")</th>
+            <th class="table-cell table-head" scope="col">@messages("submissions.noOfNotifications")</th>
         </tr>
 
         @for( (submission, notifications) <- submissions ){
             <tr class="table-row">
-                <td class="table-cell">
+                <td class="table-cell" scope="row">
                     @if(notifications.exists(_.isStatusRejected)) {
                         <a href="@routes.RejectedNotificationsController.displayPage(submission.uuid)">@submission.ducr</a>
                     } else {
