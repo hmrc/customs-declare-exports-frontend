@@ -49,16 +49,14 @@
                 <table id="container-table">
                   <thead>
                       <tr>
-                        <th>@messages("declaration.transportInformation.containerId.title")</th>
-                          <th>@messages("standard.seal.summary.heading")</th>
-                          <th></th>
-                          <th></th>
+                          <th>@messages("declaration.transportInformation.containerId.title")</th>
+                          <th scope="col" colspan="3">@messages("standard.seal.summary.heading")</th>
                       </tr>
                   </thead>
                   <tbody>
                   @for((container, index) <- containers.zipWithIndex) {
                     <tr id="containers-row@index">
-                        <td id="containers-row@index-container">@{container.id}</td>
+                        <td scope="row" id="containers-row@index-container">@{container.id}</td>
                         @if(container.seals.isEmpty){
                             <td id="containers-row@index-seals">@messages("standard.seal.summary.noSeals")</td>
                         } else {

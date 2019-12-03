@@ -33,17 +33,17 @@
           @title.map { heading =>
               <thead>
                   <tr>
-                    <th id="@{id}-heading" colspan="2">@heading</th>
+                    <th id="@{id}-heading" colspan="2" scope="col">@heading</th>
                   </tr>
               </thead>
           }
           <tbody>
             @for((elem, index) <- elements.zipWithIndex) {
                 <tr id="@{id}__row@index">
-                    <th id="@{id}-row@index-label">@{elem.label}</th>
-                    <th id="@{id}-row@index-remove_button">
+                    <td scope="row" id="@{id}-row@index-label">@{elem.label}</td>
+                    <td id="@{id}-row@index-remove_button">
                         @remove_button(element = elem, buttonClass = removeButtonClass, hint = removeButtonHint)
-                    </th>
+                    </td>
                 </tr>
             }
           </tbody>
