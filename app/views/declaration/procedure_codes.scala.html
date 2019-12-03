@@ -16,6 +16,7 @@
 
 @import forms.declaration.ProcedureCodes
 @import uk.gov.hmrc.play.views.html._
+@import views.components.fields.LabelledValue
 @import views.Title
 
 @this(main_template: views.html.main_template)
@@ -50,6 +51,7 @@
                 field = form("additionalProcedureCode"),
                 label = messages("supplementary.procedureCodes.additionalProcedureCode.header"),
                 hint = Some(messages("supplementary.procedureCodes.additionalProcedureCode.header.hint")),
+                elementsTableHeading = Some(messages("supplementary.procedureCodes.procedureCode.item.header")),
                 elements = codes,
                 labelClass = Some("bold-small"),
                 includeAddButton = false,

@@ -23,6 +23,7 @@
     field: Field,
     label: String,
     hint: Option[String] = None,
+    elementsTableHeading: Option[String] = None,
     elements: Seq[String] = Seq.empty,
     labelClass: Option[String] = None,
     input: Html,
@@ -48,6 +49,7 @@
     @if(elements.nonEmpty) {
 
         @removable_elements_table(
+              title = elementsTableHeading,
               id = field.id + "-table",
               elements = elements.map(elm => LabelledValue(elm, valuePrefix.getOrElse("") + elm)),
               removeButtonHint = removeHint

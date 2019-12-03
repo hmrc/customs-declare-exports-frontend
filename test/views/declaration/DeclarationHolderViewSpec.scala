@@ -190,9 +190,9 @@ class DeclarationHolderViewSpec extends UnitViewSpec with DeclarationHolderMessa
       val view =
         declarationHolderPage(Mode.Normal, form, Seq(DeclarationHolder(Some("1234"), Some("1234"))))(request, messages)
 
-      view.select("tbody>tr>th:nth-child(1)").text() mustBe "1234-1234"
+      view.getElementById("removable_elements-row0-label").text() mustBe "1234-1234"
 
-      val removeButton = view.select("tbody>tr>th:nth-child(2)>button")
+      val removeButton = view.getElementsByClass("remove button--secondary")
 
       removeButton.text() mustBe "site.remove site.remove.hint"
       removeButton.attr("value") mustBe "1234-1234"
