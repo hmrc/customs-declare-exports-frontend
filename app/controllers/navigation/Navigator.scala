@@ -79,6 +79,29 @@ object Navigator {
     case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
 
+  val clearance: PartialFunction[DeclarationPage, Mode => Call] = {
+    case BorderTransport             => controllers.declaration.routes.DepartureTransportController.displayPage
+    case TransportPayment            => controllers.declaration.routes.BorderTransportController.displayPage
+    case ContainerFirst              => controllers.declaration.routes.TransportPaymentController.displayPage
+    case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
+    case Document                    => controllers.declaration.routes.NatureOfTransactionController.displayPage
+    case OriginationCountryPage      => controllers.declaration.routes.DeclarationHolderController.displayPage
+    case DestinationCountryPage      => controllers.declaration.routes.OriginationCountryController.displayPage
+    case RoutingQuestionPage         => controllers.declaration.routes.DestinationCountryController.displayPage
+    case RemoveCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
+    case ChangeCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
+    case SupervisingCustomsOffice    => controllers.declaration.routes.WarehouseIdentificationController.displayPage
+    case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
+    case WarehouseIdentification     => controllers.declaration.routes.ItemsSummaryController.displayPage
+    case DeclarationAdditionalActors => controllers.declaration.routes.CarrierDetailsController.displayPage
+    case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
+  }
+  val clearanceItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
+    case PackageInformation    => controllers.declaration.routes.StatisticalValueController.displayPage
+    case AdditionalInformation => controllers.declaration.routes.CommodityMeasureController.displayPage
+    case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
+  }
+
   val supplementary: PartialFunction[DeclarationPage, Mode => Call] = {
     case BorderTransport             => controllers.declaration.routes.DepartureTransportController.displayPage
     case ContainerFirst              => controllers.declaration.routes.BorderTransportController.displayPage
@@ -146,6 +169,7 @@ object Navigator {
       case SUPPLEMENTARY => supplementary(page)(mode)
       case SIMPLIFIED    => simplified(page)(mode)
       case OCCASIONAL    => occasional(page)(mode)
+      case CLEARANCE     => clearance(page)(mode)
     }
 
   def backLink(page: DeclarationPage, mode: Mode, itemId: ItemId)(implicit request: JourneyRequest[_]): Call =
@@ -154,5 +178,6 @@ object Navigator {
       case SUPPLEMENTARY => supplementaryItemPage(page)(mode, itemId.id)
       case SIMPLIFIED    => simplifiedItemPage(page)(mode, itemId.id)
       case OCCASIONAL    => occasionalItemPage(page)(mode, itemId.id)
+      case CLEARANCE     => clearanceItemPage(page)(mode, itemId.id)
     }
 }

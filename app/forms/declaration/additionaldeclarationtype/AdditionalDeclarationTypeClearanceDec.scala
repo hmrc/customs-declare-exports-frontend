@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package models
+package forms.declaration.additionaldeclarationtype
 
-import play.api.libs.json._
-import utils.EnumJson
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 
-object DeclarationType extends Enumeration {
-  type DeclarationType = Value
-  implicit val format: Format[DeclarationType.Value] = EnumJson.format(DeclarationType)
-  val STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL, CLEARANCE = Value
+object AdditionalDeclarationTypeClearanceDec extends AdditionalDeclarationTypeTrait {
+  override def allowedValues: Set[AdditionalDeclarationType] =
+    Set(AdditionalDeclarationType.CLEARANCE_FRONTIER, AdditionalDeclarationType.CLEARANCE_PRE_LODGED)
+
+  object AllowedAdditionalDeclarationTypes {
+    val PreLodged = "K"
+    val Frontier = "J"
+  }
 }

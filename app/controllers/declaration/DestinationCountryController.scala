@@ -69,7 +69,7 @@ class DestinationCountryController @Inject()(
     request.declarationType match {
       case DeclarationType.SUPPLEMENTARY =>
         navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode))
-      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
+      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
         navigator.continueTo(controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(mode))
     }
 }

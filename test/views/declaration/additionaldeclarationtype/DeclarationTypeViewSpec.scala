@@ -41,6 +41,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
   private val formSupplementary: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeSupplementaryDec.form()
   private val formSimplified: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeSimplifiedDec.form()
   private val formOccasional: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeOccasionalDec.form()
+  private val formClearance: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeClearanceDec.form()
   private val declarationTypePage = new declaration_type(mainTemplate)
   private def createView(form: Form[AdditionalDeclarationType], journeyType: DeclarationType, messages: Messages = stubMessages()): Document =
     declarationTypePage(Mode.Normal, form)(journeyRequest(journeyType), messages)
@@ -66,6 +67,11 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
 
       "used for Occasional Declaration journey" in {
         val viewWithMessage = createView(formOccasional, DeclarationType.OCCASIONAL, realMessagesApi.preferred(request))
+        viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
+      }
+
+      "used for Clearance Request journey" in {
+        val viewWithMessage = createView(formClearance, DeclarationType.CLEARANCE, realMessagesApi.preferred(request))
         viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
       }
     }
@@ -100,6 +106,13 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         backButton.text() mustBe messages(backCaption)
         backButton.attr("href") mustBe routes.DispatchLocationController.displayPage().url
       }
+
+      "used for Clearance Request journey" in {
+        val backButton = createView(formClearance, DeclarationType.CLEARANCE).getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.DispatchLocationController.displayPage().url
+      }
     }
 
     "display 'Save and continue' button" when {
@@ -121,6 +134,11 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
 
       "used for Occasional Declaration journey" in {
         val view: Document = createView(formOccasional, DeclarationType.OCCASIONAL)
+        view.getElementById("submit").text() mustBe messages(saveAndContinueCaption)
+      }
+
+      "used for Clearance Request journey" in {
+        val view: Document = createView(formClearance, DeclarationType.CLEARANCE)
         view.getElementById("submit").text() mustBe messages(saveAndContinueCaption)
       }
     }
@@ -150,6 +168,13 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
 
       "used for Occasional Declaration journey" in {
         val view: Document = createView(formOccasional, DeclarationType.OCCASIONAL)
+        val button = view.getElementById("submit_and_return")
+        button.text() mustBe messages(saveAndReturnCaption)
+        button must haveAttribute("name", SaveAndReturn.toString)
+      }
+
+      "used for Clearance Request journey" in {
+        val view: Document = createView(formClearance, DeclarationType.CLEARANCE)
         val button = view.getElementById("submit_and_return")
         button.text() mustBe messages(saveAndReturnCaption)
         button must haveAttribute("name", SaveAndReturn.toString)
@@ -184,6 +209,13 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         val view = createView(formOccasional, DeclarationType.OCCASIONAL)
 
         view.getElementById("title").text() mustBe messages(headerOccasionalDec)
+      }
+
+      "used for Clearance Request journey" in {
+
+        val view = createView(formClearance, DeclarationType.CLEARANCE)
+
+        view.getElementById("title").text() mustBe messages(headerClearanceDec)
       }
     }
 
@@ -256,6 +288,23 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         val optionTwoLabel = view.getElementById("Frontier-label")
         optionTwoLabel.text() mustBe messages(occasionalFrontier)
       }
+
+      "used for Clearance Request journey" in {
+
+        val view = createView(formClearance, DeclarationType.CLEARANCE)
+
+        val optionOne = view.getElementById("PreLodged")
+        optionOne.attr("checked") mustBe empty
+
+        val optionOneLabel = view.getElementById("PreLodged-label")
+        optionOneLabel.text() mustBe messages(clearancePreLodged)
+
+        val optionTwo = view.getElementById("Frontier")
+        optionTwo.attr("checked") mustBe empty
+
+        val optionTwoLabel = view.getElementById("Frontier-label")
+        optionTwoLabel.text() mustBe messages(clearanceFrontier)
+      }
     }
 
   }
@@ -303,6 +352,16 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
 
         view.select("#error-message-additionalDeclarationType-input").text() mustBe messages(errorMessageEmpty)
       }
+
+      "used for Clearance Request journey" in {
+
+        val view = createView(formClearance.bind(Map[String, String]()), DeclarationType.CLEARANCE)
+
+        checkErrorsSummary(view)
+        view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
+
+        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages(errorMessageEmpty)
+      }
     }
 
     "display error if incorrect declaration is selected" when {
@@ -340,6 +399,16 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
       "used for Occasional Declaration journey" in {
 
         val view = createView(formOccasional.bind(Map("additionalDeclarationType" -> "#")), DeclarationType.OCCASIONAL)
+
+        checkErrorsSummary(view)
+        view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
+
+        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages(errorMessageIncorrect)
+      }
+
+      "used for Clearance Request journey" in {
+
+        val view = createView(formClearance.bind(Map("additionalDeclarationType" -> "#")), DeclarationType.CLEARANCE)
 
         checkErrorsSummary(view)
         view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
@@ -397,6 +466,17 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         val optionTwo = view.getElementById("Frontier")
         optionTwo.attr("checked") mustBe empty
       }
+
+      "used for Clearance Request journey - Pre-lodged (K)" in {
+
+        val view = createView(formClearance.fill(AdditionalDeclarationType.CLEARANCE_PRE_LODGED), DeclarationType.CLEARANCE)
+
+        val optionOne = view.getElementById("PreLodged")
+        optionOne.attr("checked") mustBe "checked"
+
+        val optionTwo = view.getElementById("Frontier")
+        optionTwo.attr("checked") mustBe empty
+      }
     }
 
     "display selected second radio button" when {
@@ -437,6 +517,17 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
       "used for Occasional Declaration journey - Frontier (B)" in {
 
         val view = createView(formOccasional.fill(AdditionalDeclarationType.OCCASIONAL_FRONTIER), DeclarationType.OCCASIONAL)
+
+        val optionOne = view.getElementById("PreLodged")
+        optionOne.attr("checked") mustBe empty
+
+        val optionTwo = view.getElementById("Frontier")
+        optionTwo.attr("checked") mustBe "checked"
+      }
+
+      "used for Clearance Request journey - Frontier (L)" in {
+
+        val view = createView(formClearance.fill(AdditionalDeclarationType.CLEARANCE_FRONTIER), DeclarationType.CLEARANCE)
 
         val optionOne = view.getElementById("PreLodged")
         optionOne.attr("checked") mustBe empty

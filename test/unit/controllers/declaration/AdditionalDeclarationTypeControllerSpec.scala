@@ -97,6 +97,16 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
 
           status(result) must be(OK)
         }
+
+        "during clearance request" in new SetUp {
+          withNewCaching(
+            aDeclaration(withType(DeclarationType.CLEARANCE), withAdditionalDeclarationType(AdditionalDeclarationType.CLEARANCE_FRONTIER))
+          )
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) must be(OK)
+        }
       }
     }
   }
@@ -149,6 +159,16 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
         withNewCaching(aDeclaration(withType(DeclarationType.OCCASIONAL)))
 
         val correctForm = Seq("additionalDeclarationType" -> "B", SaveAndContinue.toString -> "")
+        val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.ConsignmentReferencesController.displayPage()
+      }
+
+      "during clearance request" in new SetUp {
+        withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
+
+        val correctForm = Seq("additionalDeclarationType" -> "K", SaveAndContinue.toString -> "")
         val result = controller.submitForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage

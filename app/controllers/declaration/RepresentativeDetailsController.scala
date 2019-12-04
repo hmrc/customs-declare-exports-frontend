@@ -18,11 +18,10 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.Choice.AllowedChoiceValues._
 import forms.declaration.RepresentativeDetails
 import javax.inject.Inject
-import models.{DeclarationType, ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -64,7 +63,7 @@ class RepresentativeDetailsController @Inject()(
     request.declarationType match {
       case DeclarationType.SUPPLEMENTARY =>
         controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage(mode)
-      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
+      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
         controllers.declaration.routes.CarrierDetailsController.displayPage(mode)
     }
 

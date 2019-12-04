@@ -60,7 +60,7 @@ class BorderTransportController @Inject()(
 
   private def nextPage(mode: Mode, borderTransport: BorderTransport)(implicit request: JourneyRequest[AnyContent]): Result =
     request.declarationType match {
-      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
+      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
         navigator.continueTo(controllers.declaration.routes.TransportPaymentController.displayPage(mode))
       case DeclarationType.SUPPLEMENTARY =>
         navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode))
