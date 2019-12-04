@@ -929,7 +929,7 @@ declaration.summary.transport.departure.transportCode.4 = Air transport
 declaration.summary.transport.departure.transportCode.5 = Postal or Mail
 declaration.summary.transport.departure.transportCode.7 = Fixed transport installations
 declaration.summary.transport.departure.transportCode.8 = Inland waterway transport
-declaration.summary.transport.departure.transportCode.9 = Mode unknown, for example own propulsion"
+declaration.summary.transport.departure.transportCode.9 = Mode unknown, for example own propulsion
 
 declaration.summary.transport.departure.meansOfTransport.header = Transport details at the border
 declaration.summary.transport.departure.meansOfTransport.10 = Ship IMO number
@@ -939,7 +939,7 @@ declaration.summary.transport.departure.meansOfTransport.30 = Vehicle registrati
 declaration.summary.transport.departure.meansOfTransport.40 = Flight number
 declaration.summary.transport.departure.meansOfTransport.41 = Aircraft number
 declaration.summary.transport.departure.meansOfTransport.80 = European vessel number (ENI)
-declaration.summary.transport.departure.meansOfTransport.81 = Inland vessel's name"
+declaration.summary.transport.departure.meansOfTransport.81 = Inland vessel's name
 
 declaration.summary.transport.border.meansOfTransport.header = Transport leaving the border
 declaration.summary.transport.border.meansOfTransport.10 = Ship IMO number
@@ -949,7 +949,7 @@ declaration.summary.transport.border.meansOfTransport.30 = Vehicle registration
 declaration.summary.transport.border.meansOfTransport.40 = Flight number
 declaration.summary.transport.border.meansOfTransport.41 = Aircraft number
 declaration.summary.transport.border.meansOfTransport.80 = European vessel number (ENI)
-declaration.summary.transport.border.meansOfTransport.81 = Inland vessel's name"
+declaration.summary.transport.border.meansOfTransport.81 = Inland vessel's name
 declaration.summary.transport.activeTransportNationality = Nationality of transport leaving the border
 declaration.summary.transport.payment = Method of payment for transport
 declaration.summary.transport.payment.A = Payment in cash
