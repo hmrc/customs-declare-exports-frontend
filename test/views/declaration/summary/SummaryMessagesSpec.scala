@@ -183,7 +183,6 @@ class SummaryMessagesSpec extends UnitViewSpec {
       messages must haveTranslationFor("declaration.summary.transport.containers")
     }
 
-
     "have defined transport codes messages" in {
 
       messages must haveTranslationFor("declaration.summary.transport.departure.transportCode.1")
