@@ -99,6 +99,6 @@
     @if(mode == Mode.Draft) {
         <p class="mt-5">@messages("saved.declarations.summary.paragraph")</p>
 
-        <a class="button mt-3" href="@routes.DispatchLocationController.displayPage(mode)">@messages("saved.declarations.summary.continue")</a>
+        <a class="button mt-3" id="draft-continue" href="@routes.DispatchLocationController.displayPage(mode)">@messages("saved.declarations.summary.continue")</a>
     }
 }
