@@ -68,7 +68,6 @@ class DeclarationAdditionalActorsViewSpec
   "Declaration Additional Actors View on empty page" should {
 
     onEveryDeclarationJourney { request =>
-
       val view = createView(form, request)
 
       "display page title" in {
@@ -156,46 +155,43 @@ class DeclarationAdditionalActorsViewSpec
   "Declaration Additional Actors View with invalid input" must {
 
     onEveryDeclarationJourney { request =>
+      "display errors when EORI is provided, but is incorrect" in {
 
+        val view = createView(
+          DeclarationAdditionalActors
+            .form()
+            .fillAndValidate(DeclarationAdditionalActors(Some(TestHelper.createRandomAlphanumericString(18)), Some(""))),
+          request
+        )
 
-    "display errors when EORI is provided, but is incorrect" in {
+        view must haveGlobalErrorSummary
+        view must haveFieldErrorLink("eori", "#eori")
+        view must haveFieldErrorLink("partyType", "#partyType")
 
-      val view = createView(
-        DeclarationAdditionalActors
-          .form()
-          .fillAndValidate(DeclarationAdditionalActors(Some(TestHelper.createRandomAlphanumericString(18)), Some(""))),
-        request
-      )
+        view.select("#error-message-eori-input").text() mustBe messages(eoriError)
+        view.select("#error-message-partyType-input").text() mustBe messages(partyTypeError)
+      }
 
-      view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("eori", "#eori")
-      view must haveFieldErrorLink("partyType", "#partyType")
+      "display error when EORI is provided, but party is not selected" in {
 
-      view.select("#error-message-eori-input").text() mustBe messages(eoriError)
-      view.select("#error-message-partyType-input").text() mustBe messages(partyTypeError)
+        val view = createView(
+          DeclarationAdditionalActors
+            .form()
+            .fillAndValidate(DeclarationAdditionalActors(Some(TestHelper.createRandomAlphanumericString(17)), Some(""))),
+          request
+        )
+
+        view must haveGlobalErrorSummary
+        view must haveFieldErrorLink("partyType", "#partyType")
+
+        view.select("#error-message-partyType-input").text() mustBe messages(partyTypeError)
+      }
     }
-
-    "display error when EORI is provided, but party is not selected" in {
-
-      val view = createView(
-        DeclarationAdditionalActors
-          .form()
-          .fillAndValidate(DeclarationAdditionalActors(Some(TestHelper.createRandomAlphanumericString(17)), Some(""))),
-        request
-      )
-
-      view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("partyType", "#partyType")
-
-      view.select("#error-message-partyType-input").text() mustBe messages(partyTypeError)
-    }
-  }
   }
 
   "Declaration Additional Actors View when filled" must {
 
     onEveryDeclarationJourney { request =>
-
       "display EORI with CS selected" in {
 
         val view =
