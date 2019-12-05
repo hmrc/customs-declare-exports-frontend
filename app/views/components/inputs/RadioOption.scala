@@ -18,3 +18,7 @@ package views.components.inputs
 import play.twirl.api.Html
 
 case class RadioOption(id: String, value: String, message: String, hint: Option[String] = None, revealComponent: Option[Html] = None)
+
+object RadioOption {
+  val dividerId = "radio_divider"
+}
