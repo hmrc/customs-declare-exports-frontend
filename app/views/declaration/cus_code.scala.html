@@ -15,6 +15,7 @@
  *@
 
 @import controllers.declaration.routes
+@import controllers.navigation.{Navigator, ItemId}
 @import controllers.util.SaveAndContinue
 @import forms.declaration.CUSCode
 @import forms.declaration.CUSCode._
@@ -42,7 +43,7 @@
     @helper.form(routes.CUSCodeController.submitForm(mode, itemId), 'autocomplete -> "off") {
         @helper.CSRF.formField
 
-        @components.back_link(routes.UNDangerousGoodsCodeController.displayPage(mode, itemId), mode)
+        @components.back_link(Navigator.backLink(CUSCode, mode, ItemId(itemId)))
 
         @components.error_summary(form.errors)
 

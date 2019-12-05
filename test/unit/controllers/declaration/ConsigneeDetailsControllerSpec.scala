@@ -18,42 +18,55 @@ package unit.controllers.declaration
 
 import controllers.declaration.ConsigneeDetailsController
 import forms.declaration.{ConsigneeDetails, EntityDetails}
-import models.{DeclarationType, Mode}
+import models.Mode
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.declaration.consignee_details
 
 class ConsigneeDetailsControllerSpec extends ControllerSpec {
 
-  trait SetUp {
-    val consigneeDetailsPage = new consignee_details(mainTemplate)
+  val consigneeDetailsPage = mock[consignee_details]
 
-    val controller = new ConsigneeDetailsController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockExportsCacheService,
-      navigator,
-      stubMessagesControllerComponents(),
-      consigneeDetailsPage
-    )(ec)
+  val controller = new ConsigneeDetailsController(
+    mockAuthAction,
+    mockJourneyAction,
+    mockExportsCacheService,
+    navigator,
+    stubMessagesControllerComponents(),
+    consigneeDetailsPage
+  )(ec)
 
-    val model = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+
     authorizedUser()
-    withNewCaching(model)
+    when(consigneeDetailsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(consigneeDetailsPage)
+
+    super.afterEach()
   }
 
   "Consignee Details controller" should {
 
     "return 200 (OK)" when {
 
-      "display page method is invoked and cache is empty" in new SetUp {
-        val result = controller.displayPage(Mode.Normal)(getRequest(model))
+      "display page method is invoked and cache is empty" in {
+
+        withNewCaching(aDeclaration())
+
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
 
-      "display page method is invoked and cache contrains data" in new SetUp {
+      "display page method is invoked and cache contrains data" in {
 
         val modelWithDetails = aDeclaration(withConsigneeDetails(Some("123"), None))
 
@@ -67,7 +80,9 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
 
     "return 400 (BAD_REQUEST)" when {
 
-      "form is incorrect" in new SetUp {
+      "form is incorrect" in {
+
+        withNewCaching(aDeclaration())
 
         val incorrectForm = Json.toJson(ConsigneeDetails(EntityDetails(None, None)))
 
@@ -79,7 +94,9 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
 
     "return 303 (SEE_OTHER)" when {
 
-      "form is correct" in new SetUp {
+      "form is correct" in {
+
+        withNewCaching(aDeclaration())
 
         val correctForm = Json.toJson(ConsigneeDetails(EntityDetails(Some("1234"), None)))
 

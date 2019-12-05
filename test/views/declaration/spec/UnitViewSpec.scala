@@ -19,13 +19,13 @@ package views.declaration.spec
 import base.Injector
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration}
+import models.DeclarationType
 import org.jsoup.nodes.Document
 import org.scalatest.matchers.{BeMatcher, MatchResult}
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.{FakeRequest, Helpers}
-import services.cache.{ExportsDeclarationBuilder, ExportsTestData}
+import services.cache.ExportsTestData
 import unit.base.UnitSpec
 
 class UnitViewSpec extends UnitSpec with ViewMatchers {

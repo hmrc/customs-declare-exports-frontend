@@ -18,13 +18,15 @@ package unit.controllers.declaration
 
 import controllers.declaration.CommodityDetailsController
 import forms.declaration.CommodityDetails
+import models.DeclarationType.DeclarationType
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.Call
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -45,13 +47,14 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
+
     authorizedUser()
-    withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
     when(mockCommodityDetailsPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     super.afterEach()
+
     reset(mockCommodityDetailsPage)
   }
 
@@ -69,6 +72,8 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
 
       "display page method is invoked and cache is empty" in {
 
+        withNewCaching(aDeclaration())
+
         val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
         status(result) mustBe OK
@@ -78,6 +83,9 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
       }
 
       "display page method is invoked and cache contains data" in {
+
+        withNewCaching(aDeclaration())
+
         val details = CommodityDetails(Some("12345678"), "Description")
         val item = anItem(withCommodityDetails(details))
         withNewCaching(aDeclaration(withItems(item)))
@@ -95,6 +103,8 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
 
       "form is incorrect" in {
 
+        withNewCaching(aDeclaration())
+
         val incorrectForm = Json.toJson(CommodityDetails(None, "Description"))
 
         val result = controller.submitForm(Mode.Normal, itemId)(postRequest(incorrectForm))
@@ -106,26 +116,61 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
 
     "return 303 (SEE_OTHER)" when {
 
-      "valid data provided" in {
+      def redirectForDeclarationType(declarationType: DeclarationType, form: CommodityDetails, call: Call): Unit =
+        "redirect" in {
+          withNewCaching(aDeclaration(withType(declarationType)))
 
-        val correctForm = Json.toJson(CommodityDetails(Some("12345678"), "Description"))
+          val correctForm = Json.toJson(form)
 
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
+          val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
-        verify(mockCommodityDetailsPage, times(0)).apply(any(), any(), any())(any(), any())
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe call
+        }
+
+      "submit for Standard declaration" should {
+
+        behave like redirectForDeclarationType(
+          DeclarationType.STANDARD,
+          CommodityDetails(Some("12345678"), "Description"),
+          controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
+        )
       }
 
-      "valid data provided for simple declaration" in {
-        withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED)))
-        val correctForm = Json.toJson(CommodityDetails(None, "Description"))
+      "submit for Supplementary declaration" should {
 
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
+        behave like redirectForDeclarationType(
+          DeclarationType.SUPPLEMENTARY,
+          CommodityDetails(Some("12345678"), "Description"),
+          controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
+        )
+      }
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
-        verify(mockCommodityDetailsPage, times(0)).apply(any(), any(), any())(any(), any())
+      "submit for Simplified declaration" should {
+
+        behave like redirectForDeclarationType(
+          DeclarationType.SIMPLIFIED,
+          CommodityDetails(None, "Description"),
+          controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
+        )
+      }
+
+      "submit for Occasional declaration" should {
+
+        behave like redirectForDeclarationType(
+          DeclarationType.OCCASIONAL,
+          CommodityDetails(Some("12345678"), "Description"),
+          controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
+        )
+      }
+
+      "submit for Clearance declaration" should {
+
+        behave like redirectForDeclarationType(
+          DeclarationType.CLEARANCE,
+          CommodityDetails(Some("12345678"), "Description"),
+          controllers.declaration.routes.CUSCodeController.displayPage(Mode.Normal, itemId)
+        )
       }
     }
   }
