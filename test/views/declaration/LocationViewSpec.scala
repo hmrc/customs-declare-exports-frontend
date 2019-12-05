@@ -18,10 +18,12 @@ package views.declaration
 
 import base.{Injector, TestHelper}
 import forms.declaration.GoodsLocation
-import models.Mode
+import models.DeclarationType.DeclarationType
+import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
+import play.api.mvc.Call
 import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
@@ -34,8 +36,13 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
   private val page = new goods_location(mainTemplate)
   private val form: Form[GoodsLocation] = GoodsLocation.form()
-  private def createView(mode: Mode = Mode.Normal, form: Form[GoodsLocation] = form, messages: Messages = stubMessages()): Document =
-    page(mode, form)(journeyRequest(), messages)
+  private def createView(
+    mode: Mode = Mode.Normal,
+    form: Form[GoodsLocation] = form,
+    messages: Messages = stubMessages(),
+    declarationType: DeclarationType = DeclarationType.STANDARD
+  ): Document =
+    page(mode, form)(journeyRequest(declarationType), messages)
 
   "Location View on empty page" should {
 
@@ -123,13 +130,6 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
     "display empty input with label for City" in {
       view.getElementById("city-label").text() mustBe "supplementary.goodsLocation.city"
       view.getElementById("city").attr("value") mustBe empty
-    }
-
-    "display 'Back' button that links to 'Destination Countries' page" in {
-      val backButton = view.getElementById("back-link")
-
-      backButton.text() mustBe "site.back"
-      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(Mode.Normal))
     }
 
     "display 'Save and continue' button" in {
@@ -399,6 +399,41 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       view.getElementById("addressLine").attr("value") must be(lstreetAndNumber)
       view.getElementById("postCode").attr("value") must be(lpostCode)
       view.getElementById("city").attr("value") must be(lcity)
+    }
+  }
+
+  "Goods Location view" should {
+    def viewWithCorrectBackButton(declarationType: DeclarationType, redirect: Call): Unit =
+      "have correct back-link" when {
+        val view = createView(declarationType = declarationType)
+        "display 'Back' button that links to correct page" in {
+          val backButton = view.getElementById("back-link")
+
+          backButton must containText("site.back")
+          backButton.getElementById("back-link") must haveHref(redirect)
+        }
+      }
+
+    "for Standard declaration" should {
+      behave like viewWithCorrectBackButton(DeclarationType.STANDARD, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage())
+    }
+    "for Simplified declaration" should {
+      behave like viewWithCorrectBackButton(
+        DeclarationType.SIMPLIFIED,
+        controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
+      )
+    }
+    "for Occasional declaration" should {
+      behave like viewWithCorrectBackButton(
+        DeclarationType.OCCASIONAL,
+        controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
+      )
+    }
+    "for Supplementary declaration" should {
+      behave like viewWithCorrectBackButton(DeclarationType.SUPPLEMENTARY, controllers.declaration.routes.DestinationCountryController.displayPage())
+    }
+    "for Clearance request" should {
+      behave like viewWithCorrectBackButton(DeclarationType.CLEARANCE, controllers.declaration.routes.DestinationCountryController.displayPage())
     }
   }
 }

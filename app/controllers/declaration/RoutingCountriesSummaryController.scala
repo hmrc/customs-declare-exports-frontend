@@ -23,11 +23,11 @@ import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.destinationCountries.DestinationCountries.{FirstRoutingCountryPage, NextRoutingCountryPage}
 import javax.inject.Inject
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.cache.ExportsCacheService
 import services.Countries.findByCodes
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.destinationCountries.{change_routing_country, remove_routing_country, routing_countries_summary}
 
@@ -46,18 +46,13 @@ class RoutingCountriesSummaryController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.declarationType match {
-      case DeclarationType.SUPPLEMENTARY =>
-        navigator.continueTo(controllers.declaration.routes.DestinationCountryController.displayPage(mode))
-      case _ =>
-        val countryCodes = request.cacheModel.locations.routingCountries
-        val countries = findByCodes(countryCodes)
+    val countryCodes = request.cacheModel.locations.routingCountries
+    val countries = findByCodes(countryCodes)
 
-        if (countries.nonEmpty) {
-          Ok(routingCountriesSummaryPage(mode, RoutingQuestionYesNo.form(), countries))
-        } else {
-          navigator.continueTo(controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(mode))
-        }
+    if (countries.nonEmpty) {
+      Ok(routingCountriesSummaryPage(mode, RoutingQuestionYesNo.form(), countries))
+    } else {
+      navigator.continueTo(controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(mode))
     }
   }
 
