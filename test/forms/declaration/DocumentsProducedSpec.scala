@@ -21,12 +21,12 @@ import forms.common.Date._
 import forms.common.DateSpec.{correctDate, correctDateJSON, incorrectDate}
 import forms.declaration.additionaldocuments.DocumentWriteOff._
 import forms.declaration.additionaldocuments.DocumentWriteOffSpec._
-import forms.declaration.additionaldocuments.DocumentsProduced
+import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
 import forms.declaration.additionaldocuments.DocumentsProduced._
 import helpers.views.components.DateMessages
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.FormError
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 
 class DocumentsProducedSpec extends WordSpec with MustMatchers with DateMessages {
 
@@ -200,13 +200,13 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers with DateMessages
       "provided with correct data" in {
 
         val form = DocumentsProduced.form.bind(correctDocumentsProducedJSON)
-        form.hasErrors must be(false)
+        form.errors mustBe empty
       }
 
       "provided with empty data" in {
 
         val form = DocumentsProduced.form.bind(emptyDocumentsProducedJSON)
-        form.hasErrors must be(false)
+        form.errors mustBe empty
       }
 
       "provided with Issuing Authority Name containing special characters" in {
@@ -214,12 +214,28 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers with DateMessages
         val input = JsObject(Map(issuingAuthorityNameKey -> JsString("Issuing Authority Name with ''' added")))
         val form = DocumentsProduced.form.bind(input)
 
-        form.hasErrors must be(false)
+        form.errors mustBe empty
+      }
+
+      "provide the correct data with #" in {
+
+        val input = JsObject(
+          Map(
+            documentTypeCodeKey -> JsString(categoryCode + typeCode),
+            documentIdentifierKey -> JsString("ABCDEF1234567890"),
+            documentStatusKey -> JsString("AB"),
+            documentStatusReasonKey -> JsString("DocumentStatusReason"),
+            issuingAuthorityNameKey -> JsString("Issuing Authority Name"),
+            dateOfValidityKey -> correctDateJSON,
+            documentWriteOffKey -> Json.toJson(DocumentWriteOff(Some("AB#12"), Some(12)))
+          )
+        )
+        val form = DocumentsProduced.form.bind(input)
+
+        form.errors mustBe empty
       }
     }
-
   }
-
 }
 
 object DocumentsProducedSpec {
