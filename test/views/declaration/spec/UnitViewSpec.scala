@@ -49,13 +49,7 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
   def messagesKey(key: String): BeMatcher[String] = new MessagesKeyMatcher(key)
 
   def onEveryDeclarationJourney(f: JourneyRequest[_] => Unit): Unit =
-    onJourney(
-      DeclarationType.STANDARD,
-      DeclarationType.SUPPLEMENTARY,
-      DeclarationType.SIMPLIFIED,
-      DeclarationType.OCCASIONAL,
-      DeclarationType.CLEARANCE
-    )(f)
+    onJourney(DeclarationType.values.toSeq: _*)(f)
 
   def onJourney(types: DeclarationType*)(f: JourneyRequest[_] => Unit): Unit =
     types.foreach {

@@ -67,14 +67,15 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
 
   private def verifyPageInvoked(numberOfTimes: Int = 1) = verify(mockPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
-  "TARIC Code controller" should {
+  val item = anItem()
 
-    "return 200 (OK)" when {
+  "TARIC Code controller" must {
 
-      def controllerDisplaysPage(decType: DeclarationType): Unit = {
+    onEveryDeclarationJourney(withItems(item)){ declaration =>
+      "return 200 (OK)" that {
         "display page method is invoked and cache is empty" in {
-          val item = anItem()
-          withNewCaching(aDeclaration(withType(decType), withItems(item)))
+
+          withNewCaching(declaration)
 
           val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
 
@@ -87,7 +88,7 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
         "display page method is invoked and cache contains data" in {
           val taricCode = TaricCode("1234")
           val item = anItem(withTaricCodes(taricCode))
-          withNewCaching(aDeclaration(withType(decType), withItems(item)))
+          withNewCaching(aDeclarationAfter(declaration, withItems(item)))
 
           val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
 
@@ -98,33 +99,22 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
         }
       }
 
-      for (decType <- DeclarationType.values) {
-        s"we are on $decType journey" should {
-          behave like controllerDisplaysPage(decType)
-        }
+      "user adds invalid code" in {
+        withNewCaching(declaration)
+
+        val body = Seq((taricCodeKey, "invalidCode"), (Add.toString, ""))
+
+        val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(body: _*))
+
+        status(result) mustBe BAD_REQUEST
+        verifyPageInvoked()
       }
-    }
 
-    "return 400 (BAD_REQUEST)" when {
-
-      def controllerErrors(decType: DeclarationType): Unit = {
-
-        "user adds invalid code" in {
-          val item = anItem()
-          withNewCaching(aDeclaration(withType(decType), withItems(item)))
-
-          val body = Seq((taricCodeKey, "invalidCode"), (Add.toString, ""))
-
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(body: _*))
-
-          status(result) mustBe BAD_REQUEST
-          verifyPageInvoked()
-        }
-
+      "return 400 (BAD_REQUEST)" when {
         "user adds duplicate code" in {
           val taricCode = TaricCode("1234")
           val item = anItem(withTaricCodes(taricCode))
-          withNewCaching(aDeclaration(withType(decType), withItems(item)))
+          withNewCaching(aDeclarationAfter(declaration, withItems(item)))
 
           val body = Seq((taricCodeKey, "1234"), (Add.toString, ""))
 
@@ -137,7 +127,7 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
         "user adds too many codes" in {
           val taricCodes = List.fill(99)(TaricCode(TestHelper.createRandomAlphanumericString(4)))
           val item = anItem(withTaricCodes(taricCodes))
-          withNewCaching(aDeclaration(withType(decType), withItems(item)))
+          withNewCaching(aDeclarationAfter(declaration, withItems(item)))
 
           val body = Seq((taricCodeKey, "1234"), (Add.toString, ""))
 
@@ -147,19 +137,10 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
           verifyPageInvoked()
         }
       }
-      for (decType <- DeclarationType.values) {
-        s"we are on $decType journey" should {
-          behave like controllerErrors(decType)
-        }
-      }
-    }
-
-    "return 303 (SEE_OTHER)" when {
-
-      def controllerRedirectsToNextPage(decType: DeclarationType): Unit =
+      "return 303 (SEE_OTHER)" when {
         "user submits valid code" in {
           val item = anItem(withItemId("itemId"))
-          withNewCaching(aDeclaration(withType(decType), withItems(item)))
+          withNewCaching(aDeclarationAfter(declaration, withItems(item)))
 
           val body = Seq((taricCodeKey, "1234"), (SaveAndContinue.toString, ""))
 
@@ -168,11 +149,6 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, "itemId")
           verifyPageInvoked(0)
-        }
-
-      for (decType <- DeclarationType.values) {
-        s"we are on $decType journey" should {
-          behave like controllerRedirectsToNextPage(decType)
         }
       }
     }
