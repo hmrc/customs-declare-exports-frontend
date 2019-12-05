@@ -61,9 +61,9 @@ class RepresentativeDetailsController @Inject()(
 
   private def nextPage(mode: Mode, request: JourneyRequest[AnyContent]) =
     request.declarationType match {
-      case DeclarationType.SUPPLEMENTARY =>
+      case DeclarationType.SUPPLEMENTARY | DeclarationType.CLEARANCE =>
         controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage(mode)
-      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
+      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL  =>
         controllers.declaration.routes.CarrierDetailsController.displayPage(mode)
     }
 

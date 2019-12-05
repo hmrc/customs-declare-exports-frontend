@@ -19,8 +19,9 @@ package unit.base
 import base.{MockAuthAction, MockConnectors, MockExportCacheService, MockNavigator}
 import config.AppConfig
 import controllers.util.{Add, AddField, SaveAndContinue}
-import models.ExportsDeclaration
+import models.DeclarationType.DeclarationType
 import models.requests.{ExportsSessionKeys, JourneyRequest}
+import models.{DeclarationType, ExportsDeclaration}
 import play.api.libs.json.JsValue
 import play.api.mvc._
 import play.api.test.FakeRequest
@@ -73,4 +74,68 @@ trait ControllerSpec
       .withSession(ExportsSessionKeys.declarationId -> "declaration-id")
       .withJsonBody(body)
       .withCSRFToken
+
+  def onEveryDeclarationJourney(modifiers: ExportsDeclarationModifier*)(f: ExportsDeclaration => Unit): Unit =
+    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)(modifiers: _*)(f)
+
+  def onJourney(types: DeclarationType*)(modifiers: ExportsDeclarationModifier*)(f: ExportsDeclaration => Unit): Unit = {
+    val declaration = aDeclaration(modifiers: _*)
+    types.foreach {
+      case kind @ DeclarationType.STANDARD      => onStandard(aDeclarationAfter(declaration, withType(kind)))(f)
+      case kind @ DeclarationType.SUPPLEMENTARY => onSupplementary(aDeclarationAfter(declaration, withType(kind)))(f)
+      case kind @ DeclarationType.SIMPLIFIED    => onSimplified(aDeclarationAfter(declaration, withType(kind)))(f)
+      case kind @ DeclarationType.OCCASIONAL    => onOccasional(aDeclarationAfter(declaration, withType(kind)))(f)
+      case kind @ DeclarationType.CLEARANCE    => onClearance(aDeclarationAfter(declaration, withType(kind)))(f)
+    }
+  }
+
+  def onStandard(f: ExportsDeclaration => Unit): Unit =
+    onStandard(ControllerSpec.simpleStandardDeclaration)(f)
+
+  def onStandard(declaration: ExportsDeclaration)(f: ExportsDeclaration => Unit): Unit =
+    "on Standard journey handle request" that {
+      f(declaration)
+    }
+
+  def onSimplified(f: ExportsDeclaration => Unit): Unit =
+    onSimplified(ControllerSpec.simpleSimplifiedDeclaration)(f)
+
+  def onSimplified(declaration: ExportsDeclaration)(f: ExportsDeclaration => Unit): Unit =
+    "on Simplified journey handle request" that {
+      f(declaration)
+    }
+
+  def onSupplementary(f: ExportsDeclaration => Unit): Unit =
+    onSupplementary(ControllerSpec.simpleSupplementaryDeclaration)(f)
+
+  def onSupplementary(declaration: ExportsDeclaration)(f: ExportsDeclaration => Unit): Unit =
+    "on Supplementary journey handle request" that {
+      f(declaration)
+    }
+
+  def onOccasional(f: ExportsDeclaration => Unit): Unit =
+    onOccasional(ControllerSpec.simpleOccasionalDeclaration)(f)
+
+  def onOccasional(declaration: ExportsDeclaration)(f: ExportsDeclaration => Unit): Unit =
+    "on Occasional journey handle request" that {
+      f(declaration)
+    }
+
+  def onClearance(f: ExportsDeclaration => Unit): Unit = {
+    onClearance(ControllerSpec.simpleClearanceDeclaration)(f)
+  }
+
+  def onClearance(declaration: ExportsDeclaration)(f: ExportsDeclaration => Unit): Unit = {
+    "on Clearance journey handle request" that {
+      f(declaration)
+    }
+  }
+}
+
+object ControllerSpec extends ExportsDeclarationBuilder {
+  val simpleStandardDeclaration: ExportsDeclaration = aDeclaration(withType(DeclarationType.STANDARD))
+  val simpleSupplementaryDeclaration: ExportsDeclaration = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
+  val simpleSimplifiedDeclaration: ExportsDeclaration = aDeclaration(withType(DeclarationType.SIMPLIFIED))
+  val simpleOccasionalDeclaration: ExportsDeclaration = aDeclaration(withType(DeclarationType.OCCASIONAL))
+  val simpleClearanceDeclaration: ExportsDeclaration = aDeclaration(withType(DeclarationType.CLEARANCE))
 }
