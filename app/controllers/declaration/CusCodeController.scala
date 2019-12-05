@@ -21,11 +21,12 @@ import controllers.navigation.Navigator
 import forms.declaration.CUSCode
 import forms.declaration.CUSCode.form
 import javax.inject.Inject
+import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.cus_code
@@ -56,8 +57,7 @@ class CusCodeController @Inject()(
         (formWithErrors: Form[CUSCode]) => Future.successful(BadRequest(cusCodePage(mode, itemId, formWithErrors))),
         validForm =>
           updateExportsCache(itemId, validForm).map { _ =>
-            navigator
-              .continueTo(controllers.declaration.routes.TaricCodeController.displayPage(mode, itemId))
+            navigator.continueTo(nextPage(mode, itemId, request.declarationType))
         }
       )
   }
@@ -68,4 +68,12 @@ class CusCodeController @Inject()(
     updateExportsDeclarationSyncDirect { model =>
       model.updatedItem(itemId, item => item.copy(cusCode = Some(updatedItem)))
     }
+
+  def nextPage(mode: Mode, itemId: String, declarationType: DeclarationType): Call = {
+    if(declarationType == DeclarationType.CLEARANCE) {
+      controllers.declaration.routes.NactCodeController.displayPage(mode, itemId)
+    } else {
+      controllers.declaration.routes.TaricCodeController.displayPage(mode, itemId)
+    }
+  }
 }

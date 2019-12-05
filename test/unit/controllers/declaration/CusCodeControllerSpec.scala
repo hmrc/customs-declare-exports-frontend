@@ -62,7 +62,7 @@ class CusCodeControllerSpec extends ControllerSpec {
 
   "CUSCode controller" must {
 
-    onEveryDeclarationJourney(){ declaration =>
+    onEveryDeclarationJourney() { declaration =>
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
@@ -104,6 +104,9 @@ class CusCodeControllerSpec extends ControllerSpec {
           verify(mockPage, times(1)).apply(any(), any(), any())(any(), any())
         }
       }
+    }
+
+    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)() { declaration =>
       "return 303 (SEE_OTHER)" when {
         "accept submission and redirect" in {
           withNewCaching(declaration)
@@ -113,6 +116,21 @@ class CusCodeControllerSpec extends ControllerSpec {
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, itemId)
+          verify(mockPage, times(0)).apply(any(), any(), any())(any(), any())
+        }
+      }
+    }
+
+    onClearance { declaration =>
+      "return 303 (SEE_OTHER)" when {
+        "accept submission and redirect" in {
+          withNewCaching(declaration)
+          val correctForm = formData("12345678")
+
+          val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, itemId)
           verify(mockPage, times(0)).apply(any(), any(), any())(any(), any())
         }
       }
