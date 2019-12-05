@@ -22,10 +22,10 @@ import forms.declaration.CommodityDetails
 import forms.declaration.CommodityDetails.form
 import javax.inject.Inject
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.commodity_details
@@ -54,13 +54,16 @@ class CommodityDetailsController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[CommodityDetails]) => Future.successful(BadRequest(commodityDetailsPage(mode, itemId, formWithErrors))),
-        validForm =>
-          updateExportsCache(itemId, validForm).map { _ =>
-            navigator
-              .continueTo(controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(mode, itemId))
-        }
+        validForm => updateExportsCache(itemId, validForm).map(_ => redirectToNextPage(mode, itemId))
       )
   }
+
+  private def redirectToNextPage(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
+    if (request.isType(DeclarationType.CLEARANCE)) {
+      navigator.continueTo(controllers.declaration.routes.CUSCodeController.displayPage(mode, itemId))
+    } else {
+      navigator.continueTo(controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(mode, itemId))
+    }
 
   private def updateExportsCache(itemId: String, updatedItem: CommodityDetails)(
     implicit request: JourneyRequest[AnyContent]

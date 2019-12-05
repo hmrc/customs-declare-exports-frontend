@@ -77,6 +77,7 @@ object Navigator {
   val standardItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
     case PackageInformation    => controllers.declaration.routes.StatisticalValueController.displayPage
     case AdditionalInformation => controllers.declaration.routes.CommodityMeasureController.displayPage
+    case CUSCode               => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
     case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
 
@@ -101,6 +102,7 @@ object Navigator {
   val clearanceItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
     case PackageInformation    => controllers.declaration.routes.StatisticalValueController.displayPage
     case AdditionalInformation => controllers.declaration.routes.CommodityMeasureController.displayPage
+    case CUSCode               => controllers.declaration.routes.CommodityDetailsController.displayPage
     case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }
 
@@ -121,6 +123,7 @@ object Navigator {
   val supplementaryItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
     case PackageInformation    => controllers.declaration.routes.StatisticalValueController.displayPage
     case AdditionalInformation => controllers.declaration.routes.CommodityMeasureController.displayPage
+    case CUSCode               => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
     case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
   }
 
@@ -143,6 +146,7 @@ object Navigator {
   val simplifiedItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
     case PackageInformation    => controllers.declaration.routes.NactCodeController.displayPage
     case AdditionalInformation => controllers.declaration.routes.PackageInformationController.displayPage
+    case CUSCode               => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
     case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
   }
 
@@ -165,6 +169,7 @@ object Navigator {
   val occasionalItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
     case PackageInformation    => controllers.declaration.routes.NactCodeController.displayPage
     case AdditionalInformation => controllers.declaration.routes.PackageInformationController.displayPage
+    case CUSCode               => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
     case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
   }
 
