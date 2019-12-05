@@ -42,7 +42,6 @@ class CUSCodeControllerSpec extends ControllerSpec {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
     when(mockPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -61,69 +60,62 @@ class CUSCodeControllerSpec extends ControllerSpec {
 
   private def formData(code: String) = JsObject(Map(cusCodeKey -> JsString(code), hasCusCodeKey -> JsString("Yes")))
 
-  "CUSCode controller" should {
+  "CUSCode controller" must {
 
-    "return 200 (OK)" when {
+    onEveryDeclarationJourney(){ declaration =>
+      "return 200 (OK)" when {
 
-      "display page method is invoked and cache is empty" in {
+        "display page method is invoked and cache is empty" in {
 
-        val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+          withNewCaching(declaration)
 
-        status(result) mustBe OK
-        verify(mockPage, times(1)).apply(any(), any(), any())(any(), any())
+          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
-        theResponseForm.value mustBe empty
+          status(result) mustBe OK
+          verify(mockPage, times(1)).apply(any(), any(), any())(any(), any())
+
+          theResponseForm.value mustBe empty
+        }
+
+        "display page method is invoked and cache contains data" in {
+          val cusCode = CUSCode(Some("12345678"))
+          val item = anItem(withCUSCode(cusCode))
+          withNewCaching(aDeclarationAfter(declaration, withItems(item)))
+
+          val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
+
+          status(result) mustBe OK
+          verify(mockPage, times(1)).apply(any(), any(), any())(any(), any())
+
+          theResponseForm.value mustBe Some(cusCode)
+        }
       }
 
-      "display page method is invoked and cache contains data" in {
-        val cusCode = CUSCode(Some("12345678"))
-        val item = anItem(withCUSCode(cusCode))
-        withNewCaching(aDeclaration(withItems(item)))
+      "return 400 (BAD_REQUEST)" when {
 
-        val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
+        "form is incorrect" in {
+          withNewCaching(declaration)
 
-        status(result) mustBe OK
-        verify(mockPage, times(1)).apply(any(), any(), any())(any(), any())
+          val incorrectForm = formData("Invalid Code")
 
-        theResponseForm.value mustBe Some(cusCode)
+          val result = controller.submitForm(Mode.Normal, itemId)(postRequest(incorrectForm))
+
+          status(result) mustBe BAD_REQUEST
+          verify(mockPage, times(1)).apply(any(), any(), any())(any(), any())
+        }
       }
-    }
-
-    "return 400 (BAD_REQUEST)" when {
-
-      "form is incorrect" in {
-
-        val incorrectForm = formData("Invalid Code")
-
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequest(incorrectForm))
-
-        status(result) mustBe BAD_REQUEST
-        verify(mockPage, times(1)).apply(any(), any(), any())(any(), any())
-      }
-    }
-
-    "return 303 (SEE_OTHER)" when {
-
-      val nextPage: Call = controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, itemId)
-
-      def controllerRedirectsToNextPage(decType: DeclarationType, call: Call = nextPage): Unit =
+      "return 303 (SEE_OTHER)" when {
         "accept submission and redirect" in {
-          withNewCaching(aDeclaration(withType(decType)))
+          withNewCaching(declaration)
           val correctForm = formData("12345678")
 
           val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe call
+          thePageNavigatedTo mustBe controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, itemId)
           verify(mockPage, times(0)).apply(any(), any(), any())(any(), any())
         }
-
-      for (decType <- DeclarationType.values) {
-        s"we are on $decType journey" should {
-          behave like controllerRedirectsToNextPage(decType)
-        }
       }
-
     }
   }
 }
