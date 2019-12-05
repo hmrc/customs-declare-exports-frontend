@@ -128,7 +128,7 @@ class DeclarationAdditionalActorsViewSpec
       }
     }
 
-    onJourney(DeclarationType.SUPPLEMENTARY, DeclarationType.OCCASIONAL) { request =>
+    onJourney(DeclarationType.SUPPLEMENTARY, DeclarationType.CLEARANCE) { request =>
       "display 'Back' button that links to 'Representative Details' page" in {
 
         val view = declarationAdditionalActorsPage(Mode.Normal, form, Seq())(request, messages)
@@ -140,7 +140,7 @@ class DeclarationAdditionalActorsViewSpec
       }
     }
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED) { request =>
+    onJourney(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
       "display 'Back' button that links to 'Carrier Details' page" in {
 
         val view = declarationAdditionalActorsPage(Mode.Normal, form, Seq())(request, messages)
