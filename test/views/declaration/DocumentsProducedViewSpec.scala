@@ -26,7 +26,7 @@ import forms.declaration.additionaldocuments.DocumentWriteOffSpec._
 import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.additionaldocuments.DocumentsProduced._
 import helpers.views.components.DateMessages
-import helpers.views.declaration.{CommonMessages, DocumentsProducedMessages}
+import helpers.views.declaration.CommonMessages
 import models.Mode
 import org.jsoup.nodes.Document
 import org.scalatest.OptionValues
@@ -39,8 +39,7 @@ import views.html.declaration.documents_produced
 import views.tags.ViewTest
 
 @ViewTest
-class DocumentsProducedViewSpec
-    extends UnitViewSpec with DocumentsProducedMessages with DateMessages with CommonMessages with Stubs with Injector with OptionValues {
+class DocumentsProducedViewSpec extends UnitViewSpec with DateMessages with CommonMessages with Stubs with Injector with OptionValues {
 
   private val itemId = "a7sc78"
   private val mode = Mode.Normal
@@ -97,40 +96,40 @@ class DocumentsProducedViewSpec
     }
 
     "display empty input with label and hint for Document identifier" in {
-      view.getElementById(s"$documentIdentifierKey-label").text() mustBe messagesKey(documentIdentifier)
+      view.getElementById(s"$documentIdentifierKey-label").text() mustBe messagesKey("supplementary.addDocument.documentIdentifier")
       view.getElementById(s"$documentIdentifierKey-hint").text() mustBe messagesKey("supplementary.addDocument.documentIdentifier.hint")
 
       view.getElementById(s"$documentIdentifierKey").attr("value") mustBe empty
     }
 
     "display empty input with label for Document status" in {
-      view.getElementById(s"$documentStatusKey-label").text() mustBe messagesKey(documentStatus)
+      view.getElementById(s"$documentStatusKey-label").text() mustBe messagesKey("supplementary.addDocument.documentStatus")
       view.getElementById(s"$documentStatusKey").attr("value") mustBe empty
     }
 
     "display empty input with label for Document status reason" in {
-      view.getElementById(s"$documentStatusReasonKey-label").text() mustBe messagesKey(documentStatusReason)
+      view.getElementById(s"$documentStatusReasonKey-label").text() mustBe messagesKey("supplementary.addDocument.documentStatusReason")
       view.getElementById(s"$documentStatusReasonKey").attr("value") mustBe empty
     }
 
     "display empty input with label for Issuing Authority Name" in {
-      view.getElementById(s"$issuingAuthorityNameKey-label").text() mustBe messagesKey(issuingAuthorityName)
+      view.getElementById(s"$issuingAuthorityNameKey-label").text() mustBe messagesKey("supplementary.addDocument.issuingAuthorityName")
       view.getElementById(issuingAuthorityNameKey).attr("value") mustBe empty
     }
 
     "display empty input with label for Date of Validity" in {
-      view.getElementById(s"$dateOfValidityKey-label").text() mustBe messagesKey(dateOfValidity)
+      view.getElementById(s"$dateOfValidityKey-label").text() mustBe messagesKey("supplementary.addDocument.dateOfValidity")
       view.getElementById(dateOfValidityKey).attr("value") mustBe empty
     }
 
     "display empty input with label for Measurement Unit" in {
-      view.getElementById(s"${documentWriteOffKey}_$measurementUnitKey-label").text() mustBe messagesKey(measurementUnit)
+      view.getElementById(s"${documentWriteOffKey}_$measurementUnitKey-label").text() mustBe messagesKey("supplementary.addDocument.measurementUnit")
       view.getElementById(s"${documentWriteOffKey}_$measurementUnitKey").attr("value") mustBe empty
     }
 
     "display empty input with label for Document quantity" in {
       view.getElementById(s"${documentWriteOffKey}_$documentQuantityKey-label").text() mustBe
-        messagesKey(documentQuantity)
+        messagesKey("supplementary.addDocument.documentQuantity")
 
       view.getElementById(s"${documentWriteOffKey}_$documentQuantityKey").attr("value") mustBe empty
     }
@@ -168,7 +167,7 @@ class DocumentsProducedViewSpec
       checkErrorsSummary(view)
       view must haveFieldErrorLink(s"$documentTypeCodeKey", s"#$documentTypeCodeKey")
 
-      view.select(s"#error-message-$documentTypeCodeKey-input").text() mustBe messagesKey(documentTypeCodeError)
+      view.select(s"#error-message-$documentTypeCodeKey-input").text() mustBe messagesKey("supplementary.addDocument.documentTypeCode.error")
     }
 
     "display error for Document identifier" in {
@@ -183,7 +182,7 @@ class DocumentsProducedViewSpec
 
       view
         .select(s"#error-message-$documentIdentifierKey-input")
-        .text() mustBe messagesKey(documentIdentifierError)
+        .text() mustBe messagesKey("supplementary.addDocument.documentIdentifier.error")
     }
 
     "display error for Document status" in {
@@ -196,7 +195,7 @@ class DocumentsProducedViewSpec
       checkErrorsSummary(view)
       view must haveFieldErrorLink(s"$documentStatusKey", s"#$documentStatusKey")
 
-      view.select(s"#error-message-$documentStatusKey-input").text() mustBe messagesKey(documentStatusError)
+      view.select(s"#error-message-$documentStatusKey-input").text() mustBe messagesKey("supplementary.addDocument.documentStatus.error")
     }
 
     "display error for Document status reason" in {
@@ -209,7 +208,7 @@ class DocumentsProducedViewSpec
       checkErrorsSummary(view)
       view must haveFieldErrorLink(s"$documentStatusReasonKey", s"#$documentStatusReasonKey")
 
-      view.select(s"#error-message-$documentStatusReasonKey-input").text() mustBe messagesKey(documentStatusReasonError)
+      view.select(s"#error-message-$documentStatusReasonKey-input").text() mustBe messagesKey("supplementary.addDocument.documentStatusReason.error")
     }
 
     "display error for Issuing Authority Name" in {
@@ -223,7 +222,7 @@ class DocumentsProducedViewSpec
       view must haveFieldErrorLink(s"$issuingAuthorityNameKey", s"#$issuingAuthorityNameKey")
 
       view.select(s"#error-message-$issuingAuthorityNameKey-input").text() mustBe
-        messagesKey(issuingAuthorityNameLengthError)
+        messagesKey("supplementary.addDocument.issuingAuthorityName.error.length")
     }
 
     "display error for Date of Validity" when {
@@ -273,7 +272,7 @@ class DocumentsProducedViewSpec
         view must haveFieldErrorLink(s"${documentWriteOffKey}_$measurementUnitKey", s"#${documentWriteOffKey}_$measurementUnitKey")
 
         view.select(s"#error-message-${documentWriteOffKey}_$measurementUnitKey-input").text() mustBe
-          messagesKey(measurementUnitLengthError)
+          messagesKey("supplementary.addDocument.measurementUnit.error.length")
       }
 
       "unit text contains special characters" in {
@@ -285,7 +284,7 @@ class DocumentsProducedViewSpec
         view must haveFieldErrorLink(s"${documentWriteOffKey}_$measurementUnitKey", s"#${documentWriteOffKey}_$measurementUnitKey")
 
         view.select(s"#error-message-${documentWriteOffKey}_$measurementUnitKey-input").text() mustBe
-          messagesKey(measurementUnitSpecialCharactersError)
+          messagesKey("supplementary.addDocument.measurementUnit.error.specialCharacters")
       }
 
     }
@@ -302,7 +301,7 @@ class DocumentsProducedViewSpec
         view must haveFieldErrorLink(s"${documentWriteOffKey}_$documentQuantityKey", s"#${documentWriteOffKey}_$documentQuantityKey")
 
         view.select(s"#error-message-${documentWriteOffKey}_$documentQuantityKey-input").text() mustBe
-          messagesKey(documentQuantityPrecisionError)
+          messagesKey("supplementary.addDocument.documentQuantity.error.precision")
       }
 
       "there is scale error" in {
@@ -314,7 +313,7 @@ class DocumentsProducedViewSpec
         view must haveFieldErrorLink(s"${documentWriteOffKey}_$documentQuantityKey", s"#${documentWriteOffKey}_$documentQuantityKey")
 
         view.select(s"#error-message-${documentWriteOffKey}_$documentQuantityKey-input").text() mustBe
-          messagesKey(documentQuantityScaleError)
+          messagesKey("supplementary.addDocument.documentQuantity.error.scale")
       }
 
       "there is error in quantity" in {
@@ -326,7 +325,7 @@ class DocumentsProducedViewSpec
         view must haveFieldErrorLink(s"${documentWriteOffKey}_$documentQuantityKey", s"#${documentWriteOffKey}_$documentQuantityKey")
 
         view.select(s"#error-message-${documentWriteOffKey}_$documentQuantityKey-input").text() mustBe
-          messagesKey(documentQuantityError)
+          messagesKey("supplementary.addDocument.documentQuantity.error")
       }
 
     }
@@ -345,7 +344,7 @@ class DocumentsProducedViewSpec
         view must haveFieldErrorLink(s"$documentWriteOffKey", s"#$documentWriteOffKey")
 
         view.select(s"#error-message-$documentWriteOffKey-input").text() mustBe
-          messagesKey(measurementUnitAndQuantityError)
+          messagesKey("supplementary.addDocument.error.measurementUnitAndQuantity")
       }
 
       "provided with Document Quantity but no Measurement Unit" in {
@@ -360,7 +359,7 @@ class DocumentsProducedViewSpec
         view must haveFieldErrorLink(s"$documentWriteOffKey", s"#$documentWriteOffKey")
 
         view.select(s"#error-message-$documentWriteOffKey-input").text() mustBe
-          messagesKey(measurementUnitAndQuantityError)
+          messagesKey("supplementary.addDocument.error.measurementUnitAndQuantity")
       }
     }
 
@@ -380,20 +379,20 @@ class DocumentsProducedViewSpec
       view must haveFieldErrorLink(s"${documentWriteOffKey}_$measurementUnitKey", s"#${documentWriteOffKey}_$measurementUnitKey")
       view must haveFieldErrorLink(s"${documentWriteOffKey}_$documentQuantityKey", s"#${documentWriteOffKey}_$documentQuantityKey")
 
-      view.select(s"#error-message-$documentTypeCodeKey-input").text() mustBe messagesKey(documentTypeCodeError)
+      view.select(s"#error-message-$documentTypeCodeKey-input").text() mustBe messagesKey("supplementary.addDocument.documentTypeCode.error")
       view
         .select(s"#error-message-$documentIdentifierKey-input")
-        .text() mustBe messagesKey(documentIdentifierError)
+        .text() mustBe messagesKey("supplementary.addDocument.documentIdentifier.error")
 
-      view.select(s"#error-message-$documentStatusKey-input").text() mustBe messagesKey(documentStatusError)
-      view.select(s"#error-message-$documentStatusReasonKey-input").text() mustBe messagesKey(documentStatusReasonError)
+      view.select(s"#error-message-$documentStatusKey-input").text() mustBe messagesKey("supplementary.addDocument.documentStatus.error")
+      view.select(s"#error-message-$documentStatusReasonKey-input").text() mustBe messagesKey("supplementary.addDocument.documentStatusReason.error")
       view.select(s"#error-message-$issuingAuthorityNameKey-input").text() mustBe
-        messagesKey(issuingAuthorityNameLengthError)
+        messagesKey("supplementary.addDocument.issuingAuthorityName.error.length")
       view.select(s"#error-message-$dateOfValidityKey-input").text() mustBe messagesKey(dateFormatError)
       view.select(s"#error-message-${documentWriteOffKey}_$measurementUnitKey-input").text() mustBe
-        messagesKey(measurementUnitLengthError)
+        messagesKey("supplementary.addDocument.measurementUnit.error.length")
       view.select(s"#error-message-${documentWriteOffKey}_$documentQuantityKey-input").text() mustBe
-        messagesKey(documentQuantityPrecisionError)
+        messagesKey("supplementary.addDocument.documentQuantity.error.precision")
     }
   }
 
@@ -427,29 +426,29 @@ class DocumentsProducedViewSpec
         val header = view.selectFirst(".documents thead tr")
 
         "have header for Document Type" in {
-          header.selectFirst(".document-type").text() mustBe messagesKey(documentTypeCode)
+          header.selectFirst(".document-type").text() mustBe messagesKey("supplementary.addDocument.documentTypeCode")
         }
 
         "have header for Document Identifier" in {
-          header.selectFirst(".document-identifier").text() mustBe messagesKey(documentIdentifier)
+          header.selectFirst(".document-identifier").text() mustBe messagesKey("supplementary.addDocument.documentIdentifier")
         }
         "have header for Document Status" in {
-          header.selectFirst(".document-status").text() mustBe messagesKey(documentStatus)
+          header.selectFirst(".document-status").text() mustBe messagesKey("supplementary.addDocument.documentStatus")
         }
         "have header for Document Status Reason" in {
-          header.selectFirst(".document-status-reason").text() mustBe messagesKey(documentStatusReason)
+          header.selectFirst(".document-status-reason").text() mustBe messagesKey("supplementary.addDocument.documentStatusReason")
         }
         "have header for Document Issuing Authroity" in {
-          header.selectFirst(".document-issuing-authority").text() mustBe messagesKey(issuingAuthorityName)
+          header.selectFirst(".document-issuing-authority").text() mustBe messagesKey("supplementary.addDocument.issuingAuthorityName")
         }
         "have header for Document Date of Validtiy" in {
-          header.selectFirst(".date-of-validity").text() mustBe messagesKey(dateOfValidity)
+          header.selectFirst(".date-of-validity").text() mustBe messagesKey("supplementary.addDocument.dateOfValidity")
         }
         "have header for Document Measurement Unit" in {
-          header.selectFirst(".measurement-unit").text() mustBe messagesKey(measurementUnit)
+          header.selectFirst(".measurement-unit").text() mustBe messagesKey("supplementary.addDocument.measurementUnit")
         }
         "have header for Document Quntity" in {
-          header.selectFirst(".document-quantity").text() mustBe messagesKey(documentQuantity)
+          header.selectFirst(".document-quantity").text() mustBe messagesKey("supplementary.addDocument.documentQuantity")
         }
       }
 
@@ -493,7 +492,6 @@ class DocumentsProducedViewSpec
           removeButton.attr("value") mustBe correctDocumentsProduced.toJson.toString()
         }
       }
-
     }
   }
 }

@@ -19,7 +19,7 @@ package forms.declaration.additionaldocuments
 import play.api.data.Forms.{bigDecimal, optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import utils.validators.forms.FieldValidator.{isAlphanumeric, lengthInRange}
+import utils.validators.forms.FieldValidator.{isAlphanumericWithSpecialCharacters, lengthInRange}
 
 case class DocumentWriteOff(measurementUnit: Option[String], documentQuantity: Option[BigDecimal])
 
@@ -28,7 +28,7 @@ object DocumentWriteOff {
   implicit val format = Json.format[DocumentWriteOff]
 
   private val measurementUnitMinLength = 3
-  private val measurementUnitMaxLength = 4
+  private val measurementUnitMaxLength = 5
   private val documentQuantityMaxLength = 16
   private val documentQuantityMaxDecimalPlaces = 6
 
@@ -40,7 +40,7 @@ object DocumentWriteOff {
       measurementUnitKey -> optional(
         text()
           .verifying("supplementary.addDocument.measurementUnit.error.length", lengthInRange(measurementUnitMinLength)(measurementUnitMaxLength))
-          .verifying("supplementary.addDocument.measurementUnit.error.specialCharacters", isAlphanumeric)
+          .verifying("supplementary.addDocument.measurementUnit.error.specialCharacters", isAlphanumericWithSpecialCharacters(Set('#')))
       ),
       documentQuantityKey -> optional(
         bigDecimal
