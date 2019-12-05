@@ -49,13 +49,21 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
   def messagesKey(key: String): BeMatcher[String] = new MessagesKeyMatcher(key)
 
   def onEveryDeclarationJourney(f: JourneyRequest[_] => Unit): Unit =
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED)(f)
+    onJourney(
+      DeclarationType.STANDARD,
+      DeclarationType.SUPPLEMENTARY,
+      DeclarationType.SIMPLIFIED,
+      DeclarationType.OCCASIONAL,
+      DeclarationType.CLEARANCE
+    )(f)
 
   def onJourney(types: DeclarationType*)(f: JourneyRequest[_] => Unit): Unit =
     types.foreach {
       case DeclarationType.STANDARD      => onStandard(f)
       case DeclarationType.SUPPLEMENTARY => onSupplementary(f)
       case DeclarationType.SIMPLIFIED    => onSimplified(f)
+      case DeclarationType.OCCASIONAL    => onOccasional(f)
+      case DeclarationType.CLEARANCE     => onClearance(f)
     }
 
   def onStandard(f: JourneyRequest[_] => Unit): Unit =
@@ -64,13 +72,23 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
     }
 
   def onSimplified(f: JourneyRequest[_] => Unit): Unit =
-    "on Supplementary journey render view" that {
+    "on Simplified journey render view" that {
       f(UnitViewSpec.simplifiedRequest)
     }
 
   def onSupplementary(f: JourneyRequest[_] => Unit): Unit =
-    "on Simplified journey render view" that {
+    "on Supplementary journey render view" that {
       f(UnitViewSpec.supplementaryRequest)
+    }
+
+  def onOccasional(f: JourneyRequest[_] => Unit): Unit =
+    "on Occasional journey render view" that {
+      f(UnitViewSpec.occasionalRequest)
+    }
+
+  def onClearance(f: JourneyRequest[_] => Unit): Unit =
+    "on Clearance journey render view" that {
+      f(UnitViewSpec.clearanceRequest)
     }
 }
 
@@ -101,6 +119,10 @@ object UnitViewSpec extends Injector with ExportsTestData {
   val supplementaryRequest: JourneyRequest[AnyContent] = journeyRequest(DeclarationType.SUPPLEMENTARY)
 
   val simplifiedRequest: JourneyRequest[AnyContent] = journeyRequest(DeclarationType.SIMPLIFIED)
+
+  val occasionalRequest: JourneyRequest[AnyContent] = journeyRequest(DeclarationType.OCCASIONAL)
+
+  val clearanceRequest: JourneyRequest[AnyContent] = journeyRequest(DeclarationType.CLEARANCE)
 }
 
 private class AllMessageKeysAreMandatoryMessages(msg: Messages) extends Messages {

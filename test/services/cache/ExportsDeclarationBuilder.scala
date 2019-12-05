@@ -34,7 +34,7 @@ import models.{DeclarationStatus, DeclarationType, ExportsDeclaration}
 //noinspection ScalaStyle
 trait ExportsDeclarationBuilder {
 
-  private type ExportsDeclarationModifier = ExportsDeclaration => ExportsDeclaration
+  protected type ExportsDeclarationModifier = ExportsDeclaration => ExportsDeclaration
   protected val DUCR = "5GB123456789000-123ABC456DEFIIIII"
   protected val LRN = Lrn("FG7676767889")
   private val modelWithDefaults: ExportsDeclaration = ExportsDeclaration(

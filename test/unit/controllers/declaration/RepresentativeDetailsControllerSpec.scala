@@ -44,7 +44,7 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
     stubMessagesControllerComponents(),
     mockRepresentativeDetailsPage
   )(ec)
-  val exampleDeclaration = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
+
   val eori = "GB1000200"
 
   def theResponseForm: Form[RepresentativeDetails] = {
@@ -64,60 +64,58 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
     super.afterEach()
   }
 
-  "Representative Details controller" should {
+  "Representative Details controller" must {
 
-    "return 200 (OK)" when {
+    onEveryDeclarationJourney() { declaration =>
+      "return 200 (OK)" when {
 
-      "display page method is invoked with empty cache" in {
+        "display page method is invoked with empty cache" in {
 
-        withNewCaching(exampleDeclaration)
+          withNewCaching(declaration)
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage(Mode.Normal)(getRequest())
 
-        status(result) mustBe OK
-        verify(mockRepresentativeDetailsPage, times(1)).apply(any(), any())(any(), any())
+          status(result) mustBe OK
+          verify(mockRepresentativeDetailsPage, times(1)).apply(any(), any())(any(), any())
 
-        theResponseForm.value mustBe empty
-      }
+          theResponseForm.value mustBe empty
+        }
 
-      "display page method is invoked with data in cache" in {
+        "display page method is invoked with data in cache" in {
 
-        withNewCaching(
-          exampleDeclaration.copy(
-            parties = exampleDeclaration.parties
-              .copy(representativeDetails = Some(RepresentativeDetails(Some(EntityDetails(Some(eori), None)), None)))
+          withNewCaching(
+            aDeclarationAfter(declaration, withRepresentativeDetails(RepresentativeDetails(Some(EntityDetails(Some(eori), None)), None)))
           )
-        )
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage(Mode.Normal)(getRequest())
 
-        status(result) mustBe (OK)
-        verify(mockRepresentativeDetailsPage, times(1)).apply(any(), any())(any(), any())
+          status(result) mustBe (OK)
+          verify(mockRepresentativeDetailsPage, times(1)).apply(any(), any())(any(), any())
 
-        theResponseForm.value.value.details.value.eori.value mustBe eori
+          theResponseForm.value.value.details.value.eori.value mustBe eori
+        }
+      }
+
+      "return 400 (BAD_REQUEST)" when {
+
+        "form is incorrect" in {
+
+          withNewCaching(declaration)
+
+          val incorrectForm = Json.toJson(RepresentativeDetails(None, Some("incorrect")))
+
+          val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+
+          status(result) mustBe BAD_REQUEST
+          verify(mockRepresentativeDetailsPage, times(1)).apply(any(), any())(any(), any())
+        }
       }
     }
 
-    "return 400 (BAD_REQUEST)" when {
+    onJourney(DeclarationType.SUPPLEMENTARY, DeclarationType.CLEARANCE)() { declaration =>
+      "return 303 (SEE_OTHER) and redirect to additional actors page" in {
 
-      "form is incorrect" in {
-
-        withNewCaching(exampleDeclaration)
-
-        val incorrectForm = Json.toJson(RepresentativeDetails(None, Some("incorrect")))
-
-        val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
-
-        status(result) mustBe BAD_REQUEST
-        verify(mockRepresentativeDetailsPage, times(1)).apply(any(), any())(any(), any())
-      }
-    }
-
-    "return 303 (SEE_OTHER) and redirect to additional actors page" when {
-
-      "form is correct and user is during Supplementary journey" in {
-
-        withNewCaching(exampleDeclaration.copy(`type` = DeclarationType.SUPPLEMENTARY))
+        withNewCaching(declaration)
 
         val correctForm = Json.toJson(RepresentativeDetails(Some(EntityDetails(Some(eori), None)), Some("2")))
 
@@ -130,25 +128,10 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
       }
     }
 
-    "return 303 (SEE_OTHER) and redirect to carrier details page" when {
+    onJourney(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)() { declaration =>
+      "return 303 (SEE_OTHER) and redirect to carrier details page" in {
 
-      "form is correct and user is during Standard journey" in {
-
-        withNewCaching(exampleDeclaration.copy(`type` = DeclarationType.STANDARD))
-
-        val correctForm = Json.toJson(RepresentativeDetails(Some(EntityDetails(Some(eori), None)), Some("2")))
-
-        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.CarrierDetailsController.displayPage()
-
-        verify(mockRepresentativeDetailsPage, times(0)).apply(any(), any())(any(), any())
-      }
-
-      "form is correct and user is during Simplified journey" in {
-
-        withNewCaching(exampleDeclaration.copy(`type` = DeclarationType.SIMPLIFIED))
+        withNewCaching(declaration)
 
         val correctForm = Json.toJson(RepresentativeDetails(Some(EntityDetails(Some(eori), None)), Some("2")))
 
