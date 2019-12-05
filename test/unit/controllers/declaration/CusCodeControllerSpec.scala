@@ -16,7 +16,7 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.CUSCodeController
+import controllers.declaration.CusCodeController
 import forms.declaration.CUSCode
 import forms.declaration.CUSCode._
 import models.DeclarationType.DeclarationType
@@ -32,12 +32,12 @@ import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.declaration.cus_code
 
-class CUSCodeControllerSpec extends ControllerSpec {
+class CusCodeControllerSpec extends ControllerSpec {
 
   val mockPage = mock[cus_code]
 
   val controller =
-    new CUSCodeController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, stubMessagesControllerComponents(), mockPage)(ec)
+    new CusCodeController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, stubMessagesControllerComponents(), mockPage)(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

@@ -31,7 +31,7 @@ import views.html.declaration.cus_code
 import views.tags.ViewTest
 
 @ViewTest
-class CUSCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages {
+class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages {
 
   private val page = new cus_code(mainTemplate, minimalAppConfig)
   private val itemId = "item1"

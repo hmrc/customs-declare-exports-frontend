@@ -40,7 +40,7 @@
     title = Title("declaration.cusCode.header", "supplementary.items")
 ) {
 
-    @helper.form(routes.CUSCodeController.submitForm(mode, itemId), 'autocomplete -> "off") {
+    @helper.form(routes.CusCodeController.submitForm(mode, itemId), 'autocomplete -> "off") {
         @helper.CSRF.formField
 
         @components.back_link(Navigator.backLink(CUSCode, mode, ItemId(itemId)))

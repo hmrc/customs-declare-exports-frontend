@@ -192,9 +192,9 @@ POST        /items/:itemId/un-dangerous-goods-code             controllers.decla
 
 # CUS Code
 
-GET         /items/:itemId/cus-code                            controllers.declaration.CUSCodeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/cus-code                            controllers.declaration.CusCodeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
 
-POST        /items/:itemId/cus-code                            controllers.declaration.CUSCodeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/cus-code                            controllers.declaration.CusCodeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
 
 # TARIC Code
 

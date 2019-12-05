@@ -111,7 +111,7 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
 
     "return 303 (SEE_OTHER)" when {
 
-      val cusCodePage: Call = controllers.declaration.routes.CUSCodeController.displayPage(Mode.Normal, itemId)
+      val cusCodePage: Call = controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, itemId)
 
       def controllerRedirectsToNextPage(decType: DeclarationType, call: Call = cusCodePage): Unit =
         "accept submission and redirect" in {

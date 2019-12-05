@@ -32,7 +32,7 @@ import views.html.declaration.cus_code
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CUSCodeController @Inject()(
+class CusCodeController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,

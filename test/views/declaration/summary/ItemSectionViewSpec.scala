@@ -97,7 +97,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
       view.getElementById("item-1-cusCode-label").text() mustBe messages("declaration.summary.items.item.cusCode")
       view.getElementById("item-1-cusCode").text() mustBe "321"
       view.getElementById("item-1-cusCode-change").text() mustBe messages("site.change")
-      view.getElementById("item-1-cusCode-change") must haveHref(controllers.declaration.routes.CUSCodeController.displayPage(Mode.Normal, item.id))
+      view.getElementById("item-1-cusCode-change") must haveHref(controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, item.id))
     }
 
     "has taric codes separated by comma with change button" in {
