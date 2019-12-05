@@ -51,14 +51,19 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
   def onEveryDeclarationJourney(f: JourneyRequest[_] => Unit): Unit =
     onJourney(DeclarationType.values.toSeq: _*)(f)
 
-  def onJourney(types: DeclarationType*)(f: JourneyRequest[_] => Unit): Unit =
-    types.foreach {
-      case DeclarationType.STANDARD      => onStandard(f)
-      case DeclarationType.SUPPLEMENTARY => onSupplementary(f)
-      case DeclarationType.SIMPLIFIED    => onSimplified(f)
-      case DeclarationType.OCCASIONAL    => onOccasional(f)
-      case DeclarationType.CLEARANCE     => onClearance(f)
+  def onJourney(types: DeclarationType*)(f: JourneyRequest[_] => Unit): Unit = {
+    if(types.isEmpty){
+      throw new RuntimeException("Provide at lest one journey to test")
     }
+    types.foreach {
+      case DeclarationType.STANDARD => onStandard(f)
+      case DeclarationType.SUPPLEMENTARY => onSupplementary(f)
+      case DeclarationType.SIMPLIFIED => onSimplified(f)
+      case DeclarationType.OCCASIONAL => onOccasional(f)
+      case DeclarationType.CLEARANCE => onClearance(f)
+      case _ => throw new RuntimeException("Unrecognized declaration type - you could have to implement helper methods")
+    }
+  }
 
   def onStandard(f: JourneyRequest[_] => Unit): Unit =
     "on Standard journey render view" that {
