@@ -39,9 +39,9 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers with DocumentsPro
 
       "provided with Document Type Code" which {
 
-        "is longer than 4 characters" in {
+        "is longer than 5 characters" in {
 
-          val input = JsObject(Map(documentTypeCodeKey -> JsString("12345")))
+          val input = JsObject(Map(documentTypeCodeKey -> JsString("123456")))
           val expectedErrors = Seq(FormError(documentTypeCodeKey, documentTypeCodeError))
 
           testFailedValidationErrors(input, expectedErrors)
@@ -57,7 +57,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers with DocumentsPro
 
         "contains special characters" in {
 
-          val input = JsObject(Map(documentTypeCodeKey -> JsString("12#$")))
+          val input = JsObject(Map(documentTypeCodeKey -> JsString("12!$")))
           val expectedErrors = Seq(FormError(documentTypeCodeKey, documentTypeCodeError))
 
           testFailedValidationErrors(input, expectedErrors)
@@ -287,7 +287,7 @@ object DocumentsProducedSpec {
     s"$dateOfValidityKey.$yearKey" -> incorrectDate.year.get.toString,
     s"$dateOfValidityKey.$monthKey" -> incorrectDate.month.get.toString,
     s"$dateOfValidityKey.$dayKey" -> incorrectDate.day.get.toString,
-    s"$documentWriteOffKey.$measurementUnitKey" -> TestHelper.createRandomAlphanumericString(5),
+    s"$documentWriteOffKey.$measurementUnitKey" -> TestHelper.createRandomAlphanumericString(6),
     s"$documentWriteOffKey.$documentQuantityKey" -> "12345678901234567"
   )
 

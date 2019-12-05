@@ -31,9 +31,9 @@ class DocumentWriteOffSpec extends WordSpec with MustMatchers with DocumentsProd
 
       "provided with Measurement Unit" which {
 
-        "is longer than 4 characters" in {
+        "is longer than 5 characters" in {
 
-          val input = JsObject(Map(measurementUnitKey -> JsString("AB345")))
+          val input = JsObject(Map(measurementUnitKey -> JsString("AB3456")))
           val expectedErrors = Seq(FormError(measurementUnitKey, measurementUnitLengthError))
 
           testFailedValidationErrors(input, expectedErrors)
@@ -47,9 +47,9 @@ class DocumentWriteOffSpec extends WordSpec with MustMatchers with DocumentsProd
           testFailedValidationErrors(input, expectedErrors)
         }
 
-        "contains special characters" in {
+        "contains special characters different than hash" in {
 
-          val input = JsObject(Map(measurementUnitKey -> JsString("AB#@")))
+          val input = JsObject(Map(measurementUnitKey -> JsString("AB!@")))
           val expectedErrors = Seq(FormError(measurementUnitKey, measurementUnitSpecialCharactersError))
 
           testFailedValidationErrors(input, expectedErrors)
@@ -106,6 +106,16 @@ class DocumentWriteOffSpec extends WordSpec with MustMatchers with DocumentsProd
     }
   }
 
+  "Document Write Off mapping" should {
+
+    "allow hash character" in {
+
+      val input = JsObject(Map(measurementUnitKey -> JsString("AB#12"), documentQuantityKey -> JsString("0.123")))
+      val form = DocumentWriteOff.form().bind(input)
+
+      form.errors mustBe empty
+    }
+  }
 }
 
 object DocumentWriteOffSpec {
@@ -116,10 +126,10 @@ object DocumentWriteOffSpec {
   val correctDocumentWriteOffJSON = JsObject(Map(measurementUnitKey -> JsString("AB12"), documentQuantityKey -> JsString("1234567890.123456")))
 
   val incorrectDocumentWriteOff =
-    DocumentWriteOff(measurementUnit = Some(TestHelper.createRandomAlphanumericString(5)), documentQuantity = Some(BigDecimal("12345678901234567")))
+    DocumentWriteOff(measurementUnit = Some(TestHelper.createRandomAlphanumericString(6)), documentQuantity = Some(BigDecimal("12345678901234567")))
 
   val incorrectDocumentWriteOffJSON = JsObject(
-    Map(measurementUnitKey -> JsString(TestHelper.createRandomAlphanumericString(5)), documentQuantityKey -> JsString("12345678901234567"))
+    Map(measurementUnitKey -> JsString(TestHelper.createRandomAlphanumericString(6)), documentQuantityKey -> JsString("12345678901234567"))
   )
 
   val emptyDocumentWriteOff =
