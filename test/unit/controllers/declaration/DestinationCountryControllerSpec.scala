@@ -17,10 +17,12 @@
 package unit.controllers.declaration
 
 import controllers.declaration.DestinationCountryController
+import models.DeclarationType.DeclarationType
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.libs.json.{JsObject, JsString}
+import play.api.mvc.Call
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -92,49 +94,49 @@ class DestinationCountryControllerSpec extends ControllerSpec {
       }
     }
 
-    "return 303 (SEE_OTHER) and redirect to Destination Country page for Standard" when {
+    "return 303 (SEE_OTHER) and redirect" when {
 
-      "form is correct" in {
+      def redirectForDeclarationType(declarationType: DeclarationType, redirect: Call): Unit =
+        "redirect" in {
+          withNewCaching(aDeclaration(withType(declarationType), withDestinationCountries()))
 
-        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withDestinationCountries()))
+          val correctForm = JsObject(Map("country" -> JsString("PL")))
 
-        val correctForm = JsObject(Map("country" -> JsString("PL")))
+          val result = controller.submit(Mode.Normal)(postRequest(correctForm))
 
-        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe redirect
+        }
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion()
+      "submit for Standard declaration" should {
+        behave like redirectForDeclarationType(
+          DeclarationType.STANDARD,
+          controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion()
+        )
+      }
+
+      "submit for Simplified declaration" should {
+        behave like redirectForDeclarationType(
+          DeclarationType.SIMPLIFIED,
+          controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion()
+        )
+      }
+
+      "submit for Occasional declaration" should {
+        behave like redirectForDeclarationType(
+          DeclarationType.OCCASIONAL,
+          controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion()
+        )
+      }
+
+      "submit for Supplementary declaration" should {
+        behave like redirectForDeclarationType(DeclarationType.SUPPLEMENTARY, controllers.declaration.routes.LocationController.displayPage())
+      }
+
+      "submit for Customs Clearance request" should {
+        behave like redirectForDeclarationType(DeclarationType.CLEARANCE, controllers.declaration.routes.LocationController.displayPage())
       }
     }
 
-    "return 303 (SEE_OTHER) and redirect to Destination Country page for Simplified" when {
-
-      "form is correct" in {
-
-        withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED), withDestinationCountries()))
-
-        val correctForm = JsObject(Map("country" -> JsString("PL")))
-
-        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion()
-      }
-    }
-
-    "return 303 (SEE_OTHER) and redirect to Location page for Supplementary" when {
-
-      "form is correct" in {
-
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withDestinationCountries()))
-
-        val correctForm = JsObject(Map("country" -> JsString("PL")))
-
-        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.LocationController.displayPage()
-      }
-    }
   }
 }

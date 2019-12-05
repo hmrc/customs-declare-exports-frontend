@@ -15,9 +15,9 @@
  *@
 
 @import controllers.declaration.routes._
+@import controllers.navigation.Navigator
 @import forms.declaration.GoodsLocation
 @import models.requests.JourneyRequest
-@import uk.gov.hmrc.play.views.html._
 @import services.Countries
 @import services.view.AutoCompleteItem
 @import views.Title
@@ -32,7 +32,7 @@
     @helper.form(LocationController.saveLocation(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
-        @components.back_link(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(mode), mode)
+        @components.back_link(Navigator.backLink(GoodsLocation, mode)(request))
 
         @components.error_summary(form.errors)
 

@@ -123,19 +123,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
 
     "return 303 (SEE_OTHER) for display page method" when {
 
-      "declaration type is Supplementary" in {
-
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
-
-        val result = controller.displayPage(Mode.Normal)(getRequest())
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DestinationCountryController.displayPage()
-
-        verify(routingCountriesSummaryPage, times(0)).apply(any(), any(), any())(any(), any())
-      }
-
-      "declaration type is different than Supplementary but cache doesn't contain countries" in {
+      "cache doesn't contain countries" in {
 
         withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withRoutingCountries(Seq.empty)))
 
@@ -148,7 +136,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
       }
     }
 
-    "deturn 303 (SEE_OTHER) for removing country" when {
+    "return 303 (SEE_OTHER) for removing country" when {
 
       "user try to remove country that didn't added" in {
 
