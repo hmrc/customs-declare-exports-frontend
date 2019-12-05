@@ -84,10 +84,7 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
         "display page method is invoked with data in cache" in {
 
           withNewCaching(
-            declaration.copy(
-              parties = declaration.parties
-                .copy(representativeDetails = Some(RepresentativeDetails(Some(EntityDetails(Some(eori), None)), None)))
-            )
+            aDeclarationAfter(declaration, withRepresentativeDetails(RepresentativeDetails(Some(EntityDetails(Some(eori), None)), None)))
           )
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
@@ -114,7 +111,6 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
         }
       }
     }
-
 
     onJourney(DeclarationType.SUPPLEMENTARY, DeclarationType.CLEARANCE)() { declaration =>
       "return 303 (SEE_OTHER) and redirect to additional actors page" in {

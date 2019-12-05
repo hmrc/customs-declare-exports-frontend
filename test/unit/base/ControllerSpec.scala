@@ -85,7 +85,7 @@ trait ControllerSpec
       case kind @ DeclarationType.SUPPLEMENTARY => onSupplementary(aDeclarationAfter(declaration, withType(kind)))(f)
       case kind @ DeclarationType.SIMPLIFIED    => onSimplified(aDeclarationAfter(declaration, withType(kind)))(f)
       case kind @ DeclarationType.OCCASIONAL    => onOccasional(aDeclarationAfter(declaration, withType(kind)))(f)
-      case kind @ DeclarationType.CLEARANCE    => onClearance(aDeclarationAfter(declaration, withType(kind)))(f)
+      case kind @ DeclarationType.CLEARANCE     => onClearance(aDeclarationAfter(declaration, withType(kind)))(f)
     }
   }
 
@@ -121,15 +121,13 @@ trait ControllerSpec
       f(declaration)
     }
 
-  def onClearance(f: ExportsDeclaration => Unit): Unit = {
+  def onClearance(f: ExportsDeclaration => Unit): Unit =
     onClearance(ControllerSpec.simpleClearanceDeclaration)(f)
-  }
 
-  def onClearance(declaration: ExportsDeclaration)(f: ExportsDeclaration => Unit): Unit = {
+  def onClearance(declaration: ExportsDeclaration)(f: ExportsDeclaration => Unit): Unit =
     "on Clearance journey handle request" that {
       f(declaration)
     }
-  }
 }
 
 object ControllerSpec extends ExportsDeclarationBuilder {
