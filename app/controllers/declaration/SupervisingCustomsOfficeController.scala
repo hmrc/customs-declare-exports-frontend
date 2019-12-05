@@ -63,7 +63,7 @@ class SupervisingCustomsOfficeController @Inject()(
 
   private def nextPage(mode: Mode, request: JourneyRequest[AnyContent]) =
     request.declarationType match {
-      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
+      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | DeclarationType.CLEARANCE =>
         controllers.declaration.routes.InlandTransportDetailsController.displayPage(mode)
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
         controllers.declaration.routes.TransportPaymentController.displayPage(mode)

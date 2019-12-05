@@ -47,8 +47,8 @@ class OfficeOfExitController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.declarationType match {
-      case DeclarationType.SUPPLEMENTARY                                                      => Ok(supplementaryPage(mode))
-      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL => Ok(standardPage(mode))
+      case DeclarationType.SUPPLEMENTARY                                                                                  => Ok(supplementaryPage(mode))
+      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE => Ok(standardPage(mode))
     }
   }
 
@@ -66,8 +66,8 @@ class OfficeOfExitController @Inject()(
 
   def saveOffice(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     request.declarationType match {
-      case DeclarationType.SUPPLEMENTARY                                                      => saveSupplementaryOffice(mode)
-      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL => saveStandardOffice(mode)
+      case DeclarationType.SUPPLEMENTARY                                                                                  => saveSupplementaryOffice(mode)
+      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE => saveStandardOffice(mode)
     }
   }
 
@@ -103,7 +103,7 @@ class OfficeOfExitController @Inject()(
 
   private def nextPage(mode: Mode, request: JourneyRequest[AnyContent]) =
     request.declarationType match {
-      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
+      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | DeclarationType.CLEARANCE =>
         controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode)
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
         controllers.declaration.routes.PreviousDocumentsController.displayPage(mode)

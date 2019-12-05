@@ -159,6 +159,10 @@ class NactCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
         behave like controllerErrors(DeclarationType.STANDARD)
       }
 
+      "we are on clearance journey" should {
+        behave like controllerErrors(DeclarationType.CLEARANCE)
+      }
+
       "we are on simplified journey" should {
         behave like controllerErrors(DeclarationType.SIMPLIFIED)
       }
@@ -186,7 +190,7 @@ class NactCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
           verifyPageInvoked(0)
         }
 
-      for (decType <- Set(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)) {
+      for (decType <- Set(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.CLEARANCE)) {
         s"we are on $decType journey" should {
           behave like controllerRedirectsToNextPage(
             decType,

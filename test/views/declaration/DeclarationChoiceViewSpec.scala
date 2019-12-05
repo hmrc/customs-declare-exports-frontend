@@ -57,6 +57,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with ChoiceMessages with Co
       ensureRadioIsUnChecked(view, "STANDARD")
       ensureRadioIsUnChecked(view, "SIMPLIFIED")
       ensureRadioIsUnChecked(view, "OCCASIONAL")
+      ensureRadioIsUnChecked(view, "CLEARANCE")
     }
 
     "display 'Back' button that links to 'Choice' page" in {
@@ -109,15 +110,17 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with ChoiceMessages with Co
       ensureRadioIsUnChecked(view, "STANDARD")
       ensureRadioIsUnChecked(view, "SIMPLIFIED")
       ensureRadioIsUnChecked(view, "OCCASIONAL")
+      ensureRadioIsUnChecked(view, "CLEARANCE")
     }
 
   }
   private def ensureAllLabelTextIsCorrect(view: Document): Unit = {
-    view.getElementsByTag("label").size mustBe 4
+    view.getElementsByTag("label").size mustBe 5
     view.getElementById("STANDARD-label").text() mustBe "declaration.type.standard"
     view.getElementById("SUPPLEMENTARY-label").text() mustBe "declaration.type.supplementary"
     view.getElementById("SIMPLIFIED-label").text() mustBe "declaration.type.simplified"
     view.getElementById("OCCASIONAL-label").text() mustBe "declaration.type.occasional"
+    view.getElementById("CLEARANCE-label").text() mustBe "declaration.type.clearance"
   }
 
   private def ensureRadioIsChecked(view: Document, elementId: String): Unit = {

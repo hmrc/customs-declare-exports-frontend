@@ -121,6 +121,15 @@ th.rejected-field-name, td.rejected-field-name {
   font-weight:bold;
 }
 
+.radio-divider {
+  display: block;
+  float: none;
+  clear: left;
+  position: relative;
+  padding: 0 0 0 10px;
+  margin-bottom: 10px;
+}
+
 button:focus {
   outline: 3px solid #ffbf47;
 }

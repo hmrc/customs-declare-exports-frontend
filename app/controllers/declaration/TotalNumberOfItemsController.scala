@@ -60,7 +60,7 @@ class TotalNumberOfItemsController @Inject()(
 
   private def nextPage(mode: Mode, request: JourneyRequest[AnyContent]) =
     request.declarationType match {
-      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
+      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | DeclarationType.CLEARANCE =>
         controllers.declaration.routes.NatureOfTransactionController.displayPage(mode)
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
         controllers.declaration.routes.PreviousDocumentsController.displayPage(mode)

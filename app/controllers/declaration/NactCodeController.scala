@@ -102,7 +102,7 @@ class NactCodeController @Inject()(
 
   private def nextPage(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]) =
     request.declarationType match {
-      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
+      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | DeclarationType.CLEARANCE =>
         controllers.declaration.routes.StatisticalValueController.displayPage(mode, itemId)
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
         controllers.declaration.routes.PackageInformationController.displayPage(mode, itemId)

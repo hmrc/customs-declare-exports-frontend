@@ -95,7 +95,7 @@ class PackageInformationController @Inject()(
 
   private def nextPage(mode: Mode, itemId: String, request: JourneyRequest[AnyContent]) =
     request.declarationType match {
-      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
+      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | DeclarationType.CLEARANCE =>
         controllers.declaration.routes.CommodityMeasureController.displayPage(mode, itemId)
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
         controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId)

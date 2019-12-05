@@ -25,6 +25,7 @@ trait DeclarationTypeMessages {
   val headerStandardDec: String = declarationType + ".header.standard"
   val headerSimplifiedDec: String = declarationType + ".header.simplified"
   val headerOccasionalDec: String = declarationType + ".header.occasional"
+  val headerClearanceDec: String = declarationType + ".header.clearance"
   val hint: String = declarationType + ".header.hint"
   val supplementarySimplified: String = declarationType + ".inputText.supplementary.simplified"
   val supplementaryStandard: String = declarationType + ".inputText.supplementary.standard"
@@ -34,6 +35,8 @@ trait DeclarationTypeMessages {
   val simplifiedFrontier: String = declarationType + ".inputText.simplified.frontier"
   val occasionalPreLodged: String = declarationType + ".inputText.occasional.preLodged"
   val occasionalFrontier: String = declarationType + ".inputText.occasional.frontier"
+  val clearancePreLodged: String = declarationType + ".inputText.clearance.preLodged"
+  val clearanceFrontier: String = declarationType + ".inputText.clearance.frontier"
   val errorMessageEmpty: String = declarationType + ".inputText.error.empty"
   val errorMessageIncorrect: String = declarationType + ".inputText.error.incorrect"
 }

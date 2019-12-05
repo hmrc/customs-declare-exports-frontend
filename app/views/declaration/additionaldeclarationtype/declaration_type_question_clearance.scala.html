@@ -1,0 +1,37 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
+@import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeClearanceDec.AllowedAdditionalDeclarationTypes._
+@import views.components.inputs.RadioOption
+
+@import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+
+@(form: Form[AdditionalDeclarationType])(implicit messages: Messages)
+
+@components.heading(
+    sectionHeader = messages("declaration.declarationType.title"),
+    title = messages("declaration.declarationType.header.clearance")
+)
+
+@components.fields.field_radio(
+    field = form("additionalDeclarationType"),
+    legend = "",
+    inputs = Seq(
+        RadioOption("PreLodged", PreLodged, messages("declaration.declarationType.inputText.clearance.preLodged"), Some(messages("declaration.declarationType.inputText.clearance.preLodged.hint"))),
+        RadioOption("Frontier", Frontier, messages("declaration.declarationType.inputText.clearance.frontier"), Some(messages("declaration.declarationType.inputText.clearance.frontier.hint")))
+    )
+)

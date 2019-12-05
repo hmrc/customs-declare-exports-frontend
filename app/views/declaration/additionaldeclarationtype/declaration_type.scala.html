@@ -32,6 +32,7 @@
         case DeclarationType.STANDARD => Title("declaration.declarationType.header.standard", "declaration.declarationType.title")
         case DeclarationType.SIMPLIFIED => Title("declaration.declarationType.header.simplified", "declaration.declarationType.title")
         case DeclarationType.OCCASIONAL => Title("declaration.declarationType.header.occasional", "declaration.declarationType.title")
+        case DeclarationType.CLEARANCE => Title("declaration.declarationType.header.clearance", "declaration.declarationType.title")
     }
 ) {
 
@@ -48,6 +49,7 @@
                 case DeclarationType.STANDARD => declaration_type_question_standard(form)
                 case DeclarationType.SIMPLIFIED => declaration_type_question_simplified(form)
                 case DeclarationType.OCCASIONAL => declaration_type_question_occasional(form)
+                case DeclarationType.CLEARANCE => declaration_type_question_clearance(form)
             }
         }
 
