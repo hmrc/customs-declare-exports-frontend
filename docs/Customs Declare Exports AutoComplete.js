@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.14
+// @version      1.15
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*/customs-declare-exports*
-// @grant        none
+// @grant GM_setValue
+// @grant GM_getValue
 // @updateURL    https://raw.githubusercontent.com/hmrc/customs-declare-exports-frontend/master/docs/Customs%20Declare%20Exports%20AutoComplete.js
 // ==/UserScript==
 
@@ -57,6 +58,17 @@ function selectRadioOption(element, index){
     }
 }
 
+function findRadioOption(fieldname) {
+    var inputs = document.getElementById(fieldname).getElementsByTagName('input');
+    var choice;
+    for(var i = 0; i < inputs.length; i++){
+        if(inputs[i].checked){
+            choice = inputs[i].value;
+        }
+    }
+    return choice;
+}
+
 function currentPageIs(path) {
     let matches = window.location.pathname.match(path);
     return matches && matches.length > 0
@@ -71,8 +83,14 @@ function completePage() {
         document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("/customs-declare-exports/declaration/declaration-choice")){
-        selectRadioOption(document.getElementById("type"), 0);
-        document.getElementsByClassName('button')[0].click()
+        let choice = findRadioOption("type");
+        if(choice){
+            GM_setValue('decType', choice);
+            document.getElementsByClassName('button')[0].click()
+        } else {
+            selectRadioOption(document.getElementById("type"), 0);
+            document.getElementsByClassName('button')[0].click());
+        }
     }
     if(currentPageIs("/customs-declare-exports/declaration/dispatch-location")){
         selectRadioOption(document.getElementById("dispatchLocation"), 0);
@@ -120,7 +138,12 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs("/customs-declare-exports/declaration/holder-of-authorisation")) {
-        selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "AEOC");
+        let choice = GM_getValue('decType', 0);
+        if(choice == "SIMPLIFIED"){
+            selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "SDE");
+        } else {
+            selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "AEOC");
+        }
         document.getElementById('eori').value = 'GB717572504502811';
         document.getElementsByClassName('button')[0].click()
     }
@@ -257,8 +280,15 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/add-document')) {
-        document.getElementById('documentTypeCode').value ='C501';
-        document.getElementById('documentIdentifier').value ='GBAEOC717572504502811';
+        let choice = GM_getValue('decType', 0);
+        if(choice == "SIMPLIFIED"){
+            document.getElementById('documentTypeCode').value ='C512';
+            document.getElementById('documentIdentifier').value ='GBSDE717572504502811';
+        } else {
+            document.getElementById('documentTypeCode').value ='C501';
+            document.getElementById('documentIdentifier').value ='GBAEOC717572504502811';
+        }
+
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/warehouse-identification')) {
