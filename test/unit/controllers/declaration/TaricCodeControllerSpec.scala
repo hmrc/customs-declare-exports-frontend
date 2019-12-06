@@ -71,7 +71,7 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
 
   "TARIC Code controller" must {
 
-    onEveryDeclarationJourney(withItems(item)){ declaration =>
+    onEveryDeclarationJourney(withItems(item)) { declaration =>
       "return 200 (OK)" that {
         "display page method is invoked and cache is empty" in {
 

@@ -69,11 +69,10 @@ class CusCodeController @Inject()(
       model.updatedItem(itemId, item => item.copy(cusCode = Some(updatedItem)))
     }
 
-  def nextPage(mode: Mode, itemId: String, declarationType: DeclarationType): Call = {
-    if(declarationType == DeclarationType.CLEARANCE) {
+  def nextPage(mode: Mode, itemId: String, declarationType: DeclarationType): Call =
+    if (declarationType == DeclarationType.CLEARANCE) {
       controllers.declaration.routes.NactCodeController.displayPage(mode, itemId)
     } else {
       controllers.declaration.routes.TaricCodeController.displayPage(mode, itemId)
     }
-  }
 }

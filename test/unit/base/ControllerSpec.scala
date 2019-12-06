@@ -79,7 +79,7 @@ trait ControllerSpec
     onJourney(DeclarationType.values.toSeq: _*)(modifiers: _*)(f)
 
   def onJourney(types: DeclarationType*)(modifiers: ExportsDeclarationModifier*)(f: ExportsDeclaration => Unit): Unit = {
-    if(types.isEmpty){
+    if (types.isEmpty) {
       throw new RuntimeException("Attempt to test against no types - please provide at least one declaration type")
     }
     val declaration = aDeclaration(modifiers: _*)
@@ -89,7 +89,7 @@ trait ControllerSpec
       case kind @ DeclarationType.SIMPLIFIED    => onSimplified(aDeclarationAfter(declaration, withType(kind)))(f)
       case kind @ DeclarationType.OCCASIONAL    => onOccasional(aDeclarationAfter(declaration, withType(kind)))(f)
       case kind @ DeclarationType.CLEARANCE     => onClearance(aDeclarationAfter(declaration, withType(kind)))(f)
-      case _ => throw new RuntimeException("Unrecognized declaration type - you could have to implement helper methods")
+      case _                                    => throw new RuntimeException("Unrecognized declaration type - you could have to implement helper methods")
     }
   }
 

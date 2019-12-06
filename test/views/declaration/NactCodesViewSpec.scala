@@ -103,8 +103,6 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
         addButton.text() must include(realMessages("declaration.nationalAdditionalCode.add.hint"))
       }
 
-
-
       "display 'Save and continue' button on page" in {
 
         val saveButton = view.select("#submit")
@@ -112,8 +110,7 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
       }
     }
 
-    onJourney(DeclarationType.CLEARANCE){ request =>
-
+    onJourney(DeclarationType.CLEARANCE) { request =>
       "display 'Back' button that links to 'TARIC Code' page" in {
 
         val view = createView(NactCode.form, List.empty, request)
@@ -124,8 +121,7 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
       }
     }
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL){ request =>
-
+    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
       "display 'Back' button that links to 'TARIC Code' page" in {
 
         val view = createView(NactCode.form, List.empty, request)
@@ -180,8 +176,7 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
       }
     }
 
-    onJourney(DeclarationType.CLEARANCE){ request =>
-
+    onJourney(DeclarationType.CLEARANCE) { request =>
       "display 'Back' button that links to 'TARIC Code' page" in {
 
         val view = createView(NactCode.form, List.empty, request)
@@ -192,8 +187,7 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
       }
     }
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL){ request =>
-
+    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
       "display 'Back' button that links to 'TARIC Code' page" in {
 
         val view = createView(NactCode.form, List.empty, request)

@@ -52,16 +52,16 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
     onJourney(DeclarationType.values.toSeq: _*)(f)
 
   def onJourney(types: DeclarationType*)(f: JourneyRequest[_] => Unit): Unit = {
-    if(types.isEmpty){
+    if (types.isEmpty) {
       throw new RuntimeException("Provide at lest one journey to test")
     }
     types.foreach {
-      case DeclarationType.STANDARD => onStandard(f)
+      case DeclarationType.STANDARD      => onStandard(f)
       case DeclarationType.SUPPLEMENTARY => onSupplementary(f)
-      case DeclarationType.SIMPLIFIED => onSimplified(f)
-      case DeclarationType.OCCASIONAL => onOccasional(f)
-      case DeclarationType.CLEARANCE => onClearance(f)
-      case _ => throw new RuntimeException("Unrecognized declaration type - you could have to implement helper methods")
+      case DeclarationType.SIMPLIFIED    => onSimplified(f)
+      case DeclarationType.OCCASIONAL    => onOccasional(f)
+      case DeclarationType.CLEARANCE     => onClearance(f)
+      case _                             => throw new RuntimeException("Unrecognized declaration type - you could have to implement helper methods")
     }
   }
 
