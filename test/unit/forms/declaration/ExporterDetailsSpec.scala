@@ -18,10 +18,9 @@ package unit.forms.declaration
 
 import forms.LightFormMatchers
 import forms.declaration.ExporterDetails
-import helpers.views.declaration.CommonMessages
 import org.scalatest.{MustMatchers, WordSpec}
 
-class ExporterDetailsSpec extends WordSpec with MustMatchers with LightFormMatchers with CommonMessages {
+class ExporterDetailsSpec extends WordSpec with MustMatchers with LightFormMatchers {
 
   import forms.declaration.ExporterDetailsSpec._
 
@@ -33,26 +32,26 @@ class ExporterDetailsSpec extends WordSpec with MustMatchers with LightFormMatch
 
   "Exporter Details form" should {
     "validate is eori and address is non empty" in {
-      ExporterDetails.form().bind(emptyExporterDetailsJSON).error("details") must haveMessage(eoriOrAddressEmpty)
+      ExporterDetails.form().bind(emptyExporterDetailsJSON).error("details") must haveMessage("supplementary.namedEntityDetails.error")
     }
     val outcomeFromIncorrectForm = ExporterDetails.form().bind(incorrectExporterDetailsJSON)
     "validate eori and address" in {
-      outcomeFromIncorrectForm.error("details.eori") must haveMessage(eoriError)
+      outcomeFromIncorrectForm.error("details.eori") must haveMessage("supplementary.eori.error")
     }
     "validate address fullname" in {
-      outcomeFromIncorrectForm.error("details.address.fullName") must haveMessage(fullNameError)
+      outcomeFromIncorrectForm.error("details.address.fullName") must haveMessage("supplementary.address.fullName.error")
     }
     "validate address addresline" in {
-      outcomeFromIncorrectForm.error("details.address.addressLine") must haveMessage(addressLineError)
+      outcomeFromIncorrectForm.error("details.address.addressLine") must haveMessage("supplementary.address.addressLine.error")
     }
     "validate town or city" in {
-      outcomeFromIncorrectForm.error("details.address.townOrCity") must haveMessage(townOrCityError)
+      outcomeFromIncorrectForm.error("details.address.townOrCity") must haveMessage("supplementary.address.townOrCity.error")
     }
     "validate post code" in {
-      outcomeFromIncorrectForm.error("details.address.postCode") must haveMessage(postCodeError)
+      outcomeFromIncorrectForm.error("details.address.postCode") must haveMessage("supplementary.address.postCode.error")
     }
     "validate country" in {
-      outcomeFromIncorrectForm.error("details.address.country") must haveMessage(countryError)
+      outcomeFromIncorrectForm.error("details.address.country") must haveMessage("supplementary.address.country.error")
     }
 
     "bind correctly to EORI only request" in {

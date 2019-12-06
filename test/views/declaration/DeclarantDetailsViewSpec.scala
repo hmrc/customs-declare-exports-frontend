@@ -90,7 +90,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
       checkErrorsSummary(view)
       view must haveFieldErrorLink("details_eori", "#details_eori")
 
-      view.getElementById("error-message-details_eori-input").text() mustBe messages(eoriEmpty)
+      view.getElementById("error-message-details_eori-input").text() mustBe messages("supplementary.eori.empty")
     }
 
     "display error when EORI is provided, but is incorrect" in {
@@ -104,7 +104,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
       checkErrorsSummary(view)
       view must haveFieldErrorLink("details_eori", "#details_eori")
 
-      view.getElementById("error-message-details_eori-input").text() mustBe messages(eoriError)
+      view.getElementById("error-message-details_eori-input").text() mustBe messages("supplementary.eori.error")
     }
 
   }
@@ -118,6 +118,5 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
 
       view.getElementById("details_eori").attr("value") mustBe "1234"
     }
-
   }
 }

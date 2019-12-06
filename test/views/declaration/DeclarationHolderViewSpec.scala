@@ -139,7 +139,7 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("eori", "#eori")
 
-      view.select("#error-message-eori-input").text() mustBe messages(eoriError)
+      view.select("#error-message-eori-input").text() mustBe messages("supplementary.eori.error")
     }
 
     "display error for both incorrect fields" in {
@@ -155,7 +155,7 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
       view must haveFieldErrorLink("eori", "#eori")
 
       view.select("#error-message-authorisationTypeCode-input").text() mustBe messages("supplementary.declarationHolder.authorisationCode.invalid")
-      view.select("#error-message-eori-input").text() mustBe messages(eoriError)
+      view.select("#error-message-eori-input").text() mustBe messages("supplementary.eori.error")
     }
   }
 

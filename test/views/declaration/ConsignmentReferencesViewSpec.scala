@@ -159,7 +159,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
       view must haveFieldErrorLink("ducr_ducr", "#ducr_ducr")
       view must haveFieldErrorLink("lrn", "#lrn")
 
-      view.select("#error-message-ducr_ducr-input").text() mustBe messages(ducrError)
+      view.select("#error-message-ducr_ducr-input").text() mustBe messages("error.ducr")
       view.select("#error-message-lrn-input").text() mustBe messages("supplementary.consignmentReferences.lrn.error.empty")
     }
 
@@ -175,7 +175,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
       view must haveFieldErrorLink("ducr_ducr", "#ducr_ducr")
       view must haveFieldErrorLink("lrn", "#lrn")
 
-      view.select("#error-message-ducr_ducr-input").text() mustBe messages(ducrError)
+      view.select("#error-message-ducr_ducr-input").text() mustBe messages("error.ducr")
       view.select("#error-message-lrn-input").text() mustBe messages("supplementary.consignmentReferences.lrn.error.length")
     }
 
@@ -188,7 +188,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
       view must haveFieldErrorLink("ducr_ducr", "#ducr_ducr")
       view must haveFieldErrorLink("lrn", "#lrn")
 
-      view.select("#error-message-ducr_ducr-input").text() mustBe messages(ducrError)
+      view.select("#error-message-ducr_ducr-input").text() mustBe messages("error.ducr")
       view.select("#error-message-lrn-input").text() mustBe messages("supplementary.consignmentReferences.lrn.error.specialCharacter")
     }
   }

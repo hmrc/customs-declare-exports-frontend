@@ -18,11 +18,9 @@ package helpers.views.components
 
 trait DateMessages {
 
-  val date: String = "dateTime.date"
-
-  val dateFormatError: String = date + ".error.format"
-  val dateOutOfRangeError: String = date + ".error.outOfRange"
-  val dayEmptyFieldError: String = date + ".day.error.empty"
-  val monthEmptyFieldError: String = date + ".month.error.empty"
-  val yearEmptyFieldError: String = date + ".year.error.empty"
+  val dateFormatError: String = "dateTime.date.error.format"
+  val dateOutOfRangeError: String = "dateTime.date.error.outOfRange"
+  val dayEmptyFieldError: String = "dateTime.date.day.error.empty"
+  val monthEmptyFieldError: String = "dateTime.date.month.error.empty"
+  val yearEmptyFieldError: String = "dateTime.date.year.error.empty"
 }

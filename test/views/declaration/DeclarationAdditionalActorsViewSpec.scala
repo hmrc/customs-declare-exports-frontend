@@ -33,7 +33,7 @@ import views.html.declaration.declaration_additional_actors
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
+class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessages with ExportsTestData with Stubs with Injector {
 
   private val form: Form[DeclarationAdditionalActors] = DeclarationAdditionalActors.form()
   private val declarationAdditionalActorsPage = new declaration_additional_actors(mainTemplate)
@@ -89,29 +89,29 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with ExportsTestD
 
         val view = createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some(""), Some(""))), request)
 
-        val optionOne = view.getElementById(consolidator)
+        val optionOne = view.getElementById("supplementary.partyType.CS")
         optionOne.attr("checked") mustBe empty
 
         val optionOneLabel = view.getElementById("supplementary.partyType.CS-label")
-        optionOneLabel.text() mustBe messages(consolidator)
+        optionOneLabel.text() mustBe messages("supplementary.partyType.CS")
 
-        val optionTwo = view.getElementById(manufacturer)
+        val optionTwo = view.getElementById("supplementary.partyType.MF")
         optionTwo.attr("checked") mustBe empty
 
         val optionTwoLabel = view.getElementById("supplementary.partyType.MF-label")
-        optionTwoLabel.text() mustBe messages(manufacturer)
+        optionTwoLabel.text() mustBe messages("supplementary.partyType.MF")
 
-        val optionThree = view.getElementById(freightForwarder)
+        val optionThree = view.getElementById("supplementary.partyType.FW")
         optionThree.attr("checked") mustBe empty
 
         val optionThreeLabel = view.getElementById("supplementary.partyType.FW-label")
-        optionThreeLabel.text() mustBe messages(freightForwarder)
+        optionThreeLabel.text() mustBe messages("supplementary.partyType.FW")
 
-        val optionFour = view.getElementById(warehouseKeeper)
+        val optionFour = view.getElementById("supplementary.partyType.WH")
         optionFour.attr("checked") mustBe empty
 
         val optionFourLabel = view.getElementById("supplementary.partyType.WH-label")
-        optionFourLabel.text() mustBe messages(warehouseKeeper)
+        optionFourLabel.text() mustBe messages("supplementary.partyType.WH")
       }
 
       "display both 'Add' and 'Save and continue' button on page" in {
@@ -167,8 +167,8 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with ExportsTestD
         view must haveFieldErrorLink("eori", "#eori")
         view must haveFieldErrorLink("partyType", "#partyType")
 
-        view.select("#error-message-eori-input").text() mustBe messages(eoriError)
-        view.select("#error-message-partyType-input").text() mustBe messages(partyTypeError)
+        view.select("#error-message-eori-input").text() mustBe messages("supplementary.eori.error")
+        view.select("#error-message-partyType-input").text() mustBe messages("supplementary.partyType.error")
       }
 
       "display error when EORI is provided, but party is not selected" in {
@@ -183,7 +183,7 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with ExportsTestD
         view must haveGlobalErrorSummary
         view must haveFieldErrorLink("partyType", "#partyType")
 
-        view.select("#error-message-partyType-input").text() mustBe messages(partyTypeError)
+        view.select("#error-message-partyType-input").text() mustBe messages("supplementary.partyType.error")
       }
     }
   }
@@ -197,10 +197,10 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with ExportsTestD
           createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("CS"))), request)
 
         view.getElementById("eori").attr("value") mustBe "1234"
-        view.getElementById(consolidator).attr("checked") mustBe "checked"
-        view.getElementById(manufacturer).attr("checked") mustBe empty
-        view.getElementById(freightForwarder).attr("checked") mustBe empty
-        view.getElementById(warehouseKeeper).attr("checked") mustBe empty
+        view.getElementById("supplementary.partyType.CS").attr("checked") mustBe "checked"
+        view.getElementById("supplementary.partyType.MF").attr("checked") mustBe empty
+        view.getElementById("supplementary.partyType.FW").attr("checked") mustBe empty
+        view.getElementById("supplementary.partyType.WH").attr("checked") mustBe empty
       }
 
       "display EORI with MF selected" in {
@@ -209,10 +209,10 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with ExportsTestD
           createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("MF"))), request)
 
         view.getElementById("eori").attr("value") mustBe "1234"
-        view.getElementById(consolidator).attr("checked") mustBe empty
-        view.getElementById(manufacturer).attr("checked") mustBe "checked"
-        view.getElementById(freightForwarder).attr("checked") mustBe empty
-        view.getElementById(warehouseKeeper).attr("checked") mustBe empty
+        view.getElementById("supplementary.partyType.CS").attr("checked") mustBe empty
+        view.getElementById("supplementary.partyType.MF").attr("checked") mustBe "checked"
+        view.getElementById("supplementary.partyType.FW").attr("checked") mustBe empty
+        view.getElementById("supplementary.partyType.WH").attr("checked") mustBe empty
       }
 
       "display EORI with FW selected" in {
@@ -221,10 +221,10 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with ExportsTestD
           createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("FW"))), request)
 
         view.getElementById("eori").attr("value") mustBe "1234"
-        view.getElementById(consolidator).attr("checked") mustBe empty
-        view.getElementById(manufacturer).attr("checked") mustBe empty
-        view.getElementById(freightForwarder).attr("checked") mustBe "checked"
-        view.getElementById(warehouseKeeper).attr("checked") mustBe empty
+        view.getElementById("supplementary.partyType.CS").attr("checked") mustBe empty
+        view.getElementById("supplementary.partyType.MF").attr("checked") mustBe empty
+        view.getElementById("supplementary.partyType.FW").attr("checked") mustBe "checked"
+        view.getElementById("supplementary.partyType.WH").attr("checked") mustBe empty
       }
 
       "display EORI with WH selected" in {
@@ -233,10 +233,10 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with ExportsTestD
           createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("WH"))), request)
 
         view.getElementById("eori").attr("value") mustBe "1234"
-        view.getElementById(consolidator).attr("checked") mustBe empty
-        view.getElementById(manufacturer).attr("checked") mustBe empty
-        view.getElementById(freightForwarder).attr("checked") mustBe empty
-        view.getElementById(warehouseKeeper).attr("checked") mustBe "checked"
+        view.getElementById("supplementary.partyType.CS").attr("checked") mustBe empty
+        view.getElementById("supplementary.partyType.MF").attr("checked") mustBe empty
+        view.getElementById("supplementary.partyType.FW").attr("checked") mustBe empty
+        view.getElementById("supplementary.partyType.WH").attr("checked") mustBe "checked"
       }
 
       "display one row with data in table" in {
