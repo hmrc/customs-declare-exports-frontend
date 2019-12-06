@@ -21,7 +21,7 @@ import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.Address
 import forms.declaration.{ConsigneeDetails, EntityDetails}
-import helpers.views.declaration.{CommonMessages, ConsigneeDetailsMessages}
+import helpers.views.declaration.CommonMessages
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -31,7 +31,7 @@ import views.html.declaration.consignee_details
 import views.tags.ViewTest
 
 @ViewTest
-class ConsigneeDetailsViewSpec extends UnitViewSpec with ConsigneeDetailsMessages with CommonMessages with Stubs {
+class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs {
 
   val form: Form[ConsigneeDetails] = ConsigneeDetails.form()
   val consigneeDetailsPage = new consignee_details(mainTemplate)
@@ -41,7 +41,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with ConsigneeDetailsMessage
 
     "display page title" in {
 
-      createView().getElementById("title").text() mustBe messages(title)
+      createView().getElementById("title").text() mustBe messages("supplementary.consignee.title")
     }
 
     "display section header" in {
@@ -55,7 +55,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with ConsigneeDetailsMessage
 
       val view = createView()
 
-      view.getElementById("details_eori-label").text() mustBe messages(eoriInfo)
+      view.getElementById("details_eori-label").text() mustBe messages("supplementary.consignee.eori.info")
       view.getElementById("details_eori").attr("value") mustBe empty
     }
 
@@ -71,7 +71,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with ConsigneeDetailsMessage
 
       val view = createView()
 
-      view.getElementById("address-header").text() mustBe messages(addressInfo)
+      view.getElementById("address-header").text() mustBe messages("supplementary.consignee.address.info")
       view.getElementById("details_address_fullName").attr("value") mustBe empty
     }
 

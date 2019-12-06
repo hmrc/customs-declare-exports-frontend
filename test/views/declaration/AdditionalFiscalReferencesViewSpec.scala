@@ -18,7 +18,7 @@ package views.declaration
 
 import controllers.util.{Add, SaveAndContinue, SaveAndReturn}
 import forms.declaration.AdditionalFiscalReference
-import helpers.views.declaration.{AdditionalFiscalReferencesMessages, CommonMessages}
+import helpers.views.declaration.CommonMessages
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -29,7 +29,7 @@ import views.html.declaration.additional_fiscal_references
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with AdditionalFiscalReferencesMessages with CommonMessages {
+class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with CommonMessages {
 
   private val form: Form[AdditionalFiscalReference] = AdditionalFiscalReference.form()
 
@@ -45,7 +45,7 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Ad
     val view = createView()
 
     "display page title" in {
-      view.getElementById("title").text() mustBe title
+      view.getElementById("title").text() mustBe "declaration.additionalFiscalReferences.title"
     }
 
     "display header" in {
@@ -53,12 +53,12 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Ad
     }
 
     "display country input" in {
-      view.getElementById("country-label").text() mustBe fiscalReferenceCountry
+      view.getElementById("country-label").text() mustBe "declaration.additionalFiscalReferences.country"
       view.getElementById("country").attr("value") mustBe empty
     }
 
     "display VAT number input" in {
-      view.getElementById("reference-label").text() mustBe reference
+      view.getElementById("reference-label").text() mustBe "declaration.additionalFiscalReferences.reference"
       view.getElementById("reference").attr("value") mustBe empty
     }
 
@@ -110,45 +110,44 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Ad
         val view = createView(form.bind(emptyCountry))
 
         view must haveGlobalErrorSummary
-        view must haveFieldError("country", fiscalReferenceCountryEmpty)
+        view must haveFieldError("country", "declaration.additionalFiscalReferences.country.empty")
       }
 
       "country is incorrect" in {
         val view = createView(form.bind(incorrectCountry))
 
         view must haveGlobalErrorSummary
-        view must haveFieldError("country", fiscalReferenceCountryError)
+        view must haveFieldError("country", "declaration.additionalFiscalReferences.country.error")
       }
 
       "reference is empty" in {
         val view = createView(form.bind(emptyReference))
 
         view must haveGlobalErrorSummary
-        view must haveFieldError("reference", referenceEmpty)
+        view must haveFieldError("reference", "declaration.additionalFiscalReferences.reference.empty")
       }
 
       "reference is incorrect" in {
         val view = createView(form.bind(incorrectReference))
 
         view must haveGlobalErrorSummary
-        view must haveFieldError("reference", referenceError)
+        view must haveFieldError("reference", "declaration.additionalFiscalReferences.reference.error")
       }
       "both country and reference are empty" in {
         val view = createView(form.bind(emptyCountryAndRef))
 
         view must haveGlobalErrorSummary
-        view must haveFieldError("country", fiscalReferenceCountryEmpty)
-        view must haveFieldError("reference", referenceEmpty)
+        view must haveFieldError("country", "declaration.additionalFiscalReferences.country.empty")
+        view must haveFieldError("reference", "declaration.additionalFiscalReferences.reference.empty")
       }
 
       "both country and reference are incorrect" in {
         val view = createView(form.bind(incorrectCountryAndRef))
 
         view must haveGlobalErrorSummary
-        view must haveFieldError("country", fiscalReferenceCountryError)
-        view must haveFieldError("reference", referenceError)
+        view must haveFieldError("country", "declaration.additionalFiscalReferences.country.error")
+        view must haveFieldError("reference", "declaration.additionalFiscalReferences.reference.error")
       }
-
     }
   }
 }

@@ -19,7 +19,7 @@ package views.declaration
 import base.Injector
 import controllers.util.{Add, SaveAndContinue, SaveAndReturn}
 import forms.declaration.AdditionalInformation
-import helpers.views.declaration.{AdditionalInformationMessages, CommonMessages}
+import helpers.views.declaration.CommonMessages
 import models.DeclarationType.DeclarationType
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
@@ -32,12 +32,10 @@ import views.html.declaration.additional_information
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalInformationViewSpec
-    extends UnitViewSpec with AdditionalInformationMessages with ExportsTestData with CommonMessages with Stubs with Injector {
+class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
 
   val itemId = "a7sc78"
   private val form: Form[AdditionalInformation] = AdditionalInformation.form()
-  private val additionalInformationPage = new additional_information(mainTemplate)
 
   private val page = new additional_information(mainTemplate)
 
@@ -66,7 +64,7 @@ class AdditionalInformationViewSpec
 
     "display page title" in {
 
-      createView().getElementById("title").text() mustBe messages(title)
+      createView().getElementById("title").text() mustBe messages("supplementary.additionalInformation.title")
     }
 
     "display section header" in {
@@ -78,7 +76,7 @@ class AdditionalInformationViewSpec
 
       val view = createView()
 
-      view.getElementById("code-label").text() mustBe messages(code)
+      view.getElementById("code-label").text() mustBe messages("supplementary.additionalInformation.code")
       view.getElementById("code").attr("value") mustBe empty
     }
 
@@ -86,7 +84,7 @@ class AdditionalInformationViewSpec
 
       val view = createView()
 
-      view.getElementById("description-label").text() mustBe messages(description)
+      view.getElementById("description-label").text() mustBe messages("supplementary.additionalInformation.description")
       view.getElementById("description").attr("value") mustBe empty
     }
 

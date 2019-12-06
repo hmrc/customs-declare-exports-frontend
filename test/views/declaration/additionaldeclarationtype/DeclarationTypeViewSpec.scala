@@ -21,7 +21,7 @@ import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype._
-import helpers.views.declaration.{CommonMessages, DeclarationTypeMessages}
+import helpers.views.declaration.CommonMessages
 import models.DeclarationType.DeclarationType
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
@@ -35,7 +35,7 @@ import views.html.declaration.additionaldeclarationtype.declaration_type
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with DeclarationTypeMessages with CommonMessages with Stubs with Injector {
+class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
 
   private val formStandard: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeStandardDec.form()
   private val formSupplementary: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeSupplementaryDec.form()
@@ -187,35 +187,35 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
 
         val view = createView(formStandard, DeclarationType.STANDARD)
 
-        view.getElementById("title").text() mustBe messages(headerStandardDec)
+        view.getElementById("title").text() mustBe messages("declaration.declarationType.header.standard")
       }
 
       "used for Supplementary Declaration journey" in {
 
         val view = createView(formSupplementary, DeclarationType.SUPPLEMENTARY)
 
-        view.getElementById("title").text() mustBe messages(headerSupplementaryDec)
+        view.getElementById("title").text() mustBe messages("declaration.declarationType.header.supplementary")
       }
 
       "used for Simplified Declaration journey" in {
 
         val view = createView(formSimplified, DeclarationType.SIMPLIFIED)
 
-        view.getElementById("title").text() mustBe messages(headerSimplifiedDec)
+        view.getElementById("title").text() mustBe messages("declaration.declarationType.header.simplified")
       }
 
       "used for Occasional Declaration journey" in {
 
         val view = createView(formOccasional, DeclarationType.OCCASIONAL)
 
-        view.getElementById("title").text() mustBe messages(headerOccasionalDec)
+        view.getElementById("title").text() mustBe messages("declaration.declarationType.header.occasional")
       }
 
       "used for Clearance Request journey" in {
 
         val view = createView(formClearance, DeclarationType.CLEARANCE)
 
-        view.getElementById("title").text() mustBe messages(headerClearanceDec)
+        view.getElementById("title").text() mustBe messages("declaration.declarationType.header.clearance")
       }
     }
 
@@ -229,13 +229,13 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         optionOne.attr("checked") mustBe empty
 
         val optionOneLabel = view.getElementById("PreLodged-label")
-        optionOneLabel.text() mustBe messages(standardPreLodged)
+        optionOneLabel.text() mustBe messages("declaration.declarationType.inputText.standard.preLodged")
 
         val optionTwo = view.getElementById("Frontier")
         optionTwo.attr("checked") mustBe empty
 
         val optionTwoLabel = view.getElementById("Frontier-label")
-        optionTwoLabel.text() mustBe messages(standardFrontier)
+        optionTwoLabel.text() mustBe messages("declaration.declarationType.inputText.standard.frontier")
       }
 
       "used for Supplementary Declaration journey" in {
@@ -246,13 +246,13 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         optionOne.attr("checked") mustBe empty
 
         val optionOneLabel = view.select("#additionalDeclarationType>div:nth-child(2)>label")
-        optionOneLabel.text() mustBe messages(supplementarySimplified)
+        optionOneLabel.text() mustBe messages("declaration.declarationType.inputText.supplementary.simplified")
 
         val optionTwo = view.getElementById("Standard")
         optionTwo.attr("checked") mustBe empty
 
         val optionTwoLabel = view.select("#additionalDeclarationType>div:nth-child(3)>label")
-        optionTwoLabel.text() mustBe messages(supplementaryStandard)
+        optionTwoLabel.text() mustBe messages("declaration.declarationType.inputText.supplementary.standard")
       }
 
       "used for Simplified Declaration journey" in {
@@ -263,13 +263,13 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         optionOne.attr("checked") mustBe empty
 
         val optionOneLabel = view.getElementById("PreLodged-label")
-        optionOneLabel.text() mustBe messages(simplifiedPreLodged)
+        optionOneLabel.text() mustBe messages("declaration.declarationType.inputText.simplified.preLodged")
 
         val optionTwo = view.getElementById("Frontier")
         optionTwo.attr("checked") mustBe empty
 
         val optionTwoLabel = view.getElementById("Frontier-label")
-        optionTwoLabel.text() mustBe messages(simplifiedFrontier)
+        optionTwoLabel.text() mustBe messages("declaration.declarationType.inputText.simplified.frontier")
       }
 
       "used for Occasional Declaration journey" in {
@@ -280,13 +280,13 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         optionOne.attr("checked") mustBe empty
 
         val optionOneLabel = view.getElementById("PreLodged-label")
-        optionOneLabel.text() mustBe messages(occasionalPreLodged)
+        optionOneLabel.text() mustBe messages("declaration.declarationType.inputText.occasional.preLodged")
 
         val optionTwo = view.getElementById("Frontier")
         optionTwo.attr("checked") mustBe empty
 
         val optionTwoLabel = view.getElementById("Frontier-label")
-        optionTwoLabel.text() mustBe messages(occasionalFrontier)
+        optionTwoLabel.text() mustBe messages("declaration.declarationType.inputText.occasional.frontier")
       }
 
       "used for Clearance Request journey" in {
@@ -297,13 +297,13 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         optionOne.attr("checked") mustBe empty
 
         val optionOneLabel = view.getElementById("PreLodged-label")
-        optionOneLabel.text() mustBe messages(clearancePreLodged)
+        optionOneLabel.text() mustBe messages("declaration.declarationType.inputText.clearance.preLodged")
 
         val optionTwo = view.getElementById("Frontier")
         optionTwo.attr("checked") mustBe empty
 
         val optionTwoLabel = view.getElementById("Frontier-label")
-        optionTwoLabel.text() mustBe messages(clearanceFrontier)
+        optionTwoLabel.text() mustBe messages("declaration.declarationType.inputText.clearance.frontier")
       }
     }
 
@@ -320,7 +320,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         checkErrorsSummary(view)
         view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
 
-        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages(errorMessageEmpty)
+        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages("declaration.declarationType.inputText.error.empty")
       }
 
       "used for Supplementary Declaration journey" in {
@@ -330,7 +330,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         checkErrorsSummary(view)
         view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
 
-        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages(errorMessageEmpty)
+        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages("declaration.declarationType.inputText.error.empty")
       }
 
       "used for Simplified Declaration journey" in {
@@ -340,7 +340,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         checkErrorsSummary(view)
         view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
 
-        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages(errorMessageEmpty)
+        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages("declaration.declarationType.inputText.error.empty")
       }
 
       "used for Occasional Declaration journey" in {
@@ -350,7 +350,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         checkErrorsSummary(view)
         view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
 
-        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages(errorMessageEmpty)
+        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages("declaration.declarationType.inputText.error.empty")
       }
 
       "used for Clearance Request journey" in {
@@ -360,7 +360,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         checkErrorsSummary(view)
         view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
 
-        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages(errorMessageEmpty)
+        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages("declaration.declarationType.inputText.error.empty")
       }
     }
 
@@ -373,7 +373,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         checkErrorsSummary(view)
         view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
 
-        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages(errorMessageIncorrect)
+        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages("declaration.declarationType.inputText.error.incorrect")
       }
 
       "used for Supplementary Declaration journey" in {
@@ -383,7 +383,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         checkErrorsSummary(view)
         view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
 
-        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages(errorMessageIncorrect)
+        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages("declaration.declarationType.inputText.error.incorrect")
       }
 
       "used for Simplified Declaration journey" in {
@@ -393,7 +393,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         checkErrorsSummary(view)
         view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
 
-        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages(errorMessageIncorrect)
+        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages("declaration.declarationType.inputText.error.incorrect")
       }
 
       "used for Occasional Declaration journey" in {
@@ -403,7 +403,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         checkErrorsSummary(view)
         view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
 
-        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages(errorMessageIncorrect)
+        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages("declaration.declarationType.inputText.error.incorrect")
       }
 
       "used for Clearance Request journey" in {
@@ -413,7 +413,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Dec
         checkErrorsSummary(view)
         view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
 
-        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages(errorMessageIncorrect)
+        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages("declaration.declarationType.inputText.error.incorrect")
       }
     }
 

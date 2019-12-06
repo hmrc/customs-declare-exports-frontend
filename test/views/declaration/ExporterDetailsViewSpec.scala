@@ -21,7 +21,7 @@ import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.Address
 import forms.declaration.{EntityDetails, ExporterDetails}
-import helpers.views.declaration.{CommonMessages, ExporterDetailsMessages}
+import helpers.views.declaration.CommonMessages
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -33,7 +33,7 @@ import views.html.declaration.exporter_details
 import views.tags.ViewTest
 
 @ViewTest
-class ExporterDetailsViewSpec extends UnitViewSpec with ExporterDetailsMessages with CommonMessages with Stubs with Injector {
+class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   private val form: Form[ExporterDetails] = ExporterDetails.form()
   private val exporterDetailsPage = new exporter_details(mainTemplate)
@@ -56,7 +56,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with ExporterDetailsMessages 
 
       val view = createView()
 
-      view.getElementById("details_eori-label").text() mustBe messages(consignorEori)
+      view.getElementById("details_eori-label").text() mustBe messages("supplementary.consignor.eori")
       view.getElementById("details_eori").attr("value") mustBe empty
     }
 

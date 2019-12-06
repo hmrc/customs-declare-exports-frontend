@@ -20,7 +20,7 @@ import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.declaration.DeclarationHolder
-import helpers.views.declaration.{CommonMessages, DeclarationHolderMessages}
+import helpers.views.declaration.CommonMessages
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -31,7 +31,7 @@ import views.html.declaration.declaration_holder
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarationHolderViewSpec extends UnitViewSpec with DeclarationHolderMessages with CommonMessages with Stubs with Injector {
+class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   private val form: Form[DeclarationHolder] = DeclarationHolder.form()
   private val declarationHolderPage = new declaration_holder(mainTemplate)
@@ -60,7 +60,7 @@ class DeclarationHolderViewSpec extends UnitViewSpec with DeclarationHolderMessa
 
     "display page title" in {
 
-      createView().getElementById("title").text() mustBe messages(title)
+      createView().getElementById("title").text() mustBe messages("supplementary.declarationHolder.title")
     }
 
     "display section header" in {
@@ -72,8 +72,8 @@ class DeclarationHolderViewSpec extends UnitViewSpec with DeclarationHolderMessa
 
       val view = createView()
 
-      view.getElementById("authorisationTypeCode-label").text() mustBe messages(authorisationCode)
-      view.getElementById("authorisationTypeCode-hint").text() mustBe messages(authorisationCodeHint)
+      view.getElementById("authorisationTypeCode-label").text() mustBe messages("supplementary.declarationHolder.authorisationCode")
+      view.getElementById("authorisationTypeCode-hint").text() mustBe messages("supplementary.declarationHolder.authorisationCode.hint")
       view.getElementById("authorisationTypeCode").attr("value") mustBe empty
     }
 
@@ -81,7 +81,7 @@ class DeclarationHolderViewSpec extends UnitViewSpec with DeclarationHolderMessa
 
       val view = createView()
 
-      view.getElementById("eori-label").text() mustBe messages(declarationHolderEori)
+      view.getElementById("eori-label").text() mustBe messages("supplementary.declarationHolder.eori")
       view.getElementById("eori").attr("value") mustBe empty
     }
 
@@ -125,7 +125,7 @@ class DeclarationHolderViewSpec extends UnitViewSpec with DeclarationHolderMessa
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("authorisationTypeCode", "#authorisationTypeCode")
 
-      view.select("#error-message-authorisationTypeCode-input").text() mustBe messages(authorisationCodeError)
+      view.select("#error-message-authorisationTypeCode-input").text() mustBe messages("supplementary.declarationHolder.authorisationCode.invalid")
     }
 
     "display error for incorrect EORI" in {
@@ -154,7 +154,7 @@ class DeclarationHolderViewSpec extends UnitViewSpec with DeclarationHolderMessa
       view must haveFieldErrorLink("authorisationTypeCode", "#authorisationTypeCode")
       view must haveFieldErrorLink("eori", "#eori")
 
-      view.select("#error-message-authorisationTypeCode-input").text() mustBe messages(authorisationCodeError)
+      view.select("#error-message-authorisationTypeCode-input").text() mustBe messages("supplementary.declarationHolder.authorisationCode.invalid")
       view.select("#error-message-eori-input").text() mustBe messages(eoriError)
     }
   }

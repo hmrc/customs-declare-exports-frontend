@@ -21,7 +21,7 @@ import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.Address
 import forms.declaration.{CarrierDetails, EntityDetails}
-import helpers.views.declaration.{CarrierDetailsMessages, CommonMessages}
+import helpers.views.declaration.CommonMessages
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -32,7 +32,7 @@ import views.html.declaration.carrier_details
 import views.tags.ViewTest
 
 @ViewTest
-class CarrierDetailsViewSpec extends UnitViewSpec with CarrierDetailsMessages with CommonMessages with Stubs with Injector {
+class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   val form: Form[CarrierDetails] = CarrierDetails.form()
   private val carrierDetailsPage = new carrier_details(mainTemplate)
@@ -54,14 +54,14 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CarrierDetailsMessages wi
 
     "display page title" in {
 
-      createView().getElementById("title").text() mustBe messages(title)
+      createView().getElementById("title").text() mustBe messages("supplementary.carrier.title")
     }
 
     "display empty input with label for EORI" in {
 
       val view = createView()
 
-      view.getElementById("details_eori-label").text() mustBe messages(eoriInfo)
+      view.getElementById("details_eori-label").text() mustBe messages("supplementary.carrier.eori.info")
       view.getElementById("details_eori").attr("value") mustBe empty
     }
 
@@ -77,7 +77,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CarrierDetailsMessages wi
 
       val view = createView()
 
-      view.getElementById("address-header").text() mustBe messages(addressInfo)
+      view.getElementById("address-header").text() mustBe messages("supplementary.carrier.address.info")
       view.getElementById("details_address_fullName").attr("value") mustBe empty
     }
 

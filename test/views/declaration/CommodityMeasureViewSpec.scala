@@ -18,7 +18,7 @@ package views.declaration
 
 import base.Injector
 import forms.declaration.CommodityMeasure
-import helpers.views.declaration.{CommodityMeasureMessages, CommonMessages}
+import helpers.views.declaration.CommonMessages
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -29,7 +29,7 @@ import views.html.declaration.goods_measure
 import views.tags.ViewTest
 
 @ViewTest
-class CommodityMeasureViewSpec extends UnitViewSpec with CommodityMeasureMessages with CommonMessages with Stubs with Injector {
+class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   val itemId = "a7sc78"
   private val form: Form[CommodityMeasure] = CommodityMeasure.form()
@@ -62,7 +62,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommodityMeasureMessage
 
     "display page title" in {
 
-      createView().getElementById("title").text() mustBe messages(title)
+      createView().getElementById("title").text() mustBe messages("supplementary.commodityMeasure.title")
     }
 
     "display section header" in {
@@ -74,8 +74,8 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommodityMeasureMessage
 
       val view = createView()
 
-      view.getElementById("supplementaryUnits-label").text() mustBe messages(supplementaryUnits)
-      view.getElementById("supplementaryUnits-hint").text() mustBe messages(supplementaryUnitsHint)
+      view.getElementById("supplementaryUnits-label").text() mustBe messages("supplementary.commodityMeasure.supplementaryUnits")
+      view.getElementById("supplementaryUnits-hint").text() mustBe messages("supplementary.commodityMeasure.supplementaryUnits.hint")
       view.getElementById("supplementaryUnits").attr("value") mustBe empty
     }
 
@@ -83,7 +83,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommodityMeasureMessage
 
       val view = createView()
 
-      view.getElementById("netMass-label").text() mustBe messages(netMass)
+      view.getElementById("netMass-label").text() mustBe messages("supplementary.commodityMeasure.netMass")
       view.getElementById("netMass").attr("value") mustBe empty
     }
 
@@ -91,7 +91,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommodityMeasureMessage
 
       val view = createView()
 
-      view.getElementById("grossMass-label").text() mustBe messages(grossMass)
+      view.getElementById("grossMass-label").text() mustBe messages("supplementary.commodityMeasure.grossMass")
       view.getElementById("grossMass").attr("value") mustBe empty
     }
 
@@ -120,8 +120,8 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommodityMeasureMessage
       view must haveFieldErrorLink("netMass", "#netMass")
       view must haveFieldErrorLink("grossMass", "#grossMass")
 
-      view.select("#error-message-netMass-input").text() mustBe messages(netMassEmpty)
-      view.select("#error-message-grossMass-input").text() mustBe messages(grossMassEmpty)
+      view.select("#error-message-netMass-input").text() mustBe messages("supplementary.commodityMeasure.netMass.empty")
+      view.select("#error-message-grossMass-input").text() mustBe messages("supplementary.commodityMeasure.grossMass.empty")
     }
 
     "display error when supplementary units are incorrect" in {
@@ -131,7 +131,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommodityMeasureMessage
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("supplementaryUnits", "#supplementaryUnits")
 
-      view.select("#error-message-supplementaryUnits-input").text() mustBe messages(supplementaryUnitsError)
+      view.select("#error-message-supplementaryUnits-input").text() mustBe messages("supplementary.commodityMeasure.supplementaryUnits.error")
     }
 
     "display error when net mass is empty" in {
@@ -141,7 +141,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommodityMeasureMessage
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("netMass", "#netMass")
 
-      view.select("#error-message-netMass-input").text() mustBe messages(netMassEmpty)
+      view.select("#error-message-netMass-input").text() mustBe messages("supplementary.commodityMeasure.netMass.empty")
     }
 
     "display error when net mass is incorrect" in {
@@ -152,7 +152,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommodityMeasureMessage
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("netMass", "#netMass")
 
-      view.select("#error-message-netMass-input").text() mustBe messages(netMassError)
+      view.select("#error-message-netMass-input").text() mustBe messages("supplementary.commodityMeasure.netMass.error")
     }
 
     "display error when gross mass is empty" in {
@@ -162,7 +162,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommodityMeasureMessage
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("grossMass", "#grossMass")
 
-      view.select("#error-message-grossMass-input").text() mustBe messages(grossMassEmpty)
+      view.select("#error-message-grossMass-input").text() mustBe messages("supplementary.commodityMeasure.grossMass.empty")
     }
 
     "display error when gross mass is incorrect" in {
@@ -172,7 +172,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommodityMeasureMessage
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("grossMass", "#grossMass")
 
-      view.select("#error-message-grossMass-input").text() mustBe messages(grossMassError)
+      view.select("#error-message-grossMass-input").text() mustBe messages("supplementary.commodityMeasure.grossMass.error")
     }
   }
 

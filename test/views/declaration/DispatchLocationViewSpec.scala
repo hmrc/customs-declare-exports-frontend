@@ -19,7 +19,7 @@ package views.declaration
 import base.Injector
 import controllers.util.SaveAndReturn
 import forms.declaration.DispatchLocation
-import helpers.views.declaration.{CommonMessages, DispatchLocationMessages}
+import helpers.views.declaration.CommonMessages
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -30,7 +30,7 @@ import views.html.declaration.dispatch_location
 import views.tags.ViewTest
 
 @ViewTest
-class DispatchLocationViewSpec extends UnitViewSpec with DispatchLocationMessages with CommonMessages with Stubs with Injector {
+class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   private val form: Form[DispatchLocation] = DispatchLocation.form()
   private val dispatchLocationPage = new dispatch_location(mainTemplate)
@@ -56,7 +56,7 @@ class DispatchLocationViewSpec extends UnitViewSpec with DispatchLocationMessage
 
     "display page title" in {
 
-      createView().getElementById("title").text() mustBe messages(header)
+      createView().getElementById("title").text() mustBe messages("supplementary.dispatchLocation.header")
     }
 
     "display section header" in {
@@ -72,13 +72,13 @@ class DispatchLocationViewSpec extends UnitViewSpec with DispatchLocationMessage
       optionOne.attr("checked") mustBe empty
 
       val optionOneLabel = view.getElementById("OutsideEU-label")
-      optionOneLabel.text() mustBe messages(outsideEu)
+      optionOneLabel.text() mustBe messages("supplementary.dispatchLocation.inputText.outsideEU")
 
       val optionTwo = view.getElementById("SpecialFiscalTerritory")
       optionTwo.attr("checked") mustBe empty
 
       val optionTwoLabel = view.getElementById("SpecialFiscalTerritory-label")
-      optionTwoLabel.text() mustBe messages(specialFiscalTerritory)
+      optionTwoLabel.text() mustBe messages("supplementary.dispatchLocation.inputText.specialFiscalTerritory")
     }
 
     "display 'Back' button" when {
@@ -125,7 +125,7 @@ class DispatchLocationViewSpec extends UnitViewSpec with DispatchLocationMessage
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("dispatchLocation", "#dispatchLocation")
 
-      view.select("#error-message-dispatchLocation-input").text() mustBe messages(errorMessageEmpty)
+      view.select("#error-message-dispatchLocation-input").text() mustBe messages("supplementary.dispatchLocation.inputText.error.empty")
     }
 
     "display error if incorrect dispatch is selected" in {
@@ -135,7 +135,7 @@ class DispatchLocationViewSpec extends UnitViewSpec with DispatchLocationMessage
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("dispatchLocation", "#dispatchLocation")
 
-      view.select("#error-message-dispatchLocation-input").text() mustBe messages(errorMessageIncorrect)
+      view.select("#error-message-dispatchLocation-input").text() mustBe messages("supplementary.dispatchLocation.inputText.error.incorrect")
     }
   }
 
