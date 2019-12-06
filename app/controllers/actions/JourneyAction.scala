@@ -17,6 +17,7 @@
 package controllers.actions
 
 import com.google.inject.Inject
+import models.DeclarationType.DeclarationType
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.Logger
 import play.api.mvc.{ActionRefiner, Result, Results}
@@ -26,29 +27,35 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class JourneyAction @Inject()(cacheService: ExportsCacheService)(implicit override val executionContext: ExecutionContext)
+class JourneyAction @Inject()(cacheService: ExportsCacheService)(implicit val exc: ExecutionContext)
     extends ActionRefiner[AuthenticatedRequest, JourneyRequest] {
 
   private val logger = Logger(this.getClass)
 
-  override def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] = {
-    implicit val hc: HeaderCarrier =
-      HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+  override protected def executionContext: ExecutionContext = exc
+
+  private def refiner[A](request: AuthenticatedRequest[A], types: DeclarationType*): Future[Either[Result, JourneyRequest[A]]] = {
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
     request.declarationId match {
       case Some(id) =>
         cacheService.get(id).map {
-          case Some(declaration) => Right(new JourneyRequest(request, declaration))
-          case _                 => handleMissingDeclarationId(request)
+          case Some(declaration) if types.isEmpty || types.contains(declaration.`type`) =>
+            Right(new JourneyRequest(request, declaration))
+          case _ =>
+            Left(Results.Redirect(controllers.routes.StartController.displayStartPage()))
         }
-      case None => Future.successful(handleMissingDeclarationId(request))
+      case None =>
+        logger.warn(s"Could not obtain journey type for declaration ${request.declarationId}")
+        Future.successful(Left(Results.Redirect(controllers.routes.StartController.displayStartPage())))
     }
   }
 
-  private def handleMissingDeclarationId[A](request: AuthenticatedRequest[_]): Either[Result, JourneyRequest[A]] = {
-    // $COVERAGE-OFF$Trivial
-    logger.warn(s"Could not obtain journey type for declaration ${request.declarationId}")
-    // $COVERAGE-ON
-    Left(Results.Redirect(controllers.routes.StartController.displayStartPage()))
+  override def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] =
+    refiner(request, Seq.empty[DeclarationType]: _*)
+
+  def apply(types: DeclarationType*): ActionRefiner[AuthenticatedRequest, JourneyRequest] = new ActionRefiner[AuthenticatedRequest, JourneyRequest] {
+    override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] = refiner(request, types: _*)
+    override protected def executionContext: ExecutionContext = exc
   }
 }
