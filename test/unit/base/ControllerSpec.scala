@@ -76,9 +76,12 @@ trait ControllerSpec
       .withCSRFToken
 
   def onEveryDeclarationJourney(modifiers: ExportsDeclarationModifier*)(f: ExportsDeclaration => Unit): Unit =
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)(modifiers: _*)(f)
+    onJourney(DeclarationType.values.toSeq: _*)(modifiers: _*)(f)
 
   def onJourney(types: DeclarationType*)(modifiers: ExportsDeclarationModifier*)(f: ExportsDeclaration => Unit): Unit = {
+    if (types.isEmpty) {
+      throw new RuntimeException("Attempt to test against no types - please provide at least one declaration type")
+    }
     val declaration = aDeclaration(modifiers: _*)
     types.foreach {
       case kind @ DeclarationType.STANDARD      => onStandard(aDeclarationAfter(declaration, withType(kind)))(f)
@@ -86,6 +89,7 @@ trait ControllerSpec
       case kind @ DeclarationType.SIMPLIFIED    => onSimplified(aDeclarationAfter(declaration, withType(kind)))(f)
       case kind @ DeclarationType.OCCASIONAL    => onOccasional(aDeclarationAfter(declaration, withType(kind)))(f)
       case kind @ DeclarationType.CLEARANCE     => onClearance(aDeclarationAfter(declaration, withType(kind)))(f)
+      case _                                    => throw new RuntimeException("Unrecognized declaration type - you could have to implement helper methods")
     }
   }
 

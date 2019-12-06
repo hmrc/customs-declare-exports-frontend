@@ -17,6 +17,7 @@
 @import config.AppConfig
 @import controllers.declaration.routes
 @import controllers.util.SaveAndContinue
+@import controllers.navigation._
 @import forms.Choice.AllowedChoiceValues
 @import forms.declaration.NactCode
 @import forms.declaration.NactCode._
@@ -46,7 +47,7 @@
     @helper.form(routes.NactCodeController.submitForm(mode, itemId), 'autocomplete -> "off") {
         @helper.CSRF.formField
 
-        @components.back_link(routes.TaricCodeController.displayPage(mode, itemId), mode)
+        @components.back_link(Navigator.backLink(NactCode, mode, ItemId(itemId)))
 
         @components.error_summary(form.errors)
 

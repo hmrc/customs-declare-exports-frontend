@@ -47,7 +47,7 @@
     @components.table_row(s"item-${item.sequenceId}-cusCode", HtmlTableRow(
         label = messages("declaration.summary.items.item.cusCode"),
         value = item.cusCode.flatMap(_.cusCode).getOrElse(""),
-        call = Some(controllers.declaration.routes.CUSCodeController.displayPage(Mode.Normal, item.id))
+        call = Some(controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, item.id))
     ))
     @components.table_row(s"item-${item.sequenceId}-taricAdditionalCodes", HtmlTableRow(
         label = messages("declaration.summary.items.item.taricAdditionalCodes"),

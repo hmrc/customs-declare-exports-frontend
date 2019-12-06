@@ -18,21 +18,22 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.CUSCode
-import forms.declaration.CUSCode.form
+import forms.declaration.CusCode
+import forms.declaration.CusCode.form
 import javax.inject.Inject
+import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.cus_code
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CUSCodeController @Inject()(
+class CusCodeController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -53,19 +54,25 @@ class CUSCodeController @Inject()(
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[CUSCode]) => Future.successful(BadRequest(cusCodePage(mode, itemId, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(cusCodePage(mode, itemId, formWithErrors))),
         validForm =>
           updateExportsCache(itemId, validForm).map { _ =>
-            navigator
-              .continueTo(controllers.declaration.routes.TaricCodeController.displayPage(mode, itemId))
+            navigator.continueTo(nextPage(mode, itemId, request.declarationType))
         }
       )
   }
 
-  private def updateExportsCache(itemId: String, updatedItem: CUSCode)(
+  private def updateExportsCache(itemId: String, updatedItem: CusCode)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>
       model.updatedItem(itemId, item => item.copy(cusCode = Some(updatedItem)))
+    }
+
+  def nextPage(mode: Mode, itemId: String, declarationType: DeclarationType): Call =
+    if (declarationType == DeclarationType.CLEARANCE) {
+      controllers.declaration.routes.NactCodeController.displayPage(mode, itemId)
+    } else {
+      controllers.declaration.routes.TaricCodeController.displayPage(mode, itemId)
     }
 }

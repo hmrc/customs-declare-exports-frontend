@@ -57,7 +57,7 @@ class UNDangerousGoodsCodeController @Inject()(
         validForm =>
           updateExportsCache(itemId, validForm).map { _ =>
             navigator
-              .continueTo(controllers.declaration.routes.CUSCodeController.displayPage(mode, itemId))
+              .continueTo(controllers.declaration.routes.CusCodeController.displayPage(mode, itemId))
         }
       )
   }

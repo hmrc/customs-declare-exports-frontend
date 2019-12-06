@@ -19,6 +19,7 @@ package views.declaration
 import forms.declaration.NactCode
 import helpers.views.declaration.CommonMessages
 import models.DeclarationType.DeclarationType
+import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -34,12 +35,12 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
   private val page = new nact_codes(mainTemplate, minimalAppConfig)
   private val itemId = "item1"
   private val realMessages = validatedMessages
-  private def createView(declarationType: DeclarationType, form: Form[NactCode], codes: List[NactCode]): Document =
-    page(Mode.Normal, itemId, form, codes)(journeyRequest(declarationType), realMessages)
+  private def createView(form: Form[NactCode], codes: List[NactCode], request: JourneyRequest[_]): Document =
+    page(Mode.Normal, itemId, form, codes)(request, realMessages)
 
-  def nactCodeView(declarationType: DeclarationType, taricCode: Option[NactCode] = None, codes: List[NactCode] = List.empty): Unit = {
+  def nactCodeView(request: JourneyRequest[_], taricCode: Option[NactCode] = None, codes: List[NactCode] = List.empty): Unit = {
     val form = taricCode.fold(NactCode.form)(NactCode.form.fill(_))
-    val view = createView(declarationType, form, codes)
+    val view = createView(form, codes, request)
 
     "display page title" in {
 
@@ -82,23 +83,118 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
     }
   }
 
-  "NACT Code View on empty page" when {
+  "NACT Code View on empty page" must {
+    onEveryDeclarationJourney { request =>
+      val view = createView(NactCode.form, List.empty, request)
 
-    for (decType <- DeclarationType.values) {
-      s"we are on $decType journey" should {
-        behave like nactCodeView(decType)
+      "display page title" in {
+
+        view.getElementById("title").text() mustBe realMessages("declaration.nationalAdditionalCode.header")
+      }
+
+      "display taric code input field" in {
+        view.getElementById(NactCode.nactCodeKey).attr("value") mustBe empty
+      }
+
+      "display 'Add' button on page" in {
+
+        val addButton = view.getElementById("add")
+        addButton.text() must include(realMessages(addCaption))
+        addButton.text() must include(realMessages("declaration.nationalAdditionalCode.add.hint"))
+      }
+
+      "display 'Save and continue' button on page" in {
+
+        val saveButton = view.select("#submit")
+        saveButton.text() mustBe realMessages(saveAndContinueCaption)
       }
     }
 
+    onJourney(DeclarationType.CLEARANCE) { request =>
+      "display 'Back' button that links to 'TARIC Code' page" in {
+
+        val view = createView(NactCode.form, List.empty, request)
+
+        val backButton = view.getElementById("back-link")
+
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, itemId))
+      }
+    }
+
+    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
+      "display 'Back' button that links to 'TARIC Code' page" in {
+
+        val view = createView(NactCode.form, List.empty, request)
+
+        val backButton = view.getElementById("back-link")
+
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, itemId))
+      }
+    }
   }
 
   "NACT Code View on populated page" when {
-    val nactCode = Some(NactCode("1234"))
-    val existingCodes = List(NactCode("ABCD"), NactCode("4321"))
+    val code = NactCode("1234")
+    val form = NactCode.form.fill(code)
+    val codes = List(NactCode("ABCD"), NactCode("4321"))
 
-    for (decType <- DeclarationType.values) {
-      s"we are on $decType journey" should {
-        behave like nactCodeView(decType, nactCode, existingCodes)
+    onEveryDeclarationJourney { request =>
+      val view = createView(form, codes, request)
+
+      "display page title" in {
+
+        view.getElementById("title").text() mustBe realMessages("declaration.nationalAdditionalCode.header")
+      }
+
+      "display taric code input field" in {
+        val expectedCode = code.nactCode
+        view.getElementById(NactCode.nactCodeKey).attr("value") mustBe expectedCode
+      }
+
+      "display existing taric codes table" in {
+        codes.zipWithIndex.foreach {
+          case (code, index) => {
+            view.getElementById(s"nactCode-table-row$index-label").text mustBe code.nactCode
+            var removeButton = view.getElementById(s"nactCode-table-row$index-remove_button")
+            removeButton.text must include(realMessages(removeCaption))
+            removeButton.text must include(realMessages("declaration.nationalAdditionalCode.remove.hint", code.nactCode))
+          }
+        }
+      }
+
+      "display 'Add' button on page" in {
+
+        val addButton = view.getElementById("add")
+        addButton.text() must include(realMessages(addCaption))
+        addButton.text() must include(realMessages("declaration.nationalAdditionalCode.add.hint"))
+      }
+
+      "display 'Save and continue' button on page" in {
+
+        val saveButton = view.select("#submit")
+        saveButton.text() mustBe realMessages(saveAndContinueCaption)
+      }
+    }
+
+    onJourney(DeclarationType.CLEARANCE) { request =>
+      "display 'Back' button that links to 'TARIC Code' page" in {
+
+        val view = createView(NactCode.form, List.empty, request)
+
+        val backButton = view.getElementById("back-link")
+
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, itemId))
+      }
+    }
+
+    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
+      "display 'Back' button that links to 'TARIC Code' page" in {
+
+        val view = createView(NactCode.form, List.empty, request)
+
+        val backButton = view.getElementById("back-link")
+
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, itemId))
       }
     }
 

@@ -16,7 +16,7 @@
 
 package views.declaration
 
-import forms.declaration.CUSCode
+import forms.declaration.CusCode
 import helpers.views.declaration.CommonMessages
 import models.requests.JourneyRequest
 import models.DeclarationType._
@@ -31,16 +31,16 @@ import views.html.declaration.cus_code
 import views.tags.ViewTest
 
 @ViewTest
-class CUSCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages {
+class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages {
 
   private val page = new cus_code(mainTemplate, minimalAppConfig)
   private val itemId = "item1"
   private val realMessages = validatedMessages
-  private def createView(form: Form[CUSCode], request: JourneyRequest[_]): Document =
+  private def createView(form: Form[CusCode], request: JourneyRequest[_]): Document =
     page(Mode.Normal, itemId, form)(request, realMessages)
 
-  def cusCodeView(journeyRequest: JourneyRequest[_], cusCode: Option[CUSCode] = None): Unit = {
-    val form = cusCode.fold(CUSCode.form)(CUSCode.form.fill(_))
+  def cusCodeView(journeyRequest: JourneyRequest[_], cusCode: Option[CusCode] = None): Unit = {
+    val form = cusCode.fold(CusCode.form)(CusCode.form.fill(_))
     val view = createView(form, journeyRequest)
 
     "display page title" in {
@@ -50,11 +50,11 @@ class CUSCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with 
 
     "display cus code input field" in {
       val expectedCode = cusCode.flatMap(_.cusCode).getOrElse("")
-      view.getElementById(CUSCode.cusCodeKey).attr("value") mustBe expectedCode
+      view.getElementById(CusCode.cusCodeKey).attr("value") mustBe expectedCode
     }
 
     "display has cus code field" in {
-      view.getElementById(CUSCode.hasCusCodeKey).attr("value") mustBe empty
+      view.getElementById(CusCode.hasCusCodeKey).attr("value") mustBe empty
     }
 
     "display 'Save and continue' button on page" in {
@@ -65,7 +65,7 @@ class CUSCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with 
   }
 
   def backButton(journeyRequest: JourneyRequest[_], call: Call): Unit = {
-    val view = createView(CUSCode.form, journeyRequest)
+    val view = createView(CusCode.form, journeyRequest)
 
     "display back button with correct call" in {
       val backButton = view.getElementById("back-link")
@@ -83,7 +83,7 @@ class CUSCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with 
   }
 
   "CUS Code View on populated page" when {
-    val dangerousGoodsCode = Some(CUSCode(Some("12345678")))
+    val dangerousGoodsCode = Some(CusCode(Some("12345678")))
 
     onEveryDeclarationJourney { request =>
       behave like cusCodeView(request, dangerousGoodsCode)
