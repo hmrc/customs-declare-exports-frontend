@@ -70,7 +70,7 @@ trait ExportsItemBuilder {
   def withUNDangerousGoodsCode(data: UNDangerousGoodsCode): ItemModifier =
     _.copy(dangerousGoodsCode = Some(data))
 
-  def withCUSCode(data: CUSCode): ItemModifier =
+  def withCUSCode(data: CusCode): ItemModifier =
     _.copy(cusCode = Some(data))
 
   def withTaricCodes(first: TaricCode, others: TaricCode*): ItemModifier =

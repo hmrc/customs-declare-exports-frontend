@@ -23,21 +23,21 @@ import models.DeclarationType.DeclarationType
 import play.api.libs.json.Json
 
 case class ExportItem(
-  id: String,
-  sequenceId: Int = 0,
-  procedureCodes: Option[ProcedureCodesData] = None,
-  fiscalInformation: Option[FiscalInformation] = None,
-  additionalFiscalReferencesData: Option[AdditionalFiscalReferencesData] = None,
-  statisticalValue: Option[StatisticalValue] = None,
-  commodityDetails: Option[CommodityDetails] = None,
-  dangerousGoodsCode: Option[UNDangerousGoodsCode] = None,
-  cusCode: Option[CUSCode] = None,
-  taricCodes: List[TaricCode] = Nil,
-  nactCodes: List[NactCode] = Nil,
-  packageInformation: List[PackageInformation] = Nil,
-  commodityMeasure: Option[CommodityMeasure] = None,
-  additionalInformation: Option[AdditionalInformationData] = None,
-  documentsProducedData: Option[DocumentsProducedData] = None
+                       id: String,
+                       sequenceId: Int = 0,
+                       procedureCodes: Option[ProcedureCodesData] = None,
+                       fiscalInformation: Option[FiscalInformation] = None,
+                       additionalFiscalReferencesData: Option[AdditionalFiscalReferencesData] = None,
+                       statisticalValue: Option[StatisticalValue] = None,
+                       commodityDetails: Option[CommodityDetails] = None,
+                       dangerousGoodsCode: Option[UNDangerousGoodsCode] = None,
+                       cusCode: Option[CusCode] = None,
+                       taricCodes: List[TaricCode] = Nil,
+                       nactCodes: List[NactCode] = Nil,
+                       packageInformation: List[PackageInformation] = Nil,
+                       commodityMeasure: Option[CommodityMeasure] = None,
+                       additionalInformation: Option[AdditionalInformationData] = None,
+                       documentsProducedData: Option[DocumentsProducedData] = None
 ) {
   def hasFiscalReferences: Boolean =
     fiscalInformation.exists(_.onwardSupplyRelief == FiscalInformation.AllowedFiscalInformationAnswers.yes)

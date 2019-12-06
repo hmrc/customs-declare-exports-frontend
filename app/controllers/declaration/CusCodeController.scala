@@ -18,8 +18,8 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.CUSCode
-import forms.declaration.CUSCode.form
+import forms.declaration.CusCode
+import forms.declaration.CusCode.form
 import javax.inject.Inject
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
@@ -54,7 +54,7 @@ class CusCodeController @Inject()(
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[CUSCode]) => Future.successful(BadRequest(cusCodePage(mode, itemId, formWithErrors))),
+        (formWithErrors: Form[CusCode]) => Future.successful(BadRequest(cusCodePage(mode, itemId, formWithErrors))),
         validForm =>
           updateExportsCache(itemId, validForm).map { _ =>
             navigator.continueTo(nextPage(mode, itemId, request.declarationType))
@@ -62,7 +62,7 @@ class CusCodeController @Inject()(
       )
   }
 
-  private def updateExportsCache(itemId: String, updatedItem: CUSCode)(
+  private def updateExportsCache(itemId: String, updatedItem: CusCode)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>

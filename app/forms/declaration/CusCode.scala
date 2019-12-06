@@ -23,11 +23,11 @@ import play.api.libs.json.Json
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
 
-case class CUSCode(cusCode: Option[String])
+case class CusCode(cusCode: Option[String])
 
-object CUSCode extends DeclarationPage {
+object CusCode extends DeclarationPage {
 
-  implicit val format = Json.format[CUSCode]
+  implicit val format = Json.format[CusCode]
 
   val hasCusCodeKey = "hasCusCode"
   val cusCodeKey = "cusCode"
@@ -40,15 +40,15 @@ object CUSCode extends DeclarationPage {
 
   import AllowedCUSCodeAnswers._
 
-  private def form2Model: (String, Option[String]) => CUSCode = {
+  private def form2Model: (String, Option[String]) => CusCode = {
     case (hasCode, codeValue) =>
       hasCode match {
-        case AllowedCUSCodeAnswers.yes => CUSCode(codeValue)
-        case AllowedCUSCodeAnswers.no  => CUSCode(None)
+        case AllowedCUSCodeAnswers.yes => CusCode(codeValue)
+        case AllowedCUSCodeAnswers.no  => CusCode(None)
       }
   }
 
-  private def model2Form: CUSCode => Option[(String, Option[String])] =
+  private def model2Form: CusCode => Option[(String, Option[String])] =
     model =>
       model.cusCode match {
         case Some(code) => Some((yes, Some(code)))
@@ -68,5 +68,5 @@ object CUSCode extends DeclarationPage {
       )
     )(form2Model)(model2Form)
 
-  def form(): Form[CUSCode] = Form(mapping)
+  def form(): Form[CusCode] = Form(mapping)
 }

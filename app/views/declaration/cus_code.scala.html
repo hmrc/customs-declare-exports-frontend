@@ -17,8 +17,8 @@
 @import controllers.declaration.routes
 @import controllers.navigation.{Navigator, ItemId}
 @import controllers.util.SaveAndContinue
-@import forms.declaration.CUSCode
-@import forms.declaration.CUSCode._
+@import forms.declaration.CusCode
+@import forms.declaration.CusCode._
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.play.views.html._
 @import views.Title
@@ -30,7 +30,7 @@
 @(
         mode: Mode,
         itemId: String,
-        form: Form[CUSCode]
+        form: Form[CusCode]
 )(implicit request: JourneyRequest[_], messages: Messages)
 
 @tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.cusCode.header.tradeTariff.link")</a>}
@@ -43,7 +43,7 @@
     @helper.form(routes.CusCodeController.submitForm(mode, itemId), 'autocomplete -> "off") {
         @helper.CSRF.formField
 
-        @components.back_link(Navigator.backLink(CUSCode, mode, ItemId(itemId)))
+        @components.back_link(Navigator.backLink(CusCode, mode, ItemId(itemId)))
 
         @components.error_summary(form.errors)
 

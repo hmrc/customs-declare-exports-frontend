@@ -17,8 +17,8 @@
 package unit.controllers.declaration
 
 import controllers.declaration.CusCodeController
-import forms.declaration.CUSCode
-import forms.declaration.CUSCode._
+import forms.declaration.CusCode
+import forms.declaration.CusCode._
 import models.DeclarationType.DeclarationType
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
@@ -52,8 +52,8 @@ class CusCodeControllerSpec extends ControllerSpec {
 
   val itemId = "itemId"
 
-  def theResponseForm: Form[CUSCode] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[CUSCode]])
+  def theResponseForm: Form[CusCode] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[CusCode]])
     verify(mockPage).apply(any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
@@ -78,7 +78,7 @@ class CusCodeControllerSpec extends ControllerSpec {
         }
 
         "display page method is invoked and cache contains data" in {
-          val cusCode = CUSCode(Some("12345678"))
+          val cusCode = CusCode(Some("12345678"))
           val item = anItem(withCUSCode(cusCode))
           withNewCaching(aDeclarationAfter(declaration, withItems(item)))
 

@@ -16,12 +16,12 @@
 
 package forms.declaration
 
-import forms.declaration.CUSCode._
+import forms.declaration.CusCode._
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString}
 
-class CUSCodeSpec extends WordSpec with MustMatchers {
+class CusCodeSpec extends WordSpec with MustMatchers {
 
   def formData(hasCode: String, code: Option[String]) =
     JsObject(Map(hasCusCodeKey -> JsString(hasCode), cusCodeKey -> JsString(code.getOrElse(""))))
@@ -30,25 +30,25 @@ class CUSCodeSpec extends WordSpec with MustMatchers {
 
     "return form with errors" when {
       "provided with code too long" in {
-        val form = CUSCode.form.bind(formData("Yes", Some("ABCD12345")))
+        val form = CusCode.form.bind(formData("Yes", Some("ABCD12345")))
 
         form.errors mustBe Seq(FormError(cusCodeKey, "declaration.cusCode.error.length"))
       }
 
       "provided with code too short" in {
-        val form = CUSCode.form.bind(formData("Yes", Some("ABCD123")))
+        val form = CusCode.form.bind(formData("Yes", Some("ABCD123")))
 
         form.errors mustBe Seq(FormError(cusCodeKey, "declaration.cusCode.error.length"))
       }
 
       "provided with non-alphanumeric code" in {
-        val form = CUSCode.form.bind(formData("Yes", Some("!2345678")))
+        val form = CusCode.form.bind(formData("Yes", Some("!2345678")))
 
         form.errors mustBe Seq(FormError(cusCodeKey, "declaration.cusCode.error.specialCharacters"))
       }
 
       "provided with no code when user said yes" in {
-        val form = CUSCode.form.bind(formData("Yes", None))
+        val form = CusCode.form.bind(formData("Yes", None))
 
         form.errors mustBe Seq(FormError(cusCodeKey, "declaration.cusCode.error.empty"))
       }
@@ -56,13 +56,13 @@ class CUSCodeSpec extends WordSpec with MustMatchers {
 
     "return form without errors" when {
       "provided with valid input when user said Yes" in {
-        val form = CUSCode.form.bind(formData("Yes", Some("1234ABCD")))
+        val form = CusCode.form.bind(formData("Yes", Some("1234ABCD")))
 
         form.hasErrors must be(false)
       }
 
       "provided with no input when user said No" in {
-        val form = CUSCode.form.bind(formData("No", None))
+        val form = CusCode.form.bind(formData("No", None))
 
         form.hasErrors must be(false)
       }
