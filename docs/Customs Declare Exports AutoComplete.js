@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.13
+// @version      1.14
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -83,7 +83,7 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs("/customs-declare-exports/declaration/consignment-references")) {
-        document.getElementById('lrn').value = 'JasTest4';
+        document.getElementById('lrn').value = 'QSLRN' + Math.floor(Math.random() * 8999) + 100;
         document.getElementById('ducr_ducr').value = '8GB12345' + Math.floor(Math.random() * 8999) + 100 + '-101SHIP1';
         document.getElementsByClassName('button')[0].click()
     }
@@ -129,11 +129,11 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs("/customs-declare-exports/declaration/destination-country")) {
-        selectFromAutoPredict(document.getElementById("country-container"), "GB");
+        selectFromAutoPredict(document.getElementById("country-container"), "DE");
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs("/customs-declare-exports/declaration/country-of-routing")) {
-        document.getElementById('No').click()
+        document.getElementById('Yes').click()
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs("/customs-declare-exports/declaration/countries-of-routing")) {
@@ -206,8 +206,8 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/commodity-details')) {
-        document.getElementById('combinedNomenclatureCode').value ='12345678';
-        document.getElementById('descriptionOfGoods').value ='Copper pipe (15mm x 3m)';
+        document.getElementById('combinedNomenclatureCode').value ='46021910';
+        document.getElementById('descriptionOfGoods').value ='Straw for bottles';
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/un-dangerous-goods-code')) {
@@ -262,7 +262,7 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/warehouse-identification')) {
-        document.getElementById('identificationNumber').value ='R1234567GB';
+        //document.getElementById('identificationNumber').value ='R1234567GB';
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/supervising-customs-office')) {
