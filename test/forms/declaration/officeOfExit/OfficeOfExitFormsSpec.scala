@@ -16,11 +16,10 @@
 
 package forms.declaration.officeOfExit
 
-import helpers.views.declaration.OfficeOfExitMessages
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.FormError
 
-class OfficeOfExitFormsSpec extends WordSpec with MustMatchers with OfficeOfExitMessages {
+class OfficeOfExitFormsSpec extends WordSpec with MustMatchers {
 
   trait SetUp {
     val officeFieldId = "officeId"
@@ -46,7 +45,7 @@ class OfficeOfExitFormsSpec extends WordSpec with MustMatchers with OfficeOfExit
         val errors = supplementaryForm.fillAndValidate(data).errors
 
         errors.length must be(1)
-        errors.head must be(FormError(officeFieldId, officeOfExitEmpty))
+        errors.head must be(FormError(officeFieldId, "declaration.officeOfExit.empty"))
       }
 
       "office of exit is too short" in new SupplementarySetUp {
@@ -55,7 +54,7 @@ class OfficeOfExitFormsSpec extends WordSpec with MustMatchers with OfficeOfExit
         val errors = supplementaryForm.fillAndValidate(data).errors
 
         errors.length must be(1)
-        errors.head must be(FormError(officeFieldId, officeOfExitLength))
+        errors.head must be(FormError(officeFieldId, "declaration.officeOfExit.length"))
       }
 
       "office of exit is too long" in new SupplementarySetUp {
@@ -64,7 +63,7 @@ class OfficeOfExitFormsSpec extends WordSpec with MustMatchers with OfficeOfExit
         val errors = supplementaryForm.fillAndValidate(data).errors
 
         errors.length must be(1)
-        errors.head must be(FormError(officeFieldId, officeOfExitLength))
+        errors.head must be(FormError(officeFieldId, "declaration.officeOfExit.length"))
       }
 
       "office of exit contain special characters" in new SupplementarySetUp {
@@ -73,7 +72,7 @@ class OfficeOfExitFormsSpec extends WordSpec with MustMatchers with OfficeOfExit
         val errors = supplementaryForm.fillAndValidate(data).errors
 
         errors.length must be(1)
-        errors.head must be(FormError(officeFieldId, officeOfExitSpecialCharacters))
+        errors.head must be(FormError(officeFieldId, "declaration.officeOfExit.specialCharacters"))
       }
     }
 
@@ -99,8 +98,8 @@ class OfficeOfExitFormsSpec extends WordSpec with MustMatchers with OfficeOfExit
         val errors = standardForm.fillAndValidate(data).errors
 
         errors.length must be(2)
-        errors(0) must be(FormError(officeFieldId, officeOfExitEmpty))
-        errors(1) must be(FormError(circumstancesCodeFieldId, circumstancesCodeError))
+        errors(0) must be(FormError(officeFieldId, "declaration.officeOfExit.empty"))
+        errors(1) must be(FormError(circumstancesCodeFieldId, "standard.officeOfExit.circumstancesCode.error"))
       }
 
       "office of exit too short" in new StandardSetUp {
@@ -109,7 +108,7 @@ class OfficeOfExitFormsSpec extends WordSpec with MustMatchers with OfficeOfExit
         val errors = standardForm.fillAndValidate(data).errors
 
         errors.length must be(1)
-        errors(0) must be(FormError(officeFieldId, officeOfExitLength))
+        errors(0) must be(FormError(officeFieldId, "declaration.officeOfExit.length"))
       }
 
       "office of exit too long" in new StandardSetUp {
@@ -118,7 +117,7 @@ class OfficeOfExitFormsSpec extends WordSpec with MustMatchers with OfficeOfExit
         val errors = standardForm.fillAndValidate(data).errors
 
         errors.length must be(1)
-        errors(0) must be(FormError(officeFieldId, officeOfExitLength))
+        errors(0) must be(FormError(officeFieldId, "declaration.officeOfExit.length"))
       }
 
       "office of exit contains special characters" in new StandardSetUp {
@@ -126,7 +125,7 @@ class OfficeOfExitFormsSpec extends WordSpec with MustMatchers with OfficeOfExit
         val errors = standardForm.fillAndValidate(data).errors
 
         errors.length must be(1)
-        errors(0) must be(FormError(officeFieldId, officeOfExitSpecialCharacters))
+        errors(0) must be(FormError(officeFieldId, "declaration.officeOfExit.specialCharacters"))
       }
 
       "circumstances code is incorrect" in new StandardSetUp {
@@ -135,7 +134,7 @@ class OfficeOfExitFormsSpec extends WordSpec with MustMatchers with OfficeOfExit
         val errors = standardForm.fillAndValidate(data).errors
 
         errors.length must be(1)
-        errors.head must be(FormError(circumstancesCodeFieldId, circumstancesCodeError))
+        errors.head must be(FormError(circumstancesCodeFieldId, "standard.officeOfExit.circumstancesCode.error"))
       }
     }
   }

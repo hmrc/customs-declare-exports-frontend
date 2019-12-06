@@ -21,7 +21,7 @@ import config.AppConfig
 import forms.Choice
 import forms.Choice.AllowedChoiceValues.CreateDec
 import forms.declaration.DeclarationChoice
-import helpers.views.declaration.{ChoiceMessages, CommonMessages}
+import helpers.views.declaration.CommonMessages
 import models.DeclarationType
 import org.jsoup.nodes.Document
 import org.scalatest.Matchers._
@@ -34,7 +34,7 @@ import views.html.declaration.declaration_choice
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarationChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessages with Stubs with Injector {
+class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   private val form: Form[DeclarationChoice] = DeclarationChoice.form()
   private val choicePage = new declaration_choice(mainTemplate, instanceOf[AppConfig])

@@ -18,15 +18,14 @@ package unit.controllers.declaration
 
 import controllers.declaration.CommodityDetailsController
 import forms.declaration.CommodityDetails
-import models.DeclarationType.DeclarationType
-import models.{DeclarationType, Mode}
+import models.DeclarationType._
+import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.Call
+import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -84,8 +83,6 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
 
       "display page method is invoked and cache contains data" in {
 
-        withNewCaching(aDeclaration())
-
         val details = CommodityDetails(Some("12345678"), "Description")
         val item = anItem(withCommodityDetails(details))
         withNewCaching(aDeclaration(withItems(item)))
@@ -114,63 +111,42 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    "return 303 (SEE_OTHER)" when {
+    onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL)() { declaration =>
+      "return 303 (SEE_OTHER) and redirect to UN Dangerous Goods Code page" in {
 
-      def redirectForDeclarationType(declarationType: DeclarationType, form: CommodityDetails, call: Call): Unit =
-        "redirect" in {
-          withNewCaching(aDeclaration(withType(declarationType)))
+        withNewCaching(declaration)
+        val correctForm = Json.toJson(CommodityDetails(Some("12345678"), "Description"))
 
-          val correctForm = Json.toJson(form)
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
 
-          val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe call
-        }
-
-      "submit for Standard declaration" should {
-
-        behave like redirectForDeclarationType(
-          DeclarationType.STANDARD,
-          CommodityDetails(Some("12345678"), "Description"),
-          controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
-        )
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
       }
+    }
 
-      "submit for Supplementary declaration" should {
+    onJourney(SIMPLIFIED)() { declaration =>
+      "return 303 (SEE_OTHER) and redirect to UN Dangerous Goods Code page" in {
 
-        behave like redirectForDeclarationType(
-          DeclarationType.SUPPLEMENTARY,
-          CommodityDetails(Some("12345678"), "Description"),
-          controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
-        )
+        withNewCaching(declaration)
+        val correctForm = Json.toJson(CommodityDetails(None, "Description"))
+
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
       }
+    }
 
-      "submit for Simplified declaration" should {
+    onJourney(CLEARANCE)() { declaration =>
+      "return 303 (SEE_OTHER) and redirect to UN Dangerous Goods Code page" in {
 
-        behave like redirectForDeclarationType(
-          DeclarationType.SIMPLIFIED,
-          CommodityDetails(None, "Description"),
-          controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
-        )
-      }
+        withNewCaching(declaration)
+        val correctForm = Json.toJson(CommodityDetails(Some("12345678"), "Description"))
 
-      "submit for Occasional declaration" should {
+        val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
 
-        behave like redirectForDeclarationType(
-          DeclarationType.OCCASIONAL,
-          CommodityDetails(Some("12345678"), "Description"),
-          controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
-        )
-      }
-
-      "submit for Clearance declaration" should {
-
-        behave like redirectForDeclarationType(
-          DeclarationType.CLEARANCE,
-          CommodityDetails(Some("12345678"), "Description"),
-          controllers.declaration.routes.CUSCodeController.displayPage(Mode.Normal, itemId)
-        )
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.CUSCodeController.displayPage(Mode.Normal, itemId)
       }
     }
   }

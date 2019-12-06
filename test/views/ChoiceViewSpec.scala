@@ -20,7 +20,7 @@ import base.Injector
 import com.typesafe.config.{Config, ConfigFactory}
 import config.AppConfig
 import forms.Choice
-import helpers.views.declaration.{ChoiceMessages, CommonMessages}
+import helpers.views.declaration.CommonMessages
 import org.jsoup.nodes.Document
 import org.scalatest.Matchers._
 import play.api.Mode.Test
@@ -38,7 +38,7 @@ import views.html.components.errorSummary
 import views.tags.ViewTest
 
 @ViewTest
-class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessages with Stubs with Injector {
+class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   private val form: Form[Choice] = Choice.form()
   private val choicePage = instanceOf[choice_page]
@@ -118,7 +118,7 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#value")
 
-      view.getElementsByClass("#govuk-error-message").text() contains messages(choiceEmpty)
+      view.getElementsByClass("#govuk-error-message").text() contains messages("choicePage.input.error.empty")
     }
 
     "display error when choice is incorrect" in {
@@ -128,7 +128,7 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#value")
 
-      view.getElementsByClass("#govuk-error-message").text() contains messages(choiceError)
+      view.getElementsByClass("#govuk-error-message").text() contains messages("choicePage.input.error.incorrectValue")
     }
   }
 
@@ -178,15 +178,15 @@ class ChoiceViewSpec extends UnitViewSpec with ChoiceMessages with CommonMessage
   }
   private def ensureAllLabelTextIsCorrect(view: Document): Unit = {
     view.getElementsByTag("label").size mustBe 4
-    view.getElementsByAttributeValue("for", "CRT").text() mustBe createDec
-    view.getElementsByAttributeValue("for", "SUB").text() mustBe recentDec
-    view.getElementsByAttributeValue("for", "CAN").text() mustBe cancelDec
-    view.getElementsByAttributeValue("for", "CON").text() mustBe continueDec
+    view.getElementsByAttributeValue("for", "CRT").text() mustBe "declaration.choice.CRT"
+    view.getElementsByAttributeValue("for", "SUB").text() mustBe "declaration.choice.SUB"
+    view.getElementsByAttributeValue("for", "CAN").text() mustBe "declaration.choice.CAN"
+    view.getElementsByAttributeValue("for", "CON").text() mustBe "declaration.choice.CON"
   }
 
   private def ensureCreateLabelIsCorrect(view: Document): Unit = {
     view.getElementsByTag("label").size mustBe 1
-    view.getElementsByAttributeValue("for", "CRT").text() mustBe createDec
+    view.getElementsByAttributeValue("for", "CRT").text() mustBe "declaration.choice.CRT"
   }
 
   private def ensureRadioIsChecked(view: Document, elementId: String): Unit = {

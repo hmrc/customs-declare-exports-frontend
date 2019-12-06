@@ -21,7 +21,7 @@ import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.declaration.ConsignmentReferences
 import forms.{Ducr, Lrn}
-import helpers.views.declaration.{CommonMessages, ConsignmentReferencesMessages}
+import helpers.views.declaration.CommonMessages
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -32,7 +32,7 @@ import views.html.declaration.consignment_references
 import views.tags.ViewTest
 
 @ViewTest
-class ConsignmentReferencesViewSpec extends UnitViewSpec with ConsignmentReferencesMessages with CommonMessages with Stubs with Injector {
+class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   private val properDUCR = "7GB000000000000-12345"
   private val incorrectDUCR = "7GB000000000000-1234512345123451234512345"
@@ -64,7 +64,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with ConsignmentReferen
 
     "display page title" in {
 
-      createView().getElementById("title").text() mustBe messages(header)
+      createView().getElementById("title").text() mustBe messages("supplementary.consignmentReferences.header")
     }
 
     "display section header" in {
@@ -76,8 +76,8 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with ConsignmentReferen
 
       val view = createView()
 
-      view.getElementById("ducr_ducr-label").text() mustBe messages(ducrInfo)
-      view.getElementById("ducr_ducr-hint").text() mustBe messages(ducrHint)
+      view.getElementById("ducr_ducr-label").text() mustBe messages("supplementary.consignmentReferences.ducr.info")
+      view.getElementById("ducr_ducr-hint").text() mustBe messages("supplementary.consignmentReferences.ducr.hint")
       view.getElementById("ducr_ducr").attr("value") mustBe empty
     }
 
@@ -85,8 +85,8 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with ConsignmentReferen
 
       val view = createView()
 
-      view.getElementById("lrn-label").text() mustBe messages(lrnInfo)
-      view.getElementById("lrn-hint").text() mustBe messages(lrnHint)
+      view.getElementById("lrn-label").text() mustBe messages("supplementary.consignmentReferences.lrn.info")
+      view.getElementById("lrn-hint").text() mustBe messages("supplementary.consignmentReferences.lrn.hint")
       view.getElementById("lrn").attr("value") mustBe empty
     }
 
@@ -122,7 +122,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with ConsignmentReferen
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("lrn", "#lrn")
 
-      view.select("#error-message-lrn-input").text() mustBe messages(lrnEmpty)
+      view.select("#error-message-lrn-input").text() mustBe messages("supplementary.consignmentReferences.lrn.error.empty")
     }
 
     "display error when LRN is longer then 22 characters" in {
@@ -136,7 +136,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with ConsignmentReferen
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("lrn", "#lrn")
 
-      view.select("#error-message-lrn-input").text() mustBe messages(lrnLength)
+      view.select("#error-message-lrn-input").text() mustBe messages("supplementary.consignmentReferences.lrn.error.length")
     }
 
     "display error when LRN contains special character" in {
@@ -147,7 +147,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with ConsignmentReferen
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("lrn", "#lrn")
 
-      view.select("#error-message-lrn-input").text() mustBe messages(lrnSpecialCharacter)
+      view.select("#error-message-lrn-input").text() mustBe messages("supplementary.consignmentReferences.lrn.error.specialCharacter")
     }
 
     "display error when DUCR is incorrect and LRN empty" in {
@@ -160,7 +160,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with ConsignmentReferen
       view must haveFieldErrorLink("lrn", "#lrn")
 
       view.select("#error-message-ducr_ducr-input").text() mustBe messages(ducrError)
-      view.select("#error-message-lrn-input").text() mustBe messages(lrnEmpty)
+      view.select("#error-message-lrn-input").text() mustBe messages("supplementary.consignmentReferences.lrn.error.empty")
     }
 
     "display error when DUCR is incorrect and LRN is longer then 22 characters" in {
@@ -176,7 +176,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with ConsignmentReferen
       view must haveFieldErrorLink("lrn", "#lrn")
 
       view.select("#error-message-ducr_ducr-input").text() mustBe messages(ducrError)
-      view.select("#error-message-lrn-input").text() mustBe messages(lrnLength)
+      view.select("#error-message-lrn-input").text() mustBe messages("supplementary.consignmentReferences.lrn.error.length")
     }
 
     "display error when DUCR is incorrect and LRN contains special character" in {
@@ -189,7 +189,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with ConsignmentReferen
       view must haveFieldErrorLink("lrn", "#lrn")
 
       view.select("#error-message-ducr_ducr-input").text() mustBe messages(ducrError)
-      view.select("#error-message-lrn-input").text() mustBe messages(lrnSpecialCharacter)
+      view.select("#error-message-lrn-input").text() mustBe messages("supplementary.consignmentReferences.lrn.error.specialCharacter")
     }
   }
 

@@ -20,7 +20,7 @@ import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.declaration.DeclarationAdditionalActors
-import helpers.views.declaration.{CommonMessages, DeclarationAdditionalActorsMessages}
+import helpers.views.declaration.CommonMessages
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
@@ -33,8 +33,7 @@ import views.html.declaration.declaration_additional_actors
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarationAdditionalActorsViewSpec
-    extends UnitViewSpec with ExportsTestData with DeclarationAdditionalActorsMessages with CommonMessages with Stubs with Injector {
+class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
 
   private val form: Form[DeclarationAdditionalActors] = DeclarationAdditionalActors.form()
   private val declarationAdditionalActorsPage = new declaration_additional_actors(mainTemplate)
@@ -72,7 +71,7 @@ class DeclarationAdditionalActorsViewSpec
 
       "display page title" in {
 
-        view.getElementById("title").text() mustBe messages(title)
+        view.getElementById("title").text() mustBe messages("supplementary.additionalActors.title")
       }
 
       "display section header" in {

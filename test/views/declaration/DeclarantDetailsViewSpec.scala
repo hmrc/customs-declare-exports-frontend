@@ -20,7 +20,7 @@ import base.TestHelper
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.declaration.{DeclarantDetails, EntityDetails}
-import helpers.views.declaration.{CommonMessages, DeclarantDetailsMessages}
+import helpers.views.declaration.CommonMessages
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -31,7 +31,7 @@ import views.html.declaration.declarant_details
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with DeclarantDetailsMessages with CommonMessages with Stubs {
+class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs {
 
   private val form: Form[DeclarantDetails] = DeclarantDetails.form()
   private val declarantDetailsPage = new declarant_details(mainTemplate)
@@ -42,7 +42,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with De
 
     "display page title" in {
 
-      createView().getElementById("title").text() mustBe messages(title)
+      createView().getElementById("title").text() mustBe messages("supplementary.declarant.title")
     }
 
     "display section header" in {
@@ -56,7 +56,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with De
 
       val view = createView()
 
-      view.getElementById("details_eori-label").text() mustBe messages(declarantEori)
+      view.getElementById("details_eori-label").text() mustBe messages("supplementary.declarant.eori.info")
       view.getElementById("details_eori").attr("value") mustBe empty
     }
 
