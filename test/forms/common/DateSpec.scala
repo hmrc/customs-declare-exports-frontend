@@ -17,13 +17,18 @@
 package forms.common
 
 import forms.common.Date._
-import helpers.views.components.DateMessages
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-class DateSpec extends WordSpec with MustMatchers with DateMessages {
+class DateSpec extends WordSpec with MustMatchers {
   import DateSpec._
+
+  val dateFormatError: String = "dateTime.date.error.format"
+  val dateOutOfRangeError: String = "dateTime.date.error.outOfRange"
+  val dayEmptyFieldError: String = "dateTime.date.day.error.empty"
+  val monthEmptyFieldError: String = "dateTime.date.month.error.empty"
+  val yearEmptyFieldError: String = "dateTime.date.year.error.empty"
 
   "Date mapping validation rules" should {
 

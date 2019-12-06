@@ -25,7 +25,6 @@ import forms.declaration.additionaldocuments.DocumentWriteOff._
 import forms.declaration.additionaldocuments.DocumentWriteOffSpec._
 import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.additionaldocuments.DocumentsProduced._
-import helpers.views.components.DateMessages
 import helpers.views.declaration.CommonMessages
 import models.Mode
 import org.jsoup.nodes.Document
@@ -39,7 +38,7 @@ import views.html.declaration.documents_produced
 import views.tags.ViewTest
 
 @ViewTest
-class DocumentsProducedViewSpec extends UnitViewSpec with DateMessages with CommonMessages with Stubs with Injector with OptionValues {
+class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with OptionValues {
 
   private val itemId = "a7sc78"
   private val mode = Mode.Normal
@@ -243,7 +242,7 @@ class DocumentsProducedViewSpec extends UnitViewSpec with DateMessages with Comm
         checkErrorsSummary(view)
         view must haveFieldErrorLink(s"$dateOfValidityKey", s"#$dateOfValidityKey")
 
-        view.select(s"#error-message-$dateOfValidityKey-input").text() mustBe messages(dateOutOfRangeError)
+        view.select(s"#error-message-$dateOfValidityKey-input").text() mustBe messages("dateTime.date.error.outOfRange")
       }
 
       "provided with non-existing month and day" in {
@@ -256,7 +255,7 @@ class DocumentsProducedViewSpec extends UnitViewSpec with DateMessages with Comm
         checkErrorsSummary(view)
         view must haveFieldErrorLink(s"$dateOfValidityKey", s"#$dateOfValidityKey")
 
-        view.select(s"#error-message-$dateOfValidityKey-input").text() mustBe messages(dateFormatError)
+        view.select(s"#error-message-$dateOfValidityKey-input").text() mustBe messages("dateTime.date.error.format")
       }
     }
 
@@ -388,7 +387,7 @@ class DocumentsProducedViewSpec extends UnitViewSpec with DateMessages with Comm
       view.select(s"#error-message-$documentStatusReasonKey-input").text() mustBe messagesKey("supplementary.addDocument.documentStatusReason.error")
       view.select(s"#error-message-$issuingAuthorityNameKey-input").text() mustBe
         messagesKey("supplementary.addDocument.issuingAuthorityName.error.length")
-      view.select(s"#error-message-$dateOfValidityKey-input").text() mustBe messagesKey(dateFormatError)
+      view.select(s"#error-message-$dateOfValidityKey-input").text() mustBe messagesKey("dateTime.date.error.format")
       view.select(s"#error-message-${documentWriteOffKey}_$measurementUnitKey-input").text() mustBe
         messagesKey("supplementary.addDocument.measurementUnit.error.length")
       view.select(s"#error-message-${documentWriteOffKey}_$documentQuantityKey-input").text() mustBe

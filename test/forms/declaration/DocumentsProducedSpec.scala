@@ -23,12 +23,11 @@ import forms.declaration.additionaldocuments.DocumentWriteOff._
 import forms.declaration.additionaldocuments.DocumentWriteOffSpec._
 import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
 import forms.declaration.additionaldocuments.DocumentsProduced._
-import helpers.views.components.DateMessages
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 
-class DocumentsProducedSpec extends WordSpec with MustMatchers with DateMessages {
+class DocumentsProducedSpec extends WordSpec with MustMatchers {
 
   import DocumentsProducedSpec._
 
@@ -153,7 +152,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers with DateMessages
 
           val input =
             JsObject(Map(dateOfValidityKey -> JsObject(Map(yearKey -> JsString("2000"), monthKey -> JsString("13"), dayKey -> JsString("32")))))
-          val expectedErrors = Seq(FormError(dateOfValidityKey, dateFormatError))
+          val expectedErrors = Seq(FormError(dateOfValidityKey, "dateTime.date.error.format"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
