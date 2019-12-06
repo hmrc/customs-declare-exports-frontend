@@ -54,7 +54,7 @@ class CusCodeController @Inject()(
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[CusCode]) => Future.successful(BadRequest(cusCodePage(mode, itemId, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(cusCodePage(mode, itemId, formWithErrors))),
         validForm =>
           updateExportsCache(itemId, validForm).map { _ =>
             navigator.continueTo(nextPage(mode, itemId, request.declarationType))
