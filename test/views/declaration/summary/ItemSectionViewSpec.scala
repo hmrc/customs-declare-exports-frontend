@@ -162,17 +162,17 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
     "has package information section" in {
 
-      view.getElementById("package-information").text() mustBe messages("declaration.summary.items.item.packageInformation")
+      view.getElementById("package-information-1").text() mustBe messages("declaration.summary.items.item.packageInformation")
     }
 
     "has union and national codes" in {
 
-      view.getElementById("additional-information").text() mustBe messages("declaration.summary.items.item.additionalInformation")
+      view.getElementById("additional-information-1").text() mustBe messages("declaration.summary.items.item.additionalInformation")
     }
 
     "has supporting documents" in {
 
-      view.getElementById("supporting-documents").text() mustBe messages("declaration.summary.items.item.supportingDocuments")
+      view.getElementById("supporting-documents-1").text() mustBe messages("declaration.summary.items.item.supportingDocuments")
     }
   }
 }

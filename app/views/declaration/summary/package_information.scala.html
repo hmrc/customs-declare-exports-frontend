@@ -19,23 +19,23 @@
 @import models.viewmodels.HtmlTableRow
 @import models.Mode
 
-@(itemId: String, packageInformation: Seq[PackageInformation])(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
+@(itemId: String, itemNo: Int, packageInformation: Seq[PackageInformation])(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
 @if(packageInformation.nonEmpty){
-    <caption class="heading-small"><span id="package-information">@messages("declaration.summary.items.item.packageInformation")</span></caption>
+    <caption class="heading-small"><span id="package-information-@itemNo">@messages("declaration.summary.items.item.packageInformation")</span></caption>
     <tr class="section">
-        <td class="bold"><span id="package-information-type">@messages("declaration.summary.items.item.packageInformation.type")</span></td>
-        <td class="bold"><span id="package-information-number">@messages("declaration.summary.items.item.packageInformation.number")</span></td>
-        <td class="bold"><span id="package-information-markings">@messages("declaration.summary.items.item.packageInformation.markings")</span></td>
+        <td class="bold"><span id="package-information-type-@itemNo">@messages("declaration.summary.items.item.packageInformation.type")</span></td>
+        <td class="bold"><span id="package-information-number-@itemNo">@messages("declaration.summary.items.item.packageInformation.number")</span></td>
+        <td class="bold"><span id="package-information-markings-@itemNo">@messages("declaration.summary.items.item.packageInformation.markings")</span></td>
         <td></td>
     </tr>
     @packageInformation.zipWithIndex.map { case (information, index) =>
         <tr class="section">
-            <td><span id="package-information-@index-code">@information.typesOfPackagesText</span></td>
-            <td><span id="package-information-@index-number">@information.numberOfPackages</span></td>
-            <td><span id="package-information-@index-marks">@information.shippingMarks</span></td>
+            <td><span id="package-information-@itemNo-code-@index">@information.typesOfPackagesText</span></td>
+            <td><span id="package-information-@itemNo-number-@index">@information.numberOfPackages</span></td>
+            <td><span id="package-information-@itemNo-marks-@index">@information.shippingMarks</span></td>
             <td class="link-right">
-                <a href="@controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, itemId)" id="package-information-@index-change">@messages("site.change")</a>
+                <a href="@controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, itemId)" id="package-information-@itemNo-change-@index">@messages("site.change")</a>
             </td>
         </tr>
     }
