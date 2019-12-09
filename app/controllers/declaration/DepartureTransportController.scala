@@ -21,11 +21,11 @@ import controllers.navigation.Navigator
 import forms.declaration.DepartureTransport
 import forms.declaration.DepartureTransport._
 import javax.inject.Inject
-import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.departure_transport
@@ -42,23 +42,35 @@ class DepartureTransportController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.departureTransport match {
-      case Some(data) => Ok(departureTransportPage(mode, form().fill(data)))
-      case _          => Ok(departureTransportPage(mode, form()))
-    }
-  }
+  private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.CLEARANCE)
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form()
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[DepartureTransport]) => Future.successful(BadRequest(departureTransportPage(mode, formWithErrors))),
-        borderTransport =>
-          updateCache(borderTransport)
-            .map(_ => navigator.continueTo(routes.BorderTransportController.displayPage(mode)))
-      )
-  }
+  def displayPage(mode: Mode): Action[AnyContent] =
+    (authenticate andThen journeyType(validTypes: _*)) { implicit request =>
+      request.cacheModel.departureTransport match {
+        case Some(data) => Ok(departureTransportPage(mode, form().fill(data)))
+        case _          => Ok(departureTransportPage(mode, form()))
+      }
+    }
+
+  def submitForm(mode: Mode): Action[AnyContent] =
+    (authenticate andThen journeyType(validTypes: _*)).async { implicit request =>
+      form()
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[DepartureTransport]) => Future.successful(BadRequest(departureTransportPage(mode, formWithErrors))),
+          borderTransport =>
+            updateCache(borderTransport)
+              .map(_ => nextPage(mode))
+        )
+    }
+
+  private def nextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
+    request.declarationType match {
+      case DeclarationType.CLEARANCE =>
+        navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode))
+      case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
+        navigator.continueTo(controllers.declaration.routes.BorderTransportController.displayPage(mode))
+    }
 
   private def updateCache(formData: DepartureTransport)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(_.copy(departureTransport = Some(formData)))

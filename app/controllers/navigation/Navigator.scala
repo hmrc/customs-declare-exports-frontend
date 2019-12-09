@@ -83,9 +83,7 @@ object Navigator {
   }
 
   val clearance: PartialFunction[DeclarationPage, Mode => Call] = {
-    case BorderTransport             => controllers.declaration.routes.DepartureTransportController.displayPage
-    case TransportPayment            => controllers.declaration.routes.BorderTransportController.displayPage
-    case ContainerFirst              => controllers.declaration.routes.TransportPaymentController.displayPage
+    case ContainerFirst              => controllers.declaration.routes.DepartureTransportController.displayPage
     case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
     case Document                    => controllers.declaration.routes.NatureOfTransactionController.displayPage
     case OriginationCountryPage      => controllers.declaration.routes.DeclarationHolderController.displayPage

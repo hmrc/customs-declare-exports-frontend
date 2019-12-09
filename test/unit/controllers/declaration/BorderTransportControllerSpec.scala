@@ -19,15 +19,14 @@ package unit.controllers.declaration
 import controllers.declaration.BorderTransportController
 import forms.declaration.TransportCodes.IMOShipIDNumber
 import models.{DeclarationType, ExportsDeclaration, Mode}
-import play.api.libs.json.Json
-import models.{DeclarationType, Mode}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.libs.json.{JsObject, JsString}
+import play.api.mvc.Call
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.declaration.border_transport
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 
 class BorderTransportControllerSpec extends ControllerSpec {
 
@@ -64,7 +63,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
       )
     )
 
-  def borderTransportController(declarationFactory: () => ExportsDeclaration): Unit =
+  def borderTransportController(declarationFactory: () => ExportsDeclaration, nextPage: Call): Unit =
     "Transport Details Controller" should {
 
       "return 200 (OK)" when {
@@ -101,69 +100,70 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
       "return 303 (SEE_OTHER)" when {
         "valid options are selected" in {
+          withNewCaching(declarationFactory())
+
           val correctForm = formData(IMOShipIDNumber, "SHIP001", "United Kingdom")
+
+          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe nextPage
         }
       }
+    }
+
+  def borderTransportControllerForInvalidJourney(declarationFactory: () => ExportsDeclaration): Unit =
+    "Transport Details Controller" should {
+
+      "return 303 (SEE_OTHER)" when {
+
+        "display page method is invoked" in {
+          withNewCaching(aDeclarationAfter(declarationFactory(), withBorderTransport()))
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+        }
+
+        "valid options are selected" in {
+          withNewCaching(declarationFactory())
+
+          val correctForm = formData(IMOShipIDNumber, "SHIP001", "United Kingdom")
+
+          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+        }
+      }
+
     }
 
   "Transport Details Controller" when {
     "we are on supplementary declaration journey" should {
       def declarationFactory() = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
-      behave like borderTransportController(declarationFactory)
-
-      "return 303 (SEE_OTHER) to Containers" when {
-        "valid options are selected" in {
-          withNewCaching(declarationFactory())
-
-          val correctForm = formData(IMOShipIDNumber, "SHIP001", "United Kingdom")
-
-          val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
-            .displayContainerSummary(Mode.Draft)
-        }
-
-      }
+      behave like borderTransportController(declarationFactory, controllers.declaration.routes.TransportContainerController.displayContainerSummary())
     }
+
     "we are on standard declaration journey" should {
       def declarationFactory() = aDeclaration(withType(DeclarationType.STANDARD))
-      behave like borderTransportController(declarationFactory)
-
-      "return 303 (SEE_OTHER) to TransportPayment" when {
-        "valid options are selected" in {
-          withNewCaching(declarationFactory())
-
-          val correctForm = formData(IMOShipIDNumber, "SHIP001", "United Kingdom")
-
-          val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.TransportPaymentController
-            .displayPage(Mode.Draft)
-        }
-
-      }
+      behave like borderTransportController(declarationFactory, controllers.declaration.routes.TransportPaymentController.displayPage())
     }
+
     "we are on simplified declaration journey" should {
       def declarationFactory() = aDeclaration(withType(DeclarationType.SIMPLIFIED))
-      behave like borderTransportController(declarationFactory)
-
-      "return 303 (SEE_OTHER) to TransportPayment" when {
-        "valid options are selected" in {
-          withNewCaching(declarationFactory())
-
-          val correctForm = formData(IMOShipIDNumber, "SHIP001", "United Kingdom")
-
-          val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.TransportPaymentController
-            .displayPage(Mode.Draft)
-        }
-
-      }
+      behave like borderTransportControllerForInvalidJourney(declarationFactory)
     }
 
+    "we are on occasional declaration journey" should {
+      def declarationFactory() = aDeclaration(withType(DeclarationType.OCCASIONAL))
+      behave like borderTransportControllerForInvalidJourney(declarationFactory)
+    }
+
+    "we are on clearance declaration journey" should {
+      def declarationFactory() = aDeclaration(withType(DeclarationType.CLEARANCE))
+      behave like borderTransportControllerForInvalidJourney(declarationFactory)
+    }
   }
 }

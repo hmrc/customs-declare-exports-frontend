@@ -115,13 +115,29 @@ class TransportPaymentControllerSpec extends ControllerSpec {
           verify(transportPaymentPage, times(0)).apply(any(), any())(any(), any())
         }
 
-      for (decType <- DeclarationType.values) {
+      def controllerRedirectsToStartPageForInvalidType(decType: DeclarationType): Unit =
+        "accept submission and redirect" in {
+          withNewCaching(aDeclaration(withType(decType)))
+          val correctForm = formData(TransportPayment.other)
+
+          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+          verify(transportPaymentPage, times(0)).apply(any(), any())(any(), any())
+        }
+
+      for (decType <- DeclarationType.values.filter(_ != DeclarationType.CLEARANCE)) {
         s"we are on $decType journey" should {
           behave like controllerRedirectsToNextPage(
             decType,
             controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
           )
         }
+      }
+
+      "we are on a clearance request journey" should {
+        behave like controllerRedirectsToStartPageForInvalidType(DeclarationType.CLEARANCE)
       }
 
     }

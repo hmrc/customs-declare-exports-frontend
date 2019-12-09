@@ -22,7 +22,7 @@ import forms.declaration.TransportPayment._
 import forms.declaration.{BorderTransport, TransportPayment}
 import javax.inject.Inject
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
@@ -41,21 +41,25 @@ class TransportPaymentController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.transportInformation.flatMap(_.transportPayment) match {
-      case Some(data) => Ok(transportPayment(mode, form().fill(data)))
-      case _          => Ok(transportPayment(mode, form()))
-    }
-  }
+  private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form()
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(transportPayment(mode, formWithErrors))),
-        transportPayment => updateCache(transportPayment).map(_ => nextPage(mode, request.cacheModel.borderTransport))
-      )
-  }
+  def displayPage(mode: Mode): Action[AnyContent] =
+    (authenticate andThen journeyType(validTypes: _*)) { implicit request =>
+      request.cacheModel.transportInformation.flatMap(_.transportPayment) match {
+        case Some(data) => Ok(transportPayment(mode, form().fill(data)))
+        case _          => Ok(transportPayment(mode, form()))
+      }
+    }
+
+  def submitForm(mode: Mode): Action[AnyContent] =
+    (authenticate andThen journeyType(validTypes: _*)).async { implicit request =>
+      form()
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(transportPayment(mode, formWithErrors))),
+          transportPayment => updateCache(transportPayment).map(_ => nextPage(mode, request.cacheModel.borderTransport))
+        )
+    }
 
   private def nextPage(mode: Mode, borderTransport: Option[BorderTransport])(implicit request: JourneyRequest[AnyContent]): Result =
     navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode))

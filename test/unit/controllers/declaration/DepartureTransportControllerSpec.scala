@@ -17,12 +17,11 @@
 package unit.controllers.declaration
 
 import controllers.declaration.{routes, DepartureTransportController}
-import forms.Choice
 import forms.declaration.DepartureTransport
 import forms.declaration.TransportCodes.{Maritime, WagonNumber}
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.Result
+import play.api.mvc.{Call, Result}
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
@@ -49,7 +48,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
     authorizedUser()
   }
 
-  def departureTransportController(declaration: () => ExportsDeclaration): Unit = {
+  def departureTransportController(declaration: () => ExportsDeclaration, nextPage: Call): Unit = {
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in {
@@ -93,20 +92,60 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.BorderTransportController.displayPage()
+        thePageNavigatedTo mustBe nextPage
       }
     }
   }
 
+  def departureTransportControllerWithInvalidType(declaration: () => ExportsDeclaration): Unit =
+    "Transport Details Controller" should {
+
+      "return 303 (SEE_OTHER)" when {
+
+        "display page method is invoked" in {
+          withNewCaching(aDeclarationAfter(declaration(), withBorderTransport()))
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+        }
+
+        "page is submitted" in {
+          withNewCaching(declaration())
+
+          val correctForm: JsValue = Json.toJson(DepartureTransport(Maritime, WagonNumber, "FAA"))
+
+          val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+        }
+      }
+
+    }
+
   "Border transport controller" when {
     "we are on standard declaration journey" should {
-      behave like departureTransportController(() => aDeclaration(withType(DeclarationType.STANDARD)))
+      behave like departureTransportController(() => aDeclaration(withType(DeclarationType.STANDARD)), routes.BorderTransportController.displayPage())
     }
     "we are on supplementary declaration journey" should {
-      behave like departureTransportController(() => aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
+      behave like departureTransportController(
+        () => aDeclaration(withType(DeclarationType.SUPPLEMENTARY)),
+        routes.BorderTransportController.displayPage()
+      )
+    }
+    "we are on clearance request journey" should {
+      behave like departureTransportController(
+        () => aDeclaration(withType(DeclarationType.CLEARANCE)),
+        routes.TransportContainerController.displayContainerSummary()
+      )
     }
     "we are on simplified declaration journey" should {
-      behave like departureTransportController(() => aDeclaration(withType(DeclarationType.SIMPLIFIED)))
+      behave like departureTransportControllerWithInvalidType(() => aDeclaration(withType(DeclarationType.SIMPLIFIED)))
+    }
+    "we are on occasional declaration journey" should {
+      behave like departureTransportControllerWithInvalidType(() => aDeclaration(withType(DeclarationType.OCCASIONAL)))
     }
   }
 
