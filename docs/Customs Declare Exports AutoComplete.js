@@ -287,8 +287,7 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/add-document')) {
-        let choice = GM_getValue('decType', 0);
-        if(choice == "SIMPLIFIED"){
+        if(getChoice() == "SIMPLIFIED"){
             document.getElementById('documentTypeCode').value ='C512';
             document.getElementById('documentIdentifier').value ='GBSDE717572504502811';
         } else {
