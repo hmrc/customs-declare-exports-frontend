@@ -103,6 +103,8 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
           status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+
           verify(mockCarrierDetailsPage, times(0)).apply(any(), any())(any(), any())
         }
       }
