@@ -20,8 +20,8 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.CarrierDetails
 import javax.inject.Inject
-import models.Mode
 import models.requests.JourneyRequest
+import models.{DeclarationType, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,9 +31,6 @@ import views.html.declaration.carrier_details
 
 import scala.concurrent.{ExecutionContext, Future}
 
-/**
-  * This controller is not used in supp dec journey
-  */
 class CarrierDetailsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
@@ -44,25 +41,27 @@ class CarrierDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.parties.carrierDetails match {
-      case Some(data) => Ok(carrierDetailsPage(mode, CarrierDetails.form().fill(data)))
-      case _          => Ok(carrierDetailsPage(mode, CarrierDetails.form()))
+  def displayPage(mode: Mode): Action[AnyContent] =
+    (authenticate andThen journeyType(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)) { implicit request =>
+      request.cacheModel.parties.carrierDetails match {
+        case Some(data) => Ok(carrierDetailsPage(mode, CarrierDetails.form().fill(data)))
+        case _          => Ok(carrierDetailsPage(mode, CarrierDetails.form()))
+      }
     }
-  }
 
-  def saveAddress(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    CarrierDetails
-      .form()
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[CarrierDetails]) => Future.successful(BadRequest(carrierDetailsPage(mode, formWithErrors))),
-        form =>
-          updateCache(form).map { _ =>
-            navigator.continueTo(routes.DeclarationAdditionalActorsController.displayPage(mode))
-        }
-      )
-  }
+  def saveAddress(mode: Mode): Action[AnyContent] =
+    (authenticate andThen journeyType(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)).async { implicit request =>
+      CarrierDetails
+        .form()
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[CarrierDetails]) => Future.successful(BadRequest(carrierDetailsPage(mode, formWithErrors))),
+          form =>
+            updateCache(form).map { _ =>
+              navigator.continueTo(routes.DeclarationAdditionalActorsController.displayPage(mode))
+          }
+        )
+    }
 
   private def updateCache(formData: CarrierDetails)(implicit req: JourneyRequest[AnyContent]) =
     updateExportsDeclarationSyncDirect(model => {

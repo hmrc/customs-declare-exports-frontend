@@ -16,57 +16,108 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.{routes, CarrierDetailsController}
-import forms.Choice
+import controllers.declaration.CarrierDetailsController
 import forms.declaration.{CarrierDetails, EntityDetails}
-import models.{DeclarationType, Mode}
+import models.DeclarationType._
+import models.Mode
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, times, verify, when}
+import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.declaration.carrier_details
 
 class CarrierDetailsControllerSpec extends ControllerSpec {
 
-  trait SetUp {
-    val carrierDetailsPage = new carrier_details(mainTemplate)
+  val mockCarrierDetailsPage = mock[carrier_details]
 
-    val controller = new CarrierDetailsController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockExportsCacheService,
-      navigator,
-      stubMessagesControllerComponents(),
-      carrierDetailsPage
-    )(ec)
+  val controller = new CarrierDetailsController(
+    mockAuthAction,
+    mockJourneyAction,
+    mockExportsCacheService,
+    navigator,
+    stubMessagesControllerComponents(),
+    mockCarrierDetailsPage
+  )(ec)
+
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
 
     authorizedUser()
-    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
+    when(mockCarrierDetailsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
-  "Carrier Details Controller" should {
+  override protected def afterEach(): Unit = {
+    super.afterEach()
+
+    reset(mockCarrierDetailsPage)
+  }
+
+  def theResponseForm: Form[CarrierDetails] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[CarrierDetails]])
+    verify(mockCarrierDetailsPage).apply(any(), captor.capture())(any(), any())
+    captor.getValue
+  }
+
+  "Carrier Details Controller display page" should {
 
     "return OK (200)" when {
 
-      "display page method is invoked and cache is empty" in new SetUp {
+      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL)() { declaration =>
+        "with valid journey type" in {
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+          val eori = Some("1234")
+          withNewCaching(aDeclarationAfter(declaration, withCarrierDetails(eori)))
 
-        status(result) must be(OK)
-      }
+          val result = controller.displayPage(Mode.Normal)(getRequest())
 
-      "display page method is invoked and cache contains data" in new SetUp {
+          status(result) mustBe OK
+          verify(mockCarrierDetailsPage, times(1)).apply(any(), any())(any(), any())
 
-        withNewCaching(aDeclaration(withCarrierDetails(Some("1234"))))
-
-        val result = controller.displayPage(Mode.Normal)(getRequest())
-
-        status(result) must be(OK)
+          theResponseForm.value mustBe Some(CarrierDetails(EntityDetails(eori, None)))
+        }
       }
     }
 
+    "return 303 (SEE_OTHER)" when {
+
+      "method is invoked and cache is empty" in {
+
+        withNoDeclaration()
+        val result = controller.displayPage(Mode.Normal)(getRequest())
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+
+        verify(mockCarrierDetailsPage, times(0)).apply(any(), any())(any(), any())
+      }
+
+      onJourney(SUPPLEMENTARY, CLEARANCE)() { declaration =>
+        "with invalid journey type" in {
+
+          withNewCaching(declaration)
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+
+          verify(mockCarrierDetailsPage, times(0)).apply(any(), any())(any(), any())
+        }
+      }
+    }
+  }
+
+  "Carrier Details Controller submit page" should {
+
     "return 400 (BAD_REQUEST)" when {
 
-      "form is incorrect" in new SetUp {
+      "form is incorrect" in {
+
+        withNewCaching(aDeclaration())
 
         val incorrectForm = Json.toJson(CarrierDetails(EntityDetails(None, None)))
 
@@ -78,15 +129,32 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
     "return 303 (SEE_OTHER)" when {
 
-      "information provided by user are correct" in new SetUp {
+      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL)() { declaration =>
+        "with valid journey type" in {
 
-        val correctForm = Json.toJson(CarrierDetails(EntityDetails(Some("12345678"), None)))
+          withNewCaching(declaration)
+          val correctForm = Json.toJson(CarrierDetails(EntityDetails(Some("12345678"), None)))
 
-        val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
+          val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.DeclarationAdditionalActorsController.displayPage()
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage()
+        }
       }
+
+      onJourney(SUPPLEMENTARY, CLEARANCE)() { declaration =>
+        "with invalid journey type" in {
+
+          withNewCaching(declaration)
+          val correctForm = Json.toJson(CarrierDetails(EntityDetails(Some("12345678"), None)))
+
+          val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+        }
+      }
+
     }
   }
 }
