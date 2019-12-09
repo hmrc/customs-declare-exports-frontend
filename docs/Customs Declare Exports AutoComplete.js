@@ -74,6 +74,14 @@ function currentPageIs(path) {
     return matches && matches.length > 0
 }
 
+function setChoice(choice) {
+    GM_setValue('decType', choice);
+}
+
+function getChoice() {
+    return GM_getValue('decType', 0);
+}
+
 function completePage() {
     if (currentPageIs('/customs-declare-exports/start')) {
         document.getElementsByClassName('button')[0].click()
@@ -85,11 +93,11 @@ function completePage() {
     if(currentPageIs("/customs-declare-exports/declaration/declaration-choice")){
         let choice = findRadioOption("type");
         if(choice){
-            GM_setValue('decType', choice);
+            setChoice(choice);
             document.getElementsByClassName('button')[0].click()
         } else {
             selectRadioOption(document.getElementById("type"), 0);
-            document.getElementsByClassName('button')[0].click());
+            document.getElementsByClassName('button')[0].click();
         }
     }
     if(currentPageIs("/customs-declare-exports/declaration/dispatch-location")){
@@ -138,8 +146,7 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs("/customs-declare-exports/declaration/holder-of-authorisation")) {
-        let choice = GM_getValue('decType', 0);
-        if(choice == "SIMPLIFIED"){
+        if(getChoice() == "SIMPLIFIED"){
             selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "SDE");
         } else {
             selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "AEOC");
