@@ -19,21 +19,21 @@
 @import models.viewmodels.HtmlTableRow
 @import models.Mode
 
-@(itemId: String, supportingDocuments: Seq[DocumentsProduced])(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
+@(itemId: String, itemNo: Int, supportingDocuments: Seq[DocumentsProduced])(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
 
 @if(supportingDocuments.nonEmpty){
-    <caption class="heading-small"><span id="supporting-documents">@messages("declaration.summary.items.item.supportingDocuments")</span></caption>
+    <caption class="heading-small"><span id="supporting-documents-@itemNo">@messages("declaration.summary.items.item.supportingDocuments")</span></caption>
     <tr class="section">
-        <td class="bold"><span id="supporting-documents-code">@messages("declaration.summary.items.item.supportingDocuments.code")</span></td>
-        <td class="bold"><span id="supporting-documents-information">@messages("declaration.summary.items.item.supportingDocuments.information")</span></td>
+        <td class="bold"><span id="supporting-documents-code-@itemNo">@messages("declaration.summary.items.item.supportingDocuments.code")</span></td>
+        <td class="bold"><span id="supporting-documents-information-@itemNo">@messages("declaration.summary.items.item.supportingDocuments.information")</span></td>
         <td></td>
     </tr>
     @supportingDocuments.zipWithIndex.map { case (document, index) =>
         <tr class="section">
-            <td><span id="supporting-document-@index-code">@document.documentTypeCode.getOrElse("")</span></td>
-            <td><span id="supporting-document-@index-information">@document.documentIdentifier.getOrElse("")</span></td>
+            <td><span id="supporting-document-@itemNo-code-@index">@document.documentTypeCode.getOrElse("")</span></td>
+            <td><span id="supporting-document-@itemNo-information-@index">@document.documentIdentifier.getOrElse("")</span></td>
             <td class="link-right">
-                <a href="@controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, itemId)" id="supporting-document-@index-change">@messages("site.change")</a>
+                <a href="@controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, itemId)" id="supporting-document-@itemNo-change-@index">@messages("site.change")</a>
             </td>
         </tr>
     }

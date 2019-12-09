@@ -30,7 +30,7 @@ class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
 
       "there is no documents" in {
 
-        supporting_documents("itemId", Seq.empty)(messages, journeyRequest()).text() mustBe empty
+        supporting_documents("itemId", 1, Seq.empty)(messages, journeyRequest()).text() mustBe empty
       }
     }
 
@@ -40,21 +40,25 @@ class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
         DocumentsProduced(Some("typ1"), Some("identifier1"), None, None, None, None, None),
         DocumentsProduced(Some("typ2"), Some("identifier2"), None, None, None, None, None)
       )
-      val view = supporting_documents("itemId", documents)(messages, journeyRequest())
+      val view = supporting_documents("itemId", 1, documents)(messages, journeyRequest())
 
-      view.getElementById("supporting-documents").text() mustBe messages("declaration.summary.items.item.supportingDocuments")
-      view.getElementById("supporting-documents-code").text() mustBe messages("declaration.summary.items.item.supportingDocuments.code")
-      view.getElementById("supporting-documents-information").text() mustBe messages("declaration.summary.items.item.supportingDocuments.information")
-      view.getElementById("supporting-document-0-code").text() mustBe "typ1"
-      view.getElementById("supporting-document-0-information").text() mustBe "identifier1"
-      view.getElementById("supporting-document-0-change").text() mustBe messages("site.change")
-      view.getElementById("supporting-document-0-change") must haveHref(
+      println(view)
+
+      view.getElementById("supporting-documents-1").text() mustBe messages("declaration.summary.items.item.supportingDocuments")
+      view.getElementById("supporting-documents-code-1").text() mustBe messages("declaration.summary.items.item.supportingDocuments.code")
+      view.getElementById("supporting-documents-information-1").text() mustBe messages(
+        "declaration.summary.items.item.supportingDocuments.information"
+      )
+      view.getElementById("supporting-document-1-code-0").text() mustBe "typ1"
+      view.getElementById("supporting-document-1-information-0").text() mustBe "identifier1"
+      view.getElementById("supporting-document-1-change-0").text() mustBe messages("site.change")
+      view.getElementById("supporting-document-1-change-0") must haveHref(
         controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId")
       )
-      view.getElementById("supporting-document-1-code").text() mustBe "typ2"
-      view.getElementById("supporting-document-1-information").text() mustBe "identifier2"
-      view.getElementById("supporting-document-1-change").text() mustBe messages("site.change")
-      view.getElementById("supporting-document-1-change") must haveHref(
+      view.getElementById("supporting-document-1-code-1").text() mustBe "typ2"
+      view.getElementById("supporting-document-1-information-1").text() mustBe "identifier2"
+      view.getElementById("supporting-document-1-change-1").text() mustBe messages("site.change")
+      view.getElementById("supporting-document-1-change-1") must haveHref(
         controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId")
       )
     }

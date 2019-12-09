@@ -166,7 +166,7 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
       view.select("form>table>thead>tr>td").text() must be("")
 
       // check row
-      view.select("table>tbody>tr>td:nth-child(1)").text() mustBe "PA"
+      view.select("table>tbody>tr>th:nth-child(1)").text() mustBe "PA"
       view.select("table>tbody>tr>td:nth-child(2)").text() mustBe "100"
       view.select("table>tbody>tr>td:nth-child(3)").text() mustBe "Shipping Mark"
     }
@@ -184,11 +184,11 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
       view.select("form>table>thead>tr>td").text() must be("")
 
       // check rows
-      view.select("table>tbody>tr>td:nth-child(1)").text() must include("PA")
+      view.select("table>tbody>tr>th:nth-child(1)").text() must include("PA")
       view.select("table>tbody>tr>td:nth-child(2)").text() must include("100")
       view.select("table>tbody>tr>td:nth-child(3)").text() must include("Shipping Mark")
 
-      view.select("table>tbody>tr:nth-child(2)>td:nth-child(1)").text() must include("PB")
+      view.select("table>tbody>tr:nth-child(2)>th:nth-child(1)").text() must include("PB")
       view.select("table>tbody>tr:nth-child(2)>td:nth-child(2)").text() must include("101")
       view.select("table>tbody>tr:nth-child(2)>td:nth-child(3)").text() must include("Shipping Mark")
     }

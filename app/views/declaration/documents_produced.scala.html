@@ -60,7 +60,7 @@
                 <tbody>
                 @documents.zipWithIndex.map { case (item, index) =>
                     <tr>
-                        <td scope="row" class="document-type">@item.documentTypeCode</td>
+                        <th scope="row" class="document-type">@item.documentTypeCode</th>
                         <td class="document-identifier">@item.documentIdentifier</td>
                         <td class="document-status">@item.documentStatus</td>
                         <td class="document-status-reason">@item.documentStatusReason</td>

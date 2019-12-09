@@ -50,13 +50,13 @@
 
         @for( (submission, notifications) <- submissions ){
             <tr class="table-row">
-                <td class="table-cell" scope="row">
+                <th class="table-cell" scope="row">
                     @if(notifications.exists(_.isStatusRejected)) {
                         <a href="@routes.RejectedNotificationsController.displayPage(submission.uuid)">@submission.ducr</a>
                     } else {
                         @submission.ducr
                     }
-                </td>
+                </th>
                 <td class="table-cell">@submission.lrn</td>
                 <td class="table-cell">@submission.mrn</td>
                 <td class="table-cell">@{submission.actions.find(_.requestType == SubmissionRequest).map(_.requestTimestamp).map(ViewDates.formatter.withZone(ZoneId.systemDefault()).format(_))}</td>

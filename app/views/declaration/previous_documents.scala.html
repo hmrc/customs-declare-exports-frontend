@@ -62,7 +62,7 @@
                 <tbody>
                 @documents.zipWithIndex.map { case (document, index) =>
                 <tr>
-                    <td scope="row">@messages("supplementary.previousDocuments." + document.documentCategory)</td>
+                    <th scope="row">@messages("supplementary.previousDocuments." + document.documentCategory)</th>
                     <td>@document.documentType</td>
                     <td>@document.documentReference</td>
                     <td>@document.goodsItemIdentifier.getOrElse("")</td>

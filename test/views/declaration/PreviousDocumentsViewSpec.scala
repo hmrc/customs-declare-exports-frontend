@@ -253,7 +253,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
       view.select("form>table>thead>tr>td").text() must be("")
 
       // row
-      view.select("form>table>tbody>tr>td:nth-child(1)").text() must be("supplementary.previousDocuments.X")
+      view.select("form>table>tbody>tr>th:nth-child(1)").text() must be("supplementary.previousDocuments.X")
       view.select("form>table>tbody>tr>td:nth-child(2)").text() must be("1")
       view.select("form>table>tbody>tr>td:nth-child(3)").text() must be("A")
       view.select("form>table>tbody>tr>td:nth-child(4)").text() must be("1")
