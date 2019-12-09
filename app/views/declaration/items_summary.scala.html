@@ -58,7 +58,7 @@
 
          @items.zipWithIndex.map { case (item, index) =>
                 <tr id="item_@index">
-                    <td id="item_@index--sequence_id" scope="row">@item.sequenceId</td>
+                    <th id="item_@index--sequence_id" scope="row">@item.sequenceId</th>
                     <td id="item_@index--procedure_code" scope="row">@item.procedureCodes.map(_.procedureCode).getOrElse("") </td>
                     <td id="item_@index--item_type" scope="row">@item.commodityDetails.map(_.combinedNomenclatureCode) </td>
                     <td id="item_@index--package_count" scope="row">
@@ -67,18 +67,18 @@
                         )
                         </ol>
                     </td>
-                    <td scope="row">
+                    <th scope="row">
                         <a id="item_@index--change" href="@routes.ProcedureCodesController.displayPage(mode, item.id)">
                             <span aria-hidden="true">@messages("site.change")</span>
                             <span class="visuallyhidden">@{messages("supplementary.itemsAdd.change.hint", item.sequenceId)}</span>
                         </a>
-                    </td>
-                    <td scope="row">
+                    </th>
+                    <th scope="row">
                         <a id="item_@index--remove" class="button button--gray" href="@routes.ItemsSummaryController.removeItem(mode, item.id)">
                             <span aria-hidden="true">@messages("site.remove")</span>
                             <span class="visuallyhidden">@{messages("supplementary.itemsAdd.remove.hint", item.sequenceId)}</span>
                         </a>
-                    </td>
+                    </th>
                 </tr>
             }
 

@@ -58,7 +58,7 @@
                 @for(actor <- actors) {
                   @defining(messages(s"supplementary.partyType.${actor.partyType.getOrElse("error")}")) { partyType =>
                       <tr>
-                          <td scope="row">@actor.eori</td>
+                          <th scope="row">@actor.eori</th>
                           <td>@partyType</td>
                           <td>
                           @components.buttons.remove_button(
