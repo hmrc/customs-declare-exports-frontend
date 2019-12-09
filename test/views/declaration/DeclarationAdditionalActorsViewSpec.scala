@@ -250,7 +250,7 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessag
         view.select("table>thead>tr>th:nth-child(1)").text() mustBe "Party’s EORI number"
         view.select("table>thead>tr>th:nth-child(2)").text() mustBe "Party type"
 
-        view.select("table>tbody>tr>td:nth-child(1)").text() mustBe "12345"
+        view.select("table>tbody>tr>th:nth-child(1)").text() mustBe "12345"
         view.select("table>tbody>tr>td:nth-child(2)").text() mustBe "Consolidator"
 
         val removeButton = view.select("table>tbody>tr>td:nth-child(3)>button")

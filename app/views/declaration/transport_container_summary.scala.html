@@ -56,7 +56,7 @@
                   <tbody>
                   @for((container, index) <- containers.zipWithIndex) {
                     <tr id="containers-row@index">
-                        <td scope="row" id="containers-row@index-container">@{container.id}</td>
+                        <th scope="row" id="containers-row@index-container">@{container.id}</th>
                         @if(container.seals.isEmpty){
                             <td id="containers-row@index-seals">@messages("standard.seal.summary.noSeals")</td>
                         } else {

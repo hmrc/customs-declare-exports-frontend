@@ -57,7 +57,7 @@
                     <tbody>
                     @for((elem, index) <- items.zipWithIndex) {
                         <tr id="removable_elements__row@index">
-                            <td class="code-row" id="removable_elements-row@index-code" scope="row">@{elem.code}</td>
+                            <th class="code-row" id="removable_elements-row@index-code" scope="row">@{elem.code}</th>
                             <td class="description-row" id="removable_elements-row@index-info">@{elem.description}</td>
                             <td id="removable_elements-row@index-remove_button">
                                 @remove_button(element = LabelledValue(elem.toString))

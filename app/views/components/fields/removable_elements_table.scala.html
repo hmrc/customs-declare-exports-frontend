@@ -40,7 +40,7 @@
           <tbody>
             @for((elem, index) <- elements.zipWithIndex) {
                 <tr id="@{id}__row@index">
-                    <td scope="row" id="@{id}-row@index-label">@{elem.label}</td>
+                    <th scope="row" id="@{id}-row@index-label">@{elem.label}</th>
                     <td id="@{id}-row@index-remove_button">
                         @remove_button(element = elem, buttonClass = removeButtonClass, hint = removeButtonHint)
                     </td>
