@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.16
+// @version      1.17
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -97,6 +97,7 @@ function completePage() {
             document.getElementsByClassName('button')[0].click()
         } else {
             selectRadioOption(document.getElementById("type"), 0);
+            setChoice("STANDARD");
             document.getElementsByClassName('button')[0].click();
         }
     }
