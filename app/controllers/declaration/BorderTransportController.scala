@@ -44,7 +44,7 @@ class BorderTransportController @Inject()(
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes: _*)) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.borderTransport match {
       case Some(data) => Ok(borderTransport(mode, form().fill(data)))
       case _          => Ok(borderTransport(mode, form()))
@@ -52,7 +52,7 @@ class BorderTransportController @Inject()(
   }
 
   def submitForm(mode: Mode): Action[AnyContent] =
-    (authenticate andThen journeyType(validTypes: _*)).async { implicit request =>
+    (authenticate andThen journeyType(validTypes)).async { implicit request =>
       form()
         .bindFromRequest()
         .fold(
