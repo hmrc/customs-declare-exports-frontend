@@ -290,7 +290,6 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/add-document')) {
-        console.log("using choice " + getChoice());
         if(getChoice() == "SIMPLIFIED"){
             document.getElementById('documentTypeCode').value ='C512';
             document.getElementById('documentIdentifier').value ='GBSDE717572504502811';
