@@ -16,16 +16,15 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.TransportPaymentController
+import controllers.declaration.{routes, TransportPaymentController}
 import forms.declaration.TransportPayment
-import models.DeclarationType.DeclarationType
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString, Json}
-import play.api.mvc.Call
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -67,79 +66,84 @@ class TransportPaymentControllerSpec extends ControllerSpec {
 
   "Transport Payment Controller" should {
 
-    "return 200 (OK)" when {
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)() { declaration =>
+      "return 200 (OK)" when {
 
-      "display page method is invoked and cache is empty" in {
+        "display page method is invoked and cache is empty" in {
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage(Mode.Normal)(getRequest())
 
-        status(result) must be(OK)
-        theResponseForm.value mustBe empty
+          status(result) must be(OK)
+          theResponseForm.value mustBe empty
+        }
+
+        "display page method is invoked and cache is not empty" in {
+
+          val payment = TransportPayment(Some(TransportPayment.cash))
+          withNewCaching(aDeclarationAfter(declaration, withTransportPayment(Some(payment))))
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) must be(OK)
+          theResponseForm.value mustBe Some(payment)
+        }
       }
 
-      "display page method is invoked and cache is not empty" in {
+      "return 400 (BAD_REQUEST)" when {
 
-        val payment = TransportPayment(Some(TransportPayment.cash))
-        withNewCaching(aDeclaration(withTransportPayment(Some(payment))))
+        "form contains incorrect values" in {
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+          withNewCaching(declaration)
 
-        status(result) must be(OK)
-        theResponseForm.value mustBe Some(payment)
+          val incorrectForm = Json.toJson(TransportPayment(Some("incorrect")))
+
+          val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+
+          status(result) must be(BAD_REQUEST)
+        }
       }
-    }
 
-    "return 400 (BAD_REQUEST)" when {
+      "return 303 (SEE_OTHER)" when {
 
-      "form contains incorrect values" in {
-
-        val incorrectForm = Json.toJson(TransportPayment(Some("incorrect")))
-
-        val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
-
-        status(result) must be(BAD_REQUEST)
-      }
-    }
-
-    "return 303 (SEE_OTHER)" when {
-
-      def controllerRedirectsToNextPage(decType: DeclarationType, call: Call): Unit =
-        "accept submission and redirect" in {
-          withNewCaching(aDeclaration(withType(decType)))
+        "form contains valid values" in {
+          withNewCaching(declaration)
           val correctForm = formData(TransportPayment.other)
 
           val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe call
+          thePageNavigatedTo mustBe routes.TransportContainerController.displayContainerSummary()
           verify(transportPaymentPage, times(0)).apply(any(), any())(any(), any())
         }
+      }
 
-      def controllerRedirectsToStartPageForInvalidType(decType: DeclarationType): Unit =
-        "accept submission and redirect" in {
-          withNewCaching(aDeclaration(withType(decType)))
+    }
+
+    onJourney(CLEARANCE)() { declaration =>
+      "return 303 (SEE_OTHER)" when {
+
+        "display page" in {
+          withNewCaching(declaration)
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+        }
+
+        "submit" in {
+          withNewCaching(declaration)
           val correctForm = formData(TransportPayment.other)
 
           val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
           status(result) must be(SEE_OTHER)
           redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
-          verify(transportPaymentPage, times(0)).apply(any(), any())(any(), any())
         }
 
-      for (decType <- DeclarationType.values.filter(_ != DeclarationType.CLEARANCE)) {
-        s"we are on $decType journey" should {
-          behave like controllerRedirectsToNextPage(
-            decType,
-            controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)
-          )
-        }
-      }
-
-      "we are on a clearance request journey" should {
-        behave like controllerRedirectsToStartPageForInvalidType(DeclarationType.CLEARANCE)
       }
 
     }
+
   }
 }

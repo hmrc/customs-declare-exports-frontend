@@ -19,9 +19,10 @@ package unit.controllers.declaration
 import controllers.declaration.{routes, DepartureTransportController}
 import forms.declaration.DepartureTransport
 import forms.declaration.TransportCodes.{Maritime, WagonNumber}
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.DeclarationType._
+import models.Mode
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{Call, Result}
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
@@ -48,62 +49,67 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
     authorizedUser()
   }
 
-  def departureTransportController(declaration: () => ExportsDeclaration, nextPage: Call): Unit = {
-    "return 200 (OK)" when {
-
-      "display page method is invoked and cache is empty" in {
-        withNewCaching(declaration())
-
-        val result: Future[Result] = controller.displayPage(Mode.Normal)(getRequest())
-
-        status(result) must be(OK)
-      }
-
-      "display page method is invoked and cache contains data" in {
-
-        withNewCaching(aDeclarationAfter(declaration(), withDepartureTransport(Maritime, WagonNumber, "FAA")))
-
-        val result: Future[Result] = controller.displayPage(Mode.Normal)(getRequest())
-
-        status(result) must be(OK)
-      }
-    }
-
-    "return 400 (BAD_REQUEST)" when {
-
-      "form is incorrect" in {
-        withNewCaching(declaration())
-
-        val incorrectForm: JsValue = Json.toJson(DepartureTransport("wrongValue", "wrongValue", "FAA"))
-
-        val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
-
-        status(result) must be(BAD_REQUEST)
-      }
-    }
-
-    "return 303 (SEE_OTHER)" when {
-
-      "information provided by user are correct" in {
-        withNewCaching(declaration())
-
-        val correctForm: JsValue = Json.toJson(DepartureTransport(Maritime, WagonNumber, "FAA"))
-
-        val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe nextPage
-      }
-    }
+  private def nextPage(decType: DeclarationType) = decType match {
+    case SUPPLEMENTARY => routes.BorderTransportController.displayPage()
+    case STANDARD      => routes.BorderTransportController.displayPage()
+    case CLEARANCE     => routes.TransportContainerController.displayContainerSummary()
   }
 
-  def departureTransportControllerWithInvalidType(declaration: () => ExportsDeclaration): Unit =
-    "Transport Details Controller" should {
+  "Border transport controller" when {
+    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE)() { declaration =>
+      "return 200 (OK)" when {
+
+        "display page method is invoked and cache is empty" in {
+          withNewCaching(declaration)
+
+          val result: Future[Result] = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) must be(OK)
+        }
+
+        "display page method is invoked and cache contains data" in {
+
+          withNewCaching(aDeclarationAfter(declaration, withDepartureTransport(Maritime, WagonNumber, "FAA")))
+
+          val result: Future[Result] = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) must be(OK)
+        }
+      }
+
+      "return 400 (BAD_REQUEST)" when {
+
+        "form is incorrect" in {
+          withNewCaching(declaration)
+
+          val incorrectForm: JsValue = Json.toJson(DepartureTransport("wrongValue", "wrongValue", "FAA"))
+
+          val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+
+          status(result) must be(BAD_REQUEST)
+        }
+      }
 
       "return 303 (SEE_OTHER)" when {
 
+        "information provided by user are correct" in {
+          withNewCaching(declaration)
+
+          val correctForm: JsValue = Json.toJson(DepartureTransport(Maritime, WagonNumber, "FAA"))
+
+          val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe nextPage(declaration.`type`)
+        }
+      }
+    }
+
+    onJourney(SIMPLIFIED, OCCASIONAL)() { declaration =>
+      "return 303 (SEE_OTHER)" when {
+
         "display page method is invoked" in {
-          withNewCaching(aDeclarationAfter(declaration(), withBorderTransport()))
+          withNewCaching(aDeclarationAfter(declaration, withBorderTransport()))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -112,7 +118,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         }
 
         "page is submitted" in {
-          withNewCaching(declaration())
+          withNewCaching(declaration)
 
           val correctForm: JsValue = Json.toJson(DepartureTransport(Maritime, WagonNumber, "FAA"))
 
@@ -125,28 +131,6 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
     }
 
-  "Border transport controller" when {
-    "we are on standard declaration journey" should {
-      behave like departureTransportController(() => aDeclaration(withType(DeclarationType.STANDARD)), routes.BorderTransportController.displayPage())
-    }
-    "we are on supplementary declaration journey" should {
-      behave like departureTransportController(
-        () => aDeclaration(withType(DeclarationType.SUPPLEMENTARY)),
-        routes.BorderTransportController.displayPage()
-      )
-    }
-    "we are on clearance request journey" should {
-      behave like departureTransportController(
-        () => aDeclaration(withType(DeclarationType.CLEARANCE)),
-        routes.TransportContainerController.displayContainerSummary()
-      )
-    }
-    "we are on simplified declaration journey" should {
-      behave like departureTransportControllerWithInvalidType(() => aDeclaration(withType(DeclarationType.SIMPLIFIED)))
-    }
-    "we are on occasional declaration journey" should {
-      behave like departureTransportControllerWithInvalidType(() => aDeclaration(withType(DeclarationType.OCCASIONAL)))
-    }
   }
 
 }
