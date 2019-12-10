@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import models.DeclarationType._
 @import models.declaration.ExportItem
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
@@ -58,26 +59,28 @@
     value = item.nactCodes.map(_.nactCode).mkString(", "),
     call = Some(controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, item.id))
 ))
-@components.table_row(s"item-${item.sequenceId}-itemValue", HtmlTableRow(
-    label = messages("declaration.summary.items.item.itemValue"),
-    value = item.statisticalValue.map(_.statisticalValue).getOrElse(""),
-    call = Some(controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, item.id))
-))
-@components.table_row(s"item-${item.sequenceId}-supplementaryUnits", HtmlTableRow(
-    label = messages("declaration.summary.items.item.supplementaryUnits"),
-    value = item.commodityMeasure.flatMap(_.supplementaryUnits).getOrElse(""),
-    call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, item.id))
-))
-@components.table_row(s"item-${item.sequenceId}-grossWeight", HtmlTableRow(
-    label = messages("declaration.summary.items.item.grossWeight"),
-    value = item.commodityMeasure.map(_.grossMass).getOrElse(""),
-    call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, item.id))
-))
-@components.table_row(s"item-${item.sequenceId}-netWeight", HtmlTableRow(
-    label = messages("declaration.summary.items.item.netWeight"),
-    value = item.commodityMeasure.map(_.netMass).getOrElse(""),
-    call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, item.id))
-))
+@if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, OCCASIONAL, CLEARANCE)) {
+    @components.table_row(s"item-${item.sequenceId}-itemValue", HtmlTableRow(
+        label = messages("declaration.summary.items.item.itemValue"),
+        value = item.statisticalValue.map(_.statisticalValue).getOrElse(""),
+        call = Some(controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, item.id))
+    ))
+    @components.table_row(s"item-${item.sequenceId}-supplementaryUnits", HtmlTableRow(
+        label = messages("declaration.summary.items.item.supplementaryUnits"),
+        value = item.commodityMeasure.flatMap(_.supplementaryUnits).getOrElse(""),
+        call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, item.id))
+    ))
+    @components.table_row(s"item-${item.sequenceId}-grossWeight", HtmlTableRow(
+        label = messages("declaration.summary.items.item.grossWeight"),
+        value = item.commodityMeasure.map(_.grossMass).getOrElse(""),
+        call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, item.id))
+    ))
+    @components.table_row(s"item-${item.sequenceId}-netWeight", HtmlTableRow(
+        label = messages("declaration.summary.items.item.netWeight"),
+        value = item.commodityMeasure.map(_.netMass).getOrElse(""),
+        call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, item.id))
+    ))
+}
 @package_information(item.id, item.sequenceId, item.packageInformation)
 @union_and_national_codes(item.id, item.sequenceId, item.additionalInformation.map(_.items).getOrElse(Seq.empty))
 @supporting_documents(item.id, item.sequenceId, item.documentsProducedData.map(_.documents).getOrElse(Seq.empty))

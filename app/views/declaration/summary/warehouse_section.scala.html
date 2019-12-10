@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import models.DeclarationType._
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 
@@ -31,10 +32,12 @@
             value = declarationData.locations.supervisingCustomsOffice.flatMap(_.supervisingCustomsOffice).getOrElse(""),
             call = Some(controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage())
         ))
-        @components.table_row("mode-of-transport", HtmlTableRow(
-            label = messages("declaration.summary.warehouse.inlandModeOfTransport"),
-            value = declarationData.locations.inlandModeOfTransportCode.flatMap(_.inlandModeOfTransportCode.map(code => messages(s"declaration.summary.warehouse.inlandModeOfTransport.$code"))).getOrElse(""),
-            call = Some(controllers.declaration.routes.InlandTransportDetailsController.displayPage())
-        ))
+        @if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, OCCASIONAL, CLEARANCE)) {
+            @components.table_row("mode-of-transport", HtmlTableRow(
+                label = messages("declaration.summary.warehouse.inlandModeOfTransport"),
+                value = declarationData.locations.inlandModeOfTransportCode.flatMap(_.inlandModeOfTransportCode.map(code => messages(s"declaration.summary.warehouse.inlandModeOfTransport.$code"))).getOrElse(""),
+                call = Some(controllers.declaration.routes.InlandTransportDetailsController.displayPage())
+            ))
+        }
     }
 </div>

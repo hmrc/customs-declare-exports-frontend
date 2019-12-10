@@ -46,7 +46,7 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
 
         val view = related_documents(data)(messages, journeyRequest())
 
-        view.getElementById("previous-documents").text() mustBe messages("declaration.summary.transaction.previousDocuments")
+        view.getElementById("previous-documents-label").text() mustBe messages("declaration.summary.transaction.previousDocuments")
         view.getElementById("previous-documents-type").text() mustBe messages("declaration.summary.transaction.previousDocuments.type")
         view.getElementById("previous-documents-reference").text() mustBe messages("declaration.summary.transaction.previousDocuments.reference")
         view.getElementById("previous-document-0-type").text() mustBe "Proforma Invoice - 325"

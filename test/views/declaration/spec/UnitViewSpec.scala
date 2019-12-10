@@ -21,6 +21,7 @@ import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.DeclarationType
 import org.jsoup.nodes.Document
+import org.scalatest.Assertion
 import org.scalatest.matchers.{BeMatcher, MatchResult}
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.{AnyContent, Request}
@@ -41,17 +42,17 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
   def validatedMessages(implicit request: Request[_]): Messages =
     new AllMessageKeysAreMandatoryMessages(realMessagesApi.preferred(request))
 
-  def checkErrorsSummary(view: Document) = {
+  def checkErrorsSummary(view: Document): Assertion = {
     view.getElementById("error-summary-heading").text() must be("error.summary.title")
     view.getElementsByClass("error-summary error-summary--show").get(0).getElementsByTag("p").text() must be("error.summary.text")
   }
 
   def messagesKey(key: String): BeMatcher[String] = new MessagesKeyMatcher(key)
 
-  def onEveryDeclarationJourney(f: JourneyRequest[_] => Unit): Unit =
+  def onEveryDeclarationJourney(f: JourneyRequest[AnyContent] => Unit): Unit =
     onJourney(DeclarationType.values.toSeq: _*)(f)
 
-  def onJourney(types: DeclarationType*)(f: JourneyRequest[_] => Unit): Unit = {
+  def onJourney(types: DeclarationType*)(f: JourneyRequest[AnyContent] => Unit): Unit = {
     if (types.isEmpty) {
       throw new RuntimeException("Provide at lest one journey to test")
     }
@@ -65,27 +66,27 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
     }
   }
 
-  def onStandard(f: JourneyRequest[_] => Unit): Unit =
+  def onStandard(f: JourneyRequest[AnyContent] => Unit): Unit =
     "on Standard journey render view" that {
       f(UnitViewSpec.standardRequest)
     }
 
-  def onSimplified(f: JourneyRequest[_] => Unit): Unit =
+  def onSimplified(f: JourneyRequest[AnyContent] => Unit): Unit =
     "on Simplified journey render view" that {
       f(UnitViewSpec.simplifiedRequest)
     }
 
-  def onSupplementary(f: JourneyRequest[_] => Unit): Unit =
+  def onSupplementary(f: JourneyRequest[AnyContent] => Unit): Unit =
     "on Supplementary journey render view" that {
       f(UnitViewSpec.supplementaryRequest)
     }
 
-  def onOccasional(f: JourneyRequest[_] => Unit): Unit =
+  def onOccasional(f: JourneyRequest[AnyContent] => Unit): Unit =
     "on Occasional journey render view" that {
       f(UnitViewSpec.occasionalRequest)
     }
 
-  def onClearance(f: JourneyRequest[_] => Unit): Unit =
+  def onClearance(f: JourneyRequest[AnyContent] => Unit): Unit =
     "on Clearance journey render view" that {
       f(UnitViewSpec.clearanceRequest)
     }

@@ -35,6 +35,12 @@ class PackageInformationSpec extends WordSpec with MustMatchers {
 
       PackageInformation.limit must be(99)
     }
+
+    "has correct type of package text" in {
+      val model = PackageInformation("PK", 10, "marks")
+
+      model.typesOfPackagesText mustBe "Package - PK"
+    }
   }
 
   "Package Information form" should {

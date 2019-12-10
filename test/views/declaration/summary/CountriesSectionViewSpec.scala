@@ -16,6 +16,7 @@
 
 package views.declaration.summary
 
+import models.DeclarationType._
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.countries_section
@@ -24,118 +25,135 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
   "Countries section" should {
 
-    "display empty country of dispatch" in {
+    onEveryDeclarationJourney { request =>
+      "display empty routing countries" in {
 
-      val data = aDeclaration(withoutOriginationCountry())
+        val data = aDeclaration(withoutRoutingCountries())
 
-      val view = countries_section(data)(messages, journeyRequest())
+        val view = countries_section(data)(messages, request)
 
-      view.getElementById("countryOfDispatch-label").text() mustBe messages("declaration.summary.countries.countryOfDispatch")
-      view.getElementById("countryOfDispatch").text() mustBe empty
+        view.getElementById("countriesOfRouting-label").text() mustBe messages("declaration.summary.countries.routingCountries")
+        view.getElementById("countriesOfRouting").text() mustBe empty
+      }
+
+      "display single routing country" in {
+
+        val countryCode = "GB"
+        val data = aDeclaration(withRoutingCountries(Seq(countryCode)))
+
+        val view = countries_section(data)(messages, request)
+
+        val expectedCountry = "United Kingdom (GB)"
+
+        view.getElementById("countriesOfRouting-label").text() mustBe messages("declaration.summary.countries.routingCountries")
+        view.getElementById("countriesOfRouting").text() mustBe expectedCountry
+      }
+
+      "display multiple routing countries separated by comma" in {
+
+        val firstCountryCode = "GB"
+        val secondCountryCode = "PL"
+        val data = aDeclaration(withRoutingCountries(Seq(firstCountryCode, secondCountryCode)))
+
+        val view = countries_section(data)(messages, request)
+
+        val firstExpectedCountry = "United Kingdom (GB)"
+        val secondExpectedCountry = "Poland (PL)"
+
+        view.getElementById("countriesOfRouting-label").text() mustBe messages("declaration.summary.countries.routingCountries")
+        view.getElementById("countriesOfRouting").text() mustBe s"$firstExpectedCountry, $secondExpectedCountry"
+      }
+
+      "display empty country of destination" in {
+
+        val data = aDeclaration(withoutDestinationCountry())
+
+        val view = countries_section(data)(messages, request)
+
+        view.getElementById("countryOfDestination-label").text() mustBe messages("declaration.summary.countries.countryOfDestination")
+        view.getElementById("countryOfDestination").text() mustBe empty
+      }
+
+      "display country of destination" in {
+
+        val countryCode = "GB"
+        val data = aDeclaration(withDestinationCountry(countryCode))
+
+        val view = countries_section(data)(messages, request)
+
+        val expectedCountry = "United Kingdom (GB)"
+
+        view.getElementById("countryOfDestination-label").text() mustBe messages("declaration.summary.countries.countryOfDestination")
+        view.getElementById("countryOfDestination").text() mustBe expectedCountry
+      }
+
+      "display change button for countries of routing" in {
+
+        val data = aDeclaration(withoutRoutingCountries())
+
+        val view = countries_section(data)(messages, request)
+
+        view.getElementById("countriesOfRouting-change").text() mustBe messages("site.change")
+        view.getElementById("countriesOfRouting-change") must haveHref(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage())
+      }
+
+      "display change button for country of destination" in {
+
+        val data = aDeclaration(withoutOriginationCountry())
+
+        val view = countries_section(data)(messages, request)
+
+        view.getElementById("countryOfDestination-change").text() mustBe messages("site.change")
+        view.getElementById("countryOfDestination-change") must haveHref(controllers.declaration.routes.DestinationCountryController.displayPage())
+      }
     }
 
-    "display country of dispatch" in {
+    onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL, CLEARANCE) { request =>
+      "display country of dispatch" in {
 
-      val countryCode = "GB"
-      val data = aDeclaration(withOriginationCountry(countryCode))
+        val countryCode = "GB"
+        val data = aDeclaration(withOriginationCountry(countryCode))
 
-      val view = countries_section(data)(messages, journeyRequest())
+        val view = countries_section(data)(messages, request)
 
-      val expectedCountry = "United Kingdom (GB)"
+        val expectedCountry = "United Kingdom (GB)"
 
-      view.getElementById("countryOfDispatch-label").text() mustBe messages("declaration.summary.countries.countryOfDispatch")
-      view.getElementById("countryOfDispatch").text() mustBe expectedCountry
+        view.getElementById("countryOfDispatch-label").text() mustBe messages("declaration.summary.countries.countryOfDispatch")
+        view.getElementById("countryOfDispatch").text() mustBe expectedCountry
+      }
+
+      "display empty country of dispatch" in {
+
+        val data = aDeclaration(withoutOriginationCountry())
+
+        val view = countries_section(data)(messages, request)
+
+        view.getElementById("countryOfDispatch-label").text() mustBe messages("declaration.summary.countries.countryOfDispatch")
+        view.getElementById("countryOfDispatch").text() mustBe empty
+      }
+
+      "display change button for country of dispatch" in {
+
+        val data = aDeclaration(withoutOriginationCountry())
+
+        val view = countries_section(data)(messages, request)
+
+        view.getElementById("countryOfDispatch-change").text() mustBe messages("site.change")
+        view.getElementById("countryOfDispatch-change") must haveHref(controllers.declaration.routes.OriginationCountryController.displayPage())
+      }
     }
 
-    "display empty routing countries" in {
+    onJourney(SIMPLIFIED) { request =>
+      "not display country of dispatch" in {
 
-      val data = aDeclaration(withoutRoutingCountries())
+        val data = aDeclaration()
 
-      val view = countries_section(data)(messages, journeyRequest())
+        val view = countries_section(data)(messages, request)
 
-      view.getElementById("countriesOfRouting-label").text() mustBe messages("declaration.summary.countries.routingCountries")
-      view.getElementById("countriesOfRouting").text() mustBe empty
-    }
-
-    "display single routing country" in {
-
-      val countryCode = "GB"
-      val data = aDeclaration(withRoutingCountries(Seq(countryCode)))
-
-      val view = countries_section(data)(messages, journeyRequest())
-
-      val expectedCountry = "United Kingdom (GB)"
-
-      view.getElementById("countriesOfRouting-label").text() mustBe messages("declaration.summary.countries.routingCountries")
-      view.getElementById("countriesOfRouting").text() mustBe expectedCountry
-    }
-
-    "display multiple routing countries separated by comma" in {
-
-      val firstCountryCode = "GB"
-      val secondCountryCode = "PL"
-      val data = aDeclaration(withRoutingCountries(Seq(firstCountryCode, secondCountryCode)))
-
-      val view = countries_section(data)(messages, journeyRequest())
-
-      val firstExpectedCountry = "United Kingdom (GB)"
-      val secondExpectedCountry = "Poland (PL)"
-
-      view.getElementById("countriesOfRouting-label").text() mustBe messages("declaration.summary.countries.routingCountries")
-      view.getElementById("countriesOfRouting").text() mustBe s"$firstExpectedCountry, $secondExpectedCountry"
-    }
-
-    "display empty country of destination" in {
-
-      val data = aDeclaration(withoutDestinationCountry())
-
-      val view = countries_section(data)(messages, journeyRequest())
-
-      view.getElementById("countryOfDestination-label").text() mustBe messages("declaration.summary.countries.countryOfDestination")
-      view.getElementById("countryOfDestination").text() mustBe empty
-    }
-
-    "display country of destination" in {
-
-      val countryCode = "GB"
-      val data = aDeclaration(withDestinationCountry(countryCode))
-
-      val view = countries_section(data)(messages, journeyRequest())
-
-      val expectedCountry = "United Kingdom (GB)"
-
-      view.getElementById("countryOfDestination-label").text() mustBe messages("declaration.summary.countries.countryOfDestination")
-      view.getElementById("countryOfDestination").text() mustBe expectedCountry
-    }
-
-    "display change button for country of dispatch" in {
-
-      val data = aDeclaration(withoutOriginationCountry())
-
-      val view = countries_section(data)(messages, journeyRequest())
-
-      view.getElementById("countryOfDispatch-change").text() mustBe messages("site.change")
-      view.getElementById("countryOfDispatch-change") must haveHref(controllers.declaration.routes.OriginationCountryController.displayPage())
-    }
-
-    "display change button for countries of routing" in {
-
-      val data = aDeclaration(withoutRoutingCountries())
-
-      val view = countries_section(data)(messages, journeyRequest())
-
-      view.getElementById("countriesOfRouting-change").text() mustBe messages("site.change")
-      view.getElementById("countriesOfRouting-change") must haveHref(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage())
-    }
-
-    "display change button for country of destination" in {
-
-      val data = aDeclaration(withoutOriginationCountry())
-
-      val view = countries_section(data)(messages, journeyRequest())
-
-      view.getElementById("countryOfDestination-change").text() mustBe messages("site.change")
-      view.getElementById("countryOfDestination-change") must haveHref(controllers.declaration.routes.DestinationCountryController.displayPage())
+        view.getElementById("countryOfDispatch-label") mustBe null
+        view.getElementById("countryOfDispatch") mustBe null
+        view.getElementById("countryOfDispatch-change") mustBe null
+      }
     }
   }
 }
