@@ -49,10 +49,10 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
 
   def messagesKey(key: String): BeMatcher[String] = new MessagesKeyMatcher(key)
 
-  def onEveryDeclarationJourney(f: JourneyRequest[AnyContent] => Unit): Unit =
+  def onEveryDeclarationJourney(f: JourneyRequest[_] => Unit): Unit =
     onJourney(DeclarationType.values.toSeq: _*)(f)
 
-  def onJourney(types: DeclarationType*)(f: JourneyRequest[AnyContent] => Unit): Unit = {
+  def onJourney(types: DeclarationType*)(f: JourneyRequest[_] => Unit): Unit = {
     if (types.isEmpty) {
       throw new RuntimeException("Provide at lest one journey to test")
     }
@@ -66,27 +66,27 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
     }
   }
 
-  def onStandard(f: JourneyRequest[AnyContent] => Unit): Unit =
+  def onStandard(f: JourneyRequest[_] => Unit): Unit =
     "on Standard journey render view" that {
       f(UnitViewSpec.standardRequest)
     }
 
-  def onSimplified(f: JourneyRequest[AnyContent] => Unit): Unit =
+  def onSimplified(f: JourneyRequest[_] => Unit): Unit =
     "on Simplified journey render view" that {
       f(UnitViewSpec.simplifiedRequest)
     }
 
-  def onSupplementary(f: JourneyRequest[AnyContent] => Unit): Unit =
+  def onSupplementary(f: JourneyRequest[_] => Unit): Unit =
     "on Supplementary journey render view" that {
       f(UnitViewSpec.supplementaryRequest)
     }
 
-  def onOccasional(f: JourneyRequest[AnyContent] => Unit): Unit =
+  def onOccasional(f: JourneyRequest[_] => Unit): Unit =
     "on Occasional journey render view" that {
       f(UnitViewSpec.occasionalRequest)
     }
 
-  def onClearance(f: JourneyRequest[AnyContent] => Unit): Unit =
+  def onClearance(f: JourneyRequest[_] => Unit): Unit =
     "on Clearance journey render view" that {
       f(UnitViewSpec.clearanceRequest)
     }

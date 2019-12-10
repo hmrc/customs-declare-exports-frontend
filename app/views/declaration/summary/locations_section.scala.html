@@ -19,7 +19,7 @@
 @import models.viewmodels.HtmlTableRow
 @import services.Countries._
 
-@(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
+@(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @locationCode(locationOpt: Option[GoodsLocation]) = @{
   locationOpt.map { location =>

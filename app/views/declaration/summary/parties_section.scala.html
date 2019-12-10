@@ -17,7 +17,7 @@
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 
-@(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
+@(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 <div id="declaration-parties-summary">
     @components.summary_list(Some(messages("declaration.summary.parties"))) {

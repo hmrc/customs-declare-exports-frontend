@@ -19,7 +19,7 @@
 @import models.viewmodels.HtmlTableRow
 @import services.Countries
 
-@(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
+@(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 <div id="declaration-countries-summary">
     @components.summary_list(Some(messages("declaration.summary.countries"))) {

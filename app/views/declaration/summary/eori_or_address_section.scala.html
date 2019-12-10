@@ -19,7 +19,7 @@
 @import models.viewmodels.HtmlTableRow
 @import play.api.mvc.Call
 
-@(id: String, eoriOption: Option[String], eoriLabel: String, address: Option[Address], addressLabel: String, call: Option[Call], isEoriDefault: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
+@(id: String, eoriOption: Option[String], eoriLabel: String, address: Option[Address], addressLabel: String, call: Option[Call], isEoriDefault: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @extractAddressValues(addressOpt: Option[Address]) = @{
     addressOpt.map { values =>

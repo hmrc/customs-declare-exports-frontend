@@ -20,7 +20,7 @@
 @import forms.declaration.DepartureTransport
 @import forms.declaration.BorderTransport
 
-@(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
+@(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @messagesForDepartureMeansOfTransport(departure: Option[DepartureTransport]) = @{
   departure.map(transport =>

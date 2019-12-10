@@ -21,7 +21,7 @@
 @import models.viewmodels.HtmlTableRow
 @import models.Mode
 
-@(itemId: String, itemNo: Int, fiscalInformation: Option[FiscalInformation], additionalFiscalReferences: Seq[AdditionalFiscalReference])(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
+@(itemId: String, itemNo: Int, fiscalInformation: Option[FiscalInformation], additionalFiscalReferences: Seq[AdditionalFiscalReference])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @components.table_row(s"item-$itemNo-onwardSupplyRelief", HtmlTableRow(
     label = messages("declaration.summary.items.item.onwardSupplyRelief"),
