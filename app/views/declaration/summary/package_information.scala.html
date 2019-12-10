@@ -19,7 +19,7 @@
 @import models.viewmodels.HtmlTableRow
 @import models.Mode
 
-@(itemId: String, itemNo: Int, packageInformation: Seq[PackageInformation])(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
+@(itemId: String, itemNo: Int, packageInformation: Seq[PackageInformation])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @if(packageInformation.nonEmpty){
     <caption class="heading-small"><span id="package-information-@itemNo">@messages("declaration.summary.items.item.packageInformation")</span></caption>

@@ -41,14 +41,14 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData {
       view.getElementById("package-information-type-1").text() mustBe messages("declaration.summary.items.item.packageInformation.type")
       view.getElementById("package-information-number-1").text() mustBe messages("declaration.summary.items.item.packageInformation.number")
       view.getElementById("package-information-markings-1").text() mustBe messages("declaration.summary.items.item.packageInformation.markings")
-      view.getElementById("package-information-1-code-0").text() mustBe "Open-ended box and pallet"
+      view.getElementById("package-information-1-code-0").text() mustBe "Open-ended box and pallet - PB"
       view.getElementById("package-information-1-number-0").text() mustBe "123"
       view.getElementById("package-information-1-marks-0").text() mustBe "first-marks"
       view.getElementById("package-information-1-change-0").text() mustBe messages("site.change")
       view.getElementById("package-information-1-change-0") must haveHref(
         controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, "itemId")
       )
-      view.getElementById("package-information-1-code-1").text() mustBe "Drum, plastic, non-removable head"
+      view.getElementById("package-information-1-code-1").text() mustBe "Drum, plastic, non-removable head - QF"
       view.getElementById("package-information-1-number-1").text() mustBe "321"
       view.getElementById("package-information-1-marks-1").text() mustBe "second-marks"
       view.getElementById("package-information-1-change-1").text() mustBe messages("site.change")

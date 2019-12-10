@@ -16,6 +16,7 @@
 
 package views.declaration.summary
 
+import models.DeclarationType._
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.transaction_section
@@ -28,41 +29,82 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
   "Transaction section" should {
 
-    "have total amount invoiced with change button" in {
+    onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL, CLEARANCE) { request =>
+      val view = transaction_section(data)(messages, request)
 
-      view.getElementById("item-amount-label").text() mustBe messages("declaration.summary.transaction.itemAmount")
-      view.getElementById("item-amount").text() mustBe "123"
-      view.getElementById("item-amount-change").text() mustBe messages("site.change")
-      view.getElementById("item-amount-change") must haveHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage())
+      "have total amount invoiced with change button" in {
+
+        view.getElementById("item-amount-label").text() mustBe messages("declaration.summary.transaction.itemAmount")
+        view.getElementById("item-amount").text() mustBe "123"
+        view.getElementById("item-amount-change").text() mustBe messages("site.change")
+        view.getElementById("item-amount-change") must haveHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage())
+      }
+
+      "have exchange rate with change button" in {
+
+        view.getElementById("exchange-rate-label").text() mustBe messages("declaration.summary.transaction.exchangeRate")
+        view.getElementById("exchange-rate").text() mustBe "1.23"
+        view.getElementById("exchange-rate-change").text() mustBe messages("site.change")
+        view.getElementById("exchange-rate-change") must haveHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage())
+      }
+
+      "have total package with change button" in {
+
+        view.getElementById("total-no-of-packages-label").text() mustBe messages("declaration.summary.transaction.totalNoOfPackages")
+        view.getElementById("total-no-of-packages").text() mustBe "12"
+        view.getElementById("total-no-of-packages-change").text() mustBe messages("site.change")
+        view.getElementById("total-no-of-packages-change") must haveHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage())
+      }
+
+      "have nature of transaction with change button" in {
+
+        view.getElementById("nature-of-transaction-label").text() mustBe messages("declaration.summary.transaction.natureOfTransaction")
+        view.getElementById("nature-of-transaction").text() mustBe messages("declaration.summary.transaction.natureOfTransaction.2")
+        view.getElementById("nature-of-transaction-change").text() mustBe messages("site.change")
+        view.getElementById("nature-of-transaction-change") must haveHref(controllers.declaration.routes.NatureOfTransactionController.displayPage())
+      }
+
+      "have related documents section" in {
+
+        view.getElementById("previous-documents").text() mustNot be(empty)
+      }
     }
 
-    "have exchange rate with change button" in {
+    onJourney(SIMPLIFIED) { request =>
+      val view = transaction_section(data)(messages, request)
 
-      view.getElementById("exchange-rate-label").text() mustBe messages("declaration.summary.transaction.exchangeRate")
-      view.getElementById("exchange-rate").text() mustBe "1.23"
-      view.getElementById("exchange-rate-change").text() mustBe messages("site.change")
-      view.getElementById("exchange-rate-change") must haveHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage())
-    }
+      "not display total amount invoiced" in {
 
-    "have total package with change button" in {
+        view.getElementById("item-amount-label") mustBe null
+        view.getElementById("item-amount") mustBe null
+        view.getElementById("item-amount-change") mustBe null
+      }
 
-      view.getElementById("total-no-of-packages-label").text() mustBe messages("declaration.summary.transaction.totalNoOfPackages")
-      view.getElementById("total-no-of-packages").text() mustBe "12"
-      view.getElementById("total-no-of-packages-change").text() mustBe messages("site.change")
-      view.getElementById("total-no-of-packages-change") must haveHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage())
-    }
+      "not display exchange rate" in {
 
-    "have nature of transaction with change button" in {
+        view.getElementById("exchange-rate-label") mustBe null
+        view.getElementById("exchange-rate") mustBe null
+        view.getElementById("exchange-rate-change") mustBe null
+      }
 
-      view.getElementById("nature-of-transaction-label").text() mustBe messages("declaration.summary.transaction.natureOfTransaction")
-      view.getElementById("nature-of-transaction").text() mustBe messages("declaration.summary.transaction.natureOfTransaction.2")
-      view.getElementById("nature-of-transaction-change").text() mustBe messages("site.change")
-      view.getElementById("nature-of-transaction-change") must haveHref(controllers.declaration.routes.NatureOfTransactionController.displayPage())
-    }
+      "not display total package" in {
 
-    "have related documents section" in {
+        view.getElementById("total-no-of-packages-label") mustBe null
+        view.getElementById("total-no-of-packages") mustBe null
+        view.getElementById("total-no-of-packages-change") mustBe null
+      }
 
-      view.getElementById("previous-documents").text() mustNot be(empty)
+      "not display nature of transaction" in {
+
+        view.getElementById("nature-of-transaction-label") mustBe null
+        view.getElementById("nature-of-transaction") mustBe null
+        view.getElementById("nature-of-transaction-change") mustBe null
+      }
+
+      "have related documents section" in {
+
+        view.getElementById("previous-documents").text() mustNot be(empty)
+      }
     }
   }
 }

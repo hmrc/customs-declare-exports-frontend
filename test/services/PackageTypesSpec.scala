@@ -21,6 +21,14 @@ import unit.base.UnitSpec
 
 class PackageTypesSpec extends UnitSpec {
 
+  "Package type" should {
+
+    "have correct method asText" in {
+
+      PackageType("code", "description").asText() mustBe "description - code"
+    }
+  }
+
   "Package type list" should {
 
     "return package types containing commas and quotes" in {

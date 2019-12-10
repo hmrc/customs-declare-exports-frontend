@@ -19,7 +19,7 @@
 @import models.viewmodels.HtmlTableRow
 @import models.Mode
 
-@(itemId: String, itemNo: Int, supportingDocuments: Seq[DocumentsProduced])(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
+@(itemId: String, itemNo: Int, supportingDocuments: Seq[DocumentsProduced])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @if(supportingDocuments.nonEmpty){
     <caption class="heading-small"><span id="supporting-documents-@itemNo">@messages("declaration.summary.items.item.supportingDocuments")</span></caption>

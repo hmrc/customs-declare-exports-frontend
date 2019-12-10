@@ -21,6 +21,7 @@ import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.DeclarationType
 import org.jsoup.nodes.Document
+import org.scalatest.Assertion
 import org.scalatest.matchers.{BeMatcher, MatchResult}
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.{AnyContent, Request}
@@ -41,7 +42,7 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
   def validatedMessages(implicit request: Request[_]): Messages =
     new AllMessageKeysAreMandatoryMessages(realMessagesApi.preferred(request))
 
-  def checkErrorsSummary(view: Document) = {
+  def checkErrorsSummary(view: Document): Assertion = {
     view.getElementById("error-summary-heading").text() must be("error.summary.title")
     view.getElementsByClass("error-summary error-summary--show").get(0).getElementsByTag("p").text() must be("error.summary.text")
   }

@@ -26,7 +26,7 @@ import utils.validators.forms.FieldValidator._
 case class PackageInformation(typesOfPackages: String, numberOfPackages: Int, shippingMarks: String) {
   def toJson: JsValue = Json.toJson(this)(PackageInformation.format)
 
-  def typesOfPackagesText: String = PackageTypes.findByCode(typesOfPackages).description
+  def typesOfPackagesText: String = PackageTypes.findByCode(typesOfPackages).asText()
 }
 
 object PackageInformation extends DeclarationPage {

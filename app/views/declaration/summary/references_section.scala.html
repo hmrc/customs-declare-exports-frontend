@@ -19,7 +19,7 @@
 @import models.viewmodels.HtmlTableRow
 @import views.ViewDates
 
-@(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[AnyContent])
+@(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 <div id="declaration-references-summary">
     @components.summary_list(Some(messages("declaration.summary.references"))) {
