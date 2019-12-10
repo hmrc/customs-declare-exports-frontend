@@ -18,16 +18,15 @@ package unit.controllers.declaration
 
 import controllers.declaration.BorderTransportController
 import forms.declaration.TransportCodes.IMOShipIDNumber
-import models.{DeclarationType, ExportsDeclaration, Mode}
-import play.api.libs.json.Json
-import models.{DeclarationType, Mode}
+import models.DeclarationType._
+import models.Mode
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.declaration.border_transport
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 
 class BorderTransportControllerSpec extends ControllerSpec {
 
@@ -48,6 +47,12 @@ class BorderTransportControllerSpec extends ControllerSpec {
     when(borderTransportPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
+  private def nextPage(decType: DeclarationType) = decType match {
+    case SUPPLEMENTARY =>
+      controllers.declaration.routes.TransportContainerController.displayContainerSummary()
+    case STANDARD => controllers.declaration.routes.TransportPaymentController.displayPage()
+  }
+
   private def formData(transportType: String, reference: String, nationality: String) =
     JsObject(
       Map(
@@ -64,13 +69,12 @@ class BorderTransportControllerSpec extends ControllerSpec {
       )
     )
 
-  def borderTransportController(declarationFactory: () => ExportsDeclaration): Unit =
-    "Transport Details Controller" should {
-
+  "Transport Details Controller" when {
+    onJourney(STANDARD, SUPPLEMENTARY)() { declaration =>
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
-          withNewCaching(declarationFactory())
+          withNewCaching(declaration)
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -78,7 +82,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
         }
 
         "display page method is invoked and cache is not empty" in {
-          withNewCaching(aDeclarationAfter(declarationFactory(), withBorderTransport()))
+          withNewCaching(aDeclarationAfter(declaration, withBorderTransport()))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -89,7 +93,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
       "return 400 (BAD_REQUEST)" when {
 
         "form contains incorrect values" in {
-          withNewCaching(declarationFactory())
+          withNewCaching(declaration)
 
           val incorrectForm = formData("incorrect", "", "")
 
@@ -101,67 +105,37 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
       "return 303 (SEE_OTHER)" when {
         "valid options are selected" in {
+          withNewCaching(declaration)
+
           val correctForm = formData(IMOShipIDNumber, "SHIP001", "United Kingdom")
+
+          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe nextPage(declaration.`type`)
         }
       }
     }
 
-  "Transport Details Controller" when {
-    "we are on supplementary declaration journey" should {
-      def declarationFactory() = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
-      behave like borderTransportController(declarationFactory)
+    onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE)() { declaration =>
+      "display page method is invoked" in {
+        withNewCaching(aDeclarationAfter(declaration, withBorderTransport()))
 
-      "return 303 (SEE_OTHER) to Containers" when {
-        "valid options are selected" in {
-          withNewCaching(declarationFactory())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
-          val correctForm = formData(IMOShipIDNumber, "SHIP001", "United Kingdom")
-
-          val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
-            .displayContainerSummary(Mode.Draft)
-        }
-
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
       }
-    }
-    "we are on standard declaration journey" should {
-      def declarationFactory() = aDeclaration(withType(DeclarationType.STANDARD))
-      behave like borderTransportController(declarationFactory)
 
-      "return 303 (SEE_OTHER) to TransportPayment" when {
-        "valid options are selected" in {
-          withNewCaching(declarationFactory())
+      "valid options are selected" in {
+        withNewCaching(declaration)
 
-          val correctForm = formData(IMOShipIDNumber, "SHIP001", "United Kingdom")
+        val correctForm = formData(IMOShipIDNumber, "SHIP001", "United Kingdom")
 
-          val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
+        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.TransportPaymentController
-            .displayPage(Mode.Draft)
-        }
-
-      }
-    }
-    "we are on simplified declaration journey" should {
-      def declarationFactory() = aDeclaration(withType(DeclarationType.SIMPLIFIED))
-      behave like borderTransportController(declarationFactory)
-
-      "return 303 (SEE_OTHER) to TransportPayment" when {
-        "valid options are selected" in {
-          withNewCaching(declarationFactory())
-
-          val correctForm = formData(IMOShipIDNumber, "SHIP001", "United Kingdom")
-
-          val result = controller.submitForm(Mode.Draft)(postRequest(correctForm))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.TransportPaymentController
-            .displayPage(Mode.Draft)
-        }
-
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
       }
     }
 

@@ -34,9 +34,8 @@ class JourneyAction @Inject()(cacheService: ExportsCacheService)(implicit val ex
 
   override protected def executionContext: ExecutionContext = exc
 
-  private def refiner[A](request: AuthenticatedRequest[A], types: DeclarationType*): Future[Either[Result, JourneyRequest[A]]] = {
+  private def refiner[A](request: AuthenticatedRequest[A], types: Seq[DeclarationType]): Future[Either[Result, JourneyRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
-
     request.declarationId match {
       case Some(id) =>
         cacheService.get(id).map {
@@ -50,12 +49,14 @@ class JourneyAction @Inject()(cacheService: ExportsCacheService)(implicit val ex
         Future.successful(Left(Results.Redirect(controllers.routes.StartController.displayStartPage())))
     }
   }
-
   override def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] =
-    refiner(request, Seq.empty[DeclarationType]: _*)
+    refiner(request, Seq.empty[DeclarationType])
 
-  def apply(types: DeclarationType*): ActionRefiner[AuthenticatedRequest, JourneyRequest] = new ActionRefiner[AuthenticatedRequest, JourneyRequest] {
-    override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] = refiner(request, types: _*)
-    override protected def executionContext: ExecutionContext = exc
-  }
+  def apply(type1: DeclarationType, others: DeclarationType*): ActionRefiner[AuthenticatedRequest, JourneyRequest] = apply(others.toSeq.+:(type1))
+
+  def apply(types: Seq[DeclarationType]): ActionRefiner[AuthenticatedRequest, JourneyRequest] =
+    new ActionRefiner[AuthenticatedRequest, JourneyRequest] {
+      override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] = refiner(request, types)
+      override protected def executionContext: ExecutionContext = exc
+    }
 }

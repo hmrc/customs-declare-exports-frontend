@@ -42,25 +42,28 @@ class BorderTransportController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
+
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.borderTransport match {
       case Some(data) => Ok(borderTransport(mode, form().fill(data)))
       case _          => Ok(borderTransport(mode, form()))
     }
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form()
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[BorderTransport]) => Future.successful(BadRequest(borderTransport(mode, formWithErrors))),
-        borderTransport => updateCache(borderTransport).map(_ => nextPage(mode, borderTransport))
-      )
-  }
+  def submitForm(mode: Mode): Action[AnyContent] =
+    (authenticate andThen journeyType(validTypes)).async { implicit request =>
+      form()
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[BorderTransport]) => Future.successful(BadRequest(borderTransport(mode, formWithErrors))),
+          borderTransport => updateCache(borderTransport).map(_ => nextPage(mode, borderTransport))
+        )
+    }
 
   private def nextPage(mode: Mode, borderTransport: BorderTransport)(implicit request: JourneyRequest[AnyContent]): Result =
     request.declarationType match {
-      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
+      case DeclarationType.STANDARD =>
         navigator.continueTo(controllers.declaration.routes.TransportPaymentController.displayPage(mode))
       case DeclarationType.SUPPLEMENTARY =>
         navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode))
