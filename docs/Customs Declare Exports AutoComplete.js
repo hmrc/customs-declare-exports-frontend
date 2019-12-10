@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.15
+// @version      1.16
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -148,6 +148,8 @@ function completePage() {
     if (currentPageIs("/customs-declare-exports/declaration/holder-of-authorisation")) {
         if(getChoice() == "SIMPLIFIED"){
             selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "SDE");
+        } else if(getChoice() == "CLEARANCE"){
+            selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "EIR");
         } else {
             selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "AEOC");
         }
@@ -289,6 +291,9 @@ function completePage() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/add-document')) {
         if(getChoice() == "SIMPLIFIED"){
             document.getElementById('documentTypeCode').value ='C512';
+            document.getElementById('documentIdentifier').value ='GBSDE717572504502811';
+        } else if(getChoice() == "CLEARANCE"){
+            document.getElementById('documentTypeCode').value ='C514';
             document.getElementById('documentIdentifier').value ='GBSDE717572504502811';
         } else {
             document.getElementById('documentTypeCode').value ='C501';
