@@ -23,7 +23,6 @@ import connectors.exchange.ExportsDeclarationExchange
 import forms.CancelDeclaration
 import javax.inject.{Inject, Singleton}
 import models._
-import models.ExportsDeclaration.Mongo.format
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Submission
 import play.api.Logger
