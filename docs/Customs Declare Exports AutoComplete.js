@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.17
+// @version      1.18
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -12,8 +12,58 @@
 
 (function() {
     'use strict';
-    document.getElementsByTagName("body")[0].appendChild(createQuickButton());
+    document.getElementsByTagName("body")[0].appendChild(createDropDown());
 })();
+
+function setDeclaration(choice) { GM_setValue("declaration", choice); }
+
+function getDeclaration() { return GM_getValue("declaration"); }
+
+function createDropDown() {
+    var myParent = document.body;
+    var panel = myParent.appendChild(document.createElement("div"));
+
+    panel.appendChild(createQuickButton());
+
+    // create array of options to be added
+    let text = ["Standard-PreLodged",
+                "Standard-Frontier",
+                "Simplified-PreLodged",
+                "Simplified-Frontier",
+                "Supplementary-SDP",
+                "Supplementary-EIDR",
+                "Occasional-PreLodged",
+                "Occasional-Frontier",
+                "Clearance-PreLodged",
+                "Clearance-Frontier"
+               ];
+    let value = ["D", "A", "F", "C", "Y", "Z", "E", "B", "K", "J"]
+
+    // create and append select list
+    var selectList = document.createElement("select");
+    selectList.style.position = "absolute"
+    selectList.style.top = "100px"
+    selectList.id = "mySelect";
+    panel.appendChild(selectList);
+
+    // create and append the options
+    for (var i = 0; i < text.length; i++) {
+        var option = document.createElement("option");
+        option.value = value[i];
+        option.text = text[i];
+        selectList.appendChild(option);
+    }
+
+    selectList.onchange = function (e) { setDeclaration(this.value); };
+
+    // empty on start
+    if (currentPageIs('/customs-declare-exports/start')) {
+        selectList.value = 0;
+        setDeclaration(0);
+    } else {
+        selectList.value = getDeclaration();
+    }
+}
 
 function createQuickButton() {
     let button = document.createElement('button');
@@ -74,39 +124,69 @@ function currentPageIs(path) {
     return matches && matches.length > 0
 }
 
-function setChoice(choice) {
-    GM_setValue('decType', choice);
-}
-
-function getChoice() {
-    return GM_getValue('decType', 0);
-}
-
 function completePage() {
     if (currentPageIs('/customs-declare-exports/start')) {
+
+        if(getDeclaration() == 0){
+            alert("Select journey type");
+            return;
+        }
+
         document.getElementsByClassName('button')[0].click()
     }
     if(currentPageIs("/customs-declare-exports/choice")){
+
+        if(getDeclaration() == 0){
+            alert("Select journey type");
+            return;
+        }
+
         document.getElementById("CRT").checked = true
         document.getElementsByClassName('govuk-button')[0].click()
     }
     if(currentPageIs("/customs-declare-exports/declaration/declaration-choice")){
-        let choice = findRadioOption("type");
-        if(choice){
-            setChoice(choice);
-            document.getElementsByClassName('button')[0].click()
-        } else {
-            selectRadioOption(document.getElementById("type"), 0);
-            setChoice("STANDARD");
-            document.getElementsByClassName('button')[0].click();
+
+        if(getDeclaration() == 0){
+            alert("Select journey type");
+            return;
         }
+
+        switch(getDeclaration()) {
+            case 'D':
+            case 'A':
+               selectRadioOption(document.getElementById("type"), 0);
+            break;
+            case 'F':
+            case 'C':
+               selectRadioOption(document.getElementById("type"), 1);
+            break;
+            case 'Y':
+            case 'Z':
+               selectRadioOption(document.getElementById("type"), 2);
+            break;
+            case 'E':
+            case 'B':
+               selectRadioOption(document.getElementById("type"), 3);
+            break;
+            case 'K':
+            case 'J':
+               selectRadioOption(document.getElementById("type"), 4);
+            break;
+        }
+        document.getElementsByClassName('button')[0].click();
     }
     if(currentPageIs("/customs-declare-exports/declaration/dispatch-location")){
+
         selectRadioOption(document.getElementById("dispatchLocation"), 0);
         document.getElementsByClassName('button')[0].click()
     }
     if(currentPageIs("/customs-declare-exports/declaration/type")){
-        selectRadioOption(document.getElementById("additionalDeclarationType"), 0);
+        // top values
+        if (['D','F','Y','E','K'].indexOf(getDeclaration()) > -1) {
+            selectRadioOption(document.getElementById("additionalDeclarationType"), 0);
+        } else {
+            selectRadioOption(document.getElementById("additionalDeclarationType"), 1);
+        }
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs("/customs-declare-exports/declaration/consignment-references")) {
@@ -147,13 +227,21 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs("/customs-declare-exports/declaration/holder-of-authorisation")) {
-        if(getChoice() == "SIMPLIFIED"){
-            selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "SDE");
-        } else if(getChoice() == "CLEARANCE"){
-            selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "EIR");
-        } else {
-            selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "AEOC");
-        }
+        switch(getDeclaration())
+        {
+            // simplified
+            case 'F':
+            case 'C':
+                selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "SDE");
+            break;
+            // clearance frontier
+            case 'J':
+                selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "EIR");
+            break;
+            default:
+                selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "AEOC");
+       }
+
         document.getElementById('eori').value = 'GB717572504502811';
         document.getElementsByClassName('button')[0].click()
     }
@@ -290,16 +378,23 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/add-document')) {
-        if(getChoice() == "SIMPLIFIED"){
-            document.getElementById('documentTypeCode').value ='C512';
-            document.getElementById('documentIdentifier').value ='GBSDE717572504502811';
-        } else if(getChoice() == "CLEARANCE"){
-            document.getElementById('documentTypeCode').value ='C514';
-            document.getElementById('documentIdentifier').value ='GBSDE717572504502811';
-        } else {
-            document.getElementById('documentTypeCode').value ='C501';
-            document.getElementById('documentIdentifier').value ='GBAEOC717572504502811';
-        }
+        switch(getDeclaration())
+        {
+            // simplified
+            case 'F':
+            case 'C':
+                document.getElementById('documentTypeCode').value ='C512';
+                document.getElementById('documentIdentifier').value ='GBSDE717572504502811';
+            break;
+            // clearance frontier
+            case 'J':
+                document.getElementById('documentTypeCode').value ='C514';
+                document.getElementById('documentIdentifier').value ='GBSDE717572504502811';
+            break;
+            default:
+                document.getElementById('documentTypeCode').value ='C501';
+                document.getElementById('documentIdentifier').value ='GBAEOC717572504502811';
+       }
 
         document.getElementsByClassName('button')[0].click()
     }
@@ -355,6 +450,8 @@ function completePage() {
         document.getElementById("email").value = 'tim@testing.com';
         document.getElementById("confirmation").click()
         document.getElementsByClassName('button')[0].click()
+
+        setDeclaration(0);
     }
     if (currentPageIs('/customs-declare-exports/declaration/confirmation')) {
         document.getElementsByClassName('button')[0].click()
