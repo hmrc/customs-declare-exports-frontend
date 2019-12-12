@@ -18,7 +18,6 @@ package services.audit
 
 import base.{Injector, TestHelper}
 import config.AppConfig
-import models.ExportsDeclaration.Audit.format
 import models.declaration.ExportDeclarationTestData.{allRecordsXmlMarshallingTest, cancellationDeclarationTest}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
