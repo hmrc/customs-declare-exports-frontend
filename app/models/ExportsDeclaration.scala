@@ -35,9 +35,7 @@ case class ExportsDeclaration(
   dispatchLocation: Option[DispatchLocation] = None,
   additionalDeclarationType: Option[AdditionalDeclarationType] = None,
   consignmentReferences: Option[ConsignmentReferences] = None,
-  departureTransport: Option[DepartureTransport] = None,
-  borderTransport: Option[BorderTransport] = None,
-  transportInformation: Option[TransportInformation] = None,
+  transport: Transport = Transport(),
   parties: Parties = Parties(),
   locations: Locations = Locations(),
   items: Set[ExportItem] = Set.empty,
@@ -45,8 +43,28 @@ case class ExportsDeclaration(
   previousDocuments: Option[PreviousDocumentsData] = None,
   natureOfTransaction: Option[NatureOfTransaction] = None
 ) {
+  def addOrUpdateContainer(container: Container): ExportsDeclaration = {
+    copy(transport = transport.addOrUpdateContainer(container))
+  }
+
   val lrn: Option[String] = consignmentReferences.map(_.lrn.value)
   val ducr: Option[String] = consignmentReferences.map(_.ducr.ducr)
+
+  def updateDepartureTransport(departure: DepartureTransport): ExportsDeclaration = {
+    copy(transport = transport.copy(
+      borderModeOfTransportCode = Some(departure.borderModeOfTransportCode),
+      meansOfTransportOnDepartureType = Some(departure.meansOfTransportOnDepartureType),
+      meansOfTransportOnDepartureIDNumber = Some(departure.meansOfTransportOnDepartureIDNumber)
+    ))
+  }
+
+  def updateBorderTransport(formData: BorderTransport): ExportsDeclaration = {
+    copy(transport = transport.copy(
+      meansOfTransportCrossingTheBorderType = Some(formData.meansOfTransportCrossingTheBorderType),
+      meansOfTransportCrossingTheBorderIDNumber = Some(formData.meansOfTransportCrossingTheBorderIDNumber),
+      meansOfTransportCrossingTheBorderNationality = formData.meansOfTransportCrossingTheBorderNationality
+    ))
+  }
 
   def isComplete: Boolean = status == DeclarationStatus.COMPLETE
 
@@ -74,10 +92,10 @@ case class ExportsDeclaration(
     copy(locations = locations.copy(hasRoutingCountries = Some(false), routingCountries = Seq.empty))
 
   def updateContainers(containers: Seq[Container]) =
-    copy(transportInformation = Some(transportInformation.getOrElse(new TransportInformation).copy(containers = containers)))
+    copy(transport = transport.copy(containers = containers))
 
   def updateTransportPayment(payment: TransportPayment) =
-    copy(transportInformation = Some(transportInformation.getOrElse(new TransportInformation).copy(transportPayment = Some(payment))))
+    copy(transport = transport.copy(transportPayment = Some(payment)))
 
   def containRoutingCountries(): Boolean = locations.routingCountries.nonEmpty
 
@@ -87,7 +105,7 @@ case class ExportsDeclaration(
 
   def hasContainers: Boolean = containers.nonEmpty
 
-  def containers: Seq[Container] = transportInformation.map(_.containers).getOrElse(Seq.empty)
+  def containers: Seq[Container] = transport.containers
 
   def amend()(implicit clock: Clock = Clock.systemUTC()): ExportsDeclaration = {
     val currentTime = Instant.now(clock)

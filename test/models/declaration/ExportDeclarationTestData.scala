@@ -56,11 +56,17 @@ object ExportDeclarationTestData {
     dispatchLocation = Some(correctDispatchLocation),
     additionalDeclarationType = Some(correctAdditionalDeclarationTypeSupplementaryDec),
     consignmentReferences = Some(correctConsignmentReferences),
-    borderTransport = Some(BorderTransport(Some("Portugal"), "40", "1234567878ui")),
-    transportInformation = Some(TransportInformation(containers = correctTransportInformationContainerData)),
     natureOfTransaction = Some(correctNatureOfTransaction),
     totalNumberOfItems = Some(correctTotalNumberOfItemsDecimalValues),
-    departureTransport = Some(DepartureTransport("3", "10", "123112yu78")),
+    transport = Transport (
+      containers = correctTransportInformationContainerData,
+      borderModeOfTransportCode = Some("3"),
+      meansOfTransportOnDepartureType = Some("10"),
+        meansOfTransportOnDepartureIDNumber = Some("123112yu78"),
+      meansOfTransportCrossingTheBorderNationality = Some("Portugal"),
+      meansOfTransportCrossingTheBorderType = Some("40"),
+      meansOfTransportCrossingTheBorderIDNumber = Some("1234567878ui")
+    ),
     parties = Parties(
       exporterDetails = Some(correctExporterDetails),
       declarantDetails = Some(correctDeclarantDetailsEORIOnly),

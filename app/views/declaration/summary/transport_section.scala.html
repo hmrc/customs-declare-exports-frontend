@@ -19,19 +19,22 @@
 @import models.viewmodels.HtmlTableRow
 @import forms.declaration.DepartureTransport
 @import forms.declaration.BorderTransport
+@import models.declaration.Transport
 
 @(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
-@messagesForDepartureMeansOfTransport(departure: Option[DepartureTransport]) = @{
-  departure.map(transport =>
-    Seq(messages(s"declaration.summary.transport.departure.meansOfTransport.${transport.meansOfTransportOnDepartureType}"), transport.meansOfTransportOnDepartureIDNumber)
-  ).getOrElse(Seq.empty)
+@messagesForDepartureMeansOfTransport(transport: Transport) = @{
+  (transport.meansOfTransportOnDepartureType, transport.meansOfTransportOnDepartureIDNumber) match {
+    case (Some(meansType), Some(meansId)) => Seq(messages(s"declaration.summary.transport.departure.meansOfTransport.$meansType"), meansId)
+    case _ => Seq.empty
+  }
 }
 
-@messagesForBorderMeansOfTransport(border: Option[BorderTransport]) = @{
-  border.map(transport =>
-    Seq(messages(s"declaration.summary.transport.border.meansOfTransport.${transport.meansOfTransportCrossingTheBorderType}"), transport.meansOfTransportCrossingTheBorderIDNumber)
-  ).getOrElse(Seq.empty)
+@messagesForBorderMeansOfTransport(transport: Transport) = @{
+  (transport.meansOfTransportCrossingTheBorderType, transport.meansOfTransportCrossingTheBorderIDNumber) match {
+    case (Some(meansType), Some(meansId)) => Seq(messages(s"declaration.summary.transport.border.meansOfTransport.$meansType"), meansId)
+    case _ => Seq.empty
+  }
 }
 
 <div id="declaration-transport-summary">
@@ -39,37 +42,37 @@
         @if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, OCCASIONAL, CLEARANCE)){
             @components.table_row("border-transport", HtmlTableRow(
                 label = messages("declaration.summary.transport.departure.transportCode.header"),
-                value = declarationData.departureTransport.map(departure =>
-                    Seq(messages(s"declaration.summary.transport.departure.transportCode.${departure.borderModeOfTransportCode}"))
+                value = declarationData.transport.borderModeOfTransportCode.map(code =>
+                    Seq(messages(s"declaration.summary.transport.departure.transportCode.${code}"))
                 ).getOrElse(Seq.empty),
                 call = Some(controllers.declaration.routes.DepartureTransportController.displayPage())
             ))
             @components.table_row("transport-reference", HtmlTableRow(
                 label = messages("declaration.summary.transport.departure.meansOfTransport.header"),
-                value = messagesForDepartureMeansOfTransport(declarationData.departureTransport),
+                value = messagesForDepartureMeansOfTransport(declarationData.transport),
                 call = Some(controllers.declaration.routes.DepartureTransportController.displayPage())
             ))
             @components.table_row("active-transport-type", HtmlTableRow(
                 label = messages("declaration.summary.transport.border.meansOfTransport.header"),
-                value = messagesForBorderMeansOfTransport(declarationData.borderTransport),
+                value = messagesForBorderMeansOfTransport(declarationData.transport),
                 call = Some(controllers.declaration.routes.BorderTransportController.displayPage())
             ))
             @components.table_row("active-transport-nationality", HtmlTableRow(
                 label = messages("declaration.summary.transport.activeTransportNationality"),
-                value = declarationData.borderTransport.flatMap(_.meansOfTransportCrossingTheBorderNationality).getOrElse(""),
+                value = declarationData.transport.meansOfTransportCrossingTheBorderNationality.getOrElse(""),
                 call = Some(controllers.declaration.routes.BorderTransportController.displayPage())
             ))
         }
         @components.table_row("transport-payment", HtmlTableRow(
             label = messages("declaration.summary.transport.payment"),
-            value = declarationData.transportInformation.flatMap(_.transportPayment.flatMap(_.paymentMethod.map(code => messages(s"declaration.summary.transport.payment.$code")))).getOrElse(""),
+            value = declarationData.transport.transportPayment.flatMap(_.paymentMethod).map(code => messages(s"declaration.summary.transport.payment.$code")).getOrElse(""),
             call = Some(controllers.declaration.routes.TransportPaymentController.displayPage())
         ))
         @components.table_row("containers", HtmlTableRow(
             label = messages("declaration.summary.transport.containers"),
-            value = messages(declarationData.transportInformation.map(info => if(info.containers.nonEmpty) "site.yes" else "site.no").getOrElse("")),
+            value = messages(if(declarationData.transport.hasContainers) "site.yes" else "site.no"),
             call = Some(controllers.declaration.routes.TransportContainerController.displayContainerSummary())
         ))
-        @containers(declarationData.transportInformation.map(_.containers).getOrElse(Seq.empty))
+        @containers(declarationData.transport.containers)
     }
 </div>
