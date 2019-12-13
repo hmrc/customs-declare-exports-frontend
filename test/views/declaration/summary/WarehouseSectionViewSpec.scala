@@ -39,7 +39,12 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("warehouse-id-label").text() mustBe messages("declaration.summary.warehouse.id")
         view.getElementById("warehouse-id").text() mustBe "12345"
-        view.getElementById("warehouse-id-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("warehouse-id-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.warehouse.id.change")
+
         view.getElementById("warehouse-id-change") must haveHref(controllers.declaration.routes.WarehouseIdentificationController.displayPage())
       }
 
@@ -47,7 +52,12 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("supervising-office-label").text() mustBe messages("declaration.summary.warehouse.supervisingOffice")
         view.getElementById("supervising-office").text() mustBe "23456"
-        view.getElementById("supervising-office-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("supervising-office-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.warehouse.supervisingOffice.change")
+
         view.getElementById("supervising-office-change") must haveHref(
           controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage()
         )
@@ -57,7 +67,12 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("mode-of-transport-label").text() mustBe messages("declaration.summary.warehouse.inlandModeOfTransport")
         view.getElementById("mode-of-transport").text() mustBe messages("declaration.summary.warehouse.inlandModeOfTransport.1")
-        view.getElementById("mode-of-transport-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("mode-of-transport-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.warehouse.inlandModeOfTransport.change")
+
         view.getElementById("mode-of-transport-change") must haveHref(controllers.declaration.routes.InlandTransportDetailsController.displayPage())
       }
     }
@@ -69,7 +84,12 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("warehouse-id-label").text() mustBe messages("declaration.summary.warehouse.id")
         view.getElementById("warehouse-id").text() mustBe "12345"
-        view.getElementById("warehouse-id-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("warehouse-id-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.warehouse.id.change")
+
         view.getElementById("warehouse-id-change") must haveHref(controllers.declaration.routes.WarehouseIdentificationController.displayPage())
       }
 
@@ -77,7 +97,12 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("supervising-office-label").text() mustBe messages("declaration.summary.warehouse.supervisingOffice")
         view.getElementById("supervising-office").text() mustBe "23456"
-        view.getElementById("supervising-office-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("supervising-office-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.warehouse.supervisingOffice.change")
+
         view.getElementById("supervising-office-change") must haveHref(
           controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage()
         )

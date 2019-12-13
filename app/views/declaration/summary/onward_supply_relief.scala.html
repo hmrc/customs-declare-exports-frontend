@@ -26,13 +26,15 @@
 @components.table_row(s"item-$itemNo-onwardSupplyRelief", HtmlTableRow(
     label = messages("declaration.summary.items.item.onwardSupplyRelief"),
     value = fiscalInformation.map(_.onwardSupplyRelief).getOrElse(""),
-    call = Some(controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId))
+    call = Some(controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId)),
+    changeLabel = Some(messages("declaration.summary.items.item.onwardSupplyRelief.change", itemNo))
 ))
 
 @if(fiscalInformation.map(_.onwardSupplyRelief) == Some(yes)) {
     @components.table_row(s"item-$itemNo-VATdetails", HtmlTableRow(
         label = messages("declaration.summary.items.item.VATdetails"),
         value = additionalFiscalReferences.map(_.asString).mkString(", "),
-        call = Some(controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(Mode.Normal, itemId))
+        call = Some(controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(Mode.Normal, itemId)),
+        changeLabel = Some(messages("declaration.summary.items.item.VATdetails.change", itemNo))
     ))
 }

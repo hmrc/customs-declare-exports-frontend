@@ -82,20 +82,39 @@ class AdditionalAndAuthorisedPartiesSectionViewSpec extends UnitViewSpec with Ex
 
       val view = additional_and_authorised_parties_section(Seq.empty, Seq.empty)(messages, journeyRequest())
 
-      view.getElementById("additionalActors-change").text() mustBe messages("site.change")
+      val List(changeActor, accessibleChangeActor) = view.getElementById("additionalActors-change").text().split(" ").toList
+
+      changeActor mustBe messages("site.change")
+      accessibleChangeActor mustBe messages("declaration.summary.parties.additional.empty.change")
+
       view.getElementById("additionalActors-change") must haveHref(controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage())
-      view.getElementById("holders-change").text() mustBe messages("site.change")
+
+      val List(changeHolder, accessibleChangeHolder) = view.getElementById("holders-change").text().split(" ").toList
+
+      changeHolder mustBe messages("site.change")
+      accessibleChangeHolder mustBe messages("declaration.summary.parties.holders.empty.change")
+
+      view.getElementById("holders-change") must haveHref(controllers.declaration.routes.DeclarationHolderController.displayPage())
     }
 
     "provide change button for every actor" in {
 
       val view = additional_and_authorised_parties_section(additionalActors, Seq.empty)(messages, journeyRequest())
 
-      view.getElementById("additionalActor-0-change").text() mustBe messages("site.change")
+      val List(change1, accessibleChange1) = view.getElementById("additionalActor-0-change").text().split(" ").toList
+
+      change1 mustBe messages("site.change")
+      accessibleChange1 mustBe messages("declaration.summary.parties.additional.change", partyType1, eori1)
+
       view.getElementById("additionalActor-0-change") must haveHref(
         controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage()
       )
-      view.getElementById("additionalActor-1-change").text() mustBe messages("site.change")
+
+      val List(change2, accessibleChange2) = view.getElementById("additionalActor-1-change").text().split(" ").toList
+
+      change2 mustBe messages("site.change")
+      accessibleChange2 mustBe messages("declaration.summary.parties.additional.change", partyType2, eori2)
+
       view.getElementById("additionalActor-1-change") must haveHref(
         controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage()
       )
@@ -105,9 +124,18 @@ class AdditionalAndAuthorisedPartiesSectionViewSpec extends UnitViewSpec with Ex
 
       val view = additional_and_authorised_parties_section(Seq.empty, holders)(messages, journeyRequest())
 
-      view.getElementById("holder-0-change").text() mustBe messages("site.change")
+      val List(change1, accessibleChange1) = view.getElementById("holder-0-change").text().split(" ").toList
+
+      change1 mustBe messages("site.change")
+      accessibleChange1 mustBe messages("declaration.summary.parties.holders.change", authorisationTypeCode1, eori1)
+
       view.getElementById("holder-0-change") must haveHref(controllers.declaration.routes.DeclarationHolderController.displayPage())
-      view.getElementById("holder-1-change").text() mustBe messages("site.change")
+
+      val List(change2, accessibleChange2) = view.getElementById("holder-1-change").text().split(" ").toList
+
+      change2 mustBe messages("site.change")
+      accessibleChange2 mustBe messages("declaration.summary.parties.holders.change", authorisationTypeCode2, eori2)
+
       view.getElementById("holder-1-change") must haveHref(controllers.declaration.routes.DeclarationHolderController.displayPage())
     }
   }

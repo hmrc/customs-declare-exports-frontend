@@ -34,7 +34,12 @@ class OnwardSupplyReliefViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("item-1-onwardSupplyRelief-label").text() mustBe messages("declaration.summary.items.item.onwardSupplyRelief")
         view.getElementById("item-1-onwardSupplyRelief").text() mustBe "No"
-        view.getElementById("item-1-onwardSupplyRelief-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("item-1-onwardSupplyRelief-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.items.item.onwardSupplyRelief.change", 1)
+
         view.getElementById("item-1-onwardSupplyRelief-change") must haveHref(
           controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, "itemId")
         )
@@ -53,13 +58,23 @@ class OnwardSupplyReliefViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("item-1-onwardSupplyRelief-label").text() mustBe messages("declaration.summary.items.item.onwardSupplyRelief")
         view.getElementById("item-1-onwardSupplyRelief").text() mustBe "Yes"
-        view.getElementById("item-1-onwardSupplyRelief-change").text() mustBe messages("site.change")
+
+        val List(change1, accessibleChange1) = view.getElementById("item-1-onwardSupplyRelief-change").text().split(" ").toList
+
+        change1 mustBe messages("site.change")
+        accessibleChange1 mustBe messages("declaration.summary.items.item.onwardSupplyRelief.change", 1)
+
         view.getElementById("item-1-onwardSupplyRelief-change") must haveHref(
           controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, "itemId")
         )
         view.getElementById("item-1-VATdetails-label").text() mustBe messages("declaration.summary.items.item.VATdetails")
         view.getElementById("item-1-VATdetails").text() mustBe "GB123456789"
-        view.getElementById("item-1-VATdetails-change").text() mustBe messages("site.change")
+
+        val List(change2, accessibleChange2) = view.getElementById("item-1-VATdetails-change").text().split(" ").toList
+
+        change2 mustBe messages("site.change")
+        accessibleChange2 mustBe messages("declaration.summary.items.item.VATdetails.change", 2)
+
         view.getElementById("item-1-VATdetails-change") must haveHref(
           controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(Mode.Normal, "itemId")
         )

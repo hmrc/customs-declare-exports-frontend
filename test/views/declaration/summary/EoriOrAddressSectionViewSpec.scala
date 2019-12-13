@@ -33,12 +33,17 @@ class EoriOrAddressSectionViewSpec extends UnitViewSpec with ExportsTestData {
   val country = "Country"
   val address = Address(fullName, street, city, postCode, country)
   val addressLabel = "addressLabel"
+  val eoriChangeLabel = "eori-change"
+  val addressChangeLabel = "address-change"
 
   "Eori or address section" should {
 
     "display eori row without value if eori and address is empty and eori is default row" in {
 
-      val view = eori_or_address_section(pageId, None, eoriLabel, None, addressLabel, None)(messages, journeyRequest())
+      val view = eori_or_address_section(pageId, None, eoriLabel, None, addressLabel, None, Some(eoriChangeLabel), Some(addressChangeLabel))(
+        messages,
+        journeyRequest()
+      )
 
       view.getElementById(s"$pageId-eori-label").text() mustBe messages(eoriLabel)
       view.getElementById(s"$pageId-eori").text() mustBe empty
@@ -46,7 +51,10 @@ class EoriOrAddressSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
     "display address row without value if eori and address is empty and eori is not default row" in {
 
-      val view = eori_or_address_section(pageId, None, eoriLabel, None, addressLabel, None, false)(messages, journeyRequest())
+      val view = eori_or_address_section(pageId, None, eoriLabel, None, addressLabel, None, Some(eoriChangeLabel), Some(addressChangeLabel), false)(
+        messages,
+        journeyRequest()
+      )
 
       view.getElementById(s"$pageId-address-label").text() mustBe messages(addressLabel)
       view.getElementById(s"$pageId-address").text() mustBe empty
@@ -54,7 +62,10 @@ class EoriOrAddressSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
     "display eori when defined" in {
 
-      val view = eori_or_address_section(pageId, Some(eori), eoriLabel, None, addressLabel, None)(messages, journeyRequest())
+      val view = eori_or_address_section(pageId, Some(eori), eoriLabel, None, addressLabel, None, Some(eoriChangeLabel), Some(addressChangeLabel))(
+        messages,
+        journeyRequest()
+      )
 
       view.getElementById(s"$pageId-eori-label").text() mustBe messages(eoriLabel)
       view.getElementById(s"$pageId-eori").text() mustBe eori
@@ -62,7 +73,10 @@ class EoriOrAddressSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
     "display address when defined" in {
 
-      val view = eori_or_address_section(pageId, None, eoriLabel, Some(address), addressLabel, None)(messages, journeyRequest())
+      val view = eori_or_address_section(pageId, None, eoriLabel, Some(address), addressLabel, None, Some(eoriChangeLabel), Some(addressChangeLabel))(
+        messages,
+        journeyRequest()
+      )
 
       view.getElementById(s"$pageId-address-label").text() mustBe messages(addressLabel)
       view.getElementById(s"$pageId-address-0").text() mustBe fullName
@@ -74,7 +88,11 @@ class EoriOrAddressSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
     "display both eori and address when defined" in {
 
-      val view = eori_or_address_section(pageId, Some(eori), eoriLabel, Some(address), addressLabel, None)(messages, journeyRequest())
+      val view =
+        eori_or_address_section(pageId, Some(eori), eoriLabel, Some(address), addressLabel, None, Some(eoriChangeLabel), Some(addressChangeLabel))(
+          messages,
+          journeyRequest()
+        )
 
       view.getElementById(s"$pageId-eori-label").text() mustBe messages(eoriLabel)
       view.getElementById(s"$pageId-eori").text() mustBe eori

@@ -33,7 +33,10 @@
             <td><span id="additional-information-@itemNo-code-@index">@information.code</span></td>
             <td><span id="additional-information-@itemNo-information-@index">@information.description</span></td>
             <td class="link-right">
-                <a href="@controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, itemId)" id="additional-information-@itemNo-change-@index">@messages("site.change")</a>
+                <a href="@controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, itemId)" id="additional-information-@itemNo-change-@index">
+                    <span aria-hidden="true">@messages("site.change")</span>
+                    <span class="visually-hidden">@messages("declaration.summary.items.item.additionalInformation.change", itemNo)</span>
+                </a>
             </td>
         </tr>
     }

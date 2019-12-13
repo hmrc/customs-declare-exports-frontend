@@ -19,9 +19,16 @@
 
 @(id: String, tableRow: HtmlTableRow)(implicit messages: Messages)
 
-@changeLink(callOpt: Option[Call]) = {
+@changeLink(callOpt: Option[Call], changeLabel: Option[String]) = {
   @callOpt.map { call =>
-      <td><a href="@call" id="@id-change">@messages("site.change")</a></td>
+      <td>
+          <a href="@call" id="@id-change">
+              <span aria-hidden="true">@messages("site.change")</span>
+              @changeLabel.map { label =>
+                  <span class="visually-hidden">@label</span>
+              }
+          </a>
+      </td>
   }.getOrElse("")
 }
 
@@ -36,6 +43,6 @@
             }
         }
     </td>
-    @changeLink(tableRow.call)
+    @changeLink(tableRow.call, tableRow.changeLabel)
 </tr>
 

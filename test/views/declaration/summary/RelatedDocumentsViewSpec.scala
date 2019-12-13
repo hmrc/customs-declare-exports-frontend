@@ -33,7 +33,12 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("previous-documents-label").text() mustBe messages("declaration.summary.transaction.previousDocuments")
         view.getElementById("previous-documents").text() mustBe messages("site.no")
-        view.getElementById("previous-documents-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("previous-documents-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.transaction.previousDocuments.change")
+
         view.getElementById("previous-documents-change") must haveHref(controllers.declaration.routes.PreviousDocumentsController.displayPage())
       }
     }
@@ -51,11 +56,21 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
         view.getElementById("previous-documents-reference").text() mustBe messages("declaration.summary.transaction.previousDocuments.reference")
         view.getElementById("previous-document-0-type").text() mustBe "Proforma Invoice - 325"
         view.getElementById("previous-document-0-reference").text() mustBe "123456"
-        view.getElementById("previous-document-0-change").text() mustBe messages("site.change")
+
+        val List(change1, accessibleChange1) = view.getElementById("previous-document-0-change").text().split(" ").toList
+
+        change1 mustBe messages("site.change")
+        accessibleChange1 mustBe messages("declaration.summary.transaction.previousDocuments.document.change", 0)
+
         view.getElementById("previous-document-0-change") must haveHref(controllers.declaration.routes.PreviousDocumentsController.displayPage())
         view.getElementById("previous-document-1-type").text() mustBe "Packing List - 271"
         view.getElementById("previous-document-1-reference").text() mustBe "654321"
-        view.getElementById("previous-document-1-change").text() mustBe messages("site.change")
+
+        val List(change2, accessibleChange2) = view.getElementById("previous-document-1-change").text().split(" ").toList
+
+        change2 mustBe messages("site.change")
+        accessibleChange2 mustBe messages("declaration.summary.transaction.previousDocuments.document.change", 1)
+
         view.getElementById("previous-document-1-change") must haveHref(controllers.declaration.routes.PreviousDocumentsController.displayPage())
       }
     }

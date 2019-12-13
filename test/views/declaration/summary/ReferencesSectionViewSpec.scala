@@ -39,7 +39,12 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
       view.getElementById("declarationType-label").text() mustBe messages("declaration.summary.references.type")
       view.getElementById("declarationType").text() mustBe "Standard"
-      view.getElementById("declarationType-change").text() mustBe messages("site.change")
+
+      val List(change, accessibleChange) = view.getElementById("declarationType-change").text().split(" ").toList
+
+      change mustBe messages("site.change")
+      accessibleChange mustBe messages("declaration.summary.references.type.change")
+
       view.getElementById("declarationType-change") must haveHref(controllers.declaration.routes.DeclarationChoiceController.displayPage())
     }
 
@@ -47,7 +52,12 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
       view.getElementById("location-label").text() mustBe messages("declaration.summary.references.location")
       view.getElementById("location").text() mustBe messages("site.yes")
-      view.getElementById("location-change").text() mustBe messages("site.change")
+
+      val List(change, accessibleChange) = view.getElementById("location-change").text().split(" ").toList
+
+      change mustBe messages("site.change")
+      accessibleChange mustBe messages("declaration.summary.references.location.change")
+
       view.getElementById("location-change") must haveHref(controllers.declaration.routes.DispatchLocationController.displayPage())
     }
 
@@ -55,7 +65,12 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
       view.getElementById("additionalType-label").text() mustBe messages("declaration.summary.references.additionalType")
       view.getElementById("additionalType").text() mustBe messages("declaration.summary.references.additionalType.A")
-      view.getElementById("additionalType-change").text() mustBe messages("site.change")
+
+      val List(change, accessibleChange) = view.getElementById("additionalType-change").text().split(" ").toList
+
+      change mustBe messages("site.change")
+      accessibleChange mustBe messages("declaration.summary.references.additionalType.change")
+
       view.getElementById("additionalType-change") must haveHref(controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage())
     }
 
@@ -63,7 +78,12 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
       view.getElementById("ducr-label").text() mustBe messages("declaration.summary.references.ducr")
       view.getElementById("ducr").text() mustBe "DUCR"
-      view.getElementById("ducr-change").text() mustBe messages("site.change")
+
+      val List(change, accessibleChange) = view.getElementById("ducr-change").text().split(" ").toList
+
+      change mustBe messages("site.change")
+      accessibleChange mustBe messages("declaration.summary.references.ducr.change")
+
       view.getElementById("ducr-change") must haveHref(controllers.declaration.routes.ConsignmentReferencesController.displayPage())
     }
 
@@ -71,7 +91,12 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
       view.getElementById("lrn-label").text() mustBe messages("declaration.summary.references.lrn")
       view.getElementById("lrn").text() mustBe "LRN"
-      view.getElementById("lrn-change").text() mustBe messages("site.change")
+
+      val List(change, accessibleChange) = view.getElementById("lrn-change").text().split(" ").toList
+
+      change mustBe messages("site.change")
+      accessibleChange mustBe messages("declaration.summary.references.lrn.change")
+
       view.getElementById("lrn-change") must haveHref(controllers.declaration.routes.ConsignmentReferencesController.displayPage())
     }
   }

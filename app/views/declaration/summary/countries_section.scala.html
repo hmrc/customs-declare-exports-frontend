@@ -27,18 +27,21 @@
             @components.table_row("countryOfDispatch", HtmlTableRow(
                 label = messages("declaration.summary.countries.countryOfDispatch"),
                 value = declarationData.locations.originationCountry.map(code => Countries.findByCode(code).asString()).getOrElse(""),
-                call = Some(controllers.declaration.routes.OriginationCountryController.displayPage())
+                call = Some(controllers.declaration.routes.OriginationCountryController.displayPage()),
+                changeLabel = Some(messages("declaration.summary.countries.countryOfDispatch.change"))
             ))
         }
         @components.table_row("countriesOfRouting", HtmlTableRow(
             label = messages("declaration.summary.countries.routingCountries"),
             value = Seq(Countries.findByCodes(declarationData.locations.routingCountries).map(_.asString()).mkString(", ")),
-            call = Some(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage())
+            call = Some(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()),
+            changeLabel = Some(messages("declaration.summary.countries.routingCountries.change"))
         ))
         @components.table_row("countryOfDestination", HtmlTableRow(
             label = messages("declaration.summary.countries.countryOfDestination"),
             value = declarationData.locations.destinationCountry.map(code => Countries.findByCode(code).asString()).getOrElse(""),
-            call = Some(controllers.declaration.routes.DestinationCountryController.displayPage())
+            call = Some(controllers.declaration.routes.DestinationCountryController.displayPage()),
+            changeLabel = Some(messages("declaration.summary.countries.countryOfDestination"))
         ))
     }
 </div>

@@ -33,7 +33,10 @@
             <td><span id="supporting-document-@itemNo-code-@index">@document.documentTypeCode.getOrElse("")</span></td>
             <td><span id="supporting-document-@itemNo-information-@index">@document.documentIdentifier.getOrElse("")</span></td>
             <td class="link-right">
-                <a href="@controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, itemId)" id="supporting-document-@itemNo-change-@index">@messages("site.change")</a>
+                <a href="@controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, itemId)" id="supporting-document-@itemNo-change-@index">
+                    <span aria-hidden="true">@messages("site.change")</span>
+                    <span class="visually-hidden">@messages("declaration.summary.items.item.supportingDocuments.change", itemNo)</span>
+                </a>
             </td>
         </tr>
     }

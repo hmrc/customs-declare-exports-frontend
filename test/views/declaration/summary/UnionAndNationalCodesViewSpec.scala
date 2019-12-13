@@ -46,13 +46,23 @@ class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestData {
       )
       view.getElementById("additional-information-1-code-0").text() mustBe "12345"
       view.getElementById("additional-information-1-information-0").text() mustBe "description1"
-      view.getElementById("additional-information-1-change-0").text() mustBe messages("site.change")
+
+      val List(change1, accessibleChange1) = view.getElementById("additional-information-1-change-0").text().split(" ").toList
+
+      change1 mustBe messages("site.change")
+      accessibleChange1 mustBe messages("declaration.summary.items.item.additionalInformation.change", 1)
+
       view.getElementById("additional-information-1-change-0") must haveHref(
         controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, "itemId")
       )
       view.getElementById("additional-information-1-code-1").text() mustBe "23456"
       view.getElementById("additional-information-1-information-1").text() mustBe "description2"
-      view.getElementById("additional-information-1-change-1").text() mustBe messages("site.change")
+
+      val List(change, accessibleChange) = view.getElementById("additional-information-1-change-1").text().split(" ").toList
+
+      change mustBe messages("site.change")
+      accessibleChange mustBe messages("declaration.summary.items.item.additionalInformation.change", 2)
+
       view.getElementById("additional-information-1-change-1") must haveHref(
         controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, "itemId")
       )

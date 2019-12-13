@@ -18,11 +18,13 @@ package models.viewmodels
 
 import play.api.mvc.Call
 
-class HtmlTableRow(val label: String, val values: Seq[Option[String]], val call: Option[Call])
+class HtmlTableRow(val label: String, val values: Seq[Option[String]], val call: Option[Call], val changeLabel: Option[String])
 
 object HtmlTableRow {
 
-  def apply(label: String, value: Seq[String], call: Option[Call]): HtmlTableRow = new HtmlTableRow(label, value.map(Option.apply), call)
+  def apply(label: String, value: Seq[String], call: Option[Call], changeLabel: Option[String]): HtmlTableRow =
+    new HtmlTableRow(label, value.map(Option.apply), call, changeLabel)
 
-  def apply(label: String, value: String, call: Option[Call]): HtmlTableRow = new HtmlTableRow(label, Seq(Some(value)), call)
+  def apply(label: String, value: String, call: Option[Call], changeLabel: Option[String]): HtmlTableRow =
+    new HtmlTableRow(label, Seq(Some(value)), call, changeLabel)
 }
