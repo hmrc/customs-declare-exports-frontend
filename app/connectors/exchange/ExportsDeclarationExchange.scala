@@ -234,7 +234,7 @@ object ExportsDeclarationExchange {
     )
     JsObject(values.flatten)
   }
-  
+
   implicit val format: OFormat[ExportsDeclarationExchange] = OFormat(readsVersion2 orElse readsVersion1, writesVersion2)
 
   private def buildDeclaration(declaration: ExportsDeclaration, idProvider: ExportsDeclaration => Option[String]): ExportsDeclarationExchange =
