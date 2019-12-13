@@ -237,7 +237,7 @@ object ExportsDeclarationExchange {
 
   implicit val format: OFormat[ExportsDeclarationExchange] = Json.format[ExportsDeclarationExchange]
 
-  private def buildDeclaration(declaration: ExportsDeclaration, idProvider: ExportsDeclaration => Option[String]): ExportsDeclarationExchange = {
+  private def buildDeclaration(declaration: ExportsDeclaration, idProvider: ExportsDeclaration => Option[String]): ExportsDeclarationExchange =
     ExportsDeclarationExchange(
       id = idProvider(declaration),
       status = declaration.status,
@@ -256,8 +256,6 @@ object ExportsDeclarationExchange {
       previousDocuments = declaration.previousDocuments,
       natureOfTransaction = declaration.natureOfTransaction
     )
-  }
-
 
   def apply(declaration: ExportsDeclaration): ExportsDeclarationExchange =
     buildDeclaration(declaration, declaration => Some(declaration.id))

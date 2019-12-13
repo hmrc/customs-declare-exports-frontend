@@ -20,7 +20,7 @@ import forms.declaration.TransportPayment
 import play.api.libs.json.{Format, Json}
 
 case class Transport(
-  transportPayment: Option[TransportPayment]  = None,
+  transportPayment: Option[TransportPayment] = None,
   containers: Seq[Container] = Seq.empty,
   borderModeOfTransportCode: Option[String] = None,
   meansOfTransportOnDepartureType: Option[String] = None,

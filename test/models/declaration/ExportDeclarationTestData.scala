@@ -58,11 +58,11 @@ object ExportDeclarationTestData {
     consignmentReferences = Some(correctConsignmentReferences),
     natureOfTransaction = Some(correctNatureOfTransaction),
     totalNumberOfItems = Some(correctTotalNumberOfItemsDecimalValues),
-    transport = Transport (
+    transport = Transport(
       containers = correctTransportInformationContainerData,
       borderModeOfTransportCode = Some("3"),
       meansOfTransportOnDepartureType = Some("10"),
-        meansOfTransportOnDepartureIDNumber = Some("123112yu78"),
+      meansOfTransportOnDepartureIDNumber = Some("123112yu78"),
       meansOfTransportCrossingTheBorderNationality = Some("Portugal"),
       meansOfTransportCrossingTheBorderType = Some("40"),
       meansOfTransportCrossingTheBorderIDNumber = Some("1234567878ui")

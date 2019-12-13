@@ -43,28 +43,29 @@ case class ExportsDeclaration(
   previousDocuments: Option[PreviousDocumentsData] = None,
   natureOfTransaction: Option[NatureOfTransaction] = None
 ) {
-  def addOrUpdateContainer(container: Container): ExportsDeclaration = {
+  def addOrUpdateContainer(container: Container): ExportsDeclaration =
     copy(transport = transport.addOrUpdateContainer(container))
-  }
 
   val lrn: Option[String] = consignmentReferences.map(_.lrn.value)
   val ducr: Option[String] = consignmentReferences.map(_.ducr.ducr)
 
-  def updateDepartureTransport(departure: DepartureTransport): ExportsDeclaration = {
-    copy(transport = transport.copy(
-      borderModeOfTransportCode = Some(departure.borderModeOfTransportCode),
-      meansOfTransportOnDepartureType = Some(departure.meansOfTransportOnDepartureType),
-      meansOfTransportOnDepartureIDNumber = Some(departure.meansOfTransportOnDepartureIDNumber)
-    ))
-  }
+  def updateDepartureTransport(departure: DepartureTransport): ExportsDeclaration =
+    copy(
+      transport = transport.copy(
+        borderModeOfTransportCode = Some(departure.borderModeOfTransportCode),
+        meansOfTransportOnDepartureType = Some(departure.meansOfTransportOnDepartureType),
+        meansOfTransportOnDepartureIDNumber = Some(departure.meansOfTransportOnDepartureIDNumber)
+      )
+    )
 
-  def updateBorderTransport(formData: BorderTransport): ExportsDeclaration = {
-    copy(transport = transport.copy(
-      meansOfTransportCrossingTheBorderType = Some(formData.meansOfTransportCrossingTheBorderType),
-      meansOfTransportCrossingTheBorderIDNumber = Some(formData.meansOfTransportCrossingTheBorderIDNumber),
-      meansOfTransportCrossingTheBorderNationality = formData.meansOfTransportCrossingTheBorderNationality
-    ))
-  }
+  def updateBorderTransport(formData: BorderTransport): ExportsDeclaration =
+    copy(
+      transport = transport.copy(
+        meansOfTransportCrossingTheBorderType = Some(formData.meansOfTransportCrossingTheBorderType),
+        meansOfTransportCrossingTheBorderIDNumber = Some(formData.meansOfTransportCrossingTheBorderIDNumber),
+        meansOfTransportCrossingTheBorderNationality = formData.meansOfTransportCrossingTheBorderNationality
+      )
+    )
 
   def isComplete: Boolean = status == DeclarationStatus.COMPLETE
 

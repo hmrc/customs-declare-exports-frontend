@@ -252,13 +252,14 @@ trait ExportsDeclarationBuilder {
     )
   }
 
-
   def withBorderTransport(
     meansOfTransportCrossingTheBorderNationality: Option[String] = None,
     meansOfTransportCrossingTheBorderType: String = "",
     meansOfTransportCrossingTheBorderIDNumber: String = ""
   ): ExportsDeclarationModifier =
-    withBorderTransport(BorderTransport(meansOfTransportCrossingTheBorderNationality, meansOfTransportCrossingTheBorderType, meansOfTransportCrossingTheBorderIDNumber))
+    withBorderTransport(
+      BorderTransport(meansOfTransportCrossingTheBorderNationality, meansOfTransportCrossingTheBorderType, meansOfTransportCrossingTheBorderIDNumber)
+    )
 
   def withDestinationCountries(
     countryOfDispatch: String = "GB",
@@ -303,9 +304,7 @@ trait ExportsDeclarationBuilder {
 
   def withContainerData(data: Seq[Container]): ExportsDeclarationModifier =
     cache => {
-      cache.copy(
-        transport = cache.transport.copy(containers = data)
-      )
+      cache.copy(transport = cache.transport.copy(containers = data))
     }
 
   def withoutContainerData(): ExportsDeclarationModifier =
