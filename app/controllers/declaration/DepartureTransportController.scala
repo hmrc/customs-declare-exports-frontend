@@ -46,7 +46,13 @@ class DepartureTransportController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)) { implicit request =>
-      request.cacheModel.departureTransport match {
+      val transport = request.cacheModel.transport
+      val formData =
+        (transport.borderModeOfTransportCode, transport.meansOfTransportOnDepartureType, transport.meansOfTransportOnDepartureIDNumber) match {
+          case (Some(code), Some(meansType), Some(meansId)) => Some(DepartureTransport(code, meansType, meansId))
+          case _                                            => None
+        }
+      formData match {
         case Some(data) => Ok(departureTransportPage(mode, form().fill(data)))
         case _          => Ok(departureTransportPage(mode, form()))
       }
@@ -73,5 +79,5 @@ class DepartureTransportController @Inject()(
     }
 
   private def updateCache(formData: DepartureTransport)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(_.copy(departureTransport = Some(formData)))
+    updateExportsDeclarationSyncDirect(_.updateDepartureTransport(formData))
 }

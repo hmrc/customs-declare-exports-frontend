@@ -142,12 +142,6 @@ class SealController @Inject()(
     )
 
   private def updateCache(updatedContainer: Container)(implicit req: JourneyRequest[AnyContent]) =
-    updateExportsDeclarationSyncDirect(model => {
-
-      val updatedContainers = model.transportInformation
-        .fold(Seq(updatedContainer))(_.addOrUpdateContainer(updatedContainer))
-
-      model.copy(transportInformation = Some(model.transportInformation.getOrElse(new TransportInformation).copy(containers = updatedContainers)))
-    })
+    updateExportsDeclarationSyncDirect(model => model.addOrUpdateContainer(updatedContainer))
 
 }

@@ -45,7 +45,7 @@ class TransportPaymentController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)) { implicit request =>
-      request.cacheModel.transportInformation.flatMap(_.transportPayment) match {
+      request.cacheModel.transport.transportPayment match {
         case Some(data) => Ok(transportPayment(mode, form().fill(data)))
         case _          => Ok(transportPayment(mode, form()))
       }
@@ -57,11 +57,11 @@ class TransportPaymentController @Inject()(
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(transportPayment(mode, formWithErrors))),
-          transportPayment => updateCache(transportPayment).map(_ => nextPage(mode, request.cacheModel.borderTransport))
+          transportPayment => updateCache(transportPayment).map(_ => nextPage(mode))
         )
     }
 
-  private def nextPage(mode: Mode, borderTransport: Option[BorderTransport])(implicit request: JourneyRequest[AnyContent]): Result =
+  private def nextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
     navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode))
 
   private def updateCache(formData: TransportPayment)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =

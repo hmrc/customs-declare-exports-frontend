@@ -45,7 +45,16 @@ class BorderTransportController @Inject()(
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    request.cacheModel.borderTransport match {
+    val transport = request.cacheModel.transport
+    val borderTransportData = (
+      transport.meansOfTransportCrossingTheBorderType,
+      transport.meansOfTransportCrossingTheBorderIDNumber,
+      transport.meansOfTransportCrossingTheBorderNationality
+    ) match {
+      case (Some(meansType), Some(meansId), meansNationality) => Some(BorderTransport(meansNationality, meansType, meansId))
+      case _                                                  => None
+    }
+    borderTransportData match {
       case Some(data) => Ok(borderTransport(mode, form().fill(data)))
       case _          => Ok(borderTransport(mode, form()))
     }
@@ -70,5 +79,5 @@ class BorderTransportController @Inject()(
     }
 
   private def updateCache(formData: BorderTransport)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.copy(borderTransport = Some(formData)))
+    updateExportsDeclarationSyncDirect(_.updateBorderTransport(formData))
 }
