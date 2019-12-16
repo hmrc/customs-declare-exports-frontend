@@ -95,7 +95,7 @@ POST        /country-of-routing/:code/remove     controllers.declaration.Routing
 
 GET         /country-of-routing/:code/change     controllers.declaration.RoutingCountriesSummaryController.displayChangeCountryPage(mode: models.Mode ?= models.Mode.Normal, code: String)
 
-POST        /countri-of-routing/:code/change     controllers.declaration.RoutingCountriesSummaryController.submitChangeCountry(mode: models.Mode ?= models.Mode.Normal, code: String)
+POST        /country-of-routing/:code/change     controllers.declaration.RoutingCountriesSummaryController.submitChangeCountry(mode: models.Mode ?= models.Mode.Normal, code: String)
 
 # Location of goods
 
