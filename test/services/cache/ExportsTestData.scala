@@ -17,7 +17,7 @@
 package services.cache
 
 import base.ExportsTestData.newUser
-import forms.declaration.{GoodsLocation, InlandModeOfTransportCode, SupervisingCustomsOffice, WarehouseIdentification}
+import forms.declaration.{GoodsLocation, InlandModeOfTransportCode, ModeOfTransportCodes, SupervisingCustomsOffice, WarehouseIdentification}
 import models.{DeclarationType, ExportsDeclaration}
 import models.DeclarationType.DeclarationType
 import models.declaration.Container
@@ -35,7 +35,7 @@ trait ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder 
     withGoodsLocation(GoodsLocation("PL", "type", "id", Some("a"), Some("b"), Some("c"), Some("d"), Some("e"))),
     withWarehouseIdentification(Some(WarehouseIdentification(Some("a")))),
     withSupervisingCustomsOffice(Some(SupervisingCustomsOffice(Some("b")))),
-    withInlandModeOfTransportCode(Some(InlandModeOfTransportCode(Some("c")))),
+    withInlandModeOfTransportCode(Some(InlandModeOfTransportCode(Some(ModeOfTransportCodes.Rail)))),
     withOfficeOfExit("id", Some("code")),
     withContainerData(Container("id", Seq.empty)),
     withTotalNumberOfItems(Some("123"), Some("123")),

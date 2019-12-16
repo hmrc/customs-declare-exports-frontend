@@ -171,6 +171,13 @@ trait ExportsDeclarationBuilder {
   }
 
   def withDepartureTransport(
+    borderModeOfTransportCode: ModeOfTransportCodes,
+    meansOfTransportOnDepartureType: String,
+    meansOfTransportOnDepartureIDNumber: String
+  ): ExportsDeclarationModifier =
+    withDepartureTransport(borderModeOfTransportCode.value, meansOfTransportOnDepartureType, meansOfTransportOnDepartureIDNumber)
+
+  def withDepartureTransport(
     borderModeOfTransportCode: String = "",
     meansOfTransportOnDepartureType: String = "",
     meansOfTransportOnDepartureIDNumber: String = ""

@@ -34,7 +34,7 @@ class InlandModeOfTransportCodeSpec extends UnitSpec with LightFormMatchers {
 
     "validate inland mode transport code - correct choice" in {
       val incorrectTransportCode: JsValue =
-        JsObject(Map("inlandModeOfTransportCode" -> JsString(TransportCodes.Rail)))
+        JsObject(Map("inlandModeOfTransportCode" -> JsString(InlandModeOfTransportCodeSpec.inlandModeOfTransportCode)))
 
       form().bind(incorrectTransportCode) mustBe errorless
     }
@@ -42,9 +42,9 @@ class InlandModeOfTransportCodeSpec extends UnitSpec with LightFormMatchers {
 }
 
 object InlandModeOfTransportCodeSpec {
-  private val inlandModeOfTransportCode = TransportCodes.Rail
+  private val inlandModeOfTransportCode = ModeOfTransportCodes.Rail.value
   val correctInlandModeOfTransportCode =
-    InlandModeOfTransportCode(Some(inlandModeOfTransportCode))
+    InlandModeOfTransportCode(Some(ModeOfTransportCodes.Rail))
   val correctInlandModeOfTransportCodeJSON: JsValue =
     JsObject(Map("inlandModeOfTransportCode" -> JsString(inlandModeOfTransportCode)))
   val emptyInlandModeOfTransportCodeJSON: JsValue =

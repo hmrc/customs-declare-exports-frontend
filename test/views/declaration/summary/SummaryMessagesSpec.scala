@@ -16,6 +16,7 @@
 
 package views.declaration.summary
 
+import forms.declaration.ModeOfTransportCodes
 import views.declaration.spec.UnitViewSpec
 
 class SummaryMessagesSpec extends UnitViewSpec {
@@ -163,14 +164,9 @@ class SummaryMessagesSpec extends UnitViewSpec {
       messages must haveTranslationFor("declaration.summary.warehouse.id")
       messages must haveTranslationFor("declaration.summary.warehouse.supervisingOffice")
       messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport")
-      messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport.1")
-      messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport.2")
-      messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport.3")
-      messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport.4")
-      messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport.5")
-      messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport.7")
-      messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport.8")
-      messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport.9")
+      ModeOfTransportCodes.allowedModeOfTransportCodes.foreach { code =>
+        messages must haveTranslationFor(s"declaration.summary.warehouse.inlandModeOfTransport.${code}")
+      }
     }
 
     "have defined transport messages" in {
@@ -184,7 +180,6 @@ class SummaryMessagesSpec extends UnitViewSpec {
     }
 
     "have defined transport codes messages" in {
-
       messages must haveTranslationFor("declaration.summary.transport.departure.transportCode.1")
       messages must haveTranslationFor("declaration.summary.transport.departure.transportCode.2")
       messages must haveTranslationFor("declaration.summary.transport.departure.transportCode.3")

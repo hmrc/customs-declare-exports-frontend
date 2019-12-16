@@ -16,7 +16,7 @@
 
 package views.declaration.summary
 
-import forms.declaration.{InlandModeOfTransportCode, SupervisingCustomsOffice, WarehouseIdentification}
+import forms.declaration.{InlandModeOfTransportCode, ModeOfTransportCodes, SupervisingCustomsOffice, WarehouseIdentification}
 import models.DeclarationType._
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
@@ -27,7 +27,7 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData {
   val data = aDeclaration(
     withWarehouseIdentification(Some(WarehouseIdentification(Some("12345")))),
     withSupervisingCustomsOffice(Some(SupervisingCustomsOffice(Some("23456")))),
-    withInlandModeOfTransportCode(Some(InlandModeOfTransportCode(Some("1"))))
+    withInlandModeOfTransportCode(Some(InlandModeOfTransportCode(Some(ModeOfTransportCodes.Maritime))))
   )
 
   "Warehouse section" should {
@@ -56,7 +56,7 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData {
       "display mode of transport with change button" in {
 
         view.getElementById("mode-of-transport-label").text() mustBe messages("declaration.summary.warehouse.inlandModeOfTransport")
-        view.getElementById("mode-of-transport").text() mustBe messages("declaration.summary.warehouse.inlandModeOfTransport.1")
+        view.getElementById("mode-of-transport").text() mustBe messages("declaration.summary.warehouse.inlandModeOfTransport.Maritime")
         view.getElementById("mode-of-transport-change").text() mustBe messages("site.change")
         view.getElementById("mode-of-transport-change") must haveHref(controllers.declaration.routes.InlandTransportDetailsController.displayPage())
       }
