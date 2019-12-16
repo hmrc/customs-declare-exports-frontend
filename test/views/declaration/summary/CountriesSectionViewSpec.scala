@@ -93,7 +93,11 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         val view = countries_section(data)(messages, request)
 
-        view.getElementById("countriesOfRouting-change").text() mustBe messages("site.change")
+        val List(change, accessibleChange) = view.getElementById("countriesOfRouting-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.countries.routingCountries.change")
+
         view.getElementById("countriesOfRouting-change") must haveHref(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage())
       }
 
@@ -103,7 +107,11 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         val view = countries_section(data)(messages, request)
 
-        view.getElementById("countryOfDestination-change").text() mustBe messages("site.change")
+        val List(change, accessibleChange) = view.getElementById("countryOfDestination-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.countries.countryOfDestination")
+
         view.getElementById("countryOfDestination-change") must haveHref(controllers.declaration.routes.DestinationCountryController.displayPage())
       }
     }
@@ -138,7 +146,11 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         val view = countries_section(data)(messages, request)
 
-        view.getElementById("countryOfDispatch-change").text() mustBe messages("site.change")
+        val List(change, accessibleChange) = view.getElementById("countryOfDispatch-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.countries.countryOfDispatch.change")
+
         view.getElementById("countryOfDispatch-change") must haveHref(controllers.declaration.routes.OriginationCountryController.displayPage())
       }
     }

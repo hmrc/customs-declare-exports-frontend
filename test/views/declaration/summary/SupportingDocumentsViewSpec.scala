@@ -42,8 +42,6 @@ class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
       )
       val view = supporting_documents("itemId", 1, documents)(messages, journeyRequest())
 
-      println(view)
-
       view.getElementById("supporting-documents-1").text() mustBe messages("declaration.summary.items.item.supportingDocuments")
       view.getElementById("supporting-documents-code-1").text() mustBe messages("declaration.summary.items.item.supportingDocuments.code")
       view.getElementById("supporting-documents-information-1").text() mustBe messages(
@@ -51,13 +49,23 @@ class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
       )
       view.getElementById("supporting-document-1-code-0").text() mustBe "typ1"
       view.getElementById("supporting-document-1-information-0").text() mustBe "identifier1"
-      view.getElementById("supporting-document-1-change-0").text() mustBe messages("site.change")
+
+      val List(change1, accessibleChange1) = view.getElementById("supporting-document-1-change-0").text().split(" ").toList
+
+      change1 mustBe messages("site.change")
+      accessibleChange1 mustBe messages("declaration.summary.items.item.supportingDocuments.change", 1)
+
       view.getElementById("supporting-document-1-change-0") must haveHref(
         controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId")
       )
       view.getElementById("supporting-document-1-code-1").text() mustBe "typ2"
       view.getElementById("supporting-document-1-information-1").text() mustBe "identifier2"
-      view.getElementById("supporting-document-1-change-1").text() mustBe messages("site.change")
+
+      val List(change2, accessibleChange2) = view.getElementById("supporting-document-1-change-1").text().split(" ").toList
+
+      change2 mustBe messages("site.change")
+      accessibleChange2 mustBe messages("declaration.summary.items.item.supportingDocuments.change", 2)
+
       view.getElementById("supporting-document-1-change-1") must haveHref(
         controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId")
       )

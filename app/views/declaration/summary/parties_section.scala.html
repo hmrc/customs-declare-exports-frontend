@@ -27,7 +27,9 @@
             eoriLabel = messages("declaration.summary.parties.exporter.eori"),
             address = declarationData.parties.exporterDetails.flatMap(_.details.address),
             addressLabel = messages("declaration.summary.parties.exporter.address"),
-            call = Some(controllers.declaration.routes.ExporterDetailsController.displayPage())
+            call = Some(controllers.declaration.routes.ExporterDetailsController.displayPage()),
+            eoriChangeLabel = Some(messages("declaration.summary.parties.exporter.eori.change")),
+            addressChangeLabel = Some(messages("declaration.summary.parties.exporter.address.change"))
         )
         @eori_or_address_section(
             id = "consignee",
@@ -36,6 +38,8 @@
             address = declarationData.parties.consigneeDetails.flatMap(_.details.address),
             addressLabel = messages("declaration.summary.parties.consignee.address"),
             call = Some(controllers.declaration.routes.ConsigneeDetailsController.displayPage()),
+            eoriChangeLabel = Some(messages("declaration.summary.parties.consignee.eori.change")),
+            addressChangeLabel = Some(messages("declaration.summary.parties.consignee.address.change")),
             isEoriDefault = false
         )
         @eori_or_address_section(
@@ -44,7 +48,9 @@
             eoriLabel = messages("declaration.summary.parties.declarant.eori"),
             address = declarationData.parties.declarantDetails.flatMap(_.details.address),
             addressLabel = messages("declaration.summary.parties.declarant.address"),
-            call = Some(controllers.declaration.routes.DeclarantDetailsController.displayPage())
+            call = Some(controllers.declaration.routes.DeclarantDetailsController.displayPage()),
+            eoriChangeLabel = Some(messages("declaration.summary.parties.declarant.eori.change")),
+            addressChangeLabel = Some(messages("declaration.summary.parties.declarant.address.change"))
         )
         @eori_or_address_section(
             id = "representative",
@@ -52,12 +58,15 @@
             eoriLabel = messages("declaration.summary.parties.representative.eori"),
             address = declarationData.parties.representativeDetails.flatMap(_.details.flatMap(_.address)),
             addressLabel = messages("declaration.summary.parties.representative.address"),
-            call = Some(controllers.declaration.routes.RepresentativeDetailsController.displayPage())
+            call = Some(controllers.declaration.routes.RepresentativeDetailsController.displayPage()),
+            eoriChangeLabel = Some(messages("declaration.summary.parties.representative.eori.change")),
+            addressChangeLabel = Some(messages("declaration.summary.parties.representative.address.change"))
         )
         @components.table_row("representationType", HtmlTableRow(
             label = messages("declaration.summary.parties.representative.type"),
             value = declarationData.parties.representativeDetails.flatMap(_.statusCode.map(code => messages(s"declaration.summary.parties.representative.type.$code"))).getOrElse(""),
-            call = Some(controllers.declaration.routes.RepresentativeDetailsController.displayPage())
+            call = Some(controllers.declaration.routes.RepresentativeDetailsController.displayPage()),
+            changeLabel = Some(messages("declaration.summary.parties.representative.type.change"))
         ))
         @eori_or_address_section(
             id = "carrier",
@@ -66,6 +75,8 @@
             address = declarationData.parties.carrierDetails.flatMap(_.details.address),
             addressLabel = messages("declaration.summary.parties.carrier.address"),
             call = Some(controllers.declaration.routes.CarrierDetailsController.displayPage()),
+            eoriChangeLabel = Some(messages("declaration.summary.parties.carrier.eori.change")),
+            addressChangeLabel = Some(messages("declaration.summary.parties.carrier.address.change")),
             isEoriDefault = false
         )
         @additional_and_authorised_parties_section(

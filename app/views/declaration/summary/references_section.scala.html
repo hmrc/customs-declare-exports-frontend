@@ -14,10 +14,8 @@
  * limitations under the License.
  *@
 
-@import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
-@import views.ViewDates
 
 @(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
@@ -26,7 +24,8 @@
         @components.table_row("declarationType", HtmlTableRow(
             label = messages("declaration.summary.references.type"),
             value = declarationData.`type`.toString().toLowerCase().capitalize,
-            call = Some(controllers.declaration.routes.DeclarationChoiceController.displayPage())
+            call = Some(controllers.declaration.routes.DeclarationChoiceController.displayPage()),
+            changeLabel = Some(messages("declaration.summary.references.type.change"))
         ))
         @components.table_row("location", HtmlTableRow(
             label = messages("declaration.summary.references.location"),
@@ -37,22 +36,26 @@
                   messages("site.no")
                 }
             ).getOrElse("")),
-            call = Some(controllers.declaration.routes.DispatchLocationController.displayPage())
+            call = Some(controllers.declaration.routes.DispatchLocationController.displayPage()),
+            changeLabel = Some(messages("declaration.summary.references.location.change"))
         ))
         @components.table_row("additionalType", HtmlTableRow(
             label = messages("declaration.summary.references.additionalType"),
             value = declarationData.additionalDeclarationType.map(decType => messages(s"declaration.summary.references.additionalType.${decType.toString}")).getOrElse(""),
-            call = Some(controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage())
+            call = Some(controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage()),
+            changeLabel = Some(messages("declaration.summary.references.additionalType.change"))
         ))
         @components.table_row("ducr", HtmlTableRow(
             label = messages("declaration.summary.references.ducr"),
             value = declarationData.consignmentReferences.map(_.ducr.ducr).getOrElse(""),
-            call = Some(controllers.declaration.routes.ConsignmentReferencesController.displayPage())
+            call = Some(controllers.declaration.routes.ConsignmentReferencesController.displayPage()),
+            changeLabel = Some(messages("declaration.summary.references.ducr.change"))
         ))
         @components.table_row("lrn", HtmlTableRow(
             label = messages("declaration.summary.references.lrn"),
             value = declarationData.consignmentReferences.map(_.lrn.value).getOrElse(""),
-            call = Some(controllers.declaration.routes.ConsignmentReferencesController.displayPage())
+            call = Some(controllers.declaration.routes.ConsignmentReferencesController.displayPage()),
+            changeLabel = Some(messages("declaration.summary.references.lrn.change"))
         ))
     }
 </div>

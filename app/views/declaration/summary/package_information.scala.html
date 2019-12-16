@@ -35,7 +35,10 @@
             <td><span id="package-information-@itemNo-number-@index">@information.numberOfPackages</span></td>
             <td><span id="package-information-@itemNo-marks-@index">@information.shippingMarks</span></td>
             <td class="link-right">
-                <a href="@controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, itemId)" id="package-information-@itemNo-change-@index">@messages("site.change")</a>
+                <a href="@controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, itemId)" id="package-information-@itemNo-change-@index">
+                    <span aria-hidden="true">@messages("site.change")</span>
+                    <span class="visually-hidden">@messages("declaration.summary.items.item.packageInformation.change", information.typesOfPackagesText, information.shippingMarks, itemNo)</span>
+                </a>
             </td>
         </tr>
     }

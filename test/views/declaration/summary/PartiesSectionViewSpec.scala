@@ -44,9 +44,19 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
       view.getElementById("exporter-eori-label").text() mustBe messages("declaration.summary.parties.exporter.eori")
       view.getElementById("exporter-address-label").text() mustBe messages("declaration.summary.parties.exporter.address")
-      view.getElementById("exporter-eori-change").text() mustBe messages("site.change")
+
+      val List(change1, accessibleChange1) = view.getElementById("exporter-eori-change").text().split(" ").toList
+
+      change1 mustBe messages("site.change")
+      accessibleChange1 mustBe messages("declaration.summary.parties.exporter.eori.change")
+
       view.getElementById("exporter-eori-change") must haveHref(controllers.declaration.routes.ExporterDetailsController.displayPage())
-      view.getElementById("exporter-address-change").text() mustBe messages("site.change")
+
+      val List(change2, accessibleChange2) = view.getElementById("exporter-address-change").text().split(" ").toList
+
+      change2 mustBe messages("site.change")
+      accessibleChange2 mustBe messages("declaration.summary.parties.exporter.address.change")
+
       view.getElementById("exporter-address-change") must haveHref(controllers.declaration.routes.ExporterDetailsController.displayPage())
     }
 
@@ -54,9 +64,19 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
       view.getElementById("consignee-eori-label").text() mustBe messages("declaration.summary.parties.consignee.eori")
       view.getElementById("consignee-address-label").text() mustBe messages("declaration.summary.parties.consignee.address")
-      view.getElementById("consignee-eori-change").text() mustBe messages("site.change")
+
+      val List(change1, accessibleChange1) = view.getElementById("consignee-eori-change").text().split(" ").toList
+
+      change1 mustBe messages("site.change")
+      accessibleChange1 mustBe messages("declaration.summary.parties.consignee.eori.change")
+
       view.getElementById("consignee-eori-change") must haveHref(controllers.declaration.routes.ConsigneeDetailsController.displayPage())
-      view.getElementById("consignee-address-change").text() mustBe messages("site.change")
+
+      val List(change2, accessibleChange2) = view.getElementById("consignee-address-change").text().split(" ").toList
+
+      change2 mustBe messages("site.change")
+      accessibleChange2 mustBe messages("declaration.summary.parties.consignee.address.change")
+
       view.getElementById("consignee-address-change") must haveHref(controllers.declaration.routes.ConsigneeDetailsController.displayPage())
     }
 
@@ -64,9 +84,19 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
       view.getElementById("declarant-eori-label").text() mustBe messages("declaration.summary.parties.declarant.eori")
       view.getElementById("declarant-address-label").text() mustBe messages("declaration.summary.parties.declarant.address")
-      view.getElementById("declarant-eori-change").text() mustBe messages("site.change")
+
+      val List(change1, accessibleChange1) = view.getElementById("declarant-eori-change").text().split(" ").toList
+
+      change1 mustBe messages("site.change")
+      accessibleChange1 mustBe messages("declaration.summary.parties.declarant.eori.change")
+
       view.getElementById("declarant-eori-change") must haveHref(controllers.declaration.routes.DeclarantDetailsController.displayPage())
-      view.getElementById("declarant-address-change").text() mustBe messages("site.change")
+
+      val List(change2, accessibleChange2) = view.getElementById("declarant-address-change").text().split(" ").toList
+
+      change2 mustBe messages("site.change")
+      accessibleChange2 mustBe messages("declaration.summary.parties.declarant.address.change")
+
       view.getElementById("declarant-address-change") must haveHref(controllers.declaration.routes.DeclarantDetailsController.displayPage())
     }
 
@@ -74,9 +104,19 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
       view.getElementById("representative-eori-label").text() mustBe messages("declaration.summary.parties.representative.eori")
       view.getElementById("representative-address-label").text() mustBe messages("declaration.summary.parties.representative.address")
-      view.getElementById("representative-eori-change").text() mustBe messages("site.change")
+
+      val List(change1, accessibleChange1) = view.getElementById("representative-eori-change").text().split(" ").toList
+
+      change1 mustBe messages("site.change")
+      accessibleChange1 mustBe messages("declaration.summary.parties.representative.eori.change")
+
       view.getElementById("representative-eori-change") must haveHref(controllers.declaration.routes.RepresentativeDetailsController.displayPage())
-      view.getElementById("representative-address-change").text() mustBe messages("site.change")
+
+      val List(change2, accessibleChange2) = view.getElementById("representative-address-change").text().split(" ").toList
+
+      change2 mustBe messages("site.change")
+      accessibleChange2 mustBe messages("declaration.summary.parties.representative.address.change")
+
       view.getElementById("representative-address-change") must haveHref(controllers.declaration.routes.RepresentativeDetailsController.displayPage())
     }
 
@@ -84,9 +124,19 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
       view.getElementById("carrier-eori-label").text() mustBe messages("declaration.summary.parties.carrier.eori")
       view.getElementById("carrier-address-label").text() mustBe messages("declaration.summary.parties.carrier.address")
-      view.getElementById("carrier-eori-change").text() mustBe messages("site.change")
+
+      val List(change1, accessibleChange1) = view.getElementById("carrier-eori-change").text().split(" ").toList
+
+      change1 mustBe messages("site.change")
+      accessibleChange1 mustBe messages("declaration.summary.parties.carrier.eori.change")
+
       view.getElementById("carrier-eori-change") must haveHref(controllers.declaration.routes.CarrierDetailsController.displayPage())
-      view.getElementById("carrier-address-change").text() mustBe messages("site.change")
+
+      val List(change2, accessibleChange2) = view.getElementById("carrier-address-change").text().split(" ").toList
+
+      change2 mustBe messages("site.change")
+      accessibleChange2 mustBe messages("declaration.summary.parties.carrier.address.change")
+
       view.getElementById("carrier-address-change") must haveHref(controllers.declaration.routes.CarrierDetailsController.displayPage())
     }
 
@@ -94,7 +144,12 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
       view.getElementById("representationType-label").text() mustBe messages("declaration.summary.parties.representative.type")
       view.getElementById("representationType").text() mustBe messages("declaration.summary.parties.representative.type.1")
-      view.getElementById("representationType-change").text() mustBe messages("site.change")
+
+      val List(change, accessibleChange) = view.getElementById("representationType-change").text().split(" ").toList
+
+      change mustBe messages("site.change")
+      accessibleChange mustBe messages("declaration.summary.parties.representative.type.change")
+
       view.getElementById("representationType-change") must haveHref(controllers.declaration.routes.RepresentativeDetailsController.displayPage())
     }
 

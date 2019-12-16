@@ -32,7 +32,10 @@
             <td><span id="container-@index-id">@container.id</span></td>
             <td><span id="container-@index-seals">@container.seals.map(_.id).mkString(", ")</span></td>
             <td class="link-right">
-                <a href="@controllers.declaration.routes.TransportContainerController.displayContainerSummary()" id="container-@index-change">@messages("site.change")</a>
+                <a href="@controllers.declaration.routes.TransportContainerController.displayContainerSummary()" id="container-@index-change">
+                    <span aria-hidden="true">@messages("site.change")</span>
+                    <span class="visually-hidden">@messages("declaration.summary.container.change", container.id)</span>
+                </a>
             </td>
         </tr>
     }

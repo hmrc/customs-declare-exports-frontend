@@ -19,7 +19,17 @@
 @import models.viewmodels.HtmlTableRow
 @import play.api.mvc.Call
 
-@(id: String, eoriOption: Option[String], eoriLabel: String, address: Option[Address], addressLabel: String, call: Option[Call], isEoriDefault: Boolean = true)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(
+        id: String,
+        eoriOption: Option[String],
+        eoriLabel: String,
+        address: Option[Address],
+        addressLabel: String,
+        call: Option[Call],
+        eoriChangeLabel: Option[String],
+        addressChangeLabel: Option[String],
+        isEoriDefault: Boolean = true
+)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @extractAddressValues(addressOpt: Option[Address]) = @{
     addressOpt.map { values =>
@@ -31,13 +41,15 @@
     @components.table_row(s"$id-eori", HtmlTableRow(
         label = messages(eoriLabel),
         value = Seq.empty,
-        call = call
+        call = call,
+        changeLabel = eoriChangeLabel
     ))
 } else if(eoriOption.isEmpty && address.isEmpty) {
     @components.table_row(s"$id-address", HtmlTableRow(
         label = messages(addressLabel),
         value = Seq.empty,
-        call = call
+        call = call,
+        changeLabel = addressChangeLabel
     ))
 }
 
@@ -45,7 +57,8 @@
     @components.table_row(s"$id-eori", HtmlTableRow(
         label = messages(eoriLabel),
         value = eori,
-        call = call
+        call = call,
+        changeLabel = eoriChangeLabel
     ))
 }
 
@@ -53,6 +66,7 @@
     @components.table_row(s"$id-address", HtmlTableRow(
         label = messages(addressLabel),
         value = extractAddressValues(address),
-        call = call
+        call = call,
+        changeLabel = addressChangeLabel
     ))
 }

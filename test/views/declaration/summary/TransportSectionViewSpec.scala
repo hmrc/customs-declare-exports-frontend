@@ -43,7 +43,12 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("border-transport-label").text() mustBe messages("declaration.summary.transport.departure.transportCode.header")
         view.getElementById("border-transport").text() mustBe messages("declaration.summary.transport.departure.transportCode.1")
-        view.getElementById("border-transport-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("border-transport-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.transport.departure.transportCode.header.change")
+
         view.getElementById("border-transport-change") must haveHref(controllers.declaration.routes.DepartureTransportController.displayPage())
       }
 
@@ -52,7 +57,12 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
         view.getElementById("transport-reference-label").text() mustBe messages("declaration.summary.transport.departure.meansOfTransport.header")
         view.getElementById("transport-reference-0").text() mustBe messages("declaration.summary.transport.departure.meansOfTransport.10")
         view.getElementById("transport-reference-1").text() mustBe "identifier"
-        view.getElementById("transport-reference-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("transport-reference-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.transport.departure.meansOfTransport.header.change")
+
         view.getElementById("transport-reference-change") must haveHref(controllers.declaration.routes.DepartureTransportController.displayPage())
       }
 
@@ -61,7 +71,12 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
         view.getElementById("active-transport-type-label").text() mustBe messages("declaration.summary.transport.border.meansOfTransport.header")
         view.getElementById("active-transport-type-0").text() mustBe messages("declaration.summary.transport.border.meansOfTransport.11")
         view.getElementById("active-transport-type-1").text() mustBe "borderId"
-        view.getElementById("active-transport-type-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("active-transport-type-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.transport.border.meansOfTransport.header.change")
+
         view.getElementById("active-transport-type-change") must haveHref(controllers.declaration.routes.BorderTransportController.displayPage())
       }
 
@@ -69,7 +84,12 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("active-transport-nationality-label").text() mustBe messages("declaration.summary.transport.activeTransportNationality")
         view.getElementById("active-transport-nationality").text() mustBe "United Kingdom"
-        view.getElementById("active-transport-nationality-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("active-transport-nationality-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.transport.activeTransportNationality.change")
+
         view.getElementById("active-transport-nationality-change") must haveHref(
           controllers.declaration.routes.BorderTransportController.displayPage()
         )
@@ -79,7 +99,12 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("transport-payment-label").text() mustBe messages("declaration.summary.transport.payment")
         view.getElementById("transport-payment").text() mustBe messages("declaration.summary.transport.payment.A")
-        view.getElementById("transport-payment-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("transport-payment-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.transport.payment.change")
+
         view.getElementById("transport-payment-change") must haveHref(controllers.declaration.routes.TransportPaymentController.displayPage())
       }
 
@@ -87,7 +112,12 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("containers-label").text() mustBe messages("declaration.summary.transport.containers")
         view.getElementById("containers").text() mustBe "site.yes"
-        view.getElementById("containers-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("containers-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.transport.containers.change")
+
         view.getElementById("containers-change") must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary())
       }
 
@@ -143,7 +173,12 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("transport-payment-label").text() mustBe messages("declaration.summary.transport.payment")
         view.getElementById("transport-payment").text() mustBe messages("declaration.summary.transport.payment.A")
-        view.getElementById("transport-payment-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("transport-payment-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.transport.payment.change")
+
         view.getElementById("transport-payment-change") must haveHref(controllers.declaration.routes.TransportPaymentController.displayPage())
       }
 
@@ -151,7 +186,12 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("containers-label").text() mustBe messages("declaration.summary.transport.containers")
         view.getElementById("containers").text() mustBe "site.yes"
-        view.getElementById("containers-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("containers-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.transport.containers.change")
+
         view.getElementById("containers-change") must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary())
       }
 

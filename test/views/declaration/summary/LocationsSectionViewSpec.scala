@@ -35,7 +35,12 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
       view.getElementById("location-code-label").text() mustBe messages("declaration.summary.locations.goodsLocationCode")
       view.getElementById("location-code").text() mustBe "GBAU123"
-      view.getElementById("location-code-change").text() mustBe messages("site.change")
+
+      val List(change, accessibleChange) = view.getElementById("location-code-change").text().split(" ").toList
+
+      change mustBe messages("site.change")
+      accessibleChange mustBe messages("declaration.summary.locations.goodsLocationCode.change")
+
       view.getElementById("location-code-change") must haveHref(controllers.declaration.routes.LocationController.displayPage())
     }
 
@@ -46,7 +51,12 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData {
       view.getElementById("location-address-1").text() mustBe "city"
       view.getElementById("location-address-2").text() mustBe "postCode"
       view.getElementById("location-address-3").text() mustBe "United Kingdom"
-      view.getElementById("location-address-change").text() mustBe messages("site.change")
+
+      val List(change, accessibleChange) = view.getElementById("location-address-change").text().split(" ").toList
+
+      change mustBe messages("site.change")
+      accessibleChange mustBe messages("declaration.summary.locations.goodsLocationAddress.change")
+
       view.getElementById("location-address-change") must haveHref(controllers.declaration.routes.LocationController.displayPage())
     }
 
@@ -54,7 +64,12 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
       view.getElementById("location-officeOfExit-label").text() mustBe messages("declaration.summary.locations.officeOfExit")
       view.getElementById("location-officeOfExit").text() mustBe "123"
-      view.getElementById("location-officeOfExit-change").text() mustBe messages("site.change")
+
+      val List(change, accessibleChange) = view.getElementById("location-officeOfExit-change").text().split(" ").toList
+
+      change mustBe messages("site.change")
+      accessibleChange mustBe messages("declaration.summary.locations.officeOfExit.change")
+
       view.getElementById("location-officeOfExit-change") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage())
     }
 
@@ -62,7 +77,12 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
       view.getElementById("location-expressConsignment-label").text() mustBe messages("declaration.summary.locations.expressConsignment")
       view.getElementById("location-expressConsignment").text() mustBe "12"
-      view.getElementById("location-expressConsignment-change").text() mustBe messages("site.change")
+
+      val List(change, accessibleChange) = view.getElementById("location-expressConsignment-change").text().split(" ").toList
+
+      change mustBe messages("site.change")
+      accessibleChange mustBe messages("declaration.summary.locations.expressConsignment.change")
+
       view.getElementById("location-expressConsignment-change") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage())
     }
   }

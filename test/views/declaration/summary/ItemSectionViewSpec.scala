@@ -58,7 +58,12 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("item-1-procedureCode-label").text() mustBe messages("declaration.summary.items.item.procedureCode")
         view.getElementById("item-1-procedureCode").text() mustBe "1234 000 111"
-        view.getElementById("item-1-procedureCode-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("item-1-procedureCode-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.items.item.procedureCode.change", 1)
+
         view.getElementById("item-1-procedureCode-change") must haveHref(
           controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, item.id)
         )
@@ -68,7 +73,12 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("item-1-commodityCode-label").text() mustBe messages("declaration.summary.items.item.commodityCode")
         view.getElementById("item-1-commodityCode").text() mustBe "231"
-        view.getElementById("item-1-commodityCode-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("item-1-commodityCode-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.items.item.commodityCode.change", 1)
+
         view.getElementById("item-1-commodityCode-change") must haveHref(
           controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, item.id)
         )
@@ -78,7 +88,12 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("item-1-goodsDescription-label").text() mustBe messages("declaration.summary.items.item.goodsDescription")
         view.getElementById("item-1-goodsDescription").text() mustBe "description"
-        view.getElementById("item-1-goodsDescription-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("item-1-goodsDescription-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.items.item.goodsDescription.change", 1)
+
         view.getElementById("item-1-goodsDescription-change") must haveHref(
           controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, item.id)
         )
@@ -88,7 +103,12 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("item-1-unDangerousGoodsCode-label").text() mustBe messages("declaration.summary.items.item.unDangerousGoodsCode")
         view.getElementById("item-1-unDangerousGoodsCode").text() mustBe "345"
-        view.getElementById("item-1-unDangerousGoodsCode-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("item-1-unDangerousGoodsCode-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.items.item.unDangerousGoodsCode.change", 1)
+
         view.getElementById("item-1-unDangerousGoodsCode-change") must haveHref(
           controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, item.id)
         )
@@ -98,7 +118,12 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("item-1-cusCode-label").text() mustBe messages("declaration.summary.items.item.cusCode")
         view.getElementById("item-1-cusCode").text() mustBe "321"
-        view.getElementById("item-1-cusCode-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("item-1-cusCode-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.items.item.cusCode.change", 1)
+
         view.getElementById("item-1-cusCode-change") must haveHref(controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, item.id))
       }
 
@@ -106,7 +131,12 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("item-1-taricAdditionalCodes-label").text() mustBe messages("declaration.summary.items.item.taricAdditionalCodes")
         view.getElementById("item-1-taricAdditionalCodes").text() mustBe "999, 888"
-        view.getElementById("item-1-taricAdditionalCodes-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("item-1-taricAdditionalCodes-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.items.item.taricAdditionalCodes.change", 1)
+
         view.getElementById("item-1-taricAdditionalCodes-change") must haveHref(
           controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, item.id)
         )
@@ -116,7 +146,12 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("item-1-nationalAdditionalCodes-label").text() mustBe messages("declaration.summary.items.item.nationalAdditionalCodes")
         view.getElementById("item-1-nationalAdditionalCodes").text() mustBe "111, 222"
-        view.getElementById("item-1-nationalAdditionalCodes-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("item-1-nationalAdditionalCodes-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.items.item.nationalAdditionalCodes.change", 1)
+
         view.getElementById("item-1-nationalAdditionalCodes-change") must haveHref(
           controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, item.id)
         )
@@ -145,7 +180,12 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("item-1-itemValue-label").text() mustBe messages("declaration.summary.items.item.itemValue")
         view.getElementById("item-1-itemValue").text() mustBe "123"
-        view.getElementById("item-1-itemValue-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("item-1-itemValue-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.items.item.itemValue.change", 1)
+
         view.getElementById("item-1-itemValue-change") must haveHref(
           controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, item.id)
         )
@@ -155,7 +195,12 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("item-1-supplementaryUnits-label").text() mustBe messages("declaration.summary.items.item.supplementaryUnits")
         view.getElementById("item-1-supplementaryUnits").text() mustBe "12"
-        view.getElementById("item-1-supplementaryUnits-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("item-1-supplementaryUnits-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.items.item.supplementaryUnits.change", 1)
+
         view.getElementById("item-1-supplementaryUnits-change") must haveHref(
           controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, item.id)
         )
@@ -165,7 +210,12 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("item-1-grossWeight-label").text() mustBe messages("declaration.summary.items.item.grossWeight")
         view.getElementById("item-1-grossWeight").text() mustBe "666"
-        view.getElementById("item-1-grossWeight-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("item-1-grossWeight-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.items.item.grossWeight.change", 1)
+
         view.getElementById("item-1-grossWeight-change") must haveHref(
           controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, item.id)
         )
@@ -175,7 +225,12 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("item-1-netWeight-label").text() mustBe messages("declaration.summary.items.item.netWeight")
         view.getElementById("item-1-netWeight").text() mustBe "555"
-        view.getElementById("item-1-netWeight-change").text() mustBe messages("site.change")
+
+        val List(change, accessibleChange) = view.getElementById("item-1-netWeight-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.items.item.netWeight.change", 1)
+
         view.getElementById("item-1-netWeight-change") must haveHref(
           controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, item.id)
         )

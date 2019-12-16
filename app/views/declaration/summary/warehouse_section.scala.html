@@ -25,18 +25,21 @@
         @components.table_row("warehouse-id", HtmlTableRow(
             label = messages("declaration.summary.warehouse.id"),
             value = declarationData.locations.warehouseIdentification.flatMap(_.identificationNumber).getOrElse(""),
-            call = Some(controllers.declaration.routes.WarehouseIdentificationController.displayPage())
+            call = Some(controllers.declaration.routes.WarehouseIdentificationController.displayPage()),
+            changeLabel = Some(messages("declaration.summary.warehouse.id.change"))
         ))
         @components.table_row("supervising-office", HtmlTableRow(
             label = messages("declaration.summary.warehouse.supervisingOffice"),
             value = declarationData.locations.supervisingCustomsOffice.flatMap(_.supervisingCustomsOffice).getOrElse(""),
-            call = Some(controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage())
+            call = Some(controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage()),
+            changeLabel = Some(messages("declaration.summary.warehouse.supervisingOffice.change"))
         ))
         @if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, OCCASIONAL, CLEARANCE)) {
             @components.table_row("mode-of-transport", HtmlTableRow(
                 label = messages("declaration.summary.warehouse.inlandModeOfTransport"),
                 value = declarationData.locations.inlandModeOfTransportCode.flatMap(_.inlandModeOfTransportCode.map(code => messages(s"declaration.summary.warehouse.inlandModeOfTransport.$code"))).getOrElse(""),
-                call = Some(controllers.declaration.routes.InlandTransportDetailsController.displayPage())
+                call = Some(controllers.declaration.routes.InlandTransportDetailsController.displayPage()),
+                changeLabel = Some(messages("declaration.summary.warehouse.inlandModeOfTransport.change"))
             ))
         }
     }

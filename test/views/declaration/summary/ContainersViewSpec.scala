@@ -51,9 +51,18 @@ class ContainersViewSpec extends UnitViewSpec with ExportsTestData {
 
       val view = summary.containers(containers)(messages, journeyRequest())
 
-      view.getElementById("container-0-change").text() mustBe messages("site.change")
+      val List(change1, accessibleChange1) = view.getElementById("container-0-change").text().split(" ").toList
+
+      change1 mustBe messages("site.change")
+      accessibleChange1 mustBe messages("declaration.summary.container.change", firstContainerID)
+
       view.getElementById("container-0-change") must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary())
-      view.getElementById("container-1-change").text() mustBe messages("site.change")
+
+      val List(change2, accessibleChange2) = view.getElementById("container-1-change").text().split(" ").toList
+
+      change2 mustBe messages("site.change")
+      accessibleChange2 mustBe messages("declaration.summary.container.change", secondContainerID)
+
       view.getElementById("container-1-change") must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary())
     }
   }
