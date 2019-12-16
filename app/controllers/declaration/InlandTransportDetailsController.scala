@@ -58,7 +58,7 @@ class InlandTransportDetailsController @Inject()(
         form => {
           val nextStep = request.cacheModel.`type` match {
             case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY | DeclarationType.CLEARANCE =>
-              controllers.declaration.routes.DepartureTransportController.displayPage(mode)
+              controllers.declaration.routes.TransportLeavingTheBorder.displayPage(mode)
             case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
               controllers.declaration.routes.BorderTransportController.displayPage(mode)
           }

@@ -48,8 +48,8 @@ class DepartureTransportController @Inject()(
     (authenticate andThen journeyType(validTypes)) { implicit request =>
       val transport = request.cacheModel.transport
       val formData =
-        (transport.borderModeOfTransportCode, transport.meansOfTransportOnDepartureType, transport.meansOfTransportOnDepartureIDNumber) match {
-          case (Some(code), Some(meansType), Some(meansId)) => Some(DepartureTransport(code, meansType, meansId))
+        (transport.meansOfTransportOnDepartureType, transport.meansOfTransportOnDepartureIDNumber) match {
+          case (Some(meansType), Some(meansId)) => Some(DepartureTransport(meansType, meansId))
           case _                                            => None
         }
       formData match {

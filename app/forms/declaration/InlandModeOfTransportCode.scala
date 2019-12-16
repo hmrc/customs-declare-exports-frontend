@@ -17,25 +17,21 @@
 package forms.declaration
 
 import forms.DeclarationPage
-import forms.declaration.TransportCodes.allowedModeOfTransportCodes
-import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import utils.validators.forms.FieldValidator.isContainedIn
 
-case class InlandModeOfTransportCode(inlandModeOfTransportCode: Option[String] = None)
+case class InlandModeOfTransportCode(inlandModeOfTransportCode: Option[ModeOfTransportCodes] = None)
 
 object InlandModeOfTransportCode extends DeclarationPage {
   implicit val format = Json.format[InlandModeOfTransportCode]
 
   val formId = "InlandModeOfTransportCode"
 
+  import Forms._
+
   val mapping = Forms
     .mapping(
-      "inlandModeOfTransportCode" -> optional(
-        text()
-          .verifying("declaration.warehouse.inlandTransportDetails.error.incorrect", isContainedIn(allowedModeOfTransportCodes))
-      )
+      "inlandModeOfTransportCode" -> optional(of(ModeOfTransportCodes.formatter("declaration.warehouse.inlandTransportDetails.error.incorrect")))
     )(InlandModeOfTransportCode.apply)(InlandModeOfTransportCode.unapply)
 
   def form(): Form[InlandModeOfTransportCode] = Form(mapping)

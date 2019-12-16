@@ -94,7 +94,7 @@ object ExportsDeclarationExchange {
     dispatchLocation: Option[DispatchLocation] = None,
     additionalDeclarationType: Option[AdditionalDeclarationType] = None,
     consignmentReferences: Option[ConsignmentReferences] = None,
-    departureTransport: Option[DepartureTransport] = None,
+    departureTransportOld: Option[(Option[String], Option[DepartureTransport])] = None,
     borderTransport: Option[BorderTransport] = None,
     transportInformation: Option[TransportInformation] = None,
     parties: Parties = Parties(),
@@ -104,10 +104,13 @@ object ExportsDeclarationExchange {
     previousDocuments: Option[PreviousDocumentsData] = None,
     natureOfTransaction: Option[NatureOfTransaction] = None
   ): ExportsDeclarationExchange = {
+
+    val borderModeOfTransportCode = departureTransportOld.flatMap(_._1)
+    val departureTransport = departureTransportOld.flatMap(_._2)
     val transport = Transport(
       transportPayment = transportInformation.flatMap(_.transportPayment),
       containers = transportInformation.map(_.containers).getOrElse(Seq.empty),
-      borderModeOfTransportCode = departureTransport.map(_.borderModeOfTransportCode),
+      borderModeOfTransportCode = borderModeOfTransportCode,
       meansOfTransportOnDepartureType = departureTransport.map(_.meansOfTransportOnDepartureType),
       meansOfTransportOnDepartureIDNumber = departureTransport.map(_.meansOfTransportOnDepartureIDNumber),
       meansOfTransportCrossingTheBorderNationality = borderTransport.flatMap(_.meansOfTransportCrossingTheBorderNationality),
@@ -183,7 +186,9 @@ object ExportsDeclarationExchange {
       (__ \ "dispatchLocation").readNullable[DispatchLocation] and
       (__ \ "additionalDeclarationType").readNullable[AdditionalDeclarationType] and
       (__ \ "consignmentReferences").readNullable[ConsignmentReferences] and
-      (__ \ "departureTransport").readNullable[DepartureTransport] and
+      (__ \ "departureTransport").readNullable({
+        (__ \ "borderModeOfTransportCode").readNullable[String] and __.readNullable[DepartureTransport]
+      }.tupled) and
       (__ \ "borderTransport").readNullable[BorderTransport] and
       (__ \ "transportInformation").readNullable[TransportInformation] and
       (__ \ "parties").read[Parties] and
