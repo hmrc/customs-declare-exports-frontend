@@ -38,24 +38,24 @@
 
     @components.error_summary(form.errors)
 
-    @components.heading(title = messages("declaration.transportInformation.title"))
+    @components.heading(title = messages("declaration.transport.leavingTheBorder.title"))
 
     @helper.form(TransportLeavingTheBorder.submitForm(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         @components.fields.field_radio(
             field = form("code"),
-            legend = messages("declaration.transportInformation.borderTransportMode.header"),
-            hint = Some(messages("declaration.transportInformation.borderTransportMode.header.hint")),
+            legend = "",
+            hint = None,
             inputs = Seq(
-                RadioOption("Border_Sea", Maritime.value, messages("declaration.transportInformation.transportMode.sea")),
-                RadioOption("Border_Rail", Rail.value, messages("declaration.transportInformation.transportMode.rail")),
-                RadioOption("Border_Road", Road.value, messages("declaration.transportInformation.transportMode.road")),
-                RadioOption("Border_Air", Air.value, messages("declaration.transportInformation.transportMode.air")),
-                RadioOption("Border_PostalOrMail", PostalConsignment.value, messages("declaration.transportInformation.transportMode.postalOrMail")),
-                RadioOption("Border_FixedTransportInstallations", FixedTransportInstallations.value, messages("declaration.transportInformation.transportMode.fixedTransportInstallations")),
-                RadioOption("Border_InlandWaterway", InlandWaterway.value, messages("declaration.transportInformation.transportMode.inlandWaterway")),
-                RadioOption("Border_Unknown", Unknown.value, messages("declaration.transportInformation.transportMode.unknown"))
+                RadioOption("Border_Sea", Maritime.value, messages("declaration.transport.leavingTheBorder.transportMode.sea")),
+                RadioOption("Border_Rail", Rail.value, messages("declaration.transport.leavingTheBorder.transportMode.rail")),
+                RadioOption("Border_Road", Road.value, messages("declaration.transport.leavingTheBorder.transportMode.road")),
+                RadioOption("Border_Air", Air.value, messages("declaration.transport.leavingTheBorder.transportMode.air")),
+                RadioOption("Border_PostalOrMail", PostalConsignment.value, messages("declaration.transport.leavingTheBorder.transportMode.postalOrMail")),
+                RadioOption("Border_FixedTransportInstallations", FixedTransportInstallations.value, messages("declaration.transport.leavingTheBorder.transportMode.fixedTransportInstallations")),
+                RadioOption("Border_InlandWaterway", InlandWaterway.value, messages("declaration.transport.leavingTheBorder.transportMode.inlandWaterway")),
+                RadioOption("Border_Unknown", Unknown.value, messages("declaration.transport.leavingTheBorder.transportMode.unknown"))
             )
         )
 

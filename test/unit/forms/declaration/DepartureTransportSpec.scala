@@ -19,27 +19,18 @@ package unit.forms.declaration
 import base.TestHelper
 import forms.declaration.DepartureTransport
 import forms.declaration.TransportCodes._
-import org.scalatest.{MustMatchers, WordSpec}
+import unit.base.FormSpec
 
-class DepartureTransportSpec extends WordSpec with MustMatchers {
+class DepartureTransportSpec extends FormSpec {
 
   val form = DepartureTransport.form
 
-  "Border Transport form" should {
-
-    "allow all mode transport codes" in {
-
-      val errors = allowedModeOfTransportCodes.map { code =>
-        form.fillAndValidate(DepartureTransport(code, IMOShipIDNumber, "rereference")).errors
-      }.toSeq.flatten
-
-      errors must be(empty)
-    }
+  "Departure Transport form" should {
 
     "allow all means of transport type codes" in {
 
       val errors = allowedMeansOfTransportTypeCodes.map { code =>
-        form.fillAndValidate(DepartureTransport(Maritime, code, "reference")).errors
+        form.fillAndValidate(DepartureTransport(code, "reference")).errors
       }.toSeq.flatten
 
       errors must be(empty)
@@ -49,7 +40,7 @@ class DepartureTransportSpec extends WordSpec with MustMatchers {
 
       "user filled all mandatory fields with correct data" in {
 
-        val correctForm = DepartureTransport(Maritime, IMOShipIDNumber, "reference")
+        val correctForm = DepartureTransport(IMOShipIDNumber, "reference")
 
         val result = form.fillAndValidate(correctForm)
 
@@ -62,16 +53,15 @@ class DepartureTransportSpec extends WordSpec with MustMatchers {
       "mandatory field are empty" in {
 
         val incorrectForm =
-          Map("borderModeOfTransportCode" -> "", "meansOfTransportOnDepartureType" -> "", "meansOfTransportOnDepartureIDNumber" -> "")
+          Map("meansOfTransportOnDepartureType" -> "", "meansOfTransportOnDepartureIDNumber" -> "")
 
         val result = form.bind(incorrectForm)
         val errorKeys = result.errors.map(_.key)
         val errorMessages = result.errors.map(_.message)
 
-        errorKeys must be(List("borderModeOfTransportCode", "meansOfTransportOnDepartureType", "meansOfTransportOnDepartureIDNumber"))
+        errorKeys must be(List("meansOfTransportOnDepartureType", "meansOfTransportOnDepartureIDNumber"))
         errorMessages must be(
           List(
-            "declaration.transportInformation.borderTransportMode.error.empty",
             "declaration.transportInformation.meansOfTransport.departure.error.empty",
             "declaration.transportInformation.meansOfTransport.reference.error.empty"
           )
@@ -81,7 +71,6 @@ class DepartureTransportSpec extends WordSpec with MustMatchers {
       "fields are incorrect" in {
 
         val incorrectForm = Map(
-          "borderModeOfTransportCode" -> "incorrect",
           "meansOfTransportOnDepartureType" -> "incorrect",
           "meansOfTransportOnDepartureIDNumber" -> "correct"
         )
@@ -90,10 +79,9 @@ class DepartureTransportSpec extends WordSpec with MustMatchers {
         val errorKeys = result.errors.map(_.key)
         val errorMessages = result.errors.map(_.message)
 
-        errorKeys must be(List("borderModeOfTransportCode", "meansOfTransportOnDepartureType"))
+        errorKeys must be(List("meansOfTransportOnDepartureType"))
         errorMessages must be(
           List(
-            "declaration.transportInformation.borderTransportMode.error.incorrect",
             "declaration.transportInformation.meansOfTransport.departure.error.incorrect"
           )
         )
@@ -101,7 +89,6 @@ class DepartureTransportSpec extends WordSpec with MustMatchers {
 
       "means of transport on departure id number is empty" in {
         val incorrectForm = Map(
-          "borderModeOfTransportCode" -> Maritime,
           "meansOfTransportOnDepartureType" -> IMOShipIDNumber,
           "meansOfTransportOnDepartureIDNumber" -> ""
         )
@@ -119,7 +106,6 @@ class DepartureTransportSpec extends WordSpec with MustMatchers {
       "means of transport on departure id number is too long" in {
 
         val incorrectForm = Map(
-          "borderModeOfTransportCode" -> Maritime,
           "meansOfTransportOnDepartureType" -> IMOShipIDNumber,
           "meansOfTransportOnDepartureIDNumber" -> TestHelper.createRandomAlphanumericString(28)
         )
@@ -137,7 +123,6 @@ class DepartureTransportSpec extends WordSpec with MustMatchers {
       "means of transport on departure id number contains invalid special characters" in {
 
         val incorrectForm = Map(
-          "borderModeOfTransportCode" -> Maritime,
           "meansOfTransportOnDepartureType" -> IMOShipIDNumber,
           "meansOfTransportOnDepartureIDNumber" -> "!@#$"
         )

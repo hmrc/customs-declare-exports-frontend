@@ -16,9 +16,10 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.{routes, DepartureTransportController}
+import controllers.declaration.{DepartureTransportController, routes}
 import forms.declaration.DepartureTransport
-import forms.declaration.TransportCodes.{Maritime, WagonNumber}
+import forms.declaration.ModeOfTransportCodes.Maritime
+import forms.declaration.TransportCodes.WagonNumber
 import models.DeclarationType._
 import models.Mode
 import play.api.libs.json.{JsValue, Json}
@@ -82,7 +83,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         "form is incorrect" in {
           withNewCaching(declaration)
 
-          val incorrectForm: JsValue = Json.toJson(DepartureTransport("wrongValue", "wrongValue", "FAA"))
+          val incorrectForm: JsValue = Json.toJson(DepartureTransport("wrongValue", "FAA"))
 
           val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
 
@@ -95,7 +96,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         "information provided by user are correct" in {
           withNewCaching(declaration)
 
-          val correctForm: JsValue = Json.toJson(DepartureTransport(Maritime, WagonNumber, "FAA"))
+          val correctForm: JsValue = Json.toJson(DepartureTransport(WagonNumber, "FAA"))
 
           val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
@@ -120,7 +121,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         "page is submitted" in {
           withNewCaching(declaration)
 
-          val correctForm: JsValue = Json.toJson(DepartureTransport(Maritime, WagonNumber, "FAA"))
+          val correctForm: JsValue = Json.toJson(DepartureTransport(WagonNumber, "FAA"))
 
           val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
