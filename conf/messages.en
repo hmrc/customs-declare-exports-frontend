@@ -946,6 +946,8 @@ declaration.summary.warehouse.inlandModeOfTransport.InlandWaterway = Inland wate
 declaration.summary.warehouse.inlandModeOfTransport.Unknown = Mode unknown, for example own propulsion
 declaration.summary.transport = Transportation of the goods
 declaration.summary.transport.departure.transportCode.header = Transport at the border
+declaration.summary.transport.departure.transportCode. =
+# this is hack about incorrectness of model ^^
 declaration.summary.transport.departure.transportCode.1 = Sea transport
 declaration.summary.transport.departure.transportCode.2 = Rail transport
 declaration.summary.transport.departure.transportCode.3 = Road transport
@@ -956,6 +958,8 @@ declaration.summary.transport.departure.transportCode.8 = Inland waterway transp
 declaration.summary.transport.departure.transportCode.9 = Mode unknown, for example own propulsion
 
 declaration.summary.transport.departure.meansOfTransport.header = Transport details at the border
+declaration.summary.transport.departure.meansOfTransport. =
+# this is hack about incorrectness of model ^^
 declaration.summary.transport.departure.meansOfTransport.10 = Ship IMO number
 declaration.summary.transport.departure.meansOfTransport.11 = Ship name
 declaration.summary.transport.departure.meansOfTransport.20 = Train
