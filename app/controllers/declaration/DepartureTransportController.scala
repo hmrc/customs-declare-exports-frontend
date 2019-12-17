@@ -50,7 +50,7 @@ class DepartureTransportController @Inject()(
       val formData =
         (transport.meansOfTransportOnDepartureType, transport.meansOfTransportOnDepartureIDNumber) match {
           case (Some(meansType), Some(meansId)) => Some(DepartureTransport(meansType, meansId))
-          case _                                            => None
+          case _                                => None
         }
       formData match {
         case Some(data) => Ok(departureTransportPage(mode, form().fill(data)))

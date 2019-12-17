@@ -43,9 +43,8 @@ case class ExportsDeclaration(
   previousDocuments: Option[PreviousDocumentsData] = None,
   natureOfTransaction: Option[NatureOfTransaction] = None
 ) {
-  def updateTransportLeavingBorder(code: ModeOfTransportCodes): ExportsDeclaration = {
+  def updateTransportLeavingBorder(code: ModeOfTransportCodes): ExportsDeclaration =
     copy(transport = transport.copy(borderModeOfTransportCode = Some(code.value)))
-  }
 
   def addOrUpdateContainer(container: Container): ExportsDeclaration =
     copy(transport = transport.addOrUpdateContainer(container))

@@ -40,7 +40,7 @@
 
     @components.heading(title = messages("declaration.transport.leavingTheBorder.title"))
 
-    @helper.form(TransportLeavingTheBorder.submitForm(mode), 'autoComplete -> "off") {
+    @helper.form(TransportLeavingTheBorderController.submitForm(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         @components.fields.field_radio(

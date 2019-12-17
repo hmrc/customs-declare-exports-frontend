@@ -241,9 +241,9 @@ POST         /items/:itemId/add-document                        controllers.decl
 
 # **** END OF ITEM PAGES ****
 
-GET         /transport-leaving-the-border       controllers.declaration.TransportLeavingTheBorder.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /transport-leaving-the-border       controllers.declaration.TransportLeavingTheBorderController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /transport-leveing-the-border       controllers.declaration.TransportLeavingTheBorder.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /transport-leveing-the-border       controllers.declaration.TransportLeavingTheBorderController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
 # Departure Transport
 

@@ -29,9 +29,9 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.transport_leaving_the_border
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
-class TransportLeavingTheBorder @Inject()(
+class TransportLeavingTheBorderController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
@@ -52,20 +52,20 @@ class TransportLeavingTheBorder @Inject()(
   }
 
   def submitForm(mode: Mode) = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    ModeOfTransportCodes
-      .form
+    ModeOfTransportCodes.form
       .bindFromRequest()
       .fold(
-        errors => ???,
-        code => updateExportsDeclarationSyncDirect(_.updateTransportLeavingBorder(code)).map { _ =>
-          navigator.continueTo(nextPage(mode))
+        errors => Future.successful(BadRequest(transportAtBorder(errors, mode))),
+        code =>
+          updateExportsDeclarationSyncDirect(_.updateTransportLeavingBorder(code)).map { _ =>
+            navigator.continueTo(nextPage(mode))
         }
       )
   }
 
-  def nextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Call =  request.declarationType match {
+  def nextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Call = request.declarationType match {
     case DeclarationType.CLEARANCE =>
-      controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode)
+      controllers.declaration.routes.TransportContainerController.displayAddContainer(mode)
     case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
       controllers.declaration.routes.DepartureTransportController.displayPage(mode)
   }

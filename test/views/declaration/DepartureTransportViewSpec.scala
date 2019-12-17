@@ -46,8 +46,6 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
   "Departure Transport View" must {
 
     onEveryDeclarationJourney { request =>
-
-
       val view = createView(form, request)
 
       "have defined translation for used labels" in {
@@ -80,7 +78,7 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
       "display 'Back' button that links to 'Inland Transport Details' page" in {
         val backButton = view.getElementById("back-link")
         backButton.text() mustBe messages(backCaption)
-        backButton must haveHref(routes.TransportLeavingTheBorder.displayPage())
+        backButton must haveHref(routes.TransportLeavingTheBorderController.displayPage())
       }
 
       "display 'Save and continue' button on page" in {

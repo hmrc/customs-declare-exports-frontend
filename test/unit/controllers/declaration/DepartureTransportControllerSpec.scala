@@ -16,7 +16,7 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.{DepartureTransportController, routes}
+import controllers.declaration.{routes, DepartureTransportController}
 import forms.declaration.DepartureTransport
 import forms.declaration.ModeOfTransportCodes.Maritime
 import forms.declaration.TransportCodes.WagonNumber
