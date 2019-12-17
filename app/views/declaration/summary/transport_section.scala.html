@@ -45,7 +45,7 @@
                 value = declarationData.transport.borderModeOfTransportCode.map(code =>
                     Seq(messages(s"declaration.summary.transport.departure.transportCode.${code}"))
                 ).getOrElse(Seq.empty),
-                call = Some(controllers.declaration.routes.DepartureTransportController.displayPage()),
+                call = Some(controllers.declaration.routes.TransportLeavingTheBorderController.displayPage()),
                 changeLabel = Some(messages("declaration.summary.transport.departure.transportCode.header.change"))
             ))
             @components.table_row("transport-reference", HtmlTableRow(

@@ -43,13 +43,14 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("border-transport-label").text() mustBe messages("declaration.summary.transport.departure.transportCode.header")
         view.getElementById("border-transport").text() mustBe messages("declaration.summary.transport.departure.transportCode.1")
+        view.getElementById("border-transport-change").text() mustBe messages("site.change")
 
         val List(change, accessibleChange) = view.getElementById("border-transport-change").text().split(" ").toList
 
         change mustBe messages("site.change")
         accessibleChange mustBe messages("declaration.summary.transport.departure.transportCode.header.change")
 
-        view.getElementById("border-transport-change") must haveHref(controllers.declaration.routes.DepartureTransportController.displayPage())
+        view.getElementById("border-transport-change") must haveHref(controllers.declaration.routes.TransportLeavingTheBorderController.displayPage())
       }
 
       "display transport reference with change button" in {

@@ -70,28 +70,18 @@ class DepartureTransportSpec extends FormSpec {
 
       "fields are incorrect" in {
 
-        val incorrectForm = Map(
-          "meansOfTransportOnDepartureType" -> "incorrect",
-          "meansOfTransportOnDepartureIDNumber" -> "correct"
-        )
+        val incorrectForm = Map("meansOfTransportOnDepartureType" -> "incorrect", "meansOfTransportOnDepartureIDNumber" -> "correct")
 
         val result = form.bind(incorrectForm)
         val errorKeys = result.errors.map(_.key)
         val errorMessages = result.errors.map(_.message)
 
         errorKeys must be(List("meansOfTransportOnDepartureType"))
-        errorMessages must be(
-          List(
-            "declaration.transportInformation.meansOfTransport.departure.error.incorrect"
-          )
-        )
+        errorMessages must be(List("declaration.transportInformation.meansOfTransport.departure.error.incorrect"))
       }
 
       "means of transport on departure id number is empty" in {
-        val incorrectForm = Map(
-          "meansOfTransportOnDepartureType" -> IMOShipIDNumber,
-          "meansOfTransportOnDepartureIDNumber" -> ""
-        )
+        val incorrectForm = Map("meansOfTransportOnDepartureType" -> IMOShipIDNumber, "meansOfTransportOnDepartureIDNumber" -> "")
 
         val result = form.bind(incorrectForm)
 
@@ -122,10 +112,7 @@ class DepartureTransportSpec extends FormSpec {
 
       "means of transport on departure id number contains invalid special characters" in {
 
-        val incorrectForm = Map(
-          "meansOfTransportOnDepartureType" -> IMOShipIDNumber,
-          "meansOfTransportOnDepartureIDNumber" -> "!@#$"
-        )
+        val incorrectForm = Map("meansOfTransportOnDepartureType" -> IMOShipIDNumber, "meansOfTransportOnDepartureIDNumber" -> "!@#$")
 
         val result = form.bind(incorrectForm)
 

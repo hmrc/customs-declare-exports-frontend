@@ -105,7 +105,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
         val result = await(controller.submit(Mode.Normal)(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.TransportLeavingTheBorder.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.TransportLeavingTheBorderController.displayPage()
       }
     }
 
@@ -116,7 +116,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
         val result = await(controller.submit(Mode.Normal)(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.TransportLeavingTheBorder.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.TransportLeavingTheBorderController.displayPage()
       }
     }
 
@@ -149,7 +149,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
         val result = await(controller.submit(Mode.Normal)(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.TransportLeavingTheBorder.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.TransportLeavingTheBorderController.displayPage()
       }
     }
   }

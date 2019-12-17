@@ -31,7 +31,7 @@ object DepartureTransport extends DeclarationPage {
   implicit val formats = Json.format[DepartureTransport]
 
   val formMapping = mapping(
-"meansOfTransportOnDepartureType" -> requiredRadio("declaration.transportInformation.meansOfTransport.departure.error.empty")
+    "meansOfTransportOnDepartureType" -> requiredRadio("declaration.transportInformation.meansOfTransport.departure.error.empty")
       .verifying("declaration.transportInformation.meansOfTransport.departure.error.incorrect", isContainedIn(allowedMeansOfTransportTypeCodes)),
     "meansOfTransportOnDepartureIDNumber" -> text()
       .verifying("declaration.transportInformation.meansOfTransport.reference.error.empty", nonEmpty)
