@@ -22,7 +22,7 @@
 
 <div id="declaration-transaction-summary">
     @components.summary_list(Some(messages("declaration.summary.transaction"))) {
-        @if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, OCCASIONAL, CLEARANCE)) {
+        @if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, CLEARANCE)) {
             @components.table_row("item-amount", HtmlTableRow(
                 label = messages("declaration.summary.transaction.itemAmount"),
                 value = declarationData.totalNumberOfItems.flatMap(_.totalAmountInvoiced).getOrElse(""),

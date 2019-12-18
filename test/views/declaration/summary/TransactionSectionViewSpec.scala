@@ -29,7 +29,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
   "Transaction section" should {
 
-    onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL, CLEARANCE) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
       val view = transaction_section(data)(messages, request)
 
       "have total amount invoiced with change button" in {
@@ -90,7 +90,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData {
       }
     }
 
-    onJourney(SIMPLIFIED) { request =>
+    onJourney(SIMPLIFIED, OCCASIONAL) { request =>
       val view = transaction_section(data)(messages, request)
 
       "not display total amount invoiced" in {

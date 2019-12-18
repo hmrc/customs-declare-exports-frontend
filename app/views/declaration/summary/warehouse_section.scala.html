@@ -34,7 +34,7 @@
             call = Some(controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage()),
             changeLabel = Some(messages("declaration.summary.warehouse.supervisingOffice.change"))
         ))
-        @if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, OCCASIONAL, CLEARANCE)) {
+        @if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, CLEARANCE)) {
             @components.table_row("mode-of-transport", HtmlTableRow(
                 label = messages("declaration.summary.warehouse.inlandModeOfTransport"),
                 value = declarationData.locations.inlandModeOfTransportCode.flatMap(_.inlandModeOfTransportCode.map(code => messages(s"declaration.summary.warehouse.inlandModeOfTransport.$code"))).getOrElse(""),
