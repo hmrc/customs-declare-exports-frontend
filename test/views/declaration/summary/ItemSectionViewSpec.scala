@@ -173,7 +173,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
       }
     }
 
-    onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL, CLEARANCE) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
       val view = item_section(item)(messages, request)
 
       "has statistical item value with change button" in {
@@ -237,7 +237,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
       }
     }
 
-    onJourney(SIMPLIFIED) { request =>
+    onJourney(SIMPLIFIED, OCCASIONAL) { request =>
       val view = item_section(item)(messages, request)
 
       "not display statistical item value" in {

@@ -66,7 +66,7 @@
     call = Some(controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, item.id)),
     changeLabel = Some(messages("declaration.summary.items.item.nationalAdditionalCodes.change", item.sequenceId))
 ))
-@if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, OCCASIONAL, CLEARANCE)) {
+@if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, CLEARANCE)) {
     @components.table_row(s"item-${item.sequenceId}-itemValue", HtmlTableRow(
         label = messages("declaration.summary.items.item.itemValue"),
         value = item.statisticalValue.map(_.statisticalValue).getOrElse(""),
