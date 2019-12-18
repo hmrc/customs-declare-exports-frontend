@@ -16,22 +16,21 @@
 
 package forms.declaration
 
+import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import forms.declaration.TransportCodes._
 import play.api.data.Form
 import play.api.data.Forms.{mapping, optional, text}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, Writes}
 import utils.validators.forms.FieldValidator.{isContainedIn, noLongerThan, _}
 
-case class DepartureTransport(borderModeOfTransportCode: String, meansOfTransportOnDepartureType: String, meansOfTransportOnDepartureIDNumber: String)
+case class DepartureTransport(meansOfTransportOnDepartureType: String, meansOfTransportOnDepartureIDNumber: String)
 
-object DepartureTransport {
+object DepartureTransport extends DeclarationPage {
 
   implicit val formats = Json.format[DepartureTransport]
 
   val formMapping = mapping(
-    "borderModeOfTransportCode" -> requiredRadio("declaration.transportInformation.borderTransportMode.error.empty")
-      .verifying("declaration.transportInformation.borderTransportMode.error.incorrect", isContainedIn(allowedModeOfTransportCodes)),
     "meansOfTransportOnDepartureType" -> requiredRadio("declaration.transportInformation.meansOfTransport.departure.error.empty")
       .verifying("declaration.transportInformation.meansOfTransport.departure.error.incorrect", isContainedIn(allowedMeansOfTransportTypeCodes)),
     "meansOfTransportOnDepartureIDNumber" -> text()
@@ -46,15 +45,6 @@ object DepartureTransport {
 
 object TransportCodes {
 
-  val Maritime = "1"
-  val Rail = "2"
-  val Road = "3"
-  val Air = "4"
-  val PostalConsignment = "5"
-  val FixedTransportInstallations = "7"
-  val InlandWaterway = "8"
-  val Unknown = "9"
-
   val IMOShipIDNumber = "10"
   val NameOfVessel = "11"
   val WagonNumber = "20"
@@ -63,9 +53,6 @@ object TransportCodes {
   val AircraftRegistrationNumber = "41"
   val EuropeanVesselIDNumber = "80"
   val NameOfInlandWaterwayVessel = "81"
-
-  val allowedModeOfTransportCodes =
-    Set(Maritime, Rail, Road, Air, PostalConsignment, FixedTransportInstallations, InlandWaterway, Unknown)
 
   val allowedMeansOfTransportTypeCodes =
     Set(

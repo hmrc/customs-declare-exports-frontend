@@ -17,7 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.InlandTransportDetailsController
-import forms.declaration.TransportCodes.Maritime
+import forms.declaration.ModeOfTransportCodes.Maritime
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
@@ -44,12 +44,6 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
 
   private val exampleTransportMode = Maritime
 
-  private val standardCacheModel = aDeclaration(withType(DeclarationType.STANDARD))
-
-  private val supplementaryCacheModel = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
-
-  private val simplifiedCacheModel = aDeclaration(withType(DeclarationType.SIMPLIFIED))
-
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
@@ -62,69 +56,32 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
   }
 
   "Inland Transport Details Controller on GET request" should {
+    onEveryDeclarationJourney() { declaration =>
+      "return 200 OK" in {
+        withNewCaching(declaration)
 
-    "return 200 OK" in {
-      withNewCaching(supplementaryCacheModel)
+        val response = controller.displayPage(Mode.Normal).apply(getRequest())
 
-      val response = controller.displayPage(Mode.Normal).apply(getRequest())
+        status(response) must be(OK)
+      }
 
-      status(response) must be(OK)
-    }
+      "read item from cache and display it" in {
+        withNewCaching(declaration)
 
-    "read item from cache and display it" in {
-      withNewCaching(supplementaryCacheModel)
+        await(controller.displayPage(Mode.Normal)(getRequest()))
 
-      await(controller.displayPage(Mode.Normal)(getRequest()))
-
-      verify(mockExportsCacheService).get(any())(any())
-      verify(inlandTransportDetails).apply(any(), any())(any(), any())
+        verify(mockExportsCacheService).get(any())(any())
+        verify(inlandTransportDetails).apply(any(), any())(any(), any())
+      }
     }
   }
   "Inland Transport Details Controller on POST" when {
 
     val body = Json.obj("inlandModeOfTransportCode" -> exampleTransportMode)
 
-    "we are on standard declaration journey" should {
-
-      "redirect to Departure Transport" in {
-        withNewCaching(standardCacheModel)
-
-        val result = await(controller.submit(Mode.Normal)(postRequest(body)))
-
-        result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DepartureTransportController.displayPage()
-      }
-
+    onEveryDeclarationJourney() { declaration =>
       "update cache after successful bind" in {
-        withNewCaching(standardCacheModel)
-
-        await(controller.submit(Mode.Normal)(postRequest(body)))
-
-        theCacheModelUpdated.locations.inlandModeOfTransportCode.value.inlandModeOfTransportCode.value mustBe exampleTransportMode
-      }
-
-      "return Bad Request if payload is not compatible with model" in {
-        withNewCaching(standardCacheModel)
-
-        val body = Json.obj("inlandModeOfTransportCode" -> "A")
-        val result = controller.submit(Mode.Normal)(postRequest(body))
-
-        status(result) mustBe BAD_REQUEST
-      }
-    }
-
-    "we are on supplementary declaration journey" should {
-      "redirect to Departure Transport" in {
-        withNewCaching(supplementaryCacheModel)
-
-        val result = await(controller.submit(Mode.Normal)(postRequest(body)))
-
-        result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DepartureTransportController.displayPage()
-      }
-
-      "update cache after successful bind" in {
-        withNewCaching(supplementaryCacheModel)
+        withNewCaching(declaration)
 
         await(controller.submit(Mode.Normal).apply(postRequest(body)))
 
@@ -132,7 +89,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
       }
 
       "return Bad Request if payload is not compatible with model" in {
-        withNewCaching(supplementaryCacheModel)
+        withNewCaching(declaration)
 
         val body = Json.obj("inlandModeOfTransportCode" -> "A")
         val result = controller.submit(Mode.Normal)(postRequest(body))
@@ -141,31 +98,58 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
       }
     }
 
-    "we are on simplified declaration journey" should {
+    onStandard { declaration =>
+      "redirect to Departure Transport" in {
+        withNewCaching(declaration)
+
+        val result = await(controller.submit(Mode.Normal)(postRequest(body)))
+
+        result mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.TransportLeavingTheBorderController.displayPage()
+      }
+    }
+
+    onSupplementary { declaration =>
+      "redirect to Departure Transport" in {
+        withNewCaching(declaration)
+
+        val result = await(controller.submit(Mode.Normal)(postRequest(body)))
+
+        result mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.TransportLeavingTheBorderController.displayPage()
+      }
+    }
+
+    onSimplified { declaration =>
       "redirect to Border Transport" in {
-        withNewCaching(simplifiedCacheModel)
+        withNewCaching(declaration)
 
         val result = await(controller.submit(Mode.Normal)(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.BorderTransportController.displayPage()
       }
+    }
 
-      "update cache after successful bind" in {
-        withNewCaching(simplifiedCacheModel)
+    onOccasional { declaration =>
+      "redirect to Border Transport" in {
+        withNewCaching(declaration)
 
-        await(controller.submit(Mode.Normal).apply(postRequest(body)))
+        val result = await(controller.submit(Mode.Normal)(postRequest(body)))
 
-        theCacheModelUpdated.locations.inlandModeOfTransportCode.value.inlandModeOfTransportCode.value mustBe exampleTransportMode
+        result mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.BorderTransportController.displayPage()
       }
+    }
 
-      "return Bad Request if payload is not compatible with model" in {
-        withNewCaching(simplifiedCacheModel)
+    onClearance { declaration =>
+      "redirect to Border Transport" in {
+        withNewCaching(declaration)
 
-        val body = Json.obj("inlandModeOfTransportCode" -> "A")
-        val result = controller.submit(Mode.Normal)(postRequest(body))
+        val result = await(controller.submit(Mode.Normal)(postRequest(body)))
 
-        status(result) mustBe BAD_REQUEST
+        result mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.TransportLeavingTheBorderController.displayPage()
       }
     }
   }

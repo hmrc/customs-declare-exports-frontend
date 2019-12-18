@@ -1,0 +1,66 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.declaration.routes._
+@import forms.declaration.DepartureTransport
+@import forms.declaration.TransportCodes._
+@import forms.declaration.ModeOfTransportCodes._
+@import services.model.Country
+@import uk.gov.hmrc.play.views.html._
+@import views.components.inputs.RadioOption
+@import views.Title
+@import models.requests.JourneyRequest
+@import forms.declaration.ModeOfTransportCodes
+
+
+@this(main_template: main_template)
+
+@(form: Form[ModeOfTransportCodes], mode: Mode)(implicit request: JourneyRequest[_], messages: Messages)
+
+@main_template(
+    title = Title("declaration.transportInformation.title")
+) {
+
+    @components.back_link(controllers.declaration.routes.InlandTransportDetailsController.displayPage(mode), mode)
+
+    @components.error_summary(form.errors)
+
+    @components.heading(title = messages("declaration.transport.leavingTheBorder.title"))
+
+    @helper.form(TransportLeavingTheBorderController.submitForm(mode), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
+        @components.fields.field_radio(
+            field = form("code"),
+            legend = "",
+            hint = None,
+            inputs = Seq(
+                RadioOption("Border_Sea", Maritime.value, messages("declaration.transport.leavingTheBorder.transportMode.sea")),
+                RadioOption("Border_Rail", Rail.value, messages("declaration.transport.leavingTheBorder.transportMode.rail")),
+                RadioOption("Border_Road", Road.value, messages("declaration.transport.leavingTheBorder.transportMode.road")),
+                RadioOption("Border_Air", Air.value, messages("declaration.transport.leavingTheBorder.transportMode.air")),
+                RadioOption("Border_PostalOrMail", PostalConsignment.value, messages("declaration.transport.leavingTheBorder.transportMode.postalOrMail")),
+                RadioOption("Border_FixedTransportInstallations", FixedTransportInstallations.value, messages("declaration.transport.leavingTheBorder.transportMode.fixedTransportInstallations")),
+                RadioOption("Border_InlandWaterway", InlandWaterway.value, messages("declaration.transport.leavingTheBorder.transportMode.inlandWaterway")),
+                RadioOption("Border_Unknown", Unknown.value, messages("declaration.transport.leavingTheBorder.transportMode.unknown"))
+            )
+        )
+
+        @components.submit_button()
+        @components.buttons.save_and_return_later_button()
+    }
+
+}

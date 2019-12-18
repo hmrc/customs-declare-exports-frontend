@@ -57,6 +57,7 @@ case class ItemId(id: String)
 object Navigator {
 
   val standard: PartialFunction[DeclarationPage, Mode => Call] = {
+    case ModeOfTransportCodes        => controllers.declaration.routes.InlandTransportDetailsController.displayPage
     case BorderTransport             => controllers.declaration.routes.DepartureTransportController.displayPage
     case TransportPayment            => controllers.declaration.routes.BorderTransportController.displayPage
     case ContainerFirst              => controllers.declaration.routes.TransportPaymentController.displayPage
@@ -83,7 +84,8 @@ object Navigator {
   }
 
   val clearance: PartialFunction[DeclarationPage, Mode => Call] = {
-    case ContainerFirst              => controllers.declaration.routes.DepartureTransportController.displayPage
+    case ModeOfTransportCodes        => controllers.declaration.routes.InlandTransportDetailsController.displayPage
+    case ContainerFirst              => controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
     case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
     case Document                    => controllers.declaration.routes.NatureOfTransactionController.displayPage
     case OriginationCountryPage      => controllers.declaration.routes.DeclarationHolderController.displayPage
@@ -107,6 +109,7 @@ object Navigator {
   }
 
   val supplementary: PartialFunction[DeclarationPage, Mode => Call] = {
+    case ModeOfTransportCodes        => controllers.declaration.routes.InlandTransportDetailsController.displayPage
     case BorderTransport             => controllers.declaration.routes.DepartureTransportController.displayPage
     case ContainerFirst              => controllers.declaration.routes.BorderTransportController.displayPage
     case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
@@ -129,6 +132,7 @@ object Navigator {
   }
 
   val simplified: PartialFunction[DeclarationPage, Mode => Call] = {
+    case ModeOfTransportCodes        => controllers.declaration.routes.InlandTransportDetailsController.displayPage
     case TransportPayment            => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case ContainerFirst              => controllers.declaration.routes.TransportPaymentController.displayPage
     case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
@@ -153,6 +157,8 @@ object Navigator {
   }
 
   val occasional: PartialFunction[DeclarationPage, Mode => Call] = {
+
+    case ModeOfTransportCodes        => controllers.declaration.routes.InlandTransportDetailsController.displayPage
     case TransportPayment            => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case ContainerFirst              => controllers.declaration.routes.TransportPaymentController.displayPage
     case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary

@@ -49,7 +49,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
         change mustBe messages("site.change")
         accessibleChange mustBe messages("declaration.summary.transport.departure.transportCode.header.change")
 
-        view.getElementById("border-transport-change") must haveHref(controllers.declaration.routes.DepartureTransportController.displayPage())
+        view.getElementById("border-transport-change") must haveHref(controllers.declaration.routes.TransportLeavingTheBorderController.displayPage())
       }
 
       "display transport reference with change button" in {

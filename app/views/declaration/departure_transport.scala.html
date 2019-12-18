@@ -21,16 +21,19 @@
 @import uk.gov.hmrc.play.views.html._
 @import views.components.inputs.RadioOption
 @import views.Title
+@import controllers.navigation.Navigator
+@import forms.declaration.ModeOfTransportCodes
+@import models.requests.JourneyRequest
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[DepartureTransport])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, form: Form[DepartureTransport])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
     title = Title("declaration.transportInformation.title")
 ) {
 
-    @components.back_link(controllers.declaration.routes.InlandTransportDetailsController.displayPage(mode), mode)
+    @components.back_link(TransportLeavingTheBorderController.displayPage(mode), mode)
 
     @components.error_summary(form.errors)
 
@@ -38,22 +41,6 @@
 
     @helper.form(DepartureTransportController.submitForm(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
-
-        @components.fields.field_radio(
-            field = form("borderModeOfTransportCode"),
-            legend = messages("declaration.transportInformation.borderTransportMode.header"),
-            hint = Some(messages("declaration.transportInformation.borderTransportMode.header.hint")),
-            inputs = Seq(
-                RadioOption("Border_Sea", Maritime, messages("declaration.transportInformation.transportMode.sea")),
-                RadioOption("Border_Rail", Rail, messages("declaration.transportInformation.transportMode.rail")),
-                RadioOption("Border_Road", Road, messages("declaration.transportInformation.transportMode.road")),
-                RadioOption("Border_Air", Air, messages("declaration.transportInformation.transportMode.air")),
-                RadioOption("Border_PostalOrMail", PostalConsignment, messages("declaration.transportInformation.transportMode.postalOrMail")),
-                RadioOption("Border_FixedTransportInstallations", FixedTransportInstallations, messages("declaration.transportInformation.transportMode.fixedTransportInstallations")),
-                RadioOption("Border_InlandWaterway", InlandWaterway, messages("declaration.transportInformation.transportMode.inlandWaterway")),
-                RadioOption("Border_Unknown", Unknown, messages("declaration.transportInformation.transportMode.unknown"))
-            )
-        )
 
         @components.fields.field_radio(
             field = form("meansOfTransportOnDepartureType"),
