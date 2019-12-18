@@ -32,7 +32,7 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
   "Warehouse section" should {
 
-    onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL, CLEARANCE) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
       val view = warehouse_section(data)(messages, request)
 
       "display warehouse id with change button" in {
@@ -77,7 +77,7 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData {
       }
     }
 
-    onJourney(SIMPLIFIED) { request =>
+    onJourney(SIMPLIFIED, OCCASIONAL) { request =>
       val view = warehouse_section(data)(messages, request)
 
       "display warehouse id with change button" in {

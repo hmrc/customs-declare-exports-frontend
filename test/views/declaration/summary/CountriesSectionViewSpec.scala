@@ -116,7 +116,7 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
       }
     }
 
-    onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL, CLEARANCE) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
       "display country of dispatch" in {
 
         val countryCode = "GB"
@@ -155,7 +155,7 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
       }
     }
 
-    onJourney(SIMPLIFIED) { request =>
+    onJourney(SIMPLIFIED, OCCASIONAL) { request =>
       "not display country of dispatch" in {
 
         val data = aDeclaration()

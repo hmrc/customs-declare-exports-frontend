@@ -23,7 +23,7 @@
 
 <div id="declaration-countries-summary">
     @components.summary_list(Some(messages("declaration.summary.countries"))) {
-        @if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, OCCASIONAL, CLEARANCE)) {
+        @if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, CLEARANCE)) {
             @components.table_row("countryOfDispatch", HtmlTableRow(
                 label = messages("declaration.summary.countries.countryOfDispatch"),
                 value = declarationData.locations.originationCountry.map(code => Countries.findByCode(code).asString()).getOrElse(""),

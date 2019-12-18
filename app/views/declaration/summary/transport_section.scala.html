@@ -39,7 +39,7 @@
 
 <div id="declaration-transport-summary">
     @components.summary_list(Some(messages("declaration.summary.transport"))) {
-        @if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, OCCASIONAL, CLEARANCE)){
+        @if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, CLEARANCE)){
             @components.table_row("border-transport", HtmlTableRow(
                 label = messages("declaration.summary.transport.departure.transportCode.header"),
                 value = declarationData.transport.borderModeOfTransportCode.map(code =>

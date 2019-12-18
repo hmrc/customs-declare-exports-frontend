@@ -36,7 +36,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
   "Transport section" should {
 
-    onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL, CLEARANCE) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
       val view = transport_section(data)(messages, request)
 
       "display transport code with change button" in {
@@ -136,7 +136,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
       }
     }
 
-    onJourney(SIMPLIFIED) { request =>
+    onJourney(SIMPLIFIED, OCCASIONAL) { request =>
       val view = transport_section(data)(messages, request)
 
       "not display transport code" in {

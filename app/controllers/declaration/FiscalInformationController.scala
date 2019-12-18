@@ -19,13 +19,13 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.FiscalInformation
-import forms.declaration.FiscalInformation.form
+import forms.declaration.FiscalInformation._
 import javax.inject.Inject
-import models.Mode
+import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.fiscal_information
@@ -43,7 +43,7 @@ class FiscalInformationController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode, itemId: String, fastForward: Boolean): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    def cacheContainsFiscalReferenceData = request.cacheModel.itemBy(itemId).exists(_.additionalFiscalReferencesData.exists(_.references.nonEmpty))
+    val cacheContainsFiscalReferenceData = request.cacheModel.itemBy(itemId).exists(_.additionalFiscalReferencesData.exists(_.references.nonEmpty))
 
     if (fastForward && cacheContainsFiscalReferenceData) {
       navigator.continueTo(routes.AdditionalFiscalReferencesController.displayPage(mode, itemId))
@@ -60,29 +60,31 @@ class FiscalInformationController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[FiscalInformation]) => Future.successful(BadRequest(fiscalInformationPage(mode, itemId, formWithErrors))),
-        formData =>
-          formData.onwardSupplyRelief match {
-            case FiscalInformation.AllowedFiscalInformationAnswers.yes =>
-              updateCacheForYes(itemId, formData) map { _ =>
-                navigator.continueTo(routes.AdditionalFiscalReferencesController.displayPage(mode, itemId))
-              }
-            case FiscalInformation.AllowedFiscalInformationAnswers.no =>
-              updateCacheForNo(itemId, formData) map { _ =>
-                navigator.continueTo(routes.CommodityDetailsController.displayPage(mode, itemId))
-              }
-        }
+        formData => updateCache(itemId, formData).map(_ => redirectToNextPage(mode, itemId, formData))
       )
   }
 
-  //TODO Use one method instead of updateCacheForYes and updateCacheForNo
-  private def updateCacheForYes(itemId: String, updatedFiscalInformation: FiscalInformation)(implicit req: JourneyRequest[AnyContent]): Future[Unit] =
-    updateExportsDeclarationSyncDirect(model => {
-      model.updatedItem(itemId, item => item.copy(fiscalInformation = Some(updatedFiscalInformation)))
-    }).map(_ => ())
+  private def updateCache(itemId: String, updatedFiscalInformation: FiscalInformation)(
+    implicit request: JourneyRequest[AnyContent]
+  ): Future[Option[ExportsDeclaration]] = {
+    def updatedModel(model: ExportsDeclaration): ExportsDeclaration =
+      updatedFiscalInformation.onwardSupplyRelief match {
+        case AllowedFiscalInformationAnswers.yes =>
+          model.updatedItem(itemId, item => item.copy(fiscalInformation = Some(updatedFiscalInformation)))
+        case AllowedFiscalInformationAnswers.no =>
+          model.updatedItem(itemId, item => item.copy(fiscalInformation = Some(updatedFiscalInformation), additionalFiscalReferencesData = None))
+      }
 
-  private def updateCacheForNo(itemId: String, updatedFiscalInformation: FiscalInformation)(implicit req: JourneyRequest[AnyContent]): Future[Unit] =
-    updateExportsDeclarationSyncDirect(model => {
-      model.updatedItem(itemId, item => item.copy(fiscalInformation = Some(updatedFiscalInformation), additionalFiscalReferencesData = None))
-    }).map(_ => ())
+    updateExportsDeclarationSyncDirect(updatedModel(_))
+  }
 
+  private def redirectToNextPage(mode: Mode, itemId: String, fiscalInformation: FiscalInformation)(
+    implicit request: JourneyRequest[AnyContent]
+  ): Result =
+    fiscalInformation.onwardSupplyRelief match {
+      case FiscalInformation.AllowedFiscalInformationAnswers.yes =>
+        navigator.continueTo(routes.AdditionalFiscalReferencesController.displayPage(mode, itemId))
+      case FiscalInformation.AllowedFiscalInformationAnswers.no =>
+        navigator.continueTo(routes.CommodityDetailsController.displayPage(mode, itemId))
+    }
 }
