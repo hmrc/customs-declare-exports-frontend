@@ -19,7 +19,7 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.FiscalInformation
-import forms.declaration.FiscalInformation.form
+import forms.declaration.FiscalInformation._
 import javax.inject.Inject
 import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
@@ -67,16 +67,15 @@ class FiscalInformationController @Inject()(
   private def updateCache(itemId: String, updatedFiscalInformation: FiscalInformation)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] = {
-    val updateModel: ExportsDeclaration => ExportsDeclaration =
-      (model: ExportsDeclaration) =>
-        updatedFiscalInformation.onwardSupplyRelief match {
-          case FiscalInformation.AllowedFiscalInformationAnswers.yes =>
-            model.updatedItem(itemId, item => item.copy(fiscalInformation = Some(updatedFiscalInformation)))
-          case FiscalInformation.AllowedFiscalInformationAnswers.no =>
-            model.updatedItem(itemId, item => item.copy(fiscalInformation = Some(updatedFiscalInformation), additionalFiscalReferencesData = None))
+    def updatedModel(model: ExportsDeclaration): ExportsDeclaration =
+      updatedFiscalInformation.onwardSupplyRelief match {
+        case AllowedFiscalInformationAnswers.yes =>
+          model.updatedItem(itemId, item => item.copy(fiscalInformation = Some(updatedFiscalInformation)))
+        case AllowedFiscalInformationAnswers.no =>
+          model.updatedItem(itemId, item => item.copy(fiscalInformation = Some(updatedFiscalInformation), additionalFiscalReferencesData = None))
       }
 
-    updateExportsDeclarationSyncDirect(updateModel)
+    updateExportsDeclarationSyncDirect(updatedModel(_))
   }
 
   private def redirectToNextPage(mode: Mode, itemId: String, fiscalInformation: FiscalInformation)(
