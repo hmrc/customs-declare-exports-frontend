@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.18
+// @version      1.20
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -12,16 +12,15 @@
 
 (function() {
     'use strict';
-    document.getElementsByTagName("body")[0].appendChild(createDropDown());
+    document.body.appendChild(dropDown());
 })();
 
 function setDeclaration(choice) { GM_setValue("declaration", choice); }
 
 function getDeclaration() { return GM_getValue("declaration"); }
 
-function createDropDown() {
-    var myParent = document.body;
-    var panel = myParent.appendChild(document.createElement("div"));
+function dropDown() {
+    var panel = document.createElement("div");
 
     panel.appendChild(createQuickButton());
 
@@ -61,8 +60,9 @@ function createDropDown() {
         selectList.value = 0;
         setDeclaration(0);
     } else {
-        selectList.value = getDeclaration();
+        selectList.value = getDeclaration()
     }
+    return panel;
 }
 
 function createQuickButton() {
@@ -410,8 +410,11 @@ function completePage() {
         selectRadioOption(document.getElementById('inlandModeOfTransportCode'), 0);
         document.getElementsByClassName('button')[0].click()
     }
+    if (currentPageIs('/customs-declare-exports/declaration/transport-leaving-the-border')) {
+        selectRadioOption(document.getElementById('code'), 1);
+        document.getElementsByClassName('button')[0].click()
+    }
     if (currentPageIs('/customs-declare-exports/declaration/departure-transport')) {
-        selectRadioOption(document.getElementById('borderModeOfTransportCode'), 0);
         selectRadioOption(document.getElementById('meansOfTransportOnDepartureType'), 1);
         if(document.getElementById("meansOfTransportCrossingTheBorderIDNumber")){
             document.getElementById("meansOfTransportCrossingTheBorderIDNumber").value = 'SHIP1'
