@@ -41,7 +41,6 @@ object PackageInformation extends DeclarationPage {
   val formId = "PackageInformation"
   val limit = 99
 
-  //TODO Remove the last validation and inlined error and validate separately every field like mandatory field
   val mapping = Forms
     .mapping(
       "typesOfPackages" ->
