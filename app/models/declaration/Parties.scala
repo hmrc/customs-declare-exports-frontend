@@ -28,17 +28,7 @@ case class Parties(
   declarationAdditionalActorsData: Option[DeclarationAdditionalActorsData] = None,
   declarationHoldersData: Option[DeclarationHoldersData] = None,
   carrierDetails: Option[CarrierDetails] = None
-) extends SummaryContainer {
-
-  def isEmpty: Boolean =
-    exporterDetails.isEmpty &&
-      consigneeDetails.isEmpty &&
-      declarantDetails.isEmpty &&
-      representativeDetails.isEmpty &&
-      declarationAdditionalActorsData.isEmpty &&
-      declarationHoldersData.isEmpty &&
-      carrierDetails.isEmpty
-}
+)
 
 object Parties {
   val id = "Parties"
