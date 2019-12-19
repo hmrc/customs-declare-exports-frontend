@@ -19,13 +19,8 @@ package models.declaration.dectype
 import forms.declaration.DispatchLocation
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import models.ExportsDeclaration
-import models.declaration.SummaryContainer
 
 case class DeclarationTypeSupplementary(dispatchLocation: Option[DispatchLocation], additionalDeclarationType: Option[AdditionalDeclarationType])
-    extends SummaryContainer {
-
-  override def isEmpty: Boolean = dispatchLocation.isEmpty && additionalDeclarationType.isEmpty
-}
 
 object DeclarationTypeSupplementary {
   val id = "DeclarationType"

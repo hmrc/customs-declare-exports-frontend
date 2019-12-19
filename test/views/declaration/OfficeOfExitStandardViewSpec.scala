@@ -70,9 +70,9 @@ class OfficeOfExitStandardViewSpec extends UnitViewSpec with ExportsTestData wit
         view.getElementById("officeId").attr("value") mustBe empty
       }
 
-      // TODO change below code to use getElementById, missing ID in radio input for legend
       "display circumstances code question" in {
-        view.select("#circumstancesCode>legend>span").text() must include("")
+        view.getElementById("circumstancesCode-label").text() mustBe "standard.officeOfExit.circumstancesCode"
+        view.getElementById("circumstancesCode-hint").text() mustBe "standard.officeOfExit.circumstancesCode.hint"
       }
 
       "display 'Back' button that links to 'Location of Goods' page" in {

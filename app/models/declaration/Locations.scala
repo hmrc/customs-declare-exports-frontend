@@ -31,13 +31,7 @@ case class Locations(
   supervisingCustomsOffice: Option[SupervisingCustomsOffice] = None,
   warehouseIdentification: Option[WarehouseIdentification] = None,
   inlandModeOfTransportCode: Option[InlandModeOfTransportCode] = None
-) extends SummaryContainer {
-
-  // TODO Add hasRoutingCountries field when screen will be ready and added
-  def isEmpty: Boolean =
-    originationCountry.isEmpty && destinationCountry.isEmpty && routingCountries.isEmpty && goodsLocation.isEmpty &&
-      officeOfExit.isEmpty && warehouseIdentification.isEmpty && inlandModeOfTransportCode.isEmpty && supervisingCustomsOffice.isEmpty
-}
+)
 
 object Locations {
   val id = "Locations"
