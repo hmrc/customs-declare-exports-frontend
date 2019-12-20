@@ -131,7 +131,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
     onClearance { request =>
       val view = transaction_section(data)(messages, request)
-      
+
       "not display total amount invoiced" in {
 
         view.getElementById("item-amount-label") mustBe null

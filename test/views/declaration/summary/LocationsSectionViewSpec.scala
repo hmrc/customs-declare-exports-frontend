@@ -77,7 +77,6 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData {
       }
     }
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
-
       "have express consignment answer with change button" in {
         val view = locations_section(data)(messages, request)
         view.getElementById("location-expressConsignment-label").text() mustBe messages("declaration.summary.locations.expressConsignment")

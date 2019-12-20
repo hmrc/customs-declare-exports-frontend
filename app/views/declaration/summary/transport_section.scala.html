@@ -23,23 +23,23 @@
 
 @(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
-@messagesForDepartureMeansOfTransport(transport: Transport) = @{
-  (transport.meansOfTransportOnDepartureType, transport.meansOfTransportOnDepartureIDNumber) match {
-    case (Some(meansType), Some(meansId)) => Seq(messages(s"declaration.summary.transport.departure.meansOfTransport.$meansType"), meansId)
-    case _ => Seq.empty
-  }
-}
+    @messagesForDepartureMeansOfTransport(transport: Transport) = @{
+        (transport.meansOfTransportOnDepartureType, transport.meansOfTransportOnDepartureIDNumber) match {
+            case (Some(meansType), Some(meansId)) => Seq(messages(s"declaration.summary.transport.departure.meansOfTransport.$meansType"), meansId)
+            case _ => Seq.empty
+        }
+    }
 
-@messagesForBorderMeansOfTransport(transport: Transport) = @{
-  (transport.meansOfTransportCrossingTheBorderType, transport.meansOfTransportCrossingTheBorderIDNumber) match {
-    case (Some(meansType), Some(meansId)) => Seq(messages(s"declaration.summary.transport.border.meansOfTransport.$meansType"), meansId)
-    case _ => Seq.empty
-  }
-}
+    @messagesForBorderMeansOfTransport(transport: Transport) = @{
+        (transport.meansOfTransportCrossingTheBorderType, transport.meansOfTransportCrossingTheBorderIDNumber) match {
+            case (Some(meansType), Some(meansId)) => Seq(messages(s"declaration.summary.transport.border.meansOfTransport.$meansType"), meansId)
+            case _ => Seq.empty
+        }
+    }
 
-<div id="declaration-transport-summary">
+    <div id="declaration-transport-summary">
     @components.summary_list(Some(messages("declaration.summary.transport"))) {
-        @if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, CLEARANCE)){
+        @if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, CLEARANCE)) {
             @components.table_row("border-transport", HtmlTableRow(
                 label = messages("declaration.summary.transport.departure.transportCode.header"),
                 value = declarationData.transport.borderModeOfTransportCode.map(code =>
@@ -48,6 +48,9 @@
                 call = Some(controllers.declaration.routes.TransportLeavingTheBorderController.displayPage()),
                 changeLabel = Some(messages("declaration.summary.transport.departure.transportCode.header.change"))
             ))
+        }
+        @if(journeyRequest.isType(STANDARD, SUPPLEMENTARY)) {
+
             @components.table_row("transport-reference", HtmlTableRow(
                 label = messages("declaration.summary.transport.departure.meansOfTransport.header"),
                 value = messagesForDepartureMeansOfTransport(declarationData.transport),
@@ -67,12 +70,15 @@
                 changeLabel = Some(messages("declaration.summary.transport.activeTransportNationality.change"))
             ))
         }
-        @components.table_row("transport-payment", HtmlTableRow(
-            label = messages("declaration.summary.transport.payment"),
-            value = declarationData.transport.transportPayment.flatMap(_.paymentMethod).map(code => messages(s"declaration.summary.transport.payment.$code")).getOrElse(""),
-            call = Some(controllers.declaration.routes.TransportPaymentController.displayPage()),
-            changeLabel = Some(messages("declaration.summary.transport.payment.change"))
-        ))
+
+        @if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)) {
+            @components.table_row("transport-payment", HtmlTableRow(
+                label = messages("declaration.summary.transport.payment"),
+                value = declarationData.transport.transportPayment.flatMap(_.paymentMethod).map(code => messages(s"declaration.summary.transport.payment.$code")).getOrElse(""),
+                call = Some(controllers.declaration.routes.TransportPaymentController.displayPage()),
+                changeLabel = Some(messages("declaration.summary.transport.payment.change"))
+            ))
+        }
         @components.table_row("containers", HtmlTableRow(
             label = messages("declaration.summary.transport.containers"),
             value = messages(if(declarationData.transport.hasContainers) "site.yes" else "site.no"),
@@ -81,4 +87,4 @@
         ))
         @containers(declarationData.transport.containers)
     }
-</div>
+    </div>

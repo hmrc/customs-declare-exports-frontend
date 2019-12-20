@@ -120,7 +120,9 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData {
         change2 mustBe messages("site.change")
         accessibleChange2 mustBe messages("declaration.summary.parties.representative.address.change")
 
-        view.getElementById("representative-address-change") must haveHref(controllers.declaration.routes.RepresentativeDetailsController.displayPage())
+        view.getElementById("representative-address-change") must haveHref(
+          controllers.declaration.routes.RepresentativeDetailsController.displayPage()
+        )
       }
 
       "display status code with change button" in {
@@ -148,7 +150,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
   }
 
-  onJourney(STANDARD,SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request  =>
+  onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
     val view = parties_section(data)(messages, request)
 
     "contains carrier details with change button" in {

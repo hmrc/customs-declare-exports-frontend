@@ -79,7 +79,7 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
       }
     }
 
-    onJourney(CLEARANCE){ request =>
+    onJourney(CLEARANCE) { request =>
       "not have routing country section" in {
         val view = countries_section(declarationWithoutRoutingCountries)(messages, request)
 
@@ -89,7 +89,6 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     onEveryDeclarationJourney { request =>
-
       "display empty country of destination" in {
         val view = countries_section(declarationWithoutRoutingCountries)(messages, request)
 
@@ -124,8 +123,6 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
         view.getElementById("countryOfDestination-change") must haveHref(controllers.declaration.routes.DestinationCountryController.displayPage())
       }
     }
-
-
 
     onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
       "display country of dispatch" in {

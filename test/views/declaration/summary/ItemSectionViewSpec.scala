@@ -143,7 +143,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
       }
     }
 
-    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL){ request =>
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
       val view = item_section(item)(messages, request)
 
       "has un dangerous goods code with change button" in {
