@@ -411,7 +411,7 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/transport-leaving-the-border')) {
-        selectRadioOption(document.getElementById('code'), 1);
+        selectRadioOption(document.getElementById('code'), 0);
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/departure-transport')) {
