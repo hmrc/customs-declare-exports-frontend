@@ -22,7 +22,7 @@
 
 <div id="declaration-transaction-summary">
     @components.summary_list(Some(messages("declaration.summary.transaction"))) {
-        @if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, CLEARANCE)) {
+        @if(journeyRequest.isType(STANDARD, SUPPLEMENTARY)) {
             @components.table_row("item-amount", HtmlTableRow(
                 label = messages("declaration.summary.transaction.itemAmount"),
                 value = declarationData.totalNumberOfItems.flatMap(_.totalAmountInvoiced).getOrElse(""),
@@ -41,6 +41,8 @@
                 call = Some(controllers.declaration.routes.TotalNumberOfItemsController.displayPage()),
                 changeLabel = Some(messages("declaration.summary.transaction.totalNoOfPackages.change"))
             ))
+        }
+        @if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, CLEARANCE)) {
             @components.table_row("nature-of-transaction", HtmlTableRow(
                 label = messages("declaration.summary.transaction.natureOfTransaction"),
                 value = declarationData.natureOfTransaction.map(natureType => messages(s"declaration.summary.transaction.natureOfTransaction.${natureType.natureType}")).getOrElse(""),
