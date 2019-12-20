@@ -23,9 +23,11 @@ import views.html.declaration.summary.countries_section
 
 class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
+  val declarationWithoutRoutingCountries = aDeclaration(withoutDestinationCountry())
+
   "Countries section" should {
 
-    onEveryDeclarationJourney { request =>
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
       "display empty routing countries" in {
 
         val data = aDeclaration(withoutRoutingCountries())
@@ -62,13 +64,34 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("countriesOfRouting-label").text() mustBe messages("declaration.summary.countries.routingCountries")
         view.getElementById("countriesOfRouting").text() mustBe s"$firstExpectedCountry, $secondExpectedCountry"
+
       }
+      "display change button for countries of routing" in {
+
+        val view = countries_section(declarationWithoutRoutingCountries)(messages, request)
+
+        val List(change, accessibleChange) = view.getElementById("countriesOfRouting-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.countries.routingCountries.change")
+
+        view.getElementById("countriesOfRouting-change") must haveHref(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage())
+      }
+    }
+
+    onJourney(CLEARANCE){ request =>
+      "not have routing country section" in {
+        val view = countries_section(declarationWithoutRoutingCountries)(messages, request)
+
+        view.getElementById("countriesOfRouting-label") mustBe null
+        view.getElementById("countriesOfRouting") mustBe null
+      }
+    }
+
+    onEveryDeclarationJourney { request =>
 
       "display empty country of destination" in {
-
-        val data = aDeclaration(withoutDestinationCountry())
-
-        val view = countries_section(data)(messages, request)
+        val view = countries_section(declarationWithoutRoutingCountries)(messages, request)
 
         view.getElementById("countryOfDestination-label").text() mustBe messages("declaration.summary.countries.countryOfDestination")
         view.getElementById("countryOfDestination").text() mustBe empty
@@ -87,20 +110,6 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
         view.getElementById("countryOfDestination").text() mustBe expectedCountry
       }
 
-      "display change button for countries of routing" in {
-
-        val data = aDeclaration(withoutRoutingCountries())
-
-        val view = countries_section(data)(messages, request)
-
-        val List(change, accessibleChange) = view.getElementById("countriesOfRouting-change").text().split(" ").toList
-
-        change mustBe messages("site.change")
-        accessibleChange mustBe messages("declaration.summary.countries.routingCountries.change")
-
-        view.getElementById("countriesOfRouting-change") must haveHref(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage())
-      }
-
       "display change button for country of destination" in {
 
         val data = aDeclaration(withoutOriginationCountry())
@@ -115,6 +124,8 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
         view.getElementById("countryOfDestination-change") must haveHref(controllers.declaration.routes.DestinationCountryController.displayPage())
       }
     }
+
+
 
     onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
       "display country of dispatch" in {
