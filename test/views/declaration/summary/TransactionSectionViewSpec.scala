@@ -25,8 +25,6 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
   val data = aDeclaration(withTotalNumberOfItems(Some("123"), Some("1.23"), "12"), withNatureOfTransaction("2"), withPreviousDocuments())
 
-  val view = transaction_section(data)(messages, journeyRequest())
-
   "Transaction section" should {
 
     onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>

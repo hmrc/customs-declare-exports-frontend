@@ -99,21 +99,6 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
         )
       }
 
-      "has un dangerous goods code with change button" in {
-
-        view.getElementById("item-1-unDangerousGoodsCode-label").text() mustBe messages("declaration.summary.items.item.unDangerousGoodsCode")
-        view.getElementById("item-1-unDangerousGoodsCode").text() mustBe "345"
-
-        val List(change, accessibleChange) = view.getElementById("item-1-unDangerousGoodsCode-change").text().split(" ").toList
-
-        change mustBe messages("site.change")
-        accessibleChange mustBe messages("declaration.summary.items.item.unDangerousGoodsCode.change", 1)
-
-        view.getElementById("item-1-unDangerousGoodsCode-change") must haveHref(
-          controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, item.id)
-        )
-      }
-
       "has cus code with change button" in {
 
         view.getElementById("item-1-cusCode-label").text() mustBe messages("declaration.summary.items.item.cusCode")
@@ -125,21 +110,6 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
         accessibleChange mustBe messages("declaration.summary.items.item.cusCode.change", 1)
 
         view.getElementById("item-1-cusCode-change") must haveHref(controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, item.id))
-      }
-
-      "has taric codes separated by comma with change button" in {
-
-        view.getElementById("item-1-taricAdditionalCodes-label").text() mustBe messages("declaration.summary.items.item.taricAdditionalCodes")
-        view.getElementById("item-1-taricAdditionalCodes").text() mustBe "999, 888"
-
-        val List(change, accessibleChange) = view.getElementById("item-1-taricAdditionalCodes-change").text().split(" ").toList
-
-        change mustBe messages("site.change")
-        accessibleChange mustBe messages("declaration.summary.items.item.taricAdditionalCodes.change", 1)
-
-        view.getElementById("item-1-taricAdditionalCodes-change") must haveHref(
-          controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, item.id)
-        )
       }
 
       "has nact codes separated by comma with change button" in {
@@ -170,6 +140,57 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
       "has supporting documents" in {
 
         view.getElementById("supporting-documents-1").text() mustBe messages("declaration.summary.items.item.supportingDocuments")
+      }
+    }
+
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
+      val view = item_section(item)(messages, request)
+
+      "has un dangerous goods code with change button" in {
+
+        view.getElementById("item-1-unDangerousGoodsCode-label").text() mustBe messages("declaration.summary.items.item.unDangerousGoodsCode")
+        view.getElementById("item-1-unDangerousGoodsCode").text() mustBe "345"
+
+        val List(change, accessibleChange) = view.getElementById("item-1-unDangerousGoodsCode-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.items.item.unDangerousGoodsCode.change", 1)
+
+        view.getElementById("item-1-unDangerousGoodsCode-change") must haveHref(
+          controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, item.id)
+        )
+      }
+
+      "has taric codes separated by comma with change button" in {
+
+        view.getElementById("item-1-taricAdditionalCodes-label").text() mustBe messages("declaration.summary.items.item.taricAdditionalCodes")
+        view.getElementById("item-1-taricAdditionalCodes").text() mustBe "999, 888"
+
+        val List(change, accessibleChange) = view.getElementById("item-1-taricAdditionalCodes-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.items.item.taricAdditionalCodes.change", 1)
+
+        view.getElementById("item-1-taricAdditionalCodes-change") must haveHref(
+          controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, item.id)
+        )
+      }
+    }
+
+    onClearance { request =>
+      val view = item_section(item)(messages, request)
+      "not has un dangerous goods code with change button" in {
+
+        view.getElementById("item-1-unDangerousGoodsCode-label") mustBe null
+        view.getElementById("item-1-unDangerousGoodsCode") mustBe null
+        view.getElementById("item-1-unDangerousGoodsCode-change") mustBe null
+      }
+
+      "not has taric codes separated by comma with change button" in {
+
+        view.getElementById("item-1-taricAdditionalCodes-label") mustBe null
+        view.getElementById("item-1-taricAdditionalCodes") mustBe null
+        view.getElementById("item-1-taricAdditionalCodes-change") mustBe null
       }
     }
 

@@ -18,6 +18,7 @@
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 @import services.Countries._
+@import models.DeclarationType._
 
 @(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
@@ -55,11 +56,13 @@
             call = Some(controllers.declaration.routes.OfficeOfExitController.displayPage()),
             changeLabel = Some(messages("declaration.summary.locations.officeOfExit.change"))
         ))
-        @components.table_row("location-expressConsignment", HtmlTableRow(
-            label = messages("declaration.summary.locations.expressConsignment"),
-            value = declarationData.locations.officeOfExit.flatMap(_.circumstancesCode).getOrElse(""),
-            call = Some(controllers.declaration.routes.OfficeOfExitController.displayPage()),
-            changeLabel = Some(messages("declaration.summary.locations.expressConsignment.change"))
-        ))
+        @if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)){
+            @components.table_row("location-expressConsignment", HtmlTableRow(
+                label = messages("declaration.summary.locations.expressConsignment"),
+                value = declarationData.locations.officeOfExit.flatMap(_.circumstancesCode).getOrElse(""),
+                call = Some(controllers.declaration.routes.OfficeOfExitController.displayPage()),
+                changeLabel = Some(messages("declaration.summary.locations.expressConsignment.change"))
+            ))
+        }
     }
 </div>

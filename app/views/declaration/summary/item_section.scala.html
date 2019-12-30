@@ -42,24 +42,28 @@
     call = Some(controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, item.id)),
     changeLabel = Some(messages("declaration.summary.items.item.goodsDescription.change", item.sequenceId))
 ))
-@components.table_row(s"item-${item.sequenceId}-unDangerousGoodsCode", HtmlTableRow(
-    label = messages("declaration.summary.items.item.unDangerousGoodsCode"),
-    value = item.dangerousGoodsCode.flatMap(_.dangerousGoodsCode).getOrElse(""),
-    call = Some(controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, item.id)),
-    changeLabel = Some(messages("declaration.summary.items.item.unDangerousGoodsCode.change", item.sequenceId))
-))
+@if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)) {
+    @components.table_row(s"item-${item.sequenceId}-unDangerousGoodsCode", HtmlTableRow(
+        label = messages("declaration.summary.items.item.unDangerousGoodsCode"),
+        value = item.dangerousGoodsCode.flatMap(_.dangerousGoodsCode).getOrElse(""),
+        call = Some(controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, item.id)),
+        changeLabel = Some(messages("declaration.summary.items.item.unDangerousGoodsCode.change", item.sequenceId))
+    ))
+}
 @components.table_row(s"item-${item.sequenceId}-cusCode", HtmlTableRow(
     label = messages("declaration.summary.items.item.cusCode"),
     value = item.cusCode.flatMap(_.cusCode).getOrElse(""),
     call = Some(controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, item.id)),
     changeLabel = Some(messages("declaration.summary.items.item.cusCode.change", item.sequenceId))
 ))
-@components.table_row(s"item-${item.sequenceId}-taricAdditionalCodes", HtmlTableRow(
-    label = messages("declaration.summary.items.item.taricAdditionalCodes"),
-    value = item.taricCodes.map(_.taricCode).mkString(", "),
-    call = Some(controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, item.id)),
-    changeLabel = Some(messages("declaration.summary.items.item.taricAdditionalCodes.change", item.sequenceId))
-))
+@if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)) {
+    @components.table_row(s"item-${item.sequenceId}-taricAdditionalCodes", HtmlTableRow(
+        label = messages("declaration.summary.items.item.taricAdditionalCodes"),
+        value = item.taricCodes.map(_.taricCode).mkString(", "),
+        call = Some(controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, item.id)),
+        changeLabel = Some(messages("declaration.summary.items.item.taricAdditionalCodes.change", item.sequenceId))
+    ))
+}
 @components.table_row(s"item-${item.sequenceId}-nationalAdditionalCodes", HtmlTableRow(
     label = messages("declaration.summary.items.item.nationalAdditionalCodes"),
     value = item.nactCodes.map(_.nactCode).mkString(", "),

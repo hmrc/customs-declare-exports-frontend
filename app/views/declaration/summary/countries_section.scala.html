@@ -31,12 +31,14 @@
                 changeLabel = Some(messages("declaration.summary.countries.countryOfDispatch.change"))
             ))
         }
-        @components.table_row("countriesOfRouting", HtmlTableRow(
-            label = messages("declaration.summary.countries.routingCountries"),
-            value = Seq(Countries.findByCodes(declarationData.locations.routingCountries).map(_.asString()).mkString(", ")),
-            call = Some(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()),
-            changeLabel = Some(messages("declaration.summary.countries.routingCountries.change"))
-        ))
+        @if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)) {
+            @components.table_row("countriesOfRouting", HtmlTableRow(
+                label = messages("declaration.summary.countries.routingCountries"),
+                value = Seq(Countries.findByCodes(declarationData.locations.routingCountries).map(_.asString()).mkString(", ")),
+                call = Some(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()),
+                changeLabel = Some(messages("declaration.summary.countries.routingCountries.change"))
+            ))
+        }
         @components.table_row("countryOfDestination", HtmlTableRow(
             label = messages("declaration.summary.countries.countryOfDestination"),
             value = declarationData.locations.destinationCountry.map(code => Countries.findByCode(code).asString()).getOrElse(""),

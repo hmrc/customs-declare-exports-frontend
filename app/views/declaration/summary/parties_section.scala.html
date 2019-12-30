@@ -16,6 +16,7 @@
 
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
+@import models.DeclarationType._
 
 @(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
@@ -68,17 +69,19 @@
             call = Some(controllers.declaration.routes.RepresentativeDetailsController.displayPage()),
             changeLabel = Some(messages("declaration.summary.parties.representative.type.change"))
         ))
-        @eori_or_address_section(
-            id = "carrier",
-            eoriOption = declarationData.parties.carrierDetails.flatMap(_.details.eori),
-            eoriLabel = messages("declaration.summary.parties.carrier.eori"),
-            address = declarationData.parties.carrierDetails.flatMap(_.details.address),
-            addressLabel = messages("declaration.summary.parties.carrier.address"),
-            call = Some(controllers.declaration.routes.CarrierDetailsController.displayPage()),
-            eoriChangeLabel = Some(messages("declaration.summary.parties.carrier.eori.change")),
-            addressChangeLabel = Some(messages("declaration.summary.parties.carrier.address.change")),
-            isEoriDefault = false
-        )
+        @if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)) {
+            @eori_or_address_section(
+                id = "carrier",
+                eoriOption = declarationData.parties.carrierDetails.flatMap(_.details.eori),
+                eoriLabel = messages("declaration.summary.parties.carrier.eori"),
+                address = declarationData.parties.carrierDetails.flatMap(_.details.address),
+                addressLabel = messages("declaration.summary.parties.carrier.address"),
+                call = Some(controllers.declaration.routes.CarrierDetailsController.displayPage()),
+                eoriChangeLabel = Some(messages("declaration.summary.parties.carrier.eori.change")),
+                addressChangeLabel = Some(messages("declaration.summary.parties.carrier.address.change")),
+                isEoriDefault = false
+            )
+        }
         @additional_and_authorised_parties_section(
             additionalActors = declarationData.parties.declarationAdditionalActorsData.map(_.actors).getOrElse(Seq.empty),
             holders = declarationData.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)

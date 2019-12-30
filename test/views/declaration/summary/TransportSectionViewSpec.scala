@@ -32,14 +32,28 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
     withTransportPayment(Some(TransportPayment(Some("A"))))
   )
 
-  val view = transport_section(data)(messages, journeyRequest())
-
   "Transport section" should {
 
-    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
-      val view = transport_section(data)(messages, request)
+    onEveryDeclarationJourney { request =>
+      "skip containers part if empty" in {
 
+        val view = transport_section(aDeclaration(withoutContainerData()))(messages, request)
+
+        view.getElementById("container") mustBe null
+      }
+
+      "display containers section if containers are not empty" in {
+
+        val view = transport_section(aDeclaration(withContainerData(Container("123", Seq.empty))))(messages, request)
+
+        view.getElementById("container").text() mustNot be(empty)
+      }
+
+    }
+
+    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
       "display transport code with change button" in {
+        val view = transport_section(data)(messages, request)
 
         view.getElementById("border-transport-label").text() mustBe messages("declaration.summary.transport.departure.transportCode.header")
         view.getElementById("border-transport").text() mustBe messages("declaration.summary.transport.departure.transportCode.1")
@@ -51,6 +65,10 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("border-transport-change") must haveHref(controllers.declaration.routes.TransportLeavingTheBorderController.displayPage())
       }
+    }
+
+    onJourney(STANDARD, SUPPLEMENTARY) { request =>
+      val view = transport_section(data)(messages, request)
 
       "display transport reference with change button" in {
 
@@ -120,31 +138,10 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("containers-change") must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary())
       }
-
-      "skip containers part if empty" in {
-
-        val view = transport_section(aDeclaration(withoutContainerData()))(messages, journeyRequest())
-
-        view.getElementById("container") mustBe null
-      }
-
-      "display containers section if containers are not empty" in {
-
-        val view = transport_section(aDeclaration(withContainerData(Container("123", Seq.empty))))(messages, journeyRequest())
-
-        view.getElementById("container").text() mustNot be(empty)
-      }
     }
 
-    onJourney(SIMPLIFIED, OCCASIONAL) { request =>
+    onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
       val view = transport_section(data)(messages, request)
-
-      "not display transport code" in {
-
-        view.getElementById("border-transport-label") mustBe null
-        view.getElementById("border-transport") mustBe null
-        view.getElementById("border-transport-change") mustBe null
-      }
 
       "not display transport reference" in {
 
@@ -169,6 +166,30 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
         view.getElementById("active-transport-nationality-change") mustBe null
       }
 
+      "display information about containers with change button" in {
+
+        view.getElementById("containers-label").text() mustBe messages("declaration.summary.transport.containers")
+        view.getElementById("containers").text() mustBe "site.yes"
+
+        val List(change, accessibleChange) = view.getElementById("containers-change").text().split(" ").toList
+
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.transport.containers.change")
+
+        view.getElementById("containers-change") must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary())
+      }
+    }
+
+    onJourney(SIMPLIFIED, OCCASIONAL) { request =>
+      val view = transport_section(data)(messages, request)
+
+      "not display transport code" in {
+
+        view.getElementById("border-transport-label") mustBe null
+        view.getElementById("border-transport") mustBe null
+        view.getElementById("border-transport-change") mustBe null
+      }
+
       "display transport payment with change button" in {
 
         view.getElementById("transport-payment-label").text() mustBe messages("declaration.summary.transport.payment")
@@ -182,32 +203,18 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
         view.getElementById("transport-payment-change") must haveHref(controllers.declaration.routes.TransportPaymentController.displayPage())
       }
 
-      "display information about containers with change button" in {
-
-        view.getElementById("containers-label").text() mustBe messages("declaration.summary.transport.containers")
-        view.getElementById("containers").text() mustBe "site.yes"
-
-        val List(change, accessibleChange) = view.getElementById("containers-change").text().split(" ").toList
-
-        change mustBe messages("site.change")
-        accessibleChange mustBe messages("declaration.summary.transport.containers.change")
-
-        view.getElementById("containers-change") must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary())
-      }
-
-      "skip containers part if empty" in {
-
-        val view = transport_section(aDeclaration(withoutContainerData()))(messages, journeyRequest())
-
-        view.getElementById("container") mustBe null
-      }
-
-      "display containers section if containers are not empty" in {
-
-        val view = transport_section(aDeclaration(withContainerData(Container("123", Seq.empty))))(messages, journeyRequest())
-
-        view.getElementById("container").text() mustNot be(empty)
-      }
     }
+
+    onClearance { request =>
+      val view = transport_section(data)(messages, request)
+
+      "not display transport payment" in {
+        view.getElementById("transport-payment-label") mustBe null
+        view.getElementById("transport-payment") mustBe null
+        view.getElementById("transport-payment-change") mustBe null
+      }
+
+    }
+
   }
 }
