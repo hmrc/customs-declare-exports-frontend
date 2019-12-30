@@ -27,7 +27,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
   "Transaction section" should {
 
-    onJourney(STANDARD, SUPPLEMENTARY) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
       val view = transaction_section(data)(messages, request)
 
       "have total amount invoiced with change button" in {
@@ -68,10 +68,6 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("total-no-of-packages-change") must haveHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage())
       }
-    }
-
-    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
-      val view = transaction_section(data)(messages, request)
 
       "have nature of transaction with change button" in {
 
@@ -126,31 +122,6 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData {
       "have related documents section" in {
 
         view.getElementById("previous-documents").text() mustNot be(empty)
-      }
-    }
-
-    onClearance { request =>
-      val view = transaction_section(data)(messages, request)
-
-      "not display total amount invoiced" in {
-
-        view.getElementById("item-amount-label") mustBe null
-        view.getElementById("item-amount") mustBe null
-        view.getElementById("item-amount-change") mustBe null
-      }
-
-      "not display exchange rate" in {
-
-        view.getElementById("exchange-rate-label") mustBe null
-        view.getElementById("exchange-rate") mustBe null
-        view.getElementById("exchange-rate-change") mustBe null
-      }
-
-      "not display total package" in {
-
-        view.getElementById("total-no-of-packages-label") mustBe null
-        view.getElementById("total-no-of-packages") mustBe null
-        view.getElementById("total-no-of-packages-change") mustBe null
       }
     }
   }
