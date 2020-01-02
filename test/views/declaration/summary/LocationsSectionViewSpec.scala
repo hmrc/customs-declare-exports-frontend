@@ -76,7 +76,7 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData {
         view.getElementById("location-officeOfExit-change") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage())
       }
     }
-    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { request =>
       "have express consignment answer with change button" in {
         val view = locations_section(data)(messages, request)
         view.getElementById("location-expressConsignment-label").text() mustBe messages("declaration.summary.locations.expressConsignment")
@@ -90,8 +90,8 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData {
         view.getElementById("location-expressConsignment-change") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage())
       }
     }
-    onClearance { request =>
-      "have express consignment answer with change button" in {
+    onJourney(SUPPLEMENTARY, CLEARANCE) { request =>
+      "not have express consignment answer with change button" in {
         val view = locations_section(data)(messages, request)
 
         view.getElementById("location-expressConsignment-label") mustBe null

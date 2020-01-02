@@ -71,7 +71,7 @@
             ))
         }
 
-        @if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)) {
+        @if(journeyRequest.isType(STANDARD, SIMPLIFIED, OCCASIONAL)) {
             @components.table_row("transport-payment", HtmlTableRow(
                 label = messages("declaration.summary.transport.payment"),
                 value = declarationData.transport.transportPayment.flatMap(_.paymentMethod).map(code => messages(s"declaration.summary.transport.payment.$code")).getOrElse(""),

@@ -113,19 +113,6 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
         )
       }
 
-      "display transport payment with change button" in {
-
-        view.getElementById("transport-payment-label").text() mustBe messages("declaration.summary.transport.payment")
-        view.getElementById("transport-payment").text() mustBe messages("declaration.summary.transport.payment.A")
-
-        val List(change, accessibleChange) = view.getElementById("transport-payment-change").text().split(" ").toList
-
-        change mustBe messages("site.change")
-        accessibleChange mustBe messages("declaration.summary.transport.payment.change")
-
-        view.getElementById("transport-payment-change") must haveHref(controllers.declaration.routes.TransportPaymentController.displayPage())
-      }
-
       "display information about containers with change button" in {
 
         view.getElementById("containers-label").text() mustBe messages("declaration.summary.transport.containers")
@@ -189,6 +176,10 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
         view.getElementById("border-transport") mustBe null
         view.getElementById("border-transport-change") mustBe null
       }
+    }
+
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { request =>
+      val view = transport_section(data)(messages, request)
 
       "display transport payment with change button" in {
 
@@ -202,10 +193,9 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         view.getElementById("transport-payment-change") must haveHref(controllers.declaration.routes.TransportPaymentController.displayPage())
       }
-
     }
 
-    onClearance { request =>
+    onJourney(SUPPLEMENTARY, CLEARANCE) { request =>
       val view = transport_section(data)(messages, request)
 
       "not display transport payment" in {

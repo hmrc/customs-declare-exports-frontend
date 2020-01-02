@@ -31,7 +31,7 @@
                 changeLabel = Some(messages("declaration.summary.countries.countryOfDispatch.change"))
             ))
         }
-        @if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)) {
+        @if(journeyRequest.isType(STANDARD, SIMPLIFIED, OCCASIONAL)) {
             @components.table_row("countriesOfRouting", HtmlTableRow(
                 label = messages("declaration.summary.countries.routingCountries"),
                 value = Seq(Countries.findByCodes(declarationData.locations.routingCountries).map(_.asString()).mkString(", ")),
