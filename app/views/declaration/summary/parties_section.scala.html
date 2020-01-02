@@ -69,7 +69,7 @@
             call = Some(controllers.declaration.routes.RepresentativeDetailsController.displayPage()),
             changeLabel = Some(messages("declaration.summary.parties.representative.type.change"))
         ))
-        @if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)) {
+        @if(journeyRequest.isType(STANDARD, SIMPLIFIED, OCCASIONAL)) {
             @eori_or_address_section(
                 id = "carrier",
                 eoriOption = declarationData.parties.carrierDetails.flatMap(_.details.eori),

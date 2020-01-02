@@ -27,7 +27,7 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
   "Countries section" should {
 
-    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { request =>
       "display empty routing countries" in {
 
         val data = aDeclaration(withoutRoutingCountries())
@@ -79,7 +79,7 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
       }
     }
 
-    onJourney(CLEARANCE) { request =>
+    onJourney(SUPPLEMENTARY, CLEARANCE) { request =>
       "not have routing country section" in {
         val view = countries_section(declarationWithoutRoutingCountries)(messages, request)
 
