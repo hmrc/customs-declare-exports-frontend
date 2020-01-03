@@ -39,7 +39,7 @@
         sectionHeader = messages("declaration.destinationCountry.heading")
     )
 
-    @helper.form(routes.DestinationCountryController.submit(), 'autoComplete -> "off") {
+    @helper.form(routes.DestinationCountryController.submit(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         @components.fields.field_autocomplete(
