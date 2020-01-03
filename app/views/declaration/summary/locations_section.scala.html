@@ -56,7 +56,7 @@
             call = Some(controllers.declaration.routes.OfficeOfExitController.displayPage()),
             changeLabel = Some(messages("declaration.summary.locations.officeOfExit.change"))
         ))
-        @if(journeyRequest.isType(STANDARD, SIMPLIFIED, OCCASIONAL)){
+        @if(journeyRequest.isType(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE)){
             @components.table_row("location-expressConsignment", HtmlTableRow(
                 label = messages("declaration.summary.locations.expressConsignment"),
                 value = declarationData.locations.officeOfExit.flatMap(_.circumstancesCode).getOrElse(""),
