@@ -38,7 +38,7 @@
         sectionHeader = messages("declaration.routingQuestion.heading")
     )
 
-    @helper.form(routes.RoutingCountriesController.submitRoutingAnswer(), 'autoComplete -> "off") {
+    @helper.form(routes.RoutingCountriesController.submitRoutingAnswer(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         @components.fields.field_radio(

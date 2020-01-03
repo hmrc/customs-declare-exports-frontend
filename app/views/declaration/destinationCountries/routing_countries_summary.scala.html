@@ -62,7 +62,7 @@
         </tbody>
     </table>
 
-    @helper.form(routes.RoutingCountriesSummaryController.submit(), 'autoComplete -> "off") {
+    @helper.form(routes.RoutingCountriesSummaryController.submit(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         @components.fields.field_radio(
