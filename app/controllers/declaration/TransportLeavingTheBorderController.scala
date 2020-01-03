@@ -65,7 +65,7 @@ class TransportLeavingTheBorderController @Inject()(
 
   def nextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Call = request.declarationType match {
     case DeclarationType.CLEARANCE =>
-      controllers.declaration.routes.TransportContainerController.displayAddContainer(mode)
+      controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode)
     case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
       controllers.declaration.routes.DepartureTransportController.displayPage(mode)
   }
