@@ -42,6 +42,8 @@ function dropDown() {
     var selectList = document.createElement("select");
     selectList.style.position = "absolute"
     selectList.style.top = "100px"
+    selectList.style.right = "5px"
+    button.style.zIndex = "999"
     selectList.id = "mySelect";
     panel.appendChild(selectList);
 
@@ -69,12 +71,14 @@ function createQuickButton() {
     let button = document.createElement('button');
     button.id="quickSubmit";
     if (!!document.getElementById('global-header')) {
-        button.classList.add('button-start');
+        button.classList.add('button');
     } else {
-        button.classList.add('govuk-button');
+        button.classList.add('button');
     }
     button.style.position = "absolute"
-    button.style.top = "50px"
+    button.style.top = "10px"
+    button.style.right = "5px"
+    button.style.zIndex = "999"
     button.innerHTML = 'Quick Submit';
     button.onclick = () => completePage();
     return button;
