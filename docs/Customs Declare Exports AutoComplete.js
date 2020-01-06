@@ -43,7 +43,7 @@ function dropDown() {
     selectList.style.position = "absolute"
     selectList.style.top = "100px"
     selectList.style.right = "5px"
-    button.style.zIndex = "999"
+    selectList.style.zIndex = "999"
     selectList.id = "mySelect";
     panel.appendChild(selectList);
 
