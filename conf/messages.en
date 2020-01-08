@@ -414,8 +414,8 @@ declaration.routingCountries.limit = Maximum number of routing countries added
 declaration.destinationCountries.title = Countries of routing
 declaration.destinationCountries.routing = Which countries will the goods stop at before reaching their destination?
 declaration.destinationCountries.routing.hint = You can leave this answer blank if the goods will not be stopping en-route.
-declaration.destinationCountries.countriesOfRouting.error = Country of routing is incorrect
-declaration.destinationCountries.countriesOfRouting.empty = Enter a country code
+declaration.destinationCountries.countriesOfRouting.error = Select a country of routing
+declaration.destinationCountries.countriesOfRouting.empty = Select a country of routing
 declaration.destinationCountries.add.hint = Add country of routing
 declaration.destinationCountries.remove.hint = Remove country of routing {0}
 
