@@ -34,12 +34,10 @@ object CancelDeclaration {
     "mrn" -> text()
       .verifying("cancellation.mrn.empty", nonEmpty)
       .verifying("cancellation.mrn.tooLong", isEmpty or noLongerThan(70))
-      .verifying("cancellation.mrn.tooShort", isEmpty or noShorterThan(0)) // TODO what is the minimum value for declarationID?
       .verifying("cancellation.mrn.wrongFormat", isEmpty or isAlphanumeric),
     "statementDescription" -> text()
       .verifying("cancellation.statementDescription.empty", nonEmpty)
       .verifying("cancellation.statementDescription.tooLong", isEmpty or noLongerThan(512))
-      .verifying("cancellation.statementDescription.tooShort", isEmpty or noShorterThan(0))
       .verifying("cancellation.statementDescription.wrongFormat", isEmpty or isAlphanumericWithAllowedSpecialCharacters),
     "changeReason" ->
       text()
