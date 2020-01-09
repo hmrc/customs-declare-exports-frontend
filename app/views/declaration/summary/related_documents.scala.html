@@ -40,8 +40,8 @@
     @documents.zipWithIndex.map { case (document, index) =>
         <tr class="section">
             <td><span id="previous-document-@index-type">@DocumentType.findByCode(document.documentType).asText</span></td>
-            <td><span id="previous-document-@index-reference">@document.documentReference</span></td>
-            <td class="link-right">
+            <td class="exports-summary-list__value"><span id="previous-document-@index-reference">@document.documentReference</span></td>
+            <td class="exports-summary-list__actions">
                 <a href="@controllers.declaration.routes.PreviousDocumentsController.displayPage()" id="previous-document-@index-change">
                     <span aria-hidden="true">@messages("site.change")</span>
                     <span class="visually-hidden">@messages("declaration.summary.transaction.previousDocuments.document.change", index + 1)</span>
