@@ -63,8 +63,8 @@
     @additionalActors.zipWithIndex.map { case (actor, index) =>
         <tr class="section">
             <td><span id="additionalActor-type-@index">@actorPartyType(actor)</span></td>
-            <td><span id="additionalActor-eori-@index">@actorEori(actor)</span></td>
-            <td class="link-right">
+            <td class="exports-summary-list__value"><span id="additionalActor-eori-@index">@actorEori(actor)</span></td>
+            <td class="exports-summary-list__actions">
                 <a href="@controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage()" id="additionalActor-@index-change">
                     <span aria-hidden="true">@messages("site.change")</span>
                     <span class="visually-hidden">@messages("declaration.summary.parties.additional.change", actorPartyType(actor), actorEori(actor))</span>
@@ -84,8 +84,8 @@
     @holders.zipWithIndex.map { case (holder, index) =>
         <tr class="section">
             <td><span id="holder-type-@index">@holderTypeCode(holder)</span></td>
-            <td><span id="holder-eori-@index">@holderEori(holder)</span></td>
-            <td class="link-right">
+            <td class="exports-summary-list__value"><span id="holder-eori-@index">@holderEori(holder)</span></td>
+            <td class="exports-summary-list__actions">
                 <a href="@controllers.declaration.routes.DeclarationHolderController.displayPage()" id="holder-@index-change">
                     <span aria-hidden="true">@messages("site.change")</span>
                     <span class="visually-hidden">@messages("declaration.summary.parties.holders.change", holderTypeCode(holder), holderEori(holder))</span>

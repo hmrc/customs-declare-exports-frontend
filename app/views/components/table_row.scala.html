@@ -21,7 +21,7 @@
 
 @changeLink(callOpt: Option[Call], label: String) = {
   @callOpt.map { call =>
-      <td>
+      <td class="exports-summary-list__actions">
           <a href="@call" id="@id-change">
               <span aria-hidden="true">@messages("site.change")</span>
               <span class="visually-hidden">@label</span>
@@ -31,8 +31,8 @@
 }
 
 <tr class="section">
-    <td class="bold"><span id="@id-label">@tableRow.label</span></td>
-    <td>
+    <td class="exports-summary-list__key"><span id="@id-label">@tableRow.label</span></td>
+    <td class="exports-summary-list__value">
         @if(tableRow.values.drop(1).isEmpty) {
             <span id="@id">@tableRow.values.headOption.flatten.getOrElse("")<br/></span>
         } else {
