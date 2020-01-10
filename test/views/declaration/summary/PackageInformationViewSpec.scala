@@ -26,9 +26,14 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData {
 
   "Package information" should {
 
-    "be empty if Sequence is empty" in {
+    "display title only and change link if Sequence is empty" in {
 
-      package_information("itemId", 1, Seq.empty)(messages, journeyRequest()).text() mustBe empty
+      val view = package_information("itemId", 1, Seq.empty)(messages, journeyRequest())
+
+      view.getElementById("package-information-1-label").text() mustBe messages("declaration.summary.items.item.packageInformation")
+      view.getElementById("package-information-1-change") must haveHref(
+        controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, "itemId")
+      )
     }
 
     "display package information section with multiple package information and change buttons" in {

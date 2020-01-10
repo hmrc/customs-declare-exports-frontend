@@ -45,7 +45,7 @@ object ExportDeclarationTestData {
 
   private val containerId = "id"
 
-  val correctTransportInformationContainerData = Seq(Container(id = "M1l3s", Seq.empty))
+  val correctTransportInformationContainerData = Some(Seq(Container(id = "M1l3s", Seq.empty)))
   val emptyTransportInformationContainerData = ContainerAdd(None)
   val correctTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("container-M1l3s")))
   val incorrectTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("123456789012345678")))
@@ -117,7 +117,7 @@ object ExportDeclarationTestData {
         additionalFiscalReferencesData =
           Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"), AdditionalFiscalReference("FR", "54321")))),
         procedureCodes = Some(ProcedureCodesData(Some("CUPR"), Seq("CC", "PR"))),
-        packageInformation = List(PackageInformation("AA", 2, "mark1"), PackageInformation("AB", 4, "mark2"))
+        packageInformation = Some(List(PackageInformation("AA", 2, "mark1"), PackageInformation("AB", 4, "mark2")))
       )
     ),
     totalNumberOfItems = Some(TotalNumberOfItems(Some("1212312.12"), Some("1212121.12345"), "123")),

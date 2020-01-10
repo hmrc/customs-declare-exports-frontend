@@ -15,18 +15,16 @@
  *@
 
 @import models.requests.JourneyRequest
-@import models.viewmodels.HtmlTableRow
 
 @(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
-<div id="declaration-items-summary">
-    @components.summary_list(Some(messages("declaration.summary.items"))) {
-        @if(declarationData.items.isEmpty) {
-            <tr><td><span id="empty-items">@messages("declaration.summary.items.empty")</span></td></tr>
-        } else {
+
+    @if(declarationData.items.nonEmpty) {
+        <div id="declaration-items-summary">
+        @components.summary_list(Some(messages("declaration.summary.items"))) {
             @declarationData.items.toSeq.sortBy(_.sequenceId).map { item =>
                 @item_section(item)
             }
         }
+        </div>
     }
-</div>

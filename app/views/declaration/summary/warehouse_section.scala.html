@@ -14,33 +14,43 @@
  * limitations under the License.
  *@
 
-@import models.DeclarationType._
+@import models.declaration.Locations
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 
 @(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
-<div id="declaration-warehouse-summary">
-    @components.summary_list(Some(messages("declaration.summary.warehouse"))) {
-        @components.table_row("warehouse-id", HtmlTableRow(
-            label = messages("declaration.summary.warehouse.id"),
-            value = declarationData.locations.warehouseIdentification.flatMap(_.identificationNumber).getOrElse(""),
-            call = Some(controllers.declaration.routes.WarehouseIdentificationController.displayPage()),
-            changeLabel = Some(messages("declaration.summary.warehouse.id.change"))
-        ))
-        @components.table_row("supervising-office", HtmlTableRow(
-            label = messages("declaration.summary.warehouse.supervisingOffice"),
-            value = declarationData.locations.supervisingCustomsOffice.flatMap(_.supervisingCustomsOffice).getOrElse(""),
-            call = Some(controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage()),
-            changeLabel = Some(messages("declaration.summary.warehouse.supervisingOffice.change"))
-        ))
-        @if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, CLEARANCE)) {
-            @components.table_row("mode-of-transport", HtmlTableRow(
-                label = messages("declaration.summary.warehouse.inlandModeOfTransport"),
-                value = declarationData.locations.inlandModeOfTransportCode.flatMap(_.inlandModeOfTransportCode.map(code => messages(s"declaration.summary.warehouse.inlandModeOfTransport.$code"))).getOrElse(""),
-                call = Some(controllers.declaration.routes.InlandTransportDetailsController.displayPage()),
-                changeLabel = Some(messages("declaration.summary.warehouse.inlandModeOfTransport.change"))
-            ))
-        }
+    @sectionRequired(locations: Locations) = @{
+        locations.warehouseIdentification.isDefined || locations.supervisingCustomsOffice.isDefined || locations.inlandModeOfTransportCode
     }
-</div>
+
+    @if(sectionRequired(declarationData.locations)) {
+        <div id="declaration-warehouse-summary">
+        @components.summary_list(Some(messages("declaration.summary.warehouse"))) {
+            @declarationData.locations.warehouseIdentification.map(warehouseIdentification =>
+                components.table_row("warehouse-id", HtmlTableRow(
+                    label = messages("declaration.summary.warehouse.id"),
+                    value = warehouseIdentification.identificationNumber.getOrElse(""),
+                    call = Some(controllers.declaration.routes.WarehouseIdentificationController.displayPage()),
+                    changeLabel = Some(messages("declaration.summary.warehouse.id.change"))
+                ))
+            )
+            @declarationData.locations.supervisingCustomsOffice.map(supervisingCustomsOffice =>
+                components.table_row("supervising-office", HtmlTableRow(
+                    label = messages("declaration.summary.warehouse.supervisingOffice"),
+                    value = supervisingCustomsOffice.supervisingCustomsOffice.getOrElse(""),
+                    call = Some(controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage()),
+                    changeLabel = Some(messages("declaration.summary.warehouse.supervisingOffice.change"))
+                ))
+            )
+            @declarationData.locations.inlandModeOfTransportCode.map(inlandModeOfTransportCode =>
+                components.table_row("mode-of-transport", HtmlTableRow(
+                    label = messages("declaration.summary.warehouse.inlandModeOfTransport"),
+                    value = inlandModeOfTransportCode.inlandModeOfTransportCode.map(code => messages(s"declaration.summary.warehouse.inlandModeOfTransport.$code")).getOrElse(""),
+                    call = Some(controllers.declaration.routes.InlandTransportDetailsController.displayPage()),
+                    changeLabel = Some(messages("declaration.summary.warehouse.inlandModeOfTransport.change"))
+                ))
+            )
+        }
+        </div>
+    }

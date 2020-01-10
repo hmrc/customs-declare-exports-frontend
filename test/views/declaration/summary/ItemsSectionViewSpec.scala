@@ -24,16 +24,19 @@ class ItemsSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
   "Items section" should {
 
-    "display items empty" when {
+    "display nothing" when {
 
       "there is no items in the declaration" in {
 
         val view = items_section(aDeclaration())(messages, journeyRequest())
 
-        view.getElementById("empty-items").text() mustBe messages("declaration.summary.items.empty")
+        view.getAllElements.text() must be(empty)
       }
+    }
 
-      "display items if exists" in {
+    "display items" when {
+
+      "item exists" in {
 
         val data = aDeclaration(withItems(anItem(withSequenceId(1)), anItem(withSequenceId(2))))
 

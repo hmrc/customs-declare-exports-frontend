@@ -23,79 +23,108 @@
 @(item: ExportItem)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 <caption class="heading-small"><span id="item-@item.sequenceId-header">@messages("declaration.summary.items.item.sequenceId", item.sequenceId)</span></caption>
-@components.table_row(s"item-${item.sequenceId}-procedureCode", HtmlTableRow(
+
+@item.procedureCodes.map(data =>
+components.table_row(s"item-${item.sequenceId}-procedureCode", HtmlTableRow(
     label = messages("declaration.summary.items.item.procedureCode"),
-    value = item.procedureCodes.map(data => data.procedureCode.fold("")(code => (Seq(code) ++ data.additionalProcedureCodes).mkString(" "))).getOrElse(""),
+    value = data.procedureCode.fold("")(code => (Seq(code) ++ data.additionalProcedureCodes).mkString(" ")),
     call = Some(controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, item.id)),
     changeLabel = Some(messages("declaration.summary.items.item.procedureCode.change", item.sequenceId))
 ))
-@onward_supply_relief(item.id, item.sequenceId, item.fiscalInformation, item.additionalFiscalReferencesData.map(_.references).getOrElse(Seq.empty))
-@components.table_row(s"item-${item.sequenceId}-commodityCode", HtmlTableRow(
-    label = messages("declaration.summary.items.item.commodityCode"),
-    value = item.commodityDetails.flatMap(_.combinedNomenclatureCode).getOrElse(""),
-    call = Some(controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, item.id)),
-    changeLabel = Some(messages("declaration.summary.items.item.commodityCode.change", item.sequenceId))
-))
-@components.table_row(s"item-${item.sequenceId}-goodsDescription", HtmlTableRow(
-    label = messages("declaration.summary.items.item.goodsDescription"),
-    value = item.commodityDetails.map(_.descriptionOfGoods).getOrElse(""),
-    call = Some(controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, item.id)),
-    changeLabel = Some(messages("declaration.summary.items.item.goodsDescription.change", item.sequenceId))
-))
-@if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)) {
-    @components.table_row(s"item-${item.sequenceId}-unDangerousGoodsCode", HtmlTableRow(
-        label = messages("declaration.summary.items.item.unDangerousGoodsCode"),
-        value = item.dangerousGoodsCode.flatMap(_.dangerousGoodsCode).getOrElse(""),
-        call = Some(controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, item.id)),
-        changeLabel = Some(messages("declaration.summary.items.item.unDangerousGoodsCode.change", item.sequenceId))
+)
+
+@onward_supply_relief(item.id, item.sequenceId, item.fiscalInformation, item.additionalFiscalReferencesData)
+
+@item.commodityDetails.map(commodityDetails =>
+    components.table_row(s"item-${item.sequenceId}-commodityCode", HtmlTableRow(
+        label = messages("declaration.summary.items.item.commodityCode"),
+        value = commodityDetails.combinedNomenclatureCode.getOrElse(""),
+        call = Some(controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, item.id)),
+        changeLabel = Some(messages("declaration.summary.items.item.commodityCode.change", item.sequenceId))
     ))
-}
-@components.table_row(s"item-${item.sequenceId}-cusCode", HtmlTableRow(
+)
+@item.commodityDetails.map(commodityDetails =>
+    components.table_row(s"item-${item.sequenceId}-goodsDescription", HtmlTableRow(
+        label = messages("declaration.summary.items.item.goodsDescription"),
+        value = commodityDetails.descriptionOfGoods,
+        call = Some(controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, item.id)),
+        changeLabel = Some(messages("declaration.summary.items.item.goodsDescription.change", item.sequenceId))
+    ))
+)
+@item.dangerousGoodsCode.map(dangerousGoodsCode =>
+components.table_row(s"item-${item.sequenceId}-unDangerousGoodsCode", HtmlTableRow(
+    label = messages("declaration.summary.items.item.unDangerousGoodsCode"),
+    value = dangerousGoodsCode.dangerousGoodsCode.getOrElse(messages("site.no")),
+    call = Some(controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, item.id)),
+    changeLabel = Some(messages("declaration.summary.items.item.unDangerousGoodsCode.change", item.sequenceId))
+))
+)
+@item.cusCode.map(cusCode =>
+components.table_row(s"item-${item.sequenceId}-cusCode", HtmlTableRow(
     label = messages("declaration.summary.items.item.cusCode"),
-    value = item.cusCode.flatMap(_.cusCode).getOrElse(""),
+    value = cusCode.cusCode.getOrElse(messages("site.no")),
     call = Some(controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, item.id)),
     changeLabel = Some(messages("declaration.summary.items.item.cusCode.change", item.sequenceId))
 ))
-@if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)) {
-    @components.table_row(s"item-${item.sequenceId}-taricAdditionalCodes", HtmlTableRow(
-        label = messages("declaration.summary.items.item.taricAdditionalCodes"),
-        value = item.taricCodes.map(_.taricCode).mkString(", "),
-        call = Some(controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, item.id)),
-        changeLabel = Some(messages("declaration.summary.items.item.taricAdditionalCodes.change", item.sequenceId))
-    ))
-}
-@components.table_row(s"item-${item.sequenceId}-nationalAdditionalCodes", HtmlTableRow(
+)
+@item.taricCodes.map(taricCodes =>
+components.table_row(s"item-${item.sequenceId}-taricAdditionalCodes", HtmlTableRow(
+    label = messages("declaration.summary.items.item.taricAdditionalCodes"),
+    value = taricCodes.map(_.taricCode).mkString(", "),
+    call = Some(controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, item.id)),
+    changeLabel = Some(messages("declaration.summary.items.item.taricAdditionalCodes.change", item.sequenceId))
+))
+)
+@item.nactCodes.map(nactCodes =>
+components.table_row(s"item-${item.sequenceId}-nationalAdditionalCodes", HtmlTableRow(
     label = messages("declaration.summary.items.item.nationalAdditionalCodes"),
-    value = item.nactCodes.map(_.nactCode).mkString(", "),
+    value = nactCodes.map(_.nactCode).mkString(", "),
     call = Some(controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, item.id)),
     changeLabel = Some(messages("declaration.summary.items.item.nationalAdditionalCodes.change", item.sequenceId))
 ))
-@if(journeyRequest.isType(STANDARD, SUPPLEMENTARY, CLEARANCE)) {
-    @components.table_row(s"item-${item.sequenceId}-itemValue", HtmlTableRow(
-        label = messages("declaration.summary.items.item.itemValue"),
-        value = item.statisticalValue.map(_.statisticalValue).getOrElse(""),
-        call = Some(controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, item.id)),
-        changeLabel = Some(messages("declaration.summary.items.item.itemValue.change", item.sequenceId))
-    ))
-    @components.table_row(s"item-${item.sequenceId}-supplementaryUnits", HtmlTableRow(
+)
+@item.statisticalValue.map(statisticalValue =>
+components.table_row(s"item-${item.sequenceId}-itemValue", HtmlTableRow(
+    label = messages("declaration.summary.items.item.itemValue"),
+    value = statisticalValue.statisticalValue,
+    call = Some(controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, item.id)),
+    changeLabel = Some(messages("declaration.summary.items.item.itemValue.change", item.sequenceId))
+))
+)
+@item.commodityMeasure.map(commodityMeasure =>
+    components.table_row(s"item-${item.sequenceId}-supplementaryUnits", HtmlTableRow(
         label = messages("declaration.summary.items.item.supplementaryUnits"),
-        value = item.commodityMeasure.flatMap(_.supplementaryUnits).getOrElse(""),
+        value = commodityMeasure.supplementaryUnits.getOrElse(""),
         call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, item.id)),
         changeLabel = Some(messages("declaration.summary.items.item.supplementaryUnits.change", item.sequenceId))
     ))
-    @components.table_row(s"item-${item.sequenceId}-grossWeight", HtmlTableRow(
+)
+@item.commodityMeasure.map(commodityMeasure =>
+    components.table_row(s"item-${item.sequenceId}-grossWeight", HtmlTableRow(
         label = messages("declaration.summary.items.item.grossWeight"),
-        value = item.commodityMeasure.map(_.grossMass).getOrElse(""),
+        value = commodityMeasure.grossMass,
         call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, item.id)),
         changeLabel = Some(messages("declaration.summary.items.item.grossWeight.change", item.sequenceId))
     ))
-    @components.table_row(s"item-${item.sequenceId}-netWeight", HtmlTableRow(
+)
+@item.commodityMeasure.map(commodityMeasure =>
+    components.table_row(s"item-${item.sequenceId}-netWeight", HtmlTableRow(
         label = messages("declaration.summary.items.item.netWeight"),
-        value = item.commodityMeasure.map(_.netMass).getOrElse(""),
+        value = commodityMeasure.netMass,
         call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, item.id)),
         changeLabel = Some(messages("declaration.summary.items.item.netWeight.change", item.sequenceId))
     ))
-}
-@package_information(item.id, item.sequenceId, item.packageInformation)
-@union_and_national_codes(item.id, item.sequenceId, item.additionalInformation.map(_.items).getOrElse(Seq.empty))
-@supporting_documents(item.id, item.sequenceId, item.documentsProducedData.map(_.documents).getOrElse(Seq.empty))
+)
+
+@item.packageInformation.map(packageInformation =>
+    package_information(item.id, item.sequenceId, packageInformation)
+)
+
+@item.additionalInformation.map(additionalInformation =>
+    union_and_national_codes(item.id, item.sequenceId, additionalInformation.items)
+)
+
+@item.documentsProducedData.map(documentsProducedData =>
+    supporting_documents(item.id, item.sequenceId, documentsProducedData.documents)
+)
+

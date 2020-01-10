@@ -20,7 +20,6 @@ import forms.declaration.GoodsLocation
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.locations_section
-import models.DeclarationType._
 
 class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
@@ -31,73 +30,84 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
   "Locations section" must {
 
-    onEveryDeclarationJourney { request =>
-      val view = locations_section(data)(messages, request)
+    val view = locations_section(data)(messages, journeyRequest())
 
-      "have a goods location code with change button" in {
+    "have a goods location code with change button" in {
 
-        view.getElementById("location-code-label").text() mustBe messages("declaration.summary.locations.goodsLocationCode")
-        view.getElementById("location-code").text() mustBe "GBAU123"
+      view.getElementById("location-code-label").text() mustBe messages("declaration.summary.locations.goodsLocationCode")
+      view.getElementById("location-code").text() mustBe "GBAU123"
 
-        val List(change, accessibleChange) = view.getElementById("location-code-change").text().split(" ").toList
+      val List(change, accessibleChange) = view.getElementById("location-code-change").text().split(" ").toList
 
-        change mustBe messages("site.change")
-        accessibleChange mustBe messages("declaration.summary.locations.goodsLocationCode.change")
+      change mustBe messages("site.change")
+      accessibleChange mustBe messages("declaration.summary.locations.goodsLocationCode.change")
 
-        view.getElementById("location-code-change") must haveHref(controllers.declaration.routes.LocationController.displayPage())
-      }
-
-      "have a goods location address with change button" in {
-
-        view.getElementById("location-address-label").text() mustBe messages("declaration.summary.locations.goodsLocationAddress")
-        view.getElementById("location-address-0").text() mustBe "addressLine"
-        view.getElementById("location-address-1").text() mustBe "city"
-        view.getElementById("location-address-2").text() mustBe "postCode"
-        view.getElementById("location-address-3").text() mustBe "United Kingdom"
-
-        val List(change, accessibleChange) = view.getElementById("location-address-change").text().split(" ").toList
-
-        change mustBe messages("site.change")
-        accessibleChange mustBe messages("declaration.summary.locations.goodsLocationAddress.change")
-
-        view.getElementById("location-address-change") must haveHref(controllers.declaration.routes.LocationController.displayPage())
-      }
-
-      "have office of exit id with change button" in {
-
-        view.getElementById("location-officeOfExit-label").text() mustBe messages("declaration.summary.locations.officeOfExit")
-        view.getElementById("location-officeOfExit").text() mustBe "123"
-
-        val List(change, accessibleChange) = view.getElementById("location-officeOfExit-change").text().split(" ").toList
-
-        change mustBe messages("site.change")
-        accessibleChange mustBe messages("declaration.summary.locations.officeOfExit.change")
-
-        view.getElementById("location-officeOfExit-change") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage())
-      }
+      view.getElementById("location-code-change") must haveHref(controllers.declaration.routes.LocationController.displayPage())
     }
-    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
-      "have express consignment answer with change button" in {
-        val view = locations_section(data)(messages, request)
-        view.getElementById("location-expressConsignment-label").text() mustBe messages("declaration.summary.locations.expressConsignment")
-        view.getElementById("location-expressConsignment").text() mustBe "12"
 
-        val List(change, accessibleChange) = view.getElementById("location-expressConsignment-change").text().split(" ").toList
+    "have a goods location address with change button" in {
 
-        change mustBe messages("site.change")
-        accessibleChange mustBe messages("declaration.summary.locations.expressConsignment.change")
+      view.getElementById("location-address-label").text() mustBe messages("declaration.summary.locations.goodsLocationAddress")
+      view.getElementById("location-address-0").text() mustBe "addressLine"
+      view.getElementById("location-address-1").text() mustBe "city"
+      view.getElementById("location-address-2").text() mustBe "postCode"
+      view.getElementById("location-address-3").text() mustBe "United Kingdom"
 
-        view.getElementById("location-expressConsignment-change") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage())
-      }
+      val List(change, accessibleChange) = view.getElementById("location-address-change").text().split(" ").toList
+
+      change mustBe messages("site.change")
+      accessibleChange mustBe messages("declaration.summary.locations.goodsLocationAddress.change")
+
+      view.getElementById("location-address-change") must haveHref(controllers.declaration.routes.LocationController.displayPage())
     }
-    onJourney(SUPPLEMENTARY) { request =>
-      "not have express consignment answer with change button" in {
-        val view = locations_section(data)(messages, request)
 
-        view.getElementById("location-expressConsignment-label") mustBe null
-        view.getElementById("location-expressConsignment") mustBe null
-        view.getElementById("location-expressConsignment-change") mustBe null
-      }
+    "have office of exit id with change button" in {
+
+      view.getElementById("location-officeOfExit-label").text() mustBe messages("declaration.summary.locations.officeOfExit")
+      view.getElementById("location-officeOfExit").text() mustBe "123"
+
+      val List(change, accessibleChange) = view.getElementById("location-officeOfExit-change").text().split(" ").toList
+
+      change mustBe messages("site.change")
+      accessibleChange mustBe messages("declaration.summary.locations.officeOfExit.change")
+
+      view.getElementById("location-officeOfExit-change") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage())
+    }
+
+    "have express consignment answer with change button" in {
+      view.getElementById("location-expressConsignment-label").text() mustBe messages("declaration.summary.locations.expressConsignment")
+      view.getElementById("location-expressConsignment").text() mustBe "12"
+
+      val List(change, accessibleChange) = view.getElementById("location-expressConsignment-change").text().split(" ").toList
+
+      change mustBe messages("site.change")
+      accessibleChange mustBe messages("declaration.summary.locations.expressConsignment.change")
+
+      view.getElementById("location-expressConsignment-change") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage())
+    }
+
+    "not have answers when goods location not asked" in {
+      val view = locations_section(aDeclarationAfter(data, withoutGoodsLocation()))(messages, journeyRequest())
+
+      view.getElementById("location-code-label") mustBe null
+      view.getElementById("location-code") mustBe null
+      view.getElementById("location-code-change") mustBe null
+
+      view.getElementById("location-address-label") mustBe null
+      view.getElementById("location-address") mustBe null
+      view.getElementById("location-address-change") mustBe null
+    }
+
+    "not have answers when office of exit not asked" in {
+      val view = locations_section(aDeclarationAfter(data, withoutOfficeOfExit()))(messages, journeyRequest())
+
+      view.getElementById("location-officeOfExit-label") mustBe null
+      view.getElementById("location-officeOfExit") mustBe null
+      view.getElementById("location-officeOfExit-change") mustBe null
+
+      view.getElementById("location-expressConsignment-label") mustBe null
+      view.getElementById("location-expressConsignment") mustBe null
+      view.getElementById("location-expressConsignment-change") mustBe null
     }
   }
 }

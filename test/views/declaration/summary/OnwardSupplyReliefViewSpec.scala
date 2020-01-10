@@ -16,7 +16,7 @@
 
 package views.declaration.summary
 
-import forms.declaration.{AdditionalFiscalReference, FiscalInformation}
+import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation}
 import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
@@ -30,7 +30,7 @@ class OnwardSupplyReliefViewSpec extends UnitViewSpec with ExportsTestData {
 
       "answer is No" in {
 
-        val view = onward_supply_relief("itemId", 1, Some(FiscalInformation("No")), Seq.empty)(messages, journeyRequest())
+        val view = onward_supply_relief("itemId", 1, Some(FiscalInformation("No")), None)(messages, journeyRequest())
 
         view.getElementById("item-1-onwardSupplyRelief-label").text() mustBe messages("declaration.summary.items.item.onwardSupplyRelief")
         view.getElementById("item-1-onwardSupplyRelief").text() mustBe "No"
@@ -51,10 +51,12 @@ class OnwardSupplyReliefViewSpec extends UnitViewSpec with ExportsTestData {
       "answer is Yes and user provided Additional VAT Details" in {
 
         val view =
-          onward_supply_relief("itemId", 1, Some(FiscalInformation("Yes")), Seq(AdditionalFiscalReference("GB", "123456789")))(
-            messages,
-            journeyRequest()
-          )
+          onward_supply_relief(
+            "itemId",
+            1,
+            Some(FiscalInformation("Yes")),
+            Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "123456789"))))
+          )(messages, journeyRequest())
 
         view.getElementById("item-1-onwardSupplyRelief-label").text() mustBe messages("declaration.summary.items.item.onwardSupplyRelief")
         view.getElementById("item-1-onwardSupplyRelief").text() mustBe "Yes"

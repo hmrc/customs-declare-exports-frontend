@@ -47,14 +47,14 @@ class NactCodeController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val nactCodes = request.cacheModel.itemBy(itemId).map(_.nactCodes).getOrElse(Seq.empty)
+    val nactCodes = request.cacheModel.itemBy(itemId).flatMap(_.nactCodes).getOrElse(List.empty)
     Ok(nactCodesPage(mode, itemId, form(), nactCodes))
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val actionTypeOpt = FormAction.bindFromRequest()
     val boundForm = form().bindFromRequest()
-    val nactCodes = request.cacheModel.itemBy(itemId).map(_.nactCodes).getOrElse(Seq.empty)
+    val nactCodes = request.cacheModel.itemBy(itemId).flatMap(_.nactCodes).getOrElse(List.empty)
     actionTypeOpt match {
       case Add                             => addItem(mode, itemId, boundForm, nactCodes)
       case Remove(values)                  => removeItem(mode, itemId, values, boundForm, nactCodes)
@@ -92,12 +92,8 @@ class NactCodeController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(nactCodesPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
-          if (updatedCache != cachedData)
-            updateExportsCache(itemId, updatedCache)
-              .map(_ => navigator.continueTo(nextPage(mode, itemId)))
-          else
-            Future
-              .successful(navigator.continueTo(nextPage(mode, itemId)))
+          updateExportsCache(itemId, updatedCache)
+            .map(_ => navigator.continueTo(nextPage(mode, itemId)))
       )
 
   private def nextPage(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]) =
@@ -111,6 +107,6 @@ class NactCodeController @Inject()(
   private def updateExportsCache(itemId: String, updatedCache: Seq[NactCode])(
     implicit r: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(nactCodes = updatedCache.toList)))
+    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(nactCodes = Some(updatedCache.toList))))
 
 }

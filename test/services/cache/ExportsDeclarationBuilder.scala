@@ -102,6 +102,10 @@ trait ExportsDeclarationBuilder {
     m.copy(locations = m.locations.copy(goodsLocation = Some(goodsLocation)))
   }
 
+  def withoutGoodsLocation(): ExportsDeclarationModifier = { m =>
+    m.copy(locations = m.locations.copy(goodsLocation = None))
+  }
+
   def withOriginationCountry(originationCountry: String = "GB"): ExportsDeclarationModifier =
     model => model.copy(locations = model.locations.copy(originationCountry = Some(originationCountry)))
 
@@ -123,7 +127,7 @@ trait ExportsDeclarationBuilder {
   def withRoutingCountries(routingCountries: Seq[String] = Seq("FR", "GB")): ExportsDeclarationModifier =
     model => model.copy(locations = model.locations.copy(routingCountries = routingCountries))
 
-  def withoutRoutingCountries(routingCountries: Seq[String] = Seq("FR", "GB")): ExportsDeclarationModifier =
+  def withoutRoutingCountries(): ExportsDeclarationModifier =
     model => model.copy(locations = model.locations.copy(routingCountries = Seq.empty))
 
   def withoutItems(): ExportsDeclarationModifier = _.copy(items = Set.empty)
@@ -230,6 +234,9 @@ trait ExportsDeclarationBuilder {
   def withPreviousDocuments(previousDocuments: Document*): ExportsDeclarationModifier =
     _.copy(previousDocuments = Some(PreviousDocumentsData(previousDocuments)))
 
+  def withoutPreviousDocuments(): ExportsDeclarationModifier =
+    _.copy(previousDocuments = None)
+
   def withPreviousDocuments(previousDocumentsData: PreviousDocumentsData): ExportsDeclarationModifier =
     _.copy(previousDocuments = Some(previousDocumentsData))
 
@@ -239,6 +246,9 @@ trait ExportsDeclarationBuilder {
   def withNatureOfTransaction(natureType: String): ExportsDeclarationModifier =
     _.copy(natureOfTransaction = Some(NatureOfTransaction(natureType)))
 
+  def withoutNatureOfTransaction(): ExportsDeclarationModifier =
+    _.copy(natureOfTransaction = None)
+
   def withoutBorderTransport(): ExportsDeclarationModifier = declaration => {
     declaration.copy(
       transport = declaration.transport.copy(
@@ -247,6 +257,18 @@ trait ExportsDeclarationBuilder {
         meansOfTransportCrossingTheBorderIDNumber = None
       )
     )
+  }
+
+  def withoutBorderModeOfTransportCode(): ExportsDeclarationModifier = declaration => {
+    declaration.copy(transport = declaration.transport.copy(borderModeOfTransportCode = None))
+  }
+
+  def withoutMeansOfTransportOnDepartureType(): ExportsDeclarationModifier = declaration => {
+    declaration.copy(transport = declaration.transport.copy(meansOfTransportOnDepartureType = None))
+  }
+
+  def withoutTransportPayment(): ExportsDeclarationModifier = declaration => {
+    declaration.copy(transport = declaration.transport.copy(transportPayment = None))
   }
 
   def withBorderTransport(details: BorderTransport): ExportsDeclarationModifier = declaration => {
@@ -290,8 +312,14 @@ trait ExportsDeclarationBuilder {
   def withSupervisingCustomsOffice(supervisingCustomsOffice: Option[SupervisingCustomsOffice]): ExportsDeclarationModifier =
     cache => cache.copy(locations = cache.locations.copy(supervisingCustomsOffice = supervisingCustomsOffice))
 
+  def withoutSupervisingCustomsOffice(): ExportsDeclarationModifier =
+    cache => cache.copy(locations = cache.locations.copy(supervisingCustomsOffice = None))
+
   def withInlandModeOfTransportCode(inlandModeOfTransportCode: Option[InlandModeOfTransportCode]): ExportsDeclarationModifier =
     cache => cache.copy(locations = cache.locations.copy(inlandModeOfTransportCode = inlandModeOfTransportCode))
+
+  def withoutInlandModeOfTransportCode(): ExportsDeclarationModifier =
+    cache => cache.copy(locations = cache.locations.copy(inlandModeOfTransportCode = None))
 
   def withWarehouseIdentification(warehouseIdentification: Option[WarehouseIdentification] = None): ExportsDeclarationModifier =
     cache => cache.copy(locations = cache.locations.copy(warehouseIdentification = warehouseIdentification))
@@ -311,10 +339,11 @@ trait ExportsDeclarationBuilder {
 
   def withContainerData(data: Seq[Container]): ExportsDeclarationModifier =
     cache => {
-      cache.copy(transport = cache.transport.copy(containers = data))
+      cache.copy(transport = cache.transport.copy(containers = Some(data)))
     }
 
   def withoutContainerData(): ExportsDeclarationModifier =
-    withContainerData(Seq.empty)
-
+    cache => {
+      cache.copy(transport = cache.transport.copy(containers = None))
+    }
 }

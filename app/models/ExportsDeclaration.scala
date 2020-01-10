@@ -95,7 +95,7 @@ case class ExportsDeclaration(
     copy(locations = locations.copy(hasRoutingCountries = Some(false), routingCountries = Seq.empty))
 
   def updateContainers(containers: Seq[Container]) =
-    copy(transport = transport.copy(containers = containers))
+    copy(transport = transport.copy(containers = if (containers.isEmpty) None else Some(containers)))
 
   def updateTransportPayment(payment: TransportPayment) =
     copy(transport = transport.copy(transportPayment = Some(payment)))
@@ -108,7 +108,7 @@ case class ExportsDeclaration(
 
   def hasContainers: Boolean = containers.nonEmpty
 
-  def containers: Seq[Container] = transport.containers
+  def containers: Seq[Container] = transport.containers.getOrElse(Seq.empty)
 
   def amend()(implicit clock: Clock = Clock.systemUTC()): ExportsDeclaration = {
     val currentTime = Instant.now(clock)

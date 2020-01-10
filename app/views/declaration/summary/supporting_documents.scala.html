@@ -40,4 +40,11 @@
             </td>
         </tr>
     }
+} else {
+    @components.table_row(s"supporting-documents-$itemNo", HtmlTableRow(
+        label = messages("declaration.summary.items.item.supportingDocuments"),
+        value = "",
+        call = Some(controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, itemId)),
+        changeLabel = Some(messages("declaration.summary.items.item.supportingDocuments.change", itemNo))
+    ))
 }

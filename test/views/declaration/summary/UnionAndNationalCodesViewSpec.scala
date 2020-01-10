@@ -26,11 +26,16 @@ class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestData {
 
   "Union and national codes" should {
 
-    "be empty" when {
+    "display title only and change link" when {
 
-      "there is no additional information" in {
+      "Sequence is empty" in {
 
-        union_and_national_codes("itemId", 1, Seq.empty)(messages, journeyRequest()).text() mustBe empty
+        val view = union_and_national_codes("itemId", 1, Seq.empty)(messages, journeyRequest())
+
+        view.getElementById("additional-information-1-label").text() mustBe messages("declaration.summary.items.item.additionalInformation")
+        view.getElementById("additional-information-1-change") must haveHref(
+          controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, "itemId")
+        )
       }
     }
 

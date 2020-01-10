@@ -973,6 +973,7 @@ declaration.summary.items.item.packageInformation.type = Package type
 declaration.summary.items.item.packageInformation.number = Number of package type
 declaration.summary.items.item.packageInformation.markings = Packaging markings
 declaration.summary.items.item.packageInformation.change = Change package type {0} shipping reference {1} for item {2}
+declaration.summary.items.item.packageInformation.changeAll = Change package information for item {0}
 declaration.summary.items.item.additionalInformation = Union and national codes
 declaration.summary.items.item.additionalInformation.change = Change union and national codes for item {0}
 declaration.summary.items.item.additionalInformation.code = Union or national code

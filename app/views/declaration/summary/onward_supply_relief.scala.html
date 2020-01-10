@@ -14,27 +14,27 @@
  * limitations under the License.
  *@
 
-@import forms.declaration.AdditionalFiscalReference
-@import forms.declaration.FiscalInformation
-@import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers.yes
+@import forms.declaration.{AdditionalFiscalReferencesData, FiscalInformation}
+@import models.Mode
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
-@import models.Mode
 
-@(itemId: String, itemNo: Int, fiscalInformation: Option[FiscalInformation], additionalFiscalReferences: Seq[AdditionalFiscalReference])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(itemId: String, itemNo: Int, fiscalInformation: Option[FiscalInformation], additionalFiscalReferences: Option[AdditionalFiscalReferencesData])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
-@components.table_row(s"item-$itemNo-onwardSupplyRelief", HtmlTableRow(
-    label = messages("declaration.summary.items.item.onwardSupplyRelief"),
-    value = fiscalInformation.map(_.onwardSupplyRelief).getOrElse(""),
-    call = Some(controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId)),
-    changeLabel = Some(messages("declaration.summary.items.item.onwardSupplyRelief.change", itemNo))
-))
+@fiscalInformation.map(fiscalInformation =>
+    components.table_row(s"item-$itemNo-onwardSupplyRelief", HtmlTableRow(
+        label = messages("declaration.summary.items.item.onwardSupplyRelief"),
+        value = fiscalInformation.onwardSupplyRelief,
+        call = Some(controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId)),
+        changeLabel = Some(messages("declaration.summary.items.item.onwardSupplyRelief.change", itemNo))
+    ))
+)
 
-@if(fiscalInformation.map(_.onwardSupplyRelief) == Some(yes)) {
-    @components.table_row(s"item-$itemNo-VATdetails", HtmlTableRow(
+@additionalFiscalReferences.map(additionalFiscalReferences =>
+    components.table_row(s"item-$itemNo-VATdetails", HtmlTableRow(
         label = messages("declaration.summary.items.item.VATdetails"),
-        value = additionalFiscalReferences.map(_.asString).mkString(", "),
+        value = additionalFiscalReferences.references.map(_.asString).mkString(", "),
         call = Some(controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(Mode.Normal, itemId)),
         changeLabel = Some(messages("declaration.summary.items.item.VATdetails.change", itemNo))
     ))
-}
+)

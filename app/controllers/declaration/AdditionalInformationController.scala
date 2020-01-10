@@ -93,15 +93,12 @@ class AdditionalInformationController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(additionalInformationPage(mode: Mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
-          if (updatedCache != cachedData)
-            updateCache(itemId, AdditionalInformationData(updatedCache))
-              .map(
-                _ =>
-                  navigator
-                    .continueTo(controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId))
-              )
-          else
-            Future.successful(navigator.continueTo(controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId)))
+          updateCache(itemId, AdditionalInformationData(updatedCache))
+            .map(
+              _ =>
+                navigator
+                  .continueTo(controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId))
+          )
       )
 
   private def handleRemove(mode: Mode, itemId: String, ids: Seq[String], boundForm: Form[AdditionalInformation], items: Seq[AdditionalInformation])(

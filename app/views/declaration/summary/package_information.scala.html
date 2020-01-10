@@ -42,4 +42,11 @@
             </td>
         </tr>
     }
+} else {
+    @components.table_row(s"package-information-$itemNo", HtmlTableRow(
+    label = messages("declaration.summary.items.item.packageInformation"),
+    value = "",
+    call = Some(controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, itemId)),
+    changeLabel = Some(messages("declaration.summary.items.item.netWeight.changeAll", itemNo))
+    ))
 }
