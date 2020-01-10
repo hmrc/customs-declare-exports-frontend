@@ -111,7 +111,7 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
       val List(change, accessibleChange) = view.getElementById("countryOfDestination-change").text().split(" ").toList
 
       change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.countries.countryOfDestination")
+      accessibleChange mustBe messages("declaration.summary.countries.countryOfDestination.change")
 
       view.getElementById("countryOfDestination-change") must haveHref(controllers.declaration.routes.DestinationCountryController.displayPage())
     }

@@ -50,7 +50,7 @@
                 label = messages("declaration.summary.countries.countryOfDestination"),
                 value = Countries.findByCode(destinationCountry).asString(),
                 call = Some(controllers.declaration.routes.DestinationCountryController.displayPage()),
-                changeLabel = Some(messages("declaration.summary.countries.countryOfDestination"))
+                changeLabel = Some(messages("declaration.summary.countries.countryOfDestination.change"))
             ))
         )
     }
