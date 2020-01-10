@@ -167,7 +167,7 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessag
         view must haveFieldErrorLink("eori", "#eori")
         view must haveFieldErrorLink("partyType", "#partyType")
 
-        view.select("#error-message-eori-input").text() mustBe messages("supplementary.eori.error")
+        view.select("#error-message-eori-input").text() mustBe messages("supplementary.eori.error.format")
         view.select("#error-message-partyType-input").text() mustBe messages("supplementary.partyType.error")
       }
 

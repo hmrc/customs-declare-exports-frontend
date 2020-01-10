@@ -104,7 +104,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
       checkErrorsSummary(view)
       view must haveFieldErrorLink("details_eori", "#details_eori")
 
-      view.getElementById("error-message-details_eori-input").text() mustBe messages("supplementary.eori.nongb.error")
+      view.getElementById("error-message-details_eori-input").text() mustBe messages("supplementary.eori.error.format")
     }
 
   }

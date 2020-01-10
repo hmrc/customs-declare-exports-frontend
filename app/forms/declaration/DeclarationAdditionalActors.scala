@@ -45,7 +45,7 @@ object DeclarationAdditionalActors extends DeclarationPage {
   val eoriPattern = "[0-9a-zA-Z]{1,17}"
 
   val mapping = Forms.mapping(
-    "eori" -> optional(text().verifying("supplementary.eori.error", _.matches(eoriPattern))),
+    "eori" -> optional(text().verifying("supplementary.eori.error.format", _.matches(eoriPattern))),
     "partyType" -> mandatoryIfNot(
       "eori",
       "",

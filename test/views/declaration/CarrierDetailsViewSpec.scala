@@ -156,7 +156,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("details_eori", "#details_eori")
 
-      view.getElementById("error-message-details_eori-input").text() mustBe messages("supplementary.eori.nongb.error")
+      view.getElementById("error-message-details_eori-input").text() mustBe messages("supplementary.eori.error.format")
     }
 
     "display error for empty Full name" in {

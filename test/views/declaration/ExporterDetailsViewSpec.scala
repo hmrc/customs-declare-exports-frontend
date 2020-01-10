@@ -143,7 +143,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
       checkErrorsSummary(view)
       view must haveFieldErrorLink("details_eori", "#details_eori")
 
-      view.select("#error-message-details_eori-input").text() mustBe messages("supplementary.eori.nongb.error")
+      view.select("#error-message-details_eori-input").text() mustBe messages("supplementary.eori.error.format")
     }
 
     "display error for empty Full name" in {
