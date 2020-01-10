@@ -31,16 +31,17 @@ case class Transport(
 ) {
 
   def addOrUpdateContainer(updatedContainer: Container): Transport = {
+    def containerSequence = containers.getOrElse(Seq.empty)
     val updatedContainers = {
       if (containers.isEmpty) {
         Seq(updatedContainer)
       } else if (hasContainer(updatedContainer.id)) {
-        containers.get.map {
+        containerSequence.map {
           case container if updatedContainer.id == container.id => updatedContainer
           case otherContainer                                   => otherContainer
         }
       } else {
-        containers.get :+ updatedContainer
+        containerSequence :+ updatedContainer
       }
     }
     copy(containers = Some(updatedContainers))

@@ -98,12 +98,12 @@ trait ExportsDeclarationBuilder {
   def withDispatchLocation(location: String = OutsideEU): ExportsDeclarationModifier =
     _.copy(dispatchLocation = Some(DispatchLocation(location)))
 
-  def withGoodsLocation(goodsLocation: GoodsLocation): ExportsDeclarationModifier = { m =>
-    m.copy(locations = m.locations.copy(goodsLocation = Some(goodsLocation)))
+  def withGoodsLocation(goodsLocation: GoodsLocation): ExportsDeclarationModifier = { model =>
+    model.copy(locations = model.locations.copy(goodsLocation = Some(goodsLocation)))
   }
 
-  def withoutGoodsLocation(): ExportsDeclarationModifier = { m =>
-    m.copy(locations = m.locations.copy(goodsLocation = None))
+  def withoutGoodsLocation(): ExportsDeclarationModifier = { model =>
+    model.copy(locations = model.locations.copy(goodsLocation = None))
   }
 
   def withOriginationCountry(originationCountry: String = "GB"): ExportsDeclarationModifier =
