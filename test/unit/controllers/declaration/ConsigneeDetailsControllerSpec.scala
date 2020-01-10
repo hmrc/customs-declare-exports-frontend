@@ -98,7 +98,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration())
 
-        val correctForm = Json.toJson(ConsigneeDetails(EntityDetails(Some("1234"), None)))
+        val correctForm = Json.toJson(ConsigneeDetails(EntityDetails(Some("GB123456789123456"), None)))
 
         val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 

@@ -25,6 +25,8 @@ case class DeclarantDetails(details: EntityDetails)
 object DeclarantDetails {
   implicit val format = Json.format[DeclarantDetails]
 
+  val validCountries = Set("GB")
+
   val id = "DeclarantDetails"
 
   val declarantMapping = Forms
@@ -32,7 +34,8 @@ object DeclarantDetails {
       "eori" ->
         text()
           .verifying("supplementary.eori.empty", nonEmpty)
-          .verifying("supplementary.eori.error", noLongerThan(17) and isAlphanumeric)
+          .verifying("supplementary.eori.nongb.error", isValidEORI)
+          .verifying("supplementary.eori.error", noLongerThan(17) and noShorterThan(14) and isAlphanumeric)
     )(eori => EntityDetails(Some(eori), None))(entityDetails => entityDetails.eori)
 
   val mapping = Forms.mapping("details" -> declarantMapping)(DeclarantDetails.apply)(DeclarantDetails.unapply)

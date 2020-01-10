@@ -136,4 +136,14 @@ object FieldValidator {
 
   private val emailPattern = Pattern.compile("""^\S+@\S+$""")
   val isValidEmail: String => Boolean = (name: String) => emailPattern.matcher(name).matches()
+
+  val REGEX = "^(GB|gb)[\\d]+$"
+  private val eoriPattern = Pattern.compile(REGEX)
+  val isValidEORI: String => Boolean = (name: String) => eoriPattern.matcher(name).matches()
+
+
+
+
+
+
 }

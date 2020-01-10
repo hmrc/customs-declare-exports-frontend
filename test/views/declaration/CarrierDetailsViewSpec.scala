@@ -150,13 +150,13 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
       val view = createView(
         CarrierDetails
           .form()
-          .fillAndValidate(CarrierDetails(EntityDetails(Some(TestHelper.createRandomAlphanumericString(18)), None)))
+          .fillAndValidate(CarrierDetails(EntityDetails(Some(TestHelper.createRandomAlphanumericString(17)), None)))
       )
 
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("details_eori", "#details_eori")
 
-      view.getElementById("error-message-details_eori-input").text() mustBe messages("supplementary.eori.error")
+      view.getElementById("error-message-details_eori-input").text() mustBe messages("supplementary.eori.nongb.error")
     }
 
     "display error for empty Full name" in {

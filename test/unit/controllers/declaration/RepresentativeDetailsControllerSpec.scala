@@ -45,7 +45,7 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
     mockRepresentativeDetailsPage
   )(ec)
 
-  val eori = "GB1000200"
+  val eori = "GB12345678912345"
 
   def theResponseForm: Form[RepresentativeDetails] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[RepresentativeDetails]])

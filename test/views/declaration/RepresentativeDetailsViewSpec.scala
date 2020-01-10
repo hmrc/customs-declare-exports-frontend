@@ -145,7 +145,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
               .form()
               .bind(
                 Map(
-                  "details.eori" -> "1234",
+                  "details.eori" -> "GB12345678912345",
                   "details.address.fullName" -> "",
                   "details.address.addressLine" -> "",
                   "details.address.townOrCity" -> "",
@@ -210,7 +210,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         checkErrorsSummary(view)
         haveFieldErrorLink("details", "#details_eori")
 
-        view.getElementById("error-message-details_eori-input").text() must be("supplementary.eori.error")
+        view.getElementById("error-message-details_eori-input").text() must be("supplementary.eori.nongb.error")
       }
 
       "display errors for empty Full name" in {
@@ -597,7 +597,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         checkErrorsSummary(view)
         haveFieldErrorLink("details.eori", "#details_eori")
 
-        view.getElementById("error-message-details_eori-input").text() must be("supplementary.eori.error")
+        view.getElementById("error-message-details_eori-input").text() must be("supplementary.eori.nongb.error")
       }
 
       "display errors for empty Full name" in {

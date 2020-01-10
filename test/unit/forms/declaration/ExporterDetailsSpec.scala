@@ -36,7 +36,7 @@ class ExporterDetailsSpec extends WordSpec with MustMatchers with LightFormMatch
     }
     val outcomeFromIncorrectForm = ExporterDetails.form().bind(incorrectExporterDetailsJSON)
     "validate eori and address" in {
-      outcomeFromIncorrectForm.error("details.eori") must haveMessage("supplementary.eori.error")
+      outcomeFromIncorrectForm.error("details.eori") must haveMessage("supplementary.eori.nongb.error")
     }
     "validate address fullname" in {
       outcomeFromIncorrectForm.error("details.address.fullName") must haveMessage("supplementary.address.fullName.error")
