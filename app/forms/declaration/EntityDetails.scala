@@ -35,7 +35,7 @@ object EntityDetails {
       "eori" -> optional(
         text()
           .verifying("supplementary.eori.empty", nonEmpty)
-          .verifying("supplementary.eori.nongb.error",isValidEORI)
+          .verifying("supplementary.eori.nongb.error", isValidEORI)
           .verifying("supplementary.eori.error", noLongerThan(17) and noShorterThan(14) and isAlphanumeric)
       ),
       "address" -> optional(Address.mapping)

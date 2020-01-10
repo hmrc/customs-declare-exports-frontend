@@ -141,9 +141,4 @@ object FieldValidator {
   private val eoriPattern = Pattern.compile(REGEX)
   val isValidEORI: String => Boolean = (name: String) => eoriPattern.matcher(name).matches()
 
-
-
-
-
-
 }
