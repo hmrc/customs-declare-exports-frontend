@@ -95,7 +95,7 @@ case class ExportsDeclaration(
     copy(locations = locations.copy(hasRoutingCountries = Some(false), routingCountries = Seq.empty))
 
   def updateContainers(containers: Seq[Container]) =
-    copy(transport = transport.copy(containers = if (containers.isEmpty) None else Some(containers)))
+    copy(transport = transport.copy(containers = Some(containers)))
 
   def updateTransportPayment(payment: TransportPayment) =
     copy(transport = transport.copy(transportPayment = Some(payment)))

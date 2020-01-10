@@ -34,19 +34,19 @@
       transport.meansOfTransportCrossingTheBorderType.isDefined
 }
 
-    @messagesForDepartureMeansOfTransport(transport: Transport) = @{
-        (transport.meansOfTransportOnDepartureType, transport.meansOfTransportOnDepartureIDNumber) match {
-            case (Some(meansType), Some(meansId)) => Seq(messages(s"declaration.summary.transport.departure.meansOfTransport.$meansType"), meansId)
-            case _ => Seq.empty
-        }
+@messagesForDepartureMeansOfTransport(transport: Transport) = @{
+    (transport.meansOfTransportOnDepartureType, transport.meansOfTransportOnDepartureIDNumber) match {
+        case (Some(meansType), Some(meansId)) => Seq(messages(s"declaration.summary.transport.departure.meansOfTransport.$meansType"), meansId)
+        case _ => Seq.empty
     }
+}
 
-    @messagesForBorderMeansOfTransport(transport: Transport) = @{
-        (transport.meansOfTransportCrossingTheBorderType, transport.meansOfTransportCrossingTheBorderIDNumber) match {
-            case (Some(meansType), Some(meansId)) => Seq(messages(s"declaration.summary.transport.border.meansOfTransport.$meansType"), meansId)
-            case _ => Seq.empty
-        }
+@messagesForBorderMeansOfTransport(transport: Transport) = @{
+    (transport.meansOfTransportCrossingTheBorderType, transport.meansOfTransportCrossingTheBorderIDNumber) match {
+        case (Some(meansType), Some(meansId)) => Seq(messages(s"declaration.summary.transport.border.meansOfTransport.$meansType"), meansId)
+        case _ => Seq.empty
     }
+}
 
 @if(sectionRequired(declarationData.transport)) {
     <div id="declaration-transport-summary">
@@ -78,14 +78,14 @@
             ))
         }
 
-        @declarationData.transport.meansOfTransportCrossingTheBorderNationality.map(nationality =>
-            components.table_row("active-transport-nationality", HtmlTableRow(
+        @if(declarationData.transport.meansOfTransportCrossingTheBorderType.isDefined && declarationData.transport.meansOfTransportCrossingTheBorderIDNumber.isDefined) {
+            @components.table_row("active-transport-nationality", HtmlTableRow(
                 label = messages("declaration.summary.transport.activeTransportNationality"),
-                value = nationality,
+                value = declarationData.transport.meansOfTransportCrossingTheBorderNationality.getOrElse(""),
                 call = Some(controllers.declaration.routes.BorderTransportController.displayPage()),
                 changeLabel = Some(messages("declaration.summary.transport.activeTransportNationality.change"))
             ))
-        )
+        }
 
         @declarationData.transport.transportPayment.map(transportPayment =>
             components.table_row("transport-payment", HtmlTableRow(

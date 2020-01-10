@@ -65,11 +65,8 @@ class PreviousDocumentsController @Inject()(
         saveAndContinue(boundForm, cache.documents, isScreenMandatory, maxAmountOfItems).fold(
           formWithErrors => Future.successful(BadRequest(previousDocumentsPage(mode, formWithErrors, cache.documents))),
           updatedCache =>
-            if (updatedCache != cache.documents)
-              updateCache(PreviousDocumentsData(updatedCache))
-                .map(_ => navigator.continueTo(controllers.declaration.routes.ItemsSummaryController.displayPage(mode)))
-            else
-              Future.successful(navigator.continueTo(controllers.declaration.routes.ItemsSummaryController.displayPage(mode)))
+            updateCache(PreviousDocumentsData(updatedCache))
+              .map(_ => navigator.continueTo(controllers.declaration.routes.ItemsSummaryController.displayPage(mode)))
         )
 
       case Add =>

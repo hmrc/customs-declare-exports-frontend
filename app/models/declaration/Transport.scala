@@ -48,7 +48,7 @@ case class Transport(
 
   private def hasContainer(id: String) = containers.exists(_.exists(_.id == id))
 
-  def hasContainers: Boolean = containers.isDefined
+  def hasContainers: Boolean = containers.exists(_.nonEmpty)
 
 }
 

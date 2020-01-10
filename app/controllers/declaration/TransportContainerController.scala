@@ -27,7 +27,7 @@ import javax.inject.Inject
 import models.declaration.Container
 import models.declaration.Container.maxNumberOfItems
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{ExportsDeclaration, Mode}
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -69,11 +69,7 @@ class TransportContainerController @Inject()(
         .bindFromRequest()
         .fold(
           (formWithErrors: Form[ContainerFirst]) => Future.successful(BadRequest(addFirstPage(mode, formWithErrors))),
-          validForm =>
-            validForm.id match {
-              case Some(containerId) => saveFirstContainer(mode, containerId)
-              case _                 => Future.successful(navigator.continueTo(routes.SummaryController.displayPage(Mode.Normal)))
-          }
+          validForm => saveFirstContainer(mode, validForm.id)
         )
     }
   }
@@ -107,10 +103,11 @@ class TransportContainerController @Inject()(
       removeContainerAnswer(mode, containerId)
     }
 
-  private def saveFirstContainer(mode: Mode, containerId: String)(implicit request: JourneyRequest[AnyContent]) = {
-    val container = Container(containerId, Seq.empty)
-    updateCache(Seq(container)).map(_ => redirectAfterAdd(mode, containerId))
-  }
+  private def saveFirstContainer(mode: Mode, containerId: Option[String])(implicit request: JourneyRequest[AnyContent]) =
+    containerId match {
+      case Some(id) => updateCache(Seq(Container(id, Seq.empty))).map(_ => redirectAfterAdd(mode, id))
+      case None     => updateCache(Seq.empty).map(_ => navigator.continueTo(routes.SummaryController.displayPage(mode)))
+    }
 
   private def saveAdditionalContainer(mode: Mode, boundForm: Form[ContainerAdd], elementLimit: Int, cache: Seq[Container])(
     implicit request: JourneyRequest[AnyContent]

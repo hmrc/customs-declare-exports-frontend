@@ -142,9 +142,9 @@ class DeclarationAdditionalActorsController @Inject()(
     hc: HeaderCarrier
   ): Future[Result] =
     if (actor.isDefined) {
-      val updatedCache = DeclarationAdditionalActorsData(actors :+ actor)
-      updateCache(updatedCache).map(_ => navigator.continueTo(routes.DeclarationHolderController.displayPage(mode)))
-    } else Future.successful(navigator.continueTo(routes.DeclarationHolderController.displayPage(mode)))
+      updateCache(DeclarationAdditionalActorsData(actors :+ actor))
+        .map(_ => navigator.continueTo(routes.DeclarationHolderController.displayPage(mode)))
+    } else updateCache(DeclarationAdditionalActorsData(actors)).map(_ => navigator.continueTo(routes.DeclarationHolderController.displayPage(mode)))
 
   private def removeItem(
     mode: Mode,
