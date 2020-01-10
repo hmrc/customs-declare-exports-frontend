@@ -21,7 +21,7 @@
 @import models.Mode
 
 @(item: ExportItem)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
-
+<table>
 <caption class="heading-small"><span id="item-@item.sequenceId-header">@messages("declaration.summary.items.item.sequenceId", item.sequenceId)</span></caption>
 
 @item.procedureCodes.map(data =>
@@ -127,4 +127,4 @@ components.table_row(s"item-${item.sequenceId}-itemValue", HtmlTableRow(
 @item.documentsProducedData.map(documentsProducedData =>
     supporting_documents(item.id, item.sequenceId, documentsProducedData.documents)
 )
-
+</table>
