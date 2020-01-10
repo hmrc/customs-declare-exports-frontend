@@ -25,8 +25,6 @@ case class DeclarantDetails(details: EntityDetails)
 object DeclarantDetails {
   implicit val format = Json.format[DeclarantDetails]
 
-  val validCountries = Set("GB")
-
   val id = "DeclarantDetails"
 
   val declarantMapping = Forms
