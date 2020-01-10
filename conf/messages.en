@@ -1131,6 +1131,7 @@ rejected.notification.information = You will need to review your answers and fix
 rejected.notification.continue = Continue declaration (opens in a new window)
 
 summary.amend.information = You will start at the beginning of the declaration
+summary.amend.back = Back to submissions
 
 field.declaration.functionCode = Declaration type
 field.declaration.consignmentReferences.lrn = LRN

@@ -40,7 +40,7 @@
 
   @mode match {
       case Mode.Amend => {
-          @components.back_link(controllers.routes.SubmissionsController.displayListOfSubmissions(), mode, "supplementary.summary.back")
+          @components.back_link(controllers.routes.SubmissionsController.displayListOfSubmissions(), mode, "summary.amend.back")
       }
       case Mode.Draft => {
           @components.back_link(controllers.routes.SavedDeclarationsController.displayDeclarations(), mode)
@@ -87,7 +87,7 @@
 
             @legal_declaration(legalDeclarationForm)
 
-            @components.submit_button(messages("site.acceptAndSubmitDeclaration"))
+            @components.submit_button("site.acceptAndSubmitDeclaration")
         }
         <script>
             document.getElementById("summary").addEventListener("submit", function(event){

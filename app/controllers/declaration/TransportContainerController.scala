@@ -106,7 +106,7 @@ class TransportContainerController @Inject()(
   private def saveFirstContainer(mode: Mode, containerId: Option[String])(implicit request: JourneyRequest[AnyContent]) =
     containerId match {
       case Some(id) => updateCache(Seq(Container(id, Seq.empty))).map(_ => redirectAfterAdd(mode, id))
-      case None     => updateCache(Seq.empty).map(_ => navigator.continueTo(routes.SummaryController.displayPage(mode)))
+      case None     => updateCache(Seq.empty).map(_ => navigator.continueTo(routes.SummaryController.displayPage(Mode.Normal)))
     }
 
   private def saveAdditionalContainer(mode: Mode, boundForm: Form[ContainerAdd], elementLimit: Int, cache: Seq[Container])(

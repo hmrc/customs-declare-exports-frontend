@@ -32,12 +32,13 @@ import scala.concurrent.duration.FiniteDuration
 class SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
 
   val appConfig = mock[AppConfig]
+  private val realMessages = validatedMessages
   when(appConfig.draftTimeToLive).thenReturn(FiniteDuration(30, "day"))
   val draftInfoPage = new draft_info_section(appConfig)
 
   val summaryPage = new summary_page(mainTemplate, draftInfoPage)
   def view(mode: Mode = Normal, declaration: ExportsDeclaration = aDeclaration()): Document =
-    summaryPage(mode, LegalDeclaration.form())(journeyRequest(declaration), messages, minimalAppConfig)
+    summaryPage(mode, LegalDeclaration.form())(journeyRequest(declaration), realMessages, minimalAppConfig)
 
   "Summary page" should {
 
@@ -45,17 +46,17 @@ class SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
 
       "mode is normal" in {
 
-        view().getElementById("title").text() must include("declaration.summary.normal-header")
+        view().getElementById("title").text() mustBe realMessages("declaration.summary.normal-header")
       }
 
       "mode is amend" in {
 
-        view(Amend).getElementById("title").text() must include("declaration.summary.amend-header")
+        view(Amend).getElementById("title").text() mustBe realMessages("declaration.summary.amend-header")
       }
 
       "mode is draft" in {
 
-        view(Draft).getElementById("title").text() must include("declaration.summary.saved-header")
+        view(Draft).getElementById("title").text() mustBe realMessages("declaration.summary.saved-header")
       }
     }
 
@@ -65,7 +66,7 @@ class SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
 
         val backButton = view().getElementById("back-link")
 
-        backButton.text() mustBe messages("site.back")
+        backButton.text() mustBe realMessages("site.back")
         backButton must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary(Normal))
       }
 
@@ -73,15 +74,15 @@ class SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
 
         val backButton = view(Amend).getElementById("back-link")
 
-        backButton.text() mustBe messages("supplementary.summary.back")
-        backButton must haveHref(controllers.routes.SubmissionsController.displayListOfSubmissions())
+        backButton.text() mustBe realMessages("summary.amend.back")
+        backButtonbackButton must haveHref(controllers.routes.SubmissionsController.displayListOfSubmissions())
       }
 
       "mode is draft" in {
 
         val backButton = view(Draft).getElementById("back-link")
 
-        backButton.text() mustBe messages("site.back")
+        backButton.text() mustBe realMessages("site.back")
         backButton must haveHref(controllers.routes.SavedDeclarationsController.displayDeclarations())
       }
     }

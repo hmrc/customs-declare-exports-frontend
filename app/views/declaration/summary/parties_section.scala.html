@@ -38,9 +38,9 @@
             eori_or_address_section(
                 id = "exporter",
                 eoriOption = exporter.details.eori,
-                eoriLabel = messages("declaration.summary.parties.exporter.eori"),
+                eoriLabel = "declaration.summary.parties.exporter.eori",
                 address = exporter.details.address,
-                addressLabel = messages("declaration.summary.parties.exporter.address"),
+                addressLabel = "declaration.summary.parties.exporter.address",
                 call = Some(controllers.declaration.routes.ExporterDetailsController.displayPage()),
                 eoriChangeLabel = Some(messages("declaration.summary.parties.exporter.eori.change")),
                 addressChangeLabel = Some(messages("declaration.summary.parties.exporter.address.change"))
@@ -50,9 +50,9 @@
             eori_or_address_section(
                 id = "consignee",
                 eoriOption = consignee.details.eori,
-                eoriLabel = messages("declaration.summary.parties.consignee.eori"),
+                eoriLabel = "declaration.summary.parties.consignee.eori",
                 address = consignee.details.address,
-                addressLabel = messages("declaration.summary.parties.consignee.address"),
+                addressLabel = "declaration.summary.parties.consignee.address",
                 call = Some(controllers.declaration.routes.ConsigneeDetailsController.displayPage()),
                 eoriChangeLabel = Some(messages("declaration.summary.parties.consignee.eori.change")),
                 addressChangeLabel = Some(messages("declaration.summary.parties.consignee.address.change")),
@@ -63,9 +63,9 @@
             eori_or_address_section(
                 id = "declarant",
                 eoriOption = declarant.details.eori,
-                eoriLabel = messages("declaration.summary.parties.declarant.eori"),
+                eoriLabel = "declaration.summary.parties.declarant.eori",
                 address = declarant.details.address,
-                addressLabel = messages("declaration.summary.parties.declarant.address"),
+                addressLabel = "declaration.summary.parties.declarant.address",
                 call = Some(controllers.declaration.routes.DeclarantDetailsController.displayPage()),
                 eoriChangeLabel = Some(messages("declaration.summary.parties.declarant.eori.change")),
                 addressChangeLabel = Some(messages("declaration.summary.parties.declarant.address.change"))
@@ -75,7 +75,7 @@
             eori_or_address_section(
                 id = "representative",
                 eoriOption = representative.details.flatMap(_.eori),
-                eoriLabel = messages("declaration.summary.parties.representative.eori"),
+                eoriLabel = "declaration.summary.parties.representative.eori",
                 address = representative.details.flatMap(_.address),
                 addressLabel = messages("declaration.summary.parties.representative.address"),
                 call = Some(controllers.declaration.routes.RepresentativeDetailsController.displayPage()),
@@ -95,9 +95,9 @@
             eori_or_address_section(
                 id = "carrier",
                 eoriOption = carrier.details.eori,
-                eoriLabel = messages("declaration.summary.parties.carrier.eori"),
+                eoriLabel = "declaration.summary.parties.carrier.eori",
                 address = carrier.details.address,
-                addressLabel = messages("declaration.summary.parties.carrier.address"),
+                addressLabel = "declaration.summary.parties.carrier.address",
                 call = Some(controllers.declaration.routes.CarrierDetailsController.displayPage()),
                 eoriChangeLabel = Some(messages("declaration.summary.parties.carrier.eori.change")),
                 addressChangeLabel = Some(messages("declaration.summary.parties.carrier.address.change")),
