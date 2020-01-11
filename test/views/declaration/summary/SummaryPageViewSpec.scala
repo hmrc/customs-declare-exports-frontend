@@ -75,7 +75,7 @@ class SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
         val backButton = view(Amend).getElementById("back-link")
 
         backButton.text() mustBe realMessages("summary.amend.back")
-        backButtonbackButton must haveHref(controllers.routes.SubmissionsController.displayListOfSubmissions())
+        backButton must haveHref(controllers.routes.SubmissionsController.displayListOfSubmissions())
       }
 
       "mode is draft" in {
