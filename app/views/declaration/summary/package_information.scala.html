@@ -21,27 +21,36 @@
 
 @(itemId: String, itemNo: Int, packageInformation: Seq[PackageInformation])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
-@if(packageInformation.nonEmpty){
-  <table>
+<table>
+@if(packageInformation.nonEmpty) {
+
     <caption class="heading-small"><span id="package-information-@itemNo">@messages("declaration.summary.items.item.packageInformation")</span></caption>
-        <tr class="section">
-            <td class="bold"><span id="package-information-type-@itemNo">@messages("declaration.summary.items.item.packageInformation.type")</span></td>
-            <td class="bold"><span id="package-information-number-@itemNo">@messages("declaration.summary.items.item.packageInformation.number")</span></td>
-            <td class="bold"><span id="package-information-markings-@itemNo">@messages("declaration.summary.items.item.packageInformation.markings")</span></td>
-            <td></td>
-        </tr>
-        @packageInformation.zipWithIndex.map { case (information, index) =>
-            <tr class="section">
-                <td class="exports-table__cell"><span id="package-information-@itemNo-code-@index">@information.typesOfPackagesText</span></td>
-                <td class="exports-table__cell"><span id="package-information-@itemNo-number-@index">@information.numberOfPackages</span></td>
-                <td class="exports-table__cell"><span id="package-information-@itemNo-marks-@index">@information.shippingMarks</span></td>
-                <td class="exports-table__cell exports-table__cell--numeric">
-                    <a href="@controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, itemId)" id="package-information-@itemNo-change-@index">
-                        <span aria-hidden="true">@messages("site.change")</span>
-                        <span class="visually-hidden">@messages("declaration.summary.items.item.packageInformation.change", information.typesOfPackagesText, information.shippingMarks, itemNo)</span>
-                    </a>
-                </td>
-            </tr>
-        }
+    <tr class="section">
+        <td class="bold"><span id="package-information-type-@itemNo">@messages("declaration.summary.items.item.packageInformation.type")</span></td>
+        <td class="bold"><span id="package-information-number-@itemNo">@messages("declaration.summary.items.item.packageInformation.number")</span></td>
+        <td class="bold"><span id="package-information-markings-@itemNo">@messages("declaration.summary.items.item.packageInformation.markings")</span></td>
+        <td></td>
+    </tr>
+    @packageInformation.zipWithIndex.map { case (information, index) =>
+    <tr class="section">
+        <td class="exports-table__cell"><span id="package-information-@itemNo-code-@index">@information.typesOfPackagesText</span></td>
+        <td class="exports-table__cell"><span id="package-information-@itemNo-number-@index">@information.numberOfPackages</span></td>
+        <td class="exports-table__cell"><span id="package-information-@itemNo-marks-@index">@information.shippingMarks</span></td>
+        <td class="exports-table__cell exports-table__cell--numeric">
+            <a href="@controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, itemId)" id="package-information-@itemNo-change-@index">
+                <span aria-hidden="true">@messages("site.change")</span>
+                <span class="visually-hidden">@messages("declaration.summary.items.item.packageInformation.change", information.typesOfPackagesText, information.shippingMarks, itemNo)</span>
+    </a>
+    </td>
+    </tr>
     }
+
+} else {
+    @components.table_row(s"package-information-$itemNo", HtmlTableRow(
+        label = messages("declaration.summary.items.item.packageInformation"),
+        value = "",
+        call = Some(controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, itemId)),
+        changeLabel = Some(messages("declaration.summary.items.item.netWeight.changeAll", itemNo))
+    ))
+}
 </table>

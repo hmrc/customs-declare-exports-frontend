@@ -32,6 +32,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData {
   )
 
   val view = references_section(data)(messages, journeyRequest())
+  val viewNoAnswers = references_section(aDeclaration(withType(DeclarationType.STANDARD)))(messages, journeyRequest())
 
   "References section" should {
 
@@ -98,6 +99,35 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData {
       accessibleChange mustBe messages("declaration.summary.references.lrn.change")
 
       view.getElementById("lrn-change") must haveHref(controllers.declaration.routes.ConsignmentReferencesController.displayPage())
+    }
+  }
+
+  "References section with no answers" should {
+
+    "have declaration type" in {
+
+      viewNoAnswers.getElementById("declarationType-label").text() mustBe messages("declaration.summary.references.type")
+      viewNoAnswers.getElementById("declarationType-change") must haveHref(controllers.declaration.routes.DeclarationChoiceController.displayPage())
+    }
+
+    "not have dispatch location" in {
+
+      viewNoAnswers.getElementById("location-label") mustBe null
+    }
+
+    "not have additional declaration type" in {
+
+      viewNoAnswers.getElementById("additionalType-label") mustBe null
+    }
+
+    "not have have ducr" in {
+
+      viewNoAnswers.getElementById("ducr-label") mustBe null
+    }
+
+    "not have have lrn" in {
+
+      viewNoAnswers.getElementById("lrn-label") mustBe null
     }
   }
 }

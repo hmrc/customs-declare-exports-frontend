@@ -17,9 +17,9 @@
 package views.declaration.summary
 
 import config.AppConfig
-import forms.declaration.LegalDeclaration
-import models.Mode
+import forms.declaration.{LegalDeclaration, WarehouseIdentification}
 import models.Mode._
+import models.{ExportsDeclaration, Mode}
 import org.jsoup.nodes.Document
 import org.mockito.Mockito.when
 import services.cache.ExportsTestData
@@ -32,11 +32,13 @@ import scala.concurrent.duration.FiniteDuration
 class SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
 
   val appConfig = mock[AppConfig]
+  private val realMessages = validatedMessages
   when(appConfig.draftTimeToLive).thenReturn(FiniteDuration(30, "day"))
   val draftInfoPage = new draft_info_section(appConfig)
 
   val summaryPage = new summary_page(mainTemplate, draftInfoPage)
-  def view(mode: Mode = Normal): Document = summaryPage(mode, LegalDeclaration.form())(journeyRequest(aDeclaration()), messages, minimalAppConfig)
+  def view(mode: Mode = Normal, declaration: ExportsDeclaration = aDeclaration()): Document =
+    summaryPage(mode, LegalDeclaration.form())(journeyRequest(declaration), realMessages, minimalAppConfig)
 
   "Summary page" should {
 
@@ -44,17 +46,17 @@ class SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
 
       "mode is normal" in {
 
-        view().getElementById("title").text() must include("declaration.summary.normal-header")
+        view().getElementById("title").text() mustBe realMessages("declaration.summary.normal-header")
       }
 
       "mode is amend" in {
 
-        view(Amend).getElementById("title").text() must include("declaration.summary.amend-header")
+        view(Amend).getElementById("title").text() mustBe realMessages("declaration.summary.amend-header")
       }
 
       "mode is draft" in {
 
-        view(Draft).getElementById("title").text() must include("declaration.summary.saved-header")
+        view(Draft).getElementById("title").text() mustBe realMessages("declaration.summary.saved-header")
       }
     }
 
@@ -64,7 +66,7 @@ class SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
 
         val backButton = view().getElementById("back-link")
 
-        backButton.text() mustBe messages("site.back")
+        backButton.text() mustBe realMessages("site.back")
         backButton must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary(Normal))
       }
 
@@ -72,7 +74,7 @@ class SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
 
         val backButton = view(Amend).getElementById("back-link")
 
-        backButton.text() mustBe messages("supplementary.summary.back")
+        backButton.text() mustBe realMessages("summary.amend.back")
         backButton must haveHref(controllers.routes.SubmissionsController.displayListOfSubmissions())
       }
 
@@ -80,7 +82,7 @@ class SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
 
         val backButton = view(Draft).getElementById("back-link")
 
-        backButton.text() mustBe messages("site.back")
+        backButton.text() mustBe realMessages("site.back")
         backButton must haveHref(controllers.routes.SavedDeclarationsController.displayDeclarations())
       }
     }
@@ -90,39 +92,76 @@ class SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
       view().getElementById("declaration-references-summary").text() mustNot be(empty)
     }
 
+    "not have parties section" in {
+
+      view().getElementById("declaration-parties-summary") mustBe null
+    }
+
     "have parties section" in {
 
-      view().getElementById("declaration-parties-summary").text() mustNot be(empty)
+      view(declaration = aDeclaration(withExporterDetails())).getElementById("declaration-parties-summary").text() mustNot be(empty)
+    }
+
+    "not have countries section" in {
+
+      view().getElementById("declaration-countries-summary") mustBe null
     }
 
     "have countries section" in {
 
-      view().getElementById("declaration-countries-summary").text() mustNot be(empty)
+      view(declaration = aDeclaration(withDestinationCountry())).getElementById("declaration-countries-summary").text() mustNot be(empty)
+    }
+
+    "not have locations section" in {
+
+      view().getElementById("declaration-locations-summary") mustBe null
     }
 
     "have locations section" in {
 
-      view().getElementById("declaration-locations-summary").text() mustNot be(empty)
+      view(declaration = aDeclaration(withOfficeOfExit())).getElementById("declaration-locations-summary").text() mustNot be(empty)
+    }
+
+    "not have transaction section" in {
+
+      view().getElementById("declaration-transaction-summary") mustBe null
     }
 
     "have transaction section" in {
 
-      view().getElementById("declaration-transaction-summary").text() mustNot be(empty)
+      view(declaration = aDeclaration(withPreviousDocuments())).getElementById("declaration-transaction-summary").text() mustNot be(empty)
+    }
+
+    "not have items section" in {
+
+      view().getElementById("declaration-items-summary") mustBe null
     }
 
     "have items section" in {
 
-      view().getElementById("declaration-items-summary").text() mustNot be(empty)
+      view(declaration = aDeclaration(withItem())).getElementById("declaration-items-summary").text() mustNot be(empty)
+    }
+
+    "not have warehouse section" in {
+
+      view().getElementById("declaration-warehouse-summary") mustBe null
     }
 
     "have warehouse section" in {
 
-      view().getElementById("declaration-warehouse-summary").text() mustNot be(empty)
+      view(declaration = aDeclaration(withWarehouseIdentification(Some(WarehouseIdentification(Some("12345"))))))
+        .getElementById("declaration-warehouse-summary")
+        .text() mustNot be(empty)
+    }
+
+    "not have transport section" in {
+
+      view().getElementById("declaration-transport-summary") mustBe null
     }
 
     "have transport section" in {
 
-      view().getElementById("declaration-transport-summary").text() mustNot be(empty)
+      view(declaration = aDeclaration(withBorderTransport())).getElementById("declaration-transport-summary").text() mustNot be(empty)
     }
   }
 }

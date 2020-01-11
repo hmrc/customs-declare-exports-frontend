@@ -75,22 +75,22 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
       "user is coming to the page without fastForward flag" in {
 
-        withNewCaching(aDeclaration(withRoutingCountries()))
+        withNewCaching(aDeclaration(withRoutingQuestion(true), withRoutingCountries()))
 
         val result = controller.displayRoutingQuestion(Mode.Normal, false)(getRequest())
 
         status(result) mustBe OK
-        theRoutingQuestionForm.value mustBe empty
+        theRoutingQuestionForm.value mustBe Some(true)
       }
 
       "user doesn't have any countries in cache" in {
 
-        withNewCaching(aDeclaration(withoutRoutingCountries()))
+        withNewCaching(aDeclaration(withRoutingQuestion(false), withoutRoutingCountries()))
 
         val result = controller.displayRoutingQuestion(Mode.Normal, true)(getRequest())
 
         status(result) mustBe OK
-        theRoutingQuestionForm.value mustBe empty
+        theRoutingQuestionForm.value mustBe Some(false)
       }
 
       "user answer Yes on the Routing Question and try to get routing country page" in {

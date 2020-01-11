@@ -21,7 +21,7 @@ import play.api.libs.json.{Format, Json}
 
 case class Transport(
   transportPayment: Option[TransportPayment] = None,
-  containers: Seq[Container] = Seq.empty,
+  containers: Option[Seq[Container]] = None,
   borderModeOfTransportCode: Option[String] = None,
   meansOfTransportOnDepartureType: Option[String] = None,
   meansOfTransportOnDepartureIDNumber: Option[String] = None,
@@ -31,24 +31,26 @@ case class Transport(
 ) {
 
   def addOrUpdateContainer(updatedContainer: Container): Transport = {
+    def containerSequence = containers.getOrElse(Seq.empty)
     val updatedContainers = {
       if (containers.isEmpty) {
         Seq(updatedContainer)
       } else if (hasContainer(updatedContainer.id)) {
-        containers.map {
+        containerSequence.map {
           case container if updatedContainer.id == container.id => updatedContainer
           case otherContainer                                   => otherContainer
         }
       } else {
-        containers :+ updatedContainer
+        containerSequence :+ updatedContainer
       }
     }
-    copy(containers = updatedContainers)
+    copy(containers = Some(updatedContainers))
   }
 
-  private def hasContainer(id: String) = containers.exists(_.id == id)
+  private def hasContainer(id: String) = containers.exists(_.exists(_.id == id))
 
-  def hasContainers: Boolean = containers.nonEmpty
+  def hasContainers: Boolean = containers.exists(_.nonEmpty)
+
 }
 
 object Transport {

@@ -15,54 +15,64 @@
  *@
 
 @import forms.declaration.GoodsLocation
+@import models.declaration.Locations
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 @import services.Countries._
-@import models.DeclarationType._
 
 @(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
-@locationCode(locationOpt: Option[GoodsLocation]) = @{
-  locationOpt.map { location =>
-      findByName(location.country).countryCode + location.typeOfLocation + location.qualifierOfIdentification + location.identificationOfLocation.getOrElse("")
-  }
+@locationCode(location: GoodsLocation) = @{
+    findByName(location.country).countryCode + location.typeOfLocation + location.qualifierOfIdentification + location.identificationOfLocation.getOrElse("")
 }
 
-@address(locationOpt: Option[GoodsLocation]) = @{
-  locationOpt.map { location =>
-      val address = Seq(location.addressLine, location.city, location.postCode, Some(location.country)).flatten
-
-      if (address.length > 3) address else Seq.empty
-  }
+@address(location: GoodsLocation) = @{
+    val address = Seq(location.addressLine, location.city, location.postCode, Some(location.country)).flatten
+    if(address.length > 3) address else Seq.empty
 }
 
-<div id="declaration-locations-summary">
+@hasLocations(locations: Locations) = @{
+    locations.goodsLocation.isDefined || locations.officeOfExit.isDefined
+}
+
+@if(hasLocations(declarationData.locations)) {
+    <div id="declaration-locations-summary">
     @components.summary_list(Some(messages("declaration.summary.locations"))) {
-        @components.table_row("location-code", HtmlTableRow(
-            label = messages("declaration.summary.locations.goodsLocationCode"),
-            value = locationCode(declarationData.locations.goodsLocation).toSeq,
-            call = Some(controllers.declaration.routes.LocationController.displayPage()),
-            changeLabel = Some(messages("declaration.summary.locations.goodsLocationCode.change"))
-        ))
-        @components.table_row("location-address", HtmlTableRow(
-            label = messages("declaration.summary.locations.goodsLocationAddress"),
-            value = address(declarationData.locations.goodsLocation).getOrElse(Seq.empty),
-            call = Some(controllers.declaration.routes.LocationController.displayPage()),
-            changeLabel = Some(messages("declaration.summary.locations.goodsLocationAddress.change"))
-        ))
-        @components.table_row("location-officeOfExit", HtmlTableRow(
-            label = messages("declaration.summary.locations.officeOfExit"),
-            value = declarationData.locations.officeOfExit.map(_.officeId).getOrElse(""),
-            call = Some(controllers.declaration.routes.OfficeOfExitController.displayPage()),
-            changeLabel = Some(messages("declaration.summary.locations.officeOfExit.change"))
-        ))
-        @if(journeyRequest.isType(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE)){
-            @components.table_row("location-expressConsignment", HtmlTableRow(
-                label = messages("declaration.summary.locations.expressConsignment"),
-                value = declarationData.locations.officeOfExit.flatMap(_.circumstancesCode).getOrElse(""),
-                call = Some(controllers.declaration.routes.OfficeOfExitController.displayPage()),
-                changeLabel = Some(messages("declaration.summary.locations.expressConsignment.change"))
+        @declarationData.locations.goodsLocation.map(goodsLocation =>
+            components.table_row("location-code", HtmlTableRow(
+                label = messages("declaration.summary.locations.goodsLocationCode"),
+                value = locationCode(goodsLocation),
+                call = Some(controllers.declaration.routes.LocationController.displayPage()),
+                changeLabel = Some(messages("declaration.summary.locations.goodsLocationCode.change"))
             ))
-        }
+        )
+        @declarationData.locations.goodsLocation.map(goodsLocation =>
+            components.table_row("location-address", HtmlTableRow(
+                label = messages("declaration.summary.locations.goodsLocationAddress"),
+                value = address(goodsLocation),
+                call = Some(controllers.declaration.routes.LocationController.displayPage()),
+                changeLabel = Some(messages("declaration.summary.locations.goodsLocationAddress.change"))
+            ))
+        )
+
+        @declarationData.locations.officeOfExit.map(officeOfExit =>
+            components.table_row("location-officeOfExit", HtmlTableRow(
+                label = messages("declaration.summary.locations.officeOfExit"),
+                value = officeOfExit.officeId,
+                call = Some(controllers.declaration.routes.OfficeOfExitController.displayPage()),
+                changeLabel = Some(messages("declaration.summary.locations.officeOfExit.change"))
+            ))
+        )
+        @declarationData.locations.officeOfExit.map(officeOfExit =>
+            officeOfExit.circumstancesCode.map(code =>
+                components.table_row("location-expressConsignment", HtmlTableRow(
+                    label = messages("declaration.summary.locations.expressConsignment"),
+                    value = code,
+                    call = Some(controllers.declaration.routes.OfficeOfExitController.displayPage()),
+                    changeLabel = Some(messages("declaration.summary.locations.expressConsignment.change"))
+                ))
+            )
+        )
     }
-</div>
+    </div>
+}

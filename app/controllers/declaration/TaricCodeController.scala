@@ -47,14 +47,14 @@ class TaricCodeController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val taricCodes = request.cacheModel.itemBy(itemId).map(_.taricCodes).getOrElse(Seq.empty)
+    val taricCodes = request.cacheModel.itemBy(itemId).flatMap(_.taricCodes).getOrElse(List.empty)
     Ok(taricCodesPage(mode, itemId, form(), taricCodes))
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val actionTypeOpt = FormAction.bindFromRequest()
     val boundForm = form().bindFromRequest()
-    val taricCodes = request.cacheModel.itemBy(itemId).map(_.taricCodes).getOrElse(Seq.empty)
+    val taricCodes = request.cacheModel.itemBy(itemId).flatMap(_.taricCodes).getOrElse(List.empty)
     actionTypeOpt match {
       case Add                             => addItem(mode, itemId, boundForm, taricCodes)
       case Remove(values)                  => removeItem(mode, itemId, values, boundForm, taricCodes)
@@ -92,12 +92,8 @@ class TaricCodeController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(taricCodesPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
-          if (updatedCache != cachedData)
-            updateExportsCache(itemId, updatedCache)
-              .map(_ => navigator.continueTo(nextPage(mode, itemId)))
-          else
-            Future
-              .successful(navigator.continueTo(nextPage(mode, itemId)))
+          updateExportsCache(itemId, updatedCache)
+            .map(_ => navigator.continueTo(nextPage(mode, itemId)))
       )
 
   private def nextPage(mode: Mode, itemId: String) =
@@ -106,6 +102,6 @@ class TaricCodeController @Inject()(
   private def updateExportsCache(itemId: String, updatedCache: Seq[TaricCode])(
     implicit r: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(taricCodes = updatedCache.toList)))
+    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(taricCodes = Some(updatedCache.toList))))
 
 }

@@ -21,8 +21,9 @@
 
 @(itemId: String, itemNo: Int,  additionalInformation: Seq[AdditionalInformation])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
+<table>
 @if(additionalInformation.nonEmpty){
-  <table>
+
         <caption class="heading-small"><span id="additional-information-@itemNo">@messages("declaration.summary.items.item.additionalInformation")</span></caption>
         <tr class="section">
             <td class="bold"><span id="additional-information-code-@itemNo">@messages("declaration.summary.items.item.additionalInformation.code")</span></td>
@@ -41,5 +42,13 @@
                 </td>
             </tr>
         }
-  </table>
+
+} else {
+    @components.table_row(s"additional-information-$itemNo", HtmlTableRow(
+        label = messages("declaration.summary.items.item.additionalInformation"),
+        value = "",
+        call = Some(controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, itemId)),
+        changeLabel = Some(messages("declaration.summary.items.item.additionalInformation.change", itemNo))
+    ))
 }
+</table>

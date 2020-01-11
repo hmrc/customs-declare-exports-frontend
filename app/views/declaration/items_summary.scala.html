@@ -62,7 +62,7 @@
                     <td id="item_@index--procedure_code">@item.procedureCodes.map(_.procedureCode).getOrElse("") </td>
                     <td id="item_@index--item_type" >@item.commodityDetails.map(_.combinedNomenclatureCode) </td>
                     <td id="item_@index--package_count">
-                        <ol type="1">@item.packageInformation.map(a =>
+                        <ol type="1">@item.packageInformation.getOrElse(List.empty).map(a =>
                             <li>{a.numberOfPackages}</li>
                         )
                         </ol>

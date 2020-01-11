@@ -77,29 +77,33 @@ trait ExportsItemBuilder {
     withTaricCodes(List(first) ++ others.toList)
 
   def withTaricCodes(codes: List[TaricCode]): ItemModifier =
-    _.copy(taricCodes = codes)
+    _.copy(taricCodes = Some(codes))
 
   def withNactCodes(first: NactCode, others: NactCode*): ItemModifier =
     withNactCodes(List(first) ++ others.toList)
 
   def withNactCodes(codes: List[NactCode]): ItemModifier =
-    _.copy(nactCodes = codes)
+    _.copy(nactCodes = Some(codes))
 
   def withStatisticalValue(statisticalValue: String = ""): ItemModifier =
     withStatisticalValue(StatisticalValue(statisticalValue))
 
   def withStatisticalValue(data: StatisticalValue): ItemModifier = _.copy(statisticalValue = Some(data))
 
-  def withoutPackageInformation(): ItemModifier = _.copy(packageInformation = List.empty)
+  def withoutPackageInformation(): ItemModifier = _.copy(packageInformation = None)
 
   def withPackageInformation(first: PackageInformation, others: PackageInformation*): ItemModifier =
     withPackageInformation(List(first) ++ others.toList)
 
   def withPackageInformation(informations: List[PackageInformation]): ItemModifier =
-    _.copy(packageInformation = informations)
+    _.copy(packageInformation = Some(informations))
 
   def withPackageInformation(typesOfPackages: String = "", numberOfPackages: Int = 0, shippingMarks: String = ""): ItemModifier =
-    cache => cache.copy(packageInformation = cache.packageInformation :+ PackageInformation(typesOfPackages, numberOfPackages, shippingMarks))
+    cache =>
+      cache.copy(
+        packageInformation =
+          Some(cache.packageInformation.getOrElse(List.empty) :+ PackageInformation(typesOfPackages, numberOfPackages, shippingMarks))
+    )
 
   def withDocumentsProduced(first: DocumentsProduced, docs: DocumentsProduced*): ItemModifier = cache => {
     val existing = cache.documentsProducedData.map(_.documents).getOrElse(Seq.empty)

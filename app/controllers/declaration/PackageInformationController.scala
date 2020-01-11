@@ -47,14 +47,14 @@ class PackageInformationController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val items = request.cacheModel.itemBy(itemId).map(_.packageInformation).getOrElse(Nil)
+    val items = request.cacheModel.itemBy(itemId).flatMap(_.packageInformation).getOrElse(List.empty)
     Ok(packageInformationPage(mode, itemId, form(), items))
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit authRequest =>
     val actionTypeOpt = FormAction.bindFromRequest()
     val boundForm = form().bindFromRequest()
-    val packagings = authRequest.cacheModel.itemBy(itemId).map(_.packageInformation).getOrElse(Seq.empty)
+    val packagings = authRequest.cacheModel.itemBy(itemId).flatMap(_.packageInformation).getOrElse(List.empty)
     actionTypeOpt match {
       case Add                             => addItem(mode, itemId, boundForm, packagings)
       case Remove(values)                  => removeItem(mode, itemId, values, boundForm, packagings)
@@ -80,18 +80,14 @@ class PackageInformationController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(packageInformationPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
-          if (updatedCache != cachedData)
-            updateExportsCache(itemId, updatedCache)
-              .map(_ => navigator.continueTo(nextPage(mode, itemId, request)))
-          else
-            Future
-              .successful(navigator.continueTo(nextPage(mode, itemId, request)))
+          updateExportsCache(itemId, updatedCache)
+            .map(_ => navigator.continueTo(nextPage(mode, itemId, request)))
       )
 
   private def updateExportsCache(itemId: String, updatedCache: Seq[PackageInformation])(
     implicit r: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(packageInformation = updatedCache.toList)))
+    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(packageInformation = Some(updatedCache.toList))))
 
   private def nextPage(mode: Mode, itemId: String, request: JourneyRequest[AnyContent]) =
     request.declarationType match {

@@ -17,7 +17,6 @@
 package views.declaration.summary
 
 import forms.declaration.{InlandModeOfTransportCode, ModeOfTransportCodes, SupervisingCustomsOffice, WarehouseIdentification}
-import models.DeclarationType._
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.warehouse_section
@@ -32,88 +31,70 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
   "Warehouse section" should {
 
-    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
-      val view = warehouse_section(data)(messages, request)
+    val view = warehouse_section(data)(messages, journeyRequest())
 
-      "display warehouse id with change button" in {
+    "display warehouse id with change button" in {
 
-        view.getElementById("warehouse-id-label").text() mustBe messages("declaration.summary.warehouse.id")
-        view.getElementById("warehouse-id").text() mustBe "12345"
+      view.getElementById("warehouse-id-label").text() mustBe messages("declaration.summary.warehouse.id")
+      view.getElementById("warehouse-id").text() mustBe "12345"
 
-        val List(change, accessibleChange) = view.getElementById("warehouse-id-change").text().split(" ").toList
+      val List(change, accessibleChange) = view.getElementById("warehouse-id-change").text().split(" ").toList
 
-        change mustBe messages("site.change")
-        accessibleChange mustBe messages("declaration.summary.warehouse.id.change")
+      change mustBe messages("site.change")
+      accessibleChange mustBe messages("declaration.summary.warehouse.id.change")
 
-        view.getElementById("warehouse-id-change") must haveHref(controllers.declaration.routes.WarehouseIdentificationController.displayPage())
-      }
-
-      "display supervising office with change button" in {
-
-        view.getElementById("supervising-office-label").text() mustBe messages("declaration.summary.warehouse.supervisingOffice")
-        view.getElementById("supervising-office").text() mustBe "23456"
-
-        val List(change, accessibleChange) = view.getElementById("supervising-office-change").text().split(" ").toList
-
-        change mustBe messages("site.change")
-        accessibleChange mustBe messages("declaration.summary.warehouse.supervisingOffice.change")
-
-        view.getElementById("supervising-office-change") must haveHref(
-          controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage()
-        )
-      }
-
-      "display mode of transport with change button" in {
-
-        view.getElementById("mode-of-transport-label").text() mustBe messages("declaration.summary.warehouse.inlandModeOfTransport")
-        view.getElementById("mode-of-transport").text() mustBe messages("declaration.summary.warehouse.inlandModeOfTransport.Maritime")
-
-        val List(change, accessibleChange) = view.getElementById("mode-of-transport-change").text().split(" ").toList
-
-        change mustBe messages("site.change")
-        accessibleChange mustBe messages("declaration.summary.warehouse.inlandModeOfTransport.change")
-
-        view.getElementById("mode-of-transport-change") must haveHref(controllers.declaration.routes.InlandTransportDetailsController.displayPage())
-      }
+      view.getElementById("warehouse-id-change") must haveHref(controllers.declaration.routes.WarehouseIdentificationController.displayPage())
     }
 
-    onJourney(SIMPLIFIED, OCCASIONAL) { request =>
-      val view = warehouse_section(data)(messages, request)
+    "display supervising office with change button" in {
 
-      "display warehouse id with change button" in {
+      view.getElementById("supervising-office-label").text() mustBe messages("declaration.summary.warehouse.supervisingOffice")
+      view.getElementById("supervising-office").text() mustBe "23456"
 
-        view.getElementById("warehouse-id-label").text() mustBe messages("declaration.summary.warehouse.id")
-        view.getElementById("warehouse-id").text() mustBe "12345"
+      val List(change, accessibleChange) = view.getElementById("supervising-office-change").text().split(" ").toList
 
-        val List(change, accessibleChange) = view.getElementById("warehouse-id-change").text().split(" ").toList
+      change mustBe messages("site.change")
+      accessibleChange mustBe messages("declaration.summary.warehouse.supervisingOffice.change")
 
-        change mustBe messages("site.change")
-        accessibleChange mustBe messages("declaration.summary.warehouse.id.change")
+      view.getElementById("supervising-office-change") must haveHref(controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage())
+    }
 
-        view.getElementById("warehouse-id-change") must haveHref(controllers.declaration.routes.WarehouseIdentificationController.displayPage())
-      }
+    "display mode of transport with change button" in {
 
-      "display supervising office with change button" in {
+      view.getElementById("mode-of-transport-label").text() mustBe messages("declaration.summary.warehouse.inlandModeOfTransport")
+      view.getElementById("mode-of-transport").text() mustBe messages("declaration.summary.warehouse.inlandModeOfTransport.Maritime")
 
-        view.getElementById("supervising-office-label").text() mustBe messages("declaration.summary.warehouse.supervisingOffice")
-        view.getElementById("supervising-office").text() mustBe "23456"
+      val List(change, accessibleChange) = view.getElementById("mode-of-transport-change").text().split(" ").toList
 
-        val List(change, accessibleChange) = view.getElementById("supervising-office-change").text().split(" ").toList
+      change mustBe messages("site.change")
+      accessibleChange mustBe messages("declaration.summary.warehouse.inlandModeOfTransport.change")
 
-        change mustBe messages("site.change")
-        accessibleChange mustBe messages("declaration.summary.warehouse.supervisingOffice.change")
+      view.getElementById("mode-of-transport-change") must haveHref(controllers.declaration.routes.InlandTransportDetailsController.displayPage())
+    }
 
-        view.getElementById("supervising-office-change") must haveHref(
-          controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage()
-        )
-      }
+    "not display warehouse id when question not answered" in {
 
-      "not display mode of transport" in {
+      val view = warehouse_section(aDeclarationAfter(data, withoutWarehouseIdentification()))(messages, journeyRequest())
 
-        view.getElementById("mode-of-transport-label") mustBe null
-        view.getElementById("mode-of-transport") mustBe null
-        view.getElementById("mode-of-transport-change") mustBe null
-      }
+      view.getElementById("warehouse-id-label") mustBe null
+      view.getElementById("warehouse-id") mustBe null
+    }
+
+    "not display supervising office when question not answered" in {
+
+      val view = warehouse_section(aDeclarationAfter(data, withoutSupervisingCustomsOffice()))(messages, journeyRequest())
+
+      view.getElementById("supervising-office-label") mustBe null
+      view.getElementById("supervising-office-id") mustBe null
+    }
+
+    "not display mode of transport when question not answered" in {
+
+      val view = warehouse_section(aDeclarationAfter(data, withoutInlandModeOfTransportCode()))(messages, journeyRequest())
+
+      view.getElementById("mode-of-transport-label") mustBe null
+      view.getElementById("mode-of-transport-id") mustBe null
     }
   }
+
 }

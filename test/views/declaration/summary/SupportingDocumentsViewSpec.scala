@@ -26,11 +26,16 @@ class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
 
   "Supporting documents view" should {
 
-    "be empty" when {
+    "display title only and change link" when {
 
       "there is no documents" in {
 
-        supporting_documents("itemId", 1, Seq.empty)(messages, journeyRequest()).text() mustBe empty
+        val view = supporting_documents("itemId", 1, Seq.empty)(messages, journeyRequest())
+
+        view.getElementById("supporting-documents-1-label").text() mustBe messages("declaration.summary.items.item.supportingDocuments")
+        view.getElementById("supporting-documents-1-change") must haveHref(
+          controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId")
+        )
       }
     }
 
