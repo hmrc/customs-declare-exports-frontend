@@ -48,7 +48,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
   }
 
-  val eori = "GB123456"
+  val eori = "GB12345678912345"
   val additionalActor = DeclarationAdditionalActors(Some(eori), Some("CS"))
   val declarationWithActor =
     aDeclaration(withDeclarationAdditionalActors(additionalActor))

@@ -297,7 +297,7 @@ supplementary.eori = EORI number
 supplementary.eori.info = Enter the EORI number or business details
 supplementary.eori.hint = The number starts with a country code, for example FR for France, and is then followed by up to 15 digits
 
-supplementary.eori.error.format = EORI number must start with GB followed by 12 to 15 digits only
+supplementary.eori.error.format = EORI number must start with GB followed by 12 to 15 digits
 supplementary.eori.empty = Enter a valid EORI
 
 supplementary.address.fullName = Full name
