@@ -137,7 +137,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
       val view = createView(
         ExporterDetails
           .form()
-          .fillAndValidate(ExporterDetails(EntityDetails(Some(TestHelper.createRandomAlphanumericString(17)), None)))
+          .fillAndValidate(ExporterDetails(EntityDetails(Some(TestHelper.createRandomAlphanumericString(18)), None)))
       )
 
       checkErrorsSummary(view)

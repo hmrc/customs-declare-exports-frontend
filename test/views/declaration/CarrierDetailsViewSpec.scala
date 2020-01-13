@@ -150,7 +150,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
       val view = createView(
         CarrierDetails
           .form()
-          .fillAndValidate(CarrierDetails(EntityDetails(Some(TestHelper.createRandomAlphanumericString(17)), None)))
+          .fillAndValidate(CarrierDetails(EntityDetails(Some(TestHelper.createRandomAlphanumericString(18)), None)))
       )
 
       view must haveGlobalErrorSummary

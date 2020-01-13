@@ -34,7 +34,7 @@ object DeclarationHolder {
       text()
         .verifying("supplementary.declarationHolder.authorisationCode.invalid", isContainedIn(HolderOfAuthorisationCode.all.map(_.value)))
     ),
-    "eori" -> optional(text().verifying("supplementary.eori.error.format", isValidEORIPattern and noLongerThan(17) and noShorterThan(14)))
+    "eori" -> optional(text().verifying("supplementary.eori.error.format", isValidEORIPattern and noLongerThan(17) and noShorterThan(3)))
   )(DeclarationHolder.apply)(DeclarationHolder.unapply)
 
   def form(): Form[DeclarationHolder] = Form(mapping)
