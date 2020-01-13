@@ -29,7 +29,7 @@
     </tr>
     @containers.zipWithIndex.map { case (container, index) =>
         <tr class="section">
-            <td><span id="container-@index-id">@container.id</span></td>
+            <td class="exports-summary-list__key_value"><span id="container-@index-id">@container.id</span></td>
             <td class="exports-summary-list__value"><span id="container-@index-seals">@container.seals.map(_.id).mkString(", ")</span></td>
             <td class="exports-summary-list__actions">
                 <a href="@controllers.declaration.routes.TransportContainerController.displayContainerSummary()" id="container-@index-change">

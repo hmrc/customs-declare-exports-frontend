@@ -39,7 +39,7 @@
             </tr>
     @documents.zipWithIndex.map { case (document, index) =>
         <tr class="section">
-            <td><span id="previous-document-@index-type">@DocumentType.findByCode(document.documentType).asText</span></td>
+            <td class="exports-summary-list__key_value"><span id="previous-document-@index-type">@DocumentType.findByCode(document.documentType).asText</span></td>
             <td class="exports-summary-list__value"><span id="previous-document-@index-reference">@document.documentReference</span></td>
             <td class="exports-summary-list__actions">
                 <a href="@controllers.declaration.routes.PreviousDocumentsController.displayPage()" id="previous-document-@index-change">

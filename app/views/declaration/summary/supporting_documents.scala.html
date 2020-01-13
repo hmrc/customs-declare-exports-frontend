@@ -32,7 +32,7 @@
     </tr>
     @supportingDocuments.zipWithIndex.map { case (document, index) =>
         <tr class="section">
-            <td><span id="supporting-document-@itemNo-code-@index">@document.documentTypeCode.getOrElse("")</span></td>
+            <td class="exports-summary-list__key_value"><span id="supporting-document-@itemNo-code-@index">@document.documentTypeCode.getOrElse("")</span></td>
             <td class="exports-summary-list__value"><span id="supporting-document-@itemNo-information-@index">@document.documentIdentifier.getOrElse("")</span></td>
             <td class="exports-summary-list__actions">
                 <a href="@controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, itemId)" id="supporting-document-@itemNo-change-@index">
