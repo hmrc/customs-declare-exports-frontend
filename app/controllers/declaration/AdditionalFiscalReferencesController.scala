@@ -96,7 +96,11 @@ class AdditionalFiscalReferencesController @Inject()(
     val updatedCache = cacheModel.removeReference(value)
     updateExportsCache(itemId, updatedCache).map {
       case Some(_) =>
-        navigator.continueTo(routes.AdditionalFiscalReferencesController.displayPage(mode, itemId))
+        if (updatedCache.references.isEmpty) {
+          navigator.continueTo(routes.FiscalInformationController.displayPage(mode, itemId))
+        } else {
+          navigator.continueTo(routes.AdditionalFiscalReferencesController.displayPage(mode, itemId))
+        }
       case None => navigator.continueTo(routes.ItemsSummaryController.displayPage())
     }
   }
