@@ -32,7 +32,7 @@
         </tr>
         @additionalInformation.zipWithIndex.map { case (information, index) =>
             <tr class="section">
-                <td><span id="additional-information-@itemNo-code-@index">@information.code</span></td>
+                <td class="exports-summary-list__key_value"><span id="additional-information-@itemNo-code-@index">@information.code</span></td>
                 <td class="exports-summary-list__value"><span id="additional-information-@itemNo-information-@index">@information.description</span></td>
                 <td class="exports-summary-list__actions">
                     <a href="@controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, itemId)" id="additional-information-@itemNo-change-@index">

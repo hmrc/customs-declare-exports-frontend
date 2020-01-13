@@ -74,6 +74,11 @@ Styling for tables on "Check Your Answers Page"
   word-break: break-word;
 }
 
+.exports-summary-list__key_value {
+  vertical-align: top;
+  word-break: break-word;
+}
+
 .exports-summary-list__value {
   width: 60%;
   word-break: break-all;
