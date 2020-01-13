@@ -43,8 +43,7 @@ object DeclarationAdditionalActors extends DeclarationPage {
   val formId = "DeclarationAdditionalActors"
 
   val mapping = Forms.mapping(
-    "eori" -> optional(text().verifying("supplementary.eori.error.format",
-                                            isValidEORI and noLongerThan(17) and noShorterThan(14))),
+    "eori" -> optional(text().verifying("supplementary.eori.error.format", isValidEORIPattern and noLongerThan(17) and noShorterThan(14))),
     "partyType" -> mandatoryIfNot(
       "eori",
       "",

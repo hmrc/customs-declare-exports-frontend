@@ -32,7 +32,7 @@ object DeclarantDetails {
       "eori" ->
         text()
           .verifying("supplementary.eori.empty", nonEmpty)
-          .verifying("supplementary.eori.error.format", isValidEORI and noLongerThan(17) and noShorterThan(14))
+          .verifying("supplementary.eori.error.format", isValidEORIPattern and noLongerThan(17) and noShorterThan(14))
     )(eori => EntityDetails(Some(eori), None))(entityDetails => entityDetails.eori)
 
   val mapping = Forms.mapping("details" -> declarantMapping)(DeclarantDetails.apply)(DeclarantDetails.unapply)
