@@ -95,7 +95,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
       "correct form is submitted" in {
         val declaration = aDeclaration()
         withNewCaching(declaration)
-        val body = Json.obj("details" -> Json.obj("eori" -> "PL213472539481923"))
+        val body = Json.obj("details" -> Json.obj("eori" -> "GB213472539481923"))
         val response = controller.saveAddress(Mode.Normal)(postRequest(body, declaration))
 
         await(response) mustBe aRedirectToTheNextPage

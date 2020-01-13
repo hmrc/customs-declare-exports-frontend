@@ -36,7 +36,7 @@ class DeclarationAdditionalActorsSpec extends WordSpec with MustMatchers {
 
       "provided with unknown value for party type" in {
         val declarationAdditionalActorsInputData =
-          JsObject(Map("eori" -> JsString("eori1"), "partyType" -> JsString("Incorrect")))
+          JsObject(Map("eori" -> JsString("GB12345678912345"), "partyType" -> JsString("Incorrect")))
         val form = DeclarationAdditionalActors.form().bind(declarationAdditionalActorsInputData)
 
         form.hasErrors must be(true)
@@ -65,10 +65,10 @@ object DeclarationAdditionalActorsSpec {
   val incorrectAdditionalActors =
     DeclarationAdditionalActors(eori = Some("123456789123456789"), partyType = Some("Incorrect"))
 
-  val correctAdditionalActorsJSON: JsValue = JsObject(Map("eori" -> JsString("eori1"), "partyType" -> JsString(Consolidator)))
+  val correctAdditionalActorsJSON: JsValue = JsObject(Map("eori" -> JsString("GB12345678912345"), "partyType" -> JsString(Consolidator)))
   val emptyAdditionalActorsJSON: JsValue = JsObject(Map("eori" -> JsString(""), "partyType" -> JsString("")))
 
-  val correctEORIPartyNotSelectedJSON: JsValue = JsObject(Map("eori" -> JsString("1234567890123456")))
+  val correctEORIPartyNotSelectedJSON: JsValue = JsObject(Map("eori" -> JsString("GB12345678912345")))
   val incorrectAdditionalActorsJSON: JsValue = JsObject(Map("eori" -> JsString("123456789123456789"), "partyType" -> JsString("Incorrect")))
 
   val correctAdditionalActorsMap: Map[String, String] = Map("eori" -> "eori1", "partyType" -> "CS")

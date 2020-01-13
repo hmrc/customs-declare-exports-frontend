@@ -22,7 +22,7 @@ import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfNot
-import utils.validators.forms.FieldValidator.isContainedIn
+import utils.validators.forms.FieldValidator._
 
 case class DeclarationAdditionalActors(eori: Option[String], partyType: Option[String]) {
 
@@ -42,10 +42,8 @@ object DeclarationAdditionalActors extends DeclarationPage {
 
   val formId = "DeclarationAdditionalActors"
 
-  val eoriPattern = "[0-9a-zA-Z]{1,17}"
-
   val mapping = Forms.mapping(
-    "eori" -> optional(text().verifying("supplementary.eori.error", _.matches(eoriPattern))),
+    "eori" -> optional(text().verifying("supplementary.eori.error.format", isValidEORIPattern and noLongerThan(17) and noShorterThan(14))),
     "partyType" -> mandatoryIfNot(
       "eori",
       "",

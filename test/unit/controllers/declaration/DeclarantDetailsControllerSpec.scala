@@ -77,7 +77,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
     "return 303 (SEE_OTHER)" in new SetUp {
 
-      val correctForm = Json.toJson(DeclarantDetails(EntityDetails(Some("12345"), None)))
+      val correctForm = Json.toJson(DeclarantDetails(EntityDetails(Some("GB12345678912345"), None)))
 
       val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 

@@ -137,13 +137,13 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
       val view = createView(
         ExporterDetails
           .form()
-          .fillAndValidate(ExporterDetails(EntityDetails(Some(TestHelper.createRandomAlphanumericString(19)), None)))
+          .fillAndValidate(ExporterDetails(EntityDetails(Some(TestHelper.createRandomAlphanumericString(17)), None)))
       )
 
       checkErrorsSummary(view)
       view must haveFieldErrorLink("details_eori", "#details_eori")
 
-      view.select("#error-message-details_eori-input").text() mustBe messages("supplementary.eori.error")
+      view.select("#error-message-details_eori-input").text() mustBe messages("supplementary.eori.error.format")
     }
 
     "display error for empty Full name" in {
