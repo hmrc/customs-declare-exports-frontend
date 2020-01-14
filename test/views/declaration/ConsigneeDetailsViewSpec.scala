@@ -143,7 +143,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
       val view = createView(
         ConsigneeDetails
           .form()
-          .fillAndValidate(ConsigneeDetails(EntityDetails(Some(TestHelper.createRandomAlphanumericString(17)), None)))
+          .fillAndValidate(ConsigneeDetails(EntityDetails(Some(TestHelper.createRandomAlphanumericString(18)), None)))
       )
 
       view must haveGlobalErrorSummary
