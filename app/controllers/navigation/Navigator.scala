@@ -192,6 +192,7 @@ object Navigator {
 
   val universal: PartialFunction[DeclarationPage, Mode => Call] = {
     case ConsignmentReferences => controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage
+    case ExporterDetails => controllers.declaration.routes.ConsignmentReferencesController.displayPage
   }
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
