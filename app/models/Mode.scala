@@ -52,7 +52,7 @@ object Mode {
   case object Draft extends Mode {
     override val name: String = "Draft"
 
-    override val next: Mode = Draft
+    override val next: Mode = Normal
   }
 
   private val modes = Set[Mode](Normal, Amend, Draft, Change, ChangeAmend)

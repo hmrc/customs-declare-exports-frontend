@@ -181,6 +181,7 @@ object Navigator {
     case DeclarationAdditionalActors => controllers.declaration.routes.CarrierDetailsController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
   }
+
   val occasionalItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
     case PackageInformation    => controllers.declaration.routes.NactCodeController.displayPage
     case AdditionalInformation => controllers.declaration.routes.PackageInformationController.displayPage
@@ -191,9 +192,11 @@ object Navigator {
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
     mode match {
-      case Mode.Change => controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
+      case Mode.Change      => controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
       case Mode.ChangeAmend => controllers.declaration.routes.SummaryController.displayPage(Mode.Amend)
-      case _=> request.declarationType match {
+      case Mode.Draft       => controllers.declaration.routes.SummaryController.displayPage(Mode.Draft)
+      case _ =>
+        request.declarationType match {
           case STANDARD      => standard(page)(mode)
           case SUPPLEMENTARY => supplementary(page)(mode)
           case SIMPLIFIED    => simplified(page)(mode)
@@ -202,18 +205,19 @@ object Navigator {
         }
     }
 
-
   def backLink(page: DeclarationPage, mode: Mode, itemId: ItemId)(implicit request: JourneyRequest[_]): Call =
     mode match {
-      case Mode.Change => controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
+      case Mode.Change      => controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
       case Mode.ChangeAmend => controllers.declaration.routes.SummaryController.displayPage(Mode.Amend)
-      case _ => request.declarationType match {
-        case STANDARD      => standardItemPage(page)(mode, itemId.id)
-        case SUPPLEMENTARY => supplementaryItemPage(page)(mode, itemId.id)
-        case SIMPLIFIED    => simplifiedItemPage(page)(mode, itemId.id)
-        case OCCASIONAL    => occasionalItemPage(page)(mode, itemId.id)
-        case CLEARANCE     => clearanceItemPage(page)(mode, itemId.id)
-      }
+      case Mode.Draft       => controllers.declaration.routes.SummaryController.displayPage(Mode.Draft)
+      case _ =>
+        request.declarationType match {
+          case STANDARD      => standardItemPage(page)(mode, itemId.id)
+          case SUPPLEMENTARY => supplementaryItemPage(page)(mode, itemId.id)
+          case SIMPLIFIED    => simplifiedItemPage(page)(mode, itemId.id)
+          case OCCASIONAL    => occasionalItemPage(page)(mode, itemId.id)
+          case CLEARANCE     => clearanceItemPage(page)(mode, itemId.id)
+        }
     }
 
 }
