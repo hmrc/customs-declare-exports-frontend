@@ -20,27 +20,39 @@ import play.api.mvc.{JavascriptLiteral, QueryStringBindable}
 
 sealed trait Mode {
   val name: String
+
+  def next: Mode
 }
 object Mode {
 
   case object Normal extends Mode {
     override val name: String = "Normal"
+
+    override val next: Mode = this
   }
 
   case object Change extends Mode {
     override val name: String = "Change"
+
+    override val next: Mode = Normal
   }
 
   case object Amend extends Mode {
     override val name: String = "Amend"
+
+    override val next: Mode = this
   }
 
   case object ChangeAmend extends Mode {
     override val name: String = "Change-Amend"
+
+    override val next: Mode = Amend
   }
 
   case object Draft extends Mode {
     override val name: String = "Draft"
+
+    override val next: Mode = Draft
   }
 
   private val modes = Set[Mode](Normal, Amend, Draft, Change, ChangeAmend)
