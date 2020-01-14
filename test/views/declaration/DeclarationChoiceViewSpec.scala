@@ -86,7 +86,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("type", "#type")
 
-      view.select("#error-message-type-input").text() mustBe messages("error.required")
+      view.select("#error-message-type-input").text() mustBe messages("declaration.type.error")
     }
 
     "display error when choice is incorrect" in {

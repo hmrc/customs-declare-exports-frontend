@@ -17,9 +17,11 @@
 package forms.declaration
 
 import forms.DeclarationPage
+import forms.Mapping.requiredRadio
 import play.api.data.format.{Formats, Formatter}
 import play.api.data.{Form, FormError, Forms}
 import play.api.libs.json.{JsString, JsonValidationError, Reads, Writes}
+import utils.validators.forms.FieldValidator.isContainedIn
 
 sealed abstract class ModeOfTransportCodes(val value: String)
 
@@ -56,9 +58,12 @@ object ModeOfTransportCodes extends DeclarationPage {
 
   implicit val writes: Writes[ModeOfTransportCodes] = Writes(code => JsString(code.value))
 
-  import Forms._
-
-  private val mapping = Forms.single("code" -> of(formatter("error.unknown")))
+  private val mapping = Forms.single(
+    "code" ->
+      requiredRadio("declaration.transportInformation.borderTransportMode.error.empty")
+        .verifying("declaration.transportInformation.borderTransportMode.error.incorrect", isContainedIn(reverseLookup.keySet))
+        .transform[ModeOfTransportCodes](choice => ModeOfTransportCodes(choice).get, choice => choice.value)
+  )
 
   val form: Form[ModeOfTransportCodes] = Form(mapping)
 }

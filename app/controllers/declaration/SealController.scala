@@ -26,7 +26,7 @@ import forms.declaration.Seal
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.Mode
-import models.declaration.{Container, TransportInformation}
+import models.declaration.Container
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -55,13 +55,18 @@ class SealController @Inject()(
   }
 
   def submitAddSeal(mode: Mode, containerId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = Seal.form().bindFromRequest()
-
-    request.cacheModel.containerBy(containerId) match {
-      case Some(container) =>
-        saveSeal(mode, boundForm, container)
-      case _ => errorHandler.displayErrorPage()
-    }
+    Seal
+      .form()
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[Seal]) => Future.successful(BadRequest(addPage(mode, formWithErrors, containerId))),
+        validSeal =>
+          request.cacheModel.containerBy(containerId) match {
+            case Some(container) =>
+              saveSeal(mode, Seal.form.fill(validSeal), container)
+            case _ => errorHandler.displayErrorPage()
+        }
+      )
   }
 
   def displaySealSummary(mode: Mode, containerId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
