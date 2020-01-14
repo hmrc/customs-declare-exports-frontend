@@ -16,6 +16,7 @@
 
 package forms.declaration
 
+import forms.DeclarationPage
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
@@ -23,7 +24,7 @@ import utils.validators.forms.FieldValidator.isContainedIn
 
 case class RepresentativeDetails(details: Option[EntityDetails], statusCode: Option[String])
 
-object RepresentativeDetails {
+object RepresentativeDetails extends DeclarationPage {
   implicit val format = Json.format[RepresentativeDetails]
 
   import StatusCodes._
