@@ -20,7 +20,7 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class CommodityMeasure(supplementaryUnits: Option[String], netMass: String, grossMass: String)
+case class CommodityMeasure(supplementaryUnits: Option[String], grossMass: String, netMass: String)
 object CommodityMeasure {
 
   implicit val format = Json.format[CommodityMeasure]
@@ -29,12 +29,12 @@ object CommodityMeasure {
 
   val mapping = Forms.mapping(
     "supplementaryUnits" -> optional(text().verifying("supplementary.commodityMeasure.supplementaryUnits.error", validateDecimal(16)(2))),
-    "netMass" -> text
-      .verifying("supplementary.commodityMeasure.netMass.empty", nonEmpty)
-      .verifying("supplementary.commodityMeasure.netMass.error", isEmpty or validateDecimal(11)(3)),
     "grossMass" -> text
       .verifying("supplementary.commodityMeasure.grossMass.empty", nonEmpty)
-      .verifying("supplementary.commodityMeasure.grossMass.error", isEmpty or validateDecimal(16)(2))
+      .verifying("supplementary.commodityMeasure.grossMass.error", isEmpty or validateDecimal(16)(2)),
+    "netMass" -> text
+      .verifying("supplementary.commodityMeasure.netMass.empty", nonEmpty)
+      .verifying("supplementary.commodityMeasure.netMass.error", isEmpty or validateDecimal(11)(3))
   )(CommodityMeasure.apply)(CommodityMeasure.unapply)
 
   def form(): Form[CommodityMeasure] = Form(mapping)

@@ -24,14 +24,14 @@ import services.Countries.allCountries
 import utils.validators.forms.FieldValidator._
 
 case class GoodsLocation(
-  country: String,
   typeOfLocation: String,
   qualifierOfIdentification: String,
   identificationOfLocation: Option[String],
   additionalIdentifier: Option[String],
   addressLine: Option[String],
   postCode: Option[String],
-  city: Option[String]
+  city: Option[String],
+  country: String
 )
 
 object GoodsLocation extends DeclarationPage {
@@ -40,10 +40,6 @@ object GoodsLocation extends DeclarationPage {
   val formId = "GoodsLocation"
 
   val mapping = Forms.mapping(
-    "country" ->
-      text()
-        .verifying("supplementary.address.country.empty", _.trim.nonEmpty)
-        .verifying("supplementary.address.country.error", input => input.trim.isEmpty || allCountries.exists(_.countryName == input)),
     "typeOfLocation" -> text()
       .verifying("supplementary.goodsLocation.typeOfLocation.empty", nonEmpty)
       .verifying("supplementary.goodsLocation.typeOfLocation.error", isEmpty or (isAlphabetic and hasSpecificLength(1))),
@@ -67,7 +63,11 @@ object GoodsLocation extends DeclarationPage {
     "city" -> optional(
       text()
         .verifying("supplementary.goodsLocation.city.error", isAlphanumericWithAllowedSpecialCharacters and noLongerThan(35))
-    )
+    ),
+    "country" ->
+      text()
+        .verifying("supplementary.address.country.empty", _.trim.nonEmpty)
+        .verifying("supplementary.address.country.error", input => input.trim.isEmpty || allCountries.exists(_.countryName == input))
   )(GoodsLocation.apply)(GoodsLocation.unapply)
 
   def form(): Form[GoodsLocation] = Form(mapping)

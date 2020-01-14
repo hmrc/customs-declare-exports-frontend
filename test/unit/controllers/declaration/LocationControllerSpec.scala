@@ -77,7 +77,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
 
       "display page method is invoked and cache contains data" in {
 
-        val goodsLocation = GoodsLocation("PL", "A", "B", None, None, None, None, None)
+        val goodsLocation = GoodsLocation("A", "B", None, None, None, None, None, "PL")
         withNewCaching(aDeclaration(withGoodsLocation(goodsLocation)))
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
@@ -102,7 +102,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
       "form is incorrect" in {
 
         val incorrectForm =
-          Json.toJson(GoodsLocation("incorrect", "incorrect", "incorrect", None, None, None, None, None))
+          Json.toJson(GoodsLocation("incorrect", "incorrect", None, None, None, None, None, "incorrect"))
 
         val result = controller.saveLocation(Mode.Normal)(postRequest(incorrectForm))
 
@@ -115,7 +115,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
 
       "information provided by user are correct" in {
 
-        val correctForm = Json.toJson(GoodsLocation("Poland", "A", "B", None, None, None, None, None))
+        val correctForm = Json.toJson(GoodsLocation("A", "B", None, None, None, None, None, "Poland"))
 
         val result = controller.saveLocation(Mode.Normal)(postRequest(correctForm))
 
