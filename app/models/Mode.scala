@@ -27,15 +27,27 @@ object Mode {
     override val name: String = "Normal"
   }
 
+  case object Change extends Mode {
+    override val name: String = "Change"
+  }
+
   case object Amend extends Mode {
     override val name: String = "Amend"
+  }
+
+  case object ChangeAmend extends Mode {
+    override val name: String = "Change-Amend"
   }
 
   case object Draft extends Mode {
     override val name: String = "Draft"
   }
 
-  def withName(str: String): Option[Mode] = Set[Mode](Normal, Amend, Draft).find(_.name == str)
+  private val modes = Set[Mode](Normal, Amend, Draft, Change, ChangeAmend)
+
+  def withName(str: String): Option[Mode] = {
+    modes.find(_.name == str)
+  }
 
   implicit val binder: QueryStringBindable[Mode] = new QueryStringBindable[Mode] {
     private val strBinder: QueryStringBindable[String] = implicitly[QueryStringBindable[String]]

@@ -157,7 +157,6 @@ object Navigator {
   }
 
   val occasional: PartialFunction[DeclarationPage, Mode => Call] = {
-
     case ModeOfTransportCodes        => controllers.declaration.routes.InlandTransportDetailsController.displayPage
     case TransportPayment            => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case ContainerFirst              => controllers.declaration.routes.TransportPaymentController.displayPage
@@ -183,20 +182,30 @@ object Navigator {
   }
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
-    request.declarationType match {
-      case STANDARD      => standard(page)(mode)
-      case SUPPLEMENTARY => supplementary(page)(mode)
-      case SIMPLIFIED    => simplified(page)(mode)
-      case OCCASIONAL    => occasional(page)(mode)
-      case CLEARANCE     => clearance(page)(mode)
+    mode match {
+      case Mode.Change => controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
+      case Mode.ChangeAmend => controllers.declaration.routes.SummaryController.displayPage(Mode.Amend)
+      case _=> request.declarationType match {
+          case STANDARD      => standard(page)(mode)
+          case SUPPLEMENTARY => supplementary(page)(mode)
+          case SIMPLIFIED    => simplified(page)(mode)
+          case OCCASIONAL    => occasional(page)(mode)
+          case CLEARANCE     => clearance(page)(mode)
+        }
     }
 
+
   def backLink(page: DeclarationPage, mode: Mode, itemId: ItemId)(implicit request: JourneyRequest[_]): Call =
-    request.declarationType match {
-      case STANDARD      => standardItemPage(page)(mode, itemId.id)
-      case SUPPLEMENTARY => supplementaryItemPage(page)(mode, itemId.id)
-      case SIMPLIFIED    => simplifiedItemPage(page)(mode, itemId.id)
-      case OCCASIONAL    => occasionalItemPage(page)(mode, itemId.id)
-      case CLEARANCE     => clearanceItemPage(page)(mode, itemId.id)
+    mode match {
+      case Mode.Change => controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
+      case Mode.ChangeAmend => controllers.declaration.routes.SummaryController.displayPage(Mode.Amend)
+      case _ => request.declarationType match {
+        case STANDARD      => standardItemPage(page)(mode, itemId.id)
+        case SUPPLEMENTARY => supplementaryItemPage(page)(mode, itemId.id)
+        case SIMPLIFIED    => simplifiedItemPage(page)(mode, itemId.id)
+        case OCCASIONAL    => occasionalItemPage(page)(mode, itemId.id)
+        case CLEARANCE     => clearanceItemPage(page)(mode, itemId.id)
+      }
     }
+
 }
