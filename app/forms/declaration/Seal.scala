@@ -15,10 +15,10 @@
  */
 
 package forms.declaration
-import play.api.data.{Form, Forms}
 import play.api.data.Forms.text
+import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
-import utils.validators.forms.FieldValidator.{isAlphanumeric, noLongerThan, nonEmpty}
+import utils.validators.forms.FieldValidator._
 
 case class Seal(id: String)
 
@@ -27,12 +27,12 @@ object Seal {
 
   val formId = "Seal"
 
-  val formMapping = Forms.mapping(
+  val formMapping: Mapping[Seal] = Forms.mapping(
     "id" ->
       text()
         .verifying("standard.transport.sealId.empty.error", nonEmpty)
-        .verifying("standard.transport.sealId.alphaNumeric.error", isAlphanumeric)
-        .verifying("standard.transport.sealId.longer.error", noLongerThan(20))
+        .verifying("standard.transport.sealId.alphaNumeric.error", isEmpty or isAlphanumeric)
+        .verifying("standard.transport.sealId.longer.error", isEmpty or noLongerThan(20))
   )(Seal.apply)(Seal.unapply)
 
   def form(): Form[Seal] = Form(formMapping)

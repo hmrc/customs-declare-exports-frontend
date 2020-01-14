@@ -58,10 +58,10 @@ class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
       view.getElementById(CommodityDetails.descriptionOfGoodsKey).text() mustBe expectedDescription
     }
 
-    "display 'Back' button that links to 'Package Information' page" in {
+    "display 'Back' button that links to 'Fiscal Information' page with 'fast-forward' enabled" in {
       val backButton = view.getElementById("back-link")
       backButton.getElementById("back-link") must haveHref(
-        controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId)
+        controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId, fastForward = true)
       )
     }
 
