@@ -41,7 +41,7 @@
     @helper.form(routes.CommodityDetailsController.submitForm(mode, itemId), 'autocomplete -> "off") {
         @helper.CSRF.formField
 
-        @components.back_link(routes.FiscalInformationController.displayPage(mode, itemId), mode)
+        @components.back_link(routes.FiscalInformationController.displayPage(mode, itemId, fastForward = true), mode)
 
         @components.error_summary(form.errors)
 

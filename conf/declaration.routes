@@ -165,7 +165,7 @@ POST        /items/:itemId/procedure-codes        controllers.declaration.Proced
 
 # Fiscal Information
 
-GET          /items/:itemId/fiscal-information    controllers.declaration.FiscalInformationController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, fastForward: Boolean ?= true)
+GET          /items/:itemId/fiscal-information    controllers.declaration.FiscalInformationController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, fastForward: Boolean ?= false)
 
 POST         /items/:itemId/fiscal-information   controllers.declaration.FiscalInformationController.saveFiscalInformation(mode: models.Mode ?= models.Mode.Normal, itemId)
 
