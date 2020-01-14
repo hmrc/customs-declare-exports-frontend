@@ -31,7 +31,7 @@ import play.api.mvc._
 import services._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.summary.{summary_page, summary_page_no_data}
+import views.html.declaration.summary._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -42,7 +42,9 @@ class SummaryController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   submissionService: SubmissionService,
   mcc: MessagesControllerComponents,
-  summaryPage: summary_page,
+  normalSummaryPage: normal_summary_page,
+  amendSummaryPage: amend_summary_page,
+  draftSummaryPage: draft_summary_page,
   summaryPageNoData: summary_page_no_data
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
@@ -51,7 +53,12 @@ class SummaryController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (containsMandatoryData(request.cacheModel, mode)) {
-      Ok(summaryPage(mode, LegalDeclaration.form()))
+      mode match {
+        case Mode.Normal => Ok(normalSummaryPage(LegalDeclaration.form()))
+        case Mode.Amend => Ok(amendSummaryPage())
+        case Mode.Draft => Ok(draftSummaryPage())
+        case _ => handleError("Invalid mode on summary page")
+      }
     } else {
       Ok(summaryPageNoData())
     }
@@ -65,7 +72,7 @@ class SummaryController @Inject()(
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(summaryPage(Mode.Normal, formWithErrors))),
+        (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(normalSummaryPage(formWithErrors))),
         legalDeclaration => {
           submissionService.submit(request.eori, request.cacheModel, legalDeclaration).map {
             case Some(lrn) =>
