@@ -17,7 +17,7 @@
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 
-@(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 <div id="declaration-references-summary">
     @components.summary_list(Some(messages("declaration.summary.references"))) {
@@ -37,7 +37,7 @@
                       messages("site.no")
                   }
               ),
-              call = Some(controllers.declaration.routes.DispatchLocationController.displayPage()),
+              call = Some(controllers.declaration.routes.DispatchLocationController.displayPage(mode)),
               changeLabel = Some(messages("declaration.summary.references.location.change"))
           ))
       )
@@ -46,7 +46,7 @@
         components.table_row("additionalType", HtmlTableRow(
             label = messages("declaration.summary.references.additionalType"),
             value = messages(s"declaration.summary.references.additionalType.${decType.toString}"),
-            call = Some(controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage()),
+            call = Some(controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage(mode)),
             changeLabel = Some(messages("declaration.summary.references.additionalType.change"))
         ))
       )
@@ -54,7 +54,7 @@
           components.table_row("ducr", HtmlTableRow(
               label = messages("declaration.summary.references.ducr"),
               value = refs.ducr.ducr,
-              call = Some(controllers.declaration.routes.ConsignmentReferencesController.displayPage()),
+              call = Some(controllers.declaration.routes.ConsignmentReferencesController.displayPage(mode)),
               changeLabel = Some(messages("declaration.summary.references.ducr.change"))
           ))
       )
@@ -62,7 +62,7 @@
             components.table_row("lrn", HtmlTableRow(
                 label = messages("declaration.summary.references.lrn"),
                 value = refs.lrn.value,
-                call = Some(controllers.declaration.routes.ConsignmentReferencesController.displayPage()),
+                call = Some(controllers.declaration.routes.ConsignmentReferencesController.displayPage(mode)),
                 changeLabel = Some(messages("declaration.summary.references.lrn.change"))
             ))
         )
