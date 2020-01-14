@@ -61,7 +61,7 @@ object ModeOfTransportCodes extends DeclarationPage {
   private val mapping = Forms.single(
     "code" ->
       requiredRadio("declaration.transportInformation.borderTransportMode.error.empty")
-        .verifying("declaration.transportInformation.borderTransportMode.error.empty", isContainedIn(reverseLookup.keySet))
+        .verifying("declaration.transportInformation.borderTransportMode.error.incorrect", isContainedIn(reverseLookup.keySet))
         .transform[ModeOfTransportCodes](choice => ModeOfTransportCodes(choice).get, choice => choice.value)
   )
 
