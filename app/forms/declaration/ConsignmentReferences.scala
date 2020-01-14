@@ -16,13 +16,13 @@
 
 package forms.declaration
 
-import forms.{Ducr, Lrn}
+import forms.{DeclarationPage, Ducr, Lrn}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 
 case class ConsignmentReferences(ducr: Ducr, lrn: Lrn)
 
-object ConsignmentReferences {
+object ConsignmentReferences extends DeclarationPage {
 
   val mapping =
     Forms.mapping("ducr" -> Ducr.ducrMapping, "lrn" -> Lrn.mapping("supplementary.consignmentReferences.lrn"))(ConsignmentReferences.apply)(

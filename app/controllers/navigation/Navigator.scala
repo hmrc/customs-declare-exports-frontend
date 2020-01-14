@@ -190,19 +190,24 @@ object Navigator {
     case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
   }
 
+  val universal: PartialFunction[DeclarationPage, Mode => Call] = {
+    case ConsignmentReferences => controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage
+  }
+
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
     mode match {
       case Mode.Change      => controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
       case Mode.ChangeAmend => controllers.declaration.routes.SummaryController.displayPage(Mode.Amend)
       case Mode.Draft       => controllers.declaration.routes.SummaryController.displayPage(Mode.Draft)
       case _ =>
-        request.declarationType match {
-          case STANDARD      => standard(page)(mode)
-          case SUPPLEMENTARY => supplementary(page)(mode)
-          case SIMPLIFIED    => simplified(page)(mode)
-          case OCCASIONAL    => occasional(page)(mode)
-          case CLEARANCE     => clearance(page)(mode)
+        val specific = request.declarationType match {
+          case STANDARD      => standard
+          case SUPPLEMENTARY => supplementary
+          case SIMPLIFIED    => simplified
+          case OCCASIONAL    => occasional
+          case CLEARANCE     => clearance
         }
+        universal.orElse(specific)(page)(mode)
     }
 
   def backLink(page: DeclarationPage, mode: Mode, itemId: ItemId)(implicit request: JourneyRequest[_]): Call =
