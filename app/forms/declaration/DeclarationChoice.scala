@@ -15,9 +15,9 @@
  */
 
 package forms.declaration
+import forms.Mapping.requiredRadio
 import models.DeclarationType
 import models.DeclarationType.DeclarationType
-import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import utils.validators.forms.FieldValidator.isContainedIn
 
@@ -27,7 +27,7 @@ object DeclarationChoice {
 
   val mapping = Forms.single(
     "type" ->
-      text()
+      requiredRadio("declaration.type.error")
         .verifying("declaration.type.error", isContainedIn(DeclarationType.values.map(_.toString)))
         .transform[DeclarationChoice](
           choice => DeclarationChoice(DeclarationType.values.find(_.toString.equals(choice)).get),
