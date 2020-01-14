@@ -59,7 +59,7 @@ class OriginationCountryController @Inject()(
         formWithErrors => Future.successful(BadRequest(originationCountryPage(mode, formWithErrors))),
         validCountry =>
           updateExportsDeclarationSyncDirect(_.updateOriginationCountry(validCountry)).map { _ =>
-            navigator.continueTo(controllers.declaration.routes.DestinationCountryController.displayPage(mode))
+            navigator.continueTo(mode, controllers.declaration.routes.DestinationCountryController.displayPage)
         }
       )
   }

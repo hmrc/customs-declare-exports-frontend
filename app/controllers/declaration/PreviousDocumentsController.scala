@@ -66,7 +66,7 @@ class PreviousDocumentsController @Inject()(
           formWithErrors => Future.successful(BadRequest(previousDocumentsPage(mode, formWithErrors, cache.documents))),
           updatedCache =>
             updateCache(PreviousDocumentsData(updatedCache))
-              .map(_ => navigator.continueTo(controllers.declaration.routes.ItemsSummaryController.displayPage(mode)))
+              .map(_ => navigator.continueTo(mode, controllers.declaration.routes.ItemsSummaryController.displayPage))
         )
 
       case Add =>
@@ -74,14 +74,14 @@ class PreviousDocumentsController @Inject()(
           formWithErrors => Future.successful(BadRequest(previousDocumentsPage(mode, formWithErrors, cache.documents))),
           updatedCache =>
             updateCache(PreviousDocumentsData(updatedCache))
-              .map(_ => navigator.continueTo(controllers.declaration.routes.PreviousDocumentsController.displayPage(mode)))
+              .map(_ => navigator.continueTo(mode, controllers.declaration.routes.PreviousDocumentsController.displayPage))
         )
 
       case Remove(ids) =>
         val itemToRemove = Document.fromJsonString(ids.head)
         val updatedDocuments = MultipleItemsHelper.remove(cache.documents, itemToRemove.contains(_: Document))
         updateCache(PreviousDocumentsData(updatedDocuments))
-          .map(_ => navigator.continueTo(routes.PreviousDocumentsController.displayPage(mode)))
+          .map(_ => navigator.continueTo(mode, routes.PreviousDocumentsController.displayPage))
 
       case _ => Future.successful(BadRequest(previousDocumentsPage(mode, boundForm, cache.documents)))
     }

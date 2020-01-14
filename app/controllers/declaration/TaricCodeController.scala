@@ -72,7 +72,7 @@ class TaricCodeController @Inject()(
         formWithErrors => Future.successful(BadRequest(taricCodesPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
           updateExportsCache(itemId, updatedCache)
-            .map(_ => navigator.continueTo(controllers.declaration.routes.TaricCodeController.displayPage(mode, itemId)))
+            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.TaricCodeController.displayPage(_, itemId)))
       )
 
   private def removeItem(mode: Mode, itemId: String, values: Seq[String], boundForm: Form[TaricCode], items: Seq[TaricCode])(
@@ -81,7 +81,7 @@ class TaricCodeController @Inject()(
     val itemToRemove = items.find(_.taricCode.equals(values.head))
     val updatedCache = remove(items, itemToRemove.contains(_: TaricCode))
     updateExportsCache(itemId, updatedCache)
-      .map(_ => navigator.continueTo(routes.TaricCodeController.displayPage(mode, itemId)))
+      .map(_ => navigator.continueTo(mode, routes.TaricCodeController.displayPage(_, itemId)))
   }
 
   private def saveAndContinue(mode: Mode, itemId: String, boundForm: Form[TaricCode], cachedData: Seq[TaricCode])(
@@ -93,11 +93,9 @@ class TaricCodeController @Inject()(
         formWithErrors => Future.successful(BadRequest(taricCodesPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
           updateExportsCache(itemId, updatedCache)
-            .map(_ => navigator.continueTo(nextPage(mode, itemId)))
+            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.NactCodeController.displayPage(_, itemId)))
       )
 
-  private def nextPage(mode: Mode, itemId: String) =
-    controllers.declaration.routes.NactCodeController.displayPage(mode, itemId)
 
   private def updateExportsCache(itemId: String, updatedCache: Seq[TaricCode])(
     implicit r: JourneyRequest[AnyContent]

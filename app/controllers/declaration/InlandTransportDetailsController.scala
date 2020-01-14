@@ -20,10 +20,11 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.InlandModeOfTransportCode
 import javax.inject.Inject
+import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.inland_transport_details
@@ -56,16 +57,19 @@ class InlandTransportDetailsController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(inlandTransportDetailsPage(mode, formWithErrors))),
         form => {
-          val nextStep = request.cacheModel.`type` match {
-            case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY | DeclarationType.CLEARANCE =>
-              controllers.declaration.routes.TransportLeavingTheBorderController.displayPage(mode)
-            case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
-              controllers.declaration.routes.BorderTransportController.displayPage(mode)
-          }
           updateCache(form)
-            .map(_ => navigator.continueTo(nextStep))
+            .map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
         }
       )
+  }
+
+  private def nextPage(declarationType: DeclarationType): Mode => Call = {
+    declarationType match {
+      case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY | DeclarationType.CLEARANCE =>
+        controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
+      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
+        controllers.declaration.routes.BorderTransportController.displayPage
+    }
   }
 
   private def updateCache(formData: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =

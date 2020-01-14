@@ -24,6 +24,7 @@ import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation._
 import handlers.ErrorHandler
 import javax.inject.Inject
+import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
@@ -69,7 +70,7 @@ class PackageInformationController @Inject()(
     val itemToRemove = PackageInformation.fromJsonString(values.head)
     val updatedCache = remove(items, itemToRemove.contains(_: PackageInformation))
     updateExportsCache(itemId, updatedCache)
-      .map(_ => navigator.continueTo(routes.PackageInformationController.displayPage(mode, itemId)))
+      .map(_ => navigator.continueTo(mode, routes.PackageInformationController.displayPage(_, itemId)))
   }
 
   private def saveAndContinue(mode: Mode, itemId: String, boundForm: Form[PackageInformation], cachedData: Seq[PackageInformation])(
@@ -81,7 +82,7 @@ class PackageInformationController @Inject()(
         formWithErrors => Future.successful(BadRequest(packageInformationPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
           updateExportsCache(itemId, updatedCache)
-            .map(_ => navigator.continueTo(nextPage(mode, itemId, request)))
+            .map(_ => navigator.continueTo(mode, nextPage(itemId, request.declarationType)))
       )
 
   private def updateExportsCache(itemId: String, updatedCache: Seq[PackageInformation])(
@@ -89,12 +90,12 @@ class PackageInformationController @Inject()(
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(packageInformation = Some(updatedCache.toList))))
 
-  private def nextPage(mode: Mode, itemId: String, request: JourneyRequest[AnyContent]) =
-    request.declarationType match {
+  private def nextPage(itemId: String, declarationType: DeclarationType): Mode => Call =
+    declarationType match {
       case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | DeclarationType.CLEARANCE =>
-        controllers.declaration.routes.CommodityMeasureController.displayPage(mode, itemId)
+        controllers.declaration.routes.CommodityMeasureController.displayPage(_, itemId)
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
-        controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId)
+        controllers.declaration.routes.AdditionalInformationController.displayPage(_, itemId)
     }
 
   private def addItem(mode: Mode, itemId: String, boundForm: Form[PackageInformation], cachedData: Seq[PackageInformation])(
@@ -106,6 +107,6 @@ class PackageInformationController @Inject()(
         formWithErrors => Future.successful(BadRequest(packageInformationPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
           updateExportsCache(itemId, updatedCache)
-            .map(_ => navigator.continueTo(controllers.declaration.routes.PackageInformationController.displayPage(mode, itemId)))
+            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.PackageInformationController.displayPage(_, itemId)))
       )
 }

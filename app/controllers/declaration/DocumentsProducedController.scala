@@ -103,8 +103,8 @@ class DocumentsProducedController @Inject()(
     if (document.isDefined) {
       val updateDocs = DocumentsProducedData(documents :+ document)
       updateModelInCache(itemId, document, updateDocs)
-        .map(_ => navigator.continueTo(routes.ItemsSummaryController.displayPage(mode)))
-    } else Future.successful(navigator.continueTo(routes.ItemsSummaryController.displayPage(mode)))
+        .map(_ => navigator.continueTo(mode, routes.ItemsSummaryController.displayPage))
+    } else Future.successful(navigator.continueTo(mode, routes.ItemsSummaryController.displayPage))
 
   private def updateModelInCache(itemId: String, document: DocumentsProduced, updatedDocs: DocumentsProducedData)(
     implicit journeyRequest: JourneyRequest[AnyContent]
@@ -124,7 +124,7 @@ class DocumentsProducedController @Inject()(
       case (document, documents) =>
         if (document.isDefined) {
           updateCache(itemId, DocumentsProducedData(documents :+ document))
-            .map(_ => navigator.continueTo(routes.DocumentsProducedController.displayPage(mode, itemId)))
+            .map(_ => navigator.continueTo(mode, routes.DocumentsProducedController.displayPage(_, itemId)))
         } else
           handleErrorPage(mode, itemId, Seq(("", "supplementary.addDocument.error.notDefined")), userInput, cachedData.documents)
     }
@@ -136,7 +136,7 @@ class DocumentsProducedController @Inject()(
     val itemToRemove = DocumentsProduced.fromJsonString(values.head)
     val updatedCache =
       cachedData.copy(documents = remove(cachedData.documents, itemToRemove.contains(_: DocumentsProduced)))
-    updateCache(itemId, updatedCache).map(_ => navigator.continueTo(routes.DocumentsProducedController.displayPage(mode, itemId)))
+    updateCache(itemId, updatedCache).map(_ => navigator.continueTo(mode, routes.DocumentsProducedController.displayPage(_, itemId)))
   }
 
   private def handleErrorPage(

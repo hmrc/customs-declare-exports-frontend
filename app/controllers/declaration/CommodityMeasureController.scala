@@ -63,7 +63,7 @@ class CommodityMeasureController @Inject()(
         validForm =>
           updateExportsCache(itemId, validForm).map { _ =>
             navigator
-              .continueTo(controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId))
+              .continueTo(mode, controllers.declaration.routes.AdditionalInformationController.displayPage(_, itemId))
         }
       )
   }

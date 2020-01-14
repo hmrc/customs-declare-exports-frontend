@@ -20,11 +20,12 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitStandard, OfficeOfExitSupplementary}
 import javax.inject.Inject
+import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
 import play.twirl.api.Html
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -78,7 +79,7 @@ class OfficeOfExitController @Inject()(
         (formWithErrors: Form[OfficeOfExitSupplementary]) => Future.successful(BadRequest(officeOfExitSupplementaryPage(mode, formWithErrors))),
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(nextPage(mode, request)))
+            .map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
       )
 
   private def saveStandardOffice(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
@@ -92,7 +93,7 @@ class OfficeOfExitController @Inject()(
         },
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(nextPage(mode, request)))
+            .map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
       )
 
   private def updateCache(formData: OfficeOfExitSupplementary)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
@@ -101,11 +102,11 @@ class OfficeOfExitController @Inject()(
   private def updateCache(formData: OfficeOfExitStandard)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData)))))
 
-  private def nextPage(mode: Mode, request: JourneyRequest[AnyContent]) =
-    request.declarationType match {
+  private def nextPage(declarationType: DeclarationType): Mode => Call =
+    declarationType match {
       case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | DeclarationType.CLEARANCE =>
-        controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode)
+        controllers.declaration.routes.TotalNumberOfItemsController.displayPage
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
-        controllers.declaration.routes.PreviousDocumentsController.displayPage(mode)
+        controllers.declaration.routes.PreviousDocumentsController.displayPage
     }
 }

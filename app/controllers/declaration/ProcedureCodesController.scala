@@ -109,7 +109,7 @@ class ProcedureCodesController @Inject()(
 
       case (Some(code), seq) =>
         updateCache(itemId, ProcedureCodesData(userInput.procedureCode, seq :+ code))
-          .map(_ => navigator.continueTo(routes.ProcedureCodesController.displayPage(mode, itemId)))
+          .map(_ => navigator.continueTo(mode, routes.ProcedureCodesController.displayPage(_, itemId)))
 
     }
 
@@ -120,7 +120,7 @@ class ProcedureCodesController @Inject()(
     val updatedCache =
       cachedData.copy(additionalProcedureCodes = remove(cachedData.additionalProcedureCodes, (_: String) == code))
     updateCache(itemId, updatedCache)
-      .map(_ => navigator.continueTo(routes.ProcedureCodesController.displayPage(mode, itemId)))
+      .map(_ => navigator.continueTo(mode, routes.ProcedureCodesController.displayPage(_, itemId)))
   }
 
   private def updateCache(itemId: String, updatedProcedureCodes: ProcedureCodesData)(
@@ -140,7 +140,7 @@ class ProcedureCodesController @Inject()(
         procedureCode match {
           case ProcedureCodes(Some(procedureCode), Some(additionalCode)) =>
             updateCache(itemId, ProcedureCodesData(Some(procedureCode), Seq(additionalCode)))
-              .map(_ => navigator.continueTo(routes.FiscalInformationController.displayPage(mode, itemId)))
+              .map(_ => navigator.continueTo(mode, routes.FiscalInformationController.displayPage(_, itemId)))
           case ProcedureCodes(procedureCode, additionalCode) =>
             val procedureCodeError =
               procedureCode.fold(Seq(("procedureCode", "supplementary.procedureCodes.procedureCode.error.empty")))(_ => Seq[(String, String)]())
@@ -186,7 +186,7 @@ class ProcedureCodesController @Inject()(
               ProcedureCodesData(Some(procedureCode), cachedData.additionalProcedureCodes ++ additionalCode.fold(Seq[String]())(Seq(_)))
 
             updateCache(itemId, updatedCache)
-              .map(_ => navigator.continueTo(routes.FiscalInformationController.displayPage(mode, itemId)))
+              .map(_ => navigator.continueTo(mode, routes.FiscalInformationController.displayPage(_, itemId)))
         }
     }
 

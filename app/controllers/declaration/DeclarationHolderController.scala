@@ -170,7 +170,7 @@ class DeclarationHolderController @Inject()(
   ): Future[Result] = {
     val updatedCache = cachedData.copy(holders = remove(cachedData.holders, (_: DeclarationHolder) == holderToRemove))
     updateCache(updatedCache)
-      .map(_ => navigator.continueTo(routes.DeclarationHolderController.displayPage(mode)))
+      .map(_ => navigator.continueTo(mode, routes.DeclarationHolderController.displayPage))
   }
 
   private def retrieveHolder(values: Seq[String]): DeclarationHolder =
@@ -179,9 +179,9 @@ class DeclarationHolderController @Inject()(
   private def navigateToNextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
     request.declarationType match {
       case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY | DeclarationType.CLEARANCE =>
-        navigator.continueTo(controllers.declaration.routes.OriginationCountryController.displayPage(mode))
+        navigator.continueTo(mode, controllers.declaration.routes.OriginationCountryController.displayPage)
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
-        navigator.continueTo(controllers.declaration.routes.DestinationCountryController.displayPage(mode))
+        navigator.continueTo(mode, controllers.declaration.routes.DestinationCountryController.displayPage)
     }
 
 }

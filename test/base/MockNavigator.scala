@@ -18,6 +18,7 @@ package base
 
 import config.AppConfig
 import controllers.navigation.Navigator
+import models.Mode
 import models.requests.JourneyRequest
 import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
@@ -33,17 +34,19 @@ trait MockNavigator extends MockitoSugar with BeforeAndAfterEach { self: Mockito
 
   protected val navigator: Navigator = mock[Navigator]
   protected val aRedirectToTheNextPage: Result = mock[Result]
+  protected val redirectFactoryToTheNextPage: Mode => Call = mock[Mode => Call]
   protected val hc: HeaderCarrier = HeaderCarrier()
 
   override protected def beforeEach(): Unit = {
     given(navigator.continueTo(any[Call])(any[JourneyRequest[AnyContent]], any())).willReturn(aRedirectToTheNextPage)
+    given(navigator.continueTo(any[Mode], any[Mode => Call]())(any[JourneyRequest[AnyContent]], any())).willReturn(aRedirectToTheNextPage)
     given(aRedirectToTheNextPage.header).willReturn(ResponseHeader(Status.SEE_OTHER))
   }
 
   protected def thePageNavigatedTo: Call = {
-    val captor: ArgumentCaptor[Call] = ArgumentCaptor.forClass(classOf[Call])
-    Mockito.verify(navigator).continueTo(captor.capture())(any(), any())
-    captor.getValue
+    val captor: ArgumentCaptor[Mode => Call] = ArgumentCaptor.forClass(classOf[Mode => Call])
+    Mockito.verify(navigator).continueTo(any(), captor.capture())(any(), any())
+    captor.getValue.apply(Mode.Normal)
   }
 
   override protected def afterEach(): Unit = {

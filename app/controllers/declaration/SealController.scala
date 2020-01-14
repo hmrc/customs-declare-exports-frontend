@@ -102,10 +102,10 @@ class SealController @Inject()(
         formData =>
           formData.answer match {
             case YesNoAnswers.yes =>
-              Future.successful(navigator.continueTo(routes.SealController.displayAddSeal(mode, containerId)))
+              Future.successful(navigator.continueTo(mode, routes.SealController.displayAddSeal(_, containerId)))
             case YesNoAnswers.no =>
               Future
-                .successful(navigator.continueTo(routes.TransportContainerController.displayContainerSummary(mode)))
+                .successful(navigator.continueTo(mode, routes.TransportContainerController.displayContainerSummary))
         }
       )
 
@@ -120,12 +120,12 @@ class SealController @Inject()(
               removeSeal(containerId, sealId, mode)
             case YesNoAnswers.no =>
               Future
-                .successful(navigator.continueTo(routes.SealController.displaySealSummary(mode, containerId)))
+                .successful(navigator.continueTo(mode, routes.SealController.displaySealSummary(_, containerId)))
         }
       )
 
   private def confirmRemoveSeal(containerId: String, sealId: String, mode: Mode)(implicit request: JourneyRequest[AnyContent]) =
-    Future.successful(navigator.continueTo(routes.SealController.displaySealRemove(mode, containerId, sealId)))
+    Future.successful(navigator.continueTo(mode, routes.SealController.displaySealRemove(_, containerId, sealId)))
 
   private def removeSeal(containerId: String, sealId: String, mode: Mode)(implicit request: JourneyRequest[AnyContent]) = {
     val result =
@@ -133,7 +133,7 @@ class SealController @Inject()(
         case Some(container) => updateCache(container)
         case _               => Future.successful(None)
       }
-    result.map(_ => navigator.continueTo(routes.SealController.displaySealSummary(mode, containerId)))
+    result.map(_ => navigator.continueTo(mode, routes.SealController.displaySealSummary(_, containerId)))
   }
 
   private def saveSeal(mode: Mode, boundForm: Form[Seal], cachedContainer: Container)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
@@ -141,9 +141,9 @@ class SealController @Inject()(
       formWithErrors => Future.successful(BadRequest(addPage(mode, formWithErrors, cachedContainer.id))),
       updatedCache =>
         if (updatedCache != cachedContainer.seals) updateCache(cachedContainer.copy(seals = updatedCache)).map { _ =>
-          navigator.continueTo(routes.SealController.displaySealSummary(mode, cachedContainer.id))
+          navigator.continueTo(mode, routes.SealController.displaySealSummary(_, cachedContainer.id))
         } else
-          Future.successful(navigator.continueTo(routes.SealController.displaySealSummary(mode, cachedContainer.id)))
+          Future.successful(navigator.continueTo(mode, routes.SealController.displaySealSummary(_, cachedContainer.id)))
     )
 
   private def updateCache(updatedContainer: Container)(implicit req: JourneyRequest[AnyContent]) =
