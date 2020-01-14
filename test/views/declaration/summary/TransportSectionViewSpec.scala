@@ -27,7 +27,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
   val data = aDeclaration(
     withDepartureTransport("1", "10", "identifier"),
     withBorderTransport(Some("United Kingdom"), "11", "borderId"),
-    withContainerData(Container("123", Seq.empty)),
+    withContainerData(Seq.empty),
     withTransportPayment(Some(TransportPayment(Some("A"))))
   )
 
@@ -105,11 +105,11 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
       view.getElementById("transport-payment-change") must haveHref(controllers.declaration.routes.TransportPaymentController.displayPage())
     }
 
-    "display information about containers with change button" in {
+    "display information about containers when user said 'No' with change button" in {
       val view = transport_section(data)(messages, journeyRequest())
 
       view.getElementById("containers-label").text() mustBe messages("declaration.summary.transport.containers")
-      view.getElementById("containers").text() mustBe "site.yes"
+      view.getElementById("containers").text() mustBe "site.no"
 
       val List(change, accessibleChange) = view.getElementById("containers-change").text().split(" ").toList
 
