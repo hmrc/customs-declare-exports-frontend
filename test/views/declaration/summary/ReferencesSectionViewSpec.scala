@@ -17,7 +17,7 @@
 package views.declaration.summary
 
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
-import models.DeclarationType
+import models.{DeclarationType, Mode}
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.references_section
@@ -31,8 +31,8 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData {
     withConsignmentReferences(ducr = "DUCR", lrn = "LRN")
   )
 
-  val view = references_section(data)(messages, journeyRequest())
-  val viewNoAnswers = references_section(aDeclaration(withType(DeclarationType.STANDARD)))(messages, journeyRequest())
+  val view = references_section(Mode.Change, data)(messages, journeyRequest())
+  val viewNoAnswers = references_section(Mode.Change, aDeclaration(withType(DeclarationType.STANDARD)))(messages, journeyRequest())
 
   "References section" should {
 
@@ -46,7 +46,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData {
       change mustBe messages("site.change")
       accessibleChange mustBe messages("declaration.summary.references.type.change")
 
-      view.getElementById("declarationType-change") must haveHref(controllers.declaration.routes.DeclarationChoiceController.displayPage())
+      view.getElementById("declarationType-change") must haveHref(controllers.declaration.routes.DeclarationChoiceController.displayPage(Mode.Change))
     }
 
     "have dispatch location with change button" in {
@@ -59,7 +59,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData {
       change mustBe messages("site.change")
       accessibleChange mustBe messages("declaration.summary.references.location.change")
 
-      view.getElementById("location-change") must haveHref(controllers.declaration.routes.DispatchLocationController.displayPage())
+      view.getElementById("location-change") must haveHref(controllers.declaration.routes.DispatchLocationController.displayPage(Mode.Change))
     }
 
     "have additional declaration type with change button" in {
@@ -72,7 +72,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData {
       change mustBe messages("site.change")
       accessibleChange mustBe messages("declaration.summary.references.additionalType.change")
 
-      view.getElementById("additionalType-change") must haveHref(controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage())
+      view.getElementById("additionalType-change") must haveHref(controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage(Mode.Change))
     }
 
     "have ducr with change button" in {
@@ -85,7 +85,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData {
       change mustBe messages("site.change")
       accessibleChange mustBe messages("declaration.summary.references.ducr.change")
 
-      view.getElementById("ducr-change") must haveHref(controllers.declaration.routes.ConsignmentReferencesController.displayPage())
+      view.getElementById("ducr-change") must haveHref(controllers.declaration.routes.ConsignmentReferencesController.displayPage(Mode.Change))
     }
 
     "have lrn with change button" in {
@@ -98,7 +98,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData {
       change mustBe messages("site.change")
       accessibleChange mustBe messages("declaration.summary.references.lrn.change")
 
-      view.getElementById("lrn-change") must haveHref(controllers.declaration.routes.ConsignmentReferencesController.displayPage())
+      view.getElementById("lrn-change") must haveHref(controllers.declaration.routes.ConsignmentReferencesController.displayPage(Mode.Change))
     }
   }
 
@@ -107,7 +107,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData {
     "have declaration type" in {
 
       viewNoAnswers.getElementById("declarationType-label").text() mustBe messages("declaration.summary.references.type")
-      viewNoAnswers.getElementById("declarationType-change") must haveHref(controllers.declaration.routes.DeclarationChoiceController.displayPage())
+      viewNoAnswers.getElementById("declarationType-change") must haveHref(controllers.declaration.routes.DeclarationChoiceController.displayPage(Mode.Change))
     }
 
     "not have dispatch location" in {

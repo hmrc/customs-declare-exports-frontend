@@ -18,7 +18,7 @@ package controllers.navigation
 
 import config.AppConfig
 import controllers.util.{FormAction, SaveAndReturn}
-import forms.DeclarationPage
+import forms.{Choice, DeclarationPage}
 import forms.declaration.RoutingQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingQuestionPage}
 import forms.declaration.destinationCountries.DestinationCountries.{DestinationCountryPage, OriginationCountryPage}
 import forms.declaration.{BorderTransport, Document, PackageInformation, _}
@@ -196,6 +196,7 @@ object Navigator {
     case ConsigneeDetails => controllers.declaration.routes.ExporterDetailsController.displayPage
     case DeclarantDetails => controllers.declaration.routes.ConsigneeDetailsController.displayPage
     case RepresentativeDetails => controllers.declaration.routes.DeclarantDetailsController.displayPage
+    case CarrierDetails => controllers.declaration.routes.RepresentativeDetailsController.displayPage
   }
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =

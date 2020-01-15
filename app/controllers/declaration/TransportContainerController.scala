@@ -183,6 +183,6 @@ class TransportContainerController @Inject()(
     updateExportsDeclarationSyncDirect(_.updateContainers(updatedContainers))
 
   private def redirectAfterAdd(mode: Mode, containerId: String)(implicit request: JourneyRequest[AnyContent]) =
-    navigator.continueTo(routes.SealController.displaySealSummary(mode, containerId))
+    navigator.continueTo(mode, routes.SealController.displaySealSummary(_, containerId))
 
 }

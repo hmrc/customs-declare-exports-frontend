@@ -24,7 +24,7 @@
         @components.table_row("declarationType", HtmlTableRow(
             label = messages("declaration.summary.references.type"),
             value = declarationData.`type`.toString().toLowerCase().capitalize,
-            call = Some(controllers.declaration.routes.DeclarationChoiceController.displayPage()),
+            call = Some(controllers.declaration.routes.DeclarationChoiceController.displayPage(mode)),
             changeLabel = Some(messages("declaration.summary.references.type.change"))
         ))
       @declarationData.dispatchLocation.map(dispatchLocation =>

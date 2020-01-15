@@ -24,7 +24,7 @@
 
 @this(main_template: views.html.main_template, appConfig: AppConfig)
 
-@(form: Form[_])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, form: Form[_])(implicit request: Request[_], messages: Messages)
 
     @main_template(
         title = Title("declaration.type.description")
@@ -32,7 +32,7 @@
 
         @components.back_link(controllers.routes.ChoiceController.displayPage(Some(Choice(CreateDec))))
 
-        @helper.form(controllers.declaration.routes.DeclarationChoiceController.submitChoice(), 'autoComplete -> "off") {
+        @helper.form(controllers.declaration.routes.DeclarationChoiceController.submitChoice(mode), 'autoComplete -> "off") {
             @helper.CSRF.formField
 
             @components.error_summary(form.errors)

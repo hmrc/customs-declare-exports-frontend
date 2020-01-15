@@ -47,7 +47,7 @@ class ModeSpec extends UnitSpec {
 
   "Draft" must {
     "be same after submitting page" in {
-      Draft.next mustBe Draft
+      Draft.next mustBe Normal
     }
   }
 
