@@ -71,7 +71,7 @@ class CommodityMeasureSpec extends WordSpec with MustMatchers {
       "data provided by user is incorrect" in {
 
         val incorrectForm =
-          Map("supplementaryUnits" -> "12345.123", "netMass" -> "12345.1234", "grossMass" -> "12345.123")
+          Map("supplementaryUnits" -> "0", "netMass" -> "123453333333333.1234", "grossMass" -> "12345.12333333")
 
         val result = form.bind(incorrectForm)
         val errorKeys = result.errors.map(_.key)
