@@ -46,7 +46,7 @@ class RoutingCountriesController @Inject()(
 
   def displayRoutingQuestion(mode: Mode, fastForward: Boolean): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (fastForward && request.cacheModel.containRoutingCountries()) {
-      navigator.continueTo(mode, routes.RoutingCountriesSummaryController.displayPage)
+      navigator.redirectTo(mode, routes.RoutingCountriesSummaryController.displayPage)
     } else {
       val destinationCountryCode = request.cacheModel.locations.destinationCountry
       val destinationCountryName = destinationCountryCode.map(findByCode(_)).map(_.countryName).getOrElse("")

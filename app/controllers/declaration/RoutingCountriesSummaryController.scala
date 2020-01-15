@@ -52,7 +52,7 @@ class RoutingCountriesSummaryController @Inject()(
     if (countries.nonEmpty) {
       Ok(routingCountriesSummaryPage(mode, RoutingQuestionYesNo.form(), countries))
     } else {
-      navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(_))
+      navigator.redirectTo(mode, controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(_))
     }
   }
 
@@ -81,7 +81,7 @@ class RoutingCountriesSummaryController @Inject()(
     val country = services.Countries.countryCodeMap(countryCode)
 
     if (isCountryPresentedInCache) Ok(removeRoutingCountryPage(mode, RoutingQuestionYesNo.form(), country))
-    else navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
+    else navigator.redirectTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
   }
 
   def submitRemoveCountry(mode: Mode, countryCode: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -112,7 +112,7 @@ class RoutingCountriesSummaryController @Inject()(
     val page = if (countryIndex > 0) NextRoutingCountryPage else FirstRoutingCountryPage
 
     if (isCountryPresentedInCache) Ok(changeRoutingCountryPage(mode, DestinationCountries.form(page).fill(countryCode), page, countryCode))
-    else navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
+    else navigator.redirectTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
   }
 
   def submitChangeCountry(mode: Mode, countryToChange: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -130,7 +130,7 @@ class RoutingCountriesSummaryController @Inject()(
           val updatedCountries = cachedCountries.updated(countryIndex, validCountry)
 
           updateExportsDeclarationSyncDirect(_.updateCountriesOfRouting(updatedCountries)).map { _ =>
-            navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
+            navigator.continueTo( mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
           }
         }
       )
