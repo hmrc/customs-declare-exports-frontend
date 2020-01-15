@@ -1,0 +1,72 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.declaration.routes._
+@import forms.common.YesNoAnswer
+@import forms.common.YesNoAnswer.YesNoAnswers._
+@import models.declaration.Container
+@import views.components.fields.LabelledValue
+@import views.components.inputs.RadioOption
+@import forms.declaration.Seal
+@import views.Title
+
+@this(main_template: views.html.main_template)
+
+@(mode: Mode, form: Form[YesNoAnswer], container: Container)(implicit request: Request[_], messages: Messages)
+
+
+@main_template(
+    title = Title("declaration.transportInformation.container.remove.title")
+) {
+
+    @components.back_link(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode), mode)
+
+    @components.error_summary(form.errors)
+
+    @components.heading(title = messages("declaration.transportInformation.container.remove.title"))
+
+    @helper.form(TransportContainerController.submitContainerRemove(mode, container.id), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
+        <div class="field-group mb-2">
+            <table id="container-table">
+                <thead>
+                    <tr>
+                        <th>@messages("declaration.transportInformation.containerId.title")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td >@{container.id}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        @components.fields.field_radio(
+            field = form("yesNo"),
+            legend = "",
+            inputs = Seq(
+                RadioOption("Yes", yes, messages("site.yes")),
+                RadioOption("No", no, messages("site.no"))
+            )
+        )
+
+        @components.submit_button()
+        @components.buttons.save_and_return_later_button()
+    }
+}
+

@@ -107,9 +107,11 @@
         }
 
         @declarationData.transport.containers.map(containerSeq =>
-            containers(mode, containerSeq)
+          journeyRequest.declarationType match {
+              case DeclarationType.CLEARANCE => clearance_containers(mode, containerSeq)
+              case _ => containers(mode, containerSeq)
+          }
         )
-
     }
     </div>
 }
