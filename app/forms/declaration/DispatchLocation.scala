@@ -16,6 +16,7 @@
 
 package forms.declaration
 
+import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
 import play.api.data.{Form, Forms, Mapping}
@@ -29,7 +30,7 @@ case class DispatchLocation(
   def isOutsideEU: Boolean = dispatchLocation == AllowedDispatchLocations.OutsideEU
 }
 
-object DispatchLocation {
+object DispatchLocation extends DeclarationPage {
   implicit val format: OFormat[DispatchLocation] = Json.format[DispatchLocation]
 
   private val allowedValues = Set(AllowedDispatchLocations.OutsideEU, AllowedDispatchLocations.SpecialFiscalTerritory)

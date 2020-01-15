@@ -21,37 +21,50 @@
 @import views.Title
 @import views.components.inputs.RadioOption
 @import forms.Choice
+@import forms.declaration.DeclarationChoice
+@import controllers.navigation.Navigator
 
 @this(main_template: views.html.main_template, appConfig: AppConfig)
 
+
+
 @(mode: Mode, form: Form[_])(implicit request: Request[_], messages: Messages)
 
-    @main_template(
-        title = Title("declaration.type.description")
-    ) {
-
-        @components.back_link(controllers.routes.ChoiceController.displayPage(Some(Choice(CreateDec))))
-
-        @helper.form(controllers.declaration.routes.DeclarationChoiceController.submitChoice(mode), 'autoComplete -> "off") {
-            @helper.CSRF.formField
-
-            @components.error_summary(form.errors)
-
-            @components.heading(title = messages("declaration.type.description"))
-
-            @components.fields.field_radio(
-                field = form("type"),
-                legend = "",
-                inputs = Seq(
-                    RadioOption(DeclarationType.STANDARD.toString, DeclarationType.STANDARD.toString, messages("declaration.type.standard"), Some(messages("declaration.type.standard.hint"))),
-                    RadioOption(DeclarationType.SIMPLIFIED.toString, DeclarationType.SIMPLIFIED.toString, messages("declaration.type.simplified"), Some(messages("declaration.type.simplified.hint"))),
-                    RadioOption(DeclarationType.SUPPLEMENTARY.toString, DeclarationType.SUPPLEMENTARY.toString, messages("declaration.type.supplementary"), Some(messages("declaration.type.supplementary.hint"))),
-                    RadioOption(DeclarationType.OCCASIONAL.toString, DeclarationType.OCCASIONAL.toString, messages("declaration.type.occasional"), Some(messages("declaration.type.occasional.hint"))),
-                    RadioOption(RadioOption.dividerId, RadioOption.dividerId, messages("declaration.type.or")),
-                    RadioOption(DeclarationType.CLEARANCE.toString, DeclarationType.CLEARANCE.toString, messages("declaration.type.clearance"))
-                ).filter(radioOption => radioOption.id == RadioOption.dividerId || appConfig.availableDeclarations().contains(radioOption.value))
-            )
-
-            @components.submit_button()
-        }
+@backCall = @{
+    mode match {
+        case Mode.Change => controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
+        case Mode.ChangeAmend => controllers.declaration.routes.SummaryController.displayPage(Mode.Amend)
+        case Mode.Draft => controllers.declaration.routes.SummaryController.displayPage(Mode.Draft)
+        case _ => controllers.routes.ChoiceController.displayPage(Some(Choice(CreateDec)))
     }
+}
+
+@main_template(
+    title = Title("declaration.type.description")
+) {
+
+    @components.back_link(backCall, mode)
+
+    @helper.form(controllers.declaration.routes.DeclarationChoiceController.submitChoice(mode), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
+        @components.error_summary(form.errors)
+
+        @components.heading(title = messages("declaration.type.description"))
+
+        @components.fields.field_radio(
+            field = form("type"),
+            legend = "",
+            inputs = Seq(
+                RadioOption(DeclarationType.STANDARD.toString, DeclarationType.STANDARD.toString, messages("declaration.type.standard"), Some(messages("declaration.type.standard.hint"))),
+                RadioOption(DeclarationType.SIMPLIFIED.toString, DeclarationType.SIMPLIFIED.toString, messages("declaration.type.simplified"), Some(messages("declaration.type.simplified.hint"))),
+                RadioOption(DeclarationType.SUPPLEMENTARY.toString, DeclarationType.SUPPLEMENTARY.toString, messages("declaration.type.supplementary"), Some(messages("declaration.type.supplementary.hint"))),
+                RadioOption(DeclarationType.OCCASIONAL.toString, DeclarationType.OCCASIONAL.toString, messages("declaration.type.occasional"), Some(messages("declaration.type.occasional.hint"))),
+                RadioOption(RadioOption.dividerId, RadioOption.dividerId, messages("declaration.type.or")),
+                RadioOption(DeclarationType.CLEARANCE.toString, DeclarationType.CLEARANCE.toString, messages("declaration.type.clearance"))
+            ).filter(radioOption => radioOption.id == RadioOption.dividerId || appConfig.availableDeclarations().contains(radioOption.value))
+        )
+
+        @components.submit_button()
+    }
+}

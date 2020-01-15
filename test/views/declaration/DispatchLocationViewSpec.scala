@@ -21,6 +21,7 @@ import controllers.util.SaveAndReturn
 import forms.declaration.DispatchLocation
 import helpers.views.declaration.CommonMessages
 import models.Mode
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -34,7 +35,7 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
 
   private val form: Form[DispatchLocation] = DispatchLocation.form()
   private val dispatchLocationPage = new dispatch_location(mainTemplate)
-  private def createView(form: Form[DispatchLocation] = form, mode: Mode = Mode.Normal): Document =
+  private def createView(form: Form[DispatchLocation] = form, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
     dispatchLocationPage(mode, form)(request, messages)
 
   "Dispatch Location" should {
@@ -54,113 +55,134 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
 
   "Dispatch Location View on empty page" should {
 
-    "display page title" in {
+    onEveryDeclarationJourney { implicit request =>
+      "display page title" in {
 
-      createView().getElementById("title").text() mustBe messages("supplementary.dispatchLocation.header")
-    }
-
-    "display section header" in {
-
-      createView().getElementById("section-header").text() must include(messages("declaration.summary.locations.header"))
-    }
-
-    "display two radio buttons with description (not selected)" in {
-
-      val view = createView(DispatchLocation.form().fill(DispatchLocation("")))
-
-      val optionOne = view.getElementById("OutsideEU")
-      optionOne.attr("checked") mustBe empty
-
-      val optionOneLabel = view.getElementById("OutsideEU-label")
-      optionOneLabel.text() mustBe messages("supplementary.dispatchLocation.inputText.outsideEU")
-
-      val optionTwo = view.getElementById("SpecialFiscalTerritory")
-      optionTwo.attr("checked") mustBe empty
-
-      val optionTwoLabel = view.getElementById("SpecialFiscalTerritory-label")
-      optionTwoLabel.text() mustBe messages("supplementary.dispatchLocation.inputText.specialFiscalTerritory")
-    }
-
-    "display 'Back' button" when {
-      "normal mode" in {
-        val backButton = createView(mode = Mode.Normal).getElementById("back-link")
-
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe controllers.declaration.routes.DeclarationChoiceController.displayPage().url
+        createView().getElementById("title").text() mustBe messages("supplementary.dispatchLocation.header")
       }
 
-      "draft mode" in {
-        val backButton = createView(mode = Mode.Draft).getElementById("back-link")
+      "display section header" in {
 
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Draft).url
+        createView().getElementById("section-header").text() must include(messages("declaration.summary.locations.header"))
       }
 
-      "amend mode" in {
-        val backButton = createView(mode = Mode.Amend).getElementById("back-link")
+      "display two radio buttons with description (not selected)" in {
 
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Amend).url
+        val view = createView(DispatchLocation.form().fill(DispatchLocation("")))
+
+        val optionOne = view.getElementById("OutsideEU")
+        optionOne.attr("checked") mustBe empty
+
+        val optionOneLabel = view.getElementById("OutsideEU-label")
+        optionOneLabel.text() mustBe messages("supplementary.dispatchLocation.inputText.outsideEU")
+
+        val optionTwo = view.getElementById("SpecialFiscalTerritory")
+        optionTwo.attr("checked") mustBe empty
+
+        val optionTwoLabel = view.getElementById("SpecialFiscalTerritory-label")
+        optionTwoLabel.text() mustBe messages("supplementary.dispatchLocation.inputText.specialFiscalTerritory")
       }
-    }
 
-    "display 'Save and continue' button" in {
-      val saveButton = createView().getElementById("submit")
-      saveButton.text() mustBe messages(saveAndContinueCaption)
-    }
+      "display 'Back' button" when {
+        "normal mode" in {
+          val backButton = createView(mode = Mode.Normal).getElementById("back-link")
 
-    "display 'Save and return' button" in {
-      val saveButton = createView().getElementById("submit_and_return")
-      saveButton.text() mustBe messages(saveAndReturnCaption)
-      saveButton.attr("name") mustBe SaveAndReturn.toString
+          backButton.text() mustBe messages(backCaption)
+          backButton.attr("href") mustBe controllers.declaration.routes.DeclarationChoiceController.displayPage().url
+        }
+
+        "change mode" in {
+          val backButton = createView(mode = Mode.Change).getElementById("back-link")
+
+          backButton.text() mustBe messages(backCaption)
+          backButton.attr("href") mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Normal).url
+        }
+
+        "draft mode" in {
+          val backButton = createView(mode = Mode.Draft).getElementById("back-link")
+
+          backButton.text() mustBe messages(backCaption)
+          backButton.attr("href") mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Draft).url
+        }
+
+        "amend mode" in {
+          val backButton = createView(mode = Mode.Amend).getElementById("back-link")
+
+          backButton.text() mustBe messages(backCaption)
+          backButton.attr("href") mustBe controllers.declaration.routes.DeclarationChoiceController.displayPage(Mode.Amend).url
+        }
+
+        "change amend mode" in {
+          val backButton = createView(mode = Mode.ChangeAmend).getElementById("back-link")
+
+          backButton.text() mustBe messages(backCaption)
+          backButton.attr("href") mustBe controllers.declaration.routes.SummaryController.displayPage(Mode.Amend).url
+        }
+      }
+
+      "display 'Save and continue' button" in {
+        val saveButton = createView().getElementById("submit")
+        saveButton.text() mustBe messages(saveAndContinueCaption)
+      }
+
+      "display 'Save and return' button" in {
+        val saveButton = createView().getElementById("submit_and_return")
+        saveButton.text() mustBe messages(saveAndReturnCaption)
+        saveButton.attr("name") mustBe SaveAndReturn.toString
+      }
     }
   }
 
   "Dispatch Location View for invalid input" should {
 
-    "display error if nothing is selected" in {
+    onEveryDeclarationJourney { implicit request =>
 
-      val view = createView(DispatchLocation.form().bind(Map[String, String]()))
+      "display error if nothing is selected" in {
 
-      view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("dispatchLocation", "#dispatchLocation")
+        val view = createView(DispatchLocation.form().bind(Map[String, String]()))
 
-      view.select("#error-message-dispatchLocation-input").text() mustBe messages("supplementary.dispatchLocation.inputText.error.empty")
-    }
+        view must haveGlobalErrorSummary
+        view must haveFieldErrorLink("dispatchLocation", "#dispatchLocation")
 
-    "display error if incorrect dispatch is selected" in {
+        view.select("#error-message-dispatchLocation-input").text() mustBe messages("supplementary.dispatchLocation.inputText.error.empty")
+      }
 
-      val view = createView(DispatchLocation.form().fillAndValidate(DispatchLocation("12")))
+      "display error if incorrect dispatch is selected" in {
 
-      view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("dispatchLocation", "#dispatchLocation")
+        val view = createView(DispatchLocation.form().fillAndValidate(DispatchLocation("12")))
 
-      view.select("#error-message-dispatchLocation-input").text() mustBe messages("supplementary.dispatchLocation.inputText.error.incorrect")
+        view must haveGlobalErrorSummary
+        view must haveFieldErrorLink("dispatchLocation", "#dispatchLocation")
+
+        view.select("#error-message-dispatchLocation-input").text() mustBe messages("supplementary.dispatchLocation.inputText.error.incorrect")
+      }
     }
   }
 
   "Dispatch Location View when filled" should {
+    onEveryDeclarationJourney { implicit request =>
 
-    "display selected first radio button - Outside (EX)" in {
+      "display selected first radio button - Outside (EX)" in {
 
-      val view = createView(DispatchLocation.form().fill(DispatchLocation("EX")))
+        val view = createView(DispatchLocation.form().fill(DispatchLocation("EX")))
 
-      val optionOne = view.getElementById("OutsideEU")
-      optionOne.attr("checked") mustBe "checked"
+        val optionOne = view.getElementById("OutsideEU")
+        optionOne.attr("checked") mustBe "checked"
 
-      val optionTwo = view.getElementById("SpecialFiscalTerritory")
-      optionTwo.attr("checked") mustBe empty
-    }
+        val optionTwo = view.getElementById("SpecialFiscalTerritory")
+        optionTwo.attr("checked") mustBe empty
+      }
 
-    "display selected second radio button - Fiscal Territory (CO)" in {
+      "display selected second radio button - Fiscal Territory (CO)" in {
 
-      val view = createView(DispatchLocation.form().fill(DispatchLocation("CO")))
+        val view = createView(DispatchLocation.form().fill(DispatchLocation("CO")))
 
-      val optionOne = view.getElementById("OutsideEU")
-      optionOne.attr("checked") mustBe empty
+        val optionOne = view.getElementById("OutsideEU")
+        optionOne.attr("checked") mustBe empty
 
-      val optionTwo = view.getElementById("SpecialFiscalTerritory")
-      optionTwo.attr("checked") mustBe "checked"
+        val optionTwo = view.getElementById("SpecialFiscalTerritory")
+        optionTwo.attr("checked") mustBe "checked"
+      }
     }
   }
 }

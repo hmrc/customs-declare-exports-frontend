@@ -15,6 +15,7 @@
  */
 
 package forms.declaration
+import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import models.DeclarationType
 import models.DeclarationType.DeclarationType
@@ -23,7 +24,7 @@ import utils.validators.forms.FieldValidator.isContainedIn
 
 case class DeclarationChoice(value: DeclarationType)
 
-object DeclarationChoice {
+object DeclarationChoice extends DeclarationPage {
 
   val mapping = Forms.single(
     "type" ->
