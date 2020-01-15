@@ -23,7 +23,6 @@ import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.locations_section
 import models.Mode
 
-
 class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
   val data = aDeclaration(
