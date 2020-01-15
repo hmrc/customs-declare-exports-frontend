@@ -24,6 +24,7 @@ import forms.common.YesNoAnswer.{form, YesNoAnswers}
 import forms.declaration.{ContainerAdd, ContainerFirst}
 import handlers.ErrorHandler
 import javax.inject.Inject
+import models.DeclarationType.CLEARANCE
 import models.declaration.Container
 import models.declaration.Container.maxNumberOfItems
 import models.requests.JourneyRequest
@@ -33,7 +34,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.{transport_container_add, transport_container_add_first, transport_container_remove, transport_container_summary}
+import views.html.declaration._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -47,7 +48,9 @@ class TransportContainerController @Inject()(
   addFirstPage: transport_container_add_first,
   addPage: transport_container_add,
   summaryPage: transport_container_summary,
-  removePage: transport_container_remove
+  clearanceSummaryPage: transport_container_summary_clearance,
+  removePage: transport_container_remove,
+  clearanceRemovePage: transport_container_remove_clearance
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
@@ -76,7 +79,11 @@ class TransportContainerController @Inject()(
 
   def displayContainerSummary(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.containers match {
-      case containers if containers.nonEmpty => Ok(summaryPage(mode, YesNoAnswer.form(), containers))
+      case containers if containers.nonEmpty =>
+        request.declarationType match {
+          case CLEARANCE => Ok(clearanceSummaryPage(mode, YesNoAnswer.form(), containers))
+          case _         => Ok(summaryPage(mode, YesNoAnswer.form(), containers))
+        }
       case _ =>
         navigator.continueTo(mode, routes.TransportContainerController.displayAddContainer)
     }
@@ -93,8 +100,12 @@ class TransportContainerController @Inject()(
   def displayContainerRemove(mode: Mode, containerId: String): Action[AnyContent] =
     (authenticate andThen journeyType) { implicit request =>
       request.cacheModel.containerBy(containerId) match {
-        case Some(container) => Ok(removePage(mode, YesNoAnswer.form(), container))
-        case _               => navigator.continueTo(mode, routes.TransportContainerController.displayContainerSummary)
+        case Some(container) =>
+          request.declarationType match {
+            case CLEARANCE => Ok(clearanceRemovePage(mode, YesNoAnswer.form(), container))
+            case _         => Ok(removePage(mode, YesNoAnswer.form(), container))
+          }
+        case _ => navigator.continueTo(mode, routes.TransportContainerController.displayContainerSummary)
       }
     }
 
@@ -147,7 +158,13 @@ class TransportContainerController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(summaryPage(mode, formWithErrors, request.cacheModel.containers))),
+        (formWithErrors: Form[YesNoAnswer]) =>
+          request.declarationType match {
+            case CLEARANCE =>
+              Future.successful(BadRequest(clearanceSummaryPage(mode, formWithErrors, request.cacheModel.containers)))
+            case _ =>
+              Future.successful(BadRequest(summaryPage(mode, formWithErrors, request.cacheModel.containers)))
+        },
         formData =>
           formData.answer match {
             case YesNoAnswers.yes =>
@@ -162,7 +179,12 @@ class TransportContainerController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[YesNoAnswer]) =>
-          Future.successful(BadRequest(removePage(mode, formWithErrors, request.cacheModel.containers.filter(_.id == containerId).head))),
+          request.declarationType match {
+            case CLEARANCE =>
+              Future.successful(BadRequest(clearanceRemovePage(mode, formWithErrors, request.cacheModel.containers.filter(_.id == containerId).head)))
+            case _ =>
+              Future.successful(BadRequest(removePage(mode, formWithErrors, request.cacheModel.containers.filter(_.id == containerId).head)))
+        },
         formData => {
           formData.answer match {
             case YesNoAnswers.yes =>
@@ -183,6 +205,8 @@ class TransportContainerController @Inject()(
     updateExportsDeclarationSyncDirect(_.updateContainers(updatedContainers))
 
   private def redirectAfterAdd(mode: Mode, containerId: String)(implicit request: JourneyRequest[AnyContent]) =
-    navigator.continueTo(mode, routes.SealController.displaySealSummary(_, containerId))
-
+    request.declarationType match {
+      case CLEARANCE => navigator.continueTo(mode, routes.TransportContainerController.displayContainerSummary)
+      case _         => navigator.continueTo(mode, routes.SealController.displaySealSummary(_, containerId))
+    }
 }
