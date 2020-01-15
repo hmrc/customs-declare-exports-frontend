@@ -16,6 +16,7 @@
 
 package forms
 
+import forms.Mapping.requiredRadio
 import forms.cancellation.CancellationChangeReason.{Duplication, NoLongerRequired, OtherReason}
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
@@ -32,15 +33,14 @@ object CancelDeclaration {
   val mapping = Forms.mapping(
     "functionalReferenceId" -> Lrn.mapping("cancellation.functionalReferenceId"),
     "mrn" -> text()
-      .verifying("cancellation.mrn.empty", nonEmpty)
-      .verifying("cancellation.mrn.tooLong", isEmpty or noLongerThan(70))
-      .verifying("cancellation.mrn.wrongFormat", isEmpty or isAlphanumeric),
+      .verifying("cancellation.mrn.error.empty", nonEmpty)
+      .verifying("cancellation.mrn.error.tooLong", isEmpty or noLongerThan(70))
+      .verifying("cancellation.mrn.error.wrongFormat", isEmpty or isAlphanumeric),
     "statementDescription" -> text()
-      .verifying("cancellation.statementDescription.empty", nonEmpty)
-      .verifying("cancellation.statementDescription.tooLong", isEmpty or noLongerThan(512))
-      .verifying("cancellation.statementDescription.wrongFormat", isEmpty or isAlphanumericWithAllowedSpecialCharacters),
+      .verifying("cancellation.statementDescription.error.empty", nonEmpty)
+      .verifying("cancellation.statementDescription.error.invalid", isEmpty or (noLongerThan(512) and isAlphanumericWithAllowedSpecialCharacters)),
     "changeReason" ->
-      text()
+      requiredRadio("cancellation.changeReason.error.wrongValue")
         .verifying(
           "cancellation.changeReason.error.wrongValue",
           isContainedIn(Seq(NoLongerRequired.toString, Duplication.toString, OtherReason.toString))

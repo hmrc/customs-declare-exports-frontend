@@ -32,19 +32,25 @@ class TaricCodeSpec extends WordSpec with MustMatchers {
       "provided with code too long" in {
         val form = TaricCode.form.bind(formData(Some("12345")))
 
-        form.errors mustBe Seq(FormError(taricCodeKey, "declaration.taricAdditionalCodes.error.length"))
+        form.errors mustBe Seq(FormError(taricCodeKey, "declaration.taricAdditionalCodes.error.invalid"))
       }
 
       "provided with code too short" in {
         val form = TaricCode.form.bind(formData(Some("123")))
 
-        form.errors mustBe Seq(FormError(taricCodeKey, "declaration.taricAdditionalCodes.error.length"))
+        form.errors mustBe Seq(FormError(taricCodeKey, "declaration.taricAdditionalCodes.error.invalid"))
       }
 
       "provided with non-alphanumeric code" in {
         val form = TaricCode.form.bind(formData(Some("!234")))
 
-        form.errors mustBe Seq(FormError(taricCodeKey, "declaration.taricAdditionalCodes.error.specialCharacters"))
+        form.errors mustBe Seq(FormError(taricCodeKey, "declaration.taricAdditionalCodes.error.invalid"))
+      }
+
+      "provided with non-alphanumeric code and too long" in {
+        val form = TaricCode.form.bind(formData(Some("!23456789")))
+
+        form.errors mustBe Seq(FormError(taricCodeKey, "declaration.taricAdditionalCodes.error.invalid"))
       }
     }
 

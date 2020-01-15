@@ -27,16 +27,28 @@ class ProcedureCodesSpec extends WordSpec with MustMatchers {
     "return form with errors" when {
 
       "procedure code is incorrect" in {
-        val form = ProcedureCodes.form().bind(incorrectProcedureCode)
+        val form = ProcedureCodes.form().bind(procedureCodeIncorrectLength)
 
-        form.errors mustBe Seq(FormError("procedureCode", "supplementary.procedureCodes.procedureCode.error.length"))
+        form.errors mustBe Seq(FormError("procedureCode", "supplementary.procedureCodes.procedureCode.error.invalid"))
+      }
+
+      "procedure code has special chars" in {
+        val form = ProcedureCodes.form().bind(procedureCodeSpecialChars)
+
+        form.errors mustBe Seq(FormError("procedureCode", "supplementary.procedureCodes.procedureCode.error.invalid"))
+      }
+
+      "procedure code incorrect with special chars" in {
+        val form = ProcedureCodes.form().bind(procedureCodeIncorrectLengthSpecialChars)
+
+        form.errors mustBe Seq(FormError("procedureCode", "supplementary.procedureCodes.procedureCode.error.invalid"))
       }
 
       "additional code has incorrect length" in {
         val form = ProcedureCodes.form().bind(tooLongAdditionalProcedureCode)
 
         form.errors.length must be(1)
-        form.errors.head must be(FormError("additionalProcedureCode", "supplementary.procedureCodes.additionalProcedureCode.error.length"))
+        form.errors.head must be(FormError("additionalProcedureCode", "supplementary.procedureCodes.additionalProcedureCode.error.invalid"))
       }
 
       "additional code has special characters" in {
@@ -44,7 +56,14 @@ class ProcedureCodesSpec extends WordSpec with MustMatchers {
         val form = ProcedureCodes.form().bind(additionalProcedureCodeSpecialChars)
 
         form.errors.length must be(1)
-        form.errors.head must be(FormError("additionalProcedureCode", "supplementary.procedureCodes.additionalProcedureCode.error.specialCharacters"))
+        form.errors.head must be(FormError("additionalProcedureCode", "supplementary.procedureCodes.additionalProcedureCode.error.invalid"))
+      }
+
+      "additional code has incorrect length with special characters" in {
+        val form = ProcedureCodes.form().bind(tooLongAdditionalProcedureCodeWithSpecialCharacters)
+
+        form.errors.length must be(1)
+        form.errors.head must be(FormError("additionalProcedureCode", "supplementary.procedureCodes.additionalProcedureCode.error.invalid"))
       }
     }
   }
@@ -52,11 +71,16 @@ class ProcedureCodesSpec extends WordSpec with MustMatchers {
 
 object ProcedureCodesSpec {
 
-  val incorrectProcedureCode: Map[String, String] = Map("procedureCode" -> "21", "additionalProcedureCode" -> "123")
+  val procedureCodeIncorrectLength: Map[String, String] = Map("procedureCode" -> "21", "additionalProcedureCode" -> "123")
+  val procedureCodeSpecialChars: Map[String, String] = Map("procedureCode" -> "21##", "additionalProcedureCode" -> "123")
+  val procedureCodeIncorrectLengthSpecialChars: Map[String, String] = Map("procedureCode" -> "12321##", "additionalProcedureCode" -> "123")
 
   val tooLongAdditionalProcedureCode: Map[String, String] =
     Map("procedureCode" -> "2112", "additionalProcedureCode" -> "123456")
 
   val additionalProcedureCodeSpecialChars: Map[String, String] =
     Map("procedureCode" -> "2112", "additionalProcedureCode" -> "#$%")
+
+  val tooLongAdditionalProcedureCodeWithSpecialCharacters: Map[String, String] =
+    Map("procedureCode" -> "2112", "additionalProcedureCode" -> "123456#$")
 }

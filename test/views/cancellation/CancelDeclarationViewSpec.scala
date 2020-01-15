@@ -162,7 +162,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
       "changeReason is empty" in {
         view must haveGlobalErrorSummary
         view must haveFieldErrorLink("changeReason", "#changeReason")
-        view.getElementById("error-message-changeReason-input").text() mustBe messages("error.required")
+        view.getElementById("error-message-changeReason-input").text() mustBe messages("cancellation.changeReason.error.wrongValue")
       }
     }
 
@@ -218,7 +218,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
         view must haveFieldErrorLink("mrn", "#mrn")
 
         view.getElementById("error-message-mrn-input").text() mustBe
-          messages("cancellation.mrn.tooLong")
+          messages("cancellation.mrn.error.tooLong")
       }
 
       "is empty" in {
@@ -231,7 +231,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
           "mrn",
           "#mrn",
           "error-message-mrn-input",
-          messages("cancellation.mrn.empty")
+          messages("cancellation.mrn.error.empty")
         )
       }
 
@@ -246,7 +246,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
         view must haveFieldErrorLink("mrn", "#mrn")
 
         view.getElementById("error-message-mrn-input").text() mustBe
-          messages("cancellation.mrn.wrongFormat")
+          messages("cancellation.mrn.error.wrongFormat")
       }
     }
 
@@ -262,7 +262,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
           "statementDescription",
           "#statementDescription",
           "error-message-statementDescription-input",
-          messages("cancellation.statementDescription.tooLong")
+          messages("cancellation.statementDescription.error.invalid")
         )
       }
 
@@ -276,7 +276,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
           "statementDescription",
           "#statementDescription",
           "error-message-statementDescription-input",
-          messages("cancellation.statementDescription.empty")
+          messages("cancellation.statementDescription.error.empty")
         )
       }
 
@@ -293,7 +293,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
         view must haveFieldErrorLink("statementDescription", "#statementDescription")
 
         view.getElementById("error-message-statementDescription-input").text() mustBe
-          messages("cancellation.statementDescription.wrongFormat")
+          messages("cancellation.statementDescription.error.invalid")
       }
     }
 

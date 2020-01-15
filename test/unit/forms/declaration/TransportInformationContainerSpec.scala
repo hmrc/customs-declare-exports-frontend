@@ -68,19 +68,29 @@ class TransportInformationContainerSpec extends WordSpec with MustMatchers {
         val error = result.errors.head
 
         error.key must be("id")
-        error.message must be("declaration.transportInformation.containerId.error.alphanumeric")
+        error.message must be("declaration.transportInformation.containerId.error.invalid")
       }
 
       "id field is longer than allowed" in {
 
-        val limit = ContainerAdd.maxContainerIdLength
-        val emptyForm = Map("id" -> TestHelper.createRandomAlphanumericString(limit + 1))
+        val emptyForm = Map("id" -> TestHelper.createRandomAlphanumericString(ContainerAdd.maxContainerIdLength + 1))
 
         val result = form.bind(emptyForm)
         val error = result.errors.head
 
         error.key must be("id")
-        error.message must be("declaration.transportInformation.containerId.error.length")
+        error.message must be("declaration.transportInformation.containerId.error.invalid")
+      }
+
+      "id field is not alphanumeric and too long" in {
+
+        val emptyForm = Map("id" -> (TestHelper.createRandomAlphanumericString(ContainerAdd.maxContainerIdLength + 1) + "!@#$"))
+
+        val result = form.bind(emptyForm)
+        val error = result.errors.head
+
+        error.key must be("id")
+        error.message must be("declaration.transportInformation.containerId.error.invalid")
       }
     }
   }

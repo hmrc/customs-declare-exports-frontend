@@ -74,7 +74,7 @@ class SealAddViewSpec extends UnitViewSpec with Stubs with MustMatchers with Com
     "display error if incorrect seal is entered" in {
       val view = createView(Seal.form().fillAndValidate(Seal("Invalid!!!")))
 
-      view.select("#error-message-id-input").text() must be(messages("standard.transport.sealId.alphaNumeric.error"))
+      view.select("#error-message-id-input").text() must be(messages("standard.transport.sealId.error.invalid"))
     }
 
   }

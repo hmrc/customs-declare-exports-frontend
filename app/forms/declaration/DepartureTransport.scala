@@ -20,8 +20,8 @@ import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import forms.declaration.TransportCodes._
 import play.api.data.Form
-import play.api.data.Forms.{mapping, optional, text}
-import play.api.libs.json.{Json, Writes}
+import play.api.data.Forms.{mapping, text}
+import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator.{isContainedIn, noLongerThan, _}
 
 case class DepartureTransport(meansOfTransportOnDepartureType: String, meansOfTransportOnDepartureIDNumber: String)
@@ -35,8 +35,10 @@ object DepartureTransport extends DeclarationPage {
       .verifying("declaration.transportInformation.meansOfTransport.departure.error.incorrect", isContainedIn(allowedMeansOfTransportTypeCodes)),
     "meansOfTransportOnDepartureIDNumber" -> text()
       .verifying("declaration.transportInformation.meansOfTransport.reference.error.empty", nonEmpty)
-      .verifying("declaration.transportInformation.meansOfTransport.reference.error.length", noLongerThan(27))
-      .verifying("declaration.transportInformation.meansOfTransport.reference.error.invalid", isAlphanumericWithAllowedSpecialCharacters)
+      .verifying(
+        "declaration.transportInformation.meansOfTransport.reference.error.invalid",
+        isEmpty or (noLongerThan(27) and isAlphanumericWithAllowedSpecialCharacters)
+      )
   )(DepartureTransport.apply)(DepartureTransport.unapply)
 
   def form(): Form[DepartureTransport] = Form(DepartureTransport.formMapping)
