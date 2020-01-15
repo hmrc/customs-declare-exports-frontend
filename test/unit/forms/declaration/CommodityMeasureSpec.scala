@@ -58,31 +58,31 @@ class CommodityMeasureSpec extends WordSpec with MustMatchers {
 
       "mandatory fields are empty" in {
 
-        val incorrectForm = Map("supplementaryUnits" -> "", "netMass" -> "", "grossMass" -> "")
+        val incorrectForm = Map("supplementaryUnits" -> "", "grossMass" -> "", "netMass" -> "")
 
         val result = form.bind(incorrectForm)
         val errorKeys = result.errors.map(_.key)
         val errorMessages = result.errors.map(_.message)
 
-        errorKeys must be(List("netMass", "grossMass"))
-        errorMessages must be(List("supplementary.commodityMeasure.netMass.empty", "supplementary.commodityMeasure.grossMass.empty"))
+        errorKeys must be(List("grossMass", "netMass"))
+        errorMessages must be(List("supplementary.commodityMeasure.grossMass.empty", "supplementary.commodityMeasure.netMass.empty"))
       }
 
       "data provided by user is incorrect" in {
 
         val incorrectForm =
-          Map("supplementaryUnits" -> "0", "netMass" -> "123453333333333.1234", "grossMass" -> "12345.12333333")
+          Map("supplementaryUnits" -> "0", "grossMass" -> "12345.12333333", "netMass" -> "123453333333333.1234")
 
         val result = form.bind(incorrectForm)
         val errorKeys = result.errors.map(_.key)
         val errorMessages = result.errors.map(_.message)
 
-        errorKeys must be(List("supplementaryUnits", "netMass", "grossMass"))
+        errorKeys must be(List("supplementaryUnits", "grossMass", "netMass"))
         errorMessages must be(
           List(
             "supplementary.commodityMeasure.supplementaryUnits.error",
-            "supplementary.commodityMeasure.netMass.error",
-            "supplementary.commodityMeasure.grossMass.error"
+            "supplementary.commodityMeasure.grossMass.error",
+            "supplementary.commodityMeasure.netMass.error"
           )
         )
       }
