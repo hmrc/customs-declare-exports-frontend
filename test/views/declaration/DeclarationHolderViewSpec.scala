@@ -145,7 +145,9 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
         val view = createView(
           DeclarationHolder
             .form()
-            .fillAndValidate(DeclarationHolder(Some(TestHelper.createRandomAlphanumericString(6)), Some(TestHelper.createRandomAlphanumericString(18))))
+            .fillAndValidate(
+              DeclarationHolder(Some(TestHelper.createRandomAlphanumericString(6)), Some(TestHelper.createRandomAlphanumericString(18)))
+            )
         )
 
         view must haveGlobalErrorSummary

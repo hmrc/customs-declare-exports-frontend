@@ -57,9 +57,8 @@ object Mode {
 
   private val modes = Set[Mode](Normal, Amend, Draft, Change, ChangeAmend)
 
-  def withName(str: String): Option[Mode] = {
+  def withName(str: String): Option[Mode] =
     modes.find(_.name == str)
-  }
 
   implicit val binder: QueryStringBindable[Mode] = new QueryStringBindable[Mode] {
     private val strBinder: QueryStringBindable[String] = implicitly[QueryStringBindable[String]]

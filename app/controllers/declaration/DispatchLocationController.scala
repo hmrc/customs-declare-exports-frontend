@@ -66,7 +66,8 @@ class DispatchLocationController @Inject()(
       case AllowedDispatchLocations.OutsideEU =>
         controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage
       case AllowedDispatchLocations.SpecialFiscalTerritory =>
-        _ => controllers.declaration.routes.NotEligibleController.displayPage()
+        _ =>
+          controllers.declaration.routes.NotEligibleController.displayPage()
     }
 
   private def updateCache(formData: DispatchLocation)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =

@@ -55,9 +55,9 @@ class SummaryController @Inject()(
     if (containsMandatoryData(request.cacheModel, mode)) {
       mode match {
         case Mode.Normal => Ok(normalSummaryPage(LegalDeclaration.form()))
-        case Mode.Amend => Ok(amendSummaryPage())
-        case Mode.Draft => Ok(draftSummaryPage())
-        case _ => handleError("Invalid mode on summary page")
+        case Mode.Amend  => Ok(amendSummaryPage())
+        case Mode.Draft  => Ok(draftSummaryPage())
+        case _           => handleError("Invalid mode on summary page")
       }
     } else {
       Ok(summaryPageNoData())

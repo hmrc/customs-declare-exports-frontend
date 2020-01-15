@@ -63,14 +63,13 @@ class InlandTransportDetailsController @Inject()(
       )
   }
 
-  private def nextPage(declarationType: DeclarationType): Mode => Call = {
+  private def nextPage(declarationType: DeclarationType): Mode => Call =
     declarationType match {
       case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY | DeclarationType.CLEARANCE =>
         controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
         controllers.declaration.routes.BorderTransportController.displayPage
     }
-  }
 
   private def updateCache(formData: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(inlandModeOfTransportCode = Some(formData))))

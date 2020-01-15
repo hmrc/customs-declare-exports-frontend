@@ -130,7 +130,7 @@ class RoutingCountriesSummaryController @Inject()(
           val updatedCountries = cachedCountries.updated(countryIndex, validCountry)
 
           updateExportsDeclarationSyncDirect(_.updateCountriesOfRouting(updatedCountries)).map { _ =>
-            navigator.continueTo( mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
+            navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
           }
         }
       )

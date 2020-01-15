@@ -96,7 +96,6 @@ class TaricCodeController @Inject()(
             .map(_ => navigator.continueTo(mode, controllers.declaration.routes.NactCodeController.displayPage(_, itemId)))
       )
 
-
   private def updateExportsCache(itemId: String, updatedCache: Seq[TaricCode])(
     implicit r: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =

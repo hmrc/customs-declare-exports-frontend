@@ -136,7 +136,6 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
   "Dispatch Location View for invalid input" should {
 
     onEveryDeclarationJourney { implicit request =>
-
       "display error if nothing is selected" in {
 
         val view = createView(DispatchLocation.form().bind(Map[String, String]()))
@@ -161,7 +160,6 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
 
   "Dispatch Location View when filled" should {
     onEveryDeclarationJourney { implicit request =>
-
       "display selected first radio button - Outside (EX)" in {
 
         val view = createView(DispatchLocation.form().fill(DispatchLocation("EX")))

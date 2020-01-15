@@ -72,7 +72,9 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData {
       change mustBe messages("site.change")
       accessibleChange mustBe messages("declaration.summary.references.additionalType.change")
 
-      view.getElementById("additionalType-change") must haveHref(controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage(Mode.Change))
+      view.getElementById("additionalType-change") must haveHref(
+        controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage(Mode.Change)
+      )
     }
 
     "have ducr with change button" in {
@@ -107,7 +109,9 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData {
     "have declaration type" in {
 
       viewNoAnswers.getElementById("declarationType-label").text() mustBe messages("declaration.summary.references.type")
-      viewNoAnswers.getElementById("declarationType-change") must haveHref(controllers.declaration.routes.DeclarationChoiceController.displayPage(Mode.Change))
+      viewNoAnswers.getElementById("declarationType-change") must haveHref(
+        controllers.declaration.routes.DeclarationChoiceController.displayPage(Mode.Change)
+      )
     }
 
     "not have dispatch location" in {
