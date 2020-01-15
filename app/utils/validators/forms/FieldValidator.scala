@@ -112,8 +112,8 @@ object FieldValidator {
       pattern.matcher(input).matches()
   }
 
-  val validateDecimal: Double => Double => String => Boolean = (totalLength: Double) =>
-    (decimalPlaces: Double) =>
+  val validateDecimal: Int => Int => String => Boolean = (totalLength: Int) =>
+    (decimalPlaces: Int) =>
       (input: String) =>
         input.split('.') match {
           case Array(a, b) if isNumeric(a) && isNumeric(b) => b.length <= decimalPlaces && (a + b).length <= totalLength && b.toDouble > 0
