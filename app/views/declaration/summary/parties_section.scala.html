@@ -18,8 +18,10 @@
 @import models.declaration.Parties
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
+@import models.DeclarationType._
+@import models.Mode._
 
-@(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @sectionRequired(parties: Parties) = @{
     parties.exporterDetails.isDefined ||
@@ -41,7 +43,7 @@
                 eoriLabel = "declaration.summary.parties.exporter.eori",
                 address = exporter.details.address,
                 addressLabel = "declaration.summary.parties.exporter.address",
-                call = Some(controllers.declaration.routes.ExporterDetailsController.displayPage()),
+                call = Some(controllers.declaration.routes.ExporterDetailsController.displayPage(mode)),
                 eoriChangeLabel = Some(messages("declaration.summary.parties.exporter.eori.change")),
                 addressChangeLabel = Some(messages("declaration.summary.parties.exporter.address.change"))
             )
@@ -53,7 +55,7 @@
                 eoriLabel = "declaration.summary.parties.consignee.eori",
                 address = consignee.details.address,
                 addressLabel = "declaration.summary.parties.consignee.address",
-                call = Some(controllers.declaration.routes.ConsigneeDetailsController.displayPage()),
+                call = Some(controllers.declaration.routes.ConsigneeDetailsController.displayPage(mode)),
                 eoriChangeLabel = Some(messages("declaration.summary.parties.consignee.eori.change")),
                 addressChangeLabel = Some(messages("declaration.summary.parties.consignee.address.change")),
                 isEoriDefault = false
@@ -66,7 +68,7 @@
                 eoriLabel = "declaration.summary.parties.declarant.eori",
                 address = declarant.details.address,
                 addressLabel = "declaration.summary.parties.declarant.address",
-                call = Some(controllers.declaration.routes.DeclarantDetailsController.displayPage()),
+                call = Some(controllers.declaration.routes.DeclarantDetailsController.displayPage(mode)),
                 eoriChangeLabel = Some(messages("declaration.summary.parties.declarant.eori.change")),
                 addressChangeLabel = Some(messages("declaration.summary.parties.declarant.address.change"))
             )
@@ -78,7 +80,7 @@
                 eoriLabel = "declaration.summary.parties.representative.eori",
                 address = representative.details.flatMap(_.address),
                 addressLabel = messages("declaration.summary.parties.representative.address"),
-                call = Some(controllers.declaration.routes.RepresentativeDetailsController.displayPage()),
+                call = Some(controllers.declaration.routes.RepresentativeDetailsController.displayPage(mode)),
                 eoriChangeLabel = Some(messages("declaration.summary.parties.representative.eori.change")),
                 addressChangeLabel = Some(messages("declaration.summary.parties.representative.address.change"))
             )
@@ -87,7 +89,7 @@
             components.table_row("representationType", HtmlTableRow(
                 label = messages("declaration.summary.parties.representative.type"),
                 value = representative.statusCode.map(code => messages(s"declaration.summary.parties.representative.type.$code")).getOrElse(""),
-                call = Some(controllers.declaration.routes.RepresentativeDetailsController.displayPage()),
+                call = Some(controllers.declaration.routes.RepresentativeDetailsController.displayPage(mode)),
                 changeLabel = Some(messages("declaration.summary.parties.representative.type.change"))
             ))
         )
@@ -98,7 +100,7 @@
                 eoriLabel = "declaration.summary.parties.carrier.eori",
                 address = carrier.details.address,
                 addressLabel = "declaration.summary.parties.carrier.address",
-                call = Some(controllers.declaration.routes.CarrierDetailsController.displayPage()),
+                call = Some(controllers.declaration.routes.CarrierDetailsController.displayPage(mode)),
                 eoriChangeLabel = Some(messages("declaration.summary.parties.carrier.eori.change")),
                 addressChangeLabel = Some(messages("declaration.summary.parties.carrier.address.change")),
                 isEoriDefault = false
@@ -107,6 +109,7 @@
 
         @declarationData.parties.declarationAdditionalActorsData.map(additional =>
             additional_and_authorised_parties_section(
+                mode = mode,
                 additionalActors = additional.actors,
                 holders = declarationData.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
             )
