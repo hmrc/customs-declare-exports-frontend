@@ -16,12 +16,10 @@
 
 package forms.declaration
 
-import forms.declaration.DispatchLocationSpec.{correctDispatchLocationJSON, emptyDispatchLocationJSON, incorrectDispatchLocationJSON}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsValue}
 
 class DeclarantDetailsSpec extends WordSpec with MustMatchers {
-
 
   import DeclarantDetailsSpec._
 
