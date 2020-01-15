@@ -168,11 +168,14 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
       view.getElementById("container") mustBe null
     }
 
-    "display containers section if containers are not empty" in {
+    "display containers section (but not yes/no answer) if containers are not empty" in {
 
       val view = transport_section(aDeclaration(withContainerData(Container("123", Seq.empty))))(messages, journeyRequest())
 
       view.getElementById("container").text() mustNot be(empty)
+
+      view.getElementById("containers-label") mustBe null
+      view.getElementById("containers-change") mustBe null
     }
   }
 }
