@@ -126,7 +126,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
 
     "display error when supplementary units are incorrect" in {
 
-      val view = createView(CommodityMeasure.form().fillAndValidate(CommodityMeasure(Some("99.123"), "", "")))
+      val view = createView(CommodityMeasure.form().fillAndValidate(CommodityMeasure(Some("0.0"), "", "")))
 
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("supplementaryUnits", "#supplementaryUnits")
@@ -147,7 +147,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
     "display error when net mass is incorrect" in {
 
       val view =
-        createView(CommodityMeasure.form().fillAndValidate(CommodityMeasure(Some("99.99"), "20.99", "10.00345")))
+        createView(CommodityMeasure.form().fillAndValidate(CommodityMeasure(Some("99.99"), "20.99", "10.0055345")))
 
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("netMass", "#netMass")
@@ -167,7 +167,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
 
     "display error when gross mass is incorrect" in {
 
-      val view = createView(CommodityMeasure.form().fillAndValidate(CommodityMeasure(Some("99.99"), "5.00234", "100.100")))
+      val view = createView(CommodityMeasure.form().fillAndValidate(CommodityMeasure(Some("99.99"), "5.00234ff", "100.100")))
 
       view must haveGlobalErrorSummary
       view must haveFieldErrorLink("grossMass", "#grossMass")

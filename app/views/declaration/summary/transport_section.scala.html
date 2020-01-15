@@ -96,15 +96,14 @@
             ))
         )
 
-        @declarationData.transport.containers.map(_ =>
-            components.table_row("containers", HtmlTableRow(
-                label = messages("declaration.summary.transport.containers"),
-                value = messages(if(declarationData.transport.hasContainers) "site.yes" else "site.no"),
-                call = Some(controllers.declaration.routes.TransportContainerController.displayContainerSummary()),
-                changeLabel = Some(messages("declaration.summary.transport.containers.change"))
+        @if(declarationData.transport.containers.exists(_.isEmpty)){
+            @components.table_row("containers", HtmlTableRow(
+              label = messages("declaration.summary.transport.containers"),
+              value = messages("site.no"),
+              call = Some(controllers.declaration.routes.TransportContainerController.displayContainerSummary()),
+              changeLabel = Some(messages("declaration.summary.transport.containers.change"))
             ))
-
-        )
+        }
 
         @declarationData.transport.containers.map(containerSeq =>
             containers(containerSeq)
