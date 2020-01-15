@@ -98,7 +98,7 @@ class DeclarationHolderController @Inject()(
 
   //scalastyle:off method.length
   private def handleErrorPage(mode: Mode, fieldWithError: Seq[(String, String)], userInput: DeclarationHolder, holders: Seq[DeclarationHolder])(
-    implicit request: Request[_]
+    implicit request: JourneyRequest[_]
   ): Future[Result] = {
     val updatedErrors = fieldWithError.map((FormError.apply(_: String, _: String)).tupled)
 

@@ -203,6 +203,7 @@ object Navigator {
     case DeclarantDetails      => controllers.declaration.routes.ConsigneeDetailsController.displayPage
     case RepresentativeDetails => controllers.declaration.routes.DeclarantDetailsController.displayPage
     case CarrierDetails        => controllers.declaration.routes.RepresentativeDetailsController.displayPage
+    case DeclarationHolder => controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage
   }
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
