@@ -19,8 +19,10 @@
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 @import services.Countries._
+@import models.DeclarationType._
+@import models.Mode._
 
-@(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @locationCode(location: GoodsLocation) = @{
     findByName(location.country).countryCode + location.typeOfLocation + location.qualifierOfIdentification + location.identificationOfLocation.getOrElse("")
@@ -42,7 +44,7 @@
             components.table_row("location-code", HtmlTableRow(
                 label = messages("declaration.summary.locations.goodsLocationCode"),
                 value = locationCode(goodsLocation),
-                call = Some(controllers.declaration.routes.LocationController.displayPage()),
+                call = Some(controllers.declaration.routes.LocationController.displayPage(mode)),
                 changeLabel = Some(messages("declaration.summary.locations.goodsLocationCode.change"))
             ))
         )
@@ -50,7 +52,7 @@
             components.table_row("location-address", HtmlTableRow(
                 label = messages("declaration.summary.locations.goodsLocationAddress"),
                 value = address(goodsLocation),
-                call = Some(controllers.declaration.routes.LocationController.displayPage()),
+                call = Some(controllers.declaration.routes.LocationController.displayPage(mode)),
                 changeLabel = Some(messages("declaration.summary.locations.goodsLocationAddress.change"))
             ))
         )
@@ -59,7 +61,7 @@
             components.table_row("location-officeOfExit", HtmlTableRow(
                 label = messages("declaration.summary.locations.officeOfExit"),
                 value = officeOfExit.officeId,
-                call = Some(controllers.declaration.routes.OfficeOfExitController.displayPage()),
+                call = Some(controllers.declaration.routes.OfficeOfExitController.displayPage(mode)),
                 changeLabel = Some(messages("declaration.summary.locations.officeOfExit.change"))
             ))
         )
@@ -68,7 +70,7 @@
                 components.table_row("location-expressConsignment", HtmlTableRow(
                     label = messages("declaration.summary.locations.expressConsignment"),
                     value = code,
-                    call = Some(controllers.declaration.routes.OfficeOfExitController.displayPage()),
+                    call = Some(controllers.declaration.routes.OfficeOfExitController.displayPage(mode)),
                     changeLabel = Some(messages("declaration.summary.locations.expressConsignment.change"))
                 ))
             )

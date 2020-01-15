@@ -16,6 +16,7 @@
 
 package forms.declaration.officeOfExit
 
+import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import forms.declaration.officeOfExit.OfficeOfExitStandard.AllowedCircumstancesCodeAnswers.{no, yes}
 import play.api.data.Forms.text
@@ -25,7 +26,7 @@ import utils.validators.forms.FieldValidator._
 
 case class OfficeOfExitStandard(officeId: String, circumstancesCode: String)
 
-object OfficeOfExitStandard {
+object OfficeOfExitStandard extends DeclarationPage {
   implicit val format: OFormat[OfficeOfExitStandard] = Json.format[OfficeOfExitStandard]
 
   val mapping: Mapping[OfficeOfExitStandard] = Forms.mapping(
