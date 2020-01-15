@@ -39,16 +39,20 @@ object CommodityDetails extends DeclarationPage {
     optional(
       text()
         .verifying("declaration.commodityDetails.combinedNomenclatureCode.error.empty", nonEmpty)
-        .verifying("declaration.commodityDetails.combinedNomenclatureCode.error.length", isEmpty or noLongerThan(combinedNomenclatureCodeMaxLength))
-        .verifying("declaration.commodityDetails.combinedNomenclatureCode.error.specialCharacters", isEmpty or isNumeric)
+        .verifying(
+          "declaration.commodityDetails.combinedNomenclatureCode.error.invalid",
+          isEmpty or (noLongerThan(combinedNomenclatureCodeMaxLength) and isNumeric)
+        )
     ).verifying("declaration.commodityDetails.combinedNomenclatureCode.error.empty", isPresent)
 
   private def mappingCombinedNomenclatureCodeOptional: Mapping[Option[String]] =
     optional(
       text()
         .verifying("declaration.commodityDetails.combinedNomenclatureCode.error.empty", nonEmpty)
-        .verifying("declaration.commodityDetails.combinedNomenclatureCode.error.length", isEmpty or noLongerThan(combinedNomenclatureCodeMaxLength))
-        .verifying("declaration.commodityDetails.combinedNomenclatureCode.error.specialCharacters", isEmpty or isNumeric)
+        .verifying(
+          "declaration.commodityDetails.combinedNomenclatureCode.error.invalid",
+          isEmpty or (noLongerThan(combinedNomenclatureCodeMaxLength) and isNumeric)
+        )
     )
 
   private val mappingDescriptionOfGoods = text()

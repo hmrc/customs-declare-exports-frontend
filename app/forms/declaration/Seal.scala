@@ -31,8 +31,7 @@ object Seal {
     "id" ->
       text()
         .verifying("standard.transport.sealId.empty.error", nonEmpty)
-        .verifying("standard.transport.sealId.alphaNumeric.error", isEmpty or isAlphanumeric)
-        .verifying("standard.transport.sealId.longer.error", isEmpty or noLongerThan(20))
+        .verifying("standard.transport.sealId.error.invalid", isEmpty or (isAlphanumeric and noLongerThan(20)))
   )(Seal.apply)(Seal.unapply)
 
   def form(): Form[Seal] = Form(formMapping)

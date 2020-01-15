@@ -107,12 +107,29 @@ class DepartureTransportSpec extends FormSpec {
         val error = result.errors.head
 
         error.key must be("meansOfTransportOnDepartureIDNumber")
-        error.message must be("declaration.transportInformation.meansOfTransport.reference.error.length")
+        error.message must be("declaration.transportInformation.meansOfTransport.reference.error.invalid")
       }
 
       "means of transport on departure id number contains invalid special characters" in {
 
         val incorrectForm = Map("meansOfTransportOnDepartureType" -> IMOShipIDNumber, "meansOfTransportOnDepartureIDNumber" -> "!@#$")
+
+        val result = form.bind(incorrectForm)
+
+        result.errors.length must be(1)
+
+        val error = result.errors.head
+
+        error.key must be("meansOfTransportOnDepartureIDNumber")
+        error.message must be("declaration.transportInformation.meansOfTransport.reference.error.invalid")
+      }
+
+      "means of transport on departure id number is too long with invalid characters" in {
+
+        val incorrectForm = Map(
+          "meansOfTransportOnDepartureType" -> IMOShipIDNumber,
+          "meansOfTransportOnDepartureIDNumber" -> (TestHelper.createRandomAlphanumericString(28) + "!@#$")
+        )
 
         val result = form.bind(incorrectForm)
 

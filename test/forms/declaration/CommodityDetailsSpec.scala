@@ -33,15 +33,19 @@ class CommodityDetailsSpec extends WordSpec with MustMatchers {
         "provided with invalid commodity code" in {
           val form = CommodityDetails.form(decType).bind(formData("A1234", "description"))
 
-          form.errors mustBe Seq(
-            FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.specialCharacters")
-          )
+          form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"))
         }
 
         "provided with commodity code too long" in {
           val form = CommodityDetails.form(decType).bind(formData("1234567890", "description"))
 
-          form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
+          form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"))
+        }
+
+        "provided with invalid commodity code that is too long" in {
+          val form = CommodityDetails.form(decType).bind(formData("ABCDE", "description"))
+
+          form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"))
         }
 
         "provided with missing commodity code" in {
@@ -75,15 +79,13 @@ class CommodityDetailsSpec extends WordSpec with MustMatchers {
         "provided with invalid commodity code" in {
           val form = CommodityDetails.form(decType).bind(formData("#1234", "description"))
 
-          form.errors mustBe Seq(
-            FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.specialCharacters")
-          )
+          form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"))
         }
 
         "provided with commodity code too long" in {
           val form = CommodityDetails.form(decType).bind(formData("1234567890", "description"))
 
-          form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
+          form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"))
         }
 
         "provided with missing description" in {

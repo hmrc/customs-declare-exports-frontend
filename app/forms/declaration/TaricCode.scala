@@ -36,8 +36,7 @@ object TaricCode extends DeclarationPage {
       taricCodeKey ->
         text()
           .verifying("declaration.taricAdditionalCodes.error.empty", nonEmpty)
-          .verifying("declaration.taricAdditionalCodes.error.length", isEmpty or hasSpecificLength(taricCodeLength))
-          .verifying("declaration.taricAdditionalCodes.error.specialCharacters", isEmpty or isAlphanumeric)
+          .verifying("declaration.taricAdditionalCodes.error.invalid", isEmpty or (hasSpecificLength(taricCodeLength) and isAlphanumeric))
     )(TaricCode.apply)(TaricCode.unapply)
 
   def form(): Form[TaricCode] = Form(mapping)

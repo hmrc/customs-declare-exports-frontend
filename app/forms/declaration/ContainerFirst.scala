@@ -22,7 +22,7 @@ import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
-import utils.validators.forms.FieldValidator.{isAlphanumeric, noLongerThan, nonEmpty}
+import utils.validators.forms.FieldValidator._
 
 case class ContainerFirst(id: Option[String])
 
@@ -61,8 +61,7 @@ object ContainerFirst extends DeclarationPage {
       yes,
       text()
         .verifying("declaration.transportInformation.containerId.empty", nonEmpty)
-        .verifying("declaration.transportInformation.containerId.error.alphanumeric", isAlphanumeric)
-        .verifying("declaration.transportInformation.containerId.error.length", noLongerThan(maxContainerIdLength))
+        .verifying("declaration.transportInformation.containerId.error.invalid", isAlphanumeric and noLongerThan(maxContainerIdLength))
     )
   )(form2Model)(model2Form)
 

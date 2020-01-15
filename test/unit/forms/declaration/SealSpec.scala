@@ -73,7 +73,7 @@ class SealSpec extends WordSpec with MustMatchers {
         val error = result.errors.head
 
         error.key must be("id")
-        error.message must be("standard.transport.sealId.alphaNumeric.error")
+        error.message must be("standard.transport.sealId.error.invalid")
       }
 
       "id field is longer than 20 characters" in {
@@ -84,7 +84,18 @@ class SealSpec extends WordSpec with MustMatchers {
         val error = result.errors.head
 
         error.key must be("id")
-        error.message must be("standard.transport.sealId.longer.error")
+        error.message must be("standard.transport.sealId.error.invalid")
+      }
+
+      "id field is longer than 20 characters with invalid charaters" in {
+
+        val emptyForm = Map("id" -> (TestHelper.createRandomAlphanumericString(21) + "!@#$"))
+
+        val result = form.bind(emptyForm)
+        val error = result.errors.head
+
+        error.key must be("id")
+        error.message must be("standard.transport.sealId.error.invalid")
       }
     }
   }

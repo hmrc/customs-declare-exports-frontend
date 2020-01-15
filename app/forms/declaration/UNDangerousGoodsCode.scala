@@ -63,8 +63,7 @@ object UNDangerousGoodsCode extends DeclarationPage {
         yes,
         text()
           .verifying("declaration.unDangerousGoodsCode.error.empty", nonEmpty)
-          .verifying("declaration.unDangerousGoodsCode.error.length", isEmpty or hasSpecificLength(unDangerousGoodsCodeLength))
-          .verifying("declaration.unDangerousGoodsCode.error.specialCharacters", isEmpty or isNumeric)
+          .verifying("declaration.unDangerousGoodsCode.error.invalid", isEmpty or (hasSpecificLength(unDangerousGoodsCodeLength) and isNumeric))
       )
     )(form2Model)(model2Form)
 
