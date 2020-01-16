@@ -19,11 +19,12 @@ package controllers.navigation
 import config.AppConfig
 import controllers.util.{FormAction, SaveAndReturn}
 import forms.Choice.AllowedChoiceValues
-import forms.{Choice, DeclarationPage}
 import forms.declaration.RoutingQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingQuestionPage}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeStandardDec
 import forms.declaration.destinationCountries.DestinationCountries.{DestinationCountryPage, OriginationCountryPage}
 import forms.declaration.officeOfExit.{OfficeOfExitStandard, OfficeOfExitSupplementary}
 import forms.declaration.{BorderTransport, Document, PackageInformation, _}
+import forms.{Choice, DeclarationPage}
 import javax.inject.Inject
 import models.DeclarationType._
 import models.Mode
@@ -209,7 +210,7 @@ object Navigator {
     case CarrierDetails                                   => controllers.declaration.routes.RepresentativeDetailsController.displayPage
     case DeclarationHolder                                => controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage
     case OfficeOfExitStandard | OfficeOfExitSupplementary => controllers.declaration.routes.LocationController.displayPage
-
+    case AdditionalDeclarationTypeStandardDec             => controllers.declaration.routes.DispatchLocationController.displayPage
   }
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =

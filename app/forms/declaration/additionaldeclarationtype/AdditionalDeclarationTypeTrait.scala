@@ -16,12 +16,13 @@
 
 package forms.declaration.additionaldeclarationtype
 
+import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import play.api.data.{Form, Forms, Mapping}
 import utils.validators.forms.FieldValidator.isContainedIn
 
-trait AdditionalDeclarationTypeTrait {
+trait AdditionalDeclarationTypeTrait extends DeclarationPage {
   def allowedValues: Set[AdditionalDeclarationType]
 
   val formMapping: Mapping[AdditionalDeclarationType] = Forms
