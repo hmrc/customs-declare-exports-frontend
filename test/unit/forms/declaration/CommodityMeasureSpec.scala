@@ -46,7 +46,7 @@ class CommodityMeasureSpec extends WordSpec with MustMatchers {
 
       "user fill all fields with correct values" in {
 
-        val correctForm = CommodityMeasure(Some("1231.12"), "123.12", "123.12")
+        val correctForm = CommodityMeasure(Some("1231.12"), "123.0", "123.12")
 
         val result = form.fillAndValidate(correctForm)
 
@@ -72,6 +72,24 @@ class CommodityMeasureSpec extends WordSpec with MustMatchers {
 
         val incorrectForm =
           Map("supplementaryUnits" -> "0", "grossMass" -> "12345.12333333", "netMass" -> "123453333333333.1234")
+
+        val result = form.bind(incorrectForm)
+        val errorKeys = result.errors.map(_.key)
+        val errorMessages = result.errors.map(_.message)
+
+        errorKeys must be(List("supplementaryUnits", "grossMass", "netMass"))
+        errorMessages must be(
+          List(
+            "supplementary.commodityMeasure.supplementaryUnits.error",
+            "supplementary.commodityMeasure.grossMass.error",
+            "supplementary.commodityMeasure.netMass.error"
+          )
+        )
+      }
+      "data provided by user is incorrect and ends with dot" in {
+
+        val incorrectForm =
+          Map("supplementaryUnits" -> "10.", "grossMass" -> "12345.", "netMass" -> "30..")
 
         val result = form.bind(incorrectForm)
         val errorKeys = result.errors.map(_.key)

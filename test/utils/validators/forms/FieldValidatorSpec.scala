@@ -704,7 +704,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
       "input with dot and without decimal places" in {
         val input = "123456."
 
-        validateDecimal(totalDecimalLength)(decimalPlaces)(input) must be(true)
+        validateDecimal(totalDecimalLength)(decimalPlaces)(input) must be(false)
       }
 
       "input with whole decimal number" in {

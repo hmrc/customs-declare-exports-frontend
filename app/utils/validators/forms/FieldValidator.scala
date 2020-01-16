@@ -115,10 +115,15 @@ object FieldValidator {
   val validateDecimal: Int => Int => String => Boolean = (totalLength: Int) =>
     (decimalPlaces: Int) =>
       (input: String) =>
-        input.split('.') match {
-          case Array(a, b) if isNumeric(a) && isNumeric(b) => b.length <= decimalPlaces && (a + b).length <= totalLength && b.toDouble > 0
-          case Array(a) if isNumeric(a) && nonEmpty(a)     => a.length <= totalLength && a.toDouble > 0
-          case _                                           => false
+        input.trim().endsWith(".") match {
+          case false =>
+            input.trim().split('.') match {
+              case Array(a, b) if isNumeric(a) && isNumeric(b) =>
+                b.length <= decimalPlaces && (a + b).length <= totalLength && (b.toDouble > 0 || a.toDouble > 0)
+              case Array(a) if isNumeric(a) && nonEmpty(a) => a.length <= totalLength && a.toDouble > 0
+              case _                                       => false
+            }
+          case true => false
   }
 
   val containsDuplicates: Iterable[_] => Boolean = (input: Iterable[_]) => input.toSet.size != input.size
