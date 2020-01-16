@@ -86,24 +86,6 @@ class CommodityMeasureSpec extends WordSpec with MustMatchers {
           )
         )
       }
-      "data provided by user is incorrect and ends with dot" in {
-
-        val incorrectForm =
-          Map("supplementaryUnits" -> "10.", "grossMass" -> "12345.", "netMass" -> "30..")
-
-        val result = form.bind(incorrectForm)
-        val errorKeys = result.errors.map(_.key)
-        val errorMessages = result.errors.map(_.message)
-
-        errorKeys must be(List("supplementaryUnits", "grossMass", "netMass"))
-        errorMessages must be(
-          List(
-            "supplementary.commodityMeasure.supplementaryUnits.error",
-            "supplementary.commodityMeasure.grossMass.error",
-            "supplementary.commodityMeasure.netMass.error"
-          )
-        )
-      }
     }
   }
 }
