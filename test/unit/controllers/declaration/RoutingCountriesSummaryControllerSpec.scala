@@ -130,7 +130,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion()
+        thePageRedirectedTo mustBe controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion()
 
         verify(routingCountriesSummaryPage, times(0)).apply(any(), any(), any())(any(), any())
       }
@@ -145,7 +145,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
         val result = controller.displayRemoveCountryPage(Mode.Normal, "FR")(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
+        thePageRedirectedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
       }
 
       "user remove country that exists in cache" in {
@@ -182,7 +182,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
         val result = controller.displayChangeCountryPage(Mode.Normal, "PL")(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
+        thePageRedirectedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
       }
 
       "user succesfully update a country" in {

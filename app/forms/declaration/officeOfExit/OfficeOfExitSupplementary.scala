@@ -16,6 +16,7 @@
 
 package forms.declaration.officeOfExit
 
+import forms.DeclarationPage
 import play.api.data.Forms
 import play.api.data.Forms.text
 import play.api.libs.json.Json
@@ -23,7 +24,7 @@ import utils.validators.forms.FieldValidator._
 
 case class OfficeOfExitSupplementary(officeId: String)
 
-object OfficeOfExitSupplementary {
+object OfficeOfExitSupplementary extends DeclarationPage {
   implicit val format = Json.format[OfficeOfExitSupplementary]
 
   val mapping = Forms.mapping(

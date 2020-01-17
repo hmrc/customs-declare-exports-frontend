@@ -57,16 +57,17 @@ class DispatchLocationController @Inject()(
         (formWithErrors: Form[DispatchLocation]) => Future.successful(BadRequest(dispatchLocationPage(mode, formWithErrors))),
         validDispatchLocation =>
           updateCache(validDispatchLocation)
-            .map(_ => navigator.continueTo(nextPage(mode, validDispatchLocation)))
+            .map(_ => navigator.continueTo(mode, nextPage(validDispatchLocation)))
       )
   }
 
-  private def nextPage(mode: Mode, providedDispatchLocation: DispatchLocation): Call =
+  private def nextPage(providedDispatchLocation: DispatchLocation): Mode => Call =
     providedDispatchLocation.dispatchLocation match {
       case AllowedDispatchLocations.OutsideEU =>
-        controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage(mode)
+        controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage
       case AllowedDispatchLocations.SpecialFiscalTerritory =>
-        controllers.declaration.routes.NotEligibleController.displayPage()
+        _ =>
+          controllers.declaration.routes.NotEligibleController.displayPage()
     }
 
   private def updateCache(formData: DispatchLocation)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =

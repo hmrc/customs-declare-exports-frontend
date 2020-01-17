@@ -17,9 +17,11 @@
 package views.declaration.summary
 
 import forms.declaration.GoodsLocation
+import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.locations_section
+import models.Mode
 
 class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
@@ -30,7 +32,7 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
   "Locations section" must {
 
-    val view = locations_section(data)(messages, journeyRequest())
+    val view = locations_section(Mode.Normal, data)(messages, journeyRequest())
 
     "have a goods location code with change button" in {
 
@@ -87,7 +89,7 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     "not have answers when goods location not asked" in {
-      val view = locations_section(aDeclarationAfter(data, withoutGoodsLocation()))(messages, journeyRequest())
+      val view = locations_section(Mode.Normal, aDeclarationAfter(data, withoutGoodsLocation()))(messages, journeyRequest())
 
       view.getElementById("location-code-label") mustBe null
       view.getElementById("location-code") mustBe null
@@ -99,7 +101,7 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     "not have answers when office of exit not asked" in {
-      val view = locations_section(aDeclarationAfter(data, withoutOfficeOfExit()))(messages, journeyRequest())
+      val view = locations_section(Mode.Normal, aDeclarationAfter(data, withoutOfficeOfExit()))(messages, journeyRequest())
 
       view.getElementById("location-officeOfExit-label") mustBe null
       view.getElementById("location-officeOfExit") mustBe null

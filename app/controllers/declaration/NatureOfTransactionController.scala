@@ -53,7 +53,7 @@ class NatureOfTransactionController @Inject()(
     form().bindFromRequest
       .fold(
         (formWithErrors: Form[NatureOfTransaction]) => Future.successful(BadRequest(natureOfTransactionPage(mode, formWithErrors))),
-        form => updateCache(form).map(_ => navigator.continueTo(controllers.declaration.routes.PreviousDocumentsController.displayPage(mode)))
+        form => updateCache(form).map(_ => navigator.continueTo(mode, controllers.declaration.routes.PreviousDocumentsController.displayPage))
       )
   }
 

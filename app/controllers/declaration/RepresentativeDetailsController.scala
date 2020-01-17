@@ -20,11 +20,12 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.RepresentativeDetails
 import javax.inject.Inject
+import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.representative_details
@@ -55,16 +56,16 @@ class RepresentativeDetailsController @Inject()(
       .fold(
         (formWithErrors: Form[RepresentativeDetails]) =>
           Future.successful(BadRequest(representativeDetailsPage(mode, RepresentativeDetails.adjustErrors(formWithErrors)))),
-        validRepresentativeDetails => updateCache(validRepresentativeDetails).map(_ => navigator.continueTo(nextPage(mode, request)))
+        validRepresentativeDetails => updateCache(validRepresentativeDetails).map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
       )
   }
 
-  private def nextPage(mode: Mode, request: JourneyRequest[AnyContent]) =
-    request.declarationType match {
+  private def nextPage(declarationType: DeclarationType): Mode => Call =
+    declarationType match {
       case DeclarationType.SUPPLEMENTARY | DeclarationType.CLEARANCE =>
-        controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage(mode)
+        controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage
       case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
-        controllers.declaration.routes.CarrierDetailsController.displayPage(mode)
+        controllers.declaration.routes.CarrierDetailsController.displayPage
     }
 
   private def updateCache(formData: RepresentativeDetails)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =

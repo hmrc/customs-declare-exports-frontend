@@ -16,6 +16,7 @@
 
 package forms.declaration
 
+import forms.DeclarationPage
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
@@ -26,7 +27,7 @@ case class DeclarationHolder(authorisationTypeCode: Option[String], eori: Option
   override def toString: String = s"${authorisationTypeCode.getOrElse("")}-${eori.getOrElse("")}"
 }
 
-object DeclarationHolder {
+object DeclarationHolder extends DeclarationPage {
   implicit val format = Json.format[DeclarationHolder]
 
   val mapping = Forms.mapping(

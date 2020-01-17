@@ -20,11 +20,12 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.TotalNumberOfItems
 import javax.inject.Inject
+import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.total_number_of_items
@@ -54,16 +55,16 @@ class TotalNumberOfItemsController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[TotalNumberOfItems]) => Future.successful(BadRequest(totalNumberOfItemsPage(mode, formWithErrors))),
-        formData => updateCache(formData).map(_ => navigator.continueTo(nextPage(mode, request)))
+        formData => updateCache(formData).map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
       )
   }
 
-  private def nextPage(mode: Mode, request: JourneyRequest[AnyContent]) =
-    request.declarationType match {
+  private def nextPage(declarationType: DeclarationType): Mode => Call =
+    declarationType match {
       case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | DeclarationType.CLEARANCE =>
-        controllers.declaration.routes.NatureOfTransactionController.displayPage(mode)
+        controllers.declaration.routes.NatureOfTransactionController.displayPage
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
-        controllers.declaration.routes.PreviousDocumentsController.displayPage(mode)
+        controllers.declaration.routes.PreviousDocumentsController.displayPage
     }
 
   private def updateCache(formData: TotalNumberOfItems)(implicit req: JourneyRequest[AnyContent]) =

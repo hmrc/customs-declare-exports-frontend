@@ -20,23 +20,19 @@
 @import uk.gov.hmrc.play.views.html._
 @import views.components.inputs.RadioOption
 @import views.Title
+@import controllers.navigation.Navigator
+@import models.requests.JourneyRequest
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[DispatchLocation])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, form: Form[DispatchLocation])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
   title = Title("supplementary.dispatchLocation.header", "declaration.summary.locations.header")
 ) {
 
-    @mode match {
-        case Mode.Draft | Mode.Amend => {
-            @components.back_link(controllers.declaration.routes.SummaryController.displayPage(mode), mode)
-        }
-        case Mode.Normal => {
-            @components.back_link(controllers.declaration.routes.DeclarationChoiceController.displayPage(), mode)
-        }
-    }
+    @components.back_link(Navigator.backLink(DispatchLocation, mode), mode)
+
 
   @helper.form(controllers.declaration.routes.DispatchLocationController.submitForm(mode), 'autoComplete -> "off") {
       @helper.CSRF.formField

@@ -47,34 +47,34 @@ class DeclarationChoiceController @Inject()(
 
   private val logger = Logger(this.getClass)
 
-  def displayPage: Action[AnyContent] = authenticate.async { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = authenticate.async { implicit request =>
     request.declarationId match {
       case Some(id) =>
         exportsCacheService.get(id).map(_.map(_.`type`)).map {
-          case Some(data) => Ok(choicePage(form().fill(DeclarationChoice(data))))
-          case _          => Ok(choicePage(form()))
+          case Some(data) => Ok(choicePage(mode, form().fill(DeclarationChoice(data))))
+          case _          => Ok(choicePage(mode, form()))
         }
-      case _ => Future.successful(Ok(choicePage(form())))
+      case _ => Future.successful(Ok(choicePage(mode, form())))
     }
 
   }
 
-  def submitChoice(): Action[AnyContent] = authenticate.async { implicit request =>
+  def submitChoice(mode: Mode): Action[AnyContent] = authenticate.async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[DeclarationChoice]) => Future.successful(BadRequest(choicePage(formWithErrors))),
+        (formWithErrors: Form[DeclarationChoice]) => Future.successful(BadRequest(choicePage(mode, formWithErrors))),
         choice => {
           val declarationType = choice.value
 
           request.declarationId match {
             case Some(id) =>
               updateDeclarationType(id, declarationType).map { _ =>
-                Redirect(controllers.declaration.routes.DispatchLocationController.displayPage(Mode.Normal))
+                Redirect(controllers.declaration.routes.DispatchLocationController.displayPage(mode))
               }
             case _ =>
               create(declarationType) map { created =>
-                Redirect(controllers.declaration.routes.DispatchLocationController.displayPage(Mode.Normal))
+                Redirect(controllers.declaration.routes.DispatchLocationController.displayPage(mode))
                   .addingToSession(ExportsSessionKeys.declarationId -> created.id)
               }
           }

@@ -16,12 +16,13 @@
 
 package forms.declaration
 
+import forms.DeclarationPage
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 
 case class CarrierDetails(details: EntityDetails)
 
-object CarrierDetails {
+object CarrierDetails extends DeclarationPage {
   implicit val format = Json.format[CarrierDetails]
 
   val id = "CarrierDetails"

@@ -17,6 +17,8 @@
 package views.declaration.summary
 
 import forms.common.Address
+import models.{DeclarationType, Mode}
+import models.DeclarationType._
 import models.declaration.DeclarationAdditionalActorsData
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
@@ -38,114 +40,118 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
   "Parties section" must {
 
-    val view = parties_section(data)(messages, journeyRequest())
+    onEveryDeclarationJourney { request =>
+      val view = parties_section(Mode.Normal, data)(messages, request)
 
-    "contains exporter details with change button" in {
+      "contains exporter details with change button" in {
 
-      view.getElementById("exporter-eori-label").text() mustBe messages("declaration.summary.parties.exporter.eori")
-      view.getElementById("exporter-address-label").text() mustBe messages("declaration.summary.parties.exporter.address")
+        view.getElementById("exporter-eori-label").text() mustBe messages("declaration.summary.parties.exporter.eori")
+        view.getElementById("exporter-address-label").text() mustBe messages("declaration.summary.parties.exporter.address")
 
-      val List(change1, accessibleChange1) = view.getElementById("exporter-eori-change").text().split(" ").toList
+        val List(change1, accessibleChange1) = view.getElementById("exporter-eori-change").text().split(" ").toList
 
-      change1 mustBe messages("site.change")
-      accessibleChange1 mustBe messages("declaration.summary.parties.exporter.eori.change")
+        change1 mustBe messages("site.change")
+        accessibleChange1 mustBe messages("declaration.summary.parties.exporter.eori.change")
 
-      view.getElementById("exporter-eori-change") must haveHref(controllers.declaration.routes.ExporterDetailsController.displayPage())
+        view.getElementById("exporter-eori-change") must haveHref(controllers.declaration.routes.ExporterDetailsController.displayPage())
 
-      val List(change2, accessibleChange2) = view.getElementById("exporter-address-change").text().split(" ").toList
+        val List(change2, accessibleChange2) = view.getElementById("exporter-address-change").text().split(" ").toList
 
-      change2 mustBe messages("site.change")
-      accessibleChange2 mustBe messages("declaration.summary.parties.exporter.address.change")
+        change2 mustBe messages("site.change")
+        accessibleChange2 mustBe messages("declaration.summary.parties.exporter.address.change")
 
-      view.getElementById("exporter-address-change") must haveHref(controllers.declaration.routes.ExporterDetailsController.displayPage())
-    }
+        view.getElementById("exporter-address-change") must haveHref(controllers.declaration.routes.ExporterDetailsController.displayPage())
+      }
 
-    "contains consignee details with change button" in {
+      "contains consignee details with change button" in {
 
-      view.getElementById("consignee-eori-label").text() mustBe messages("declaration.summary.parties.consignee.eori")
-      view.getElementById("consignee-address-label").text() mustBe messages("declaration.summary.parties.consignee.address")
+        view.getElementById("consignee-eori-label").text() mustBe messages("declaration.summary.parties.consignee.eori")
+        view.getElementById("consignee-address-label").text() mustBe messages("declaration.summary.parties.consignee.address")
 
-      val List(change1, accessibleChange1) = view.getElementById("consignee-eori-change").text().split(" ").toList
+        val List(change1, accessibleChange1) = view.getElementById("consignee-eori-change").text().split(" ").toList
 
-      change1 mustBe messages("site.change")
-      accessibleChange1 mustBe messages("declaration.summary.parties.consignee.eori.change")
+        change1 mustBe messages("site.change")
+        accessibleChange1 mustBe messages("declaration.summary.parties.consignee.eori.change")
 
-      view.getElementById("consignee-eori-change") must haveHref(controllers.declaration.routes.ConsigneeDetailsController.displayPage())
+        view.getElementById("consignee-eori-change") must haveHref(controllers.declaration.routes.ConsigneeDetailsController.displayPage())
 
-      val List(change2, accessibleChange2) = view.getElementById("consignee-address-change").text().split(" ").toList
+        val List(change2, accessibleChange2) = view.getElementById("consignee-address-change").text().split(" ").toList
 
-      change2 mustBe messages("site.change")
-      accessibleChange2 mustBe messages("declaration.summary.parties.consignee.address.change")
+        change2 mustBe messages("site.change")
+        accessibleChange2 mustBe messages("declaration.summary.parties.consignee.address.change")
 
-      view.getElementById("consignee-address-change") must haveHref(controllers.declaration.routes.ConsigneeDetailsController.displayPage())
-    }
+        view.getElementById("consignee-address-change") must haveHref(controllers.declaration.routes.ConsigneeDetailsController.displayPage())
+      }
 
-    "contains declarant details with change button" in {
+      "contains declarant details with change button" in {
 
-      view.getElementById("declarant-eori-label").text() mustBe messages("declaration.summary.parties.declarant.eori")
-      view.getElementById("declarant-address-label").text() mustBe messages("declaration.summary.parties.declarant.address")
+        view.getElementById("declarant-eori-label").text() mustBe messages("declaration.summary.parties.declarant.eori")
+        view.getElementById("declarant-address-label").text() mustBe messages("declaration.summary.parties.declarant.address")
 
-      val List(change1, accessibleChange1) = view.getElementById("declarant-eori-change").text().split(" ").toList
+        val List(change1, accessibleChange1) = view.getElementById("declarant-eori-change").text().split(" ").toList
 
-      change1 mustBe messages("site.change")
-      accessibleChange1 mustBe messages("declaration.summary.parties.declarant.eori.change")
+        change1 mustBe messages("site.change")
+        accessibleChange1 mustBe messages("declaration.summary.parties.declarant.eori.change")
 
-      view.getElementById("declarant-eori-change") must haveHref(controllers.declaration.routes.DeclarantDetailsController.displayPage())
+        view.getElementById("declarant-eori-change") must haveHref(controllers.declaration.routes.DeclarantDetailsController.displayPage())
 
-      val List(change2, accessibleChange2) = view.getElementById("declarant-address-change").text().split(" ").toList
+        val List(change2, accessibleChange2) = view.getElementById("declarant-address-change").text().split(" ").toList
 
-      change2 mustBe messages("site.change")
-      accessibleChange2 mustBe messages("declaration.summary.parties.declarant.address.change")
+        change2 mustBe messages("site.change")
+        accessibleChange2 mustBe messages("declaration.summary.parties.declarant.address.change")
 
-      view.getElementById("declarant-address-change") must haveHref(controllers.declaration.routes.DeclarantDetailsController.displayPage())
-    }
+        view.getElementById("declarant-address-change") must haveHref(controllers.declaration.routes.DeclarantDetailsController.displayPage())
+      }
 
-    "contains representative details with change button" in {
+      "contains representative details with change button" in {
 
-      view.getElementById("representative-eori-label").text() mustBe messages("declaration.summary.parties.representative.eori")
-      view.getElementById("representative-address-label").text() mustBe messages("declaration.summary.parties.representative.address")
+        view.getElementById("representative-eori-label").text() mustBe messages("declaration.summary.parties.representative.eori")
+        view.getElementById("representative-address-label").text() mustBe messages("declaration.summary.parties.representative.address")
 
-      val List(change1, accessibleChange1) = view.getElementById("representative-eori-change").text().split(" ").toList
+        val List(change1, accessibleChange1) = view.getElementById("representative-eori-change").text().split(" ").toList
 
-      change1 mustBe messages("site.change")
-      accessibleChange1 mustBe messages("declaration.summary.parties.representative.eori.change")
+        change1 mustBe messages("site.change")
+        accessibleChange1 mustBe messages("declaration.summary.parties.representative.eori.change")
 
-      view.getElementById("representative-eori-change") must haveHref(controllers.declaration.routes.RepresentativeDetailsController.displayPage())
+        view.getElementById("representative-eori-change") must haveHref(controllers.declaration.routes.RepresentativeDetailsController.displayPage())
 
-      val List(change2, accessibleChange2) = view.getElementById("representative-address-change").text().split(" ").toList
+        val List(change2, accessibleChange2) = view.getElementById("representative-address-change").text().split(" ").toList
 
-      change2 mustBe messages("site.change")
-      accessibleChange2 mustBe messages("declaration.summary.parties.representative.address.change")
+        change2 mustBe messages("site.change")
+        accessibleChange2 mustBe messages("declaration.summary.parties.representative.address.change")
 
-      view.getElementById("representative-address-change") must haveHref(controllers.declaration.routes.RepresentativeDetailsController.displayPage())
-    }
+        view.getElementById("representative-address-change") must haveHref(
+          controllers.declaration.routes.RepresentativeDetailsController.displayPage()
+        )
+      }
 
-    "display status code with change button" in {
+      "display status code with change button" in {
 
-      view.getElementById("representationType-label").text() mustBe messages("declaration.summary.parties.representative.type")
-      view.getElementById("representationType").text() mustBe messages("declaration.summary.parties.representative.type.1")
+        view.getElementById("representationType-label").text() mustBe messages("declaration.summary.parties.representative.type")
+        view.getElementById("representationType").text() mustBe messages("declaration.summary.parties.representative.type.1")
 
-      val List(change, accessibleChange) = view.getElementById("representationType-change").text().split(" ").toList
+        val List(change, accessibleChange) = view.getElementById("representationType-change").text().split(" ").toList
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.parties.representative.type.change")
+        change mustBe messages("site.change")
+        accessibleChange mustBe messages("declaration.summary.parties.representative.type.change")
 
-      view.getElementById("representationType-change") must haveHref(controllers.declaration.routes.RepresentativeDetailsController.displayPage())
-    }
+        view.getElementById("representationType-change") must haveHref(controllers.declaration.routes.RepresentativeDetailsController.displayPage())
+      }
 
-    "display additional actors section" in {
+      "display additional actors section" in {
 
-      view.getElementById("additionalActors-label").text() mustBe messages("declaration.summary.parties.additional")
-    }
+        view.getElementById("additionalActors-label").text() mustBe messages("declaration.summary.parties.additional")
+      }
 
-    "display holders section" in {
+      "display holders section" in {
 
-      view.getElementById("holders-label").text() mustBe messages("declaration.summary.parties.holders")
+        view.getElementById("holders-label").text() mustBe messages("declaration.summary.parties.holders")
+      }
     }
   }
 
   "contains carrier details with change button" in {
-    val view = parties_section(data)(messages, journeyRequest())
+    val view = parties_section(Mode.Normal, data)(messages, journeyRequest())
 
     view.getElementById("carrier-eori-label").text() mustBe messages("declaration.summary.parties.carrier.eori")
     view.getElementById("carrier-address-label").text() mustBe messages("declaration.summary.parties.carrier.address")
@@ -166,42 +172,42 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData {
   }
 
   "does not contain exporter when section not answered" in {
-    val view = parties_section(aDeclarationAfter(data, withoutExporterDetails()))(messages, journeyRequest())
+    val view = parties_section(Mode.Normal, aDeclarationAfter(data, withoutExporterDetails()))(messages, journeyRequest())
 
     view.getElementById("exporter-eori-label") mustBe null
     view.getElementById("exporter-address-label") mustBe null
   }
 
   "does not contain consignee when section not answered" in {
-    val view = parties_section(aDeclarationAfter(data, withoutConsigneeDetails()))(messages, journeyRequest())
+    val view = parties_section(Mode.Normal, aDeclarationAfter(data, withoutConsigneeDetails()))(messages, journeyRequest())
 
     view.getElementById("consignee-eori-label") mustBe null
     view.getElementById("consignee-address-label") mustBe null
   }
 
   "does not contain declarant when section not answered" in {
-    val view = parties_section(aDeclarationAfter(data, withoutDeclarantDetails()))(messages, journeyRequest())
+    val view = parties_section(Mode.Normal, aDeclarationAfter(data, withoutDeclarantDetails()))(messages, journeyRequest())
 
     view.getElementById("declarant-eori-label") mustBe null
     view.getElementById("declarant-address-label") mustBe null
   }
 
   "does not contain representative when section not answered" in {
-    val view = parties_section(aDeclarationAfter(data, withoutRepresentativeDetails()))(messages, journeyRequest())
+    val view = parties_section(Mode.Normal, aDeclarationAfter(data, withoutRepresentativeDetails()))(messages, journeyRequest())
 
     view.getElementById("representative-eori-label") mustBe null
     view.getElementById("representative-address-label") mustBe null
   }
 
   "does not contain carrier details when section not answered" in {
-    val view = parties_section(aDeclarationAfter(data, withoutCarrierDetails()))(messages, journeyRequest())
+    val view = parties_section(Mode.Normal, aDeclarationAfter(data, withoutCarrierDetails()))(messages, journeyRequest())
 
     view.getElementById("carrier-eori-label") mustBe null
     view.getElementById("carrier-address-label") mustBe null
   }
 
   "does not contain anything when there are no parties" in {
-    val view = parties_section(aDeclaration())(messages, journeyRequest())
+    val view = parties_section(Mode.Normal, aDeclaration())(messages, journeyRequest())
 
     view.getAllElements.text() must be(empty)
   }

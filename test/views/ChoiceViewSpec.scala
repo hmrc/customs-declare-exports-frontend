@@ -21,6 +21,7 @@ import com.typesafe.config.{Config, ConfigFactory}
 import config.AppConfig
 import forms.Choice
 import helpers.views.declaration.CommonMessages
+import models.Mode
 import org.jsoup.nodes.Document
 import org.scalatest.Matchers._
 import play.api.Mode.Test

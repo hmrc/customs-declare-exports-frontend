@@ -58,15 +58,15 @@ class TransportLeavingTheBorderController @Inject()(
         errors => Future.successful(BadRequest(transportAtBorder(errors, mode))),
         code =>
           updateExportsDeclarationSyncDirect(_.updateTransportLeavingBorder(code)).map { _ =>
-            navigator.continueTo(nextPage(mode))
+            navigator.continueTo(mode, nextPage(request.declarationType))
         }
       )
   }
 
-  def nextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Call = request.declarationType match {
+  def nextPage(declarationType: DeclarationType): Mode => Call = declarationType match {
     case DeclarationType.CLEARANCE =>
-      controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode)
+      controllers.declaration.routes.TransportContainerController.displayContainerSummary
     case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
-      controllers.declaration.routes.DepartureTransportController.displayPage(mode)
+      controllers.declaration.routes.DepartureTransportController.displayPage
   }
 }

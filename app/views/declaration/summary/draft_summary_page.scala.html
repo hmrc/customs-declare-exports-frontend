@@ -1,0 +1,58 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.declaration.routes
+@import forms.declaration.LegalDeclaration
+@import models.{ExportsDeclaration, Mode}
+@import models.requests.JourneyRequest
+@import models.viewmodels.HtmlTableRow
+@import views.html.declaration.summary._
+@import views.{Title, ViewDates}
+
+@this(main_template: views.html.main_template, draftInfoSection: draft_info_section)
+
+@()(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
+
+@main_template(title = Title("declaration.summary.saved-header")){
+
+    @components.back_link(controllers.routes.SavedDeclarationsController.displayDeclarations(), Mode.Draft)
+
+    @components.heading(title = messages("declaration.summary.saved-header"))
+
+    @draftInfoSection(request.cacheModel)
+
+    @references_section(Mode.Draft, request.cacheModel)
+
+    @parties_section(Mode.Draft, request.cacheModel)
+
+    @countries_section(Mode.Draft, request.cacheModel)
+
+    @locations_section(Mode.Draft, request.cacheModel)
+
+    @transaction_section(request.cacheModel)
+
+    @items_section(request.cacheModel)
+
+    @warehouse_section(request.cacheModel)
+
+    @transport_section(request.cacheModel)
+
+    <p class="mt-5">@messages("saved.declarations.summary.paragraph")</p>
+
+    <a class="button mt-3" id="draft-continue" href="@routes.DispatchLocationController.displayPage(Mode.Draft)">@messages("saved.declarations.summary.continue")</a>
+
+}

@@ -68,8 +68,8 @@ class DestinationCountryController @Inject()(
   private def redirectToNextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
     request.declarationType match {
       case DeclarationType.SUPPLEMENTARY | DeclarationType.CLEARANCE =>
-        navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode))
+        navigator.continueTo(mode, controllers.declaration.routes.LocationController.displayPage)
       case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
-        navigator.continueTo(controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(mode))
+        navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(_))
     }
 }

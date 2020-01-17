@@ -83,8 +83,8 @@ class FiscalInformationController @Inject()(
   ): Result =
     fiscalInformation.onwardSupplyRelief match {
       case FiscalInformation.AllowedFiscalInformationAnswers.yes =>
-        navigator.continueTo(routes.AdditionalFiscalReferencesController.displayPage(mode, itemId))
+        navigator.continueTo(mode, routes.AdditionalFiscalReferencesController.displayPage(_, itemId))
       case FiscalInformation.AllowedFiscalInformationAnswers.no =>
-        navigator.continueTo(routes.CommodityDetailsController.displayPage(mode, itemId))
+        navigator.continueTo(mode, routes.CommodityDetailsController.displayPage(_, itemId))
     }
 }

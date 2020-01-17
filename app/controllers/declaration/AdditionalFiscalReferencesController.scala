@@ -73,7 +73,7 @@ class AdditionalFiscalReferencesController @Inject()(
         formWithErrors => Future.successful(badRequest(mode, itemId, formWithErrors, cachedData.references)),
         updatedCache =>
           updateExportsCache(itemId, AdditionalFiscalReferencesData(updatedCache))
-            .map(_ => navigator.continueTo(routes.AdditionalFiscalReferencesController.displayPage(mode, itemId)))
+            .map(_ => navigator.continueTo(mode, routes.AdditionalFiscalReferencesController.displayPage(_, itemId)))
       )
 
   private def saveAndContinue(mode: Mode, itemId: String, form: Form[AdditionalFiscalReference], cachedData: AdditionalFiscalReferencesData)(
@@ -86,8 +86,8 @@ class AdditionalFiscalReferencesController @Inject()(
         updatedCache =>
           if (updatedCache != cachedData.references)
             updateExportsCache(itemId, AdditionalFiscalReferencesData(updatedCache))
-              .map(_ => navigator.continueTo(routes.CommodityDetailsController.displayPage(mode, itemId)))
-          else Future.successful(navigator.continueTo(routes.CommodityDetailsController.displayPage(mode, itemId)))
+              .map(_ => navigator.continueTo(mode, routes.CommodityDetailsController.displayPage(_, itemId)))
+          else Future.successful(navigator.continueTo(mode, routes.CommodityDetailsController.displayPage(_, itemId)))
       )
 
   def removeReference(mode: Mode, itemId: String, value: String) = itemAction(itemId).async { implicit request =>
@@ -96,7 +96,7 @@ class AdditionalFiscalReferencesController @Inject()(
     val updatedCache = cacheModel.removeReference(value)
     updateExportsCache(itemId, updatedCache).map {
       case Some(_) =>
-        navigator.continueTo(routes.AdditionalFiscalReferencesController.displayPage(mode, itemId))
+        navigator.continueTo(mode, routes.AdditionalFiscalReferencesController.displayPage(_, itemId))
       case None => navigator.continueTo(routes.ItemsSummaryController.displayPage())
     }
   }
