@@ -20,6 +20,7 @@ import controllers.util.{Add, SaveAndContinue, SaveAndReturn}
 import forms.declaration.AdditionalFiscalReference
 import helpers.views.declaration.CommonMessages
 import models.Mode
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportItemIdGeneratorService
@@ -37,116 +38,121 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
 
   val itemId = new ExportItemIdGeneratorService().generateItemId()
 
-  private def createView(form: Form[AdditionalFiscalReference] = form, references: Seq[AdditionalFiscalReference] = Seq.empty): Document =
+  private def createView(form: Form[AdditionalFiscalReference] = form, references: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: JourneyRequest[_]): Document =
     additionalFiscalReferencesPage(Mode.Normal, itemId, form, references)
 
   "Additional Fiscal References View on empty page" should {
+    onEveryDeclarationJourney { implicit request =>
 
-    val view = createView()
+      val view = createView()
 
-    "display page title" in {
-      view.getElementById("title").text() mustBe "declaration.additionalFiscalReferences.title"
+      "display page title" in {
+        view.getElementById("title").text() mustBe "declaration.additionalFiscalReferences.title"
+      }
+
+      "display header" in {
+        view.getElementById("section-header").text() must include("declaration.fiscalInformation.header")
+      }
+
+      "display country input" in {
+        view.getElementById("country-label").text() mustBe "declaration.additionalFiscalReferences.country"
+        view.getElementById("country").attr("value") mustBe empty
+      }
+
+      "display VAT number input" in {
+        view.getElementById("reference-label").text() mustBe "declaration.additionalFiscalReferences.reference"
+        view.getElementById("reference").attr("value") mustBe empty
+      }
+
+      "display 'Back' button to Fiscal Information page" in {
+
+        val backButton = view.getElementById("back-link")
+
+        backButton.text() mustBe backCaption
+        backButton must haveHref(controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId, fastForward = false))
+      }
+
+      "display 'Save and continue' button" in {
+        view must containElement("button").withName(SaveAndContinue.toString)
+      }
+
+      "display 'Save and return' button" in {
+        view must containElement("button").withName(SaveAndReturn.toString)
+      }
+
+      "display 'Add' button" in {
+        view must containElement("button").withName(Add.toString)
+      }
     }
-
-    "display header" in {
-      view.getElementById("section-header").text() must include("declaration.fiscalInformation.header")
-    }
-
-    "display country input" in {
-      view.getElementById("country-label").text() mustBe "declaration.additionalFiscalReferences.country"
-      view.getElementById("country").attr("value") mustBe empty
-    }
-
-    "display VAT number input" in {
-      view.getElementById("reference-label").text() mustBe "declaration.additionalFiscalReferences.reference"
-      view.getElementById("reference").attr("value") mustBe empty
-    }
-
-    "display 'Back' button to Fiscal Information page" in {
-
-      val backButton = view.getElementById("back-link")
-
-      backButton.text() mustBe backCaption
-      backButton must haveHref(controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId, fastForward = false))
-    }
-
-    "display 'Save and continue' button" in {
-      view must containElement("button").withName(SaveAndContinue.toString)
-    }
-
-    "display 'Save and return' button" in {
-      view must containElement("button").withName(SaveAndReturn.toString)
-    }
-
-    "display 'Add' button" in {
-      view must containElement("button").withName(Add.toString)
-    }
-
   }
 
   "Additional Fiscal References" should {
+    onEveryDeclarationJourney { implicit request =>
+      val view = createView(references = Seq(AdditionalFiscalReference("FR", "12345")))
 
-    val view = createView(references = Seq(AdditionalFiscalReference("FR", "12345")))
+      "display references" in {
+        view.text() must include("FR12345")
 
-    "display references" in {
-      view.text() must include("FR12345")
+      }
 
-    }
-
-    "display remove button" in {
-      view.getElementsByAttributeValue("class", "remove button--secondary").first() must submitTo(
-        controllers.declaration.routes.AdditionalFiscalReferencesController
-          .removeReference(Mode.Normal, itemId, "FR12345")
-      )
+      "display remove button" in {
+        view.getElementsByAttributeValue("class", "remove button--secondary").first() must submitTo(
+          controllers.declaration.routes.AdditionalFiscalReferencesController
+            .removeReference(Mode.Normal, itemId, "FR12345")
+        )
+      }
     }
   }
 
   "Additional Fiscal References for invalid input" should {
     import forms.declaration.AdditionalFiscalReferenceSpec._
 
-    "display error" when {
+    onEveryDeclarationJourney { implicit request =>
 
-      "country is empty" in {
-        val view = createView(form.bind(emptyCountry))
+      "display error" when {
 
-        view must haveGlobalErrorSummary
-        view must haveFieldError("country", "declaration.additionalFiscalReferences.country.empty")
-      }
+        "country is empty" in {
+          val view = createView(form.bind(emptyCountry))
 
-      "country is incorrect" in {
-        val view = createView(form.bind(incorrectCountry))
+          view must haveGlobalErrorSummary
+          view must haveFieldError("country", "declaration.additionalFiscalReferences.country.empty")
+        }
 
-        view must haveGlobalErrorSummary
-        view must haveFieldError("country", "declaration.additionalFiscalReferences.country.error")
-      }
+        "country is incorrect" in {
+          val view = createView(form.bind(incorrectCountry))
 
-      "reference is empty" in {
-        val view = createView(form.bind(emptyReference))
+          view must haveGlobalErrorSummary
+          view must haveFieldError("country", "declaration.additionalFiscalReferences.country.error")
+        }
 
-        view must haveGlobalErrorSummary
-        view must haveFieldError("reference", "declaration.additionalFiscalReferences.reference.empty")
-      }
+        "reference is empty" in {
+          val view = createView(form.bind(emptyReference))
 
-      "reference is incorrect" in {
-        val view = createView(form.bind(incorrectReference))
+          view must haveGlobalErrorSummary
+          view must haveFieldError("reference", "declaration.additionalFiscalReferences.reference.empty")
+        }
 
-        view must haveGlobalErrorSummary
-        view must haveFieldError("reference", "declaration.additionalFiscalReferences.reference.error")
-      }
-      "both country and reference are empty" in {
-        val view = createView(form.bind(emptyCountryAndRef))
+        "reference is incorrect" in {
+          val view = createView(form.bind(incorrectReference))
 
-        view must haveGlobalErrorSummary
-        view must haveFieldError("country", "declaration.additionalFiscalReferences.country.empty")
-        view must haveFieldError("reference", "declaration.additionalFiscalReferences.reference.empty")
-      }
+          view must haveGlobalErrorSummary
+          view must haveFieldError("reference", "declaration.additionalFiscalReferences.reference.error")
+        }
+        "both country and reference are empty" in {
+          val view = createView(form.bind(emptyCountryAndRef))
 
-      "both country and reference are incorrect" in {
-        val view = createView(form.bind(incorrectCountryAndRef))
+          view must haveGlobalErrorSummary
+          view must haveFieldError("country", "declaration.additionalFiscalReferences.country.empty")
+          view must haveFieldError("reference", "declaration.additionalFiscalReferences.reference.empty")
+        }
 
-        view must haveGlobalErrorSummary
-        view must haveFieldError("country", "declaration.additionalFiscalReferences.country.error")
-        view must haveFieldError("reference", "declaration.additionalFiscalReferences.reference.error")
+        "both country and reference are incorrect" in {
+          val view = createView(form.bind(incorrectCountryAndRef))
+
+          view must haveGlobalErrorSummary
+          view must haveFieldError("country", "declaration.additionalFiscalReferences.country.error")
+          view must haveFieldError("reference", "declaration.additionalFiscalReferences.reference.error")
+        }
       }
     }
   }

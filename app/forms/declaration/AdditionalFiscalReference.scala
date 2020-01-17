@@ -16,6 +16,7 @@
 
 package forms.declaration
 
+import forms.DeclarationPage
 import play.api.data.{Form, Forms}
 import play.api.data.Forms.text
 import play.api.libs.json.Json
@@ -26,7 +27,7 @@ case class AdditionalFiscalReference(country: String, reference: String) {
   val asString: String = country + reference
 }
 
-object AdditionalFiscalReference {
+object AdditionalFiscalReference extends DeclarationPage {
   implicit val format = Json.format[AdditionalFiscalReference]
 
   val mapping = Forms.mapping(

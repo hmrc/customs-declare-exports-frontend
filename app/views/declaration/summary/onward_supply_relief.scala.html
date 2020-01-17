@@ -25,7 +25,7 @@
     components.table_row(s"item-$itemNo-onwardSupplyRelief", HtmlTableRow(
         label = messages("declaration.summary.items.item.onwardSupplyRelief"),
         value = fiscalInformation.onwardSupplyRelief,
-        call = Some(controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId)),
+        call = Some(controllers.declaration.routes.FiscalInformationController.displayPage(mode, itemId)),
         changeLabel = Some(messages("declaration.summary.items.item.onwardSupplyRelief.change", itemNo))
     ))
 )
@@ -34,7 +34,7 @@
     components.table_row(s"item-$itemNo-VATdetails", HtmlTableRow(
         label = messages("declaration.summary.items.item.VATdetails"),
         value = additionalFiscalReferences.references.map(_.asString).mkString(", "),
-        call = Some(controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(Mode.Normal, itemId)),
+        call = Some(controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(mode, itemId)),
         changeLabel = Some(messages("declaration.summary.items.item.VATdetails.change", itemNo))
     ))
 )

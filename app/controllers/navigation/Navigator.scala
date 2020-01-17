@@ -218,7 +218,8 @@ object Navigator {
   }
 
   val commonItem: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
-    case FiscalInformation => controllers.declaration.routes.ProcedureCodesController.displayPage
+    case FiscalInformation         => controllers.declaration.routes.ProcedureCodesController.displayPage
+    case AdditionalFiscalReference => controllers.declaration.routes.FiscalInformationController.displayPage(_, _, fastForward = false)
   }
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
