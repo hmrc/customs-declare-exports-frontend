@@ -212,6 +212,8 @@ object Navigator {
     case NatureOfTransaction                              => controllers.declaration.routes.TotalNumberOfItemsController.displayPage
     case ProcedureCodes                                   => controllers.declaration.routes.ItemsSummaryController.displayPage
     case ModeOfTransportCodes                             => controllers.declaration.routes.InlandTransportDetailsController.displayPage
+    case DepartureTransport => controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
+
   }
 
   val commonItem: PartialFunction[DeclarationPage, (Mode, String) => Call] = {

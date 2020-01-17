@@ -43,7 +43,7 @@
     @helper.form(TransportLeavingTheBorderController.submitForm(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
-        @components.fields.field_radio( 
+        @components.fields.field_radio(
             field = form("code"),
             legend = "",
             hint = None,

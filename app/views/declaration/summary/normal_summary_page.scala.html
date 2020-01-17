@@ -50,7 +50,7 @@
 
     @warehouse_section(Mode.Change, request.cacheModel)
 
-    @transport_section(request.cacheModel)
+    @transport_section(Mode.Change, request.cacheModel)
 
 
     @helper.form(action = routes.SummaryController.submitDeclaration(), 'id -> "summary") {

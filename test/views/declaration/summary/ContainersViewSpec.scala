@@ -17,6 +17,7 @@
 package views.declaration.summary
 
 import forms.declaration.Seal
+import models.Mode
 import models.declaration.Container
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
@@ -36,7 +37,7 @@ class ContainersViewSpec extends UnitViewSpec with ExportsTestData {
 
     "display all containers and seals" in {
 
-      val view = summary.containers(containers)(messages, journeyRequest())
+      val view = summary.containers(Mode.Normal, containers)(messages, journeyRequest())
 
       view.getElementById("container").text() mustBe messages("declaration.summary.container")
       view.getElementById("container-id").text() mustBe messages("declaration.summary.container.id")
@@ -49,7 +50,7 @@ class ContainersViewSpec extends UnitViewSpec with ExportsTestData {
 
     "display change buttons for every container" in {
 
-      val view = summary.containers(containers)(messages, journeyRequest())
+      val view = summary.containers(Mode.Normal, containers)(messages, journeyRequest())
 
       val List(change1, accessibleChange1) = view.getElementById("container-0-change").text().split(" ").toList
 
