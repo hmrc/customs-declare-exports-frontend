@@ -33,9 +33,9 @@
 @backCall = @{
     mode match {
         case Mode.Change => controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
-        case Mode.ChangeAmend => controllers.declaration.routes.SummaryController.displayPage(Mode.Amend)
+        case Mode.ChangeAmend | Mode.Amend => controllers.declaration.routes.SummaryController.displayPage(Mode.Amend)
         case Mode.Draft => controllers.declaration.routes.SummaryController.displayPage(Mode.Draft)
-        case _ => controllers.routes.ChoiceController.displayPage(Some(Choice(CreateDec)))
+        case Mode.Normal => controllers.routes.ChoiceController.displayPage(Some(Choice(CreateDec)))
     }
 }
 

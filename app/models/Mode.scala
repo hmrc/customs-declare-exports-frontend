@@ -74,7 +74,7 @@ object Mode {
         )
       )
 
-    override def unbind(key: String, value: Mode): String = strBinder.unbind(key, value.toString)
+    override def unbind(key: String, value: Mode): String = strBinder.unbind(key, value.name)
   }
 
   implicit val jsLiteral: JavascriptLiteral[Mode] = new JavascriptLiteral[Mode] {
