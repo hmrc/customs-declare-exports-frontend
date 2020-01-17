@@ -7,11 +7,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
                     .insertAfter(this.element);
 
                 this.element.hide();
-                this._createAutocomplete();
+                this._createAutocomplete(this.element.attr("id"));
                 this._createShowAllButton();
             },
 
-            _createAutocomplete: function () {
+            _createAutocomplete: function (parentId) {
                 var selected = this.element.children(":selected"),
                     value = selected.val() ? selected.text() : "";
 
@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
                     .appendTo(this.comboBoxLabel)   
                     .val(value)
                     .attr("autocomplete", "off")
+                    .attr("id", parentId.replace(/\./g, "_"))
                     .addClass("custom-combobox-input ui-state-default ui-corner-left form-control")
                     .autocomplete({
                         delay: 0,
