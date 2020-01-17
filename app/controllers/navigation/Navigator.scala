@@ -222,6 +222,7 @@ object Navigator {
     case AdditionalFiscalReference => controllers.declaration.routes.FiscalInformationController.displayPage(_, _, fastForward = false)
     case CommodityDetails => controllers.declaration.routes.FiscalInformationController.displayPage(_, _, fastForward = true)
     case UNDangerousGoodsCode => controllers.declaration.routes.CommodityDetailsController.displayPage
+    case TaricCode => controllers.declaration.routes.CusCodeController.displayPage
   }
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =

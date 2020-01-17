@@ -55,7 +55,7 @@ components.table_row(s"item-${item.sequenceId}-procedureCode", HtmlTableRow(
 components.table_row(s"item-${item.sequenceId}-unDangerousGoodsCode", HtmlTableRow(
     label = messages("declaration.summary.items.item.unDangerousGoodsCode"),
     value = dangerousGoodsCode.dangerousGoodsCode.getOrElse(messages("site.no")),
-    call = Some(controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, item.id)),
+    call = Some(controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(mode, item.id)),
     changeLabel = Some(messages("declaration.summary.items.item.unDangerousGoodsCode.change", item.sequenceId))
 ))
 )
@@ -63,7 +63,7 @@ components.table_row(s"item-${item.sequenceId}-unDangerousGoodsCode", HtmlTableR
 components.table_row(s"item-${item.sequenceId}-cusCode", HtmlTableRow(
     label = messages("declaration.summary.items.item.cusCode"),
     value = cusCode.cusCode.getOrElse(messages("site.no")),
-    call = Some(controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, item.id)),
+    call = Some(controllers.declaration.routes.CusCodeController.displayPage(mode, item.id)),
     changeLabel = Some(messages("declaration.summary.items.item.cusCode.change", item.sequenceId))
 ))
 )
@@ -71,7 +71,7 @@ components.table_row(s"item-${item.sequenceId}-cusCode", HtmlTableRow(
 components.table_row(s"item-${item.sequenceId}-taricAdditionalCodes", HtmlTableRow(
     label = messages("declaration.summary.items.item.taricAdditionalCodes"),
     value = taricCodes.map(_.taricCode).mkString(", "),
-    call = Some(controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, item.id)),
+    call = Some(controllers.declaration.routes.TaricCodeController.displayPage(mode, item.id)),
     changeLabel = Some(messages("declaration.summary.items.item.taricAdditionalCodes.change", item.sequenceId))
 ))
 )
