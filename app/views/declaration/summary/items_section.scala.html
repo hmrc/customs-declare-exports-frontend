@@ -15,15 +15,16 @@
  *@
 
 @import models.requests.JourneyRequest
+@import models.Mode
 
-@(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 
     @if(declarationData.items.nonEmpty) {
         <div id="declaration-items-summary">
         @components.summary_list(Some(messages("declaration.summary.items"))) {
             @declarationData.items.toSeq.sortBy(_.sequenceId).map { item =>
-                @item_section(item)
+                @item_section(mode, item)
             }
         }
         </div>

@@ -20,7 +20,7 @@
 @import models.viewmodels.HtmlTableRow
 @import models.Mode
 
-@(item: ExportItem)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, item: ExportItem)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 <table>
 <caption class="heading-small"><span id="item-@item.sequenceId-header">@messages("declaration.summary.items.item.sequenceId", item.sequenceId)</span></caption>
 

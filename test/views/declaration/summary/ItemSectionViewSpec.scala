@@ -47,7 +47,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
   "Item section with item answers" should {
 
-    val view = item_section(itemWithAnswers)(messages, journeyRequest())
+    val view = item_section(Mode.Normal, itemWithAnswers)(messages, journeyRequest())
 
     "have item header" in {
 
@@ -238,7 +238,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
   "Item section with no answers" should {
 
-    val view = item_section(itemWithoutAnswers)(messages, journeyRequest())
+    val view = item_section(Mode.Normal, itemWithoutAnswers)(messages, journeyRequest())
 
     "not display procedure code" in {
 

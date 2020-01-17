@@ -46,7 +46,7 @@
 
     @transaction_section(Mode.Change, request.cacheModel)
 
-    @items_section(request.cacheModel)
+    @items_section(Mode.Change, request.cacheModel)
 
     @warehouse_section(request.cacheModel)
 
