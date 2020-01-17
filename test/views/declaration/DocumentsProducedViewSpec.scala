@@ -46,7 +46,9 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
 
   private val form: Form[DocumentsProduced] = DocumentsProduced.form()
   private val documentsProducedPage = new documents_produced(mainTemplate)
-  private def createView(form: Form[DocumentsProduced] = form, cachedDocuments: Seq[DocumentsProduced] = Seq())(implicit request: JourneyRequest[_]): Document =
+  private def createView(form: Form[DocumentsProduced] = form, cachedDocuments: Seq[DocumentsProduced] = Seq())(
+    implicit request: JourneyRequest[_]
+  ): Document =
     documentsProducedPage(mode, itemId, form, cachedDocuments)(request, messages)
 
   "Document Produced" should {
@@ -123,7 +125,9 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
       }
 
       "display empty input with label for Measurement Unit" in {
-        view.getElementById(s"${documentWriteOffKey}_$measurementUnitKey-label").text() mustBe messagesKey("supplementary.addDocument.measurementUnit")
+        view.getElementById(s"${documentWriteOffKey}_$measurementUnitKey-label").text() mustBe messagesKey(
+          "supplementary.addDocument.measurementUnit"
+        )
         view.getElementById(s"${documentWriteOffKey}_$measurementUnitKey").attr("value") mustBe empty
       }
 
@@ -209,7 +213,9 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
         checkErrorsSummary(view)
         view must haveFieldErrorLink(s"$documentStatusReasonKey", s"#$documentStatusReasonKey")
 
-        view.select(s"#error-message-$documentStatusReasonKey-input").text() mustBe messagesKey("supplementary.addDocument.documentStatusReason.error")
+        view.select(s"#error-message-$documentStatusReasonKey-input").text() mustBe messagesKey(
+          "supplementary.addDocument.documentStatusReason.error"
+        )
       }
 
       "display error for Issuing Authority Name" in {
@@ -385,7 +391,9 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
           .text() mustBe messagesKey("supplementary.addDocument.documentIdentifier.error")
 
         view.select(s"#error-message-$documentStatusKey-input").text() mustBe messagesKey("supplementary.addDocument.documentStatus.error")
-        view.select(s"#error-message-$documentStatusReasonKey-input").text() mustBe messagesKey("supplementary.addDocument.documentStatusReason.error")
+        view.select(s"#error-message-$documentStatusReasonKey-input").text() mustBe messagesKey(
+          "supplementary.addDocument.documentStatusReason.error"
+        )
         view.select(s"#error-message-$issuingAuthorityNameKey-input").text() mustBe
           messagesKey("supplementary.addDocument.issuingAuthorityName.error.length")
         view.select(s"#error-message-$dateOfValidityKey-input").text() mustBe messagesKey("dateTime.date.error.format")

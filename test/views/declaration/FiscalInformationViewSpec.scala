@@ -89,7 +89,9 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
         val backButton = view.getElementById("back-link")
 
         backButton.text() mustBe "site.back"
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, "itemId"))
+        backButton.getElementById("back-link") must haveHref(
+          controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, "itemId")
+        )
       }
 
       "display 'Save and continue' button" in {
@@ -107,7 +109,6 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
 
   "Fiscal Information View for invalid input" should {
     onEveryDeclarationJourney { implicit request =>
-
       "display error if nothing is selected" in {
 
         val view = createView(form = FiscalInformation.form().bind(Map[String, String]()))
@@ -136,7 +137,6 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
 
   "Dispatch Border Transport View when filled" should {
     onEveryDeclarationJourney { implicit request =>
-
       "display selected first radio button - Yes" in {
 
         val view = createView(form = FiscalInformation.form().fill(FiscalInformation("Yes")))

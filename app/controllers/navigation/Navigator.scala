@@ -212,19 +212,19 @@ object Navigator {
     case NatureOfTransaction                              => controllers.declaration.routes.TotalNumberOfItemsController.displayPage
     case ProcedureCodes                                   => controllers.declaration.routes.ItemsSummaryController.displayPage
     case ModeOfTransportCodes                             => controllers.declaration.routes.InlandTransportDetailsController.displayPage
-    case DepartureTransport => controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
+    case DepartureTransport                               => controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
 
   }
 
   val commonItem: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
     case FiscalInformation         => controllers.declaration.routes.ProcedureCodesController.displayPage
     case AdditionalFiscalReference => controllers.declaration.routes.FiscalInformationController.displayPage(_, _, fastForward = false)
-    case CommodityDetails => controllers.declaration.routes.FiscalInformationController.displayPage(_, _, fastForward = true)
-    case UNDangerousGoodsCode => controllers.declaration.routes.CommodityDetailsController.displayPage
-    case TaricCode => controllers.declaration.routes.CusCodeController.displayPage
-    case StatisticalValue => controllers.declaration.routes.NactCodeController.displayPage
-    case CommodityMeasure => controllers.declaration.routes.PackageInformationController.displayPage
-    case DocumentsProduced => controllers.declaration.routes.AdditionalInformationController.displayPage
+    case CommodityDetails          => controllers.declaration.routes.FiscalInformationController.displayPage(_, _, fastForward = true)
+    case UNDangerousGoodsCode      => controllers.declaration.routes.CommodityDetailsController.displayPage
+    case TaricCode                 => controllers.declaration.routes.CusCodeController.displayPage
+    case StatisticalValue          => controllers.declaration.routes.NactCodeController.displayPage
+    case CommodityMeasure          => controllers.declaration.routes.PackageInformationController.displayPage
+    case DocumentsProduced         => controllers.declaration.routes.AdditionalInformationController.displayPage
   }
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =

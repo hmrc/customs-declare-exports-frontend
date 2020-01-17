@@ -61,7 +61,6 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
 
   "Commodity Measure View on empty page" should {
     onEveryDeclarationJourney { implicit request =>
-
       "display page title" in {
 
         createView().getElementById("title").text() mustBe messages("supplementary.commodityMeasure.title")
@@ -182,7 +181,6 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
 
   "Commodity Measure View when filled" should {
     onEveryDeclarationJourney { implicit request =>
-
       "display data in supplementary units input" in {
 
         val form = CommodityMeasure.form().fill(CommodityMeasure(Some("123"), "", ""))

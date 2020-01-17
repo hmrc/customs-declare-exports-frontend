@@ -38,12 +38,13 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
 
   val itemId = new ExportItemIdGeneratorService().generateItemId()
 
-  private def createView(form: Form[AdditionalFiscalReference] = form, references: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: JourneyRequest[_]): Document =
+  private def createView(form: Form[AdditionalFiscalReference] = form, references: Seq[AdditionalFiscalReference] = Seq.empty)(
+    implicit request: JourneyRequest[_]
+  ): Document =
     additionalFiscalReferencesPage(Mode.Normal, itemId, form, references)
 
   "Additional Fiscal References View on empty page" should {
     onEveryDeclarationJourney { implicit request =>
-
       val view = createView()
 
       "display page title" in {
@@ -108,7 +109,6 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
     import forms.declaration.AdditionalFiscalReferenceSpec._
 
     onEveryDeclarationJourney { implicit request =>
-
       "display error" when {
 
         "country is empty" in {
