@@ -28,7 +28,7 @@
 components.table_row(s"item-${item.sequenceId}-procedureCode", HtmlTableRow(
     label = messages("declaration.summary.items.item.procedureCode"),
     value = data.procedureCode.fold("")(code => (Seq(code) ++ data.additionalProcedureCodes).mkString(" ")),
-    call = Some(controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, item.id)),
+    call = Some(controllers.declaration.routes.ProcedureCodesController.displayPage(mode, item.id)),
     changeLabel = Some(messages("declaration.summary.items.item.procedureCode.change", item.sequenceId))
 ))
 )

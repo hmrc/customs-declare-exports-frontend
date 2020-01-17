@@ -198,7 +198,7 @@ class ProcedureCodesController @Inject()(
     fieldWithError: Seq[(String, String)],
     userInput: ProcedureCodes,
     additionalProcedureCodes: Seq[String]
-  )(implicit request: Request[_]): Future[Result] = {
+  )(implicit request: JourneyRequest[_]): Future[Result] = {
     val updatedErrors = fieldWithError.map((FormError.apply(_: String, _: String)).tupled)
 
     val formWithError = form().fill(userInput).copy(errors = updatedErrors)
