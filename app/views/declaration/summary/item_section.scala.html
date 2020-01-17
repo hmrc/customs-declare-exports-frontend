@@ -117,7 +117,7 @@ components.table_row(s"item-${item.sequenceId}-itemValue", HtmlTableRow(
 )
 
 @item.packageInformation.map(packageInformation =>
-    package_information(item.id, item.sequenceId, packageInformation)
+    package_information(mode, item.id, item.sequenceId, packageInformation)
 )
 
 @item.additionalInformation.map(additionalInformation =>
