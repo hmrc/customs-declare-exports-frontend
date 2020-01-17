@@ -196,7 +196,7 @@ object Navigator {
     case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
   }
 
-  val universal: PartialFunction[DeclarationPage, Mode => Call] = {
+  val common: PartialFunction[DeclarationPage, Mode => Call] = {
     case DeclarationChoice =>
       _ =>
         controllers.routes.ChoiceController.displayPage(Some(Choice(AllowedChoiceValues.CreateDec)))
@@ -226,7 +226,7 @@ object Navigator {
           case OCCASIONAL    => occasional
           case CLEARANCE     => clearance
         }
-        universal.orElse(specific)(page)(mode)
+        common.orElse(specific)(page)(mode)
     }
 
   def backLink(page: DeclarationPage, mode: Mode, itemId: ItemId)(implicit request: JourneyRequest[_]): Call =
