@@ -46,7 +46,7 @@ class CommodityMeasureSpec extends WordSpec with MustMatchers {
 
       "user fill all fields with correct values" in {
 
-        val correctForm = CommodityMeasure(Some("1231.12"), "123.12", "123.12")
+        val correctForm = CommodityMeasure(Some("1231.12"), "123.0", "123.12")
 
         val result = form.fillAndValidate(correctForm)
 
