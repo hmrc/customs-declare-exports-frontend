@@ -33,7 +33,7 @@ components.table_row(s"item-${item.sequenceId}-procedureCode", HtmlTableRow(
 ))
 )
 
-@onward_supply_relief(item.id, item.sequenceId, item.fiscalInformation, item.additionalFiscalReferencesData)
+@onward_supply_relief(mode, item.id, item.sequenceId, item.fiscalInformation, item.additionalFiscalReferencesData)
 
 @item.commodityDetails.map(commodityDetails =>
     components.table_row(s"item-${item.sequenceId}-commodityCode", HtmlTableRow(

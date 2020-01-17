@@ -19,7 +19,7 @@
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 
-@(itemId: String, itemNo: Int, fiscalInformation: Option[FiscalInformation], additionalFiscalReferences: Option[AdditionalFiscalReferencesData])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, itemId: String, itemNo: Int, fiscalInformation: Option[FiscalInformation], additionalFiscalReferences: Option[AdditionalFiscalReferencesData])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @fiscalInformation.map(fiscalInformation =>
     components.table_row(s"item-$itemNo-onwardSupplyRelief", HtmlTableRow(

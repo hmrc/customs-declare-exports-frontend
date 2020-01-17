@@ -20,6 +20,7 @@ import base.Injector
 import controllers.util.SaveAndReturn
 import forms.declaration.FiscalInformation
 import models.Mode
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.test.Helpers.stubMessages
@@ -35,7 +36,7 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
 
   private val form: Form[FiscalInformation] = FiscalInformation.form()
   private val page = new fiscal_information(mainTemplate)
-  private def createView(itemId: String = "itemId", form: Form[FiscalInformation] = form): Html =
+  private def createView(itemId: String = "itemId", form: Form[FiscalInformation] = form)(implicit request: JourneyRequest[_]): Html =
     page(Mode.Normal, itemId, form)(request, stubMessages())
 
   "Fiscal Information View on empty page" should {
@@ -56,103 +57,107 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
       messages must haveTranslationFor("declaration.additionalFiscalReferences.reference.error")
     }
 
-    val view = createView()
+    onEveryDeclarationJourney { implicit request =>
+      val view = createView()
 
-    "display page title" in {
-      view.getElementById("title").text() mustBe "declaration.fiscalInformation.title"
+      "display page title" in {
+        view.getElementById("title").text() mustBe "declaration.fiscalInformation.title"
+      }
+
+      "display section header" in {
+        view.getElementById("section-header").text() must include("declaration.fiscalInformation.header")
+      }
+
+      "display two radio buttons with description (not selected)" in {
+        val view = createView(form = FiscalInformation.form().fill(FiscalInformation("")))
+
+        val optionOne = view.getElementById("Yes")
+        optionOne.attr("checked") mustBe empty
+
+        val optionOneLabel = view.getElementById("Yes-label")
+        optionOneLabel.text() mustBe "site.yes"
+
+        val optionTwo = view.getElementById("No")
+        optionTwo.attr("checked") mustBe empty
+
+        val optionTwoLabel = view.getElementById("No-label")
+        optionTwoLabel.text() mustBe "site.no"
+      }
+
+      "display 'Back' button that links to 'Warehouse' page" in {
+
+        val backButton = view.getElementById("back-link")
+
+        backButton.text() mustBe "site.back"
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, "itemId"))
+      }
+
+      "display 'Save and continue' button" in {
+        val saveButton = view.getElementById("submit")
+        saveButton.text() mustBe "site.save_and_continue"
+      }
+
+      "display 'Save and return' button" in {
+        val saveButton = view.getElementById("submit_and_return")
+        saveButton.text() mustBe "site.save_and_come_back_later"
+        saveButton.attr("name") must be(SaveAndReturn.toString)
+      }
     }
-
-    "display section header" in {
-      view.getElementById("section-header").text() must include("declaration.fiscalInformation.header")
-    }
-
-    "display two radio buttons with description (not selected)" in {
-      val view = createView(form = FiscalInformation.form().fill(FiscalInformation("")))
-
-      val optionOne = view.getElementById("Yes")
-      optionOne.attr("checked") mustBe empty
-
-      val optionOneLabel = view.getElementById("Yes-label")
-      optionOneLabel.text() mustBe "site.yes"
-
-      val optionTwo = view.getElementById("No")
-      optionTwo.attr("checked") mustBe empty
-
-      val optionTwoLabel = view.getElementById("No-label")
-      optionTwoLabel.text() mustBe "site.no"
-    }
-
-    "display 'Back' button that links to 'Warehouse' page" in {
-
-      val backButton = view.getElementById("back-link")
-
-      backButton.text() mustBe "site.back"
-      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, "itemId"))
-    }
-
-    "display 'Save and continue' button" in {
-      val saveButton = view.getElementById("submit")
-      saveButton.text() mustBe "site.save_and_continue"
-    }
-
-    "display 'Save and return' button" in {
-      val saveButton = view.getElementById("submit_and_return")
-      saveButton.text() mustBe "site.save_and_come_back_later"
-      saveButton.attr("name") must be(SaveAndReturn.toString)
-    }
-
   }
 
   "Fiscal Information View for invalid input" should {
+    onEveryDeclarationJourney { implicit request =>
 
-    "display error if nothing is selected" in {
+      "display error if nothing is selected" in {
 
-      val view = createView(form = FiscalInformation.form().bind(Map[String, String]()))
+        val view = createView(form = FiscalInformation.form().bind(Map[String, String]()))
 
-      checkErrorsSummary(view)
-      haveFieldErrorLink("onwardSupplyRelief", "#onwardSupplyRelief")
+        checkErrorsSummary(view)
+        haveFieldErrorLink("onwardSupplyRelief", "#onwardSupplyRelief")
 
-      view
-        .select("#error-message-onwardSupplyRelief-input")
-        .text() mustBe "declaration.fiscalInformation.onwardSupplyRelief.empty"
+        view
+          .select("#error-message-onwardSupplyRelief-input")
+          .text() mustBe "declaration.fiscalInformation.onwardSupplyRelief.empty"
+      }
+
+      "display error if incorrect fiscal information is selected" in {
+
+        val view = createView(form = FiscalInformation.form().fillAndValidate(FiscalInformation("Incorrect")))
+
+        checkErrorsSummary(view)
+        haveFieldErrorLink("onwardSupplyRelief", "#onwardSupplyRelief")
+
+        view
+          .select("#error-message-onwardSupplyRelief-input")
+          .text() mustBe "declaration.fiscalInformation.onwardSupplyRelief.error"
+      }
     }
-
-    "display error if incorrect fiscal information is selected" in {
-
-      val view = createView(form = FiscalInformation.form().fillAndValidate(FiscalInformation("Incorrect")))
-
-      checkErrorsSummary(view)
-      haveFieldErrorLink("onwardSupplyRelief", "#onwardSupplyRelief")
-
-      view
-        .select("#error-message-onwardSupplyRelief-input")
-        .text() mustBe "declaration.fiscalInformation.onwardSupplyRelief.error"
-    }
-
   }
 
   "Dispatch Border Transport View when filled" should {
+    onEveryDeclarationJourney { implicit request =>
 
-    "display selected first radio button - Yes" in {
+      "display selected first radio button - Yes" in {
 
-      val view = createView(form = FiscalInformation.form().fill(FiscalInformation("Yes")))
+        val view = createView(form = FiscalInformation.form().fill(FiscalInformation("Yes")))
 
-      val optionOne = view.getElementById("Yes")
-      optionOne.attr("checked") must be("checked")
+        val optionOne = view.getElementById("Yes")
+        optionOne.attr("checked") must be("checked")
 
-      val optionTwo = view.getElementById("No")
-      optionTwo.attr("checked") mustBe empty
-    }
+        val optionTwo = view.getElementById("No")
+        optionTwo.attr("checked") mustBe empty
+      }
 
-    "display selected second radio button - No" in {
+      "display selected second radio button - No" in {
 
-      val view = createView(form = FiscalInformation.form().fill(FiscalInformation("No")))
+        val view = createView(form = FiscalInformation.form().fill(FiscalInformation("No")))
 
-      val optionOne = view.getElementById("Yes")
-      optionOne.attr("checked") mustBe empty
+        val optionOne = view.getElementById("Yes")
+        optionOne.attr("checked") mustBe empty
 
-      val optionTwo = view.getElementById("No")
-      optionTwo.attr("checked") must be("checked")
+        val optionTwo = view.getElementById("No")
+        optionTwo.attr("checked") must be("checked")
+      }
     }
   }
 }

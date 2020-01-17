@@ -214,6 +214,11 @@ object Navigator {
     case TotalNumberOfItems                               => controllers.declaration.routes.OfficeOfExitController.displayPage
     case NatureOfTransaction                              => controllers.declaration.routes.TotalNumberOfItemsController.displayPage
     case ProcedureCodes                                   => controllers.declaration.routes.ItemsSummaryController.displayPage
+
+  }
+
+  val commonItem: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
+    case FiscalInformation => controllers.declaration.routes.ProcedureCodesController.displayPage
   }
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
@@ -238,13 +243,14 @@ object Navigator {
       case Mode.ChangeAmend => controllers.declaration.routes.SummaryController.displayPage(Mode.Amend)
       case Mode.Draft       => controllers.declaration.routes.SummaryController.displayPage(Mode.Draft)
       case _ =>
-        request.declarationType match {
-          case STANDARD      => standardItemPage(page)(mode, itemId.id)
-          case SUPPLEMENTARY => supplementaryItemPage(page)(mode, itemId.id)
-          case SIMPLIFIED    => simplifiedItemPage(page)(mode, itemId.id)
-          case OCCASIONAL    => occasionalItemPage(page)(mode, itemId.id)
-          case CLEARANCE     => clearanceItemPage(page)(mode, itemId.id)
+        val specific = request.declarationType match {
+          case STANDARD      => standardItemPage
+          case SUPPLEMENTARY => supplementaryItemPage
+          case SIMPLIFIED    => simplifiedItemPage
+          case OCCASIONAL    => occasionalItemPage
+          case CLEARANCE     => clearanceItemPage
         }
+        commonItem.orElse(specific)(page)(mode, itemId.id)
     }
 
 }
