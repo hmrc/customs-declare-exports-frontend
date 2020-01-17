@@ -124,7 +124,11 @@ object FieldValidator {
   val validateDecimalGreaterThanZero: Int => Int => String => Boolean = (totalLength: Int) =>
     (decimalPlaces: Int) =>
       (input: String) =>
-        try { BigDecimal(input.trim()) > 0 && BigDecimal(input.trim()).scale < decimalPlaces && input.trim().replace(".", "").length < totalLength } catch {
+        try {
+          BigDecimal(input) > 0 &&
+          BigDecimal(input).scale <= decimalPlaces &&
+          input.length <= totalLength
+        } catch {
           case e: java.lang.NumberFormatException => false
   }
 
