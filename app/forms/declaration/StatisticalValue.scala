@@ -16,6 +16,7 @@
 
 package forms.declaration
 
+import forms.DeclarationPage
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
@@ -23,7 +24,7 @@ import utils.validators.forms.FieldValidator._
 
 case class StatisticalValue(statisticalValue: String)
 
-object StatisticalValue {
+object StatisticalValue extends DeclarationPage {
 
   implicit val format = Json.format[StatisticalValue]
 

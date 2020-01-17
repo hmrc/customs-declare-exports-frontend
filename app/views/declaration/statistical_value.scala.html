@@ -25,6 +25,7 @@
 @import services.view.AutoCompleteItem
 @import forms.declaration.AdditionalFiscalReference
 @import views.Title
+@import controllers.navigation.{Navigator, ItemId}
 
 @this(main_template: views.html.main_template)
 
@@ -41,7 +42,7 @@
     @helper.form(routes.StatisticalValueController.submitItemType(mode, itemId), 'autocomplete -> "off") {
         @helper.CSRF.formField
 
-        @components.back_link(routes.NactCodeController.displayPage(mode, itemId), mode)
+        @components.back_link(Navigator.backLink(StatisticalValue, mode, ItemId(itemId)), mode)
 
         @components.error_summary(form.errors)
 

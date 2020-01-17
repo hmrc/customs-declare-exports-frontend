@@ -15,13 +15,15 @@
  */
 
 package forms.declaration
+import forms.DeclarationPage
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
 case class CommodityMeasure(supplementaryUnits: Option[String], netMass: String, grossMass: String)
-object CommodityMeasure {
+
+object CommodityMeasure extends DeclarationPage {
 
   implicit val format = Json.format[CommodityMeasure]
 

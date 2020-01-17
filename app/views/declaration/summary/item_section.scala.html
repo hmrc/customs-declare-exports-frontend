@@ -79,7 +79,7 @@ components.table_row(s"item-${item.sequenceId}-taricAdditionalCodes", HtmlTableR
 components.table_row(s"item-${item.sequenceId}-nationalAdditionalCodes", HtmlTableRow(
     label = messages("declaration.summary.items.item.nationalAdditionalCodes"),
     value = nactCodes.map(_.nactCode).mkString(", "),
-    call = Some(controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, item.id)),
+    call = Some(controllers.declaration.routes.NactCodeController.displayPage(mode, item.id)),
     changeLabel = Some(messages("declaration.summary.items.item.nationalAdditionalCodes.change", item.sequenceId))
 ))
 )
@@ -87,7 +87,7 @@ components.table_row(s"item-${item.sequenceId}-nationalAdditionalCodes", HtmlTab
 components.table_row(s"item-${item.sequenceId}-itemValue", HtmlTableRow(
     label = messages("declaration.summary.items.item.itemValue"),
     value = statisticalValue.statisticalValue,
-    call = Some(controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, item.id)),
+    call = Some(controllers.declaration.routes.StatisticalValueController.displayPage(mode, item.id)),
     changeLabel = Some(messages("declaration.summary.items.item.itemValue.change", item.sequenceId))
 ))
 )
@@ -95,7 +95,7 @@ components.table_row(s"item-${item.sequenceId}-itemValue", HtmlTableRow(
     components.table_row(s"item-${item.sequenceId}-supplementaryUnits", HtmlTableRow(
         label = messages("declaration.summary.items.item.supplementaryUnits"),
         value = commodityMeasure.supplementaryUnits.getOrElse(""),
-        call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, item.id)),
+        call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(mode, item.id)),
         changeLabel = Some(messages("declaration.summary.items.item.supplementaryUnits.change", item.sequenceId))
     ))
 )
@@ -103,7 +103,7 @@ components.table_row(s"item-${item.sequenceId}-itemValue", HtmlTableRow(
     components.table_row(s"item-${item.sequenceId}-grossWeight", HtmlTableRow(
         label = messages("declaration.summary.items.item.grossWeight"),
         value = commodityMeasure.grossMass,
-        call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, item.id)),
+        call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(mode, item.id)),
         changeLabel = Some(messages("declaration.summary.items.item.grossWeight.change", item.sequenceId))
     ))
 )
@@ -111,7 +111,7 @@ components.table_row(s"item-${item.sequenceId}-itemValue", HtmlTableRow(
     components.table_row(s"item-${item.sequenceId}-netWeight", HtmlTableRow(
         label = messages("declaration.summary.items.item.netWeight"),
         value = commodityMeasure.netMass,
-        call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, item.id)),
+        call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(mode, item.id)),
         changeLabel = Some(messages("declaration.summary.items.item.netWeight.change", item.sequenceId))
     ))
 )
