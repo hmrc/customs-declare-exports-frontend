@@ -72,4 +72,4 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData {
       )
     }
   }
-} 
+}
