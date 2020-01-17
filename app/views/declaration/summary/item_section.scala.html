@@ -39,7 +39,7 @@ components.table_row(s"item-${item.sequenceId}-procedureCode", HtmlTableRow(
     components.table_row(s"item-${item.sequenceId}-commodityCode", HtmlTableRow(
         label = messages("declaration.summary.items.item.commodityCode"),
         value = commodityDetails.combinedNomenclatureCode.getOrElse(""),
-        call = Some(controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, item.id)),
+        call = Some(controllers.declaration.routes.CommodityDetailsController.displayPage(mode, item.id)),
         changeLabel = Some(messages("declaration.summary.items.item.commodityCode.change", item.sequenceId))
     ))
 )
@@ -47,7 +47,7 @@ components.table_row(s"item-${item.sequenceId}-procedureCode", HtmlTableRow(
     components.table_row(s"item-${item.sequenceId}-goodsDescription", HtmlTableRow(
         label = messages("declaration.summary.items.item.goodsDescription"),
         value = commodityDetails.descriptionOfGoods,
-        call = Some(controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, item.id)),
+        call = Some(controllers.declaration.routes.CommodityDetailsController.displayPage(mode, item.id)),
         changeLabel = Some(messages("declaration.summary.items.item.goodsDescription.change", item.sequenceId))
     ))
 )
