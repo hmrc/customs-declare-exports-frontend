@@ -16,17 +16,51 @@
 
 package forms.declaration
 
+import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsValue}
+
+class DeclarantDetailsSpec extends WordSpec with MustMatchers {
+
+  import DeclarantDetailsSpec._
+
+  "DeclarantDetails mapping used for binding data" should {
+
+    "return form with errors" when {
+      "provided with empty input" in {
+        val form = DeclarantDetails.form().bind(emptyDeclarantDetailsJSON)
+
+        form.hasErrors must be(true)
+        form.errors.length must equal(1)
+        form.errors.head.message must equal("supplementary.eori.empty")
+      }
+
+      "provided with an invalid EORI" in {
+        val form = DeclarantDetails.form().bind(invalidDeclarantDetailsEORIOnlyJSON)
+
+        form.hasErrors must be(true)
+        form.errors.length must equal(1)
+        form.errors.head.message must equal("supplementary.eori.error.format")
+      }
+    }
+
+    "return form without errors" when {
+      "provided with valid input" in {
+        val form = DeclarantDetails.form().bind(correctDeclarantDetailsJSON)
+
+        form.hasErrors must be(false)
+      }
+    }
+  }
+}
 
 object DeclarantDetailsSpec {
   import forms.declaration.EntityDetailsSpec._
 
   val correctDeclarantDetails = DeclarantDetails(details = EntityDetailsSpec.correctEntityDetails)
   val correctDeclarantDetailsEORIOnly = DeclarantDetails(details = EntityDetailsSpec.correctEntityDetailsEORIOnly)
-  val correctDeclarantDetailsAddressOnly = DeclarantDetails(details = EntityDetailsSpec.correctEntityDetailsAddressOnly)
 
   val correctDeclarantDetailsJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsJSON))
   val correctDeclarantDetailsEORIOnlyJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsEORIOnlyJSON))
-  val correctDeclarantDetailsAddressOnlyJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsAddressOnlyJSON))
+  val invalidDeclarantDetailsEORIOnlyJSON: JsValue = JsObject(Map("details" -> incorrectEntityDetailsJSON))
   val emptyDeclarantDetailsJSON: JsValue = JsObject(Map("details" -> emptyEntityDetailsJSON))
 }

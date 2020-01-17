@@ -38,7 +38,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
     withTaricCodes(TaricCode("999"), TaricCode("888")),
     withNactCodes(NactCode("111"), NactCode("222")),
     withPackageInformation("PB", 10, "marks"),
-    withCommodityMeasure(CommodityMeasure(Some("12"), "555", "666")),
+    withCommodityMeasure(CommodityMeasure(Some("12"), "666", "555")),
     withAdditionalInformation("1234", "additionalDescription"),
     withDocumentsProduced(DocumentsProduced(Some("C501"), Some("GBAEOC1342"), None, None, None, None, None))
   )
