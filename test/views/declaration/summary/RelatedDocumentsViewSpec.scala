@@ -63,7 +63,9 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
         change1 mustBe messages("site.change")
         accessibleChange1 mustBe messages("declaration.summary.transaction.previousDocuments.document.change", 0)
 
-        view.getElementById("previous-document-0-change") must haveHref(controllers.declaration.routes.PreviousDocumentsController.displayPage(Mode.Change))
+        view.getElementById("previous-document-0-change") must haveHref(
+          controllers.declaration.routes.PreviousDocumentsController.displayPage(Mode.Change)
+        )
         view.getElementById("previous-document-1-type").text() mustBe "Packing List - 271"
         view.getElementById("previous-document-1-reference").text() mustBe "654321"
 
@@ -72,7 +74,9 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
         change2 mustBe messages("site.change")
         accessibleChange2 mustBe messages("declaration.summary.transaction.previousDocuments.document.change", 1)
 
-        view.getElementById("previous-document-1-change") must haveHref(controllers.declaration.routes.PreviousDocumentsController.displayPage(Mode.Change))
+        view.getElementById("previous-document-1-change") must haveHref(
+          controllers.declaration.routes.PreviousDocumentsController.displayPage(Mode.Change)
+        )
       }
     }
   }
