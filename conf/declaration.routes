@@ -243,7 +243,7 @@ POST         /items/:itemId/add-document                        controllers.decl
 
 GET         /transport-leaving-the-border       controllers.declaration.TransportLeavingTheBorderController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /transport-leveing-the-border       controllers.declaration.TransportLeavingTheBorderController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /transport-leaving-the-border       controllers.declaration.TransportLeavingTheBorderController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
 # Departure Transport
 
