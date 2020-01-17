@@ -30,7 +30,7 @@ class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestData {
 
       "Sequence is empty" in {
 
-        val view = union_and_national_codes("itemId", 1, Seq.empty)(messages, journeyRequest())
+        val view = union_and_national_codes(Mode.Normal, "itemId", 1, Seq.empty)(messages, journeyRequest())
 
         view.getElementById("additional-information-1-label").text() mustBe messages("declaration.summary.items.item.additionalInformation")
         view.getElementById("additional-information-1-change") must haveHref(
@@ -42,7 +42,7 @@ class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestData {
     "display additional information with change buttons" in {
 
       val data = Seq(AdditionalInformation("12345", "description1"), AdditionalInformation("23456", "description2"))
-      val view = union_and_national_codes("itemId", 1, data)(messages, journeyRequest())
+      val view = union_and_national_codes(Mode.Normal, "itemId", 1, data)(messages, journeyRequest())
 
       view.getElementById("additional-information-1").text() mustBe messages("declaration.summary.items.item.additionalInformation")
       view.getElementById("additional-information-code-1").text() mustBe messages("declaration.summary.items.item.additionalInformation.code")

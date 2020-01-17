@@ -43,13 +43,13 @@
 
     @locations_section(Mode.Draft, request.cacheModel)
 
-    @transaction_section(request.cacheModel)
+    @transaction_section(Mode.Draft, request.cacheModel)
 
-    @items_section(request.cacheModel)
+    @items_section(Mode.Draft, request.cacheModel)
 
-    @warehouse_section(request.cacheModel)
+    @warehouse_section(Mode.Draft, request.cacheModel)
 
-    @transport_section(request.cacheModel)
+    @transport_section(Mode.Draft, request.cacheModel)
 
     <p class="mt-5">@messages("saved.declarations.summary.paragraph")</p>
 

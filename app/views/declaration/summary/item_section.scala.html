@@ -20,7 +20,7 @@
 @import models.viewmodels.HtmlTableRow
 @import models.Mode
 
-@(item: ExportItem)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, item: ExportItem)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 <table>
 <caption class="heading-small"><span id="item-@item.sequenceId-header">@messages("declaration.summary.items.item.sequenceId", item.sequenceId)</span></caption>
 
@@ -28,18 +28,18 @@
 components.table_row(s"item-${item.sequenceId}-procedureCode", HtmlTableRow(
     label = messages("declaration.summary.items.item.procedureCode"),
     value = data.procedureCode.fold("")(code => (Seq(code) ++ data.additionalProcedureCodes).mkString(" ")),
-    call = Some(controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, item.id)),
+    call = Some(controllers.declaration.routes.ProcedureCodesController.displayPage(mode, item.id)),
     changeLabel = Some(messages("declaration.summary.items.item.procedureCode.change", item.sequenceId))
 ))
 )
 
-@onward_supply_relief(item.id, item.sequenceId, item.fiscalInformation, item.additionalFiscalReferencesData)
+@onward_supply_relief(mode, item.id, item.sequenceId, item.fiscalInformation, item.additionalFiscalReferencesData)
 
 @item.commodityDetails.map(commodityDetails =>
     components.table_row(s"item-${item.sequenceId}-commodityCode", HtmlTableRow(
         label = messages("declaration.summary.items.item.commodityCode"),
         value = commodityDetails.combinedNomenclatureCode.getOrElse(""),
-        call = Some(controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, item.id)),
+        call = Some(controllers.declaration.routes.CommodityDetailsController.displayPage(mode, item.id)),
         changeLabel = Some(messages("declaration.summary.items.item.commodityCode.change", item.sequenceId))
     ))
 )
@@ -47,7 +47,7 @@ components.table_row(s"item-${item.sequenceId}-procedureCode", HtmlTableRow(
     components.table_row(s"item-${item.sequenceId}-goodsDescription", HtmlTableRow(
         label = messages("declaration.summary.items.item.goodsDescription"),
         value = commodityDetails.descriptionOfGoods,
-        call = Some(controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, item.id)),
+        call = Some(controllers.declaration.routes.CommodityDetailsController.displayPage(mode, item.id)),
         changeLabel = Some(messages("declaration.summary.items.item.goodsDescription.change", item.sequenceId))
     ))
 )
@@ -55,7 +55,7 @@ components.table_row(s"item-${item.sequenceId}-procedureCode", HtmlTableRow(
 components.table_row(s"item-${item.sequenceId}-unDangerousGoodsCode", HtmlTableRow(
     label = messages("declaration.summary.items.item.unDangerousGoodsCode"),
     value = dangerousGoodsCode.dangerousGoodsCode.getOrElse(messages("site.no")),
-    call = Some(controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, item.id)),
+    call = Some(controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(mode, item.id)),
     changeLabel = Some(messages("declaration.summary.items.item.unDangerousGoodsCode.change", item.sequenceId))
 ))
 )
@@ -63,7 +63,7 @@ components.table_row(s"item-${item.sequenceId}-unDangerousGoodsCode", HtmlTableR
 components.table_row(s"item-${item.sequenceId}-cusCode", HtmlTableRow(
     label = messages("declaration.summary.items.item.cusCode"),
     value = cusCode.cusCode.getOrElse(messages("site.no")),
-    call = Some(controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, item.id)),
+    call = Some(controllers.declaration.routes.CusCodeController.displayPage(mode, item.id)),
     changeLabel = Some(messages("declaration.summary.items.item.cusCode.change", item.sequenceId))
 ))
 )
@@ -71,7 +71,7 @@ components.table_row(s"item-${item.sequenceId}-cusCode", HtmlTableRow(
 components.table_row(s"item-${item.sequenceId}-taricAdditionalCodes", HtmlTableRow(
     label = messages("declaration.summary.items.item.taricAdditionalCodes"),
     value = taricCodes.map(_.taricCode).mkString(", "),
-    call = Some(controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, item.id)),
+    call = Some(controllers.declaration.routes.TaricCodeController.displayPage(mode, item.id)),
     changeLabel = Some(messages("declaration.summary.items.item.taricAdditionalCodes.change", item.sequenceId))
 ))
 )
@@ -79,7 +79,7 @@ components.table_row(s"item-${item.sequenceId}-taricAdditionalCodes", HtmlTableR
 components.table_row(s"item-${item.sequenceId}-nationalAdditionalCodes", HtmlTableRow(
     label = messages("declaration.summary.items.item.nationalAdditionalCodes"),
     value = nactCodes.map(_.nactCode).mkString(", "),
-    call = Some(controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, item.id)),
+    call = Some(controllers.declaration.routes.NactCodeController.displayPage(mode, item.id)),
     changeLabel = Some(messages("declaration.summary.items.item.nationalAdditionalCodes.change", item.sequenceId))
 ))
 )
@@ -87,7 +87,7 @@ components.table_row(s"item-${item.sequenceId}-nationalAdditionalCodes", HtmlTab
 components.table_row(s"item-${item.sequenceId}-itemValue", HtmlTableRow(
     label = messages("declaration.summary.items.item.itemValue"),
     value = statisticalValue.statisticalValue,
-    call = Some(controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, item.id)),
+    call = Some(controllers.declaration.routes.StatisticalValueController.displayPage(mode, item.id)),
     changeLabel = Some(messages("declaration.summary.items.item.itemValue.change", item.sequenceId))
 ))
 )
@@ -95,7 +95,7 @@ components.table_row(s"item-${item.sequenceId}-itemValue", HtmlTableRow(
     components.table_row(s"item-${item.sequenceId}-supplementaryUnits", HtmlTableRow(
         label = messages("declaration.summary.items.item.supplementaryUnits"),
         value = commodityMeasure.supplementaryUnits.getOrElse(""),
-        call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, item.id)),
+        call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(mode, item.id)),
         changeLabel = Some(messages("declaration.summary.items.item.supplementaryUnits.change", item.sequenceId))
     ))
 )
@@ -103,7 +103,7 @@ components.table_row(s"item-${item.sequenceId}-itemValue", HtmlTableRow(
     components.table_row(s"item-${item.sequenceId}-grossWeight", HtmlTableRow(
         label = messages("declaration.summary.items.item.grossWeight"),
         value = commodityMeasure.grossMass,
-        call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, item.id)),
+        call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(mode, item.id)),
         changeLabel = Some(messages("declaration.summary.items.item.grossWeight.change", item.sequenceId))
     ))
 )
@@ -111,20 +111,20 @@ components.table_row(s"item-${item.sequenceId}-itemValue", HtmlTableRow(
     components.table_row(s"item-${item.sequenceId}-netWeight", HtmlTableRow(
         label = messages("declaration.summary.items.item.netWeight"),
         value = commodityMeasure.netMass,
-        call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, item.id)),
+        call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(mode, item.id)),
         changeLabel = Some(messages("declaration.summary.items.item.netWeight.change", item.sequenceId))
     ))
 )
 
 @item.packageInformation.map(packageInformation =>
-    package_information(item.id, item.sequenceId, packageInformation)
+    package_information(mode, item.id, item.sequenceId, packageInformation)
 )
 
 @item.additionalInformation.map(additionalInformation =>
-    union_and_national_codes(item.id, item.sequenceId, additionalInformation.items)
+    union_and_national_codes(mode, item.id, item.sequenceId, additionalInformation.items)
 )
 
 @item.documentsProducedData.map(documentsProducedData =>
-    supporting_documents(item.id, item.sequenceId, documentsProducedData.documents)
+    supporting_documents(mode, item.id, item.sequenceId, documentsProducedData.documents)
 )
 </table>

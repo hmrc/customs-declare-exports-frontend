@@ -16,6 +16,7 @@
 
 package forms.declaration.additionaldocuments
 
+import forms.DeclarationPage
 import forms.common.Date
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
@@ -41,7 +42,7 @@ case class DocumentsProduced(
     )
 }
 
-object DocumentsProduced {
+object DocumentsProduced extends DeclarationPage {
 
   def fromJsonString(value: String): Option[DocumentsProduced] = Json.fromJson(Json.parse(value)).asOpt
 

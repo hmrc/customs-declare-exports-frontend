@@ -19,7 +19,7 @@
 @import models.viewmodels.HtmlTableRow
 @import models.Mode
 
-@(itemId: String, itemNo: Int, supportingDocuments: Seq[DocumentsProduced])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, itemId: String, itemNo: Int, supportingDocuments: Seq[DocumentsProduced])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 <table>
 @if(supportingDocuments.nonEmpty){
@@ -35,7 +35,7 @@
             <td class="exports-summary-list__key_value"><span id="supporting-document-@itemNo-code-@index">@document.documentTypeCode.getOrElse("")</span></td>
             <td class="exports-summary-list__value"><span id="supporting-document-@itemNo-information-@index">@document.documentIdentifier.getOrElse("")</span></td>
             <td class="exports-summary-list__actions">
-                <a href="@controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, itemId)" id="supporting-document-@itemNo-change-@index">
+                <a href="@controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId)" id="supporting-document-@itemNo-change-@index">
                     <span aria-hidden="true">@messages("site.change")</span>
                     <span class="visually-hidden">@messages("declaration.summary.items.item.supportingDocuments.change", itemNo)</span>
                 </a>
@@ -47,7 +47,7 @@
     @components.table_row(s"supporting-documents-$itemNo", HtmlTableRow(
         label = messages("declaration.summary.items.item.supportingDocuments"),
         value = "",
-        call = Some(controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, itemId)),
+        call = Some(controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId)),
         changeLabel = Some(messages("declaration.summary.items.item.supportingDocuments.change", itemNo))
     ))
 }

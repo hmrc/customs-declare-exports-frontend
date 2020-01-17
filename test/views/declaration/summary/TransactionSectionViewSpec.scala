@@ -16,6 +16,7 @@
 
 package views.declaration.summary
 
+import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.transaction_section
@@ -26,7 +27,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
   "Transaction section" should {
 
-    val view = transaction_section(data)(messages, journeyRequest())
+    val view = transaction_section(Mode.Normal, data)(messages, journeyRequest())
 
     "have total amount invoiced with change button" in {
 
@@ -86,7 +87,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     "not display total amount invoiced when question not asked" in {
-      val view = transaction_section(aDeclarationAfter(data, withoutTotalNumberOfItems()))(messages, journeyRequest())
+      val view = transaction_section(Mode.Normal, aDeclarationAfter(data, withoutTotalNumberOfItems()))(messages, journeyRequest())
 
       view.getElementById("item-amount-label") mustBe null
       view.getElementById("item-amount") mustBe null
@@ -94,7 +95,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     "not display exchange rate when question not asked" in {
-      val view = transaction_section(aDeclarationAfter(data, withoutTotalNumberOfItems()))(messages, journeyRequest())
+      val view = transaction_section(Mode.Normal, aDeclarationAfter(data, withoutTotalNumberOfItems()))(messages, journeyRequest())
 
       view.getElementById("exchange-rate-label") mustBe null
       view.getElementById("exchange-rate") mustBe null
@@ -102,7 +103,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     "not display total package when question not asked" in {
-      val view = transaction_section(aDeclarationAfter(data, withoutTotalNumberOfItems()))(messages, journeyRequest())
+      val view = transaction_section(Mode.Normal, aDeclarationAfter(data, withoutTotalNumberOfItems()))(messages, journeyRequest())
 
       view.getElementById("total-no-of-packages-label") mustBe null
       view.getElementById("total-no-of-packages") mustBe null
@@ -110,7 +111,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     "not display nature of transaction when question not asked" in {
-      val view = transaction_section(aDeclarationAfter(data, withoutNatureOfTransaction()))(messages, journeyRequest())
+      val view = transaction_section(Mode.Normal, aDeclarationAfter(data, withoutNatureOfTransaction()))(messages, journeyRequest())
 
       view.getElementById("nature-of-transaction-label") mustBe null
       view.getElementById("nature-of-transaction") mustBe null
@@ -118,7 +119,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     "not display related documents section when question not asked" in {
-      val view = transaction_section(aDeclarationAfter(data, withoutPreviousDocuments()))(messages, journeyRequest())
+      val view = transaction_section(Mode.Normal, aDeclarationAfter(data, withoutPreviousDocuments()))(messages, journeyRequest())
 
       view.getElementById("previous-documents") mustBe null
     }

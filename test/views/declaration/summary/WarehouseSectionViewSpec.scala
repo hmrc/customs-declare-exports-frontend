@@ -17,6 +17,7 @@
 package views.declaration.summary
 
 import forms.declaration.{InlandModeOfTransportCode, ModeOfTransportCodes, SupervisingCustomsOffice, WarehouseIdentification}
+import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.warehouse_section
@@ -29,9 +30,11 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData {
     withInlandModeOfTransportCode(Some(InlandModeOfTransportCode(Some(ModeOfTransportCodes.Maritime))))
   )
 
+  val mode = Mode.Normal
+
   "Warehouse section" should {
 
-    val view = warehouse_section(data)(messages, journeyRequest())
+    val view = warehouse_section(mode, data)(messages, journeyRequest())
 
     "display warehouse id with change button" in {
 
@@ -74,7 +77,7 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
     "not display warehouse id when question not answered" in {
 
-      val view = warehouse_section(aDeclarationAfter(data, withoutWarehouseIdentification()))(messages, journeyRequest())
+      val view = warehouse_section(mode, aDeclarationAfter(data, withoutWarehouseIdentification()))(messages, journeyRequest())
 
       view.getElementById("warehouse-id-label") mustBe null
       view.getElementById("warehouse-id") mustBe null
@@ -82,7 +85,7 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
     "not display supervising office when question not answered" in {
 
-      val view = warehouse_section(aDeclarationAfter(data, withoutSupervisingCustomsOffice()))(messages, journeyRequest())
+      val view = warehouse_section(mode, aDeclarationAfter(data, withoutSupervisingCustomsOffice()))(messages, journeyRequest())
 
       view.getElementById("supervising-office-label") mustBe null
       view.getElementById("supervising-office-id") mustBe null
@@ -90,7 +93,7 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
     "not display mode of transport when question not answered" in {
 
-      val view = warehouse_section(aDeclarationAfter(data, withoutInlandModeOfTransportCode()))(messages, journeyRequest())
+      val view = warehouse_section(mode, aDeclarationAfter(data, withoutInlandModeOfTransportCode()))(messages, journeyRequest())
 
       view.getElementById("mode-of-transport-label") mustBe null
       view.getElementById("mode-of-transport-id") mustBe null

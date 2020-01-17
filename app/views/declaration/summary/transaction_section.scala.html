@@ -16,8 +16,9 @@
 
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
+@import models.Mode
 
-@(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
     @hasTransactionData(declarationData: ExportsDeclaration) = @{
         declarationData.totalNumberOfItems.isDefined || declarationData.natureOfTransaction.isDefined || declarationData.previousDocuments.isDefined
@@ -30,7 +31,7 @@
                 components.table_row("item-amount", HtmlTableRow(
                     label = messages("declaration.summary.transaction.itemAmount"),
                     value = totalNumberOfItems.totalAmountInvoiced.getOrElse(""),
-                    call = Some(controllers.declaration.routes.TotalNumberOfItemsController.displayPage()),
+                    call = Some(controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode)),
                     changeLabel = Some(messages("declaration.summary.transaction.itemAmount.change"))
                 ))
             )
@@ -39,7 +40,7 @@
                 components.table_row("exchange-rate", HtmlTableRow(
                     label = messages("declaration.summary.transaction.exchangeRate"),
                     value = totalNumberOfItems.exchangeRate.getOrElse(""),
-                    call = Some(controllers.declaration.routes.TotalNumberOfItemsController.displayPage()),
+                    call = Some(controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode)),
                     changeLabel = Some(messages("declaration.summary.transaction.exchangeRate.change"))
                 ))
             )
@@ -48,7 +49,7 @@
                 components.table_row("total-no-of-packages", HtmlTableRow(
                     label = messages("declaration.summary.transaction.totalNoOfPackages"),
                     value = totalNumberOfItems.totalPackage,
-                    call = Some(controllers.declaration.routes.TotalNumberOfItemsController.displayPage()),
+                    call = Some(controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode)),
                     changeLabel = Some(messages("declaration.summary.transaction.totalNoOfPackages.change"))
                 ))
             )
@@ -57,7 +58,7 @@
                 components.table_row("nature-of-transaction", HtmlTableRow(
                     label = messages("declaration.summary.transaction.natureOfTransaction"),
                     value = messages(s"declaration.summary.transaction.natureOfTransaction.${natureOfTransaction.natureType}"),
-                    call = Some(controllers.declaration.routes.NatureOfTransactionController.displayPage()),
+                    call = Some(controllers.declaration.routes.NatureOfTransactionController.displayPage(mode)),
                     changeLabel = Some(messages("declaration.summary.transaction.natureOfTransaction.change"))
                 ))
             )

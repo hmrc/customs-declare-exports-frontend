@@ -20,8 +20,9 @@
 @import forms.declaration.DepartureTransport
 @import forms.declaration.BorderTransport
 @import models.declaration.Transport
+@import models.Mode
 
-@(declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @sectionRequired(transport: Transport) = @{
     transport.transportPayment.isDefined ||
@@ -55,7 +56,7 @@
             components.table_row("border-transport", HtmlTableRow(
                 label = messages("declaration.summary.transport.departure.transportCode.header"),
                 value = Seq(messages(s"declaration.summary.transport.departure.transportCode.${borderModeOfTransportCode}")),
-                call = Some(controllers.declaration.routes.TransportLeavingTheBorderController.displayPage()),
+                call = Some(controllers.declaration.routes.TransportLeavingTheBorderController.displayPage(mode)),
                 changeLabel = Some(messages("declaration.summary.transport.departure.transportCode.header.change"))
             ))
         )
@@ -64,7 +65,7 @@
             @components.table_row("transport-reference", HtmlTableRow(
                 label = messages("declaration.summary.transport.departure.meansOfTransport.header"),
                 value = messagesForDepartureMeansOfTransport(declarationData.transport),
-                call = Some(controllers.declaration.routes.DepartureTransportController.displayPage()),
+                call = Some(controllers.declaration.routes.DepartureTransportController.displayPage(mode)),
                 changeLabel = Some(messages("declaration.summary.transport.departure.meansOfTransport.header.change"))
             ))
         }
@@ -73,7 +74,7 @@
             @components.table_row("active-transport-type", HtmlTableRow(
                 label = messages("declaration.summary.transport.border.meansOfTransport.header"),
                 value = messagesForBorderMeansOfTransport(declarationData.transport),
-                call = Some(controllers.declaration.routes.BorderTransportController.displayPage()),
+                call = Some(controllers.declaration.routes.BorderTransportController.displayPage(mode)),
                 changeLabel = Some(messages("declaration.summary.transport.border.meansOfTransport.header.change"))
             ))
         }
@@ -82,7 +83,7 @@
             @components.table_row("active-transport-nationality", HtmlTableRow(
                 label = messages("declaration.summary.transport.activeTransportNationality"),
                 value = declarationData.transport.meansOfTransportCrossingTheBorderNationality.getOrElse(""),
-                call = Some(controllers.declaration.routes.BorderTransportController.displayPage()),
+                call = Some(controllers.declaration.routes.BorderTransportController.displayPage(mode)),
                 changeLabel = Some(messages("declaration.summary.transport.activeTransportNationality.change"))
             ))
         }
@@ -91,7 +92,7 @@
             components.table_row("transport-payment", HtmlTableRow(
                 label = messages("declaration.summary.transport.payment"),
                 value = transportPayment.paymentMethod.map(code => messages(s"declaration.summary.transport.payment.$code")).getOrElse(""),
-                call = Some(controllers.declaration.routes.TransportPaymentController.displayPage()),
+                call = Some(controllers.declaration.routes.TransportPaymentController.displayPage(mode)),
                 changeLabel = Some(messages("declaration.summary.transport.payment.change"))
             ))
         )
@@ -100,13 +101,13 @@
             @components.table_row("containers", HtmlTableRow(
               label = messages("declaration.summary.transport.containers"),
               value = messages("site.no"),
-              call = Some(controllers.declaration.routes.TransportContainerController.displayContainerSummary()),
+              call = Some(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode)),
               changeLabel = Some(messages("declaration.summary.transport.containers.change"))
             ))
         }
 
         @declarationData.transport.containers.map(containerSeq =>
-            containers(containerSeq)
+            containers(mode, containerSeq)
         )
 
     }

@@ -16,6 +16,7 @@
 
 package forms.declaration
 
+import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
@@ -23,7 +24,7 @@ import utils.validators.forms.FieldValidator._
 
 case class NatureOfTransaction(natureType: String)
 
-object NatureOfTransaction {
+object NatureOfTransaction extends DeclarationPage {
   implicit val format: OFormat[NatureOfTransaction] = Json.format[NatureOfTransaction]
 
   val formId = "TransactionType"

@@ -18,10 +18,12 @@
 @import forms.declaration.TotalNumberOfItems
 @import uk.gov.hmrc.play.views.html._
 @import views.Title
+@import controllers.navigation.Navigator
+@import models.requests.JourneyRequest
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[TotalNumberOfItems])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, form: Form[TotalNumberOfItems])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
     title = Title("supplementary.valueOfItems", "supplementary.items")
@@ -29,7 +31,7 @@
     @helper.form(TotalNumberOfItemsController.saveNoOfItems(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
-        @components.back_link(controllers.declaration.routes.OfficeOfExitController.displayPage(mode), mode)
+        @components.back_link(Navigator.backLink(TotalNumberOfItems, mode), mode)
 
         @components.error_summary(form.errors)
 

@@ -21,6 +21,7 @@ import controllers.util.{FormAction, SaveAndReturn}
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.RoutingQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingQuestionPage}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeStandardDec
+import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.destinationCountries.DestinationCountries.{DestinationCountryPage, OriginationCountryPage}
 import forms.declaration.officeOfExit.{OfficeOfExitStandard, OfficeOfExitSupplementary}
 import forms.declaration.{BorderTransport, Document, PackageInformation, _}
@@ -71,7 +72,6 @@ case class ItemId(id: String)
 object Navigator {
 
   val standard: PartialFunction[DeclarationPage, Mode => Call] = {
-    case ModeOfTransportCodes        => controllers.declaration.routes.InlandTransportDetailsController.displayPage
     case BorderTransport             => controllers.declaration.routes.DepartureTransportController.displayPage
     case TransportPayment            => controllers.declaration.routes.BorderTransportController.displayPage
     case ContainerFirst              => controllers.declaration.routes.TransportPaymentController.displayPage
@@ -98,7 +98,6 @@ object Navigator {
   }
 
   val clearance: PartialFunction[DeclarationPage, Mode => Call] = {
-    case ModeOfTransportCodes        => controllers.declaration.routes.InlandTransportDetailsController.displayPage
     case ContainerFirst              => controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
     case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
     case Document                    => controllers.declaration.routes.NatureOfTransactionController.displayPage
@@ -123,7 +122,6 @@ object Navigator {
   }
 
   val supplementary: PartialFunction[DeclarationPage, Mode => Call] = {
-    case ModeOfTransportCodes        => controllers.declaration.routes.InlandTransportDetailsController.displayPage
     case BorderTransport             => controllers.declaration.routes.DepartureTransportController.displayPage
     case ContainerFirst              => controllers.declaration.routes.BorderTransportController.displayPage
     case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
@@ -146,7 +144,6 @@ object Navigator {
   }
 
   val simplified: PartialFunction[DeclarationPage, Mode => Call] = {
-    case ModeOfTransportCodes        => controllers.declaration.routes.InlandTransportDetailsController.displayPage
     case TransportPayment            => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case ContainerFirst              => controllers.declaration.routes.TransportPaymentController.displayPage
     case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
@@ -171,7 +168,7 @@ object Navigator {
   }
 
   val occasional: PartialFunction[DeclarationPage, Mode => Call] = {
-    case ModeOfTransportCodes        => controllers.declaration.routes.InlandTransportDetailsController.displayPage
+
     case TransportPayment            => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case ContainerFirst              => controllers.declaration.routes.TransportPaymentController.displayPage
     case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
@@ -196,7 +193,7 @@ object Navigator {
     case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
   }
 
-  val universal: PartialFunction[DeclarationPage, Mode => Call] = {
+  val common: PartialFunction[DeclarationPage, Mode => Call] = {
     case DeclarationChoice =>
       _ =>
         controllers.routes.ChoiceController.displayPage(Some(Choice(AllowedChoiceValues.CreateDec)))
@@ -211,6 +208,23 @@ object Navigator {
     case DeclarationHolder                                => controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage
     case OfficeOfExitStandard | OfficeOfExitSupplementary => controllers.declaration.routes.LocationController.displayPage
     case AdditionalDeclarationTypeStandardDec             => controllers.declaration.routes.DispatchLocationController.displayPage
+    case TotalNumberOfItems                               => controllers.declaration.routes.OfficeOfExitController.displayPage
+    case NatureOfTransaction                              => controllers.declaration.routes.TotalNumberOfItemsController.displayPage
+    case ProcedureCodes                                   => controllers.declaration.routes.ItemsSummaryController.displayPage
+    case ModeOfTransportCodes                             => controllers.declaration.routes.InlandTransportDetailsController.displayPage
+    case DepartureTransport                               => controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
+
+  }
+
+  val commonItem: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
+    case FiscalInformation         => controllers.declaration.routes.ProcedureCodesController.displayPage
+    case AdditionalFiscalReference => controllers.declaration.routes.FiscalInformationController.displayPage(_, _, fastForward = false)
+    case CommodityDetails          => controllers.declaration.routes.FiscalInformationController.displayPage(_, _, fastForward = true)
+    case UNDangerousGoodsCode      => controllers.declaration.routes.CommodityDetailsController.displayPage
+    case TaricCode                 => controllers.declaration.routes.CusCodeController.displayPage
+    case StatisticalValue          => controllers.declaration.routes.NactCodeController.displayPage
+    case CommodityMeasure          => controllers.declaration.routes.PackageInformationController.displayPage
+    case DocumentsProduced         => controllers.declaration.routes.AdditionalInformationController.displayPage
   }
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
@@ -226,7 +240,7 @@ object Navigator {
           case OCCASIONAL    => occasional
           case CLEARANCE     => clearance
         }
-        universal.orElse(specific)(page)(mode)
+        common.orElse(specific)(page)(mode)
     }
 
   def backLink(page: DeclarationPage, mode: Mode, itemId: ItemId)(implicit request: JourneyRequest[_]): Call =
@@ -235,13 +249,14 @@ object Navigator {
       case Mode.ChangeAmend => controllers.declaration.routes.SummaryController.displayPage(Mode.Amend)
       case Mode.Draft       => controllers.declaration.routes.SummaryController.displayPage(Mode.Draft)
       case _ =>
-        request.declarationType match {
-          case STANDARD      => standardItemPage(page)(mode, itemId.id)
-          case SUPPLEMENTARY => supplementaryItemPage(page)(mode, itemId.id)
-          case SIMPLIFIED    => simplifiedItemPage(page)(mode, itemId.id)
-          case OCCASIONAL    => occasionalItemPage(page)(mode, itemId.id)
-          case CLEARANCE     => clearanceItemPage(page)(mode, itemId.id)
+        val specific = request.declarationType match {
+          case STANDARD      => standardItemPage
+          case SUPPLEMENTARY => supplementaryItemPage
+          case SIMPLIFIED    => simplifiedItemPage
+          case OCCASIONAL    => occasionalItemPage
+          case CLEARANCE     => clearanceItemPage
         }
+        commonItem.orElse(specific)(page)(mode, itemId.id)
     }
 
 }

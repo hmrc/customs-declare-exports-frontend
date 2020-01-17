@@ -17,6 +17,7 @@
 package views.declaration.summary
 
 import forms.declaration.TransportPayment
+import models.Mode
 import models.declaration.Container
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
@@ -34,7 +35,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
   "Transport section" should {
 
     "display border transport with change button" in {
-      val view = transport_section(data)(messages, journeyRequest())
+      val view = transport_section(Mode.Normal, data)(messages, journeyRequest())
 
       view.getElementById("border-transport-label").text() mustBe messages("declaration.summary.transport.departure.transportCode.header")
       view.getElementById("border-transport").text() mustBe messages("declaration.summary.transport.departure.transportCode.1")
@@ -48,7 +49,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     "display transport reference with change button" in {
-      val view = transport_section(data)(messages, journeyRequest())
+      val view = transport_section(Mode.Normal, data)(messages, journeyRequest())
 
       view.getElementById("transport-reference-label").text() mustBe messages("declaration.summary.transport.departure.meansOfTransport.header")
       view.getElementById("transport-reference-0").text() mustBe messages("declaration.summary.transport.departure.meansOfTransport.10")
@@ -63,7 +64,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     "display active transport type with change button" in {
-      val view = transport_section(data)(messages, journeyRequest())
+      val view = transport_section(Mode.Normal, data)(messages, journeyRequest())
 
       view.getElementById("active-transport-type-label").text() mustBe messages("declaration.summary.transport.border.meansOfTransport.header")
       view.getElementById("active-transport-type-0").text() mustBe messages("declaration.summary.transport.border.meansOfTransport.11")
@@ -78,7 +79,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     "display active transport nationality with change button" in {
-      val view = transport_section(data)(messages, journeyRequest())
+      val view = transport_section(Mode.Normal, data)(messages, journeyRequest())
 
       view.getElementById("active-transport-nationality-label").text() mustBe messages("declaration.summary.transport.activeTransportNationality")
       view.getElementById("active-transport-nationality").text() mustBe "United Kingdom"
@@ -92,7 +93,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     "display transport payment with change button" in {
-      val view = transport_section(data)(messages, journeyRequest())
+      val view = transport_section(Mode.Normal, data)(messages, journeyRequest())
 
       view.getElementById("transport-payment-label").text() mustBe messages("declaration.summary.transport.payment")
       view.getElementById("transport-payment").text() mustBe messages("declaration.summary.transport.payment.A")
@@ -106,7 +107,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     "display information about containers when user said 'No' with change button" in {
-      val view = transport_section(data)(messages, journeyRequest())
+      val view = transport_section(Mode.Normal, data)(messages, journeyRequest())
 
       view.getElementById("containers-label").text() mustBe messages("declaration.summary.transport.containers")
       view.getElementById("containers").text() mustBe "site.no"
@@ -120,7 +121,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     "not display border transport if question not answered" in {
-      val view = transport_section(aDeclarationAfter(data, withoutBorderModeOfTransportCode()))(messages, journeyRequest())
+      val view = transport_section(Mode.Normal, aDeclarationAfter(data, withoutBorderModeOfTransportCode()))(messages, journeyRequest())
 
       view.getElementById("border-transport-label") mustBe null
       view.getElementById("border-transport") mustBe null
@@ -128,7 +129,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     "not display transport reference if question not answered" in {
-      val view = transport_section(aDeclarationAfter(data, withoutBorderTransport()))(messages, journeyRequest())
+      val view = transport_section(Mode.Normal, aDeclarationAfter(data, withoutBorderTransport()))(messages, journeyRequest())
 
       view.getElementById("transport-reference-label") mustBe null
       view.getElementById("transport-reference-0") mustBe null
@@ -137,7 +138,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     "not display active transport type if question not answered" in {
-      val view = transport_section(aDeclarationAfter(data, withoutMeansOfTransportOnDepartureType()))(messages, journeyRequest())
+      val view = transport_section(Mode.Normal, aDeclarationAfter(data, withoutMeansOfTransportOnDepartureType()))(messages, journeyRequest())
 
       view.getElementById("active-transport-type-label") mustBe null
       view.getElementById("active-transport-type-0") mustBe null
@@ -146,7 +147,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     "not display active transport nationality if question not answered" in {
-      val view = transport_section(aDeclarationAfter(data, withoutBorderTransport()))(messages, journeyRequest())
+      val view = transport_section(Mode.Normal, aDeclarationAfter(data, withoutBorderTransport()))(messages, journeyRequest())
 
       view.getElementById("active-transport-nationality-label") mustBe null
       view.getElementById("active-transport-nationality") mustBe null
@@ -154,7 +155,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     "not display transport payment if question not answered" in {
-      val view = transport_section(aDeclarationAfter(data, withoutTransportPayment()))(messages, journeyRequest())
+      val view = transport_section(Mode.Normal, aDeclarationAfter(data, withoutTransportPayment()))(messages, journeyRequest())
 
       view.getElementById("transport-payment-label") mustBe null
       view.getElementById("transport-payment") mustBe null
@@ -163,14 +164,14 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
     "skip containers part if empty" in {
 
-      val view = transport_section(aDeclaration(withoutContainerData()))(messages, journeyRequest())
+      val view = transport_section(Mode.Normal, aDeclaration(withoutContainerData()))(messages, journeyRequest())
 
       view.getElementById("container") mustBe null
     }
 
     "display containers section (but not yes/no answer) if containers are not empty" in {
 
-      val view = transport_section(aDeclaration(withContainerData(Container("123", Seq.empty))))(messages, journeyRequest())
+      val view = transport_section(Mode.Normal, aDeclaration(withContainerData(Container("123", Seq.empty))))(messages, journeyRequest())
 
       view.getElementById("container").text() mustNot be(empty)
 

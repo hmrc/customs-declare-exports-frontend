@@ -24,6 +24,7 @@
 @import controllers.navigation.Navigator
 @import forms.declaration.ModeOfTransportCodes
 @import models.requests.JourneyRequest
+@import controllers.navigation.Navigator
 
 @this(main_template: views.html.main_template)
 
@@ -33,7 +34,7 @@
     title = Title("declaration.transportInformation.title")
 ) {
 
-    @components.back_link(TransportLeavingTheBorderController.displayPage(mode), mode)
+    @components.back_link(Navigator.backLink(DepartureTransport, mode), mode)
 
     @components.error_summary(form.errors)
 
