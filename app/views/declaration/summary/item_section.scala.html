@@ -125,6 +125,6 @@ components.table_row(s"item-${item.sequenceId}-itemValue", HtmlTableRow(
 )
 
 @item.documentsProducedData.map(documentsProducedData =>
-    supporting_documents(item.id, item.sequenceId, documentsProducedData.documents)
+    supporting_documents(mode, item.id, item.sequenceId, documentsProducedData.documents)
 )
 </table>

@@ -21,6 +21,7 @@ import controllers.util.{FormAction, SaveAndReturn}
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.RoutingQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingQuestionPage}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeStandardDec
+import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.destinationCountries.DestinationCountries.{DestinationCountryPage, OriginationCountryPage}
 import forms.declaration.officeOfExit.{OfficeOfExitStandard, OfficeOfExitSupplementary}
 import forms.declaration.{BorderTransport, Document, PackageInformation, _}
@@ -225,6 +226,7 @@ object Navigator {
     case TaricCode => controllers.declaration.routes.CusCodeController.displayPage
     case StatisticalValue => controllers.declaration.routes.NactCodeController.displayPage
     case CommodityMeasure => controllers.declaration.routes.PackageInformationController.displayPage
+    case DocumentsProduced => controllers.declaration.routes.AdditionalInformationController.displayPage
   }
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
