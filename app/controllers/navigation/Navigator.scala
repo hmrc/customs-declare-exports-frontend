@@ -212,6 +212,7 @@ object Navigator {
     case OfficeOfExitStandard | OfficeOfExitSupplementary => controllers.declaration.routes.LocationController.displayPage
     case AdditionalDeclarationTypeStandardDec             => controllers.declaration.routes.DispatchLocationController.displayPage
     case TotalNumberOfItems                               => controllers.declaration.routes.OfficeOfExitController.displayPage
+    case NatureOfTransaction                              => controllers.declaration.routes.TotalNumberOfItemsController.displayPage
   }
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
