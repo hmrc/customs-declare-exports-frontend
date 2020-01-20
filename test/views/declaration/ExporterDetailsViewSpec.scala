@@ -98,8 +98,8 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
         val view = createView()
 
-        view.getElementById("details.address.country-label").text() mustBe messages("supplementary.address.country")
-        view.getElementById("details.address.country").attr("value") mustBe empty
+        view.getElementById("details_address_country-label").text() mustBe messages("supplementary.address.country")
+        view.getElementById("details_address_country").attr("value") mustBe empty
       }
 
       "display 'Back' button that links to 'Consignment References' page" in {
@@ -430,7 +430,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
         view.getElementById("details_address_addressLine").attr("value") mustBe empty
         view.getElementById("details_address_townOrCity").attr("value") mustBe empty
         view.getElementById("details_address_postCode").attr("value") mustBe empty
-        view.getElementById("details.address.country").attr("value") mustBe empty
+        view.getElementById("details_address_country").attr("value") mustBe empty
       }
 
       "display data in Business address inputs" in {
@@ -445,7 +445,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
         view.getElementById("details_address_addressLine").attr("value") mustBe "test1"
         view.getElementById("details_address_townOrCity").attr("value") mustBe "test2"
         view.getElementById("details_address_postCode").attr("value") mustBe "test3"
-        view.getElementById("details.address.country").attr("value") mustBe "test4"
+        view.getElementById("details_address_country").attr("value") mustBe "test4"
       }
 
       "display data in both EORI and Business address inputs" in {
@@ -460,7 +460,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
         view.getElementById("details_address_addressLine").attr("value") mustBe "test1"
         view.getElementById("details_address_townOrCity").attr("value") mustBe "test2"
         view.getElementById("details_address_postCode").attr("value") mustBe "test3"
-        view.getElementById("details.address.country").attr("value") mustBe "test4"
+        view.getElementById("details_address_country").attr("value") mustBe "test4"
       }
     }
   }
