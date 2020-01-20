@@ -82,7 +82,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
 
         "display page method is invoked and cache contains data" in new StandardSetUp {
 
-          val totalPackage = "12"
+          val totalPackage = Some("12")
           val totalNumberOfItems = TotalNumberOfItems(None, None, totalPackage)
           withNewCaching(aDeclaration(withTotalNumberOfItems(totalNumberOfItems)))
 
@@ -110,7 +110,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
 
         "display page method is invoked and cache contains data" in new SimplifiedSetUp {
 
-          val totalPackage = "12"
+          val totalPackage = Some("12")
           val totalNumberOfItems = TotalNumberOfItems(None, None, totalPackage)
           withNewCaching(aDeclaration(withTotalNumberOfItems(totalNumberOfItems), withType(DeclarationType.SIMPLIFIED)))
 
@@ -129,7 +129,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
       "standard journey" when {
         "form is incorrect" in new StandardSetUp {
 
-          val incorrectForm = Json.toJson(TotalNumberOfItems(Some("abc"), None, "12"))
+          val incorrectForm = Json.toJson(TotalNumberOfItems(Some("abc"), None, Some("12")))
 
           val result = controller.saveNoOfItems(Mode.Normal)(postRequest(incorrectForm))
 
@@ -140,7 +140,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
       "simplified journey" when {
         "form is incorrect" in new SimplifiedSetUp {
 
-          val incorrectForm = Json.toJson(TotalNumberOfItems(Some("abc"), None, "12"))
+          val incorrectForm = Json.toJson(TotalNumberOfItems(Some("abc"), None, Some("12")))
 
           val result = controller.saveNoOfItems(Mode.Normal)(postRequest(incorrectForm))
 
@@ -155,7 +155,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
 
         "information provided by user are correct" in new StandardSetUp {
 
-          val correctForm = Json.toJson(TotalNumberOfItems(None, None, "12"))
+          val correctForm = Json.toJson(TotalNumberOfItems(None, None, Some("12")))
 
           val result = controller.saveNoOfItems(Mode.Normal)(postRequest(correctForm))
 
@@ -168,7 +168,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
 
         "information provided by user are correct" in new SimplifiedSetUp {
 
-          val correctForm = Json.toJson(TotalNumberOfItems(None, None, "12"))
+          val correctForm = Json.toJson(TotalNumberOfItems(None, None, Some("12")))
 
           val result = controller.saveNoOfItems(Mode.Normal)(postRequest(correctForm))
 

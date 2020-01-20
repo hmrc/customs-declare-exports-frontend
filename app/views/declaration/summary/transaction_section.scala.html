@@ -45,13 +45,15 @@
                 ))
             )
 
-            @declarationData.totalNumberOfItems.map(totalNumberOfItems =>
-                components.table_row("total-no-of-packages", HtmlTableRow(
-                    label = messages("declaration.summary.transaction.totalNoOfPackages"),
-                    value = totalNumberOfItems.totalPackage,
-                    call = Some(controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode)),
-                    changeLabel = Some(messages("declaration.summary.transaction.totalNoOfPackages.change"))
-                ))
+            @declarationData.totalNumberOfItems.flatMap(totalNumberOfItems =>
+                totalNumberOfItems.totalPackage.map( totalPackage =>
+                    components.table_row("total-no-of-packages", HtmlTableRow(
+                        label = messages("declaration.summary.transaction.totalNoOfPackages"),
+                        value = totalPackage,
+                        call = Some(controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode)),
+                        changeLabel = Some(messages("declaration.summary.transaction.totalNoOfPackages.change"))
+                    ))
+                )
             )
 
             @declarationData.natureOfTransaction.map(natureOfTransaction =>
