@@ -25,7 +25,7 @@
     @components.table_row("previous-documents", HtmlTableRow(
         label = messages("declaration.summary.transaction.previousDocuments"),
         value = messages("site.no"),
-        call = Some(controllers.declaration.routes.PreviousDocumentsController.displayPage()),
+        call = Some(controllers.declaration.routes.PreviousDocumentsController.displayPage(mode)),
         changeLabel = Some(messages("declaration.summary.transaction.previousDocuments.change"))
     ))
 }

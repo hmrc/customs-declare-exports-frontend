@@ -40,7 +40,9 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
         change mustBe messages("site.change")
         accessibleChange mustBe messages("declaration.summary.transaction.previousDocuments.change")
 
-        view.getElementById("previous-documents-change") must haveHref(controllers.declaration.routes.PreviousDocumentsController.displayPage())
+        view.getElementById("previous-documents-change") must haveHref(
+          controllers.declaration.routes.PreviousDocumentsController.displayPage(Mode.Change)
+        )
       }
     }
 
