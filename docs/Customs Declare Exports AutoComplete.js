@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.21
+// @version      1.22
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -224,7 +224,7 @@ function consigneeDetails(){
         document.getElementById('details_address_townOrCity').value = 'New York';
         document.getElementById('details_address_postCode').value = '10001';
 
-        selectFromAutoPredict(document.getElementById('details.address.country-container'), "United States of America");
+        selectFromAutoPredict(document.getElementById('details_address_country-container'), "United States of America");
         document.getElementsByClassName('button')[0].click()
     }
 }
@@ -278,7 +278,7 @@ function carrierDetails() {
         document.getElementById('details_address_addressLine').value = 'School Road';
         document.getElementById('details_address_townOrCity').value = 'London';
         document.getElementById('details_address_postCode').value = 'WS1 2AB';
-        selectFromAutoPredict(document.getElementById('details.address.country-container'), "United Kingdom");
+        selectFromAutoPredict(document.getElementById('details_address_country-container'), "United Kingdom");
         document.getElementsByClassName('button')[0].click()
     }
 }
@@ -339,7 +339,7 @@ function holderOfAuthorisation(){
             case 'K':
                 document.getElementsByClassName('button')[0].click();
                 break;
-       }
+        }
     }
 }
 
@@ -536,7 +536,7 @@ function commodityDetails(){
             case 'F':
                 document.getElementById('combinedNomenclatureCode').value ='84111100';
                 document.getElementById('descriptionOfGoods').value ='Aircraft engine';
-            break;
+                break;
             default:
                 document.getElementById('combinedNomenclatureCode').value ='46021910';
                 document.getElementById('descriptionOfGoods').value ='Straw for bottles';
@@ -556,7 +556,7 @@ function unDangerousGoodsCode(){
             case 'F':
             case 'K':
                 document.getElementById('code_no').checked = 'checked';
-            break;
+                break;
             default:
                 document.getElementById('code_yes').checked = 'checked';
                 document.getElementById('dangerousGoodsCode').value ='1234';
@@ -647,7 +647,7 @@ function additionalInformation(){
                 } else {
                     document.getElementsByClassName('button')[0].click()
                 }
-            break;
+                break;
             case 'K':
                 document.getElementById('code').value ='00600';
                 document.getElementById('description').value ='EXPORTER';
@@ -712,7 +712,7 @@ function addDocuments(){
                 document.getElementById('documentTypeCode').value ='C501';
                 document.getElementById('documentIdentifier').value ='GBAEOC717572504502811';
                 document.getElementsByClassName('button')[0].click()
-       }
+        }
     }
 }
 
