@@ -15,6 +15,7 @@
  */
 
 package forms.declaration
+import forms.DeclarationPage
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
@@ -22,7 +23,7 @@ import utils.validators.forms.FieldValidator._
 
 case class DeclarantDetails(details: EntityDetails)
 
-object DeclarantDetails {
+object DeclarantDetails extends DeclarationPage {
   implicit val format = Json.format[DeclarantDetails]
 
   val id = "DeclarantDetails"

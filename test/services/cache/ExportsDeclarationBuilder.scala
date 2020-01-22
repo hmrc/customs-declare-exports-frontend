@@ -90,7 +90,7 @@ trait ExportsDeclarationBuilder {
     exchangeRate: Option[String] = None,
     totalPackage: String = "1"
   ): ExportsDeclarationModifier =
-    _.copy(totalNumberOfItems = Some(TotalNumberOfItems(totalAmountInvoiced, exchangeRate, totalPackage)))
+    _.copy(totalNumberOfItems = Some(TotalNumberOfItems(totalAmountInvoiced, exchangeRate, Some(totalPackage))))
 
   def withAdditionalDeclarationType(decType: AdditionalDeclarationType = AdditionalDeclarationType.STANDARD_FRONTIER): ExportsDeclarationModifier =
     _.copy(additionalDeclarationType = Some(decType))

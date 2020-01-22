@@ -17,6 +17,7 @@
 package views.declaration.summary
 
 import forms.declaration.{DeclarationAdditionalActors, DeclarationHolder}
+import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.additional_and_authorised_parties_section
@@ -38,7 +39,7 @@ class AdditionalAndAuthorisedPartiesSectionViewSpec extends UnitViewSpec with Ex
 
     "display additional actors with answer no if empty" in {
 
-      val view = additional_and_authorised_parties_section(Seq.empty, Seq.empty)(messages, journeyRequest())
+      val view = additional_and_authorised_parties_section(Mode.Normal, Seq.empty, Seq.empty)(messages, journeyRequest())
 
       view.getElementById("additionalActors-label").text() mustBe messages("declaration.summary.parties.additional")
       view.getElementById("additionalActors").text() mustBe messages("site.no")
@@ -46,7 +47,7 @@ class AdditionalAndAuthorisedPartiesSectionViewSpec extends UnitViewSpec with Ex
 
     "display holders with answer no if empty" in {
 
-      val view = additional_and_authorised_parties_section(Seq.empty, Seq.empty)(messages, journeyRequest())
+      val view = additional_and_authorised_parties_section(Mode.Normal, Seq.empty, Seq.empty)(messages, journeyRequest())
 
       view.getElementById("holders-label").text() mustBe messages("declaration.summary.parties.holders")
       view.getElementById("holders").text() mustBe messages("site.no")
@@ -54,7 +55,7 @@ class AdditionalAndAuthorisedPartiesSectionViewSpec extends UnitViewSpec with Ex
 
     "display additional actors if exists" in {
 
-      val view = additional_and_authorised_parties_section(additionalActors, Seq.empty)(messages, journeyRequest())
+      val view = additional_and_authorised_parties_section(Mode.Normal, additionalActors, Seq.empty)(messages, journeyRequest())
 
       view.getElementById("additionalActors").text() mustBe messages("declaration.summary.parties.additional")
       view.getElementById("additionalActors-type").text() mustBe messages("declaration.summary.parties.additional.type")
@@ -67,7 +68,7 @@ class AdditionalAndAuthorisedPartiesSectionViewSpec extends UnitViewSpec with Ex
 
     "display holders if exists" in {
 
-      val view = additional_and_authorised_parties_section(Seq.empty, holders)(messages, journeyRequest())
+      val view = additional_and_authorised_parties_section(Mode.Normal, Seq.empty, holders)(messages, journeyRequest())
 
       view.getElementById("holders").text() mustBe messages("declaration.summary.parties.holders")
       view.getElementById("holders-type").text() mustBe messages("declaration.summary.parties.holders.type")
@@ -80,7 +81,7 @@ class AdditionalAndAuthorisedPartiesSectionViewSpec extends UnitViewSpec with Ex
 
     "provide change button if there is no additional actors and holders" in {
 
-      val view = additional_and_authorised_parties_section(Seq.empty, Seq.empty)(messages, journeyRequest())
+      val view = additional_and_authorised_parties_section(Mode.Normal, Seq.empty, Seq.empty)(messages, journeyRequest())
 
       val List(changeActor, accessibleChangeActor) = view.getElementById("additionalActors-change").text().split(" ").toList
 
@@ -99,7 +100,7 @@ class AdditionalAndAuthorisedPartiesSectionViewSpec extends UnitViewSpec with Ex
 
     "provide change button for every actor" in {
 
-      val view = additional_and_authorised_parties_section(additionalActors, Seq.empty)(messages, journeyRequest())
+      val view = additional_and_authorised_parties_section(Mode.Normal, additionalActors, Seq.empty)(messages, journeyRequest())
 
       val List(change1, accessibleChange1) = view.getElementById("additionalActor-0-change").text().split(" ").toList
 
@@ -122,7 +123,7 @@ class AdditionalAndAuthorisedPartiesSectionViewSpec extends UnitViewSpec with Ex
 
     "provide change button for every holder" in {
 
-      val view = additional_and_authorised_parties_section(Seq.empty, holders)(messages, journeyRequest())
+      val view = additional_and_authorised_parties_section(Mode.Normal, Seq.empty, holders)(messages, journeyRequest())
 
       val List(change1, accessibleChange1) = view.getElementById("holder-0-change").text().split(" ").toList
 

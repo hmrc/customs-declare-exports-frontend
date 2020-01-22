@@ -46,7 +46,7 @@ class RoutingCountriesController @Inject()(
 
   def displayRoutingQuestion(mode: Mode, fastForward: Boolean): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (fastForward && request.cacheModel.containRoutingCountries()) {
-      navigator.continueTo(routes.RoutingCountriesSummaryController.displayPage(mode))
+      navigator.redirectTo(mode, routes.RoutingCountriesSummaryController.displayPage)
     } else {
       val destinationCountryCode = request.cacheModel.locations.destinationCountry
       val destinationCountryName = destinationCountryCode.map(findByCode(_)).map(_.countryName).getOrElse("")
@@ -79,9 +79,9 @@ class RoutingCountriesController @Inject()(
 
   private def redirectFromRoutingAnswer(mode: Mode, answer: Boolean)(implicit request: JourneyRequest[AnyContent]): Result =
     if (answer) {
-      navigator.continueTo(controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(mode))
+      navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry)
     } else {
-      navigator.continueTo(controllers.declaration.routes.LocationController.displayPage(mode))
+      navigator.continueTo(mode, controllers.declaration.routes.LocationController.displayPage)
     }
 
   def displayRoutingCountry(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
@@ -90,7 +90,7 @@ class RoutingCountriesController @Inject()(
 
     routingAnswer match {
       case Some(answer) if answer => Ok(countryOfRoutingPage(mode, DestinationCountries.form(page), page))
-      case _                      => navigator.continueTo(controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(mode, false))
+      case _                      => navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(_, fastForward = false))
     }
   }
 
@@ -108,7 +108,7 @@ class RoutingCountriesController @Inject()(
           val newRoutingCountries = request.cacheModel.locations.routingCountries :+ validCountry
 
           updateRoutingCountries(newRoutingCountries).map { _ =>
-            navigator.continueTo(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(mode))
+            navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
           }
         }
       )

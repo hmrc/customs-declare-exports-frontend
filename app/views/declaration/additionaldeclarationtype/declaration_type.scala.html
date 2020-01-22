@@ -14,15 +14,13 @@
  * limitations under the License.
  *@
 
-@import forms.Choice.AllowedChoiceValues._
-@import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
-@import models.requests.JourneyRequest
-@import uk.gov.hmrc.play.views.html._
-@import views.Title
+@import controllers.navigation.Navigator
 @import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+@import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeStandardDec
+@import models.requests.JourneyRequest
+@import views.Title
 
 @this(main_template: views.html.main_template)
-
 
 @(mode: Mode, form: Form[AdditionalDeclarationType])(implicit request: JourneyRequest[_], messages: Messages)
 
@@ -36,7 +34,7 @@
     }
 ) {
 
-    @components.back_link(controllers.declaration.routes.DispatchLocationController.displayPage(mode), mode)
+    @components.back_link(Navigator.backLink(AdditionalDeclarationTypeStandardDec, mode))
 
     @helper.form(controllers.declaration.routes.AdditionalDeclarationTypeController.submitForm(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField

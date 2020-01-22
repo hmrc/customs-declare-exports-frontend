@@ -33,13 +33,15 @@ import services.SubmissionService
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
-import views.html.declaration.summary.{summary_page, summary_page_no_data}
+import views.html.declaration.summary._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with OptionValues {
 
-  private val mockSummaryPage = mock[summary_page]
+  private val normalSummaryPage = mock[normal_summary_page]
+  private val draftSummaryPage = mock[draft_summary_page]
+  private val amendSummaryPage = mock[amend_summary_page]
   private val mockSummaryPageNoData = mock[summary_page_no_data]
   private val mockSubmissionService = mock[SubmissionService]
   private val appConfig = mock[AppConfig]
@@ -51,7 +53,9 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
     mockExportsCacheService,
     mockSubmissionService,
     stubMessagesControllerComponents(),
-    mockSummaryPage,
+    normalSummaryPage,
+    amendSummaryPage,
+    draftSummaryPage,
     mockSummaryPageNoData
   )(ec, appConfig)
 
@@ -59,12 +63,14 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    when(mockSummaryPage.apply(any(), any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
+    when(normalSummaryPage.apply(any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
+    when(draftSummaryPage.apply()(any(), any(), any())).thenReturn(HtmlFormat.empty)
+    when(amendSummaryPage.apply()(any(), any(), any())).thenReturn(HtmlFormat.empty)
     when(mockSummaryPageNoData.apply()(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockSummaryPage, mockSummaryPageNoData, mockSubmissionService)
+    reset(normalSummaryPage, draftSummaryPage, amendSummaryPage, mockSummaryPageNoData, mockSubmissionService)
     super.afterEach()
   }
 
@@ -79,7 +85,7 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
-        verify(mockSummaryPage, times(1)).apply(any(), any())(any(), any(), any())
+        verify(normalSummaryPage, times(1)).apply(any())(any(), any(), any())
         verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
       }
 
@@ -90,7 +96,7 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
-        verify(mockSummaryPage, times(0)).apply(any(), any())(any(), any(), any())
+        verify(normalSummaryPage, times(0)).apply(any())(any(), any(), any())
         verify(mockSummaryPageNoData, times(1)).apply()(any(), any())
       }
     }
@@ -106,7 +112,7 @@ class SummaryControllerSpec extends ControllerSpec with ErrorHandlerMocks with O
         val result = controller.submitDeclaration()(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) mustBe INTERNAL_SERVER_ERROR
-        verify(mockSummaryPage, times(0)).apply(any(), any())(any(), any(), any())
+        verify(normalSummaryPage, times(0)).apply(any())(any(), any(), any())
         verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
       }
     }

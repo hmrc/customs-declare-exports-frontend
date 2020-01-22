@@ -40,7 +40,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
 
-class NavigatorTest extends WordSpec with Matchers with MockitoSugar with ExportsDeclarationBuilder {
+class NavigatorSpec extends WordSpec with Matchers with MockitoSugar with ExportsDeclarationBuilder {
 
   private val call = Call("GET", "url")
   private val config = mock[AppConfig]

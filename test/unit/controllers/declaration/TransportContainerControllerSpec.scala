@@ -32,7 +32,9 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
     val transportContainersAddFirstPage = new transport_container_add_first(mainTemplate)
     val transportContainersAddPage = new transport_container_add(mainTemplate)
     val transportContainersRemovePage = new transport_container_remove(mainTemplate)
+    val transportClearanceContainersRemovePage = new transport_container_remove_clearance(mainTemplate)
     val transportContainersSummaryPage = new transport_container_summary(mainTemplate)
+    val transportClearanceContainersSummaryPage = new transport_container_summary_clearance(mainTemplate)
 
     val controller = new TransportContainerController(
       mockAuthAction,
@@ -44,7 +46,9 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
       transportContainersAddFirstPage,
       transportContainersAddPage,
       transportContainersSummaryPage,
-      transportContainersRemovePage
+      transportClearanceContainersSummaryPage,
+      transportContainersRemovePage,
+      transportClearanceContainersRemovePage
     )(ec)
 
     authorizedUser()
@@ -121,6 +125,23 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
   }
 
   "Transport Container submit add page" should {
+
+    "add first container and redirect to containers Summary page" when {
+
+      val requestBody = Seq(ContainerFirst.hasContainerKey -> "Yes", ContainerFirst.containerIdKey -> "value")
+
+      "working on clearance declaration with cache empty" in new SetUp {
+        withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
+
+        val result = controller.submitAddContainer(Mode.Normal)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.TransportContainerController
+          .displayContainerSummary(Mode.Normal)
+
+        theCacheModelUpdated.containers mustBe Seq(Container("value", Seq.empty))
+      }
+    }
 
     "add first container and redirect to add seal page" when {
 

@@ -72,7 +72,7 @@ class NactCodeController @Inject()(
         formWithErrors => Future.successful(BadRequest(nactCodesPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
           updateExportsCache(itemId, updatedCache)
-            .map(_ => navigator.continueTo(controllers.declaration.routes.NactCodeController.displayPage(mode, itemId)))
+            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.NactCodeController.displayPage(_, itemId)))
       )
 
   private def removeItem(mode: Mode, itemId: String, values: Seq[String], boundForm: Form[NactCode], items: Seq[NactCode])(
@@ -81,7 +81,7 @@ class NactCodeController @Inject()(
     val itemToRemove = items.find(_.nactCode.equals(values.head))
     val updatedCache = remove(items, itemToRemove.contains(_: NactCode))
     updateExportsCache(itemId, updatedCache)
-      .map(_ => navigator.continueTo(routes.NactCodeController.displayPage(mode, itemId)))
+      .map(_ => navigator.continueTo(mode, routes.NactCodeController.displayPage(_, itemId)))
   }
 
   private def saveAndContinue(mode: Mode, itemId: String, boundForm: Form[NactCode], cachedData: Seq[NactCode])(
@@ -93,15 +93,15 @@ class NactCodeController @Inject()(
         formWithErrors => Future.successful(BadRequest(nactCodesPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
           updateExportsCache(itemId, updatedCache)
-            .map(_ => navigator.continueTo(nextPage(mode, itemId)))
+            .map(_ => navigator.continueTo(mode, nextPage(itemId)))
       )
 
-  private def nextPage(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]) =
+  private def nextPage(itemId: String)(implicit request: JourneyRequest[AnyContent]): Mode => Call =
     request.declarationType match {
       case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | DeclarationType.CLEARANCE =>
-        controllers.declaration.routes.StatisticalValueController.displayPage(mode, itemId)
+        controllers.declaration.routes.StatisticalValueController.displayPage(_, itemId)
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
-        controllers.declaration.routes.PackageInformationController.displayPage(mode, itemId)
+        controllers.declaration.routes.PackageInformationController.displayPage(_, itemId)
     }
 
   private def updateExportsCache(itemId: String, updatedCache: Seq[NactCode])(

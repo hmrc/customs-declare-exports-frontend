@@ -25,7 +25,7 @@ import org.mockito.Mockito.when
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.{draft_info_section, summary_page}
+import views.html.declaration.summary._
 
 import scala.concurrent.duration.FiniteDuration
 
@@ -36,60 +36,30 @@ class SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
   when(appConfig.draftTimeToLive).thenReturn(FiniteDuration(30, "day"))
   val draftInfoPage = new draft_info_section(appConfig)
 
-  val summaryPage = new summary_page(mainTemplate, draftInfoPage)
-  def view(mode: Mode = Normal, declaration: ExportsDeclaration = aDeclaration()): Document =
-    summaryPage(mode, LegalDeclaration.form())(journeyRequest(declaration), realMessages, minimalAppConfig)
+  val normal_summaryPage = new normal_summary_page(mainTemplate, draftInfoPage)
+  def view(declaration: ExportsDeclaration = aDeclaration()): Document =
+    normal_summaryPage(LegalDeclaration.form())(journeyRequest(declaration), realMessages, minimalAppConfig)
 
   "Summary page" should {
 
-    "should display correct title" when {
+    val document = view()
 
-      "mode is normal" in {
+    "should display correct title" in {
 
-        view().getElementById("title").text() mustBe realMessages("declaration.summary.normal-header")
-      }
-
-      "mode is amend" in {
-
-        view(Amend).getElementById("title").text() mustBe realMessages("declaration.summary.amend-header")
-      }
-
-      "mode is draft" in {
-
-        view(Draft).getElementById("title").text() mustBe realMessages("declaration.summary.saved-header")
-      }
+      document.getElementById("title").text() mustBe realMessages("declaration.summary.normal-header")
     }
 
-    "should display correct back link" when {
+    "should display correct back link" in {
 
-      "mode is normal" in {
+      val backButton = document.getElementById("back-link")
 
-        val backButton = view().getElementById("back-link")
-
-        backButton.text() mustBe realMessages("site.back")
-        backButton must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary(Normal))
-      }
-
-      "mode is amend" in {
-
-        val backButton = view(Amend).getElementById("back-link")
-
-        backButton.text() mustBe realMessages("summary.amend.back")
-        backButton must haveHref(controllers.routes.SubmissionsController.displayListOfSubmissions())
-      }
-
-      "mode is draft" in {
-
-        val backButton = view(Draft).getElementById("back-link")
-
-        backButton.text() mustBe realMessages("site.back")
-        backButton must haveHref(controllers.routes.SavedDeclarationsController.displayDeclarations())
-      }
+      backButton.text() mustBe realMessages("site.back")
+      backButton must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary(Normal))
     }
 
     "have references section" in {
 
-      view().getElementById("declaration-references-summary").text() mustNot be(empty)
+      document.getElementById("declaration-references-summary").text() mustNot be(empty)
     }
 
     "not have parties section" in {

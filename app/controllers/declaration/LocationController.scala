@@ -55,7 +55,7 @@ class LocationController @Inject()(
         (formWithErrors: Form[GoodsLocation]) => Future.successful(BadRequest(goodsLocationPage(mode, formWithErrors))),
         formData =>
           updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(goodsLocation = Some(formData)))).map { _ =>
-            navigator.continueTo(controllers.declaration.routes.OfficeOfExitController.displayPage(mode))
+            navigator.continueTo(mode, controllers.declaration.routes.OfficeOfExitController.displayPage)
         }
       )
   }

@@ -82,7 +82,7 @@ class AdditionalInformationController @Inject()(
         formWithErrors => Future.successful(BadRequest(additionalInformationPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
           updateCache(itemId, AdditionalInformationData(updatedCache))
-            .map(_ => navigator.continueTo(controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId)))
+            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.AdditionalInformationController.displayPage(_, itemId)))
       )
 
   private def handleSaveAndContinue(mode: Mode, itemId: String, boundForm: Form[AdditionalInformation], cachedData: Seq[AdditionalInformation])(
@@ -97,7 +97,7 @@ class AdditionalInformationController @Inject()(
             .map(
               _ =>
                 navigator
-                  .continueTo(controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId))
+                  .continueTo(mode, controllers.declaration.routes.DocumentsProducedController.displayPage(_, itemId))
           )
       )
 
@@ -106,7 +106,7 @@ class AdditionalInformationController @Inject()(
   ): Future[Result] = {
     val updatedCache = remove(items, (addItem: AdditionalInformation) => addItem.toString == ids.head)
     updateCache(itemId, AdditionalInformationData(updatedCache))
-      .map(_ => navigator.continueTo(controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId)))
+      .map(_ => navigator.continueTo(mode, controllers.declaration.routes.AdditionalInformationController.displayPage(_, itemId)))
   }
 
   private def updateCache(itemId: String, updatedAdditionalInformation: AdditionalInformationData)(

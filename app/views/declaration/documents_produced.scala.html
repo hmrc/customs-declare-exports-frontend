@@ -16,6 +16,8 @@
 
 @import controllers.declaration.routes._
 @import controllers.util.Remove
+@import controllers.navigation.{Navigator, ItemId}
+@import models.requests.JourneyRequest
 @import forms.declaration.additionaldocuments.DocumentWriteOff._
 @import forms.declaration.additionaldocuments.DocumentsProduced
 @import forms.declaration.additionaldocuments.DocumentsProduced._
@@ -25,11 +27,11 @@
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, itemId: String, form: Form[DocumentsProduced], documents: Seq[DocumentsProduced])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[DocumentsProduced], documents: Seq[DocumentsProduced])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(title = Title("supplementary.addDocument.title", "supplementary.summary.yourReferences.header")) {
 
-    @components.back_link(AdditionalInformationController.displayPage(mode, itemId), mode)
+    @components.back_link(Navigator.backLink(DocumentsProduced, mode, ItemId(itemId)), mode)
 
     @components.error_summary(form.errors)
 

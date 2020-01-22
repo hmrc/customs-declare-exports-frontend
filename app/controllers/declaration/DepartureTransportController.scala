@@ -73,9 +73,9 @@ class DepartureTransportController @Inject()(
   private def nextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
     request.declarationType match {
       case DeclarationType.CLEARANCE =>
-        navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode))
+        navigator.continueTo(mode, controllers.declaration.routes.TransportContainerController.displayContainerSummary)
       case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
-        navigator.continueTo(controllers.declaration.routes.BorderTransportController.displayPage(mode))
+        navigator.continueTo(mode, controllers.declaration.routes.BorderTransportController.displayPage)
     }
 
   private def updateCache(formData: DepartureTransport)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =

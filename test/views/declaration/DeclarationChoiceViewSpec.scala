@@ -32,6 +32,7 @@ import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.declaration_choice
 import views.tags.ViewTest
+import models.Mode
 
 @ViewTest
 class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
@@ -39,7 +40,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
   private val form: Form[DeclarationChoice] = DeclarationChoice.form()
   private val choicePage = new declaration_choice(mainTemplate, instanceOf[AppConfig])
   private def createView(form: Form[DeclarationChoice] = form, messages: Messages = stubMessages()): Document =
-    choicePage(form)(request, messages)
+    choicePage(Mode.Normal, form)(request, messages)
 
   "Declaration Choice View on empty page" should {
 

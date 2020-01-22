@@ -20,22 +20,45 @@ import play.api.mvc.{JavascriptLiteral, QueryStringBindable}
 
 sealed trait Mode {
   val name: String
+
+  def next: Mode
 }
 object Mode {
 
   case object Normal extends Mode {
     override val name: String = "Normal"
+
+    override val next: Mode = this
+  }
+
+  case object Change extends Mode {
+    override val name: String = "Change"
+
+    override val next: Mode = Normal
   }
 
   case object Amend extends Mode {
     override val name: String = "Amend"
+
+    override val next: Mode = this
+  }
+
+  case object ChangeAmend extends Mode {
+    override val name: String = "Change-Amend"
+
+    override val next: Mode = Amend
   }
 
   case object Draft extends Mode {
     override val name: String = "Draft"
+
+    override val next: Mode = Normal
   }
 
-  def withName(str: String): Option[Mode] = Set[Mode](Normal, Amend, Draft).find(_.name == str)
+  private val modes = Set[Mode](Normal, Amend, Draft, Change, ChangeAmend)
+
+  def withName(str: String): Option[Mode] =
+    modes.find(_.name == str)
 
   implicit val binder: QueryStringBindable[Mode] = new QueryStringBindable[Mode] {
     private val strBinder: QueryStringBindable[String] = implicitly[QueryStringBindable[String]]
@@ -51,7 +74,7 @@ object Mode {
         )
       )
 
-    override def unbind(key: String, value: Mode): String = strBinder.unbind(key, value.toString)
+    override def unbind(key: String, value: Mode): String = strBinder.unbind(key, value.name)
   }
 
   implicit val jsLiteral: JavascriptLiteral[Mode] = new JavascriptLiteral[Mode] {

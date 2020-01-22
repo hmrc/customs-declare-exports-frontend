@@ -28,7 +28,7 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData {
 
     "display title only and change link if Sequence is empty" in {
 
-      val view = package_information("itemId", 1, Seq.empty)(messages, journeyRequest())
+      val view = package_information(Mode.Normal, "itemId", 1, Seq.empty)(messages, journeyRequest())
 
       view.getElementById("package-information-1-label").text() mustBe messages("declaration.summary.items.item.packageInformation")
       view.getElementById("package-information-1-change") must haveHref(
@@ -40,7 +40,7 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData {
 
       val data = Seq(PackageInformation("PB", 123, "first-marks"), PackageInformation("QF", 321, "second-marks"))
 
-      val view = package_information("itemId", 1, data)(messages, journeyRequest())
+      val view = package_information(Mode.Normal, "itemId", 1, data)(messages, journeyRequest())
 
       view.getElementById("package-information-1").text() mustBe messages("declaration.summary.items.item.packageInformation")
       view.getElementById("package-information-type-1").text() mustBe messages("declaration.summary.items.item.packageInformation.type")

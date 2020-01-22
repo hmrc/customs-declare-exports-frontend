@@ -30,7 +30,7 @@ class OnwardSupplyReliefViewSpec extends UnitViewSpec with ExportsTestData {
 
       "answer is No" in {
 
-        val view = onward_supply_relief("itemId", 1, Some(FiscalInformation("No")), None)(messages, journeyRequest())
+        val view = onward_supply_relief(Mode.Normal, "itemId", 1, Some(FiscalInformation("No")), None)(messages, journeyRequest())
 
         view.getElementById("item-1-onwardSupplyRelief-label").text() mustBe messages("declaration.summary.items.item.onwardSupplyRelief")
         view.getElementById("item-1-onwardSupplyRelief").text() mustBe "No"
@@ -52,6 +52,7 @@ class OnwardSupplyReliefViewSpec extends UnitViewSpec with ExportsTestData {
 
         val view =
           onward_supply_relief(
+            Mode.Normal,
             "itemId",
             1,
             Some(FiscalInformation("Yes")),

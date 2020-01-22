@@ -60,7 +60,7 @@ class CarrierDetailsController @Inject()(
           (formWithErrors: Form[CarrierDetails]) => Future.successful(BadRequest(carrierDetailsPage(mode, formWithErrors))),
           form =>
             updateCache(form).map { _ =>
-              navigator.continueTo(routes.DeclarationAdditionalActorsController.displayPage(mode))
+              navigator.continueTo(mode, routes.DeclarationAdditionalActorsController.displayPage)
           }
         )
     }

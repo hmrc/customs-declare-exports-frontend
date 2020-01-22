@@ -57,7 +57,7 @@ class CusCodeController @Inject()(
         formWithErrors => Future.successful(BadRequest(cusCodePage(mode, itemId, formWithErrors))),
         validForm =>
           updateExportsCache(itemId, validForm).map { _ =>
-            navigator.continueTo(nextPage(mode, itemId, request.declarationType))
+            navigator.continueTo(mode, nextPage(itemId, request.declarationType))
         }
       )
   }
@@ -69,10 +69,10 @@ class CusCodeController @Inject()(
       model.updatedItem(itemId, item => item.copy(cusCode = Some(updatedItem)))
     }
 
-  def nextPage(mode: Mode, itemId: String, declarationType: DeclarationType): Call =
+  def nextPage(itemId: String, declarationType: DeclarationType): Mode => Call =
     if (declarationType == DeclarationType.CLEARANCE) {
-      controllers.declaration.routes.NactCodeController.displayPage(mode, itemId)
+      controllers.declaration.routes.NactCodeController.displayPage(_, itemId)
     } else {
-      controllers.declaration.routes.TaricCodeController.displayPage(mode, itemId)
+      controllers.declaration.routes.TaricCodeController.displayPage(_, itemId)
     }
 }

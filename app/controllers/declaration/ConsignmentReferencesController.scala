@@ -56,7 +56,7 @@ class ConsignmentReferencesController @Inject()(
         (formWithErrors: Form[ConsignmentReferences]) => Future.successful(BadRequest(consignmentReferencesPage(mode, formWithErrors))),
         validConsignmentReferences =>
           updateCache(validConsignmentReferences)
-            .map(_ => navigator.continueTo(controllers.declaration.routes.ExporterDetailsController.displayPage(mode)))
+            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.ExporterDetailsController.displayPage))
       )
   }
 

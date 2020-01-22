@@ -21,7 +21,7 @@ import forms.Choice
 import forms.declaration.DeclarationChoiceSpec
 import models.DeclarationType.DeclarationType
 import models.requests.ExportsSessionKeys
-import models.{DeclarationStatus, DeclarationType}
+import models.{DeclarationStatus, DeclarationType, Mode}
 import org.scalatest.OptionValues
 import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContentAsJson, Request}
@@ -62,7 +62,7 @@ class DeclarationChoiceControllerSpec extends ControllerSpec with OptionValues {
       "display page method is invoked with empty cache" in {
         withNoDeclaration()
 
-        val result = controller.displayPage(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -70,7 +70,7 @@ class DeclarationChoiceControllerSpec extends ControllerSpec with OptionValues {
       "display page method is invoked with data in cache" in {
         withNewCaching(existingDeclaration())
 
-        val result = controller.displayPage(getRequest())
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -82,10 +82,10 @@ class DeclarationChoiceControllerSpec extends ControllerSpec with OptionValues {
         withNoDeclaration()
 
         val request = getRequest()
-        val result = controller.displayPage(request)
+        val result = controller.displayPage(Mode.Normal)(request)
         var form = Choice.form()
 
-        viewOf(result) must be(choicePage(form)(request, controller.messagesApi.preferred(request)))
+        viewOf(result) must be(choicePage(Mode.Normal, form)(request, controller.messagesApi.preferred(request)))
       }
     }
   }
@@ -96,7 +96,7 @@ class DeclarationChoiceControllerSpec extends ControllerSpec with OptionValues {
 
       "form is incorrect" in {
 
-        val result = controller.submitChoice()(postChoiceRequest(incorrectChoiceJSON))
+        val result = controller.submitChoice(Mode.Normal)(postChoiceRequest(incorrectChoiceJSON))
 
         status(result) must be(BAD_REQUEST)
         verifyTheCacheIsUnchanged()
@@ -108,7 +108,7 @@ class DeclarationChoiceControllerSpec extends ControllerSpec with OptionValues {
       "user chooses Standard Dec for new declaration" in {
         withCreateResponse(newDeclaration)
 
-        val result = controller.submitChoice()(postChoiceRequest(correctChoiceJSON))
+        val result = controller.submitChoice(Mode.Normal)(postChoiceRequest(correctChoiceJSON))
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some(controllers.declaration.routes.DispatchLocationController.displayPage().url))

@@ -16,6 +16,7 @@
 
 package views.declaration.summary
 
+import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.items_section
@@ -28,7 +29,7 @@ class ItemsSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
       "there is no items in the declaration" in {
 
-        val view = items_section(aDeclaration())(messages, journeyRequest())
+        val view = items_section(Mode.Normal, aDeclaration())(messages, journeyRequest())
 
         view.getAllElements.text() must be(empty)
       }
@@ -40,7 +41,7 @@ class ItemsSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
         val data = aDeclaration(withItems(anItem(withSequenceId(1)), anItem(withSequenceId(2))))
 
-        val view = items_section(data)(messages, journeyRequest())
+        val view = items_section(Mode.Normal, data)(messages, journeyRequest())
 
         view.getElementById("item-1-header").text() mustNot be(empty)
         view.getElementById("item-2-header").text() mustNot be(empty)

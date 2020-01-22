@@ -90,7 +90,7 @@ class DeclarationAdditionalActorsController @Inject()(
         if (actor.isDefined) {
           val updatedCache = DeclarationAdditionalActorsData(actors :+ actor)
           updateCache(updatedCache)
-            .map(_ => navigator.continueTo(routes.DeclarationAdditionalActorsController.displayPage(mode)))
+            .map(_ => navigator.continueTo(mode, routes.DeclarationAdditionalActorsController.displayPage))
         } else
           handleErrorPage(mode, Seq(("eori", "supplementary.additionalActors.eori.isNotDefined")), userInput, cachedData.actors)
     }
@@ -143,8 +143,8 @@ class DeclarationAdditionalActorsController @Inject()(
   ): Future[Result] =
     if (actor.isDefined) {
       updateCache(DeclarationAdditionalActorsData(actors :+ actor))
-        .map(_ => navigator.continueTo(routes.DeclarationHolderController.displayPage(mode)))
-    } else updateCache(DeclarationAdditionalActorsData(actors)).map(_ => navigator.continueTo(routes.DeclarationHolderController.displayPage(mode)))
+        .map(_ => navigator.continueTo(mode, routes.DeclarationHolderController.displayPage))
+    } else updateCache(DeclarationAdditionalActorsData(actors)).map(_ => navigator.continueTo(mode, routes.DeclarationHolderController.displayPage))
 
   private def removeItem(
     mode: Mode,
@@ -155,6 +155,6 @@ class DeclarationAdditionalActorsController @Inject()(
     val updatedCache =
       cachedData.copy(actors = remove(cachedData.actors, actorToRemove.contains(_: DeclarationAdditionalActors)))
     updateCache(updatedCache)
-      .map(_ => navigator.continueTo(routes.DeclarationAdditionalActorsController.displayPage(mode)))
+      .map(_ => navigator.continueTo(mode, routes.DeclarationAdditionalActorsController.displayPage))
   }
 }

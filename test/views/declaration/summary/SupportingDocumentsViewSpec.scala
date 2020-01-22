@@ -30,7 +30,7 @@ class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
 
       "there is no documents" in {
 
-        val view = supporting_documents("itemId", 1, Seq.empty)(messages, journeyRequest())
+        val view = supporting_documents(Mode.Normal, "itemId", 1, Seq.empty)(messages, journeyRequest())
 
         view.getElementById("supporting-documents-1-label").text() mustBe messages("declaration.summary.items.item.supportingDocuments")
         view.getElementById("supporting-documents-1-change") must haveHref(
@@ -45,7 +45,7 @@ class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
         DocumentsProduced(Some("typ1"), Some("identifier1"), None, None, None, None, None),
         DocumentsProduced(Some("typ2"), Some("identifier2"), None, None, None, None, None)
       )
-      val view = supporting_documents("itemId", 1, documents)(messages, journeyRequest())
+      val view = supporting_documents(Mode.Normal, "itemId", 1, documents)(messages, journeyRequest())
 
       view.getElementById("supporting-documents-1").text() mustBe messages("declaration.summary.items.item.supportingDocuments")
       view.getElementById("supporting-documents-code-1").text() mustBe messages("declaration.summary.items.item.supportingDocuments.code")

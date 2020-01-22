@@ -93,8 +93,8 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
     }
 
     "display empty input with label for Country" in {
-      view.getElementById("details.address.country-label").text() mustBe "supplementary.address.country"
-      view.getElementById("details.address.country").attr("value") mustBe empty
+      view.getElementById("details_address_country-label").text() mustBe "supplementary.address.country"
+      view.getElementById("details_address_country").attr("value") mustBe empty
     }
 
     "display three radio buttons with description (not selected)" in {
@@ -424,7 +424,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         )
 
         checkErrorsSummary(view)
-        haveFieldErrorLink("details.address.country", "#details_address_country")
+        haveFieldErrorLink("details_address_country", "#details_address_country")
 
         view.select("span.error-message").text() must be("supplementary.address.country.empty")
       }
@@ -1007,7 +1007,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         view.getElementById("details_address_addressLine").attr("value") must be("test1")
         view.getElementById("details_address_townOrCity").attr("value") must be("test2")
         view.getElementById("details_address_postCode").attr("value") must be("test3")
-        view.getElementById("details.address.country").attr("value") must be("test4")
+        view.getElementById("details_address_country").attr("value") must be("test4")
       }
     }
 
@@ -1055,7 +1055,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         view.getElementById("details_address_addressLine").attr("value") must be("test1")
         view.getElementById("details_address_townOrCity").attr("value") must be("test2")
         view.getElementById("details_address_postCode").attr("value") must be("test3")
-        view.getElementById("details.address.country").attr("value") must be("test4")
+        view.getElementById("details_address_country").attr("value") must be("test4")
         view.getElementById("statusCode_direct").attr("checked") must be("checked")
       }
     }
@@ -1104,7 +1104,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         view.getElementById("details_address_addressLine").attr("value") must be("test1")
         view.getElementById("details_address_townOrCity").attr("value") must be("test2")
         view.getElementById("details_address_postCode").attr("value") must be("test3")
-        view.getElementById("details.address.country").attr("value") must be("test4")
+        view.getElementById("details_address_country").attr("value") must be("test4")
         view.getElementById("statusCode_indirect").attr("checked") must be("checked")
       }
     }

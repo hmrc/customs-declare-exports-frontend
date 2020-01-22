@@ -20,10 +20,11 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.SupervisingCustomsOffice
 import javax.inject.Inject
+import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.supervising_customs_office
@@ -56,17 +57,17 @@ class SupervisingCustomsOfficeController @Inject()(
         formWithErrors => Future.successful(BadRequest(supervisingCustomsOfficePage(mode, formWithErrors))),
         form => {
           updateCache(form)
-            .map(_ => navigator.continueTo(nextPage(mode, request)))
+            .map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
         }
       )
   }
 
-  private def nextPage(mode: Mode, request: JourneyRequest[AnyContent]) =
-    request.declarationType match {
+  private def nextPage(declarationType: DeclarationType): Mode => Call =
+    declarationType match {
       case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | DeclarationType.CLEARANCE =>
-        controllers.declaration.routes.InlandTransportDetailsController.displayPage(mode)
+        controllers.declaration.routes.InlandTransportDetailsController.displayPage
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
-        controllers.declaration.routes.TransportPaymentController.displayPage(mode)
+        controllers.declaration.routes.TransportPaymentController.displayPage
     }
 
   private def updateCache(formData: SupervisingCustomsOffice)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =

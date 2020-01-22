@@ -20,16 +20,19 @@
 @import uk.gov.hmrc.play.views.html._
 @import views.components.inputs.RadioOption
 @import views.Title
+@import controllers.navigation.Navigator
+@import models.requests.JourneyRequest
+@import controllers.navigation.ItemId
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, itemId: String, form: Form[FiscalInformation])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[FiscalInformation])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
     title = Title("declaration.fiscalInformation.title", "declaration.fiscalInformation.header")
 ) {
 
-    @components.back_link(ProcedureCodesController.displayPage(mode, itemId), mode)
+    @components.back_link(Navigator.backLink(FiscalInformation, mode, ItemId(itemId)), mode)
 
     @components.error_summary(form.errors)
 

@@ -24,7 +24,7 @@ JQuery treats [] as element's attribute and tried evaluated this.
 To avoid problems, we need to remove [] from field.
 *@
 @fieldNameWithoutBrackets = @{
-    field.name.replace("[]", "")
+    field.name.replace("[]", "").replace(".", "_")
 }
 
 @elements = @{

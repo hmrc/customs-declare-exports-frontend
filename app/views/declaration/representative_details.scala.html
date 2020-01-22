@@ -21,16 +21,19 @@
 @import uk.gov.hmrc.play.views.html._
 @import views.components.inputs.RadioOption
 @import views.Title
+@import models.requests.JourneyRequest
+@import controllers.navigation.Navigator
+
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[RepresentativeDetails])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, form: Form[RepresentativeDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
     title = Title("supplementary.representative.header", "supplementary.summary.parties.header")
 ) {
 
-    @components.back_link(controllers.declaration.routes.DeclarantDetailsController.displayPage(mode), mode)
+    @components.back_link(Navigator.backLink(RepresentativeDetails, mode), mode)
 
     @helper.form(RepresentativeDetailsController.submitForm(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField

@@ -62,7 +62,7 @@ class TransportPaymentController @Inject()(
     }
 
   private def nextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
-    navigator.continueTo(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode))
+    navigator.continueTo(mode, controllers.declaration.routes.TransportContainerController.displayContainerSummary)
 
   private def updateCache(formData: TransportPayment)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(_.updateTransportPayment(formData))

@@ -21,16 +21,19 @@
 @import services.view.AutoCompleteItem
 @import views.components.fields.LabelledValue
 @import views.Title
+@import controllers.navigation.Navigator
+@import models.requests.JourneyRequest
+@import models.Mode._
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[DeclarationHolder], holders: Seq[DeclarationHolder])(implicit request: Request[_], messages: Messages)
+@(mode: Mode, form: Form[DeclarationHolder], holders: Seq[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
     title = Title("supplementary.declarationHolder.title", "supplementary.summary.parties.header")
 ) {
 
-    @components.back_link(controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage(mode), mode)
+    @components.back_link(Navigator.backLink(DeclarationHolder, mode), mode)
 
     @components.error_summary(form.errors)
 
