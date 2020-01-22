@@ -23,6 +23,7 @@ import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
@@ -271,7 +272,20 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
     "display error for incorrect Postcode" in {
 
       val form = GoodsLocation.form
-        .fillAndValidate(GoodsLocation("t", "t", Some("TST"), Some("TST"), None, Some(TestHelper.createRandomAlphanumericString(10)), None, "Poland"))
+        .bind(
+          Json.toJson(
+            GoodsLocation(
+              typeOfLocation = "t",
+              qualifierOfIdentification = "t",
+              identificationOfLocation = Some("TST"),
+              additionalIdentifier = Some("TST"),
+              addressLine = None,
+              postCode = Some(TestHelper.createRandomAlphanumericString(10)),
+              city = None,
+              country = "Poland"
+            )
+          )
+        )
       val view = createView(form = form)
 
       checkErrorsSummary(view)
@@ -283,7 +297,20 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
     "display error for incorrect City" in {
 
       val form = GoodsLocation.form
-        .fillAndValidate(GoodsLocation("t", "t", Some("TST"), Some("TST"), None, None, Some(TestHelper.createRandomAlphanumericString(36)), "Poland"))
+        .bind(
+          Json.toJson(
+            GoodsLocation(
+              typeOfLocation = "t",
+              qualifierOfIdentification = "t",
+              identificationOfLocation = Some("TST"),
+              additionalIdentifier = Some("TST"),
+              addressLine = None,
+              postCode = None,
+              city = Some(TestHelper.createRandomAlphanumericString(36)),
+              country = "Poland"
+            )
+          )
+        )
       val view = createView(form = form)
 
       checkErrorsSummary(view)
@@ -302,8 +329,8 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
             Some(TestHelper.createRandomAlphanumericString(36)),
             Some(TestHelper.createRandomAlphanumericString(4)),
             Some(TestHelper.createRandomAlphanumericString(71)),
-            Some(TestHelper.createRandomAlphanumericString(10)),
             Some(TestHelper.createRandomAlphanumericString(36)),
+            Some(TestHelper.createRandomAlphanumericString(10)),
             "Country"
           )
         )
@@ -347,8 +374,8 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
             None,
             Some(TestHelper.createRandomAlphanumericString(33)),
             Some(TestHelper.createRandomAlphanumericString(71)),
-            Some(TestHelper.createRandomAlphanumericString(10)),
             Some(TestHelper.createRandomAlphanumericString(36)),
+            Some(TestHelper.createRandomAlphanumericString(10)),
             "Country"
           )
         )
@@ -389,8 +416,19 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       val lcity: String = TestHelper.createRandomAlphanumericString(35)
 
       val form = GoodsLocation.form
-        .fillAndValidate(
-          GoodsLocation("AB", "CD", Some("TST"), Some(ladditionalInformation), Some(lstreetAndNumber), Some(lpostCode), Some(lcity), "Poland")
+        .bind(
+          Json.toJson(
+            GoodsLocation(
+              typeOfLocation = "AB",
+              qualifierOfIdentification = "CD",
+              identificationOfLocation = Some("TST"),
+              additionalIdentifier = Some(ladditionalInformation),
+              addressLine = Some(lstreetAndNumber),
+              postCode = Some(lpostCode),
+              city = Some(lcity),
+              country = "Poland"
+            )
+          )
         )
       val view = createView(form = form)
       view.getElementById("country").attr("value") must be("Poland")
