@@ -322,16 +322,18 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
     "display errors for everything incorrect" in {
 
       val form = GoodsLocation.form
-        .fillAndValidate(
-          GoodsLocation(
-            "ABC",
-            "ABC",
-            Some(TestHelper.createRandomAlphanumericString(36)),
-            Some(TestHelper.createRandomAlphanumericString(4)),
-            Some(TestHelper.createRandomAlphanumericString(71)),
-            Some(TestHelper.createRandomAlphanumericString(36)),
-            Some(TestHelper.createRandomAlphanumericString(10)),
-            "Country"
+        .bind(
+          Json.toJson(
+            GoodsLocation(
+              typeOfLocation = "ABC",
+              qualifierOfIdentification = "ABC",
+              identificationOfLocation = Some(TestHelper.createRandomAlphanumericString(36)),
+              additionalIdentifier = Some(TestHelper.createRandomAlphanumericString(4)),
+              addressLine = Some(TestHelper.createRandomAlphanumericString(71)),
+              postCode = Some(TestHelper.createRandomAlphanumericString(10)),
+              city = Some(TestHelper.createRandomAlphanumericString(36)),
+              country = "Country"
+            )
           )
         )
       val view = createView(form = form)
@@ -367,16 +369,18 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
     "display errors for everything incorrect (except IoL which is empty)" in {
 
       val form = GoodsLocation.form
-        .fillAndValidate(
-          GoodsLocation(
-            "ABC",
-            "ABC",
-            None,
-            Some(TestHelper.createRandomAlphanumericString(33)),
-            Some(TestHelper.createRandomAlphanumericString(71)),
-            Some(TestHelper.createRandomAlphanumericString(36)),
-            Some(TestHelper.createRandomAlphanumericString(10)),
-            "Country"
+        .bind(
+          Json.toJson(
+            GoodsLocation(
+              typeOfLocation = "ABC",
+              qualifierOfIdentification = "ABC",
+              identificationOfLocation = None,
+              additionalIdentifier = Some(TestHelper.createRandomAlphanumericString(33)),
+              addressLine = Some(TestHelper.createRandomAlphanumericString(71)),
+              postCode = Some(TestHelper.createRandomAlphanumericString(10)),
+              city = Some(TestHelper.createRandomAlphanumericString(36)),
+              country = "Country"
+            )
           )
         )
       val view = createView(form = form)
