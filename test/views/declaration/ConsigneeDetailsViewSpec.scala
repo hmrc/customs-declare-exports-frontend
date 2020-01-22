@@ -20,7 +20,7 @@ import base.TestHelper
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.Address
-import forms.declaration.{ConsigneeDetails, EntityDetails}
+import forms.declaration.{ConsigneeDetails, EntityDetails, Eori}
 import helpers.views.declaration.CommonMessages
 import models.Mode
 import org.jsoup.nodes.Document
@@ -143,7 +143,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
       val view = createView(
         ConsigneeDetails
           .form()
-          .fillAndValidate(ConsigneeDetails(EntityDetails(Some(TestHelper.createRandomAlphanumericString(18)), None)))
+          .fillAndValidate(ConsigneeDetails(EntityDetails(Some(Eori(TestHelper.createRandomAlphanumericString(18))), None)))
       )
 
       view must haveGlobalErrorSummary
@@ -422,7 +422,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
     "display data in EORI input" in {
 
-      val form = ConsigneeDetails.form().fill(ConsigneeDetails(EntityDetails(Some("1234"), None)))
+      val form = ConsigneeDetails.form().fill(ConsigneeDetails(EntityDetails(Some(Eori("1234")), None)))
       val view = createView(form)
 
       view.getElementById("details_eori").attr("value") mustBe "1234"
@@ -452,7 +452,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
       val form = ConsigneeDetails
         .form()
-        .fill(ConsigneeDetails(EntityDetails(Some("1234"), Some(Address("test", "test1", "test2", "test3", "test4")))))
+        .fill(ConsigneeDetails(EntityDetails(Some(Eori("1234")), Some(Address("test", "test1", "test2", "test3", "test4")))))
       val view = createView(form)
 
       view.getElementById("details_eori").attr("value") mustBe "1234"

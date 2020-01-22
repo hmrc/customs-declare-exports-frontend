@@ -19,7 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.RepresentativeDetailsController
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
-import forms.declaration.{EntityDetails, RepresentativeDetails}
+import forms.declaration.{EntityDetails, Eori, RepresentativeDetails}
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -84,7 +84,7 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
         "display page method is invoked with data in cache" in {
 
           withNewCaching(
-            aDeclarationAfter(declaration, withRepresentativeDetails(RepresentativeDetails(Some(EntityDetails(Some(eori), None)), None)))
+            aDeclarationAfter(declaration, withRepresentativeDetails(RepresentativeDetails(Some(EntityDetails(Some(Eori(eori)), None)), None)))
           )
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
@@ -92,7 +92,7 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
           status(result) mustBe (OK)
           verify(mockRepresentativeDetailsPage, times(1)).apply(any(), any())(any(), any())
 
-          theResponseForm.value.value.details.value.eori.value mustBe eori
+          theResponseForm.value.value.details.value.eori.value mustBe Eori(eori)
         }
       }
 
@@ -117,7 +117,7 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
 
         withNewCaching(declaration)
 
-        val correctForm = Json.toJson(RepresentativeDetails(Some(EntityDetails(Some(eori), None)), Some("2")))
+        val correctForm = Json.toJson(RepresentativeDetails(Some(EntityDetails(Some(Eori(eori)), None)), Some("2")))
 
         val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
@@ -133,7 +133,7 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
 
         withNewCaching(declaration)
 
-        val correctForm = Json.toJson(RepresentativeDetails(Some(EntityDetails(Some(eori), None)), Some("2")))
+        val correctForm = Json.toJson(RepresentativeDetails(Some(EntityDetails(Some(Eori(eori)), None)), Some("2")))
 
         val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 

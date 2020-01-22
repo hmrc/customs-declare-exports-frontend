@@ -28,12 +28,7 @@ object DeclarantDetails {
   val id = "DeclarantDetails"
 
   val declarantMapping = Forms
-    .mapping(
-      "eori" ->
-        text()
-          .verifying("supplementary.eori.empty", nonEmpty)
-          .verifying("supplementary.eori.error.format", isEmpty or (isValidEORIPattern and noLongerThan(17) and noShorterThan(3)))
-    )(eori => EntityDetails(Some(eori), None))(entityDetails => entityDetails.eori)
+    .mapping("eori" -> Eori.mapping("supplementary"))(eori => EntityDetails(Some(eori), None))(entityDetails => entityDetails.eori)
 
   val mapping = Forms.mapping("details" -> declarantMapping)(DeclarantDetails.apply)(DeclarantDetails.unapply)
 

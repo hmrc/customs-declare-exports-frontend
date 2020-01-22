@@ -19,7 +19,7 @@ package views.declaration
 import base.TestHelper
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
-import forms.declaration.{DeclarantDetails, EntityDetails}
+import forms.declaration.{DeclarantDetails, EntityDetails, Eori}
 import helpers.views.declaration.CommonMessages
 import models.Mode
 import org.jsoup.nodes.Document
@@ -85,7 +85,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
 
     "display error when EORI is empty" in {
 
-      val view = createView(DeclarantDetails.form().fillAndValidate(DeclarantDetails(EntityDetails(Some(""), None))))
+      val view = createView(DeclarantDetails.form().fillAndValidate(DeclarantDetails(EntityDetails(Some(Eori("")), None))))
 
       checkErrorsSummary(view)
       view must haveFieldErrorLink("details_eori", "#details_eori")
@@ -98,7 +98,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
       val view = createView(
         DeclarantDetails
           .form()
-          .fillAndValidate(DeclarantDetails(EntityDetails(Some(TestHelper.createRandomAlphanumericString(19)), None)))
+          .fillAndValidate(DeclarantDetails(EntityDetails(Some(Eori(TestHelper.createRandomAlphanumericString(19))), None)))
       )
 
       checkErrorsSummary(view)
@@ -113,7 +113,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
 
     "display data in EORI input" in {
 
-      val form = DeclarantDetails.form().fill(DeclarantDetails(EntityDetails(Some("1234"), None)))
+      val form = DeclarantDetails.form().fill(DeclarantDetails(EntityDetails(Some(Eori("1234")), None)))
       val view = createView(form)
 
       view.getElementById("details_eori").attr("value") mustBe "1234"

@@ -17,7 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.ConsigneeDetailsController
-import forms.declaration.{ConsigneeDetails, EntityDetails}
+import forms.declaration.{ConsigneeDetails, EntityDetails, Eori}
 import models.Mode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -68,7 +68,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
 
       "display page method is invoked and cache contrains data" in {
 
-        val modelWithDetails = aDeclaration(withConsigneeDetails(Some("123"), None))
+        val modelWithDetails = aDeclaration(withConsigneeDetails(Some(Eori("123")), None))
 
         withNewCaching(modelWithDetails)
 
@@ -98,7 +98,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration())
 
-        val correctForm = Json.toJson(ConsigneeDetails(EntityDetails(Some("GB123456789123456"), None)))
+        val correctForm = Json.toJson(ConsigneeDetails(EntityDetails(Some(Eori("GB123456789123456")), None)))
 
         val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 

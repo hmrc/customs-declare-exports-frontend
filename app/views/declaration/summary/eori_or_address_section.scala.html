@@ -18,10 +18,11 @@
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
 @import play.api.mvc.Call
+@import forms.declaration.Eori
 
 @(
         id: String,
-        eoriOption: Option[String],
+        eoriOption: Option[Eori],
         eoriLabel: String,
         address: Option[Address],
         addressLabel: String,
@@ -56,7 +57,7 @@
 @eoriOption.map { eori =>
     @components.table_row(s"$id-eori", HtmlTableRow(
         label = messages(eoriLabel),
-        value = eori,
+        value = eori.value,
         call = call,
         changeLabel = eoriChangeLabel
     ))

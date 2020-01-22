@@ -17,6 +17,7 @@
 package views.declaration.summary
 
 import forms.common.Address
+import forms.declaration.Eori
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.eori_or_address_section
@@ -62,10 +63,11 @@ class EoriOrAddressSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
     "display eori when defined" in {
 
-      val view = eori_or_address_section(pageId, Some(eori), eoriLabel, None, addressLabel, None, Some(eoriChangeLabel), Some(addressChangeLabel))(
-        messages,
-        journeyRequest()
-      )
+      val view =
+        eori_or_address_section(pageId, Some(Eori(eori)), eoriLabel, None, addressLabel, None, Some(eoriChangeLabel), Some(addressChangeLabel))(
+          messages,
+          journeyRequest()
+        )
 
       view.getElementById(s"$pageId-eori-label").text() mustBe messages(eoriLabel)
       view.getElementById(s"$pageId-eori").text() mustBe eori
@@ -89,10 +91,16 @@ class EoriOrAddressSectionViewSpec extends UnitViewSpec with ExportsTestData {
     "display both eori and address when defined" in {
 
       val view =
-        eori_or_address_section(pageId, Some(eori), eoriLabel, Some(address), addressLabel, None, Some(eoriChangeLabel), Some(addressChangeLabel))(
-          messages,
-          journeyRequest()
-        )
+        eori_or_address_section(
+          pageId,
+          Some(Eori(eori)),
+          eoriLabel,
+          Some(address),
+          addressLabel,
+          None,
+          Some(eoriChangeLabel),
+          Some(addressChangeLabel)
+        )(messages, journeyRequest())
 
       view.getElementById(s"$pageId-eori-label").text() mustBe messages(eoriLabel)
       view.getElementById(s"$pageId-eori").text() mustBe eori

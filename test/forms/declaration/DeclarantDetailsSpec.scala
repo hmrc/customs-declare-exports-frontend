@@ -30,7 +30,7 @@ class DeclarantDetailsSpec extends WordSpec with MustMatchers {
         val form = DeclarantDetails.form().bind(emptyDeclarantDetailsJSON)
 
         form.hasErrors must be(true)
-        form.errors.length must equal(1)
+        form.errors.length must equal(2)
         form.errors.head.message must equal("supplementary.eori.empty")
       }
 
