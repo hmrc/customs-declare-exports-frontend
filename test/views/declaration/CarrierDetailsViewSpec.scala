@@ -20,7 +20,7 @@ import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.Address
-import forms.declaration.{CarrierDetails, EntityDetails}
+import forms.declaration.{CarrierDetails, EntityDetails, Eori}
 import helpers.views.declaration.CommonMessages
 import models.Mode
 import models.requests.JourneyRequest
@@ -141,7 +141,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
         val view = createView(
           CarrierDetails
             .form()
-            .fillAndValidate(CarrierDetails(EntityDetails(Some(TestHelper.createRandomAlphanumericString(18)), None)))
+            .fillAndValidate(CarrierDetails(EntityDetails(Some(Eori(TestHelper.createRandomAlphanumericString(18))), None)))
         )
 
         view must haveGlobalErrorSummary
@@ -423,7 +423,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
     onEveryDeclarationJourney { implicit request =>
       "display data in EORI input" in {
 
-        val form = CarrierDetails.form().fill(CarrierDetails(EntityDetails(Some("1234"), None)))
+        val form = CarrierDetails.form().fill(CarrierDetails(EntityDetails(Some(Eori("1234")), None)))
         val view = createView(form)
 
         view.getElementById("details_eori").attr("value") mustBe "1234"
@@ -453,7 +453,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         val form = CarrierDetails
           .form()
-          .fill(CarrierDetails(EntityDetails(Some("1234"), Some(Address("test", "test1", "test2", "test3", "test4")))))
+          .fill(CarrierDetails(EntityDetails(Some(Eori("1234")), Some(Address("test", "test1", "test2", "test3", "test4")))))
         val view = createView(form)
 
         view.getElementById("details_eori").attr("value") mustBe "1234"

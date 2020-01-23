@@ -18,7 +18,7 @@ package unit.controllers.declaration
 
 import controllers.declaration.ExporterDetailsController
 import forms.common.Address
-import forms.declaration.ExporterDetails
+import forms.declaration.{Eori, ExporterDetails}
 import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -73,7 +73,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
       }
       "details are filled" in {
         val declaration = aDeclaration(
-          withExporterDetails(eori = Some("99980"), address = Some(Address("CaptainAmerica", "Test Street", "Leeds", "LS18BN", "Portugal")))
+          withExporterDetails(eori = Some(Eori("99980")), address = Some(Address("CaptainAmerica", "Test Street", "Leeds", "LS18BN", "Portugal")))
         )
         withNewCaching(declaration)
         val response = controller.displayPage(Mode.Normal)(getRequest(declaration))

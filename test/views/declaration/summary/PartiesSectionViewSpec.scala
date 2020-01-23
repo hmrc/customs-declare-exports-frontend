@@ -17,6 +17,7 @@
 package views.declaration.summary
 
 import forms.common.Address
+import forms.declaration.Eori
 import models.{DeclarationType, Mode}
 import models.DeclarationType._
 import models.declaration.DeclarationAdditionalActorsData
@@ -29,11 +30,11 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData {
   val exampleEori = "GB123456"
   val exampleAddress = Address("fullName", "addressLine", "townOrCity", "postCode", "GB")
   val data = aDeclaration(
-    withExporterDetails(Some(exampleEori), Some(exampleAddress)),
-    withConsigneeDetails(Some(exampleEori), Some(exampleAddress)),
-    withDeclarantDetails(Some(exampleEori), Some(exampleAddress)),
-    withRepresentativeDetails(Some(exampleEori), Some(exampleAddress), Some("1")),
-    withCarrierDetails(Some(exampleEori), Some(exampleAddress)),
+    withExporterDetails(Some(Eori(exampleEori)), Some(exampleAddress)),
+    withConsigneeDetails(Some(Eori(exampleEori)), Some(exampleAddress)),
+    withDeclarantDetails(Some(Eori(exampleEori)), Some(exampleAddress)),
+    withRepresentativeDetails(Some(Eori(exampleEori)), Some(exampleAddress), Some("1")),
+    withCarrierDetails(Some(Eori(exampleEori)), Some(exampleAddress)),
     withDeclarationAdditionalActors(DeclarationAdditionalActorsData(Seq.empty)),
     withDeclarationHolders()
   )

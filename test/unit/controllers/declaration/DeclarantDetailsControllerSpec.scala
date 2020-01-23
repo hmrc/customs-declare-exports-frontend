@@ -17,7 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.DeclarantDetailsController
-import forms.declaration.{DeclarantDetails, EntityDetails}
+import forms.declaration.{DeclarantDetails, EntityDetails, Eori}
 import models.{DeclarationType, Mode}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -77,7 +77,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
     "return 303 (SEE_OTHER)" in new SetUp {
 
-      val correctForm = Json.toJson(DeclarantDetails(EntityDetails(Some("GB12345678912345"), None)))
+      val correctForm = Json.toJson(DeclarantDetails(EntityDetails(Some(Eori("GB12345678912345")), None)))
 
       val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 

@@ -211,11 +211,14 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
 }
 
 object EntityDetailsSpec {
-  val correctEntityDetails = EntityDetails(eori = Some("GB12345678912345"), address = Some(AddressSpec.correctAddress))
-  val correctEntityDetailsEORIOnly = EntityDetails(eori = Some("GB12345678912345"), address = None)
+  val correctEntityDetails = EntityDetails(eori = Some(Eori("GB12345678912345")), address = Some(AddressSpec.correctAddress))
+  val correctEntityDetailsEORIOnly = EntityDetails(eori = Some(Eori("GB12345678912345")), address = None)
   val correctEntityDetailsAddressOnly = EntityDetails(eori = None, address = Some(AddressSpec.correctAddress))
   val incorrectEntityDetails =
-    EntityDetails(eori = Some("gIeC1xyOPmgpZSVGT1nFmGxPd3tS7yvj7CKgsZfq2BYfXPB0tKM6GISKwvuqn0g14TwN6e"), address = Some(AddressSpec.incorrectAddress))
+    EntityDetails(
+      eori = Some(Eori("gIeC1xyOPmgpZSVGT1nFmGxPd3tS7yvj7CKgsZfq2BYfXPB0tKM6GISKwvuqn0g14TwN6e")),
+      address = Some(AddressSpec.incorrectAddress)
+    )
   val emptyEntityDetails = EntityDetails(None, None)
 
   val correctEntityDetailsJSON: JsValue = JsObject(Map("eori" -> JsString("GB12345678912345"), "address" -> AddressSpec.correctAddressJSON))
@@ -230,7 +233,7 @@ object EntityDetailsSpec {
   val emptyEntityDetailsJSON: JsValue = JsObject(Map("eori" -> JsString(""), "address" -> AddressSpec.emptyAddressJSON))
 
   def buildEntityInputMap(entityDetails: EntityDetails): Map[String, String] =
-    buildEntityInputMap(eori = entityDetails.eori.getOrElse(""), address = entityDetails.address.getOrElse(buildAddress()))
+    buildEntityInputMap(eori = entityDetails.eori.map(_.value).getOrElse(""), address = entityDetails.address.getOrElse(buildAddress()))
 
   def buildEntityInputMap(eori: String = "", address: Address = buildAddress()): Map[String, String] = Map(
     "eori" -> eori,

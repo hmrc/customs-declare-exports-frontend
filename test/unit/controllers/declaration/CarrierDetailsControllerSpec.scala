@@ -17,7 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.CarrierDetailsController
-import forms.declaration.{CarrierDetails, EntityDetails}
+import forms.declaration.{CarrierDetails, EntityDetails, Eori}
 import models.DeclarationType._
 import models.Mode
 import org.mockito.ArgumentCaptor
@@ -69,7 +69,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
       onJourney(STANDARD, SIMPLIFIED, OCCASIONAL)() { declaration =>
         "with valid journey type" in {
 
-          val eori = Some("1234")
+          val eori = Some(Eori("1234"))
           withNewCaching(aDeclarationAfter(declaration, withCarrierDetails(eori)))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
@@ -133,7 +133,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
         "with valid journey type" in {
 
           withNewCaching(declaration)
-          val correctForm = Json.toJson(CarrierDetails(EntityDetails(Some("GB12345678912345"), None)))
+          val correctForm = Json.toJson(CarrierDetails(EntityDetails(Some(Eori("GB12345678912345")), None)))
 
           val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 
@@ -146,7 +146,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
         "with invalid journey type" in {
 
           withNewCaching(declaration)
-          val correctForm = Json.toJson(CarrierDetails(EntityDetails(Some("12345678"), None)))
+          val correctForm = Json.toJson(CarrierDetails(EntityDetails(Some(Eori("12345678")), None)))
 
           val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 

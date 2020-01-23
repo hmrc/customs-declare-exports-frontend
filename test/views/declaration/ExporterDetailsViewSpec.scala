@@ -20,7 +20,7 @@ import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.Address
-import forms.declaration.{EntityDetails, ExporterDetails}
+import forms.declaration.{EntityDetails, Eori, ExporterDetails}
 import helpers.views.declaration.CommonMessages
 import models.Mode
 import models.requests.JourneyRequest
@@ -141,10 +141,11 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
         val view = createView(
           ExporterDetails
             .form()
-            .fillAndValidate(ExporterDetails(EntityDetails(Some(TestHelper.createRandomAlphanumericString(18)), None)))
+            .fillAndValidate(ExporterDetails(EntityDetails(Some(Eori(TestHelper.createRandomAlphanumericString(18))), None)))
         )
 
         checkErrorsSummary(view)
+
         view must haveFieldErrorLink("details_eori", "#details_eori")
 
         view.select("#error-message-details_eori-input").text() mustBe messages("supplementary.eori.error.format")
@@ -422,7 +423,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
     onEveryDeclarationJourney { implicit request =>
       "display data in EORI input" in {
 
-        val form = ExporterDetails.form().fill(ExporterDetails(EntityDetails(Some("1234"), None)))
+        val form = ExporterDetails.form().fill(ExporterDetails(EntityDetails(Some(Eori("1234")), None)))
         val view = createView(form)
 
         view.getElementById("details_eori").attr("value") mustBe "1234"
@@ -452,7 +453,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
         val form = ExporterDetails
           .form()
-          .fill(ExporterDetails(EntityDetails(Some("1234"), Some(Address("test", "test1", "test2", "test3", "test4")))))
+          .fill(ExporterDetails(EntityDetails(Some(Eori("1234")), Some(Address("test", "test1", "test2", "test3", "test4")))))
         val view = createView(form)
 
         view.getElementById("details_eori").attr("value") mustBe "1234"

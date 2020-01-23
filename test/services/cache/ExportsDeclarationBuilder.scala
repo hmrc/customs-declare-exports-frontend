@@ -146,13 +146,13 @@ trait ExportsDeclarationBuilder {
   def withoutExporterDetails(): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(exporterDetails = None))
 
-  def withExporterDetails(eori: Option[String] = None, address: Option[Address] = None): ExportsDeclarationModifier =
+  def withExporterDetails(eori: Option[Eori] = None, address: Option[Address] = None): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(exporterDetails = Some(ExporterDetails(EntityDetails(eori, address)))))
 
   def withoutDeclarantDetails(): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(declarantDetails = None))
 
-  def withDeclarantDetails(eori: Option[String] = None, address: Option[Address] = None): ExportsDeclarationModifier =
+  def withDeclarantDetails(eori: Option[Eori] = None, address: Option[Address] = None): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(declarantDetails = Some(DeclarantDetails(EntityDetails(eori, address)))))
 
   def withoutDeclarationHolders(): ExportsDeclarationModifier =
@@ -206,7 +206,7 @@ trait ExportsDeclarationBuilder {
   def withConsigneeDetails(consigneeDetails: ConsigneeDetails): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(consigneeDetails = Some(consigneeDetails)))
 
-  def withConsigneeDetails(eori: Option[String], address: Option[Address]): ExportsDeclarationModifier =
+  def withConsigneeDetails(eori: Option[Eori], address: Option[Address]): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(consigneeDetails = Some(ConsigneeDetails(EntityDetails(eori, address)))))
 
   def withoutConsigneeDetails(): ExportsDeclarationModifier =
@@ -218,7 +218,7 @@ trait ExportsDeclarationBuilder {
   def withDeclarationAdditionalActors(declarationAdditionalActorsData: DeclarationAdditionalActorsData): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(declarationAdditionalActorsData = Some(declarationAdditionalActorsData)))
 
-  def withRepresentativeDetails(eori: Option[String], address: Option[Address], statusCode: Option[String]): ExportsDeclarationModifier =
+  def withRepresentativeDetails(eori: Option[Eori], address: Option[Address], statusCode: Option[String]): ExportsDeclarationModifier =
     cache =>
       cache.copy(parties = cache.parties.copy(representativeDetails = Some(RepresentativeDetails(Some(EntityDetails(eori, address)), statusCode))))
 
@@ -303,7 +303,7 @@ trait ExportsDeclarationBuilder {
   def withoutCarrierDetails(): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(carrierDetails = None))
 
-  def withCarrierDetails(eori: Option[String] = None, address: Option[Address] = None): ExportsDeclarationModifier =
+  def withCarrierDetails(eori: Option[Eori] = None, address: Option[Address] = None): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(carrierDetails = Some(CarrierDetails(EntityDetails(eori, address)))))
 
   def withoutWarehouseIdentification(): ExportsDeclarationModifier =
