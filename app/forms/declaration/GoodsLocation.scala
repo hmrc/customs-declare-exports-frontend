@@ -29,8 +29,8 @@ case class GoodsLocation(
   identificationOfLocation: Option[String],
   additionalIdentifier: Option[String],
   addressLine: Option[String],
-  postCode: Option[String],
   city: Option[String],
+  postCode: Option[String],
   country: String
 )
 
