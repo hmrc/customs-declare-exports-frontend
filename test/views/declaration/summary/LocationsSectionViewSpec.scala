@@ -26,7 +26,7 @@ import models.Mode
 class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
   val data = aDeclaration(
-    withGoodsLocation(GoodsLocation("A", "U", Some("123"), None, Some("addressLine"), Some("postCode"), Some("city"), "United Kingdom")),
+    withGoodsLocation(GoodsLocation("A", "U", Some("123"), None, Some("addressLine"), Some("city"), Some("postCode"), "United Kingdom")),
     withOfficeOfExit("123", Some("12"))
   )
 
