@@ -120,7 +120,8 @@ object ExportDeclarationTestData {
         packageInformation = Some(List(PackageInformation("AA", 2, "mark1"), PackageInformation("AB", 4, "mark2")))
       )
     ),
-    totalNumberOfItems = Some(TotalNumberOfItems(Some("1212312.12"), Some("1212121.12345"), Some("123"))),
+    totalNumberOfItems = Some(TotalNumberOfItems(Some("1212312.12"), Some("1212121.12345"))),
+    totalPackageQuantity = Some(TotalPackageQuantity(Some("123"))),
     parties = Parties(
       exporterDetails = Some(correctExporterDetails),
       declarantDetails = Some(correctDeclarantDetailsEORIOnly),

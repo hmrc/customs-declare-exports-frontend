@@ -22,7 +22,7 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class TotalNumberOfItems(totalAmountInvoiced: Option[String], exchangeRate: Option[String], totalPackage: Option[String])
+case class TotalNumberOfItems(totalAmountInvoiced: Option[String], exchangeRate: Option[String])
 
 object TotalNumberOfItems extends DeclarationPage {
   implicit val format = Json.format[TotalNumberOfItems]
@@ -40,11 +40,6 @@ object TotalNumberOfItems extends DeclarationPage {
     "exchangeRate" -> optional(
       text()
         .verifying("supplementary.exchangeRate.error", isEmpty or ofPattern(exchangeRatePattern))
-    ),
-    "totalPackage" -> optional(
-      text()
-        .verifying("supplementary.totalPackageQuantity.empty", nonEmpty)
-        .verifying("supplementary.totalPackageQuantity.error", isEmpty or (isNumeric and noLongerThan(8)))
     )
   )(TotalNumberOfItems.apply)(TotalNumberOfItems.unapply)
 

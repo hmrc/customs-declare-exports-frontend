@@ -54,12 +54,6 @@
             labelClass = Some("form-label-bold")
         )
 
-        @components.fields.field_text(
-            field = form("totalPackage"),
-            label = Some(messages("supplementary.totalPackageQuantity")),
-            labelClass = Some("form-label-bold")
-        )
-
         @components.submit_button()
         @components.buttons.save_and_return_later_button()
     }

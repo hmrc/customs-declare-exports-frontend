@@ -49,9 +49,9 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
       messages must haveTranslationFor("supplementary.exchangeRate")
       messages must haveTranslationFor("supplementary.exchangeRate.error")
       messages must haveTranslationFor("supplementary.exchangeRate.hint")
-      messages must haveTranslationFor("supplementary.totalPackageQuantity")
-      messages must haveTranslationFor("supplementary.totalPackageQuantity.empty")
-      messages must haveTranslationFor("supplementary.totalPackageQuantity.error")
+//      messages must haveTranslationFor("supplementary.totalPackageQuantity")
+//      messages must haveTranslationFor("supplementary.totalPackageQuantity.empty")
+//      messages must haveTranslationFor("supplementary.totalPackageQuantity.error")
       messages must haveTranslationFor("error.summary.title")
     }
 
@@ -80,11 +80,6 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
       view.getElementById("exchangeRate").attr("value") mustBe empty
     }
 
-    "display empty input with label for Total Package" in {
-      view.getElementById("totalPackage-label").text() must be("supplementary.totalPackageQuantity")
-      view.getElementById("totalPackage").attr("value") mustBe empty
-    }
-
     "display 'Back' button that links to 'Transport Information' page" in {
       val backButton = view.getElementById("back-link")
 
@@ -105,36 +100,23 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
 
   "Total Number Of Items View for invalid input" should {
 
-    "display errors when nothing is entered" in {
-
-      val view =
-        createView(form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(None, None, Some(""))))
-
-      checkErrorsSummary(view)
-      haveFieldErrorLink("totalPackage", "#totalPackage")
-
-      view.getElementById("error-message-totalPackage-input").text() must be("supplementary.totalPackageQuantity.empty")
-    }
-
     "display error when all entered input is incorrect" in {
 
       val view =
-        createView(form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("abcd"), Some("abcd"), Some("abcd")))).outerHtml()
+        createView(form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("abcd"), Some("abcd")))).outerHtml()
 
       checkErrorsSummary(view)
       haveFieldErrorLink("totalAmountInvoiced", "#totalAmountInvoiced")
       haveFieldErrorLink("exchangeRate", "#exchangeRate")
-      haveFieldErrorLink("totalPackage", "#totalPackage")
 
       view.getElementById("error-message-totalAmountInvoiced-input").text() must be("supplementary.totalAmountInvoiced.error")
       view.getElementById("error-message-exchangeRate-input").text() must be("supplementary.exchangeRate.error")
-      view.getElementById("error-message-totalPackage-input").text() must be("supplementary.totalPackageQuantity.error")
     }
 
     "display error when Total Amount Invoiced is incorrect" in {
 
       val view =
-        createView(form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("abcd"), Some("123.12345"), Some("1")))).outerHtml()
+        createView(form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("abcd"), Some("123.12345")))).outerHtml()
 
       checkErrorsSummary(view)
       haveFieldErrorLink("totalAmountInvoiced", "#totalAmountInvoiced")
@@ -145,34 +127,12 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
     "display error when Exchange Rate is incorrect" in {
 
       val view =
-        createView(form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("123.12"), Some("abcd"), Some("1")))).outerHtml()
+        createView(form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("123.12"), Some("abcd")))).outerHtml()
 
       checkErrorsSummary(view)
       haveFieldErrorLink("exchangeRate", "#exchangeRate")
 
       view.getElementById("error-message-exchangeRate-input").text() must be("supplementary.exchangeRate.error")
-    }
-
-    "display error when Total Package is empty" in {
-
-      val view =
-        createView(form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("123.12"), Some("123.12345"), Some("")))).outerHtml()
-
-      checkErrorsSummary(view)
-      haveFieldErrorLink("totalPackage", "#totalPackage")
-
-      view.getElementById("error-message-totalPackage-input").text() must be("supplementary.totalPackageQuantity.empty")
-    }
-
-    "display error when Total Package is incorrect" in {
-
-      val view =
-        createView(form = TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("123.12"), Some("123.12345"), Some("abcd")))).outerHtml()
-
-      checkErrorsSummary(view)
-      haveFieldErrorLink("totalPackage", "#totalPackage")
-
-      view.getElementById("error-message-totalPackage-input").text() must be("supplementary.totalPackageQuantity.error")
     }
   }
 
@@ -180,39 +140,27 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
 
     "display data in Total Amount Invoiced input" in {
 
-      val view = createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(Some("123.123"), None, Some(""))))
+      val view = createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(Some("123.123"), None)))
 
       view.getElementById("totalAmountInvoiced").attr("value") must be("123.123")
       view.getElementById("exchangeRate").attr("value") mustBe empty
-      view.getElementById("totalPackage").attr("value") mustBe empty
     }
 
     "display data in Exchange Rate input" in {
 
-      val view = createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(None, Some("123.12345"), Some(""))))
+      val view = createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(None, Some("123.12345"))))
 
       view.getElementById("totalAmountInvoiced").attr("value") mustBe empty
       view.getElementById("exchangeRate").attr("value") must be("123.12345")
-      view.getElementById("totalPackage").attr("value") mustBe empty
-    }
-
-    "display data in Total Package input" in {
-
-      val view = createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(None, None, Some("1"))))
-
-      view.getElementById("totalAmountInvoiced").attr("value") mustBe empty
-      view.getElementById("exchangeRate").attr("value") mustBe empty
-      view.getElementById("totalPackage").attr("value") must be("1")
     }
 
     "display data in all inputs" in {
 
       val view =
-        createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(Some("123.123"), Some("123.12345"), Some("1"))))
+        createView(form = TotalNumberOfItems.form.fill(TotalNumberOfItems(Some("123.123"), Some("123.12345"))))
 
       view.getElementById("totalAmountInvoiced").attr("value") must be("123.123")
       view.getElementById("exchangeRate").attr("value") must be("123.12345")
-      view.getElementById("totalPackage").attr("value") must be("1")
     }
   }
 }

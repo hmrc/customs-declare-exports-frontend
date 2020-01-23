@@ -18,6 +18,7 @@ package connectors.exchange
 
 import java.time.Instant
 
+import forms.declaration.ConsignmentReferencesSpec.correctConsignmentReferences
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.{Ducr, Lrn}
@@ -40,20 +41,20 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
   private val dispatchLocation = mock[DispatchLocation]
   private val additionalDeclarationType = mock[AdditionalDeclarationType]
 
-  private val consignmentReferences = mock[ConsignmentReferences]
-  when(consignmentReferences.ducr).thenReturn(Ducr(""))
-  when(consignmentReferences.lrn).thenReturn(Lrn(""))
+  private val consignmentReferences = ConsignmentReferences(Ducr(""), Lrn(""))
 
-  private val departureTransport = mock[DepartureTransport]
-  private val borderTransport = mock[BorderTransport]
-  private val parties = mock[Parties]
-  private val locations = mock[Locations]
-  private val item = mock[ExportItem]
-  private val totalNumberOfItems = mock[TotalNumberOfItems]
-  private val previousDocuments = mock[PreviousDocumentsData]
-  private val natureOfTransaction = mock[NatureOfTransaction]
-  private val transportInformation = mock[TransportInformation]
-  private val transport = mock[Transport]
+  private val departureTransport = DepartureTransport("", "")
+  private val borderTransport = BorderTransport(None, "", "")
+  private val parties = Parties()
+  private val locations = Locations()
+  private val item = ExportItem("itemId")
+  private val totalItemExchange = TotalItemsExchange(None, None, None)
+  private val totalNumberOfItems = TotalNumberOfItems(None, None)
+  private val totalPackageQuantity = TotalPackageQuantity(None)
+  private val previousDocuments = PreviousDocumentsData(Seq.empty)
+  private val natureOfTransaction = NatureOfTransaction("")
+  private val transportInformation = TransportInformation()
+  private val transport = Transport()
 
   private val request = ExportsDeclarationExchange(
     id = Some(id),
@@ -69,7 +70,7 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
     parties = parties,
     locations = locations,
     items = Seq(item),
-    totalNumberOfItems = Some(totalNumberOfItems),
+    totalNumberOfItems = Some(totalItemExchange),
     previousDocuments = Some(previousDocuments),
     natureOfTransaction = Some(natureOfTransaction)
   )
@@ -89,6 +90,7 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
     locations = locations,
     items = Seq(item),
     totalNumberOfItems = Some(totalNumberOfItems),
+    totalPackageQuantity = Some(totalPackageQuantity),
     previousDocuments = Some(previousDocuments),
     natureOfTransaction = Some(natureOfTransaction)
   )

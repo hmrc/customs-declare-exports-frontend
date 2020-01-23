@@ -45,8 +45,8 @@
                 ))
             )
 
-            @declarationData.totalNumberOfItems.flatMap(totalNumberOfItems =>
-                totalNumberOfItems.totalPackage.map( totalPackage =>
+            @declarationData.totalPackageQuantity.flatMap(totalPackageQuantity =>
+                totalPackageQuantity.totalPackage.map( totalPackage =>
                     components.table_row("total-no-of-packages", HtmlTableRow(
                         label = messages("declaration.summary.transaction.totalNoOfPackages"),
                         value = totalPackage,

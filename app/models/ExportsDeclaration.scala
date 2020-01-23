@@ -40,6 +40,7 @@ case class ExportsDeclaration(
   locations: Locations = Locations(),
   items: Seq[ExportItem] = Seq.empty,
   totalNumberOfItems: Option[TotalNumberOfItems] = None,
+  totalPackageQuantity: Option[TotalPackageQuantity] = None,
   previousDocuments: Option[PreviousDocumentsData] = None,
   natureOfTransaction: Option[NatureOfTransaction] = None
 ) {
