@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.22
-// @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K)
+// @version      1.25
+// @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
 // @grant GM_setValue
@@ -159,24 +159,24 @@ function declarationChoice(){
         switch(getDeclaration()) {
             case 'D':
             case 'A':
-               selectRadioOption(document.getElementById("type"), 0);
-            break;
+                selectRadioOption(document.getElementById("type"), 0);
+                break;
             case 'F':
             case 'C':
-               selectRadioOption(document.getElementById("type"), 1);
-            break;
+                selectRadioOption(document.getElementById("type"), 1);
+                break;
             case 'Y':
             case 'Z':
-               selectRadioOption(document.getElementById("type"), 2);
-            break;
+                selectRadioOption(document.getElementById("type"), 2);
+                break;
             case 'E':
             case 'B':
-               selectRadioOption(document.getElementById("type"), 3);
-            break;
+                selectRadioOption(document.getElementById("type"), 3);
+                break;
             case 'K':
             case 'J':
-               selectRadioOption(document.getElementById("type"), 4);
-            break;
+                selectRadioOption(document.getElementById("type"), 4);
+                break;
         }
         document.getElementsByClassName('button')[0].click();
     }
@@ -205,7 +205,7 @@ function additionalDeclarationType(){
 function consignmentRefereences(){
     if (currentPageIs("/customs-declare-exports/declaration/consignment-references")) {
         document.getElementById('lrn').value = 'QSLRN' + Math.floor(Math.random() * 8999) + 100;
-        document.getElementById('ducr_ducr').value = '8GB12345' + Math.floor(Math.random() * 8999) + 100 + '-101SHIP1';
+        document.getElementById('ducr_ducr').value = '8GB123456' + Math.floor(Math.random() * 899999 + 100000) + '-101SHIP1';
         document.getElementsByClassName('button')[0].click()
     }
 }
@@ -235,6 +235,7 @@ function declarantDetails(){
             case 'E':
             case 'F':
             case 'K':
+            case 'Y':
                 document.getElementById('details_eori').value = 'GB717572504502801';
                 break;
             case 'D':
@@ -260,6 +261,8 @@ function representativeDetails(){
             case 'E':
             case 'F':
             case 'K':
+            case 'Y':
+            case 'Z':
                 document.getElementById('details_eori').value = 'GB717572504502801';
                 selectRadioOption(document.getElementById("statusCode"), 0);
                 break;
@@ -310,7 +313,21 @@ function holderOfAuthorisation(){
                     document.getElementsByClassName('button')[0].click();
                 }
                 break;
+            case 'Z':
+                if (!document.getElementById("removable_elements__row0")) {
+                    selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "EIR");
+                    document.getElementById('eori').value = 'GB717572504502802';
+                    document.getElementById('add').click();
+                } else if (!document.getElementById("removable_elements__row1")) {
+                    selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "MOU");
+                    document.getElementById('eori').value = 'GB717572504502801';
+                    document.getElementById('add').click();
+                } else {
+                    document.getElementsByClassName('button')[0].click();
+                }
+                break;
             case 'F':
+            case 'Y':
                 selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "SDE");
                 document.getElementById('eori').value = 'GB717572504502801';
                 document.getElementsByClassName('button')[0].click();
@@ -386,11 +403,15 @@ function locationOfGoods(){
             case 'E':
             case 'F':
             case 'K':
+            case 'Y':
                 document.getElementById('identificationOfLocation').value ='BELBFSBEL';
                 break;
             case 'J':
                 document.getElementById('additionalIdentifier').value ='123';
                 document.getElementById('identificationOfLocation').value ='FXTFXTFXT';
+                break;
+            case 'Z':
+                document.getElementById('identificationOfLocation').value = 'ABDABDABD';
                 break;
             default:
                 document.getElementById('identificationOfLocation').value ='FXTFXTFXT';
@@ -409,10 +430,14 @@ function officeOfExit(){
             case 'E':
             case 'F':
             case 'K':
+            case 'Y':
                 selectFromAutoPredict(document.getElementById('officeId-container'), "GB000041");
                 break;
             case 'J':
                 selectFromAutoPredict(document.getElementById('officeId-container'), "GB000054");
+                break;
+            case 'Z':
+                selectFromAutoPredict(document.getElementById('officeId-container'), "GB000051");
                 break;
             default:
                 selectFromAutoPredict(document.getElementById('officeId-container'), "GB000434");
@@ -457,6 +482,8 @@ function previousDocuments(){
             case 'E':
             case 'F':
             case 'K':
+            case 'Y':
+            case 'Z':
                 break;
             case 'J':
                 selectRadioOption(document.getElementById("documentCategory"), 1);
@@ -493,6 +520,7 @@ function procedureCodes(){
             case 'D':
             case 'F':
             case 'J':
+            case 'Y':
                 document.getElementById('procedureCode').value = '1040';
                 document.getElementById('additionalProcedureCode').value ='000';
                 break;
@@ -503,6 +531,10 @@ function procedureCodes(){
             case 'K':
                 document.getElementById('procedureCode').value = '0012';
                 document.getElementById('additionalProcedureCode').value ='000';
+                break;
+            case 'Z':
+                document.getElementById('procedureCode').value = '1040';
+                document.getElementById('additionalProcedureCode').value ='1MU';
                 break;
             default:
                 document.getElementById('procedureCode').value ='1040';
@@ -534,8 +566,13 @@ function commodityDetails(){
             case 'C':
             case 'E':
             case 'F':
+            case 'Y':
                 document.getElementById('combinedNomenclatureCode').value ='84111100';
                 document.getElementById('descriptionOfGoods').value ='Aircraft engine';
+                break;
+            case 'Z':
+                document.getElementById('combinedNomenclatureCode').value ='85389099';
+                document.getElementById('descriptionOfGoods').value ='Oilwell equipment';
                 break;
             default:
                 document.getElementById('combinedNomenclatureCode').value ='46021910';
@@ -547,20 +584,7 @@ function commodityDetails(){
 
 function unDangerousGoodsCode(){
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/un-dangerous-goods-code')) {
-        switch(getDeclaration()){
-            case 'A':
-            case 'B':
-            case 'C':
-            case 'D':
-            case 'E':
-            case 'F':
-            case 'K':
-                document.getElementById('code_no').checked = 'checked';
-                break;
-            default:
-                document.getElementById('code_yes').checked = 'checked';
-                document.getElementById('dangerousGoodsCode').value ='1234';
-        }
+        document.getElementById('code_no').checked = 'checked';
         document.getElementsByClassName('button')[0].click()
     }
 }
@@ -575,6 +599,8 @@ function cusCode(){
             case 'E':
             case 'F':
             case 'K':
+            case 'Y':
+            case 'Z':
                 document.getElementById('code_no').checked = 'checked';
                 break;
             case 'J':
@@ -649,6 +675,7 @@ function additionalInformation(){
                 }
                 break;
             case 'K':
+            case 'Z':
                 document.getElementById('code').value ='00600';
                 document.getElementById('description').value ='EXPORTER';
                 document.getElementsByClassName('button')[0].click()
@@ -677,6 +704,40 @@ function addDocuments(){
                 } else if (!document.querySelector("#content>article>form>table>tbody>tr:nth-child(3)>th")) {
                     document.getElementById('documentTypeCode').value ='C676';
                     document.getElementById('documentIdentifier').value ='GBCSE717572504502801';
+                    document.getElementById('add').click();
+                } else {
+                    document.getElementsByClassName('button')[0].click()
+                }
+                break;
+            case 'Z':
+                if (!document.querySelector("#content>article>form>table>tbody>tr>th")) {
+                    document.getElementById('documentTypeCode').value ='C514';
+                    document.getElementById('documentIdentifier').value ='GBEIR717572504502802';
+                    document.getElementById('add').click();
+                } else if (!document.querySelector("#content>article>form>table>tbody>tr:nth-child(2)>th")) {
+                    document.getElementById('documentTypeCode').value ='C676';
+                    document.getElementById('documentIdentifier').value ='GBMOU717572504502802';
+                    document.getElementById('add').click();
+                } else {
+                    document.getElementsByClassName('button')[0].click()
+                }
+                break;
+            case 'Y':
+                if (!document.querySelector("#content>article>form>table>tbody>tr>th")) {
+                    document.getElementById('documentTypeCode').value ='C512';
+                    document.getElementById('documentIdentifier').value ='GBSDE717572504502801';
+                    document.getElementById('add').click();
+                } else if (!document.querySelector("#content>article>form>table>tbody>tr:nth-child(2)>th")) {
+                    document.getElementById('documentTypeCode').value ='Y901';
+                    document.getElementById('documentIdentifier').value ='GB717572504502801';
+                    document.getElementById('documentStatus').value = 'XX';
+                    document.getElementById('add').click();
+                } else if (!document.querySelector("#content>article>form>table>tbody>tr:nth-child(3)>th")) {
+                    document.getElementById('documentTypeCode').value ='X002';
+                    document.getElementById('documentIdentifier').value ='428/2009';
+                    document.getElementById('documentStatus').value = 'AF';
+                    document.getElementById('documentWriteOff_measurementUnit').value = 'KGM#G';
+                    document.getElementById('documentWriteOff_documentQuantity').value = '100';
                     document.getElementById('add').click();
                 } else {
                     document.getElementsByClassName('button')[0].click()
@@ -718,18 +779,7 @@ function addDocuments(){
 
 function warehouseIdentification(){
     if (currentPageIs('/customs-declare-exports/declaration/warehouse-identification')) {
-        switch(getDeclaration()){
-            case 'A':
-            case 'B':
-            case 'C':
-            case 'D':
-            case 'E':
-            case 'F':
-            case 'J':
-            case 'K':
-                document.getElementsByClassName('button')[0].click()
-                break;
-        }
+        document.getElementsByClassName('button')[0].click()
     }
 }
 
@@ -737,12 +787,14 @@ function supervisingCustomsOffice(){
     if (currentPageIs('/customs-declare-exports/declaration/supervising-customs-office')) {
         switch(getDeclaration()){
             case 'A':
+            case 'Z':
                 break;
             case 'B':
             case 'C':
             case 'E':
             case 'F':
             case 'K':
+            case 'Y':
                 selectFromAutoPredict(document.getElementById('supervisingCustomsOffice-container'), "GBBEL004");
                 break;
             default:

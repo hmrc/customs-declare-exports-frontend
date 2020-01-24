@@ -29,8 +29,8 @@ case class GoodsLocation(
   identificationOfLocation: Option[String],
   additionalIdentifier: Option[String],
   addressLine: Option[String],
-  postCode: Option[String],
   city: Option[String],
+  postCode: Option[String],
   country: String
 )
 
@@ -57,12 +57,12 @@ object GoodsLocation extends DeclarationPage {
     "addressLine" -> optional(
       text().verifying("supplementary.goodsLocation.addressLine.error", isAlphanumericWithAllowedSpecialCharacters and noLongerThan(70))
     ),
-    "postCode" -> optional(
-      text().verifying("supplementary.goodsLocation.postCode.error", isAlphanumericWithAllowedSpecialCharacters and noLongerThan(9))
-    ),
     "city" -> optional(
       text()
         .verifying("supplementary.goodsLocation.city.error", isAlphanumericWithAllowedSpecialCharacters and noLongerThan(35))
+    ),
+    "postCode" -> optional(
+      text().verifying("supplementary.goodsLocation.postCode.error", isAlphanumericWithAllowedSpecialCharacters and noLongerThan(9))
     ),
     "country" ->
       text()

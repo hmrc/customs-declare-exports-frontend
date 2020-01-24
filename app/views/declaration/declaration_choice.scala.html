@@ -62,7 +62,7 @@
                 RadioOption(DeclarationType.OCCASIONAL.toString, DeclarationType.OCCASIONAL.toString, messages("declaration.type.occasional"), Some(messages("declaration.type.occasional.hint"))),
                 RadioOption(RadioOption.dividerId, RadioOption.dividerId, messages("declaration.type.or")),
                 RadioOption(DeclarationType.CLEARANCE.toString, DeclarationType.CLEARANCE.toString, messages("declaration.type.clearance"))
-            ).filter(radioOption => radioOption.id == RadioOption.dividerId || appConfig.availableDeclarations().contains(radioOption.value))
+            ).filter(radioOption => appConfig.availableDeclarations().contains(radioOption.value))
         )
 
         @components.submit_button()
