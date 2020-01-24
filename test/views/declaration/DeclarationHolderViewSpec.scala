@@ -19,6 +19,7 @@ package views.declaration
 import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
+import forms.common.Eori
 import forms.declaration.DeclarationHolder
 import helpers.views.declaration.CommonMessages
 import models.Mode
@@ -117,7 +118,7 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
         val view = createView(
           DeclarationHolder
             .form()
-            .fillAndValidate(DeclarationHolder(Some("12345"), Some(TestHelper.createRandomAlphanumericString(17))))
+            .fillAndValidate(DeclarationHolder(Some("12345"), Some(Eori(TestHelper.createRandomAlphanumericString(17)))))
         )
 
         view must haveGlobalErrorSummary
@@ -131,7 +132,7 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
         val view = createView(
           DeclarationHolder
             .form()
-            .fillAndValidate(DeclarationHolder(Some("ACE"), Some(TestHelper.createRandomAlphanumericString(18))))
+            .fillAndValidate(DeclarationHolder(Some("ACE"), Some(Eori(TestHelper.createRandomAlphanumericString(18)))))
         )
 
         view must haveGlobalErrorSummary
@@ -146,7 +147,7 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
           DeclarationHolder
             .form()
             .fillAndValidate(
-              DeclarationHolder(Some(TestHelper.createRandomAlphanumericString(6)), Some(TestHelper.createRandomAlphanumericString(18)))
+              DeclarationHolder(Some(TestHelper.createRandomAlphanumericString(6)), Some(Eori(TestHelper.createRandomAlphanumericString(18))))
             )
         )
 
@@ -172,7 +173,7 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
 
       "display data in EORI input" in {
 
-        val view = createView(DeclarationHolder.form().fill(DeclarationHolder(None, Some("test"))))
+        val view = createView(DeclarationHolder.form().fill(DeclarationHolder(None, Some(Eori("test")))))
 
         view.getElementById("authorisationTypeCode").attr("value") mustBe empty
         view.getElementById("eori").attr("value") mustBe "test"
@@ -180,7 +181,7 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
 
       "display data in both inputs" in {
 
-        val view = createView(DeclarationHolder.form().fill(DeclarationHolder(Some("test"), Some("test1"))))
+        val view = createView(DeclarationHolder.form().fill(DeclarationHolder(Some("test"), Some(Eori("test1")))))
 
         view.getElementById("authorisationTypeCode").attr("value") mustBe "test"
         view.getElementById("eori").attr("value") mustBe "test1"
@@ -189,7 +190,7 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
       "display one row with data in table" in {
 
         val view =
-          declarationHolderPage(Mode.Normal, form, Seq(DeclarationHolder(Some("1234"), Some("1234"))))(request, messages)
+          declarationHolderPage(Mode.Normal, form, Seq(DeclarationHolder(Some("1234"), Some(Eori("1234")))))(request, messages)
 
         view.getElementById("removable_elements-row0-label").text() mustBe "1234-1234"
 

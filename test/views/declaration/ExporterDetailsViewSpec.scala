@@ -19,8 +19,8 @@ package views.declaration
 import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
-import forms.common.Address
-import forms.declaration.{EntityDetails, Eori, ExporterDetails}
+import forms.common.{Address, Eori}
+import forms.declaration.{EntityDetails, ExporterDetails}
 import helpers.views.declaration.CommonMessages
 import models.Mode
 import models.requests.JourneyRequest

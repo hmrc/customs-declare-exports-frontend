@@ -16,8 +16,7 @@
 
 package views.declaration.summary
 
-import forms.common.Address
-import forms.declaration.Eori
+import forms.common.{Address, Eori}
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.eori_or_address_section

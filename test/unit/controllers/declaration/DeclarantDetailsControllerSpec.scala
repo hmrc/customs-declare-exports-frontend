@@ -17,7 +17,8 @@
 package unit.controllers.declaration
 
 import controllers.declaration.DeclarantDetailsController
-import forms.declaration.{DeclarantDetails, EntityDetails, Eori}
+import forms.common.Eori
+import forms.declaration.{DeclarantDetails, EntityDetails}
 import models.{DeclarationType, Mode}
 import play.api.libs.json.Json
 import play.api.test.Helpers._

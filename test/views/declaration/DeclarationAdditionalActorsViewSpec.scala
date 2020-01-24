@@ -19,6 +19,7 @@ package views.declaration
 import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
+import forms.common.Eori
 import forms.declaration.DeclarationAdditionalActors
 import helpers.views.declaration.CommonMessages
 import models.requests.JourneyRequest
@@ -87,7 +88,7 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessag
 
       "display four radio buttons with description (not selected)" in {
 
-        val view = createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some(""), Some(""))), request)
+        val view = createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some(Eori("")), Some(""))), request)
 
         val optionOne = view.getElementById("supplementary.partyType.CS")
         optionOne.attr("checked") mustBe empty
@@ -159,7 +160,7 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessag
         val view = createView(
           DeclarationAdditionalActors
             .form()
-            .fillAndValidate(DeclarationAdditionalActors(Some(TestHelper.createRandomAlphanumericString(18)), Some(""))),
+            .fillAndValidate(DeclarationAdditionalActors(Some(Eori(TestHelper.createRandomAlphanumericString(18))), Some(""))),
           request
         )
 
@@ -176,7 +177,7 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessag
         val view = createView(
           DeclarationAdditionalActors
             .form()
-            .fillAndValidate(DeclarationAdditionalActors(Some(TestHelper.createRandomAlphanumericString(17)), Some(""))),
+            .fillAndValidate(DeclarationAdditionalActors(Some(Eori(TestHelper.createRandomAlphanumericString(17))), Some(""))),
           request
         )
 
@@ -194,9 +195,9 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessag
       "display EORI with CS selected" in {
 
         val view =
-          createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("CS"))), request)
+          createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some(Eori("GB1234")), Some("CS"))), request)
 
-        view.getElementById("eori").attr("value") mustBe "1234"
+        view.getElementById("eori").attr("value") mustBe "GB1234"
         view.getElementById("supplementary.partyType.CS").attr("checked") mustBe "checked"
         view.getElementById("supplementary.partyType.MF").attr("checked") mustBe empty
         view.getElementById("supplementary.partyType.FW").attr("checked") mustBe empty
@@ -206,9 +207,9 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessag
       "display EORI with MF selected" in {
 
         val view =
-          createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("MF"))), request)
+          createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some(Eori("GB1234")), Some("MF"))), request)
 
-        view.getElementById("eori").attr("value") mustBe "1234"
+        view.getElementById("eori").attr("value") mustBe "GB1234"
         view.getElementById("supplementary.partyType.CS").attr("checked") mustBe empty
         view.getElementById("supplementary.partyType.MF").attr("checked") mustBe "checked"
         view.getElementById("supplementary.partyType.FW").attr("checked") mustBe empty
@@ -218,7 +219,7 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessag
       "display EORI with FW selected" in {
 
         val view =
-          createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("FW"))), request)
+          createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some(Eori("1234")), Some("FW"))), request)
 
         view.getElementById("eori").attr("value") mustBe "1234"
         view.getElementById("supplementary.partyType.CS").attr("checked") mustBe empty
@@ -230,7 +231,7 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessag
       "display EORI with WH selected" in {
 
         val view =
-          createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("WH"))), request)
+          createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some(Eori("1234")), Some("WH"))), request)
 
         view.getElementById("eori").attr("value") mustBe "1234"
         view.getElementById("supplementary.partyType.CS").attr("checked") mustBe empty
@@ -242,7 +243,7 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessag
       "display one row with data in table" in {
 
         val view =
-          declarationAdditionalActorsPage(Mode.Normal, form, Seq(DeclarationAdditionalActors(Some("12345"), Some("CS"))))(
+          declarationAdditionalActorsPage(Mode.Normal, form, Seq(DeclarationAdditionalActors(Some(Eori("GB12345")), Some("CS"))))(
             request,
             realMessagesApi.preferred(request)
           )
@@ -250,13 +251,13 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessag
         view.select("table>thead>tr>th:nth-child(1)").text() mustBe "Party’s EORI number"
         view.select("table>thead>tr>th:nth-child(2)").text() mustBe "Party type"
 
-        view.select("table>tbody>tr>th:nth-child(1)").text() mustBe "12345"
+        view.select("table>tbody>tr>th:nth-child(1)").text() mustBe "GB12345"
         view.select("table>tbody>tr>td:nth-child(2)").text() mustBe "Consolidator"
 
         val removeButton = view.select("table>tbody>tr>td:nth-child(3)>button")
 
-        removeButton.text() must include("Remove Consolidator 12345")
-        removeButton.attr("value") mustBe """{"eori":"12345","partyType":"CS"}"""
+        removeButton.text() must include("Remove Consolidator GB12345")
+        removeButton.attr("value") mustBe """{"eori":"GB12345","partyType":"CS"}"""
       }
 
     }

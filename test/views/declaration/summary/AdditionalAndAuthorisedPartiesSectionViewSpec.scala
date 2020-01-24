@@ -16,6 +16,7 @@
 
 package views.declaration.summary
 
+import forms.common.Eori
 import forms.declaration.{DeclarationAdditionalActors, DeclarationHolder}
 import models.Mode
 import services.cache.ExportsTestData
@@ -31,9 +32,11 @@ class AdditionalAndAuthorisedPartiesSectionViewSpec extends UnitViewSpec with Ex
   val authorisationTypeCode1 = "partyType1"
   val authorisationTypeCode2 = "partyType2"
 
-  val additionalActors = Seq(DeclarationAdditionalActors(Some(eori1), Some(partyType1)), DeclarationAdditionalActors(Some(eori2), Some(partyType2)))
+  val additionalActors =
+    Seq(DeclarationAdditionalActors(Some(Eori(eori1)), Some(partyType1)), DeclarationAdditionalActors(Some(Eori(eori2)), Some(partyType2)))
 
-  val holders = Seq(DeclarationHolder(Some(authorisationTypeCode1), Some(eori1)), DeclarationHolder(Some(authorisationTypeCode2), Some(eori2)))
+  val holders =
+    Seq(DeclarationHolder(Some(authorisationTypeCode1), Some(Eori(eori1))), DeclarationHolder(Some(authorisationTypeCode2), Some(Eori(eori2))))
 
   "Additional and authorised parties section" should {
 

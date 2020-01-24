@@ -17,6 +17,7 @@
 package forms.declaration
 
 import forms.DeclarationPage
+import forms.common.Eori
 import forms.declaration.DeclarationAdditionalActors.PartyType
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
@@ -24,7 +25,7 @@ import play.api.libs.json.{JsValue, Json}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfNot
 import utils.validators.forms.FieldValidator._
 
-case class DeclarationAdditionalActors(eori: Option[String], partyType: Option[String]) {
+case class DeclarationAdditionalActors(eori: Option[Eori], partyType: Option[String]) {
 
   def isDefined: Boolean = eori.isDefined && partyType.isDefined
 
@@ -43,7 +44,7 @@ object DeclarationAdditionalActors extends DeclarationPage {
   val formId = "DeclarationAdditionalActors"
 
   val mapping = Forms.mapping(
-    "eori" -> optional(text().verifying("supplementary.eori.error.format", isValidEORIPattern and noLongerThan(17) and noShorterThan(3))),
+    "eori" -> optional(Eori.mapping("supplementary")),
     "partyType" -> mandatoryIfNot(
       "eori",
       "",

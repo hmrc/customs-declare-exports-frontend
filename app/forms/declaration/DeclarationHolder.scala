@@ -17,13 +17,14 @@
 package forms.declaration
 
 import forms.DeclarationPage
+import forms.common.Eori
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import services.HolderOfAuthorisationCode
 import utils.validators.forms.FieldValidator._
 
-case class DeclarationHolder(authorisationTypeCode: Option[String], eori: Option[String]) {
+case class DeclarationHolder(authorisationTypeCode: Option[String], eori: Option[Eori]) {
   override def toString: String = s"${authorisationTypeCode.getOrElse("")}-${eori.getOrElse("")}"
 }
 
@@ -35,17 +36,17 @@ object DeclarationHolder extends DeclarationPage {
       text()
         .verifying("supplementary.declarationHolder.authorisationCode.invalid", isContainedIn(HolderOfAuthorisationCode.all.map(_.value)))
     ),
-    "eori" -> optional(text().verifying("supplementary.eori.error.format", isValidEORIPattern and noLongerThan(17) and noShorterThan(3)))
+    "eori" -> optional(Eori.mapping("supplementary"))
   )(DeclarationHolder.apply)(DeclarationHolder.unapply)
 
   def form(): Form[DeclarationHolder] = Form(mapping)
 
   // Method for parse format typeCode-eori
   def buildFromString(value: String): DeclarationHolder = {
-    val dividedString = value.split('-')
+    val dividedString: Array[String] = value.split('-')
 
     if (dividedString.length == 0) DeclarationHolder(None, None)
     else if (dividedString.length == 1) DeclarationHolder(Some(value.split('-')(0)), None)
-    else DeclarationHolder(Some(value.split('-')(0)), Some(value.split('-')(1)))
+    else DeclarationHolder(Some(value.split('-')(0)), Some(Eori(value.split('-')(1))))
   }
 }

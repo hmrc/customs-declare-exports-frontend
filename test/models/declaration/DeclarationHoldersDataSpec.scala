@@ -16,12 +16,13 @@
 
 package models.declaration
 
+import forms.common.Eori
 import forms.declaration.DeclarationHolder
 import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
 
 object DeclarationHoldersDataSpec {
   val correctDeclarationHolder =
-    DeclarationHolder(authorisationTypeCode = Some("1234"), eori = Some("PL213472539481923"))
+    DeclarationHolder(authorisationTypeCode = Some("1234"), eori = Some(Eori("PL213472539481923")))
   val correctDeclarationHoldersData = DeclarationHoldersData(Seq(correctDeclarationHolder))
   val correctDeclarationHolderJSON: JsValue = JsObject(Map("authorisationTypeCode" -> JsString("1234"), "eori" -> JsString("PL213472539481923")))
   val anotherCorrectDeclarationHolderJSON: JsValue = JsObject(
