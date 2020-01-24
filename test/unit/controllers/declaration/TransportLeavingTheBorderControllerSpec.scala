@@ -101,7 +101,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec {
 
     }
 
-    onJourney(STANDARD, SUPPLEMENTARY)() { declaration =>
+    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE)() { declaration =>
       "return 303 (SEE_OTHER)" when {
 
         "form contains valid values" in {
@@ -111,23 +111,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec {
           val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.DepartureTransportController.displayPage()
-          verify(transportLeavingTheBorder, times(0)).apply(any(), any())(any(), any())
-        }
-      }
-    }
-
-    onClearance { declaration =>
-      "return 303 (SEE_OTHER)" when {
-
-        "form contains valid values" in {
-          withNewCaching(declaration)
-          val correctForm = Json.obj("code" -> ModeOfTransportCodes.Rail.value)
-
-          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.TransportContainerController.displayContainerSummary()
+          thePageNavigatedTo mustBe controllers.declaration.routes.DepartureTransportController.displayPage(Mode.Normal)
           verify(transportLeavingTheBorder, times(0)).apply(any(), any())(any(), any())
         }
       }
