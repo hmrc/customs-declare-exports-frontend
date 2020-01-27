@@ -16,6 +16,7 @@
 
 package forms.declaration
 
+import forms.common.Eori
 import forms.declaration.DeclarationAdditionalActors.PartyType.{Consolidator, FreightForwarder}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
@@ -57,13 +58,13 @@ class DeclarationAdditionalActorsSpec extends WordSpec with MustMatchers {
 }
 
 object DeclarationAdditionalActorsSpec {
-  val correctAdditionalActors1 = DeclarationAdditionalActors(eori = Some("eori1"), partyType = Some(Consolidator))
-  val correctAdditionalActors2 = DeclarationAdditionalActors(eori = Some("eori99"), partyType = Some(FreightForwarder))
+  val correctAdditionalActors1 = DeclarationAdditionalActors(eori = Some(Eori("eori1")), partyType = Some(Consolidator))
+  val correctAdditionalActors2 = DeclarationAdditionalActors(eori = Some(Eori("eori99")), partyType = Some(FreightForwarder))
 
   val emptyAdditionalActors = DeclarationAdditionalActors(eori = None, partyType = None)
-  val correctEORIPartyNotSelected = DeclarationAdditionalActors(eori = Some("1234567890123456"), partyType = None)
+  val correctEORIPartyNotSelected = DeclarationAdditionalActors(eori = Some(Eori("1234567890123456")), partyType = None)
   val incorrectAdditionalActors =
-    DeclarationAdditionalActors(eori = Some("123456789123456789"), partyType = Some("Incorrect"))
+    DeclarationAdditionalActors(eori = Some(Eori("123456789123456789")), partyType = Some("Incorrect"))
 
   val correctAdditionalActorsJSON: JsValue = JsObject(Map("eori" -> JsString("GB12345678912345"), "partyType" -> JsString(Consolidator)))
   val emptyAdditionalActorsJSON: JsValue = JsObject(Map("eori" -> JsString(""), "partyType" -> JsString("")))

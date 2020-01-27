@@ -19,7 +19,7 @@ package models.declaration
 import java.time.Instant
 import java.util.UUID
 
-import forms.common.Date
+import forms.common.{Date, Eori}
 import forms.declaration.ConsignmentReferencesSpec._
 import forms.declaration.DeclarantDetailsSpec._
 import forms.declaration.DeclarationAdditionalActorsSpec.correctAdditionalActors1
@@ -130,8 +130,8 @@ object ExportDeclarationTestData {
       declarationHoldersData = Some(
         DeclarationHoldersData(
           Seq(
-            DeclarationHolder(authorisationTypeCode = Some("1234"), eori = Some("PL213472539481923")),
-            DeclarationHolder(authorisationTypeCode = Some("4321"), eori = Some("PT213472539481923"))
+            DeclarationHolder(authorisationTypeCode = Some("1234"), eori = Some(Eori("PL213472539481923"))),
+            DeclarationHolder(authorisationTypeCode = Some("4321"), eori = Some(Eori("PT213472539481923")))
           )
         )
       ),

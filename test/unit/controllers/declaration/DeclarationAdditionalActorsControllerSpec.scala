@@ -19,6 +19,7 @@ package unit.controllers.declaration
 import base.TestHelper
 import controllers.declaration.DeclarationAdditionalActorsController
 import controllers.util.Remove
+import forms.common.Eori
 import forms.declaration.DeclarationAdditionalActors
 import models.{DeclarationType, Mode}
 import models.declaration.DeclarationAdditionalActorsData
@@ -49,7 +50,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
   }
 
   val eori = "GB12345678912345"
-  val additionalActor = DeclarationAdditionalActors(Some(eori), Some("CS"))
+  val additionalActor = DeclarationAdditionalActors(Some(Eori(eori)), Some("CS"))
   val declarationWithActor =
     aDeclaration(withDeclarationAdditionalActors(additionalActor))
 

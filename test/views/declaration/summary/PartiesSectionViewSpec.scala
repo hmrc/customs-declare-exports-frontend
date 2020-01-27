@@ -16,10 +16,8 @@
 
 package views.declaration.summary
 
-import forms.common.Address
-import forms.declaration.Eori
-import models.{DeclarationType, Mode}
-import models.DeclarationType._
+import forms.common.{Address, Eori}
+import models.Mode
 import models.declaration.DeclarationAdditionalActorsData
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec

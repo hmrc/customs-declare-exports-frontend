@@ -17,7 +17,8 @@
 package unit.controllers.declaration
 
 import controllers.declaration.CarrierDetailsController
-import forms.declaration.{CarrierDetails, EntityDetails, Eori}
+import forms.common.Eori
+import forms.declaration.{CarrierDetails, EntityDetails}
 import models.DeclarationType._
 import models.Mode
 import org.mockito.ArgumentCaptor

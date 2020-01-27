@@ -19,7 +19,8 @@ package unit.controllers.declaration
 import controllers.declaration.RepresentativeDetailsController
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
-import forms.declaration.{EntityDetails, Eori, RepresentativeDetails}
+import forms.common.Eori
+import forms.declaration.{EntityDetails, RepresentativeDetails}
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any

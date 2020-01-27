@@ -17,7 +17,8 @@
 package unit.controllers.declaration
 
 import controllers.declaration.ConsigneeDetailsController
-import forms.declaration.{ConsigneeDetails, EntityDetails, Eori}
+import forms.common.Eori
+import forms.declaration.{ConsigneeDetails, EntityDetails}
 import models.Mode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}

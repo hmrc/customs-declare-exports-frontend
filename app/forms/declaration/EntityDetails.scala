@@ -16,30 +16,10 @@
 
 package forms.declaration
 
-import forms.common.Address
-import play.api.data.Forms.{optional, text}
-import play.api.data.{Form, Forms, Mapping}
-import play.api.libs.json.{Format, JsResult, JsString, JsValue, Json, Reads}
-import utils.validators.forms.FieldValidator._
-
-case class Eori(value: String)
-object Eori {
-  def build(value: String): Eori = new Eori(value.toUpperCase)
-
-  implicit val format: Format[Eori] = new Format[Eori] {
-    override def writes(o: Eori): JsValue = JsString(o.value)
-
-    private val mappedReads = Reads.StringReads.map(value => Eori.build(value))
-
-    override def reads(json: JsValue): JsResult[Eori] = mappedReads.reads(json)
-  }
-
-  def mapping(errorPrefix: String): Mapping[Eori] =
-    text()
-      .verifying(s"${errorPrefix}.eori.empty", nonEmpty)
-      .verifying(s"${errorPrefix}.eori.error.format", isValidEORIPattern and noLongerThan(17) and noShorterThan(3))
-      .transform(build, unapply(_).getOrElse(""))
-}
+import forms.common.{Address, Eori}
+import play.api.data.Forms.optional
+import play.api.data.{Form, Forms}
+import play.api.libs.json.Json
 
 case class EntityDetails(
   eori: Option[Eori], // alphanumeric, max length 17 characters

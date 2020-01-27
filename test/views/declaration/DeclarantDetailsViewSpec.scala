@@ -19,7 +19,8 @@ package views.declaration
 import base.TestHelper
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
-import forms.declaration.{DeclarantDetails, EntityDetails, Eori}
+import forms.common.Eori
+import forms.declaration.{DeclarantDetails, EntityDetails}
 import helpers.views.declaration.CommonMessages
 import models.Mode
 import org.jsoup.nodes.Document
