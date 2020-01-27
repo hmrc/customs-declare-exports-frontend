@@ -283,8 +283,8 @@ trait ExportsDeclarationBuilder {
 
   def withBorderTransport(
     meansOfTransportCrossingTheBorderNationality: Option[String] = None,
-    meansOfTransportCrossingTheBorderType: String = "",
-    meansOfTransportCrossingTheBorderIDNumber: String = ""
+    meansOfTransportCrossingTheBorderType: String = "20",
+    meansOfTransportCrossingTheBorderIDNumber: String = "123"
   ): ExportsDeclarationModifier =
     withBorderTransport(
       BorderTransport(meansOfTransportCrossingTheBorderNationality, meansOfTransportCrossingTheBorderType, meansOfTransportCrossingTheBorderIDNumber)

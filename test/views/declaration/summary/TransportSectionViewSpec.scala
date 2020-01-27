@@ -129,7 +129,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     "not display transport reference if question not answered" in {
-      val view = transport_section(Mode.Normal, aDeclarationAfter(data, withoutBorderTransport()))(messages, journeyRequest())
+      val view = transport_section(Mode.Normal, aDeclarationAfter(data, withoutMeansOfTransportOnDepartureType()))(messages, journeyRequest())
 
       view.getElementById("transport-reference-label") mustBe null
       view.getElementById("transport-reference-0") mustBe null
@@ -138,7 +138,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     "not display active transport type if question not answered" in {
-      val view = transport_section(Mode.Normal, aDeclarationAfter(data, withoutMeansOfTransportOnDepartureType()))(messages, journeyRequest())
+      val view = transport_section(Mode.Normal, aDeclarationAfter(data, withoutBorderTransport()))(messages, journeyRequest())
 
       view.getElementById("active-transport-type-label") mustBe null
       view.getElementById("active-transport-type-0") mustBe null
