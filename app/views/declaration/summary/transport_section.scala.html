@@ -61,7 +61,7 @@
             ))
         )
 
-        @if(declarationData.transport.meansOfTransportCrossingTheBorderType.isDefined && declarationData.transport.meansOfTransportCrossingTheBorderIDNumber.isDefined) {
+        @if(declarationData.transport.meansOfTransportOnDepartureType.isDefined && declarationData.transport.meansOfTransportOnDepartureIDNumber.isDefined) {
             @components.table_row("transport-reference", HtmlTableRow(
                 label = messages("declaration.summary.transport.departure.meansOfTransport.header"),
                 value = messagesForDepartureMeansOfTransport(declarationData.transport),
@@ -70,7 +70,7 @@
             ))
         }
 
-        @if(declarationData.transport.meansOfTransportOnDepartureType.isDefined && declarationData.transport.meansOfTransportOnDepartureIDNumber.isDefined) {
+        @if(declarationData.transport.meansOfTransportCrossingTheBorderType.isDefined && declarationData.transport.meansOfTransportCrossingTheBorderIDNumber.isDefined) {
             @components.table_row("active-transport-type", HtmlTableRow(
                 label = messages("declaration.summary.transport.border.meansOfTransport.header"),
                 value = messagesForBorderMeansOfTransport(declarationData.transport),

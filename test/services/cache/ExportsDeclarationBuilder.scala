@@ -19,7 +19,7 @@ package services.cache
 import java.time.{Instant, LocalDate, LocalDateTime, ZoneOffset}
 import java.util.UUID
 
-import forms.common.Address
+import forms.common.{Address, Eori}
 import forms.declaration.DispatchLocation.AllowedDispatchLocations.OutsideEU
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
@@ -158,7 +158,7 @@ trait ExportsDeclarationBuilder {
   def withoutDeclarationHolders(): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(declarationHoldersData = None))
 
-  def withDeclarationHolders(authorisationTypeCode: Option[String] = None, eori: Option[String] = None): ExportsDeclarationModifier = { cache =>
+  def withDeclarationHolders(authorisationTypeCode: Option[String] = None, eori: Option[Eori] = None): ExportsDeclarationModifier = { cache =>
     val existing: Seq[DeclarationHolder] = cache.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
     val holdersData = DeclarationHoldersData(existing :+ DeclarationHolder(authorisationTypeCode, eori))
     cache.copy(parties = cache.parties.copy(declarationHoldersData = Some(holdersData)))
@@ -283,8 +283,8 @@ trait ExportsDeclarationBuilder {
 
   def withBorderTransport(
     meansOfTransportCrossingTheBorderNationality: Option[String] = None,
-    meansOfTransportCrossingTheBorderType: String = "",
-    meansOfTransportCrossingTheBorderIDNumber: String = ""
+    meansOfTransportCrossingTheBorderType: String = "20",
+    meansOfTransportCrossingTheBorderIDNumber: String = "123"
   ): ExportsDeclarationModifier =
     withBorderTransport(
       BorderTransport(meansOfTransportCrossingTheBorderNationality, meansOfTransportCrossingTheBorderType, meansOfTransportCrossingTheBorderIDNumber)

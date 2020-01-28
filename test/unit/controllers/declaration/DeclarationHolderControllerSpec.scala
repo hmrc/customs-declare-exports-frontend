@@ -18,6 +18,7 @@ package unit.controllers.declaration
 
 import controllers.declaration.DeclarationHolderController
 import controllers.util.Remove
+import forms.common.Eori
 import forms.declaration.DeclarationHolder
 import models.{DeclarationType, Mode}
 import models.declaration.DeclarationHoldersData
@@ -46,9 +47,9 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
     withNewCaching(aDeclaration())
   }
 
-  val declarationWithHolder = aDeclaration(withDeclarationHolders(Some("ACP"), Some("GB123456")))
+  val declarationWithHolder = aDeclaration(withDeclarationHolders(Some("ACP"), Some(Eori("GB123456"))))
   val maxAmountOfItems = aDeclaration(
-    withDeclarationHolders(Seq.fill(DeclarationHoldersData.limitOfHolders)(DeclarationHolder(Some("ACP"), Some("GB123456"))): _*)
+    withDeclarationHolders(Seq.fill(DeclarationHoldersData.limitOfHolders)(DeclarationHolder(Some("ACP"), Some(Eori("GB123456")))): _*)
   )
 
   "Declaration Additional Actors controller" should {
