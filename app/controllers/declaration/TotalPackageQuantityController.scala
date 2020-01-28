@@ -18,50 +18,52 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.TotalNumberOfItems
+import forms.declaration.TotalPackageQuantity
 import javax.inject.Inject
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
-import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.total_number_of_items
+import views.html.declaration.total_package_quantity
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class TotalNumberOfItemsController @Inject()(
-  authenticate: AuthAction,
-  journeyType: JourneyAction,
-  navigator: Navigator,
+class TotalPackageQuantityController @Inject()(
+  authorize: AuthAction,
+  journey: JourneyAction,
   mcc: MessagesControllerComponents,
-  totalNumberOfItemsPage: total_number_of_items,
-  override val exportsCacheService: ExportsCacheService
+  navigator: Navigator,
+  override val exportsCacheService: ExportsCacheService,
+  totalPackageQuantity: total_package_quantity
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
-  import forms.declaration.TotalNumberOfItems._
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.totalNumberOfItems match {
-      case Some(data) => Ok(totalNumberOfItemsPage(mode, form().fill(data)))
-      case _          => Ok(totalNumberOfItemsPage(mode, form()))
-    }
+  def displayPage(mode: Mode): Action[Unit] = (authorize andThen journey)(parse.empty) { implicit request =>
+    Ok(totalPackageQuantity(mode, TotalPackageQuantity.form()))
   }
 
-  def saveNoOfItems(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form()
+  def saveTotalPackageQuantity(mode: Mode): Action[AnyContent] = (authorize andThen journey).async { implicit request =>
+    TotalPackageQuantity
+      .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[TotalNumberOfItems]) => Future.successful(BadRequest(totalNumberOfItemsPage(mode, formWithErrors))),
-        formData => updateCache(formData).map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
+        error => Future.successful(BadRequest(totalPackageQuantity(mode, error))),
+        form => updateCache(form).map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
       )
   }
 
   private def nextPage(declarationType: DeclarationType): Mode => Call =
-    controllers.declaration.routes.TotalPackageQuantityController.displayPage
+    declarationType match {
+      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | DeclarationType.CLEARANCE =>
+        controllers.declaration.routes.NatureOfTransactionController.displayPage
+      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
+        controllers.declaration.routes.PreviousDocumentsController.displayPage
+    }
 
-  private def updateCache(formData: TotalNumberOfItems)(implicit req: JourneyRequest[AnyContent]) =
-    updateExportsDeclarationSyncDirect(_.copy(totalNumberOfItems = Some(formData)))
+  private def updateCache(totalPackage: TotalPackageQuantity)(implicit req: JourneyRequest[AnyContent]) =
+    updateExportsDeclarationSyncDirect(_.copy(totalPackageQuantity = Some(totalPackage)))
+
 }

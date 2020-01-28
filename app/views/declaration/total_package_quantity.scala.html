@@ -1,0 +1,53 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.declaration.routes._
+@import forms.declaration.TotalNumberOfItems
+@import uk.gov.hmrc.play.views.html._
+@import views.Title
+@import controllers.navigation.Navigator
+@import models.requests.JourneyRequest
+@import forms.declaration.TotalPackageQuantity
+
+@this(main_template: views.html.main_template)
+
+@(mode: Mode, form: Form[TotalPackageQuantity])(implicit request: JourneyRequest[_], messages: Messages)
+
+@main_template(
+    title = Title("supplementary.valueOfItems", "supplementary.items")
+) {
+    @helper.form(TotalPackageQuantityController.saveTotalPackageQuantity(mode), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
+        @components.back_link(Navigator.backLink(TotalPackageQuantity, mode), mode)
+
+        @components.error_summary(form.errors)
+
+        @components.heading(
+            sectionHeader = messages("supplementary.items"),
+            title = messages("supplementary.valueOfItems")
+        )
+
+        @components.fields.field_text(
+            field = form("totalPackage"),
+            label = Some(messages("supplementary.totalPackageQuantity")),
+            labelClass = Some("form-label-bold")
+        )
+
+        @components.submit_button()
+        @components.buttons.save_and_return_later_button()
+    }
+}
