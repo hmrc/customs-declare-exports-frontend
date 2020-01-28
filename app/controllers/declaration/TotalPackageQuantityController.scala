@@ -42,7 +42,9 @@ class TotalPackageQuantityController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode): Action[Unit] = (authorize andThen journey)(parse.empty) { implicit request =>
-    Ok(totalPackageQuantity(mode, TotalPackageQuantity.form()))
+    val form = TotalPackageQuantity.form()
+    val data = request.cacheModel.totalPackageQuantity.fold(form)(form.fill)
+    Ok(totalPackageQuantity(mode, data))
   }
 
   def saveTotalPackageQuantity(mode: Mode): Action[AnyContent] = (authorize andThen journey).async { implicit request =>
