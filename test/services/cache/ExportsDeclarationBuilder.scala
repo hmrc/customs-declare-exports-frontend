@@ -130,13 +130,13 @@ trait ExportsDeclarationBuilder {
   def withoutRoutingCountries(): ExportsDeclarationModifier =
     model => model.copy(locations = model.locations.copy(routingCountries = Seq.empty))
 
-  def withoutItems(): ExportsDeclarationModifier = _.copy(items = Set.empty)
+  def withoutItems(): ExportsDeclarationModifier = _.copy(items = Seq.empty)
 
   def withItem(item: ExportItem = ExportItem(uuid)): ExportsDeclarationModifier =
-    m => m.copy(items = m.items + item)
+    m => m.copy(items = m.items :+ item)
 
   def withItems(item1: ExportItem, others: ExportItem*): ExportsDeclarationModifier =
-    _.copy(items = Set(item1) ++ others)
+    _.copy(items = Seq(item1) ++ others)
 
   def withItems(count: Int): ExportsDeclarationModifier =
     cache => cache.copy(items = cache.items ++ (1 to count).map(index => ExportItem(id = uuid, sequenceId = index)).toSet)

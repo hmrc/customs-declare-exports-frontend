@@ -92,7 +92,7 @@ object ExportDeclarationTestData {
   lazy val cancellationDeclarationTest = CancelDeclaration(Lrn("FG7676767889"), "mrn", "description", "reason")
 
   lazy val allRecordsXmlMarshallingTest = allRecords.copy(
-    items = Set(
+    items = Seq(
       ExportItem(
         "itemid",
         sequenceId = 1,

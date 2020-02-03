@@ -58,7 +58,7 @@ class ItemsSummaryController @Inject()(
         exportsCacheService
           .update(
             request.cacheModel
-              .copy(items = request.cacheModel.items + newItem.copy(sequenceId = request.cacheModel.items.size + 1))
+              .copy(items = request.cacheModel.items :+ newItem.copy(sequenceId = request.cacheModel.items.size + 1))
           )
           .map(_ => navigator.continueTo(mode, controllers.declaration.routes.ProcedureCodesController.displayPage(_, newItem.id)))
       case SaveAndContinue if incorrectItems.nonEmpty =>
@@ -69,7 +69,7 @@ class ItemsSummaryController @Inject()(
   }
 
   private def buildIncorrectItemsErrors(request: JourneyRequest[AnyContent]): Seq[FormError] =
-    request.cacheModel.items.toSeq.zipWithIndex.filterNot { case (item, _) => item.isCompleted(request.declarationType) }.map {
+    request.cacheModel.items.zipWithIndex.filterNot { case (item, _) => item.isCompleted(request.declarationType) }.map {
       case (item, index) =>
         FormError("item_" + index, "declaration.itemsSummary.item.incorrect", Seq(item.sequenceId.toString))
     }
@@ -78,7 +78,7 @@ class ItemsSummaryController @Inject()(
     request.cacheModel.itemBy(itemId) match {
       case Some(itemToDelete) =>
         val updatedItems =
-          request.cacheModel.copy(items = request.cacheModel.items - itemToDelete).items.zipWithIndex.map {
+          request.cacheModel.copy(items = request.cacheModel.items.filterNot(_.equals(itemToDelete))).items.zipWithIndex.map {
             case (item, index) => item.copy(sequenceId = index + 1)
           }
         exportsCacheService.update(request.cacheModel.copy(items = updatedItems)).map { _ =>
