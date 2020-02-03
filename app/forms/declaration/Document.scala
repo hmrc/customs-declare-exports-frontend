@@ -47,7 +47,7 @@ object Document extends DeclarationPage {
       .verifying("supplementary.previousDocuments.documentReference.empty", nonEmpty)
       .verifying(
         "supplementary.previousDocuments.documentReference.error",
-        isEmpty or (isAlphanumericWithAllowedHyphenCharacter and noLongerThan(35))
+        isEmpty or (isAlphanumericWithSpecialCharacters(Set('-', '/')) and noLongerThan(35))
       ),
     "goodsItemIdentifier" -> optional(text().verifying("supplementary.previousDocuments.goodsItemIdentifier.error", isNumeric and noLongerThan(3)))
   )(Document.apply)(Document.unapply)
