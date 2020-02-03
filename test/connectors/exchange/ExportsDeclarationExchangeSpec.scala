@@ -68,7 +68,7 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
     transport = transport,
     parties = parties,
     locations = locations,
-    items = Set(item),
+    items = Seq(item),
     totalNumberOfItems = Some(totalNumberOfItems),
     previousDocuments = Some(previousDocuments),
     natureOfTransaction = Some(natureOfTransaction)
@@ -87,7 +87,7 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
     transport = transport,
     parties = parties,
     locations = locations,
-    items = Set(item),
+    items = Seq(item),
     totalNumberOfItems = Some(totalNumberOfItems),
     previousDocuments = Some(previousDocuments),
     natureOfTransaction = Some(natureOfTransaction)

@@ -38,7 +38,7 @@ case class ExportsDeclaration(
   transport: Transport = Transport(),
   parties: Parties = Parties(),
   locations: Locations = Locations(),
-  items: Set[ExportItem] = Set.empty,
+  items: Seq[ExportItem] = Seq.empty,
   totalNumberOfItems: Option[TotalNumberOfItems] = None,
   previousDocuments: Option[PreviousDocumentsData] = None,
   natureOfTransaction: Option[NatureOfTransaction] = None
