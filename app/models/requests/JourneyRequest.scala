@@ -19,7 +19,7 @@ package models.requests
 import models.DeclarationType.DeclarationType
 import models.ExportsDeclaration
 
-class JourneyRequest[A](val authenticatedRequest: AuthenticatedRequest[A], val cacheModel: ExportsDeclaration)
+class JourneyRequest[+A](val authenticatedRequest: AuthenticatedRequest[A], val cacheModel: ExportsDeclaration)
     extends AuthenticatedRequest[A](authenticatedRequest, authenticatedRequest.user) {
   val declarationType: DeclarationType = cacheModel.`type`
   def isType(`type`: DeclarationType*): Boolean = `type`.contains(declarationType)

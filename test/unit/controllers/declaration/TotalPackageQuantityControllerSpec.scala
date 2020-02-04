@@ -58,10 +58,17 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
       "return 200 (OK)" when {
         "cache is empty" in {
           withNewCaching(declaration)
-          val result  = controller.displayPage(Mode.Normal)(journeyR)
+
+          val result  = controller.displayPage(Mode.Normal).apply(getRequest(declaration))
+
+          status(result) mustBe OK
         }
         "cache is non empty" in {
           withNewCaching(aDeclarationAfter(declaration, withTotalPackageQuantity("1")))
+
+          val result  = controller.displayPage(Mode.Normal).apply(getRequest(declaration))
+
+          status(result) mustBe OK
         }
       }
       "return 400 (Bad Request)" when {
