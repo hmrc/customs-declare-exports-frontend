@@ -23,7 +23,12 @@ import views.html.declaration.summary.transaction_section
 
 class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
-  val data = aDeclaration(withTotalNumberOfItems(Some("123"), Some("1.23")), withTotalPackageQuantity("12"), withNatureOfTransaction("2"), withPreviousDocuments())
+  val data = aDeclaration(
+    withTotalNumberOfItems(Some("123"), Some("1.23")),
+    withTotalPackageQuantity("12"),
+    withNatureOfTransaction("2"),
+    withPreviousDocuments()
+  )
 
   "Transaction section" should {
 

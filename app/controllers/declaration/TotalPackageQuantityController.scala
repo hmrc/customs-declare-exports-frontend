@@ -43,7 +43,7 @@ class TotalPackageQuantityController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(mode: Mode) = (authorize andThen journey){ implicit request =>
+  def displayPage(mode: Mode) = (authorize andThen journey) { implicit request =>
     val form = TotalPackageQuantity.form()
     val data = request.cacheModel.totalPackageQuantity.fold(form)(form.fill)
     Ok(totalPackageQuantity(mode, data))

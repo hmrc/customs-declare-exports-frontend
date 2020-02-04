@@ -108,7 +108,6 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
 
         "display page method is invoked and cache contains data" in new SimplifiedSetUp {
 
-
           withNewCaching(aDeclaration(withTotalNumberOfItems(totalNumberOfItems), withType(DeclarationType.SIMPLIFIED)))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())

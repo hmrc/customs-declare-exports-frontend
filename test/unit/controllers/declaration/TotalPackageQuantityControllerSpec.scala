@@ -54,19 +54,19 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
   }
 
   "Total Package Quantity Controller" must {
-    onJourney(STANDARD, SIMPLIFIED)(){ declaration =>
+    onJourney(STANDARD, SIMPLIFIED)() { declaration =>
       "return 200 (OK)" when {
         "cache is empty" in {
           withNewCaching(declaration)
 
-          val result  = controller.displayPage(Mode.Normal).apply(getRequest(declaration))
+          val result = controller.displayPage(Mode.Normal).apply(getRequest(declaration))
 
           status(result) mustBe OK
         }
         "cache is non empty" in {
           withNewCaching(aDeclarationAfter(declaration, withTotalPackageQuantity("1")))
 
-          val result  = controller.displayPage(Mode.Normal).apply(getRequest(declaration))
+          val result = controller.displayPage(Mode.Normal).apply(getRequest(declaration))
 
           status(result) mustBe OK
         }

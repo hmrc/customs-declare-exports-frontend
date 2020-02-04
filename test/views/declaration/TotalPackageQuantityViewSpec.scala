@@ -91,8 +91,8 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
 
         "redered with filled form" should {
           "display data in inputs" in {
-              val form = TotalPackageQuantity.form().fill(TotalPackageQuantity(Some("1")))
-              val view: Document = template.apply(Mode.Normal, form)(request, messages)
+            val form = TotalPackageQuantity.form().fill(TotalPackageQuantity(Some("1")))
+            val view: Document = template.apply(Mode.Normal, form)(request, messages)
 
             view.getElementById("totalPackage").attr("value") mustEqual "1"
           }

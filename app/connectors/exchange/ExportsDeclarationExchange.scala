@@ -108,12 +108,14 @@ object ExportsDeclarationExchange {
       parties = declaration.parties,
       locations = declaration.locations,
       items = declaration.items,
-      totalNumberOfItems = if(declaration.totalNumberOfItems.isDefined || declaration.totalPackageQuantity.isDefined) {
-        Some(TotalItemsExchange(
-          declaration.totalNumberOfItems.flatMap(_.totalAmountInvoiced),
-          declaration.totalNumberOfItems.flatMap(_.exchangeRate),
-          declaration.totalPackageQuantity.flatMap(_.totalPackage)
-        ))
+      totalNumberOfItems = if (declaration.totalNumberOfItems.isDefined || declaration.totalPackageQuantity.isDefined) {
+        Some(
+          TotalItemsExchange(
+            declaration.totalNumberOfItems.flatMap(_.totalAmountInvoiced),
+            declaration.totalNumberOfItems.flatMap(_.exchangeRate),
+            declaration.totalPackageQuantity.flatMap(_.totalPackage)
+          )
+        )
       } else None,
       previousDocuments = declaration.previousDocuments,
       natureOfTransaction = declaration.natureOfTransaction
