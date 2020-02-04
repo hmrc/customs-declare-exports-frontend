@@ -16,6 +16,8 @@
 
 package controllers.declaration
 
+import java.time.Instant
+
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.TotalPackageQuantity

@@ -150,7 +150,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
           val result = controller.saveNoOfItems(Mode.Normal)(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.NatureOfTransactionController.displayPage()
+          thePageNavigatedTo mustBe controllers.declaration.routes.TotalPackageQuantityController.displayPage()
           verify(mockTotalNumberOfItemsPage, times(0)).apply(any(), any())(any(), any())
         }
       }
@@ -160,7 +160,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
           val result = controller.saveNoOfItems(Mode.Normal)(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
+          thePageNavigatedTo mustBe controllers.declaration.routes.TotalPackageQuantityController.displayPage()
           verify(mockTotalNumberOfItemsPage, times(0)).apply(any(), any())(any(), any())
         }
       }

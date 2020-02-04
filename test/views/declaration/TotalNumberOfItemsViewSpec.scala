@@ -49,9 +49,6 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
       messages must haveTranslationFor("supplementary.exchangeRate")
       messages must haveTranslationFor("supplementary.exchangeRate.error")
       messages must haveTranslationFor("supplementary.exchangeRate.hint")
-//      messages must haveTranslationFor("supplementary.totalPackageQuantity")
-//      messages must haveTranslationFor("supplementary.totalPackageQuantity.empty")
-//      messages must haveTranslationFor("supplementary.totalPackageQuantity.error")
       messages must haveTranslationFor("error.summary.title")
     }
 
