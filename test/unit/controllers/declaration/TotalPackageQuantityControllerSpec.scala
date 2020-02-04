@@ -22,9 +22,10 @@ import models.DeclarationType._
 import models.Mode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
-import org.mockito.Mockito.{times, verify}
+import org.mockito.Mockito.{times, verify, when}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.declaration.total_package_quantity
 
@@ -41,6 +42,12 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
     totalPackageQuantity
   )
 
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+    when(totalPackageQuantity.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    authorizedUser()
+  }
+
   override protected def afterEach(): Unit = {
     Mockito.reset(totalPackageQuantity)
     super.afterEach()
@@ -50,15 +57,20 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
     onJourney(STANDARD, SIMPLIFIED)(){ declaration =>
       "return 200 (OK)" when {
         "cache is empty" in {
-          ???
+          withNewCaching(declaration)
+          val result  = controller.displayPage(Mode.Normal)(journeyR)
         }
         "cache is non empty" in {
-          ???
+          withNewCaching(aDeclarationAfter(declaration, withTotalPackageQuantity("1")))
         }
       }
       "return 400 (Bad Request)" when {
         "form is incorrect" in {
-          ???
+          withNewCaching(declaration)
+
+          val result = controller.saveTotalPackageQuantity(Mode.Normal).apply(postRequest(Json.obj("totalPackage" -> "one"), declaration))
+
+          status(result) mustBe BAD_REQUEST
         }
       }
       "return 303 (See Other)" should {
@@ -69,7 +81,7 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
             val result = controller.saveTotalPackageQuantity(Mode.Normal)(postRequest(correctForm))
 
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe controllers.declaration.routes.TotalPackageQuantityController.displayPage()
+            thePageNavigatedTo mustBe controllers.declaration.routes.NatureOfTransactionController.displayPage()
           }
         }
         onSimplified { declaration =>
@@ -78,7 +90,7 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
             val result = controller.saveTotalPackageQuantity(Mode.Normal)(postRequest(correctForm))
 
             await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe controllers.declaration.routes.TotalPackageQuantityController.displayPage()
+            thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
           }
         }
       }
