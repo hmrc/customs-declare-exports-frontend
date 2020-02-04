@@ -66,6 +66,21 @@ class DocumentSpec extends WordSpec with MustMatchers {
 
         form.errors mustBe empty
       }
+
+      "provided document reference with :" in {
+
+        val correctJson = JsObject(
+          Map(
+            "documentCategory" -> JsString(RelatedDocument),
+            "documentType" -> JsString("MCR"),
+            "documentReference" -> JsString("A:12345645"),
+            "goodsItemIdentifier" -> JsString("123")
+          )
+        )
+        val form = Document.form.bind(correctJson)
+
+        form.errors mustBe empty
+      }
     }
   }
 }
