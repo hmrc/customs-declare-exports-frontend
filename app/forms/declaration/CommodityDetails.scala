@@ -41,7 +41,7 @@ object CommodityDetails extends DeclarationPage {
         .verifying("declaration.commodityDetails.combinedNomenclatureCode.error.empty", nonEmpty)
         .verifying(
           "declaration.commodityDetails.combinedNomenclatureCode.error.invalid",
-          isEmpty or (noLongerThan(combinedNomenclatureCodeMaxLength) and isNumeric)
+          isEmpty or (hasSpecificLength(combinedNomenclatureCodeMaxLength) and isNumeric)
         )
     ).verifying("declaration.commodityDetails.combinedNomenclatureCode.error.empty", isPresent)
 
@@ -51,7 +51,7 @@ object CommodityDetails extends DeclarationPage {
         .verifying("declaration.commodityDetails.combinedNomenclatureCode.error.empty", nonEmpty)
         .verifying(
           "declaration.commodityDetails.combinedNomenclatureCode.error.invalid",
-          isEmpty or (noLongerThan(combinedNomenclatureCodeMaxLength) and isNumeric)
+          isEmpty or (hasSpecificLength(combinedNomenclatureCodeMaxLength) and isNumeric)
         )
     )
 
