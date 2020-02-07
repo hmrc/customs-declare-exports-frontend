@@ -42,6 +42,12 @@ class CommodityDetailsSpec extends WordSpec with MustMatchers {
           form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"))
         }
 
+        "provided with commodity code too short" in {
+          val form = CommodityDetails.form(decType).bind(formData("1234", "description"))
+
+          form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"))
+        }
+
         "provided with invalid commodity code that is too long" in {
           val form = CommodityDetails.form(decType).bind(formData("ABCDE", "description"))
 
@@ -78,6 +84,12 @@ class CommodityDetailsSpec extends WordSpec with MustMatchers {
       s"return form with errors for $decType" when {
         "provided with invalid commodity code" in {
           val form = CommodityDetails.form(decType).bind(formData("#1234", "description"))
+
+          form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"))
+        }
+
+        "provided with commodity code too short" in {
+          val form = CommodityDetails.form(decType).bind(formData("12345", "description"))
 
           form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"))
         }
