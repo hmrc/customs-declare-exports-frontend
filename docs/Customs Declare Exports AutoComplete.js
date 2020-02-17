@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.25
+// @version      1.26
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -455,12 +455,24 @@ function totalNumberOfItems(){
     if (currentPageIs('/customs-declare-exports/declaration/total-numbers-of-items')) {
         switch(getDeclaration()){
             case 'K':
+                document.getElementsByClassName('button')[0].click()
+                break;
+            default:
+                document.getElementById('exchangeRate').value ='1.49';
+                document.getElementById('totalAmountInvoiced').value ='56764';
+                document.getElementsByClassName('button')[0].click()
+        }
+    }
+}
+
+function totalNumberOfPackages(){
+    if (currentPageIs('/customs-declare-exports/declaration/total-package-quantity')) {
+        switch(getDeclaration()){
+            case 'K':
                 document.getElementById('totalPackage').value ='500';
                 document.getElementsByClassName('button')[0].click()
                 break;
             default:
-                document.getElementById('totalAmountInvoiced').value ='56764';
-                document.getElementById('exchangeRate').value ='1.49';
                 document.getElementById('totalPackage').value ='1';
                 document.getElementsByClassName('button')[0].click()
         }
@@ -918,6 +930,7 @@ function completeJourney() {
 
     // transaction
     totalNumberOfItems();
+    totalNumberOfPackages();
     natureOfTransaction();
     previousDocuments();
 
