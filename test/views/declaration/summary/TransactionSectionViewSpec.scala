@@ -23,7 +23,12 @@ import views.html.declaration.summary.transaction_section
 
 class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
-  val data = aDeclaration(withTotalNumberOfItems(Some("123"), Some("1.23"), "12"), withNatureOfTransaction("2"), withPreviousDocuments())
+  val data = aDeclaration(
+    withTotalNumberOfItems(Some("123"), Some("1.23")),
+    withTotalPackageQuantity("12"),
+    withNatureOfTransaction("2"),
+    withPreviousDocuments()
+  )
 
   "Transaction section" should {
 
@@ -103,7 +108,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     "not display total package when question not asked" in {
-      val view = transaction_section(Mode.Normal, aDeclarationAfter(data, withoutTotalNumberOfItems()))(messages, journeyRequest())
+      val view = transaction_section(Mode.Normal, aDeclarationAfter(data, withoutTotalPackageQuantity))(messages, journeyRequest())
 
       view.getElementById("total-no-of-packages-label") mustBe null
       view.getElementById("total-no-of-packages") mustBe null

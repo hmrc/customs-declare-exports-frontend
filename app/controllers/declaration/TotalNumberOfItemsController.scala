@@ -60,12 +60,7 @@ class TotalNumberOfItemsController @Inject()(
   }
 
   private def nextPage(declarationType: DeclarationType): Mode => Call =
-    declarationType match {
-      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | DeclarationType.CLEARANCE =>
-        controllers.declaration.routes.NatureOfTransactionController.displayPage
-      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
-        controllers.declaration.routes.PreviousDocumentsController.displayPage
-    }
+    controllers.declaration.routes.TotalPackageQuantityController.displayPage
 
   private def updateCache(formData: TotalNumberOfItems)(implicit req: JourneyRequest[AnyContent]) =
     updateExportsDeclarationSyncDirect(_.copy(totalNumberOfItems = Some(formData)))

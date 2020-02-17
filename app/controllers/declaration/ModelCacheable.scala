@@ -29,12 +29,12 @@ trait ModelCacheable {
 
   protected def updateExportsDeclarationSyncDirect(
     update: ExportsDeclaration => ExportsDeclaration
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
     exportsCacheService.update(update(request.cacheModel))
 
   protected def updateExportsDeclarationSync(
     update: ExportsDeclaration => Option[ExportsDeclaration]
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
     update(request.cacheModel)
       .map(model => exportsCacheService.update(model))
       .getOrElse(Future.successful(None))

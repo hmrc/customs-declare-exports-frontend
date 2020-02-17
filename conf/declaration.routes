@@ -133,6 +133,12 @@ GET         /total-numbers-of-items              controllers.declaration.TotalNu
 
 POST        /total-numbers-of-items              controllers.declaration.TotalNumberOfItemsController.saveNoOfItems(mode: models.Mode ?= models.Mode.Normal)
 
+# Total package quantity
+
+GET         /total-package-quantity              controllers.declaration.TotalPackageQuantityController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /total-package-quantity              controllers.declaration.TotalPackageQuantityController.saveTotalPackageQuantity(mode: models.Mode ?= models.Mode.Normal)
+
 
 # Previous documents
 

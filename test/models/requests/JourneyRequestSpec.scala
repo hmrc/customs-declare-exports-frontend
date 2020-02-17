@@ -26,7 +26,7 @@ class JourneyRequestSpec extends UnitSpec with ExportsDeclarationBuilder with Mo
 
   val declaration = aDeclaration(withType(DeclarationType.OCCASIONAL))
   val authenticatedRequest = getAuthenticatedRequest()
-  val request = new JourneyRequest[AnyContentAsEmpty.type](authenticatedRequest, declaration)
+  val request = new JourneyRequest(authenticatedRequest, declaration)
 
   "Journey request" should {
 

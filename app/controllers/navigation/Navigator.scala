@@ -209,11 +209,11 @@ object Navigator {
     case OfficeOfExitStandard | OfficeOfExitSupplementary => controllers.declaration.routes.LocationController.displayPage
     case AdditionalDeclarationTypeStandardDec             => controllers.declaration.routes.DispatchLocationController.displayPage
     case TotalNumberOfItems                               => controllers.declaration.routes.OfficeOfExitController.displayPage
-    case NatureOfTransaction                              => controllers.declaration.routes.TotalNumberOfItemsController.displayPage
+    case NatureOfTransaction                              => controllers.declaration.routes.TotalPackageQuantityController.displayPage
     case ProcedureCodes                                   => controllers.declaration.routes.ItemsSummaryController.displayPage
     case ModeOfTransportCodes                             => controllers.declaration.routes.InlandTransportDetailsController.displayPage
     case DepartureTransport                               => controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
-
+    case TotalPackageQuantity                             => controllers.declaration.routes.TotalNumberOfItemsController.displayPage
   }
 
   val commonItem: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
