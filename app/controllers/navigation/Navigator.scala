@@ -87,6 +87,7 @@ object Navigator {
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case WarehouseIdentification     => controllers.declaration.routes.ItemsSummaryController.displayPage
     case DeclarationAdditionalActors => controllers.declaration.routes.CarrierDetailsController.displayPage
+    case TotalPackageQuantity        => controllers.declaration.routes.TotalNumberOfItemsController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
   val standardItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
@@ -111,6 +112,7 @@ object Navigator {
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case WarehouseIdentification     => controllers.declaration.routes.ItemsSummaryController.displayPage
     case DeclarationAdditionalActors => controllers.declaration.routes.RepresentativeDetailsController.displayPage
+    case TotalPackageQuantity        => controllers.declaration.routes.OfficeOfExitController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }
   val clearanceItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
@@ -133,6 +135,7 @@ object Navigator {
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case WarehouseIdentification     => controllers.declaration.routes.ItemsSummaryController.displayPage
     case DeclarationAdditionalActors => controllers.declaration.routes.RepresentativeDetailsController.displayPage
+    case TotalPackageQuantity        => controllers.declaration.routes.TotalNumberOfItemsController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
   }
   val supplementaryItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
@@ -157,6 +160,7 @@ object Navigator {
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case WarehouseIdentification     => controllers.declaration.routes.ItemsSummaryController.displayPage
     case DeclarationAdditionalActors => controllers.declaration.routes.CarrierDetailsController.displayPage
+    case TotalPackageQuantity        => controllers.declaration.routes.TotalNumberOfItemsController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
   }
   val simplifiedItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
@@ -182,6 +186,7 @@ object Navigator {
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case WarehouseIdentification     => controllers.declaration.routes.ItemsSummaryController.displayPage
     case DeclarationAdditionalActors => controllers.declaration.routes.CarrierDetailsController.displayPage
+    case TotalPackageQuantity        => controllers.declaration.routes.TotalNumberOfItemsController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
   }
 
@@ -213,7 +218,6 @@ object Navigator {
     case ProcedureCodes                                   => controllers.declaration.routes.ItemsSummaryController.displayPage
     case ModeOfTransportCodes                             => controllers.declaration.routes.InlandTransportDetailsController.displayPage
     case DepartureTransport                               => controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
-    case TotalPackageQuantity                             => controllers.declaration.routes.TotalNumberOfItemsController.displayPage
   }
 
   val commonItem: PartialFunction[DeclarationPage, (Mode, String) => Call] = {

@@ -76,192 +76,317 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
     captor.getValue
   }
 
-  "Office of Exit controller for supplementary journey" should {
+  "Office of Exit controller" should {
 
-    "return 200 (OK)" when {
+    onSupplementary { declaration =>
+      "return 200 (OK)" when {
 
-      "display page method is invoked and cache is empty" in {
+        "display page method is invoked and cache is empty" in {
 
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
+          withNewCaching(declaration)
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage(Mode.Normal)(getRequest())
 
-        status(result) mustBe OK
-        checkSupplementaryViewInteractions()
+          status(result) mustBe OK
+          checkSupplementaryViewInteractions()
 
-        theSupplementaryResponseForm.value mustBe empty
+          theSupplementaryResponseForm.value mustBe empty
+        }
+
+        "display page method is invoked and cache contains data" in {
+
+          val officeId = "officeId"
+          withNewCaching(aDeclarationAfter(declaration, withOfficeOfExit(officeId)))
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) mustBe OK
+          checkSupplementaryViewInteractions()
+
+          theSupplementaryResponseForm.value.value.officeId mustBe officeId
+        }
       }
 
-      "display page method is invoked and cache contains data" in {
+      "return 400 (BAD_REQUEST)" when {
 
-        val officeId = "officeId"
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withOfficeOfExit(officeId)))
+        "form is incorrect" in {
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+          withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
 
-        status(result) mustBe OK
-        checkSupplementaryViewInteractions()
+          val incorrectForm = Json.toJson(OfficeOfExitSupplementary("!@#$"))
 
-        theSupplementaryResponseForm.value.value.officeId mustBe officeId
-      }
-    }
+          val result = controller.saveOffice(Mode.Normal)(postRequest(incorrectForm))
 
-    "return 400 (BAD_REQUEST)" when {
-
-      "form is incorrect" in {
-
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
-
-        val incorrectForm = Json.toJson(OfficeOfExitSupplementary("!@#$"))
-
-        val result = controller.saveOffice(Mode.Normal)(postRequest(incorrectForm))
-
-        status(result) mustBe BAD_REQUEST
-        checkSupplementaryViewInteractions()
-      }
-    }
-
-    "return 303 (SEE_OTHER)" when {
-
-      "information provided by user are correct" in {
-
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
-
-        val correctForm = Json.toJson(OfficeOfExitSupplementary("officeId"))
-
-        val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.TotalNumberOfItemsController.displayPage()
-        checkSupplementaryViewInteractions(0)
-      }
-    }
-  }
-
-  "Office of Exit controller for standard journey" should {
-
-    "return 200 (OK)" when {
-
-      "display page method is invoked and cache is empty" in {
-
-        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
-
-        val result = controller.displayPage(Mode.Normal)(getRequest())
-
-        status(result) mustBe OK
-        checkStandardViewInteractions()
-
-        theStandardResponseForm.value mustBe empty
+          status(result) mustBe BAD_REQUEST
+          checkSupplementaryViewInteractions()
+        }
       }
 
-      "display page method is invoked and cache contains data" in {
+      "return 303 (SEE_OTHER)" when {
 
-        val officeId = "officeId"
-        val circumstancesCode = "Yes"
-        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withOfficeOfExit(officeId, Some(circumstancesCode))))
+        "information provided by user are correct" in {
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+          withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
 
-        status(result) mustBe OK
-        checkStandardViewInteractions()
+          val correctForm = Json.toJson(OfficeOfExitSupplementary("officeId"))
 
-        theStandardResponseForm.value.value.officeId mustBe officeId
-        theStandardResponseForm.value.value.circumstancesCode mustBe circumstancesCode
+          val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.TotalNumberOfItemsController.displayPage()
+          checkSupplementaryViewInteractions(0)
+        }
       }
     }
 
-    "return 400 (BAD_REQUEST)" when {
+    onStandard { declaration =>
+      "return 200 (OK)" when {
 
-      "form is incorrect" in {
+        "display page method is invoked and cache is empty" in {
 
-        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
+          withNewCaching(declaration)
 
-        val incorrectForm = Json.toJson(OfficeOfExitStandard("!@#$", "wrong"))
+          val result = controller.displayPage(Mode.Normal)(getRequest())
 
-        val result = controller.saveOffice(Mode.Normal)(postRequest(incorrectForm))
+          status(result) mustBe OK
+          checkStandardViewInteractions()
 
-        status(result) mustBe BAD_REQUEST
-        checkStandardViewInteractions()
+          theStandardResponseForm.value mustBe empty
+        }
+
+        "display page method is invoked and cache contains data" in {
+
+          val officeId = "officeId"
+          val circumstancesCode = "Yes"
+          withNewCaching(aDeclarationAfter(declaration, withOfficeOfExit(officeId, Some(circumstancesCode))))
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) mustBe OK
+          checkStandardViewInteractions()
+
+          theStandardResponseForm.value.value.officeId mustBe officeId
+          theStandardResponseForm.value.value.circumstancesCode mustBe circumstancesCode
+        }
+      }
+
+      "return 400 (BAD_REQUEST)" when {
+
+        "form is incorrect" in {
+
+          withNewCaching(declaration)
+
+          val incorrectForm = Json.toJson(OfficeOfExitStandard("!@#$", "wrong"))
+
+          val result = controller.saveOffice(Mode.Normal)(postRequest(incorrectForm))
+
+          status(result) mustBe BAD_REQUEST
+          checkStandardViewInteractions()
+        }
+      }
+
+      "return 303 (SEE_OTHER)" when {
+
+        "information provided by user are correct" in {
+
+          withNewCaching(declaration)
+
+          val correctForm = Json.toJson(OfficeOfExitStandard("officeId", "Yes"))
+
+          val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.TotalNumberOfItemsController.displayPage()
+          checkStandardViewInteractions(0)
+        }
       }
     }
 
-    "return 303 (SEE_OTHER)" when {
+    onSimplified { declaration =>
+      "return 200 (OK)" when {
 
-      "information provided by user are correct" in {
+        "display page method is invoked and cache is empty" in {
 
-        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
+          withNewCaching(declaration)
 
-        val correctForm = Json.toJson(OfficeOfExitStandard("officeId", "Yes"))
+          val result = controller.displayPage(Mode.Normal)(getRequest())
 
-        val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
+          status(result) mustBe OK
+          checkStandardViewInteractions()
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.TotalNumberOfItemsController.displayPage()
-        checkStandardViewInteractions(0)
+          theStandardResponseForm.value mustBe empty
+        }
+
+        "display page method is invoked and cache contains data" in {
+
+          val officeId = "officeId"
+          val circumstancesCode = "Yes"
+          withNewCaching(aDeclarationAfter(declaration, withOfficeOfExit(officeId, Some(circumstancesCode))))
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) mustBe OK
+          checkStandardViewInteractions()
+
+          theStandardResponseForm.value.value.officeId mustBe officeId
+          theStandardResponseForm.value.value.circumstancesCode mustBe circumstancesCode
+        }
+      }
+
+      "return 400 (BAD_REQUEST)" when {
+
+        "form is incorrect" in {
+
+          withNewCaching(declaration)
+
+          val incorrectForm = Json.toJson(OfficeOfExitStandard("!@#$", "wrong"))
+
+          val result = controller.saveOffice(Mode.Normal)(postRequest(incorrectForm))
+
+          status(result) mustBe BAD_REQUEST
+          checkStandardViewInteractions()
+        }
+      }
+
+      "return 303 (SEE_OTHER)" when {
+
+        "information provided by user are correct" in {
+
+          withNewCaching(declaration)
+
+          val correctForm = Json.toJson(OfficeOfExitStandard("officeId", "Yes"))
+
+          val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
+          checkStandardViewInteractions(0)
+        }
       }
     }
-  }
+    onOccasional { declaration =>
+      "return 200 (OK)" when {
 
-  "Office of Exit controller for simplified journey" should {
+        "display page method is invoked and cache is empty" in {
 
-    "return 200 (OK)" when {
+          withNewCaching(declaration)
 
-      "display page method is invoked and cache is empty" in {
+          val result = controller.displayPage(Mode.Normal)(getRequest())
 
-        withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED)))
+          status(result) mustBe OK
+          checkStandardViewInteractions()
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+          theStandardResponseForm.value mustBe empty
+        }
 
-        status(result) mustBe OK
-        checkStandardViewInteractions()
+        "display page method is invoked and cache contains data" in {
 
-        theStandardResponseForm.value mustBe empty
+          val officeId = "officeId"
+          val circumstancesCode = "Yes"
+          withNewCaching(aDeclarationAfter(declaration, withOfficeOfExit(officeId, Some(circumstancesCode))))
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) mustBe OK
+          checkStandardViewInteractions()
+
+          theStandardResponseForm.value.value.officeId mustBe officeId
+          theStandardResponseForm.value.value.circumstancesCode mustBe circumstancesCode
+        }
       }
 
-      "display page method is invoked and cache contains data" in {
+      "return 400 (BAD_REQUEST)" when {
 
-        val officeId = "officeId"
-        val circumstancesCode = "Yes"
-        withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED), withOfficeOfExit(officeId, Some(circumstancesCode))))
+        "form is incorrect" in {
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+          withNewCaching(declaration)
 
-        status(result) mustBe OK
-        checkStandardViewInteractions()
+          val incorrectForm = Json.toJson(OfficeOfExitStandard("!@#$", "wrong"))
 
-        theStandardResponseForm.value.value.officeId mustBe officeId
-        theStandardResponseForm.value.value.circumstancesCode mustBe circumstancesCode
+          val result = controller.saveOffice(Mode.Normal)(postRequest(incorrectForm))
+
+          status(result) mustBe BAD_REQUEST
+          checkStandardViewInteractions()
+        }
+      }
+
+      "return 303 (SEE_OTHER)" when {
+
+        "information provided by user are correct" in {
+
+          withNewCaching(declaration)
+
+          val correctForm = Json.toJson(OfficeOfExitStandard("officeId", "Yes"))
+
+          val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
+          checkStandardViewInteractions(0)
+        }
       }
     }
 
-    "return 400 (BAD_REQUEST)" when {
+    onClearance { declaration =>
+      "return 200 (OK)" when {
 
-      "form is incorrect" in {
+        "display page method is invoked and cache is empty" in {
 
-        withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED)))
+          withNewCaching(declaration)
 
-        val incorrectForm = Json.toJson(OfficeOfExitStandard("!@#$", "wrong"))
+          val result = controller.displayPage(Mode.Normal)(getRequest())
 
-        val result = controller.saveOffice(Mode.Normal)(postRequest(incorrectForm))
+          status(result) mustBe OK
+          checkStandardViewInteractions()
 
-        status(result) mustBe BAD_REQUEST
-        checkStandardViewInteractions()
+          theStandardResponseForm.value mustBe empty
+        }
+
+        "display page method is invoked and cache contains data" in {
+
+          val officeId = "officeId"
+          val circumstancesCode = "Yes"
+          withNewCaching(aDeclarationAfter(declaration, withOfficeOfExit(officeId, Some(circumstancesCode))))
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) mustBe OK
+          checkStandardViewInteractions()
+
+          theStandardResponseForm.value.value.officeId mustBe officeId
+          theStandardResponseForm.value.value.circumstancesCode mustBe circumstancesCode
+        }
       }
-    }
 
-    "return 303 (SEE_OTHER)" when {
+      "return 400 (BAD_REQUEST)" when {
 
-      "information provided by user are correct" in {
+        "form is incorrect" in {
 
-        withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED)))
+          withNewCaching(declaration)
 
-        val correctForm = Json.toJson(OfficeOfExitStandard("officeId", "Yes"))
+          val incorrectForm = Json.toJson(OfficeOfExitStandard("!@#$", "wrong"))
 
-        val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
+          val result = controller.saveOffice(Mode.Normal)(postRequest(incorrectForm))
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
-        checkStandardViewInteractions(0)
+          status(result) mustBe BAD_REQUEST
+          checkStandardViewInteractions()
+        }
+      }
+
+      "return 303 (SEE_OTHER)" when {
+
+        "information provided by user are correct" in {
+
+          withNewCaching(declaration)
+
+          val correctForm = Json.toJson(OfficeOfExitStandard("officeId", "Yes"))
+
+          val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.TotalPackageQuantityController.displayPage()
+          checkStandardViewInteractions(0)
+        }
       }
     }
   }
