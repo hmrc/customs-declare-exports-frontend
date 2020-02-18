@@ -19,6 +19,7 @@ package views.declaration
 import base.Injector
 import forms.declaration.TotalPackageQuantity
 import models.Mode
+import models.DeclarationType._
 import org.jsoup.nodes.Document
 import play.api.i18n.MessagesApi
 import services.cache.ExportsTestData
@@ -62,13 +63,6 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
           view.getElementById("totalPackage").attr("value") mustBe empty
         }
 
-        "display back button" in {
-          val backButton = view.getElementById("back-link")
-
-          backButton.text() must be("site.back")
-          backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage(Mode.Normal))
-        }
-
         "display 'Save and continue' button on page" in {
           val saveButton = view.getElementById("submit")
           saveButton.text() must be("site.save_and_continue")
@@ -97,6 +91,24 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
             view.getElementById("totalPackage").attr("value") mustEqual "1"
           }
         }
+      }
+    }
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
+      "display back button" in {
+        val view: Document = template.apply(Mode.Normal, TotalPackageQuantity.form())(request, messages)
+        val backButton = view.getElementById("back-link")
+
+        backButton.text() must be("site.back")
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage(Mode.Normal))
+      }
+    }
+    onClearance { request =>
+      "display back button" in {
+        val view: Document = template.apply(Mode.Normal, TotalPackageQuantity.form())(request, messages)
+        val backButton = view.getElementById("back-link")
+
+        backButton.text() must be("site.back")
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Normal))
       }
     }
   }

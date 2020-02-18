@@ -104,8 +104,10 @@ class OfficeOfExitController @Inject()(
 
   private def nextPage(declarationType: DeclarationType): Mode => Call =
     declarationType match {
-      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | DeclarationType.CLEARANCE =>
+      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
         controllers.declaration.routes.TotalNumberOfItemsController.displayPage
+      case DeclarationType.CLEARANCE =>
+        controllers.declaration.routes.TotalPackageQuantityController.displayPage
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
         controllers.declaration.routes.PreviousDocumentsController.displayPage
     }
