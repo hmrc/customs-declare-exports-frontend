@@ -68,6 +68,9 @@ site.change = Change
 site.add.item = Add item
 site.add.anotherItem = Add another item
 
+site.details.summary_text_this = For more information about this
+site.details.summary_text_these = For more information about these
+
 general.inquiries.help.link = General enquires help
 
 unauthorised.heading = You can’t access this service with this account
@@ -93,6 +96,7 @@ address.error.required.street = Enter a street name
 address.error.required.townOrCity = Enter a town or city
 address.error.required.postcode = Enter a postcode
 address.error.required.country = Enter a country
+
 
 simpleDeclaration.title = Simple declaration
 simpleDeclaration.heading = Simple declaration
@@ -162,6 +166,35 @@ declaration.type.or = or
 declaration.type.occasional = Simplified declaration for occasional use
 declaration.type.occasional.hint = This is a shorter version of the full declaration that is only permitted in special circumstances. No follow-up declaration is required.
 declaration.type.clearance = Customs clearance request (C21)
+declaration.type.tariff_summary_text = For more information about this
+declaration.type.bodyText = Go to data element 1/2 Additional Declaration Type in the {0}.
+declaration.type.tariffUrlText = UK Trade Tariff (opens in new window or tab)
+declaration.type.consignmentTariffText = Go to the {0}. For details about:
+declaration.type.consignmentDescListItemOne = UCR, go to data element 2/4 Reference Number/UCR
+declaration.type.consignmentDescListItemTwo = LRN, go to data element 2/5 LRN (no previous reference)
+declaration.type.consignmentTariff_summary_text = For more information about these
+declaration.type.dispatchLocationSummaryText = Go to data element 1/1 Declaration Type in the {0}
+declaration.type.additionalActorsSummaryText = Go to data element 2/2 Additional Information in the  {0}.
+declaration.type.holderOfAuthorisationSummaryText = Go to data element 3/39 Holder of the Authorisation Identification Number in the {0}
+declaration.type.originationCountrySummaryText = Go to data element 5/14 Country of Dispatch/Export Code in the {0}
+declaration.type.destinationCountrySummaryText = Go to data element 5/8 Country of Destination Code in the {0}
+declaration.type.previousDocumentsSummaryText = Go to data element 2/1 Simplifed Declaration/Previous Documents in the {0}
+declaration.type.previousDocumentsSummaryText = Go to data element 2/1 Simplifed Declaration/Previous Documents in the {0}
+declaration.type.procedureCodeDescListItemOne = Procedure code, go to data element 1/10 Procedure
+declaration.type.procedureCodeDescListItemTwo = Additional procedure code, go to data element 1/11 Additional Procedure Code
+declaration.type.fiscalInformationSummaryText = Go to data element 3/40 Additional Fiscal References Identification Number in the {0}
+declaration.type.commodityDetailsListItemOne = Commodity code, go to data element 6/14 Commodity code - Combined Nomenclature Code
+declaration.type.commodityDetailsListItemTwo = Description of goods, go to data element 6/8 Description of Goods
+declaration.type.commodityMeasureListItemOne = Supplementary units, go to data element 6/2 Supplementary Units
+declaration.type.commodityMeasureListItemTwo = Gross weight, go to data element 6/5 Gross Mass
+declaration.type.commodityMeasureListItemThree = Net weight, go to data element 6/1 Net Mass
+declaration.type.unDangerousGoodsCodeSummaryText = Go to data element 6/12 UN Dangerous Goods Code in the {0}
+declaration.type.documentProcudedListItemOne = Additional documents, go to data element 2/3 Documents produced, certificates and authorisations, additional references
+declaration.type.documentProcudedListItemTwo = Writing off, go to data element 8/7 Writing Off
+declaration.type.warehouseInformationSummaryText = Go to data element 2/7 Identification of Warehouse in the {0}
+declaration.type.supervisingCustomsOfficeSummaryText = Go to data element 5/27 Supervising Customs Office in the {0}
+declaration.type.containerAddFirstItemListOne = Container, go to data element 7/2 Container
+declaration.type.containerAddFirstItemListTwo = Container ID, go to data element 7/10 Container Identification Number
 
 declaration.type.error = Choose a valid option
 
@@ -262,21 +295,28 @@ supplementary.consignor.title = Who is the exporter?
 supplementary.consignor.title.hint = Enter the exporter’s EORI number or name and business address.
 supplementary.consignor.eori = Exporter’s EORI number
 supplementary.consignor.address.info = Exporter’s name and business address
+supplementary.exporter-details.help-item1 = Exporter’s EORI number, go to data element 3/2 Exporter Identification Number
+supplementary.exporter-details.help-item2 = Exporter’s name and business address, go to data element 3/1 Exporter
 
 supplementary.declarant.title = Who is the declarant?
 supplementary.declarant.title.hint = Enter the declarant’s EORI number.
 supplementary.declarant.eori.info = Declarant’s EORI number
 supplementary.declarant.address.info = Declarant’s name and business address
+supplementary.declarant-details.help.bodyText = Go to data element 3/18 Declarant Identification Number in the {0}.
 
 supplementary.consignee.title = Who is the consignee?
 supplementary.consignee.title.hint = Enter the consignee’s EORI number or name and business address.
 supplementary.consignee.eori.info = Consignee’s EORI number
 supplementary.consignee.address.info = Consignee’s name and business address
+supplementary.consignee-details.help-item1 = Consignee’s EORI number, go to data element 3/10 Consignee’s Identification Number
+supplementary.consignee-details.help-item2 = Consignee’s name and business address, go to data element 3/9 Consignee Name and Address
 
 supplementary.carrier.title = Who is the carrier?
 supplementary.carrier.title.hint = Enter the carrier’s EORI number or name and business address.
 supplementary.carrier.eori.info = Carrier’s EORI number
 supplementary.carrier.address.info = Carrier’s name and business address
+supplementary.carrier-details.help-item1 = Carrier’s EORI number, go to data element 3/32 Carrier Identification Number
+supplementary.carrier-details.help-item2 = Carrier’s name and business address, go to data element 3/31 Carrier Name and Address
 
 supplementary.representative.header = Who is the representative?
 supplementary.representative.hint = Enter the representative’s EORI number or name and business address. If no representative was used, leave this page blank and continue.
@@ -290,6 +330,9 @@ supplementary.representative.representationType.direct = Direct representative
 supplementary.representative.representationType.direct.hint = The representative is accepting legal responsibility for the exporter
 supplementary.representative.representationType.indirect = Indirect representative
 supplementary.representative.representationType.indirect.hint = The representative is sharing legal responsibility with the exporter
+supplementary.representative-details.help-item1 = Representative’s EORI number, go to data element 3/20 Representative Identification Number
+supplementary.representative-details.help-item2 = Representative’s name and business address, go to data element 3/19 Representative Name and Address
+supplementary.representative-details.help-item3 = What type of representative will be used, go to data element 3/21 Representative Status Code
 
 supplementary.eori = EORI number
 supplementary.eori.info = Enter the EORI number or business details
@@ -386,6 +429,8 @@ declaration.routingQuestion.heading = Locations
 declaration.routingQuestion.question = Will the goods pass through customs in any other countries before arriving in {0}?
 declaration.routingQuestion.empty = Select yes or no
 declaration.routingQuestion.error = Select yes or no
+declaration.routingQuestion.error = Select yes or no
+declaration.routingQuestion.help.bodyText = Go to data element 5/18 Country of Routing Codes in the {0}.
 
 declaration.routingCountry.title = Routing country
 declaration.routingCountry.heading = Locations
@@ -441,6 +486,7 @@ supplementary.goodsLocation.postCode = Postcode
 supplementary.goodsLocation.postCode.error = Enter a postcode in the correct format or type 'unknown' if there is no postcode
 supplementary.goodsLocation.city = City
 supplementary.goodsLocation.city.error = Enter a city, up to 35 characters
+supplementary.goodsLocation.help.bodyText = Go to data element 5/23 Location of Goods in the {0}.
 
 supplementary.procedureCodes.title = Procedure Codes
 supplementary.procedureCodes.procedureCode.header = Enter the procedure code
@@ -465,6 +511,8 @@ declaration.officeOfExit.hint = This is the office where goods are officially re
 declaration.officeOfExit.empty = Select an office of exit from the list
 declaration.officeOfExit.length = Select an office of exit from the list
 declaration.officeOfExit.specialCharacters = Select an office of exit from the list
+declaration.officeOfExit.help-item1 = Where is the office of exit, go to data element 5/12 Customs Office of Exit
+declaration.officeOfExit.help-item2 = Express consignment, go to data element 1/7 Specific Circumstance Indicator
 
 standard.officeOfExit.circumstancesCode = Does the declaration relate to an express consignment?
 standard.officeOfExit.circumstancesCode.hint = This is where the goods have been fast-tracked by an express courier.
@@ -494,6 +542,7 @@ declaration.warehouse.inlandTransportDetails.transportMode.postalOrMail = Postal
 declaration.warehouse.inlandTransportDetails.transportMode.fixedTransportInstallations = Fixed transport installations
 declaration.warehouse.inlandTransportDetails.transportMode.inlandWaterway = Inland waterway transport
 declaration.warehouse.inlandTransportDetails.transportMode.unknown = Mode unknown, for example own propulsion
+declaration.warehouse.inlandTransportDetails.help.bodyText = Go to data element 7/5 Inland Mode of Transport in the UK Trade Tariff. {0}.
 
 declaration.fiscalInformation.title = Onward Supply Relief (OSR)
 declaration.fiscalInformation.question = Do you want to claim OSR?
@@ -562,6 +611,7 @@ declaration.transport.leavingTheBorder.transportMode.postalOrMail = Postal or Ma
 declaration.transport.leavingTheBorder.transportMode.fixedTransportInstallations = Fixed transport installations
 declaration.transport.leavingTheBorder.transportMode.inlandWaterway = Inland waterway transport
 declaration.transport.leavingTheBorder.transportMode.unknown = Mode unknown, for example own propulsion
+declaration.transport.leavingTheBorder.transportMode.help.bodyText = Go to data element 7/4 Mode of Transport at the Border in the UK Trade Tariff {0}.
 
 
 declaration.transportInformation.title = Transport details
@@ -570,6 +620,8 @@ declaration.transportInformation.borderTransportMode.header = What transport wil
 declaration.transportInformation.borderTransportMode.header.hint = The transport that the goods will be loaded on to cross the border.
 declaration.transportInformation.borderTransportMode.error.empty = Select the mode of transport at the border
 declaration.transportInformation.borderTransportMode.error.incorrect = Select the mode of transport at the border
+declaration.transportInformation.active.help-item1 = The details of the transport that left the border, go to data element 7/14 Identity of Active Means of Transport Crossing the Border.
+declaration.transportInformation.active.help-item2 = The country the transport is registered in, go to data element 7/15 Nationality of active means of transport crossing the border.
 
 
 declaration.transportInformation.transportPayment.paymentMethod = How is the transport paid for?
@@ -582,11 +634,14 @@ declaration.transportInformation.transportPayment.paymentMethod.eFunds = Electro
 declaration.transportInformation.transportPayment.paymentMethod.accHolder = Account holder with carrier
 declaration.transportInformation.transportPayment.paymentMethod.notPrePaid = Not pre-paid
 declaration.transportInformation.transportPayment.paymentMethod.error= Input is not valid
+declaration.transportInformation.transportPayment.paymentMethod.help.bodyText = Go to data element 4/2 Transport charges method of payment in the {0}.
 
 declaration.transportInformation.meansOfTransport.departure.header = What are the chosen transport’s details?
 declaration.transportInformation.meansOfTransport.departure.header.hint = Select the type of identification used for the chosen transport and enter the reference
 declaration.transportInformation.meansOfTransport.departure.error.empty = Enter the transport details
 declaration.transportInformation.meansOfTransport.departure.error.incorrect = Enter the transport details
+declaration.transportInformation.meansOfTransport.departure.help.bodyText = Go to data element 7/7 Identity of the Means of Transport at Departure in the UK Trade Tariff {0}
+
 declaration.transportInformation.meansOfTransport.crossingTheBorder.header = What are the details for the transport that left the border?
 declaration.transportInformation.meansOfTransport.crossingTheBorder.header.hint = If the transport at the border was loaded onto another mode of transport, we need to know that mode of transport. For example, in the case of a lorry on a sea-going vessel, the active means of transport is the sea-going vessel.
 declaration.transportInformation.meansOfTransport.crossingTheBorder.error.empty = Select the active means of transport
@@ -649,6 +704,8 @@ supplementary.totalAmountInvoiced.hint = This is the total amount of all items o
 supplementary.exchangeRate.error = Enter an exchange rate in the correct format
 supplementary.exchangeRate = Agreed fixed rate of exchange
 supplementary.exchangeRate.hint = This is a set price contractually agreed based on a specific currency exchange rate. If one wasn’t agreed, leave this question blank and continue.
+supplementary.total-number-of-items.help-item1 = Where is the office of exit, go to data element 5/12 Customs Office of Exit
+supplementary.total-number-of-items.help-item2 = Express consignment, go to data element 1/7 Specific Circumstance Indicator
 
 supplementary.goodItemNumber.title = Good item number
 supplementary.goodItemNumber.error = Item number doesn't exist
@@ -694,6 +751,7 @@ declaration.cusCode.noCode = No
 declaration.cusCode.error.empty = Enter a CUS code
 declaration.cusCode.error.length = CUS Code must be exactly 8 characters long
 declaration.cusCode.error.specialCharacters = CUS Code cannot contain special characters
+declaration.cusCode.help.bodyText = Go to data element 6/13 CUS Code for Chemicals in the {0}.
 
 declaration.taricAdditionalCodes.header = Is there an additional TARIC code?
 declaration.taricAdditionalCodes.header.hint = This will be the four digits that come after the commodity code in the {0}. If no additional codes are required, leave blank.
@@ -703,6 +761,7 @@ declaration.taricAdditionalCodes.error.invalid = Additional code must be 4 alpha
 declaration.taricAdditionalCodes.add.hint = Add TARIC code
 declaration.taricAdditionalCodes.table.header = TARIC code
 declaration.taricAdditionalCodes.remove.hint = Remove TARIC code {0}
+declaration.taricAdditionalCodes.help.bodyText = Go to data element 6/16 Commodity Code: TARIC Additional Code in the {0}
 
 declaration.nationalAdditionalCode.header = Do these goods require a national additional (NACT) code?
 declaration.nationalAdditionalCode.header.hint = You can find this in ‘Export measures and restrictions’ tab in the {0}. If no additional code is required, leave blank.
@@ -714,12 +773,15 @@ declaration.nationalAdditionalCode.error.duplicate = National additional code al
 declaration.nationalAdditionalCode.add.hint = Add National Additional Code
 declaration.nationalAdditionalCode.table.header = NACT Code
 declaration.nationalAdditionalCode.remove.hint = Remove National Additional Code {0}
+declaration.nationalAdditionalCode.help.bodyText = Go to data element 6/17 National Additional Code in the {0}
 
 declaration.statisticalValue.header = What is the total value of this item’s goods?
 declaration.statisticalValue.header.hint = This is includes the transactional value of the goods as well as all transport involved in moving them.
 declaration.statisticalValue.error.empty = Enter a statistical value up 15 digits
 declaration.statisticalValue.error.length = Enter a statistical value up 15 digits
 declaration.statisticalValue.error.wrongFormat = Enter a statistical value in the correct format
+declaration.statisticalValue.help.bodyText = Go to data element 8/6 Statistical Value in the {0}
+
 
 supplementary.previousDocuments = Previous documents
 supplementary.previousDocuments.title = Add any documents or MUCRs and DUCRs to this declaration
@@ -782,6 +844,7 @@ declaration.natureOfTransaction.construction.hint = These goods are under a gene
 declaration.natureOfTransaction.other = Other
 declaration.natureOfTransaction.empty = Select a nature of transaction
 declaration.natureOfTransaction.error = Nature of transaction type not allowed with entered procedure code
+declaration.natureOfTransaction.help.bodyText = Go to data element 8/5 Nature of Transaction in the {0}.
 
 supplementary.packageInformation.title = Package Information
 supplementary.packageInformation.remove.hint = Remove package type {0} shipping reference {1}
@@ -804,6 +867,10 @@ supplementary.packageInformation.shippingMarks.hint = Any mark or numbers on tra
 supplementary.packageInformation.shippingMarks.lengthError = Shipping marks can be alphanumeric and up to 42 characters
 supplementary.packageInformation.shippingMarks.characterError = Shipping marks can be alphanumeric and up to 42 characters
 supplementary.packageInformation.shippingMarks.empty = Enter shipping marks
+supplementary.packageInformation.help-item1 = Package type, go to data element 6/9 Type of Packages
+supplementary.packageInformation.help-item2 = Number of this package, go to data element 6/10 Number of Packages
+supplementary.packageInformation.help-item3 = Shipping marks, go to data element 6/11 Shipping Marks
+
 supplementary.commodityMeasure.title = Commodity measurements
 supplementary.commodityMeasure.netMass = Net Weight
 supplementary.commodityMeasure.netMass.hint = The total weight(in Kg) of the goods without any packaging.
@@ -818,6 +885,7 @@ supplementary.commodityMeasure.supplementaryUnits = Do you need to add supplemen
 supplementary.commodityMeasure.supplementaryUnits.item = 6/2 Supplementary units
 supplementary.commodityMeasure.supplementaryUnits.hint = Enter the quantity in the unit specified by the commodity code, for example 1,000 kWh
 supplementary.commodityMeasure.supplementaryUnits.error = A supplementary unit can be up to 16 characters
+
 
 declaration.summary.locations.header = Locations
 supplementary.summary.parties.header = Parties

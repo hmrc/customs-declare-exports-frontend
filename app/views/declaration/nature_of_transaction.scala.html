@@ -26,6 +26,8 @@
 
 @(mode: Mode, form: Form[NatureOfTransaction])(implicit request: JourneyRequest[_], messages: Messages)
 
+@tariffBody = { @Html(messages("declaration.natureOfTransaction.help.bodyText", components.details_content_link())) }
+
 @main_template(
     title = Title("declaration.natureOfTransaction.title", "declaration.natureOfTransaction.header")
 ) {
@@ -56,6 +58,7 @@
             )
         )
 
+        @components.details(messages("declaration.type.tariff_summary_text"), Some(tariffBody))
         @components.submit_button()
         @components.buttons.save_and_return_later_button()
     }

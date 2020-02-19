@@ -16,7 +16,7 @@
 
 package views.declaration
 
-import base.TestHelper
+import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.Eori
@@ -32,7 +32,7 @@ import views.html.declaration.declarant_details
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs {
+class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
 
   private val form: Form[DeclarantDetails] = DeclarantDetails.form()
   private val declarantDetailsPage = new declarant_details(mainTemplate)

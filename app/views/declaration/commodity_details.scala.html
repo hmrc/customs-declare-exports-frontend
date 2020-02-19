@@ -35,6 +35,27 @@
 @tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.commodityDetails.how.tradeTariff")</a>}
 @classificationTeamLink = {<a target="_blank" href=@appConfig.classificationHelpUrl>@messages("declaration.commodityDetails.how.classificationTeam")</a>}
 
+
+
+@tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
+
+@tariffBody = {
+@tariffBodyDesc
+<ul class="govuk-list govuk-list--bullet">
+
+    <li>
+        @messages("declaration.type.commodityDetailsListItemOne")
+
+    </li>
+
+    <li>
+        @messages("declaration.type.commodityDetailsListItemTwo")
+
+    </li>
+
+</ul>
+
+}
 @main_template(
     title = Title("declaration.commodityDetails.title", "supplementary.items")
 ) {
@@ -57,6 +78,25 @@
             hint = Some(messages("declaration.commodityDetails.combinedNomenclatureCode.header.hint")),
             labelClass = Some("bold-small")
         )
+<details class="details-font govuk-!-margin-bottom-4" role="group">
+    <summary class="govuk-details__summary" role="button" aria-controls="details-content" aria-expanded="false">
+                <span class="govuk-details__summary-text">
+                @messages("declaration.commodityDetails.how.header")
+                </span>
+    </summary>
+    <div class="grey-border-left">
+        <ol class="list list-number">
+            <li>@Html(messages("declaration.commodityDetails.how.step1", tradeTariffLink))</li>
+            <li>@messages("declaration.commodityDetails.how.step2")</li>
+            <li>@messages("declaration.commodityDetails.how.step3")</li>
+            <li>@messages("declaration.commodityDetails.how.step4")</li>
+            <li>@messages("declaration.commodityDetails.how.step5")</li>
+        </ol>
+        <p>
+            @Html(messages("declaration.commodityDetails.how.summary", classificationTeamLink))
+        </p>
+    </div>
+</details>
 
         @components.fields.field_textarea(
             field = form(CommodityDetails.descriptionOfGoodsKey),
@@ -66,27 +106,9 @@
             inputClass = Some("form-control--full-width")
         )
 
-        <details class="govuk-details" role="group">
-            <summary class="govuk-details__summary" role="button" aria-controls="details-content" aria-expanded="false">
-                <span class="govuk-details__summary-text">
-                @messages("declaration.commodityDetails.how.header")
-                </span>
-            </summary>
-            <div class="grey-border-left">
-                <ol class="list list-number">
-                    <li>@Html(messages("declaration.commodityDetails.how.step1", tradeTariffLink))</li>
-                    <li>@messages("declaration.commodityDetails.how.step2")</li>
-                    <li>@messages("declaration.commodityDetails.how.step3")</li>
-                    <li>@messages("declaration.commodityDetails.how.step4")</li>
-                    <li>@messages("declaration.commodityDetails.how.step5")</li>
-                </ol>
-                <p>
-                    @Html(messages("declaration.commodityDetails.how.summary", classificationTeamLink))
-                </p>
-            </div>
-        </details>
 
 
+        @components.details(messages("declaration.type.consignmentTariff_summary_text"), Some(tariffBody))
         @components.submit_button()
         @components.buttons.save_and_return_later_button()
     }

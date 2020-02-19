@@ -26,6 +26,25 @@
 
 @(mode: Mode, itemId: String, form: Form[ProcedureCodes], codes: Seq[String])(implicit request: JourneyRequest[_], messages: Messages)
 
+@tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText",  components.details_content_link())) }
+
+@tariffBody = {
+@tariffBodyDesc
+<ul class="govuk-list govuk-list--bullet">
+
+    <li>
+        @messages("declaration.type.procedureCodeDescListItemOne")
+
+    </li>
+
+    <li>
+        @messages("declaration.type.procedureCodeDescListItemTwo")
+
+    </li>
+
+</ul>
+
+}
     @main_template(
         title = Title("supplementary.procedureCodes.title", "supplementary.items")
      ) {
@@ -61,6 +80,7 @@
                 removeHint = "supplementary.procedureCodes.additionalProcedureCode.remove.hint"
             )
 
+            @components.details(messages("declaration.type.consignmentTariff_summary_text"), Some(tariffBody))
             @components.add_save_button(addHint = "supplementary.procedureCodes.additionalProcedureCode.add.hint")
             @components.buttons.save_and_return_later_button()
         }

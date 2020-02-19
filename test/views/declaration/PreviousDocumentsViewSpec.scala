@@ -28,11 +28,13 @@ import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.previous_documents
 import views.tags.ViewTest
+import config.AppConfig
 
 @ViewTest
 class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  private val page = new previous_documents(mainTemplate)
+  private val appConfig = instanceOf[AppConfig]
+  private val page = new previous_documents(mainTemplate, appConfig)
   private val form: Form[Document] = Document.form()
   private def createView(
     mode: Mode = Mode.Normal,

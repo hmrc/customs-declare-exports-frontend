@@ -22,9 +22,12 @@
 @import services.view.AutoCompleteItem
 @import views.Title
 
+
 @this(main_template: views.html.main_template)
 
 @(mode: Mode, form: Form[String])(implicit request: JourneyRequest[AnyContent], messages: Messages)
+
+@tariffBody = { @Html(messages("declaration.type.originationCountrySummaryText", components.details_content_link()))}
 
 @main_template(
     title = Title("declaration.originationCountry.title", "declaration.originationCountry.heading")
@@ -50,6 +53,7 @@
             messages("declaration.originationCountry.empty"),
             AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
         )
+        @components.details(messages("declaration.type.tariff_summary_text"), Some(tariffBody))
 
         <div class="section mb-0">
             @components.buttons.save_and_continue_button()

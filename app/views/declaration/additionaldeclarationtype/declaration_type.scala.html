@@ -20,9 +20,15 @@
 @import models.requests.JourneyRequest
 @import views.Title
 
+
 @this(main_template: views.html.main_template)
 
 @(mode: Mode, form: Form[AdditionalDeclarationType])(implicit request: JourneyRequest[_], messages: Messages)
+
+
+@tariffBody = { @Html(messages("declaration.type.bodyText", components.details_content_link())) }
+
+
 
 @main_template(
     title = request.declarationType match {
@@ -51,6 +57,7 @@
             }
         }
 
+        @components.details(messages("site.details.summary_text_this"), Some(tariffBody))
         @components.submit_button()
         @components.buttons.save_and_return_later_button()
     }

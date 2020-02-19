@@ -31,12 +31,13 @@ import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.declaration_holder
 import views.tags.ViewTest
+import config.AppConfig
 
 @ViewTest
 class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
-
+  private val appConfig = instanceOf[AppConfig]
   private val form: Form[DeclarationHolder] = DeclarationHolder.form()
-  private val declarationHolderPage = new declaration_holder(mainTemplate)
+  private val declarationHolderPage = new declaration_holder(mainTemplate, appConfig)
   private def createView(form: Form[DeclarationHolder] = form)(implicit request: JourneyRequest[_]): Document =
     declarationHolderPage(Mode.Normal, form, Seq())(request, messages)
 

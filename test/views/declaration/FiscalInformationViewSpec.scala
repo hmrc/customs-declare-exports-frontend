@@ -30,12 +30,14 @@ import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.fiscal_information
 import views.tags.ViewTest
+import config.AppConfig
 
 @ViewTest
 class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
+  private val appConfig = instanceOf[AppConfig]
   private val form: Form[FiscalInformation] = FiscalInformation.form()
-  private val page = new fiscal_information(mainTemplate)
+  private val page = new fiscal_information(mainTemplate, appConfig)
   private def createView(itemId: String = "itemId", form: Form[FiscalInformation] = form)(implicit request: JourneyRequest[_]): Html =
     page(Mode.Normal, itemId, form)(request, stubMessages())
 

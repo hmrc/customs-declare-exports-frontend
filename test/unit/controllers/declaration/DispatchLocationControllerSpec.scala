@@ -16,6 +16,7 @@
 
 package unit.controllers.declaration
 
+import base.Injector
 import controllers.declaration.DispatchLocationController
 import forms.declaration.DispatchLocation
 import forms.declaration.DispatchLocation.AllowedDispatchLocations._
@@ -24,11 +25,12 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import views.html.declaration.dispatch_location
+import config.AppConfig
 
-class DispatchLocationControllerSpec extends ControllerSpec {
-
+class DispatchLocationControllerSpec extends ControllerSpec with Injector {
+  private val appConfig = instanceOf[AppConfig]
   trait SetUp {
-    val dispatchLocationPage = new dispatch_location(mainTemplate)
+    val dispatchLocationPage = new dispatch_location(mainTemplate, appConfig)
 
     val controller = new DispatchLocationController(
       mockAuthAction,

@@ -32,12 +32,13 @@ import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.declaration_additional_actors
 import views.tags.ViewTest
+import config.AppConfig
 
 @ViewTest
 class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessages with ExportsTestData with Stubs with Injector {
-
+  private val appConfig = instanceOf[AppConfig]
   private val form: Form[DeclarationAdditionalActors] = DeclarationAdditionalActors.form()
-  private val declarationAdditionalActorsPage = new declaration_additional_actors(mainTemplate)
+  private val declarationAdditionalActorsPage = new declaration_additional_actors(mainTemplate, appConfig)
 
   private def createView(form: Form[DeclarationAdditionalActors], request: JourneyRequest[_]): Document =
     declarationAdditionalActorsPage(Mode.Normal, form, Seq())(request, messages)

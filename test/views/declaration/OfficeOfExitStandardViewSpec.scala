@@ -31,6 +31,7 @@ import views.tags.ViewTest
 
 @ViewTest
 class OfficeOfExitStandardViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+
   private val page: office_of_exit_standard = new office_of_exit_standard(mainTemplate)
   private val form: Form[OfficeOfExitStandard] = OfficeOfExitForms.standardForm()
   private def createView(mode: Mode = Mode.Normal, form: Form[OfficeOfExitStandard] = form): Document =
