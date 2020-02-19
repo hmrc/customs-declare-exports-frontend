@@ -46,7 +46,8 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
         val view: Document = template.apply(Mode.Normal, TotalPackageQuantity.form(request.declarationType))(request, messages)
 
         "display same page title as header" in {
-          val viewWithMessage: Document = template.apply(Mode.Normal, TotalPackageQuantity.form(request.declarationType))(request, realMessagesApi.preferred(request))
+          val viewWithMessage: Document =
+            template.apply(Mode.Normal, TotalPackageQuantity.form(request.declarationType))(request, realMessagesApi.preferred(request))
           viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
         }
 

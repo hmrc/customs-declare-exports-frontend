@@ -44,6 +44,6 @@ object TotalPackageQuantity extends DeclarationPage {
 
   def form(declarationType: DeclarationType): Form[TotalPackageQuantity] = declarationType match {
     case STANDARD | SUPPLEMENTARY => Form(requiredMapping)
-    case CLEARANCE => Form(optionalMapping)
+    case CLEARANCE                => Form(optionalMapping)
   }
 }
