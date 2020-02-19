@@ -50,7 +50,7 @@
                     components.table_row("total-no-of-packages", HtmlTableRow(
                         label = messages("declaration.summary.transaction.totalNoOfPackages"),
                         value = totalPackage,
-                        call = Some(controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode)),
+                        call = Some(controllers.declaration.routes.TotalPackageQuantityController.displayPage(mode)),
                         changeLabel = Some(messages("declaration.summary.transaction.totalNoOfPackages.change"))
                     ))
                 )

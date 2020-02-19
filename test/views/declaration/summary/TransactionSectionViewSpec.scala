@@ -70,7 +70,7 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData {
       change mustBe messages("site.change")
       accessibleChange mustBe messages("declaration.summary.transaction.totalNoOfPackages.change")
 
-      view.getElementById("total-no-of-packages-change") must haveHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage())
+      view.getElementById("total-no-of-packages-change") must haveHref(controllers.declaration.routes.TotalPackageQuantityController.displayPage())
     }
 
     "have nature of transaction with change button" in {
