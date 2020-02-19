@@ -27,7 +27,7 @@
 @(mode: Mode, form: Form[TotalPackageQuantity])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
-    title = Title("supplementary.valueOfItems", "supplementary.items")
+    title = Title("supplementary.valueOfItems", "declaration.totalPackageQuantity.title")
 ) {
     @helper.form(TotalPackageQuantityController.saveTotalPackageQuantity(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
@@ -38,13 +38,13 @@
 
         @components.heading(
             sectionHeader = messages("supplementary.items"),
-            title = messages("supplementary.valueOfItems")
+            title = messages("declaration.totalPackageQuantity.title")
         )
 
         @components.fields.field_text(
             field = form("totalPackage"),
-            label = Some(messages("supplementary.totalPackageQuantity")),
-            labelClass = Some("form-label-bold")
+            label = Some(""),
+            labelClass = Some("")
         )
 
         @components.submit_button()

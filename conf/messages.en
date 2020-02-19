@@ -550,6 +550,8 @@ supplementary.totalPackageQuantity = Total number of packages
 supplementary.totalPackageQuantity.empty = Enter the total number of packages
 supplementary.totalPackageQuantity.error = Enter the total number of packages
 
+declaration.totalPackageQuantity.title = What is the total number of packages you want to add? 
+
 declaration.transport.leavingTheBorder.title = What mode of transport will the goods leave the EU on?
 declaration.transport.leavingTheBorder.heaer = What mode of transport will the goods leave the EU on?
 declaration.transport.leavingTheBorder.transportMode.sea = Sea transport

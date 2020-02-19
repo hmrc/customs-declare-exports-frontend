@@ -36,6 +36,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
     "rendered with empty form" should {
       "have proper messages for keys" in {
         val messages = instanceOf[MessagesApi].preferred(journeyRequest())
+        messages must haveTranslationFor("declaration.totalPackageQuantity.title")
         messages must haveTranslationFor("supplementary.totalPackageQuantity")
         messages must haveTranslationFor("supplementary.totalPackageQuantity.empty")
         messages must haveTranslationFor("supplementary.totalPackageQuantity.error")
