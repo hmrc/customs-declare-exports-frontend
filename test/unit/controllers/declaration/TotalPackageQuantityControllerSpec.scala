@@ -54,7 +54,7 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
   }
 
   "Total Package Quantity Controller" must {
-    onJourney(STANDARD, SIMPLIFIED)() { declaration =>
+    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE)() { declaration =>
       "return 200 (OK)" when {
         "cache is empty" in {
           withNewCaching(declaration)
@@ -80,26 +80,13 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
           status(result) mustBe BAD_REQUEST
         }
       }
-      "return 303 (See Other)" should {
-        val correctForm = Json.toJson(TotalPackageQuantity(Some("1")))
-        onStandard { declaration =>
-          "redirect to next question" in {
-            withNewCaching(declaration)
-            val result = controller.saveTotalPackageQuantity(Mode.Normal)(postRequest(correctForm))
+      val correctForm = Json.toJson(TotalPackageQuantity(Some("1")))
+      "return 303 (See Other) redirect to next question" in {
+        withNewCaching(declaration)
+        val result = controller.saveTotalPackageQuantity(Mode.Normal)(postRequest(correctForm, declaration))
 
-            await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe controllers.declaration.routes.NatureOfTransactionController.displayPage()
-          }
-        }
-        onSimplified { declaration =>
-          "redurect to next question" in {
-            withNewCaching(declaration)
-            val result = controller.saveTotalPackageQuantity(Mode.Normal)(postRequest(correctForm))
-
-            await(result) mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
-          }
-        }
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.NatureOfTransactionController.displayPage()
       }
     }
   }

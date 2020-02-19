@@ -44,14 +44,14 @@ class TotalPackageQuantityController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode) = (authorize andThen journey) { implicit request =>
-    val form = TotalPackageQuantity.form()
+    val form = TotalPackageQuantity.form(request.declarationType)
     val data = request.cacheModel.totalPackageQuantity.fold(form)(form.fill)
     Ok(totalPackageQuantity(mode, data))
   }
 
   def saveTotalPackageQuantity(mode: Mode): Action[AnyContent] = (authorize andThen journey).async { implicit request =>
     TotalPackageQuantity
-      .form()
+      .form(request.declarationType)
       .bindFromRequest()
       .fold(
         error => Future.successful(BadRequest(totalPackageQuantity(mode, error))),
@@ -63,8 +63,6 @@ class TotalPackageQuantityController @Inject()(
     declarationType match {
       case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | DeclarationType.CLEARANCE =>
         controllers.declaration.routes.NatureOfTransactionController.displayPage
-      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
-        controllers.declaration.routes.PreviousDocumentsController.displayPage
     }
 
   private def updateCache(totalPackage: TotalPackageQuantity)(implicit req: JourneyRequest[_]) =

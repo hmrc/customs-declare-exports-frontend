@@ -42,11 +42,11 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
         messages must haveTranslationFor("supplementary.totalPackageQuantity.error")
       }
 
-      onEveryDeclarationJourney { request =>
-        val view: Document = template.apply(Mode.Normal, TotalPackageQuantity.form())(request, messages)
+      onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
+        val view: Document = template.apply(Mode.Normal, TotalPackageQuantity.form(request.declarationType))(request, messages)
 
         "display same page title as header" in {
-          val viewWithMessage: Document = template.apply(Mode.Normal, TotalPackageQuantity.form())(request, realMessagesApi.preferred(request))
+          val viewWithMessage: Document = template.apply(Mode.Normal, TotalPackageQuantity.form(request.declarationType))(request, realMessagesApi.preferred(request))
           viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
         }
 
@@ -55,12 +55,11 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
         }
 
         "display header" in {
-          view.getElementById("title").text() must be("supplementary.valueOfItems")
+          view.getElementById("title").text() must be("declaration.totalPackageQuantity.title")
         }
 
         "display empty input with label for Total Package" in {
-          view.getElementById("totalPackage-label").text() must be("supplementary.totalPackageQuantity") // FIXME
-//          view.getElementById("totalPackage-hint").text() must be("supplementary.totalPackageQuantity.hint") //FIXME there is no hint
+          view.getElementById("totalPackage-label").text() must be("")
           view.getElementById("totalPackage").attr("value") mustBe empty
         }
 
@@ -76,7 +75,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
 
         "rendered with invalid form" should {
           "display error when all entered input is incorrect" in {
-            val form = TotalPackageQuantity.form().withError("totalPackage", "supplementary.totalPackageQuantity.error")
+            val form = TotalPackageQuantity.form(request.declarationType).withError("totalPackage", "supplementary.totalPackageQuantity.error")
             val view: Document = template.apply(Mode.Normal, form)(request, messages)
 
             view must haveGlobalErrorSummary
@@ -86,7 +85,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
 
         "redered with filled form" should {
           "display data in inputs" in {
-            val form = TotalPackageQuantity.form().fill(TotalPackageQuantity(Some("1")))
+            val form = TotalPackageQuantity.form(request.declarationType).fill(TotalPackageQuantity(Some("1")))
             val view: Document = template.apply(Mode.Normal, form)(request, messages)
 
             view.getElementById("totalPackage").attr("value") mustEqual "1"
@@ -94,9 +93,9 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
         }
       }
     }
-    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY) { request =>
       "display back button" in {
-        val view: Document = template.apply(Mode.Normal, TotalPackageQuantity.form())(request, messages)
+        val view: Document = template.apply(Mode.Normal, TotalPackageQuantity.form(request.declarationType))(request, messages)
         val backButton = view.getElementById("back-link")
 
         backButton.text() must be("site.back")
@@ -105,7 +104,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
     }
     onClearance { request =>
       "display back button" in {
-        val view: Document = template.apply(Mode.Normal, TotalPackageQuantity.form())(request, messages)
+        val view: Document = template.apply(Mode.Normal, TotalPackageQuantity.form(request.declarationType))(request, messages)
         val backButton = view.getElementById("back-link")
 
         backButton.text() must be("site.back")

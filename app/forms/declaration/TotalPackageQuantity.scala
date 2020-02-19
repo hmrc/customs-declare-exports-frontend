@@ -17,6 +17,8 @@
 package forms.declaration
 
 import forms.DeclarationPage
+import models.DeclarationType._
+import models.DeclarationType.DeclarationType
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
@@ -30,7 +32,7 @@ object TotalPackageQuantity extends DeclarationPage {
 
   import utils.validators.forms.FieldValidator._
 
-  val mapping = Forms.mapping(
+  private val optionalMapping = Forms.mapping(
     "totalPackage" -> optional(
       text()
         .verifying("supplementary.totalPackageQuantity.empty", nonEmpty)
@@ -38,5 +40,10 @@ object TotalPackageQuantity extends DeclarationPage {
     )
   )(TotalPackageQuantity.apply)(TotalPackageQuantity.unapply)
 
-  def form(): Form[TotalPackageQuantity] = Form(mapping)
+  private val requiredMapping = optionalMapping.verifying("declaration.totalPackageQuantity.required", _.totalPackage.exists(nonEmpty))
+
+  def form(declarationType: DeclarationType): Form[TotalPackageQuantity] = declarationType match {
+    case STANDARD | SUPPLEMENTARY => Form(requiredMapping)
+    case CLEARANCE => Form(optionalMapping)
+  }
 }
