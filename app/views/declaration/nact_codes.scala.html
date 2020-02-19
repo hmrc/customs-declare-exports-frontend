@@ -38,6 +38,8 @@
         nactCodes: Seq[NactCode] = Seq.empty
 )(implicit request: JourneyRequest[_], messages: Messages)
 
+@tariffBody = { @Html(messages("declaration.nationalAdditionalCode.help.bodyText", components.details_content_link())) }
+
 @tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.nationalAdditionalCode.header.tradeTariff.link")</a>}
 
 @main_template(
@@ -73,6 +75,7 @@
             removeHint = "declaration.nationalAdditionalCode.remove.hint"
         )
 
+        @components.details(messages("site.details.summary_text_this"), Some(tariffBody))
         <div class="section mb-0">
         @components.buttons.save_and_continue_button()
         </div>

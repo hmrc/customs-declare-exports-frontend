@@ -29,6 +29,25 @@
 
 @(mode: Mode, form: Form[OfficeOfExitStandard])(implicit request: JourneyRequest[_], messages: Messages)
 
+@tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
+
+@tariffBody = {
+@tariffBodyDesc
+<ul class="govuk-list govuk-list--bullet">
+
+    <li>
+        @messages("supplementary.representative-details.help-item1")
+
+    </li>
+
+    <li>
+        @messages("supplementary.representative-details.help-item2")
+
+    </li>
+</ul>
+
+}
+
 @main_template(
     title = Title("declaration.officeOfExit.title", "declaration.summary.locations.header")
 ) {
@@ -62,6 +81,7 @@
             )
         )
 
+        @components.details(messages("site.details.summary_text_these"), Some(tariffBody))
         @components.submit_button()
         @components.buttons.save_and_return_later_button()
     }

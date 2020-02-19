@@ -16,7 +16,7 @@
 
 package views.declaration
 
-import base.TestHelper
+import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.{Address, Eori}
@@ -32,7 +32,7 @@ import views.html.declaration.consignee_details
 import views.tags.ViewTest
 
 @ViewTest
-class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs {
+class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   val form: Form[ConsigneeDetails] = ConsigneeDetails.form()
   val consigneeDetailsPage = new consignee_details(mainTemplate)

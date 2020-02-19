@@ -138,3 +138,7 @@ $govuk-assets-path: '/customs-declare-exports/assets/';
 $govuk-images-path: "/customs-declare-exports/assets/lib/govuk-frontend/govuk/assets/images/";
 $govuk-fonts-path: "/customs-declare-exports/assets/lib/govuk-frontend/govuk/assets/fonts/";
 @import 'lib/govuk-frontend/govuk/all';
+
+.details-font {
+font-size : 19px;
+}

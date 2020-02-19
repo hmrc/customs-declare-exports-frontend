@@ -31,6 +31,25 @@
 
 @(mode: Mode, form: Form[BorderTransport])(implicit request: JourneyRequest[_], messages: Messages)
 
+@tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
+
+@tariffBody = {
+@tariffBodyDesc
+<ul class="govuk-list govuk-list--bullet">
+
+    <li>
+        @messages("declaration.transportInformation.active.help-item1")
+
+    </li>
+
+    <li>
+        @messages("declaration.transportInformation.active.help-item2")
+
+    </li>
+</ul>
+
+}
+
 @radioOption(id: String, value: String) = @{RadioOption(
     id = id,
     value = value,
@@ -87,6 +106,7 @@
             'otherErrorFields -> Seq("countryCode")
         )
 
+        @components.details(messages("site.details.summary_text_these"), Some(tariffBody))
         @components.submit_button()
         @components.buttons.save_and_return_later_button()
     }

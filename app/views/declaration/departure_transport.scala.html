@@ -30,6 +30,9 @@
 
 @(mode: Mode, form: Form[DepartureTransport])(implicit request: JourneyRequest[_], messages: Messages)
 
+@tariffBody = { @Html(messages("declaration.transportInformation.meansOfTransport.departure.help.bodyText", components.details_content_link())) }
+
+
 @main_template(
     title = Title("declaration.transportInformation.title")
 ) {
@@ -65,6 +68,7 @@
             labelClass = Some("bold-small")
         )
 
+       @components.details(messages("site.details.summary_text_this"), Some(tariffBody))
        @components.submit_button()
        @components.buttons.save_and_return_later_button()
     }

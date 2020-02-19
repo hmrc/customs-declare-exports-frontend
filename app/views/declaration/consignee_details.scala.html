@@ -26,6 +26,26 @@
 
 @(mode: Mode, form: Form[ConsigneeDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
+@tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
+
+@tariffBody = {
+@tariffBodyDesc
+<ul class="govuk-list govuk-list--bullet">
+
+    <li>
+        @messages("supplementary.consignee-details.help-item1")
+
+    </li>
+
+    <li>
+        @messages("supplementary.consignee-details.help-item2")
+
+    </li>
+
+</ul>
+
+}
+
 @main_template(
     title = Title("supplementary.consignee.title", "supplementary.summary.parties.header")
 ) {
@@ -56,6 +76,7 @@
             @components.address(form, "details.address", Some(messages("supplementary.consignee.address.info")))
         }
 
+        @components.details(messages("site.details.summary_text_these"), Some(tariffBody))
         @components.submit_button()
         @components.buttons.save_and_return_later_button()
     }

@@ -16,6 +16,7 @@
 
 package views.declaration
 
+import base.Injector
 import forms.declaration.CusCode
 import helpers.views.declaration.CommonMessages
 import models.requests.JourneyRequest
@@ -29,11 +30,13 @@ import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.cus_code
 import views.tags.ViewTest
+import config.AppConfig
 
 @ViewTest
-class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages {
+class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
 
-  private val page = new cus_code(mainTemplate, minimalAppConfig)
+  private val appConfig = instanceOf[AppConfig]
+  private val page = new cus_code(mainTemplate, appConfig)
   private val itemId = "item1"
   private val realMessages = validatedMessages
   private def createView(form: Form[CusCode], request: JourneyRequest[_]): Document =

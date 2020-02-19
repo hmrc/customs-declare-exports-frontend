@@ -27,6 +27,9 @@
 
 @(mode: Mode, itemId: String, form: Form[AdditionalInformation], items: Seq[AdditionalInformation])(implicit request: JourneyRequest[_], messages: Messages)
 
+@tariffBodyDesc = { @Html(messages("declaration.type.additionalActorsSummaryText", components.details_content_link())) }
+
+
 @main_template(
     title = Title("supplementary.additionalInformation.title", "supplementary.summary.yourReferences.header")
 ) {
@@ -80,7 +83,7 @@
             label = messages("supplementary.additionalInformation.description"),
             labelClass = Some("bold-small")
         )
-
+        @components.details(messages("site.details.summary_text_this"), Some(tariffBodyDesc))
         @components.add_save_button(addHint = "supplementary.additionalInformation.add.hint")
         @components.buttons.save_and_return_later_button()
     }

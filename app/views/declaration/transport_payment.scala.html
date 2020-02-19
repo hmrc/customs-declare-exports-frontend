@@ -31,6 +31,8 @@
 
 @(mode: Mode, form: Form[TransportPayment])(implicit request: JourneyRequest[_], messages: Messages)
 
+@tariffBody = { @Html(messages("declaration.transportInformation.transportPayment.paymentMethod.help.bodyText", components.details_content_link())) }
+
 @main_template(
     title = Title("declaration.transportInformation.transportPayment.paymentMethod")
 ) {
@@ -61,6 +63,7 @@
             )
         )
 
+        @components.details(messages("site.details.summary_text_this"), Some(tariffBody))
         @components.submit_button()
         @components.buttons.save_and_return_later_button()
     }

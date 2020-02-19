@@ -16,6 +16,7 @@
 
 package views.declaration
 
+import base.Injector
 import forms.declaration.TaricCode
 import helpers.views.declaration.CommonMessages
 import models.DeclarationType.DeclarationType
@@ -27,11 +28,13 @@ import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.taric_codes
 import views.tags.ViewTest
+import config.AppConfig
 
 @ViewTest
-class TaricCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages {
+class TaricCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
 
-  private val page = new taric_codes(mainTemplate, minimalAppConfig)
+  private val appConfig = instanceOf[AppConfig]
+  private val page = new taric_codes(mainTemplate, appConfig)
   private val itemId = "item1"
   private val realMessages = validatedMessages
   private def createView(declarationType: DeclarationType, form: Form[TaricCode], codes: List[TaricCode]): Document =

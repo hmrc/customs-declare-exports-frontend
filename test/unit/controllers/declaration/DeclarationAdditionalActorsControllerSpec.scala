@@ -16,6 +16,7 @@
 
 package unit.controllers.declaration
 
+import base.Injector
 import base.TestHelper
 import controllers.declaration.DeclarationAdditionalActorsController
 import controllers.util.Remove
@@ -28,11 +29,12 @@ import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
 import views.html.declaration.declaration_additional_actors
+import config.AppConfig
 
-class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with ErrorHandlerMocks {
-
+class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Injector with ErrorHandlerMocks {
+  private val appConfig = instanceOf[AppConfig]
   trait SetUp {
-    val declarationAdditionalActorsPage = new declaration_additional_actors(mainTemplate)
+    val declarationAdditionalActorsPage = new declaration_additional_actors(mainTemplate, appConfig)
 
     val controller = new DeclarationAdditionalActorsController(
       mockAuthAction,
