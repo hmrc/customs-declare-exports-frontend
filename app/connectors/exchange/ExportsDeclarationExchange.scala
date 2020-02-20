@@ -14,22 +14,6 @@
  * limitations under the License.
  */
 
-/*
- * Copyright 2019 HM Revenue & Customs
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package connectors.exchange
 
 import java.time.Instant
@@ -80,7 +64,12 @@ case class ExportsDeclarationExchange(
     parties = this.parties,
     locations = this.locations,
     items = this.items,
-    totalNumberOfItems = this.totalNumberOfItems.map(exchange => TotalNumberOfItems(exchange.totalAmountInvoiced, exchange.exchangeRate)),
+    totalNumberOfItems = this.totalNumberOfItems.flatMap { exchange =>
+      (exchange.totalAmountInvoiced, exchange.exchangeRate) match {
+        case (None, None)                        => None
+        case (totalAmountInvoiced, exchangeRate) => Some(TotalNumberOfItems(totalAmountInvoiced, exchangeRate))
+      }
+    },
     totalPackageQuantity = this.totalNumberOfItems.map(exchange => TotalPackageQuantity(exchange.totalPackage)),
     previousDocuments = this.previousDocuments,
     natureOfTransaction = this.natureOfTransaction

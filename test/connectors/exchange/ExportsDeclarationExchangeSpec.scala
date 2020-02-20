@@ -89,7 +89,7 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
     parties = parties,
     locations = locations,
     items = Seq(item),
-    totalNumberOfItems = Some(totalNumberOfItems),
+    totalNumberOfItems = None,
     totalPackageQuantity = Some(totalPackageQuantity),
     previousDocuments = Some(previousDocuments),
     natureOfTransaction = Some(natureOfTransaction)
