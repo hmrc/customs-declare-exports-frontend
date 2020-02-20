@@ -40,6 +40,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
         messages must haveTranslationFor("supplementary.totalPackageQuantity")
         messages must haveTranslationFor("supplementary.totalPackageQuantity.empty")
         messages must haveTranslationFor("supplementary.totalPackageQuantity.error")
+        messages must haveTranslationFor("declaration.totalPackageQuantity.error.required")
       }
 
       onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>

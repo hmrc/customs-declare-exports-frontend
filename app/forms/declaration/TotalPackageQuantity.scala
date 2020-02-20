@@ -40,7 +40,7 @@ object TotalPackageQuantity extends DeclarationPage {
     )
   )(TotalPackageQuantity.apply)(TotalPackageQuantity.unapply)
 
-  private val requiredMapping = optionalMapping.verifying("declaration.totalPackageQuantity.required", _.totalPackage.exists(nonEmpty))
+  private val requiredMapping = optionalMapping.verifying("declaration.totalPackageQuantity.error.required", _.totalPackage.exists(nonEmpty))
 
   def form(declarationType: DeclarationType): Form[TotalPackageQuantity] = declarationType match {
     case STANDARD | SUPPLEMENTARY => Form(requiredMapping)
