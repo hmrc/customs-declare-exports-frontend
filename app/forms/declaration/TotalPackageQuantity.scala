@@ -20,7 +20,7 @@ import forms.DeclarationPage
 import models.DeclarationType._
 import models.DeclarationType.DeclarationType
 import play.api.data.Forms.{optional, text}
-import play.api.data.{Form, Forms}
+import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 
 case class TotalPackageQuantity(totalPackage: Option[String])
@@ -30,17 +30,24 @@ object TotalPackageQuantity extends DeclarationPage {
 
   val formId = "TotalPackageQuantity"
 
+  def applyRequired(value: String): TotalPackageQuantity = TotalPackageQuantity(if (value.isEmpty) None else Some(value))
+
+  def unapplyRequired(value: TotalPackageQuantity): Option[String] = value.totalPackage
+
   import utils.validators.forms.FieldValidator._
 
   private val optionalMapping = Forms.mapping(
     "totalPackage" -> optional(
       text()
-        .verifying("supplementary.totalPackageQuantity.empty", nonEmpty)
-        .verifying("supplementary.totalPackageQuantity.error", isEmpty or (isNumeric and noLongerThan(8)))
+        .verifying("supplementary.totalPackageQuantity.error", isNumeric and noLongerThan(8))
     )
   )(TotalPackageQuantity.apply)(TotalPackageQuantity.unapply)
 
-  private val requiredMapping = optionalMapping.verifying("declaration.totalPackageQuantity.error.required", _.totalPackage.exists(nonEmpty))
+  private val requiredMapping = Forms.mapping(
+    "totalPackage" -> text()
+      .verifying("supplementary.totalPackageQuantity.empty", nonEmpty)
+      .verifying("supplementary.totalPackageQuantity.error", isEmpty or (isNumeric and noLongerThan(8)))
+  )(TotalPackageQuantity.applyRequired)(TotalPackageQuantity.unapplyRequired)
 
   def form(declarationType: DeclarationType): Form[TotalPackageQuantity] = declarationType match {
     case STANDARD | SUPPLEMENTARY => Form(requiredMapping)
