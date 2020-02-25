@@ -28,13 +28,11 @@ import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.procedure_codes
 import views.tags.ViewTest
-import config.AppConfig
 
 @ViewTest
 class ProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  private val appConfig = instanceOf[AppConfig]
-  private val page = new procedure_codes(mainTemplate, appConfig)
+  private val page = new procedure_codes(mainTemplate)
   private val form: Form[ProcedureCodes] = ProcedureCodes.form()
   private def createView(mode: Mode = Mode.Normal, form: Form[ProcedureCodes] = form, codes: Seq[String] = Seq.empty): Document =
     page(mode, "itemId", form, codes)(journeyRequest(), stubMessages())
