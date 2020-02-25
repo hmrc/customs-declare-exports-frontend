@@ -16,7 +16,6 @@
 
 package views.declaration.destinationCountries
 
-import base.Injector
 import controllers.declaration.routes
 import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.destinationCountries.DestinationCountries.OriginationCountryPage
@@ -26,14 +25,12 @@ import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.destinationCountries.origination_country
-import config.AppConfig
 
-class OriginationCountryViewSpec extends UnitViewSpec with Injector with Stubs with ExportsTestData {
-  private val appConfig = instanceOf[AppConfig]
+class OriginationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
 
   val form: Form[String] = DestinationCountries.form(OriginationCountryPage)
 
-  val originationCountryPage = new origination_country(mainTemplate, appConfig)
+  val originationCountryPage = new origination_country(mainTemplate)
   val view = originationCountryPage(Mode.Normal, form)(journeyRequest(), messages)
 
   "Origination country view spec" should {

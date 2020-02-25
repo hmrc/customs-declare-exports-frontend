@@ -196,6 +196,8 @@ declaration.type.supervisingCustomsOfficeSummaryText = Go to data element 5/27 S
 declaration.type.containerAddFirstItemListOne = Container, go to data element 7/2 Container
 declaration.type.containerAddFirstItemListTwo = Container ID, go to data element 7/10 Container Identification Number
 
+declaration.type.sealsSummaryText = Go to data element 7/18 Seal Number in the {0}
+
 declaration.type.error = Choose a valid option
 
 startPage.title.sectionHeader = Guidance

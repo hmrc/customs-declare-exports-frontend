@@ -16,7 +16,6 @@
 
 package unit.controllers.declaration
 
-import base.Injector
 import controllers.declaration.DeclarationHolderController
 import controllers.util.Remove
 import forms.common.Eori
@@ -27,13 +26,11 @@ import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
 import views.html.declaration.declaration_holder
-import config.AppConfig
 
-class DeclarationHolderControllerSpec extends ControllerSpec with Injector with ErrorHandlerMocks {
-  private val appConfig = instanceOf[AppConfig]
+class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
   trait SetUp {
-    val declarationHolderPage = new declaration_holder(mainTemplate, appConfig)
+    val declarationHolderPage = new declaration_holder(mainTemplate)
 
     val controller = new DeclarationHolderController(
       mockAuthAction,

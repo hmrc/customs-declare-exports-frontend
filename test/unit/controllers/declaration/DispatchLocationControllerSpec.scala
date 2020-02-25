@@ -16,7 +16,6 @@
 
 package unit.controllers.declaration
 
-import base.Injector
 import controllers.declaration.DispatchLocationController
 import forms.declaration.DispatchLocation
 import forms.declaration.DispatchLocation.AllowedDispatchLocations._
@@ -27,10 +26,10 @@ import unit.base.ControllerSpec
 import views.html.declaration.dispatch_location
 import config.AppConfig
 
-class DispatchLocationControllerSpec extends ControllerSpec with Injector {
-  private val appConfig = instanceOf[AppConfig]
+class DispatchLocationControllerSpec extends ControllerSpec {
+
   trait SetUp {
-    val dispatchLocationPage = new dispatch_location(mainTemplate, appConfig)
+    val dispatchLocationPage = new dispatch_location(mainTemplate)
 
     val controller = new DispatchLocationController(
       mockAuthAction,

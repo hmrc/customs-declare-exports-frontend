@@ -29,13 +29,12 @@ import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.dispatch_location
 import views.tags.ViewTest
-import config.AppConfig
 
 @ViewTest
 class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
-  private val appConfig = instanceOf[AppConfig]
+
   private val form: Form[DispatchLocation] = DispatchLocation.form()
-  private val dispatchLocationPage = new dispatch_location(mainTemplate, appConfig)
+  private val dispatchLocationPage = new dispatch_location(mainTemplate)
   private def createView(form: Form[DispatchLocation] = form, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
     dispatchLocationPage(mode, form)(request, messages)
 
