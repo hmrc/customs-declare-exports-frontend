@@ -30,6 +30,8 @@
 
 @(mode: Mode, form: Form[YesNoAnswer], containers: Seq[Container])(implicit request: JourneyRequest[_], messages: Messages)
 
+@tariffBody = { @Html(messages("declaration.type.container.summary.help.text", components.details_content_link())) }
+
 @main_template(
     title = Title("declaration.transportInformation.containers.title")
 ) {
@@ -87,6 +89,9 @@
             )
         )
 
+        @components.details(messages("site.details.summary_text_this")){
+         @tariffBody
+        }
         @components.submit_button()
         @components.buttons.save_and_return_later_button()
     }

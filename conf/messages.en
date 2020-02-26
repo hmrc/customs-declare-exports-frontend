@@ -195,6 +195,7 @@ declaration.type.warehouseInformationSummaryText = Go to data element 2/7 Identi
 declaration.type.supervisingCustomsOfficeSummaryText = Go to data element 5/27 Supervising Customs Office in the {0}
 declaration.type.containerAddFirstItemListOne = Container, go to data element 7/2 Container
 declaration.type.containerAddFirstItemListTwo = Container ID, go to data element 7/10 Container Identification Number
+declaration.type.container.summary.help.text = Go to data element 7/10 Container Identification Number in the UK Trade Tariff.
 
 declaration.type.sealsSummaryText = Go to data element 7/18 Seal Number in the {0}
 

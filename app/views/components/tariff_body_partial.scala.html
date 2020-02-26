@@ -14,17 +14,20 @@
  * limitations under the License.
  *@
 
-@import play.twirl.api.HtmlFormat
-
-@(summaryText: String = "")(bodyHtml: Html = HtmlFormat.empty)
-
-<details class="govuk-details details-font" data-module="govuk-details">
-    <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      @summaryText
-    </span>
-    </summary>
-    <div class="govuk-details__text">
-        @bodyHtml
-    </div>
-</details>
+@(m1: String = "", m2: String = "", m3: String = "")(description: Html)
+@description
+<ul class="govuk-list govuk-list--bullet">
+    <li>
+        @m1
+    </li>
+    @if(m2.nonEmpty){
+    <li>
+        @m2
+    </li>
+    }
+    @if(m3.nonEmpty){
+    <li>
+        @m2
+    </li>
+    }
+</ul>

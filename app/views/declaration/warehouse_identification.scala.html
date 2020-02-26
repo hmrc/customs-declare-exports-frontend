@@ -24,7 +24,7 @@
 
 @(mode: Mode, form: Form[WarehouseIdentification])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tariffBodyDesc = { @Html(messages("declaration.type.warehouseInformationSummaryText", components.details_content_link())) }
+@tariffBody = { @Html(messages("declaration.type.warehouseInformationSummaryText", components.details_content_link())) }
 
     @main_template(
         title = Title("declaration.warehouse.identification.title")
@@ -45,7 +45,9 @@
 
             @components.fields.field_text(field = form("identificationNumber"))
 
-            @components.details(messages("site.details.summary_text_this"), Some(tariffBodyDesc))
+            @components.details(messages("site.details.summary_text_this")){
+               @tariffBody
+            }
             @components.submit_button()
             @components.buttons.save_and_return_later_button()
         }

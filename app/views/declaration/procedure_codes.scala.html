@@ -28,23 +28,8 @@
 
 @tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText",  components.details_content_link())) }
 
-@tariffBody = {
-@tariffBodyDesc
-<ul class="govuk-list govuk-list--bullet">
+@tariffBody = { @components.tariff_body_partial(messages("declaration.type.procedureCodeDescListItemOne"), messages("declaration.type.procedureCodeDescListItemTwo"))(tariffBodyDesc)}
 
-    <li>
-        @messages("declaration.type.procedureCodeDescListItemOne")
-
-    </li>
-
-    <li>
-        @messages("declaration.type.procedureCodeDescListItemTwo")
-
-    </li>
-
-</ul>
-
-}
     @main_template(
         title = Title("supplementary.procedureCodes.title", "supplementary.items")
      ) {
@@ -80,7 +65,9 @@
                 removeHint = "supplementary.procedureCodes.additionalProcedureCode.remove.hint"
             )
 
-            @components.details(messages("declaration.type.consignmentTariff_summary_text"), Some(tariffBody))
+            @components.details(messages("declaration.type.consignmentTariff_summary_text")){
+              @tariffBody
+            }
             @components.add_save_button(addHint = "supplementary.procedureCodes.additionalProcedureCode.add.hint")
             @components.buttons.save_and_return_later_button()
         }

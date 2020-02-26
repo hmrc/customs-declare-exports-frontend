@@ -29,7 +29,7 @@
 
 @(mode: Mode, form: Form[DeclarationHolder], holders: Seq[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tariffBodyDesc = { @Html(messages("declaration.type.holderOfAuthorisationSummaryText", components.details_content_link())) }
+@tariffBody = { @Html(messages("declaration.type.holderOfAuthorisationSummaryText", components.details_content_link())) }
 
 @main_template(
     title = Title("supplementary.declarationHolder.title", "supplementary.summary.parties.header")
@@ -72,7 +72,9 @@
             labelClass = Some("form-label-bold")
         )
 
-        @components.details(messages("site.details.summary_text_this"), Some(tariffBodyDesc))
+        @components.details(messages("site.details.summary_text_this")){
+            @tariffBody
+        }
         @components.add_save_button(addHint = "supplementary.declarationHolders.add.hint")
         @components.buttons.save_and_return_later_button()
     }

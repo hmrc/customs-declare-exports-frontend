@@ -75,7 +75,9 @@
             removeHint = "declaration.nationalAdditionalCode.remove.hint"
         )
 
-        @components.details(messages("site.details.summary_text_this"), Some(tariffBody))
+        @components.details(messages("site.details.summary_text_this")){
+           @tariffBody
+        }
         <div class="section mb-0">
         @components.buttons.save_and_continue_button()
         </div>

@@ -1,0 +1,131 @@
+@import '_variables';
+
+a.button--gray, button.button--gray, .button--gray:visited {
+  background-color: $gray;
+  color: $black !important;
+  box-shadow: 0 2px 0 $gray--dark;
+
+  &:hover, &:focus {
+    background-color: $gray--dark;
+    color: $black;
+  }
+}
+
+
+.align-right {
+  text-align: right;
+}
+
+.mb-0 {
+  margin-bottom: 0;
+}
+
+.mb-1 {
+  margin-bottom: 1rem;
+}
+
+.mb-2 {
+  margin-bottom: 2rem;
+}
+
+.mb-3 {
+  margin-bottom: 3rem;
+}
+
+.mt-2 {
+  margin-top: 2rem;
+}
+
+.mt-3 {
+  margin-top: 3rem;
+}
+
+.mt-5 {
+  margin-top: 5rem;
+}
+
+.rejected-field-name {
+  ol, ul {
+    margin: 0;
+  }
+
+  li {
+    font-weight: 700;
+  }
+
+  li:before {
+    content: "- "
+  }
+
+  li:first-child:before {
+    content: ""
+  }
+
+  li:nth-child(2) {
+    padding-left: 1rem;
+  }
+
+  li:nth-child(3) {
+    padding-left: 2rem;
+  }
+}
+
+th.rejected-field-name, td.rejected-field-name {
+  white-space: nowrap;
+}
+
+.button-link {
+  background: none !important;
+  color: inherit;
+  border: none;
+  padding: 0 !important;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+
+  &:hover {
+    color: #2e8aca;
+  }
+  &:focus {
+    color: inherit;
+  }
+  &:visited {
+    color: #4c2c92;
+  }
+}
+
+.table-head {
+  font-weight: bold;
+}
+
+.grey-border-left {
+  border-left: 5px solid #bfc1c3;
+  padding-left: 2.2em;
+}
+
+.bold {
+  font-weight:bold;
+}
+
+.radio-divider {
+  display: block;
+  float: none;
+  clear: left;
+  position: relative;
+  padding: 0 0 0 10px;
+  margin-bottom: 10px;
+}
+
+button:focus {
+  outline: 3px solid #ffbf47;
+}
+
+.govuk-details summary {
+ font-size : 19px;
+}
+
+.govuk-details div {
+ font-size : 19px;
+}

@@ -53,8 +53,10 @@
             messages("declaration.originationCountry.empty"),
             AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
         )
-        @components.details(messages("declaration.type.tariff_summary_text"), Some(tariffBody))
 
+        @components.details(messages("declaration.type.tariff_summary_text")){
+           @tariffBody
+        }
         <div class="section mb-0">
             @components.buttons.save_and_continue_button()
         </div>
