@@ -27,7 +27,7 @@
 
 @(mode: Mode, form: Form[SupervisingCustomsOffice])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tariffBodyDesc = { @Html(messages("declaration.type.supervisingCustomsOfficeSummaryText", components.details_content_link()))}
+@tariffBody = { @Html(messages("declaration.type.supervisingCustomsOfficeSummaryText", components.details_content_link()))}
 
     @main_template(
         title = Title("declaration.warehouse.supervisingCustomsOffice.title")
@@ -54,7 +54,9 @@
                 emptySelectValue = messages("supplementary.packageInformation.typesOfPackages.empty"),
                 items = AutoCompleteItem.fromSupervisingCustomsOffice(CustomsOffices.all))
 
-            @components.details(messages("site.details.summary_text_this"), Some(tariffBodyDesc))
+            @components.details(messages("site.details.summary_text_these")){
+                @tariffBody
+            }
             @components.submit_button()
             @components.buttons.save_and_return_later_button()
         }
