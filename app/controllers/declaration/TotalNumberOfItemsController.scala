@@ -43,14 +43,16 @@ class TotalNumberOfItemsController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
   import forms.declaration.TotalNumberOfItems._
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
+
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.totalNumberOfItems match {
       case Some(data) => Ok(totalNumberOfItemsPage(mode, form().fill(data)))
       case _          => Ok(totalNumberOfItemsPage(mode, form()))
     }
   }
 
-  def saveNoOfItems(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def saveNoOfItems(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(

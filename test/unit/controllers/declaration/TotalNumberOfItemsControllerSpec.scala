@@ -18,10 +18,11 @@ package unit.controllers.declaration
 
 import controllers.declaration.TotalNumberOfItemsController
 import forms.declaration.TotalNumberOfItems
-import models.{DeclarationType, Mode}
-import org.mockito.ArgumentCaptor
+import models.DeclarationType._
+import models.Mode
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito.{times, verify, when}
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -38,131 +39,87 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
     captor.getValue
   }
 
-  trait SetUp {
-    val mockTotalNumberOfItemsPage: total_number_of_items = mock[total_number_of_items]
-
-    val controller = new TotalNumberOfItemsController(
-      mockAuthAction,
-      mockJourneyAction,
-      navigator,
-      stubMessagesControllerComponents(),
-      mockTotalNumberOfItemsPage,
-      mockExportsCacheService
-    )(ec)
-  }
-
-  trait StandardSetUp extends SetUp {
-    reset(mockTotalNumberOfItemsPage)
-    authorizedUser()
-    withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
     when(mockTotalNumberOfItemsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    authorizedUser()
   }
 
-  trait SimplifiedSetUp extends SetUp {
-    reset(mockTotalNumberOfItemsPage)
-    authorizedUser()
-    withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED)))
-    when(mockTotalNumberOfItemsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+  override protected def afterEach(): Unit = {
+    Mockito.reset(mockTotalNumberOfItemsPage)
+    super.afterEach()
   }
+
+  val mockTotalNumberOfItemsPage: total_number_of_items = mock[total_number_of_items]
+
+  val controller = new TotalNumberOfItemsController(
+    mockAuthAction,
+    mockJourneyAction,
+    navigator,
+    stubMessagesControllerComponents(),
+    mockTotalNumberOfItemsPage,
+    mockExportsCacheService
+  )(ec)
 
   val totalNumberOfItems = TotalNumberOfItems(None, None)
 
   "Total Number of Items controller" should {
 
-    "return 200 (OK)" when {
-      "during Standard journey" when {
+    onJourney(STANDARD, SUPPLEMENTARY)() { declaration =>
+      "display page method is invoked and cache is empty" in {
+        withNewCaching(declaration)
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
-        "display page method is invoked and cache is empty" in new StandardSetUp {
+        status(result) mustBe OK
+        verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any())(any(), any())
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
-
-          status(result) mustBe OK
-          verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any())(any(), any())
-
-          theResponseForm(mockTotalNumberOfItemsPage).value mustBe empty
-        }
-
-        "display page method is invoked and cache contains data" in new StandardSetUp {
-          withNewCaching(aDeclaration(withTotalNumberOfItems(totalNumberOfItems)))
-
-          val result = controller.displayPage(Mode.Normal)(getRequest())
-
-          status(result) mustBe OK
-          verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any())(any(), any())
-
-          theResponseForm(mockTotalNumberOfItemsPage).value mustNot be(empty)
-        }
+        theResponseForm(mockTotalNumberOfItemsPage).value mustBe empty
       }
 
-      "during Simplified journey" when {
+      "display page method is invoked and cache contains data" in {
+        withNewCaching(aDeclaration(withTotalNumberOfItems(totalNumberOfItems)))
 
-        "display page method is invoked and cache is empty" in new SimplifiedSetUp {
+        val result = controller.displayPage(Mode.Normal)(getRequest())
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
+        status(result) mustBe OK
+        verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any())(any(), any())
 
-          status(result) mustBe OK
-          verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any())(any(), any())
-
-          theResponseForm(mockTotalNumberOfItemsPage).value mustBe empty
-        }
-
-        "display page method is invoked and cache contains data" in new SimplifiedSetUp {
-
-          withNewCaching(aDeclaration(withTotalNumberOfItems(totalNumberOfItems), withType(DeclarationType.SIMPLIFIED)))
-
-          val result = controller.displayPage(Mode.Normal)(getRequest())
-
-          status(result) mustBe OK
-          verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any())(any(), any())
-
-          theResponseForm(mockTotalNumberOfItemsPage).value mustNot be(empty)
-        }
+        theResponseForm(mockTotalNumberOfItemsPage).value mustNot be(empty)
       }
+
+      "return 400 (BAD_REQUEST) when form is incorrect" in {
+        withNewCaching(declaration)
+        val incorrectForm = Json.toJson(TotalNumberOfItems(Some("abc"), None))
+        val result = controller.saveNoOfItems(Mode.Normal)(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+        verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any())(any(), any())
+      }
+
+      "return 303 (SEE_OTHER) when information provided by user are correct" in {
+        withNewCaching(declaration)
+        val correctForm = Json.toJson(TotalNumberOfItems(None, None))
+        val result = controller.saveNoOfItems(Mode.Normal)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.TotalPackageQuantityController.displayPage()
+        verify(mockTotalNumberOfItemsPage, times(0)).apply(any(), any())(any(), any())
+      }
+
     }
 
-    "return 400 (BAD_REQUEST)" when {
-      val incorrectForm = Json.toJson(TotalNumberOfItems(Some("abc"), None))
-      "standard journey" when {
-        "form is incorrect" in new StandardSetUp {
-          val result = controller.saveNoOfItems(Mode.Normal)(postRequest(incorrectForm))
+    onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE)() { declaration =>
+      "redirect 303 (See Other) to start" in {
+        withNewCaching(declaration)
 
-          status(result) mustBe BAD_REQUEST
-          verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any())(any(), any())
-        }
-      }
-      "simplified journey" when {
-        "form is incorrect" in new SimplifiedSetUp {
-          val result = controller.saveNoOfItems(Mode.Normal)(postRequest(incorrectForm))
+        val result = controller.displayPage(Mode.Normal).apply(getRequest(declaration))
 
-          status(result) mustBe BAD_REQUEST
-          verify(mockTotalNumberOfItemsPage, times(1)).apply(any(), any())(any(), any())
-        }
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) must contain(controllers.routes.StartController.displayStartPage().url)
       }
+
     }
 
-    "return 303 (SEE_OTHER)" when {
-      val correctForm = Json.toJson(TotalNumberOfItems(None, None))
-      "Standard journey" when {
-
-        "information provided by user are correct" in new StandardSetUp {
-
-          val result = controller.saveNoOfItems(Mode.Normal)(postRequest(correctForm))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.TotalPackageQuantityController.displayPage()
-          verify(mockTotalNumberOfItemsPage, times(0)).apply(any(), any())(any(), any())
-        }
-      }
-      "Simplified journey" when {
-
-        "information provided by user are correct" in new SimplifiedSetUp {
-          val result = controller.saveNoOfItems(Mode.Normal)(postRequest(correctForm))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.TotalPackageQuantityController.displayPage()
-          verify(mockTotalNumberOfItemsPage, times(0)).apply(any(), any())(any(), any())
-        }
-      }
-    }
   }
+
 }

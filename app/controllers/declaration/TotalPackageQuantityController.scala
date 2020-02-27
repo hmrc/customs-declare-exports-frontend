@@ -16,8 +16,6 @@
 
 package controllers.declaration
 
-import java.time.Instant
-
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.TotalPackageQuantity
@@ -43,13 +41,15 @@ class TotalPackageQuantityController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(mode: Mode) = (authorize andThen journey) { implicit request =>
+  private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
+
+  def displayPage(mode: Mode) = (authorize andThen journey(validTypes)) { implicit request =>
     val form = TotalPackageQuantity.form(request.declarationType)
     val data = request.cacheModel.totalPackageQuantity.fold(form)(form.fill)
     Ok(totalPackageQuantity(mode, data))
   }
 
-  def saveTotalPackageQuantity(mode: Mode): Action[AnyContent] = (authorize andThen journey).async { implicit request =>
+  def saveTotalPackageQuantity(mode: Mode): Action[AnyContent] = (authorize andThen journey(validTypes)).async { implicit request =>
     TotalPackageQuantity
       .form(request.declarationType)
       .bindFromRequest()

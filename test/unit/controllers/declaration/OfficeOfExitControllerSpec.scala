@@ -384,7 +384,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.TotalPackageQuantityController.displayPage()
+          thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
           checkStandardViewInteractions(0)
         }
       }

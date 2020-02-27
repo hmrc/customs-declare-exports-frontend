@@ -22,7 +22,7 @@ import models.DeclarationType._
 import models.Mode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.when
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -54,7 +54,7 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
   }
 
   "Total Package Quantity Controller" must {
-    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE)() { declaration =>
+    onJourney(STANDARD, SUPPLEMENTARY)() { declaration =>
       "return 200 (OK)" when {
         "cache is empty" in {
           withNewCaching(declaration)
@@ -88,6 +88,18 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.NatureOfTransactionController.displayPage()
       }
+    }
+
+    onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE)() { declaration =>
+      "redirect 303 (See Other) to start" in {
+        withNewCaching(declaration)
+
+        val result = controller.displayPage(Mode.Normal).apply(getRequest(declaration))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) must contain(controllers.routes.StartController.displayStartPage().url)
+      }
+
     }
   }
 }
