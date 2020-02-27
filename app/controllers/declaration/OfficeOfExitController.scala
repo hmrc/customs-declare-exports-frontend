@@ -25,7 +25,7 @@ import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
+import play.api.mvc._
 import play.twirl.api.Html
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -106,9 +106,7 @@ class OfficeOfExitController @Inject()(
     declarationType match {
       case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
         controllers.declaration.routes.TotalNumberOfItemsController.displayPage
-      case DeclarationType.CLEARANCE =>
-        controllers.declaration.routes.TotalPackageQuantityController.displayPage
-      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
+      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
         controllers.declaration.routes.PreviousDocumentsController.displayPage
     }
 }
