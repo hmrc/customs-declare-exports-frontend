@@ -19,17 +19,13 @@ package views.declaration
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.declaration.DepartureTransport
-import forms.declaration.TransportCodes._
 import helpers.views.declaration.CommonMessages
-import models.Mode
 import models.requests.JourneyRequest
-import org.jsoup.nodes.Document
+import models.{DeclarationType, Mode}
 import play.api.data.Form
 import play.twirl.api.Html
 import unit.tools.Stubs
-import views.components.inputs.RadioOption
 import views.declaration.spec.UnitViewSpec
-import views.html.components.fields.{field_radio, field_text}
 import views.html.declaration.departure_transport
 import views.tags.ViewTest
 
@@ -45,7 +41,7 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
 
   "Departure Transport View" must {
 
-    onEveryDeclarationJourney { request =>
+    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.CLEARANCE) { request =>
       val view = createView(form, request)
 
       "have defined translation for used labels" in {
@@ -73,12 +69,6 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
 
       "display page title" in {
         view.getElementById("title").text() mustBe messages("declaration.transportInformation.title")
-      }
-
-      "display 'Back' button that links to 'Inland Transport Details' page" in {
-        val backButton = view.getElementById("back-link")
-        backButton.text() mustBe messages(backCaption)
-        backButton must haveHref(routes.TransportLeavingTheBorderController.displayPage())
       }
 
       "display 'Save and continue' button on page" in {
@@ -168,6 +158,28 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
             .text() mustBe "declaration.transportInformation.meansOfTransport.reference.hint"
         }
       }
+    }
+
+    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY) { request =>
+      val view = createView(form, request)
+
+      "display 'Back' button that links to 'Transport leaving the boarder' page" in {
+        val backButton = view.getElementById("back-link")
+        backButton.text() mustBe messages(backCaption)
+        backButton must haveHref(routes.TransportLeavingTheBorderController.displayPage())
+      }
+
+    }
+
+    onJourney(DeclarationType.CLEARANCE) { request =>
+      val view = createView(form, request)
+
+      "display 'Back' button that links to 'Inland Transport Details' page" in {
+        val backButton = view.getElementById("back-link")
+        backButton.text() mustBe messages(backCaption)
+        backButton must haveHref(routes.InlandTransportDetailsController.displayPage())
+      }
+
     }
   }
 }

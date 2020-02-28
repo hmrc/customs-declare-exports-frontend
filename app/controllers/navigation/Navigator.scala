@@ -85,6 +85,7 @@ object Navigator {
     case GoodsLocation               => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case SupervisingCustomsOffice    => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
+    case DepartureTransport          => controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
     case WarehouseIdentification     => controllers.declaration.routes.ItemsSummaryController.displayPage
     case DeclarationAdditionalActors => controllers.declaration.routes.CarrierDetailsController.displayPage
     case TotalPackageQuantity        => controllers.declaration.routes.TotalNumberOfItemsController.displayPage
@@ -110,6 +111,7 @@ object Navigator {
     case GoodsLocation               => controllers.declaration.routes.DestinationCountryController.displayPage
     case SupervisingCustomsOffice    => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
+    case DepartureTransport          => controllers.declaration.routes.InlandTransportDetailsController.displayPage
     case WarehouseIdentification     => controllers.declaration.routes.ItemsSummaryController.displayPage
     case DeclarationAdditionalActors => controllers.declaration.routes.RepresentativeDetailsController.displayPage
     case TotalPackageQuantity        => controllers.declaration.routes.OfficeOfExitController.displayPage
@@ -133,6 +135,7 @@ object Navigator {
     case GoodsLocation               => controllers.declaration.routes.DestinationCountryController.displayPage
     case SupervisingCustomsOffice    => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
+    case DepartureTransport          => controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
     case WarehouseIdentification     => controllers.declaration.routes.ItemsSummaryController.displayPage
     case DeclarationAdditionalActors => controllers.declaration.routes.RepresentativeDetailsController.displayPage
     case TotalPackageQuantity        => controllers.declaration.routes.TotalNumberOfItemsController.displayPage
@@ -217,7 +220,6 @@ object Navigator {
     case NatureOfTransaction                              => controllers.declaration.routes.TotalPackageQuantityController.displayPage
     case ProcedureCodes                                   => controllers.declaration.routes.ItemsSummaryController.displayPage
     case ModeOfTransportCodes                             => controllers.declaration.routes.InlandTransportDetailsController.displayPage
-    case DepartureTransport                               => controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
   }
 
   val commonItem: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
