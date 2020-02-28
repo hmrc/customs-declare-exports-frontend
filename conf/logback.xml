@@ -71,6 +71,10 @@
     <logger name="io.netty" level="INFO"/>
     <logger name="sun.net.www.protocol.http" level="INFO"/>
 
+    <logger name="com.dmanchester.playfop" level="INFO" />
+    <logger name="org.apache.fop" level="ERROR" />
+    <logger name="org.apache.xmlgraphics" level="ERROR" />
+
     <logger name="connector" level="TRACE">
         <appender-ref ref="STDOUT"/>
     </logger>

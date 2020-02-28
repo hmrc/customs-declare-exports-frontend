@@ -24,7 +24,7 @@ import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.{DeclarationType, ExportsDeclaration}
 import play.api.libs.json.JsValue
 import play.api.mvc._
-import play.api.test.FakeRequest
+import play.api.test.{DefaultAwaitTimeout, FakeRequest}
 import play.api.test.Helpers.{contentAsString, _}
 import play.twirl.api.Html
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait ControllerSpec
     extends UnitSpec with Stubs with MockAuthAction with MockConnectors with MockExportCacheService with MockNavigator with ExportsDeclarationBuilder
-    with ExportsItemBuilder with JourneyActionMocks {
+    with ExportsItemBuilder with JourneyActionMocks with DefaultAwaitTimeout {
 
   implicit val ec: ExecutionContext = ExecutionContext.global
 

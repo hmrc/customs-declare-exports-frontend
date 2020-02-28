@@ -310,3 +310,5 @@ POST        /summary                             controllers.declaration.Summary
 GET         /confirmation                        controllers.declaration.ConfirmationController.displaySubmissionConfirmation()
 
 GET         /draft-saved                         controllers.declaration.ConfirmationController.displayDraftConfirmation()
+
+GET         /ead/:mrn                            controllers.pdf.EADController.generatePdf(mrn)
