@@ -1,0 +1,20 @@
+@this()
+
+@(text: String, mrn: String, base64Image: String)
+
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+    <fo:layout-master-set>
+        <fo:simple-page-master master-name="EAD" margin-top="1cm" margin-bottom="1cm" margin-left="1cm" margin-right="1cm">
+            <fo:region-body region-name="xsl-region-body"/>
+        </fo:simple-page-master>
+    </fo:layout-master-set>
+    <fo:page-sequence master-reference="EAD">
+        <fo:flow flow-name="xsl-region-body">
+            <fo:block text-align="center" font-size="30pt">@text</fo:block>
+            <fo:block text-align="right">
+                <fo:external-graphic src="data:image/png;base64,@base64Image"> </fo:external-graphic>
+            </fo:block>
+            <fo:block text-align="right" font-size="15pt">MRN: @mrn</fo:block>
+        </fo:flow>
+    </fo:page-sequence>
+</fo:root>

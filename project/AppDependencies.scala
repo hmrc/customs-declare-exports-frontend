@@ -18,7 +18,9 @@ object AppDependencies {
     "ai.x"                 %% "play-json-extensions"          % "0.40.2",
     "uk.gov.hmrc"          %% "play-whitelist-filter"         % "3.1.0-play-26",
     "com.typesafe.play"    %% "play-json-joda"                % "2.6.10",
-    "com.github.tototoshi" %% "scala-csv"                     % "1.3.6"
+    "com.github.tototoshi" %% "scala-csv"                     % "1.3.6",
+    "com.dmanchester"      %% "playfop"                       % "1.0",
+    "net.sf.barcode4j"     %  "barcode4j"                     % "2.1"
   )
 
   val test: Seq[ModuleID] = Seq(
@@ -28,6 +30,7 @@ object AppDependencies {
     "org.pegdown"            %  "pegdown"            % "1.6.0"             % "test, it",
     "org.jsoup"              %  "jsoup"              % "1.12.1"            % "test",
     "com.typesafe.play"      %% "play-test"          % PlayVersion.current % "test",
-    "org.mockito"            %  "mockito-core"       % "3.0.0"             % "test"
+    "org.mockito"            %  "mockito-core"       % "3.0.0"             % "test",
+    "org.apache.pdfbox"      %  "pdfbox"             % "2.0.19"            % "test"
   )
 }
