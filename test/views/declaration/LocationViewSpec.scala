@@ -455,12 +455,8 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       )
     }
 
-    onJourney(SUPPLEMENTARY) { declaration =>
+    onJourney(SUPPLEMENTARY, CLEARANCE) { declaration =>
       behave like viewWithCorrectBackButton(declaration.declarationType, controllers.declaration.routes.DestinationCountryController.displayPage())
-    }
-
-    onJourney(CLEARANCE) { declaration =>
-      behave like viewWithCorrectBackButton(declaration.declarationType, controllers.declaration.routes.DeclarationHolderController.displayPage())
     }
 
     def viewWithCorrectBackButton(declarationType: DeclarationType, redirect: Call): Unit =
