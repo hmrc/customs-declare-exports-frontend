@@ -18,7 +18,7 @@ package views.declaration
 
 import base.{Injector, TestHelper}
 import forms.declaration.GoodsLocation
-import models.DeclarationType.DeclarationType
+import models.DeclarationType._
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -447,6 +447,18 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
   }
 
   "Goods Location view" should {
+
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { declaration =>
+      behave like viewWithCorrectBackButton(
+        declaration.declarationType,
+        controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
+      )
+    }
+
+    onJourney(SUPPLEMENTARY, CLEARANCE) { declaration =>
+      behave like viewWithCorrectBackButton(declaration.declarationType, controllers.declaration.routes.DestinationCountryController.displayPage())
+    }
+
     def viewWithCorrectBackButton(declarationType: DeclarationType, redirect: Call): Unit =
       "have correct back-link" when {
         val view = createView(declarationType = declarationType)
@@ -458,26 +470,5 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
         }
       }
 
-    "for Standard declaration" should {
-      behave like viewWithCorrectBackButton(DeclarationType.STANDARD, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage())
-    }
-    "for Simplified declaration" should {
-      behave like viewWithCorrectBackButton(
-        DeclarationType.SIMPLIFIED,
-        controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
-      )
-    }
-    "for Occasional declaration" should {
-      behave like viewWithCorrectBackButton(
-        DeclarationType.OCCASIONAL,
-        controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
-      )
-    }
-    "for Supplementary declaration" should {
-      behave like viewWithCorrectBackButton(DeclarationType.SUPPLEMENTARY, controllers.declaration.routes.DestinationCountryController.displayPage())
-    }
-    "for Clearance request" should {
-      behave like viewWithCorrectBackButton(DeclarationType.CLEARANCE, controllers.declaration.routes.DestinationCountryController.displayPage())
-    }
   }
 }
