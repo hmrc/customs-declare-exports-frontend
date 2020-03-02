@@ -31,6 +31,7 @@ import views.tags.ViewTest
 
 @ViewTest
 class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+
   private val page = new total_number_of_items(mainTemplate)
   private val form: Form[TotalNumberOfItems] = TotalNumberOfItems.form()
   private def createView(mode: Mode = Mode.Normal, form: Form[TotalNumberOfItems] = form, messages: Messages = stubMessages()): Document =

@@ -27,6 +27,19 @@
 
 @(mode: Mode, form: Form[DispatchLocation])(implicit request: JourneyRequest[_], messages: Messages)
 
+@tariffBodyDesc = { @Html(messages("declaration.type.dispatchLocationSummaryText", components.details_content_link())) }
+
+@tariffBody = {
+<p>
+    <span class="bold">@messages("supplementary.dispatchLocation.summary.euCountries") </span>
+    @Countries.euCountries.mkString(", ")
+</p>
+<p>
+    <span class="bold">@messages("supplementary.dispatchLocation.summary.euSpecialFiscalTerritories") </span>
+    @Countries.euSpecialFiscalTerritories.mkString(", ")
+</p>
+}
+
 @main_template(
   title = Title("supplementary.dispatchLocation.header", "declaration.summary.locations.header")
 ) {
@@ -60,25 +73,12 @@
         )
       )
     )
-
-      <details class="govuk-details" role="group">
-          <summary class="govuk-details__summary" role="button" aria-controls="details-content-b789d1b8-fdb1-4d59-970d-d1d42eafa90f" aria-expanded="false">
-              <span class="govuk-details__summary-text">
-                  @messages("supplementary.dispatchLocation.summary.heading")
-              </span>
-          </summary>
-          <div class="grey-border-left">
-              <p>
-                  <span class="bold">@messages("supplementary.dispatchLocation.summary.euCountries") </span>
-                  @Countries.euCountries.mkString(", ")
-              </p>
-              <p>
-                  <span class="bold">@messages("supplementary.dispatchLocation.summary.euSpecialFiscalTerritories") </span>
-                  @Countries.euSpecialFiscalTerritories.mkString(", ")
-              </p>
-          </div>
-      </details>
-
+    @components.details(messages("supplementary.dispatchLocation.summary.heading")){
+                     @tariffBody
+    }
+    @components.details(messages("site.details.summary_text_this")){
+                     @tariffBodyDesc
+    }
     @components.submit_button()
     @components.buttons.save_and_return_later_button()
   }

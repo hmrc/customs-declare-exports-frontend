@@ -38,6 +38,9 @@
         taricCodes: Seq[TaricCode] = Seq.empty
 )(implicit request: JourneyRequest[_], messages: Messages)
 
+
+@tariffBody = { @Html(messages("declaration.taricAdditionalCodes.help.bodyText", components.details_content_link())) }
+
 @tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.taricAdditionalCodes.header.tradeTariff.link")</a>}
 
 @main_template(
@@ -68,7 +71,9 @@
             removeHint = "declaration.taricAdditionalCodes.remove.hint"
         )
 
-
+       @components.details(messages("site.details.summary_text_this")){
+          @tariffBody
+        }
         <div class="section mb-0">
         @components.buttons.save_and_continue_button()
         </div>

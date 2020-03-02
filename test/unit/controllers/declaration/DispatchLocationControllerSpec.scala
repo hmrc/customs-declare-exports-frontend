@@ -24,6 +24,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import views.html.declaration.dispatch_location
+import config.AppConfig
 
 class DispatchLocationControllerSpec extends ControllerSpec {
 

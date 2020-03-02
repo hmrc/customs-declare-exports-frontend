@@ -25,6 +25,10 @@
 
 @(mode: Mode, form: Form[ConsignmentReferences])(implicit request: JourneyRequest[_], messages: Messages)
 
+@tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
+
+@tariffBody = { @components.tariff_body_partial(messages("declaration.type.consignmentDescListItemOne"), messages("declaration.type.consignmentDescListItemTwo"))(tariffBodyDesc)}
+
 @main_template(
   title = Title("supplementary.consignmentReferences.header", "supplementary.consignmentReferences.heading")
 ) {
@@ -54,6 +58,9 @@
           labelClass = Some("heading-24")
       )
 
+      @components.details(messages("declaration.type.consignmentTariff_summary_text")){
+         @tariffBody
+      }
       @components.submit_button()
       @components.buttons.save_and_return_later_button()
   }

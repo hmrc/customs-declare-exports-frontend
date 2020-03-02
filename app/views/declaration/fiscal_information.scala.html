@@ -28,6 +28,8 @@
 
 @(mode: Mode, itemId: String, form: Form[FiscalInformation])(implicit request: JourneyRequest[_], messages: Messages)
 
+@tariffBody = { @Html(messages("declaration.type.fiscalInformationSummaryText",  components.details_content_link())) }
+
 @main_template(
     title = Title("declaration.fiscalInformation.title", "declaration.fiscalInformation.header")
 ) {
@@ -45,7 +47,7 @@
         If you have entered a procedure code which starts ‘10 42’, please state whether you would like to claim for OSR.
     </p><br>
 
-    <details class="govuk-details" role="group">
+    <details class="details-font" role="group">
         <summary class="govuk-details__summary" role="button" aria-controls="details-content-b789d1b8-fdb1-4d59-970d-d1d42eafa90f" aria-expanded="false">
             <span class="govuk-details__summary-text">
                 You can claim OSR if:
@@ -72,7 +74,9 @@
                 RadioOption("No", no, messages("site.no"))
             )
         )
-
+        @components.details(messages("site.details.summary_text_this")){
+           @tariffBody
+        }
         @components.submit_button()
         @components.buttons.save_and_return_later_button()
     }

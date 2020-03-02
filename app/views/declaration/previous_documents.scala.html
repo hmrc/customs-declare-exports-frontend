@@ -30,6 +30,8 @@
 
 @(mode: Mode, form: Form[Document], documents: Seq[Document])(implicit request: JourneyRequest[_], messages: Messages)
 
+@tariffBody = { @Html(messages("declaration.type.previousDocumentsSummaryText", components.details_content_link())) }
+
 @main_template(
     title = Title("supplementary.previousDocuments.title", "supplementary.consignmentReferences.heading")
 ) {
@@ -115,6 +117,9 @@
             labelClass = Some("bold-small")
         )
 
+        @components.details(messages("site.details.summary_text_this")){
+          @tariffBody
+        }
         @components.add_save_button(addHint = "supplementary.previousDocuments.add.hint")
         @components.buttons.save_and_return_later_button()
     }

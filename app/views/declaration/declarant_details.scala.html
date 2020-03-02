@@ -28,6 +28,8 @@
 
 @(mode: Mode, form: Form[DeclarantDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
+@tariffBody = { @Html(messages("supplementary.declarant-details.help.bodyText", components.details_content_link())) }
+
 @main_template(
     title = Title("supplementary.declarant.title", "supplementary.summary.parties.header")
 ) {
@@ -55,6 +57,9 @@
             )
         }
 
+        @components.details(messages("site.details.summary_text_this")){
+           @tariffBody
+        }
         @components.submit_button()
         @components.buttons.save_and_return_later_button()
     }

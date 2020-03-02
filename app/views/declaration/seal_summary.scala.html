@@ -27,6 +27,8 @@
 
 @(mode: Mode, form: Form[YesNoAnswer], container: Option[Container])(implicit request: Request[_], messages: Messages)
 
+@tariffBody = { @Html(messages("declaration.type.sealsSummaryText", components.details_content_link())) }
+
 @defining(container.map(_.id).getOrElse("")) { containerId =>
     @defining(container.map(_.seals).getOrElse(Seq.empty)) { seals: Seq[Seal] =>
         @defining(if(seals.nonEmpty) {
@@ -65,7 +67,9 @@
                             RadioOption("No", no, messages("site.no"))
                         )
                     )
-
+                    @components.details(messages("site.details.summary_text_this")){
+                        @tariffBody
+                    }
                     @components.submit_button()
                     @components.buttons.save_and_return_later_button()
                 }

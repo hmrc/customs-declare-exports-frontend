@@ -33,6 +33,8 @@
         form: Form[CusCode]
 )(implicit request: JourneyRequest[_], messages: Messages)
 
+@tariffBody = { @Html(messages("declaration.cusCode.help.bodyText", components.details_content_link())) }
+
 @tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.cusCode.header.tradeTariff.link")</a>}
 @ecicsToolLink = {<a target="_blank" href=@appConfig.ecicsToolUrl>@messages("declaration.cusCode.header.ecicsTool.link")</a>}
 
@@ -74,7 +76,9 @@
             )
         )
 
-
+        @components.details(messages("site.details.summary_text_this")){
+          @tariffBody
+        }
         @components.submit_button()
         @components.buttons.save_and_return_later_button()
     }

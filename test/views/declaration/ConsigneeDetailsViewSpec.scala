@@ -16,7 +16,7 @@
 
 package views.declaration
 
-import base.TestHelper
+import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.{Address, Eori}

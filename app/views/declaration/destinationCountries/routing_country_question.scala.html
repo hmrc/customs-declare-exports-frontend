@@ -25,6 +25,8 @@
 
 @(mode: Mode, form: Form[Boolean], countryOfDestination: String)(implicit request: JourneyRequest[AnyContent], messages: Messages)
 
+@tariffBody = { @Html(messages("declaration.routingQuestion.help.bodyText", components.details_content_link())) }
+
 @main_template(
     title = Title("declaration.routingQuestion.title", "declaration.routingQuestion.heading")
 ) {
@@ -50,6 +52,9 @@
             )
         )
 
+        @components.details(messages("site.details.summary_text_this")){
+          @tariffBody
+        }
         <div class="section mb-0">
             @components.buttons.save_and_continue_button()
         </div>

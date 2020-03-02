@@ -31,6 +31,11 @@
 
 @(mode: Mode, form: Form[BorderTransport])(implicit request: JourneyRequest[_], messages: Messages)
 
+@tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
+
+@tariffBody = { @components.tariff_body_partial(messages("declaration.transportInformation.active.help-item1"), messages("declaration.transportInformation.active.help-item2"))(tariffBodyDesc)}
+
+
 @radioOption(id: String, value: String) = @{RadioOption(
     id = id,
     value = value,
@@ -87,6 +92,9 @@
             'otherErrorFields -> Seq("countryCode")
         )
 
+        @components.details(messages("site.details.summary_text_these")){
+            @tariffBody
+        }
         @components.submit_button()
         @components.buttons.save_and_return_later_button()
     }
