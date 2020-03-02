@@ -22,15 +22,21 @@ import java.util.Base64
 
 import javax.imageio.ImageIO
 import javax.inject.Inject
+import org.krysalis.barcode4j.HumanReadablePlacement
 import org.krysalis.barcode4j.impl.code128.Code128Bean
 import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider
+import org.krysalis.barcode4j.tools.UnitConv
 
 class EADService @Inject()(code128Bean: Code128Bean) {
+  private val dpi = 200
 
   def base64Image(mrn: String) = {
+    code128Bean.setModuleWidth(UnitConv.in2mm(1.0f / dpi))
+    code128Bean.setFontSize(2.0f)
+    code128Bean.setMsgPosition(HumanReadablePlacement.HRP_NONE)
     code128Bean.doQuietZone(false)
 
-    val canvas = new BitmapCanvasProvider(160, BufferedImage.TYPE_BYTE_BINARY, false, 0)
+    val canvas = new BitmapCanvasProvider(dpi, BufferedImage.TYPE_BYTE_BINARY, false, 0)
     code128Bean.generateBarcode(canvas, mrn)
 
     val outputStream = new ByteArrayOutputStream
