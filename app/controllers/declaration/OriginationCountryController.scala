@@ -21,7 +21,7 @@ import controllers.navigation.Navigator
 import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.destinationCountries.DestinationCountries.OriginationCountryPage
 import javax.inject.{Inject, Singleton}
-import models.Mode
+import models.{DeclarationType, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -41,7 +41,9 @@ class OriginationCountryController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
+
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val form = request.cacheModel.locations.originationCountry match {
       case Some(originateCountry) =>
         DestinationCountries.form(OriginationCountryPage).fill(originateCountry)
@@ -51,7 +53,7 @@ class OriginationCountryController @Inject()(
     Ok(originationCountryPage(mode, form))
   }
 
-  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     DestinationCountries
       .form(OriginationCountryPage)
       .bindFromRequest()

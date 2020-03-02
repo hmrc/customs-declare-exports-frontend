@@ -180,10 +180,8 @@ class DeclarationHolderController @Inject()(
     request.declarationType match {
       case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
         navigator.continueTo(mode, controllers.declaration.routes.OriginationCountryController.displayPage)
-      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
+      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
         navigator.continueTo(mode, controllers.declaration.routes.DestinationCountryController.displayPage)
-      case DeclarationType.CLEARANCE =>
-        navigator.continueTo(mode, controllers.declaration.routes.LocationController.displayPage)
     }
 
 }

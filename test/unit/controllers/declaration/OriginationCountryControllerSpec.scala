@@ -26,6 +26,8 @@ import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.declaration.destinationCountries.origination_country
 
+import models.DeclarationType._
+
 import scala.concurrent.ExecutionContext.global
 
 class OriginationCountryControllerSpec extends ControllerSpec {
@@ -56,46 +58,45 @@ class OriginationCountryControllerSpec extends ControllerSpec {
 
   "Origination Country Controller" should {
 
-    "return 200 (OK)" when {
+    onJourney(STANDARD, SUPPLEMENTARY)() { declaration =>
+      "return 200 (OK)" when {
 
-      "display page method is invoked and cache is empty" in {
+        "display page method is invoked and cache is empty" in {
 
-        withNewCaching(aDeclaration())
+          withNewCaching(aDeclaration())
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage(Mode.Normal)(getRequest())
 
-        status(result) mustBe OK
-        verify(originationCountryPage).apply(any(), any())(any(), any())
+          status(result) mustBe OK
+          verify(originationCountryPage).apply(any(), any())(any(), any())
+        }
+
+        "display page method is invoked and cache contains data" in {
+
+          withNewCaching(aDeclaration(withDestinationCountries()))
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) mustBe OK
+          verify(originationCountryPage).apply(any(), any())(any(), any())
+        }
       }
 
-      "display page method is invoked and cache contains data" in {
+      "return 400 (BAD_REQUEST)" when {
 
-        withNewCaching(aDeclaration(withDestinationCountries()))
+        "form contains incorrect country" in {
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+          withNewCaching(aDeclaration())
 
-        status(result) mustBe OK
-        verify(originationCountryPage).apply(any(), any())(any(), any())
+          val incorrectForm = JsObject(Map("country" -> JsString("incorrect")))
+
+          val result = controller.submit(Mode.Normal)(postRequest(incorrectForm))
+
+          status(result) mustBe BAD_REQUEST
+        }
       }
-    }
 
-    "return 400 (BAD_REQUEST)" when {
-
-      "form contains incorrect country" in {
-
-        withNewCaching(aDeclaration())
-
-        val incorrectForm = JsObject(Map("country" -> JsString("incorrect")))
-
-        val result = controller.submit(Mode.Normal)(postRequest(incorrectForm))
-
-        status(result) mustBe BAD_REQUEST
-      }
-    }
-
-    "return 303 (SEE_OTHER) and redirect to Destination Country page" when {
-
-      "form is correct" in {
+      "redirect to Destination Country page if form is correct" in {
 
         withNewCaching(aDeclaration(withDestinationCountries()))
 
@@ -106,6 +107,24 @@ class OriginationCountryControllerSpec extends ControllerSpec {
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.DestinationCountryController.displayPage()
       }
+
     }
+
+    onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE)() { declaration =>
+      "return 303 (SEE_OTHER)" when {
+
+        "redirect to start if journey is invalid" in {
+          withNewCaching(declaration)
+
+          val result = controller.displayPage(Mode.Normal).apply(getRequest(declaration))
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) must contain(controllers.routes.StartController.displayStartPage().url)
+        }
+
+      }
+
+    }
+
   }
 }

@@ -102,13 +102,12 @@ object Navigator {
   val clearance: PartialFunction[DeclarationPage, Mode => Call] = {
     case ContainerFirst              => controllers.declaration.routes.DepartureTransportController.displayPage
     case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
-    case Document                    => controllers.declaration.routes.OfficeOfExitController.displayPage
-    case OriginationCountryPage      => controllers.declaration.routes.DeclarationHolderController.displayPage
+    case Document                    => controllers.declaration.routes.NatureOfTransactionController.displayPage
     case DestinationCountryPage      => controllers.declaration.routes.OriginationCountryController.displayPage
     case RoutingQuestionPage         => controllers.declaration.routes.DestinationCountryController.displayPage
     case RemoveCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case ChangeCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
-    case GoodsLocation               => controllers.declaration.routes.DestinationCountryController.displayPage
+    case GoodsLocation               => controllers.declaration.routes.DeclarationHolderController.displayPage
     case SupervisingCustomsOffice    => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case DepartureTransport          => controllers.declaration.routes.InlandTransportDetailsController.displayPage
@@ -117,6 +116,7 @@ object Navigator {
     case TotalPackageQuantity        => controllers.declaration.routes.OfficeOfExitController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }
+
   val clearanceItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
     case PackageInformation    => controllers.declaration.routes.StatisticalValueController.displayPage
     case AdditionalInformation => controllers.declaration.routes.CommodityMeasureController.displayPage
