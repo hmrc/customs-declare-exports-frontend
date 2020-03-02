@@ -26,7 +26,7 @@ import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.destinationCountries.routing_country_question
 
-class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
+class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
 
   val countryOfDestination = "Poland"
   val form: Form[Boolean] = RoutingQuestionYesNo.form()

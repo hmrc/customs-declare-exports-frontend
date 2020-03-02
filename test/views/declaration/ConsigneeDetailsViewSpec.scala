@@ -32,7 +32,7 @@ import views.html.declaration.consignee_details
 import views.tags.ViewTest
 
 @ViewTest
-class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
+class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs {
 
   val form: Form[ConsigneeDetails] = ConsigneeDetails.form()
   val consigneeDetailsPage = new consignee_details(mainTemplate)
