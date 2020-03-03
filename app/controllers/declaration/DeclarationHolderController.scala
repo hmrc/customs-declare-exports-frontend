@@ -178,9 +178,9 @@ class DeclarationHolderController @Inject()(
 
   private def navigateToNextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
     request.declarationType match {
-      case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY | DeclarationType.CLEARANCE =>
+      case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
         navigator.continueTo(mode, controllers.declaration.routes.OriginationCountryController.displayPage)
-      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
+      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
         navigator.continueTo(mode, controllers.declaration.routes.DestinationCountryController.displayPage)
     }
 
