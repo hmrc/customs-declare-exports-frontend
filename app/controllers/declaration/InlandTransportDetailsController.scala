@@ -65,12 +65,10 @@ class InlandTransportDetailsController @Inject()(
 
   private def nextPage(declarationType: DeclarationType): Mode => Call =
     declarationType match {
-      case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
+      case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY | DeclarationType.CLEARANCE =>
         controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
         controllers.declaration.routes.BorderTransportController.displayPage
-      case DeclarationType.CLEARANCE =>
-        controllers.declaration.routes.DepartureTransportController.displayPage
     }
 
   private def updateCache(formData: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
