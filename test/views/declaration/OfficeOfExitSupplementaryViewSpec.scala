@@ -47,6 +47,7 @@ class OfficeOfExitSupplementaryViewSpec extends UnitViewSpec with ExportsTestDat
       messages must haveTranslationFor("declaration.officeOfExit.hint")
       messages must haveTranslationFor("declaration.officeOfExit.length")
       messages must haveTranslationFor("declaration.officeOfExit.empty")
+      messages must haveTranslationFor("site.details.summary_text_these")
     }
 
     "display page title" in {
@@ -79,6 +80,12 @@ class OfficeOfExitSupplementaryViewSpec extends UnitViewSpec with ExportsTestDat
       val saveAndReturnButton = view.getElementById("submit_and_return")
       saveAndReturnButton.text() mustBe "site.save_and_come_back_later"
     }
+
+    "display Tariff section text" in {
+      val tariffText = view.getElementsByClass("govuk-details__summary-text").first().text()
+      tariffText.text() mustBe ("site.details.summary_text_these")
+    }
+
   }
 
   "Office of Exit View for invalid input" should {
