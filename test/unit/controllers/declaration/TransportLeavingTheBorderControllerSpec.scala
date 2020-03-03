@@ -16,19 +16,22 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.TransportLeavingTheBorderController
-import forms.declaration.ModeOfTransportCodes
-import models.DeclarationType._
+import controllers.declaration.{routes, TransportLeavingTheBorderController}
+import forms.declaration.{ModeOfTransportCodes, TransportPayment}
 import models.{DeclarationType, Mode}
+import models.DeclarationType.{CLEARANCE, STANDARD, SUPPLEMENTARY}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
+import play.api.test.Helpers._
 import play.api.data.Form
 import play.api.libs.json.Json
-import play.api.test.Helpers.{BAD_REQUEST, OK, await, status, _}
+import play.api.test.Helpers.{await, status, BAD_REQUEST, OK}
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.declaration.transport_leaving_the_border
+
+import scala.concurrent.ExecutionContext
 
 class TransportLeavingTheBorderControllerSpec extends ControllerSpec {
 
@@ -62,7 +65,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec {
   }
 
   "Transport Leaving The Border Controller" must {
-    onJourney(STANDARD, SUPPLEMENTARY)() { declaration =>
+    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE)() { declaration =>
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
@@ -98,7 +101,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec {
 
     }
 
-    onJourney(STANDARD, SUPPLEMENTARY)() { declaration =>
+    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE)() { declaration =>
       "return 303 (SEE_OTHER)" when {
 
         "form contains valid values" in {
@@ -110,21 +113,6 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec {
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.DepartureTransportController.displayPage(Mode.Normal)
           verify(transportLeavingTheBorder, times(0)).apply(any(), any())(any(), any())
-        }
-      }
-    }
-
-    onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE)() { declaration =>
-      "return 303 (SEE_OTHER) - redirect to start" when {
-
-        "journey type invalid" in {
-          withNewCaching(declaration)
-
-          val result = controller.displayPage(Mode.Normal)(getRequest())
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) must contain(controllers.routes.StartController.displayStartPage().url)
-
         }
       }
     }

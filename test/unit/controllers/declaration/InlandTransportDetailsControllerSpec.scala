@@ -143,13 +143,13 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
     }
 
     onClearance { declaration =>
-      "redirect to Departure Transport" in {
+      "redirect to Border Transport" in {
         withNewCaching(declaration)
 
         val result = await(controller.submit(Mode.Normal)(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DepartureTransportController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.TransportLeavingTheBorderController.displayPage()
       }
     }
   }
