@@ -600,6 +600,7 @@ supplementary.totalNumberOfItems.error = Total number of items must correspond t
 supplementary.totalPackageQuantity = Total number of packages
 supplementary.totalPackageQuantity.empty = Enter the total number of packages
 supplementary.totalPackageQuantity.error = Enter the total number of packages
+supplementary.totalPackageQuantity.help.bodyText = Go to data element 6/18 Total packages in the {0}
 
 declaration.totalPackageQuantity.title = What is the total number of packages you want to add?
 declaration.totalPackageQuantity.error.required = Enter total number of packages
