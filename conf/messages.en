@@ -195,7 +195,7 @@ declaration.type.warehouseInformationSummaryText = Go to data element 2/7 Identi
 declaration.type.supervisingCustomsOfficeSummaryText = Go to data element 5/27 Supervising Customs Office in the {0}
 declaration.type.containerAddFirstItemListOne = Container, go to data element 7/2 Container
 declaration.type.containerAddFirstItemListTwo = Container ID, go to data element 7/10 Container Identification Number
-declaration.type.container.summary.help.text = Go to data element 7/10 Container Identification Number in the UK Trade Tariff.
+declaration.type.container.summary.help.text = Go to data element 7/10 Container Identification Number in the {0}
 
 declaration.type.sealsSummaryText = Go to data element 7/18 Seal Number in the {0}
 
@@ -600,6 +600,7 @@ supplementary.totalNumberOfItems.error = Total number of items must correspond t
 supplementary.totalPackageQuantity = Total number of packages
 supplementary.totalPackageQuantity.empty = Enter the total number of packages
 supplementary.totalPackageQuantity.error = Enter the total number of packages
+supplementary.totalPackageQuantity.help.bodyText = Go to data element 6/18 Total packages in the {0}
 
 declaration.totalPackageQuantity.title = What is the total number of packages you want to add?
 declaration.totalPackageQuantity.error.required = Enter total number of packages

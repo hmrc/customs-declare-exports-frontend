@@ -41,6 +41,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
         messages must haveTranslationFor("supplementary.totalPackageQuantity.empty")
         messages must haveTranslationFor("supplementary.totalPackageQuantity.error")
         messages must haveTranslationFor("declaration.totalPackageQuantity.error.required")
+        messages must haveTranslationFor("site.details.summary_text_this")
       }
 
       onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
@@ -68,6 +69,11 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
         "display 'Save and continue' button on page" in {
           val saveButton = view.getElementById("submit")
           saveButton.text() must be("site.save_and_continue")
+        }
+
+        "display Tariff section text" in {
+          val tariffText = view.getElementsByClass("govuk-details__summary-text").first().text()
+          tariffText.text() must be("site.details.summary_text_this")
         }
 
         "display 'Save and return' button on page" in {

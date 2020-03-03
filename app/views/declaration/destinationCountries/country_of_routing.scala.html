@@ -50,7 +50,9 @@
             messages(s"declaration.${page.id}.empty"),
             AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
         )
-
+        @components.details(messages("site.details.summary_text_this")){
+            @Html(messages("declaration.routingQuestion.help.bodyText", components.details_content_link()))
+        }
         <div class="section mb-0">
             @components.buttons.save_and_continue_button()
         </div>
