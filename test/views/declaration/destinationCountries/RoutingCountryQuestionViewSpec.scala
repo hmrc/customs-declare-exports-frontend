@@ -16,7 +16,6 @@
 
 package views.declaration.destinationCountries
 
-import base.Injector
 import controllers.declaration.routes
 import forms.declaration.RoutingQuestionYesNo
 import models.Mode
@@ -44,6 +43,7 @@ class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with Export
       messages must haveTranslationFor("declaration.routingQuestion.question")
       messages must haveTranslationFor("declaration.routingQuestion.empty")
       messages must haveTranslationFor("declaration.routingQuestion.error")
+      messages must haveTranslationFor("site.details.summary_text_this")
     }
 
     "have section header" in {
@@ -60,6 +60,11 @@ class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with Export
 
       view.getElementById("Yes-label").text() mustBe messages("site.yes")
       view.getElementById("No-label").text() mustBe messages("site.no")
+    }
+
+    "display Tariff section text" in {
+      val tariffText = view.getElementsByClass("govuk-details__summary-text").first().text()
+      tariffText.text() must be("site.details.summary_text_this")
     }
 
     "display back button that links to 'Declaration Holder' page" in {
