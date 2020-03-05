@@ -34,40 +34,31 @@
     fullWidth = true
 ) {
 
-    @components.back_link(routes.ChoiceController.displayPage(Some(Choice(Submissions))))
+    @components.back_link(
+        href = routes.ChoiceController.displayPage(Some(Choice(Submissions))),
+        backMessage = "site.backToSelectionPage"
+    )
 
     <h1>@messages("submissions.title")</h1>
 
     <table>
         <tr class="table-row">
-            <th class="table-cell table-head" scope="col">@messages("submissions.ducr")</th>
-            <th class="table-cell table-head" scope="col">@messages("submissions.lrn")</th>
-            <th class="table-cell table-head" scope="col">@messages("submissions.mrn")</th>
-            <th class="table-cell table-head" scope="col">@messages("submissions.submittedTimestamp")</th>
-            <th class="table-cell table-head" scope="col">@messages("submissions.status")</th>
-            <th class="table-cell table-head" scope="col">@messages("submissions.noOfNotifications")</th>
+            <th class="table-cell table-head" scope="col">@messages("submissions.ucr.header")</th>
+            <th class="table-cell table-head" scope="col">@messages("submissions.lrn.header")</th>
+            <th class="table-cell table-head" scope="col">@messages("submissions.mrn.header")</th>
+            <th class="table-cell table-head" scope="col">@messages("submissions.dateAndTime.header")</th>
+            <th class="table-cell table-head" scope="col">@messages("submissions.status.header")</th>
         </tr>
 
         @for( (submission, notifications) <- submissions ){
             <tr class="table-row">
                 <th class="table-cell" scope="row">
-                    @if(notifications.exists(_.isStatusRejected)) {
-                        <a href="@routes.RejectedNotificationsController.displayPage(submission.uuid)">@submission.ducr</a>
-                    } else {
-                        @submission.ducr
-                    }
+                    <a href="@routes.SubmissionsController.displayDeclarationWithNotifications(submission.uuid)">@submission.ducr</a>
                 </th>
                 <td class="table-cell">@submission.lrn</td>
                 <td class="table-cell">@submission.mrn</td>
-                <td class="table-cell">@{submission.actions.find(_.requestType == SubmissionRequest).map(_.requestTimestamp).map(ViewDates.formatter.withZone(ZoneId.systemDefault()).format(_))}</td>
+                <td class="table-cell">@{submission.actions.find(_.requestType == SubmissionRequest).map(_.requestTimestamp).map(ViewDates.submissionDateTimeFormatter.withZone(ZoneId.systemDefault()).format(_))}</td>
                 <td class="table-cell">@{SubmissionStatus.format(notifications.headOption.map(n => n.status).getOrElse(SubmissionStatus.PENDING))}</td>
-                <td class="table-cell">
-                    @if(notifications.nonEmpty){
-                        <a href="@routes.NotificationsController.listOfNotificationsForSubmission(submission.uuid)">@{notifications.length}</a>
-                    } else {
-                        <span>@{notifications.length}</span>
-                    }
-                </td>
             </tr>
         }
     </table>

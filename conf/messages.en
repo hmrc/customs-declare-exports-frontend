@@ -47,6 +47,8 @@ session_expired.heading = For your security, this service has been reset
 session_expired.guidance = The details you have given have been deleted because you did not continue the service for 1 hour.
 
 site.back = Back
+site.backToSelectionPage = Back to selection page
+site.backToDeclarations = Back to your declarations
 site.continue = Continue
 site.delete = Remove
 site.link.delete = Delete
@@ -378,15 +380,21 @@ supplementary.partyType.empty = Select a party type
 supplementary.partyType.error = Select a valid party type
 supplementary.partyType.remove.hint = Remove {0} {1}
 
-submissions.title = Submissions
+submissions.title = Your declarations
 submissions.eori = Eori
 submissions.conversationId = ConversationId
-submissions.ducr = DUCR
+submissions.ucr = UCR
+submissions.ucr.header = Consignment reference (UCR)
 submissions.lrn = LRN
+submissions.lrn.header = Your reference (LRN)
 submissions.mrn = MRN
-submissions.submittedTimestamp = Timestamp
-submissions.status = Status
-submissions.noOfNotifications = Number of notifications
+submissions.mrn.header = Movement Reference Number (MRN)
+submissions.dateAndTime.header = Date and time
+submissions.status.header = Status
+submissions.declarationInformation = Declaration information
+submissions.references = References
+submissions.history = History
+submissions.viewErrors = View errors
 
 saved.declarations.title = Your saved declarations
 saved.declarations.ducr = DUCR
@@ -1194,7 +1202,8 @@ rejected.notification.header.fieldName = Name
 rejected.notification.header.errorCode = Error code
 rejected.notification.header.errorDescription = Description of error
 rejected.notification.information = You will need to review your answers and fix the errors before you can resubmit.
-rejected.notification.continue = Continue declaration (opens in a new window)
+rejected.notification.continue = Correct and re-submit declaration (opens in a new window or tab)
+
 
 summary.amend.information = You will start at the beginning of the declaration
 summary.amend.back = Back to submissions

@@ -30,15 +30,17 @@ import models.{DeclarationStatus, ExportsDeclaration, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.{BeMatcher, MatchResult}
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import views.html.submissions
+import views.html.{declaration_information, submissions}
 
 import scala.concurrent.Future.successful
 import scala.concurrent.duration._
 
-class SubmissionsControllerSpec extends ControllerSpec {
+class SubmissionsControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
   private val notification =
     Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.UNKNOWN, Seq.empty, "payload")
@@ -50,12 +52,24 @@ class SubmissionsControllerSpec extends ControllerSpec {
     ducr = None,
     actions = Seq(Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = LocalDateTime.now()))
   )
+  val declarationInformationPage = mock[declaration_information]
+
+  override protected def beforeEach(): Unit =
+    when(declarationInformationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+
+  override protected def afterEach(): Unit =
+    reset(declarationInformationPage)
 
   trait SetUp {
     val submissionsPage = new submissions(mainTemplate)
-
     val controller =
-      new SubmissionsController(mockAuthAction, mockCustomsDeclareExportsConnector, stubMessagesControllerComponents(), submissionsPage)(ec)
+      new SubmissionsController(
+        mockAuthAction,
+        mockCustomsDeclareExportsConnector,
+        stubMessagesControllerComponents(),
+        submissionsPage,
+        declarationInformationPage
+      )(ec)
 
     authorizedUser()
   }

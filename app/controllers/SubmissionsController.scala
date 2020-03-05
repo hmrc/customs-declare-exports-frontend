@@ -26,7 +26,7 @@ import models.requests.ExportsSessionKeys
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.submissions
+import views.html.{declaration_information, submissions}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -34,7 +34,8 @@ class SubmissionsController @Inject()(
   authenticate: AuthAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
-  submissionsPage: submissions
+  submissionsPage: submissions,
+  declarationInformationPage: declaration_information
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
@@ -46,6 +47,16 @@ class SubmissionsController @Inject()(
       result = SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications)
 
     } yield Ok(submissionsPage(result))
+  }
+
+  def displayDeclarationWithNotifications(id: String): Action[AnyContent] = authenticate.async { implicit request =>
+    customsDeclareExportsConnector.findSubmission(id).flatMap {
+      case Some(submission) =>
+        customsDeclareExportsConnector.findNotifications(id).map { notifications =>
+          Ok(declarationInformationPage(submission, notifications))
+        }
+      case _ => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
+    }
   }
 
   def amend(id: String): Action[AnyContent] = authenticate.async { implicit request =>
