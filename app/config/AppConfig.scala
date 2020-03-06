@@ -62,6 +62,27 @@ class AppConfig @Inject()(
   lazy val classificationHelpUrl = loadConfig("urls.classificationHelp")
   lazy val ecicsToolUrl = loadConfig("urls.ecicsTool")
 
+  lazy val customsDeclarationsInformation = servicesConfig.baseUrl("customs-declarations-information")
+  lazy val fetchMrnStatus = servicesConfig.getConfString(
+    "customs-declarations-information.fetch-mrn-status",
+    throw new IllegalStateException("Missing configuration for fetching Customs Declarations Information MRN status URI")
+  )
+
+  lazy val cdiApiVersion = servicesConfig.getConfString(
+    "customs-declarations-information.api-version",
+    throw new IllegalStateException("Missing api-version configuration for Customs Declarations Information service")
+  )
+
+  lazy val cdiClientID = servicesConfig.getConfString(
+    "customs-declarations-information.client-id",
+    throw new IllegalStateException("Missing client-id configuration for Customs Declarations Information service")
+  )
+
+  lazy val cdiBearerToken = servicesConfig.getConfString(
+    "customs-declarations-information.bearer-token",
+    throw new IllegalStateException("Missing bearer-token configuration for Customs Declarations Information service")
+  )
+
   lazy val customsDeclareExports = servicesConfig.baseUrl("customs-declare-exports")
 
   lazy val declarations = servicesConfig.getConfString(
