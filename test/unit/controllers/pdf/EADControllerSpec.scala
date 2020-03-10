@@ -20,23 +20,39 @@ import java.io.ByteArrayInputStream
 
 import base.Injector
 import com.dmanchester.playfop.sapi.PlayFop
+import connectors.ead.CustomsDeclarationsInformationConnector
 import controllers.pdf.EADController
+import models.dis.MrnStatusSpec
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.text.PDFTextStripper
-import org.krysalis.barcode4j.impl.code128.Code128Bean
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.test.Helpers._
-import services.ead.EADService
+import services.ead.{BarcodeService, EADService}
 import unit.base.ControllerSpec
 import views.xml.pdf.pdfTemplate
+
+import scala.concurrent.Future
 
 class EADControllerSpec extends ControllerSpec with Injector {
 
   val mcc = stubMessagesControllerComponents()
-  val pdfTemplate = new pdfTemplate()
+  val barcodeService = instanceOf[BarcodeService]
   val playFop = instanceOf[PlayFop]
-  val eADService = instanceOf[EADService]
+  val pdfTemplate = new pdfTemplate()
+  val connector = mock[CustomsDeclarationsInformationConnector]
+  val eADService = new EADService(barcodeService, pdfTemplate, playFop, connector)
 
-  val controller = new EADController(pdfTemplate, eADService)(mcc, playFop)
+  val controller = new EADController(mockAuthAction, eADService)(mcc, ec)
+
+  override def beforeEach(): Unit = {
+    when(connector.fetchMrnStatus(any())(any(), any())).thenReturn(Future.successful(MrnStatusSpec.completeMrnStatus))
+    super.beforeEach()
+    authorizedUser()
+  }
+
+  override protected def afterEach(): Unit =
+    super.afterEach()
 
   "EAD Controller" should {
 
@@ -44,7 +60,7 @@ class EADControllerSpec extends ControllerSpec with Injector {
 
       "display page method is invoked" in {
 
-        val mrn = "20GB0NNR0WK39FGV09"
+        val mrn = "18GB9JLC3CU1LFGVR2"
         val result = controller.generatePdf(mrn).apply(getRequest())
 
         status(result) must be(OK)
