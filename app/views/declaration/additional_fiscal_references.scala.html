@@ -75,6 +75,8 @@
     }
 }
 
+@tariffBody = { @Html(messages("declaration.type.fiscalInformationSummaryText", components.details_content_link())) }
+
 @main_template(
     title = Title("declaration.additionalFiscalReferences.title", "declaration.fiscalInformation.header")
 ) {
@@ -110,6 +112,10 @@
             hint = None,
             labelClass = Some("bold-small")
         )
+
+        @components.details(messages("site.details.summary_text_this")){
+            @tariffBody
+        }
 
         @components.add_save_button(addHint = "declaration.additionalFiscalReferences.add.hint")
         @components.buttons.save_and_return_later_button()
