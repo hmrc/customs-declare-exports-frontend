@@ -31,8 +31,12 @@ import scala.concurrent.ExecutionContext
 
 class ConnectorSpec extends WordSpec with GuiceOneAppPerSuite with WiremockTestServer with MockitoSugar with BeforeAndAfterEach {
 
-  def overrideConfig: Map[String, Any] =
-    Map("microservice.services.customs-declare-exports.host" -> wireHost, "microservice.services.customs-declare-exports.port" -> wirePort)
+  def overrideConfig: Map[String, Any] = Map(
+    "microservice.services.customs-declare-exports.host" -> wireHost,
+    "microservice.services.customs-declare-exports.port" -> exportsWirePort,
+    "microservice.services.customs-declarations-information.host" -> wireHost,
+    "microservice.services.customs-declarations-information.port" -> disWirePort
+  )
 
   /**
     * @see [[base.Injector]]

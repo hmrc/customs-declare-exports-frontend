@@ -19,14 +19,15 @@ package connectors
 import java.time.{Instant, LocalDateTime}
 import java.util.UUID
 
+import base.TestHelper._
+import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.exchange.ExportsDeclarationExchange
 import forms.{CancelDeclaration, Lrn}
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
-import models.declaration.submissions.{Action, RequestType, Submission, SubmissionStatus}
+import models.declaration.submissions.{Action, Submission, SubmissionStatus}
 import models.{Page, Paginated}
-import org.mockito.BDDMockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
@@ -36,8 +37,6 @@ import play.api.test.Helpers._
 import services.cache.ExportsDeclarationBuilder
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import base.TestHelper._
-import play.api.Application
 
 class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with BeforeAndAfterEach with ExportsDeclarationBuilder with ScalaFutures {
 
@@ -54,9 +53,20 @@ class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with B
   implicit val defaultPatience: PatienceConfig =
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
 
+  override protected def beforeAll(): Unit = {
+    super.beforeAll()
+    exportsWireMockServer.start()
+    WireMock.configureFor(wireHost, exportsWirePort)
+  }
+
+  override protected def afterAll(): Unit = {
+    exportsWireMockServer.stop()
+    super.afterAll()
+  }
+
   "Create Declaration" should {
     "return payload" in {
-      stubFor(
+      stubForExports(
         post("/declarations")
           .willReturn(
             aResponse()
@@ -77,7 +87,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with B
 
   "Update Declaration" should {
     "return payload" in {
-      stubFor(
+      stubForExports(
         put(s"/declarations/$id")
           .willReturn(
             aResponse()
@@ -111,7 +121,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with B
            |   }]
           |}
         """.stripMargin
-      stubFor(
+      stubForExports(
         post(s"/declarations/$id/submission")
           .willReturn(
             aResponse()
@@ -133,7 +143,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with B
 
   "Delete Declaration" should {
     "return payload" in {
-      stubFor(
+      stubForExports(
         delete(s"/declarations/$id")
           .willReturn(
             aResponse()
@@ -152,7 +162,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with B
     val pagination = Page(1, 10)
 
     "return Ok" in {
-      stubFor(
+      stubForExports(
         get("/declarations?page-index=1&page-size=10")
           .willReturn(
             aResponse()
@@ -172,7 +182,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with B
     val pagination = Page(1, 10)
 
     "return Ok" in {
-      stubFor(
+      stubForExports(
         get("/declarations?status=DRAFT&page-index=1&page-size=10&sort-by=updatedDateTime&sort-direction=des")
           .willReturn(
             aResponse()
@@ -190,7 +200,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with B
 
   "Find Declaration" should {
     "return Ok" in {
-      stubFor(
+      stubForExports(
         get(s"/declarations/$id")
           .willReturn(
             aResponse()
@@ -208,7 +218,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with B
 
   "Find Submission" should {
     "return Ok" in {
-      stubFor(
+      stubForExports(
         get(s"/declarations/$id/submission")
           .willReturn(
             aResponse()
@@ -226,7 +236,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with B
 
   "Find Notifications" should {
     "return Ok" in {
-      stubFor(
+      stubForExports(
         get(s"/declarations/$id/submission/notifications")
           .willReturn(
             aResponse()
@@ -246,7 +256,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with B
     val cancellation = CancelDeclaration(Lrn("ref"), "id", "statement", "reason")
 
     "return payload" in {
-      stubFor(
+      stubForExports(
         post("/cancellations")
           .willReturn(
             aResponse()

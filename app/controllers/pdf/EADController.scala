@@ -18,35 +18,24 @@ package controllers.pdf
 
 import java.time.LocalDate
 
-import com.dmanchester.playfop.sapi.PlayFop
+import controllers.actions.AuthAction
 import javax.inject.Inject
-import org.apache.fop.apps.FOUserAgent
 import org.apache.xmlgraphics.util.MimeConstants
 import play.api.i18n.I18nSupport
-import play.api.mvc.MessagesControllerComponents
-import play.twirl.api.XmlFormat
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.ead.EADService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.xml.pdf.pdfTemplate
 
-class EADController @Inject()(pdfTemplate: pdfTemplate, eadService: EADService)(mcc: MessagesControllerComponents, val playFop: PlayFop)
+import scala.concurrent.ExecutionContext
+
+class EADController @Inject()(authenticate: AuthAction, eadService: EADService)(implicit mcc: MessagesControllerComponents, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  private val mimeType: String = MimeConstants.MIME_PDF
+  def generatePdf(mrn: String): Action[AnyContent] = authenticate.async { implicit request =>
+    val fileName = s"EAD-${mrn}-${LocalDate.now}.pdf"
 
-  def generatePdf(mrn: String) = Action { implicit request =>
-    {
-      val fileName = s"EAD-${mrn}-${LocalDate.now}.pdf"
-
-      val myFOUserAgentBlock = { foUserAgent: FOUserAgent =>
-        foUserAgent.setAuthor("HMRC")
-      }
-
-      val xml: XmlFormat.Appendable = pdfTemplate.render("Export accompanying document (EAD)", mrn, eadService.base64Image(mrn))
-
-      val pdf: Array[Byte] = playFop.processTwirlXml(xml, mimeType, autoDetectFontsForPDF = true, foUserAgentBlock = myFOUserAgentBlock)
-
-      Ok(pdf).as(mimeType).withHeaders(CONTENT_DISPOSITION -> s"attachment; filename=$fileName")
+    eadService.generatePdf(mrn).map { pdf =>
+      Ok(pdf).as(MimeConstants.MIME_PDF).withHeaders(CONTENT_DISPOSITION -> s"attachment; filename=$fileName")
     }
   }
 }

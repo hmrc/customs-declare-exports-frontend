@@ -17,7 +17,7 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import com.github.tomakehurst.wiremock.client.{MappingBuilder, WireMock}
+import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import org.scalatest.BeforeAndAfterAll
 import unit.base.UnitSpec
@@ -25,20 +25,16 @@ import unit.base.UnitSpec
 trait WiremockTestServer extends UnitSpec with BeforeAndAfterAll {
 
   val wireHost = "localhost"
-  val wirePort = 20001
-  val wireMockServer = new WireMockServer(wirePort)
 
-  protected def stubFor(mappingBuilder: MappingBuilder): StubMapping =
-    wireMockServer.stubFor(mappingBuilder)
+  val exportsWirePort = 20001
+  val exportsWireMockServer = new WireMockServer(exportsWirePort)
 
-  override protected def beforeAll(): Unit = {
-    super.beforeAll()
-    wireMockServer.start()
-    WireMock.configureFor(wireHost, wirePort)
-  }
+  val disWirePort = 20002
+  val disWireMockServer = new WireMockServer(disWirePort)
 
-  override protected def afterAll(): Unit = {
-    wireMockServer.stop()
-    super.afterAll()
-  }
+  protected def stubForExports(mappingBuilder: MappingBuilder): StubMapping =
+    exportsWireMockServer.stubFor(mappingBuilder)
+
+  protected def stubForDis(mappingBuilder: MappingBuilder): StubMapping =
+    disWireMockServer.stubFor(mappingBuilder)
 }

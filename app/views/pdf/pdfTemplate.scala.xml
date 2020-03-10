@@ -1,6 +1,8 @@
+@import models.dis.MrnStatus
+
 @this()
 
-@(text: String, mrn: String, base64Image: String)
+@(text: String, mrnStatus: MrnStatus, base64Image: String)
 
 <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
     <fo:layout-master-set>
@@ -14,7 +16,7 @@
             <fo:block text-align="right">
                 <fo:external-graphic src="data:image/png;base64,@base64Image"> </fo:external-graphic>
             </fo:block>
-            <fo:block text-align="right" font-size="15pt">MRN: @mrn</fo:block>
+            <fo:block text-align="right" font-size="15pt">MRN: @mrnStatus.mrn</fo:block>
         </fo:flow>
     </fo:page-sequence>
 </fo:root>

@@ -16,35 +16,35 @@
 
 package services.ead
 
-import java.awt.image.BufferedImage
-import java.io.ByteArrayOutputStream
-import java.util.Base64
-
-import javax.imageio.ImageIO
+import com.dmanchester.playfop.sapi.PlayFop
+import connectors.ead.CustomsDeclarationsInformationConnector
 import javax.inject.Inject
-import org.krysalis.barcode4j.HumanReadablePlacement
-import org.krysalis.barcode4j.impl.code128.Code128Bean
-import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider
-import org.krysalis.barcode4j.tools.UnitConv
+import org.apache.fop.apps.FOUserAgent
+import org.apache.xmlgraphics.util.MimeConstants
+import play.twirl.api.XmlFormat
+import uk.gov.hmrc.http.HeaderCarrier
+import views.xml.pdf.pdfTemplate
 
-class EADService @Inject()(code128Bean: Code128Bean) {
-  private val dpi = 200
+import scala.concurrent.{ExecutionContext, Future}
 
-  def base64Image(mrn: String) = {
-    code128Bean.setModuleWidth(UnitConv.in2mm(1.0f / dpi))
-    code128Bean.setFontSize(2.0f)
-    code128Bean.setMsgPosition(HumanReadablePlacement.HRP_NONE)
-    code128Bean.doQuietZone(false)
+class EADService @Inject()(
+  barcodeService: BarcodeService,
+  pdfTemplate: pdfTemplate,
+  val playFop: PlayFop,
+  connector: CustomsDeclarationsInformationConnector
+) {
 
-    val canvas = new BitmapCanvasProvider(dpi, BufferedImage.TYPE_BYTE_BINARY, false, 0)
-    code128Bean.generateBarcode(canvas, mrn)
+  def generatePdf(mrn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Array[Byte]] = {
+    val myFOUserAgentBlock = { foUserAgent: FOUserAgent =>
+      foUserAgent.setAuthor("HMRC")
+    }
 
-    val outputStream = new ByteArrayOutputStream
-    ImageIO.write(canvas.getBufferedImage, "png", outputStream)
-    outputStream.flush()
-    canvas.finish()
-    outputStream.close()
+    connector
+      .fetchMrnStatus(mrn)
+      .map(mrnStatus => {
+        val xml: XmlFormat.Appendable = pdfTemplate.render("Export accompanying document (EAD)", mrnStatus, barcodeService.base64Image(mrn))
 
-    Base64.getEncoder.encodeToString(outputStream.toByteArray)
+        playFop.processTwirlXml(xml, MimeConstants.MIME_PDF, autoDetectFontsForPDF = true, foUserAgentBlock = myFOUserAgentBlock)
+      })
   }
 }
