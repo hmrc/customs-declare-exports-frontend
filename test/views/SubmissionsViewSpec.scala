@@ -132,10 +132,10 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
         anchorSubmission.attr("href") mustBe routes.NotificationsController.listOfNotificationsForSubmission("id").url
       }
 
-      "submission status is unknown due to missing notification" in {
+      "submission status is 'pending' due to missing notification" in {
         val view = createView(Seq(submission -> Seq.empty))
 
-        tableCell(view)(1, 4).text() mustBe "Unknown status"
+        tableCell(view)(1, 4).text() mustBe "Pending"
       }
 
       "submission has link when contains rejected notification" in {
