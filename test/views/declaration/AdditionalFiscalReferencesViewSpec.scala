@@ -73,6 +73,11 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
         backButton must haveHref(controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemId, fastForward = false))
       }
 
+      "display 'For more information about this' summary text" in {
+        val detailsSummaryText = view.getElementsByClass("govuk-details__summary-text").first().text()
+        detailsSummaryText.text() mustBe "site.details.summary_text_this"
+      }
+
       "display 'Save and continue' button" in {
         view must containElement("button").withName(SaveAndContinue.toString)
       }
