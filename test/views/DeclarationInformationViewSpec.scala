@@ -84,21 +84,21 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
       view.select(".submission__mrn .govuk-summary-list__value").first().text() mustBe submission.mrn.get
     }
 
-    "contains accepted notification with correct data" in {
-
-      view.getElementById("notification_status_0").text() mustBe SubmissionStatus.format(SubmissionStatus.ACCEPTED)
-      view.getElementById("notification_date_time_0").text() mustBe "1 January 2020 at 00:00"
-      view.getElementById("notification_errors_0").text() mustBe empty
-    }
-
     "contains rejected notification with correct data and view errors link" in {
 
-      view.getElementById("notification_status_1").text() mustBe SubmissionStatus.format(SubmissionStatus.REJECTED)
-      view.getElementById("notification_date_time_1").text() mustBe "2 February 2020 at 10:00"
-      view.getElementById("notification_errors_1").text() mustBe "submissions.viewErrors"
-      view.getElementById("notification_errors_1").child(0) must haveHref(
+      view.getElementById("notification_status_0").text() mustBe SubmissionStatus.format(SubmissionStatus.REJECTED)
+      view.getElementById("notification_date_time_0").text() mustBe "2 February 2020 at 10:00"
+      view.getElementById("notification_errors_0").text() mustBe "submissions.viewErrors"
+      view.getElementById("notification_errors_0").child(0) must haveHref(
         controllers.routes.RejectedNotificationsController.displayPage(submission.uuid)
       )
+    }
+
+    "contains accepted notification with correct data" in {
+
+      view.getElementById("notification_status_1").text() mustBe SubmissionStatus.format(SubmissionStatus.ACCEPTED)
+      view.getElementById("notification_date_time_1").text() mustBe "1 January 2020 at 00:00"
+      view.getElementById("notification_errors_1").text() mustBe empty
     }
 
     "contains back link which links to the submission list" in {

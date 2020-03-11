@@ -76,7 +76,7 @@
         @if(notifications.nonEmpty) {
             <div class="govuk-grid-column" id ="declarationHistory">
                 @govukTable(Table(
-                    rows = notifications.zipWithIndex.map { case (notification, index) =>
+                    rows = notifications.sorted.reverse.zipWithIndex.map { case (notification, index) =>
                         Seq(
                             TableRow(
                                 content = HtmlContent(SubmissionStatus.format(notification.status)),
