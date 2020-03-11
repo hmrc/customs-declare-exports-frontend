@@ -1196,7 +1196,7 @@ legal.declaration.email.error=Enter a valid email address
 legal.declaration.confirmation=I confirm the information given is correct to the best of my knowledge
 legal.declaration.confirmation.missing=You must confirm this information is correct
 
-rejected.notification.ucr = UCR {0}
+rejected.notification.mrn = MRN {0}
 rejected.notification.title = There are errors in this declaration
 rejected.notification.header.fieldName = Name
 rejected.notification.header.errorCode = Error code
