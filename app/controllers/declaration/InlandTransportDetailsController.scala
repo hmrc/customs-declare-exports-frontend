@@ -43,7 +43,9 @@ class InlandTransportDetailsController @Inject()(
 
   import forms.declaration.InlandModeOfTransportCode._
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  val validJourneys = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
+
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     request.cacheModel.locations.inlandModeOfTransportCode match {
       case Some(data) => Ok(inlandTransportDetailsPage(mode, form().fill(data)))
       case _          => Ok(inlandTransportDetailsPage(mode, form()))
@@ -65,7 +67,7 @@ class InlandTransportDetailsController @Inject()(
 
   private def nextPage(declarationType: DeclarationType): Mode => Call =
     declarationType match {
-      case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY | DeclarationType.CLEARANCE =>
+      case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
         controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
         controllers.declaration.routes.BorderTransportController.displayPage
