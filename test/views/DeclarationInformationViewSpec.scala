@@ -28,7 +28,10 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
   private val declarationInformationPage = instanceOf[declaration_information]
 
-  private val submission = Submission(uuid = "id", eori = "eori", lrn = "lrn", mrn = Some("mrn"), ducr = Some("ducr"), actions = Seq.empty)
+  private def submission(mrn: Option[String] = Some("mrn")): Submission =
+    Submission(uuid = "id", eori = "eori", lrn = "lrn", mrn = mrn, ducr = Some("ducr"), actions = Seq.empty)
+
+  private val submission: Submission = submission()
 
   private val notification = Notification(
     actionId = "action-id",
@@ -82,6 +85,21 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
       view.select(".submission__lrn .govuk-summary-list__value").first().text() mustBe submission.lrn
       view.select(".submission__mrn .govuk-summary-list__key").first().text() mustBe "submissions.mrn"
       view.select(".submission__mrn .govuk-summary-list__value").first().text() mustBe submission.mrn.get
+    }
+
+    "contains create EAD link" in {
+
+      val generateEADLink = view.getElementById("generate-ead")
+
+      generateEADLink.text() mustBe "submissions.generateEAD"
+      generateEADLink must haveHref(controllers.pdf.routes.EADController.generatePdf(submission.mrn.get))
+    }
+
+    "doesn't contain EAD link if there is no MRN" in {
+
+      val view = declarationInformationPage(submission(None), notifications)(request, messages)
+
+      view.getElementById("generate-ead") mustBe null
     }
 
     "contains rejected notification with correct data and view errors link" in {
