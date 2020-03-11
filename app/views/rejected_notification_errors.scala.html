@@ -30,7 +30,7 @@
     <br/>
 
     @components.heading(
-        sectionHeader = messages("rejected.notification.ucr", submission.ducr.getOrElse("No DUCR")),
+        sectionHeader = messages("rejected.notification.mrn", submission.mrn.getOrElse("No MRN")),
         title = messages("rejected.notification.title"))
 
     <span id="information">@messages("rejected.notification.information")</span>

@@ -46,7 +46,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
     "have proper messages for labels" in {
 
       val messages = instanceOf[MessagesApi].preferred(request)
-      messages must haveTranslationFor("rejected.notification.ucr")
+      messages must haveTranslationFor("rejected.notification.mrn")
       messages must haveTranslationFor("rejected.notification.title")
       messages must haveTranslationFor("rejected.notification.header.fieldName")
       messages must haveTranslationFor("rejected.notification.header.errorCode")
