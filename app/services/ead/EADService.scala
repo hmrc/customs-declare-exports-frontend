@@ -21,6 +21,7 @@ import connectors.ead.CustomsDeclarationsInformationConnector
 import javax.inject.Inject
 import org.apache.fop.apps.FOUserAgent
 import org.apache.xmlgraphics.util.MimeConstants
+import play.api.i18n.Messages
 import play.twirl.api.XmlFormat
 import uk.gov.hmrc.http.HeaderCarrier
 import views.xml.pdf.pdfTemplate
@@ -34,7 +35,7 @@ class EADService @Inject()(
   connector: CustomsDeclarationsInformationConnector
 ) {
 
-  def generatePdf(mrn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Array[Byte]] = {
+  def generatePdf(mrn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext, messages: Messages): Future[Array[Byte]] = {
     val myFOUserAgentBlock = { foUserAgent: FOUserAgent =>
       foUserAgent.setAuthor("HMRC")
     }
@@ -42,7 +43,7 @@ class EADService @Inject()(
     connector
       .fetchMrnStatus(mrn)
       .map(mrnStatus => {
-        val xml: XmlFormat.Appendable = pdfTemplate.render("Export accompanying document (EAD)", mrnStatus, barcodeService.base64Image(mrn))
+        val xml: XmlFormat.Appendable = pdfTemplate.render(mrnStatus, barcodeService.base64Image(mrn), messages)
 
         playFop.processTwirlXml(xml, MimeConstants.MIME_PDF, autoDetectFontsForPDF = true, foUserAgentBlock = myFOUserAgentBlock)
       })

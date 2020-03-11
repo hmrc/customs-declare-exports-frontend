@@ -32,7 +32,6 @@ class BarcodeService @Inject()(code128Bean: Code128Bean) {
 
   def base64Image(mrn: String) = {
     code128Bean.setModuleWidth(UnitConv.in2mm(1.0f / dpi))
-    code128Bean.setFontSize(2.0f)
     code128Bean.setMsgPosition(HumanReadablePlacement.HRP_NONE)
     code128Bean.doQuietZone(false)
 
