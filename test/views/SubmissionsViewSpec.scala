@@ -47,14 +47,12 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
     "have proper messages for labels" in {
       val messages = instanceOf[MessagesApi].preferred(journeyRequest())
       messages must haveTranslationFor("submissions.title")
-      messages must haveTranslationFor("submissions.eori")
-      messages must haveTranslationFor("submissions.conversationId")
-      messages must haveTranslationFor("submissions.ducr")
-      messages must haveTranslationFor("submissions.lrn")
-      messages must haveTranslationFor("submissions.mrn")
-      messages must haveTranslationFor("submissions.submittedTimestamp")
-      messages must haveTranslationFor("submissions.status")
-      messages must haveTranslationFor("submissions.noOfNotifications")
+      messages must haveTranslationFor("site.backToSelectionPage")
+      messages must haveTranslationFor("submissions.ucr.header")
+      messages must haveTranslationFor("submissions.lrn.header")
+      messages must haveTranslationFor("submissions.mrn.header")
+      messages must haveTranslationFor("submissions.dateAndTime.header")
+      messages must haveTranslationFor("submissions.status.header")
     }
 
     val view = createView()
@@ -65,12 +63,11 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
     }
 
     "display page messages" in {
-      tableCell(view)(0, 0).text() mustBe "submissions.ducr"
-      tableCell(view)(0, 1).text() mustBe "submissions.lrn"
-      tableCell(view)(0, 2).text() mustBe "submissions.mrn"
-      tableCell(view)(0, 3).text() mustBe "submissions.submittedTimestamp"
-      tableCell(view)(0, 4).text() mustBe "submissions.status"
-      tableCell(view)(0, 5).text() mustBe "submissions.noOfNotifications"
+      tableCell(view)(0, 0).text() mustBe "submissions.ucr.header"
+      tableCell(view)(0, 1).text() mustBe "submissions.lrn.header"
+      tableCell(view)(0, 2).text() mustBe "submissions.mrn.header"
+      tableCell(view)(0, 3).text() mustBe "submissions.dateAndTime.header"
+      tableCell(view)(0, 4).text() mustBe "submissions.status.header"
     }
 
     "display page submissions" when {
@@ -111,11 +108,10 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
         tableCell(view)(1, 0).text() mustBe "ducr"
         tableCell(view)(1, 1).text() mustBe "lrn"
         tableCell(view)(1, 2).text() mustBe "mrn"
-        tableCell(view)(1, 3).text() mustBe "2019-01-01 00:00"
+        tableCell(view)(1, 3).text() mustBe "1 January 2019 at 00:00"
         tableCell(view)(1, 4).text() mustBe "Accepted"
-        tableCell(view)(1, 5).text() mustBe "1"
-        val anchorSubmission = tableCell(view)(1, 5).getElementsByTag("a").first()
-        anchorSubmission.attr("href") mustBe routes.NotificationsController.listOfNotificationsForSubmission("id").url
+        val decInformationLink = tableCell(view)(1, 0).getElementsByTag("a").first()
+        decInformationLink.attr("href") mustBe routes.SubmissionsController.displayDeclarationWithNotifications("id").url
       }
 
       "optional fields are unpopulated" in {
@@ -125,11 +121,10 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
         tableCell(view)(1, 0).text() mustBe empty
         tableCell(view)(1, 1).text() mustBe "lrn"
         tableCell(view)(1, 2).text() mustBe empty
-        tableCell(view)(1, 3).text() mustBe "2019-01-01 00:00"
+        tableCell(view)(1, 3).text() mustBe "1 January 2019 at 00:00"
         tableCell(view)(1, 4).text() mustBe "Accepted"
-        tableCell(view)(1, 5).text() mustBe "1"
-        val anchorSubmission = tableCell(view)(1, 5).getElementsByTag("a").first()
-        anchorSubmission.attr("href") mustBe routes.NotificationsController.listOfNotificationsForSubmission("id").url
+        val decInformationLink = tableCell(view)(1, 0).getElementsByTag("a").first()
+        decInformationLink.attr("href") mustBe routes.SubmissionsController.displayDeclarationWithNotifications("id").url
       }
 
       "submission status is 'pending' due to missing notification" in {
@@ -142,7 +137,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
         val view = createView(Seq(submission -> Seq(rejectedNotification)))
 
         tableCell(view)(1, 0).text() mustBe submission.ducr.get
-        tableCell(view)(1, 0).toString must include(routes.RejectedNotificationsController.displayPage(submission.uuid).url)
+        tableCell(view)(1, 0).toString must include(routes.SubmissionsController.displayDeclarationWithNotifications(submission.uuid).url)
       }
 
       "submission date is unknown due to missing submit action" in {

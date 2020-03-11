@@ -18,6 +18,8 @@ GET         /submissions/:id/rejected-notifications        controllers.RejectedN
 
 GET         /submissions                                   controllers.SubmissionsController.displayListOfSubmissions()
 
+GET         /submissions/:id/information                   controllers.SubmissionsController.displayDeclarationWithNotifications(id: String)
+
 GET         /submissions/:id                               controllers.SubmissionsController.amend(id: String)
 
 # Cancel declaration

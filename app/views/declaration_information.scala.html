@@ -1,0 +1,103 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.declaration.notifications.Notification
+@import models.declaration.submissions.Submission
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.Title
+@import models.declaration.submissions.SubmissionStatus
+@import views.ViewDates
+
+@this(govukLayout: views.html.gds_design_system_main_template, govukSummaryList: GovukSummaryList, govukTable: GovukTable)
+
+@(submission: Submission, notifications: Seq[Notification])(implicit request: Request[_], messages: Messages)
+
+@errorLink(declarationID: String, status: SubmissionStatus.Value)= {
+    @if(status == SubmissionStatus.REJECTED) {
+        <a href="@routes.RejectedNotificationsController.displayPage(declarationID)" >@messages("submissions.viewErrors")</a>
+    }
+}
+
+@govukLayout(
+    title = Title("submissions.declarationInformation"),
+    backButtonTitle = messages("site.backToDeclarations"),
+    backButtonUrl = routes.SubmissionsController.displayListOfSubmissions().url
+) {
+    <div class = "govuk-grid-row">
+        <h1 class="govuk-heading-l">@messages("submissions.declarationInformation")</h1>
+
+        <h2 class="govuk-heading-m">@messages("submissions.references")</h2>
+
+        @govukSummaryList(SummaryList(
+            rows = Seq(
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages("submissions.ucr"))
+                    ),
+                    value = Value(
+                        content = submission.ducr.map(HtmlContent(_)).getOrElse(Empty)
+                    ),
+                    classes = "submission__ucr"
+                ),
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages("submissions.lrn"))
+                    ),
+                    value = Value(
+                        content = HtmlContent(submission.lrn)
+                    ),
+                    classes = "submission__lrn"
+                ),
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages("submissions.mrn"))
+                    ),
+                    value = Value(
+                        content = submission.mrn.map(HtmlContent(_)).getOrElse(Empty)
+                    ),
+                    classes = "submission__mrn"
+                )
+            ).filterNot(_.value.content == Empty),
+            classes = "govuk-!-margin-bottom-9"
+        ))
+        @if(notifications.nonEmpty) {
+            <div class="govuk-grid-column" id ="declarationHistory">
+                @govukTable(Table(
+                    rows = notifications.zipWithIndex.map { case (notification, index) =>
+                        Seq(
+                            TableRow(
+                                content = HtmlContent(SubmissionStatus.format(notification.status)),
+                                attributes = Map("id" -> s"notification_status_$index")
+                            ),
+                            TableRow(
+                                content = HtmlContent(ViewDates.submissionDateTimeFormatter.format(notification.dateTimeIssued)),
+                                attributes = Map("id" -> s"notification_date_time_$index")
+                            ),
+                            TableRow(
+                                content = HtmlContent(errorLink(submission.uuid, notification.status)),
+                                attributes = Map("id" -> s"notification_errors_$index")
+                            )
+                        )
+                    },
+                    classes = "govuk-table govuk-!-margin-bottom-9",
+                    caption = Some(messages("submissions.history")),
+                    captionClasses = "govuk-table__caption govuk-heading-m",
+                    firstCellIsHeader = true
+                ))
+            </div>
+        }
+    </div>
+}
