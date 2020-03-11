@@ -23,7 +23,7 @@ import forms.declaration.StatisticalValue.form
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -44,7 +44,9 @@ class StatisticalValueController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  val validTypes = Seq(DeclarationType.SUPPLEMENTARY, DeclarationType.STANDARD)
+
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.statisticalValue) match {
       case Some(itemType) => Ok(itemTypePage(mode, itemId, StatisticalValue.form.fill(itemType)))
       case _              => Ok(itemTypePage(mode, itemId, StatisticalValue.form))
