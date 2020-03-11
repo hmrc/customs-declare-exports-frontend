@@ -56,7 +56,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
   }
 
   "Inland Transport Details Controller on GET request" should {
-    onEveryDeclarationJourney() { declaration =>
+    onJourney(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.SUPPLEMENTARY, DeclarationType.OCCASIONAL)() { declaration =>
       "return 200 OK" in {
         withNewCaching(declaration)
 
@@ -74,12 +74,23 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
         verify(inlandTransportDetails).apply(any(), any())(any(), any())
       }
     }
+    onClearance { declaration =>
+      "redirect to start" in {
+        withNewCaching(declaration)
+
+        val response = controller.displayPage(Mode.Normal).apply(getRequest())
+
+        status(response) must be(SEE_OTHER)
+        redirectLocation(response) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+      }
+    }
+
   }
   "Inland Transport Details Controller on POST" when {
 
     val body = Json.obj("inlandModeOfTransportCode" -> exampleTransportMode)
 
-    onEveryDeclarationJourney() { declaration =>
+    onJourney(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.SUPPLEMENTARY, DeclarationType.OCCASIONAL)() { declaration =>
       "update cache after successful bind" in {
         withNewCaching(declaration)
 
@@ -142,15 +153,5 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
       }
     }
 
-    onClearance { declaration =>
-      "redirect to Border Transport" in {
-        withNewCaching(declaration)
-
-        val result = await(controller.submit(Mode.Normal)(postRequest(body)))
-
-        result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.TransportLeavingTheBorderController.displayPage()
-      }
-    }
   }
 }

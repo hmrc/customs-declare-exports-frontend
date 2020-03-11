@@ -64,10 +64,12 @@ class SupervisingCustomsOfficeController @Inject()(
 
   private def nextPage(declarationType: DeclarationType): Mode => Call =
     declarationType match {
-      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | DeclarationType.CLEARANCE =>
+      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
         controllers.declaration.routes.InlandTransportDetailsController.displayPage
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
         controllers.declaration.routes.TransportPaymentController.displayPage
+      case DeclarationType.CLEARANCE =>
+        controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
     }
 
   private def updateCache(formData: SupervisingCustomsOffice)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
