@@ -70,6 +70,19 @@ class EADControllerSpec extends ControllerSpec with Injector {
         try {
           val pdfData = new PDFTextStripper().getText(pdfDocument)
           pdfData must include(mrn)
+          pdfData must include(MrnStatusSpec.completeMrnStatus.eori)
+          pdfData must include(MrnStatusSpec.completeMrnStatus.declarationType)
+          pdfData must include(MrnStatusSpec.completeMrnStatus.ucr.get)
+          pdfData must include(MrnStatusSpec.completeMrnStatus.roe)
+          pdfData must include(MrnStatusSpec.completeMrnStatus.ics)
+          pdfData must include(MrnStatusSpec.completeMrnStatus.totalPackageQuantity)
+          pdfData must include(MrnStatusSpec.completeMrnStatus.goodsItemQuantity)
+          pdfData must include(MrnStatusSpec.completeMrnStatus.releasedDateTime.get)
+          pdfData must include(MrnStatusSpec.completeMrnStatus.acceptanceDateTime.get)
+          pdfData must include(MrnStatusSpec.completeMrnStatus.receivedDateTime)
+          pdfData must include(MrnStatusSpec.completeMrnStatus.versionId)
+          pdfData must include(MrnStatusSpec.completeMrnStatus.previousDocuments.head.typeCode)
+          pdfData must include(MrnStatusSpec.completeMrnStatus.previousDocuments.head.id)
         } finally {
           pdfDocument.close()
         }
