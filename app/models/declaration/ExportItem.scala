@@ -43,10 +43,10 @@ case class ExportItem(
     fiscalInformation.exists(_.onwardSupplyRelief == FiscalInformation.AllowedFiscalInformationAnswers.yes)
 
   val isCompleted: PartialFunction[DeclarationType, Boolean] = {
-    case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY | DeclarationType.CLEARANCE =>
+    case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
       procedureCodes.isDefined && isFiscalInformationCompleted && statisticalValue.isDefined &&
         packageInformation.nonEmpty && commodityMeasure.isDefined
-    case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
+    case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
       procedureCodes.isDefined && isFiscalInformationCompleted && packageInformation.nonEmpty
   }
 

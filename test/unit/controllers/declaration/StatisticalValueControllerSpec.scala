@@ -18,7 +18,7 @@ package unit.controllers.declaration
 
 import controllers.declaration.StatisticalValueController
 import forms.declaration.StatisticalValue
-import models.Mode
+import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -75,60 +75,80 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
     "return 200 (OK)" when {
 
-      "item type exists in the cache and item type is defined" in {
+      onJourney(DeclarationType.SUPPLEMENTARY, DeclarationType.STANDARD)() { declaration =>
+        "item type exists in the cache and item type is defined" in {
 
-        withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId), withStatisticalValue()))))
+          withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId), withStatisticalValue()))))
 
-        val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+          val result = controller.displayPage(Mode.Normal, itemId)(getRequest(declaration))
 
-        status(result) mustBe OK
-        theResponseForm.value mustNot be(empty)
-      }
+          status(result) mustBe OK
+          theResponseForm.value mustNot be(empty)
+        }
 
-      "item type exists in the cache and item type is not defined" in {
+        "item type exists in the cache and item type is not defined" in {
 
-        withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
+          withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
 
-        val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
+          val result = controller.displayPage(Mode.Normal, itemId)(getRequest(declaration))
 
-        status(result) mustBe OK
-        theResponseForm.value mustBe empty
+          status(result) mustBe OK
+          theResponseForm.value mustBe empty
+        }
+
       }
 
     }
 
     "return 400 (BAD_REQUEST)" when {
 
-      "invalid data is posted" in {
+      onJourney(DeclarationType.SUPPLEMENTARY, DeclarationType.STANDARD)() { declaration =>
+        "invalid data is posted" in {
 
-        withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
+          withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
 
-        val badData = Json.toJson(StatisticalValue("Seven"))
+          val badData = Json.toJson(StatisticalValue("Seven"))
 
-        val result = controller.submitItemType(Mode.Normal, itemId)(postRequest(badData))
+          val result = controller.submitItemType(Mode.Normal, itemId)(postRequest(badData))
 
-        status(result) mustBe BAD_REQUEST
-        verify(mockItemTypePage, times(1)).apply(any(), any(), any())(any(), any())
+          status(result) mustBe BAD_REQUEST
+          verify(mockItemTypePage, times(1)).apply(any(), any(), any())(any(), any())
+        }
+
       }
-
     }
 
     "return 303 (SEE_OTHER)" when {
 
-      "valid data is posted" in {
+      onJourney(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL, DeclarationType.CLEARANCE)() { declaration =>
+        "invalid data is posted" in {
 
-        withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
+          withNewCaching(declaration)
 
-        val badData = Json.toJson(StatisticalValue("7"))
+          val result = controller.displayPage(Mode.Normal, itemId).apply(getRequest(declaration))
 
-        val result = controller.submitItemType(Mode.Normal, itemId)(postRequest(badData))
+          status(result) mustBe SEE_OTHER
+        }
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationController
-          .displayPage(Mode.Normal, itemId)
-        verify(mockItemTypePage, times(0)).apply(any(), any(), any())(any(), any())
+      }
 
-        validateCache(StatisticalValue("7"))
+      onJourney(DeclarationType.SUPPLEMENTARY, DeclarationType.STANDARD)() { declaration =>
+        "valid data is posted" in {
+
+          withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
+
+          val badData = Json.toJson(StatisticalValue("7"))
+
+          val result = controller.submitItemType(Mode.Normal, itemId)(postRequest(badData))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationController
+            .displayPage(Mode.Normal, itemId)
+          verify(mockItemTypePage, times(0)).apply(any(), any(), any())(any(), any())
+
+          validateCache(StatisticalValue("7"))
+        }
+
       }
 
     }

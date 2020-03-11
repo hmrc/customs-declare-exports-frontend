@@ -190,7 +190,7 @@ class NactCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
           verifyPageInvoked(0)
         }
 
-      for (decType <- Set(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.CLEARANCE)) {
+      for (decType <- Set(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)) {
         s"we are on $decType journey" should {
           behave like controllerRedirectsToNextPage(
             decType,
@@ -199,7 +199,7 @@ class NactCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
         }
       }
 
-      for (decType <- Set(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)) {
+      for (decType <- Set(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL, DeclarationType.CLEARANCE)) {
         s"we are on $decType journey" should {
           behave like controllerRedirectsToNextPage(
             decType,

@@ -117,7 +117,7 @@ object Navigator {
   }
 
   val clearanceItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
-    case PackageInformation    => controllers.declaration.routes.StatisticalValueController.displayPage
+    case PackageInformation    => controllers.declaration.routes.NactCodeController.displayPage
     case AdditionalInformation => controllers.declaration.routes.CommodityMeasureController.displayPage
     case CusCode               => controllers.declaration.routes.CommodityDetailsController.displayPage
     case NactCode              => controllers.declaration.routes.CusCodeController.displayPage
