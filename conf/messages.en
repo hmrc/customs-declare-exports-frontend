@@ -836,8 +836,8 @@ supplementary.additionalInformation.table.headers.description = Required informa
 
 declaration.natureOfTransaction.header = Consignment information
 declaration.natureOfTransaction.title = What was the nature of the transaction?
-declaration.natureOfTransaction.purchase = Sale
-declaration.natureOfTransaction.purchase.hint = These goods were bought outright
+declaration.natureOfTransaction.sale = Sale
+declaration.natureOfTransaction.sale.hint = These goods were bought outright
 declaration.natureOfTransaction.return = Return
 declaration.natureOfTransaction.return.hint = These goods need to be returned to the sender
 declaration.natureOfTransaction.donation = Donation
