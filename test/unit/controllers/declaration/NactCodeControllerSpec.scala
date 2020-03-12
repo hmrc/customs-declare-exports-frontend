@@ -159,10 +159,6 @@ class NactCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
         behave like controllerErrors(DeclarationType.STANDARD)
       }
 
-      "we are on clearance journey" should {
-        behave like controllerErrors(DeclarationType.CLEARANCE)
-      }
-
       "we are on simplified journey" should {
         behave like controllerErrors(DeclarationType.SIMPLIFIED)
       }
@@ -199,13 +195,23 @@ class NactCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with 
         }
       }
 
-      for (decType <- Set(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL, DeclarationType.CLEARANCE)) {
+      for (decType <- Set(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)) {
         s"we are on $decType journey" should {
           behave like controllerRedirectsToNextPage(
             decType,
             controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, "itemId")
           )
         }
+      }
+
+      "invalid journey CLEARANCE" in {
+
+        withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
+
+        val result = controller.displayPage(Mode.Normal, "").apply(getRequest())
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
       }
 
     }
