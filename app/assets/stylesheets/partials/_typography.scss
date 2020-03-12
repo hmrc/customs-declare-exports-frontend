@@ -11,27 +11,16 @@ p.lede {
   font-weight: 400;
   text-transform: none;
 }
-/*replicate font-xsmall due to ".content p" rule*/
-p.font-xsmall{
-font-family:"nta",Arial,sans-serif;
-font-size:16px;
-line-height:1.25;
-font-weight:300;
-text-transform:none
-}
-@media (max-width: 640px){
-p.font-xsmall{
-  font-size:14px;
-  line-height:1.14286
-  }
-}
 
-
-/*give some space to the hero*/
-.hero {
-  margin: 1em 0;
+/*
+====================================
+Utility bold
+Pulled from GDS elements typography
+====================================
+*/
+.bold {
+  font-weight: 700;
 }
-.hero__heading-large,
-.hero__heading-small {
-  display: block;
+label > .bold {
+  display: block; /*temp fix until form story can fix label structure*/
 }
