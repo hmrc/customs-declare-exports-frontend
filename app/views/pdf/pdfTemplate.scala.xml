@@ -2,7 +2,7 @@
 
 @this()
 
-@(mrnStatus: MrnStatus, base64Image: String, messages: Messages)
+@(mrn: String, mrnStatus: MrnStatus, base64Image: String, messages: Messages)
 
 <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
     <fo:layout-master-set>
@@ -16,13 +16,9 @@
 
 
             <!--BARCODE START-->
-            <fo:block-container absolute-position="absolute" top="19mm" right="0mm" width="50%" height="30mm" border-width="thick" border-style="solid" border-color="#000000"  margin="2mm">
-                <fo:block text-align="left" margin="1mm">
-                    <fo:external-graphic width="100%"
-                                         content-height="65%"
-                                         content-width="360%"
-                                         scaling="non-uniform"
-                                         src="data:image/png;base64,@base64Image"> </fo:external-graphic>
+            <fo:block-container absolute-position="absolute" top="19mm" right="0mm" width="35%" height="30mm" border-width="thick" border-style="solid" border-color="#000000" margin="2mm">
+                <fo:block text-align="left" margin="2mm">
+                    <fo:external-graphic content-width="70%" content-height="60%" scaling="non-uniform" src="data:image/png;base64,@base64Image"> </fo:external-graphic>
                 </fo:block>
             </fo:block-container>
             <!--BARCODE END-->
@@ -44,7 +40,7 @@
             </fo:block-container>
             <fo:block-container absolute-position="absolute" top="56mm" right="0mm" width="50%" height="5mm">
                 <fo:block font-size="14pt" font-weight="bold" text-align="right">
-                    @messages("pdf.template.mrn"): @mrnStatus.mrn
+                    @messages("pdf.template.mrn"): @mrn
                 </fo:block>
             </fo:block-container>
             <!-- DECLARATION INFO END -->

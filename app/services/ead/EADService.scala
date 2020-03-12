@@ -43,7 +43,7 @@ class EADService @Inject()(
     connector
       .fetchMrnStatus(mrn)
       .map(mrnStatus => {
-        val xml: XmlFormat.Appendable = pdfTemplate.render(mrnStatus, barcodeService.base64Image(mrn), messages)
+        val xml: XmlFormat.Appendable = pdfTemplate.render(mrn, mrnStatus, barcodeService.base64Image(mrn), messages)
 
         playFop.processTwirlXml(xml, MimeConstants.MIME_PDF, autoDetectFontsForPDF = true, foUserAgentBlock = myFOUserAgentBlock)
       })
