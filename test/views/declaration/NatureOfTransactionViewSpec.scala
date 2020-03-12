@@ -44,7 +44,7 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestData with
       val messages = instanceOf[MessagesApi].preferred(journeyRequest())
       messages must haveTranslationFor("declaration.natureOfTransaction.title")
       messages must haveTranslationFor("declaration.natureOfTransaction.header")
-      messages must haveTranslationFor("declaration.natureOfTransaction.purchase")
+      messages must haveTranslationFor("declaration.natureOfTransaction.sale")
       messages must haveTranslationFor("declaration.natureOfTransaction.return")
       messages must haveTranslationFor("declaration.natureOfTransaction.donation")
       messages must haveTranslationFor("declaration.natureOfTransaction.processing")
@@ -66,8 +66,8 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestData with
       view.getElementById("section-header").text() must include("declaration.natureOfTransaction.header")
     }
 
-    "display radio button with Purchase option" in {
-      view.getElementById("Purchase-label").text() must be("declaration.natureOfTransaction.purchase")
+    "display radio button with Sale option" in {
+      view.getElementById("Sale-label").text() must be("declaration.natureOfTransaction.sale")
     }
     "display radio button with Return option" in {
       view.getElementById("Return-label").text() must be("declaration.natureOfTransaction.return")
