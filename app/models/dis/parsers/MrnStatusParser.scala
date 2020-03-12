@@ -25,6 +25,9 @@ import scala.xml.NodeSeq
 
 class MrnStatusParser {
 
+  private val timeStampFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssz")
+  private val displayFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy 'at' hh:mma")
+
   def parse(responseXml: NodeSeq): MrnStatus = {
     import models.dis.XmlTags._
 
@@ -49,23 +52,17 @@ class MrnStatusParser {
     )
   }
 
-  private def previousDocuments(documents: NodeSeq): Seq[PreviousDocument] = {
-    var previousDocuments: Seq[PreviousDocument] = Seq.empty
-    documents.foreach { doc =>
+  private def previousDocuments(documents: NodeSeq): Seq[PreviousDocument] =
+    documents.map { doc =>
       val id = (doc \ XmlTags.id).text
       val typeCode = (doc \ XmlTags.typeCode).text
-      previousDocuments :+= PreviousDocument(id, typeCode)
+      PreviousDocument(id, typeCode)
     }
-    previousDocuments
-  }
 
-  private def timeFormatter(zonedDateTime: String): String = timeFormatter(
-    ZonedDateTime.parse(zonedDateTime, DateTimeFormatter.ofPattern("yyyyMMddHHmmssz"))
-  )
+  private def timeFormatter(zonedDateTime: String): String = timeFormatter(ZonedDateTime.parse(zonedDateTime, timeStampFormatter))
 
   private def timeFormatter(zonedDateTime: ZonedDateTime): String =
-    DateTimeFormatter
-      .ofPattern("dd MMMM yyyy 'at' hh:mma")
+    displayFormatter
       .format(zonedDateTime)
       .replace("AM", "am")
       .replace("PM", "pm")
