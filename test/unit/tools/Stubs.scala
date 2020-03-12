@@ -30,9 +30,9 @@ import uk.gov.hmrc.govukfrontend.views.html.components.{GovukHeader, Footer => _
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 import uk.gov.hmrc.play.config.{AssetsConfig, GTMConfig, OptimizelyConfig}
 import uk.gov.hmrc.play.views.html.layouts._
-import views.html.components.{phaseBanner, siteHeader}
 import views.html.layouts.GovUkTemplate
-import views.html.{gds_design_system_main_template, govuk_wrapper, main_template}
+import views.html.{govuk_wrapper, main_template}
+import views.html.components.gds._
 
 import scala.concurrent.ExecutionContext
 
@@ -117,7 +117,7 @@ trait Stubs {
   val govukHeader = new GovukHeader()
   val sHeader = new siteHeader(govukHeader)
   val pBanner = new phaseBanner(new GovukPhaseBanner(new govukTag()))
-  val gdsMainTemplate = new gds_design_system_main_template(
+  val gdsMainTemplate = new gdsMainTemplate(
     govukHeader = govukHeader,
     govukLayout = gdsGovukLayout,
     govukPhaseBanner = new components.GovukPhaseBanner(new govukTag()),

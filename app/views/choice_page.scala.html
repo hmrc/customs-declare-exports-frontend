@@ -14,17 +14,20 @@
  * limitations under the License.
  *@
 
+@import views.html.components.gds.{errorSummary, gdsMainTemplate}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import forms.Choice.AllowedChoiceValues._
 @import config.AppConfig
 @import views.Title
 
-@this(  govukLayout: views.html.gds_design_system_main_template,
-govukButton: GovukButton,
-govukRadios: GovukRadios,
-errorSummary: components.errorSummary,
-formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
-appConfig: AppConfig)
+@this(
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    errorSummary: errorSummary,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+    appConfig: AppConfig
+)
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 

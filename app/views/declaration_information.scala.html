@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import views.html.components.gds.gdsMainTemplate
 @import models.declaration.notifications.Notification
 @import models.declaration.submissions.Submission
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -21,7 +22,7 @@
 @import models.declaration.submissions.SubmissionStatus
 @import views.ViewDates
 
-@this(govukLayout: views.html.gds_design_system_main_template, govukSummaryList: GovukSummaryList, govukTable: GovukTable)
+@this(govukLayout: gdsMainTemplate, govukSummaryList: GovukSummaryList, govukTable: GovukTable)
 
 @(submission: Submission, notifications: Seq[Notification])(implicit request: Request[_], messages: Messages)
 
