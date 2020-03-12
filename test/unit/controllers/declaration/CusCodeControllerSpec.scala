@@ -129,6 +129,7 @@ class CusCodeControllerSpec extends ControllerSpec {
           val result = controller.displayPage(Mode.Normal, "").apply(getRequest())
 
           status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
         }
       }
     }
