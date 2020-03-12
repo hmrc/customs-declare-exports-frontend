@@ -395,6 +395,7 @@ submissions.declarationInformation = Declaration information
 submissions.references = References
 submissions.history = History
 submissions.viewErrors = View errors
+submissions.generateEAD = Create an Export Accompanying Document (EAD)
 
 saved.declarations.title = Your saved declarations
 saved.declarations.ducr = DUCR

@@ -27,7 +27,15 @@
 
 @errorLink(declarationID: String, status: SubmissionStatus.Value)= {
     @if(status == SubmissionStatus.REJECTED) {
-        <a href="@routes.RejectedNotificationsController.displayPage(declarationID)" >@messages("submissions.viewErrors")</a>
+        <a href="@routes.RejectedNotificationsController.displayPage(declarationID)">@messages("submissions.viewErrors")</a>
+    }
+}
+
+@createEADLink = {
+    @submission.mrn.map { mrn =>
+        <div class="govuk-body">
+            <a class="govuk-link govuk-link--no-visited-state" href="@controllers.pdf.routes.EADController.generatePdf(mrn)" id="generate-ead">@messages("submissions.generateEAD")</a>
+        </div>
     }
 }
 
@@ -70,9 +78,11 @@
                     ),
                     classes = "submission__mrn"
                 )
-            ).filterNot(_.value.content == Empty),
-            classes = "govuk-!-margin-bottom-9"
+            ).filterNot(_.value.content == Empty)
         ))
+
+        @createEADLink
+
         @if(notifications.nonEmpty) {
             <div class="govuk-grid-column" id ="declarationHistory">
                 @govukTable(Table(
