@@ -21,7 +21,6 @@ import com.typesafe.config.{Config, ConfigFactory}
 import config.AppConfig
 import forms.Choice
 import helpers.views.declaration.CommonMessages
-import models.Mode
 import org.jsoup.nodes.Document
 import org.scalatest.Matchers._
 import play.api.Mode.Test
@@ -35,7 +34,7 @@ import uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.choice_page
-import views.html.components.errorSummary
+import views.html.components.gds.errorSummary
 import views.tags.ViewTest
 
 @ViewTest
