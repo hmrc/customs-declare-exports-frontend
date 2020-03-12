@@ -21,7 +21,7 @@ import forms.declaration.CusCode
 import helpers.views.declaration.CommonMessages
 import models.requests.JourneyRequest
 import models.DeclarationType._
-import models.Mode
+import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.mvc.Call
@@ -80,7 +80,7 @@ class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with 
 
   "CUS Code View on empty page" when {
 
-    onEveryDeclarationJourney { request =>
+    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
       behave like cusCodeView(request)
     }
   }
@@ -88,7 +88,7 @@ class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with 
   "CUS Code View on populated page" when {
     val dangerousGoodsCode = Some(CusCode(Some("12345678")))
 
-    onEveryDeclarationJourney { request =>
+    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
       behave like cusCodeView(request, dangerousGoodsCode)
     }
   }
@@ -99,8 +99,5 @@ class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with 
       behave like backButton(request, controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId))
     }
 
-    onClearance { request =>
-      behave like backButton(request, controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, itemId))
-    }
   }
 }

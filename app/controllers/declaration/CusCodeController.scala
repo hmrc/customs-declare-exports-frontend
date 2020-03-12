@@ -43,7 +43,9 @@ class CusCodeController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
+
+  def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.cusCode) match {
       case Some(cusCode) => Ok(cusCodePage(mode, itemId, form.fill(cusCode)))
       case _             => Ok(cusCodePage(mode, itemId, form))
