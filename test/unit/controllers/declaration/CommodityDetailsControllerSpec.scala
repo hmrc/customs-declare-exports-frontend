@@ -146,7 +146,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, itemId)
       }
     }
   }

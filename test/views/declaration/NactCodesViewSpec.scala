@@ -19,7 +19,7 @@ package views.declaration
 import base.Injector
 import forms.declaration.NactCode
 import helpers.views.declaration.CommonMessages
-import models.DeclarationType.DeclarationType
+import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
@@ -87,7 +87,7 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
   }
 
   "NACT Code View on empty page" must {
-    onEveryDeclarationJourney { request =>
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
       val view = createView(NactCode.form, List.empty, request)
 
       "display page title" in {
@@ -113,17 +113,6 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
       }
     }
 
-    onJourney(DeclarationType.CLEARANCE) { request =>
-      "display 'Back' button that links to 'TARIC Code' page" in {
-
-        val view = createView(NactCode.form, List.empty, request)
-
-        val backButton = view.getElementById("back-link")
-
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, itemId))
-      }
-    }
-
     onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
       "display 'Back' button that links to 'TARIC Code' page" in {
 
@@ -141,7 +130,7 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
     val form = NactCode.form.fill(code)
     val codes = List(NactCode("ABCD"), NactCode("4321"))
 
-    onEveryDeclarationJourney { request =>
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
       val view = createView(form, codes, request)
 
       "display page title" in {
@@ -176,17 +165,6 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
 
         val saveButton = view.select("#submit")
         saveButton.text() mustBe realMessages(saveAndContinueCaption)
-      }
-    }
-
-    onJourney(DeclarationType.CLEARANCE) { request =>
-      "display 'Back' button that links to 'TARIC Code' page" in {
-
-        val view = createView(NactCode.form, List.empty, request)
-
-        val backButton = view.getElementById("back-link")
-
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, itemId))
       }
     }
 
