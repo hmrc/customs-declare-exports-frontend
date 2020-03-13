@@ -19,14 +19,15 @@
 @import forms.Choice.AllowedChoiceValues._
 @import models.DeclarationType
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds.{errorSummary, gdsMainTemplate, _}
 @import views.{BackButton, Title}
-@import views.html.components.gds.{errorSummary, gdsMainTemplate}
 
 @this(
     govukLayout: gdsMainTemplate,
     govukButton: GovukButton,
     govukRadios: GovukRadios,
     errorSummary: errorSummary,
+    saveAndContinue: saveAndContinue,
     formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
     appConfig: AppConfig
 )
@@ -100,7 +101,8 @@
             ).filter(radioOption => radioOption.divider.isDefined || radioOption.value.exists(appConfig.availableDeclarations().contains(_))),
             errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
-        @govukButton(Button(content = Text(messages("site.save_and_continue"))))
+
+        @saveAndContinue()
     }
 
 }
