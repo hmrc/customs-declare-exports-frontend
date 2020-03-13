@@ -102,12 +102,12 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
         view.getElementById("details_address_country").attr("value") mustBe empty
       }
 
-      "display 'Back' button that links to 'Consignment References' page" in {
+      "display 'Back' button that links to 'Declarant Details' page" in {
 
         val backButton = createView().getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.ConsignmentReferencesController.displayPage().url
+        backButton.attr("href") mustBe routes.DeclarantDetailsController.displayPage().url
       }
 
       "display 'Save and continue' button" in {

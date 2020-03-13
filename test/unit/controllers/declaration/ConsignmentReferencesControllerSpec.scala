@@ -77,14 +77,14 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
       status(result) must be(BAD_REQUEST)
     }
 
-    "return 303 (SEE_OTHER)" in new SetUp {
+    "return 303 (SEE_OTHER) and redirect to declarant details page" in new SetUp {
 
       val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN))
 
       val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(correctForm))
 
       await(result) mustBe aRedirectToTheNextPage
-      thePageNavigatedTo mustBe controllers.declaration.routes.ExporterDetailsController.displayPage()
+      thePageNavigatedTo mustBe controllers.declaration.routes.DeclarantDetailsController.displayPage()
     }
   }
 }

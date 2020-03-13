@@ -16,7 +16,7 @@
 
 package views.declaration
 
-import base.{Injector, TestHelper}
+import base.TestHelper
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.Eori
@@ -61,13 +61,13 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
       view.getElementById("details_eori").attr("value") mustBe empty
     }
 
-    "display 'Back' button that links to 'Consignee Details' page" in {
+    "display 'Back' button that links to 'Consignment References' page" in {
 
       val view = declarantDetailsPage(Mode.Normal, form)(journeyRequest(), messages)
       val backButton = view.getElementById("back-link")
 
       backButton.text() mustBe messages(backCaption)
-      backButton.attr("href") mustBe routes.ConsigneeDetailsController.displayPage().url
+      backButton.attr("href") mustBe routes.ConsignmentReferencesController.displayPage().url
     }
 
     "display 'Save and continue' button on page" in {
