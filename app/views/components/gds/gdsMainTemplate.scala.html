@@ -16,6 +16,7 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import views.BackButton
 @import views.Title
 
 @this(
@@ -28,8 +29,7 @@
 )
 
 @(  title: Title,
-    backButtonTitle: String = "Back",
-    backButtonUrl: String = "/")(contentBlock: Html)(implicit request: Request[_], messages: Messages)
+    backButton: Option[BackButton] = None)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 @head = {
     <link rel="shortcut icon" href='@routes.Assets.versioned("/lib/govuk-frontend/govuk/assets/images/favicon.ico")' type="image/x-icon" />
@@ -52,11 +52,12 @@
 
     @phaseBanner("beta")
 
-    @govukBackLink(BackLink(
-        content = Text(backButtonTitle),
+    @backButton.map(back =>
+        govukBackLink(BackLink(
+        content = Text(back.title),
         attributes = Map("id" -> "back-link"),
-        href = backButtonUrl
-    ))
+        href = back.call.url
+    )))
 }
 
 @footer = @{

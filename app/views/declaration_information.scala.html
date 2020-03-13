@@ -17,9 +17,10 @@
 @import views.html.components.gds.gdsMainTemplate
 @import models.declaration.notifications.Notification
 @import models.declaration.submissions.Submission
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.Title
 @import models.declaration.submissions.SubmissionStatus
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.BackButton
+@import views.Title
 @import views.ViewDates
 
 @this(govukLayout: gdsMainTemplate, govukSummaryList: GovukSummaryList, govukTable: GovukTable)
@@ -42,8 +43,7 @@
 
 @govukLayout(
     title = Title("submissions.declarationInformation"),
-    backButtonTitle = messages("site.backToDeclarations"),
-    backButtonUrl = routes.SubmissionsController.displayListOfSubmissions().url
+    backButton = Some(BackButton(messages("site.backToDeclarations"), routes.SubmissionsController.displayListOfSubmissions()))
 ) {
     <div class = "govuk-grid-row">
         <h1 class="govuk-heading-l">@messages("submissions.declarationInformation")</h1>

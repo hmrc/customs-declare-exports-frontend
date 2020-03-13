@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import forms.Choice.AllowedChoiceValues._
 @import config.AppConfig
+@import views.BackButton
 @import views.Title
 
 @this(
@@ -33,8 +34,7 @@
 
 @govukLayout(
     title = Title("declaration.choice.description"),
-    backButtonTitle = messages("site.back"),
-    backButtonUrl = controllers.routes.StartController.displayStartPage().url) {
+    backButton = Some(BackButton(messages("site.back"), controllers.routes.StartController.displayStartPage()))) {
 
     @formHelper(action = routes.ChoiceController.submitChoice(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
