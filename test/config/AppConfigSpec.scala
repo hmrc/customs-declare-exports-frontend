@@ -82,7 +82,7 @@ class AppConfigSpec extends UnitSpec {
 
       """.stripMargin
     )
-  private val emptyAppConfig: Config = ConfigFactory.parseString("")
+  private val emptyAppConfig: Config = ConfigFactory.empty()
   val validServicesConfiguration = Configuration(validAppConfig)
   private val emptyServicesConfiguration = Configuration(emptyAppConfig)
 

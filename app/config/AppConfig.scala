@@ -40,8 +40,6 @@ class AppConfig @Inject()(
   @Named("appName") val appName: String
 ) {
 
-  private val logger = Logger(this.getClass())
-
   private def loadConfig(key: String): String =
     runModeConfiguration.getOptional[String](key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
