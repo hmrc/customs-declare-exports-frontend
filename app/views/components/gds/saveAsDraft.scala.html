@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
-@()(implicit messages: Messages)
+@import controllers.util.SaveAndReturn
 
-<a class="govuk-link govuk-link--no-visited-state" target="_blank" href="https://www.gov.uk/government/collections/uk-trade-tariff-volume-3-for-cds"> @messages("declaration.type.tariffUrlText")</a>
+@(messageKey: String = "site.save_and_come_back_later")(implicit messages: Messages)
+<br>
+<button id="submit_and_return" class="button-link" name="@SaveAndReturn.toString">@messages(messageKey)</button>

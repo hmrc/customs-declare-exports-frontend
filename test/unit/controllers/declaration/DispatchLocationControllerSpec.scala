@@ -20,16 +20,18 @@ import controllers.declaration.DispatchLocationController
 import forms.declaration.DispatchLocation
 import forms.declaration.DispatchLocation.AllowedDispatchLocations._
 import models.{DeclarationType, Mode}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.declaration.dispatch_location
-import config.AppConfig
 
 class DispatchLocationControllerSpec extends ControllerSpec {
 
   trait SetUp {
-    val dispatchLocationPage = new dispatch_location(mainTemplate)
+    val dispatchLocationPage = mock[dispatch_location]
 
     val controller = new DispatchLocationController(
       mockAuthAction,
@@ -42,6 +44,7 @@ class DispatchLocationControllerSpec extends ControllerSpec {
 
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
+    when(dispatchLocationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   "Dispatch Location controller" should {

@@ -14,6 +14,13 @@
  * limitations under the License.
  *@
 
-@()(implicit messages: Messages)
+@import controllers.util.SaveAndReturn
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-<a class="govuk-link govuk-link--no-visited-state" target="_blank" href="https://www.gov.uk/government/collections/uk-trade-tariff-volume-3-for-cds"> @messages("declaration.type.tariffUrlText")</a>
+@this(
+        govukButton: GovukButton
+)
+
+@(messageKey: String = "site.save_and_continue")(implicit messages: Messages)
+
+@govukButton(Button(content = Text(messages(messageKey)), attributes = Map("id" -> "submit")))

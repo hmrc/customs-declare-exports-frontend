@@ -193,8 +193,8 @@ function declarationChoice(){
 function dispatchLocation(){
     if(currentPageIs("/customs-declare-exports/declaration/dispatch-location")){
 
-        selectRadioOption(document.getElementById("dispatchLocation"), 0);
-        document.getElementsByClassName('button')[0].click()
+        selectRadioOptionFromInputs(document.getElementsByName("dispatchLocation"), 0);
+        document.getElementsByClassName('govuk-button')[0].click()
     }
 }
 

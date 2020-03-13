@@ -14,32 +14,43 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
-@import controllers.routes._
-@import views.components.inputs.RadioOption
 @import views.Title
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds._
+@import views.{BackButton, Title}
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukRadios: GovukRadios,
+        govukDetails : GovukDetails,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        saveAndContinue: saveAndContinue,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(
- title = Title("notEligible.pageTitle")
-) {
-@components.back_link(controllers.routes.StartController.displayStartPage())
+@govukLayout(
+    title = Title("notEligible.title"),
+    backButton = Some(BackButton(messages("site.back"), controllers.routes.StartController.displayStartPage))){
 
-<h1 style="margin-top: 5px;">@messages("notEligible.title")<br>@messages("notEligible.titleLineTwo")</h1>
+<h1 class="govuk-heading-xl">@messages("notEligible.title")</h1>
 
-<p>@messages("notEligible.descriptionPreUrl")
-    <a href="https://secure.hmce.gov.uk/ecom/login/index.html" target="_blank" rel="noopener noreferrer"> @messages("notEligible.descriptionUrl") </a>
-    @messages("notEligible.descriptionPostUrl")
+<p class="govuk-body">
+  @messages("notEligible.description")
+  @messages("notEligible.descriptionPreUrl") <a href="https://www.gov.uk/guidance/dispatching-your-goods-within-the-eu">@messages("notEligible.descriptionUrl")</a>
 </p>
 
-<h3>@messages("notEligible.referenceTitle")</h3>
+<h2 class="govuk-heading-m">@messages("notEligible.referenceTitle")</h2>
+<p class="govuk-body">
+  @messages("notEligible.reference.problems") <b>@messages("notEligible.reference.phone")</b>
+  @messages("notEligible.reference.open")
+</p>
 
-<p>@messages("notEligible.reference.text")</p>
-
-<p>
-  <a href="https://secure.hmce.gov.uk/ecom/login/index.html" target="_blank" rel="noopener noreferrer"> @messages("general.inquiries.help.link") </a>
+<p class="govuk-body">
+  <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/customs-international-trade-and-excise-enquiries" target="_blank" rel="noopener noreferrer">@messages("general.inquiries.help.link")</a>
 </p>
 }

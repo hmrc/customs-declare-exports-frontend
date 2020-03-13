@@ -18,20 +18,24 @@ package unit.controllers.declaration
 
 import controllers.declaration.NotEligibleController
 import models.DeclarationType
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.declaration.not_eligible
 
 class NotEligibleControllerSpec extends ControllerSpec {
 
   trait SetUp {
-    val notEligiblePage = new not_eligible(mainTemplate)
+    val notEligiblePage = mock[not_eligible]
 
     val controller =
       new NotEligibleController(mockAuthAction, mockJourneyAction, stubMessagesControllerComponents(), notEligiblePage)(ec)
 
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
+    when(notEligiblePage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   "Not Eligible Controller" should {
