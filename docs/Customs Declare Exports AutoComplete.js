@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.26
+// @version      1.27
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -108,6 +108,12 @@ function selectRadioOption(element, index){
     }
 }
 
+function selectRadioOptionFromInputs(inputs, index){
+    if (inputs && index < inputs.length) {
+        inputs[index].checked = true
+    }
+}
+
 function findRadioOption(fieldname) {
     var inputs = document.getElementById(fieldname).getElementsByTagName('input');
     var choice;
@@ -156,29 +162,31 @@ function declarationChoice(){
             return;
         }
 
+        let inputs = document.getElementsByName("type");
+
         switch(getDeclaration()) {
             case 'D':
             case 'A':
-                selectRadioOption(document.getElementById("type"), 0);
+                selectRadioOptionFromInputs(inputs, 0);
                 break;
             case 'F':
             case 'C':
-                selectRadioOption(document.getElementById("type"), 1);
+                selectRadioOptionFromInputs(inputs, 1);
                 break;
             case 'Y':
             case 'Z':
-                selectRadioOption(document.getElementById("type"), 2);
+                selectRadioOptionFromInputs(inputs, 2);
                 break;
             case 'E':
             case 'B':
-                selectRadioOption(document.getElementById("type"), 3);
+                selectRadioOptionFromInputs(inputs, 3);
                 break;
             case 'K':
             case 'J':
-                selectRadioOption(document.getElementById("type"), 4);
+                selectRadioOptionFromInputs(inputs, 4);
                 break;
         }
-        document.getElementsByClassName('button')[0].click();
+        document.getElementsByClassName('govuk-button')[0].click()
     }
 }
 

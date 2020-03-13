@@ -19,6 +19,7 @@ package helpers.views.declaration
 trait CommonMessages {
 
   val backCaption: String = "site.back"
+  val backToSelectionCaption: String = "site.backToSelectionPage"
   val removeCaption: String = "site.remove"
   val addCaption: String = "site.add"
   val saveAndContinueCaption: String = "site.save_and_continue"

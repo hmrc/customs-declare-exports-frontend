@@ -22,11 +22,14 @@ import forms.declaration.DeclarationChoiceSpec
 import models.DeclarationType.DeclarationType
 import models.requests.ExportsSessionKeys
 import models.{DeclarationStatus, DeclarationType, Mode}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.OptionValues
 import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContentAsJson, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import utils.FakeRequestCSRFSupport._
 import views.html.declaration.declaration_choice
@@ -40,7 +43,7 @@ class DeclarationChoiceControllerSpec extends ControllerSpec with OptionValues {
   private val newDeclaration =
     aDeclaration(withId("newDeclarationId"), withType(DeclarationType.SUPPLEMENTARY))
 
-  val choicePage = new declaration_choice(mainTemplate, minimalAppConfig)
+  val choicePage = mock[declaration_choice]
 
   val controller =
     new DeclarationChoiceController(mockAuthAction, mockExportsCacheService, stubMessagesControllerComponents(), choicePage)(ec)
@@ -48,6 +51,12 @@ class DeclarationChoiceControllerSpec extends ControllerSpec with OptionValues {
   override def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
+    when(choicePage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(choicePage)
+    super.afterEach()
   }
 
   def postChoiceRequest(body: JsValue): Request[AnyContentAsJson] =

@@ -23,9 +23,21 @@
 @import forms.Choice
 @import forms.declaration.DeclarationChoice
 @import controllers.navigation.Navigator
+@import views.html.components.gds.{errorSummary, gdsMainTemplate}
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import forms.Choice.AllowedChoiceValues._
+@import config.AppConfig
+@import views.BackButton
+@import views.Title
 
-@this(main_template: views.html.main_template, appConfig: AppConfig)
-
+@this(
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    errorSummary: errorSummary,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+    appConfig: AppConfig
+)
 
 
 @(mode: Mode, form: Form[_])(implicit request: Request[_], messages: Messages)
@@ -39,32 +51,64 @@
     }
 }
 
-@main_template(
-    title = Title("declaration.type.description")
-) {
+@govukLayout(
+    title = Title("declaration.type.description"),
+    backButton = Some(BackButton(messages("site.backToSelectionPage"), backCall))){
 
-    @components.back_link(backCall, mode)
+    @formHelper(action = controllers.declaration.routes.DeclarationChoiceController.submitChoice(), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-    @helper.form(controllers.declaration.routes.DeclarationChoiceController.submitChoice(mode), 'autoComplete -> "off") {
-        @helper.CSRF.formField
-
-        @components.error_summary(form.errors)
-
-        @components.heading(title = messages("declaration.type.description"))
-
-        @components.fields.field_radio(
-            field = form("type"),
-            legend = "",
-            inputs = Seq(
-                RadioOption(DeclarationType.STANDARD.toString, DeclarationType.STANDARD.toString, messages("declaration.type.standard"), Some(messages("declaration.type.standard.hint"))),
-                RadioOption(DeclarationType.SIMPLIFIED.toString, DeclarationType.SIMPLIFIED.toString, messages("declaration.type.simplified"), Some(messages("declaration.type.simplified.hint"))),
-                RadioOption(DeclarationType.SUPPLEMENTARY.toString, DeclarationType.SUPPLEMENTARY.toString, messages("declaration.type.supplementary"), Some(messages("declaration.type.supplementary.hint"))),
-                RadioOption(DeclarationType.OCCASIONAL.toString, DeclarationType.OCCASIONAL.toString, messages("declaration.type.occasional"), Some(messages("declaration.type.occasional.hint"))),
-                RadioOption(RadioOption.dividerId, RadioOption.dividerId, messages("declaration.type.or")),
-                RadioOption(DeclarationType.CLEARANCE.toString, DeclarationType.CLEARANCE.toString, messages("declaration.type.clearance"))
-            ).filter(radioOption => appConfig.availableDeclarations().contains(radioOption.value))
-        )
-
-        @components.submit_button()
+        @govukRadios(Radios(
+            name = "type",
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("declaration.type.description")),
+                    isPageHeading = true,
+                    classes = "govuk-fieldset__legend--xl"
+                ))
+            )),
+            items = Seq(
+                RadioItem(
+                    id = Some(DeclarationType.STANDARD.toString),
+                    value = Some(DeclarationType.STANDARD.toString),
+                    content = Text(messages("declaration.type.standard")),
+                    hint = Some(Hint(content = Text(messages("declaration.type.standard.hint")))),
+                    checked = form("type").value.contains(DeclarationType.STANDARD.toString)
+                ),
+                RadioItem(
+                    id = Some(DeclarationType.SIMPLIFIED.toString),
+                    value = Some(DeclarationType.SIMPLIFIED.toString),
+                    content = Text(messages("declaration.type.simplified")),
+                    hint = Some(Hint(content = Text(messages("declaration.type.simplified.hint")))),
+                    checked = form("type").value.contains(DeclarationType.SIMPLIFIED.toString)
+                ),
+                RadioItem(
+                    id = Some(DeclarationType.SUPPLEMENTARY.toString),
+                    value = Some(DeclarationType.SUPPLEMENTARY.toString),
+                    content = Text(messages("declaration.type.supplementary")),
+                    hint = Some(Hint(content = Text(messages("declaration.type.supplementary.hint")))),
+                    checked = form("type").value.contains(DeclarationType.SUPPLEMENTARY.toString)
+                ),
+                RadioItem(
+                    id = Some(DeclarationType.OCCASIONAL.toString),
+                    value = Some(DeclarationType.OCCASIONAL.toString),
+                    content = Text(messages("declaration.type.occasional")),
+                    hint = Some(Hint(content = Text(messages("declaration.type.occasional.hint")))),
+                    checked = form("type").value.contains(DeclarationType.OCCASIONAL.toString)
+                ),
+                RadioItem(
+                    divider = Some(messages("declaration.type.or"))
+                ),
+                RadioItem(
+                    id = Some(DeclarationType.CLEARANCE.toString),
+                    value = Some(DeclarationType.CLEARANCE.toString),
+                    content = Text(messages("declaration.type.clearance")),
+                    checked = form("type").value.contains(DeclarationType.CLEARANCE.toString)
+                )
+            ).filter(radioOption => radioOption.divider.isDefined || radioOption.value.exists(appConfig.availableDeclarations().contains(_))),
+            errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
+        @govukButton(Button(content = Text(messages("site.save_and_continue"))))
     }
+
 }
