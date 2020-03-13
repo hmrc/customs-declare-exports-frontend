@@ -326,11 +326,13 @@ supplementary.carrier.address.info = Carrier’s name and business address
 supplementary.carrier-details.help-item1 = Carrier’s EORI number, go to data element 3/32 Carrier Identification Number
 supplementary.carrier-details.help-item2 = Carrier’s name and business address, go to data element 3/31 Carrier Name and Address
 
-supplementary.representative.header = Who is the representative?
+
+supplementary.representative.title = Representation information
+supplementary.representative.legend = What type of representation was agreed?
 supplementary.representative.hint = Enter the representative’s EORI number or name and business address. If no representative was used, leave this page blank and continue.
-supplementary.representative.eori.info = Representative’s EORI number
+supplementary.representative.eori.legend = What is the representative’s EORI number?
+supplementary.representative.eori.hint = If you are an agent representing another agent, tell us their EORI number, otherwise leave it blank
 supplementary.representative.address.info = Representative’s name and business address
-supplementary.representative.representationType.header = What type of representative will be used?
 supplementary.representative.representationType.error.empty = Enter a valid representative status
 supplementary.representative.representationType.error.wrongValue = Enter a valid representative status
 supplementary.representative.representationType.declarant = I am declaring for the company I work for or own
@@ -338,9 +340,9 @@ supplementary.representative.representationType.direct = Direct representative
 supplementary.representative.representationType.direct.hint = The representative is accepting legal responsibility for the exporter
 supplementary.representative.representationType.indirect = Indirect representative
 supplementary.representative.representationType.indirect.hint = The representative is sharing legal responsibility with the exporter
-supplementary.representative-details.help-item1 = Representative’s EORI number, go to data element 3/20 Representative Identification Number
-supplementary.representative-details.help-item2 = Representative’s name and business address, go to data element 3/19 Representative Name and Address
-supplementary.representative-details.help-item3 = What type of representative will be used, go to data element 3/21 Representative Status Code
+supplementary.representative-details.help-item1 = What type of representation was agreed, go to data element 3/21 Representative Status Code
+supplementary.representative-details.help-item2 = Representative’s EORI number, go to data element 3/20 Representative Identification Number
+supplementary.representative-details.eori.error = Enter an EORI or full address details
 
 supplementary.eori = EORI number
 supplementary.eori.info = Enter the EORI number or business details
