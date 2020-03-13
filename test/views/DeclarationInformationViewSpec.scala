@@ -19,14 +19,29 @@ package views
 import java.time.LocalDateTime
 
 import base.Injector
+import com.typesafe.config.{Config, ConfigFactory}
+import config.EadConfig
 import models.declaration.notifications.Notification
 import models.declaration.submissions.{Submission, SubmissionStatus}
+import play.api.Configuration
+import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, GovukTable}
 import views.declaration.spec.UnitViewSpec
+import views.html.components.gds.gdsMainTemplate
 import views.html.declaration_information
 
 class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
-  private val declarationInformationPage = instanceOf[declaration_information]
+  private val gdsMainTemplate = instanceOf[gdsMainTemplate]
+  private val govukSummaryList = instanceOf[GovukSummaryList]
+  private val govukTable = instanceOf[GovukTable]
+
+  private val configWithEnabledEAD: Config =
+    ConfigFactory.parseString("microservice.services.features.ead=enabled")
+  private val configWithDisabledEAD: Config =
+    ConfigFactory.parseString("microservice.services.features.ead=disabled")
+
+  private val eadConfigEnabled = new EadConfig(Configuration(configWithEnabledEAD))
+  private val eadConfigDisabled = new EadConfig(Configuration(configWithDisabledEAD))
 
   private def submission(mrn: Option[String] = Some("mrn")): Submission =
     Submission(uuid = "id", eori = "eori", lrn = "lrn", mrn = mrn, ducr = Some("ducr"), actions = Seq.empty)
@@ -53,7 +68,12 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
   private val notifications = Seq(notification, rejectedNotification)
 
-  private val view = declarationInformationPage(submission, notifications)(request, messages)
+  private val declarationInformationPageWithEad = new declaration_information(gdsMainTemplate, govukSummaryList, govukTable, eadConfigEnabled)
+
+  private val declarationInformationPageWithoutEad =
+    new declaration_information(gdsMainTemplate, govukSummaryList, govukTable, eadConfigDisabled)
+
+  private val viewWithEad = declarationInformationPageWithEad(submission, notifications)(request, messages)
 
   "Declaration information" should {
 
@@ -73,55 +93,68 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
     "contains page header" in {
 
-      view.getElementsByTag("h1").first().text() mustBe "submissions.declarationInformation"
+      viewWithEad.getElementsByTag("h1").first().text() mustBe "submissions.declarationInformation"
     }
 
     "contains references table with correct labels" in {
 
-      view.getElementsByTag("h2").first().text() mustBe "submissions.references"
-      view.select(".submission__ucr .govuk-summary-list__key").first().text() mustBe "submissions.ucr"
-      view.select(".submission__ucr .govuk-summary-list__value").first().text() mustBe submission.ducr.get
-      view.select(".submission__lrn .govuk-summary-list__key").first().text() mustBe "submissions.lrn"
-      view.select(".submission__lrn .govuk-summary-list__value").first().text() mustBe submission.lrn
-      view.select(".submission__mrn .govuk-summary-list__key").first().text() mustBe "submissions.mrn"
-      view.select(".submission__mrn .govuk-summary-list__value").first().text() mustBe submission.mrn.get
+      viewWithEad.getElementsByTag("h2").first().text() mustBe "submissions.references"
+      viewWithEad.select(".submission__ucr .govuk-summary-list__key").first().text() mustBe "submissions.ucr"
+      viewWithEad.select(".submission__ucr .govuk-summary-list__value").first().text() mustBe submission.ducr.get
+      viewWithEad.select(".submission__lrn .govuk-summary-list__key").first().text() mustBe "submissions.lrn"
+      viewWithEad.select(".submission__lrn .govuk-summary-list__value").first().text() mustBe submission.lrn
+      viewWithEad.select(".submission__mrn .govuk-summary-list__key").first().text() mustBe "submissions.mrn"
+      viewWithEad.select(".submission__mrn .govuk-summary-list__value").first().text() mustBe submission.mrn.get
     }
 
-    "contains create EAD link" in {
+    "contains create EAD link" when {
 
-      val generateEADLink = view.getElementById("generate-ead")
+      "feature flag is enabled" in {
 
-      generateEADLink.text() mustBe "submissions.generateEAD"
-      generateEADLink must haveHref(controllers.pdf.routes.EADController.generatePdf(submission.mrn.get))
+        val generateEADLink = viewWithEad.getElementById("generate-ead")
+
+        generateEADLink.text() mustBe "submissions.generateEAD"
+        generateEADLink must haveHref(controllers.pdf.routes.EADController.generatePdf(submission.mrn.get))
+      }
     }
 
-    "doesn't contain EAD link if there is no MRN" in {
+    "doesn't contain EAD link " when {
 
-      val view = declarationInformationPage(submission(None), notifications)(request, messages)
+      "there is no mrn" in {
 
-      view.getElementById("generate-ead") mustBe null
+        val view = declarationInformationPageWithoutEad(submission(None), notifications)(request, messages)
+
+        view.getElementById("generate-ead") mustBe null
+      }
+
+      "feature flag is disabled" in {
+
+        val view = declarationInformationPageWithoutEad(submission, notifications)(request, messages)
+
+        view.getElementById("generate-ead") mustBe null
+      }
     }
 
     "contains rejected notification with correct data and view errors link" in {
 
-      view.getElementById("notification_status_0").text() mustBe SubmissionStatus.format(SubmissionStatus.REJECTED)
-      view.getElementById("notification_date_time_0").text() mustBe "2 February 2020 at 10:00"
-      view.getElementById("notification_errors_0").text() mustBe "submissions.viewErrors"
-      view.getElementById("notification_errors_0").child(0) must haveHref(
+      viewWithEad.getElementById("notification_status_0").text() mustBe SubmissionStatus.format(SubmissionStatus.REJECTED)
+      viewWithEad.getElementById("notification_date_time_0").text() mustBe "2 February 2020 at 10:00"
+      viewWithEad.getElementById("notification_errors_0").text() mustBe "submissions.viewErrors"
+      viewWithEad.getElementById("notification_errors_0").child(0) must haveHref(
         controllers.routes.RejectedNotificationsController.displayPage(submission.uuid)
       )
     }
 
     "contains accepted notification with correct data" in {
 
-      view.getElementById("notification_status_1").text() mustBe SubmissionStatus.format(SubmissionStatus.ACCEPTED)
-      view.getElementById("notification_date_time_1").text() mustBe "1 January 2020 at 00:00"
-      view.getElementById("notification_errors_1").text() mustBe empty
+      viewWithEad.getElementById("notification_status_1").text() mustBe SubmissionStatus.format(SubmissionStatus.ACCEPTED)
+      viewWithEad.getElementById("notification_date_time_1").text() mustBe "1 January 2020 at 00:00"
+      viewWithEad.getElementById("notification_errors_1").text() mustBe empty
     }
 
     "contains back link which links to the submission list" in {
 
-      val backButton = view.getElementById("back-link")
+      val backButton = viewWithEad.getElementById("back-link")
 
       backButton.text() mustBe "site.backToDeclarations"
       backButton must haveHref(controllers.routes.SubmissionsController.displayListOfSubmissions())

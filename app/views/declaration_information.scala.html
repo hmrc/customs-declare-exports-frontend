@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import config.EadConfig
 @import views.html.components.gds.gdsMainTemplate
 @import models.declaration.notifications.Notification
 @import models.declaration.submissions.Submission
@@ -23,7 +24,7 @@
 @import views.Title
 @import views.ViewDates
 
-@this(govukLayout: gdsMainTemplate, govukSummaryList: GovukSummaryList, govukTable: GovukTable)
+@this(govukLayout: gdsMainTemplate, govukSummaryList: GovukSummaryList, govukTable: GovukTable, eadDocumentConfig: EadConfig)
 
 @(submission: Submission, notifications: Seq[Notification])(implicit request: Request[_], messages: Messages)
 
@@ -82,7 +83,9 @@
             ).filterNot(_.value.content == Empty)
         ))
 
-        @createEADLink
+        @if(eadDocumentConfig.isEadEnabled) {
+            @createEADLink
+        }
 
         @if(notifications.nonEmpty) {
             <div class="govuk-grid-column" id ="declarationHistory">
