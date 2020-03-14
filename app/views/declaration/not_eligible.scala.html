@@ -33,6 +33,10 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
+@descriptionLink = {<a href="https://www.gov.uk/guidance/dispatching-your-goods-within-the-eu">@messages("notEligible.descriptionLink")</a>}
+@supportPhone = {<b>0300 200 3700</b>}
+@enquiriesLink = {<a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/customs-international-trade-and-excise-enquiries" target="_blank" rel="noopener noreferrer">@messages("general.inquiries.help.link")</a>}
+
 @govukLayout(
     title = Title("notEligible.title"),
     backButton = Some(BackButton(messages("site.back"), controllers.routes.StartController.displayStartPage))){
@@ -40,17 +44,16 @@
 <h1 class="govuk-heading-xl">@messages("notEligible.title")</h1>
 
 <p class="govuk-body">
-  @messages("notEligible.description")
-  @messages("notEligible.descriptionPreUrl") <a href="https://www.gov.uk/guidance/dispatching-your-goods-within-the-eu">@messages("notEligible.descriptionUrl")</a>
+    @Html(messages("notEligible.description", descriptionLink))
 </p>
 
 <h2 class="govuk-heading-m">@messages("notEligible.referenceTitle")</h2>
 <p class="govuk-body">
-  @messages("notEligible.reference.problems") <b>@messages("notEligible.reference.phone")</b>
-  @messages("notEligible.reference.open")
+    @Html(messages("notEligible.reference.support", supportPhone))
+    @Html(messages("notEligible.reference.openingHours"))
 </p>
 
 <p class="govuk-body">
-  <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/customs-international-trade-and-excise-enquiries" target="_blank" rel="noopener noreferrer">@messages("general.inquiries.help.link")</a>
+    @enquiriesLink
 </p>
 }

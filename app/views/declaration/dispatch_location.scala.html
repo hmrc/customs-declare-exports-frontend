@@ -30,7 +30,7 @@
         govukDetails : GovukDetails,
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
-        saveAndContinue: saveAndContinue,
+        saveButtons: saveButtons,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
@@ -90,9 +90,7 @@
             content = HtmlContent(messages("declaration.type.dispatchLocationSummaryText", components.details_content_link()))
         ))
 
-        @saveAndContinue()
-        @saveAsDraft()
-
+        @saveButtons()
     }
 
 }

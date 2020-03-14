@@ -48,7 +48,7 @@
     title = Title("declaration.type.description"),
     backButton = Some(BackButton(messages("site.backToSelectionPage"), backCall))){
 
-    @formHelper(action = controllers.declaration.routes.DeclarationChoiceController.submitChoice(), 'autoComplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.DeclarationChoiceController.submitChoice(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @govukRadios(Radios(

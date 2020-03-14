@@ -14,7 +14,15 @@
  * limitations under the License.
  *@
 
-@import controllers.util.SaveAndReturn
+@import views.html.components.gds.saveAndContinue
+@import views.html.components.gds.saveAsDraft
 
-@(messageKey: String = "site.save_and_come_back_later")(implicit messages: Messages)
-<button id="submit_and_return" class="button-link govuk-link" name="@SaveAndReturn.toString">@messages(messageKey)</button>
+@this(
+        saveAndContinue: saveAndContinue
+)
+
+@(saveAndContinueKey: String = "site.save_and_continue", saveAsDraftKey: String = "site.save_and_come_back_later")(implicit messages: Messages)
+
+@saveAndContinue(saveAndContinueKey)
+<br>
+@saveAsDraft(saveAsDraftKey)
