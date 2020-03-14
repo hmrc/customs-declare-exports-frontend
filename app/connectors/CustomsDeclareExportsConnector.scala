@@ -25,6 +25,7 @@ import javax.inject.{Inject, Singleton}
 import models._
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Submission
+import models.dis.MrnStatus
 import play.api.Logger
 import play.api.http.Status
 import play.api.libs.json.{Json, Writes}
@@ -132,6 +133,15 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
       logger.debug(s"CUSTOMS_DECLARE_EXPORTS fetch submission response is --> ${response.toString}")
       response
     }
+
+  def fetchMrnStatus(mrn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[MrnStatus]] = {
+    val fetchStopwatch = fetchTimer.time()
+    httpClient
+      .GET[Option[MrnStatus]](s"${appConfig.customsDeclareExports}${appConfig.fetchMrnStatus}/$mrn")
+      .andThen {
+        case _ => fetchStopwatch.stop()
+      }
+  }
 
   def createCancellation(cancellation: CancelDeclaration)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
     logPayload("Create Cancellation Request", cancellation)

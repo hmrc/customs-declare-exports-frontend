@@ -28,7 +28,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.ExecutionContext
 
-class EADController @Inject()(authenticate: AuthAction, eadService: EADService)(implicit mcc: MessagesControllerComponents, ec: ExecutionContext)
+class EADController @Inject()(authenticate: AuthAction, mcc: MessagesControllerComponents, eadService: EADService)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def generatePdf(mrn: String): Action[AnyContent] = authenticate.async { implicit request =>
