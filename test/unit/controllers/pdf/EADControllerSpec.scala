@@ -20,7 +20,7 @@ import java.io.ByteArrayInputStream
 
 import base.Injector
 import com.dmanchester.playfop.sapi.PlayFop
-import connectors.ead.CustomsDeclarationsInformationConnector
+import connectors.CustomsDeclareExportsConnector
 import controllers.pdf.EADController
 import models.dis.MrnStatusSpec
 import org.apache.pdfbox.pdmodel.PDDocument
@@ -40,13 +40,13 @@ class EADControllerSpec extends ControllerSpec with Injector {
   val barcodeService = instanceOf[BarcodeService]
   val playFop = instanceOf[PlayFop]
   val pdfTemplate = new pdfTemplate()
-  val connector = mock[CustomsDeclarationsInformationConnector]
+  val connector = mock[CustomsDeclareExportsConnector]
   val eADService = new EADService(barcodeService, pdfTemplate, playFop, connector)
 
-  val controller = new EADController(mockAuthAction, eADService)(mcc, ec)
+  val controller = new EADController(mockAuthAction, mcc, eADService)
 
   override def beforeEach(): Unit = {
-    when(connector.fetchMrnStatus(any())(any(), any())).thenReturn(Future.successful(MrnStatusSpec.completeMrnStatus))
+    when(connector.fetchMrnStatus(any())(any(), any())).thenReturn(Future.successful(Some(MrnStatusSpec.completeMrnStatus)))
     super.beforeEach()
     authorizedUser()
   }

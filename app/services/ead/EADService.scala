@@ -17,13 +17,14 @@
 package services.ead
 
 import com.dmanchester.playfop.sapi.PlayFop
-import connectors.ead.CustomsDeclarationsInformationConnector
+import connectors.CustomsDeclareExportsConnector
 import javax.inject.Inject
 import org.apache.fop.apps.FOUserAgent
 import org.apache.xmlgraphics.util.MimeConstants
+import play.api.Logger
 import play.api.i18n.Messages
 import play.twirl.api.XmlFormat
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 import views.xml.pdf.pdfTemplate
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,8 +33,10 @@ class EADService @Inject()(
   barcodeService: BarcodeService,
   pdfTemplate: pdfTemplate,
   val playFop: PlayFop,
-  connector: CustomsDeclarationsInformationConnector
+  connector: CustomsDeclareExportsConnector
 ) {
+
+  private val logger = Logger(this.getClass())
 
   def generatePdf(mrn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext, messages: Messages): Future[Array[Byte]] = {
     val myFOUserAgentBlock = { foUserAgent: FOUserAgent =>
@@ -42,10 +45,18 @@ class EADService @Inject()(
 
     connector
       .fetchMrnStatus(mrn)
-      .map(mrnStatus => {
-        val xml: XmlFormat.Appendable = pdfTemplate.render(mrn, mrnStatus, barcodeService.base64Image(mrn), messages)
+      .map {
+        case Some(mrnStatus) => {
+          val xml: XmlFormat.Appendable = pdfTemplate.render(mrn, mrnStatus, barcodeService.base64Image(mrn), messages)
 
-        playFop.processTwirlXml(xml, MimeConstants.MIME_PDF, autoDetectFontsForPDF = true, foUserAgentBlock = myFOUserAgentBlock)
-      })
+          playFop.processTwirlXml(xml, MimeConstants.MIME_PDF, autoDetectFontsForPDF = true, foUserAgentBlock = myFOUserAgentBlock)
+        }
+        case _ => throw new IllegalArgumentException(s"No declaration information was found")
+      }
+      .recoverWith {
+        case throwable: Throwable =>
+          logger.error("An error occurred whilst trying to retrieve mrn status")
+          throw new IllegalArgumentException(s"No declaration information was found")
+      }
   }
 }

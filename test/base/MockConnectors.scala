@@ -20,7 +20,6 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 import connectors.CustomsDeclareExportsConnector
-import connectors.ead.CustomsDeclarationsInformationConnector
 import connectors.exchange.ExportsDeclarationExchange
 import models._
 import models.declaration.notifications.Notification
@@ -37,7 +36,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait MockConnectors extends MockitoSugar {
   lazy val mockCustomsDeclareExportsConnector: CustomsDeclareExportsConnector = mock[CustomsDeclareExportsConnector]
-  lazy val mockCustomsDeclarationsInformationConnector: CustomsDeclarationsInformationConnector = mock[CustomsDeclarationsInformationConnector]
 
   def successfulCustomsDeclareExportsResponse(): Unit =
     when(mockCustomsDeclareExportsConnector.createDeclaration(any[ExportsDeclarationExchange])(any(), any()))

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package models.dis.parsers
+package models.dis
 
 import scala.xml.Elem
 
-object MrnStatusParserTestData {
+object MrnStatusTestData {
 
   def mrnStatusWithAllData(mrn: String): Elem = <p:DeclarationStatusResponse
   xsi:schemaLocation="http://gov.uk/customs/declarationInformationRetrieval/status/v2"

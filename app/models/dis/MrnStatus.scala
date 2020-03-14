@@ -16,7 +16,7 @@
 
 package models.dis
 
-import models.DeclarationType.DeclarationType
+import play.api.libs.json.{Json, OFormat}
 
 case class MrnStatus(
   mrn: String,
@@ -35,3 +35,7 @@ case class MrnStatus(
   goodsItemQuantity: String,
   previousDocuments: Seq[PreviousDocument]
 )
+
+object MrnStatus {
+  implicit val formats: OFormat[MrnStatus] = Json.format[MrnStatus]
+}

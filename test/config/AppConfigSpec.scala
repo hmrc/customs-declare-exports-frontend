@@ -61,12 +61,6 @@ class AppConfigSpec extends UnitSpec {
         |microservice.services.features.welsh-translation=false
         |microservice.services.features.use-improved-error-messages=true
         |microservice.services.auth.port=9988
-        |microservice.services.customs-declarations-information.host=localhostd
-        |microservice.services.customs-declarations-information.port=9834
-        |microservice.services.customs-declarations-information.api-version=1.0
-        |microservice.services.customs-declarations-information.bearer-token=cdi-bearer-token
-        |microservice.services.customs-declarations-information.client-id=cdi-client-id
-        |microservice.services.customs-declarations-information.fetch-mrn-status=/mrn/ID/status
         |microservice.services.customs-declare-exports.host=localhoste
         |microservice.services.customs-declare-exports.port=9875
         |microservice.services.customs-declare-exports.submit-declaration=/declaration
@@ -75,6 +69,7 @@ class AppConfigSpec extends UnitSpec {
         |microservice.services.customs-declare-exports.fetch-notifications=/notifications
         |microservice.services.customs-declare-exports.fetch-submissions=/submissions
         |microservice.services.customs-declare-exports.fetch-submission-notifications=/submission-notifications
+        |microservice.services.customs-declare-exports.fetch-ead=/ead
         |microservice.services.customs-declare-exports-movements.host=localhostm
         |microservice.services.customs-declare-exports-movements.port=9876
         |microservice.services.customs-declare-exports-movements.save-movement-uri=/save-movement-submission
@@ -186,26 +181,6 @@ class AppConfigSpec extends UnitSpec {
       validConfigService.isFeatureOn(Feature.default) must be(false)
     }
 
-    "have customs declarations information" in {
-      validConfigService.customsDeclarationsInformation must be("http://localhostd:9834")
-    }
-
-    "have customs declarations information api version" in {
-      validConfigService.cdiApiVersion must be("1.0")
-    }
-
-    "have customs declarations information bearer token" in {
-      validConfigService.cdiBearerToken must be("cdi-bearer-token")
-    }
-
-    "have customs declarations information client-id" in {
-      validConfigService.cdiClientID must be("cdi-client-id")
-    }
-
-    "have fetchMrnStatus URL" in {
-      validConfigService.fetchMrnStatus must be("/mrn/ID/status")
-    }
-
     "have customs declare exports" in {
       validConfigService.customsDeclareExports must be("http://localhoste:9875")
     }
@@ -216,6 +191,10 @@ class AppConfigSpec extends UnitSpec {
 
     "have cancel declaration URL" in {
       validConfigService.cancelDeclaration must be("/cancellations")
+    }
+
+    "have ead URL" in {
+      validConfigService.fetchMrnStatus must be("/ead")
     }
 
     "have fetch notification URL" in {
@@ -296,6 +275,12 @@ class AppConfigSpec extends UnitSpec {
   "throw an exception when cancel declaration uri is missing" in {
     intercept[Exception](emptyConfigService.cancelDeclaration).getMessage must be(
       "Missing configuration for Customs Declaration Export cancel declaration URI"
+    )
+  }
+
+  "throw an exception when fetch mrn status uri is missing" in {
+    intercept[Exception](emptyConfigService.fetchMrnStatus).getMessage must be(
+      "Missing configuration for Customs Declaration Export fetch mrn status URI"
     )
   }
 
