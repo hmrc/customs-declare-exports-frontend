@@ -21,15 +21,18 @@ import controllers.util.SaveAndContinue
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.DeclarationType.DeclarationType
 import models.{DeclarationType, Mode}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.libs.json.JsString
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.declaration.additionaldeclarationtype.declaration_type
 
 class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
 
   trait SetUp {
-    val additionalDeclarationTypePage = new declaration_type(mainTemplate)
+    val additionalDeclarationTypePage = mock[declaration_type]
 
     val controller = new AdditionalDeclarationTypeController(
       mockAuthAction,
@@ -41,6 +44,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
     )(ec)
 
     authorizedUser()
+    when(additionalDeclarationTypePage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   "Display Page" should {

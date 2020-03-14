@@ -14,18 +14,20 @@
  * limitations under the License.
  *@
 
-@import views.html.components.gds.{errorSummary, gdsMainTemplate}
+@import views.html.components.gds._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import forms.Choice.AllowedChoiceValues._
 @import config.AppConfig
 @import views.BackButton
 @import views.Title
 
+
 @this(
     govukLayout: gdsMainTemplate,
     govukButton: GovukButton,
     govukRadios: GovukRadios,
     errorSummary: errorSummary,
+    saveAndContinue: saveAndContinue,
     formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
     appConfig: AppConfig
 )
@@ -76,6 +78,7 @@
             ).filter(radioOption => appConfig.availableJourneys().contains(radioOption.value.get)),
             errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
-        @govukButton(Button(content = Text(messages("site.save_and_continue"))))
+
+        @saveAndContinue()
     }
 }

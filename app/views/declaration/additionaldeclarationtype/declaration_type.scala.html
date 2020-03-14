@@ -18,47 +18,65 @@
 @import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 @import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeStandardDec
 @import models.requests.JourneyRequest
-@import views.Title
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.html.components.gds._
 
-
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukRadios: GovukRadios,
+        govukDetails : GovukDetails,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        saveButtons: saveButtons,
+        declarationTypeQuestionStandard: declaration_type_question_standard,
+        declarationTypeQuestionSupplementary: declaration_type_question_supplementary,
+        declarationTypeQuestionSimplified: declaration_type_question_simplified,
+        declarationTypeQuestionClearance: declaration_type_question_clearance,
+        declarationTypeQuestionOccasional: declaration_type_question_occasional,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, form: Form[AdditionalDeclarationType])(implicit request: JourneyRequest[_], messages: Messages)
 
 
-@tariffBody = { @Html(messages("declaration.type.bodyText", components.details_content_link())) }
+@titleForDeclaration = @{request.declarationType match {
+            case DeclarationType.SUPPLEMENTARY => Title("declaration.declarationType.header.supplementary", "declaration.section.1")
+            case DeclarationType.STANDARD => Title("declaration.declarationType.header.standard", "declaration.section.1")
+            case DeclarationType.SIMPLIFIED => Title("declaration.declarationType.header.simplified", "declaration.section.1")
+            case DeclarationType.OCCASIONAL => Title("declaration.declarationType.header.occasional", "declaration.section.1")
+            case DeclarationType.CLEARANCE => Title("declaration.declarationType.header.clearance", "declaration.section.1")
+        }
+}
 
-@main_template(
-    title = request.declarationType match {
-        case DeclarationType.SUPPLEMENTARY => Title("declaration.declarationType.header.supplementary", "declaration.declarationType.title")
-        case DeclarationType.STANDARD => Title("declaration.declarationType.header.standard", "declaration.declarationType.title")
-        case DeclarationType.SIMPLIFIED => Title("declaration.declarationType.header.simplified", "declaration.declarationType.title")
-        case DeclarationType.OCCASIONAL => Title("declaration.declarationType.header.occasional", "declaration.declarationType.title")
-        case DeclarationType.CLEARANCE => Title("declaration.declarationType.header.clearance", "declaration.declarationType.title")
-    }
-) {
+@govukLayout(
+    title = titleForDeclaration,
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalDeclarationTypeStandardDec, mode)))){
 
-    @components.back_link(Navigator.backLink(AdditionalDeclarationTypeStandardDec, mode))
+ @formHelper(action = controllers.declaration.routes.AdditionalDeclarationTypeController.submitForm(mode), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-    @helper.form(controllers.declaration.routes.AdditionalDeclarationTypeController.submitForm(mode), 'autoComplete -> "off") {
-        @helper.CSRF.formField
-
-        @components.error_summary(form.errors)
+        @sectionHeader(messages("declaration.section.1"))
 
         @{
-            request.declarationType match {
-                case DeclarationType.SUPPLEMENTARY => declaration_type_question_supplementary(form)
-                case DeclarationType.STANDARD => declaration_type_question_standard(form)
-                case DeclarationType.SIMPLIFIED => declaration_type_question_simplified(form)
-                case DeclarationType.OCCASIONAL => declaration_type_question_occasional(form)
-                case DeclarationType.CLEARANCE => declaration_type_question_clearance(form)
-            }
+         request.declarationType match {
+             case DeclarationType.SUPPLEMENTARY => declarationTypeQuestionSupplementary(form)
+             case DeclarationType.STANDARD => declarationTypeQuestionStandard(form)
+             case DeclarationType.SIMPLIFIED => declarationTypeQuestionSimplified(form)
+             case DeclarationType.OCCASIONAL => declarationTypeQuestionOccasional(form)
+             case DeclarationType.CLEARANCE => declarationTypeQuestionClearance(form)
+         }
         }
-        @components.details(messages("site.details.summary_text_this")){
-           @tariffBody
-        }
-        @components.submit_button()
-        @components.buttons.save_and_return_later_button()
+
+        @govukDetails(Details(
+            attributes = Map("id" -> "tariffReference"),
+            summary = Text(messages("site.details.summary_text_this")),
+            content = HtmlContent(messages("declaration.type.bodyText", components.details_content_link()))
+        ))
+
+        @saveButtons()
     }
 
 }
+

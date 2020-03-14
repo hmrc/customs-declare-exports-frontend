@@ -45,7 +45,7 @@
 }
 
 @govukLayout(
-    title = Title("supplementary.dispatchLocation.header", "declaration.summary.locations.header"),
+    title = Title("supplementary.dispatchLocation.header", "declaration.section.1"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DispatchLocation, mode)))){
 
     @formHelper(action = controllers.declaration.routes.DispatchLocationController.submitForm(mode), 'autoComplete -> "off") {

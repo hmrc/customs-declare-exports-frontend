@@ -256,7 +256,8 @@ supplementary.dispatchLocation.summary.euCountries=EU countries:
 supplementary.dispatchLocation.summary.euSpecialFiscalTerritories=EU Special Fiscal Territories:
 
 declaration.declarationType.title = Declaration Type
-declaration.declarationType.header.supplementary = 1/2 Which of the following best describes you?
+# TODO CHECK THIS WITH CHRIS
+declaration.declarationType.header.supplementary = What type of supplementary declaration do you want to make?
 declaration.declarationType.header.standard = What type of standard declaration do you want to make?
 declaration.declarationType.header.simplified = What type of simplified declaration do you want to make?
 declaration.declarationType.header.occasional = What type of occasional simplified declaration do you want to make?

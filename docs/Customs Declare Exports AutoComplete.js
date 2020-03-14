@@ -27,16 +27,16 @@ function dropDown() {
 
     // create array of options to be added
     let text = ["Standard-PreLodged",
-                "Standard-Frontier",
-                "Simplified-PreLodged",
-                "Simplified-Frontier",
-                "Supplementary-SDP",
-                "Supplementary-EIDR",
-                "Occasional-PreLodged",
-                "Occasional-Frontier",
-                "Clearance-PreLodged",
-                "Clearance-Frontier"
-               ];
+        "Standard-Frontier",
+        "Simplified-PreLodged",
+        "Simplified-Frontier",
+        "Supplementary-SDP",
+        "Supplementary-EIDR",
+        "Occasional-PreLodged",
+        "Occasional-Frontier",
+        "Clearance-PreLodged",
+        "Clearance-Frontier"
+    ];
     let value = ["D", "A", "F", "C", "Y", "Z", "E", "B", "K", "J"]
 
     // create and append select list
@@ -150,7 +150,7 @@ function choicePage(){
         }
 
         document.getElementById("CRT").checked = true
-        document.getElementsByClassName('govuk-button')[0].click()
+        document.getElementById('submit').click()
     }
 }
 
@@ -186,7 +186,7 @@ function declarationChoice(){
                 selectRadioOptionFromInputs(inputs, 4);
                 break;
         }
-        document.getElementsByClassName('govuk-button')[0].click()
+        document.getElementById('submit').click()
     }
 }
 
@@ -194,7 +194,7 @@ function dispatchLocation(){
     if(currentPageIs("/customs-declare-exports/declaration/dispatch-location")){
 
         selectRadioOptionFromInputs(document.getElementsByName("dispatchLocation"), 0);
-        document.getElementsByClassName('govuk-button')[0].click()
+        document.getElementById('submit').click()
     }
 }
 
@@ -202,11 +202,11 @@ function additionalDeclarationType(){
     if(currentPageIs("/customs-declare-exports/declaration/type")){
         // top values
         if (['D','F','Y','E','K'].indexOf(getDeclaration()) > -1) {
-            selectRadioOption(document.getElementById("additionalDeclarationType"), 0);
+            selectRadioOptionFromInputs(document.getElementsByName("additionalDeclarationType"), 0);
         } else {
-            selectRadioOption(document.getElementById("additionalDeclarationType"), 1);
+            selectRadioOptionFromInputs(document.getElementsByName("additionalDeclarationType"), 1);
         }
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('submit').click()
     }
 }
 
