@@ -71,7 +71,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
 
       val view = createView()
 
-      val saveButton = view.getElementsByClass("govuk-button")
+      val saveButton = view.select("#submit")
       saveButton.text() mustBe messages(saveAndContinueCaption)
     }
   }
