@@ -21,8 +21,9 @@
 @(errors: Seq[FormError], errorFieldName: Option[String] = None)(implicit messages: Messages)
 
 @errorList = @{errors.map { error =>
+    val errorKey = error.key.replace(".", "_").replace('[', '_').replace("]", "")
     ErrorLink(
-        href = Some(s"#${errorFieldName.getOrElse(error.key)}"),
+        href = Some(s"#${errorFieldName.getOrElse(errorKey)}"),
         content = Text(messages(error.message, error.args: _*))
     )
 }}

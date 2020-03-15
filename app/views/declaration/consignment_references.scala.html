@@ -15,13 +15,24 @@
  *@
 
 @import controllers.declaration.routes._
-@import forms.declaration.ConsignmentReferences
-@import uk.gov.hmrc.play.views.html._
-@import views.Title
 @import controllers.navigation.Navigator
+@import forms.declaration.ConsignmentReferences
 @import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.html.components.gds._
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukDetails : GovukDetails,
+        pageTitle: pageTitle,
+        exportsInputText: exportsInputText,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        saveButtons: saveButtons,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, form: Form[ConsignmentReferences])(implicit request: JourneyRequest[_], messages: Messages)
 
@@ -29,39 +40,35 @@
 
 @tariffBody = { @components.tariff_body_partial(messages("declaration.type.consignmentDescListItemOne"), messages("declaration.type.consignmentDescListItemTwo"))(tariffBodyDesc)}
 
-@main_template(
-  title = Title("supplementary.consignmentReferences.header", "supplementary.consignmentReferences.heading")
-) {
+@govukLayout(
+    title = Title("supplementary.consignmentReferences.header", "declaration.section.1"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ConsignmentReferences, mode)))) {
 
-    @components.back_link(Navigator.backLink(ConsignmentReferences, mode), mode)
+    @formHelper(action = ConsignmentReferencesController.submitConsignmentReferences(mode), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-    @components.error_summary(form.errors)
+        @sectionHeader(messages("declaration.section.1"))
 
-    @components.heading(
-        title = messages("supplementary.consignmentReferences.header"),
-        sectionHeader = messages("supplementary.consignmentReferences.heading"))
+        @pageTitle(messages("supplementary.consignmentReferences.header"))
 
-    @helper.form(ConsignmentReferencesController.submitConsignmentReferences(mode), 'autoComplete -> "off") {
-      @helper.CSRF.formField
+        @exportsInputText(
+            field = form("ducr.ducr"),
+            labelKey = "supplementary.consignmentReferences.ducr.info",
+            hintKey = Some("supplementary.consignmentReferences.ducr.hint")
+        )
 
-      @components.fields.field_text(
-          field = form("ducr.ducr"),
-          label = Some(messages("supplementary.consignmentReferences.ducr.info")),
-          hint = Some(messages("supplementary.consignmentReferences.ducr.hint")),
-          labelClass = Some("heading-24")
-      )
+        @exportsInputText(
+            field = form("lrn"),
+            labelKey = "supplementary.consignmentReferences.lrn.info",
+            hintKey = Some("supplementary.consignmentReferences.lrn.hint")
+        )
 
-      @components.fields.field_text(
-          field = form("lrn"),
-          label = Some(messages("supplementary.consignmentReferences.lrn.info")),
-          hint = Some(messages("supplementary.consignmentReferences.lrn.hint")),
-          labelClass = Some("heading-24")
-      )
+        @govukDetails(Details(
+            attributes = Map("id" -> "tariffReference"),
+            summary = Text(messages("declaration.type.consignmentTariff_summary_text")),
+            content = HtmlContent(tariffBody)
+        ))
 
-      @components.details(messages("declaration.type.consignmentTariff_summary_text")){
-         @tariffBody
-      }
-      @components.submit_button()
-      @components.buttons.save_and_return_later_button()
-  }
+        @saveButtons()
+    }
 }

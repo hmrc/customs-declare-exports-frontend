@@ -214,7 +214,7 @@ function consignmentRefereences(){
     if (currentPageIs("/customs-declare-exports/declaration/consignment-references")) {
         document.getElementById('lrn').value = 'QSLRN' + Math.floor(Math.random() * 8999) + 100;
         document.getElementById('ducr_ducr').value = '8GB123456' + Math.floor(Math.random() * 899999 + 100000) + '-101SHIP1';
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('submit').click()
     }
 }
 

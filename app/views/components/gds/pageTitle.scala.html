@@ -14,12 +14,8 @@
  * limitations under the License.
  *@
 
-@this(
-        saveAndContinue: saveAndContinue
-)
+@this()
 
-@(saveAndContinueKey: String = "site.save_and_continue", saveAsDraftKey: String = "site.save_and_come_back_later")(implicit messages: Messages)
+@(text: String, classes: String = "govuk-heading-xl")
 
-@saveAndContinue(saveAndContinueKey)
-<br>
-@saveAsDraft(saveAsDraftKey)
+<h1 id="title" class="@{classes}">@text</h1>

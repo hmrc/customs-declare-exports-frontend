@@ -36,7 +36,7 @@
 
 @(mode: Mode, form: Form[DispatchLocation])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tariffBody = {
+@countriesDetails = {
     <b>@messages("supplementary.dispatchLocation.summary.euCountries") </b>
     @Countries.euCountries.mkString(", ")
     <br><br>
@@ -81,7 +81,7 @@
 
          @govukDetails(Details(
             summary = Text(messages("supplementary.dispatchLocation.summary.heading")),
-            content = HtmlContent(tariffBody)
+            content = HtmlContent(countriesDetails)
           ))
 
         @govukDetails(Details(
