@@ -46,7 +46,7 @@
   }
 
 @govukLayout(
-    title = Title("supplementary.representative.header", "supplementary.summary.parties.header"),
+    title = Title("supplementary.representative.title"),
     backButton = Some(BackButton("site.back", Navigator.backLink(RepresentativeDetails, mode)))) {
 
     @formHelper(action = RepresentativeDetailsController.submitForm(mode), 'autoComplete -> "off") {
