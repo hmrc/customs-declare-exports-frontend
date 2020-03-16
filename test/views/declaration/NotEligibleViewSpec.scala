@@ -59,7 +59,7 @@ class NotEligibleViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
     "display read more link" in {
       view
         .getElementsByClass("govuk-body")
-        .get(0)
+        .first()
         .getElementsByTag("a")
         .attr("href") mustBe "https://www.gov.uk/guidance/dispatching-your-goods-within-the-eu"
     }

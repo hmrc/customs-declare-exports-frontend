@@ -88,7 +88,7 @@
         @govukDetails(Details(
             attributes = Map("id" -> "tariffReference"),
             summary = Text(messages("site.details.summary_text_this")),
-            content = HtmlContent(messages("declaration.type.dispatchLocationSummaryText", components.details_content_link()))
+            content = HtmlContent(messages("declaration.type.dispatchLocationSummaryText", components.gds.detailsContentLink()))
         ))
 
         @saveButtons()
