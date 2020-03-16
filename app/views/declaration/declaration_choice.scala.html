@@ -20,6 +20,7 @@
 @import models.DeclarationType
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.{errorSummary, gdsMainTemplate, _}
+@import views.components.gds.Styles._
 @import views.{BackButton, Title}
 
 @this(
@@ -57,7 +58,7 @@
                 legend = Some(Legend(
                     content = Text(messages("declaration.type.description")),
                     isPageHeading = true,
-                    classes = "govuk-fieldset__legend--xl"
+                    classes = gdsPageLegend
                 ))
             )),
             items = Seq(

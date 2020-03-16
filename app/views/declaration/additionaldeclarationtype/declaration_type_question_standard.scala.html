@@ -17,6 +17,7 @@
 @import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 @import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeStandardDec.AllowedAdditionalDeclarationTypes._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
 
 @this(govukRadios: GovukRadios)
 
@@ -28,7 +29,7 @@
         legend = Some(Legend(
             content = Text(messages("declaration.declarationType.header.standard")),
             isPageHeading = true,
-            classes = "govuk-fieldset__legend--xl"
+            classes = gdsPageLegend
         ))
     )),
     items = Seq(

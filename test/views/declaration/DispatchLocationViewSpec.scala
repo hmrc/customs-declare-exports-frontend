@@ -65,7 +65,7 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
 
       "display section header" in {
 
-        createView().getElementById("section-header").text() must include(messages("declaration.section.1"))
+        createView().getElementById("section-header").text() must include(messages("declaration.summary.locations.header"))
       }
 
       "display two radio buttons with description (not selected)" in {

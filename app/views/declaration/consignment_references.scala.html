@@ -41,14 +41,13 @@
 @tariffBody = { @components.tariff_body_partial(messages("declaration.type.consignmentDescListItemOne"), messages("declaration.type.consignmentDescListItemTwo"))(tariffBodyDesc)}
 
 @govukLayout(
-    title = Title("supplementary.consignmentReferences.header", "declaration.section.1"),
+    title = Title("supplementary.consignmentReferences.header", "supplementary.consignmentReferences.heading"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ConsignmentReferences, mode)))) {
 
     @formHelper(action = ConsignmentReferencesController.submitConsignmentReferences(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.section.1"))
-
+        @sectionHeader(messages("supplementary.consignmentReferences.heading"))
         @pageTitle(messages("supplementary.consignmentReferences.header"))
 
         @exportsInputText(

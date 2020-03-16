@@ -19,15 +19,11 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds._
 @import views.{BackButton, Title}
+@import views.html.components.gds._
 
 @this(
         govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukRadios: GovukRadios,
-        govukDetails : GovukDetails,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        saveAndContinue: saveAndContinue,
+        pageTitle: pageTitle,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
@@ -41,7 +37,8 @@
     title = Title("notEligible.title"),
     backButton = Some(BackButton(messages("site.back"), controllers.routes.StartController.displayStartPage))){
 
-<h1 class="govuk-heading-xl">@messages("notEligible.title")</h1>
+
+@pageTitle(messages("notEligible.title"))
 
 <p class="govuk-body">
     @Html(messages("notEligible.description", descriptionLink))

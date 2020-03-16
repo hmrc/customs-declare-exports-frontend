@@ -42,11 +42,11 @@
 
 
 @titleForDeclaration = @{request.declarationType match {
-            case DeclarationType.SUPPLEMENTARY => Title("declaration.declarationType.header.supplementary", "declaration.section.1")
-            case DeclarationType.STANDARD => Title("declaration.declarationType.header.standard", "declaration.section.1")
-            case DeclarationType.SIMPLIFIED => Title("declaration.declarationType.header.simplified", "declaration.section.1")
-            case DeclarationType.OCCASIONAL => Title("declaration.declarationType.header.occasional", "declaration.section.1")
-            case DeclarationType.CLEARANCE => Title("declaration.declarationType.header.clearance", "declaration.section.1")
+            case DeclarationType.SUPPLEMENTARY => Title("declaration.declarationType.header.supplementary", "declaration.declarationType.title")
+            case DeclarationType.STANDARD => Title("declaration.declarationType.header.standard", "declaration.declarationType.title")
+            case DeclarationType.SIMPLIFIED => Title("declaration.declarationType.header.simplified", "declaration.declarationType.title")
+            case DeclarationType.OCCASIONAL => Title("declaration.declarationType.header.occasional", "declaration.declarationType.title")
+            case DeclarationType.CLEARANCE => Title("declaration.declarationType.header.clearance", "declaration.declarationType.title")
         }
 }
 
@@ -57,7 +57,7 @@
  @formHelper(action = controllers.declaration.routes.AdditionalDeclarationTypeController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.section.1"))
+        @sectionHeader(messages("declaration.declarationType.title"))
 
         @{
          request.declarationType match {

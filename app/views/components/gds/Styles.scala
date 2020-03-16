@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,13 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import views.components.gds.Styles._
+package views.components.gds
 
-@this()
+object Styles {
 
-@(text: String, classes: String = gdsPageHeading)
-
-<h1 id="title" class="@{classes}">@text</h1>
-
+  val gdsPageLegend = "govuk-fieldset__legend--l"
+  val gdsPageHeading = "govuk-heading-l"
+}

@@ -71,7 +71,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
 
       "display section header" in {
 
-        createView().getElementById("section-header").text() must include(messages("declaration.section.1"))
+        createView().getElementById("section-header").text() must include(messages("supplementary.consignmentReferences.heading"))
       }
 
       "display empty input with label for DUCR" in {

@@ -20,6 +20,7 @@
 @import models.requests.JourneyRequest
 @import services.Countries
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
 @import views.html.components.gds._
 @import views.{BackButton, Title}
 
@@ -45,13 +46,13 @@
 }
 
 @govukLayout(
-    title = Title("supplementary.dispatchLocation.header", "declaration.section.1"),
+    title = Title("supplementary.dispatchLocation.header", "declaration.summary.locations.header"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DispatchLocation, mode)))){
 
     @formHelper(action = controllers.declaration.routes.DispatchLocationController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.section.1"))
+        @sectionHeader(messages("declaration.summary.locations.header"))
 
         @govukRadios(Radios(
             name = "dispatchLocation",
@@ -59,7 +60,7 @@
                 legend = Some(Legend(
                     content = Text(messages("supplementary.dispatchLocation.header")),
                     isPageHeading = true,
-                    classes = "govuk-fieldset__legend--xl"
+                    classes = gdsPageLegend
                 ))
             )),
             items = Seq(
