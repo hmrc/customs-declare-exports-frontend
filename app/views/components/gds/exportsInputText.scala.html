@@ -15,10 +15,11 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
 
 @this(govukInput: GovukInput)
 
-@(field: Field, labelKey: String, hintKey: Option[String] = None, isPageHeading: Boolean = false, headingClasses: String = "govuk-label--xl", labelClasses: String = "govuk-label--m")(implicit messages: Messages)
+@(field: Field, labelKey: String, hintKey: Option[String] = None, isPageHeading: Boolean = false, headingClasses: String = gdsPageLabel, labelClasses: String = "govuk-label--m")(implicit messages: Messages)
 
 @buildLabel = @{
     if(isPageHeading) {
