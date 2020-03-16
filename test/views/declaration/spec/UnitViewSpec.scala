@@ -20,7 +20,7 @@ import base.Injector
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.DeclarationType
-import org.jsoup.nodes.Document
+import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Assertion
 import org.scalatest.matchers.{BeMatcher, MatchResult}
 import play.api.i18n.{Lang, Messages, MessagesApi}

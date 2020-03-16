@@ -20,15 +20,19 @@ import controllers.declaration.DeclarantDetailsController
 import forms.common.Eori
 import forms.declaration.{DeclarantDetails, EntityDetails}
 import models.{DeclarationType, Mode}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.declaration.declarant_details
 
 class DeclarantDetailsControllerSpec extends ControllerSpec {
 
   trait SetUp {
-    val declarantDetailsPage = new declarant_details(mainTemplate)
+    val declarantDetailsPage = mock[declarant_details]
 
     val controller = new DeclarantDetailsController(
       mockAuthAction,
@@ -41,6 +45,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
+    when(declarantDetailsPage.apply(any[Mode], any[Form[DeclarantDetails]])(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   "Declarant Details Controller" should {
