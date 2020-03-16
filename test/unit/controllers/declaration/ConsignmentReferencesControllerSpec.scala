@@ -17,18 +17,21 @@
 package unit.controllers.declaration
 
 import controllers.declaration.ConsignmentReferencesController
-import forms.{Ducr, Lrn}
 import forms.declaration.ConsignmentReferences
+import forms.{Ducr, Lrn}
 import models.{DeclarationType, Mode}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.declaration.consignment_references
 
 class ConsignmentReferencesControllerSpec extends ControllerSpec {
 
   trait SetUp {
-    val consignmentReferencesPage = new consignment_references(mainTemplate)
+    val consignmentReferencesPage = mock[consignment_references]
 
     val controller = new ConsignmentReferencesController(
       mockAuthAction,
@@ -41,6 +44,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
 
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
+    when(consignmentReferencesPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   "Consignment References controller" should {

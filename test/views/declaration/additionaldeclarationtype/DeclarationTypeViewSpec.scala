@@ -42,7 +42,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
   private val formSimplified: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeSimplifiedDec.form()
   private val formOccasional: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeOccasionalDec.form()
   private val formClearance: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeClearanceDec.form()
-  private val declarationTypePage = new declaration_type(mainTemplate)
+  private val declarationTypePage = instanceOf[declaration_type]
   private def createView(form: Form[AdditionalDeclarationType], journeyType: DeclarationType, messages: Messages = stubMessages()): Document =
     declarationTypePage(Mode.Normal, form)(journeyRequest(journeyType), messages)
 
@@ -181,41 +181,42 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
       }
     }
 
-    "display header with hint" when {
+    "display header" when {
+      val validated = validatedMessages(request)
 
       "used for Standard Declaration journey" in {
 
-        val view = createView(formStandard, DeclarationType.STANDARD)
+        val view = createView(formStandard, DeclarationType.STANDARD, messages = validated)
 
-        view.getElementById("title").text() mustBe messages("declaration.declarationType.header.standard")
+        view.title() must include(validated("declaration.declarationType.header.standard"))
       }
 
       "used for Supplementary Declaration journey" in {
 
-        val view = createView(formSupplementary, DeclarationType.SUPPLEMENTARY)
+        val view = createView(formSupplementary, DeclarationType.SUPPLEMENTARY, messages = validated)
 
-        view.getElementById("title").text() mustBe messages("declaration.declarationType.header.supplementary")
+        view.title() must include(validated("declaration.declarationType.header.supplementary"))
       }
 
       "used for Simplified Declaration journey" in {
 
-        val view = createView(formSimplified, DeclarationType.SIMPLIFIED)
+        val view = createView(formSimplified, DeclarationType.SIMPLIFIED, messages = validated)
 
-        view.getElementById("title").text() mustBe messages("declaration.declarationType.header.simplified")
+        view.title() must include(validated("declaration.declarationType.header.simplified"))
       }
 
       "used for Occasional Declaration journey" in {
 
-        val view = createView(formOccasional, DeclarationType.OCCASIONAL)
+        val view = createView(formOccasional, DeclarationType.OCCASIONAL, messages = validated)
 
-        view.getElementById("title").text() mustBe messages("declaration.declarationType.header.occasional")
+        view.title() must include(validated("declaration.declarationType.header.occasional"))
       }
 
       "used for Clearance Request journey" in {
 
-        val view = createView(formClearance, DeclarationType.CLEARANCE)
+        val view = createView(formClearance, DeclarationType.CLEARANCE, messages = validated)
 
-        view.getElementById("title").text() mustBe messages("declaration.declarationType.header.clearance")
+        view.title() must include(validated("declaration.declarationType.header.clearance"))
       }
     }
 
@@ -225,85 +226,65 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
 
         val view = createView(formStandard, DeclarationType.STANDARD)
 
-        val optionOne = view.getElementById("PreLodged")
+        val optionOne = view.getElementsByAttributeValue("for", "PreLodged")
         optionOne.attr("checked") mustBe empty
+        optionOne.text() mustBe messages("declaration.declarationType.inputText.standard.preLodged")
 
-        val optionOneLabel = view.getElementById("PreLodged-label")
-        optionOneLabel.text() mustBe messages("declaration.declarationType.inputText.standard.preLodged")
-
-        val optionTwo = view.getElementById("Frontier")
+        val optionTwo = view.getElementsByAttributeValue("for", "Frontier")
         optionTwo.attr("checked") mustBe empty
-
-        val optionTwoLabel = view.getElementById("Frontier-label")
-        optionTwoLabel.text() mustBe messages("declaration.declarationType.inputText.standard.frontier")
+        optionTwo.text() mustBe messages("declaration.declarationType.inputText.standard.frontier")
       }
 
       "used for Supplementary Declaration journey" in {
 
         val view = createView(formSupplementary, DeclarationType.SUPPLEMENTARY)
 
-        val optionOne = view.getElementById("Simplified")
+        val optionOne = view.getElementsByAttributeValue("for", "Simplified")
         optionOne.attr("checked") mustBe empty
+        optionOne.text() mustBe messages("declaration.declarationType.inputText.supplementary.simplified")
 
-        val optionOneLabel = view.select("#additionalDeclarationType>div:nth-child(2)>label")
-        optionOneLabel.text() mustBe messages("declaration.declarationType.inputText.supplementary.simplified")
-
-        val optionTwo = view.getElementById("Standard")
+        val optionTwo = view.getElementsByAttributeValue("for", "Standard")
         optionTwo.attr("checked") mustBe empty
-
-        val optionTwoLabel = view.select("#additionalDeclarationType>div:nth-child(3)>label")
-        optionTwoLabel.text() mustBe messages("declaration.declarationType.inputText.supplementary.standard")
+        optionTwo.text() mustBe messages("declaration.declarationType.inputText.supplementary.standard")
       }
 
       "used for Simplified Declaration journey" in {
 
         val view = createView(formSimplified, DeclarationType.SIMPLIFIED)
 
-        val optionOne = view.getElementById("PreLodged")
+        val optionOne = view.getElementsByAttributeValue("for", "PreLodged")
         optionOne.attr("checked") mustBe empty
+        optionOne.text() mustBe messages("declaration.declarationType.inputText.simplified.preLodged")
 
-        val optionOneLabel = view.getElementById("PreLodged-label")
-        optionOneLabel.text() mustBe messages("declaration.declarationType.inputText.simplified.preLodged")
-
-        val optionTwo = view.getElementById("Frontier")
+        val optionTwo = view.getElementsByAttributeValue("for", "Frontier")
         optionTwo.attr("checked") mustBe empty
-
-        val optionTwoLabel = view.getElementById("Frontier-label")
-        optionTwoLabel.text() mustBe messages("declaration.declarationType.inputText.simplified.frontier")
+        optionTwo.text() mustBe messages("declaration.declarationType.inputText.simplified.frontier")
       }
 
       "used for Occasional Declaration journey" in {
 
         val view = createView(formOccasional, DeclarationType.OCCASIONAL)
 
-        val optionOne = view.getElementById("PreLodged")
+        val optionOne = view.getElementsByAttributeValue("for", "PreLodged")
         optionOne.attr("checked") mustBe empty
+        optionOne.text() mustBe messages("declaration.declarationType.inputText.occasional.preLodged")
 
-        val optionOneLabel = view.getElementById("PreLodged-label")
-        optionOneLabel.text() mustBe messages("declaration.declarationType.inputText.occasional.preLodged")
-
-        val optionTwo = view.getElementById("Frontier")
+        val optionTwo = view.getElementsByAttributeValue("for", "Frontier")
         optionTwo.attr("checked") mustBe empty
-
-        val optionTwoLabel = view.getElementById("Frontier-label")
-        optionTwoLabel.text() mustBe messages("declaration.declarationType.inputText.occasional.frontier")
+        optionTwo.text() mustBe messages("declaration.declarationType.inputText.occasional.frontier")
       }
 
       "used for Clearance Request journey" in {
 
         val view = createView(formClearance, DeclarationType.CLEARANCE)
 
-        val optionOne = view.getElementById("PreLodged")
+        val optionOne = view.getElementsByAttributeValue("for", "PreLodged")
         optionOne.attr("checked") mustBe empty
+        optionOne.text() mustBe messages("declaration.declarationType.inputText.clearance.preLodged")
 
-        val optionOneLabel = view.getElementById("PreLodged-label")
-        optionOneLabel.text() mustBe messages("declaration.declarationType.inputText.clearance.preLodged")
-
-        val optionTwo = view.getElementById("Frontier")
+        val optionTwo = view.getElementsByAttributeValue("for", "Frontier")
         optionTwo.attr("checked") mustBe empty
-
-        val optionTwoLabel = view.getElementById("Frontier-label")
-        optionTwoLabel.text() mustBe messages("declaration.declarationType.inputText.clearance.frontier")
+        optionTwo.text() mustBe messages("declaration.declarationType.inputText.clearance.frontier")
       }
     }
 
@@ -317,50 +298,50 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
 
         val view = createView(formStandard.bind(Map[String, String]()), DeclarationType.STANDARD)
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages("declaration.declarationType.inputText.error.empty")
+        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.declarationType.inputText.error.empty")
       }
 
       "used for Supplementary Declaration journey" in {
 
         val view = createView(formSupplementary.bind(Map[String, String]()), DeclarationType.SUPPLEMENTARY)
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages("declaration.declarationType.inputText.error.empty")
+        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.declarationType.inputText.error.empty")
       }
 
       "used for Simplified Declaration journey" in {
 
         val view = createView(formSimplified.bind(Map[String, String]()), DeclarationType.SIMPLIFIED)
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages("declaration.declarationType.inputText.error.empty")
+        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.declarationType.inputText.error.empty")
       }
 
       "used for Occasional Declaration journey" in {
 
         val view = createView(formOccasional.bind(Map[String, String]()), DeclarationType.OCCASIONAL)
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages("declaration.declarationType.inputText.error.empty")
+        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.declarationType.inputText.error.empty")
       }
 
       "used for Clearance Request journey" in {
 
         val view = createView(formClearance.bind(Map[String, String]()), DeclarationType.CLEARANCE)
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages("declaration.declarationType.inputText.error.empty")
+        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.declarationType.inputText.error.empty")
       }
     }
 
@@ -370,50 +351,50 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
 
         val view = createView(formStandard.bind(Map("additionalDeclarationType" -> "#")), DeclarationType.STANDARD)
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages("declaration.declarationType.inputText.error.incorrect")
+        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.declarationType.inputText.error.incorrect")
       }
 
       "used for Supplementary Declaration journey" in {
 
         val view = createView(formSupplementary.bind(Map("additionalDeclarationType" -> "#")), DeclarationType.SUPPLEMENTARY)
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages("declaration.declarationType.inputText.error.incorrect")
+        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.declarationType.inputText.error.incorrect")
       }
 
       "used for Simplified Declaration journey" in {
 
         val view = createView(formSimplified.bind(Map("additionalDeclarationType" -> "#")), DeclarationType.SIMPLIFIED)
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages("declaration.declarationType.inputText.error.incorrect")
+        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.declarationType.inputText.error.incorrect")
       }
 
       "used for Occasional Declaration journey" in {
 
         val view = createView(formOccasional.bind(Map("additionalDeclarationType" -> "#")), DeclarationType.OCCASIONAL)
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages("declaration.declarationType.inputText.error.incorrect")
+        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.declarationType.inputText.error.incorrect")
       }
 
       "used for Clearance Request journey" in {
 
         val view = createView(formClearance.bind(Map("additionalDeclarationType" -> "#")), DeclarationType.CLEARANCE)
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink("additionalDeclarationType", "#additionalDeclarationType")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view.select("#error-message-additionalDeclarationType-input").text() mustBe messages("declaration.declarationType.inputText.error.incorrect")
+        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.declarationType.inputText.error.incorrect")
       }
     }
 
@@ -428,7 +409,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         val view = createView(formStandard.fill(AdditionalDeclarationType.STANDARD_PRE_LODGED), DeclarationType.STANDARD)
 
         val optionOne = view.getElementById("PreLodged")
-        optionOne.attr("checked") mustBe "checked"
+        optionOne.getElementsByAttribute("checked").size() mustBe 1
 
         val optionTwo = view.getElementById("Frontier")
         optionTwo.attr("checked") mustBe empty
@@ -439,7 +420,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         val view = createView(formSupplementary.fill(AdditionalDeclarationType.SUPPLEMENTARY_SIMPLIFIED), DeclarationType.SUPPLEMENTARY)
 
         val optionOne = view.getElementById("Simplified")
-        optionOne.attr("checked") mustBe "checked"
+        optionOne.getElementsByAttribute("checked").size() mustBe 1
 
         val optionTwo = view.getElementById("Standard")
         optionTwo.attr("checked") mustBe empty
@@ -450,7 +431,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         val view = createView(formSimplified.fill(AdditionalDeclarationType.SIMPLIFIED_PRE_LODGED), DeclarationType.SIMPLIFIED)
 
         val optionOne = view.getElementById("PreLodged")
-        optionOne.attr("checked") mustBe "checked"
+        optionOne.getElementsByAttribute("checked").size() mustBe 1
 
         val optionTwo = view.getElementById("Frontier")
         optionTwo.attr("checked") mustBe empty
@@ -461,7 +442,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         val view = createView(formOccasional.fill(AdditionalDeclarationType.OCCASIONAL_PRE_LODGED), DeclarationType.OCCASIONAL)
 
         val optionOne = view.getElementById("PreLodged")
-        optionOne.attr("checked") mustBe "checked"
+        optionOne.getElementsByAttribute("checked").size() mustBe 1
 
         val optionTwo = view.getElementById("Frontier")
         optionTwo.attr("checked") mustBe empty
@@ -472,7 +453,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         val view = createView(formClearance.fill(AdditionalDeclarationType.CLEARANCE_PRE_LODGED), DeclarationType.CLEARANCE)
 
         val optionOne = view.getElementById("PreLodged")
-        optionOne.attr("checked") mustBe "checked"
+        optionOne.getElementsByAttribute("checked").size() mustBe 1
 
         val optionTwo = view.getElementById("Frontier")
         optionTwo.attr("checked") mustBe empty
@@ -489,7 +470,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         optionOne.attr("checked") mustBe empty
 
         val optionTwo = view.getElementById("Frontier")
-        optionTwo.attr("checked") mustBe "checked"
+        optionTwo.getElementsByAttribute("checked").size() mustBe 1
       }
 
       "used for Supplementary Declaration journey - Standard (Z)" in {
@@ -500,7 +481,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         optionOne.attr("checked") mustBe empty
 
         val optionTwo = view.getElementById("Standard")
-        optionTwo.attr("checked") mustBe "checked"
+        optionTwo.getElementsByAttribute("checked").size() mustBe 1
       }
 
       "used for Simplified Declaration journey - Frontier (C)" in {
@@ -511,7 +492,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         optionOne.attr("checked") mustBe empty
 
         val optionTwo = view.getElementById("Frontier")
-        optionTwo.attr("checked") mustBe "checked"
+        optionTwo.getElementsByAttribute("checked").size() mustBe 1
       }
 
       "used for Occasional Declaration journey - Frontier (B)" in {
@@ -522,7 +503,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         optionOne.attr("checked") mustBe empty
 
         val optionTwo = view.getElementById("Frontier")
-        optionTwo.attr("checked") mustBe "checked"
+        optionTwo.getElementsByAttribute("checked").size() mustBe 1
       }
 
       "used for Clearance Request journey - Frontier (L)" in {
@@ -533,7 +514,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         optionOne.attr("checked") mustBe empty
 
         val optionTwo = view.getElementById("Frontier")
-        optionTwo.attr("checked") mustBe "checked"
+        optionTwo.getElementsByAttribute("checked").size() mustBe 1
       }
     }
 

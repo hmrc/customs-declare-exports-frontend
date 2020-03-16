@@ -157,6 +157,13 @@ declaration.choice.CAN = Cancel a declaration
 declaration.choice.CON = Continue a saved declaration
 declaration.choice.SUB = View declarations
 
+declaration.section.1 = Section 1 of 6
+declaration.section.2 = Section 2 of 6
+declaration.section.3 = Section 3 of 6
+declaration.section.4 = Section 4 of 6
+declaration.section.5 = Section 5 of 6
+declaration.section.6 = Section 6 of 6
+
 declaration.type.description = Which type of declaration do you want to create?
 declaration.type.standard = Standard declaration
 declaration.type.standard.hint = This is a full declaration
@@ -249,7 +256,7 @@ supplementary.dispatchLocation.summary.euCountries=EU countries:
 supplementary.dispatchLocation.summary.euSpecialFiscalTerritories=EU Special Fiscal Territories:
 
 declaration.declarationType.title = Declaration Type
-declaration.declarationType.header.supplementary = 1/2 Which of the following best describes you?
+declaration.declarationType.header.supplementary = What type of supplementary declaration do you want to make?
 declaration.declarationType.header.standard = What type of standard declaration do you want to make?
 declaration.declarationType.header.simplified = What type of simplified declaration do you want to make?
 declaration.declarationType.header.occasional = What type of occasional simplified declaration do you want to make?
@@ -276,14 +283,13 @@ declaration.declarationType.inputText.clearance.frontier.hint = This is made whe
 declaration.declarationType.inputText.error.empty = Choose a valid declaration type
 declaration.declarationType.inputText.error.incorrect = Choose a valid declaration type
 
-notEligible.pageTitle = You need to use a different service
-notEligible.title = You need to use a different
+notEligible.title = You don’t need to use this service
 notEligible.titleLineTwo = service
-notEligible.descriptionPreUrl = This service is only for exports being dispatched outside the EU. You will need to use
-notEligible.descriptionUrl = CHIEF
-notEligible.descriptionPostUrl = to make your declaration.
+notEligible.description = You don’t need to make customs declarations to move goods within the EU. Read more about {0}
+notEligible.descriptionLink = dispatching your goods within the EU.
 notEligible.referenceTitle = Help and support
-notEligible.reference.text = If you are having problems with making a declaration, phone: 0300 333 3333. Open 8am to 6pm, Monday to Friday (closed bank holidays).
+notEligible.reference.support = If you are having problems making a declaration, phone: {0} 
+notEligible.reference.openingHours = Open 8am to 6pm, Monday to Friday (closed bank holidays).
 
 supplementary.consignmentReferences.heading = Your references
 supplementary.consignmentReferences.header =  Consignment references

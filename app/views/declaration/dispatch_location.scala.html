@@ -14,72 +14,84 @@
  * limitations under the License.
  *@
 
+@import controllers.navigation.Navigator
 @import forms.declaration.DispatchLocation
 @import forms.declaration.DispatchLocation.AllowedDispatchLocations._
-@import services.Countries
-@import uk.gov.hmrc.play.views.html._
-@import views.components.inputs.RadioOption
-@import views.Title
-@import controllers.navigation.Navigator
 @import models.requests.JourneyRequest
+@import services.Countries
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.html.components.gds._
+@import views.{BackButton, Title}
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukRadios: GovukRadios,
+        govukDetails : GovukDetails,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        saveButtons: saveButtons,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, form: Form[DispatchLocation])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tariffBodyDesc = { @Html(messages("declaration.type.dispatchLocationSummaryText", components.details_content_link())) }
-
-@tariffBody = {
-<p>
-    <span class="bold">@messages("supplementary.dispatchLocation.summary.euCountries") </span>
+@countriesDetails = {
+    <b>@messages("supplementary.dispatchLocation.summary.euCountries") </b>
     @Countries.euCountries.mkString(", ")
-</p>
-<p>
-    <span class="bold">@messages("supplementary.dispatchLocation.summary.euSpecialFiscalTerritories") </span>
+    <br><br>
+    <b>@messages("supplementary.dispatchLocation.summary.euSpecialFiscalTerritories") </b>
     @Countries.euSpecialFiscalTerritories.mkString(", ")
-</p>
 }
 
-@main_template(
-  title = Title("supplementary.dispatchLocation.header", "declaration.summary.locations.header")
-) {
+@govukLayout(
+    title = Title("supplementary.dispatchLocation.header", "declaration.summary.locations.header"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DispatchLocation, mode)))){
 
-    @components.back_link(Navigator.backLink(DispatchLocation, mode), mode)
+    @formHelper(action = controllers.declaration.routes.DispatchLocationController.submitForm(mode), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
+        @sectionHeader(messages("declaration.summary.locations.header"))
 
-  @helper.form(controllers.declaration.routes.DispatchLocationController.submitForm(mode), 'autoComplete -> "off") {
-      @helper.CSRF.formField
+        @govukRadios(Radios(
+            name = "dispatchLocation",
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("supplementary.dispatchLocation.header")),
+                    isPageHeading = true,
+                    classes = gdsPageLegend
+                ))
+            )),
+            items = Seq(
+                RadioItem(
+                    id = Some("OutsideEU"),
+                    value = Some(OutsideEU),
+                    content = Text(messages("supplementary.dispatchLocation.inputText.outsideEU")),
+                    checked = form("dispatchLocation").value.contains(OutsideEU)
+                ),
+                RadioItem(
+                    id = Some("SpecialFiscalTerritory"),
+                    value = Some(SpecialFiscalTerritory),
+                    content = Text(messages("supplementary.dispatchLocation.inputText.specialFiscalTerritory")),
+                    checked = form("dispatchLocation").value.contains(SpecialFiscalTerritory)
+                )
+            ),
+            errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
 
-      @components.error_summary(form.errors)
+         @govukDetails(Details(
+            summary = Text(messages("supplementary.dispatchLocation.summary.heading")),
+            content = HtmlContent(countriesDetails)
+          ))
 
-      @components.heading(
-          title = messages("supplementary.dispatchLocation.header"),
-          sectionHeader = messages("declaration.summary.locations.header")
-      )
+        @govukDetails(Details(
+            attributes = Map("id" -> "tariffReference"),
+            summary = Text(messages("site.details.summary_text_this")),
+            content = HtmlContent(messages("declaration.type.dispatchLocationSummaryText", components.gds.detailsContentLink()))
+        ))
 
-    @components.fields.field_radio(
-      field = form("dispatchLocation"),
-      legend = "",
-      inputs = Seq(
-        RadioOption(
-          "OutsideEU",
-          OutsideEU,
-          messages("supplementary.dispatchLocation.inputText.outsideEU")
-        ),
-        RadioOption(
-          "SpecialFiscalTerritory",
-          SpecialFiscalTerritory,
-          messages("supplementary.dispatchLocation.inputText.specialFiscalTerritory")
-        )
-      )
-    )
-    @components.details(messages("supplementary.dispatchLocation.summary.heading")){
-                     @tariffBody
+        @saveButtons()
     }
-    @components.details(messages("site.details.summary_text_this")){
-                     @tariffBodyDesc
-    }
-    @components.submit_button()
-    @components.buttons.save_and_return_later_button()
-  }
+
 }

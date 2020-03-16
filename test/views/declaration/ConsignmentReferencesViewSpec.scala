@@ -39,7 +39,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
   private val incorrectDUCR = "7GB000000000000-1234512345123451234512345"
 
   private val form: Form[ConsignmentReferences] = ConsignmentReferences.form()
-  private val consignmentReferencesPage = new consignment_references(mainTemplate)
+  private val consignmentReferencesPage = instanceOf[consignment_references]
   private def createView(form: Form[ConsignmentReferences] = form)(implicit request: JourneyRequest[_]): Document =
     consignmentReferencesPage(Mode.Normal, form)(request, messages)
 
@@ -78,7 +78,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
 
         val view = createView()
 
-        view.getElementById("ducr_ducr-label").text() mustBe messages("supplementary.consignmentReferences.ducr.info")
+        view.getElementsByAttributeValue("for", "ducr_ducr").text() mustBe messages("supplementary.consignmentReferences.ducr.info")
         view.getElementById("ducr_ducr-hint").text() mustBe messages("supplementary.consignmentReferences.ducr.hint")
         view.getElementById("ducr_ducr").attr("value") mustBe empty
       }
@@ -87,7 +87,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
 
         val view = createView()
 
-        view.getElementById("lrn-label").text() mustBe messages("supplementary.consignmentReferences.lrn.info")
+        view.getElementsByAttributeValue("for", "lrn").text() mustBe messages("supplementary.consignmentReferences.lrn.info")
         view.getElementById("lrn-hint").text() mustBe messages("supplementary.consignmentReferences.lrn.hint")
         view.getElementById("lrn").attr("value") mustBe empty
       }
@@ -123,10 +123,10 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         val view =
           createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Ducr(properDUCR), Lrn(""))))
 
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("lrn", "#lrn")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#lrn")
 
-        view.select("#error-message-lrn-input").text() mustBe messages("supplementary.consignmentReferences.lrn.error.empty")
+        view.getElementsByClass("#govuk-error-message").text() contains messages("supplementary.consignmentReferences.lrn.error.empty")
       }
 
       "display error when LRN is longer then 22 characters" in {
@@ -137,10 +137,10 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
             .fillAndValidate(ConsignmentReferences(Ducr(properDUCR), Lrn(TestHelper.createRandomAlphanumericString(23))))
         )
 
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("lrn", "#lrn")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#lrn")
 
-        view.select("#error-message-lrn-input").text() mustBe messages("supplementary.consignmentReferences.lrn.error.length")
+        view.getElementsByClass("#govuk-error-message").text() contains messages("supplementary.consignmentReferences.lrn.error.length")
       }
 
       "display error when LRN contains special character" in {
@@ -148,10 +148,10 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         val view =
           createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Ducr(properDUCR), Lrn("#@#$"))))
 
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("lrn", "#lrn")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#lrn")
 
-        view.select("#error-message-lrn-input").text() mustBe messages("supplementary.consignmentReferences.lrn.error.specialCharacter")
+        view.getElementsByClass("#govuk-error-message").text() contains messages("supplementary.consignmentReferences.lrn.error.specialCharacter")
       }
 
       "display error when DUCR is incorrect and LRN empty" in {
@@ -159,12 +159,12 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         val view =
           createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Ducr(incorrectDUCR), Lrn(""))))
 
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("ducr_ducr", "#ducr_ducr")
-        view must haveFieldErrorLink("lrn", "#lrn")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#ducr_ducr")
+        view must containErrorElementWithTagAndHref("a", "#lrn")
 
-        view.select("#error-message-ducr_ducr-input").text() mustBe messages("error.ducr")
-        view.select("#error-message-lrn-input").text() mustBe messages("supplementary.consignmentReferences.lrn.error.empty")
+        view.getElementsByClass("#govuk-error-message").text() contains messages("error.ducr")
+        view.getElementsByClass("#govuk-error-message").text() contains messages("supplementary.consignmentReferences.lrn.error.empty")
       }
 
       "display error when DUCR is incorrect and LRN is longer then 22 characters" in {
@@ -175,12 +175,12 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
             .fillAndValidate(ConsignmentReferences(Ducr(incorrectDUCR), Lrn(TestHelper.createRandomAlphanumericString(23))))
         )
 
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("ducr_ducr", "#ducr_ducr")
-        view must haveFieldErrorLink("lrn", "#lrn")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#ducr_ducr")
+        view must containErrorElementWithTagAndHref("a", "#lrn")
 
-        view.select("#error-message-ducr_ducr-input").text() mustBe messages("error.ducr")
-        view.select("#error-message-lrn-input").text() mustBe messages("supplementary.consignmentReferences.lrn.error.length")
+        view.getElementsByClass("#govuk-error-message").text() contains messages("error.ducr")
+        view.getElementsByClass("#govuk-error-message").text() contains messages("supplementary.consignmentReferences.lrn.error.length")
       }
 
       "display error when DUCR is incorrect and LRN contains special character" in {
@@ -188,12 +188,12 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         val view =
           createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Ducr(incorrectDUCR), Lrn("$$%"))))
 
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("ducr_ducr", "#ducr_ducr")
-        view must haveFieldErrorLink("lrn", "#lrn")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#ducr_ducr")
+        view must containErrorElementWithTagAndHref("a", "#lrn")
 
-        view.select("#error-message-ducr_ducr-input").text() mustBe messages("error.ducr")
-        view.select("#error-message-lrn-input").text() mustBe messages("supplementary.consignmentReferences.lrn.error.specialCharacter")
+        view.getElementsByClass("#govuk-error-message").text() contains messages("error.ducr")
+        view.getElementsByClass("#govuk-error-message").text() contains messages("supplementary.consignmentReferences.lrn.error.specialCharacter")
       }
     }
   }

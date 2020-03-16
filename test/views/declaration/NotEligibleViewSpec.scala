@@ -18,7 +18,6 @@ package views.declaration
 
 import base.Injector
 import play.api.i18n.MessagesApi
-import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -27,51 +26,53 @@ import views.tags.ViewTest
 
 @ViewTest
 class NotEligibleViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
-  private val view = new not_eligible(mainTemplate)()(journeyRequest(), stubMessages())
+  private val page = instanceOf[not_eligible]
+
+  private val validatedMsg = validatedMessages(request)
+  private val view = page()(request, validatedMsg)
 
   "Not Eligible View on empty page" should {
     "have proper messages for labels" in {
       val messages = instanceOf[MessagesApi].preferred(journeyRequest())
       messages must haveTranslationFor("declaration.natureOfTransaction.title")
-      messages must haveTranslationFor("notEligible.pageTitle")
       messages must haveTranslationFor("notEligible.title")
       messages must haveTranslationFor("notEligible.titleLineTwo")
-      messages must haveTranslationFor("notEligible.descriptionPreUrl")
-      messages must haveTranslationFor("notEligible.descriptionUrl")
-      messages must haveTranslationFor("notEligible.descriptionPostUrl")
+      messages must haveTranslationFor("notEligible.description")
+      messages must haveTranslationFor("notEligible.descriptionLink")
       messages must haveTranslationFor("notEligible.referenceTitle")
-      messages must haveTranslationFor("notEligible.reference.text")
+      messages must haveTranslationFor("notEligible.reference.support")
+      messages must haveTranslationFor("notEligible.reference.openingHours")
     }
 
     "display same page title as header" in {
-      val viewWithMessage = new not_eligible(mainTemplate)()(journeyRequest(), realMessagesApi.preferred(request))
-      viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
+      view.title() must include(view.getElementsByTag("h1").text())
     }
 
-    "display header with hint" in {
-      view.select("h1").text() mustBe "notEligible.title notEligible.titleLineTwo"
+    "display header" in {
+      view.select("h1").text() mustBe validatedMsg("notEligible.title")
     }
 
-    "display CHIEF information" in {
-      view.select("p:nth-child(3)").text() mustBe
-        "notEligible.descriptionPreUrl " +
-          "notEligible.descriptionUrl " +
-          "notEligible.descriptionPostUrl"
+    "display help information" in {
+      view.getElementsByClass("govuk-body").get(0).text() mustBe validatedMsg("notEligible.description", validatedMsg("notEligible.descriptionLink"))
     }
 
-    "display CHIEF link" in {
-      view.select("p:nth-child(3)>a").attr("href") mustBe "https://secure.hmce.gov.uk/ecom/login/index.html"
+    "display read more link" in {
+      view
+        .getElementsByClass("govuk-body")
+        .first()
+        .getElementsByTag("a")
+        .attr("href") mustBe "https://www.gov.uk/guidance/dispatching-your-goods-within-the-eu"
     }
 
     "display Help and Support with description" in {
-      view.select("h3").text() mustBe "notEligible.referenceTitle"
-      view.select("p:nth-child(5)").text() mustBe "notEligible.reference.text"
+      view.select("h2").first().text() mustBe validatedMsg("notEligible.referenceTitle")
+      view.getElementsByClass("govuk-body").get(1).text() must include(validatedMsg("notEligible.reference.support", "0300 200 3700"))
     }
 
     "display 'Back' button that links to 'Make declaration' page" in {
       val backButton = view.getElementById("back-link")
 
-      backButton.text() mustBe "site.back"
+      backButton.text() mustBe validatedMsg("site.back")
       backButton must haveHref(controllers.routes.StartController.displayStartPage())
     }
   }

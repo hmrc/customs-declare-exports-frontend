@@ -14,17 +14,8 @@
  * limitations under the License.
  *@
 
-@import play.twirl.api.HtmlFormat
+@this()
 
-@(summaryText: String = "")(bodyHtml: Html = HtmlFormat.empty)
+@(message: String)
 
-<details id="tariffReference" class="govuk-details details-font" data-module="govuk-details">
-    <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      @summaryText
-    </span>
-    </summary>
-    <div class="govuk-details__text">
-        @bodyHtml
-    </div>
-</details>
+<span id="section-header" class="govuk-caption-xl">@message</span>

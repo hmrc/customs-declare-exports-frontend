@@ -14,17 +14,12 @@
  * limitations under the License.
  *@
 
-@import play.twirl.api.HtmlFormat
+@this(
+        saveAndContinue: saveAndContinue
+)
 
-@(summaryText: String = "")(bodyHtml: Html = HtmlFormat.empty)
+@(saveAndContinueKey: String = "site.save_and_continue", saveAsDraftKey: String = "site.save_and_come_back_later")(implicit messages: Messages)
 
-<details id="tariffReference" class="govuk-details details-font" data-module="govuk-details">
-    <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      @summaryText
-    </span>
-    </summary>
-    <div class="govuk-details__text">
-        @bodyHtml
-    </div>
-</details>
+@saveAndContinue(saveAndContinueKey)
+<br>
+@saveAsDraft(saveAsDraftKey)

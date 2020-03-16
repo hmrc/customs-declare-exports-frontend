@@ -14,23 +14,39 @@
  * limitations under the License.
  *@
 
-@import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 @import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSimplifiedDec.AllowedAdditionalDeclarationTypes._
-@import views.components.inputs.RadioOption
 @import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+
+@this(govukRadios: GovukRadios)
 
 @(form: Form[AdditionalDeclarationType])(implicit messages: Messages)
 
-@components.heading(
-    sectionHeader = messages("declaration.declarationType.title"),
-    title = messages("declaration.declarationType.header.simplified")
-)
-
-@components.fields.field_radio(
-    field = form("additionalDeclarationType"),
-    legend = "",
-    inputs = Seq(
-        RadioOption("PreLodged", PreLodged, messages("declaration.declarationType.inputText.simplified.preLodged"), Some(messages("declaration.declarationType.inputText.simplified.preLodged.hint"))),
-        RadioOption("Frontier", Frontier, messages("declaration.declarationType.inputText.simplified.frontier"), Some(messages("declaration.declarationType.inputText.simplified.frontier.hint")))
-    )
-)
+@govukRadios(Radios(
+    name = "additionalDeclarationType",
+    fieldset = Some(Fieldset(
+        legend = Some(Legend(
+            content = Text(messages("declaration.declarationType.header.simplified")),
+            isPageHeading = true,
+            classes = gdsPageLegend
+        ))
+    )),
+    items = Seq(
+        RadioItem(
+            id = Some("PreLodged"),
+            value = Some(PreLodged),
+            content = Text(messages("declaration.declarationType.inputText.simplified.preLodged")),
+            hint = Some(Hint(content = Text(messages("declaration.declarationType.inputText.simplified.preLodged.hint")))),
+            checked = form("additionalDeclarationType").value.contains(PreLodged)
+        ),
+        RadioItem(
+            id = Some("Frontier"),
+            value = Some(Frontier),
+            content = Text(messages("declaration.declarationType.inputText.simplified.frontier")),
+            hint = Some(Hint(content = Text(messages("declaration.declarationType.inputText.simplified.frontier.hint")))),
+            checked = form("additionalDeclarationType").value.contains(Frontier)
+        )
+    ),
+    errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+))

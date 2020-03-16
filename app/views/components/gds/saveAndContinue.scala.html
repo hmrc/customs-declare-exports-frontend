@@ -14,17 +14,12 @@
  * limitations under the License.
  *@
 
-@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@(summaryText: String = "")(bodyHtml: Html = HtmlFormat.empty)
+@this(
+        govukButton: GovukButton
+)
 
-<details id="tariffReference" class="govuk-details details-font" data-module="govuk-details">
-    <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      @summaryText
-    </span>
-    </summary>
-    <div class="govuk-details__text">
-        @bodyHtml
-    </div>
-</details>
+@(messageKey: String = "site.save_and_continue")(implicit messages: Messages)
+
+@govukButton(Button(content = Text(messages(messageKey)), attributes = Map("id" -> "submit")))

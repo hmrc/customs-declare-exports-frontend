@@ -17,12 +17,11 @@
 package views.declaration
 
 import base.Injector
-import config.AppConfig
 import forms.Choice
 import forms.Choice.AllowedChoiceValues.CreateDec
 import forms.declaration.DeclarationChoice
 import helpers.views.declaration.CommonMessages
-import models.DeclarationType
+import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import org.scalatest.Matchers._
 import play.api.data.Form
@@ -32,13 +31,12 @@ import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.declaration_choice
 import views.tags.ViewTest
-import models.Mode
 
 @ViewTest
 class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   private val form: Form[DeclarationChoice] = DeclarationChoice.form()
-  private val choicePage = new declaration_choice(mainTemplate, instanceOf[AppConfig])
+  private val choicePage = instanceOf[declaration_choice]
   private def createView(form: Form[DeclarationChoice] = form, messages: Messages = stubMessages()): Document =
     choicePage(Mode.Normal, form)(request, messages)
 
@@ -65,7 +63,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
 
       val backButton = createView().getElementById("back-link")
 
-      backButton.text() mustBe messages(backCaption)
+      backButton.text() mustBe messages(backToSelectionCaption)
       backButton.getElementById("back-link") must haveHref(controllers.routes.ChoiceController.displayPage(Some(Choice(CreateDec))))
     }
 
@@ -84,20 +82,20 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
 
       val view = createView(DeclarationChoice.form().bind(Map[String, String]()))
 
-      view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("type", "#type")
+      view must haveGovukGlobalErrorSummary
+      view must containErrorElementWithTagAndHref("a", "#type")
 
-      view.select("#error-message-type-input").text() mustBe messages("declaration.type.error")
+      view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.type.error")
     }
 
     "display error when choice is incorrect" in {
 
       val view = createView(DeclarationChoice.form().bind(Map("type" -> "incorrect")))
 
-      view must haveGlobalErrorSummary
-      view must haveFieldErrorLink("type", "#type")
+      view must haveGovukGlobalErrorSummary
+      view must containErrorElementWithTagAndHref("a", "#type")
 
-      view.select("#error-message-type-input").text() mustBe messages("declaration.type.error")
+      view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.type.error")
     }
   }
 
@@ -117,16 +115,16 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
   }
   private def ensureAllLabelTextIsCorrect(view: Document): Unit = {
     view.getElementsByTag("label").size mustBe 5
-    view.getElementById("STANDARD-label").text() mustBe "declaration.type.standard"
-    view.getElementById("SUPPLEMENTARY-label").text() mustBe "declaration.type.supplementary"
-    view.getElementById("SIMPLIFIED-label").text() mustBe "declaration.type.simplified"
-    view.getElementById("OCCASIONAL-label").text() mustBe "declaration.type.occasional"
-    view.getElementById("CLEARANCE-label").text() mustBe "declaration.type.clearance"
+    view.getElementsByAttributeValue("for", "STANDARD").text() mustBe "declaration.type.standard"
+    view.getElementsByAttributeValue("for", "SUPPLEMENTARY").text() mustBe "declaration.type.supplementary"
+    view.getElementsByAttributeValue("for", "SIMPLIFIED").text() mustBe "declaration.type.simplified"
+    view.getElementsByAttributeValue("for", "OCCASIONAL").text() mustBe "declaration.type.occasional"
+    view.getElementsByAttributeValue("for", "CLEARANCE").text() mustBe "declaration.type.clearance"
   }
 
   private def ensureRadioIsChecked(view: Document, elementId: String): Unit = {
-    val option = view.getElementById(elementId)
-    option.attr("checked") mustBe "checked"
+    val option = view.getElementById(elementId).getElementsByAttribute("checked")
+    option.size() mustBe 1
   }
 
   private def ensureRadioIsUnChecked(view: Document, elementId: String): Unit = {

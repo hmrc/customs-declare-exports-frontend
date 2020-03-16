@@ -24,7 +24,7 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.dispatch_location
@@ -34,8 +34,10 @@ import views.tags.ViewTest
 class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   private val form: Form[DispatchLocation] = DispatchLocation.form()
-  private val dispatchLocationPage = new dispatch_location(mainTemplate)
-  private def createView(form: Form[DispatchLocation] = form, mode: Mode = Mode.Normal)(implicit request: JourneyRequest[_]): Document =
+  private val dispatchLocationPage = instanceOf[dispatch_location]
+  private def createView(form: Form[DispatchLocation] = form, mode: Mode = Mode.Normal, messages: Messages = messages)(
+    implicit request: JourneyRequest[_]
+  ): Document =
     dispatchLocationPage(mode, form)(request, messages)
 
   "Dispatch Location" should {
@@ -56,9 +58,9 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
   "Dispatch Location View on empty page" should {
 
     onEveryDeclarationJourney { implicit request =>
-      "display page title" in {
-
-        createView().getElementById("title").text() mustBe messages("supplementary.dispatchLocation.header")
+      "display same page title as header" in {
+        val viewWithMessage = createView(messages = validatedMessages(request))
+        viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
       }
 
       "display section header" in {
@@ -70,17 +72,13 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
 
         val view = createView(DispatchLocation.form().fill(DispatchLocation("")))
 
-        val optionOne = view.getElementById("OutsideEU")
+        val optionOne = view.getElementsByAttributeValue("for", "OutsideEU")
         optionOne.attr("checked") mustBe empty
+        optionOne.text() mustBe messages("supplementary.dispatchLocation.inputText.outsideEU")
 
-        val optionOneLabel = view.getElementById("OutsideEU-label")
-        optionOneLabel.text() mustBe messages("supplementary.dispatchLocation.inputText.outsideEU")
-
-        val optionTwo = view.getElementById("SpecialFiscalTerritory")
+        val optionTwo = view.getElementsByAttributeValue("for", "SpecialFiscalTerritory")
         optionTwo.attr("checked") mustBe empty
-
-        val optionTwoLabel = view.getElementById("SpecialFiscalTerritory-label")
-        optionTwoLabel.text() mustBe messages("supplementary.dispatchLocation.inputText.specialFiscalTerritory")
+        optionTwo.text() mustBe messages("supplementary.dispatchLocation.inputText.specialFiscalTerritory")
       }
 
       "display 'Back' button" when {
@@ -140,20 +138,20 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
 
         val view = createView(DispatchLocation.form().bind(Map[String, String]()))
 
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("dispatchLocation", "#dispatchLocation")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#dispatchLocation")
 
-        view.select("#error-message-dispatchLocation-input").text() mustBe messages("supplementary.dispatchLocation.inputText.error.empty")
+        view.getElementsByClass("#govuk-error-message").text() contains messages("supplementary.dispatchLocation.inputText.error.empty")
       }
 
       "display error if incorrect dispatch is selected" in {
 
         val view = createView(DispatchLocation.form().fillAndValidate(DispatchLocation("12")))
 
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("dispatchLocation", "#dispatchLocation")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#dispatchLocation")
 
-        view.select("#error-message-dispatchLocation-input").text() mustBe messages("supplementary.dispatchLocation.inputText.error.incorrect")
+        view.getElementsByClass("#govuk-error-message").text() contains messages("supplementary.dispatchLocation.inputText.error.incorrect")
       }
     }
   }
@@ -165,7 +163,7 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
         val view = createView(DispatchLocation.form().fill(DispatchLocation("EX")))
 
         val optionOne = view.getElementById("OutsideEU")
-        optionOne.attr("checked") mustBe "checked"
+        optionOne.getElementsByAttribute("checked").size() mustBe 1
 
         val optionTwo = view.getElementById("SpecialFiscalTerritory")
         optionTwo.attr("checked") mustBe empty
@@ -179,7 +177,7 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
         optionOne.attr("checked") mustBe empty
 
         val optionTwo = view.getElementById("SpecialFiscalTerritory")
-        optionTwo.attr("checked") mustBe "checked"
+        optionTwo.getElementsByAttribute("checked").size() mustBe 1
       }
     }
   }

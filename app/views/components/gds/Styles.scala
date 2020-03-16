@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import play.twirl.api.HtmlFormat
+package views.components.gds
 
-@(summaryText: String = "")(bodyHtml: Html = HtmlFormat.empty)
+object Styles {
 
-<details id="tariffReference" class="govuk-details details-font" data-module="govuk-details">
-    <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      @summaryText
-    </span>
-    </summary>
-    <div class="govuk-details__text">
-        @bodyHtml
-    </div>
-</details>
+  val gdsPageLegend = "govuk-fieldset__legend--l"
+  val gdsPageHeading = "govuk-heading-l"
+  val gdsPageLabel = "govuk-heading-l"
+}
