@@ -41,7 +41,7 @@ object RepresentativeDetails extends DeclarationPage {
       )
     )(RepresentativeDetails.apply)(RepresentativeDetails.unapply)
     .verifying(
-      "supplementary.representative-details.eori.error",
+      "supplementary.representative-details.representative-details-page.error",
       details => (details.statusCode.isEmpty && details.details.map(_.eori).isEmpty) || details.statusCode.nonEmpty
     )
 

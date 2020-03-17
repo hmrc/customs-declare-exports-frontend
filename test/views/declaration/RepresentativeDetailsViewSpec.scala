@@ -21,6 +21,7 @@ import forms.declaration.RepresentativeDetails
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
+import play.api.i18n.MessagesApi
 import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
@@ -38,6 +39,21 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
 
   "Representative Details View on empty page" should {
     val view = createView()
+
+    "have proper messages for labels" in {
+      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
+      messages must haveTranslationFor("supplementary.representative.title")
+      messages must haveTranslationFor("supplementary.summary.parties.header")
+      messages must haveTranslationFor("supplementary.representative.legend")
+      messages must haveTranslationFor("supplementary.representative.representationType.direct")
+      messages must haveTranslationFor("supplementary.representative.representationType.direct.hint")
+      messages must haveTranslationFor("supplementary.representative.eori.legend")
+      messages must haveTranslationFor("site.details.summary_text_these")
+      messages must haveTranslationFor("site.save_and_continue")
+      messages must haveTranslationFor("declaration.type.consignmentTariffText")
+      messages must haveTranslationFor("supplementary.representative-details.help-item1")
+      messages must haveTranslationFor("supplementary.representative-details.help-item2")
+    }
 
     "display page title" in {
       view.getElementById("title").text() must be("supplementary.representative.title")
@@ -109,7 +125,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         )
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#details.eori")
+        view must containErrorElementWithTagAndHref("a", "#details_eori")
 
         view.getElementsByClass("#govuk-error-message").text() contains messages("choicePage.input.error.empty")
       }
@@ -127,7 +143,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
         )
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#details.eori")
+        view must containErrorElementWithTagAndHref("a", "#details_eori")
 
         view.getElementsByClass("#govuk-error-message").text() contains messages("choicePage.input.error.empty")
       }
