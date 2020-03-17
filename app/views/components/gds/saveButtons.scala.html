@@ -21,5 +21,6 @@
 @(saveAndContinueKey: String = "site.save_and_continue", saveAsDraftKey: String = "site.save_and_come_back_later")(implicit messages: Messages)
 
 @saveAndContinue(saveAndContinueKey)
-<br>
-@saveAsDraft(saveAsDraftKey)
+<p class="govuk-body">
+ @saveAsDraft(saveAsDraftKey)
+</p>

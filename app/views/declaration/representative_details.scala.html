@@ -32,7 +32,7 @@
         pageTitle: pageTitle,
         exportsInputText: exportsInputText,
         govukInput : GovukInput,
-        saveAndContinue: saveAndContinue,
+        saveButtons: saveButtons,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(mode: Mode, form: Form[RepresentativeDetails])(implicit request: JourneyRequest[_], messages: Messages)
@@ -101,11 +101,7 @@
             @tariffBody
         }
 
-        @saveAndContinue()
-
-        <p class="govuk-body">
-          @saveAsDraft()
-        </p>
+        @saveButtons()
     }
 }
 
