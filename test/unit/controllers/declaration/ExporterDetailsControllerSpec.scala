@@ -91,7 +91,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
         status(response) mustBe BAD_REQUEST
       }
     }
-    "return 303 See other when" when {
+    "return 303 (SEE_OTHER) and redirect to consignee details page" when {
       "correct form is submitted" in {
         val declaration = aDeclaration()
         withNewCaching(declaration)

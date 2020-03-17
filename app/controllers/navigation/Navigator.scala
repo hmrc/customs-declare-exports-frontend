@@ -204,13 +204,12 @@ object Navigator {
     case DeclarationChoice =>
       _ =>
         controllers.routes.ChoiceController.displayPage(Some(Choice(AllowedChoiceValues.CreateDec)))
-    case DispatchLocation =>
-      controllers.declaration.routes.DeclarationChoiceController.displayPage
+    case DispatchLocation                                 => controllers.declaration.routes.DeclarationChoiceController.displayPage
     case ConsignmentReferences                            => controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage
-    case ExporterDetails                                  => controllers.declaration.routes.ConsignmentReferencesController.displayPage
+    case DeclarantDetails                                 => controllers.declaration.routes.ConsignmentReferencesController.displayPage
+    case ExporterDetails                                  => controllers.declaration.routes.DeclarantDetailsController.displayPage
     case ConsigneeDetails                                 => controllers.declaration.routes.ExporterDetailsController.displayPage
-    case DeclarantDetails                                 => controllers.declaration.routes.ConsigneeDetailsController.displayPage
-    case RepresentativeDetails                            => controllers.declaration.routes.DeclarantDetailsController.displayPage
+    case RepresentativeDetails                            => controllers.declaration.routes.ConsigneeDetailsController.displayPage
     case CarrierDetails                                   => controllers.declaration.routes.RepresentativeDetailsController.displayPage
     case DeclarationHolder                                => controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage
     case OfficeOfExitStandard | OfficeOfExitSupplementary => controllers.declaration.routes.LocationController.displayPage

@@ -114,12 +114,12 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
       optionIndirectLabel.text() must include("")
     }
 
-    "display 'Back' button that links to 'Declarant Details' page" in {
+    "display 'Back' button that links to 'Consignee Details' page" in {
 
       val backButton = view.getElementById("back-link")
 
       backButton.text() must be("site.back")
-      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.DeclarantDetailsController.displayPage(Mode.Normal))
+      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ConsigneeDetailsController.displayPage(Mode.Normal))
     }
 
     "display 'Save and continue' button on page" in {

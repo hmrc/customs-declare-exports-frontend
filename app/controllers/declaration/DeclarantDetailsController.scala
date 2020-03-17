@@ -20,8 +20,8 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.DeclarantDetails
 import javax.inject.Inject
-import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -56,7 +56,7 @@ class DeclarantDetailsController @Inject()(
         (formWithErrors: Form[DeclarantDetails]) => Future.successful(BadRequest(declarantDetailsPage(mode, formWithErrors))),
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.RepresentativeDetailsController.displayPage))
+            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.ExporterDetailsController.displayPage))
       )
   }
 

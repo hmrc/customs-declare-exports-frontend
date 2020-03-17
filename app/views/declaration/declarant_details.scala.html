@@ -14,53 +14,47 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes._
-@import forms.declaration.DeclarantDetails
-@import uk.gov.hmrc.play.views.html._
-@import forms.Choice.AllowedChoiceValues._
-@import models.requests.JourneyRequest
-@import services.model.Country
-@import views.Title
-@import models.requests.JourneyRequest
 @import controllers.navigation.Navigator
+@import forms.declaration.DeclarantDetails
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds._
+@import views.BackButton
+@import views.Title
 
-@this(main_template: views.html.main_template)
+@this(
+    govukLayout: gdsMainTemplate,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    exportsInputText: exportsInputText,
+    govukDetails : GovukDetails,
+    saveButtons: saveButtons,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, form: Form[DeclarantDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tariffBody = { @Html(messages("supplementary.declarant-details.help.bodyText", components.details_content_link())) }
+@govukLayout(
+    title = Title("supplementary.declarant.title"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarantDetails, mode)))) {
 
-@main_template(
-    title = Title("supplementary.declarant.title", "supplementary.summary.parties.header")
-) {
+    @formHelper(action = controllers.declaration.routes.DeclarantDetailsController.saveAddress(mode), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-    @components.back_link(Navigator.backLink(DeclarantDetails, mode), mode)
+        @sectionHeader(messages("supplementary.summary.parties.header"))
 
-    @components.error_summary(form.errors)
+        @exportsInputText(
+            field = form("details.eori"),
+            labelKey = "supplementary.declarant.title",
+            isPageHeading = true
+        )
 
-    @components.heading(
-        title = messages("supplementary.declarant.title"),
-        sectionHeader = messages("supplementary.summary.parties.header")
-    )
+        @govukDetails(Details(
+            attributes = Map("id" -> "tariffReference"),
+            summary = Text(messages("site.details.summary_text_this")),
+            content = HtmlContent(messages("supplementary.declarant-details.help.bodyText", components.details_content_link()))
+        ))
 
-    <p>@messages("supplementary.declarant.title.hint")</p>
-
-    @helper.form(DeclarantDetailsController.saveAddress(mode), 'autoComplete -> "off") {
-        @helper.CSRF.formField
-
-        @components.form_fields_wrapper(field = form("details")) {
-
-            @components.fields.field_text(
-                field = form("details.eori"),
-                label = Some(messages("supplementary.declarant.eori.info")),
-                labelClass = Some("heading-24")
-            )
-        }
-
-        @components.details(messages("site.details.summary_text_this")){
-           @tariffBody
-        }
-        @components.submit_button()
-        @components.buttons.save_and_return_later_button()
+        @saveButtons()
     }
 }

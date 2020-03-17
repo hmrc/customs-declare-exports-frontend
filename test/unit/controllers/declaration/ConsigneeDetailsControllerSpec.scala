@@ -93,7 +93,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
       }
     }
 
-    "return 303 (SEE_OTHER)" when {
+    "return 303 (SEE_OTHER) and redirect to representative details page" when {
 
       "form is correct" in {
 
@@ -104,7 +104,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
         val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarantDetailsController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeDetailsController.displayPage()
       }
     }
   }
