@@ -35,6 +35,7 @@
         declarationTypeQuestionSimplified: declaration_type_question_simplified,
         declarationTypeQuestionClearance: declaration_type_question_clearance,
         declarationTypeQuestionOccasional: declaration_type_question_occasional,
+        tariffDetails: tariffDetails,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
@@ -69,11 +70,7 @@
          }
         }
 
-        @govukDetails(Details(
-            attributes = Map("id" -> "tariffReference"),
-            summary = Text(messages("site.details.summary_text_this")),
-            content = HtmlContent(messages("declaration.type.bodyText", components.gds.detailsContentLink()))
-        ))
+        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(messages("declaration.type.bodyText", components.gds.detailsContentLink())))
 
         @saveButtons()
     }

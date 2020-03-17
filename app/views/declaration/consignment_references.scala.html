@@ -31,6 +31,7 @@
         errorSummary: errorSummary,
         sectionHeader: sectionHeader,
         saveButtons: saveButtons,
+        tariffDetails: tariffDetails,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
@@ -62,11 +63,7 @@
             hintKey = Some("supplementary.consignmentReferences.lrn.hint")
         )
 
-        @govukDetails(Details(
-            attributes = Map("id" -> "tariffReference"),
-            summary = Text(messages("declaration.type.consignmentTariff_summary_text")),
-            content = HtmlContent(tariffBody)
-        ))
+        @tariffDetails(messages("declaration.type.consignmentTariff_summary_text"), HtmlContent(tariffBody))
 
         @saveButtons()
     }
