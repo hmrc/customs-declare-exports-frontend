@@ -29,6 +29,7 @@
     exportsInputText: exportsInputText,
     govukDetails : GovukDetails,
     saveButtons: saveButtons,
+    tariffDetails: tariffDetails,
     formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
@@ -49,11 +50,7 @@
             isPageHeading = true
         )
 
-        @govukDetails(Details(
-            attributes = Map("id" -> "tariffReference"),
-            summary = Text(messages("site.details.summary_text_this")),
-            content = HtmlContent(messages("supplementary.declarant-details.help.bodyText", components.details_content_link()))
-        ))
+        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(messages("supplementary.declarant-details.help.bodyText", components.details_content_link())))
 
         @saveButtons()
     }
