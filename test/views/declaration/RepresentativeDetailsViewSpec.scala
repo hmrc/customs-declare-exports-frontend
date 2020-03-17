@@ -91,7 +91,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
     }
 
     "display 'Save and return' button on page" in {
-      val saveAndReturnButton = view.getElementsByClass("govuk-link govuk-link--no-visited-state").first()
+      val saveAndReturnButton = view.getElementsByClass("button-link govuk-link").first()
       saveAndReturnButton.text() must be("site.save_and_come_back_later")
     }
   }
