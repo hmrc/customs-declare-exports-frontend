@@ -253,7 +253,7 @@ function declarantDetails(){
             default:
                 document.getElementById('details_eori').value = 'GB717572504502802';
         }
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('submit').click()
     }
 }
 
@@ -272,14 +272,14 @@ function representativeDetails(){
             case 'Y':
             case 'Z':
                 document.getElementById('details_eori').value = 'GB717572504502801';
-                selectRadioOption(document.getElementById("statusCode"), 0);
+                selectRadioOptionFromInputs(document.getElementsByName("statusCode"), 0);
                 break;
             case 'J':
                 document.getElementById('details_eori').value = 'GB717572504502809';
-                selectRadioOption(document.getElementById("statusCode"), 1);
+                selectRadioOptionFromInputs(document.getElementsByName("statusCode"), 1);
                 break;
         }
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('submit').click()
     }
 }
 
@@ -412,18 +412,19 @@ function locationOfGoods(){
             case 'F':
             case 'K':
             case 'Y':
-                document.getElementById('code').value ='GBAUBELBFSBEL';
+                document.getElementById('code').value = 'GBAUBELBFSBEL';
                 break;
             case 'J':
-                document.getElementById('code').value ='GBAUFXTFXTFXT';
+                document.getElementById('code').value = 'GBAUFXTFXTFXT';
                 break;
             case 'Z':
                 document.getElementById('code').value = 'GBAUABDABDABD';
                 break;
             default:
-                document.getElementById('code').value ='GBAUFXTFXTFXT';
+                document.getElementById('code').value = 'GBAUFXTFXTFXT';
         }
-        document.getElementsByClassName('button')[0].click()
+
+        document.getElementById('submit').click()
     }
 }
 
@@ -927,9 +928,9 @@ function completeJourney() {
     consignmentRefereences();
 
     // parties
+    declarantDetails();
     exporterDetails();
     consigneeDetails();
-    declarantDetails();
     representativeDetails();
     carrierDetails();
     additionalActors();
