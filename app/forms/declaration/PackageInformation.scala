@@ -33,15 +33,12 @@ object PackageInformation extends DeclarationPage {
 
   def fromJsonString(value: String): Option[PackageInformation] = Json.fromJson(Json.parse(value)).asOpt
 
-  def require1Field[T](fs: (T => Option[_])*): T => Boolean =
-    t => fs.exists(f => f(t).nonEmpty)
-
   implicit val format = Json.format[PackageInformation]
 
   val formId = "PackageInformation"
   val limit = 99
 
-  val mapping = Forms
+  val mappingAllFieldsMandatory = Forms
     .mapping(
       "typesOfPackages" ->
         text()
@@ -57,10 +54,6 @@ object PackageInformation extends DeclarationPage {
           .verifying("supplementary.packageInformation.shippingMarks.lengthError", isEmpty or noLongerThan(42))
     )(PackageInformation.apply)(PackageInformation.unapply)
 
-  val DUPLICATE_MSG_KEY = "supplementary.packageInformation.global.duplicate"
-  val LIMIT_MSG_KEY = "supplementary.packageInformation.global.limit"
-  val USE_ADD = "supplementary.packageInformation.global.useAdd"
-  val ADD_ONE = "supplementary.packageInformation.global.addOne"
+  def form(): Form[PackageInformation] = Form(mappingAllFieldsMandatory)
 
-  def form(): Form[PackageInformation] = Form(mapping)
 }
