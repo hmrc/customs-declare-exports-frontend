@@ -91,29 +91,9 @@ components.table_row(s"item-${item.sequenceId}-itemValue", HtmlTableRow(
     changeLabel = Some(messages("declaration.summary.items.item.itemValue.change", item.sequenceId))
 ))
 )
+
 @item.commodityMeasure.map(commodityMeasure =>
-    components.table_row(s"item-${item.sequenceId}-supplementaryUnits", HtmlTableRow(
-        label = messages("declaration.summary.items.item.supplementaryUnits"),
-        value = commodityMeasure.supplementaryUnits.getOrElse(""),
-        call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(mode, item.id)),
-        changeLabel = Some(messages("declaration.summary.items.item.supplementaryUnits.change", item.sequenceId))
-    ))
-)
-@item.commodityMeasure.map(commodityMeasure =>
-    components.table_row(s"item-${item.sequenceId}-grossWeight", HtmlTableRow(
-        label = messages("declaration.summary.items.item.grossWeight"),
-        value = commodityMeasure.grossMass,
-        call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(mode, item.id)),
-        changeLabel = Some(messages("declaration.summary.items.item.grossWeight.change", item.sequenceId))
-    ))
-)
-@item.commodityMeasure.map(commodityMeasure =>
-    components.table_row(s"item-${item.sequenceId}-netWeight", HtmlTableRow(
-        label = messages("declaration.summary.items.item.netWeight"),
-        value = commodityMeasure.netMass,
-        call = Some(controllers.declaration.routes.CommodityMeasureController.displayPage(mode, item.id)),
-        changeLabel = Some(messages("declaration.summary.items.item.netWeight.change", item.sequenceId))
-    ))
+    commodity_measure_section(mode, item, commodityMeasure)
 )
 
 @item.packageInformation.map(packageInformation =>

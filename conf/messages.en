@@ -873,20 +873,23 @@ supplementary.packageInformation.help-item1 = Package type, go to data element 6
 supplementary.packageInformation.help-item2 = Number of this package, go to data element 6/10 Number of Packages
 supplementary.packageInformation.help-item3 = Shipping marks, go to data element 6/11 Shipping Marks
 
-supplementary.commodityMeasure.title = Commodity measurements
-supplementary.commodityMeasure.netMass = Net Weight
-supplementary.commodityMeasure.netMass.hint = The total weight(in Kg) of the goods without any packaging.
-supplementary.commodityMeasure.netMass.empty= Enter a net weight
-supplementary.commodityMeasure.netMass.error = Net weight can be up to 16 digits with maximum 6 digits after the decimal
-supplementary.commodityMeasure.grossMass = Gross Weight
-supplementary.commodityMeasure.grossMass.hint = This includes the total weight(in Kg) of the goods and any immediate packaging. For example shrink-wrap and a pallet.
-supplementary.commodityMeasure.grossMass.empty = Enter a gross weight
-supplementary.commodityMeasure.grossMass.error = Gross weight can be up to 16 digits with maximum 6 digits after the decimal
-supplementary.commodityMeasure.global.addOne = Enter packaging information
-supplementary.commodityMeasure.supplementaryUnits = Do you need to add supplementary units?
-supplementary.commodityMeasure.supplementaryUnits.item = 6/2 Supplementary units
-supplementary.commodityMeasure.supplementaryUnits.hint = Enter the quantity in the unit specified by the commodity code, for example 1,000 kWh
-supplementary.commodityMeasure.supplementaryUnits.error = A supplementary unit can be up to 16 characters
+declaration.commodityMeasure.title = Commodity measurements
+declaration.commodityMeasure.netMass = Net weight in kilograms
+declaration.commodityMeasure.netMass.hint = The total weight of the goods without any packaging.
+declaration.commodityMeasure.mass.prefix = Kg
+declaration.commodityMeasure.netMass.empty= Enter a net weight
+declaration.commodityMeasure.netMass.error = Net weight can be up to 16 digits with maximum 6 digits after the decimal
+declaration.commodityMeasure.grossMass = Gross weight in kilograms
+declaration.commodityMeasure.grossMass.hint = This includes the total weight of the goods and any immediate packaging. For example, shrink-wrap.
+declaration.commodityMeasure.grossMass.empty = Enter a gross weight
+declaration.commodityMeasure.grossMass.error = Gross weight can be up to 16 digits with maximum 6 digits after the decimal
+declaration.commodityMeasure.global.addOne = Enter packaging information
+declaration.commodityMeasure.supplementaryUnits = Do you need to add supplementary units?
+declaration.commodityMeasure.supplementaryUnits.item = 6/2 Supplementary units
+declaration.commodityMeasure.supplementaryUnits.hint = Enter the quantity in the unit specified by the commodity code, for example 1,000 kWh
+declaration.commodityMeasure.supplementaryUnits.error = A supplementary unit can be up to 16 characters
+declaration.commodityMeasure.units = Kg
+declaration.commodityMeasure.units.hint = Enter weight in kilograms
 
 
 declaration.summary.locations.header = Locations

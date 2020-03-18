@@ -19,7 +19,6 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.CommodityMeasure
-import forms.declaration.CommodityMeasure.form
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -28,7 +27,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.goods_measure
+import views.html.declaration.commodityMeasure.commodity_measure
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -38,9 +37,11 @@ class CommodityMeasureController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  goodsMeasurePage: goods_measure
+  commodityMeasurePage: commodity_measure
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+
+  private def form()(implicit request: JourneyRequest[_]) = CommodityMeasure.form(request.declarationType)
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val item = request.cacheModel.itemBy(itemId)
@@ -48,10 +49,10 @@ class CommodityMeasureController @Inject()(
     val commodityMeasure = item.flatMap(_.commodityMeasure)
 
     (packageInformation, commodityMeasure) match {
-      case (Some(p), Some(data)) if p.nonEmpty => Ok(goodsMeasurePage(mode, itemId, form().fill(data)))
-      case (Some(p), _) if p.nonEmpty          => Ok(goodsMeasurePage(mode, itemId, form()))
+      case (Some(p), Some(data)) if p.nonEmpty => Ok(commodityMeasurePage(mode, itemId, form().fill(data)))
+      case (Some(p), _) if p.nonEmpty          => Ok(commodityMeasurePage(mode, itemId, form()))
       case _ =>
-        BadRequest(goodsMeasurePage(mode, itemId, form().withGlobalError("supplementary.commodityMeasure.global.addOne")))
+        BadRequest(commodityMeasurePage(mode, itemId, form().withGlobalError("supplementary.commodityMeasure.global.addOne")))
     }
   }
 
@@ -59,7 +60,7 @@ class CommodityMeasureController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[CommodityMeasure]) => Future.successful(BadRequest(goodsMeasurePage(mode, itemId, formWithErrors))),
+        (formWithErrors: Form[CommodityMeasure]) => Future.successful(BadRequest(commodityMeasurePage(mode, itemId, formWithErrors))),
         validForm =>
           updateExportsCache(itemId, validForm).map { _ =>
             navigator
