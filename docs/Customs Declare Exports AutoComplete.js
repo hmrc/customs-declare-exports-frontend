@@ -412,18 +412,19 @@ function locationOfGoods(){
             case 'F':
             case 'K':
             case 'Y':
-                document.getElementById('code').value ='GBAUBELBFSBEL';
+                document.getElementById('code').value = 'GBAUBELBFSBEL';
                 break;
             case 'J':
-                document.getElementById('code').value ='GBAUFXTFXTFXT';
+                document.getElementById('code').value = 'GBAUFXTFXTFXT';
                 break;
             case 'Z':
                 document.getElementById('code').value = 'GBAUABDABDABD';
                 break;
             default:
-                document.getElementById('code').value ='GBAUFXTFXTFXT';
+                document.getElementById('code').value = 'GBAUFXTFXTFXT';
         }
-        document.getElementsByClassName('button')[0].click()
+
+        document.getElementById('submit').click()
     }
 }
 
