@@ -60,7 +60,7 @@ class ExportItemSpec extends UnitSpec with ExportsItemBuilder {
             withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
             withStatisticalValue(),
             withPackageInformation(),
-            withCommodityMeasure(CommodityMeasure(None, "100", "100"))
+            withCommodityMeasure(CommodityMeasure(None, Some("100"), Some("100")))
           ).copy(additionalFiscalReferencesData = None)
 
           completedItem.isCompleted(DeclarationType.STANDARD) mustBe false
@@ -74,7 +74,7 @@ class ExportItemSpec extends UnitSpec with ExportsItemBuilder {
             withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.no)),
             withStatisticalValue(),
             withPackageInformation(),
-            withCommodityMeasure(CommodityMeasure(None, "100", "100"))
+            withCommodityMeasure(CommodityMeasure(None, Some("100"), Some("100")))
           )
 
           completedItem.isCompleted(DeclarationType.STANDARD) mustBe true
@@ -89,7 +89,7 @@ class ExportItemSpec extends UnitSpec with ExportsItemBuilder {
             withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12")))),
             withStatisticalValue(),
             withPackageInformation(),
-            withCommodityMeasure(CommodityMeasure(None, "100", "100"))
+            withCommodityMeasure(CommodityMeasure(None, Some("100"), Some("100")))
           )
 
           completedItem.isCompleted(DeclarationType.STANDARD) mustBe true

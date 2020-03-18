@@ -1,0 +1,39 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@this()
+
+@(
+        field: Field,
+        labelKey: String,
+        prefixKey: String,
+        inputClass: String = "govuk-input",
+        hintKey: Option[String] = None,
+        prefixLabelKey: Option[String] = None
+)(implicit messages: Messages)
+
+<div class="govuk-form-group">
+ <label class="govuk-label govuk-label--m" for=@field.id>
+  @messages(labelKey)
+ </label>
+ @hintKey.map { hint =>
+  <span id=@{s"${field.id}-hint"} class="govuk-hint">
+   @messages(hint)
+  </span>
+ }
+ <span id=@{s"${field.id}-before"} class="govuk-body inputBefore" aria-label="@prefixLabelKey.map(messages(_)).getOrElse("")">@messages(prefixKey)</span>
+ <input class="@inputClass" value="@field.value" id=@field.id name=@field.id type="text" aria-describedby=@{s"${field.id}-hint"}>
+</div>

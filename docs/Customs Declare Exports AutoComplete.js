@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.27
+// @version      1.28
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -671,10 +671,22 @@ function packageInformation(){
 
 function commodityMeasurments(){
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/commodity-measure')) {
-        document.getElementById('supplementaryUnits').value ='10';
-        document.getElementById('netMass').value ='500';
-        document.getElementById('grossMass').value ='700';
-        document.getElementsByClassName('button')[0].click()
+        switch(getDeclaration()){
+            case 'D':
+            case 'A':
+            case 'F':
+            case 'C':
+            case 'Y':
+            case 'Z':
+            case 'E':
+            case 'B':
+                document.getElementById('supplementaryUnits').value ='10';
+            default:
+                document.getElementById('netMass').value ='500';
+                document.getElementById('grossMass').value ='700';
+
+        }
+        document.getElementById('submit').click()
     }
 }
 

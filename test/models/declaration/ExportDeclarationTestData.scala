@@ -113,7 +113,7 @@ object ExportDeclarationTestData {
           )
         ),
         additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("code", "description")))),
-        commodityMeasure = Some(CommodityMeasure(Some("2"), "90", "100")),
+        commodityMeasure = Some(CommodityMeasure(Some("2"), Some("90"), Some("100"))),
         additionalFiscalReferencesData =
           Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"), AdditionalFiscalReference("FR", "54321")))),
         procedureCodes = Some(ProcedureCodesData(Some("CUPR"), Seq("CC", "PR"))),

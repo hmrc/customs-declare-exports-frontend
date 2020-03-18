@@ -17,19 +17,21 @@
 package unit.controllers.declaration
 
 import controllers.declaration.{routes, CommodityMeasureController}
-import forms.Choice
 import forms.declaration.{CommodityMeasure, PackageInformation}
-import models.{DeclarationType, Mode}
 import models.declaration.ExportItem
+import models.{DeclarationType, Mode}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import views.html.declaration.goods_measure
+import views.html.declaration.commodityMeasure.commodity_measure
 
 class CommodityMeasureControllerSpec extends ControllerSpec {
 
   trait SetUp {
-    val goodsMeasurePage = new goods_measure(mainTemplate)
+    val goodsMeasurePage = mock[commodity_measure]
 
     val controller = new CommodityMeasureController(
       mockAuthAction,
@@ -47,6 +49,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
     val cachedData = aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item))
 
     withNewCaching(cachedData)
+    when(goodsMeasurePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   "Commodity Measure controller" should {
@@ -62,7 +65,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
 
       "display page method is invoked and commodity measure cache is not empty" in new SetUp {
 
-        val commodityItem = item.copy(commodityMeasure = Some(CommodityMeasure(None, "123", "123")))
+        val commodityItem = item.copy(commodityMeasure = Some(CommodityMeasure(None, Some("123"), Some("123"))))
         val commodityCachedData =
           aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item))
         withNewCaching(commodityCachedData)
@@ -89,7 +92,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
         val noPackageCache = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
         withNewCaching(noPackageCache)
 
-        val incorrectForm = Json.toJson(CommodityMeasure(None, "", ""))
+        val incorrectForm = Json.toJson(CommodityMeasure(None, None, None))
 
         val result = controller.submitForm(Mode.Normal, "itemId")(postRequest(incorrectForm))
 
@@ -104,7 +107,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
         val noPackageCache = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
         withNewCaching(noPackageCache)
 
-        val correctForm = Json.toJson(CommodityMeasure(None, "1234.12", "1234.12"))
+        val correctForm = Json.toJson(CommodityMeasure(None, Some("1234.12"), Some("1234.12")))
 
         val result = controller.submitForm(Mode.Normal, "itemId")(postRequest(correctForm))
 
