@@ -16,7 +16,7 @@
 
 package views.declaration.summary
 
-import forms.declaration.GoodsLocation
+import forms.declaration.GoodsLocationForm
 import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
@@ -25,10 +25,7 @@ import models.Mode
 
 class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
-  val data = aDeclaration(
-    withGoodsLocation(GoodsLocation("A", "U", Some("123"), None, Some("addressLine"), Some("city"), Some("postCode"), "United Kingdom")),
-    withOfficeOfExit("123", Some("12"))
-  )
+  val data = aDeclaration(withGoodsLocation(GoodsLocationForm("GBAUEMAEMAEMA")), withOfficeOfExit("123", Some("12")))
 
   "Locations section" must {
 
@@ -37,7 +34,7 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData {
     "have a goods location code with change button" in {
 
       view.getElementById("location-code-label").text() mustBe messages("declaration.summary.locations.goodsLocationCode")
-      view.getElementById("location-code").text() mustBe "GBAU123"
+      view.getElementById("location-code").text() mustBe "GBAUEMAEMAEMA"
 
       val List(change, accessibleChange) = view.getElementById("location-code-change").text().split(" ").toList
 
@@ -45,22 +42,6 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData {
       accessibleChange mustBe messages("declaration.summary.locations.goodsLocationCode.change")
 
       view.getElementById("location-code-change") must haveHref(controllers.declaration.routes.LocationController.displayPage())
-    }
-
-    "have a goods location address with change button" in {
-
-      view.getElementById("location-address-label").text() mustBe messages("declaration.summary.locations.goodsLocationAddress")
-      view.getElementById("location-address-0").text() mustBe "addressLine"
-      view.getElementById("location-address-1").text() mustBe "city"
-      view.getElementById("location-address-2").text() mustBe "postCode"
-      view.getElementById("location-address-3").text() mustBe "United Kingdom"
-
-      val List(change, accessibleChange) = view.getElementById("location-address-change").text().split(" ").toList
-
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.locations.goodsLocationAddress.change")
-
-      view.getElementById("location-address-change") must haveHref(controllers.declaration.routes.LocationController.displayPage())
     }
 
     "have office of exit id with change button" in {

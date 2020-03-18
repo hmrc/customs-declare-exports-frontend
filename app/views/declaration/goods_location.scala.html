@@ -16,92 +16,33 @@
 
 @import controllers.declaration.routes._
 @import controllers.navigation.Navigator
-@import forms.declaration.GoodsLocation
+@import forms.declaration.GoodsLocationForm
 @import models.requests.JourneyRequest
-@import services.Countries
-@import services.view.AutoCompleteItem
 @import views.Title
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[GoodsLocation])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[GoodsLocationForm])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tariffBody = { @Html(messages("supplementary.goodsLocation.help.bodyText", components.details_content_link())) }
+@tariffBody = { @Html(messages("declaration.goodsLocation.help.bodyText", components.details_content_link())) }
 
 @main_template(
-    title = Title("supplementary.goodsLocation.title", "declaration.summary.locations.header")
+    title = Title("declaration.goodsLocation.title", "declaration.summary.locations.header")
 ) {
     @helper.form(LocationController.saveLocation(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
-        @components.back_link(Navigator.backLink(GoodsLocation, mode)(request))
+        @components.back_link(Navigator.backLink(GoodsLocationForm, mode)(request))
 
         @components.error_summary(form.errors)
 
         @components.heading(
             sectionHeader = messages("declaration.summary.locations.header"),
-            title = messages("supplementary.goodsLocation.title"),
-            hint = messages("supplementary.goodsLocation.hint")
+            title = messages("declaration.goodsLocation.title"),
+            hint = messages("declaration.goodsLocation.hint")
         )
 
-        @components.fields.field_text(
-            field = form("typeOfLocation"),
-            label = Some(messages("supplementary.goodsLocation.typeOfLocation")),
-            labelClass = Some("bold-small")
-        )
-
-        @components.fields.field_text(
-            field = form("qualifierOfIdentification"),
-            label = Some(messages("supplementary.goodsLocation.qualifierOfIdentification")),
-            labelClass = Some("bold-small")
-        )
-
-        @components.fields.field_text(
-            field = form("identificationOfLocation"),
-            label = Some(messages("supplementary.goodsLocation.identificationOfLocation")),
-            labelClass = Some("bold-small")
-        )
-
-        @components.fields.field_text(
-            field = form("additionalIdentifier"),
-            label = Some(messages("supplementary.goodsLocation.additionalIdentifier")),
-            labelClass = Some("bold-small")
-        )
-
-        @components.fields.field_text(
-            field = form("addressLine"),
-            label = Some(messages("supplementary.goodsLocation.addressLine")),
-            labelClass = Some("bold-small")
-        )
-
-        @components.fields.field_text(
-            field = form("city"),
-            label = Some(messages("supplementary.goodsLocation.city")),
-            labelClass = Some("bold-small")
-        )
-
-        @components.fields.field_text(
-            field = form("postCode"),
-            label = Some(messages("supplementary.goodsLocation.postCode")),
-            labelClass = Some("bold-small")
-        )
-
-        @components.fields.field_autocomplete(
-            form("country"),
-            "supplementary.address.country",
-            Some("form-label-bold"),
-            None,
-            messages("supplementary.address.country.empty"),
-            AutoCompleteItem.fromCountry(Countries.allCountries),
-            'autocomplete -> "off",
-            '_inputClass -> "form-control form-control--block",
-            'spellcheck -> "false",
-            'ariaautocomplete -> "list",
-            'ariahaspopup -> "true",
-            'ariaowns -> "suggestions-list",
-            'ariaactivedescendant -> "true",
-            'otherErrorFields -> Seq("countryCode")
-        )
+        @components.fields.field_text(field = form("code"))
 
         @components.details(messages("site.details.summary_text_this")){
            @tariffBody
