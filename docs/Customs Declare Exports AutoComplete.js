@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.27
+// @version      1.28
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -253,7 +253,7 @@ function declarantDetails(){
             default:
                 document.getElementById('details_eori').value = 'GB717572504502802';
         }
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('submit').click()
     }
 }
 
@@ -272,14 +272,14 @@ function representativeDetails(){
             case 'Y':
             case 'Z':
                 document.getElementById('details_eori').value = 'GB717572504502801';
-                selectRadioOption(document.getElementById("statusCode"), 0);
+                selectRadioOptionFromInputs(document.getElementsByName("statusCode"), 0);
                 break;
             case 'J':
                 document.getElementById('details_eori').value = 'GB717572504502809';
-                selectRadioOption(document.getElementById("statusCode"), 1);
+                selectRadioOptionFromInputs(document.getElementsByName("statusCode"), 1);
                 break;
         }
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('submit').click()
     }
 }
 
@@ -915,9 +915,9 @@ function completeJourney() {
     consignmentRefereences();
 
     // parties
+    declarantDetails();
     exporterDetails();
     consigneeDetails();
-    declarantDetails();
     representativeDetails();
     carrierDetails();
     additionalActors();
