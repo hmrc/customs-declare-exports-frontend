@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-        saveAndContinue: saveAndContinue
-)
+package models.declaration
 
-@(saveAndContinueKey: String = "site.save_and_continue", saveAsDraftKey: String = "site.save_and_come_back_later")(implicit messages: Messages)
+import forms.declaration.GoodsLocationForm
+import play.api.libs.json.{Json, OFormat}
 
-@saveAndContinue(saveAndContinueKey)
-<p class="govuk-body">
- @saveAsDraft(saveAsDraftKey)
-</p>
+case class GoodsLocation(country: String, typeOfLocation: String, qualifierOfIdentification: String, identificationOfLocation: String) {
+
+  val code = country + typeOfLocation + qualifierOfIdentification + identificationOfLocation
+
+  def toForm(): GoodsLocationForm = GoodsLocationForm(code)
+}
+
+object GoodsLocation {
+
+  implicit val format: OFormat[GoodsLocation] = Json.format[GoodsLocation]
+}

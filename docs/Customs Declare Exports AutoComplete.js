@@ -412,21 +412,17 @@ function locationOfGoods(){
             case 'F':
             case 'K':
             case 'Y':
-                document.getElementById('identificationOfLocation').value ='BELBFSBEL';
+                document.getElementById('code').value ='GBAUBELBFSBEL';
                 break;
             case 'J':
-                document.getElementById('additionalIdentifier').value ='123';
-                document.getElementById('identificationOfLocation').value ='FXTFXTFXT';
+                document.getElementById('code').value ='GBAUFXTFXTFXT';
                 break;
             case 'Z':
-                document.getElementById('identificationOfLocation').value = 'ABDABDABD';
+                document.getElementById('code').value = 'GBAUABDABDABD';
                 break;
             default:
-                document.getElementById('identificationOfLocation').value ='FXTFXTFXT';
+                document.getElementById('code').value ='GBAUFXTFXTFXT';
         }
-        document.getElementById('typeOfLocation').value ='A';
-        document.getElementById('qualifierOfIdentification').value ='U';
-        selectFromAutoPredict(document.getElementById('country-container'), "United Kingdom");
         document.getElementsByClassName('button')[0].click()
     }
 }

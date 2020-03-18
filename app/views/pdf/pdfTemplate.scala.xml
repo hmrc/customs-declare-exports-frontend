@@ -33,7 +33,7 @@
                 <fo:block font-size="13pt" text-align="left" font-weight="bold"> @messages("pdf.template.declarationType"): </fo:block>
                 <fo:block font-size="13pt" text-align="left"> @mrnStatus.declarationType </fo:block>
             </fo:block-container>
-            <fo:block-container absolute-position="absolute" top="56mm" left="0mm" width="50%" height="5mm">
+            <fo:block-container absolute-position="absolute" top="56mm" left="0mm" width="80%" height="5mm">
                 <fo:block font-size="14pt" font-weight="bold" text-align="left">
                     @messages("pdf.template.ucr"): @mrnStatus.ucr
                 </fo:block>

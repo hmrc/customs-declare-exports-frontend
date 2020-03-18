@@ -27,14 +27,6 @@ class RepresentativeDetailsSpec extends WordSpec with MustMatchers {
   "RepresentativeDetails mapping used for binding data" should {
 
     "return form with errors" when {
-      "provided with empty value for status code" in {
-        val representativeDetailsWithoutStatusCode = JsObject(Map("details" -> correctEntityDetailsJSON))
-        val form = RepresentativeDetails.form().bind(representativeDetailsWithoutStatusCode)
-
-        form.hasErrors must be(true)
-        form.errors.length must equal(1)
-        form.errors.head.message must equal("supplementary.representative.representationType.error.empty")
-      }
 
       "provided with unrecognized status code" in {
         val representativeDetailsWithoutStatusCode =

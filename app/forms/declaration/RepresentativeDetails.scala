@@ -40,8 +40,10 @@ object RepresentativeDetails extends DeclarationPage {
         text().verifying("supplementary.representative.representationType.error.wrongValue", isContainedIn(representativeStatusCodeAllowedValues))
       )
     )(RepresentativeDetails.apply)(RepresentativeDetails.unapply)
-    .verifying("supplementary.namedEntityDetails.error", details => details.details.nonEmpty || details.statusCode.isEmpty)
-    .verifying("supplementary.representative.representationType.error.empty", details => details.details.isEmpty || details.statusCode.nonEmpty)
+    .verifying(
+      "supplementary.representative-details.representative-details-page.error",
+      details => (details.statusCode.isEmpty && details.details.map(_.eori).isEmpty) || details.statusCode.nonEmpty
+    )
 
   def form(): Form[RepresentativeDetails] = Form(mapping)
 
