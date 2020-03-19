@@ -14,7 +14,10 @@
  * limitations under the License.
  *@
 
-@import models.DeclarationType._
+@import views.html.declaration.summary.onward_supply_relief
+@import views.html.declaration.summary.package_information
+@import views.html.declaration.summary.union_and_national_codes
+@import views.html.declaration.summary.supporting_documents
 @import models.declaration.ExportItem
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
@@ -46,7 +49,7 @@ components.table_row(s"item-${item.sequenceId}-procedureCode", HtmlTableRow(
 @item.commodityDetails.map(commodityDetails =>
     components.table_row(s"item-${item.sequenceId}-goodsDescription", HtmlTableRow(
         label = messages("declaration.summary.items.item.goodsDescription"),
-        value = commodityDetails.descriptionOfGoods,
+        value = commodityDetails.descriptionOfGoods.getOrElse(""),
         call = Some(controllers.declaration.routes.CommodityDetailsController.displayPage(mode, item.id)),
         changeLabel = Some(messages("declaration.summary.items.item.goodsDescription.change", item.sequenceId))
     ))

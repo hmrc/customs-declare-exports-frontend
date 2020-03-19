@@ -77,9 +77,9 @@ class CommodityDetailsSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "CommodityDetails mapping used for declarations where code is optional" should {
+  "CommodityDetails mapping used for declarations where code and declaration is optional" should {
 
-    for (decType <- Set(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)) {
+    for (decType <- Set(DeclarationType.CLEARANCE)) {
 
       s"return form with errors for $decType" when {
         "provided with invalid commodity code" in {
@@ -103,7 +103,7 @@ class CommodityDetailsSpec extends WordSpec with MustMatchers {
         "provided with missing description" in {
           val form = CommodityDetails.form(decType).bind(formData("12345678", ""))
 
-          form.errors mustBe Seq(FormError(descriptionOfGoodsKey, "declaration.commodityDetails.description.error.empty"))
+          form.hasErrors must be(false)
         }
       }
 
@@ -116,6 +116,12 @@ class CommodityDetailsSpec extends WordSpec with MustMatchers {
 
         "provided with missing commodity code" in {
           val form = CommodityDetails.form(decType).bind(formData("", "description"))
+
+          form.hasErrors must be(false)
+        }
+
+        "provided with both missing commodity code and commodity description" in {
+          val form = CommodityDetails.form(decType).bind(formData("", ""))
 
           form.hasErrors must be(false)
         }
