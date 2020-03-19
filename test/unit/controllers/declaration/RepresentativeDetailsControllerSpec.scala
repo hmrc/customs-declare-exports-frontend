@@ -113,7 +113,7 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
       }
     }
 
-    onJourney(DeclarationType.SUPPLEMENTARY, DeclarationType.CLEARANCE)() { declaration =>
+    onJourney(DeclarationType.SUPPLEMENTARY)() { declaration =>
       "return 303 (SEE_OTHER) and redirect to additional actors page" in {
 
         withNewCaching(declaration)
@@ -129,7 +129,7 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
       }
     }
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)() { declaration =>
+    onJourney(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL, DeclarationType.CLEARANCE)() { declaration =>
       "return 303 (SEE_OTHER) and redirect to carrier details page" in {
 
         withNewCaching(declaration)

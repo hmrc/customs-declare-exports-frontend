@@ -111,7 +111,7 @@ object Navigator {
     case SupervisingCustomsOffice    => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case ModeOfTransportCodes        => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case WarehouseIdentification     => controllers.declaration.routes.ItemsSummaryController.displayPage
-    case DeclarationAdditionalActors => controllers.declaration.routes.RepresentativeDetailsController.displayPage
+    case DeclarationAdditionalActors => controllers.declaration.routes.CarrierDetailsController.displayPage
     case TotalPackageQuantity        => controllers.declaration.routes.OfficeOfExitController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }

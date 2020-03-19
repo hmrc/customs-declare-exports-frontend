@@ -67,7 +67,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
     "return OK (200)" when {
 
-      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL)() { declaration =>
+      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE)() { declaration =>
         "with valid journey type" in {
 
           val eori = Some(Eori("1234"))
@@ -96,7 +96,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
         verify(mockCarrierDetailsPage, times(0)).apply(any(), any())(any(), any())
       }
 
-      onJourney(SUPPLEMENTARY, CLEARANCE)() { declaration =>
+      onJourney(SUPPLEMENTARY)() { declaration =>
         "with invalid journey type" in {
 
           withNewCaching(declaration)
@@ -130,7 +130,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
     "return 303 (SEE_OTHER)" when {
 
-      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL)() { declaration =>
+      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE)() { declaration =>
         "with valid journey type" in {
 
           withNewCaching(declaration)
@@ -143,7 +143,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
         }
       }
 
-      onJourney(SUPPLEMENTARY, CLEARANCE)() { declaration =>
+      onJourney(SUPPLEMENTARY)() { declaration =>
         "with invalid journey type" in {
 
           withNewCaching(declaration)
