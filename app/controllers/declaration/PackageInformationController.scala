@@ -24,7 +24,7 @@ import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation._
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.DeclarationType.DeclarationType
+import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
@@ -49,12 +49,12 @@ class PackageInformationController @Inject()(
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val items = request.cacheModel.itemBy(itemId).flatMap(_.packageInformation).getOrElse(List.empty)
-    Ok(packageInformationPage(mode, itemId, form(), items))
+    Ok(packageInformationPage(mode, itemId, form(request.declarationType), items))
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit authRequest =>
     val actionTypeOpt = FormAction.bindFromRequest()
-    val boundForm = form().bindFromRequest()
+    val boundForm = form(authRequest.declarationType).bindFromRequest()
     val packagings = authRequest.cacheModel.itemBy(itemId).flatMap(_.packageInformation).getOrElse(List.empty)
     actionTypeOpt match {
       case Add                             => addItem(mode, itemId, boundForm, packagings)
@@ -77,13 +77,15 @@ class PackageInformationController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
-      .saveAndContinue(boundForm, cachedData, isMandatory = true, PackageInformation.limit)
+      .saveAndContinue(boundForm, cachedData, isMandatory(request), PackageInformation.limit)
       .fold(
         formWithErrors => Future.successful(BadRequest(packageInformationPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
           updateExportsCache(itemId, updatedCache)
             .map(_ => navigator.continueTo(mode, nextPage(itemId, request.declarationType)))
       )
+
+  private def isMandatory(journeyRequest: JourneyRequest[_]): Boolean = journeyRequest.declarationType != CLEARANCE
 
   private def updateExportsCache(itemId: String, updatedCache: Seq[PackageInformation])(
     implicit r: JourneyRequest[AnyContent]
@@ -92,7 +94,7 @@ class PackageInformationController @Inject()(
 
   private def nextPage(itemId: String, declarationType: DeclarationType): Mode => Call =
     declarationType match {
-      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | DeclarationType.CLEARANCE =>
+      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | CLEARANCE =>
         controllers.declaration.routes.CommodityMeasureController.displayPage(_, itemId)
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
         controllers.declaration.routes.AdditionalInformationController.displayPage(_, itemId)

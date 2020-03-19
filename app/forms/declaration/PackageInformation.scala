@@ -17,19 +17,34 @@
 package forms.declaration
 
 import forms.DeclarationPage
-import play.api.data.Forms.{number, text}
+import models.DeclarationType.{CLEARANCE, DeclarationType}
+import play.api.data.Forms.{number, optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{JsValue, Json}
 import services.PackageTypes
 import utils.validators.forms.FieldValidator._
 
-case class PackageInformation(typesOfPackages: String, numberOfPackages: Int, shippingMarks: String) {
+case class PackageInformation(typesOfPackages: Option[String], numberOfPackages: Option[Int], shippingMarks: Option[String]) {
   def toJson: JsValue = Json.toJson(this)(PackageInformation.format)
 
-  def typesOfPackagesText: String = PackageTypes.findByCode(typesOfPackages).asText()
+  def typesOfPackagesText: Option[String] =
+    for {
+      types <- typesOfPackages
+      packageType <- PackageTypes.findByCode(types)
+    } yield packageType.asText()
 }
 
 object PackageInformation extends DeclarationPage {
+
+  private def fromValues(typesOfPackages: String, numberOfPackages: Int, shippingMarks: String): PackageInformation =
+    PackageInformation(typesOfPackages = Some(typesOfPackages), numberOfPackages = Some(numberOfPackages), shippingMarks = Some(shippingMarks))
+
+  private def toValues(packageInformation: PackageInformation): Option[(String, Int, String)] =
+    for {
+      typesOfPackages <- packageInformation.typesOfPackages
+      numberOfPackages <- packageInformation.numberOfPackages
+      shippingMarks <- packageInformation.shippingMarks
+    } yield (typesOfPackages, numberOfPackages, shippingMarks)
 
   def fromJsonString(value: String): Option[PackageInformation] = Json.fromJson(Json.parse(value)).asOpt
 
@@ -46,14 +61,37 @@ object PackageInformation extends DeclarationPage {
           .verifying("supplementary.packageInformation.typesOfPackages.error", isEmpty or isContainedIn(PackageTypes.all.map(_.code))),
       "numberOfPackages" ->
         number()
-          .verifying("supplementary.packageInformation.numberOfPackages.error", q => q > 0 && q <= 999999),
+          .verifying("supplementary.packageInformation.numberOfPackages.error", isInRange(1, 999999)),
       "shippingMarks" ->
         text()
           .verifying("supplementary.packageInformation.shippingMarks.empty", nonEmpty)
           .verifying("supplementary.packageInformation.shippingMarks.characterError", isEmpty or isAlphanumericWithAllowedSpecialCharacters)
           .verifying("supplementary.packageInformation.shippingMarks.lengthError", isEmpty or noLongerThan(42))
+    )(PackageInformation.fromValues)(PackageInformation.toValues)
+
+  val mappingAllFieldsOptional = Forms
+    .mapping(
+      "typesOfPackages" -> optional(
+        text()
+          .verifying("supplementary.packageInformation.typesOfPackages.error", isContainedIn(PackageTypes.all.map(_.code)))
+      ),
+      "numberOfPackages" -> optional(
+        number()
+          .verifying("supplementary.packageInformation.numberOfPackages.error", isInRange(1, 999999))
+      ),
+      "shippingMarks" -> optional(
+        text()
+          .verifying("supplementary.packageInformation.shippingMarks.characterError", isAlphanumericWithAllowedSpecialCharacters)
+          .verifying("supplementary.packageInformation.shippingMarks.lengthError", noLongerThan(42))
+      )
     )(PackageInformation.apply)(PackageInformation.unapply)
+    .verifying("supplementary.packageInformation.empty", validatePackageInformation(_))
 
-  def form(): Form[PackageInformation] = Form(mappingAllFieldsMandatory)
+  private def validatePackageInformation(packageInformation: PackageInformation): Boolean =
+    !(packageInformation.typesOfPackages.isEmpty && packageInformation.numberOfPackages.isEmpty && packageInformation.shippingMarks.isEmpty)
 
+  def form(declarationType: DeclarationType): Form[PackageInformation] = declarationType match {
+    case CLEARANCE => Form(mappingAllFieldsOptional)
+    case _         => Form(mappingAllFieldsMandatory)
+  }
 }

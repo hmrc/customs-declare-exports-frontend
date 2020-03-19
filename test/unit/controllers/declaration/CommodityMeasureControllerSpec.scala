@@ -16,7 +16,7 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.{routes, CommodityMeasureController}
+import controllers.declaration._
 import forms.declaration.{CommodityMeasure, PackageInformation}
 import models.declaration.ExportItem
 import models.{DeclarationType, Mode}
@@ -45,7 +45,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
     authorizedUser()
 
     val item =
-      ExportItem("itemId", packageInformation = Some(List(PackageInformation("123", 123, "123"))))
+      ExportItem("itemId", packageInformation = Some(List(PackageInformation(Some("123"), Some(123), Some("123")))))
     val cachedData = aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item))
 
     withNewCaching(cachedData)
