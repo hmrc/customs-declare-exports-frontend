@@ -83,7 +83,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
 
       "display page method is invoked and cache contains data" in {
 
-        val details = CommodityDetails(Some("12345678"), "Description")
+        val details = CommodityDetails(Some("12345678"), Some("Description"))
         val item = anItem(withCommodityDetails(details))
         withNewCaching(aDeclaration(withItems(item)))
 
@@ -102,7 +102,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
 
         withNewCaching(aDeclaration())
 
-        val incorrectForm = Json.toJson(CommodityDetails(None, "Description"))
+        val incorrectForm = Json.toJson(CommodityDetails(None, Some("Description")))
 
         val result = controller.submitForm(Mode.Normal, itemId)(postRequest(incorrectForm))
 
@@ -115,7 +115,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
       "return 303 (SEE_OTHER) and redirect to UN Dangerous Goods Code page" in {
 
         withNewCaching(declaration)
-        val correctForm = Json.toJson(CommodityDetails(Some("12345678"), "Description"))
+        val correctForm = Json.toJson(CommodityDetails(Some("12345678"), Some("Description")))
 
         val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
 
@@ -128,7 +128,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
       "return 303 (SEE_OTHER) and redirect to UN Dangerous Goods Code page" in {
 
         withNewCaching(declaration)
-        val correctForm = Json.toJson(CommodityDetails(None, "Description"))
+        val correctForm = Json.toJson(CommodityDetails(None, Some("Description")))
 
         val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
 
@@ -141,7 +141,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
       "return 303 (SEE_OTHER) and redirect to UN Dangerous Goods Code page" in {
 
         withNewCaching(declaration)
-        val correctForm = Json.toJson(CommodityDetails(Some("12345678"), "Description"))
+        val correctForm = Json.toJson(CommodityDetails(Some("12345678"), Some("Description")))
 
         val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
 

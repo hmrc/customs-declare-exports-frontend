@@ -44,7 +44,7 @@ class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
     form: Form[CommodityDetails],
     commodityDetails: Option[CommodityDetails] = None
   ): Unit = {
-    val view = createView(declarationType, commodityDetails.fold(form)(form.fill(_)))
+    val view = createView(declarationType, commodityDetails.fold(form)(form.fill))
 
     "display page title" in {
       view.getElementById("title").text() mustBe realMessages("declaration.commodityDetails.title")
@@ -56,7 +56,7 @@ class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
     }
 
     "display description textarea field" in {
-      val expectedDescription = commodityDetails.map(_.descriptionOfGoods).getOrElse("")
+      val expectedDescription = commodityDetails.flatMap(_.descriptionOfGoods).getOrElse("")
       view.getElementById(CommodityDetails.descriptionOfGoodsKey).text() mustBe expectedDescription
     }
 
@@ -84,7 +84,7 @@ class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestData with St
 
   "Commodity Details View on populated page" when {
 
-    val details = Some(CommodityDetails(Some("12345678"), "Description"))
+    val details = Some(CommodityDetails(Some("12345678"), Some("Description")))
 
     for (decType <- DeclarationType.values) {
       s"we are on $decType journey" should {

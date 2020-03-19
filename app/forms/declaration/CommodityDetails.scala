@@ -23,7 +23,7 @@ import play.api.data.{Form, Mapping}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class CommodityDetails(combinedNomenclatureCode: Option[String], descriptionOfGoods: String)
+case class CommodityDetails(combinedNomenclatureCode: Option[String], descriptionOfGoods: Option[String])
 
 object CommodityDetails extends DeclarationPage {
 
@@ -55,21 +55,37 @@ object CommodityDetails extends DeclarationPage {
         )
     )
 
-  private val mappingDescriptionOfGoods = text()
-    .verifying("declaration.commodityDetails.description.error.empty", nonEmpty)
-    .verifying("declaration.commodityDetails.description.error.length", isEmpty or noLongerThan(descriptionOfGoodsMaxLength))
+  private val mappingDescriptionOfGoodsRequired =
+    optional(
+      text()
+        .verifying("declaration.commodityDetails.description.error.empty", nonEmpty)
+        .verifying("declaration.commodityDetails.description.error.length", isEmpty or noLongerThan(descriptionOfGoodsMaxLength))
+    ).verifying("declaration.commodityDetails.description.error.empty", isPresent)
+
+  private val mappingDescriptionOfGoodsOptional =
+    optional(
+      text()
+        .verifying("declaration.commodityDetails.description.error.empty", nonEmpty)
+        .verifying("declaration.commodityDetails.description.error.length", isEmpty or noLongerThan(descriptionOfGoodsMaxLength))
+    )
 
   private val mappingRequiredCode: Mapping[CommodityDetails] =
-    mapping(combinedNomenclatureCodeKey -> mappingCombinedNomenclatureCodeRequired, descriptionOfGoodsKey -> mappingDescriptionOfGoods)(
+    mapping(combinedNomenclatureCodeKey -> mappingCombinedNomenclatureCodeRequired, descriptionOfGoodsKey -> mappingDescriptionOfGoodsRequired)(
       CommodityDetails.apply
     )(CommodityDetails.unapply)
 
   private val mappingOptionalCode: Mapping[CommodityDetails] =
-    mapping(combinedNomenclatureCodeKey -> mappingCombinedNomenclatureCodeOptional, descriptionOfGoodsKey -> mappingDescriptionOfGoods)(
+    mapping(combinedNomenclatureCodeKey -> mappingCombinedNomenclatureCodeOptional, descriptionOfGoodsKey -> mappingDescriptionOfGoodsRequired)(
+      CommodityDetails.apply
+    )(CommodityDetails.unapply)
+
+  private val mappingOptionalCodeAndOptionalDescription: Mapping[CommodityDetails] =
+    mapping(combinedNomenclatureCodeKey -> mappingCombinedNomenclatureCodeOptional, descriptionOfGoodsKey -> mappingDescriptionOfGoodsOptional)(
       CommodityDetails.apply
     )(CommodityDetails.unapply)
 
   def form(declarationType: DeclarationType): Form[CommodityDetails] = declarationType match {
+    case DeclarationType.CLEARANCE                               => Form(mappingOptionalCodeAndOptionalDescription)
     case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL => Form(mappingOptionalCode)
     case _                                                       => Form(mappingRequiredCode)
   }
