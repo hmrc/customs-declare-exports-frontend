@@ -19,7 +19,15 @@
 
 @this(govukInput: GovukInput)
 
-@(field: Field, labelKey: String, hintKey: Option[String] = None, isPageHeading: Boolean = false, headingClasses: String = gdsPageLabel, labelClasses: String = "govuk-label--m")(implicit messages: Messages)
+@(
+        field: Field,
+        labelKey: String,
+        hintKey: Option[String] = None,
+        isPageHeading: Boolean = false,
+        headingClasses: String = gdsPageLabel,
+        labelClasses: String = "govuk-label--m",
+        inputClasses: Option[String] = None
+)(implicit messages: Messages)
 
 @buildLabel = @{
     if(isPageHeading) {
@@ -36,5 +44,5 @@
     label = buildLabel,
     hint = hintKey.map(key => Hint(content = Text(messages(key)))),
     errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message)))),
-    classes = "govuk-!-width-two-thirds"
+    classes = "govuk-!-width-two-thirds" + inputClasses.map(clazz => s" $clazz").getOrElse("")
 ))

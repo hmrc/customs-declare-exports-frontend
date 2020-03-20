@@ -43,17 +43,13 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
 
   private val consignmentReferences = ConsignmentReferences(Ducr(""), Lrn(""))
 
-  private val departureTransport = DepartureTransport("", "")
-  private val borderTransport = BorderTransport(None, "", "")
   private val parties = Parties()
   private val locations = Locations()
   private val item = ExportItem("itemId")
   private val totalItemExchange = TotalItemsExchange(None, None, None)
-  private val totalNumberOfItems = TotalNumberOfItems(None, None)
   private val totalPackageQuantity = TotalPackageQuantity(None)
   private val previousDocuments = PreviousDocumentsData(Seq.empty)
   private val natureOfTransaction = NatureOfTransaction("")
-  private val transportInformation = TransportInformation()
   private val transport = Transport()
 
   private val request = ExportsDeclarationExchange(
@@ -214,8 +210,7 @@ object ExportsDeclarationExchangeSpec {
       |      "country": "United Kingdom",
       |      "typeOfLocation": "A",
       |      "qualifierOfIdentification": "U",
-      |      "identificationOfLocation": "FXTFXTFXT",
-      |      "additionalIdentifier": "123"
+      |      "identificationOfLocation": "FXTFXTFXT"
       |    },
       |    "officeOfExit": {
       |      "officeId": "GB000054",

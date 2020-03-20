@@ -22,6 +22,7 @@ import controllers.util.SaveAndReturn
 import forms.common.Eori
 import forms.declaration.{DeclarantDetails, EntityDetails}
 import helpers.views.declaration.CommonMessages
+import models.DeclarationType.DeclarationType
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -35,9 +36,9 @@ import views.tags.ViewTest
 @ViewTest
 class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
 
-  private val form: Form[DeclarantDetails] = DeclarantDetails.form()
+  private def form(journeyType: DeclarationType): Form[DeclarantDetails] = DeclarantDetails.form(journeyType)
   private val declarantDetailsPage = instanceOf[declarant_details]
-  private def createView(form: Form[DeclarantDetails] = form): Document =
+  private def createView(form: Form[DeclarantDetails]): Document =
     declarantDetailsPage(Mode.Normal, form)(journeyRequest(), messages)
 
   "Declarant Details View on empty page" should {
@@ -46,10 +47,10 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
 
       val messages = instanceOf[MessagesApi].preferred(request)
 
-      messages must haveTranslationFor("supplementary.declarant.title")
+      messages must haveTranslationFor("declaration.declarant.title")
       messages must haveTranslationFor("supplementary.summary.parties.header")
-      messages must haveTranslationFor("supplementary.eori.error.format")
-      messages must haveTranslationFor("supplementary.eori.empty")
+      messages must haveTranslationFor("declaration.declarant.eori.error.format")
+      messages must haveTranslationFor("declaration.declarant.eori.empty")
     }
   }
 
@@ -58,25 +59,29 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
     onEveryDeclarationJourney { implicit request =>
       "display input label as page title" in {
 
-        createView().getElementsByClass("govuk-label govuk-label--l").text() mustBe messages("supplementary.declarant.title")
+        createView(form(request.declarationType)).getElementsByClass("govuk-label govuk-label--l").text() mustBe messages(
+          "declaration.declarant.title"
+        )
       }
 
       "display section header" in {
 
-        createView().getElementById("section-header").text() must include(messages("supplementary.summary.parties.header"))
+        createView(form(request.declarationType)).getElementById("section-header").text() must include(
+          messages("supplementary.summary.parties.header")
+        )
       }
 
       "display empty input with label for EORI" in {
 
-        val view = createView()
+        val view = createView(form(request.declarationType))
 
-        view.getElementsByAttributeValue("for", "details_eori").text() mustBe messages("supplementary.declarant.title")
+        view.getElementsByAttributeValue("for", "details_eori").text() mustBe messages("declaration.declarant.title")
         view.getElementById("details_eori").attr("value") mustBe empty
       }
 
       "display 'Back' button that links to 'Consignment References' page" in {
 
-        val view = declarantDetailsPage(Mode.Normal, form)(journeyRequest(), messages)
+        val view = declarantDetailsPage(Mode.Normal, form(request.declarationType))(journeyRequest(), messages)
         val backButton = view.getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
@@ -84,12 +89,12 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
       }
 
       "display 'Save and continue' button on page" in {
-        val saveButton = createView().getElementById("submit")
+        val saveButton = createView(form(request.declarationType)).getElementById("submit")
         saveButton.text() mustBe messages(saveAndContinueCaption)
       }
 
       "display 'Save and return' button on page" in {
-        val saveButton = createView().getElementById("submit_and_return")
+        val saveButton = createView(form(request.declarationType)).getElementById("submit_and_return")
         saveButton.text() mustBe messages(saveAndReturnCaption)
         saveButton.attr("name") mustBe SaveAndReturn.toString
       }
@@ -101,26 +106,26 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
     onEveryDeclarationJourney { implicit request =>
       "display error when EORI is empty" in {
 
-        val view = createView(DeclarantDetails.form().fillAndValidate(DeclarantDetails(EntityDetails(Some(Eori("")), None))))
+        val view = createView(DeclarantDetails.form(request.declarationType).fillAndValidate(DeclarantDetails(EntityDetails(Some(Eori("")), None))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#details_eori")
 
-        view.getElementsByClass("govuk-error-message").text() contains messages("supplementary.eori.empty")
+        view.getElementsByClass("govuk-error-message").text() contains messages("declaration.declarant.eori.empty")
       }
 
       "display error when EORI is provided, but is incorrect" in {
 
         val view = createView(
           DeclarantDetails
-            .form()
+            .form(request.declarationType)
             .fillAndValidate(DeclarantDetails(EntityDetails(Some(Eori(TestHelper.createRandomAlphanumericString(19))), None)))
         )
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#details_eori")
 
-        view.getElementsByClass("govuk-error-message").text() contains messages("supplementary.eori.error.format")
+        view.getElementsByClass("govuk-error-message").text() contains messages("declaration.declarant.eori.error.format")
       }
     }
 
@@ -131,7 +136,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
     onEveryDeclarationJourney { implicit request =>
       "display data in EORI input" in {
 
-        val form = DeclarantDetails.form().fill(DeclarantDetails(EntityDetails(Some(Eori("1234")), None)))
+        val form = DeclarantDetails.form(request.declarationType).fill(DeclarantDetails(EntityDetails(Some(Eori("1234")), None)))
         val view = createView(form)
 
         view.getElementById("details_eori").attr("value") mustBe "1234"

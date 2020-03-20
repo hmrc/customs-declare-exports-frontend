@@ -17,7 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.LocationController
-import forms.declaration.GoodsLocation
+import forms.declaration.GoodsLocationForm
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -45,6 +45,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
+
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
     when(mockGoodsLocationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
@@ -52,11 +53,12 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
 
   override protected def afterEach(): Unit = {
     super.afterEach()
+
     reset(mockGoodsLocationPage)
   }
 
-  def theResponseForm: Form[GoodsLocation] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[GoodsLocation]])
+  def theResponseForm: Form[GoodsLocationForm] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[GoodsLocationForm]])
     verify(mockGoodsLocationPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
@@ -70,30 +72,23 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
-        verify(mockGoodsLocationPage, times(1)).apply(any(), any())(any(), any())
+        verify(mockGoodsLocationPage).apply(any(), any())(any(), any())
 
         theResponseForm.value mustBe empty
       }
 
       "display page method is invoked and cache contains data" in {
 
-        val goodsLocation = GoodsLocation("A", "B", None, None, None, None, None, "PL")
+        val goodsLocation = GoodsLocationForm("GBAUEMAEMAEMA")
         withNewCaching(aDeclaration(withGoodsLocation(goodsLocation)))
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
-        verify(mockGoodsLocationPage, times(1)).apply(any(), any())(any(), any())
+        verify(mockGoodsLocationPage).apply(any(), any())(any(), any())
 
         theResponseForm.value mustNot be(empty)
-        theResponseForm.value.value.country mustBe "PL"
-        theResponseForm.value.value.typeOfLocation mustBe "A"
-        theResponseForm.value.value.qualifierOfIdentification mustBe "B"
-        theResponseForm.value.value.identificationOfLocation mustBe empty
-        theResponseForm.value.value.additionalIdentifier mustBe empty
-        theResponseForm.value.value.addressLine mustBe empty
-        theResponseForm.value.value.postCode mustBe empty
-        theResponseForm.value.value.city mustBe empty
+        theResponseForm.value.value.code mustBe "GBAUEMAEMAEMA"
       }
     }
 
@@ -101,13 +96,12 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
 
       "form is incorrect" in {
 
-        val incorrectForm =
-          Json.toJson(GoodsLocation("incorrect", "incorrect", None, None, None, None, None, "incorrect"))
+        val incorrectForm = Json.toJson(GoodsLocationForm("incorrect"))
 
         val result = controller.saveLocation(Mode.Normal)(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockGoodsLocationPage, times(1)).apply(any(), any())(any(), any())
+        verify(mockGoodsLocationPage).apply(any(), any())(any(), any())
       }
     }
 
@@ -115,7 +109,7 @@ class LocationControllerSpec extends ControllerSpec with OptionValues {
 
       "information provided by user are correct" in {
 
-        val correctForm = Json.toJson(GoodsLocation("A", "B", None, None, None, None, None, "Poland"))
+        val correctForm = Json.toJson(GoodsLocationForm("PLAUEMAEMAEMA"))
 
         val result = controller.saveLocation(Mode.Normal)(postRequest(correctForm))
 

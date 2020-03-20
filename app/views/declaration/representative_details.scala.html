@@ -47,14 +47,14 @@
 
 @govukLayout(
     title = Title("supplementary.representative.title"),
-    backButton = Some(BackButton("site.back", Navigator.backLink(RepresentativeDetails, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RepresentativeDetails, mode)))) {
 
     @formHelper(action = RepresentativeDetailsController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("supplementary.summary.parties.header"))
 
-        @pageTitle(messages("supplementary.representative.title"), classes = "govuk-heading-xl")
+        @pageTitle(messages("supplementary.representative.title"))
 
         @govukRadios(Radios(
             name = "statusCode",

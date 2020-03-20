@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.27
+// @version      1.28
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -253,7 +253,7 @@ function declarantDetails(){
             default:
                 document.getElementById('details_eori').value = 'GB717572504502802';
         }
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('submit').click()
     }
 }
 
@@ -272,14 +272,14 @@ function representativeDetails(){
             case 'Y':
             case 'Z':
                 document.getElementById('details_eori').value = 'GB717572504502801';
-                selectRadioOption(document.getElementById("statusCode"), 0);
+                selectRadioOptionFromInputs(document.getElementsByName("statusCode"), 0);
                 break;
             case 'J':
                 document.getElementById('details_eori').value = 'GB717572504502809';
-                selectRadioOption(document.getElementById("statusCode"), 1);
+                selectRadioOptionFromInputs(document.getElementsByName("statusCode"), 1);
                 break;
         }
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('submit').click()
     }
 }
 
@@ -412,22 +412,19 @@ function locationOfGoods(){
             case 'F':
             case 'K':
             case 'Y':
-                document.getElementById('identificationOfLocation').value ='BELBFSBEL';
+                document.getElementById('code').value = 'GBAUBELBFSBEL';
                 break;
             case 'J':
-                document.getElementById('additionalIdentifier').value ='123';
-                document.getElementById('identificationOfLocation').value ='FXTFXTFXT';
+                document.getElementById('code').value = 'GBAUFXTFXTFXT';
                 break;
             case 'Z':
-                document.getElementById('identificationOfLocation').value = 'ABDABDABD';
+                document.getElementById('code').value = 'GBAUABDABDABD';
                 break;
             default:
-                document.getElementById('identificationOfLocation').value ='FXTFXTFXT';
+                document.getElementById('code').value = 'GBAUFXTFXTFXT';
         }
-        document.getElementById('typeOfLocation').value ='A';
-        document.getElementById('qualifierOfIdentification').value ='U';
-        selectFromAutoPredict(document.getElementById('country-container'), "United Kingdom");
-        document.getElementsByClassName('button')[0].click()
+
+        document.getElementById('submit').click()
     }
 }
 
@@ -671,10 +668,22 @@ function packageInformation(){
 
 function commodityMeasurments(){
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/commodity-measure')) {
-        document.getElementById('supplementaryUnits').value ='10';
-        document.getElementById('netMass').value ='500';
-        document.getElementById('grossMass').value ='700';
-        document.getElementsByClassName('button')[0].click()
+        switch(getDeclaration()){
+            case 'D':
+            case 'A':
+            case 'F':
+            case 'C':
+            case 'Y':
+            case 'Z':
+            case 'E':
+            case 'B':
+                document.getElementById('supplementaryUnits').value ='10';
+            default:
+                document.getElementById('netMass').value ='500';
+                document.getElementById('grossMass').value ='700';
+
+        }
+        document.getElementById('submit').click()
     }
 }
 
@@ -919,9 +928,9 @@ function completeJourney() {
     consignmentRefereences();
 
     // parties
+    declarantDetails();
     exporterDetails();
     consigneeDetails();
-    declarantDetails();
     representativeDetails();
     carrierDetails();
     additionalActors();

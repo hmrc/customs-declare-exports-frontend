@@ -43,22 +43,24 @@ class DeclarantDetailsController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.parties.declarantDetails match {
-      case Some(data) => Ok(declarantDetailsPage(mode, DeclarantDetails.form().fill(data)))
-      case _          => Ok(declarantDetailsPage(mode, DeclarantDetails.form()))
+      case Some(data) => Ok(declarantDetailsPage(mode, form().fill(data)))
+      case _          => Ok(declarantDetailsPage(mode, form()))
     }
   }
 
   def saveAddress(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    DeclarantDetails
-      .form()
+    form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[DeclarantDetails]) => Future.successful(BadRequest(declarantDetailsPage(mode, formWithErrors))),
-        form =>
-          updateCache(form)
+        formWithErrors => Future.successful(BadRequest(declarantDetailsPage(mode, formWithErrors))),
+        validDeclarantDetails =>
+          updateCache(validDeclarantDetails)
             .map(_ => navigator.continueTo(mode, controllers.declaration.routes.ExporterDetailsController.displayPage))
       )
   }
+
+  private def form()(implicit request: JourneyRequest[AnyContent]): Form[DeclarantDetails] =
+    DeclarantDetails.form(request.declarationType)
 
   private def updateCache(formData: DeclarantDetails)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {

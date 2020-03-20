@@ -25,7 +25,6 @@ import forms.declaration.DeclarantDetailsSpec._
 import forms.declaration.DeclarationAdditionalActorsSpec.correctAdditionalActors1
 import forms.declaration.DispatchLocationSpec._
 import forms.declaration.ExporterDetailsSpec._
-import forms.declaration.GoodsLocationTestData._
 import forms.declaration.NatureOfTransactionSpec._
 import forms.declaration.OfficeOfExitSupplementarySpec._
 import forms.declaration.RepresentativeDetailsSpec._
@@ -81,7 +80,7 @@ object ExportDeclarationTestData {
       destinationCountry = Some("PL"),
       hasRoutingCountries = Some(true),
       routingCountries = Seq("FR"),
-      goodsLocation = Some(correctGoodsLocation),
+      goodsLocation = Some(GoodsLocationForm("GBAUEMAEMAEMA").toModel),
       officeOfExit = Some(correctOfficeOfExit),
       warehouseIdentification = Some(WarehouseIdentificationSpec.correctWarehouseDetails),
       supervisingCustomsOffice = Some(SupervisingCustomsOfficeSpec.correctSupervisingCustomsOffice),
@@ -113,7 +112,7 @@ object ExportDeclarationTestData {
           )
         ),
         additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("code", "description")))),
-        commodityMeasure = Some(CommodityMeasure(Some("2"), "90", "100")),
+        commodityMeasure = Some(CommodityMeasure(Some("2"), Some("90"), Some("100"))),
         additionalFiscalReferencesData =
           Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"), AdditionalFiscalReference("FR", "54321")))),
         procedureCodes = Some(ProcedureCodesData(Some("CUPR"), Seq("CC", "PR"))),
@@ -143,7 +142,7 @@ object ExportDeclarationTestData {
       destinationCountry = Some("PL"),
       hasRoutingCountries = Some(true),
       routingCountries = Seq("FR"),
-      goodsLocation = Some(correctGoodsLocation),
+      goodsLocation = Some(GoodsLocationForm("GBAUEMAEMAEMA").toModel),
       officeOfExit = Some(correctOfficeOfExit),
       warehouseIdentification = Some(WarehouseIdentificationSpec.correctWarehouseDetails),
       supervisingCustomsOffice = Some(SupervisingCustomsOfficeSpec.correctSupervisingCustomsOffice),
