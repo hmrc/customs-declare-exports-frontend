@@ -73,8 +73,6 @@ class EADControllerSpec extends ControllerSpec with Injector {
           pdfData must include(MrnStatusSpec.completeMrnStatus.eori)
           pdfData must include(MrnStatusSpec.completeMrnStatus.declarationType)
           pdfData must include(MrnStatusSpec.completeMrnStatus.ucr.get)
-          pdfData must include(MrnStatusSpec.completeMrnStatus.roe)
-          pdfData must include(MrnStatusSpec.completeMrnStatus.ics)
           pdfData must include(MrnStatusSpec.completeMrnStatus.totalPackageQuantity)
           pdfData must include(MrnStatusSpec.completeMrnStatus.goodsItemQuantity)
           pdfData must include(MrnStatusSpec.completeMrnStatus.releasedDateTime.get)

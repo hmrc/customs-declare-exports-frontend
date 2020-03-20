@@ -62,30 +62,14 @@
             <!-- DATES INFO END -->
 
 
-            <!-- ROE and ICS START -->
-            <fo:block-container absolute-position="absolute" top="65mm" left="0mm" width="50%" height="5mm">
-                <fo:block>
-                    <fo:inline font-weight="bold">@messages("pdf.template.roe"):</fo:inline>
-                    @mrnStatus.roe
-                </fo:block>
-            </fo:block-container>
-            <fo:block-container absolute-position="absolute" top="75mm" left="0mm" width="50%" height="5mm">
-                <fo:block>
-                    <fo:inline font-weight="bold">@messages("pdf.template.ics"):</fo:inline>
-                    @mrnStatus.ics
-                </fo:block>
-            </fo:block-container>
-            <!-- ROE and ICS END -->
-
-
             <!-- ITEMS INFO START -->
-            <fo:block-container absolute-position="absolute" top="95mm" left="0mm" width="50%" height="5mm">
+            <fo:block-container absolute-position="absolute" top="65mm" left="0mm" width="50%" height="5mm">
                 <fo:block font-size="12pt" text-align="left">
                     <fo:inline font-weight="bold">@messages("pdf.template.totalPackageQuantity"):</fo:inline>
                     @mrnStatus.totalPackageQuantity
                 </fo:block>
             </fo:block-container>
-            <fo:block-container absolute-position="absolute" top="105mm" left="0mm" width="50%" height="5mm">
+            <fo:block-container absolute-position="absolute" top="75mm" left="0mm" width="50%" height="5mm">
                 <fo:block font-size="12pt" text-align="left">
                     <fo:inline font-weight="bold">@messages("pdf.template.goodsItemQuantity"):</fo:inline>
                     @mrnStatus.goodsItemQuantity
