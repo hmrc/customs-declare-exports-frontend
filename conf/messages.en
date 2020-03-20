@@ -308,9 +308,10 @@ supplementary.consignor.address.info = Exporter’s name and business address
 supplementary.exporter-details.help-item1 = Exporter’s EORI number, go to data element 3/2 Exporter Identification Number
 supplementary.exporter-details.help-item2 = Exporter’s name and business address, go to data element 3/1 Exporter
 
-supplementary.declarant.title = What is your EORI number?
-supplementary.declarant.eori.info = Declarant’s EORI number
-supplementary.declarant-details.help.bodyText = Go to data element 3/18 Declarant Identification Number in the {0}.
+declaration.declarant.title = What is your EORI number?
+declaration.declarant-details.help.bodyText = Go to data element 3/18 Declarant Identification Number in the {0}.
+declaration.declarant.eori.empty = Enter your EORI number
+declaration.declarant.eori.error.format = Enter a valid EORI number, for example GB123456789000
 
 supplementary.consignee.title = Who is the consignee?
 supplementary.consignee.title.hint = Enter the consignee’s EORI number or name and business address.

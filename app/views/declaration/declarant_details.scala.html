@@ -36,7 +36,7 @@
 @(mode: Mode, form: Form[DeclarantDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
-    title = Title("supplementary.declarant.title"),
+    title = Title("declaration.declarant.title"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarantDetails, mode)))) {
 
     @formHelper(action = controllers.declaration.routes.DeclarantDetailsController.saveAddress(mode), 'autoComplete -> "off") {
@@ -46,11 +46,11 @@
 
         @exportsInputText(
             field = form("details.eori"),
-            labelKey = "supplementary.declarant.title",
+            labelKey = "declaration.declarant.title",
             isPageHeading = true
         )
 
-        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(messages("supplementary.declarant-details.help.bodyText", components.details_content_link())))
+        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(messages("declaration.declarant-details.help.bodyText", components.details_content_link())))
 
         @saveButtons()
     }
