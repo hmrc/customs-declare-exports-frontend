@@ -21,12 +21,11 @@ import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.remove
 import controllers.util._
 import forms.declaration.PackageInformation
-import forms.declaration.PackageInformation._
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.DeclarationType.{CLEARANCE, DeclarationType}
+import models.DeclarationType._
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -49,12 +48,12 @@ class PackageInformationController @Inject()(
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val items = request.cacheModel.itemBy(itemId).flatMap(_.packageInformation).getOrElse(List.empty)
-    Ok(packageInformationPage(mode, itemId, form(request.declarationType), items))
+    Ok(packageInformationPage(mode, itemId, form(), items))
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit authRequest =>
     val actionTypeOpt = FormAction.bindFromRequest()
-    val boundForm = form(authRequest.declarationType).bindFromRequest()
+    val boundForm = form().bindFromRequest()
     val packagings = authRequest.cacheModel.itemBy(itemId).flatMap(_.packageInformation).getOrElse(List.empty)
     actionTypeOpt match {
       case Add                             => addItem(mode, itemId, boundForm, packagings)
@@ -63,6 +62,8 @@ class PackageInformationController @Inject()(
       case _                               => errorHandler.displayErrorPage()
     }
   }
+
+  private def form()(implicit request: JourneyRequest[_]): Form[PackageInformation] = PackageInformation.form(request.declarationType)
 
   private def removeItem(mode: Mode, itemId: String, values: Seq[String], boundForm: Form[PackageInformation], items: Seq[PackageInformation])(
     implicit request: JourneyRequest[AnyContent]
@@ -94,9 +95,9 @@ class PackageInformationController @Inject()(
 
   private def nextPage(itemId: String, declarationType: DeclarationType): Mode => Call =
     declarationType match {
-      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | CLEARANCE =>
+      case SUPPLEMENTARY | STANDARD | CLEARANCE =>
         controllers.declaration.routes.CommodityMeasureController.displayPage(_, itemId)
-      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
+      case SIMPLIFIED | OCCASIONAL =>
         controllers.declaration.routes.AdditionalInformationController.displayPage(_, itemId)
     }
 

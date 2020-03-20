@@ -262,6 +262,7 @@ class PackageInformationSpec extends UnitViewSpec {
         )
 
         val result = formAllFieldsOptional.bind(incorrectForm)
+
         val errorKeys = result.errors.map(_.key)
         val errorMessages = result.errors.map(_.message)
 

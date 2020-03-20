@@ -33,5 +33,5 @@ object PackageTypes {
 
   val packageTypeCodeMap: Map[String, PackageType] = all.map(packageType => (packageType.code, packageType)).toMap
 
-  def findByCode(code: String): Option[PackageType] = packageTypeCodeMap.get(code)
+  def findByCode(code: String): PackageType = packageTypeCodeMap(code)
 }
