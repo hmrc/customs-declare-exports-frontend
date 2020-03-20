@@ -47,29 +47,26 @@ class PackageInformationSpec extends UnitViewSpec {
     }
   }
 
-  "Package Information form" should {
+  "Package Information form" when {
 
-    "return form with mappingAllFieldsOptional" when {
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
+      "return form with mappingAllFieldsMandatory" in {
 
-      "provided with Clearance declaration type" in {
+        val form = PackageInformation.form(request.declarationType)
 
-        val form = PackageInformation.form(CLEARANCE)
+        form.mapping mustBe PackageInformation.mappingAllFieldsMandatory
+      }
+    }
+
+    onClearance { request =>
+      "return form with mappingAllFieldsOptional" in {
+
+        val form = PackageInformation.form(request.declarationType)
 
         form.mapping mustBe PackageInformation.mappingAllFieldsOptional
       }
     }
 
-    "return form with mappingAllFieldsMandatory" when {
-
-      onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
-        "provided with Clearance declaration type" in {
-
-          val form = PackageInformation.form(request.declarationType)
-
-          form.mapping mustBe PackageInformation.mappingAllFieldsMandatory
-        }
-      }
-    }
   }
 
   "Package Information form with mappingAllFieldsMandatory" should {
@@ -79,6 +76,24 @@ class PackageInformationSpec extends UnitViewSpec {
       "correct data is provided" in {
 
         val correctForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "123", "shippingMarks" -> "correct")
+
+        val result = formAllFieldsMandatory.bind(correctForm)
+
+        result.errors must be(empty)
+      }
+
+      "number of packages is 0" in {
+
+        val correctForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "0", "shippingMarks" -> "correct")
+
+        val result = formAllFieldsMandatory.bind(correctForm)
+
+        result.errors must be(empty)
+      }
+
+      "number of packages is 99999" in {
+
+        val correctForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "99999", "shippingMarks" -> "correct")
 
         val result = formAllFieldsMandatory.bind(correctForm)
 
@@ -122,9 +137,9 @@ class PackageInformationSpec extends UnitViewSpec {
         )
       }
 
-      "number of packages is 0" in {
+      "number of packages is -1" in {
 
-        val incorrectForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "0", "shippingMarks" -> "correct")
+        val incorrectForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "-1", "shippingMarks" -> "correct")
 
         val result = formAllFieldsMandatory.bind(incorrectForm)
 
@@ -132,9 +147,9 @@ class PackageInformationSpec extends UnitViewSpec {
         errorMessages mustBe List("supplementary.packageInformation.numberOfPackages.error")
       }
 
-      "number of packages is 1 mln" in {
+      "number of packages is 100000" in {
 
-        val incorrectForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "1000000", "shippingMarks" -> "correct")
+        val incorrectForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "100000", "shippingMarks" -> "correct")
 
         val result = formAllFieldsMandatory.bind(incorrectForm)
 
@@ -151,6 +166,24 @@ class PackageInformationSpec extends UnitViewSpec {
       "correct data is provided" in {
 
         val correctForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "123", "shippingMarks" -> "correct")
+
+        val result = formAllFieldsOptional.bind(correctForm)
+
+        result.errors must be(empty)
+      }
+
+      "number of packages is 0" in {
+
+        val correctForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "0", "shippingMarks" -> "correct")
+
+        val result = formAllFieldsOptional.bind(correctForm)
+
+        result.errors must be(empty)
+      }
+
+      "number of packages is 99999" in {
+
+        val correctForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "99999", "shippingMarks" -> "correct")
 
         val result = formAllFieldsOptional.bind(correctForm)
 
@@ -252,9 +285,9 @@ class PackageInformationSpec extends UnitViewSpec {
         errorMessages must be(List("supplementary.packageInformation.empty"))
       }
 
-      "number of packages is 0" in {
+      "number of packages is -1" in {
 
-        val incorrectForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "0", "shippingMarks" -> "correct")
+        val incorrectForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "-1", "shippingMarks" -> "correct")
 
         val result = formAllFieldsOptional.bind(incorrectForm)
 
@@ -262,9 +295,9 @@ class PackageInformationSpec extends UnitViewSpec {
         errorMessages mustBe List("supplementary.packageInformation.numberOfPackages.error")
       }
 
-      "number of packages is 1 mln" in {
+      "number of packages is 100000" in {
 
-        val incorrectForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "1000000", "shippingMarks" -> "correct")
+        val incorrectForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "100000", "shippingMarks" -> "correct")
 
         val result = formAllFieldsOptional.bind(incorrectForm)
 

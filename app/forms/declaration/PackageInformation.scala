@@ -53,6 +53,9 @@ object PackageInformation extends DeclarationPage {
   val formId = "PackageInformation"
   val limit = 99
 
+  private val NumberOfPackagesLimitLower = 0
+  private val NumberOfPackagesLimitUpper = 99999
+
   val mappingAllFieldsMandatory = Forms
     .mapping(
       "typesOfPackages" ->
@@ -61,7 +64,7 @@ object PackageInformation extends DeclarationPage {
           .verifying("supplementary.packageInformation.typesOfPackages.error", isEmpty or isContainedIn(PackageTypes.all.map(_.code))),
       "numberOfPackages" ->
         number()
-          .verifying("supplementary.packageInformation.numberOfPackages.error", isInRange(1, 999999)),
+          .verifying("supplementary.packageInformation.numberOfPackages.error", isInRange(NumberOfPackagesLimitLower, NumberOfPackagesLimitUpper)),
       "shippingMarks" ->
         text()
           .verifying("supplementary.packageInformation.shippingMarks.empty", nonEmpty)
@@ -77,7 +80,7 @@ object PackageInformation extends DeclarationPage {
       ),
       "numberOfPackages" -> optional(
         number()
-          .verifying("supplementary.packageInformation.numberOfPackages.error", isInRange(1, 999999))
+          .verifying("supplementary.packageInformation.numberOfPackages.error", isInRange(NumberOfPackagesLimitLower, NumberOfPackagesLimitUpper))
       ),
       "shippingMarks" -> optional(
         text()
