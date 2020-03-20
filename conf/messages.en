@@ -343,7 +343,7 @@ supplementary.representative.representationType.indirect = Indirect representati
 supplementary.representative.representationType.indirect.hint = The representative is sharing legal responsibility with the exporter
 supplementary.representative-details.help-item1 = What type of representation was agreed, go to data element 3/21 Representative Status Code
 supplementary.representative-details.help-item2 = Representative’s EORI number, go to data element 3/20 Representative Identification Number
-supplementary.representative-details.representative-details-page.error = Enter an EORI
+supplementary.representative-details.representative-details-page.error = Enter a valid representative status if you have an EORI
 
 supplementary.eori = EORI number
 supplementary.eori.info = Enter the EORI number or business details
