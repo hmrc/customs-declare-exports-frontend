@@ -16,6 +16,7 @@
 
 package forms.declaration
 
+import models.DeclarationType._
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsValue}
 
@@ -23,31 +24,59 @@ class DeclarantDetailsSpec extends WordSpec with MustMatchers {
 
   import DeclarantDetailsSpec._
 
-  "DeclarantDetails mapping used for binding data" should {
+  Seq(SUPPLEMENTARY, STANDARD, OCCASIONAL, SIMPLIFIED).map { decType =>
+    "Declarant details mapping used for binding data" should {
 
-    "return form with errors" when {
-      "provided with empty input" in {
-        val form = DeclarantDetails.form().bind(emptyDeclarantDetailsJSON)
+      s"return form with errors for $decType journey" when {
 
-        form.hasErrors must be(true)
-        form.errors.length must equal(2)
-        form.errors.head.message must equal("supplementary.eori.empty")
-      }
+        "provided with empty input" in {
 
-      "provided with an invalid EORI" in {
-        val form = DeclarantDetails.form().bind(invalidDeclarantDetailsEORIOnlyJSON)
+          val form = DeclarantDetails.form(decType).bind(emptyDeclarantDetailsJSON)
 
-        form.hasErrors must be(true)
-        form.errors.length must equal(1)
-        form.errors.head.message must equal("supplementary.eori.error.format")
+          form.hasErrors mustBe true
+          form.errors.length must equal(1)
+          form.errors.head.message must equal("declaration.declarant.eori.empty")
+        }
       }
     }
+  }
 
-    "return form without errors" when {
-      "provided with valid input" in {
-        val form = DeclarantDetails.form().bind(correctDeclarantDetailsJSON)
+  Seq(SUPPLEMENTARY, STANDARD, OCCASIONAL, SIMPLIFIED, CLEARANCE).map { decType =>
+    "Declarant details mapping used for binding data" should {
 
-        form.hasErrors must be(false)
+      s"return form with errors for $decType journey" when {
+
+        "provided with an invalid EORI" in {
+
+          val form = DeclarantDetails.form(decType).bind(invalidDeclarantDetailsEORIOnlyJSON)
+
+          form.hasErrors mustBe true
+          form.errors.length must equal(1)
+          form.errors.head.message must equal("declaration.declarant.eori.error.format")
+        }
+      }
+
+      s"return form without errors for $decType journey" when {
+
+        "provided with valid input" in {
+
+          val form = DeclarantDetails.form(decType).bind(correctDeclarantDetailsJSON)
+
+          form.hasErrors mustBe false
+        }
+      }
+    }
+  }
+
+  "Declarant details mapping used for binding data" should {
+
+    "return form without errors for CLEARANCE journey" when {
+
+      "provided with empty input" in {
+
+        val form = DeclarantDetails.form(CLEARANCE).bind(emptyDeclarantDetailsJSON)
+
+        form.hasErrors mustBe false
       }
     }
   }
