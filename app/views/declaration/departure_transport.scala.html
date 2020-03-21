@@ -25,54 +25,125 @@
 @import forms.declaration.ModeOfTransportCodes
 @import models.requests.JourneyRequest
 @import controllers.navigation.Navigator
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds.{errorSummary, gdsMainTemplate, _}
+@import views.components.gds.Styles._
+@import views.{BackButton, Title}
+@import models.declaration.Transport
 
-@this(main_template: views.html.main_template)
+@this(
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukDetails : GovukDetails,
+    govukRadios: GovukRadios,
+    pageTitle: pageTitle,
+    exportsInputText: exportsInputText,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    saveButtons: saveButtons,
+    tariffDetails: tariffDetails,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, form: Form[DepartureTransport])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBody = { @Html(messages("declaration.transportInformation.meansOfTransport.departure.help.bodyText", components.details_content_link())) }
 
+@inputField(transportType: String, labelKey: String) = @{Some(exportsInputText(
+    field = form(s"meansOfTransportOnDepartureIDNumber_$transportType"),
+    labelClasses = "govuk-label",
+    inputClasses = Some("govuk-input govuk-!-width-one-third"),
+    labelKey = labelKey
+    ))
+}
 
-@main_template(
-    title = Title("declaration.transportInformation.title")
-) {
+@govukLayout(
+    title = Title("declaration.transportInformation.meansOfTransport.departure.title"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DepartureTransport, mode)))) {
 
-    @components.back_link(Navigator.backLink(DepartureTransport, mode), mode)
+    @formHelper(action = DepartureTransportController.submitForm(mode), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-    @components.error_summary(form.errors)
+        @sectionHeader(messages("declaration.transportInformation.meansOfTransport.departure.section"))
 
-    @components.heading(title = messages("declaration.transportInformation.title"))
+        @govukRadios(Radios(
+            name = "meansOfTransportOnDepartureType",
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("declaration.transportInformation.meansOfTransport.departure.title")),
+                    isPageHeading = true,
+                    classes = gdsPageLegend
+                ))
+            )),
+            items = Seq(
+                RadioItem(
+                    id = Some("Departure_IMOShipIDNumber"),
+                    value = Some(IMOShipIDNumber),
+                    content = Text(messages("declaration.transportInformation.meansOfTransport.IMOShipIDNumber")),
+                    conditionalHtml = inputField(IMOShipIDNumber, "declaration.transportInformation.meansOfTransport.IMOShipIDNumber.label"),
+                    checked = form("meansOfTransportOnDepartureType").value.contains(IMOShipIDNumber)
+                ),
+                RadioItem(
+                    id = Some("Departure_NameOfVessel"),
+                    value = Some(NameOfVessel),
+                    content = Text(messages("declaration.transportInformation.meansOfTransport.nameOfVessel")),
+                    conditionalHtml = inputField(NameOfVessel, "declaration.transportInformation.meansOfTransport.nameOfVessel.label"),
+                    checked = form("meansOfTransportOnDepartureType").value.contains(NameOfVessel)
+                ),
+                RadioItem(
+                    id = Some("Departure_WagonNumber"),
+                    value = Some(WagonNumber),
+                    content = Text(messages("declaration.transportInformation.meansOfTransport.wagonNumber")),
+                    conditionalHtml = inputField(WagonNumber, "declaration.transportInformation.meansOfTransport.wagonNumber.label"),
+                    checked = form("meansOfTransportOnDepartureType").value.contains(WagonNumber)
+                ),
+                RadioItem(
+                    id = Some("Departure_VehicleRegistrationNumber"),
+                    value = Some(VehicleRegistrationNumber),
+                    content = Text(messages("declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber")),
+                    conditionalHtml = inputField(VehicleRegistrationNumber, "declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber.label"),
+                    checked = form("meansOfTransportOnDepartureType").value.contains(VehicleRegistrationNumber)
+                ),
+                RadioItem(
+                    id = Some("Departure_IATAFlightNumber"),
+                    value = Some(IATAFlightNumber),
+                    content = Text(messages("declaration.transportInformation.meansOfTransport.IATAFlightNumber")),
+                    conditionalHtml = inputField(IATAFlightNumber, "declaration.transportInformation.meansOfTransport.IATAFlightNumber.label"),
+                    checked = form("meansOfTransportOnDepartureType").value.contains(IATAFlightNumber)
+                ),
+                RadioItem(
+                    id = Some("Departure_AircraftRegistrationNumber"),
+                    value = Some(AircraftRegistrationNumber),
+                    content = Text(messages("declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber")),
+                    conditionalHtml = inputField(AircraftRegistrationNumber, "declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber.label"),
+                    checked = form("meansOfTransportOnDepartureType").value.contains(AircraftRegistrationNumber)
+                ),
+                RadioItem(
+                    id = Some("Departure_EuropeanVesselIDNumber"),
+                    value = Some(EuropeanVesselIDNumber),
+                    content = Text(messages("declaration.transportInformation.meansOfTransport.europeanVesselIDNumber")),
+                    conditionalHtml = inputField(EuropeanVesselIDNumber, "declaration.transportInformation.meansOfTransport.europeanVesselIDNumber.label"),
+                    checked = form("meansOfTransportOnDepartureType").value.contains(EuropeanVesselIDNumber)
+                ),
+                RadioItem(
+                    id = Some("Departure_NameOfInlandWaterwayVessel"),
+                    value = Some(NameOfInlandWaterwayVessel),
+                    content = Text(messages("declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel")),
+                    conditionalHtml = inputField(NameOfInlandWaterwayVessel, "declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel.label"),
+                    checked = form("meansOfTransportOnDepartureType").value.contains(NameOfInlandWaterwayVessel)
+                ),
+                RadioItem(
+                    id = Some("Departure_NotApplicable"),
+                    value = Some(Transport.optionNone),
+                    content = Text(messages("declaration.transportInformation.meansOfTransport.notApplicable")),
+                    checked = form("meansOfTransportOnDepartureType").value.contains(Transport.optionNone)
+                )
+            ).filterNot(radioOption => request.declarationType != DeclarationType.CLEARANCE && radioOption.value.contains(Transport.optionNone)),
+            errorMessage = form("meansOfTransportOnDepartureType").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
 
-    @helper.form(DepartureTransportController.submitForm(mode), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
 
-        @components.fields.field_radio(
-            field = form("meansOfTransportOnDepartureType"),
-            legend = messages("declaration.transportInformation.meansOfTransport.departure.header"),
-            hint = Some(messages("declaration.transportInformation.meansOfTransport.departure.header.hint")),
-            inputs = Seq(
-                RadioOption("Departure_IMOShipIDNumber", IMOShipIDNumber, messages("declaration.transportInformation.meansOfTransport.IMOShipIDNumber")),
-                RadioOption("Departure_NameOfVessel", NameOfVessel, messages("declaration.transportInformation.meansOfTransport.nameOfVessel")),
-                RadioOption("Departure_WagonNumber", WagonNumber, messages("declaration.transportInformation.meansOfTransport.wagonNumber")),
-                RadioOption("Departure_VehicleRegistrationNumber", VehicleRegistrationNumber, messages("declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber")),
-                RadioOption("Departure_IATAFlightNumber", IATAFlightNumber, messages("declaration.transportInformation.meansOfTransport.IATAFlightNumber")),
-                RadioOption("Departure_AircraftRegistrationNumber", AircraftRegistrationNumber, messages("declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber")),
-                RadioOption("Departure_EuropeanVesselIDNumber", EuropeanVesselIDNumber, messages("declaration.transportInformation.meansOfTransport.europeanVesselIDNumber")),
-                RadioOption("Departure_NameOfInlandWaterwayVessel", NameOfInlandWaterwayVessel, messages("declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel"))
-            )
-        )
-        @components.fields.field_text(
-            field = form("meansOfTransportOnDepartureIDNumber"),
-            hint = Some(messages("declaration.transportInformation.meansOfTransport.reference.hint")),
-            label = Some(messages("declaration.transportInformation.meansOfTransport.reference.header")),
-            labelClass = Some("bold-small")
-        )
-
-        @components.details(messages("site.details.summary_text_this")){
-            @tariffBody
-        }
-        @components.submit_button()
-        @components.buttons.save_and_return_later_button()
+        @saveButtons()
     }
-
 }

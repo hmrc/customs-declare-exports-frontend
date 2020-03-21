@@ -18,7 +18,7 @@ package views.declaration.summary
 
 import forms.declaration.TransportPayment
 import models.Mode
-import models.declaration.Container
+import models.declaration.{Container, Transport}
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.transport_section
@@ -60,6 +60,31 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
       change mustBe messages("site.change")
       accessibleChange mustBe messages("declaration.summary.transport.departure.meansOfTransport.header.change")
 
+      view.getElementById("transport-reference-change") must haveHref(controllers.declaration.routes.DepartureTransportController.displayPage())
+    }
+
+    "display transport reference if question skipped" in {
+      val view = transport_section(
+        Mode.Normal,
+        data.copy(transport = data.transport.copy(meansOfTransportOnDepartureType = None, meansOfTransportOnDepartureIDNumber = Some("")))
+      )(messages, journeyRequest())
+
+      view.getElementById("transport-reference-label").text() mustBe messages("declaration.summary.transport.departure.meansOfTransport.header")
+      view.getElementById("transport-reference").text() mustBe ""
+      view.getElementById("transport-reference-change") must haveHref(controllers.declaration.routes.DepartureTransportController.displayPage())
+    }
+
+    "display transport reference if question not applicable" in {
+      val view = transport_section(
+        Mode.Normal,
+        data.copy(
+          transport =
+            data.transport.copy(meansOfTransportOnDepartureType = Some(Transport.optionNone), meansOfTransportOnDepartureIDNumber = Some(""))
+        )
+      )(messages, journeyRequest())
+
+      view.getElementById("transport-reference-label").text() mustBe messages("declaration.summary.transport.departure.meansOfTransport.header")
+      view.getElementById("transport-reference").text() mustBe messages("declaration.summary.transport.departure.meansOfTransport.option_none")
       view.getElementById("transport-reference-change") must haveHref(controllers.declaration.routes.DepartureTransportController.displayPage())
     }
 

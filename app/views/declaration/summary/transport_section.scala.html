@@ -29,7 +29,6 @@
       transport.containers.isDefined ||
       transport.borderModeOfTransportCode.isDefined ||
       transport.meansOfTransportOnDepartureType.isDefined ||
-      transport.meansOfTransportOnDepartureIDNumber.isDefined ||
       transport.meansOfTransportCrossingTheBorderIDNumber.isDefined ||
       transport.meansOfTransportCrossingTheBorderNationality.isDefined ||
       transport.meansOfTransportCrossingTheBorderType.isDefined
@@ -37,7 +36,8 @@
 
 @messagesForDepartureMeansOfTransport(transport: Transport) = @{
     (transport.meansOfTransportOnDepartureType, transport.meansOfTransportOnDepartureIDNumber) match {
-        case (Some(meansType), Some(meansId)) => Seq(messages(s"declaration.summary.transport.departure.meansOfTransport.$meansType"), meansId)
+        case (Some(meansType), Some(meansId)) if meansId.nonEmpty => Seq(messages(s"declaration.summary.transport.departure.meansOfTransport.$meansType"), meansId)
+        case (Some(meansType), _) => Seq(messages(s"declaration.summary.transport.departure.meansOfTransport.$meansType"))
         case _ => Seq.empty
     }
 }
@@ -61,7 +61,7 @@
             ))
         )
 
-        @if(declarationData.transport.meansOfTransportOnDepartureType.isDefined && declarationData.transport.meansOfTransportOnDepartureIDNumber.isDefined) {
+        @if(declarationData.transport.meansOfTransportOnDepartureType.isDefined || declarationData.transport.meansOfTransportOnDepartureIDNumber.isDefined) {
             @components.table_row("transport-reference", HtmlTableRow(
                 label = messages("declaration.summary.transport.departure.meansOfTransport.header"),
                 value = messagesForDepartureMeansOfTransport(declarationData.transport),

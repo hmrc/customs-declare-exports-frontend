@@ -265,7 +265,7 @@ trait ExportsDeclarationBuilder {
   }
 
   def withoutMeansOfTransportOnDepartureType(): ExportsDeclarationModifier = declaration => {
-    declaration.copy(transport = declaration.transport.copy(meansOfTransportOnDepartureType = None))
+    declaration.copy(transport = declaration.transport.copy(meansOfTransportOnDepartureType = None, meansOfTransportOnDepartureIDNumber = None))
   }
 
   def withoutTransportPayment(): ExportsDeclarationModifier = declaration => {

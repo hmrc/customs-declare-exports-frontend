@@ -55,4 +55,6 @@ case class Transport(
 
 object Transport {
   implicit val format: Format[Transport] = Json.format[Transport]
+
+  val optionNone = "option_none"
 }

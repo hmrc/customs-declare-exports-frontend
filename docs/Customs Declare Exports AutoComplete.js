@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.28
+// @version      1.29
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -849,14 +849,9 @@ function transportLeavingBorder(){
 
 function departureTransport(){
     if (currentPageIs('/customs-declare-exports/declaration/departure-transport')) {
-        selectRadioOption(document.getElementById('meansOfTransportOnDepartureType'), 1);
-        if(document.getElementById("meansOfTransportCrossingTheBorderIDNumber")){
-            document.getElementById("meansOfTransportCrossingTheBorderIDNumber").value = 'SHIP1'
-        }
-        if(document.getElementById("meansOfTransportOnDepartureIDNumber")){
-            document.getElementById("meansOfTransportOnDepartureIDNumber").value = 'SHIP1'
-        }
-        document.getElementsByClassName('button')[0].click()
+        selectRadioOptionFromInputs(document.getElementsByName("meansOfTransportOnDepartureType"), 1)
+        document.getElementById("meansOfTransportOnDepartureIDNumber_11").value = 'SHIP1'
+        document.getElementById('submit').click()
     }
 }
 

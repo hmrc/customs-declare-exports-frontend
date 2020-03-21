@@ -638,8 +638,8 @@ declaration.transportInformation.transportPayment.paymentMethod.notPrePaid = Not
 declaration.transportInformation.transportPayment.paymentMethod.error= Input is not valid
 declaration.transportInformation.transportPayment.paymentMethod.help.bodyText = Go to data element 4/2 Transport charges method of payment in the {0}.
 
-declaration.transportInformation.meansOfTransport.departure.header = What are the chosen transport’s details?
-declaration.transportInformation.meansOfTransport.departure.header.hint = Select the type of identification used for the chosen transport and enter the reference
+declaration.transportInformation.meansOfTransport.departure.title = What are the details for the transport the goods are physically loaded on for departure?
+declaration.transportInformation.meansOfTransport.departure.section = Transport details
 declaration.transportInformation.meansOfTransport.departure.error.empty = Enter the transport details
 declaration.transportInformation.meansOfTransport.departure.error.incorrect = Enter the transport details
 declaration.transportInformation.meansOfTransport.departure.help.bodyText = Go to data element 7/7 Identity of the Means of Transport at Departure in the UK Trade Tariff {0}
@@ -671,6 +671,7 @@ declaration.transportInformation.meansOfTransport.europeanVesselIDNumber = Europ
 declaration.transportInformation.meansOfTransport.europeanVesselIDNumber.label = Enter the European vessel identification number (ENI)
 declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel = Inland vessel’s name
 declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel.label = Enter the name of the inland waterway’s vessel
+declaration.transportInformation.meansOfTransport.notApplicable = Not applicable
 
 declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header = Which country is this transport registered in?
 declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.error.incorrect = Please, choose valid active means of transport
@@ -1080,6 +1081,7 @@ declaration.summary.transport.departure.meansOfTransport.header = Transport deta
 declaration.summary.transport.departure.meansOfTransport.header.change = Change transport details at the border
 declaration.summary.transport.departure.meansOfTransport. =
 # this is hack about incorrectness of model ^^
+declaration.summary.transport.departure.meansOfTransport.option_none = Not applicable
 declaration.summary.transport.departure.meansOfTransport.10 = Ship IMO number
 declaration.summary.transport.departure.meansOfTransport.11 = Ship name
 declaration.summary.transport.departure.meansOfTransport.20 = Train
