@@ -92,6 +92,9 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
           view
             .getElementsByAttributeValue("for", "Departure_IMOShipIDNumber")
             .text() mustBe "declaration.transportInformation.meansOfTransport.IMOShipIDNumber"
+          view
+            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$IMOShipIDNumber")
+            .text() mustBe "declaration.transportInformation.meansOfTransport.IMOShipIDNumber.label"
         }
 
         "have 'Name of vessel' option" in {
@@ -99,6 +102,9 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
           view
             .getElementsByAttributeValue("for", "Departure_NameOfVessel")
             .text() mustBe "declaration.transportInformation.meansOfTransport.nameOfVessel"
+          view
+            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$NameOfVessel")
+            .text() mustBe "declaration.transportInformation.meansOfTransport.nameOfVessel.label"
         }
 
         "have 'Wagon number' option" in {
@@ -106,6 +112,9 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
           view
             .getElementsByAttributeValue("for", "Departure_WagonNumber")
             .text() mustBe "declaration.transportInformation.meansOfTransport.wagonNumber"
+          view
+            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$WagonNumber")
+            .text() mustBe "declaration.transportInformation.meansOfTransport.wagonNumber.label"
         }
 
         "have 'Vehicle number' option" in {
@@ -113,6 +122,9 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
           view
             .getElementsByAttributeValue("for", "Departure_VehicleRegistrationNumber")
             .text() mustBe "declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber"
+          view
+            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$VehicleRegistrationNumber")
+            .text() mustBe "declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber.label"
         }
 
         "have 'flight number' option" in {
@@ -120,6 +132,9 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
           view
             .getElementsByAttributeValue("for", "Departure_IATAFlightNumber")
             .text() mustBe "declaration.transportInformation.meansOfTransport.IATAFlightNumber"
+          view
+            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$IATAFlightNumber")
+            .text() mustBe "declaration.transportInformation.meansOfTransport.IATAFlightNumber.label"
         }
 
         "have 'aircraft registration' option" in {
@@ -127,6 +142,9 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
           view
             .getElementsByAttributeValue("for", "Departure_AircraftRegistrationNumber")
             .text() mustBe "declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber"
+          view
+            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$AircraftRegistrationNumber")
+            .text() mustBe "declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber.label"
         }
 
         "have 'european vessel id' option" in {
@@ -134,6 +152,9 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
           view
             .getElementsByAttributeValue("for", "Departure_EuropeanVesselIDNumber")
             .text() mustBe "declaration.transportInformation.meansOfTransport.europeanVesselIDNumber"
+          view
+            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$EuropeanVesselIDNumber")
+            .text() mustBe "declaration.transportInformation.meansOfTransport.europeanVesselIDNumber.label"
         }
 
         "have 'inland waterway' option" in {
@@ -141,60 +162,11 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
           view
             .getElementsByAttributeValue("for", "Departure_NameOfInlandWaterwayVessel")
             .text() mustBe "declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel"
-        }
-      }
-
-      "display 'Transport details type' id number section " which {
-
-        "have 'Ship number' option" in {
-          view
-            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$IMOShipIDNumber")
-            .text() mustBe "declaration.transportInformation.meansOfTransport.IMOShipIDNumber.label"
-        }
-
-        "have 'Name of vessel' option" in {
-          view
-            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$NameOfVessel")
-            .text() mustBe "declaration.transportInformation.meansOfTransport.nameOfVessel.label"
-        }
-
-        "have 'Wagon number' option" in {
-          view
-            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$WagonNumber")
-            .text() mustBe "declaration.transportInformation.meansOfTransport.wagonNumber.label"
-        }
-
-        "have 'Vehicle number' option" in {
-          view
-            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$VehicleRegistrationNumber")
-            .text() mustBe "declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber.label"
-        }
-
-        "have 'flight number' option" in {
-          view
-            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$IATAFlightNumber")
-            .text() mustBe "declaration.transportInformation.meansOfTransport.IATAFlightNumber.label"
-        }
-
-        "have 'aircraft registration' option" in {
-          view
-            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$AircraftRegistrationNumber")
-            .text() mustBe "declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber.label"
-        }
-
-        "have 'european vessel id' option" in {
-          view
-            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$EuropeanVesselIDNumber")
-            .text() mustBe "declaration.transportInformation.meansOfTransport.europeanVesselIDNumber.label"
-        }
-
-        "have 'inland waterway' option" in {
           view
             .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$NameOfInlandWaterwayVessel")
             .text() mustBe "declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel.label"
         }
       }
-
     }
 
     onJourney(DeclarationType.CLEARANCE) { implicit request =>
