@@ -78,6 +78,7 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
     }
 
     "render item table as supplied to view" when {
+
       "some items" in {
         val view = createView(
           items = List(
@@ -109,7 +110,7 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
         rows.get(1).getElementById("item_0--sequence_id") must containText("1")
         rows.get(1).getElementById("item_0--procedure_code") must containText("procedure-code1")
         rows.get(1).getElementById("item_0--item_type") must containText("item-type1")
-        rows.get(1).getElementById("item_0--package_count") must containText("1")
+        rows.get(1).getElementById("item_0--package_count").text() must be("1")
         rows.get(1).getElementById("item_0--change") must haveHref(routes.ProcedureCodesController.displayPage(Mode.Normal, "id1"))
         rows.get(1).getElementById("item_0--remove") must haveHref(routes.ItemsSummaryController.removeItem(Mode.Normal, "id1"))
 
@@ -117,9 +118,38 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
         rows.get(2).getElementById("item_1--sequence_id") must containText("2")
         rows.get(2).getElementById("item_1--procedure_code") must containText("procedure-code2")
         rows.get(2).getElementById("item_1--item_type") must containText("item-type2")
-        rows.get(2).getElementById("item_1--package_count") must containText("2")
+        rows.get(2).getElementById("item_1--package_count").text() must be("2")
         rows.get(2).getElementById("item_1--change") must haveHref(routes.ProcedureCodesController.displayPage(Mode.Normal, "id2"))
         rows.get(2).getElementById("item_1--remove") must haveHref(routes.ItemsSummaryController.removeItem(Mode.Normal, "id2"))
+      }
+
+      "item has two package information elements with one having empty number of packages" in {
+        val view = createView(
+          items = List(
+            ExportItem(
+              "id1",
+              sequenceId = 1,
+              procedureCodes = Some(ProcedureCodesData(Some("procedure-code1"), Seq.empty)),
+              statisticalValue = Some(StatisticalValue("")),
+              commodityDetails = Some(CommodityDetails(Some("item-type1"), Some(""))),
+              packageInformation = Some(List(PackageInformation(None, Some(1), None), PackageInformation(None, None, Some("shipping-marks"))))
+            )
+          )
+        )
+
+        view must containElementWithID("item_table")
+
+        val rows = view.getElementsByTag("tr")
+        rows must have(size(2))
+
+        rows.get(1) must haveId("item_0")
+        rows.get(1).getElementById("item_0--sequence_id") must containText("1")
+        rows.get(1).getElementById("item_0--procedure_code") must containText("procedure-code1")
+        rows.get(1).getElementById("item_0--item_type") must containText("item-type1")
+        rows.get(1).getElementById("item_0--package_count").text() must be("1")
+        rows.get(1).getElementById("item_0--change") must haveHref(routes.ProcedureCodesController.displayPage(Mode.Normal, "id1"))
+        rows.get(1).getElementById("item_0--remove") must haveHref(routes.ItemsSummaryController.removeItem(Mode.Normal, "id1"))
+
       }
     }
 
