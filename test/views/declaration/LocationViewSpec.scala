@@ -34,7 +34,7 @@ import views.tags.ViewTest
 @ViewTest
 class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  private val page = new goods_location(mainTemplate)
+  private val page = instanceOf[goods_location]
   private val form: Form[GoodsLocationForm] = GoodsLocationForm.form()
   private def createView(
     mode: Mode = Mode.Normal,

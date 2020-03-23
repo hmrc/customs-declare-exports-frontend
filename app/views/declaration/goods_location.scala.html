@@ -45,7 +45,7 @@ formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
     title = Title("declaration.goodsLocation.title", "declaration.summary.locations.header"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(GoodsLocationForm, mode)))) {
 
-    @helper.form(LocationController.saveLocation(mode), 'autoComplete -> "off") {
+    @formHelper(action = LocationController.saveLocation(mode), 'autoComplete -> "off") {
     @helper.CSRF.formField
 
         @errorSummary(form.errors)
