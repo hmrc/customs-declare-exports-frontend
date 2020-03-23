@@ -83,6 +83,7 @@ object Navigator {
     case RemoveCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case ChangeCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case GoodsLocationForm           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
+    case DeclarationHolder           => controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage
     case SupervisingCustomsOffice    => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case ModeOfTransportCodes        => controllers.declaration.routes.InlandTransportDetailsController.displayPage
@@ -108,6 +109,7 @@ object Navigator {
     case RemoveCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case ChangeCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case GoodsLocationForm           => controllers.declaration.routes.DestinationCountryController.displayPage
+    case DeclarationHolder           => controllers.declaration.routes.RepresentativeDetailsController.displayPage
     case SupervisingCustomsOffice    => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case ModeOfTransportCodes        => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case WarehouseIdentification     => controllers.declaration.routes.ItemsSummaryController.displayPage
@@ -130,6 +132,7 @@ object Navigator {
     case OriginationCountryPage      => controllers.declaration.routes.DeclarationHolderController.displayPage
     case DestinationCountryPage      => controllers.declaration.routes.OriginationCountryController.displayPage
     case GoodsLocationForm           => controllers.declaration.routes.DestinationCountryController.displayPage
+    case DeclarationHolder           => controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage
     case SupervisingCustomsOffice    => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case ModeOfTransportCodes        => controllers.declaration.routes.InlandTransportDetailsController.displayPage
@@ -156,6 +159,7 @@ object Navigator {
     case RemoveCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case ChangeCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case GoodsLocationForm           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
+    case DeclarationHolder           => controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage
     case SupervisingCustomsOffice    => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case ModeOfTransportCodes        => controllers.declaration.routes.InlandTransportDetailsController.displayPage
@@ -182,6 +186,7 @@ object Navigator {
     case RoutingQuestionPage         => controllers.declaration.routes.DestinationCountryController.displayPage
     case RemoveCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case GoodsLocationForm           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
+    case DeclarationHolder           => controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage
     case ChangeCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case SupervisingCustomsOffice    => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
@@ -211,7 +216,6 @@ object Navigator {
     case ConsigneeDetails                                 => controllers.declaration.routes.ExporterDetailsController.displayPage
     case RepresentativeDetails                            => controllers.declaration.routes.ConsigneeDetailsController.displayPage
     case CarrierDetails                                   => controllers.declaration.routes.RepresentativeDetailsController.displayPage
-    case DeclarationHolder                                => controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage
     case OfficeOfExitStandard | OfficeOfExitSupplementary => controllers.declaration.routes.LocationController.displayPage
     case AdditionalDeclarationTypeStandardDec             => controllers.declaration.routes.DispatchLocationController.displayPage
     case TotalNumberOfItems                               => controllers.declaration.routes.OfficeOfExitController.displayPage

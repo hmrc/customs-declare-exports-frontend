@@ -17,9 +17,8 @@
 @import forms.declaration.{DeclarationAdditionalActors, DeclarationHolder}
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
-@import models.Mode._
 
-@(mode: Mode, additionalActors: Seq[DeclarationAdditionalActors], holders: Seq[DeclarationHolder])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(mode: Mode, additionalActors: Seq[DeclarationAdditionalActors])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @actorPartyType(actor: DeclarationAdditionalActors) = {
     @actor.partyType.map(partyType => messages(s"declaration.summary.parties.additional.$partyType")).getOrElse("")
@@ -29,28 +28,12 @@
     @actor.eori.getOrElse("")
 }
 
-@holderTypeCode(holder: DeclarationHolder) = {
-    @holder.authorisationTypeCode.getOrElse("")
-}
-
-@holderEori(holder: DeclarationHolder) = {
-    @holder.eori.getOrElse("")
-}
-
 @if(additionalActors.isEmpty) {
     @components.table_row("additionalActors", HtmlTableRow(
         label = messages("declaration.summary.parties.additional"),
         value = messages("site.no"),
         call = Some(controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage(mode)),
         changeLabel = Some(messages("declaration.summary.parties.additional.empty.change"))
-    ))
-}
-@if(holders.isEmpty) {
-    @components.table_row("holders", HtmlTableRow(
-        label = messages("declaration.summary.parties.holders"),
-        value = messages("site.no"),
-        call = Some(controllers.declaration.routes.DeclarationHolderController.displayPage(mode)),
-        changeLabel = Some(messages("declaration.summary.parties.holders.empty.change"))
     ))
 }
 
@@ -69,27 +52,6 @@
                 <a href="@controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage(mode)" id="additionalActor-@index-change">
                     <span aria-hidden="true">@messages("site.change")</span>
                     <span class="visually-hidden">@messages("declaration.summary.parties.additional.change", actorPartyType(actor), actorEori(actor))</span>
-                </a>
-            </td>
-        </tr>
-    }
-}
-
-@if(holders.nonEmpty) {
-    <caption class="heading-small"><span id="holders">@messages("declaration.summary.parties.holders")</span></caption>
-    <tr class="section">
-        <td class="bold"><span id="holders-type">@messages("declaration.summary.parties.holders.type")</span></td>
-        <td class="bold"><span id="holders-eori">@messages("declaration.summary.parties.holders.eori")</span></td>
-        <td></td>
-    </tr>
-    @holders.zipWithIndex.map { case (holder, index) =>
-        <tr class="section">
-            <td><span id="holder-type-@index">@holderTypeCode(holder)</span></td>
-            <td class="exports-summary-list__value"><span id="holder-eori-@index">@holderEori(holder)</span></td>
-            <td class="exports-summary-list__actions">
-                <a href="@controllers.declaration.routes.DeclarationHolderController.displayPage(mode)" id="holder-@index-change">
-                    <span aria-hidden="true">@messages("site.change")</span>
-                    <span class="visually-hidden">@messages("declaration.summary.parties.holders.change", holderTypeCode(holder), holderEori(holder))</span>
                 </a>
             </td>
         </tr>

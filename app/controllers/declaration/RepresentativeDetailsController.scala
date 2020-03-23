@@ -62,10 +62,12 @@ class RepresentativeDetailsController @Inject()(
 
   private def nextPage(declarationType: DeclarationType): Mode => Call =
     declarationType match {
-      case DeclarationType.SUPPLEMENTARY | DeclarationType.CLEARANCE =>
+      case DeclarationType.SUPPLEMENTARY =>
         controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage
       case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
         controllers.declaration.routes.CarrierDetailsController.displayPage
+      case DeclarationType.CLEARANCE =>
+        controllers.declaration.routes.DeclarationHolderController.displayPage
     }
 
   private def updateCache(formData: RepresentativeDetails)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
