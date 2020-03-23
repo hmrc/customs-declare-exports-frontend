@@ -116,7 +116,8 @@ object ExportDeclarationTestData {
         additionalFiscalReferencesData =
           Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"), AdditionalFiscalReference("FR", "54321")))),
         procedureCodes = Some(ProcedureCodesData(Some("CUPR"), Seq("CC", "PR"))),
-        packageInformation = Some(List(PackageInformation("AA", 2, "mark1"), PackageInformation("AB", 4, "mark2")))
+        packageInformation =
+          Some(List(PackageInformation(Some("AA"), Some(2), Some("mark1")), PackageInformation(Some("AB"), Some(4), Some("mark2"))))
       )
     ),
     totalNumberOfItems = Some(TotalNumberOfItems(Some("1212312.12"), Some("1212121.12345"))),

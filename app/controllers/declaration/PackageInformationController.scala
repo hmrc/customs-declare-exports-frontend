@@ -21,12 +21,11 @@ import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.remove
 import controllers.util._
 import forms.declaration.PackageInformation
-import forms.declaration.PackageInformation._
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.DeclarationType.DeclarationType
+import models.DeclarationType._
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -64,6 +63,8 @@ class PackageInformationController @Inject()(
     }
   }
 
+  private def form()(implicit request: JourneyRequest[_]): Form[PackageInformation] = PackageInformation.form(request.declarationType)
+
   private def removeItem(mode: Mode, itemId: String, values: Seq[String], boundForm: Form[PackageInformation], items: Seq[PackageInformation])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] = {
@@ -77,13 +78,15 @@ class PackageInformationController @Inject()(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
-      .saveAndContinue(boundForm, cachedData, isMandatory = true, PackageInformation.limit)
+      .saveAndContinue(boundForm, cachedData, isMandatory(request), PackageInformation.limit)
       .fold(
         formWithErrors => Future.successful(BadRequest(packageInformationPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
           updateExportsCache(itemId, updatedCache)
             .map(_ => navigator.continueTo(mode, nextPage(itemId, request.declarationType)))
       )
+
+  private def isMandatory(journeyRequest: JourneyRequest[_]): Boolean = journeyRequest.declarationType != CLEARANCE
 
   private def updateExportsCache(itemId: String, updatedCache: Seq[PackageInformation])(
     implicit r: JourneyRequest[AnyContent]
@@ -92,9 +95,9 @@ class PackageInformationController @Inject()(
 
   private def nextPage(itemId: String, declarationType: DeclarationType): Mode => Call =
     declarationType match {
-      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD | DeclarationType.CLEARANCE =>
+      case SUPPLEMENTARY | STANDARD | CLEARANCE =>
         controllers.declaration.routes.CommodityMeasureController.displayPage(_, itemId)
-      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
+      case SIMPLIFIED | OCCASIONAL =>
         controllers.declaration.routes.AdditionalInformationController.displayPage(_, itemId)
     }
 
