@@ -73,16 +73,7 @@ class DepartureTransportController @Inject()(
         navigator.continueTo(mode, controllers.declaration.routes.BorderTransportController.displayPage)
     }
 
-  private def updateCache(formData: DepartureTransport)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] = {
-
-    println("")
-    println("")
-    println("")
-    println("UPDATING.... " + formData)
-    println("")
-    println("")
-    println("")
-
+  private def updateCache(formData: DepartureTransport)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(_.updateDepartureTransport(formData))
-  }
+
 }

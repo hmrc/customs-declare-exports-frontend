@@ -15,21 +15,15 @@
  *@
 
 @import controllers.declaration.routes._
+@import controllers.navigation.Navigator
 @import forms.declaration.DepartureTransport
 @import forms.declaration.TransportCodes._
-@import services.model.Country
-@import uk.gov.hmrc.play.views.html._
-@import views.components.inputs.RadioOption
-@import views.Title
-@import controllers.navigation.Navigator
-@import forms.declaration.ModeOfTransportCodes
-@import models.requests.JourneyRequest
-@import controllers.navigation.Navigator
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.html.components.gds.{errorSummary, gdsMainTemplate, _}
-@import views.components.gds.Styles._
-@import views.{BackButton, Title}
 @import models.declaration.Transport
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.components.gds.Styles._
+@import views.html.components.gds.{errorSummary, gdsMainTemplate, _}
 
 @this(
     govukLayout: gdsMainTemplate,
