@@ -41,20 +41,21 @@ class CarrierDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
+  private def form()(implicit request: JourneyRequest[_]) = CarrierDetails.form(request.declarationType)
+
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL, DeclarationType.CLEARANCE)
 
   def displayPage(mode: Mode): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)) { implicit request =>
       request.cacheModel.parties.carrierDetails match {
-        case Some(data) => Ok(carrierDetailsPage(mode, CarrierDetails.form().fill(data)))
-        case _          => Ok(carrierDetailsPage(mode, CarrierDetails.form()))
+        case Some(data) => Ok(carrierDetailsPage(mode, form().fill(data)))
+        case _          => Ok(carrierDetailsPage(mode, form()))
       }
     }
 
   def saveAddress(mode: Mode): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)).async { implicit request =>
-      CarrierDetails
-        .form()
+      form()
         .bindFromRequest()
         .fold(
           (formWithErrors: Form[CarrierDetails]) => Future.successful(BadRequest(carrierDetailsPage(mode, formWithErrors))),
