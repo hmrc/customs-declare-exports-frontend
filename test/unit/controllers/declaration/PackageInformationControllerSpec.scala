@@ -19,7 +19,8 @@ package unit.controllers.declaration
 import controllers.declaration.PackageInformationController
 import controllers.util.{Add, SaveAndContinue}
 import forms.declaration.PackageInformation
-import models.{DeclarationType, Mode}
+import models.DeclarationType._
+import models.Mode
 import play.api.test.Helpers._
 import services.cache.ExportsItemBuilder
 import unit.base.ControllerSpec
@@ -46,18 +47,17 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
     val itemId = exampleItem.id
 
     authorizedUser()
-    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
+    withNewCaching(aDeclaration(withType(SUPPLEMENTARY)))
     setupErrorHandler()
   }
 
   "Package Information Controller" should {
 
     "return 200 (OK)" when {
-      "on Supplementary journey" when {
-
+      onEveryDeclarationJourney() { declaration =>
         "display page method is invoked and cache is empty" in new SetUp {
 
-          withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
+          withNewCaching(aDeclaration(withType(declaration.`type`)))
 
           val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
@@ -68,29 +68,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
           val itemWithPackageInformation =
             anItem(withPackageInformation(typesOfPackages = "12", numberOfPackages = 10, shippingMarks = "123"))
-          withNewCaching(aDeclaration(withItem(itemWithPackageInformation)))
-
-          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
-
-          status(result) must be(OK)
-        }
-      }
-      "on Simplified journey" when {
-
-        "display page method is invoked and cache is empty" in new SetUp {
-
-          withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED)))
-
-          val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
-
-          status(result) must be(OK)
-        }
-
-        "display page method is invoked and cache contain some data" in new SetUp {
-
-          val itemWithPackageInformation =
-            anItem(withPackageInformation(typesOfPackages = "12", numberOfPackages = 10, shippingMarks = "123"))
-          withNewCaching(aDeclaration(withItem(itemWithPackageInformation), withType((DeclarationType.SIMPLIFIED))))
+          withNewCaching(aDeclaration(withItem(itemWithPackageInformation), withType(declaration.`type`)))
 
           val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
@@ -101,75 +79,79 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
     "return 400 (BAD_REQUEST)" when {
 
-      "action is incorrect" in new SetUp {
+      onEveryDeclarationJourney() { declaration =>
+        "action is incorrect" in new SetUp {
 
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
+          withNewCaching(aDeclaration(withType(declaration.`type`)))
 
-        val body =
-          Seq(("typesOfPackages", "NT"), ("numberOfPackages", "123"), ("shippingMarks", "abc"), ("wrongAction", ""))
+          val body =
+            Seq(("typesOfPackages", "NT"), ("numberOfPackages", "123"), ("shippingMarks", "abc"), ("wrongAction", ""))
 
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body: _*))
+          val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body: _*))
 
-        status(result) must be(BAD_REQUEST)
+          status(result) must be(BAD_REQUEST)
+        }
+
+        "user tried to add incorrect item" in new SetUp {
+
+          withNewCaching(aDeclaration(withType(declaration.`type`)))
+
+          val body =
+            Seq(("typesOfPackages", "wrongType"), ("numberOfPackages", ""), ("shippingMarks", ""), (Add.toString, ""))
+
+          val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body: _*))
+
+          status(result) must be(BAD_REQUEST)
+        }
+
+        "user reached limit of items" in new SetUp {
+
+          val packageInformation = PackageInformation(None, None, None)
+          val maxItems = anItem(withPackageInformation(List.fill(99)(packageInformation)))
+          withNewCaching(aDeclaration(withItem(maxItems), withType(declaration.`type`)))
+
+          val body =
+            Seq(("typesOfPackages", "NT"), ("numberOfPackages", "123"), ("shippingMarks", "abc"), (Add.toString, ""))
+
+          val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body: _*))
+
+          status(result) must be(BAD_REQUEST)
+        }
+
+        "user tried to add duplicated value" in new SetUp {
+
+          val item = anItem(withPackageInformation(typesOfPackages = "NT", numberOfPackages = 1, shippingMarks = "value"))
+          withNewCaching(aDeclaration(withItem(item), withType(declaration.`type`)))
+
+          val body =
+            Seq(("typesOfPackages", "NT"), ("numberOfPackages", "1"), ("shippingMarks", "value"), (Add.toString, ""))
+
+          val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body: _*))
+
+          status(result) must be(BAD_REQUEST)
+        }
       }
 
-      "user tried to continue without adding an item" in new SetUp {
+      onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)() { declaration =>
+        "user tried to continue without adding an item" in new SetUp {
 
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
+          withNewCaching(aDeclaration(withType(declaration.`type`)))
 
-        val body = (SaveAndContinue.toString, "")
+          val body = (SaveAndContinue.toString, "")
 
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body))
+          val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body))
 
-        status(result) must be(BAD_REQUEST)
-      }
-
-      "user tried to add incorrect item" in new SetUp {
-
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
-
-        val body =
-          Seq(("typesOfPackages", "wrongType"), ("numberOfPackages", ""), ("shippingMarks", ""), (Add.toString, ""))
-
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body: _*))
-
-        status(result) must be(BAD_REQUEST)
-      }
-
-      "user reached limit of items" in new SetUp {
-
-        val packageInformation = PackageInformation("", 0, "")
-        val maxItems = anItem(withPackageInformation(List.fill(99)(packageInformation)))
-        withNewCaching(aDeclaration(withItem(maxItems)))
-
-        val body =
-          Seq(("typesOfPackages", "NT"), ("numberOfPackages", "123"), ("shippingMarks", "abc"), (Add.toString, ""))
-
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body: _*))
-
-        status(result) must be(BAD_REQUEST)
-      }
-
-      "user tried to add duplicated value" in new SetUp {
-
-        val item = anItem(withPackageInformation(typesOfPackages = "NT", numberOfPackages = 1, shippingMarks = "value"))
-        withNewCaching(aDeclaration(withItem(item)))
-
-        val body =
-          Seq(("typesOfPackages", "NT"), ("numberOfPackages", "1"), ("shippingMarks", "value"), (Add.toString, ""))
-
-        val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body: _*))
-
-        status(result) must be(BAD_REQUEST)
+          status(result) must be(BAD_REQUEST)
+        }
       }
     }
 
     "return 303 (SEE_OTHER)" when {
-      "on Supplementary journey" when {
 
+      onJourney(STANDARD, SUPPLEMENTARY)() { declaration =>
         "user added correct item" in new SetUp {
 
-          withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
+          withNewCaching(aDeclaration(withType(declaration.`type`)))
 
           val body =
             Seq(("typesOfPackages", "NT"), ("numberOfPackages", "1"), ("shippingMarks", "value"), (Add.toString, ""))
@@ -183,7 +165,63 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
         "user clicked continue with item in a cache" in new SetUp {
 
           val item = anItem(withPackageInformation(typesOfPackages = "NT", numberOfPackages = 1, shippingMarks = "value"))
-          withNewCaching(aDeclaration(withItem(item)))
+          withNewCaching(aDeclaration(withItem(item), withType(declaration.`type`)))
+
+          val body = (SaveAndContinue.toString, "")
+
+          val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, itemId)
+        }
+      }
+
+      onJourney(SIMPLIFIED, OCCASIONAL)() { declaration =>
+        "user added correct item" in new SetUp {
+
+          withNewCaching(aDeclaration(withType(declaration.`type`)))
+
+          val body =
+            Seq(("typesOfPackages", "NT"), ("numberOfPackages", "1"), ("shippingMarks", "value"), (Add.toString, ""))
+
+          val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body: _*))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, itemId)
+        }
+
+        "user clicked continue with item in a cache" in new SetUp {
+
+          val item = anItem(withPackageInformation(typesOfPackages = "NT", numberOfPackages = 1, shippingMarks = "value"))
+          withNewCaching(aDeclaration(withItem(item), withType(declaration.`type`)))
+
+          val body = (SaveAndContinue.toString, "")
+
+          val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, itemId)
+        }
+      }
+
+      onClearance { declaration =>
+        "user added correct item" in new SetUp {
+
+          withNewCaching(aDeclaration(withType(declaration.`type`)))
+
+          val body =
+            Seq(("typesOfPackages", "NT"), ("numberOfPackages", "1"), ("shippingMarks", "value"), (Add.toString, ""))
+
+          val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body: _*))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, itemId)
+        }
+
+        "user clicked continue with item in a cache" in new SetUp {
+
+          val item = anItem(withPackageInformation(typesOfPackages = "NT", numberOfPackages = 1, shippingMarks = "value"))
+          withNewCaching(aDeclaration(withItem(item), withType(declaration.`type`)))
 
           val body = (SaveAndContinue.toString, "")
 
@@ -193,33 +231,17 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
           thePageNavigatedTo mustBe controllers.declaration.routes.CommodityMeasureController
             .displayPage(Mode.Normal, itemId)
         }
-      }
-      "on Simplified journey" when {
 
-        "user added correct item" in new SetUp {
+        "user clicked continue with NO item in a cache" in new SetUp {
 
-          withNewCaching(aDeclaration(withType(DeclarationType.SIMPLIFIED)))
-
-          val body =
-            Seq(("typesOfPackages", "NT"), ("numberOfPackages", "1"), ("shippingMarks", "value"), (Add.toString, ""))
-
-          val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body: _*))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, itemId)
-        }
-
-        "user clicked continue with item in a cache" in new SetUp {
-
-          val item = anItem(withPackageInformation(typesOfPackages = "NT", numberOfPackages = 1, shippingMarks = "value"))
-          withNewCaching(aDeclaration(withItem(item), withType(DeclarationType.SIMPLIFIED)))
+          withNewCaching(aDeclaration(withType(declaration.`type`)))
 
           val body = (SaveAndContinue.toString, "")
 
           val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, itemId)
         }
       }
     }

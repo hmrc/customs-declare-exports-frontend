@@ -87,7 +87,7 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
               procedureCodes = Some(ProcedureCodesData(Some("procedure-code1"), Seq.empty)),
               statisticalValue = Some(StatisticalValue("")),
               commodityDetails = Some(CommodityDetails(Some("item-type1"), Some(""))),
-              packageInformation = Some(List(PackageInformation("", 1, "")))
+              packageInformation = Some(List(PackageInformation(None, Some(1), None)))
             ),
             ExportItem(
               "id2",
@@ -95,7 +95,7 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
               procedureCodes = Some(ProcedureCodesData(Some("procedure-code2"), Seq.empty)),
               statisticalValue = Some(StatisticalValue("")),
               commodityDetails = Some(CommodityDetails(Some("item-type2"), Some(""))),
-              packageInformation = Some(List(PackageInformation("", 2, "")))
+              packageInformation = Some(List(PackageInformation(None, Some(2), None)))
             )
           )
         )
