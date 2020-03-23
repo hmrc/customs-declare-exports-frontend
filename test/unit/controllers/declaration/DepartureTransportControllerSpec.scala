@@ -93,6 +93,16 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "return 400 (BAD_REQUEST)" when {
 
+        "no option is selected" in {
+          withNewCaching(declaration)
+
+          val correctForm: JsValue = formData("", "")
+
+          val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+          status(result) must be(BAD_REQUEST)
+        }
+
         "form is incorrect" in {
           withNewCaching(declaration)
 
@@ -121,17 +131,6 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
     onJourney(CLEARANCE)() { declaration =>
       "return 303 (SEE_OTHER)" when {
-
-        "no option is selected" in {
-          withNewCaching(declaration)
-
-          val correctForm: JsValue = formData("", "")
-
-          val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe nextPage(declaration.`type`)
-        }
 
         "'none' option is selected" in {
           withNewCaching(declaration)

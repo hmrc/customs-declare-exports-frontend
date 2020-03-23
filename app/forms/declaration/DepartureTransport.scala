@@ -43,7 +43,7 @@ object DepartureTransport extends DeclarationPage {
           "declaration.transportInformation.meansOfTransport.departure.error.incorrect",
           isContainedIn(allowedMeansOfTransportTypeCodes + Transport.optionNone)
         )
-    )
+    ).verifying("declaration.transportInformation.meansOfTransport.departure.error.empty.optional", isPresent)
 
   private val meansOfTransportOnDepartureTypeRequired =
     optional(

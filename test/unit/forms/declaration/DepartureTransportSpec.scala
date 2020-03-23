@@ -173,15 +173,6 @@ class DepartureTransportSpec extends FormSpec {
         result.errors must be(empty)
       }
 
-      "user provided no selection" in {
-
-        val correctForm = DepartureTransport(None, None)
-
-        val result = form.fillAndValidate(correctForm)
-
-        result.errors must be(empty)
-      }
-
       "user selected 'none'" in {
 
         val correctForm = DepartureTransport(Some(Transport.optionNone), None)
@@ -194,9 +185,21 @@ class DepartureTransportSpec extends FormSpec {
 
     "has errors" when {
 
-      val transportType = IATAFlightNumber
       val transportTypeField = DepartureTransport.meansOfTransportOnDepartureTypeKey
       val idNumberField = s"meansOfTransportOnDepartureIDNumber_$IATAFlightNumber"
+
+      "user provided no selection" in {
+
+        val incorrectForm =
+          Map(transportTypeField -> "", idNumberField -> "")
+
+        val result = form.bind(incorrectForm)
+        val errorKeys = result.errors.map(_.key)
+        val errorMessages = result.errors.map(_.message)
+
+        errorKeys must be(List(transportTypeField))
+        errorMessages must be(List("declaration.transportInformation.meansOfTransport.departure.error.empty.optional"))
+      }
 
       "transport id not provided" in {
 
