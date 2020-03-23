@@ -20,7 +20,6 @@ import forms.DeclarationPage
 import forms.declaration.TransportCodes._
 import models.DeclarationType
 import models.DeclarationType.DeclarationType
-import models.declaration.Transport
 import play.api.data.Form
 import play.api.data.Forms.{mapping, optional, text}
 import play.api.libs.json.Json
@@ -41,7 +40,7 @@ object DepartureTransport extends DeclarationPage {
       text()
         .verifying(
           "declaration.transportInformation.meansOfTransport.departure.error.incorrect",
-          isContainedIn(allowedMeansOfTransportTypeCodes + Transport.optionNone)
+          isContainedIn(allowedMeansOfTransportTypeCodes + OptionNone)
         )
     ).verifying("declaration.transportInformation.meansOfTransport.departure.error.empty.optional", isPresent)
 
@@ -162,6 +161,7 @@ object TransportCodes {
   val AircraftRegistrationNumber = "41"
   val EuropeanVesselIDNumber = "80"
   val NameOfInlandWaterwayVessel = "81"
+  val OptionNone = "option_none"
 
   val allowedMeansOfTransportTypeCodes =
     Set(

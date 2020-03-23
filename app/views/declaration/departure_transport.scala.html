@@ -128,11 +128,11 @@
                 ),
                 RadioItem(
                     id = Some("Departure_NotApplicable"),
-                    value = Some(Transport.optionNone),
+                    value = Some(OptionNone),
                     content = Text(messages("declaration.transportInformation.meansOfTransport.notApplicable")),
-                    checked = form("meansOfTransportOnDepartureType").value.contains(Transport.optionNone)
+                    checked = form("meansOfTransportOnDepartureType").value.contains(OptionNone)
                 )
-            ).filterNot(radioOption => request.declarationType != DeclarationType.CLEARANCE && radioOption.value.contains(Transport.optionNone)),
+            ).filterNot(radioOption => request.declarationType != DeclarationType.CLEARANCE && radioOption.value.contains(OptionNone)),
             errorMessage = form("meansOfTransportOnDepartureType").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 

@@ -17,7 +17,7 @@
 package unit.forms.declaration
 
 import base.TestHelper
-import forms.declaration.DepartureTransport
+import forms.declaration.{DepartureTransport, TransportCodes}
 import forms.declaration.TransportCodes._
 import models.DeclarationType
 import models.declaration.Transport
@@ -155,7 +155,7 @@ class DepartureTransportSpec extends FormSpec {
 
     "allow all means of transport type codes" in {
 
-      val errors = (allowedMeansOfTransportTypeCodes + Transport.optionNone).map { code =>
+      val errors = (allowedMeansOfTransportTypeCodes + TransportCodes.OptionNone).map { code =>
         form.fillAndValidate(DepartureTransport(Some(code), Some("reference"))).errors
       }.toSeq.flatten
 
@@ -175,7 +175,7 @@ class DepartureTransportSpec extends FormSpec {
 
       "user selected 'none'" in {
 
-        val correctForm = DepartureTransport(Some(Transport.optionNone), None)
+        val correctForm = DepartureTransport(Some(OptionNone), None)
 
         val result = form.fillAndValidate(correctForm)
 

@@ -16,9 +16,9 @@
 
 package views.declaration.summary
 
-import forms.declaration.TransportPayment
+import forms.declaration.{TransportCodes, TransportPayment}
 import models.Mode
-import models.declaration.{Container, Transport}
+import models.declaration.Container
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.transport_section
@@ -79,7 +79,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
         Mode.Normal,
         data.copy(
           transport =
-            data.transport.copy(meansOfTransportOnDepartureType = Some(Transport.optionNone), meansOfTransportOnDepartureIDNumber = Some(""))
+            data.transport.copy(meansOfTransportOnDepartureType = Some(TransportCodes.OptionNone), meansOfTransportOnDepartureIDNumber = Some(""))
         )
       )(messages, journeyRequest())
 

@@ -22,7 +22,6 @@ import controllers.util.SaveAndReturn
 import forms.declaration.DepartureTransport
 import forms.declaration.TransportCodes._
 import helpers.views.declaration.CommonMessages
-import models.declaration.Transport
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import play.api.data.Form
@@ -204,7 +203,7 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
       "display radio section " which {
 
         "has 'none' option" in {
-          view.getElementById("Departure_NotApplicable").attr("value") mustBe Transport.optionNone
+          view.getElementById("Departure_NotApplicable").attr("value") mustBe OptionNone
           view
             .getElementsByAttributeValue("for", "Departure_NotApplicable")
             .text() mustBe "declaration.transportInformation.meansOfTransport.notApplicable"

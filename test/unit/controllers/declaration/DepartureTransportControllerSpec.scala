@@ -17,15 +17,14 @@
 package unit.controllers.declaration
 
 import controllers.declaration.{routes, DepartureTransportController}
-import forms.declaration.DepartureTransport
 import forms.declaration.ModeOfTransportCodes.Maritime
 import forms.declaration.TransportCodes.WagonNumber
+import forms.declaration.{DepartureTransport, TransportCodes}
 import models.DeclarationType._
 import models.Mode
-import models.declaration.Transport
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import play.api.libs.json.{JsObject, JsString, JsValue, Json}
+import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -135,7 +134,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         "'none' option is selected" in {
           withNewCaching(declaration)
 
-          val correctForm: JsValue = formData(Transport.optionNone, "")
+          val correctForm: JsValue = formData(TransportCodes.OptionNone, "")
 
           val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
