@@ -17,7 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.RoutingCountriesSummaryController
-import forms.declaration.RoutingQuestionYesNo
+import forms.declaration.countries.Country
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -26,7 +26,6 @@ import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import services.model.Country
 import unit.base.ControllerSpec
 import views.html.declaration.destinationCountries.{change_routing_country, remove_routing_country, routing_countries_summary}
 
@@ -68,14 +67,14 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
     captor.getValue
   }
 
-  def theCountryToRemove: Country = {
-    val captor = ArgumentCaptor.forClass(classOf[Country])
+  def theCountryToRemove: services.model.Country = {
+    val captor = ArgumentCaptor.forClass(classOf[services.model.Country])
     verify(routingRemovePage).apply(any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
 
-  def theChangeCountry: Form[String] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[String]])
+  def theChangeCountry: Form[Country] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[Country]])
     verify(changeRoutingPage).apply(any(), captor.capture(), any(), any())(any(), any())
     captor.getValue
   }
@@ -99,7 +98,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
 
       "user try to remove country that exists in cache" in {
 
-        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withRoutingCountries(Seq("PL", "GB"))))
+        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withRoutingCountries(Seq(Country(Some("PL")), Country(Some("GB"))))))
 
         val result = controller.displayRemoveCountryPage(Mode.Normal, "PL")(getRequest())
 
@@ -112,12 +111,12 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
 
       "user change country that exists in cache" in {
 
-        withNewCaching(aDeclaration(withRoutingCountries(Seq("PL"))))
+        withNewCaching(aDeclaration(withRoutingCountries(Seq(Country(Some("PL"))))))
 
         val result = controller.displayChangeCountryPage(Mode.Normal, "PL")(getRequest())
 
         status(result) mustBe OK
-        theChangeCountry.value mustBe Some("PL")
+        theChangeCountry.value.flatMap(_.code) mustBe Some("PL")
       }
     }
 
@@ -125,7 +124,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
 
       "cache doesn't contain countries" in {
 
-        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withRoutingCountries(Seq.empty)))
+        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withoutRoutingCountries()))
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -140,7 +139,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
 
       "user try to remove country that didn't added" in {
 
-        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withRoutingCountries(Seq("PL", "GB"))))
+        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withRoutingCountries(Seq(Country(Some("PL")), Country(Some("GB"))))))
 
         val result = controller.displayRemoveCountryPage(Mode.Normal, "FR")(getRequest())
 
@@ -150,7 +149,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
 
       "user remove country that exists in cache" in {
 
-        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withRoutingCountries(Seq("PL", "GB"))))
+        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withRoutingCountries(Seq(Country(Some("PL")), Country(Some("GB"))))))
 
         val correctForm = JsObject(Seq("answer" -> JsString("Yes")))
 
@@ -162,7 +161,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
 
       "user decided to not remove country" in {
 
-        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withRoutingCountries(Seq("PL", "GB"))))
+        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withRoutingCountries(Seq(Country(Some("PL")), Country(Some("GB"))))))
 
         val correctForm = JsObject(Seq("answer" -> JsString("No")))
 
@@ -187,9 +186,9 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
 
       "user succesfully update a country" in {
 
-        withNewCaching(aDeclaration(withRoutingCountries(Seq("PL"))))
+        withNewCaching(aDeclaration(withRoutingCountries(Seq(Country(Some("PL"))))))
 
-        val correctForm = JsObject(Seq("country" -> JsString("GB")))
+        val correctForm = JsObject(Seq("code" -> JsString("GB")))
 
         val result = controller.submitChangeCountry(Mode.Normal, "PL")(postRequest(correctForm))
         await(result) mustBe aRedirectToTheNextPage
@@ -274,9 +273,9 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
 
     "handle duplication during changing the country" in {
 
-      withNewCaching(aDeclaration(withRoutingCountries(Seq("PL", "DZ", "AD"))))
+      withNewCaching(aDeclaration(withRoutingCountries(Seq(Country(Some("PL")), Country(Some("DZ")), Country(Some("AD"))))))
 
-      val duplicatedCountry = JsObject(Seq("country" -> JsString("PL")))
+      val duplicatedCountry = JsObject(Seq("code" -> JsString("PL")))
 
       val result = controller.submitChangeCountry(Mode.Normal, "DZ")(postRequest(duplicatedCountry))
 

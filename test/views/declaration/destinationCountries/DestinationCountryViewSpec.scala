@@ -17,10 +17,13 @@
 package views.declaration.destinationCountries
 
 import controllers.declaration.routes
-import forms.declaration.destinationCountries.DestinationCountries
-import forms.declaration.destinationCountries.DestinationCountries.DestinationCountryPage
-import models.{DeclarationType, Mode}
+import forms.declaration.countries.{Countries, Country}
+import forms.declaration.countries.Countries.DestinationCountryPage
+import models.requests.JourneyRequest
+import models.Mode
+import models.DeclarationType._
 import play.api.data.Form
+import play.twirl.api.Html
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -28,10 +31,10 @@ import views.html.declaration.destinationCountries.destination_country
 
 class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
 
-  val form: Form[String] = DestinationCountries.form(DestinationCountryPage)
+  private val destinationCountryPage = new destination_country(mainTemplate)
 
-  val destinationCountryPage = new destination_country(mainTemplate)
-  val view = destinationCountryPage(Mode.Normal, form)(journeyRequest(), messages)
+  private def form(request: JourneyRequest[_]): Form[Country] = Countries.form(DestinationCountryPage)(request)
+  private def view(request: JourneyRequest[_]): Html = destinationCountryPage(Mode.Normal, form(request))(request, messages)
 
   "Destination country view spec" should {
 
@@ -44,58 +47,58 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
       messages must haveTranslationFor("declaration.destinationCountry.empty")
       messages must haveTranslationFor("declaration.destinationCountry.error")
     }
+  }
 
-    "display page question" in {
+  onEveryDeclarationJourney { request =>
+    "Destination country view spec" should {
 
-      view.getElementById("title").text() mustBe messages("declaration.destinationCountry.question")
+      s"display page question for ${request.declarationType}" in {
+
+        view(request).getElementById("title").text() mustBe messages("declaration.destinationCountry.question")
+      }
+
+      s"display page heading for ${request.declarationType}" in {
+
+        view(request).getElementById("section-header").text() must include(messages("declaration.destinationCountry.heading"))
+      }
+
+      s"display 'Save and continue' button for ${request.declarationType}" in {
+
+        view(request).getElementById("submit").text() mustBe messages("site.save_and_continue")
+      }
+
+      s"display 'Save and return' button for ${request.declarationType}" in {
+
+        view(request).getElementById("submit_and_return").text() mustBe messages("site.save_and_come_back_later")
+      }
     }
+  }
 
-    "display page heading" in {
+  onJourney(STANDARD, SUPPLEMENTARY) { request =>
+    "Destination country view spec" should {
 
-      view.getElementById("section-header").text() must include(messages("declaration.destinationCountry.heading"))
-    }
+      s"display back button that links to 'Origination country' page for ${request.declarationType}" in {
 
-    "display back button that links to 'Origination country' page" when {
-
-      "user is during Standard journey" in {
-
-        val standardView = destinationCountryPage(Mode.Normal, form)(journeyRequest(DeclarationType.STANDARD), messages)
-        val backButton = standardView.getElementById("back-link")
+        val view = destinationCountryPage(Mode.Normal, form(request))(request, messages)
+        val backButton = view.getElementById("back-link")
 
         backButton.text() mustBe messages("site.back")
         backButton must haveHref(routes.OriginationCountryController.displayPage())
       }
-
-      "user is during Supplementary journey" in {
-
-        val supplementaryView = destinationCountryPage(Mode.Normal, form)(journeyRequest(DeclarationType.SUPPLEMENTARY), messages)
-        val backButton = supplementaryView.getElementById("back-link")
-
-        backButton.text() mustBe messages("site.back")
-        backButton must haveHref(routes.OriginationCountryController.displayPage())
-      }
     }
+  }
 
-    "display back button that links to `Declaration holder` page" when {
+  onJourney(SIMPLIFIED, OCCASIONAL) { request =>
+    "Destination country view spec" should {
 
-      "user is during Simplified journey" in {
+      s"display back button that links to `Declaration holder` page for ${request.declarationType}" in {
 
-        val simplifiedView = destinationCountryPage(Mode.Normal, form)(journeyRequest(DeclarationType.SIMPLIFIED), messages)
-        val backButton = simplifiedView.getElementById("back-link")
+        val view = destinationCountryPage(Mode.Normal, form(request))(request, messages)
+        val backButton = view.getElementById("back-link")
 
         backButton.text() mustBe messages("site.back")
         backButton must haveHref(routes.DeclarationHolderController.displayPage())
       }
-    }
-
-    "display 'Save and continue' button" in {
-
-      view.getElementById("submit").text() mustBe messages("site.save_and_continue")
-    }
-
-    "display 'Save and return' button" in {
-
-      view.getElementById("submit_and_return").text() mustBe messages("site.save_and_come_back_later")
     }
   }
 }

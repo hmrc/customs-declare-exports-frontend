@@ -24,6 +24,7 @@ import forms.declaration.DispatchLocation.AllowedDispatchLocations.OutsideEU
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+import forms.declaration.countries.Country
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Ducr, Lrn}
 import models.DeclarationStatus.DeclarationStatus
@@ -107,13 +108,13 @@ trait ExportsDeclarationBuilder {
     model.copy(locations = model.locations.copy(goodsLocation = None))
   }
 
-  def withOriginationCountry(originationCountry: String = "GB"): ExportsDeclarationModifier =
+  def withOriginationCountry(originationCountry: Country = Country(Some("GB"))): ExportsDeclarationModifier =
     model => model.copy(locations = model.locations.copy(originationCountry = Some(originationCountry)))
 
   def withoutOriginationCountry(): ExportsDeclarationModifier =
     model => model.copy(locations = model.locations.copy(originationCountry = None))
 
-  def withDestinationCountry(destinationCountry: String = "GB"): ExportsDeclarationModifier =
+  def withDestinationCountry(destinationCountry: Country = Country(Some("GB"))): ExportsDeclarationModifier =
     model => model.copy(locations = model.locations.copy(destinationCountry = Some(destinationCountry)))
 
   def withoutDestinationCountry(): ExportsDeclarationModifier =
@@ -125,7 +126,7 @@ trait ExportsDeclarationBuilder {
   def withoutRoutingQuestion(): ExportsDeclarationModifier =
     model => model.copy(locations = model.locations.copy(hasRoutingCountries = None))
 
-  def withRoutingCountries(routingCountries: Seq[String] = Seq("FR", "GB")): ExportsDeclarationModifier =
+  def withRoutingCountries(routingCountries: Seq[Country] = Seq(Country(Some("FR")), Country(Some("GB")))): ExportsDeclarationModifier =
     model => model.copy(locations = model.locations.copy(routingCountries = routingCountries))
 
   def withoutRoutingCountries(): ExportsDeclarationModifier =
@@ -292,9 +293,9 @@ trait ExportsDeclarationBuilder {
     )
 
   def withDestinationCountries(
-    countryOfDispatch: String = "GB",
-    countriesOfRouting: Seq[String] = Seq.empty,
-    countryOfDestination: String = "US"
+    countryOfDispatch: Country = Country(Some("GB")),
+    countriesOfRouting: Seq[Country] = Seq.empty,
+    countryOfDestination: Country = Country(Some("US"))
   ): ExportsDeclarationModifier = {
     withOriginationCountry(countryOfDispatch)
     withDestinationCountry(countryOfDestination)

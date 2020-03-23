@@ -17,15 +17,16 @@
 package models.declaration
 
 import forms.declaration._
+import forms.declaration.countries.Country
 import forms.declaration.officeOfExit.OfficeOfExit
 import models.ExportsDeclaration
 import play.api.libs.json.Json
 
 case class Locations(
-  originationCountry: Option[String] = None,
-  destinationCountry: Option[String] = None,
+  originationCountry: Option[Country] = None,
+  destinationCountry: Option[Country] = None,
   hasRoutingCountries: Option[Boolean] = None,
-  routingCountries: Seq[String] = Seq.empty,
+  routingCountries: Seq[Country] = Seq.empty,
   goodsLocation: Option[GoodsLocation] = None,
   officeOfExit: Option[OfficeOfExit] = None,
   supervisingCustomsOffice: Option[SupervisingCustomsOffice] = None,

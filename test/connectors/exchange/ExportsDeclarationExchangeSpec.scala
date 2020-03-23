@@ -200,11 +200,17 @@ object ExportsDeclarationExchangeSpec {
       |    }
       |  },
       |  "locations": {
-      |    "originationCountry": "GB",
-      |    "destinationCountry": "DE",
+      |    "originationCountry": {
+      |      "code": "GB"
+      |    },
+      |    "destinationCountry": {
+      |      "code": "DE"
+      |    },
       |    "hasRoutingCountries": true,
       |    "routingCountries": [
-      |      "FR"
+      |      {
+      |        "code": "FR"
+      |      }
       |    ],
       |    "goodsLocation": {
       |      "country": "United Kingdom",

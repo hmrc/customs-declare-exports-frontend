@@ -19,8 +19,8 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.RoutingQuestionYesNo
-import forms.declaration.destinationCountries.DestinationCountries
-import forms.declaration.destinationCountries.DestinationCountries.{FirstRoutingCountryPage, NextRoutingCountryPage}
+import forms.declaration.countries.{Countries, Country}
+import forms.declaration.countries.Countries.{FirstRoutingCountryPage, NextRoutingCountryPage}
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -46,7 +46,7 @@ class RoutingCountriesSummaryController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val countryCodes = request.cacheModel.locations.routingCountries
+    val countryCodes = request.cacheModel.locations.routingCountries.flatMap(_.code)
     val countries = findByCodes(countryCodes)
 
     if (countries.nonEmpty) {
@@ -58,7 +58,7 @@ class RoutingCountriesSummaryController @Inject()(
 
   def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val countryCodes = request.cacheModel.locations.routingCountries
-    val countries = findByCodes(countryCodes)
+    val countries = findByCodes(countryCodes.flatMap(_.code))
 
     RoutingQuestionYesNo
       .form(countryCodes)
@@ -77,7 +77,7 @@ class RoutingCountriesSummaryController @Inject()(
     }
 
   def displayRemoveCountryPage(mode: Mode, countryCode: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val isCountryPresentedInCache = request.cacheModel.locations.routingCountries.contains(countryCode)
+    val isCountryPresentedInCache = request.cacheModel.locations.routingCountries.flatMap(_.code).contains(countryCode)
     val country = services.Countries.countryCodeMap(countryCode)
 
     if (isCountryPresentedInCache) Ok(removeRoutingCountryPage(mode, RoutingQuestionYesNo.form(), country))
@@ -94,34 +94,35 @@ class RoutingCountriesSummaryController @Inject()(
         formWithErrors => Future.successful(BadRequest(removeRoutingCountryPage(mode, formWithErrors, country))),
         validAnswer =>
           if (validAnswer) {
-            removeCountry(countryCode).map { _ =>
+            removeCountry(Country(Some(countryCode))).map { _ =>
               navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
             }
           } else Future.successful(navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage))
       )
   }
 
-  private def removeCountry(countryCode: String)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(_.removeCountryOfRouting(countryCode))
+  private def removeCountry(country: Country)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(_.removeCountryOfRouting(country))
 
   def displayChangeCountryPage(mode: Mode, countryCode: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val cachedCountries = request.cacheModel.locations.routingCountries
+    val cachedCountries = request.cacheModel.locations.routingCountries.flatMap(_.code)
     val isCountryPresentedInCache = cachedCountries.contains(countryCode)
 
     val countryIndex = cachedCountries.indexOf(countryCode)
     val page = if (countryIndex > 0) NextRoutingCountryPage else FirstRoutingCountryPage
 
-    if (isCountryPresentedInCache) Ok(changeRoutingCountryPage(mode, DestinationCountries.form(page).fill(countryCode), page, countryCode))
+    if (isCountryPresentedInCache) Ok(changeRoutingCountryPage(mode, Countries.form(page).fill(Country(Some(countryCode))), page, countryCode))
     else navigator.redirectTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
   }
 
   def submitChangeCountry(mode: Mode, countryToChange: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val cachedCountries = request.cacheModel.locations.routingCountries
-    val countriesForValidation = cachedCountries.filterNot(_ == countryToChange)
-    val countryIndex = cachedCountries.indexOf(countryToChange)
+    val cachedCountryCodes = cachedCountries.flatMap(_.code)
+    val countriesForValidation = cachedCountries.filterNot(_.code == Some(countryToChange))
+    val countryIndex = cachedCountryCodes.indexOf(countryToChange)
     val page = if (countryIndex > 0) NextRoutingCountryPage else FirstRoutingCountryPage
 
-    DestinationCountries
+    Countries
       .form(page, countriesForValidation)
       .bindFromRequest()
       .fold(

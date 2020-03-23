@@ -18,8 +18,8 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.destinationCountries.DestinationCountries
-import forms.declaration.destinationCountries.DestinationCountries.DestinationCountryPage
+import forms.declaration.countries.Countries
+import forms.declaration.countries.Countries.DestinationCountryPage
 import javax.inject.{Inject, Singleton}
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
@@ -45,15 +45,15 @@ class DestinationCountryController @Inject()(
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val form = request.cacheModel.locations.destinationCountry match {
       case Some(destinationCountry) =>
-        DestinationCountries.form(DestinationCountryPage).fill(destinationCountry)
-      case None => DestinationCountries.form(DestinationCountryPage)
+        Countries.form(DestinationCountryPage).fill(destinationCountry)
+      case None => Countries.form(DestinationCountryPage)
     }
 
     Ok(destinationCountryPage(mode, form))
   }
 
   def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    DestinationCountries
+    Countries
       .form(DestinationCountryPage)
       .bindFromRequest()
       .fold(

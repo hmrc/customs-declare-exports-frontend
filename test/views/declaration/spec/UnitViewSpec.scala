@@ -20,7 +20,7 @@ import base.Injector
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.DeclarationType
-import org.jsoup.nodes.{Document, Element}
+import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import org.scalatest.matchers.{BeMatcher, MatchResult}
 import play.api.i18n.{Lang, Messages, MessagesApi}
@@ -28,8 +28,9 @@ import play.api.mvc.{AnyContent, Request}
 import play.api.test.{FakeRequest, Helpers}
 import services.cache.ExportsTestData
 import unit.base.UnitSpec
+import utils.JourneyRequestHelper
 
-class UnitViewSpec extends UnitSpec with ViewMatchers {
+class UnitViewSpec extends UnitSpec with ViewMatchers with JourneyRequestHelper {
 
   import utils.FakeRequestCSRFSupport._
 
@@ -48,48 +49,6 @@ class UnitViewSpec extends UnitSpec with ViewMatchers {
   }
 
   def messagesKey(key: String): BeMatcher[String] = new MessagesKeyMatcher(key)
-
-  def onEveryDeclarationJourney(f: JourneyRequest[_] => Unit): Unit =
-    onJourney(DeclarationType.values.toSeq: _*)(f)
-
-  def onJourney(types: DeclarationType*)(f: JourneyRequest[_] => Unit): Unit = {
-    if (types.isEmpty) {
-      throw new RuntimeException("Provide at lest one journey to test")
-    }
-    types.foreach {
-      case DeclarationType.STANDARD      => onStandard(f)
-      case DeclarationType.SUPPLEMENTARY => onSupplementary(f)
-      case DeclarationType.SIMPLIFIED    => onSimplified(f)
-      case DeclarationType.OCCASIONAL    => onOccasional(f)
-      case DeclarationType.CLEARANCE     => onClearance(f)
-      case _                             => throw new RuntimeException("Unrecognized declaration type - you could have to implement helper methods")
-    }
-  }
-
-  def onStandard(f: JourneyRequest[_] => Unit): Unit =
-    "on Standard journey render view" that {
-      f(UnitViewSpec.standardRequest)
-    }
-
-  def onSimplified(f: JourneyRequest[_] => Unit): Unit =
-    "on Simplified journey render view" that {
-      f(UnitViewSpec.simplifiedRequest)
-    }
-
-  def onSupplementary(f: JourneyRequest[_] => Unit): Unit =
-    "on Supplementary journey render view" that {
-      f(UnitViewSpec.supplementaryRequest)
-    }
-
-  def onOccasional(f: JourneyRequest[_] => Unit): Unit =
-    "on Occasional journey render view" that {
-      f(UnitViewSpec.occasionalRequest)
-    }
-
-  def onClearance(f: JourneyRequest[_] => Unit): Unit =
-    "on Clearance journey render view" that {
-      f(UnitViewSpec.clearanceRequest)
-    }
 }
 
 class MessagesKeyMatcher(key: String) extends BeMatcher[String] {

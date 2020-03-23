@@ -19,8 +19,8 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.RoutingQuestionYesNo._
-import forms.declaration.destinationCountries.DestinationCountries
-import forms.declaration.destinationCountries.DestinationCountries.{FirstRoutingCountryPage, NextRoutingCountryPage}
+import forms.declaration.countries.Countries
+import forms.declaration.countries.Countries.{FirstRoutingCountryPage, NextRoutingCountryPage}
 import javax.inject.Inject
 import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
@@ -48,7 +48,7 @@ class RoutingCountriesController @Inject()(
     if (fastForward && request.cacheModel.containRoutingCountries()) {
       navigator.redirectTo(mode, routes.RoutingCountriesSummaryController.displayPage)
     } else {
-      val destinationCountryCode = request.cacheModel.locations.destinationCountry
+      val destinationCountryCode = request.cacheModel.locations.destinationCountry.flatMap(_.code)
       val destinationCountryName = destinationCountryCode.map(findByCode(_)).map(_.countryName).getOrElse("")
 
       request.cacheModel.locations.hasRoutingCountries match {
@@ -59,7 +59,7 @@ class RoutingCountriesController @Inject()(
   }
 
   def submitRoutingAnswer(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val destinationCountry = request.cacheModel.locations.destinationCountry.getOrElse("-")
+    val destinationCountry = request.cacheModel.locations.destinationCountry.flatMap(_.code).getOrElse("-")
     val cachedCountries = request.cacheModel.locations.routingCountries
 
     form(cachedCountries)
@@ -89,7 +89,7 @@ class RoutingCountriesController @Inject()(
     val page = if (request.cacheModel.locations.routingCountries.nonEmpty) NextRoutingCountryPage else FirstRoutingCountryPage
 
     routingAnswer match {
-      case Some(answer) if answer => Ok(countryOfRoutingPage(mode, DestinationCountries.form(page), page))
+      case Some(answer) if answer => Ok(countryOfRoutingPage(mode, Countries.form(page), page))
       case _                      => navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(_, fastForward = false))
     }
   }
@@ -99,7 +99,7 @@ class RoutingCountriesController @Inject()(
     val cachedCountries = request.cacheModel.locations.routingCountries
     val page = if (hasCountriesAdded) NextRoutingCountryPage else FirstRoutingCountryPage
 
-    DestinationCountries
+    Countries
       .form(page, cachedCountries)
       .bindFromRequest()
       .fold(
@@ -107,15 +107,10 @@ class RoutingCountriesController @Inject()(
         validCountry => {
           val newRoutingCountries = request.cacheModel.locations.routingCountries :+ validCountry
 
-          updateRoutingCountries(newRoutingCountries).map { _ =>
+          updateExportsDeclarationSyncDirect(_.updateCountriesOfRouting(newRoutingCountries)).map { _ =>
             navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
           }
         }
       )
   }
-
-  private def updateRoutingCountries(
-    routingCountries: Seq[String]
-  )(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(_.updateCountriesOfRouting(routingCountries))
 }

@@ -16,6 +16,7 @@
 
 package views.declaration.summary
 
+import forms.declaration.countries.Country
 import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
@@ -37,8 +38,8 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
     "display single routing country" in {
 
-      val countryCode = "GB"
-      val data = aDeclaration(withRoutingQuestion(true), withRoutingCountries(Seq(countryCode)))
+      val country = Country(Some("GB"))
+      val data = aDeclaration(withRoutingQuestion(), withRoutingCountries(Seq(country)))
 
       val view = countries_section(Mode.Normal, data)(messages, journeyRequest())
 
@@ -50,9 +51,9 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
     "display multiple routing countries separated by comma" in {
 
-      val firstCountryCode = "GB"
-      val secondCountryCode = "PL"
-      val data = aDeclaration(withRoutingQuestion(true), withRoutingCountries(Seq(firstCountryCode, secondCountryCode)))
+      val firstCountryCode = Country(Some("GB"))
+      val secondCountryCode = Country(Some("PL"))
+      val data = aDeclaration(withRoutingQuestion(), withRoutingCountries(Seq(firstCountryCode, secondCountryCode)))
 
       val view = countries_section(Mode.Normal, data)(messages, journeyRequest())
 
@@ -65,7 +66,10 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
     "display change button for countries of routing" in {
 
-      val view = countries_section(Mode.Normal, aDeclaration(withRoutingQuestion(true), withRoutingCountries(Seq("GB"))))(messages, journeyRequest())
+      val view = countries_section(Mode.Normal, aDeclaration(withRoutingQuestion(), withRoutingCountries(Seq(Country(Some("GB"))))))(
+        messages,
+        journeyRequest()
+      )
 
       val List(change, accessibleChange) = view.getElementById("countriesOfRouting-change").text().split(" ").toList
 
@@ -76,6 +80,7 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     "not have routing country section when question not answered" in {
+
       val view = countries_section(Mode.Normal, aDeclaration(withoutRoutingQuestion()))(messages, journeyRequest())
 
       view.getElementById("countriesOfRouting-label") mustBe null
@@ -83,6 +88,7 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     "not display empty country of destination when question not asked" in {
+
       val view = countries_section(Mode.Normal, aDeclaration(withoutDestinationCountry()))(messages, journeyRequest())
 
       view.getElementById("countryOfDestination-label") mustBe null
@@ -91,8 +97,8 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
     "display country of destination" in {
 
-      val countryCode = "GB"
-      val data = aDeclaration(withDestinationCountry(countryCode))
+      val country = Country(Some("GB"))
+      val data = aDeclaration(withDestinationCountry(country))
 
       val view = countries_section(Mode.Normal, data)(messages, journeyRequest())
 
@@ -104,8 +110,8 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
     "display change button for country of destination" in {
 
-      val countryCode = "GB"
-      val data = aDeclaration(withDestinationCountry(countryCode))
+      val country = Country(Some("GB"))
+      val data = aDeclaration(withDestinationCountry(country))
 
       val view = countries_section(Mode.Normal, data)(messages, journeyRequest())
 
@@ -119,8 +125,8 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
     "display country of dispatch" in {
 
-      val countryCode = "GB"
-      val data = aDeclaration(withOriginationCountry(countryCode))
+      val country = Country(Some("GB"))
+      val data = aDeclaration(withOriginationCountry(country))
 
       val view = countries_section(Mode.Normal, data)(messages, journeyRequest())
 
@@ -142,8 +148,8 @@ class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
     "display change button for country of dispatch" in {
 
-      val countryCode = "GB"
-      val data = aDeclaration(withOriginationCountry(countryCode))
+      val country = Country(Some("GB"))
+      val data = aDeclaration(withOriginationCountry(country))
 
       val view = countries_section(Mode.Normal, data)(messages, journeyRequest())
 

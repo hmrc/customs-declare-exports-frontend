@@ -18,8 +18,8 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.destinationCountries.DestinationCountries
-import forms.declaration.destinationCountries.DestinationCountries.OriginationCountryPage
+import forms.declaration.countries.Countries
+import forms.declaration.countries.Countries.OriginationCountryPage
 import javax.inject.{Inject, Singleton}
 import models.{DeclarationType, Mode}
 import play.api.i18n.I18nSupport
@@ -46,15 +46,15 @@ class OriginationCountryController @Inject()(
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val form = request.cacheModel.locations.originationCountry match {
       case Some(originateCountry) =>
-        DestinationCountries.form(OriginationCountryPage).fill(originateCountry)
-      case None => DestinationCountries.form(OriginationCountryPage)
+        Countries.form(OriginationCountryPage).fill(originateCountry)
+      case None => Countries.form(OriginationCountryPage)
     }
 
     Ok(originationCountryPage(mode, form))
   }
 
   def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    DestinationCountries
+    Countries
       .form(OriginationCountryPage)
       .bindFromRequest()
       .fold(
