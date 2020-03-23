@@ -116,12 +116,11 @@
             )
         )
 
-        @declarationData.parties.declarationHoldersData.map(holders =>
-            parties_section_holders(
+        @parties_section_holders(
                 mode = mode,
                 holders = declarationData.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
             )
-        )
+
     }
     </div>
 }
