@@ -66,6 +66,8 @@ class RepresentativeDetailsController @Inject()(
         controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage
       case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
         controllers.declaration.routes.CarrierDetailsController.displayPage
+      case DeclarationType.CLEARANCE =>
+        controllers.declaration.routes.DeclarationHolderController.displayPage
     }
 
   private def updateCache(formData: RepresentativeDetails)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =

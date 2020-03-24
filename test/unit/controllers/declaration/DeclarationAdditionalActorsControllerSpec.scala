@@ -21,6 +21,7 @@ import controllers.declaration.DeclarationAdditionalActorsController
 import controllers.util.Remove
 import forms.common.Eori
 import forms.declaration.DeclarationAdditionalActors
+import models.DeclarationType.CLEARANCE
 import models.{DeclarationType, Mode}
 import models.declaration.DeclarationAdditionalActorsData
 import play.api.libs.json.Json
@@ -162,6 +163,17 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
     }
 
     "return 303 (SEE_OTHER)" when {
+
+      onJourney(CLEARANCE)() { request =>
+        "redirect 303 (See Other) to start" in new SetUp {
+          withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+        }
+      }
 
       "user correctly add new item" in new SetUp {
 

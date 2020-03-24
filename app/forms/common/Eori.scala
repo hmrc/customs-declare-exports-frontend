@@ -39,6 +39,6 @@ object Eori {
   def mapping(errorPrefix: String): Mapping[Eori] =
     text()
       .verifying(s"${errorPrefix}.eori.empty", nonEmpty)
-      .verifying(s"${errorPrefix}.eori.error.format", isValidEORIPattern and noLongerThan(17) and noShorterThan(3))
+      .verifying(s"${errorPrefix}.eori.error.format", isEmpty or (isValidEORIPattern and noLongerThan(17) and noShorterThan(3)))
       .transform(build, unapply(_).getOrElse(""))
 }

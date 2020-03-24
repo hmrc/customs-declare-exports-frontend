@@ -56,14 +56,14 @@
             </thead>
             <tbody>
 
-         @items.zipWithIndex.map { case (item, index) =>
+            @items.zipWithIndex.map { case (item, index) =>
                 <tr id="item_@index">
                     <th id="item_@index--sequence_id" scope="row">@item.sequenceId</th>
                     <td id="item_@index--procedure_code">@item.procedureCodes.map(_.procedureCode).getOrElse("") </td>
                     <td id="item_@index--item_type" >@item.commodityDetails.map(_.combinedNomenclatureCode) </td>
                     <td id="item_@index--package_count">
-                        <ol type="1">@item.packageInformation.getOrElse(List.empty).map(a =>
-                            <li>{a.numberOfPackages}</li>
+                        <ol type="1">@item.packageInformation.getOrElse(List.empty).map(packageInfo =>
+                            packageInfo.numberOfPackages.map(packages => <li>{packages}</li>)
                         )
                         </ol>
                     </td>

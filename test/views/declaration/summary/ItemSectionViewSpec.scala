@@ -32,7 +32,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
     withFiscalInformation(FiscalInformation("Yes")),
     withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "1234")))),
     withStatisticalValue("123"),
-    withCommodityDetails(CommodityDetails(Some("231"), "description")),
+    withCommodityDetails(CommodityDetails(Some("231"), Some("description"))),
     withUNDangerousGoodsCode(UNDangerousGoodsCode(Some("345"))),
     withCUSCode(CusCode(Some("321"))),
     withTaricCodes(TaricCode("999"), TaricCode("888")),

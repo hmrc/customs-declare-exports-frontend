@@ -27,7 +27,7 @@ import javax.inject.Inject
 import models.declaration.DeclarationAdditionalActorsData
 import models.declaration.DeclarationAdditionalActorsData.maxNumberOfItems
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -49,10 +49,12 @@ class DeclarationAdditionalActorsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
+  val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
+
   private val exceedMaximumNumberError = "supplementary.additionalActors.maximumAmount.error"
   private val duplicateActorError = "supplementary.additionalActors.duplicated.error"
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.parties.declarationAdditionalActorsData match {
       case Some(data) => Ok(declarationAdditionalActorsPage(mode, form(), data.actors))
       case _          => Ok(declarationAdditionalActorsPage(mode, form(), Seq()))
