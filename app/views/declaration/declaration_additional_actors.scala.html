@@ -19,84 +19,176 @@
 @import forms.declaration.DeclarationAdditionalActors
 @import forms.declaration.DeclarationAdditionalActors.PartyType._
 @import models.requests.JourneyRequest
-@import views.Title
-@import views.components.fields.LabelledValue
-@import views.components.inputs.RadioOption
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.html.components.gds._
+@import views.components.gds._
+@import play.twirl.api.HtmlFormat
+@import scala.collection.immutable
 
-@this(main_template: views.html.main_template)
+@this(govukLayout: gdsMainTemplate,
+        govukFieldset: GovukFieldset,
+        govukButton: GovukButton,
+        govukRadios: GovukRadios,
+        govukTable : GovukTable,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        exportsInputText: exportsInputText,
+        tariffDetails: tariffDetails,
+        saveButtons: saveButtons,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+
 
 @(mode: Mode, form: Form[DeclarationAdditionalActors], actors: Seq[DeclarationAdditionalActors])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tariffBody = { @Html(messages("declaration.type.additionalActorsSummaryText", components.details_content_link())) }
+@inputField(partyType: String) = @{Some(exportsInputText(
+    field = form(s"eori$partyType"),
+    labelClasses = "govuk-label",
+    inputClasses = Some("govuk-input govuk-!-width-one-third"),
+    labelKey = "declaration.additionalActors.eori"
+    ))
+}
 
-@main_template(
-    title = Title("supplementary.additionalActors.title", "supplementary.summary.parties.header")
-) {
+@removeButton(value: Option[String]) = @{ govukButton(Button(
+    classes = "govuk-button--secondary",
+    content = Text(messages("site.remove")),
+    name = Some("Remove"),
+    value = value
+))}
 
-    @components.back_link(Navigator.backLink(DeclarationAdditionalActors, mode))
+    declaration.partyType.remove.hint
 
-    @components.error_summary(form.errors)
+@pageHint = {
+    <span class="govuk-hint">
+        @messages("declaration.additionalActors.title.hint")
+    </span>
+}
 
-    @components.heading(
-        title = messages("supplementary.additionalActors.title"),
-        sectionHeader = messages("supplementary.summary.parties.header")
-    )
+@actorsTable = {
+    @if(actors.nonEmpty) {
+        @govukTable(Table(
+            rows = actors.zipWithIndex.map { case (actor, index) =>
+                (actor,
+                        actor.eori.map(_.value).getOrElse(""),
+                        s"declaration.partyType.${actor.partyType.getOrElse("error")}",
+                        index)
+            }.map { case (actor, eori, partyType, index) =>
+                Seq(
+                    TableRow(
+                        content = Text(messages(partyType)),
+                        attributes = Map("id" -> s"actor_party_type_$index")
+                    ),
+                    TableRow(
+                        content = Text(eori),
+                        attributes = Map("id" -> s"actor_$index")
+                    ),
+                    TableRow(
+                        content = HtmlContent(removeButton(Some(actor.toJson.toString))),
+                        attributes = Map("id" -> s"actor_action_$index")
+                    )
+                )
+            },
+            head = Some(List(
+                HeadCell(
+                    content = Text(messages("declaration.additionalActors.partyType"))
+                ),
+                HeadCell(
+                    content = Text(messages("declaration.partyType.eori")),
+                    colspan = Some(2)
+                )
+            ))
+        ))
+    }
+}
 
-    <p>@messages("supplementary.additionalActors.title.hint")</p>
+@radios = {
+    @govukRadios(Radios(
+        name = "partyType",
+        items = Seq(
+            RadioItem(
+                id = Some(Consolidator.toString),
+                value = Some(Consolidator.toString),
+                content = Text(messages(s"declaration.partyType.$Consolidator")),
+                conditionalHtml = inputField(Consolidator),
+                checked = form("partyType").value.contains(Consolidator.toString)
+            ),
+            RadioItem(
+                id = Some(Manufacturer.toString),
+                value = Some(Manufacturer.toString),
+                content = Text(messages(s"declaration.partyType.$Manufacturer")),
+                conditionalHtml = inputField(Manufacturer),
+                checked = form("partyType").value.contains(Manufacturer.toString)
+            ),
+            RadioItem(
+                id = Some(FreightForwarder.toString),
+                value = Some(FreightForwarder.toString),
+                content = Text(messages(s"declaration.partyType.$FreightForwarder")),
+                conditionalHtml = inputField(FreightForwarder),
+                checked = form("partyType").value.contains(FreightForwarder.toString)
+            ),
+            RadioItem(
+                id = Some(WarehouseKeeper.toString),
+                value = Some(WarehouseKeeper.toString),
+                content = Text(messages(s"declaration.partyType.$WarehouseKeeper")),
+                conditionalHtml = inputField(WarehouseKeeper),
+                checked = form("partyType").value.contains(WarehouseKeeper.toString)
+            ),
+            RadioItem(
+                id = Some("no"),
+                value = Some("no"),
+                content = Text(messages("site.no")),
+                checked = form("partyType").value.contains("no")
+            )
+        ),
+        errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+    ))
+}
+
+@tariffBody = {
+    @tariffDetails(
+        messages("site.details.summary_text_this"),
+        HtmlContent(messages("declaration.type.additionalActorsSummaryText", components.gds.detailsContentLink())
+    ))
+}
+
+@addButton = {
+@govukButton(Button(
+    classes = "govuk-button--secondary",
+    content = HtmlContent(HtmlFormat.fill(
+        immutable.Seq(
+            Html(s"""<span aria-hidden="true">${messages("site.add")}</span>"""),
+            Html(s"""<span class="govuk-visually-hidden">${messages("supplementary.additionalActors.add.hint")}</span>""")
+        )
+    )),
+    name = Some("Add"),
+    attributes = Map("id" -> "add")
+))}
+
+@govukLayout(
+    title = Title("declaration.additionalActors.title"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarationAdditionalActors, mode)))) {
 
     @helper.form(DeclarationAdditionalActorsController.saveForm(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
-        @if(actors.nonEmpty) {
-            <table class="form-group">
-                <thead>
-                    <tr>
-                        <th scope="col">@messages("supplementary.additionalActors.eori")</th>
-                        <th scope="col">@messages("supplementary.additionalActors.partyType")</th>
-                        <td></td>
-                    </tr>
-                </thead>
-                <tbody>
-                @for(actor <- actors) {
-                  @defining(messages(s"supplementary.partyType.${actor.partyType.getOrElse("error")}")) { partyType =>
-                      <tr>
-                          <th scope="row">@actor.eori</th>
-                          <td>@partyType</td>
-                          <td>
-                          @components.buttons.remove_button(
-                              element = LabelledValue(actor.toJson),
-                              hint=messages("supplementary.partyType.remove.hint", partyType, actor.eori.getOrElse(""))
-                          )
-                          </td>
-                      </tr>
-                  }
-                }
-                </tbody>
-            </table>
-        }
+        @errorSummary(form.errors)
 
-        @components.fields.field_radio(
-            field = form("partyType"),
-            legend = messages("supplementary.additionalActors.partyType"),
-            legendClass = Some("heading-24"),
-            inputs = Seq(
-                RadioOption(s"supplementary.partyType.$Consolidator", Consolidator, messages(s"supplementary.partyType.$Consolidator")),
-                RadioOption(s"supplementary.partyType.$Manufacturer", Manufacturer, messages(s"supplementary.partyType.$Manufacturer")),
-                RadioOption(s"supplementary.partyType.$FreightForwarder", FreightForwarder, messages(s"supplementary.partyType.$FreightForwarder")),
-                RadioOption(s"supplementary.partyType.$WarehouseKeeper", WarehouseKeeper, messages(s"supplementary.partyType.$WarehouseKeeper"))
-            )
-        )
+        @sectionHeader(messages("supplementary.summary.parties.header"))
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.additionalActors.title")),
+                classes = "govuk-fieldset__legend--xl",
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+              pageHint,
+              actorsTable,
+              radios,
+              tariffBody,
+              addButton,
+              saveButtons()
+            ))
+        ))
 
-        @components.fields.field_text(
-            field = form("eori"),
-            label = Some(messages("supplementary.additionalActors.eori")),
-            labelClass = Some("heading-24")
-        )
-
-        @components.details(messages("site.details.summary_text_this")){
-           @tariffBody
-        }
-        @components.add_save_button(addHint = "supplementary.additionalActors.add.hint")
-        @components.buttons.save_and_return_later_button()
     }
 }
