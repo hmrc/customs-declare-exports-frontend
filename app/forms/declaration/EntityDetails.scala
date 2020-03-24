@@ -32,7 +32,7 @@ object EntityDetails {
   val optionalMapping = Forms
     .mapping("eori" -> optional(Eori.mapping("supplementary")), "address" -> optional(Address.mapping))(EntityDetails.apply)(EntityDetails.unapply)
 
-  val mapping = optionalMapping.verifying("supplementary.namedEntityDetails.error", validateNamedEntityDetails(_))
+  val defaultMapping = optionalMapping.verifying("supplementary.namedEntityDetails.error", validateNamedEntityDetails(_))
 
   val mappingOptional = Forms
     .mapping("eori" -> optional(Eori.mapping("supplementary")), "address" -> optional(Address.mapping))(EntityDetails.apply)(EntityDetails.unapply)
@@ -40,5 +40,5 @@ object EntityDetails {
   private def validateNamedEntityDetails(namedEntity: EntityDetails): Boolean =
     !(namedEntity.eori.isEmpty && namedEntity.address.isEmpty)
 
-  def form(): Form[EntityDetails] = Form(mapping)
+  def form(): Form[EntityDetails] = Form(defaultMapping)
 }

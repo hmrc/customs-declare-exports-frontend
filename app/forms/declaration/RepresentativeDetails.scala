@@ -35,7 +35,7 @@ object RepresentativeDetails extends DeclarationPage {
 
   val mapping = Forms
     .mapping(
-      "details" -> optional(EntityDetails.mapping),
+      "details" -> optional(EntityDetails.defaultMapping),
       "statusCode" -> optional(
         text().verifying("supplementary.representative.representationType.error.wrongValue", isContainedIn(representativeStatusCodeAllowedValues))
       )

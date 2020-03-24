@@ -27,7 +27,7 @@ object ExporterDetails extends DeclarationPage {
 
   val id = "ExporterDetails"
 
-  val defaultMapping = Forms.mapping("details" -> EntityDetails.mapping)(ExporterDetails.apply)(ExporterDetails.unapply)
+  val defaultMapping = Forms.mapping("details" -> EntityDetails.defaultMapping)(ExporterDetails.apply)(ExporterDetails.unapply)
 
   val optionalMapping = Forms.mapping("details" -> EntityDetails.optionalMapping)(ExporterDetails.apply)(ExporterDetails.unapply)
 
