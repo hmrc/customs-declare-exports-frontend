@@ -111,10 +111,10 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL)() { declaration =>
+    onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL) { request =>
       "return 303 (SEE_OTHER) and redirect to UN Dangerous Goods Code page" in {
 
-        withNewCaching(declaration)
+        withNewCaching(request.cacheModel)
         val correctForm = Json.toJson(CommodityDetails(Some("12345678"), Some("Description")))
 
         val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
@@ -124,10 +124,10 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    onJourney(SIMPLIFIED)() { declaration =>
+    onJourney(SIMPLIFIED) { request =>
       "return 303 (SEE_OTHER) and redirect to UN Dangerous Goods Code page" in {
 
-        withNewCaching(declaration)
+        withNewCaching(request.cacheModel)
         val correctForm = Json.toJson(CommodityDetails(None, Some("Description")))
 
         val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
@@ -137,10 +137,10 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    onJourney(CLEARANCE)() { declaration =>
+    onJourney(CLEARANCE) { request =>
       "return 303 (SEE_OTHER) and redirect to UN Dangerous Goods Code page" in {
 
-        withNewCaching(declaration)
+        withNewCaching(request.cacheModel)
         val correctForm = Json.toJson(CommodityDetails(Some("12345678"), Some("Description")))
 
         val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))

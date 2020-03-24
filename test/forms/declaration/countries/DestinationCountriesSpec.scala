@@ -19,10 +19,9 @@ package forms.declaration.countries
 import forms.declaration.countries.Countries._
 import models.DeclarationType._
 import play.api.data.FormError
-import unit.base.UnitSpec
-import utils.JourneyRequestHelper
+import unit.base.{JourneyTypeTestRunner, UnitSpec}
 
-class DestinationCountriesSpec extends UnitSpec with JourneyRequestHelper {
+class DestinationCountriesSpec extends UnitSpec with JourneyTypeTestRunner {
 
   "Destination Countries" should {
 
@@ -35,7 +34,7 @@ class DestinationCountriesSpec extends UnitSpec with JourneyRequestHelper {
     }
   }
 
-  onEveryDeclarationJourney { request =>
+  onEveryDeclarationJourney() { request =>
     "Destination Countries" should {
 
       s"validate form with incorrect value for ${request.declarationType}" in {

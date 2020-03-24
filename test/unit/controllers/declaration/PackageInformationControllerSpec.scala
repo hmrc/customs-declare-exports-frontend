@@ -54,10 +54,10 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
   "Package Information Controller" should {
 
     "return 200 (OK)" when {
-      onEveryDeclarationJourney() { declaration =>
+      onEveryDeclarationJourney() { request =>
         "display page method is invoked and cache is empty" in new SetUp {
 
-          withNewCaching(aDeclaration(withType(declaration.`type`)))
+          withNewCaching(aDeclaration(withType(request.declarationType)))
 
           val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
@@ -68,7 +68,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
           val itemWithPackageInformation =
             anItem(withPackageInformation(typesOfPackages = "12", numberOfPackages = 10, shippingMarks = "123"))
-          withNewCaching(aDeclaration(withItem(itemWithPackageInformation), withType(declaration.`type`)))
+          withNewCaching(aDeclaration(withItem(itemWithPackageInformation), withType(request.declarationType)))
 
           val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
@@ -79,10 +79,10 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
     "return 400 (BAD_REQUEST)" when {
 
-      onEveryDeclarationJourney() { declaration =>
+      onEveryDeclarationJourney() { request =>
         "action is incorrect" in new SetUp {
 
-          withNewCaching(aDeclaration(withType(declaration.`type`)))
+          withNewCaching(aDeclaration(withType(request.declarationType)))
 
           val body =
             Seq(("typesOfPackages", "NT"), ("numberOfPackages", "123"), ("shippingMarks", "abc"), ("wrongAction", ""))
@@ -94,7 +94,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
         "user tried to add incorrect item" in new SetUp {
 
-          withNewCaching(aDeclaration(withType(declaration.`type`)))
+          withNewCaching(aDeclaration(withType(request.declarationType)))
 
           val body =
             Seq(("typesOfPackages", "wrongType"), ("numberOfPackages", ""), ("shippingMarks", ""), (Add.toString, ""))
@@ -108,7 +108,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
           val packageInformation = PackageInformation(None, None, None)
           val maxItems = anItem(withPackageInformation(List.fill(99)(packageInformation)))
-          withNewCaching(aDeclaration(withItem(maxItems), withType(declaration.`type`)))
+          withNewCaching(aDeclaration(withItem(maxItems), withType(request.declarationType)))
 
           val body =
             Seq(("typesOfPackages", "NT"), ("numberOfPackages", "123"), ("shippingMarks", "abc"), (Add.toString, ""))
@@ -121,7 +121,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
         "user tried to add duplicated value" in new SetUp {
 
           val item = anItem(withPackageInformation(typesOfPackages = "NT", numberOfPackages = 1, shippingMarks = "value"))
-          withNewCaching(aDeclaration(withItem(item), withType(declaration.`type`)))
+          withNewCaching(aDeclaration(withItem(item), withType(request.declarationType)))
 
           val body =
             Seq(("typesOfPackages", "NT"), ("numberOfPackages", "1"), ("shippingMarks", "value"), (Add.toString, ""))
@@ -132,10 +132,10 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
         }
       }
 
-      onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)() { declaration =>
+      onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
         "user tried to continue without adding an item" in new SetUp {
 
-          withNewCaching(aDeclaration(withType(declaration.`type`)))
+          withNewCaching(aDeclaration(withType(request.declarationType)))
 
           val body = (SaveAndContinue.toString, "")
 
@@ -148,10 +148,10 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
     "return 303 (SEE_OTHER)" when {
 
-      onJourney(STANDARD, SUPPLEMENTARY)() { declaration =>
+      onJourney(STANDARD, SUPPLEMENTARY) { request =>
         "user added correct item" in new SetUp {
 
-          withNewCaching(aDeclaration(withType(declaration.`type`)))
+          withNewCaching(aDeclaration(withType(request.declarationType)))
 
           val body =
             Seq(("typesOfPackages", "NT"), ("numberOfPackages", "1"), ("shippingMarks", "value"), (Add.toString, ""))
@@ -165,7 +165,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
         "user clicked continue with item in a cache" in new SetUp {
 
           val item = anItem(withPackageInformation(typesOfPackages = "NT", numberOfPackages = 1, shippingMarks = "value"))
-          withNewCaching(aDeclaration(withItem(item), withType(declaration.`type`)))
+          withNewCaching(aDeclaration(withItem(item), withType(request.declarationType)))
 
           val body = (SaveAndContinue.toString, "")
 
@@ -176,10 +176,10 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
         }
       }
 
-      onJourney(SIMPLIFIED, OCCASIONAL)() { declaration =>
+      onJourney(SIMPLIFIED, OCCASIONAL) { request =>
         "user added correct item" in new SetUp {
 
-          withNewCaching(aDeclaration(withType(declaration.`type`)))
+          withNewCaching(aDeclaration(withType(request.declarationType)))
 
           val body =
             Seq(("typesOfPackages", "NT"), ("numberOfPackages", "1"), ("shippingMarks", "value"), (Add.toString, ""))
@@ -193,7 +193,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
         "user clicked continue with item in a cache" in new SetUp {
 
           val item = anItem(withPackageInformation(typesOfPackages = "NT", numberOfPackages = 1, shippingMarks = "value"))
-          withNewCaching(aDeclaration(withItem(item), withType(declaration.`type`)))
+          withNewCaching(aDeclaration(withItem(item), withType(request.declarationType)))
 
           val body = (SaveAndContinue.toString, "")
 
@@ -204,10 +204,10 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
         }
       }
 
-      onClearance { declaration =>
+      onClearance { request =>
         "user added correct item" in new SetUp {
 
-          withNewCaching(aDeclaration(withType(declaration.`type`)))
+          withNewCaching(aDeclaration(withType(request.declarationType)))
 
           val body =
             Seq(("typesOfPackages", "NT"), ("numberOfPackages", "1"), ("shippingMarks", "value"), (Add.toString, ""))
@@ -221,7 +221,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
         "user clicked continue with item in a cache" in new SetUp {
 
           val item = anItem(withPackageInformation(typesOfPackages = "NT", numberOfPackages = 1, shippingMarks = "value"))
-          withNewCaching(aDeclaration(withItem(item), withType(declaration.`type`)))
+          withNewCaching(aDeclaration(withItem(item), withType(request.declarationType)))
 
           val body = (SaveAndContinue.toString, "")
 
@@ -234,7 +234,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
         "user clicked continue with NO item in a cache" in new SetUp {
 
-          withNewCaching(aDeclaration(withType(declaration.`type`)))
+          withNewCaching(aDeclaration(withType(request.declarationType)))
 
           val body = (SaveAndContinue.toString, "")
 

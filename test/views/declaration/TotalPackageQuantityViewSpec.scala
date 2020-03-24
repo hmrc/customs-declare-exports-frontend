@@ -18,8 +18,8 @@ package views.declaration
 
 import base.Injector
 import forms.declaration.TotalPackageQuantity
-import models.Mode
 import models.DeclarationType._
+import models.Mode
 import org.jsoup.nodes.Document
 import play.api.i18n.MessagesApi
 import services.cache.ExportsTestData
@@ -110,6 +110,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
         backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage(Mode.Normal))
       }
     }
+
     onClearance { request =>
       "display back button" in {
         val view: Document = template.apply(Mode.Normal, TotalPackageQuantity.form(request.declarationType))(request, messages)

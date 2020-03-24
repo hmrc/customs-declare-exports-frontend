@@ -67,7 +67,7 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessag
 
   "Declaration Additional Actors View on empty page" should {
 
-    onEveryDeclarationJourney { request =>
+    onEveryDeclarationJourney() { request =>
       val view = createView(form, request)
 
       "display page title" in {
@@ -154,7 +154,7 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessag
 
   "Declaration Additional Actors View with invalid input" must {
 
-    onEveryDeclarationJourney { request =>
+    onEveryDeclarationJourney() { request =>
       "display errors when EORI is provided, but is incorrect" in {
 
         val view = createView(
@@ -191,7 +191,7 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessag
 
   "Declaration Additional Actors View when filled" must {
 
-    onEveryDeclarationJourney { request =>
+    onEveryDeclarationJourney() { request =>
       "display EORI with CS selected" in {
 
         val view =

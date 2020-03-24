@@ -22,8 +22,8 @@ import controllers.util.Remove
 import forms.common.Eori
 import forms.declaration.DeclarationAdditionalActors
 import models.DeclarationType.CLEARANCE
-import models.{DeclarationType, Mode}
 import models.declaration.DeclarationAdditionalActorsData
+import models.{DeclarationType, Mode}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import unit.base.ControllerSpec

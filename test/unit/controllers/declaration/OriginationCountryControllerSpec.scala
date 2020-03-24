@@ -17,6 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.OriginationCountryController
+import models.DeclarationType._
 import models.Mode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -25,8 +26,6 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.declaration.destinationCountries.origination_country
-
-import models.DeclarationType._
 
 import scala.concurrent.ExecutionContext.global
 
@@ -58,12 +57,12 @@ class OriginationCountryControllerSpec extends ControllerSpec {
 
   "Origination Country Controller" should {
 
-    onJourney(STANDARD, SUPPLEMENTARY)() { declaration =>
+    onJourney(STANDARD, SUPPLEMENTARY) { request =>
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
 
-          withNewCaching(aDeclaration())
+          withNewCaching(aDeclaration(withType(request.declarationType)))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -73,7 +72,7 @@ class OriginationCountryControllerSpec extends ControllerSpec {
 
         "display page method is invoked and cache contains data" in {
 
-          withNewCaching(aDeclaration(withDestinationCountries()))
+          withNewCaching(aDeclaration(withType(request.declarationType), withDestinationCountries()))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -86,7 +85,7 @@ class OriginationCountryControllerSpec extends ControllerSpec {
 
         "form contains incorrect country" in {
 
-          withNewCaching(aDeclaration())
+          withNewCaching(aDeclaration(withType(request.declarationType)))
 
           val incorrectForm = JsObject(Map("code" -> JsString("incorrect")))
 
@@ -98,7 +97,7 @@ class OriginationCountryControllerSpec extends ControllerSpec {
 
       "redirect to Destination Country page if form is correct" in {
 
-        withNewCaching(aDeclaration(withDestinationCountries()))
+        withNewCaching(aDeclaration(withType(request.declarationType), withDestinationCountries()))
 
         val correctForm = JsObject(Map("code" -> JsString("PL")))
 
@@ -110,13 +109,13 @@ class OriginationCountryControllerSpec extends ControllerSpec {
 
     }
 
-    onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE)() { declaration =>
+    onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
       "return 303 (SEE_OTHER)" when {
 
         "redirect to start if journey is invalid" in {
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal).apply(getRequest(declaration))
+          val result = controller.displayPage(Mode.Normal).apply(getRequest(request.cacheModel))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) must contain(controllers.routes.StartController.displayStartPage().url)

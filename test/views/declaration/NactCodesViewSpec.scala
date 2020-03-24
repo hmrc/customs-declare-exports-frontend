@@ -17,11 +17,12 @@
 package views.declaration
 
 import base.Injector
+import config.AppConfig
 import forms.declaration.NactCode
 import helpers.views.declaration.CommonMessages
-import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType._
+import models.Mode
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
@@ -29,7 +30,6 @@ import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.nact_codes
 import views.tags.ViewTest
-import config.AppConfig
 
 @ViewTest
 class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
@@ -113,7 +113,7 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
       }
     }
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
       "display 'Back' button that links to 'TARIC Code' page" in {
 
         val view = createView(NactCode.form, List.empty, request)
@@ -168,7 +168,7 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
       }
     }
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
       "display 'Back' button that links to 'TARIC Code' page" in {
 
         val view = createView(NactCode.form, List.empty, request)

@@ -150,15 +150,12 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
   "Goods Location view" should {
 
-    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { declaration =>
-      behave like viewWithCorrectBackButton(
-        declaration.declarationType,
-        controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
-      )
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { request =>
+      behave like viewWithCorrectBackButton(request.declarationType, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage())
     }
 
-    onJourney(SUPPLEMENTARY, CLEARANCE) { declaration =>
-      behave like viewWithCorrectBackButton(declaration.declarationType, controllers.declaration.routes.DestinationCountryController.displayPage())
+    onJourney(SUPPLEMENTARY, CLEARANCE) { request =>
+      behave like viewWithCorrectBackButton(request.declarationType, controllers.declaration.routes.DestinationCountryController.displayPage())
     }
 
     def viewWithCorrectBackButton(declarationType: DeclarationType, redirect: Call): Unit =

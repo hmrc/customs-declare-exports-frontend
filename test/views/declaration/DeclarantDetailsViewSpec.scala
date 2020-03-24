@@ -56,7 +56,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
 
   "Declarant Details View on empty page" should {
 
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       "display input label as page title" in {
 
         createView(form(request.declarationType)).getElementsByClass("govuk-label govuk-label--l").text() mustBe messages(
@@ -103,7 +103,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
 
   "Declarant Details View with invalid input" should {
 
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       "display error when EORI is empty" in {
 
         val view = createView(DeclarantDetails.form(request.declarationType).fillAndValidate(DeclarantDetails(EntityDetails(Some(Eori("")), None))))
@@ -133,7 +133,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
 
   "Declarant Details View when filled" should {
 
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       "display data in EORI input" in {
 
         val form = DeclarantDetails.form(request.declarationType).fill(DeclarantDetails(EntityDetails(Some(Eori("1234")), None)))

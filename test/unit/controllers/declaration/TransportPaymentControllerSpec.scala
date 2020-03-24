@@ -16,7 +16,7 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.{routes, TransportPaymentController}
+import controllers.declaration._
 import forms.declaration.TransportPayment
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.{DeclarationType, Mode}
@@ -66,7 +66,7 @@ class TransportPaymentControllerSpec extends ControllerSpec {
 
   "Transport Payment Controller" should {
 
-    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)() { declaration =>
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
@@ -80,7 +80,7 @@ class TransportPaymentControllerSpec extends ControllerSpec {
         "display page method is invoked and cache is not empty" in {
 
           val payment = TransportPayment(Some(TransportPayment.cash))
-          withNewCaching(aDeclarationAfter(declaration, withTransportPayment(Some(payment))))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withTransportPayment(Some(payment))))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -93,7 +93,7 @@ class TransportPaymentControllerSpec extends ControllerSpec {
 
         "form contains incorrect values" in {
 
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val incorrectForm = Json.toJson(TransportPayment(Some("incorrect")))
 
@@ -106,7 +106,7 @@ class TransportPaymentControllerSpec extends ControllerSpec {
       "return 303 (SEE_OTHER)" when {
 
         "form contains valid values" in {
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
           val correctForm = formData(TransportPayment.other)
 
           val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
@@ -119,11 +119,11 @@ class TransportPaymentControllerSpec extends ControllerSpec {
 
     }
 
-    onJourney(CLEARANCE)() { declaration =>
+    onJourney(CLEARANCE) { request =>
       "return 303 (SEE_OTHER)" when {
 
         "display page" in {
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -132,7 +132,7 @@ class TransportPaymentControllerSpec extends ControllerSpec {
         }
 
         "submit" in {
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
           val correctForm = formData(TransportPayment.other)
 
           val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))

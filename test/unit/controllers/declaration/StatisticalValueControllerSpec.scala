@@ -18,7 +18,8 @@ package unit.controllers.declaration
 
 import controllers.declaration.StatisticalValueController
 import forms.declaration.StatisticalValue
-import models.{DeclarationType, Mode}
+import models.DeclarationType._
+import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -75,12 +76,12 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
     "return 200 (OK)" when {
 
-      onJourney(DeclarationType.SUPPLEMENTARY, DeclarationType.STANDARD)() { declaration =>
+      onJourney(SUPPLEMENTARY, STANDARD) { request =>
         "item type exists in the cache and item type is defined" in {
 
           withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId), withStatisticalValue()))))
 
-          val result = controller.displayPage(Mode.Normal, itemId)(getRequest(declaration))
+          val result = controller.displayPage(Mode.Normal, itemId)(getRequest(request.cacheModel))
 
           status(result) mustBe OK
           theResponseForm.value mustNot be(empty)
@@ -90,7 +91,7 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
           withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
 
-          val result = controller.displayPage(Mode.Normal, itemId)(getRequest(declaration))
+          val result = controller.displayPage(Mode.Normal, itemId)(getRequest(request.cacheModel))
 
           status(result) mustBe OK
           theResponseForm.value mustBe empty
@@ -102,10 +103,10 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
     "return 400 (BAD_REQUEST)" when {
 
-      onJourney(DeclarationType.SUPPLEMENTARY, DeclarationType.STANDARD)() { declaration =>
+      onJourney(SUPPLEMENTARY, STANDARD) { request =>
         "invalid data is posted" in {
 
-          withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
+          withNewCaching(aDeclaration(withType(request.declarationType), withItem(anItem(withItemId(itemId)))))
 
           val badData = Json.toJson(StatisticalValue("Seven"))
 
@@ -120,12 +121,12 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
     "return 303 (SEE_OTHER)" when {
 
-      onJourney(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL, DeclarationType.CLEARANCE)() { declaration =>
+      onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
         "invalid data is posted" in {
 
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal, itemId).apply(getRequest(declaration))
+          val result = controller.displayPage(Mode.Normal, itemId).apply(getRequest(request.cacheModel))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
@@ -133,10 +134,10 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
       }
 
-      onJourney(DeclarationType.SUPPLEMENTARY, DeclarationType.STANDARD)() { declaration =>
+      onJourney(SUPPLEMENTARY, STANDARD) { request =>
         "valid data is posted" in {
 
-          withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
+          withNewCaching(aDeclaration(withType(request.declarationType), withItem(anItem(withItemId(itemId)))))
 
           val badData = Json.toJson(StatisticalValue("7"))
 

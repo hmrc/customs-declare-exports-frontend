@@ -19,7 +19,8 @@ package views.declaration
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.declaration.ModeOfTransportCodes
-import models.{DeclarationType, Mode}
+import models.DeclarationType._
+import models.Mode
 import org.jsoup.nodes.Document
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -31,7 +32,7 @@ class TransportLeavingTheBorderViewSpec extends UnitViewSpec with Stubs {
 
   "Transport Leaving The Border Page" must {
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { implicit request =>
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
       val view: Document = page(ModeOfTransportCodes.form, Mode.Normal)
       "display page title" in {
         view.getElementById("title").text() mustBe "declaration.transport.leavingTheBorder.title"
@@ -100,7 +101,7 @@ class TransportLeavingTheBorderViewSpec extends UnitViewSpec with Stubs {
     }
   }
 
-  onJourney(DeclarationType.CLEARANCE) { implicit request =>
+  onJourney(CLEARANCE) { implicit request =>
     "display 'Back' button that links to 'Supervising Customs Office' page" in {
       val view: Document = page(ModeOfTransportCodes.form, Mode.Normal)
       val backButton = view.getElementById("back-link")

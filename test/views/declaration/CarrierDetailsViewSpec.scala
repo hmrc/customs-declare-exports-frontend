@@ -22,8 +22,8 @@ import controllers.util.SaveAndReturn
 import forms.common.{Address, Eori}
 import forms.declaration.{CarrierDetails, EntityDetails}
 import helpers.views.declaration.CommonMessages
-import models.{DeclarationType, Mode}
 import models.requests.JourneyRequest
+import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -55,7 +55,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
   "Carrier Details View on empty page" should {
 
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       val view = createView()
       "display page title" in {
 
@@ -420,7 +420,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
   "Carrier Details View when filled" should {
 
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       "display data in EORI input" in {
 
         val form = CarrierDetails.form(request.declarationType).fill(CarrierDetails(EntityDetails(Some(Eori("1234")), None)))

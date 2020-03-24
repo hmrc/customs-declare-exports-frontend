@@ -67,11 +67,11 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
     "return OK (200)" when {
 
-      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE)() { declaration =>
+      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
         "with valid journey type" in {
 
           val eori = Some(Eori("1234"))
-          withNewCaching(aDeclarationAfter(declaration, withCarrierDetails(eori)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withCarrierDetails(eori)))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -96,10 +96,10 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
         verify(mockCarrierDetailsPage, times(0)).apply(any(), any())(any(), any())
       }
 
-      onJourney(SUPPLEMENTARY)() { declaration =>
+      onJourney(SUPPLEMENTARY) { request =>
         "with invalid journey type" in {
 
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -130,10 +130,10 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
     "return 303 (SEE_OTHER)" when {
 
-      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE)() { declaration =>
+      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
         "with valid journey type" in {
 
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
           val correctForm = Json.toJson(CarrierDetails(EntityDetails(Some(Eori("GB12345678912345")), None)))
 
           val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
@@ -143,10 +143,10 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
         }
       }
 
-      onJourney(SUPPLEMENTARY)() { declaration =>
+      onJourney(SUPPLEMENTARY) { request =>
         "with invalid journey type" in {
 
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
           val correctForm = Json.toJson(CarrierDetails(EntityDetails(Some(Eori("12345678")), None)))
 
           val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))

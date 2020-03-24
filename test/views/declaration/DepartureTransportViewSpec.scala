@@ -22,8 +22,9 @@ import controllers.util.SaveAndReturn
 import forms.declaration.DepartureTransport
 import forms.declaration.TransportCodes._
 import helpers.views.declaration.CommonMessages
+import models.DeclarationType._
+import models.Mode
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
 import play.api.data.Form
 import play.twirl.api.Html
 import unit.tools.Stubs
@@ -41,7 +42,7 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
 
   "Departure Transport View" must {
 
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       val view = createView()
 
       "have defined translation for used labels" in {
@@ -169,7 +170,7 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
       }
     }
 
-    onJourney(DeclarationType.CLEARANCE) { implicit request =>
+    onJourney(CLEARANCE) { implicit request =>
       val view = createView()
 
       "display radio section " which {
@@ -180,7 +181,6 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
             .getElementsByAttributeValue("for", "Departure_NotApplicable")
             .text() mustBe "declaration.transportInformation.meansOfTransport.notApplicable"
         }
-
       }
 
     }

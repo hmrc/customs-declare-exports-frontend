@@ -77,7 +77,7 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
   }
 
   "Documents Produced View on empty page" should {
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       val view = createView()
 
       "display page title" in {
@@ -161,7 +161,7 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
   }
 
   "Documents Produced View for invalid input" should {
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       "display error for Document type code" in {
 
         val view = createView(
@@ -406,7 +406,7 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
   }
 
   "Documents Produced View when filled" should {
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       "display data in all inputs" in {
 
         val data = correctDocumentsProduced

@@ -16,7 +16,7 @@
 
 package views.declaration
 
-import base.{Injector, TestHelper}
+import base.TestHelper
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.{Address, Eori}
@@ -40,7 +40,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
   "Consignee Details View on empty page" should {
 
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
 
         createView().getElementById("title").text() mustBe messages("supplementary.consignee.title")
@@ -131,7 +131,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
   "Consignee Details View with invalid input" should {
 
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       "display error when both EORI and business details are empty" in {
 
         val view = createView(ConsigneeDetails.form().bind(Map[String, String]()))
@@ -425,7 +425,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
   "Consignee Details View when filled" should {
 
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       "display data in EORI input" in {
 
         val form = ConsigneeDetails.form().fill(ConsigneeDetails(EntityDetails(Some(Eori("1234")), None)))

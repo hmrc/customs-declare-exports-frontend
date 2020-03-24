@@ -17,8 +17,6 @@
 package unit.controllers.declaration
 
 import controllers.declaration.RepresentativeDetailsController
-import forms.Choice
-import forms.Choice.AllowedChoiceValues._
 import forms.common.Eori
 import forms.declaration.{EntityDetails, RepresentativeDetails}
 import models.{DeclarationType, Mode}
@@ -67,12 +65,12 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
 
   "Representative Details controller" must {
 
-    onEveryDeclarationJourney() { declaration =>
+    onEveryDeclarationJourney() { request =>
       "return 200 (OK)" when {
 
         "display page method is invoked with empty cache" in {
 
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -85,7 +83,7 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
         "display page method is invoked with data in cache" in {
 
           withNewCaching(
-            aDeclarationAfter(declaration, withRepresentativeDetails(RepresentativeDetails(Some(EntityDetails(Some(Eori(eori)), None)), None)))
+            aDeclarationAfter(request.cacheModel, withRepresentativeDetails(RepresentativeDetails(Some(EntityDetails(Some(Eori(eori)), None)), None)))
           )
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
@@ -101,7 +99,7 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
 
         "form is incorrect" in {
 
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val incorrectForm = Json.toJson(RepresentativeDetails(None, Some("incorrect")))
 
@@ -113,10 +111,10 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
       }
     }
 
-    onJourney(DeclarationType.SUPPLEMENTARY)() { declaration =>
+    onJourney(DeclarationType.SUPPLEMENTARY) { request =>
       "return 303 (SEE_OTHER) and redirect to additional actors page" in {
 
-        withNewCaching(declaration)
+        withNewCaching(request.cacheModel)
 
         val correctForm = Json.toJson(RepresentativeDetails(Some(EntityDetails(Some(Eori(eori)), None)), Some("2")))
 
@@ -129,10 +127,10 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
       }
     }
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL, DeclarationType.CLEARANCE)() { declaration =>
+    onJourney(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL, DeclarationType.CLEARANCE) { request =>
       "return 303 (SEE_OTHER) and redirect to carrier details page" in {
 
-        withNewCaching(declaration)
+        withNewCaching(request.cacheModel)
 
         val correctForm = Json.toJson(RepresentativeDetails(Some(EntityDetails(Some(Eori(eori)), None)), Some("2")))
 
