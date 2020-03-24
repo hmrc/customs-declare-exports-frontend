@@ -74,7 +74,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
       view.getElementById("transport-reference-change") must haveHref(controllers.declaration.routes.DepartureTransportController.displayPage())
     }
 
-    "display transport reference if question not applicable" in {
+    "display transport reference if option none selected" in {
       val view = transport_section(
         Mode.Normal,
         data.copy(

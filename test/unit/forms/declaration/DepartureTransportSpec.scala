@@ -17,10 +17,9 @@
 package unit.forms.declaration
 
 import base.TestHelper
-import forms.declaration.{DepartureTransport, TransportCodes}
 import forms.declaration.TransportCodes._
+import forms.declaration.{DepartureTransport, TransportCodes}
 import models.DeclarationType
-import models.declaration.Transport
 import unit.base.FormSpec
 
 class DepartureTransportSpec extends FormSpec {
@@ -81,7 +80,7 @@ class DepartureTransportSpec extends FormSpec {
         errorMessages must be(List("declaration.transportInformation.meansOfTransport.reference.error.empty"))
       }
 
-      "fields are incorrect" in {
+      "means of transport on departure type is incorrect" in {
 
         val incorrectForm = Map(transportTypeField -> "incorrect", idNumberField -> "correct")
 
@@ -91,19 +90,6 @@ class DepartureTransportSpec extends FormSpec {
 
         errorKeys must be(List(transportTypeField))
         errorMessages must be(List("declaration.transportInformation.meansOfTransport.departure.error.incorrect"))
-      }
-
-      "means of transport on departure id number is empty" in {
-        val incorrectForm = Map(transportTypeField -> IMOShipIDNumber, idNumberField -> "")
-
-        val result = form.bind(incorrectForm)
-
-        result.errors.length must be(1)
-
-        val error = result.errors.head
-
-        error.key must be(idNumberField)
-        error.message must be("declaration.transportInformation.meansOfTransport.reference.error.empty")
       }
 
       "means of transport on departure id number is too long" in {
@@ -214,7 +200,7 @@ class DepartureTransportSpec extends FormSpec {
         errorMessages must be(List("declaration.transportInformation.meansOfTransport.reference.error.empty"))
       }
 
-      "fields are incorrect" in {
+      "means of transport on departure type is incorrect" in {
 
         val incorrectForm = Map(transportTypeField -> "incorrect", idNumberField -> "correct")
 
@@ -224,19 +210,6 @@ class DepartureTransportSpec extends FormSpec {
 
         errorKeys must be(List(transportTypeField))
         errorMessages must be(List("declaration.transportInformation.meansOfTransport.departure.error.incorrect"))
-      }
-
-      "means of transport on departure id number is empty" in {
-        val incorrectForm = Map(transportTypeField -> IATAFlightNumber, idNumberField -> "")
-
-        val result = form.bind(incorrectForm)
-
-        result.errors.length must be(1)
-
-        val error = result.errors.head
-
-        error.key must be(idNumberField)
-        error.message must be("declaration.transportInformation.meansOfTransport.reference.error.empty")
       }
 
       "means of transport on departure id number is too long" in {
@@ -256,20 +229,6 @@ class DepartureTransportSpec extends FormSpec {
       "means of transport on departure id number contains invalid special characters" in {
 
         val incorrectForm = Map(transportTypeField -> IATAFlightNumber, idNumberField -> "!@#$")
-
-        val result = form.bind(incorrectForm)
-
-        result.errors.length must be(1)
-
-        val error = result.errors.head
-
-        error.key must be(idNumberField)
-        error.message must be("declaration.transportInformation.meansOfTransport.reference.error.invalid")
-      }
-
-      "means of transport on departure id number is too long with invalid characters" in {
-
-        val incorrectForm = Map(transportTypeField -> IATAFlightNumber, idNumberField -> (TestHelper.createRandomAlphanumericString(28) + "!@#$"))
 
         val result = form.bind(incorrectForm)
 
