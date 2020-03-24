@@ -56,8 +56,8 @@ case class ExportsDeclaration(
   def updateDepartureTransport(departure: DepartureTransport): ExportsDeclaration =
     copy(
       transport = transport.copy(
-        meansOfTransportOnDepartureType = Some(departure.meansOfTransportOnDepartureType),
-        meansOfTransportOnDepartureIDNumber = Some(departure.meansOfTransportOnDepartureIDNumber)
+        meansOfTransportOnDepartureType = departure.meansOfTransportOnDepartureType,
+        meansOfTransportOnDepartureIDNumber = departure.meansOfTransportOnDepartureIDNumber
       )
     )
 

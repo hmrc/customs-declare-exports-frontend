@@ -33,10 +33,12 @@ import views.tags.ViewTest
 class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   val itemId = "a7sc78"
-  private val form: Form[CommodityMeasure] = CommodityMeasure.form(DeclarationType.STANDARD)
+
   private val goodsMeasurePage = instanceOf[commodity_measure]
-  private def createView(form: Form[CommodityMeasure] = form)(implicit request: JourneyRequest[_]): Document =
-    goodsMeasurePage(Mode.Normal, itemId, form)(request, messages)
+  private def createView(form: Option[Form[CommodityMeasure]] = None)(implicit request: JourneyRequest[_]): Document =
+    goodsMeasurePage(Mode.Normal, itemId, form.getOrElse(CommodityMeasure.form(request.declarationType)))(request, messages)
+
+  private def form()(implicit request: JourneyRequest[_]): Form[CommodityMeasure] = CommodityMeasure.form(request.declarationType)
 
   "Commodity Measure" should {
 
@@ -122,8 +124,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
     onJourney(DeclarationType.CLEARANCE) { implicit request =>
       "no display supplementary units" in {
 
-        val view = createView()
-        view.getElementById("supplementaryUnits") mustBe (null)
+        createView().getElementById("supplementaryUnits") mustBe (null)
       }
     }
   }
@@ -132,7 +133,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
     onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { implicit request =>
       "display error when nothing is entered" in {
 
-        val view = createView(CommodityMeasure.form(request.declarationType).fillAndValidate(CommodityMeasure(Some(""), Some(""), Some(""))))
+        val view = createView(Some(CommodityMeasure.form(request.declarationType).fillAndValidate(CommodityMeasure(Some(""), Some(""), Some("")))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#netMass")
@@ -144,7 +145,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
 
       "display error when supplementary units are incorrect" in {
 
-        val view = createView(CommodityMeasure.form(request.declarationType).fillAndValidate(CommodityMeasure(Some("0.0"), Some(""), Some(""))))
+        val view = createView(Some(CommodityMeasure.form(request.declarationType).fillAndValidate(CommodityMeasure(Some("0.0"), Some(""), Some("")))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#supplementaryUnits")
@@ -154,7 +155,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
       "display error when net mass is empty" in {
 
         val view =
-          createView(CommodityMeasure.form(request.declarationType).fillAndValidate(CommodityMeasure(Some("99.99"), Some("10.00"), Some(""))))
+          createView(Some(CommodityMeasure.form(request.declarationType).fillAndValidate(CommodityMeasure(Some("99.99"), Some("10.00"), Some("")))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#netMass")
@@ -166,7 +167,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
 
         val view =
           createView(
-            CommodityMeasure.form(request.declarationType).fillAndValidate(CommodityMeasure(Some("99.99"), Some("20.99"), Some("10.0055345")))
+            Some(CommodityMeasure.form(request.declarationType).fillAndValidate(CommodityMeasure(Some("99.99"), Some("20.99"), Some("10.0055345"))))
           )
 
         view must haveGovukGlobalErrorSummary
@@ -178,7 +179,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
       "display error when gross mass is empty" in {
 
         val view =
-          createView(CommodityMeasure.form(request.declarationType).fillAndValidate(CommodityMeasure(Some("99.99"), Some(""), Some("10.00"))))
+          createView(Some(CommodityMeasure.form(request.declarationType).fillAndValidate(CommodityMeasure(Some("99.99"), Some(""), Some("10.00")))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#grossMass")
@@ -189,7 +190,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
       "display error when gross mass is incorrect" in {
 
         val view = createView(
-          CommodityMeasure.form(request.declarationType).fillAndValidate(CommodityMeasure(Some("99.99"), Some("5.00234ff"), Some("100.100")))
+          Some(CommodityMeasure.form(request.declarationType).fillAndValidate(CommodityMeasure(Some("99.99"), Some("5.00234ff"), Some("100.100"))))
         )
 
         view must haveGovukGlobalErrorSummary
@@ -204,7 +205,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
     onJourney(DeclarationType.CLEARANCE) { implicit request =>
       "display no error when nothing is entered" in {
 
-        val view = createView(CommodityMeasure.form(request.declarationType).fillAndValidate(CommodityMeasure(Some(""), Some(""), Some(""))))
+        val view = createView(Some(CommodityMeasure.form(request.declarationType).fillAndValidate(CommodityMeasure(Some(""), Some(""), Some("")))))
 
         view must not(haveGovukGlobalErrorSummary)
       }
@@ -216,7 +217,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
       "display data in supplementary units input" in {
 
         val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(Some("123"), Some(""), Some("")))
-        val view = createView(form)
+        val view = createView(Some(form))
 
         view.getElementById("supplementaryUnits").attr("value") mustBe "123"
         view.getElementById("netMass").attr("value") mustBe empty
@@ -226,7 +227,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
       "display data in net mass input" in {
 
         val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(Some(""), Some(""), Some("123")))
-        val view = createView(form)
+        val view = createView(Some(form))
 
         view.getElementById("supplementaryUnits").attr("value") mustBe empty
         view.getElementById("grossMass").attr("value") mustBe empty
@@ -236,7 +237,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
       "display data in gross mass input" in {
 
         val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(Some(""), Some("123"), Some("")))
-        val view = createView(form)
+        val view = createView(Some(form))
 
         view.getElementById("supplementaryUnits").attr("value") mustBe empty
         view.getElementById("grossMass").attr("value") mustBe "123"
@@ -246,7 +247,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
       "display every input filled" in {
 
         val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(Some("123"), Some("123"), Some("123")))
-        val view = createView(form)
+        val view = createView(Some(form))
 
         view.getElementById("supplementaryUnits").attr("value") mustBe "123"
         view.getElementById("netMass").attr("value") mustBe "123"
@@ -260,7 +261,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
       "display data in net mass input" in {
 
         val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(None, Some(""), Some("123")))
-        val view = createView(form)
+        val view = createView(Some(form))
 
         view.getElementById("supplementaryUnits") mustBe (null)
         view.getElementById("grossMass").attr("value") mustBe empty
@@ -270,7 +271,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
       "display data in gross mass input" in {
 
         val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(None, Some("123"), Some("")))
-        val view = createView(form)
+        val view = createView(Some(form))
 
         view.getElementById("supplementaryUnits") mustBe (null)
         view.getElementById("grossMass").attr("value") mustBe "123"
@@ -280,7 +281,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
       "display every input filled" in {
 
         val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(None, Some("123"), Some("123")))
-        val view = createView(form)
+        val view = createView(Some(form))
 
         view.getElementById("supplementaryUnits") mustBe (null)
         view.getElementById("netMass").attr("value") mustBe "123"

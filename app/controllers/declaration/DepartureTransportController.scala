@@ -19,7 +19,6 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.DepartureTransport
-import forms.declaration.DepartureTransport._
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
@@ -42,20 +41,16 @@ class DepartureTransportController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
+  private def form()(implicit request: JourneyRequest[_]) = DepartureTransport.form(request.declarationType)
+
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.CLEARANCE)
 
   def displayPage(mode: Mode): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)) { implicit request =>
       val transport = request.cacheModel.transport
-      val formData =
-        (transport.meansOfTransportOnDepartureType, transport.meansOfTransportOnDepartureIDNumber) match {
-          case (Some(meansType), Some(meansId)) => Some(DepartureTransport(meansType, meansId))
-          case _                                => None
-        }
-      formData match {
-        case Some(data) => Ok(departureTransportPage(mode, form().fill(data)))
-        case _          => Ok(departureTransportPage(mode, form()))
-      }
+      val formData = DepartureTransport(transport.meansOfTransportOnDepartureType, transport.meansOfTransportOnDepartureIDNumber)
+
+      Ok(departureTransportPage(mode, form().fill(formData)))
     }
 
   def submitForm(mode: Mode): Action[AnyContent] =
@@ -80,4 +75,5 @@ class DepartureTransportController @Inject()(
 
   private def updateCache(formData: DepartureTransport)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(_.updateDepartureTransport(formData))
+
 }

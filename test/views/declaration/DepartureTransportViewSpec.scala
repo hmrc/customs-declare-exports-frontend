@@ -16,48 +16,42 @@
 
 package views.declaration
 
+import base.Injector
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.declaration.DepartureTransport
 import forms.declaration.TransportCodes._
 import helpers.views.declaration.CommonMessages
-import models.Mode
 import models.requests.JourneyRequest
-import org.jsoup.nodes.Document
+import models.{DeclarationType, Mode}
 import play.api.data.Form
 import play.twirl.api.Html
 import unit.tools.Stubs
-import views.components.inputs.RadioOption
 import views.declaration.spec.UnitViewSpec
-import views.html.components.fields.{field_radio, field_text}
 import views.html.declaration.departure_transport
 import views.tags.ViewTest
 
 @ViewTest
-class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with Stubs {
+class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
-  val form: Form[DepartureTransport] = DepartureTransport.form()
+  private val borderTransportPage = instanceOf[departure_transport]
 
-  private val borderTransportPage = new departure_transport(mainTemplate)
-
-  def createView(form: Form[DepartureTransport], request: JourneyRequest[_]): Html =
-    borderTransportPage(Mode.Normal, form)(request, messages)
+  def createView(form: Option[Form[DepartureTransport]] = None)(implicit request: JourneyRequest[_]): Html =
+    borderTransportPage(Mode.Normal, form.getOrElse(DepartureTransport.form(request.declarationType)))(request, messages)
 
   "Departure Transport View" must {
 
-    onEveryDeclarationJourney { request =>
-      val view = createView(form, request)
+    onEveryDeclarationJourney { implicit request =>
+      val view = createView()
 
       "have defined translation for used labels" in {
         val messages = realMessagesApi.preferred(request)
-        messages must haveTranslationFor("declaration.transportInformation.title")
-        messages must haveTranslationFor("declaration.transportInformation.title")
+        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.departure.title")
         messages must haveTranslationFor(backCaption)
         messages must haveTranslationFor(saveAndContinueCaption)
         messages must haveTranslationFor(saveAndReturnCaption)
 
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.departure.header")
-        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.departure.header.hint")
+        messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.departure.title")
         messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.IMOShipIDNumber")
         messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.nameOfVessel")
         messages must haveTranslationFor("declaration.transportInformation.meansOfTransport.wagonNumber")
@@ -72,7 +66,7 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
       }
 
       "display page title" in {
-        view.getElementById("title").text() mustBe messages("declaration.transportInformation.title")
+        view.getElementsByTag("h1").text() mustBe messages("declaration.transportInformation.meansOfTransport.departure.title")
       }
 
       "display 'Back' button that links to 'Inland Transport Details' page" in {
@@ -91,83 +85,104 @@ class DepartureTransportViewSpec extends UnitViewSpec with CommonMessages with S
         saveAndReturn must haveAttribute("name", SaveAndReturn.toString)
       }
 
-      "display 'Transport details type' section " which {
-
-        val section = view.getElementById("meansOfTransportOnDepartureType")
-
-        "have label" in {
-          section
-            .getElementById("meansOfTransportOnDepartureType-label")
-            .text() mustBe "declaration.transportInformation.meansOfTransport.departure.header"
-        }
-
-        "have hint" in {
-          section
-            .getElementById("meansOfTransportOnDepartureType-hint")
-            .text() mustBe "declaration.transportInformation.meansOfTransport.departure.header.hint"
-        }
+      "display 'Transport details type' radio section " which {
 
         "have 'Ship number' option" in {
-          section
-            .getElementById("Departure_IMOShipIDNumber-label")
+          view.getElementById("Departure_IMOShipIDNumber").attr("value") mustBe IMOShipIDNumber
+          view
+            .getElementsByAttributeValue("for", "Departure_IMOShipIDNumber")
             .text() mustBe "declaration.transportInformation.meansOfTransport.IMOShipIDNumber"
+          view
+            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$IMOShipIDNumber")
+            .text() mustBe "declaration.transportInformation.meansOfTransport.IMOShipIDNumber.label"
         }
 
         "have 'Name of vessel' option" in {
-          section
-            .getElementById("Departure_NameOfVessel-label")
+          view.getElementById("Departure_NameOfVessel").attr("value") mustBe NameOfVessel
+          view
+            .getElementsByAttributeValue("for", "Departure_NameOfVessel")
             .text() mustBe "declaration.transportInformation.meansOfTransport.nameOfVessel"
+          view
+            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$NameOfVessel")
+            .text() mustBe "declaration.transportInformation.meansOfTransport.nameOfVessel.label"
         }
 
-        "have 'Vagon number' option" in {
-          section
-            .getElementById("Departure_WagonNumber-label")
+        "have 'Wagon number' option" in {
+          view.getElementById("Departure_WagonNumber").attr("value") mustBe WagonNumber
+          view
+            .getElementsByAttributeValue("for", "Departure_WagonNumber")
             .text() mustBe "declaration.transportInformation.meansOfTransport.wagonNumber"
+          view
+            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$WagonNumber")
+            .text() mustBe "declaration.transportInformation.meansOfTransport.wagonNumber.label"
         }
 
-        "have 'Vehice number' option" in {
-          section
-            .getElementById("Departure_VehicleRegistrationNumber-label")
+        "have 'Vehicle number' option" in {
+          view.getElementById("Departure_VehicleRegistrationNumber").attr("value") mustBe VehicleRegistrationNumber
+          view
+            .getElementsByAttributeValue("for", "Departure_VehicleRegistrationNumber")
             .text() mustBe "declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber"
+          view
+            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$VehicleRegistrationNumber")
+            .text() mustBe "declaration.transportInformation.meansOfTransport.vehicleRegistrationNumber.label"
         }
 
         "have 'flight number' option" in {
-          section
-            .getElementById("Departure_IATAFlightNumber-label")
+          view.getElementById("Departure_IATAFlightNumber").attr("value") mustBe IATAFlightNumber
+          view
+            .getElementsByAttributeValue("for", "Departure_IATAFlightNumber")
             .text() mustBe "declaration.transportInformation.meansOfTransport.IATAFlightNumber"
+          view
+            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$IATAFlightNumber")
+            .text() mustBe "declaration.transportInformation.meansOfTransport.IATAFlightNumber.label"
         }
 
         "have 'aircraft registration' option" in {
-          section
-            .getElementById("Departure_AircraftRegistrationNumber-label")
+          view.getElementById("Departure_AircraftRegistrationNumber").attr("value") mustBe AircraftRegistrationNumber
+          view
+            .getElementsByAttributeValue("for", "Departure_AircraftRegistrationNumber")
             .text() mustBe "declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber"
+          view
+            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$AircraftRegistrationNumber")
+            .text() mustBe "declaration.transportInformation.meansOfTransport.aircraftRegistrationNumber.label"
         }
 
-        "have 'eni code' optopn" in {
-          section
-            .getElementById("Departure_EuropeanVesselIDNumber-label")
+        "have 'european vessel id' option" in {
+          view.getElementById("Departure_EuropeanVesselIDNumber").attr("value") mustBe EuropeanVesselIDNumber
+          view
+            .getElementsByAttributeValue("for", "Departure_EuropeanVesselIDNumber")
             .text() mustBe "declaration.transportInformation.meansOfTransport.europeanVesselIDNumber"
+          view
+            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$EuropeanVesselIDNumber")
+            .text() mustBe "declaration.transportInformation.meansOfTransport.europeanVesselIDNumber.label"
         }
 
         "have 'inland waterway' option" in {
-          section
-            .getElementById("Departure_NameOfInlandWaterwayVessel-label")
+          view.getElementById("Departure_NameOfInlandWaterwayVessel").attr("value") mustBe NameOfInlandWaterwayVessel
+          view
+            .getElementsByAttributeValue("for", "Departure_NameOfInlandWaterwayVessel")
             .text() mustBe "declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel"
+          view
+            .getElementsByAttributeValue("for", s"meansOfTransportOnDepartureIDNumber_$NameOfInlandWaterwayVessel")
+            .text() mustBe "declaration.transportInformation.meansOfTransport.nameOfInlandWaterwayVessel.label"
         }
+      }
+    }
+
+    onJourney(DeclarationType.CLEARANCE) { implicit request =>
+      val view = createView()
+
+      "display radio section " which {
+
+        "has 'none' option" in {
+          view.getElementById("Departure_NotApplicable").attr("value") mustBe OptionNone
+          view
+            .getElementsByAttributeValue("for", "Departure_NotApplicable")
+            .text() mustBe "declaration.transportInformation.meansOfTransport.notApplicable"
+        }
+
       }
 
-      "display 'Reference' section" which {
-        "have label" in {
-          view
-            .getElementById("meansOfTransportOnDepartureIDNumber-label")
-            .text() mustBe "declaration.transportInformation.meansOfTransport.reference.header"
-        }
-        "have hint" in {
-          view
-            .getElementById("meansOfTransportOnDepartureIDNumber-hint")
-            .text() mustBe "declaration.transportInformation.meansOfTransport.reference.hint"
-        }
-      }
     }
   }
 }

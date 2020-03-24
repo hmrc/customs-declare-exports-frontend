@@ -17,14 +17,17 @@
 package unit.controllers.declaration
 
 import controllers.declaration.{routes, DepartureTransportController}
-import forms.declaration.DepartureTransport
 import forms.declaration.ModeOfTransportCodes.Maritime
 import forms.declaration.TransportCodes.WagonNumber
+import forms.declaration.{DepartureTransport, TransportCodes}
 import models.DeclarationType._
 import models.Mode
-import play.api.libs.json.{JsValue, Json}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.mvc.Result
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
 import views.html.declaration.departure_transport
@@ -33,7 +36,7 @@ import scala.concurrent.Future
 
 class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
-  val borderTransportPage = new departure_transport(mainTemplate)
+  val borderTransportPage = mock[departure_transport]
 
   val controller = new DepartureTransportController(
     mockAuthAction,
@@ -48,6 +51,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
     super.beforeEach()
     setupErrorHandler()
     authorizedUser()
+    when(borderTransportPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   private def nextPage(decType: DeclarationType) = decType match {
@@ -55,6 +59,14 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
     case STANDARD      => routes.BorderTransportController.displayPage()
     case CLEARANCE     => routes.TransportContainerController.displayContainerSummary()
   }
+
+  private def formData(transportType: String, reference: String) =
+    JsObject(
+      Map(
+        DepartureTransport.meansOfTransportOnDepartureTypeKey -> JsString(transportType),
+        s"${DepartureTransport.meansOfTransportOnDepartureIDNumberKey}_$transportType" -> JsString(reference)
+      )
+    )
 
   "Border transport controller" when {
     onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE)() { declaration =>
@@ -80,10 +92,20 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "return 400 (BAD_REQUEST)" when {
 
+        "no option is selected" in {
+          withNewCaching(declaration)
+
+          val correctForm: JsValue = formData("", "")
+
+          val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+          status(result) must be(BAD_REQUEST)
+        }
+
         "form is incorrect" in {
           withNewCaching(declaration)
 
-          val incorrectForm: JsValue = Json.toJson(DepartureTransport("wrongValue", "FAA"))
+          val incorrectForm: JsValue = formData("wrongValue", "FAA")
 
           val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
 
@@ -96,7 +118,23 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         "information provided by user are correct" in {
           withNewCaching(declaration)
 
-          val correctForm: JsValue = Json.toJson(DepartureTransport(WagonNumber, "FAA"))
+          val correctForm: JsValue = formData(WagonNumber, "FAA")
+
+          val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe nextPage(declaration.`type`)
+        }
+      }
+    }
+
+    onJourney(CLEARANCE)() { declaration =>
+      "return 303 (SEE_OTHER)" when {
+
+        "'none' option is selected" in {
+          withNewCaching(declaration)
+
+          val correctForm: JsValue = formData(TransportCodes.OptionNone, "")
 
           val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
@@ -121,7 +159,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         "page is submitted" in {
           withNewCaching(declaration)
 
-          val correctForm: JsValue = Json.toJson(DepartureTransport(WagonNumber, "FAA"))
+          val correctForm: JsValue = formData(WagonNumber, "FAA")
 
           val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
