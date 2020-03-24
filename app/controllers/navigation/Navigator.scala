@@ -109,7 +109,7 @@ object Navigator {
     case RemoveCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case ChangeCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case GoodsLocationForm           => controllers.declaration.routes.DestinationCountryController.displayPage
-    case DeclarationHolder           => controllers.declaration.routes.RepresentativeDetailsController.displayPage
+    case DeclarationHolder           => controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage
     case SupervisingCustomsOffice    => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case ModeOfTransportCodes        => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case WarehouseIdentification     => controllers.declaration.routes.ItemsSummaryController.displayPage
