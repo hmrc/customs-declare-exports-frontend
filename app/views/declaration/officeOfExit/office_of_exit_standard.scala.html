@@ -15,17 +15,17 @@
  *@
 
 @import controllers.declaration.routes
-@import forms.declaration.officeOfExit.OfficeOfExitSupplementary
-@import uk.gov.hmrc.play.views.html._
+@import controllers.navigation.Navigator
+@import forms.declaration.officeOfExit.{AllowedCircumstancesCodeAnswers, OfficeOfExitStandard}
+@import models.requests.JourneyRequest
 @import services.OfficeOfExits
 @import services.view.AutoCompleteItem
 @import views.Title
-@import models.requests.JourneyRequest
-@import controllers.navigation.Navigator
+@import views.components.inputs.RadioOption
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[OfficeOfExitSupplementary])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[OfficeOfExitStandard])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
 
@@ -37,7 +37,7 @@
     @helper.form(routes.OfficeOfExitController.saveOffice(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
-        @components.back_link(Navigator.backLink(OfficeOfExitSupplementary, mode), mode)
+        @components.back_link(Navigator.backLink(OfficeOfExitStandard, mode), mode)
 
         @components.error_summary(form.errors)
 
@@ -46,15 +46,26 @@
             title = messages("declaration.officeOfExit.title"))
 
         @components.fields.field_autocomplete(
-                  field = form("officeId"),
-                  label = messages("declaration.officeOfExit"),
-                  labelClass = Some("form-label-bold"),
-                  hintText = Some(messages("declaration.officeOfExit.hint")),
-                  messages("standard.officeOfExit.empty"),
-                  AutoCompleteItem.fromOfficeOfExit(OfficeOfExits.all)
-              )
+            field = form("officeId"),
+            label = messages("declaration.officeOfExit"),
+            labelClass = Some("form-label-bold"),
+            hintText = Some(messages("declaration.officeOfExit.hint")),
+            messages("declaration.officeOfExit.empty"),
+            AutoCompleteItem.fromOfficeOfExit(OfficeOfExits.all)
+        )
+
+        @components.fields.field_radio(
+            field = form("circumstancesCode"),
+            legend = messages("standard.officeOfExit.circumstancesCode"),
+            hint = Some(messages("standard.officeOfExit.circumstancesCode.hint")),
+            inputs = Seq(
+                RadioOption("Yes", AllowedCircumstancesCodeAnswers.yes, messages("site.yes")),
+                RadioOption("No", AllowedCircumstancesCodeAnswers.no, messages("site.no"))
+            )
+        )
+
         @components.details(messages("site.details.summary_text_these")){
-            @tariffBody
+           @tariffBody
         }
         @components.submit_button()
         @components.buttons.save_and_return_later_button()

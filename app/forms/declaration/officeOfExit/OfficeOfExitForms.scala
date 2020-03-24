@@ -23,4 +23,6 @@ object OfficeOfExitForms {
   def supplementaryForm(): Form[OfficeOfExitSupplementary] = Form(OfficeOfExitSupplementary.mapping)
 
   def standardForm(): Form[OfficeOfExitStandard] = Form(OfficeOfExitStandard.mapping)
+
+  def clearanceForm(): Form[OfficeOfExitClearance] = Form(OfficeOfExitClearance.mapping)
 }

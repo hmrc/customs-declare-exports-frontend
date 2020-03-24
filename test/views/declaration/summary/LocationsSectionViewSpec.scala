@@ -92,5 +92,17 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData {
       view.getElementById("location-expressConsignment") mustBe null
       view.getElementById("location-expressConsignment-change") mustBe null
     }
+
+    "have answers when office of exit not answered" in {
+      val view = locations_section(Mode.Normal, aDeclarationAfter(data, withOptionalOfficeOfExit(None, Some("Yes"))))(messages, journeyRequest())
+
+      view.getElementById("location-officeOfExit-label").text() mustBe messages("declaration.summary.locations.officeOfExit")
+      view.getElementById("location-officeOfExit").text() mustBe ""
+      view.getElementById("location-officeOfExit-change") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage())
+
+      view.getElementById("location-expressConsignment-label").text() mustBe messages("declaration.summary.locations.expressConsignment")
+      view.getElementById("location-expressConsignment").text() mustBe "Yes"
+      view.getElementById("location-expressConsignment-change") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage())
+    }
   }
 }

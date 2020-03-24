@@ -17,7 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.OfficeOfExitController
-import forms.declaration.officeOfExit.{OfficeOfExitStandard, OfficeOfExitSupplementary}
+import forms.declaration.officeOfExit.{OfficeOfExitClearance, OfficeOfExitStandard, OfficeOfExitSupplementary}
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -28,12 +28,13 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import views.html.declaration.{office_of_exit_standard, office_of_exit_supplementary}
+import views.html.declaration.officeOfExit._
 
 class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
   val mockOfficeOfExitSupplementaryPage = mock[office_of_exit_supplementary]
   val mockOfficeOfExitStandardPage = mock[office_of_exit_standard]
+  val mockOfficeOfExitClearancePage = mock[office_of_exit_clearance]
 
   val controller = new OfficeOfExitController(
     mockAuthAction,
@@ -42,6 +43,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
     stubMessagesControllerComponents(),
     mockOfficeOfExitSupplementaryPage,
     mockOfficeOfExitStandardPage,
+    mockOfficeOfExitClearancePage,
     mockExportsCacheService
   )(ec)
 
@@ -50,12 +52,12 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
     authorizedUser()
     when(mockOfficeOfExitSupplementaryPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockOfficeOfExitStandardPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockOfficeOfExitClearancePage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     super.afterEach()
-    reset(mockOfficeOfExitSupplementaryPage)
-    reset(mockOfficeOfExitStandardPage)
+    reset(mockOfficeOfExitSupplementaryPage, mockOfficeOfExitStandardPage, mockOfficeOfExitClearancePage)
   }
 
   def checkSupplementaryViewInteractions(noOfInvocations: Int = 1): Unit =
@@ -63,6 +65,9 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
   def checkStandardViewInteractions(noOfInvocations: Int = 1): Unit =
     verify(mockOfficeOfExitStandardPage, times(noOfInvocations)).apply(any(), any())(any(), any())
+
+  def checkClearanceViewInteractions(noOfInvocations: Int = 1): Unit =
+    verify(mockOfficeOfExitClearancePage, times(noOfInvocations)).apply(any(), any())(any(), any())
 
   def theSupplementaryResponseForm: Form[OfficeOfExitSupplementary] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[OfficeOfExitSupplementary]])
@@ -73,6 +78,12 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
   def theStandardResponseForm: Form[OfficeOfExitStandard] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[OfficeOfExitStandard]])
     verify(mockOfficeOfExitStandardPage).apply(any(), captor.capture())(any(), any())
+    captor.getValue
+  }
+
+  def theClearanceResponseForm: Form[OfficeOfExitClearance] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[OfficeOfExitClearance]])
+    verify(mockOfficeOfExitClearancePage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -337,24 +348,24 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
           status(result) mustBe OK
-          checkStandardViewInteractions()
+          checkClearanceViewInteractions()
 
-          theStandardResponseForm.value mustBe empty
+          theClearanceResponseForm.value mustBe empty
         }
 
         "display page method is invoked and cache contains data" in {
 
-          val officeId = "officeId"
+          val officeId = Some("officeId")
           val circumstancesCode = "Yes"
-          withNewCaching(aDeclarationAfter(declaration, withOfficeOfExit(officeId, Some(circumstancesCode))))
+          withNewCaching(aDeclarationAfter(declaration, withOptionalOfficeOfExit(officeId, Some(circumstancesCode))))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
           status(result) mustBe OK
-          checkStandardViewInteractions()
+          checkClearanceViewInteractions()
 
-          theStandardResponseForm.value.value.officeId mustBe officeId
-          theStandardResponseForm.value.value.circumstancesCode mustBe circumstancesCode
+          theClearanceResponseForm.value.value.officeId mustBe officeId
+          theClearanceResponseForm.value.value.circumstancesCode mustBe circumstancesCode
         }
       }
 
@@ -369,7 +380,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
           val result = controller.saveOffice(Mode.Normal)(postRequest(incorrectForm))
 
           status(result) mustBe BAD_REQUEST
-          checkStandardViewInteractions()
+          checkClearanceViewInteractions()
         }
       }
 
@@ -385,7 +396,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
-          checkStandardViewInteractions(0)
+          checkClearanceViewInteractions(0)
         }
       }
     }

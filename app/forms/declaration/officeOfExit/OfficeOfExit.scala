@@ -17,14 +17,24 @@
 package forms.declaration.officeOfExit
 import play.api.libs.json.Json
 
-case class OfficeOfExit(officeId: String, circumstancesCode: Option[String])
+case class OfficeOfExit(officeId: Option[String], circumstancesCode: Option[String])
 
 object OfficeOfExit {
   implicit val format = Json.format[OfficeOfExit]
 
   def from(officeOfExitSupplementary: OfficeOfExitSupplementary): OfficeOfExit =
-    OfficeOfExit(officeOfExitSupplementary.officeId, None)
+    OfficeOfExit(Some(officeOfExitSupplementary.officeId), None)
 
   def from(officeOfExitStandard: OfficeOfExitStandard): OfficeOfExit =
-    OfficeOfExit(officeOfExitStandard.officeId, Some(officeOfExitStandard.circumstancesCode))
+    OfficeOfExit(Some(officeOfExitStandard.officeId), Some(officeOfExitStandard.circumstancesCode))
+
+  def from(officeOfExitClearance: OfficeOfExitClearance): OfficeOfExit =
+    OfficeOfExit(officeOfExitClearance.officeId, Some(officeOfExitClearance.circumstancesCode))
+}
+
+object AllowedCircumstancesCodeAnswers {
+  val yes = "Yes"
+  val no = "No"
+
+  val allowedCodes = Seq(yes, no)
 }

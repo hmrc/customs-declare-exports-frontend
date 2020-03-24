@@ -19,25 +19,26 @@ package forms.declaration.officeOfExit
 import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import forms.declaration.officeOfExit.AllowedCircumstancesCodeAnswers.allowedCodes
-import play.api.data.Forms.text
+import play.api.data.Forms.{optional, text}
 import play.api.data.{Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
 
-case class OfficeOfExitStandard(officeId: String, circumstancesCode: String)
+case class OfficeOfExitClearance(officeId: Option[String], circumstancesCode: String)
 
-object OfficeOfExitStandard extends DeclarationPage {
-  implicit val format: OFormat[OfficeOfExitStandard] = Json.format[OfficeOfExitStandard]
+object OfficeOfExitClearance extends DeclarationPage {
+  implicit val format: OFormat[OfficeOfExitClearance] = Json.format[OfficeOfExitClearance]
 
-  val mapping: Mapping[OfficeOfExitStandard] = Forms.mapping(
-    "officeId" -> text()
-      .verifying("declaration.officeOfExit.empty", nonEmpty)
-      .verifying("declaration.officeOfExit.length", isEmpty or hasSpecificLength(8))
-      .verifying("declaration.officeOfExit.specialCharacters", isEmpty or isAlphanumeric),
+  val mapping: Mapping[OfficeOfExitClearance] = Forms.mapping(
+    "officeId" -> optional(
+      text()
+        .verifying("declaration.officeOfExit.length", isEmpty or hasSpecificLength(8))
+        .verifying("declaration.officeOfExit.specialCharacters", isEmpty or isAlphanumeric)
+    ),
     "circumstancesCode" -> requiredRadio("standard.officeOfExit.circumstancesCode.empty")
       .verifying("standard.officeOfExit.circumstancesCode.error", isContainedIn(allowedCodes))
-  )(OfficeOfExitStandard.apply)(OfficeOfExitStandard.unapply)
+  )(OfficeOfExitClearance.apply)(OfficeOfExitClearance.unapply)
 
-  def apply(officeOfExit: OfficeOfExit): OfficeOfExitStandard =
-    OfficeOfExitStandard(officeId = officeOfExit.officeId.getOrElse(""), circumstancesCode = officeOfExit.circumstancesCode.getOrElse(""))
+  def apply(officeOfExit: OfficeOfExit): OfficeOfExitClearance =
+    OfficeOfExitClearance(officeId = officeOfExit.officeId, circumstancesCode = officeOfExit.circumstancesCode.getOrElse(""))
 }

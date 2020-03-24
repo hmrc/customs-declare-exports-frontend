@@ -15,19 +15,17 @@
  *@
 
 @import controllers.declaration.routes
-@import forms.declaration.officeOfExit.OfficeOfExitStandard
-@import forms.declaration.officeOfExit.OfficeOfExitStandard.AllowedCircumstancesCodeAnswers
-@import services.view.AutoCompleteItem
-@import services.{CustomsOffices, OfficeOfExits}
-@import uk.gov.hmrc.play.views.html._
-@import views.components.inputs.RadioOption
-@import views.Title
 @import controllers.navigation.Navigator
+@import forms.declaration.officeOfExit.{AllowedCircumstancesCodeAnswers, OfficeOfExitClearance}
 @import models.requests.JourneyRequest
+@import services.OfficeOfExits
+@import services.view.AutoCompleteItem
+@import views.Title
+@import views.components.inputs.RadioOption
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[OfficeOfExitStandard])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[OfficeOfExitClearance])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
 
@@ -39,7 +37,7 @@
     @helper.form(routes.OfficeOfExitController.saveOffice(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
-        @components.back_link(Navigator.backLink(OfficeOfExitStandard, mode), mode)
+        @components.back_link(Navigator.backLink(OfficeOfExitClearance, mode), mode)
 
         @components.error_summary(form.errors)
 
