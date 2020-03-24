@@ -99,7 +99,7 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
       }
     }
 
-    onJourney(STANDARD, SIMPLIFIED, SUPPLEMENTARY, OCCASIONAL) { implicit request =>
+    onEveryDeclarationJourney { implicit request =>
       "display 'Back' button that links to 'Additional Info' page" in {
 
         val document = createView()
@@ -107,17 +107,6 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
 
         backButton.text() mustBe messages(backCaption)
         backButton.attr("href") mustBe routes.DeclarationAdditionalActorsController.displayPage().url
-      }
-    }
-
-    onJourney(CLEARANCE) { implicit request =>
-      "display 'Back' button that links to 'Representative Details' page" in {
-
-        val document = createView()
-        val backButton = document.getElementById("back-link")
-
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.RepresentativeDetailsController.displayPage().url
       }
     }
   }
