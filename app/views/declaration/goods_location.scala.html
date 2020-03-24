@@ -19,35 +19,53 @@
 @import forms.declaration.GoodsLocationForm
 @import models.requests.JourneyRequest
 @import views.Title
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.html.components.gds._
+@import views.{BackButton, Title}
 
-@this(main_template: views.html.main_template)
+@this(
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    exportsInputText: exportsInputText,
+    saveButtons: saveButtons,
+    tariffDetails: tariffDetails,
+    pageTitle: pageTitle,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
+
 
 @(mode: Mode, form: Form[GoodsLocationForm])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tariffBody = { @Html(messages("declaration.goodsLocation.help.bodyText", components.details_content_link())) }
 
-@main_template(
-    title = Title("declaration.goodsLocation.title", "declaration.summary.locations.header")
-) {
-    @helper.form(LocationController.saveLocation(mode), 'autoComplete -> "off") {
-        @helper.CSRF.formField
 
-        @components.back_link(Navigator.backLink(GoodsLocationForm, mode)(request))
+@govukLayout(
+    title = Title("declaration.goodsLocation.title", "declaration.summary.locations.header"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(GoodsLocationForm, mode)))) {
 
-        @components.error_summary(form.errors)
+    @formHelper(action = LocationController.saveLocation(mode), 'autoComplete -> "off") {
+    @helper.CSRF.formField
 
-        @components.heading(
-            sectionHeader = messages("declaration.summary.locations.header"),
-            title = messages("declaration.goodsLocation.title"),
-            hint = messages("declaration.goodsLocation.hint")
-        )
+        @errorSummary(form.errors)
 
-        @components.fields.field_text(field = form("code"))
+        @sectionHeader(messages("declaration.summary.locations.header"))
+        @pageTitle(messages("declaration.goodsLocation.title"))
 
-        @components.details(messages("site.details.summary_text_this")){
-           @tariffBody
-        }
-        @components.submit_button()
-        @components.buttons.save_and_return_later_button()
-    }
+        @exportsInputText(
+        field = form("code"),
+        labelKey = "",
+        hintKey = Some("declaration.goodsLocation.hint"),
+        isPageHeading = true,
+        headingClasses = "govuk-label--m"
+)
+
+
+    @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(messages("declaration.goodsLocation.help.bodyText", components.details_content_link())))
+
+
+    @saveButtons()
+}
+
 }
