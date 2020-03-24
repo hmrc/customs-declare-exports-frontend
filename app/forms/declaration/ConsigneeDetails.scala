@@ -26,7 +26,7 @@ object ConsigneeDetails extends DeclarationPage {
 
   val id = "ConsigneeDetails"
 
-  val mapping = Forms.mapping("details" -> EntityDetails.mapping)(ConsigneeDetails.apply)(ConsigneeDetails.unapply)
+  val mapping = Forms.mapping("details" -> EntityDetails.defaultMapping)(ConsigneeDetails.apply)(ConsigneeDetails.unapply)
 
   def form(): Form[ConsigneeDetails] = Form(mapping)
 }
