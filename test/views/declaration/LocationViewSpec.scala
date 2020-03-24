@@ -97,10 +97,10 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       val form = GoodsLocationForm.form.fillAndValidate(GoodsLocationForm(""))
       val view = createView(form = form)
 
-      checkErrorsSummary(view)
-      haveFieldErrorLink("code", "#code")
+      view must haveGovukGlobalErrorSummary
+      view must containErrorElementWithTagAndHref("a", "#code")
 
-      view.select("#error-message-code-input").text() mustBe "declaration.goodsLocation.code.empty"
+      view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.goodsLocation.code.empty")
     }
 
     "display error for incorrect country in the Goods Location code" in {
@@ -108,10 +108,10 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       val form = GoodsLocationForm.form.fillAndValidate(GoodsLocationForm("XXAU1234567"))
       val view = createView(form = form)
 
-      checkErrorsSummary(view)
-      haveFieldErrorLink("code", "#code")
+      view must haveGovukGlobalErrorSummary
+      view must containErrorElementWithTagAndHref("a", "#code")
 
-      view.select("#error-message-code-input").text() mustBe "declaration.goodsLocation.code.error"
+      view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.goodsLocation.code.error")
     }
 
     "display error for incorrect type of location in the Goods Location code" in {
@@ -119,10 +119,10 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       val form = GoodsLocationForm.form.fillAndValidate(GoodsLocationForm("GBXU12345678"))
       val view = createView(form = form)
 
-      checkErrorsSummary(view)
-      haveFieldErrorLink("code", "#code")
+      view must haveGovukGlobalErrorSummary
+      view must containErrorElementWithTagAndHref("a", "#code")
 
-      view.select("#error-message-code-input").text() mustBe "declaration.goodsLocation.code.error"
+      view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.goodsLocation.code.error")
     }
 
     "display error for incorrect qualifier of identification in the Goods Location code" in {
@@ -130,10 +130,10 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       val form = GoodsLocationForm.form.fillAndValidate(GoodsLocationForm("PLAX12345678"))
       val view = createView(form = form)
 
-      checkErrorsSummary(view)
-      haveFieldErrorLink("code", "#code")
+      view must haveGovukGlobalErrorSummary
+      view must containErrorElementWithTagAndHref("a", "#code")
 
-      view.select("#error-message-code-input").text() mustBe "declaration.goodsLocation.code.error"
+      view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.goodsLocation.code.error")
     }
 
     "display error for too short code" in {
@@ -141,10 +141,10 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       val form = GoodsLocationForm.form.fillAndValidate(GoodsLocationForm("PLAU123"))
       val view = createView(form = form)
 
-      checkErrorsSummary(view)
-      haveFieldErrorLink("code", "#code")
+      view must haveGovukGlobalErrorSummary
+      view must containErrorElementWithTagAndHref("a", "#code")
 
-      view.select("#error-message-code-input").text() mustBe "declaration.goodsLocation.code.error"
+      view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.goodsLocation.code.error")
     }
   }
 
