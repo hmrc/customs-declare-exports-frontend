@@ -20,8 +20,8 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.ExporterDetails
 import javax.inject.Inject
-import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -43,14 +43,13 @@ class ExporterDetailsController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.parties.exporterDetails match {
-      case Some(data) => Ok(exporterDetailsPage(mode, ExporterDetails.form().fill(data)))
-      case _          => Ok(exporterDetailsPage(mode, ExporterDetails.form()))
+      case Some(data) => Ok(exporterDetailsPage(mode, form().fill(data)))
+      case _          => Ok(exporterDetailsPage(mode, form()))
     }
   }
 
   def saveAddress(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    ExporterDetails
-      .form()
+    form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ExporterDetails]) => Future.successful(BadRequest(exporterDetailsPage(mode, formWithErrors))),
@@ -65,4 +64,7 @@ class ExporterDetailsController @Inject()(
       val updatedParties = model.parties.copy(exporterDetails = Some(formData))
       model.copy(parties = updatedParties)
     })
+
+  private def form()(implicit request: JourneyRequest[AnyContent]): Form[ExporterDetails] =
+    ExporterDetails.form(request.declarationType)
 }

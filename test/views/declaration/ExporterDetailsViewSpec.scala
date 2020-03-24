@@ -22,6 +22,7 @@ import controllers.util.SaveAndReturn
 import forms.common.{Address, Eori}
 import forms.declaration.{EntityDetails, ExporterDetails}
 import helpers.views.declaration.CommonMessages
+import models.DeclarationType.{DeclarationType, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -36,27 +37,31 @@ import views.tags.ViewTest
 @ViewTest
 class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
-  private val form: Form[ExporterDetails] = ExporterDetails.form()
   private val exporterDetailsPage = new exporter_details(mainTemplate)
-  private def createView(form: Form[ExporterDetails] = form, messages: Messages = stubMessages())(implicit request: JourneyRequest[_]): Document =
+
+  private def form(journeyType: DeclarationType): Form[ExporterDetails] = ExporterDetails.form(journeyType)
+
+  private def createView(form: Form[ExporterDetails], messages: Messages = stubMessages())(implicit request: JourneyRequest[_]): Document =
     exporterDetailsPage(Mode.Normal, form)(request, messages)
 
   "Exporter Details View on empty page" should {
 
     onEveryDeclarationJourney { implicit request =>
       "display same page title as header" in {
-        val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+        val viewWithMessage = createView(form(request.declarationType), messages = realMessagesApi.preferred(request))
         viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
       }
 
       "display section header" in {
 
-        createView().getElementById("section-header").text() must include(messages("supplementary.summary.parties.header"))
+        createView(form(request.declarationType)).getElementById("section-header").text() must include(
+          messages("supplementary.summary.parties.header")
+        )
       }
 
       "display empty input with label for EORI" in {
 
-        val view = createView()
+        val view = createView(form(request.declarationType))
 
         view.getElementById("details_eori-label").text() mustBe messages("supplementary.consignor.eori")
         view.getElementById("details_eori").attr("value") mustBe empty
@@ -64,7 +69,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
       "display empty input with label for Full name" in {
 
-        val view = createView()
+        val view = createView(form(request.declarationType))
 
         view.getElementById("details_address_fullName-label").text() mustBe messages("supplementary.address.fullName")
         view.getElementById("details_address_fullName").attr("value") mustBe empty
@@ -72,7 +77,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
       "display empty input with label for Address" in {
 
-        val view = createView()
+        val view = createView(form(request.declarationType))
 
         view.getElementById("details_address_addressLine-label").text() mustBe messages("supplementary.address.addressLine")
         view.getElementById("details_address_addressLine").attr("value") mustBe empty
@@ -80,7 +85,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
       "display empty input with label for Town or City" in {
 
-        val view = createView()
+        val view = createView(form(request.declarationType))
 
         view.getElementById("details_address_townOrCity-label").text() mustBe messages("supplementary.address.townOrCity")
         view.getElementById("details_address_townOrCity").attr("value") mustBe empty
@@ -88,7 +93,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
       "display empty input with label for Postcode" in {
 
-        val view = createView()
+        val view = createView(form(request.declarationType))
 
         view.getElementById("details_address_postCode-label").text() mustBe messages("supplementary.address.postCode")
         view.getElementById("details_address_postCode").attr("value") mustBe empty
@@ -96,7 +101,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
       "display empty input with label for Country" in {
 
-        val view = createView()
+        val view = createView(form(request.declarationType))
 
         view.getElementById("details_address_country-label").text() mustBe messages("supplementary.address.country")
         view.getElementById("details_address_country").attr("value") mustBe empty
@@ -104,19 +109,19 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
       "display 'Back' button that links to 'Declarant Details' page" in {
 
-        val backButton = createView().getElementById("back-link")
+        val backButton = createView(form(request.declarationType)).getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
         backButton.attr("href") mustBe routes.DeclarantDetailsController.displayPage().url
       }
 
       "display 'Save and continue' button" in {
-        val saveButton = createView().getElementById("submit")
+        val saveButton = createView(form(request.declarationType)).getElementById("submit")
         saveButton.text() mustBe messages(saveAndContinueCaption)
       }
 
       "display 'Save and return' button" in {
-        val saveButton = createView().getElementById("submit_and_return")
+        val saveButton = createView(form(request.declarationType)).getElementById("submit_and_return")
         saveButton.text() mustBe messages(saveAndReturnCaption)
         saveButton.attr("name") mustBe SaveAndReturn.toString
       }
@@ -125,10 +130,10 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
   "Exporter Details View for invalid input" should {
 
-    onEveryDeclarationJourney { implicit request =>
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
       "display error when both EORI and business details are empty" in {
 
-        val view = createView(ExporterDetails.form().bind(Map[String, String]()))
+        val view = createView(form(request.declarationType).bind(Map[String, String]()))
 
         checkErrorsSummary(view)
         view must haveFieldErrorLink("details", "#details")
@@ -139,8 +144,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
       "display error when EORI is provided, but is incorrect" in {
 
         val view = createView(
-          ExporterDetails
-            .form()
+          form(request.declarationType)
             .fillAndValidate(ExporterDetails(EntityDetails(Some(Eori(TestHelper.createRandomAlphanumericString(18))), None)))
         )
 
@@ -154,8 +158,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
       "display error for empty Full name" in {
 
         val view = createView(
-          ExporterDetails
-            .form()
+          form(request.declarationType)
             .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("", "Test Street", "Leeds", "LS18BN", "England")))))
         )
 
@@ -168,8 +171,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
       "display error for incorrect Full name" in {
 
         val view = createView(
-          ExporterDetails
-            .form()
+          form(request.declarationType)
             .fillAndValidate(
               ExporterDetails(
                 EntityDetails(None, Some(Address(TestHelper.createRandomAlphanumericString(71), "Test Street", "Leeds", "LS18BN", "England")))
@@ -186,8 +188,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
       "display error for empty Address" in {
 
         val view = createView(
-          ExporterDetails
-            .form()
+          form(request.declarationType)
             .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "", "Leeds", "LS18BN", "England")))))
         )
 
@@ -200,8 +201,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
       "display error for incorrect Address" in {
 
         val view = createView(
-          ExporterDetails
-            .form()
+          form(request.declarationType)
             .fillAndValidate(
               ExporterDetails(
                 EntityDetails(None, Some(Address("Marco Polo", TestHelper.createRandomAlphanumericString(71), "Leeds", "LS18BN", "England")))
@@ -218,8 +218,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
       "display error for empty Town or city" in {
 
         val view = createView(
-          ExporterDetails
-            .form()
+          form(request.declarationType)
             .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "", "LS18BN", "England")))))
         )
 
@@ -232,8 +231,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
       "display error for incorrect Town or city" in {
 
         val view = createView(
-          ExporterDetails
-            .form()
+          form(request.declarationType)
             .fillAndValidate(
               ExporterDetails(
                 EntityDetails(None, Some(Address("Marco Polo", "Test Street", TestHelper.createRandomAlphanumericString(71), "LS18BN", "England")))
@@ -250,8 +248,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
       "display error for empty Postcode" in {
 
         val view = createView(
-          ExporterDetails
-            .form()
+          form(request.declarationType)
             .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "", "England")))))
         )
         checkErrorsSummary(view)
@@ -263,8 +260,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
       "display error for incorrect Postcode" in {
 
         val view = createView(
-          ExporterDetails
-            .form()
+          form(request.declarationType)
             .fillAndValidate(
               ExporterDetails(
                 EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", TestHelper.createRandomAlphanumericString(71), "England")))
@@ -281,8 +277,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
       "display error for empty Country" in {
 
         val view = createView(
-          ExporterDetails
-            .form()
+          form(request.declarationType)
             .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "")))))
         )
 
@@ -295,8 +290,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
       "display error for incorrect Country" in {
 
         val view = createView(
-          ExporterDetails
-            .form()
+          form(request.declarationType)
             .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "Barcelona")))))
         )
 
@@ -309,8 +303,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
       "display errors when everything except Full name is empty" in {
 
         val view = createView(
-          ExporterDetails
-            .form()
+          form(request.declarationType)
             .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "", "", "", "")))))
         )
 
@@ -329,8 +322,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
       "display errors when everything except Country is empty" in {
 
         val view = createView(
-          ExporterDetails
-            .form()
+          form(request.declarationType)
             .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("", "", "", "", "Ukraine")))))
         )
 
@@ -349,8 +341,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
       "display errors when everything except Full name is incorrect" in {
 
         val view = createView(
-          ExporterDetails
-            .form()
+          form(request.declarationType)
             .fillAndValidate(
               ExporterDetails(
                 EntityDetails(
@@ -384,8 +375,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
       "display errors when everything except Country is incorrect" in {
 
         val view = createView(
-          ExporterDetails
-            .form()
+          form(request.declarationType)
             .fillAndValidate(
               ExporterDetails(
                 EntityDetails(
@@ -423,8 +413,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
     onEveryDeclarationJourney { implicit request =>
       "display data in EORI input" in {
 
-        val form = ExporterDetails.form().fill(ExporterDetails(EntityDetails(Some(Eori("1234")), None)))
-        val view = createView(form)
+        val view = createView(form(request.declarationType).fill(ExporterDetails(EntityDetails(Some(Eori("1234")), None))))
 
         view.getElementById("details_eori").attr("value") mustBe "1234"
         view.getElementById("details_address_fullName").attr("value") mustBe empty
@@ -436,10 +425,10 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
       "display data in Business address inputs" in {
 
-        val form = ExporterDetails
-          .form()
-          .fill(ExporterDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "test4")))))
-        val view = createView(form)
+        val view = createView(
+          form(request.declarationType)
+            .fill(ExporterDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "test4")))))
+        )
 
         view.getElementById("details_eori").attr("value") mustBe empty
         view.getElementById("details_address_fullName").attr("value") mustBe "test"
@@ -451,10 +440,10 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
       "display data in both EORI and Business address inputs" in {
 
-        val form = ExporterDetails
-          .form()
-          .fill(ExporterDetails(EntityDetails(Some(Eori("1234")), Some(Address("test", "test1", "test2", "test3", "test4")))))
-        val view = createView(form)
+        val view = createView(
+          form(request.declarationType)
+            .fill(ExporterDetails(EntityDetails(Some(Eori("1234")), Some(Address("test", "test1", "test2", "test3", "test4")))))
+        )
 
         view.getElementById("details_eori").attr("value") mustBe "1234"
         view.getElementById("details_address_fullName").attr("value") mustBe "test"

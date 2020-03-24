@@ -18,6 +18,7 @@ package unit.forms.declaration
 
 import forms.LightFormMatchers
 import forms.declaration.ExporterDetails
+import models.DeclarationType._
 import org.scalatest.{MustMatchers, WordSpec}
 
 class ExporterDetailsSpec extends WordSpec with MustMatchers with LightFormMatchers {
@@ -30,40 +31,55 @@ class ExporterDetailsSpec extends WordSpec with MustMatchers with LightFormMatch
     }
   }
 
-  "Exporter Details form" should {
-    "validate is eori and address is non empty" in {
-      ExporterDetails.form().bind(emptyExporterDetailsJSON).error("details") must haveMessage("supplementary.namedEntityDetails.error")
-    }
-    val outcomeFromIncorrectForm = ExporterDetails.form().bind(incorrectExporterDetailsJSON)
-    "validate eori and address" in {
-      outcomeFromIncorrectForm.error("details.eori") must haveMessage("supplementary.eori.error.format")
-    }
-    "validate address fullname" in {
-      outcomeFromIncorrectForm.error("details.address.fullName") must haveMessage("supplementary.address.fullName.error")
-    }
-    "validate address addresline" in {
-      outcomeFromIncorrectForm.error("details.address.addressLine") must haveMessage("supplementary.address.addressLine.error")
-    }
-    "validate town or city" in {
-      outcomeFromIncorrectForm.error("details.address.townOrCity") must haveMessage("supplementary.address.townOrCity.error")
-    }
-    "validate post code" in {
-      outcomeFromIncorrectForm.error("details.address.postCode") must haveMessage("supplementary.address.postCode.error")
-    }
-    "validate country" in {
-      outcomeFromIncorrectForm.error("details.address.country") must haveMessage("supplementary.address.country.error")
-    }
+  Seq(SUPPLEMENTARY, STANDARD, OCCASIONAL, SIMPLIFIED, CLEARANCE).map { decType =>
+    s"Exporter Details form for $decType" should {
+      val outcomeFromIncorrectForm = ExporterDetails.form(decType).bind(incorrectExporterDetailsJSON)
+      "validate eori and address" in {
+        outcomeFromIncorrectForm.error("details.eori") must haveMessage("supplementary.eori.error.format")
+      }
+      "validate address fullname" in {
+        outcomeFromIncorrectForm.error("details.address.fullName") must haveMessage("supplementary.address.fullName.error")
+      }
+      "validate address addresline" in {
+        outcomeFromIncorrectForm.error("details.address.addressLine") must haveMessage("supplementary.address.addressLine.error")
+      }
+      "validate town or city" in {
+        outcomeFromIncorrectForm.error("details.address.townOrCity") must haveMessage("supplementary.address.townOrCity.error")
+      }
+      "validate post code" in {
+        outcomeFromIncorrectForm.error("details.address.postCode") must haveMessage("supplementary.address.postCode.error")
+      }
+      "validate country" in {
+        outcomeFromIncorrectForm.error("details.address.country") must haveMessage("supplementary.address.country.error")
+      }
 
-    "bind correctly to EORI only request" in {
-      ExporterDetails.form().bind(correctExporterDetailsEORIOnlyJSON) mustBe errorless
-    }
+      "bind correctly to EORI only request" in {
+        ExporterDetails.form(decType).bind(correctExporterDetailsEORIOnlyJSON) mustBe errorless
+      }
 
-    "bind correctly to address only data" in {
-      ExporterDetails.form().bind(correctExporterDetailsAddressOnlyJSON) mustBe errorless
-    }
+      "bind correctly to address only data" in {
+        ExporterDetails.form(decType).bind(correctExporterDetailsAddressOnlyJSON) mustBe errorless
+      }
 
-    "bind correctly to EORI and address data at once" in {
-      ExporterDetails.form().bind(correctExporterDetailsJSON) mustBe errorless
+      "bind correctly to EORI and address data at once" in {
+        ExporterDetails.form(decType).bind(correctExporterDetailsJSON) mustBe errorless
+      }
+    }
+  }
+
+  Seq(CLEARANCE).map { decType =>
+    s"Exporter Details form for $decType" should {
+      "allow an empty eori and empty address" in {
+        ExporterDetails.form(decType).bind(emptyExporterDetailsJSON) mustBe errorless
+      }
+    }
+  }
+
+  Seq(SUPPLEMENTARY, STANDARD, OCCASIONAL, SIMPLIFIED).map { decType =>
+    s"Exporter Details form for $decType" should {
+      "validate is eori and address is non empty" in {
+        ExporterDetails.form(decType).bind(emptyExporterDetailsJSON).error("details") must haveMessage("supplementary.namedEntityDetails.error")
+      }
     }
   }
 }
