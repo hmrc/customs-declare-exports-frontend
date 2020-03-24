@@ -20,6 +20,8 @@
 @import models.viewmodels.HtmlTableRow
 @import models.DeclarationType._
 @import models.Mode._
+@import views.html.declaration.summary.parties_section_additional_actors
+@import views.html.declaration.summary.parties_section_holders
 
 @(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
@@ -108,12 +110,17 @@
         )
 
         @declarationData.parties.declarationAdditionalActorsData.map(additional =>
-            additional_and_authorised_parties_section(
+            parties_section_additional_actors(
                 mode = mode,
-                additionalActors = additional.actors,
-                holders = declarationData.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
+                additionalActors = additional.actors
             )
         )
+
+        @parties_section_holders(
+                mode = mode,
+                holders = declarationData.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
+            )
+
     }
     </div>
 }
