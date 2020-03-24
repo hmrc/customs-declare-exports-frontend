@@ -33,6 +33,9 @@ object EntityDetails {
     .mapping("eori" -> optional(Eori.mapping("supplementary")), "address" -> optional(Address.mapping))(EntityDetails.apply)(EntityDetails.unapply)
     .verifying("supplementary.namedEntityDetails.error", validateNamedEntityDetails(_))
 
+  val mappingOptional = Forms
+    .mapping("eori" -> optional(Eori.mapping("supplementary")), "address" -> optional(Address.mapping))(EntityDetails.apply)(EntityDetails.unapply)
+
   private def validateNamedEntityDetails(namedEntity: EntityDetails): Boolean =
     !(namedEntity.eori.isEmpty && namedEntity.address.isEmpty)
 

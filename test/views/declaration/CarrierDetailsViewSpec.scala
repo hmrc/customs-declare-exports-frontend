@@ -22,7 +22,7 @@ import controllers.util.SaveAndReturn
 import forms.common.{Address, Eori}
 import forms.declaration.{CarrierDetails, EntityDetails}
 import helpers.views.declaration.CommonMessages
-import models.Mode
+import models.{DeclarationType, Mode}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -35,7 +35,7 @@ import views.tags.ViewTest
 @ViewTest
 class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
-  val form: Form[CarrierDetails] = CarrierDetails.form()
+  val form: Form[CarrierDetails] = CarrierDetails.form(DeclarationType.STANDARD)
   private val carrierDetailsPage = new carrier_details(mainTemplate)
 
   private def createView(form: Form[CarrierDetails] = form)(implicit journeyRequest: JourneyRequest[_]): Document =
@@ -125,10 +125,10 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
   "Carrier Details View with invalid input" should {
 
-    onEveryDeclarationJourney { implicit request =>
+    onJourney(DeclarationType.STANDARD, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED) { implicit request =>
       "display error when both EORI and business details are empty" in {
 
-        val view = createView(CarrierDetails.form().bind(Map[String, String]()))
+        val view = createView(CarrierDetails.form(request.declarationType).bind(Map[String, String]()))
 
         view must haveGlobalErrorSummary
         view must haveFieldErrorLink("details", "#details")
@@ -140,7 +140,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         val view = createView(
           CarrierDetails
-            .form()
+            .form(request.declarationType)
             .fillAndValidate(CarrierDetails(EntityDetails(Some(Eori(TestHelper.createRandomAlphanumericString(18))), None)))
         )
 
@@ -154,7 +154,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         val view = createView(
           CarrierDetails
-            .form()
+            .form(request.declarationType)
             .fillAndValidate(CarrierDetails(EntityDetails(None, Some(Address("", "Test Street", "Leeds", "LS18BN", "England")))))
         )
 
@@ -168,7 +168,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         val view = createView(
           CarrierDetails
-            .form()
+            .form(request.declarationType)
             .fillAndValidate(
               CarrierDetails(
                 EntityDetails(None, Some(Address(TestHelper.createRandomAlphanumericString(71), "Test Street", "Leeds", "LS18BN", "England")))
@@ -186,7 +186,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         val view = createView(
           CarrierDetails
-            .form()
+            .form(request.declarationType)
             .fillAndValidate(CarrierDetails(EntityDetails(None, Some(Address("Marco Polo", "", "Leeds", "LS18BN", "England")))))
         )
 
@@ -200,7 +200,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         val view = createView(
           CarrierDetails
-            .form()
+            .form(request.declarationType)
             .fillAndValidate(
               CarrierDetails(
                 EntityDetails(None, Some(Address("Marco Polo", TestHelper.createRandomAlphanumericString(71), "Leeds", "LS18BN", "England")))
@@ -218,7 +218,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         val view = createView(
           CarrierDetails
-            .form()
+            .form(request.declarationType)
             .fillAndValidate(CarrierDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "", "LS18BN", "England")))))
         )
 
@@ -232,7 +232,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         val view = createView(
           CarrierDetails
-            .form()
+            .form(request.declarationType)
             .fillAndValidate(
               CarrierDetails(
                 EntityDetails(None, Some(Address("Marco Polo", "Test Street", TestHelper.createRandomAlphanumericString(71), "LS18BN", "England")))
@@ -250,7 +250,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         val view = createView(
           CarrierDetails
-            .form()
+            .form(request.declarationType)
             .fillAndValidate(CarrierDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "", "England")))))
         )
 
@@ -264,7 +264,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         val view = createView(
           CarrierDetails
-            .form()
+            .form(request.declarationType)
             .fillAndValidate(
               CarrierDetails(
                 EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", TestHelper.createRandomAlphanumericString(71), "England")))
@@ -282,7 +282,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         val view = createView(
           CarrierDetails
-            .form()
+            .form(request.declarationType)
             .fillAndValidate(CarrierDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "")))))
         )
 
@@ -296,7 +296,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         val view = createView(
           CarrierDetails
-            .form()
+            .form(request.declarationType)
             .fillAndValidate(CarrierDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "Barcelona")))))
         )
 
@@ -310,7 +310,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         val view = createView(
           CarrierDetails
-            .form()
+            .form(request.declarationType)
             .fillAndValidate(CarrierDetails(EntityDetails(None, Some(Address("Marco Polo", "", "", "", "")))))
         )
 
@@ -330,7 +330,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         val view = createView(
           CarrierDetails
-            .form()
+            .form(request.declarationType)
             .fillAndValidate(CarrierDetails(EntityDetails(None, Some(Address("", "", "", "", "Ukraine")))))
         )
 
@@ -350,7 +350,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         val view = createView(
           CarrierDetails
-            .form()
+            .form(request.declarationType)
             .fillAndValidate(
               CarrierDetails(
                 EntityDetails(
@@ -385,7 +385,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         val view = createView(
           CarrierDetails
-            .form()
+            .form(request.declarationType)
             .fillAndValidate(
               CarrierDetails(
                 EntityDetails(
@@ -423,7 +423,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
     onEveryDeclarationJourney { implicit request =>
       "display data in EORI input" in {
 
-        val form = CarrierDetails.form().fill(CarrierDetails(EntityDetails(Some(Eori("1234")), None)))
+        val form = CarrierDetails.form(request.declarationType).fill(CarrierDetails(EntityDetails(Some(Eori("1234")), None)))
         val view = createView(form)
 
         view.getElementById("details_eori").attr("value") mustBe "1234"
@@ -437,7 +437,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
       "display data in Business address inputs" in {
 
         val form = CarrierDetails
-          .form()
+          .form(request.declarationType)
           .fill(CarrierDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "test4")))))
         val view = createView(form)
 
@@ -452,7 +452,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
       "display data in both EORI and Business address inputs" in {
 
         val form = CarrierDetails
-          .form()
+          .form(request.declarationType)
           .fill(CarrierDetails(EntityDetails(Some(Eori("1234")), Some(Address("test", "test1", "test2", "test3", "test4")))))
         val view = createView(form)
 

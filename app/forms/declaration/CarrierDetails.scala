@@ -17,6 +17,8 @@
 package forms.declaration
 
 import forms.DeclarationPage
+import models.DeclarationType._
+import models.DeclarationType.DeclarationType
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 
@@ -27,7 +29,11 @@ object CarrierDetails extends DeclarationPage {
 
   val id = "CarrierDetails"
 
-  val mapping = Forms.mapping("details" -> EntityDetails.mapping)(CarrierDetails.apply)(CarrierDetails.unapply)
+  val mappingEitherRequired = Forms.mapping("details" -> EntityDetails.mapping)(CarrierDetails.apply)(CarrierDetails.unapply)
+  val mappingOptional = Forms.mapping("details" -> EntityDetails.mappingOptional)(CarrierDetails.apply)(CarrierDetails.unapply)
 
-  def form(): Form[CarrierDetails] = Form(mapping)
+  def form(declarationType: DeclarationType): Form[CarrierDetails] = declarationType match {
+    case CLEARANCE => Form(mappingOptional)
+    case _         => Form(mappingEitherRequired)
+  }
 }
