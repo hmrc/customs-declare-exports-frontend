@@ -15,9 +15,20 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import play.twirl.api.HtmlFormat
+@import scala.collection.immutable
 
-@this(govukButton: GovukButton)
+@this(govukButton : GovukButton)
 
-@(messageKey: String = "site.save_and_continue")(implicit messages: Messages)
+@(hiddenLabel: Option[String] = None)(implicit messages: Messages)
 
-@govukButton(Button(content = Text(messages(messageKey)), attributes = Map("id" -> "submit", "name" -> "SaveAndContinue")))
+@govukButton(Button(
+    classes = "govuk-button--secondary",
+    content = HtmlContent(HtmlFormat.fill(
+     immutable.Seq(
+      Html(s"""<span aria-hidden="true">${messages("site.add")}</span>"""),
+      Html(s"""<span class="govuk-visually-hidden">${messages(hiddenLabel.getOrElse("site.remove"))}</span>""")
+     )
+    )),
+    name = Some("Add")
+))

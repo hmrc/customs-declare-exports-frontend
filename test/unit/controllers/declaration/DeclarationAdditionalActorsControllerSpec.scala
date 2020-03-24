@@ -16,24 +16,24 @@
 
 package unit.controllers.declaration
 
-import base.TestHelper
+import base.{Injector, TestHelper}
 import controllers.declaration.DeclarationAdditionalActorsController
 import controllers.util.Remove
 import forms.common.Eori
 import forms.declaration.DeclarationAdditionalActors
 import models.DeclarationType.CLEARANCE
-import models.declaration.DeclarationAdditionalActorsData
 import models.{DeclarationType, Mode}
+import models.declaration.DeclarationAdditionalActorsData
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
 import views.html.declaration.declaration_additional_actors
 
-class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with ErrorHandlerMocks {
+class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with ErrorHandlerMocks with Injector {
 
   trait SetUp {
-    val declarationAdditionalActorsPage = new declaration_additional_actors(mainTemplate)
+    val declarationAdditionalActorsPage = instanceOf[declaration_additional_actors]
 
     val controller = new DeclarationAdditionalActorsController(
       mockAuthAction,
@@ -164,29 +164,45 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
     "return 303 (SEE_OTHER)" when {
 
-      onJourney(CLEARANCE) { request =>
-        "redirect back to journey start" in new SetUp {
-          withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
+      "user correctly add new consolidator" in new SetUp {
 
-          val result = controller.displayPage(Mode.Normal)(getRequest())
-
-          status(result) must be(SEE_OTHER)
-          redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
-        }
-      }
-
-      "user correctly add new item" in new SetUp {
-
-        val correctForm = Seq(("eori", eori), ("partyType", "CS"), addActionUrlEncoded())
+        val correctForm = Seq(("eoriCS", eori), ("partyType", "CS"), addActionUrlEncoded())
 
         val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(SEE_OTHER)
       }
 
-      "user save correct data" in new SetUp {
+      "user correctly add new manufacturer" in new SetUp {
 
-        val correctForm = Seq(("eori", eori), ("partyType", "CS"), saveAndContinueActionUrlEncoded)
+        val correctForm = Seq(("eoriMF", eori), ("partyType", "MF"), addActionUrlEncoded())
+
+        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        status(result) must be(SEE_OTHER)
+      }
+
+      "user correctly add new freight forwarder" in new SetUp {
+
+        val correctForm = Seq(("eoriFW", eori), ("partyType", "FW"), addActionUrlEncoded())
+
+        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        status(result) must be(SEE_OTHER)
+      }
+
+      "user correctly add new warehouse keeper" in new SetUp {
+
+        val correctForm = Seq(("eoriWH", eori), ("partyType", "WH"), addActionUrlEncoded())
+
+        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        status(result) must be(SEE_OTHER)
+      }
+
+      "user save correct consolidator" in new SetUp {
+
+        val correctForm = Seq(("eoriCS", eori), ("partyType", "CS"), saveAndContinueActionUrlEncoded)
 
         val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
@@ -194,11 +210,31 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
         thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderController.displayPage(Mode.Normal)
       }
 
-      "user save correct data without new item" in new SetUp {
+      "user save correct manufacturer" in new SetUp {
 
-        withNewCaching(declarationWithActor)
+        val correctForm = Seq(("eoriMF", eori), ("partyType", "MF"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
+        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderController.displayPage(Mode.Normal)
+      }
+
+      "user save correct freight forwarder" in new SetUp {
+
+        val correctForm = Seq(("eoriFW", eori), ("partyType", "FW"), saveAndContinueActionUrlEncoded)
+
+        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderController.displayPage(Mode.Normal)
+      }
+
+      "user save correct warehouse keeper" in new SetUp {
+
+        val correctForm = Seq(("eoriWH", eori), ("partyType", "WH"), saveAndContinueActionUrlEncoded)
+
+        val result = controller.saveForm(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderController.displayPage(Mode.Normal)
