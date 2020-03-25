@@ -370,14 +370,14 @@ function holderOfAuthorisation(){
 
 function originationCountry(){
     if (currentPageIs("/customs-declare-exports/declaration/origination-country")) {
-        selectFromAutoPredict(document.getElementById("country-container"), "GB");
+        selectFromAutoPredict(document.getElementById("countryCode-container"), "GB");
         document.getElementsByClassName('button')[0].click()
     }
 }
 
 function destinationCountry(){
     if (currentPageIs("/customs-declare-exports/declaration/destination-country")) {
-        selectFromAutoPredict(document.getElementById("country-container"), "US");
+        selectFromAutoPredict(document.getElementById("countryCode-container"), "US");
         document.getElementsByClassName('button')[0].click()
     }
 }
@@ -391,7 +391,7 @@ function countryOfRouting(){
 
 function countriesOfRouting(){
     if (currentPageIs("/customs-declare-exports/declaration/countries-of-routing")) {
-        selectFromAutoPredict(document.getElementById("country-container"), "GB");
+        selectFromAutoPredict(document.getElementById("countryCode-container"), "GB");
         document.getElementsByClassName('button')[0].click()
     }
 }

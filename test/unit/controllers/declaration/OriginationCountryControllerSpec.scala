@@ -87,7 +87,7 @@ class OriginationCountryControllerSpec extends ControllerSpec {
 
           withNewCaching(aDeclaration(withType(request.declarationType)))
 
-          val incorrectForm = JsObject(Map("code" -> JsString("incorrect")))
+          val incorrectForm = JsObject(Map("countryCode" -> JsString("incorrect")))
 
           val result = controller.submit(Mode.Normal)(postRequest(incorrectForm))
 
@@ -99,7 +99,7 @@ class OriginationCountryControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withType(request.declarationType), withDestinationCountries()))
 
-        val correctForm = JsObject(Map("code" -> JsString("PL")))
+        val correctForm = JsObject(Map("countryCode" -> JsString("PL")))
 
         val result = controller.submit(Mode.Normal)(postRequest(correctForm))
 

@@ -21,7 +21,6 @@ import models.DeclarationType._
 import models.requests.JourneyRequest
 import play.api.data.{Form, Forms, Mapping}
 import play.api.data.Forms.{optional, text}
-import play.api.mvc.AnyContent
 import services.Countries.allCountries
 
 object Countries {
@@ -54,12 +53,12 @@ object Countries {
       .verifying(s"declaration.routingCountries.limit", _ => cachedCountries.length < limit)
 
   private def mandatoryMapping(page: CountryPage, cachedCountries: Seq[Country] = Seq.empty): Mapping[Country] =
-    Forms.mapping("code" -> mapping(page, cachedCountries))(country => if (country.nonEmpty) Country(Some(country)) else Country(None))(
+    Forms.mapping("countryCode" -> mapping(page, cachedCountries))(country => if (country.nonEmpty) Country(Some(country)) else Country(None))(
       country => country.code
     )
 
   private def optionalForm(page: CountryPage, cachedCountries: Seq[Country] = Seq.empty): Mapping[Country] =
-    Forms.mapping("code" -> optional(mapping(page, cachedCountries)))(Country.apply)(Country.unapply)
+    Forms.mapping("countryCode" -> optional(mapping(page, cachedCountries)))(Country.apply)(Country.unapply)
 
   def form(page: CountryPage, cachedCountries: Seq[Country] = Seq.empty)(implicit request: JourneyRequest[_]): Form[Country] =
     request.declarationType match {
