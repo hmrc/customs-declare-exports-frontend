@@ -20,48 +20,56 @@
 @import views.Title
 @import controllers.navigation.Navigator
 @import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.html.components.gds._
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukDetails : GovukDetails,
+        pageTitle: pageTitle,
+        exportsInputText: exportsInputText,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        saveButtons: saveButtons,
+        tariffDetails: tariffDetails,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, form: Form[TotalNumberOfItems])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
 
-@tariffBody = { @components.tariff_body_partial(messages("supplementary.total-number-of-items.help-item1"), messages("supplementary.total-number-of-items.help-item2"))(tariffBodyDesc)}
+@tariffBody = { @components.tariff_body_partial(messages("declaration.total-number-of-items.help-item1"), messages("declaration.total-number-of-items.help-item2"))(tariffBodyDesc)}
 
-@main_template(
-    title = Title("supplementary.valueOfItems", "supplementary.items")
-) {
-    @helper.form(TotalNumberOfItemsController.saveNoOfItems(mode), 'autoComplete -> "off") {
-        @helper.CSRF.formField
 
-        @components.back_link(Navigator.backLink(TotalNumberOfItems, mode), mode)
+@govukLayout(
+    title = Title("declaration.invoice.details.title", "declaration.invoice.details.header"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(TotalNumberOfItems, mode)))) {
 
-        @components.error_summary(form.errors)
+    @formHelper(action = TotalNumberOfItemsController.saveNoOfItems(mode), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-        @components.heading(
-            sectionHeader = messages("supplementary.items"),
-            title = messages("supplementary.valueOfItems")
-        )
+        @sectionHeader(messages("declaration.invoice.details.header"))
+        @pageTitle(messages("declaration.invoice.details.title"))
 
-        @components.fields.field_text(
-            field = form("totalAmountInvoiced"),
-            label = Some(messages("supplementary.totalAmountInvoiced")),
-            hint = Some(messages("supplementary.totalAmountInvoiced.hint")),
-            labelClass = Some("form-label-bold")
-        )
-
-        @components.fields.field_text(
+        @exportsInputText(
             field = form("exchangeRate"),
-            label = Some(messages("supplementary.exchangeRate")),
-            hint = Some(messages("supplementary.exchangeRate.hint")),
-            labelClass = Some("form-label-bold")
+            labelKey = "declaration.exchangeRate",
+            hintKey = Some("declaration.exchangeRate.hint"),
+            inputClasses = Some("govuk-input--width-10")
         )
 
-        @components.details(messages("site.details.summary_text_these")){
-          @tariffBody
-        }
-        @components.submit_button()
-        @components.buttons.save_and_return_later_button()
+        @exportsInputText(
+            field = form("totalAmountInvoiced"),
+            labelKey = "declaration.totalAmountInvoiced",
+            hintKey = Some("declaration.totalAmountInvoiced.hint"),
+            inputClasses = Some("govuk-input--width-10")
+        )
+
+        @tariffDetails(messages("site.details.summary_text_these"), HtmlContent(tariffBody))
+
+        @saveButtons()
     }
 }

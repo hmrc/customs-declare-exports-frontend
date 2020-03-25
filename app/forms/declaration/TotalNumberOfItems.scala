@@ -35,11 +35,11 @@ object TotalNumberOfItems extends DeclarationPage {
   val mapping = Forms.mapping(
     "totalAmountInvoiced" -> optional(
       text()
-        .verifying("supplementary.totalAmountInvoiced.error", isEmpty or ofPattern(totalAmountInvoicedPattern))
+        .verifying("declaration.totalAmountInvoiced.error", isEmpty or ofPattern(totalAmountInvoicedPattern))
     ),
     "exchangeRate" -> optional(
       text()
-        .verifying("supplementary.exchangeRate.error", isEmpty or ofPattern(exchangeRatePattern))
+        .verifying("declaration.exchangeRate.error", isEmpty or ofPattern(exchangeRatePattern))
     )
   )(TotalNumberOfItems.apply)(TotalNumberOfItems.unapply)
 
