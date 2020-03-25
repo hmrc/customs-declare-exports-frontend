@@ -1,0 +1,61 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.declaration.routes
+@import controllers.navigation.Navigator
+@import forms.declaration.officeOfExit.OfficeOfExitSupplementary
+@import models.requests.JourneyRequest
+@import services.OfficeOfExits
+@import services.view.AutoCompleteItem
+@import views.Title
+
+@this(main_template: views.html.main_template)
+
+@(mode: Mode, form: Form[OfficeOfExitSupplementary])(implicit request: JourneyRequest[_], messages: Messages)
+
+@tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
+
+@tariffBody = { @components.tariff_body_partial(messages("supplementary.representative-details.help-item1"), messages("supplementary.representative-details.help-item2"))(tariffBodyDesc)}
+
+@main_template(
+    title = Title("declaration.officeOfExit.title", "declaration.summary.locations.header")
+) {
+    @helper.form(routes.OfficeOfExitController.saveOffice(mode), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
+        @components.back_link(Navigator.backLink(OfficeOfExitSupplementary, mode), mode)
+
+        @components.error_summary(form.errors)
+
+        @components.heading(
+            sectionHeader = messages("declaration.summary.locations.header"),
+            title = messages("declaration.officeOfExit.title"))
+
+        @components.fields.field_autocomplete(
+                  field = form("officeId"),
+                  label = messages("declaration.officeOfExit"),
+                  labelClass = Some("form-label-bold"),
+                  hintText = Some(messages("declaration.officeOfExit.hint")),
+                  messages("standard.officeOfExit.empty"),
+                  AutoCompleteItem.fromOfficeOfExit(OfficeOfExits.all)
+              )
+        @components.details(messages("site.details.summary_text_these")){
+            @tariffBody
+        }
+        @components.submit_button()
+        @components.buttons.save_and_return_later_button()
+    }
+}

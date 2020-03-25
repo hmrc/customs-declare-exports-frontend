@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package views.declaration
+package views.declaration.officeOfExit
 
 import base.Injector
-import forms.declaration.officeOfExit.{OfficeOfExitForms, OfficeOfExitStandard}
+import forms.declaration.officeOfExit.OfficeOfExitClearance
+import forms.declaration.officeOfExit.OfficeOfExitForms.clearanceForm
+import models.DeclarationType.CLEARANCE
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -26,16 +28,16 @@ import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.office_of_exit_standard
+import views.html.declaration.officeOfExit.office_of_exit_clearance
 import views.tags.ViewTest
 
 @ViewTest
-class OfficeOfExitStandardViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
+class OfficeOfExitClearanceViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  private val page: office_of_exit_standard = new office_of_exit_standard(mainTemplate)
-  private val form: Form[OfficeOfExitStandard] = OfficeOfExitForms.standardForm()
-  private def createView(mode: Mode = Mode.Normal, form: Form[OfficeOfExitStandard] = form): Document =
-    page(mode, form)(journeyRequest(), stubMessages())
+  private val page: office_of_exit_clearance = new office_of_exit_clearance(mainTemplate)
+  private val form: Form[OfficeOfExitClearance] = clearanceForm()
+  private def createView(mode: Mode = Mode.Normal, form: Form[OfficeOfExitClearance] = form): Document =
+    page(mode, form)(journeyRequest(CLEARANCE), stubMessages())
 
   "Office of Exit View for standard" should {
     val view = createView()
@@ -98,14 +100,11 @@ class OfficeOfExitStandardViewSpec extends UnitViewSpec with ExportsTestData wit
     "Office of Exit during standard declaration for invalid input" should {
 
       "display errors when all inputs are empty" in {
-        val data = OfficeOfExitStandard("", "")
-        val form = OfficeOfExitForms.standardForm.fillAndValidate(data)
+        val data = OfficeOfExitClearance(None, "")
+        val form = clearanceForm().fillAndValidate(data)
         val view = createView(form = form)
 
         checkErrorsSummary(view)
-
-        view.getElementById("officeId-error").text() mustBe "declaration.officeOfExit.empty"
-        view.getElementById("error-message-officeId-input").text() mustBe "declaration.officeOfExit.empty"
 
         view.getElementById("circumstancesCode-error").text() mustBe "standard.officeOfExit.circumstancesCode.error"
         view
@@ -114,8 +113,8 @@ class OfficeOfExitStandardViewSpec extends UnitViewSpec with ExportsTestData wit
       }
 
       "display errors when all inputs are incorrect" in {
-        val data = OfficeOfExitStandard("123456", "Yes")
-        val form = OfficeOfExitForms.standardForm.fillAndValidate(data)
+        val data = OfficeOfExitClearance(Some("123456"), "Yes")
+        val form = clearanceForm().fillAndValidate(data)
         val view = createView(form = form)
 
         checkErrorsSummary(view)
@@ -125,8 +124,8 @@ class OfficeOfExitStandardViewSpec extends UnitViewSpec with ExportsTestData wit
       }
 
       "display errors when office of exit contains special characters" in {
-        val data = OfficeOfExitStandard("12#$%^78", "Yes")
-        val form = OfficeOfExitForms.standardForm.fillAndValidate(data)
+        val data = OfficeOfExitClearance(Some("12#$%^78"), "Yes")
+        val form = clearanceForm().fillAndValidate(data)
         val view = createView(form = form)
 
         checkErrorsSummary(view)

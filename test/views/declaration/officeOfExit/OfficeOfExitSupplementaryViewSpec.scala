@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package views.declaration
+package views.declaration.officeOfExit
 
 import base.Injector
 import forms.declaration.officeOfExit.{OfficeOfExitForms, OfficeOfExitSupplementary}
+import models.DeclarationType.SUPPLEMENTARY
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -26,7 +27,7 @@ import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.office_of_exit_supplementary
+import views.html.declaration.officeOfExit.office_of_exit_supplementary
 import views.tags.ViewTest
 
 @ViewTest
@@ -35,7 +36,7 @@ class OfficeOfExitSupplementaryViewSpec extends UnitViewSpec with ExportsTestDat
   private val page = new office_of_exit_supplementary(mainTemplate)
   private val form: Form[OfficeOfExitSupplementary] = OfficeOfExitForms.supplementaryForm()
   private def createView(mode: Mode = Mode.Normal, form: Form[OfficeOfExitSupplementary] = form): Document =
-    page(mode, form)(journeyRequest(), stubMessages())
+    page(mode, form)(journeyRequest(SUPPLEMENTARY), stubMessages())
 
   "Office of Exit View on empty page" should {
     val view = createView()

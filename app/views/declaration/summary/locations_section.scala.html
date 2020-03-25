@@ -38,7 +38,7 @@
             @declarationData.locations.officeOfExit.map(officeOfExit =>
                 components.table_row("location-officeOfExit", HtmlTableRow(
                     label = messages("declaration.summary.locations.officeOfExit"),
-                    value = officeOfExit.officeId,
+                    value = officeOfExit.officeId.getOrElse(""),
                     call = Some(controllers.declaration.routes.OfficeOfExitController.displayPage(mode)),
                     changeLabel = Some(messages("declaration.summary.locations.officeOfExit.change"))
                 ))

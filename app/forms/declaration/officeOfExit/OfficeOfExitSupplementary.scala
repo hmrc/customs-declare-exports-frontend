@@ -34,5 +34,5 @@ object OfficeOfExitSupplementary extends DeclarationPage {
       .verifying("declaration.officeOfExit.specialCharacters", isEmpty or isAlphanumeric)
   )(OfficeOfExitSupplementary.apply)(OfficeOfExitSupplementary.unapply)
 
-  def apply(officeOfExit: OfficeOfExit): OfficeOfExitSupplementary = OfficeOfExitSupplementary(officeOfExit.officeId)
+  def apply(officeOfExit: OfficeOfExit): OfficeOfExitSupplementary = OfficeOfExitSupplementary(officeOfExit.officeId.getOrElse(""))
 }
