@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.30
+// @version      1.31
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -486,8 +486,8 @@ function totalNumberOfPackages(){
 
 function natureOfTransaction(){
     if (currentPageIs("/customs-declare-exports/declaration/nature-of-transaction")) {
-        selectRadioOption(document.getElementById("natureType"), 0);
-        document.getElementsByClassName('button')[0].click()
+        selectRadioOptionFromInputs(document.getElementsByName("natureType"), 0)
+        document.getElementById('submit').click()
     }
 }
 
