@@ -127,23 +127,7 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
       }
     }
 
-    onJourney(DeclarationType.CLEARANCE)() { declaration =>
-      "return 303 (SEE_OTHER) and redirect to holder of authorization page" in {
-
-        withNewCaching(declaration)
-
-        val correctForm = Json.toJson(RepresentativeDetails(Some(EntityDetails(Some(Eori(eori)), None)), Some("2")))
-
-        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderController.displayPage()
-
-        verify(mockRepresentativeDetailsPage, times(0)).apply(any(), any())(any(), any())
-      }
-    }
-
-    onJourney(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)() { declaration =>
+    onJourney(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL, DeclarationType.CLEARANCE)() { declaration =>
       "return 303 (SEE_OTHER) and redirect to carrier details page" in {
 
         withNewCaching(request.cacheModel)
