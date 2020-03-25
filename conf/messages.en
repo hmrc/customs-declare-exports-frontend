@@ -702,15 +702,16 @@ declaration.transportInformation.containers.yes = Yes
 declaration.transportInformation.containers.no = No
 declaration.transportInformation.containerId = Enter the container ID
 
-
-supplementary.totalAmountInvoiced.error = Total amount of invoiced items is incorrect
-supplementary.totalAmountInvoiced = Total amount invoiced
-supplementary.totalAmountInvoiced.hint = This is the total amount of all items on the invoice. Declare in GBP.
-supplementary.exchangeRate.error = Enter an exchange rate in the correct format
-supplementary.exchangeRate = Agreed fixed rate of exchange
-supplementary.exchangeRate.hint = This is a set price contractually agreed based on a specific currency exchange rate. If one wasn’t agreed, leave this question blank and continue.
-supplementary.total-number-of-items.help-item1 = Where is the office of exit, go to data element 5/12 Customs Office of Exit
-supplementary.total-number-of-items.help-item2 = Express consignment, go to data element 1/7 Specific Circumstance Indicator
+declaration.invoice.details.title = Invoice and exchange rate details
+declaration.invoice.details.header = Items
+declaration.totalAmountInvoiced.error = Total amount of invoiced items is incorrect
+declaration.totalAmountInvoiced = Total amount invoiced
+declaration.totalAmountInvoiced.hint = This is the total amount of all items added to the declaration. Declare this in the currency it was invoiced in, for example USD. If multiple currencies were used, declare in GBP.
+declaration.exchangeRate.error = Enter an exchange rate in the correct format
+declaration.exchangeRate = Contractually agreed fixed rate of exchange
+declaration.exchangeRate.hint = This is an agreed rate of exchange between buyer and seller. If you need to declare this, enter document code 9WKS back in the item’s documents page. If one wasn’t agreed, leave this question blank and continue.
+declaration.total-number-of-items.help-item1 = Agreed fixed rate of exchange, go to data element 4/15 Exchange Rate - Fixed in Advance By Contract
+declaration.total-number-of-items.help-item2 = Total amount invoiced, go to data element 4/11 Total Amount Invoiced
 
 supplementary.goodItemNumber.title = Good item number
 supplementary.goodItemNumber.error = Item number doesn't exist
