@@ -116,7 +116,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withDestinationCountry()))
 
-        val incorrectForm = JsObject(Seq("code" -> JsString("incorrect")))
+        val incorrectForm = JsObject(Seq("countryCode" -> JsString("incorrect")))
 
         val result = controller.submitRoutingAnswer(Mode.Normal)(postRequest(incorrectForm))
 
@@ -127,7 +127,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withRoutingCountries(Seq(Country(Some("PL"))))))
 
-        val duplicatedForm = JsObject(Seq("code" -> JsString("PL")))
+        val duplicatedForm = JsObject(Seq("countryCode" -> JsString("PL")))
 
         val result = controller.submitRoutingAnswer(Mode.Normal)(postRequest(duplicatedForm))
 
@@ -195,7 +195,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withRoutingQuestion()))
 
-        val correctForm = JsObject(Seq("code" -> JsString("GB")))
+        val correctForm = JsObject(Seq("countryCode" -> JsString("GB")))
 
         val result = controller.submitRoutingCountry(Mode.Normal)(postRequest(correctForm))
 

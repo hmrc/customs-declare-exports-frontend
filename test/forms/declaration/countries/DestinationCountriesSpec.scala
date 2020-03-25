@@ -41,7 +41,7 @@ class DestinationCountriesSpec extends UnitSpec with JourneyTypeTestRunner {
 
         val result = Countries.form(OriginationCountryPage)(request).fillAndValidate(Country(Some("incorrect")))
 
-        result.errors mustBe Seq(FormError("code", "declaration.originationCountry.error"))
+        result.errors mustBe Seq(FormError("countryCode", "declaration.originationCountry.error"))
       }
 
       s"check if the country is duplicated for ${request.declarationType}" in {
@@ -49,7 +49,7 @@ class DestinationCountriesSpec extends UnitSpec with JourneyTypeTestRunner {
         val cachedCountries = Seq(Country(Some("PL")))
         val result = Countries.form(NextRoutingCountryPage, cachedCountries)(request).fillAndValidate(Country(Some("PL")))
 
-        result.errors mustBe Seq(FormError("code", "declaration.routingCountries.duplication"))
+        result.errors mustBe Seq(FormError("countryCode", "declaration.routingCountries.duplication"))
       }
 
       s"validate if country limit is reached for ${request.declarationType}" in {
@@ -57,7 +57,7 @@ class DestinationCountriesSpec extends UnitSpec with JourneyTypeTestRunner {
         val cachedCountries = Seq.fill(99)(Country(Some("PL")))
         val result = Countries.form(NextRoutingCountryPage, cachedCountries)(request).fillAndValidate(Country(Some("GB")))
 
-        result.errors mustBe Seq(FormError("code", "declaration.routingCountries.limit"))
+        result.errors mustBe Seq(FormError("countryCode", "declaration.routingCountries.limit"))
       }
     }
   }
@@ -71,7 +71,7 @@ class DestinationCountriesSpec extends UnitSpec with JourneyTypeTestRunner {
 
           val result = Countries.form(DestinationCountryPage)(request).fillAndValidate(Country(Some("")))
 
-          result.errors mustBe Seq(FormError("code", "declaration.destinationCountry.empty"))
+          result.errors mustBe Seq(FormError("countryCode", "declaration.destinationCountry.empty"))
         }
       }
     }
