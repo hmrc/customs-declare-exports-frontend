@@ -591,6 +591,7 @@ supplementary.addDocument.error.notDefined = Enter document information
 supplementary.addDocument.error.measurementUnitAndQuantity = Enter measurement unit and document quantity
 
 supplementary.items = Items
+supplementary.valueOfItems = Enter item information
 supplementary.totalNumberOfItems = 1/9 What were the total number of items?
 supplementary.totalNumberOfItems.hint = Up to a maximum of 999 items
 supplementary.totalNumberOfItems.empty = Enter total number of items
