@@ -16,22 +16,19 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.{routes, TransportLeavingTheBorderController}
-import forms.declaration.{ModeOfTransportCodes, TransportPayment}
-import models.{DeclarationType, Mode}
+import controllers.declaration.TransportLeavingTheBorderController
+import forms.declaration.ModeOfTransportCodes
 import models.DeclarationType.{CLEARANCE, STANDARD, SUPPLEMENTARY}
+import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
-import play.api.test.Helpers._
 import play.api.data.Form
 import play.api.libs.json.Json
-import play.api.test.Helpers.{await, status, BAD_REQUEST, OK}
+import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.declaration.transport_leaving_the_border
-
-import scala.concurrent.ExecutionContext
 
 class TransportLeavingTheBorderControllerSpec extends ControllerSpec {
 
@@ -65,7 +62,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec {
   }
 
   "Transport Leaving The Border Controller" must {
-    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE)() { declaration =>
+    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
@@ -78,7 +75,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec {
 
         "display page method is invoked and cache is not empty" in {
 
-          withNewCaching(aDeclarationAfter(declaration, withDepartureTransport(ModeOfTransportCodes.Rail, "", "")))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withDepartureTransport(ModeOfTransportCodes.Rail, "", "")))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -91,7 +88,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec {
 
         "form contains incorrect values" in {
 
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val result = controller.submitForm(Mode.Normal)(postRequest(Json.obj()))
 
@@ -101,11 +98,11 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec {
 
     }
 
-    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE)() { declaration =>
+    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
       "return 303 (SEE_OTHER)" when {
 
         "form contains valid values" in {
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
           val correctForm = Json.obj("code" -> ModeOfTransportCodes.Rail.value)
 
           val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))

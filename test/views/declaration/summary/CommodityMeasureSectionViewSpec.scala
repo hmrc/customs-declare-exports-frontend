@@ -19,8 +19,9 @@ package views.declaration.summary
 import base.Injector
 import forms.declaration._
 import helpers.views.declaration.CommonMessages
+import models.DeclarationType._
+import models.Mode
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -34,7 +35,7 @@ class CommodityMeasureSectionViewSpec extends UnitViewSpec with ExportsTestData 
   def createView(journeyRequest: JourneyRequest[_]) = commodity_measure_section(Mode.Normal, item, commodityMeasure)(messages, journeyRequest)
 
   "CommodityMeasure section" should {
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       val view = createView(request)
 
       "have gross weight with change button" in {
@@ -69,7 +70,7 @@ class CommodityMeasureSectionViewSpec extends UnitViewSpec with ExportsTestData 
 
     }
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { implicit request =>
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
       val view = createView(request)
 
       "have supplementary units with change button" in {
@@ -89,7 +90,7 @@ class CommodityMeasureSectionViewSpec extends UnitViewSpec with ExportsTestData 
 
     }
 
-    onJourney(DeclarationType.CLEARANCE) { implicit request =>
+    onJourney(CLEARANCE) { implicit request =>
       val view = createView(request)
 
       "not have supplementary units with change button" in {

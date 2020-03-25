@@ -39,7 +39,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
   "Parties section" must {
 
-    onEveryDeclarationJourney { request =>
+    onEveryDeclarationJourney() { request =>
       val view = parties_section(Mode.Normal, data)(messages, request)
 
       "contains exporter details with change button" in {

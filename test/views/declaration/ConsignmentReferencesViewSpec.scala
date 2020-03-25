@@ -63,7 +63,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
 
   "Consignment References View on empty page" should {
 
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
 
         createView().getElementById("title").text() mustBe messages("supplementary.consignmentReferences.header")
@@ -117,7 +117,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
 
   "Consignment References View for invalid input" should {
 
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       "display error for empty LRN" in {
 
         val view =
@@ -200,7 +200,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
 
   "Consignment References View when filled" should {
 
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       "display data in DUCR input" in {
 
         val view =

@@ -57,7 +57,7 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
       messages must haveTranslationFor("declaration.additionalFiscalReferences.reference.error")
     }
 
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       val view = createView()
 
       "display page title" in {
@@ -108,7 +108,7 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
   }
 
   "Fiscal Information View for invalid input" should {
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       "display error if nothing is selected" in {
 
         val view = createView(form = FiscalInformation.form().bind(Map[String, String]()))
@@ -136,7 +136,7 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
   }
 
   "Dispatch Border Transport View when filled" should {
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       "display selected first radio button - Yes" in {
 
         val view = createView(form = FiscalInformation.form().fill(FiscalInformation("Yes")))

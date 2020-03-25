@@ -22,7 +22,7 @@ import controllers.util.SaveAndReturn
 import forms.common.Eori
 import forms.declaration.DeclarationHolder
 import helpers.views.declaration.CommonMessages
-import models.{DeclarationType, Mode}
+import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -31,7 +31,6 @@ import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.declaration_holder
 import views.tags.ViewTest
-import DeclarationType._
 
 @ViewTest
 class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
@@ -60,12 +59,21 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
   }
 
   "Declaration Holder View on empty page" should {
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       val document = createView()
 
       "display page title" in {
 
         document.getElementById("title").text() mustBe messages("supplementary.declarationHolder.title")
+      }
+
+      "display 'Back' button that links to 'Additional Info' page" in {
+
+        val document = createView()
+        val backButton = document.getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.DeclarationAdditionalActorsController.displayPage().url
       }
 
       "display section header" in {
@@ -98,21 +106,10 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
         saveAndReturnButton.attr("name") mustBe SaveAndReturn.toString
       }
     }
-
-    onEveryDeclarationJourney { implicit request =>
-      "display 'Back' button that links to 'Additional Info' page" in {
-
-        val document = createView()
-        val backButton = document.getElementById("back-link")
-
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.DeclarationAdditionalActorsController.displayPage().url
-      }
-    }
   }
 
   "Declaration Holder View for invalid input" should {
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       /*
        * Both add and save button returns the same errors, so
        * no point to distinguish them and move to controller test
@@ -166,7 +163,7 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
   }
 
   "Declaration Holder View when filled" should {
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       "display data in Authorisation Code input" in {
 
         val view = createView(DeclarationHolder.form().fill(DeclarationHolder(Some("test"), None)))

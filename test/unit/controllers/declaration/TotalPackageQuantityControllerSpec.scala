@@ -54,47 +54,47 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
   }
 
   "Total Package Quantity Controller" must {
-    onJourney(STANDARD, SUPPLEMENTARY)() { declaration =>
+    onJourney(STANDARD, SUPPLEMENTARY) { request =>
       "return 200 (OK)" when {
         "cache is empty" in {
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal).apply(getRequest(declaration))
+          val result = controller.displayPage(Mode.Normal).apply(getRequest(request.cacheModel))
 
           status(result) mustBe OK
         }
         "cache is non empty" in {
-          withNewCaching(aDeclarationAfter(declaration, withTotalPackageQuantity("1")))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withTotalPackageQuantity("1")))
 
-          val result = controller.displayPage(Mode.Normal).apply(getRequest(declaration))
+          val result = controller.displayPage(Mode.Normal).apply(getRequest(request.cacheModel))
 
           status(result) mustBe OK
         }
       }
       "return 400 (Bad Request)" when {
         "form is incorrect" in {
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
-          val result = controller.saveTotalPackageQuantity(Mode.Normal).apply(postRequest(Json.obj("totalPackage" -> "one"), declaration))
+          val result = controller.saveTotalPackageQuantity(Mode.Normal).apply(postRequest(Json.obj("totalPackage" -> "one"), request.cacheModel))
 
           status(result) mustBe BAD_REQUEST
         }
       }
       val correctForm = Json.toJson(TotalPackageQuantity(Some("1")))
       "return 303 (See Other) redirect to next question" in {
-        withNewCaching(declaration)
-        val result = controller.saveTotalPackageQuantity(Mode.Normal)(postRequest(correctForm, declaration))
+        withNewCaching(request.cacheModel)
+        val result = controller.saveTotalPackageQuantity(Mode.Normal)(postRequest(correctForm, request.cacheModel))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.NatureOfTransactionController.displayPage()
       }
     }
 
-    onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE)() { declaration =>
+    onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
       "redirect 303 (See Other) to start" in {
-        withNewCaching(declaration)
+        withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage(Mode.Normal).apply(getRequest(declaration))
+        val result = controller.displayPage(Mode.Normal).apply(getRequest(request.cacheModel))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) must contain(controllers.routes.StartController.displayStartPage().url)

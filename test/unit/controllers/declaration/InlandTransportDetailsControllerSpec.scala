@@ -18,7 +18,8 @@ package unit.controllers.declaration
 
 import controllers.declaration.InlandTransportDetailsController
 import forms.declaration.ModeOfTransportCodes.Maritime
-import models.{DeclarationType, Mode}
+import models.DeclarationType._
+import models.Mode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.mockito.Mockito.{verify, when}
@@ -56,9 +57,9 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
   }
 
   "Inland Transport Details Controller on GET request" should {
-    onJourney(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.SUPPLEMENTARY, DeclarationType.OCCASIONAL)() { declaration =>
+    onJourney(STANDARD, SIMPLIFIED, SUPPLEMENTARY, OCCASIONAL) { request =>
       "return 200 OK" in {
-        withNewCaching(declaration)
+        withNewCaching(request.cacheModel)
 
         val response = controller.displayPage(Mode.Normal).apply(getRequest())
 
@@ -66,7 +67,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
       }
 
       "read item from cache and display it" in {
-        withNewCaching(declaration)
+        withNewCaching(request.cacheModel)
 
         await(controller.displayPage(Mode.Normal)(getRequest()))
 
@@ -74,9 +75,9 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
         verify(inlandTransportDetails).apply(any(), any())(any(), any())
       }
     }
-    onClearance { declaration =>
+    onClearance { request =>
       "redirect to start" in {
-        withNewCaching(declaration)
+        withNewCaching(request.cacheModel)
 
         val response = controller.displayPage(Mode.Normal).apply(getRequest())
 
@@ -90,9 +91,9 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
 
     val body = Json.obj("inlandModeOfTransportCode" -> exampleTransportMode)
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.SUPPLEMENTARY, DeclarationType.OCCASIONAL)() { declaration =>
+    onJourney(STANDARD, SIMPLIFIED, SUPPLEMENTARY, OCCASIONAL) { request =>
       "update cache after successful bind" in {
-        withNewCaching(declaration)
+        withNewCaching(request.cacheModel)
 
         await(controller.submit(Mode.Normal).apply(postRequest(body)))
 
@@ -100,7 +101,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
       }
 
       "return Bad Request if payload is not compatible with model" in {
-        withNewCaching(declaration)
+        withNewCaching(request.cacheModel)
 
         val body = Json.obj("inlandModeOfTransportCode" -> "A")
         val result = controller.submit(Mode.Normal)(postRequest(body))
@@ -109,9 +110,9 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
       }
     }
 
-    onStandard { declaration =>
+    onStandard { request =>
       "redirect to Departure Transport" in {
-        withNewCaching(declaration)
+        withNewCaching(request.cacheModel)
 
         val result = await(controller.submit(Mode.Normal)(postRequest(body)))
 
@@ -120,9 +121,9 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
       }
     }
 
-    onSupplementary { declaration =>
+    onSupplementary { request =>
       "redirect to Departure Transport" in {
-        withNewCaching(declaration)
+        withNewCaching(request.cacheModel)
 
         val result = await(controller.submit(Mode.Normal)(postRequest(body)))
 
@@ -131,9 +132,9 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
       }
     }
 
-    onSimplified { declaration =>
+    onSimplified { request =>
       "redirect to Border Transport" in {
-        withNewCaching(declaration)
+        withNewCaching(request.cacheModel)
 
         val result = await(controller.submit(Mode.Normal)(postRequest(body)))
 
@@ -142,9 +143,9 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with BeforeAnd
       }
     }
 
-    onOccasional { declaration =>
+    onOccasional { request =>
       "redirect to Border Transport" in {
-        withNewCaching(declaration)
+        withNewCaching(request.cacheModel)
 
         val result = await(controller.submit(Mode.Normal)(postRequest(body)))
 

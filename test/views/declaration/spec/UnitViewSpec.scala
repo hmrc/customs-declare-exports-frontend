@@ -17,9 +17,6 @@
 package views.declaration.spec
 
 import base.Injector
-import models.DeclarationType.DeclarationType
-import models.requests.JourneyRequest
-import models.DeclarationType
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import org.scalatest.matchers.{BeMatcher, MatchResult}
@@ -27,10 +24,9 @@ import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.{FakeRequest, Helpers}
 import services.cache.ExportsTestData
-import unit.base.UnitSpec
-import utils.JourneyRequestHelper
+import unit.base.{JourneyTypeTestRunner, UnitSpec}
 
-class UnitViewSpec extends UnitSpec with ViewMatchers with JourneyRequestHelper {
+class UnitViewSpec extends UnitSpec with ViewMatchers with JourneyTypeTestRunner {
 
   import utils.FakeRequestCSRFSupport._
 
@@ -72,16 +68,6 @@ object MessagesKeyMatcher {
 
 object UnitViewSpec extends Injector with ExportsTestData {
   val realMessagesApi: MessagesApi = instanceOf[MessagesApi]
-
-  val standardRequest: JourneyRequest[AnyContent] = journeyRequest(DeclarationType.STANDARD)
-
-  val supplementaryRequest: JourneyRequest[AnyContent] = journeyRequest(DeclarationType.SUPPLEMENTARY)
-
-  val simplifiedRequest: JourneyRequest[AnyContent] = journeyRequest(DeclarationType.SIMPLIFIED)
-
-  val occasionalRequest: JourneyRequest[AnyContent] = journeyRequest(DeclarationType.OCCASIONAL)
-
-  val clearanceRequest: JourneyRequest[AnyContent] = journeyRequest(DeclarationType.CLEARANCE)
 }
 
 private class AllMessageKeysAreMandatoryMessages(msg: Messages) extends Messages {

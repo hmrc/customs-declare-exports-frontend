@@ -57,7 +57,7 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
 
   "Dispatch Location View on empty page" should {
 
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       "display same page title as header" in {
         val viewWithMessage = createView(messages = validatedMessages(request))
         viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
@@ -133,7 +133,7 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
 
   "Dispatch Location View for invalid input" should {
 
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       "display error if nothing is selected" in {
 
         val view = createView(DispatchLocation.form().bind(Map[String, String]()))
@@ -157,7 +157,7 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
   }
 
   "Dispatch Location View when filled" should {
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       "display selected first radio button - Outside (EX)" in {
 
         val view = createView(DispatchLocation.form().fill(DispatchLocation("EX")))

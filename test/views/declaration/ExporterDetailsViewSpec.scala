@@ -22,7 +22,7 @@ import controllers.util.SaveAndReturn
 import forms.common.{Address, Eori}
 import forms.declaration.{EntityDetails, ExporterDetails}
 import helpers.views.declaration.CommonMessages
-import models.DeclarationType.{DeclarationType, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType._
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -46,7 +46,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
   "Exporter Details View on empty page" should {
 
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       "display same page title as header" in {
         val viewWithMessage = createView(form(request.declarationType), messages = realMessagesApi.preferred(request))
         viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
@@ -410,7 +410,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
   "Exporter Details View when filled" should {
 
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       "display data in EORI input" in {
 
         val view = createView(form(request.declarationType).fill(ExporterDetails(EntityDetails(Some(Eori("1234")), None))))

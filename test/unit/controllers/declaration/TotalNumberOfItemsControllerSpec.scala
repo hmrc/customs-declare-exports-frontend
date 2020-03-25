@@ -65,9 +65,9 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
 
   "Total Number of Items controller" should {
 
-    onJourney(STANDARD, SUPPLEMENTARY)() { declaration =>
+    onJourney(STANDARD, SUPPLEMENTARY) { request =>
       "display page method is invoked and cache is empty" in {
-        withNewCaching(declaration)
+        withNewCaching(request.cacheModel)
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
@@ -77,7 +77,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
       }
 
       "display page method is invoked and cache contains data" in {
-        withNewCaching(aDeclaration(withTotalNumberOfItems(totalNumberOfItems)))
+        withNewCaching(aDeclaration(withType(request.declarationType), withTotalNumberOfItems(totalNumberOfItems)))
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -88,7 +88,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
       }
 
       "return 400 (BAD_REQUEST) when form is incorrect" in {
-        withNewCaching(declaration)
+        withNewCaching(request.cacheModel)
         val incorrectForm = Json.toJson(TotalNumberOfItems(Some("abc"), None))
         val result = controller.saveNoOfItems(Mode.Normal)(postRequest(incorrectForm))
 
@@ -97,7 +97,7 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
       }
 
       "return 303 (SEE_OTHER) when information provided by user are correct" in {
-        withNewCaching(declaration)
+        withNewCaching(request.cacheModel)
         val correctForm = Json.toJson(TotalNumberOfItems(None, None))
         val result = controller.saveNoOfItems(Mode.Normal)(postRequest(correctForm))
 
@@ -108,11 +108,11 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
 
     }
 
-    onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE)() { declaration =>
+    onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
       "redirect 303 (See Other) to start" in {
-        withNewCaching(declaration)
+        withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage(Mode.Normal).apply(getRequest(declaration))
+        val result = controller.displayPage(Mode.Normal).apply(getRequest(request.cacheModel))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) must contain(controllers.routes.StartController.displayStartPage().url)

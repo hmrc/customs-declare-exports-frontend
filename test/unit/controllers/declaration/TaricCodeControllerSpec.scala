@@ -21,8 +21,7 @@ import controllers.declaration.TaricCodeController
 import controllers.util.{Add, SaveAndContinue}
 import forms.declaration.TaricCode
 import forms.declaration.TaricCode.taricCodeKey
-import models.DeclarationType.DeclarationType
-import models.{DeclarationType, Mode}
+import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -71,11 +70,11 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
 
   "TARIC Code controller" must {
 
-    onEveryDeclarationJourney(withItems(item)) { declaration =>
+    onEveryDeclarationJourney(withItems(item)) { request =>
       "return 200 (OK)" that {
         "display page method is invoked and cache is empty" in {
 
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
 
@@ -88,7 +87,7 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
         "display page method is invoked and cache contains data" in {
           val taricCode = TaricCode("1234")
           val item = anItem(withTaricCodes(taricCode))
-          withNewCaching(aDeclarationAfter(declaration, withItems(item)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
 
@@ -100,7 +99,7 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
       }
 
       "user adds invalid code" in {
-        withNewCaching(declaration)
+        withNewCaching(request.cacheModel)
 
         val body = Seq((taricCodeKey, "invalidCode"), (Add.toString, ""))
 
@@ -114,7 +113,7 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
         "user adds duplicate code" in {
           val taricCode = TaricCode("1234")
           val item = anItem(withTaricCodes(taricCode))
-          withNewCaching(aDeclarationAfter(declaration, withItems(item)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val body = Seq((taricCodeKey, "1234"), (Add.toString, ""))
 
@@ -127,7 +126,7 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
         "user adds too many codes" in {
           val taricCodes = List.fill(99)(TaricCode(TestHelper.createRandomAlphanumericString(4)))
           val item = anItem(withTaricCodes(taricCodes))
-          withNewCaching(aDeclarationAfter(declaration, withItems(item)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val body = Seq((taricCodeKey, "1234"), (Add.toString, ""))
 
@@ -140,7 +139,7 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
       "return 303 (SEE_OTHER)" when {
         "user submits valid code" in {
           val item = anItem(withItemId("itemId"))
-          withNewCaching(aDeclarationAfter(declaration, withItems(item)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val body = Seq((taricCodeKey, "1234"), (SaveAndContinue.toString, ""))
 

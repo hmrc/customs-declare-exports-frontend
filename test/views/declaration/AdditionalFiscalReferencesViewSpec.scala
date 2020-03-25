@@ -44,7 +44,7 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
     additionalFiscalReferencesPage(Mode.Normal, itemId, form, references)
 
   "Additional Fiscal References View on empty page" should {
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       val view = createView()
 
       "display page title" in {
@@ -93,7 +93,7 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
   }
 
   "Additional Fiscal References" should {
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       val view = createView(references = Seq(AdditionalFiscalReference("FR", "12345")))
 
       "display references" in {
@@ -113,7 +113,7 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Stubs with Co
   "Additional Fiscal References for invalid input" should {
     import forms.declaration.AdditionalFiscalReferenceSpec._
 
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       "display error" when {
 
         "country is empty" in {

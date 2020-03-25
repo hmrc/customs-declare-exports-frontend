@@ -89,12 +89,12 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
   "Office of Exit controller" should {
 
-    onSupplementary { declaration =>
+    onSupplementary { request =>
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
 
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -107,7 +107,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
         "display page method is invoked and cache contains data" in {
 
           val officeId = "officeId"
-          withNewCaching(aDeclarationAfter(declaration, withOfficeOfExit(officeId)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExit(officeId)))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -150,12 +150,12 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    onStandard { declaration =>
+    onStandard { request =>
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
 
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -169,7 +169,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
           val officeId = "officeId"
           val circumstancesCode = "Yes"
-          withNewCaching(aDeclarationAfter(declaration, withOfficeOfExit(officeId, Some(circumstancesCode))))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExit(officeId, Some(circumstancesCode))))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -185,7 +185,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         "form is incorrect" in {
 
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val incorrectForm = Json.toJson(OfficeOfExitStandard("!@#$", "wrong"))
 
@@ -200,7 +200,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         "information provided by user are correct" in {
 
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val correctForm = Json.toJson(OfficeOfExitStandard("officeId", "Yes"))
 
@@ -213,12 +213,12 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    onSimplified { declaration =>
+    onSimplified { request =>
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
 
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -232,7 +232,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
           val officeId = "officeId"
           val circumstancesCode = "Yes"
-          withNewCaching(aDeclarationAfter(declaration, withOfficeOfExit(officeId, Some(circumstancesCode))))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExit(officeId, Some(circumstancesCode))))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -248,7 +248,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         "form is incorrect" in {
 
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val incorrectForm = Json.toJson(OfficeOfExitStandard("!@#$", "wrong"))
 
@@ -263,7 +263,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         "information provided by user are correct" in {
 
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val correctForm = Json.toJson(OfficeOfExitStandard("officeId", "Yes"))
 
@@ -275,12 +275,12 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
         }
       }
     }
-    onOccasional { declaration =>
+    onOccasional { request =>
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
 
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -294,7 +294,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
           val officeId = "officeId"
           val circumstancesCode = "Yes"
-          withNewCaching(aDeclarationAfter(declaration, withOfficeOfExit(officeId, Some(circumstancesCode))))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExit(officeId, Some(circumstancesCode))))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -310,7 +310,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         "form is incorrect" in {
 
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val incorrectForm = Json.toJson(OfficeOfExitStandard("!@#$", "wrong"))
 
@@ -325,7 +325,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         "information provided by user are correct" in {
 
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val correctForm = Json.toJson(OfficeOfExitStandard("officeId", "Yes"))
 
@@ -338,12 +338,12 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    onClearance { declaration =>
+    onClearance { request =>
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
 
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -357,7 +357,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
           val officeId = Some("officeId")
           val circumstancesCode = "Yes"
-          withNewCaching(aDeclarationAfter(declaration, withOptionalOfficeOfExit(officeId, Some(circumstancesCode))))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withOptionalOfficeOfExit(officeId, Some(circumstancesCode))))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -373,7 +373,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         "form is incorrect" in {
 
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val incorrectForm = Json.toJson(OfficeOfExitStandard("!@#$", "wrong"))
 
@@ -388,7 +388,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         "information provided by user are correct" in {
 
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val correctForm = Json.toJson(OfficeOfExitStandard("officeId", "Yes"))
 

@@ -19,14 +19,13 @@ package unit.controllers.declaration
 import controllers.declaration.CusCodeController
 import forms.declaration.CusCode
 import forms.declaration.CusCode._
-import models.DeclarationType.DeclarationType
-import models.{DeclarationType, Mode}
+import models.DeclarationType.{apply => _, _}
+import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString}
-import play.api.mvc.Call
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -62,12 +61,12 @@ class CusCodeControllerSpec extends ControllerSpec {
 
   "CUSCode controller" must {
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)() { declaration =>
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
 
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(Mode.Normal, itemId)(getRequest())
 
@@ -80,7 +79,7 @@ class CusCodeControllerSpec extends ControllerSpec {
         "display page method is invoked and cache contains data" in {
           val cusCode = CusCode(Some("12345678"))
           val item = anItem(withCUSCode(cusCode))
-          withNewCaching(aDeclarationAfter(declaration, withItems(item)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
 
@@ -94,7 +93,7 @@ class CusCodeControllerSpec extends ControllerSpec {
       "return 400 (BAD_REQUEST)" when {
 
         "form is incorrect" in {
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val incorrectForm = formData("Invalid Code")
 
@@ -106,10 +105,10 @@ class CusCodeControllerSpec extends ControllerSpec {
       }
     }
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)() { declaration =>
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
       "return 303 (SEE_OTHER)" when {
         "accept submission and redirect" in {
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
           val correctForm = formData("12345678")
 
           val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
@@ -121,10 +120,10 @@ class CusCodeControllerSpec extends ControllerSpec {
       }
     }
 
-    onClearance { declaration =>
+    onClearance { request =>
       "return 303 (SEE_OTHER)" when {
         "invalid journey CLEARANCE" in {
-          withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
+          withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(Mode.Normal, "").apply(getRequest())
 

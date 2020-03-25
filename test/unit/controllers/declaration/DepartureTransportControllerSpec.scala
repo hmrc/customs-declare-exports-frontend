@@ -16,7 +16,7 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.{routes, DepartureTransportController}
+import controllers.declaration._
 import forms.declaration.ModeOfTransportCodes.Maritime
 import forms.declaration.TransportCodes.WagonNumber
 import forms.declaration.{DepartureTransport, TransportCodes}
@@ -69,11 +69,11 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
     )
 
   "Border transport controller" when {
-    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE)() { declaration =>
+    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val result: Future[Result] = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -82,7 +82,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
         "display page method is invoked and cache contains data" in {
 
-          withNewCaching(aDeclarationAfter(declaration, withDepartureTransport(Maritime, WagonNumber, "FAA")))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withDepartureTransport(Maritime, WagonNumber, "FAA")))
 
           val result: Future[Result] = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -93,7 +93,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
       "return 400 (BAD_REQUEST)" when {
 
         "no option is selected" in {
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val correctForm: JsValue = formData("", "")
 
@@ -103,7 +103,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         }
 
         "form is incorrect" in {
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val incorrectForm: JsValue = formData("wrongValue", "FAA")
 
@@ -116,39 +116,39 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
       "return 303 (SEE_OTHER)" when {
 
         "information provided by user are correct" in {
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val correctForm: JsValue = formData(WagonNumber, "FAA")
 
           val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe nextPage(declaration.`type`)
+          thePageNavigatedTo mustBe nextPage(request.declarationType)
         }
       }
     }
 
-    onJourney(CLEARANCE)() { declaration =>
+    onJourney(CLEARANCE) { request =>
       "return 303 (SEE_OTHER)" when {
 
         "'none' option is selected" in {
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val correctForm: JsValue = formData(TransportCodes.OptionNone, "")
 
           val result: Future[Result] = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe nextPage(declaration.`type`)
+          thePageNavigatedTo mustBe nextPage(request.declarationType)
         }
       }
     }
 
-    onJourney(SIMPLIFIED, OCCASIONAL)() { declaration =>
+    onJourney(SIMPLIFIED, OCCASIONAL) { request =>
       "return 303 (SEE_OTHER)" when {
 
         "display page method is invoked" in {
-          withNewCaching(aDeclarationAfter(declaration, withBorderTransport()))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withBorderTransport()))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -157,7 +157,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
         }
 
         "page is submitted" in {
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val correctForm: JsValue = formData(WagonNumber, "FAA")
 

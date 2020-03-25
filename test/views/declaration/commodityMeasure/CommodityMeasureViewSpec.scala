@@ -19,6 +19,8 @@ package views.declaration.commodityMeasure
 import base.Injector
 import forms.declaration.CommodityMeasure
 import helpers.views.declaration.CommonMessages
+import models.DeclarationType._
+import models.Mode
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
@@ -62,7 +64,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
   }
 
   "Commodity Measure View on empty page" should {
-    onEveryDeclarationJourney { implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
 
         createView().getElementById("title").text() mustBe messages("declaration.commodityMeasure.title")
@@ -108,7 +110,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
   }
 
   "Commodity Measure View on empty page for supplementary units" should {
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { implicit request =>
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
       "display empty input with label for supplementary units" in {
 
         val view = createView()
@@ -121,7 +123,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
   }
 
   "Commodity Measure View on empty page for supplementary units on clearance request" should {
-    onJourney(DeclarationType.CLEARANCE) { implicit request =>
+    onJourney(CLEARANCE) { implicit request =>
       "no display supplementary units" in {
 
         createView().getElementById("supplementaryUnits") mustBe (null)
@@ -130,7 +132,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
   }
 
   "Commodity Measure with invalid input" should {
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { implicit request =>
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
       "display error when nothing is entered" in {
 
         val view = createView(Some(CommodityMeasure.form(request.declarationType).fillAndValidate(CommodityMeasure(Some(""), Some(""), Some("")))))
@@ -202,7 +204,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
   }
 
   "Commodity Measure with no input for clearance request" should {
-    onJourney(DeclarationType.CLEARANCE) { implicit request =>
+    onJourney(CLEARANCE) { implicit request =>
       "display no error when nothing is entered" in {
 
         val view = createView(Some(CommodityMeasure.form(request.declarationType).fillAndValidate(CommodityMeasure(Some(""), Some(""), Some("")))))
@@ -213,7 +215,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
   }
 
   "Commodity Measure View when filled" should {
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { implicit request =>
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
       "display data in supplementary units input" in {
 
         val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(Some("123"), Some(""), Some("")))
@@ -257,7 +259,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
   }
 
   "Commodity Measure View when filled for clearance request" should {
-    onJourney(DeclarationType.CLEARANCE) { implicit request =>
+    onJourney(CLEARANCE) { implicit request =>
       "display data in net mass input" in {
 
         val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(None, Some(""), Some("123")))

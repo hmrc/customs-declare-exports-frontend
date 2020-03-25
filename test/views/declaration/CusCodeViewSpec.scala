@@ -17,11 +17,12 @@
 package views.declaration
 
 import base.Injector
+import config.AppConfig
 import forms.declaration.CusCode
 import helpers.views.declaration.CommonMessages
-import models.requests.JourneyRequest
 import models.DeclarationType._
-import models.{DeclarationType, Mode}
+import models.Mode
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.mvc.Call
@@ -30,7 +31,6 @@ import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.cus_code
 import views.tags.ViewTest
-import config.AppConfig
 
 @ViewTest
 class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
@@ -78,26 +78,23 @@ class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with 
     }
   }
 
-  "CUS Code View on empty page" when {
+  onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
+    "CUS Code View on empty page" when {
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
       behave like cusCodeView(request)
     }
-  }
 
-  "CUS Code View on populated page" when {
-    val dangerousGoodsCode = Some(CusCode(Some("12345678")))
+    "CUS Code View on populated page" when {
+      val dangerousGoodsCode = Some(CusCode(Some("12345678")))
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
       behave like cusCodeView(request, dangerousGoodsCode)
     }
-  }
 
-  "CUS Code View" must {
+    "CUS Code View" must {
 
-    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
       behave like backButton(request, controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId))
     }
 
   }
+
 }

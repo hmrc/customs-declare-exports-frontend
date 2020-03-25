@@ -17,11 +17,11 @@
 package views.declaration.destinationCountries
 
 import controllers.declaration.routes
-import forms.declaration.countries.{Countries, Country}
 import forms.declaration.countries.Countries.DestinationCountryPage
-import models.requests.JourneyRequest
-import models.Mode
+import forms.declaration.countries.{Countries, Country}
 import models.DeclarationType._
+import models.Mode
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.twirl.api.Html
 import services.cache.ExportsTestData
@@ -49,7 +49,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
     }
   }
 
-  onEveryDeclarationJourney { request =>
+  onEveryDeclarationJourney() { request =>
     "Destination country view spec" should {
 
       s"display page question for ${request.declarationType}" in {

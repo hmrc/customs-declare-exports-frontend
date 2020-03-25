@@ -70,11 +70,11 @@ class BorderTransportControllerSpec extends ControllerSpec {
     )
 
   "Transport Details Controller" when {
-    onJourney(STANDARD, SUPPLEMENTARY)() { declaration =>
+    onJourney(STANDARD, SUPPLEMENTARY) { request =>
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -82,7 +82,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
         }
 
         "display page method is invoked and cache is not empty" in {
-          withNewCaching(aDeclarationAfter(declaration, withBorderTransport()))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withBorderTransport()))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -93,7 +93,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
       "return 400 (BAD_REQUEST)" when {
 
         "form contains incorrect values" in {
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val incorrectForm = formData("incorrect", "", "")
 
@@ -105,21 +105,21 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
       "return 303 (SEE_OTHER)" when {
         "valid options are selected" in {
-          withNewCaching(declaration)
+          withNewCaching(request.cacheModel)
 
           val correctForm = formData(IMOShipIDNumber, "SHIP001", "United Kingdom")
 
           val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe nextPage(declaration.`type`)
+          thePageNavigatedTo mustBe nextPage(request.declarationType)
         }
       }
     }
 
-    onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE)() { declaration =>
+    onJourney(SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
       "display page method is invoked" in {
-        withNewCaching(aDeclarationAfter(declaration, withBorderTransport()))
+        withNewCaching(aDeclarationAfter(request.cacheModel, withBorderTransport()))
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -128,7 +128,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
       }
 
       "valid options are selected" in {
-        withNewCaching(declaration)
+        withNewCaching(request.cacheModel)
 
         val correctForm = formData(IMOShipIDNumber, "SHIP001", "United Kingdom")
 
