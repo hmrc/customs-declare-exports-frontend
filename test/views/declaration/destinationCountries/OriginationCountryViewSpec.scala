@@ -17,10 +17,13 @@
 package views.declaration.destinationCountries
 
 import controllers.declaration.routes
-import forms.declaration.destinationCountries.DestinationCountries
-import forms.declaration.destinationCountries.DestinationCountries.OriginationCountryPage
+import forms.declaration.countries.{Countries, Country}
+import forms.declaration.countries.Countries.OriginationCountryPage
+import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.Mode
+import models.requests.JourneyRequest
 import play.api.data.Form
+import play.twirl.api.Html
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -28,10 +31,12 @@ import views.html.declaration.destinationCountries.origination_country
 
 class OriginationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
 
-  val form: Form[String] = DestinationCountries.form(OriginationCountryPage)
+  private val originationCountryPage = new origination_country(mainTemplate)
 
-  val originationCountryPage = new origination_country(mainTemplate)
-  val view = originationCountryPage(Mode.Normal, form)(journeyRequest(), messages)
+  private def form(request: JourneyRequest[_]): Form[Country] =
+    Countries.form(OriginationCountryPage)(request)
+  private def view(request: JourneyRequest[_]): Html =
+    originationCountryPage(Mode.Normal, form(request))(request, messages)
 
   "Origination country view spec" should {
 
@@ -44,33 +49,38 @@ class OriginationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
       messages must haveTranslationFor("declaration.originationCountry.empty")
       messages must haveTranslationFor("declaration.originationCountry.error")
     }
+  }
 
-    "display page question" in {
+  onJourney(STANDARD, SUPPLEMENTARY) { request =>
+    "Origination country view spec" should {
 
-      view.getElementById("title").text() mustBe messages("declaration.originationCountry.question")
-    }
+      s"display page question for ${request.declarationType}" in {
 
-    "display page heading" in {
+        view(request).getElementById("title").text() mustBe messages("declaration.originationCountry.question")
+      }
 
-      view.getElementById("section-header").text() must include(messages("declaration.originationCountry.heading"))
-    }
+      s"display page heading for ${request.declarationType}" in {
 
-    "display back button that links to 'Declaration Holder' page" in {
+        view(request).getElementById("section-header").text() must include(messages("declaration.originationCountry.heading"))
+      }
 
-      val backButton = view.getElementById("back-link")
+      s"display back button that links to 'Declaration Holder' page for ${request.declarationType}" in {
 
-      backButton.text() mustBe messages("site.back")
-      backButton must haveHref(routes.DeclarationHolderController.displayPage())
-    }
+        val backButton = view(request).getElementById("back-link")
 
-    "display 'Save and continue' button" in {
+        backButton.text() mustBe messages("site.back")
+        backButton must haveHref(routes.DeclarationHolderController.displayPage())
+      }
 
-      view.getElementById("submit").text() mustBe messages("site.save_and_continue")
-    }
+      s"display 'Save and continue' button for ${request.declarationType}" in {
 
-    "display 'Save and return' button" in {
+        view(request).getElementById("submit").text() mustBe messages("site.save_and_continue")
+      }
 
-      view.getElementById("submit_and_return").text() mustBe messages("site.save_and_come_back_later")
+      s"display 'Save and return' button for ${request.declarationType}" in {
+
+        view(request).getElementById("submit_and_return").text() mustBe messages("site.save_and_come_back_later")
+      }
     }
   }
 }

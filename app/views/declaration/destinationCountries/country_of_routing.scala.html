@@ -15,8 +15,8 @@
  *@
 
 @import controllers.declaration.routes
-@import controllers.navigation.Navigator
-@import forms.declaration.destinationCountries.DestinationCountries.{CountryPage, FirstRoutingCountryPage}
+@import forms.declaration.countries.Countries.CountryPage
+@import forms.declaration.countries.Country
 @import models.requests.JourneyRequest
 @import services.Countries
 @import services.view.AutoCompleteItem
@@ -24,7 +24,7 @@
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[String], page: CountryPage)(implicit request: JourneyRequest[AnyContent], messages: Messages)
+@(mode: Mode, form: Form[Country], page: CountryPage)(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
     title = Title("declaration.routingCountry.title", "declaration.routingCountry.heading")
@@ -43,7 +43,7 @@
         @helper.CSRF.formField
 
         @components.fields.field_autocomplete(
-            form("country"),
+            form("code"),
             "",
             None,
             None,

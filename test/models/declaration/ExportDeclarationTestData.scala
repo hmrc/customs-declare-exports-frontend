@@ -32,6 +32,7 @@ import forms.declaration.TotalNumberOfItemsSpec._
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
 import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
+import forms.declaration.countries.Country
 import forms.{CancelDeclaration, Lrn}
 import models.declaration.DeclarationAdditionalActorsDataSpec._
 import models.declaration.DeclarationHoldersDataSpec._
@@ -76,10 +77,10 @@ object ExportDeclarationTestData {
       carrierDetails = Some(CarrierDetails(EntityDetailsSpec.correctEntityDetails))
     ),
     locations = Locations(
-      originationCountry = Some("GB"),
-      destinationCountry = Some("PL"),
+      originationCountry = Some(Country(Some("GB"))),
+      destinationCountry = Some(Country(Some("PL"))),
       hasRoutingCountries = Some(true),
-      routingCountries = Seq("FR"),
+      routingCountries = Seq(Country(Some("FR"))),
       goodsLocation = Some(GoodsLocationForm("GBAUEMAEMAEMA").toModel),
       officeOfExit = Some(correctOfficeOfExit),
       warehouseIdentification = Some(WarehouseIdentificationSpec.correctWarehouseDetails),
@@ -139,10 +140,10 @@ object ExportDeclarationTestData {
       carrierDetails = Some(CarrierDetails(EntityDetailsSpec.correctEntityDetails))
     ),
     locations = Locations(
-      originationCountry = Some("GB"),
-      destinationCountry = Some("PL"),
+      originationCountry = Some(Country(Some("GB"))),
+      destinationCountry = Some(Country(Some("PL"))),
       hasRoutingCountries = Some(true),
-      routingCountries = Seq("FR"),
+      routingCountries = Seq(Country(Some("FR"))),
       goodsLocation = Some(GoodsLocationForm("GBAUEMAEMAEMA").toModel),
       officeOfExit = Some(correctOfficeOfExit),
       warehouseIdentification = Some(WarehouseIdentificationSpec.correctWarehouseDetails),

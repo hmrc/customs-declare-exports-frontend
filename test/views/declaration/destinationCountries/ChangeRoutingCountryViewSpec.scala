@@ -17,10 +17,13 @@
 package views.declaration.destinationCountries
 
 import controllers.declaration.routes
-import forms.declaration.destinationCountries.DestinationCountries
-import forms.declaration.destinationCountries.DestinationCountries.{FirstRoutingCountryPage, NextRoutingCountryPage}
+import forms.declaration.countries.{Countries, Country}
+import forms.declaration.countries.Countries.{FirstRoutingCountryPage, NextRoutingCountryPage}
 import models.Mode
+import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD}
+import models.requests.JourneyRequest
 import play.api.data.Form
+import play.twirl.api.Html
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -28,58 +31,65 @@ import views.html.declaration.destinationCountries.change_routing_country
 
 class ChangeRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
 
-  val countryToChange = "GB"
-  val firstRoutingForm: Form[String] = DestinationCountries.form(FirstRoutingCountryPage)
-  val nextRoutingForm: Form[String] = DestinationCountries.form(NextRoutingCountryPage)
+  private val countryToChange = "GB"
+  private val changeRoutingCountryPage = new change_routing_country(mainTemplate)
 
-  val changeRoutingCountryPage = new change_routing_country(mainTemplate)
-  val firstRoutingView = changeRoutingCountryPage(Mode.Normal, firstRoutingForm, FirstRoutingCountryPage, countryToChange)(journeyRequest(), messages)
-  val nextRoutingView = changeRoutingCountryPage(Mode.Normal, firstRoutingForm, NextRoutingCountryPage, countryToChange)(journeyRequest(), messages)
+  private def firstRoutingForm(request: JourneyRequest[_]): Form[Country] =
+    Countries.form(FirstRoutingCountryPage)(request)
+  private def nextRoutingForm(request: JourneyRequest[_]): Form[Country] =
+    Countries.form(NextRoutingCountryPage)(request)
 
-  "Change routing country pages" should {
+  private def firstRoutingView(request: JourneyRequest[_]): Html =
+    changeRoutingCountryPage(Mode.Normal, firstRoutingForm(request), FirstRoutingCountryPage, countryToChange)(request, messages)
+  private def nextRoutingView(request: JourneyRequest[_]): Html =
+    changeRoutingCountryPage(Mode.Normal, nextRoutingForm(request), NextRoutingCountryPage, countryToChange)(request, messages)
 
-    "have page heading" in {
+  onJourney(OCCASIONAL, SIMPLIFIED, STANDARD) { request =>
+    "Change routing country pages" should {
 
-      firstRoutingView.getElementById("section-header").text() must include(messages("declaration.routingCountry.heading"))
-      nextRoutingView.getElementById("section-header").text() must include(messages("declaration.routingCountry.heading"))
-    }
+      s"have page heading for ${request.declarationType}" in {
 
-    "have page question during changing first routing country" in {
+        firstRoutingView(request).getElementById("section-header").text() must include(messages("declaration.routingCountry.heading"))
+        nextRoutingView(request).getElementById("section-header").text() must include(messages("declaration.routingCountry.heading"))
+      }
 
-      firstRoutingView.getElementById("title").text() mustBe messages("declaration.firstRoutingCountry.question")
-    }
+      s"have page question during changing first routing country for ${request.declarationType}" in {
 
-    "have page question during changing next routing country" in {
+        firstRoutingView(request).getElementById("title").text() mustBe messages("declaration.firstRoutingCountry.question")
+      }
 
-      nextRoutingView.getElementById("title").text() mustBe messages("declaration.routingCountry.question")
-    }
+      s"have page question during changing next routing country for ${request.declarationType}" in {
 
-    "display back button that links to 'Countries summary' for first routing country page" in {
+        nextRoutingView(request).getElementById("title").text() mustBe messages("declaration.routingCountry.question")
+      }
 
-      val backButton = firstRoutingView.getElementById("back-link")
+      s"display back button that links to 'Countries summary' for first routing country page for ${request.declarationType}" in {
 
-      backButton.text() mustBe messages("site.back")
-      backButton must haveHref(routes.RoutingCountriesSummaryController.displayPage())
-    }
+        val backButton = firstRoutingView(request).getElementById("back-link")
 
-    "display back button that links to 'Countries summary' for next routing country page" in {
+        backButton.text() mustBe messages("site.back")
+        backButton must haveHref(routes.RoutingCountriesSummaryController.displayPage())
+      }
 
-      val backButton = firstRoutingView.getElementById("back-link")
+      s"display back button that links to 'Countries summary' for next routing country page for ${request.declarationType}" in {
 
-      backButton.text() mustBe messages("site.back")
-      backButton must haveHref(routes.RoutingCountriesSummaryController.displayPage())
-    }
+        val backButton = firstRoutingView(request).getElementById("back-link")
 
-    "display 'Save and continue' button" in {
+        backButton.text() mustBe messages("site.back")
+        backButton must haveHref(routes.RoutingCountriesSummaryController.displayPage())
+      }
 
-      firstRoutingView.getElementById("submit").text() mustBe messages("site.save_and_continue")
-      nextRoutingView.getElementById("submit").text() mustBe messages("site.save_and_continue")
-    }
+      s"display 'Save and continue' button for ${request.declarationType}" in {
 
-    "display 'Save and return' button" in {
+        firstRoutingView(request).getElementById("submit").text() mustBe messages("site.save_and_continue")
+        nextRoutingView(request).getElementById("submit").text() mustBe messages("site.save_and_continue")
+      }
 
-      firstRoutingView.getElementById("submit_and_return").text() mustBe messages("site.save_and_come_back_later")
-      nextRoutingView.getElementById("submit_and_return").text() mustBe messages("site.save_and_come_back_later")
+      s"display 'Save and return' button for ${request.declarationType}" in {
+
+        firstRoutingView(request).getElementById("submit_and_return").text() mustBe messages("site.save_and_come_back_later")
+        nextRoutingView(request).getElementById("submit_and_return").text() mustBe messages("site.save_and_come_back_later")
+      }
     }
   }
 }

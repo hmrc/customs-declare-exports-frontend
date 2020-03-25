@@ -22,7 +22,7 @@ import forms.Choice.AllowedChoiceValues
 import forms.declaration.RoutingQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingQuestionPage}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeStandardDec
 import forms.declaration.additionaldocuments.DocumentsProduced
-import forms.declaration.destinationCountries.DestinationCountries.{DestinationCountryPage, OriginationCountryPage}
+import forms.declaration.countries.Countries.{DestinationCountryPage, OriginationCountryPage}
 import forms.declaration.officeOfExit.{OfficeOfExitClearance, OfficeOfExitStandard, OfficeOfExitSupplementary}
 import forms.declaration.{BorderTransport, Document, PackageInformation, _}
 import forms.{Choice, DeclarationPage}

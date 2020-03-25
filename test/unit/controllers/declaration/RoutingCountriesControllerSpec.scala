@@ -17,6 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.RoutingCountriesController
+import forms.declaration.countries.Country
 import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -60,12 +61,6 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
   def theRoutingQuestionForm: Form[Boolean] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[Boolean]])
     verify(mockRoutingQuestionPage).apply(any(), captor.capture(), any())(any(), any())
-    captor.getValue
-  }
-
-  def theCountryOfRoutingForm: Form[String] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[String]])
-    verify(mockCountryOfRoutingPage.apply(any(), captor.capture(), any())(any(), any()))
     captor.getValue
   }
 
@@ -121,7 +116,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withDestinationCountry()))
 
-        val incorrectForm = JsObject(Seq("country" -> JsString("incorrect")))
+        val incorrectForm = JsObject(Seq("code" -> JsString("incorrect")))
 
         val result = controller.submitRoutingAnswer(Mode.Normal)(postRequest(incorrectForm))
 
@@ -130,9 +125,9 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
       "user submitted duplicated country in Routing Countries page" in {
 
-        withNewCaching(aDeclaration(withRoutingCountries(Seq("PL"))))
+        withNewCaching(aDeclaration(withRoutingCountries(Seq(Country(Some("PL"))))))
 
-        val duplicatedForm = JsObject(Seq("country" -> JsString("PL")))
+        val duplicatedForm = JsObject(Seq("code" -> JsString("PL")))
 
         val result = controller.submitRoutingAnswer(Mode.Normal)(postRequest(duplicatedForm))
 
@@ -200,7 +195,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withRoutingQuestion()))
 
-        val correctForm = JsObject(Seq("country" -> JsString("GB")))
+        val correctForm = JsObject(Seq("code" -> JsString("GB")))
 
         val result = controller.submitRoutingCountry(Mode.Normal)(postRequest(correctForm))
 

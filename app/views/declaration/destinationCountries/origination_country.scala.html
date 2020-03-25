@@ -16,18 +16,18 @@
 
 @import controllers.declaration.routes
 @import controllers.navigation.Navigator
-@import forms.declaration.destinationCountries.DestinationCountries.OriginationCountryPage
+@import forms.declaration.countries.Countries.OriginationCountryPage
+@import forms.declaration.countries.Country
 @import models.requests.JourneyRequest
 @import services.Countries
 @import services.view.AutoCompleteItem
 @import views.Title
 
-
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[String])(implicit request: JourneyRequest[AnyContent], messages: Messages)
+@(mode: Mode, form: Form[Country])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tariffBody = { @Html(messages("declaration.type.originationCountrySummaryText", components.details_content_link()))}
+@tariffBody = {@Html(messages("declaration.type.originationCountrySummaryText", components.details_content_link()))}
 
 @main_template(
     title = Title("declaration.originationCountry.title", "declaration.originationCountry.heading")
@@ -46,7 +46,7 @@
         @helper.CSRF.formField
 
         @components.fields.field_autocomplete(
-            form("country"),
+            form("code"),
             "",
             None,
             None,
