@@ -164,6 +164,17 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
     "return 303 (SEE_OTHER)" when {
 
+      onJourney(CLEARANCE)() { request =>
+        "redirect back to journey start" in new SetUp {
+          withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+        }
+      }
+
       "user correctly add new item" in new SetUp {
 
         val correctForm = Seq(("eori", eori), ("partyType", "CS"), addActionUrlEncoded())
