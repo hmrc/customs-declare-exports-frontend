@@ -32,6 +32,7 @@ import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.declaration_additional_actors
 import views.tags.ViewTest
+import DeclarationType._
 
 @ViewTest
 class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessages with ExportsTestData with Stubs with Injector {
@@ -67,7 +68,7 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessag
 
   "Declaration Additional Actors View on empty page" should {
 
-    onEveryDeclarationJourney() { request =>
+    onJourney(STANDARD, SIMPLIFIED, SUPPLEMENTARY, OCCASIONAL) { request =>
       val view = createView(form, request)
 
       "display page title" in {
@@ -140,7 +141,7 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessag
       }
     }
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL, DeclarationType.CLEARANCE) { request =>
+    onJourney(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
       "display 'Back' button that links to 'Carrier Details' page" in {
 
         val view = declarationAdditionalActorsPage(Mode.Normal, form, Seq())(request, messages)
@@ -154,7 +155,7 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessag
 
   "Declaration Additional Actors View with invalid input" must {
 
-    onEveryDeclarationJourney() { request =>
+    onJourney(STANDARD, SIMPLIFIED, SUPPLEMENTARY, OCCASIONAL) { request =>
       "display errors when EORI is provided, but is incorrect" in {
 
         val view = createView(
@@ -191,7 +192,7 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessag
 
   "Declaration Additional Actors View when filled" must {
 
-    onEveryDeclarationJourney() { request =>
+    onJourney(STANDARD, SIMPLIFIED, SUPPLEMENTARY, OCCASIONAL) { request =>
       "display EORI with CS selected" in {
 
         val view =

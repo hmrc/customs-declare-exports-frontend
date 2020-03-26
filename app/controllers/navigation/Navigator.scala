@@ -101,22 +101,21 @@ object Navigator {
   }
 
   val clearance: PartialFunction[DeclarationPage, Mode => Call] = {
-    case ContainerFirst              => controllers.declaration.routes.DepartureTransportController.displayPage
-    case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
-    case Document                    => controllers.declaration.routes.OfficeOfExitController.displayPage
-    case DestinationCountryPage      => controllers.declaration.routes.DeclarationHolderController.displayPage
-    case RoutingQuestionPage         => controllers.declaration.routes.DestinationCountryController.displayPage
-    case RemoveCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
-    case ChangeCountryPage           => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
-    case GoodsLocationForm           => controllers.declaration.routes.DestinationCountryController.displayPage
-    case OfficeOfExitClearance       => controllers.declaration.routes.LocationController.displayPage
-    case DeclarationHolder           => controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage
-    case SupervisingCustomsOffice    => controllers.declaration.routes.WarehouseIdentificationController.displayPage
-    case ModeOfTransportCodes        => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
-    case WarehouseIdentification     => controllers.declaration.routes.ItemsSummaryController.displayPage
-    case DeclarationAdditionalActors => controllers.declaration.routes.CarrierDetailsController.displayPage
-    case TotalPackageQuantity        => controllers.declaration.routes.OfficeOfExitController.displayPage
-    case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
+    case ContainerFirst           => controllers.declaration.routes.DepartureTransportController.displayPage
+    case ContainerAdd             => controllers.declaration.routes.TransportContainerController.displayContainerSummary
+    case Document                 => controllers.declaration.routes.OfficeOfExitController.displayPage
+    case DestinationCountryPage   => controllers.declaration.routes.DeclarationHolderController.displayPage
+    case RoutingQuestionPage      => controllers.declaration.routes.DestinationCountryController.displayPage
+    case RemoveCountryPage        => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
+    case ChangeCountryPage        => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
+    case GoodsLocationForm        => controllers.declaration.routes.DestinationCountryController.displayPage
+    case DeclarationHolder        => controllers.declaration.routes.CarrierDetailsController.displayPage
+    case OfficeOfExitClearance    => controllers.declaration.routes.LocationController.displayPage
+    case SupervisingCustomsOffice => controllers.declaration.routes.WarehouseIdentificationController.displayPage
+    case ModeOfTransportCodes     => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
+    case WarehouseIdentification  => controllers.declaration.routes.ItemsSummaryController.displayPage
+    case TotalPackageQuantity     => controllers.declaration.routes.OfficeOfExitController.displayPage
+    case page                     => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }
 
   val clearanceItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {

@@ -22,7 +22,7 @@ import controllers.util.SaveAndReturn
 import forms.common.Eori
 import forms.declaration.DeclarationHolder
 import helpers.views.declaration.CommonMessages
-import models.Mode
+import models.{DeclarationType, Mode}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -31,6 +31,7 @@ import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.declaration_holder
 import views.tags.ViewTest
+import DeclarationType._
 
 @ViewTest
 class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
@@ -67,15 +68,6 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
         document.getElementById("title").text() mustBe messages("supplementary.declarationHolder.title")
       }
 
-      "display 'Back' button that links to 'Additional Info' page" in {
-
-        val document = createView()
-        val backButton = document.getElementById("back-link")
-
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.DeclarationAdditionalActorsController.displayPage().url
-      }
-
       "display section header" in {
 
         document.getElementById("section-header").text() must include(messages("supplementary.summary.parties.header"))
@@ -104,6 +96,28 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
         val saveAndReturnButton = document.getElementById("submit_and_return")
         saveAndReturnButton.text() mustBe messages(saveAndReturnCaption)
         saveAndReturnButton.attr("name") mustBe SaveAndReturn.toString
+      }
+    }
+
+    onJourney(STANDARD, SIMPLIFIED, SUPPLEMENTARY, OCCASIONAL) { implicit request =>
+      "display 'Back' button that links to 'Additional Info' page" in {
+
+        val document = createView()
+        val backButton = document.getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.DeclarationAdditionalActorsController.displayPage().url
+      }
+    }
+
+    onJourney(CLEARANCE) { implicit request =>
+      "display 'Back' button that links to 'Carrier Details' page" in {
+
+        val document = createView()
+        val backButton = document.getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.CarrierDetailsController.displayPage().url
       }
     }
   }
