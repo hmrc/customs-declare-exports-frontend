@@ -130,7 +130,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
     "return 303 (SEE_OTHER)" when {
 
-      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL)() { request =>
+      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { request =>
         "with valid journey type" in {
 
           withNewCaching(request.cacheModel)
@@ -143,7 +143,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
         }
       }
 
-      onJourney(CLEARANCE)() { request =>
+      onJourney(CLEARANCE) { request =>
         "with valid journey type" in {
 
           withNewCaching(request.cacheModel)
@@ -156,7 +156,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
         }
       }
 
-      onJourney(SUPPLEMENTARY)() { request =>
+      onJourney(SUPPLEMENTARY) { request =>
         "with invalid journey type" in {
 
           withNewCaching(request.cacheModel)

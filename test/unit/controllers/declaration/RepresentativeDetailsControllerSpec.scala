@@ -127,7 +127,7 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
       }
     }
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL, DeclarationType.CLEARANCE)() { declaration =>
+    onJourney(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL, DeclarationType.CLEARANCE) { request =>
       "return 303 (SEE_OTHER) and redirect to carrier details page" in {
 
         withNewCaching(request.cacheModel)

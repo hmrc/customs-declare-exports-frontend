@@ -164,7 +164,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
     "return 303 (SEE_OTHER)" when {
 
-      onJourney(CLEARANCE)() { request =>
+      onJourney(CLEARANCE) { request =>
         "redirect back to journey start" in new SetUp {
           withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
 
