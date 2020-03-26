@@ -85,7 +85,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#type")
 
-      view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.type.error")
+      view must containErrorElementWithMessage("declaration.type.error")
     }
 
     "display error when choice is incorrect" in {
@@ -95,7 +95,7 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#type")
 
-      view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.type.error")
+      view must containErrorElementWithMessage("declaration.type.error")
     }
   }
 

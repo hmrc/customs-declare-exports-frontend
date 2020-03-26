@@ -301,7 +301,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.declarationType.inputText.error.empty")
+        view must containErrorElementWithMessage("declaration.declarationType.inputText.error.empty")
       }
 
       "used for Supplementary Declaration journey" in {
@@ -311,7 +311,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.declarationType.inputText.error.empty")
+        view must containErrorElementWithMessage("declaration.declarationType.inputText.error.empty")
       }
 
       "used for Simplified Declaration journey" in {
@@ -321,7 +321,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.declarationType.inputText.error.empty")
+        view must containErrorElementWithMessage("declaration.declarationType.inputText.error.empty")
       }
 
       "used for Occasional Declaration journey" in {
@@ -331,7 +331,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.declarationType.inputText.error.empty")
+        view must containErrorElementWithMessage("declaration.declarationType.inputText.error.empty")
       }
 
       "used for Clearance Request journey" in {
@@ -341,7 +341,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.declarationType.inputText.error.empty")
+        view must containErrorElementWithMessage("declaration.declarationType.inputText.error.empty")
       }
     }
 
@@ -354,7 +354,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.declarationType.inputText.error.incorrect")
+        view must containErrorElementWithMessage("declaration.declarationType.inputText.error.incorrect")
       }
 
       "used for Supplementary Declaration journey" in {
@@ -364,7 +364,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.declarationType.inputText.error.incorrect")
+        view must containErrorElementWithMessage("declaration.declarationType.inputText.error.incorrect")
       }
 
       "used for Simplified Declaration journey" in {
@@ -374,7 +374,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.declarationType.inputText.error.incorrect")
+        view must containErrorElementWithMessage("declaration.declarationType.inputText.error.incorrect")
       }
 
       "used for Occasional Declaration journey" in {
@@ -384,7 +384,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.declarationType.inputText.error.incorrect")
+        view must containErrorElementWithMessage("declaration.declarationType.inputText.error.incorrect")
       }
 
       "used for Clearance Request journey" in {
@@ -394,7 +394,7 @@ class DeclarationTypeViewSpec extends UnitViewSpec with ExportsTestData with Com
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#additionalDeclarationType")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.declarationType.inputText.error.incorrect")
+        view must containErrorElementWithMessage("declaration.declarationType.inputText.error.incorrect")
       }
     }
 

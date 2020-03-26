@@ -133,7 +133,7 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestData with
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#natureType")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.natureOfTransaction.error")
+        view must containErrorElementWithMessage("declaration.natureOfTransaction.error")
       }
 
       "display error when nature of transaction is incorrect" in {
@@ -142,7 +142,7 @@ class NatureOfTransactionViewSpec extends UnitViewSpec with ExportsTestData with
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#natureType")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.natureOfTransaction.error")
+        view must containErrorElementWithMessage("declaration.natureOfTransaction.error")
       }
     }
   }

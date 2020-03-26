@@ -141,8 +141,8 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
         view must containErrorElementWithTagAndHref("a", "#netMass")
         view must containErrorElementWithTagAndHref("a", "#grossMass")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.commodityMeasure.netMass.empty")
-        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.commodityMeasure.grossMass.empty")
+        view must containErrorElementWithMessage("declaration.commodityMeasure.netMass.empty")
+        view must containErrorElementWithMessage("declaration.commodityMeasure.grossMass.empty")
       }
 
       "display error when supplementary units are incorrect" in {
@@ -152,7 +152,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#supplementaryUnits")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.commodityMeasure.supplementaryUnits.error")
+        view must containErrorElementWithMessage("declaration.commodityMeasure.supplementaryUnits.error")
       }
       "display error when net mass is empty" in {
 
@@ -162,7 +162,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#netMass")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.commodityMeasure.netMass.empty")
+        view must containErrorElementWithMessage("declaration.commodityMeasure.netMass.empty")
       }
 
       "display error when net mass is incorrect" in {
@@ -175,7 +175,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#netMass")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.commodityMeasure.netMass.error")
+        view must containErrorElementWithMessage("declaration.commodityMeasure.netMass.error")
       }
 
       "display error when gross mass is empty" in {
@@ -186,7 +186,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#grossMass")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.commodityMeasure.grossMass.empty")
+        view must containErrorElementWithMessage("declaration.commodityMeasure.grossMass.empty")
       }
 
       "display error when gross mass is incorrect" in {
@@ -198,7 +198,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#grossMass")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.commodityMeasure.grossMass.error")
+        view must containErrorElementWithMessage("declaration.commodityMeasure.grossMass.error")
       }
     }
   }

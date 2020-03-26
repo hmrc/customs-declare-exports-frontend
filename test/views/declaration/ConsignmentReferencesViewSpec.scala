@@ -126,7 +126,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#lrn")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("supplementary.consignmentReferences.lrn.error.empty")
+        view must containErrorElementWithMessage("supplementary.consignmentReferences.lrn.error.empty")
       }
 
       "display error when LRN is longer then 22 characters" in {
@@ -140,7 +140,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#lrn")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("supplementary.consignmentReferences.lrn.error.length")
+        view must containErrorElementWithMessage("supplementary.consignmentReferences.lrn.error.length")
       }
 
       "display error when LRN contains special character" in {
@@ -151,7 +151,7 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#lrn")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("supplementary.consignmentReferences.lrn.error.specialCharacter")
+        view must containErrorElementWithMessage("supplementary.consignmentReferences.lrn.error.specialCharacter")
       }
 
       "display error when DUCR is incorrect and LRN empty" in {
@@ -163,8 +163,8 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         view must containErrorElementWithTagAndHref("a", "#ducr_ducr")
         view must containErrorElementWithTagAndHref("a", "#lrn")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("error.ducr")
-        view.getElementsByClass("#govuk-error-message").text() contains messages("supplementary.consignmentReferences.lrn.error.empty")
+        view must containErrorElementWithMessage("error.ducr")
+        view must containErrorElementWithMessage("supplementary.consignmentReferences.lrn.error.empty")
       }
 
       "display error when DUCR is incorrect and LRN is longer then 22 characters" in {
@@ -179,8 +179,8 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         view must containErrorElementWithTagAndHref("a", "#ducr_ducr")
         view must containErrorElementWithTagAndHref("a", "#lrn")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("error.ducr")
-        view.getElementsByClass("#govuk-error-message").text() contains messages("supplementary.consignmentReferences.lrn.error.length")
+        view must containErrorElementWithMessage("error.ducr")
+        view must containErrorElementWithMessage("supplementary.consignmentReferences.lrn.error.length")
       }
 
       "display error when DUCR is incorrect and LRN contains special character" in {
@@ -192,8 +192,8 @@ class ConsignmentReferencesViewSpec extends UnitViewSpec with CommonMessages wit
         view must containErrorElementWithTagAndHref("a", "#ducr_ducr")
         view must containErrorElementWithTagAndHref("a", "#lrn")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("error.ducr")
-        view.getElementsByClass("#govuk-error-message").text() contains messages("supplementary.consignmentReferences.lrn.error.specialCharacter")
+        view must containErrorElementWithMessage("error.ducr")
+        view must containErrorElementWithMessage("supplementary.consignmentReferences.lrn.error.specialCharacter")
       }
     }
   }
