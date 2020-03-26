@@ -30,10 +30,10 @@ object CarrierDetails extends DeclarationPage {
   val id = "CarrierDetails"
 
   val mappingEitherRequired = Forms.mapping("details" -> EntityDetails.defaultMapping)(CarrierDetails.apply)(CarrierDetails.unapply)
-  val mappingOptional = Forms.mapping("details" -> EntityDetails.mappingOptional)(CarrierDetails.apply)(CarrierDetails.unapply)
+  val optionalMapping = Forms.mapping("details" -> EntityDetails.optionalMapping)(CarrierDetails.apply)(CarrierDetails.unapply)
 
   def form(declarationType: DeclarationType): Form[CarrierDetails] = declarationType match {
-    case CLEARANCE => Form(mappingOptional)
+    case CLEARANCE => Form(optionalMapping)
     case _         => Form(mappingEitherRequired)
   }
 }
