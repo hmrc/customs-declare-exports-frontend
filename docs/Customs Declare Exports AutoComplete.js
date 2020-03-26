@@ -564,7 +564,7 @@ function procedureCodes(){
 function fiscalInformation(){
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/fiscal-information')) {
         document.getElementById('No').checked = 'checked';
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('submit').click()
     }
 }
 
@@ -595,7 +595,7 @@ function commodityDetails(){
                 document.getElementById('combinedNomenclatureCode').value ='46021910';
                 document.getElementById('descriptionOfGoods').value ='Straw for bottles';
         }
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('submit').click();
     }
 }
 

@@ -23,8 +23,24 @@
 @import views.Title
 @import config.AppConfig
 @import controllers.navigation.{Navigator, ItemId}
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.html.components.gds._
 
-@this(main_template: views.html.main_template, appConfig: AppConfig)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukDetails : GovukDetails,
+        pageTitle: pageTitle,
+        inputText: exportsInputText,
+        inputTextArea: exportsInputTextArea,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        saveButtons: saveButtons,
+        tariffDetails: tariffDetails,
+        appConfig: AppConfig,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(
         mode: Mode,
@@ -32,71 +48,49 @@
         form: Form[CommodityDetails]
 )(implicit request: JourneyRequest[_], messages: Messages)
 
-@tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.commodityDetails.how.tradeTariff")</a>}
-@classificationTeamLink = {<a target="_blank" href=@appConfig.classificationHelpUrl>@messages("declaration.commodityDetails.how.classificationTeam")</a>}
+@tradeTariffLink = {<a class="govuk-link govuk-link--no-visited-state" target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.commodityDetails.how.tradeTariff")</a>}
+@classificationTeamLink = {<a class="govuk-link govuk-link--no-visited-state" target="_blank" href=@appConfig.classificationHelpUrl>@messages("declaration.commodityDetails.how.classificationTeam")</a>}
 
-
+@commodityDetailsInformation = {
+@Html(messages("declaration.commodityDetails.how.step1", tradeTariffLink))
+@Html(messages("declaration.commodityDetails.how.summary", classificationTeamLink))
+}
 
 @tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
 
 @tariffBody = { @components.tariff_body_partial(messages("declaration.type.commodityDetailsListItemOne"), messages("declaration.type.commodityDetailsListItemTwo"))(tariffBodyDesc)}
 
-@main_template(
-    title = Title("declaration.commodityDetails.title", "supplementary.items")
-) {
+@govukLayout(
+    title = Title("declaration.commodityDetails.title", "supplementary.items"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(CommodityDetails, mode, ItemId(itemId))))) {
 
-    @helper.form(routes.CommodityDetailsController.submitForm(mode, itemId), 'autocomplete -> "off") {
-        @helper.CSRF.formField
+    @formHelper(action = routes.CommodityDetailsController.submitForm(mode, itemId), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-        @components.back_link(Navigator.backLink(CommodityDetails, mode, ItemId(itemId)), mode)
+        @sectionHeader(messages("supplementary.items"))
+        @pageTitle(messages("declaration.commodityDetails.title"))
 
-        @components.error_summary(form.errors)
-
-        @components.heading(
-            sectionHeader = messages("supplementary.items"),
-            title = messages("declaration.commodityDetails.title")
-        )
-
-        @components.fields.field_text(
+        @inputText(
             field = form(CommodityDetails.combinedNomenclatureCodeKey),
-            label = Some(messages("declaration.commodityDetails.combinedNomenclatureCode.header")),
-            hint = Some(messages("declaration.commodityDetails.combinedNomenclatureCode.header.hint")),
-            labelClass = Some("bold-small")
+            labelKey = "declaration.commodityDetails.combinedNomenclatureCode.header",
+            hintKey = Some("declaration.commodityDetails.combinedNomenclatureCode.header.hint"),
+            inputClasses = Some("govuk-input--width-10")
         )
-<details class="details-font govuk-!-margin-bottom-4" role="group">
-    <summary class="govuk-details__summary" role="button" aria-controls="details-content" aria-expanded="false">
-                <span class="govuk-details__summary-text">
-                @messages("declaration.commodityDetails.how.header")
-                </span>
-    </summary>
-    <div class="grey-border-left">
-        <ol class="list list-number">
-            <li>@Html(messages("declaration.commodityDetails.how.step1", tradeTariffLink))</li>
-            <li>@messages("declaration.commodityDetails.how.step2")</li>
-            <li>@messages("declaration.commodityDetails.how.step3")</li>
-            <li>@messages("declaration.commodityDetails.how.step4")</li>
-            <li>@messages("declaration.commodityDetails.how.step5")</li>
-        </ol>
-        <p>
-            @Html(messages("declaration.commodityDetails.how.summary", classificationTeamLink))
-        </p>
-    </div>
-</details>
 
-        @components.fields.field_textarea(
+        @govukDetails(Details(
+            summary = Text(messages("declaration.commodityDetails.how.header")),
+            content = HtmlContent(commodityDetailsInformation)
+        ))
+
+        @inputTextArea(
             field = form(CommodityDetails.descriptionOfGoodsKey),
-            label = messages("declaration.commodityDetails.description.header"),
-            hint = Some(messages("declaration.commodityDetails.description.header.hint")),
-            labelClass = Some("bold-small"),
-            inputClass = Some("form-control--full-width")
+            labelKey = "declaration.commodityDetails.description.header",
+            hintKey = Some("declaration.commodityDetails.description.header.hint")
         )
 
+        @tariffDetails(messages("declaration.type.consignmentTariff_summary_text"), HtmlContent(tariffBody))
 
-        @components.details(messages("declaration.type.consignmentTariff_summary_text")){
-           @tariffBody
-        }
-        @components.submit_button()
-        @components.buttons.save_and_return_later_button()
+        @saveButtons()
+
     }
-
 }

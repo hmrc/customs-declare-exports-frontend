@@ -32,8 +32,7 @@ import config.AppConfig
 @ViewTest
 class CommodityDetailsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
 
-  private val appConfig = instanceOf[AppConfig]
-  private val page = new commodity_details(mainTemplate, appConfig)
+  private val page = instanceOf[commodity_details]
   private val itemId = "item1"
   private val realMessages = validatedMessages
   private def createView(declarationType: DeclarationType, form: Form[CommodityDetails]): Document =
