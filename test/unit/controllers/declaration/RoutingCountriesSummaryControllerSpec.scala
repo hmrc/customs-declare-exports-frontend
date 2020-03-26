@@ -188,7 +188,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withRoutingCountries(Seq(Country(Some("PL"))))))
 
-        val correctForm = JsObject(Seq("code" -> JsString("GB")))
+        val correctForm = JsObject(Seq("countryCode" -> JsString("GB")))
 
         val result = controller.submitChangeCountry(Mode.Normal, "PL")(postRequest(correctForm))
         await(result) mustBe aRedirectToTheNextPage
@@ -275,7 +275,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
 
       withNewCaching(aDeclaration(withRoutingCountries(Seq(Country(Some("PL")), Country(Some("DZ")), Country(Some("AD"))))))
 
-      val duplicatedCountry = JsObject(Seq("code" -> JsString("PL")))
+      val duplicatedCountry = JsObject(Seq("countryCode" -> JsString("PL")))
 
       val result = controller.submitChangeCountry(Mode.Normal, "DZ")(postRequest(duplicatedCountry))
 
