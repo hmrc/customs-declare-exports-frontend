@@ -15,21 +15,13 @@
  *@
 
 @import controllers.declaration.routes
-@import controllers.util.SaveAndContinue
-@import forms.Choice.AllowedChoiceValues
+@import controllers.navigation.{ItemId, Navigator}
 @import forms.declaration.StatisticalValue
-@import forms.declaration.StatisticalValue._
 @import models.requests.JourneyRequest
-@import uk.gov.hmrc.play.views.html._
-@import services.NationalAdditionalCode
-@import services.view.AutoCompleteItem
-@import forms.declaration.AdditionalFiscalReference
-@import views.Title
-@import controllers.navigation.{Navigator, ItemId}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title}
-@import views.html.components.gds._
 @import views.components.gds.Styles._
+@import views.html.components.gds._
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -68,10 +60,10 @@
             labelClass = gdsPageLabel,
             isPageHeading = true,
             prefixKey = "declaration.statisticalValue.units",
-            inputClass = "input-prefix govuk-input govuk-input--width-10",
+            inputClass = "currency-prefix govuk-input govuk-input--width-10",
             hintKey = Some("declaration.statisticalValue.header.hint"),
             prefixLabelKey = Some("declaration.statisticalValue.units.hint"),
-            prefixClass = "prefix"
+            prefixClass = "currency-prefix"
         )
 
         @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
