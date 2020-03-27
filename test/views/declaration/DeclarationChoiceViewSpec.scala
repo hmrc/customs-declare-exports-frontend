@@ -17,8 +17,6 @@
 package views.declaration
 
 import base.Injector
-import com.typesafe.config.{Config, ConfigFactory}
-import config.AppConfig
 import forms.Choice
 import forms.Choice.AllowedChoiceValues.CreateDec
 import forms.declaration.DeclarationChoice
@@ -26,17 +24,11 @@ import helpers.views.declaration.CommonMessages
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import org.scalatest.Matchers._
-import play.api.Mode.Test
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
-import play.api.{Configuration, Environment}
-import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukRadios}
-import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
-import uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.components.gds.{errorSummary, saveAndContinue}
 import views.html.declaration.declaration_choice
 import views.tags.ViewTest
 
@@ -121,44 +113,6 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with St
     }
 
   }
-
-  "Choice View for available declarations" should {
-
-    "display choices that matches configuration" in {
-
-      val config: Config =
-        ConfigFactory.parseString("""
-                                    |list-of-available-journeys="CRT"
-                                    |list-of-available-declarations="STANDARD"
-                                    |google-analytics.token=N/A
-                                    |google-analytics.host=localhostGoogle
-                                  """.stripMargin)
-
-      val conf: Configuration = Configuration(config)
-      val runMode: RunMode = new RunMode(conf, Test)
-      val servicesConfig = new ServicesConfig(conf, runMode)
-      val appConfig = new AppConfig(conf, Environment.simple(), servicesConfig, "AppName")
-
-      val page = new declaration_choice(
-        gdsMainTemplate,
-        instanceOf[GovukButton],
-        instanceOf[GovukRadios],
-        instanceOf[errorSummary],
-        instanceOf[saveAndContinue],
-        instanceOf[FormWithCSRF],
-        appConfig
-      )
-
-      val view = page(Mode.Normal, DeclarationChoice.form)(request, messages)
-
-      view.getElementsByTag("label").size mustBe 1
-      view.getElementsByAttributeValue("for", "STANDARD").text() mustBe "declaration.type.standard"
-
-      // CEDS-2290 - "Or" divider should be filtered out if not configured
-      view.getElementsByClass("govuk-radios__divider").size() mustBe (0)
-    }
-  }
-
   private def ensureAllLabelTextIsCorrect(view: Document): Unit = {
     view.getElementsByTag("label").size mustBe 5
     view.getElementsByAttributeValue("for", "STANDARD").text() mustBe "declaration.type.standard"
