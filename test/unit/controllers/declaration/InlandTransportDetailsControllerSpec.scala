@@ -17,7 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.InlandTransportDetailsController
-import forms.declaration.ModeOfTransportCodes.Maritime
+import forms.declaration.ModeOfTransportCode.Maritime
 import models.DeclarationType._
 import models.Mode
 import org.mockito.ArgumentMatchers.any

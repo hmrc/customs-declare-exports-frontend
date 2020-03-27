@@ -16,7 +16,7 @@
 
 package views.declaration.summary
 
-import forms.declaration.{InlandModeOfTransportCode, ModeOfTransportCodes, SupervisingCustomsOffice, WarehouseIdentification}
+import forms.declaration.{InlandModeOfTransportCode, ModeOfTransportCode, SupervisingCustomsOffice, WarehouseIdentification}
 import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
@@ -27,7 +27,7 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData {
   val data = aDeclaration(
     withWarehouseIdentification(Some(WarehouseIdentification(Some("12345")))),
     withSupervisingCustomsOffice(Some(SupervisingCustomsOffice(Some("23456")))),
-    withInlandModeOfTransportCode(Some(InlandModeOfTransportCode(Some(ModeOfTransportCodes.Maritime))))
+    withInlandModeOfTransportCode(Some(InlandModeOfTransportCode(Some(ModeOfTransportCode.Maritime))))
   )
 
   val mode = Mode.Normal

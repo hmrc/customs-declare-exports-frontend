@@ -17,7 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration._
-import forms.declaration.ModeOfTransportCodes.Maritime
+import forms.declaration.ModeOfTransportCode.Maritime
 import forms.declaration.TransportCodes.WagonNumber
 import forms.declaration.{DepartureTransport, TransportCodes}
 import models.DeclarationType._

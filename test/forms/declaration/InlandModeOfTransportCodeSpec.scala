@@ -42,9 +42,9 @@ class InlandModeOfTransportCodeSpec extends UnitSpec with LightFormMatchers {
 }
 
 object InlandModeOfTransportCodeSpec {
-  private val inlandModeOfTransportCode = ModeOfTransportCodes.Rail.value
+  private val inlandModeOfTransportCode = ModeOfTransportCode.Rail.value
   val correctInlandModeOfTransportCode =
-    InlandModeOfTransportCode(Some(ModeOfTransportCodes.Rail))
+    InlandModeOfTransportCode(Some(ModeOfTransportCode.Rail))
   val correctInlandModeOfTransportCodeJSON: JsValue =
     JsObject(Map("inlandModeOfTransportCode" -> JsString(inlandModeOfTransportCode)))
   val emptyInlandModeOfTransportCodeJSON: JsValue =

@@ -621,6 +621,7 @@ declaration.transport.leavingTheBorder.transportMode.postalOrMail = Postal or Ma
 declaration.transport.leavingTheBorder.transportMode.fixedTransportInstallations = Fixed transport installations
 declaration.transport.leavingTheBorder.transportMode.inlandWaterway = Inland waterway transport
 declaration.transport.leavingTheBorder.transportMode.unknown = Mode unknown, for example own propulsion
+declaration.transport.leavingTheBorder.transportMode.empty = I don’t know
 declaration.transport.leavingTheBorder.transportMode.help.bodyText = Go to data element 7/4 Mode of Transport at the Border in the UK Trade Tariff {0}.
 
 
@@ -629,6 +630,7 @@ declaration.transportInformation.active.title = Transport leaving the border
 declaration.transportInformation.borderTransportMode.header = What transport will be used at the border?
 declaration.transportInformation.borderTransportMode.header.hint = The transport that the goods will be loaded on to cross the border.
 declaration.transportInformation.borderTransportMode.error.empty = Select the mode of transport at the border
+declaration.transportInformation.borderTransportMode.error.empty.optional = Select the mode of transport at the border or I don’t know
 declaration.transportInformation.borderTransportMode.error.incorrect = Select the mode of transport at the border
 declaration.transportInformation.active.help-item1 = The details of the transport that left the border, go to data element 7/14 Identity of Active Means of Transport Crossing the Border.
 declaration.transportInformation.active.help-item2 = The country the transport is registered in, go to data element 7/15 Nationality of active means of transport crossing the border.
@@ -1082,6 +1084,7 @@ declaration.summary.transport.departure.transportCode.5 = Postal or Mail
 declaration.summary.transport.departure.transportCode.7 = Fixed transport installations
 declaration.summary.transport.departure.transportCode.8 = Inland waterway transport
 declaration.summary.transport.departure.transportCode.9 = Mode unknown, for example own propulsion
+declaration.summary.transport.departure.transportCode.no-code = I don’t know
 
 declaration.summary.transport.departure.meansOfTransport.header = Transport details at the border
 declaration.summary.transport.departure.meansOfTransport.header.change = Change transport details at the border

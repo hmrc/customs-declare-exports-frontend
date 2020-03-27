@@ -60,7 +60,7 @@ object ExportDeclarationTestData {
     totalNumberOfItems = Some(correctTotalNumberOfItemsDecimalValues),
     transport = Transport(
       containers = correctTransportInformationContainerData,
-      borderModeOfTransportCode = Some("3"),
+      borderModeOfTransportCode = Some(TransportLeavingTheBorder(Some(ModeOfTransportCode.Road))),
       meansOfTransportOnDepartureType = Some("10"),
       meansOfTransportOnDepartureIDNumber = Some("123112yu78"),
       meansOfTransportCrossingTheBorderNationality = Some("Portugal"),

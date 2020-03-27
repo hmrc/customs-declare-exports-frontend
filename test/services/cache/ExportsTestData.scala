@@ -17,11 +17,11 @@
 package services.cache
 
 import base.ExportsTestData.newUser
-import forms.declaration.{GoodsLocationForm, InlandModeOfTransportCode, ModeOfTransportCodes, SupervisingCustomsOffice, WarehouseIdentification}
-import models.{DeclarationType, ExportsDeclaration}
+import forms.declaration._
 import models.DeclarationType.DeclarationType
 import models.declaration.Container
 import models.requests.{AuthenticatedRequest, JourneyRequest}
+import models.{DeclarationType, ExportsDeclaration}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import utils.FakeRequestCSRFSupport._
@@ -35,7 +35,7 @@ trait ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder 
     withGoodsLocation(GoodsLocationForm("GBAUEMAEMAEMA")),
     withWarehouseIdentification(Some(WarehouseIdentification(Some("a")))),
     withSupervisingCustomsOffice(Some(SupervisingCustomsOffice(Some("b")))),
-    withInlandModeOfTransportCode(Some(InlandModeOfTransportCode(Some(ModeOfTransportCodes.Rail)))),
+    withInlandModeOfTransportCode(Some(InlandModeOfTransportCode(Some(ModeOfTransportCode.Rail)))),
     withOfficeOfExit("id", Some("code")),
     withContainerData(Container("id", Seq.empty)),
     withTotalNumberOfItems(Some("123"), Some("123")),

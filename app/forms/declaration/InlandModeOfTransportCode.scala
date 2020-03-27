@@ -20,7 +20,7 @@ import forms.DeclarationPage
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 
-case class InlandModeOfTransportCode(inlandModeOfTransportCode: Option[ModeOfTransportCodes] = None)
+case class InlandModeOfTransportCode(inlandModeOfTransportCode: Option[ModeOfTransportCode] = None)
 
 object InlandModeOfTransportCode extends DeclarationPage {
   implicit val format = Json.format[InlandModeOfTransportCode]
@@ -31,7 +31,8 @@ object InlandModeOfTransportCode extends DeclarationPage {
 
   val mapping = Forms
     .mapping(
-      "inlandModeOfTransportCode" -> optional(of(ModeOfTransportCodes.formatter("declaration.warehouse.inlandTransportDetails.error.incorrect")))
+      "inlandModeOfTransportCode" ->
+        optional(of(ModeOfTransportCode.classicFormatter("declaration.warehouse.inlandTransportDetails.error.incorrect")))
     )(InlandModeOfTransportCode.apply)(InlandModeOfTransportCode.unapply)
 
   def form(): Form[InlandModeOfTransportCode] = Form(mapping)

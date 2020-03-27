@@ -16,7 +16,7 @@
 
 package views.declaration.summary
 
-import forms.declaration.{TransportCodes, TransportPayment}
+import forms.declaration.{ModeOfTransportCode, TransportCodes, TransportPayment}
 import models.Mode
 import models.declaration.Container
 import services.cache.ExportsTestData
@@ -26,7 +26,7 @@ import views.html.declaration.summary.transport_section
 class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
   val data = aDeclaration(
-    withDepartureTransport("1", "10", "identifier"),
+    withDepartureTransport(ModeOfTransportCode.Maritime, "10", "identifier"),
     withBorderTransport(Some("United Kingdom"), "11", "borderId"),
     withContainerData(Seq.empty),
     withTransportPayment(Some(TransportPayment(Some("A"))))
