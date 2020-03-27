@@ -23,6 +23,7 @@
 @import views.components.gds.Styles._
 @import views.html.components.gds._
 @import views.{BackButton, Title}
+@import views.components.gds.Styles._
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -57,7 +58,7 @@
         labelKey = "declaration.goodsLocation.title",
         hintKey = Some("declaration.goodsLocation.hint"),
         isPageHeading = true,
-        headingClasses = "govuk-label--xl"
+        headingClasses = gdsPageLabel
 )
 
 
