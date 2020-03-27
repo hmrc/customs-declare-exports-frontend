@@ -55,7 +55,7 @@
                 RadioOption("Border_InlandWaterway", InlandWaterway.value, messages("declaration.transport.leavingTheBorder.transportMode.inlandWaterway")),
                 RadioOption("Border_Unknown", Unknown.value, messages("declaration.transport.leavingTheBorder.transportMode.unknown")),
                 RadioOption("Border_Empty", Empty.value, messages("declaration.transport.leavingTheBorder.transportMode.empty"))
-            ).filterNot(radioOption => request.declarationType != DeclarationType.CLEARANCE && radioOption.value.contains(Empty.value))
+            ).filterNot(radioOption => (request.declarationType != DeclarationType.CLEARANCE) && radioOption.value.contains(Empty.value))
         )
 
         @components.details(messages("site.details.summary_text_this")){
