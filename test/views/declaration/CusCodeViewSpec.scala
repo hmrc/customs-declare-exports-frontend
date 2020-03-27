@@ -17,15 +17,15 @@
 package views.declaration
 
 import base.Injector
-import config.AppConfig
 import forms.declaration.CusCode
-import helpers.views.declaration.CommonMessages
-import models.DeclarationType._
+import forms.declaration.CusCode.AllowedCUSCodeAnswers
+import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.mvc.Call
+import play.api.i18n.MessagesApi
+import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -33,68 +33,86 @@ import views.html.declaration.cus_code
 import views.tags.ViewTest
 
 @ViewTest
-class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
+class CusCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  private val appConfig = instanceOf[AppConfig]
-  private val page = new cus_code(mainTemplate, appConfig)
+  private val page = instanceOf[cus_code]
+  private val form: Form[CusCode] = CusCode.form()
   private val itemId = "item1"
-  private val realMessages = validatedMessages
-  private def createView(form: Form[CusCode], request: JourneyRequest[_]): Document =
-    page(Mode.Normal, itemId, form)(request, realMessages)
 
-  def cusCodeView(journeyRequest: JourneyRequest[_], cusCode: Option[CusCode] = None): Unit = {
-    val form = cusCode.fold(CusCode.form)(CusCode.form.fill(_))
-    val view = createView(form, journeyRequest)
+  private def createView(mode: Mode = Mode.Normal, form: Form[CusCode] = form)(implicit request: JourneyRequest[_]): Document =
+    page(mode, itemId, form)(request, stubMessages())
 
-    "display page title" in {
+  "CusCode View on empty page" should {
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
+      "have proper messages for labels" in {
+        val messages = instanceOf[MessagesApi].preferred(journeyRequest())
+        messages must haveTranslationFor("declaration.cusCode.header")
+        messages must haveTranslationFor("declaration.cusCode.header.hint")
+        messages must haveTranslationFor("declaration.cusCode.hasCode")
+        messages must haveTranslationFor("declaration.cusCode.noCode")
+        messages must haveTranslationFor("declaration.cusCode.label")
+      }
 
-      view.getElementById("title").text() mustBe realMessages("declaration.cusCode.header")
-    }
+      val view = createView()
+      "display page title" in {
+        view.getElementsByTag("h1").text() must be("declaration.cusCode.header")
+      }
 
-    "display cus code input field" in {
-      val expectedCode = cusCode.flatMap(_.cusCode).getOrElse("")
-      view.getElementById(CusCode.cusCodeKey).attr("value") mustBe expectedCode
-    }
+      "display section header" in {
+        view.getElementById("section-header").text() must include("supplementary.items")
+      }
 
-    "display has cus code field" in {
-      view.getElementById(CusCode.hasCusCodeKey).attr("value") mustBe empty
-    }
+      "display radio button with Yes option" in {
+        view.getElementById("code_yes").attr("value") mustBe AllowedCUSCodeAnswers.yes
+        view.getElementsByAttributeValue("for", "code_yes").text() mustBe "declaration.cusCode.hasCode"
+      }
+      "display radio button with No option" in {
+        view.getElementById("code_no").attr("value") mustBe AllowedCUSCodeAnswers.no
+        view.getElementsByAttributeValue("for", "code_no").text() mustBe "declaration.cusCode.noCode"
+      }
 
-    "display 'Save and continue' button on page" in {
+      "display 'Back' button that links to 'UN Dangerous Goods ' page" in {
 
-      val saveButton = view.select("#submit")
-      saveButton.text() mustBe realMessages(saveAndContinueCaption)
+        val backButton = view.getElementById("back-link")
+
+        backButton.text() must be("site.back")
+        backButton.getElementById("back-link") must haveHref(
+          controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
+        )
+      }
+
+      "display 'Save and continue' button on page" in {
+        val saveButton = view.getElementById("submit")
+        saveButton.text() must be("site.save_and_continue")
+      }
+
+      "display 'Save and return' button on page" in {
+        val saveAndReturnButton = view.getElementById("submit_and_return")
+        saveAndReturnButton.text() must be("site.save_and_come_back_later")
+      }
     }
   }
 
-  def backButton(journeyRequest: JourneyRequest[_], call: Call): Unit = {
-    val view = createView(CusCode.form, journeyRequest)
+  "CusCode View for invalid input" should {
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
+      "display error when code is empty" in {
+        val view = createView(form = CusCode.form().fillAndValidate(CusCode(Some(""))))
 
-    "display back button with correct call" in {
-      val backButton = view.getElementById("back-link")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#cusCode")
 
-      backButton.text() mustBe realMessages(backCaption)
-      backButton must haveHref(call)
+        view must containErrorElementWithMessage("declaration.cusCode.error.empty")
+      }
+
+      "display error when code is incorrect" in {
+        val view = createView(form = CusCode.form().fillAndValidate(CusCode(Some("ABC!!!"))))
+
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#cusCode")
+
+        view must containErrorElementWithMessage("declaration.cusCode.error.length")
+        view must containErrorElementWithMessage("declaration.cusCode.error.specialCharacters")
+      }
     }
   }
-
-  onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
-    "CUS Code View on empty page" when {
-
-      behave like cusCodeView(request)
-    }
-
-    "CUS Code View on populated page" when {
-      val dangerousGoodsCode = Some(CusCode(Some("12345678")))
-
-      behave like cusCodeView(request, dangerousGoodsCode)
-    }
-
-    "CUS Code View" must {
-
-      behave like backButton(request, controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId))
-    }
-
-  }
-
 }

@@ -602,7 +602,7 @@ function commodityDetails(){
 function unDangerousGoodsCode(){
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/un-dangerous-goods-code')) {
         document.getElementById('code_no').checked = 'checked';
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('submit').click();
     }
 }
 
@@ -625,7 +625,7 @@ function cusCode(){
                 document.getElementById('cusCode').value ='12345678';
                 break;
         }
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('submit').click();
     }
 }
 
