@@ -21,10 +21,10 @@ import controllers.util.SaveAndReturn
 import forms.declaration.FiscalInformation
 import models.Mode
 import models.requests.JourneyRequest
+import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.test.Helpers.stubMessages
-import play.twirl.api.Html
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -35,8 +35,8 @@ import views.tags.ViewTest
 class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val form: Form[FiscalInformation] = FiscalInformation.form()
-  private val page = new fiscal_information(mainTemplate)
-  private def createView(itemId: String = "itemId", form: Form[FiscalInformation] = form)(implicit request: JourneyRequest[_]): Html =
+  private val page = instanceOf[fiscal_information]
+  private def createView(itemId: String = "itemId", form: Form[FiscalInformation] = form)(implicit request: JourneyRequest[_]): Document =
     page(Mode.Normal, itemId, form)(request, stubMessages())
 
   "Fiscal Information View on empty page" should {
@@ -45,6 +45,13 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
       val messages = instanceOf[MessagesApi].preferred(journeyRequest())
       messages must haveTranslationFor("declaration.fiscalInformation.title")
       messages must haveTranslationFor("declaration.fiscalInformation.question")
+      messages must haveTranslationFor("declaration.fiscalInformation.body")
+      messages must haveTranslationFor("declaration.fiscalInformation.details.summary")
+      messages must haveTranslationFor("declaration.fiscalInformation.details.item1")
+      messages must haveTranslationFor("declaration.fiscalInformation.details.item2")
+      messages must haveTranslationFor("declaration.fiscalInformation.details.item3")
+      messages must haveTranslationFor("declaration.fiscalInformation.details.item4")
+      messages must haveTranslationFor("declaration.fiscalInformation.details.item5")
       messages must haveTranslationFor("declaration.fiscalInformation.onwardSupplyRelief.error")
       messages must haveTranslationFor("declaration.fiscalInformation.header")
       messages must haveTranslationFor("declaration.additionalFiscalReferences.title")
@@ -71,16 +78,14 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
       "display two radio buttons with description (not selected)" in {
         val view = createView(form = FiscalInformation.form().fill(FiscalInformation("")))
 
-        val optionOne = view.getElementById("Yes")
-        optionOne.attr("checked") mustBe empty
+        view.getElementById("Yes") must not(beSelected)
 
-        val optionOneLabel = view.getElementById("Yes-label")
+        val optionOneLabel = view.getElementsByAttributeValue("for", "Yes")
         optionOneLabel.text() mustBe "site.yes"
 
-        val optionTwo = view.getElementById("No")
-        optionTwo.attr("checked") mustBe empty
+        view.getElementById("No") must not(beSelected)
 
-        val optionTwoLabel = view.getElementById("No-label")
+        val optionTwoLabel = view.getElementsByAttributeValue("for", "No")
         optionTwoLabel.text() mustBe "site.no"
       }
 
@@ -113,24 +118,20 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
 
         val view = createView(form = FiscalInformation.form().bind(Map[String, String]()))
 
-        checkErrorsSummary(view)
-        haveFieldErrorLink("onwardSupplyRelief", "#onwardSupplyRelief")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#onwardSupplyRelief")
 
-        view
-          .select("#error-message-onwardSupplyRelief-input")
-          .text() mustBe "declaration.fiscalInformation.onwardSupplyRelief.empty"
+        view must containErrorElementWithMessage(messages("declaration.fiscalInformation.onwardSupplyRelief.empty"))
       }
 
       "display error if incorrect fiscal information is selected" in {
 
         val view = createView(form = FiscalInformation.form().fillAndValidate(FiscalInformation("Incorrect")))
 
-        checkErrorsSummary(view)
-        haveFieldErrorLink("onwardSupplyRelief", "#onwardSupplyRelief")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#onwardSupplyRelief")
 
-        view
-          .select("#error-message-onwardSupplyRelief-input")
-          .text() mustBe "declaration.fiscalInformation.onwardSupplyRelief.error"
+        view must containErrorElementWithMessage(messages("declaration.fiscalInformation.onwardSupplyRelief.error"))
       }
     }
   }
@@ -141,22 +142,16 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
 
         val view = createView(form = FiscalInformation.form().fill(FiscalInformation("Yes")))
 
-        val optionOne = view.getElementById("Yes")
-        optionOne.attr("checked") must be("checked")
-
-        val optionTwo = view.getElementById("No")
-        optionTwo.attr("checked") mustBe empty
+        view.getElementById("Yes") must beSelected
+        view.getElementById("No") must not(beSelected)
       }
 
       "display selected second radio button - No" in {
 
         val view = createView(form = FiscalInformation.form().fill(FiscalInformation("No")))
 
-        val optionOne = view.getElementById("Yes")
-        optionOne.attr("checked") mustBe empty
-
-        val optionTwo = view.getElementById("No")
-        optionTwo.attr("checked") must be("checked")
+        view.getElementById("Yes") must not(beSelected)
+        view.getElementById("No") must beSelected
       }
     }
   }

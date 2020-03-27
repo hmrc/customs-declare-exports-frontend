@@ -114,8 +114,8 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
         view must containErrorElementWithTagAndHref("a", "#totalAmountInvoiced")
         view must containErrorElementWithTagAndHref("a", "#exchangeRate")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.totalAmountInvoiced.error")
-        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.exchangeRate.error")
+        view must containErrorElementWithMessage("declaration.totalAmountInvoiced.error")
+        view must containErrorElementWithMessage("declaration.exchangeRate.error")
       }
 
       "display error when Total Amount Invoiced is incorrect" in {
@@ -126,7 +126,7 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#totalAmountInvoiced")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.totalAmountInvoiced.error")
+        view must containErrorElementWithMessage("declaration.totalAmountInvoiced.error")
       }
 
       "display error when Exchange Rate is incorrect" in {
@@ -137,7 +137,7 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#exchangeRate")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.exchangeRate.error")
+        view must containErrorElementWithMessage("declaration.exchangeRate.error")
       }
     }
 

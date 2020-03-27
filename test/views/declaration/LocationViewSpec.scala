@@ -100,7 +100,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#code")
 
-      view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.goodsLocation.code.empty")
+      view must containErrorElementWithMessage("declaration.goodsLocation.code.empty")
     }
 
     "display error for incorrect country in the Goods Location code" in {
@@ -111,7 +111,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#code")
 
-      view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.goodsLocation.code.error")
+      view must containErrorElementWithMessage("declaration.goodsLocation.code.error")
     }
 
     "display error for incorrect type of location in the Goods Location code" in {
@@ -122,7 +122,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#code")
 
-      view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.goodsLocation.code.error")
+      view must containErrorElementWithMessage("declaration.goodsLocation.code.error")
     }
 
     "display error for incorrect qualifier of identification in the Goods Location code" in {
@@ -133,7 +133,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#code")
 
-      view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.goodsLocation.code.error")
+      view must containErrorElementWithMessage("declaration.goodsLocation.code.error")
     }
 
     "display error for too short code" in {
@@ -144,7 +144,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#code")
 
-      view.getElementsByClass("#govuk-error-message").text() contains messages("declaration.goodsLocation.code.error")
+      view must containErrorElementWithMessage("declaration.goodsLocation.code.error")
     }
   }
 

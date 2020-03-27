@@ -15,69 +15,87 @@
  *@
 
 @import controllers.declaration.routes._
+@import controllers.navigation.{ItemId, Navigator}
 @import forms.declaration.FiscalInformation
 @import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers._
-@import uk.gov.hmrc.play.views.html._
-@import views.components.inputs.RadioOption
-@import views.Title
-@import controllers.navigation.Navigator
 @import models.requests.JourneyRequest
-@import controllers.navigation.ItemId
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.components.gds.Styles._
+@import views.html.components.gds._
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukRadios: GovukRadios,
+        govukDetails : GovukDetails,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        body: paragraphBody,
+        pageTitle: pageTitle,
+        saveButtons: saveButtons,
+        tariffDetails: tariffDetails,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, itemId: String, form: Form[FiscalInformation])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBody = { @Html(messages("declaration.type.fiscalInformationSummaryText",  components.details_content_link())) }
 
-@main_template(
-    title = Title("declaration.fiscalInformation.title", "declaration.fiscalInformation.header")
-) {
+@fiscalInformationDetails = {
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("declaration.fiscalInformation.details.item1")</li>
+        <li>@messages("declaration.fiscalInformation.details.item2")</li>
+        <li>@messages("declaration.fiscalInformation.details.item3")</li>
+        <li>@messages("declaration.fiscalInformation.details.item4")</li>
+        <li>@messages("declaration.fiscalInformation.details.item5")</li>
+    </ul>
+}
 
-    @components.back_link(Navigator.backLink(FiscalInformation, mode, ItemId(itemId)), mode)
+@govukLayout(
+    title = Title("declaration.fiscalInformation.title", "declaration.fiscalInformation.header"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(FiscalInformation, mode, ItemId(itemId))))) {
 
-    @components.error_summary(form.errors)
+    @formHelper(action = FiscalInformationController.saveFiscalInformation(mode, itemId), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-    @components.heading(
-        sectionHeader = messages("declaration.fiscalInformation.header"),
-        title = messages("declaration.fiscalInformation.title")
-    )
+        @sectionHeader(messages("declaration.fiscalInformation.header"))
+        @pageTitle(messages("declaration.fiscalInformation.title"))
 
-    <p>
-        If you have entered a procedure code which starts ‘10 42’, please state whether you would like to claim for OSR.
-    </p><br>
+        @body(messages("declaration.fiscalInformation.body"))
 
-    <details class="details-font" role="group">
-        <summary class="govuk-details__summary" role="button" aria-controls="details-content-b789d1b8-fdb1-4d59-970d-d1d42eafa90f" aria-expanded="false">
-            <span class="govuk-details__summary-text">
-                You can claim OSR if:
-            </span>
-        </summary>
-        <ul class="list list-bullet grey-border-left">
-            <li>you are VAT registered in the UK</li>
-            <li>you regularly import goods</li>
-            <li>you are an agent registered for VAT in the UK and you have been appointed to act on behalf of an importer based in another country, who is not registered for VAT in the UK</li>
-            <li>you imported the goods no more than one month ago</li>
-            <li>the goods exported should be exactly the same as when they were imported</li>
-        </ul>
-    </details>
-    <br>
+        @govukDetails(Details(
+            summary = Text(messages("declaration.fiscalInformation.details.summary")),
+            content = HtmlContent(fiscalInformationDetails)
+        ))
 
-    @helper.form(FiscalInformationController.saveFiscalInformation(mode, itemId), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+        @govukRadios(Radios(
+            name = "onwardSupplyRelief",
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("declaration.fiscalInformation.question")),
+                    classes = "govuk-fieldset__legend--m"
+                ))
+            )),
+            items = Seq(
+                RadioItem(
+                    id = Some("Yes"),
+                    value = Some(yes),
+                    content = Text(messages("site.yes")),
+                    checked = form("onwardSupplyRelief").value.contains(yes)
+                ),
+                RadioItem(
+                    id = Some("No"),
+                    value = Some(no),
+                    content = Text(messages("site.no")),
+                    checked = form("onwardSupplyRelief").value.contains(no)
+                )
+            ),
+            errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
 
-        @components.fields.field_radio(
-            field = form("onwardSupplyRelief"),
-            legend = messages("declaration.fiscalInformation.question"),
-            inputs = Seq(
-                RadioOption("Yes", yes, messages("site.yes")),
-                RadioOption("No", no, messages("site.no"))
-            )
-        )
-        @components.details(messages("site.details.summary_text_this")){
-           @tariffBody
-        }
-        @components.submit_button()
-        @components.buttons.save_and_return_later_button()
+        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+
+        @saveButtons()
     }
 }

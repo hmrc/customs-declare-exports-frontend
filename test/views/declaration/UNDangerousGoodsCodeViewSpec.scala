@@ -16,12 +16,15 @@
 
 package views.declaration
 
+import base.Injector
 import forms.declaration.UNDangerousGoodsCode
-import helpers.views.declaration.CommonMessages
-import models.DeclarationType.DeclarationType
-import models.{DeclarationType, Mode}
+import forms.declaration.UNDangerousGoodsCode.AllowedUNDangerousGoodsCodeAnswers
+import models.Mode
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
+import play.api.i18n.MessagesApi
+import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -29,60 +32,84 @@ import views.html.declaration.un_dangerous_goods_code
 import views.tags.ViewTest
 
 @ViewTest
-class UNDangerousGoodsCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages {
+class UNDangerousGoodsCodeViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  private val page = new un_dangerous_goods_code(mainTemplate, minimalAppConfig)
+  private val page = instanceOf[un_dangerous_goods_code]
+  private val form: Form[UNDangerousGoodsCode] = UNDangerousGoodsCode.form()
   private val itemId = "item1"
-  private val realMessages = validatedMessages
-  private def createView(declarationType: DeclarationType = DeclarationType.STANDARD, form: Form[UNDangerousGoodsCode]): Document =
-    page(Mode.Normal, itemId, form)(journeyRequest(declarationType), realMessages)
 
-  def uNDangerousGoodsCodeView(declarationType: DeclarationType, dangerousGoodsCode: Option[UNDangerousGoodsCode] = None): Unit = {
-    val form = dangerousGoodsCode.fold(UNDangerousGoodsCode.form)(UNDangerousGoodsCode.form.fill(_))
-    val view = createView(declarationType, form)
+  private def createView(mode: Mode = Mode.Normal, form: Form[UNDangerousGoodsCode] = form)(implicit request: JourneyRequest[_]): Document =
+    page(mode, itemId, form)(request, stubMessages())
 
-    "display page title" in {
+  "UNDangerousGoodsCode View on empty page" should {
+    onEveryDeclarationJourney() { implicit request =>
+      "have proper messages for labels" in {
+        val messages = instanceOf[MessagesApi].preferred(journeyRequest())
+        messages must haveTranslationFor("declaration.unDangerousGoodsCode.header")
+        messages must haveTranslationFor("declaration.unDangerousGoodsCode.header.hint")
+        messages must haveTranslationFor("declaration.unDangerousGoodsCode.hasCode")
+        messages must haveTranslationFor("declaration.unDangerousGoodsCode.noCode")
+        messages must haveTranslationFor("declaration.unDangerousGoodsCode.label")
+      }
 
-      view.getElementById("title").text() mustBe realMessages("declaration.unDangerousGoodsCode.header")
-    }
+      val view = createView()
+      "display page title" in {
+        view.getElementsByTag("h1").text() must be("declaration.unDangerousGoodsCode.header")
+      }
 
-    "display dangerous goods code input field" in {
-      val expectedCode = dangerousGoodsCode.flatMap(_.dangerousGoodsCode).getOrElse("")
-      view.getElementById(UNDangerousGoodsCode.dangerousGoodsCodeKey).attr("value") mustBe expectedCode
-    }
+      "display section header" in {
+        view.getElementById("section-header").text() must include("supplementary.items")
+      }
 
-    "display has dangerous goods code field" in {
-      view.getElementById(UNDangerousGoodsCode.hasDangerousGoodsCodeKey).attr("value") mustBe empty
-    }
+      "display radio button with Yes option" in {
+        view.getElementById("code_yes").attr("value") mustBe AllowedUNDangerousGoodsCodeAnswers.yes
+        view.getElementsByAttributeValue("for", "code_yes").text() mustBe "declaration.unDangerousGoodsCode.hasCode"
+      }
+      "display radio button with No option" in {
+        view.getElementById("code_no").attr("value") mustBe AllowedUNDangerousGoodsCodeAnswers.no
+        view.getElementsByAttributeValue("for", "code_no").text() mustBe "declaration.unDangerousGoodsCode.noCode"
+      }
 
-    "display 'Back' button that links to 'Package Information' page" in {
-      val backButton = view.getElementById("back-link")
+      "display 'Back' button that links to 'Commodity Details' page" in {
 
-      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, itemId))
-    }
+        val backButton = view.getElementById("back-link")
 
-    "display 'Save and continue' button on page" in {
+        backButton.text() must be("site.back")
+        backButton.getElementById("back-link") must haveHref(
+          controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, itemId)
+        )
+      }
 
-      val saveButton = view.select("#submit")
-      saveButton.text() mustBe realMessages(saveAndContinueCaption)
-    }
-  }
+      "display 'Save and continue' button on page" in {
+        val saveButton = view.getElementById("submit")
+        saveButton.text() must be("site.save_and_continue")
+      }
 
-  "UN Dangerous Goods Code View on empty page" when {
-
-    for (decType <- DeclarationType.values) {
-      s"we are on $decType journey" should {
-        behave like uNDangerousGoodsCodeView(decType)
+      "display 'Save and return' button on page" in {
+        val saveAndReturnButton = view.getElementById("submit_and_return")
+        saveAndReturnButton.text() must be("site.save_and_come_back_later")
       }
     }
   }
 
-  "UN Dangerous Goods Code View on populated page" when {
-    val dangerousGoodsCode = Some(UNDangerousGoodsCode(Some("1234")))
+  "UNDangerousGoodsCode View for invalid input" should {
+    onEveryDeclarationJourney() { implicit request =>
+      "display error when code is empty" in {
+        val view = createView(form = UNDangerousGoodsCode.form().fillAndValidate(UNDangerousGoodsCode(Some(""))))
 
-    for (decType <- DeclarationType.values) {
-      s"we are on $decType journey" should {
-        behave like uNDangerousGoodsCodeView(decType, dangerousGoodsCode)
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#dangerousGoodsCode")
+
+        view must containErrorElementWithMessage("declaration.unDangerousGoodsCode.error.empty")
+      }
+
+      "display error when code is incorrect" in {
+        val view = createView(form = UNDangerousGoodsCode.form().fillAndValidate(UNDangerousGoodsCode(Some("ABC"))))
+
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#dangerousGoodsCode")
+
+        view must containErrorElementWithMessage("declaration.unDangerousGoodsCode.error.invalid")
       }
     }
   }

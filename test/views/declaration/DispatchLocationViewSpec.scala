@@ -141,7 +141,7 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#dispatchLocation")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("supplementary.dispatchLocation.inputText.error.empty")
+        view must containErrorElementWithMessage("supplementary.dispatchLocation.inputText.error.empty")
       }
 
       "display error if incorrect dispatch is selected" in {
@@ -151,7 +151,7 @@ class DispatchLocationViewSpec extends UnitViewSpec with CommonMessages with Stu
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#dispatchLocation")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("supplementary.dispatchLocation.inputText.error.incorrect")
+        view must containErrorElementWithMessage("supplementary.dispatchLocation.inputText.error.incorrect")
       }
     }
   }

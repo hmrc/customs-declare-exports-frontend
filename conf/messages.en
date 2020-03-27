@@ -548,9 +548,16 @@ declaration.warehouse.inlandTransportDetails.help.bodyText = Go to data element 
 
 declaration.fiscalInformation.title = Onward Supply Relief (OSR)
 declaration.fiscalInformation.question = Do you want to claim OSR?
+declaration.fiscalInformation.body = If you have entered a procedure code which starts ‘10 42’, please state whether you would like to claim for OSR.
 declaration.fiscalInformation.onwardSupplyRelief.empty = Select yes or no
 declaration.fiscalInformation.onwardSupplyRelief.error = Enter a valid value
 declaration.fiscalInformation.header = Items
+declaration.fiscalInformation.details.summary = You can claim OSR if:
+declaration.fiscalInformation.details.item1 = you are VAT registered in the UK
+declaration.fiscalInformation.details.item2 = you regularly import goods
+declaration.fiscalInformation.details.item3 = you are an agent registered for VAT in the UK and you have been appointed to act on behalf of an importer based in another country, who is not registered for VAT in the UK
+declaration.fiscalInformation.details.item4 = you imported the goods no more than one month ago
+declaration.fiscalInformation.details.item5 = the goods exported should be exactly the same as when they were imported
 declaration.additionalFiscalReferences.title = What are the exporter’s VAT details?
 declaration.additionalFiscalReferences.numbers.header = VAT number
 declaration.additionalFiscalReferences.country = Country that the VAT number is registered

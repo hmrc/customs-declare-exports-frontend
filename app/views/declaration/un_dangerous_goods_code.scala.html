@@ -14,18 +14,32 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import controllers.declaration.routes
-@import controllers.util.SaveAndContinue
+@import controllers.navigation.{ItemId, Navigator}
 @import forms.declaration.UNDangerousGoodsCode
 @import forms.declaration.UNDangerousGoodsCode._
 @import models.requests.JourneyRequest
-@import uk.gov.hmrc.play.views.html._
-@import views.Title
-@import config.AppConfig
-@import views.components.inputs.RadioOption
-@import controllers.navigation.{Navigator, ItemId}
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.components.gds.Styles._
+@import views.html.components.gds._
 
-@this(main_template: views.html.main_template, appConfig: AppConfig)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukRadios: GovukRadios,
+        govukDetails : GovukDetails,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        exportsInputText: exportsInputText,
+        body: paragraphBody,
+        pageTitle: pageTitle,
+        saveButtons: saveButtons,
+        tariffDetails: tariffDetails,
+        appConfig: AppConfig,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(
         mode: Mode,
@@ -37,50 +51,53 @@
 
 @tariffBody = { @Html(messages("declaration.type.unDangerousGoodsCodeSummaryText", components.details_content_link())) }
 
-@main_template(
-    title = Title("declaration.unDangerousGoodsCode.header", "supplementary.items")
-) {
 
-    @helper.form(routes.UNDangerousGoodsCodeController.submitForm(mode, itemId), 'autocomplete -> "off") {
-        @helper.CSRF.formField
+@govukLayout(
+    title = Title("declaration.unDangerousGoodsCode.header", "supplementary.items"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(UNDangerousGoodsCode, mode, ItemId(itemId))))) {
 
-        @components.back_link(Navigator.backLink(UNDangerousGoodsCode, mode, ItemId(itemId)), mode)
+    @formHelper(action = routes.UNDangerousGoodsCodeController.submitForm(mode, itemId), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
+        @sectionHeader(messages("supplementary.items"))
 
-        @components.heading(
-            sectionHeader = messages("supplementary.items"),
-            title = messages("declaration.unDangerousGoodsCode.header"),
-            hintHtml = Some(Html(messages("declaration.unDangerousGoodsCode.header.hint", tradeTariffLink)))
-        )
-
-
-        @components.fields.field_radio(
-            field = form(hasDangerousGoodsCodeKey),
-            legend = "",
-            inputs = Seq(
-                RadioOption(
-                    id = "code_yes",
-                    value = AllowedUNDangerousGoodsCodeAnswers.yes,
-                    message = messages("declaration.unDangerousGoodsCode.hasCode"),
-                    revealComponent = Some(components.fields.field_text(
-                        field = form(dangerousGoodsCodeKey),
-                        label = Some(messages("declaration.unDangerousGoodsCode.label"))
-                    ))
+        @govukRadios(Radios(
+            name = hasDangerousGoodsCodeKey,
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("declaration.unDangerousGoodsCode.header")),
+                    isPageHeading = true,
+                    classes = gdsPageLegend
+                ))
+            )),
+            hint = Some(Hint(
+                content = HtmlContent(Html(messages("declaration.unDangerousGoodsCode.header.hint", tradeTariffLink)))
+            )),
+            items = Seq(
+                RadioItem(
+                    id = Some("code_yes"),
+                    value = Some(AllowedUNDangerousGoodsCodeAnswers.yes),
+                    content = Text(messages("declaration.unDangerousGoodsCode.hasCode")),
+                    conditionalHtml = Some(exportsInputText(
+                          field = form(dangerousGoodsCodeKey),
+                          labelClasses = "govuk-label",
+                          inputClasses = Some("govuk-input govuk-!-width-one-third"),
+                          labelKey = "declaration.unDangerousGoodsCode.label"
+                    )),
+                    checked = form(hasDangerousGoodsCodeKey).value.contains(AllowedUNDangerousGoodsCodeAnswers.yes)
                 ),
-                RadioOption(
-                    id = "code_no",
-                    value = AllowedUNDangerousGoodsCodeAnswers.no,
-                    message = messages("declaration.unDangerousGoodsCode.noCode")
+                RadioItem(
+                    id = Some("code_no"),
+                    value = Some(AllowedUNDangerousGoodsCodeAnswers.no),
+                    content = Text(messages("declaration.unDangerousGoodsCode.noCode")),
+                    checked = form(hasDangerousGoodsCodeKey).value.contains(AllowedUNDangerousGoodsCodeAnswers.no)
                 )
-            )
-        )
+            ),
+            errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
 
-        @components.details(messages("site.details.summary_text_this")){
-           @tariffBody
-        }
-        @components.submit_button()
-        @components.buttons.save_and_return_later_button()
+        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+
+        @saveButtons()
     }
-
 }

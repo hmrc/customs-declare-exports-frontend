@@ -119,7 +119,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with In
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#value")
 
-      view.getElementsByClass("#govuk-error-message").text() contains messages("choicePage.input.error.empty")
+      view must containErrorElementWithMessage("choicePage.input.error.empty")
     }
 
     "display error when choice is incorrect" in {
@@ -129,7 +129,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages with Stubs with In
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#value")
 
-      view.getElementsByClass("#govuk-error-message").text() contains messages("choicePage.input.error.incorrectValue")
+      view must containErrorElementWithMessage("choicePage.input.error.incorrectValue")
     }
   }
 

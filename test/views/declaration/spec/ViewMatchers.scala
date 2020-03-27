@@ -50,12 +50,16 @@ trait ViewMatchers {
 
   def containErrorElementWithTagAndHref(tag: String, href: String): Matcher[Element] = new ContainErrorElementWithClassMatcher(tag, href)
 
+  def containErrorElementWithMessage(text: String): Matcher[Element] = new ContainErrorElementWithMessage(text)
+
   def containElementWithAttribute(key: String, value: String): Matcher[Element] =
     new ContainElementWithAttribute(key, value)
 
   def containElementWithTag(tag: String): Matcher[Element] = new ContainElementWithTagMatcher(tag)
 
   def containText(text: String): Matcher[Element] = new ElementContainsTextMatcher(text)
+
+  def beSelected: Matcher[Element] = new ElementSelectedMatcher(true)
 
   def haveClass(text: String): Matcher[Element] = new ElementHasClassMatcher(text)
 
@@ -144,6 +148,22 @@ trait ViewMatchers {
         s"Document did not contain element with class {$tag}\n${actualContentWas(left)}",
         s"Document contained an element with class {$tag}"
       )
+  }
+
+  class ContainErrorElementWithMessage(text: String) extends Matcher[Element] {
+    override def apply(left: Element): MatchResult =
+      MatchResult(
+        left != null && left.getElementsByClass("govuk-error-summary__list").text().contains(text),
+        s"Document did not contain error element with message {$text}\n${actualContentWas(left)}",
+        s"Document contained an error element with message {$text}"
+      )
+  }
+
+  class ElementSelectedMatcher(expected: Boolean) extends Matcher[Element] {
+    override def apply(left: Element): MatchResult = {
+      def isChecked = left.getElementsByAttribute("checked").size() == 1
+      MatchResult(left != null && isChecked == expected, s"Element was not selected\n${actualContentWas(left)}", s"Element was selected")
+    }
   }
 
   class ContainElementWithAttribute(key: String, value: String) extends Matcher[Element] {
