@@ -15,19 +15,26 @@
  *@
 
 @import controllers.declaration.routes
-@import controllers.util.SaveAndContinue
-@import forms.Choice.AllowedChoiceValues
+@import controllers.navigation.{ItemId, Navigator}
 @import forms.declaration.StatisticalValue
-@import forms.declaration.StatisticalValue._
 @import models.requests.JourneyRequest
-@import uk.gov.hmrc.play.views.html._
-@import services.NationalAdditionalCode
-@import services.view.AutoCompleteItem
-@import forms.declaration.AdditionalFiscalReference
-@import views.Title
-@import controllers.navigation.{Navigator, ItemId}
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.components.gds.Styles._
+@import views.html.components.gds._
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukDetails : GovukDetails,
+        pageTitle: pageTitle,
+        inputTextUnits: exportsInputTextWithPrefix,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        saveButtons: saveButtons,
+        tariffDetails: tariffDetails,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(
         mode: Mode,
@@ -37,33 +44,30 @@
 
 @tariffBody = { @Html(messages("declaration.statisticalValue.help.bodyText", components.details_content_link())) }
 
-@main_template(
-    title = Title(messages("declaration.statisticalValue.header", itemId), "supplementary.items")
-) {
+@govukLayout(
+    title = Title("declaration.statisticalValue.header", "supplementary.items"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(StatisticalValue, mode, ItemId(itemId))))) {
 
-    @helper.form(routes.StatisticalValueController.submitItemType(mode, itemId), 'autocomplete -> "off") {
-        @helper.CSRF.formField
+    @formHelper(action = routes.StatisticalValueController.submitItemType(mode, itemId), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-        @components.back_link(Navigator.backLink(StatisticalValue, mode, ItemId(itemId)), mode)
+        @sectionHeader(messages("supplementary.items"))
 
-        @components.error_summary(form.errors)
 
-        @components.heading(
-            sectionHeader = messages("supplementary.items"),
-            title = messages("declaration.statisticalValue.header", itemId)
-        )
-
-        @components.fields.field_text(
+        @inputTextUnits(
             field = form("statisticalValue"),
-            hint = Some(messages("declaration.statisticalValue.header.hint")),
-            labelClass = Some("bold-small")
+            labelKey = "declaration.statisticalValue.header",
+            labelClass = gdsPageLabel,
+            isPageHeading = true,
+            prefixKey = "declaration.statisticalValue.units",
+            inputClass = "currency-prefix govuk-input govuk-input--width-10",
+            hintKey = Some("declaration.statisticalValue.header.hint"),
+            prefixLabelKey = Some("declaration.statisticalValue.units.hint"),
+            prefixClass = "currency-prefix"
         )
 
-        @components.details(messages("site.details.summary_text_this")){
-            @tariffBody
-        }
-        @components.submit_button()
-        @components.buttons.save_and_return_later_button()
-    }
+        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
 
+        @saveButtons()
+    }
 }

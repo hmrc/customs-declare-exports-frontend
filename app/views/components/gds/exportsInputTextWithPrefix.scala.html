@@ -19,21 +19,33 @@
 @(
         field: Field,
         labelKey: String,
+        labelClass: String = "govuk-label--m",
+        isPageHeading: Boolean = false,
         prefixKey: String,
         inputClass: String = "govuk-input",
         hintKey: Option[String] = None,
-        prefixLabelKey: Option[String] = None
+        prefixLabelKey: Option[String] = None,
+        prefixClass: String = "inputBefore"
 )(implicit messages: Messages)
 
 <div class="govuk-form-group">
- <label class="govuk-label govuk-label--m" for=@field.id>
+ @if(isPageHeading) {
+  <h1 class="govuk-label-wrapper">
+ }
+
+ <label class="@{s"govuk-label $labelClass"}" for=@field.id>
   @messages(labelKey)
  </label>
+
+ @if(isPageHeading) {
+ </h1>
+ }
+
  @hintKey.map { hint =>
   <span id=@{s"${field.id}-hint"} class="govuk-hint">
    @messages(hint)
   </span>
  }
- <span id=@{s"${field.id}-before"} class="govuk-body inputBefore" aria-label="@prefixLabelKey.map(messages(_)).getOrElse("")">@messages(prefixKey)</span>
+ <span id=@{s"${field.id}-before"} class="@{s"govuk-body $prefixClass"}" aria-label="@prefixLabelKey.map(messages(_)).getOrElse("")">@messages(prefixKey)</span>
  <input class="@inputClass" value="@field.value" id=@field.id name=@field.id type="text" aria-describedby=@{s"${field.id}-hint"}>
 </div>

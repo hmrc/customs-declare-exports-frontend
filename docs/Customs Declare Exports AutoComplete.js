@@ -644,7 +644,7 @@ function nactCodes(){
 function statisticalValue(){
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/statistical-value')) {
         document.getElementById('statisticalValue').value ='1000';
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('submit').click();
     }
 }
 

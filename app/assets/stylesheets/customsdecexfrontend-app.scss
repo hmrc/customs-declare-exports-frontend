@@ -14,7 +14,10 @@
 
 @import 'partials/_exports.scss';
 
+@import 'partials/_currency_input.scss';
+
 $govuk-assets-path: '/customs-declare-exports/assets/';
 $govuk-images-path: "/customs-declare-exports/assets/lib/govuk-frontend/govuk/assets/images/";
 $govuk-fonts-path: "/customs-declare-exports/assets/lib/govuk-frontend/govuk/assets/fonts/";
 @import 'lib/govuk-frontend/govuk/all';
+
