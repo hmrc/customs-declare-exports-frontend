@@ -788,8 +788,10 @@ declaration.nationalAdditionalCode.table.header = NACT Code
 declaration.nationalAdditionalCode.remove.hint = Remove National Additional Code {0}
 declaration.nationalAdditionalCode.help.bodyText = Go to data element 6/17 National Additional Code in the {0}
 
-declaration.statisticalValue.header = What is the total value of this item’s goods?
-declaration.statisticalValue.header.hint = This is includes the transactional value of the goods as well as all transport involved in moving them.
+declaration.statisticalValue.header = What is the total cost of exporting these goods?
+declaration.statisticalValue.header.hint = This includes the amount paid for them or their value, packing, UK inland and coastal transport, dock dues, loading charges and all other costs, charges and expenses.
+declaration.statisticalValue.units = £
+declaration.statisticalValue.units.hint = Enter amount in GBP
 declaration.statisticalValue.error.empty = Enter a statistical value up 15 digits
 declaration.statisticalValue.error.length = Enter a statistical value up 15 digits
 declaration.statisticalValue.error.wrongFormat = Enter a statistical value in the correct format

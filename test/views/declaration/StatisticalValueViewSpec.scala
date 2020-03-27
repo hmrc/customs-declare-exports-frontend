@@ -33,7 +33,7 @@ import views.tags.ViewTest
 @ViewTest
 class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  private val page = new statistical_value(mainTemplate)
+  private val page = instanceOf[statistical_value]
   private val form: Form[StatisticalValue] = StatisticalValue.form()
   private def createView(
     mode: Mode = Mode.Normal,
@@ -139,7 +139,7 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
       "display page title" in {
 
         createView()
-          .getElementById("title")
+          .getElementsByTag("h1")
           .text() mustBe "declaration.statisticalValue.header"
       }
 
