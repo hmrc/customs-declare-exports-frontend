@@ -51,14 +51,13 @@
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.summary.locations.header"))
-        @pageTitle(messages("declaration.goodsLocation.title"))
 
         @exportsInputText(
         field = form("code"),
-        labelKey = "",
+        labelKey = "declaration.goodsLocation.title",
         hintKey = Some("declaration.goodsLocation.hint"),
         isPageHeading = true,
-        headingClasses = "govuk-label--m"
+        headingClasses = "govuk-label--xl"
 )
 
 
