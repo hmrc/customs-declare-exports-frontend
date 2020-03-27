@@ -92,8 +92,7 @@
             field = form("details.eori"),
             labelKey = "supplementary.representative.eori.legend",
             hintKey = Some("supplementary.representative.eori.hint"),
-            isPageHeading = true,
-            headingClasses = "govuk-label--m"
+            isPageHeading = false
         )
 
         @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(messages("declaration.type.consignmentTariffText", components.gds.detailsContentLink(), tariffBody)))

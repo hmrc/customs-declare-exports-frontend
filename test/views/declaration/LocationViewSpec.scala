@@ -72,7 +72,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
     "display header" in {
 
-      view.getElementById("title").text() mustBe "declaration.goodsLocation.title"
+      view.getElementsByTag("h1").text() mustBe "declaration.goodsLocation.title"
     }
 
     "display 'Save and continue' button" in {

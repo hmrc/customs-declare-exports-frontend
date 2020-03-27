@@ -23,6 +23,7 @@
 @import views.components.gds.Styles._
 @import views.html.components.gds._
 @import views.{BackButton, Title}
+@import views.components.gds.Styles._
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -51,14 +52,13 @@
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.summary.locations.header"))
-        @pageTitle(messages("declaration.goodsLocation.title"))
 
         @exportsInputText(
         field = form("code"),
-        labelKey = "",
+        labelKey = "declaration.goodsLocation.title",
         hintKey = Some("declaration.goodsLocation.hint"),
         isPageHeading = true,
-        headingClasses = "govuk-label--m"
+        headingClasses = gdsPageLabel
 )
 
 
