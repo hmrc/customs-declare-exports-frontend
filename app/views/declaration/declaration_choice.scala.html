@@ -22,6 +22,7 @@
 @import views.html.components.gds.{errorSummary, gdsMainTemplate, _}
 @import views.components.gds.Styles._
 @import views.{BackButton, Title}
+@import views.components.inputs.RadioOption
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -32,7 +33,6 @@
     formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
     appConfig: AppConfig
 )
-
 
 @(mode: Mode, form: Form[_])(implicit request: Request[_], messages: Messages)
 
@@ -91,7 +91,8 @@
                     checked = form("type").value.contains(DeclarationType.OCCASIONAL.toString)
                 ),
                 RadioItem(
-                    divider = Some(messages("declaration.type.or"))
+                    divider = Some(messages("declaration.type.or")),
+                    value = Some(RadioOption.dividerId)
                 ),
                 RadioItem(
                     id = Some(DeclarationType.CLEARANCE.toString),
@@ -99,7 +100,7 @@
                     content = Text(messages("declaration.type.clearance")),
                     checked = form("type").value.contains(DeclarationType.CLEARANCE.toString)
                 )
-            ).filter(radioOption => radioOption.divider.isDefined || radioOption.value.exists(appConfig.availableDeclarations().contains(_))),
+            ).filter(radioOption => radioOption.value.exists(appConfig.availableDeclarations().contains(_))),
             errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
