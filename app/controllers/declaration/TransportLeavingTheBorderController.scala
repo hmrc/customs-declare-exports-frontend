@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.ModeOfTransportCodes
+import forms.declaration.TransportLeavingTheBorder
 import javax.inject.Inject
 import models.{DeclarationType, Mode}
 import play.api.i18n.I18nSupport
@@ -42,15 +42,16 @@ class TransportLeavingTheBorderController @Inject()(
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.CLEARANCE)
 
   def displayPage(mode: Mode) = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    val form = ModeOfTransportCodes.form
-    request.cacheModel.transport.borderModeOfTransportCode.flatMap(ModeOfTransportCodes.apply) match {
+    val form = TransportLeavingTheBorder.form(request.declarationType)
+    request.cacheModel.transport.borderModeOfTransportCode match {
       case Some(data) => Ok(transportAtBorder(form.fill(data), mode))
       case _          => Ok(transportAtBorder(form, mode))
     }
   }
 
   def submitForm(mode: Mode) = (authenticate andThen journeyType(validTypes)).async { implicit request =>
-    ModeOfTransportCodes.form
+    TransportLeavingTheBorder
+      .form(request.declarationType)
       .bindFromRequest()
       .fold(
         errors => Future.successful(BadRequest(transportAtBorder(errors, mode))),

@@ -14,13 +14,10 @@
  * limitations under the License.
  *@
 
-@import models.DeclarationType._
+@import models.Mode
+@import models.declaration.Transport
 @import models.requests.JourneyRequest
 @import models.viewmodels.HtmlTableRow
-@import forms.declaration.DepartureTransport
-@import forms.declaration.BorderTransport
-@import models.declaration.Transport
-@import models.Mode
 
 @(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
@@ -55,7 +52,9 @@
         @declarationData.transport.borderModeOfTransportCode.map(borderModeOfTransportCode =>
             components.table_row("border-transport", HtmlTableRow(
                 label = messages("declaration.summary.transport.departure.transportCode.header"),
-                value = Seq(messages(s"declaration.summary.transport.departure.transportCode.${borderModeOfTransportCode}")),
+                value = Seq(
+                    messages(s"declaration.summary.transport.departure.transportCode.${borderModeOfTransportCode.getCodeValue}")
+                ),
                 call = Some(controllers.declaration.routes.TransportLeavingTheBorderController.displayPage(mode)),
                 changeLabel = Some(messages("declaration.summary.transport.departure.transportCode.header.change"))
             ))

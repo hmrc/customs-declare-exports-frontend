@@ -16,13 +16,13 @@
 
 package models.declaration
 
-import forms.declaration.TransportPayment
+import forms.declaration.{TransportLeavingTheBorder, TransportPayment}
 import play.api.libs.json.{Format, Json}
 
 case class Transport(
   transportPayment: Option[TransportPayment] = None,
   containers: Option[Seq[Container]] = None,
-  borderModeOfTransportCode: Option[String] = None,
+  borderModeOfTransportCode: Option[TransportLeavingTheBorder] = None,
   meansOfTransportOnDepartureType: Option[String] = None,
   meansOfTransportOnDepartureIDNumber: Option[String] = None,
   meansOfTransportCrossingTheBorderNationality: Option[String] = None,

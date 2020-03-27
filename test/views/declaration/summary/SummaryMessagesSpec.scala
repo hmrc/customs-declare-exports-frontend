@@ -16,7 +16,6 @@
 
 package views.declaration.summary
 
-import forms.declaration.ModeOfTransportCodes
 import views.declaration.spec.UnitViewSpec
 
 class SummaryMessagesSpec extends UnitViewSpec {
@@ -163,9 +162,14 @@ class SummaryMessagesSpec extends UnitViewSpec {
       messages must haveTranslationFor("declaration.summary.warehouse.id")
       messages must haveTranslationFor("declaration.summary.warehouse.supervisingOffice")
       messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport")
-      ModeOfTransportCodes.allowedModeOfTransportCodes.foreach { code =>
-        messages must haveTranslationFor(s"declaration.summary.warehouse.inlandModeOfTransport.${code}")
-      }
+      messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport.Maritime")
+      messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport.Rail")
+      messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport.Road")
+      messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport.Air")
+      messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport.PostalConsignment")
+      messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport.FixedTransportInstallations")
+      messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport.InlandWaterway")
+      messages must haveTranslationFor("declaration.summary.warehouse.inlandModeOfTransport.Unknown")
     }
 
     "have defined transport messages" in {
@@ -187,6 +191,7 @@ class SummaryMessagesSpec extends UnitViewSpec {
       messages must haveTranslationFor("declaration.summary.transport.departure.transportCode.7")
       messages must haveTranslationFor("declaration.summary.transport.departure.transportCode.8")
       messages must haveTranslationFor("declaration.summary.transport.departure.transportCode.9")
+      messages must haveTranslationFor("declaration.summary.transport.departure.transportCode.no-code")
     }
 
     "have defined departure means of transport codes" in {

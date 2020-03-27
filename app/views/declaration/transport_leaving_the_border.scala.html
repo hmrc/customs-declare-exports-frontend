@@ -15,20 +15,16 @@
  *@
 
 @import controllers.declaration.routes._
-@import forms.declaration.DepartureTransport
-@import forms.declaration.TransportCodes._
-@import forms.declaration.ModeOfTransportCodes._
-@import services.model.Country
-@import uk.gov.hmrc.play.views.html._
-@import views.components.inputs.RadioOption
-@import views.Title
-@import models.requests.JourneyRequest
-@import forms.declaration.ModeOfTransportCodes
 @import controllers.navigation.Navigator
+@import forms.declaration.ModeOfTransportCode._
+@import forms.declaration.TransportLeavingTheBorder
+@import models.requests.JourneyRequest
+@import views.Title
+@import views.components.inputs.RadioOption
 
 @this(main_template: main_template)
 
-@(form: Form[ModeOfTransportCodes], mode: Mode)(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[TransportLeavingTheBorder], mode: Mode)(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBody = { @Html(messages("declaration.transport.leavingTheBorder.transportMode.help.bodyText", components.details_content_link())) }
 
@@ -36,7 +32,7 @@
     title = Title("declaration.transportInformation.title")
 ) {
 
-    @components.back_link(Navigator.backLink(ModeOfTransportCodes, mode), mode)
+    @components.back_link(Navigator.backLink(TransportLeavingTheBorder, mode), mode)
 
     @components.error_summary(form.errors)
 
@@ -46,7 +42,7 @@
         @helper.CSRF.formField
 
         @components.fields.field_radio(
-            field = form("code"),
+            field = form("transportLeavingTheBorder"),
             legend = "",
             hint = None,
             inputs = Seq(
@@ -57,8 +53,9 @@
                 RadioOption("Border_PostalOrMail", PostalConsignment.value, messages("declaration.transport.leavingTheBorder.transportMode.postalOrMail")),
                 RadioOption("Border_FixedTransportInstallations", FixedTransportInstallations.value, messages("declaration.transport.leavingTheBorder.transportMode.fixedTransportInstallations")),
                 RadioOption("Border_InlandWaterway", InlandWaterway.value, messages("declaration.transport.leavingTheBorder.transportMode.inlandWaterway")),
-                RadioOption("Border_Unknown", Unknown.value, messages("declaration.transport.leavingTheBorder.transportMode.unknown"))
-            )
+                RadioOption("Border_Unknown", Unknown.value, messages("declaration.transport.leavingTheBorder.transportMode.unknown")),
+                RadioOption("Border_Empty", Empty.value, messages("declaration.transport.leavingTheBorder.transportMode.empty"))
+            ).filterNot(radioOption => request.declarationType != DeclarationType.CLEARANCE && radioOption.value.contains(Empty.value))
         )
 
         @components.details(messages("site.details.summary_text_this")){

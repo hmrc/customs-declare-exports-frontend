@@ -17,7 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.TransportLeavingTheBorderController
-import forms.declaration.ModeOfTransportCodes
+import forms.declaration.{ModeOfTransportCode, TransportLeavingTheBorder}
 import models.DeclarationType.{CLEARANCE, STANDARD, SUPPLEMENTARY}
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
@@ -55,8 +55,8 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec {
     super.afterEach()
   }
 
-  def theResponseForm: Form[ModeOfTransportCodes] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[ModeOfTransportCodes]])
+  def theResponseForm: Form[TransportLeavingTheBorder] = {
+    val captor: ArgumentCaptor[Form[TransportLeavingTheBorder]] = ArgumentCaptor.forClass(classOf[Form[TransportLeavingTheBorder]])
     verify(transportLeavingTheBorder).apply(captor.capture(), any())(any(), any())
     captor.getValue
   }
@@ -75,12 +75,12 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec {
 
         "display page method is invoked and cache is not empty" in {
 
-          withNewCaching(aDeclarationAfter(request.cacheModel, withDepartureTransport(ModeOfTransportCodes.Rail, "", "")))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withDepartureTransport(ModeOfTransportCode.Rail, "", "")))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
           status(result) must be(OK)
-          theResponseForm.value mustBe Some(ModeOfTransportCodes.Rail)
+          theResponseForm.value mustBe Some(TransportLeavingTheBorder(Some(ModeOfTransportCode.Rail)))
         }
       }
 
@@ -95,7 +95,6 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec {
           status(result) must be(BAD_REQUEST)
         }
       }
-
     }
 
     onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
@@ -103,7 +102,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec {
 
         "form contains valid values" in {
           withNewCaching(request.cacheModel)
-          val correctForm = Json.obj("code" -> ModeOfTransportCodes.Rail.value)
+          val correctForm = Json.obj("transportLeavingTheBorder" -> ModeOfTransportCode.Rail.value)
 
           val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 

@@ -18,9 +18,10 @@ package views.declaration
 
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
-import forms.declaration.ModeOfTransportCodes
+import forms.declaration.TransportLeavingTheBorder
 import models.DeclarationType._
 import models.Mode
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -28,20 +29,14 @@ import views.html.declaration.transport_leaving_the_border
 
 class TransportLeavingTheBorderViewSpec extends UnitViewSpec with Stubs {
 
-  val page = new transport_leaving_the_border(mainTemplate)
+  private val page = new transport_leaving_the_border(mainTemplate)
+  private def view(implicit request: JourneyRequest[_]): Document = page(TransportLeavingTheBorder.form(request.declarationType), Mode.Normal)
 
   "Transport Leaving The Border Page" must {
 
-    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
-      val view: Document = page(ModeOfTransportCodes.form, Mode.Normal)
+    onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
         view.getElementById("title").text() mustBe "declaration.transport.leavingTheBorder.title"
-      }
-
-      "display 'Back' button that links to 'Supervising Customs Office' page" in {
-        val backButton = view.getElementById("back-link")
-        backButton.text() mustBe messages("site.back")
-        backButton must haveHref(routes.InlandTransportDetailsController.displayPage())
       }
 
       "display 'Save and continue' button on page" in {
@@ -56,7 +51,7 @@ class TransportLeavingTheBorderViewSpec extends UnitViewSpec with Stubs {
 
       "display 'Mode of Transport' section" which {
 
-        val section = view.getElementById("code")
+        val section = view.getElementById("transportLeavingTheBorder")
 
         "have 'Sea' option" in {
           section.getElementById("Border_Sea-label").text() mustBe "declaration.transport.leavingTheBorder.transportMode.sea"
@@ -101,14 +96,36 @@ class TransportLeavingTheBorderViewSpec extends UnitViewSpec with Stubs {
     }
   }
 
+  onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
+    "display 'Back' button that links to 'Supervising Customs Office' page" in {
+      val backButton = view.getElementById("back-link")
+      backButton.text() mustBe messages("site.back")
+      backButton must haveHref(routes.InlandTransportDetailsController.displayPage())
+    }
+
+    "display 'Mode of Transport' section" which {
+      "not have 'I don't know' option" in {
+        val section = view.getElementById("transportLeavingTheBorder")
+        section.getElementById("Border_Empty-label") mustBe null
+      }
+    }
+  }
+
   onJourney(CLEARANCE) { implicit request =>
     "display 'Back' button that links to 'Supervising Customs Office' page" in {
-      val view: Document = page(ModeOfTransportCodes.form, Mode.Normal)
       val backButton = view.getElementById("back-link")
       backButton.text() mustBe messages("site.back")
       backButton must haveHref(routes.SupervisingCustomsOfficeController.displayPage())
     }
 
+    "display 'Mode of Transport' section" which {
+      "have 'I don't know' option" in {
+        val section = view.getElementById("transportLeavingTheBorder")
+        section
+          .getElementById("Border_Empty-label")
+          .text() mustBe "declaration.transport.leavingTheBorder.transportMode.empty"
+      }
+    }
   }
 
 }

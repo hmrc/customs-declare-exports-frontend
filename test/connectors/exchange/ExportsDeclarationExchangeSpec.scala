@@ -18,13 +18,11 @@ package connectors.exchange
 
 import java.time.Instant
 
-import forms.declaration.ConsignmentReferencesSpec.correctConsignmentReferences
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.{Ducr, Lrn}
 import models.declaration._
 import models.{DeclarationStatus, DeclarationType, ExportsDeclaration}
-import org.mockito.Mockito.when
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsSuccess, Json}
@@ -100,7 +98,7 @@ class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with Exports
       ExportsDeclarationExchange(declaration) shouldBe request
     }
 
-    "bindable by json paylaod" in {
+    "bindable by json payload" in {
       Json
         .parse(ExportsDeclarationExchangeSpec.declarationJson)
         .validate[ExportsDeclarationExchange] shouldBe a[JsSuccess[_]]
@@ -147,7 +145,9 @@ object ExportsDeclarationExchangeSpec {
       |    "meansOfTransportCrossingTheBorderNationality": "United Kingdom",
       |    "meansOfTransportCrossingTheBorderType": "11",
       |    "meansOfTransportCrossingTheBorderIDNumber": "Boaty McBoatface",
-      |    "borderModeOfTransportCode": "1",
+      |    "borderModeOfTransportCode": {
+      |       "code": "1"
+      |    },
       |    "meansOfTransportOnDepartureType": "11",
       |    "meansOfTransportOnDepartureIDNumber": "SHIP1"
       |  },

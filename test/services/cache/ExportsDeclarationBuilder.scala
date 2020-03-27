@@ -177,16 +177,20 @@ trait ExportsDeclarationBuilder {
   }
 
   def withDepartureTransport(
-    borderModeOfTransportCode: ModeOfTransportCodes,
+    borderModeOfTransportCode: ModeOfTransportCode,
     meansOfTransportOnDepartureType: String,
     meansOfTransportOnDepartureIDNumber: String
   ): ExportsDeclarationModifier =
-    withDepartureTransport(borderModeOfTransportCode.value, meansOfTransportOnDepartureType, meansOfTransportOnDepartureIDNumber)
+    withDepartureTransport(
+      TransportLeavingTheBorder(Some(borderModeOfTransportCode)),
+      meansOfTransportOnDepartureType,
+      meansOfTransportOnDepartureIDNumber
+    )
 
   def withDepartureTransport(
-    borderModeOfTransportCode: String = "",
-    meansOfTransportOnDepartureType: String = "",
-    meansOfTransportOnDepartureIDNumber: String = ""
+    borderModeOfTransportCode: TransportLeavingTheBorder,
+    meansOfTransportOnDepartureType: String,
+    meansOfTransportOnDepartureIDNumber: String
   ): ExportsDeclarationModifier = declaration => {
     declaration.copy(
       transport = declaration.transport.copy(
