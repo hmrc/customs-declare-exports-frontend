@@ -23,7 +23,7 @@
 @import views.html.declaration.summary._
 @import views.{Title, ViewDates}
 
-@this(main_template: views.html.main_template, draftInfoSection: draft_info_section)
+@this(main_template: views.html.main_template, draftInfoSection: draft_info_section, references_section_gds: references_section_gds)
 
 @()(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
@@ -35,7 +35,7 @@
 
     @draftInfoSection(request.cacheModel)
 
-    @references_section(Mode.Draft, request.cacheModel)
+    @references_section_gds(Mode.Draft, request.cacheModel)
 
     @parties_section(Mode.Draft, request.cacheModel)
 

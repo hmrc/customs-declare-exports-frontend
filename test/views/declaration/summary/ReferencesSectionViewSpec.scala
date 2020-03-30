@@ -16,13 +16,14 @@
 
 package views.declaration.summary
 
+import base.Injector
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.{DeclarationType, Mode}
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.references_section
+import views.html.declaration.summary.references_section_gds
 
-class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData {
+class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   val data = aDeclaration(
     withType(DeclarationType.STANDARD),
@@ -31,8 +32,11 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData {
     withConsignmentReferences(ducr = "DUCR", lrn = "LRN")
   )
 
-  val view = references_section(Mode.Change, data)(messages, journeyRequest())
-  val viewNoAnswers = references_section(Mode.Change, aDeclaration(withType(DeclarationType.STANDARD)))(messages, journeyRequest())
+  val component = instanceOf[references_section_gds]
+
+
+  val view =  component(Mode.Change, data)(messages, journeyRequest())
+  val viewNoAnswers = component(Mode.Change, aDeclaration(withType(DeclarationType.STANDARD)))(messages, journeyRequest())
 
   "References section" should {
 
