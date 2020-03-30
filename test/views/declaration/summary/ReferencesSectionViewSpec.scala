@@ -32,10 +32,10 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with I
     withConsignmentReferences(ducr = "DUCR", lrn = "LRN")
   )
 
-  val component = instanceOf[references_section_gds]
+  val section = instanceOf[references_section_gds]
 
-  val view = component(Mode.Change, data)(messages, journeyRequest())
-  val viewNoAnswers = component(Mode.Change, aDeclaration(withType(DeclarationType.STANDARD)))(messages, journeyRequest())
+  val view = section(Mode.Change, data)(messages, journeyRequest())
+  val viewNoAnswers = section(Mode.Change, aDeclaration(withType(DeclarationType.STANDARD)))(messages, journeyRequest())
 
   "References section" should {
 
