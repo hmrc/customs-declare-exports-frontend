@@ -78,26 +78,9 @@
                         )
                     )
                 ))
-            )),
+            ))
 
-        declarationData.parties.representativeDetails.map(refs =>
-                SummaryListRow(
-                    key = Key(
-                        content = Text(messages("declaration.summary.parties.representative.eori"))
-                ),
-                value = Value(
-                        content = Text(representative.details.flatMap(_.eori))
-                ),
-        actions = Some(Actions(
-                items = Seq(
-                    ActionItem(
-                    href = controllers.declaration.routes.RepresentativeDetailsController.displayPage(mode).url,
-                    content = Text(messages("site.change")),
-                    visuallyHiddenText = Some(messages("declaration.summary.references.ducr.change"))
-)
-)
-))
-))
+
 
 
 ))
