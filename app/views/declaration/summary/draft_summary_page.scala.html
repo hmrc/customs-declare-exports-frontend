@@ -23,7 +23,7 @@
 @import views.html.declaration.summary._
 @import views.{Title, ViewDates}
 
-@this(main_template: views.html.main_template, draftInfoSection: draft_info_section, references_section_gds: references_section_gds)
+@this(main_template: views.html.main_template, draftInfoSection: draft_info_section, references_section_gds: references_section_gds, parties_section_gds: parties_section_gds)
 
 @()(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
@@ -37,7 +37,7 @@
 
     @references_section_gds(Mode.Draft, request.cacheModel)
 
-    @parties_section(Mode.Draft, request.cacheModel)
+    @parties_section_gds(Mode.Draft, request.cacheModel)
 
     @countries_section(Mode.Draft, request.cacheModel)
 

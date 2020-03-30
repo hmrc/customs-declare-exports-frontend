@@ -1,0 +1,103 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.requests.JourneyRequest
+@import models.viewmodels.HtmlTableRow
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds.summary_list
+
+@this(summaryList: summary_list)
+
+@(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+
+@summaryList("references", Some(messages("declaration.summary.parties")), Seq(
+        Some(SummaryListRow(
+                key = Key(
+                        content = Text(messages("declaration.summary.parties.exporter.eori"))
+        ),
+                value = Value(
+                        content = Text(messages("exporter.eori"))
+        ),
+        actions = Some(Actions(
+                items = Seq(
+                        ActionItem(
+                        href = controllers.declaration.routes.ExporterDetailsController.displayPage(mode).url,
+                        content = Text(messages("site.change")),
+                        visuallyHiddenText = Some(messages("declaration.summary.parties.exporter.eori.change"))
+                            )
+                        )
+                ))
+        )),
+
+        declarationData.parties.consigneeDetails.map(dispatchLocation =>
+            SummaryListRow(
+                key = Key(
+                    content = Text(messages("declaration.summary.parties.consignee.address"))
+        ),
+                value = Value(
+                    content = Text("exports-summary-list__value")
+        ),
+        actions = Some(Actions(
+                items = Seq(
+                    ActionItem(
+                    href = controllers.declaration.routes.ConsigneeDetailsController.displayPage(mode).url,
+                    content = Text(messages("site.change")),
+                    visuallyHiddenText = Some(messages("declaration.summary.parties.consignee.address.change"))
+                        )
+                    )
+                ))
+        )),
+
+        declarationData.parties.declarantDetails.map(decType =>
+            SummaryListRow(
+                key = Key(
+                    content = Text(messages("declaration.summary.parties.declarant.eori"))
+        ),
+                value = Value(
+                    content = Text(messages("declarant.details.eori,"))
+        ),
+        actions = Some(Actions(
+                items = Seq(
+                    ActionItem(
+                    href = controllers.declaration.routes.DeclarantDetailsController.displayPage(mode).url,
+                    content = Text(messages("site.change")),
+                    visuallyHiddenText = Some(messages("declaration.summary.parties.declarant.address.change"))
+                        )
+                    )
+                ))
+            )),
+
+        declarationData.parties.representativeDetails.map(refs =>
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages("declaration.summary.parties.representative.eori"))
+                ),
+                value = Value(
+                        content = Text(representative.details.flatMap(_.eori))
+                ),
+        actions = Some(Actions(
+                items = Seq(
+                    ActionItem(
+                    href = controllers.declaration.routes.RepresentativeDetailsController.displayPage(mode).url,
+                    content = Text(messages("site.change")),
+                    visuallyHiddenText = Some(messages("declaration.summary.references.ducr.change"))
+)
+)
+))
+))
+
+
+))

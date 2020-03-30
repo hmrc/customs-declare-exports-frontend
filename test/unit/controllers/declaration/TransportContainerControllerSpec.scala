@@ -16,6 +16,7 @@
 
 package unit.controllers.declaration
 
+import base.Injector
 import controllers.declaration.TransportContainerController
 import controllers.util.Remove
 import forms.declaration.{ContainerAdd, ContainerFirst, Seal}
@@ -26,13 +27,13 @@ import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
 import views.html.declaration._
 
-class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerMocks {
+class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerMocks with Injector {
 
   trait SetUp {
-    val transportContainersAddFirstPage = new transport_container_add_first(mainTemplate)
-    val transportContainersAddPage = new transport_container_add(mainTemplate)
-    val transportContainersRemovePage = new transport_container_remove(mainTemplate)
-    val transportContainersSummaryPage = new transport_container_summary(mainTemplate)
+    val transportContainersAddFirstPage = instanceOf[transport_container_add_first]
+    val transportContainersAddPage = instanceOf[transport_container_add]
+    val transportContainersRemovePage = instanceOf[transport_container_remove]
+    val transportContainersSummaryPage = instanceOf[transport_container_summary]
 
     val controller = new TransportContainerController(
       mockAuthAction,

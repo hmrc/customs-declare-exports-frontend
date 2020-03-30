@@ -16,6 +16,7 @@
 
 package views.declaration
 
+import base.Injector
 import forms.declaration.ContainerFirst
 import helpers.views.declaration.CommonMessages
 import models.Mode
@@ -29,10 +30,10 @@ import views.html.declaration.transport_container_add_first
 import views.tags.ViewTest
 
 @ViewTest
-class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestData with Stubs with MustMatchers with CommonMessages {
+class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestData with Stubs with MustMatchers with CommonMessages with Injector{
 
   private val form: Form[ContainerFirst] = ContainerFirst.form()
-  private val page = new transport_container_add_first(mainTemplate)
+  private val page = instanceOf[transport_container_add_first]
   private val realMessages = validatedMessages
 
   private def createView(form: Form[ContainerFirst] = form): Document =
