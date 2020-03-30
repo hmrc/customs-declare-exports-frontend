@@ -28,7 +28,9 @@
         draftInfoSection: draft_info_section,
         references_section: references_section_gds,
         countries_section: countries_section_gds,
-        parties_section_gds: parties_section_gds
+        parties_section_gds: parties_section_gds,
+        draft_info_section_gds: draft_info_section_gds,
+locations_section_gds: locations_section_gds
 )
 
 @()(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
@@ -39,7 +41,7 @@
 
     @components.heading(title = messages("declaration.summary.saved-header"))
 
-    @draftInfoSection(request.cacheModel)
+    @draft_info_section_gds(request.cacheModel)
 
     @references_section(Mode.Draft, request.cacheModel)
 
@@ -47,7 +49,7 @@
 
     @countries_section(Mode.Draft, request.cacheModel)
 
-    @locations_section(Mode.Draft, request.cacheModel)
+    @locations_section_gds(Mode.Draft, request.cacheModel)
 
     @transaction_section(Mode.Draft, request.cacheModel)
 
