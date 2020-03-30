@@ -79,6 +79,11 @@ trait ViewMatchers {
 
   def haveTag(tag: String): Matcher[Element] = new ElementTagMatcher(tag)
 
+  def haveSummaryKey(value: String) = new ElementsHasElementsContainingTextMatcher("govuk-summary-list__key",value)
+  def haveSummaryValue(value: String) = new ElementsHasElementsContainingTextMatcher("govuk-summary-list__value", value)
+  def haveSummaryActionsText(value: String) = new ElementsHasElementsContainingTextMatcher("govuk-summary-list__actions", value)
+  def haveSummaryActionsHref(value: Call) = new ElementsHasSummaryActionMatcher(value)
+
   def haveChildCount(count: Int): Matcher[Element] = new ElementHasChildCountMatcher(count)
 
   def containElement(tag: String) = new ChildMatcherBuilder(tag)
@@ -282,6 +287,24 @@ trait ViewMatchers {
       val element = left.getElementById(s"$fieldName-error")
       MatchResult(element != null && element.attr("href") == link, s"View not contains $fieldName with $link", s"View contains $fieldName with $link")
     }
+  }
+
+  class ElementsHasElementsContainingTextMatcher(elementsClass: String, value: String) extends Matcher[Elements] {
+    override def apply(left: Elements): MatchResult =
+    MatchResult(
+      left != null && left.first().getElementsByClass(elementsClass).text() == value,
+      s"Elements with class {$elementsClass} had text {${left.first().getElementsByClass(elementsClass).text()}}, expected {$value}",
+      s"Element with class {$elementsClass} had text {${left.first().getElementsByClass(elementsClass).text()}}"
+    )
+  }
+
+  class ElementsHasSummaryActionMatcher(value: Call) extends Matcher[Elements] {
+    override def apply(left: Elements): MatchResult =
+    MatchResult(
+      left != null && left.first().getElementsByClass("govuk-link").first().attr("href") == value.url,
+      s"Elements had summary action {${left.first().getElementsByClass("govuk-link").first().attr("href")}}, expected {$value}",
+      s"Element had summary action {${left.first().getElementsByClass("govuk-link").first().attr("href")}}"
+    )
   }
 
   class ChildMatcherBuilder(tag: String) {
