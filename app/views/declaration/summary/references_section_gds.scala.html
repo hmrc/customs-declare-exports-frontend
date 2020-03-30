@@ -15,7 +15,6 @@
  *@
 
 @import models.requests.JourneyRequest
-@import models.viewmodels.HtmlTableRow
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.summary_list
 
@@ -25,6 +24,7 @@
 
 @summaryList("references", Some(messages("declaration.summary.references")), Seq(
         Some(SummaryListRow(
+            classes = "declarationType-row",
             key = Key(
                 content = Text(messages("declaration.summary.references.type"))
             ),
@@ -43,6 +43,7 @@
         )),
         declarationData.dispatchLocation.map(dispatchLocation =>
             SummaryListRow(
+                classes = "location-row",
                 key = Key(
                     content = Text(messages("declaration.summary.references.location"))
                 ),
@@ -62,6 +63,7 @@
         ),
         declarationData.additionalDeclarationType.map(decType =>
             SummaryListRow(
+                classes = "additionalType-row",
                 key = Key(
                     content = Text(messages("declaration.summary.references.additionalType"))
                 ),
@@ -81,6 +83,7 @@
         ),
         declarationData.consignmentReferences.map(refs =>
             SummaryListRow(
+                classes = "ducr-row",
                 key = Key(
                     content = Text(messages("declaration.summary.references.ducr"))
                 ),
@@ -100,6 +103,7 @@
         ),
         declarationData.consignmentReferences.map(refs =>
             SummaryListRow(
+                classes = "lrn-row",
                 key = Key(
                     content = Text(messages("declaration.summary.references.lrn"))
                 ),
