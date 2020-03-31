@@ -20,7 +20,7 @@
 
 @this(govukSummaryList: GovukSummaryList)
 
-@(id: String, heading: Option[String] = None, summaryListRows: Seq[Option[SummaryListRow]])
+@(id: String, heading: Option[String] = None, summaryListRows: Seq[Option[SummaryListRow]], classes: String = "govuk-!-margin-bottom-9")
 
 @heading.map { header =>
  <h2 class="govuk-heading-m">@header</h2>
@@ -28,6 +28,6 @@
 
 @govukSummaryList(SummaryList(
  rows = summaryListRows.flatten,
- classes = "govuk-!-margin-bottom-9",
+ classes = classes,
  attributes = Map("id" -> id)
 ))

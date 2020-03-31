@@ -27,8 +27,8 @@
         main_template: views.html.main_template,
         draftInfoSection: draft_info_section,
         references_section: references_section_gds,
-        countries_section: countries_section_gds,
-        parties_section_gds: parties_section_gds
+        parties_section: parties_section_gds,
+        countries_section: countries_section_gds
 )
 
 @()(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
@@ -43,7 +43,7 @@
 
     @references_section(Mode.Draft, request.cacheModel)
 
-    @parties_section_gds(Mode.Draft, request.cacheModel)
+    @parties_section(Mode.Draft, request.cacheModel)
 
     @countries_section(Mode.Draft, request.cacheModel)
 

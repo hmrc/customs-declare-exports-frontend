@@ -16,14 +16,15 @@
 
 package views.declaration.summary
 
+import base.Injector
 import forms.common.Eori
 import forms.declaration.DeclarationAdditionalActors
 import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.parties_section_additional_actors
+import views.html.declaration.summary.parties_section_additional_actors_gds
 
-class PartiesSectionAdditionalActorsViewSpec extends UnitViewSpec with ExportsTestData {
+class PartiesSectionAdditionalActorsViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   val eori1 = "eori1"
   val partyType1 = "CS"
@@ -33,63 +34,46 @@ class PartiesSectionAdditionalActorsViewSpec extends UnitViewSpec with ExportsTe
   val additionalActors =
     Seq(DeclarationAdditionalActors(Some(Eori(eori1)), Some(partyType1)), DeclarationAdditionalActors(Some(Eori(eori2)), Some(partyType2)))
 
+  private val section = instanceOf[parties_section_additional_actors_gds]
+
   "Additional actors parties section" should {
 
     "display additional actors with answer no if empty" in {
 
-      val view = parties_section_additional_actors(Mode.Normal, Seq.empty)(messages, journeyRequest())
+      val view = section(Mode.Normal, Seq.empty)(messages, journeyRequest())
+      val row = view.getElementsByClass("additionalActors-row")
 
-      view.getElementById("additionalActors-label").text() mustBe messages("declaration.summary.parties.additional")
-      view.getElementById("additionalActors").text() mustBe messages("site.no")
+      row must haveSummaryKey(messages("declaration.summary.parties.additional"))
+      row must haveSummaryValue(messages("site.no"))
+
+      row must haveSummaryActionsText("site.change declaration.summary.parties.additional.empty.change")
+
+      row must haveSummaryActionsHref(controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage(Mode.Normal))
     }
 
     "display additional actors if exists" in {
 
-      val view = parties_section_additional_actors(Mode.Normal, additionalActors)(messages, journeyRequest())
+      val view = section(Mode.Normal, additionalActors)(messages, journeyRequest())
+      val table = view.getElementById("additionalActors-table")
 
-      view.getElementById("additionalActors").text() mustBe messages("declaration.summary.parties.additional")
-      view.getElementById("additionalActors-type").text() mustBe messages("declaration.summary.parties.additional.type")
-      view.getElementById("additionalActors-eori").text() mustBe messages("declaration.summary.parties.additional.eori")
-      view.getElementById("additionalActor-type-0").text() mustBe messages("declaration.summary.parties.additional.CS")
-      view.getElementById("additionalActor-eori-0").text() mustBe messages(eori1)
-      view.getElementById("additionalActor-type-1").text() mustBe messages("declaration.summary.parties.additional.MF")
-      view.getElementById("additionalActor-eori-1").text() mustBe messages(eori2)
-    }
+      table.getElementsByTag("caption").text() mustBe messages("declaration.summary.parties.additional")
 
-    "provide change button if there is no additional actors" in {
+      table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.summary.parties.additional.type")
+      table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages("declaration.summary.parties.additional.eori")
 
-      val view = parties_section_additional_actors(Mode.Normal, Seq.empty)(messages, journeyRequest())
+      val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
+      row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe messages("declaration.summary.parties.additional.CS")
+      row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe messages(eori1)
+      val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
+      row1ChangeLink must haveHref(controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage())
+      row1ChangeLink.text() mustBe messages("site.change declaration.summary.parties.additional.change")
 
-      val List(changeActor, accessibleChangeActor) = view.getElementById("additionalActors-change").text().split(" ").toList
-
-      changeActor mustBe messages("site.change")
-      accessibleChangeActor mustBe messages("declaration.summary.parties.additional.empty.change")
-
-      view.getElementById("additionalActors-change") must haveHref(controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage())
-
-    }
-
-    "provide change button for every actor" in {
-
-      val view = parties_section_additional_actors(Mode.Normal, additionalActors)(messages, journeyRequest())
-
-      val List(change1, accessibleChange1) = view.getElementById("additionalActor-0-change").text().split(" ").toList
-
-      change1 mustBe messages("site.change")
-      accessibleChange1 mustBe messages("declaration.summary.parties.additional.change", partyType1, eori1)
-
-      view.getElementById("additionalActor-0-change") must haveHref(
-        controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage()
-      )
-
-      val List(change2, accessibleChange2) = view.getElementById("additionalActor-1-change").text().split(" ").toList
-
-      change2 mustBe messages("site.change")
-      accessibleChange2 mustBe messages("declaration.summary.parties.additional.change", partyType2, eori2)
-
-      view.getElementById("additionalActor-1-change") must haveHref(
-        controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage()
-      )
+      val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
+      row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe messages("declaration.summary.parties.additional.MF")
+      row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe messages(eori2)
+      val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
+      row2ChangeLink must haveHref(controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage())
+      row2ChangeLink.text() mustBe messages("site.change declaration.summary.parties.additional.change")
     }
 
   }

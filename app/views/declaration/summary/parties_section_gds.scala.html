@@ -14,73 +14,124 @@
  * limitations under the License.
  *@
 
+@import models.declaration.Parties
 @import models.requests.JourneyRequest
-@import models.viewmodels.HtmlTableRow
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.summary_list
+@import forms.common.Address
+@import views.declaration.summary.EoriOrAddress
+@import views.html.declaration.summary._
 
-@this(summaryList: summary_list)
+@this(
+        summaryList: summary_list,
+        additionalActorsSection: parties_section_additional_actors_gds,
+        holdersSection: parties_section_holders_gds
+)
 
 @(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
-@summaryList("references", Some(messages("declaration.summary.parties")), Seq(
-        Some(SummaryListRow(
+@sectionRequired(parties: Parties) = @{
+    parties.exporterDetails.isDefined ||
+            parties.consigneeDetails.isDefined ||
+            parties.declarantDetails.isDefined ||
+            parties.representativeDetails.isDefined ||
+            parties.declarationAdditionalActorsData.isDefined ||
+            parties.declarationHoldersData.isDefined ||
+            parties.carrierDetails.isDefined
+}
+
+@extractAddress(address: Address) = @{
+    Seq(address.fullName, address.addressLine, address.townOrCity, address.postCode, address.country).mkString("<br>")
+}
+
+@if(sectionRequired(declarationData.parties)) {
+    @summaryList("declaration-parties-summary", Some(messages("declaration.summary.parties")),
+
+        declarationData.parties.exporterDetails.map(export => EoriOrAddress.rows(
+            key = "exporter",
+            eori = export.details.eori,
+            address = export.details.address,
+            eoriLabel = "declaration.summary.parties.exporter.eori",
+            eoriChangeLabel = "declaration.summary.parties.exporter.eori.change",
+            addressLabel = "declaration.summary.parties.exporter.address",
+            addressChangeLabel = "declaration.summary.parties.exporter.address.change",
+            changeController = controllers.declaration.routes.ExporterDetailsController.displayPage(mode)
+        )).getOrElse(Seq.empty)
+
+        ++ declarationData.parties.consigneeDetails.map(consignee => EoriOrAddress.rows(
+            key = "consignee",
+            eori = consignee.details.eori,
+            address = consignee.details.address,
+            eoriLabel = "declaration.summary.parties.consignee.eori",
+            eoriChangeLabel = "declaration.summary.parties.consignee.eori.change",
+            addressLabel = "declaration.summary.parties.consignee.address",
+            addressChangeLabel = "declaration.summary.parties.consignee.address.change",
+            changeController = controllers.declaration.routes.ConsigneeDetailsController.displayPage(mode),
+            isEoriDefault = false
+        )).getOrElse(Seq.empty)
+
+        ++ declarationData.parties.declarantDetails.map(declarant => EoriOrAddress.rows(
+            key = "declarant",
+            eori = declarant.details.eori,
+            address = declarant.details.address,
+            eoriLabel = "declaration.summary.parties.declarant.eori",
+            eoriChangeLabel = "declaration.summary.parties.declarant.eori.change",
+            addressLabel = "declaration.summary.parties.declarant.address",
+            addressChangeLabel = "declaration.summary.parties.declarant.address.change",
+            changeController = controllers.declaration.routes.DeclarantDetailsController.displayPage(mode)
+        )).getOrElse(Seq.empty)
+
+        ++ declarationData.parties.representativeDetails.map(representative => EoriOrAddress.rows(
+            key = "representative",
+            eori = representative.details.flatMap(_.eori),
+            address = representative.details.flatMap(_.address),
+            eoriLabel = "declaration.summary.parties.representative.eori",
+            eoriChangeLabel = "declaration.summary.parties.representative.eori.change",
+            addressLabel = "declaration.summary.parties.representative.address",
+            addressChangeLabel = "declaration.summary.parties.representative.address.change",
+            changeController = controllers.declaration.routes.RepresentativeDetailsController.displayPage(mode)
+        )).getOrElse(Seq.empty)
+
+        ++ (Seq.empty :+ declarationData.parties.representativeDetails.map(representative =>
+            SummaryListRow(
+                classes = "representationType-row",
                 key = Key(
-                        content = Text(messages("declaration.summary.parties.exporter.eori"))
-        ),
+                    content = Text(messages("declaration.summary.parties.representative.type"))
+                ),
                 value = Value(
-                        content = Text(messages("exporter.eori"))
-        ),
-        actions = Some(Actions(
-                items = Seq(
+                    content = Text(representative.statusCode.map(code => messages(s"declaration.summary.parties.representative.type.$code")).getOrElse(""))
+                ),
+                actions = Some(Actions(
+                    items = Seq(
                         ActionItem(
-                        href = controllers.declaration.routes.ExporterDetailsController.displayPage(mode).url,
-                        content = Text(messages("site.change")),
-                        visuallyHiddenText = Some(messages("declaration.summary.parties.exporter.eori.change"))
-                            )
-                        )
-                ))
-        )),
-
-        declarationData.parties.consigneeDetails.map(dispatchLocation =>
-            SummaryListRow(
-                key = Key(
-                    content = Text(messages("declaration.summary.parties.consignee.address"))
-        ),
-                value = Value(
-                    content = Text("exports-summary-list__value")
-        ),
-        actions = Some(Actions(
-                items = Seq(
-                    ActionItem(
-                    href = controllers.declaration.routes.ConsigneeDetailsController.displayPage(mode).url,
-                    content = Text(messages("site.change")),
-                    visuallyHiddenText = Some(messages("declaration.summary.parties.consignee.address.change"))
+                            href = controllers.declaration.routes.RepresentativeDetailsController.displayPage(mode).url,
+                            content = Text(messages("site.change")),
+                            visuallyHiddenText = Some(messages("declaration.summary.parties.representative.type.change"))
                         )
                     )
                 ))
-        )),
+            )
+        ))
 
-        declarationData.parties.declarantDetails.map(decType =>
-            SummaryListRow(
-                key = Key(
-                    content = Text(messages("declaration.summary.parties.declarant.eori"))
-        ),
-                value = Value(
-                    content = Text(messages("declarant.details.eori,"))
-        ),
-        actions = Some(Actions(
-                items = Seq(
-                    ActionItem(
-                    href = controllers.declaration.routes.DeclarantDetailsController.displayPage(mode).url,
-                    content = Text(messages("site.change")),
-                    visuallyHiddenText = Some(messages("declaration.summary.parties.declarant.address.change"))
-                        )
-                    )
-                ))
-            ))
+        ++ declarationData.parties.carrierDetails.map(carrier => EoriOrAddress.rows(
+            key = "carrier",
+            eori = carrier.details.eori,
+            address = carrier.details.address,
+            eoriLabel = "declaration.summary.parties.carrier.eori",
+            eoriChangeLabel = "declaration.summary.parties.carrier.eori.change",
+            addressLabel = "declaration.summary.parties.carrier.address",
+            addressChangeLabel = "declaration.summary.parties.carrier.address.change",
+            changeController = controllers.declaration.routes.CarrierDetailsController.displayPage(mode)
+        )).getOrElse(Seq.empty),
 
+        classes = "govuk-!-margin-bottom-6"
+    )
 
+    @declarationData.parties.declarationAdditionalActorsData.map(data =>
+        additionalActorsSection(mode, data.actors)
+    )
 
-
-))
+    @declarationData.parties.declarationHoldersData.map(data =>
+        holdersSection(mode, data.holders)
+    )
+}
