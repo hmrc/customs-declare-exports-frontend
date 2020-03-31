@@ -30,7 +30,7 @@ import views.html.declaration.transport_container_add_first
 import views.tags.ViewTest
 
 @ViewTest
-class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestData with Stubs with MustMatchers with CommonMessages with Injector{
+class TransportContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestData with Stubs with MustMatchers with CommonMessages with Injector {
 
   private val form: Form[ContainerFirst] = ContainerFirst.form()
   private val page = instanceOf[transport_container_add_first]

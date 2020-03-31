@@ -79,7 +79,7 @@ trait ViewMatchers {
 
   def haveTag(tag: String): Matcher[Element] = new ElementTagMatcher(tag)
 
-  def haveSummaryKey(value: String) = new ElementsHasElementsContainingTextMatcher("govuk-summary-list__key",value)
+  def haveSummaryKey(value: String) = new ElementsHasElementsContainingTextMatcher("govuk-summary-list__key", value)
   def haveSummaryValue(value: String) = new ElementsHasElementsContainingTextMatcher("govuk-summary-list__value", value)
   def haveSummaryActionsText(value: String) = new ElementsHasElementsContainingTextMatcher("govuk-summary-list__actions", value)
   def haveSummaryActionsHref(value: Call) = new ElementsHasSummaryActionMatcher(value)
@@ -300,11 +300,11 @@ trait ViewMatchers {
 
   class ElementsHasSummaryActionMatcher(value: Call) extends Matcher[Elements] {
     override def apply(left: Elements): MatchResult =
-    MatchResult(
-      left != null && left.first().getElementsByClass("govuk-link").first().attr("href") == value.url,
-      s"Elements had summary action {${left.first().getElementsByClass("govuk-link").first().attr("href")}}, expected {$value}",
-      s"Element had summary action {${left.first().getElementsByClass("govuk-link").first().attr("href")}}"
-    )
+      MatchResult(
+        left != null && left.first().getElementsByClass("govuk-link").first().attr("href") == value.url,
+        s"Elements had summary action {${left.first().getElementsByClass("govuk-link").first().attr("href")}}, expected {$value}",
+        s"Element had summary action {${left.first().getElementsByClass("govuk-link").first().attr("href")}}"
+      )
   }
 
   class ChildMatcherBuilder(tag: String) {
