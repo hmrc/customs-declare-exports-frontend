@@ -17,8 +17,15 @@
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.summary_list
+@import views.ViewDates
+@import config.AppConfig
+@import models.viewmodels.HtmlTableRow
 
-@this(summaryList: summary_list)
+
+@this(
+    summaryList: summary_list,
+    appConfig: AppConfig
+)
 
 @(declarationData: ExportsDeclaration)(implicit messages: Messages)
 
@@ -29,7 +36,7 @@
                   content = Text(messages("declaration.summary.draft.ducr"))
           ),
               value = Value(
-                  content = Text("")
+                  content = Text(declarationData.consignmentReferences.map(_.ducr.ducr).getOrElse(""))
           ),
           actions = Some(Actions(
 
@@ -42,7 +49,7 @@
                     content = Text(messages("declaration.summary.draft.createdDate"))
             ),
                 value = Value(
-                    content = Text("Seq(ViewDates.formatDateAtTime(declarationData.createdDateTime))")
+                    content = Text(ViewDates.formatDateAtTime(declarationData.createdDateTime))
             ),
             actions = Some(Actions(
 
@@ -55,7 +62,7 @@
                     content = Text(messages("declaration.summary.draft.expireDate"))
             ),
                 value = Value(
-                    content = Text("Seq(ViewDates.formatDateAtTime(declarationData.updatedDateTime.plusSeconds(appConfig.draftTimeToLive.toSeconds)))")
+                    content = Text(ViewDates.formatDateAtTime(declarationData.updatedDateTime.plusSeconds(appConfig.draftTimeToLive.toSeconds)))
             ),
             actions = Some(Actions(
     ))

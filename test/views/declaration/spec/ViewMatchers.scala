@@ -291,11 +291,11 @@ trait ViewMatchers {
 
   class ElementsHasElementsContainingTextMatcher(elementsClass: String, value: String) extends Matcher[Elements] {
     override def apply(left: Elements): MatchResult =
-    MatchResult(
-      left != null && left.first().getElementsByClass(elementsClass).text() == value,
-      s"Elements with class {$elementsClass} had text {${left.first().getElementsByClass(elementsClass).text()}}, expected {$value}",
-      s"Element with class {$elementsClass} had text {${left.first().getElementsByClass(elementsClass).text()}}"
-    )
+      MatchResult(
+        left != null && left.first().getElementsByClass(elementsClass).text() == value,
+        s"Elements with class {$elementsClass} had text {${left.first().getElementsByClass(elementsClass).text()}}, expected {$value}",
+        s"Element with class {$elementsClass} had text {${left.first().getElementsByClass(elementsClass).text()}}"
+      )
   }
 
   class ElementsHasSummaryActionMatcher(value: Call) extends Matcher[Elements] {
