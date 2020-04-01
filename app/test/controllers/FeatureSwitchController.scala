@@ -16,7 +16,7 @@
 
 package test.controllers
 
-import config.AppConfig
+import config.FeatureSwitchConfig
 import features.Feature.Feature
 import features.FeatureStatus.FeatureStatus
 import javax.inject.{Inject, Singleton}
@@ -26,10 +26,11 @@ import uk.gov.hmrc.play.bootstrap.controller.BackendController
 import scala.concurrent.Future
 
 @Singleton
-class FeatureSwitchController @Inject()(implicit val appConfig: AppConfig, cc: ControllerComponents) extends BackendController(cc) {
+class FeatureSwitchController @Inject()(implicit val featureSwitchConfig: FeatureSwitchConfig, cc: ControllerComponents)
+    extends BackendController(cc) {
 
   def set(feature: Feature, status: FeatureStatus): Action[AnyContent] = Action.async { implicit req =>
-    appConfig.setFeatureStatus(feature, status)
+    featureSwitchConfig.setFeatureStatus(feature, status)
     Future.successful(Ok(s"${feature} ${status}"))
   }
 }

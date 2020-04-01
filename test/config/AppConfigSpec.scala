@@ -169,18 +169,6 @@ class AppConfigSpec extends UnitSpec {
       validConfigService.languageMap.get("cymraeg").isDefined must be(true)
     }
 
-    "have default feature status" in {
-      validConfigService.defaultFeatureStatus must be(FeatureStatus.disabled)
-    }
-
-    "return correct value for feature" in {
-      validConfigService.featureStatus(Feature.default) must be(FeatureStatus.disabled)
-    }
-
-    "return correct value for isFeatureOn method" in {
-      validConfigService.isFeatureOn(Feature.default) must be(false)
-    }
-
     "have customs declare exports" in {
       validConfigService.customsDeclareExports must be("http://localhoste:9875")
     }
@@ -254,12 +242,6 @@ class AppConfigSpec extends UnitSpec {
 
   "throw an exception when urls.loginContinue is missing" in {
     intercept[Exception](emptyConfigService.loginContinueUrl).getMessage must be("Missing configuration key: urls.loginContinue")
-  }
-
-  "throw an exception when microservice.services.features.default is missing" in {
-    intercept[Exception](emptyConfigService.defaultFeatureStatus).getMessage must be(
-      "Missing configuration key: microservice.services.features.default"
-    )
   }
 
   "throw an exception when customs-declare-exports.host is missing" in {

@@ -20,7 +20,7 @@ import java.time.LocalDateTime
 
 import base.Injector
 import com.typesafe.config.{Config, ConfigFactory}
-import config.EadConfig
+import config.{EadConfig, FeatureSwitchConfig}
 import models.declaration.notifications.Notification
 import models.declaration.submissions.{Submission, SubmissionStatus}
 import play.api.Configuration
@@ -40,8 +40,11 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
   private val configWithDisabledEAD: Config =
     ConfigFactory.parseString("microservice.services.features.ead=disabled")
 
-  private val eadConfigEnabled = new EadConfig(Configuration(configWithEnabledEAD))
-  private val eadConfigDisabled = new EadConfig(Configuration(configWithDisabledEAD))
+  private val featureSwitchConfigEnabledEAD = new FeatureSwitchConfig(Configuration(configWithEnabledEAD))
+  private val featureSwitchConfigDisabledEAD = new FeatureSwitchConfig(Configuration(configWithDisabledEAD))
+
+  private val eadConfigEnabled = new EadConfig(featureSwitchConfigEnabledEAD)
+  private val eadConfigDisabled = new EadConfig(featureSwitchConfigDisabledEAD)
 
   private def submission(mrn: Option[String] = Some("mrn")): Submission =
     Submission(uuid = "id", eori = "eori", lrn = "lrn", mrn = mrn, ducr = Some("ducr"), actions = Seq.empty)
