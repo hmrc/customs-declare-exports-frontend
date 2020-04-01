@@ -386,7 +386,7 @@ declaration.partyType.FW = Freight forwarder
 declaration.partyType.WH = Warehouse keeper
 declaration.partyType.empty = Select a party type
 supplementary.partyType.error = Select a valid party type
-declaration.partyType.remove.hint = Remove {0} {1}
+declaration.partyType.remove.hint = Remove
 
 submissions.title = Your declarations
 submissions.eori = Eori

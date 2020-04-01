@@ -52,11 +52,9 @@
 @removeButton(value: Option[String]) = @{ govukButton(Button(
     classes = "govuk-button--secondary",
     content = Text(messages("site.remove")),
-    name = Some("Remove"),
+    name = Some(messages("declaration.partyType.remove.hint")),
     value = value
 ))}
-
-    declaration.partyType.remove.hint
 
 @pageHint = {
     <span class="govuk-hint">
