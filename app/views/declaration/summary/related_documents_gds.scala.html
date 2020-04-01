@@ -16,38 +16,69 @@
 
 @import forms.declaration.Document
 @import models.requests.JourneyRequest
-@import models.viewmodels.HtmlTableRow
 @import services.DocumentType
-@import views.html.components.gds.summary_list
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import models.Mode._
+@import views.html.components.gds.summary_list
+
+@this(
+        govukTable: GovukTable,
+        summaryList: summary_list
+)
 
 @(mode: Mode, documents: Seq[Document])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
-@if(documents.isEmpty) {
-@*//    @components.table_row("previous-documents", HtmlTableRow(*@
-@*//        label = messages("declaration.summary.transaction.previousDocuments"),*@
-@*//        value = messages("site.no"),*@
-@*//        call = Some(controllers.declaration.routes.PreviousDocumentsController.displayPage(mode)),*@
-@*//        changeLabel = Some(messages("declaration.summary.transaction.previousDocuments.change"))*@
-@*//    ))*@
+@changeLink(document: Document) = {
+    <a class="govuk-link" href="@controllers.declaration.routes.PreviousDocumentsController.displayPage(mode)">
+        @messages("site.change")
+        <span class="govuk-visually-hidden">@messages("declaration.summary.transaction.previousDocuments.document.change", document.documentReference)</span>
+    </a>
+}
 
-  @SummaryListRow(
-      classes = "item-amount-row",
-      key = Key(
-          content = Text(messages("declaration.summary.transaction.previous-documents"))
-      ),
-      value = Value(
-          content = Text(messages("site.no"))
-      ),
-      actions = Some(Actions(
-          items = Seq(
-              ActionItem(
-                  href = controllers.declaration.routes.PreviousDocumentsController.displayPage(mode).url,
-                  content = Text(messages("site.change")),
-                  visuallyHiddenText = Some(messages("declaration.summary.transaction.previousDocuments.change"))
-              )
-          ))
-      ))
+@if(documents.isEmpty) {
+    @summaryList("previous-documents", None, Seq(
+        Some(SummaryListRow(
+            classes = "previous-documents",
+            key = Key(Text(messages("declaration.summary.transaction.previousDocuments"))),
+            value = Value(Text(messages("site.no"))),
+            actions = Some(Actions(
+                items = Seq(
+                    ActionItem(
+                        href = controllers.declaration.routes.PreviousDocumentsController.displayPage(mode).url,
+                        content = Text(messages("site.change")),
+                        visuallyHiddenText = Some(messages("declaration.summary.transaction.previousDocuments.change"))
+                    )
+                )
+            ))
+        ))
+    ))
+} else {
+    @govukTable(Table(
+        rows = documents.map(document =>
+            Seq(
+                TableRow(
+                    content = Text(DocumentType.findByCode(document.documentType).asText)
+                ),
+                TableRow(
+                    content = Text(document.documentReference)
+                ),
+                TableRow(
+                    content = HtmlContent(changeLink(document))
+                )
+            )
+        ),
+        head = Some(List(
+            HeadCell(
+                content = Text(messages("declaration.summary.transaction.previousDocuments.type"))
+            ),
+            HeadCell(
+                content = Text(messages("declaration.summary.transaction.previousDocuments.reference"))
+            ),
+            HeadCell(
+                content = Empty
+            )
+        )),
+        caption = Some(messages("declaration.summary.transaction.previousDocuments")),
+        attributes = Map("id" -> "previous-documents")
+    ))
 }
 

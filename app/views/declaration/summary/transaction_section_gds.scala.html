@@ -15,13 +15,14 @@
  *@
 
 @import models.requests.JourneyRequest
-@import models.viewmodels.HtmlTableRow
-@import views.html.components.gds.summary_list
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import models.Mode._
+@import views.html.components.gds.summary_list
 @import views.html.declaration.summary.related_documents_gds
 
-@this(summaryList: summary_list)
+@this(
+        summaryList: summary_list,
+        related_documents: related_documents_gds
+)
 
 @(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
@@ -106,26 +107,13 @@
                         )
                     ))
                 ))
-        ),
-        declarationData.previousDocuments.map(previousDocuments =>
-            SummaryListRow(
-                classes = "previousDocuments",
-                key = Key(
-                    content = Text(messages("declaration.summary.transaction.previousDocuments"))
-                ),
-                value = Value(
-                    content = Text(messages("site.no"))
-                ),
-                actions = Some(Actions(
-                    items = Seq(
-                        ActionItem(
-                            href = controllers.declaration.routes.PreviousDocumentsController.displayPage(mode).url,
-                            content = Text(messages("site.change")),
-                            visuallyHiddenText = Some(messages("declaration.summary.transaction.previousDocuments.change"))
-                        )
-                ))
-        ))
+        )
+    ),
+        classes = "govuk-!-margin-bottom-6"
     )
-    ))
+
+    @declarationData.previousDocuments.map(previousDocuments =>
+        related_documents(mode, previousDocuments.documents)
+    )
 }
 
