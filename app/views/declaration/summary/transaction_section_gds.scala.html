@@ -106,13 +106,11 @@
                         )
                     ))
                 ))
-        )
-
-
-    // related documents table here
-
-
-    )
+        ))
+    ),
+declarationData.previousDocuments.map(previousDocuments =>
+related_documents(mode, previousDocuments.documents)
+)
     )
 }
 
