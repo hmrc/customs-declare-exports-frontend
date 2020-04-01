@@ -31,7 +31,8 @@
         parties_section: parties_section_gds,
         locations_section: locations_section_gds,
         transaction_section_gds: transaction_section_gds,
-        items_section_gds: items_section_gds
+        items_section: items_section_gds,
+        transport_section: transport_section_gds
 )
 
 @()(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
@@ -57,9 +58,7 @@
 
     @transaction_section_gds(Mode.Draft, request.cacheModel)
 
-  <!-- TODO - delete next line once item_section_gds complete -->
     @items_section(Mode.Draft, request.cacheModel)
-    @items_section_gds(Mode.Draft, request.cacheModel)
 
     @warehouse_section(Mode.Draft, request.cacheModel)
 
