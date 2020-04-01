@@ -29,13 +29,15 @@ class EadConfigSpec extends UnitSpec {
   private val emptyConfig: Config =
     ConfigFactory.parseString("microservice.services.features.default=disabled")
 
+  def featureSwitchConfig(config: Configuration): FeatureSwitchConfig = new FeatureSwitchConfig(config)
+
   "EAD Document config" should {
 
     "return true" when {
 
       "ead document feature is enabled" in {
 
-        val eadConfig = new EadConfig(Configuration(configWithEnabledEAD))
+        val eadConfig = new EadConfig(featureSwitchConfig(Configuration(configWithEnabledEAD)))
 
         eadConfig.isEadEnabled mustBe true
       }
@@ -45,14 +47,14 @@ class EadConfigSpec extends UnitSpec {
 
       "ead document feature is diabled" in {
 
-        val eadConfig = new EadConfig(Configuration(configWithDisabledEAD))
+        val eadConfig = new EadConfig(featureSwitchConfig(Configuration(configWithDisabledEAD)))
 
         eadConfig.isEadEnabled mustBe false
       }
 
       "ead document feature config doesn't exist" in {
 
-        val eadConfig = new EadConfig(Configuration(emptyConfig))
+        val eadConfig = new EadConfig(featureSwitchConfig(Configuration(emptyConfig)))
 
         eadConfig.isEadEnabled mustBe false
       }

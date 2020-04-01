@@ -16,40 +16,11 @@
 
 package config
 
-import features.Feature.Feature
 import features.{Feature, FeatureStatus}
-import features.FeatureStatus.FeatureStatus
 import javax.inject.{Inject, Singleton}
-import play.api.Configuration
 
 @Singleton
-class EadConfig @Inject()(configuration: Configuration) {
+class EadConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
 
-  private def loadConfig(key: String): String =
-    configuration.getOptional[String](key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
-
-  private def feature2Key(feature: Feature): String = s"microservice.services.features.$feature"
-
-  private def str2FeatureStatus(str: String): FeatureStatus = FeatureStatus.withName(str)
-
-  private lazy val defaultFeatureStatus: features.FeatureStatus.Value =
-    FeatureStatus.withName(loadConfig(feature2Key(Feature.default)))
-
-  private def getFeatureStatusFromProperties(feature: Feature): Option[FeatureStatus] =
-    sys.props
-      .get(feature2Key(feature))
-      .map(str2FeatureStatus)
-
-  private def getFeatureStatusFromConfig(feature: Feature): FeatureStatus =
-    configuration
-      .getOptional[String](feature2Key(feature))
-      .map(str2FeatureStatus)
-      .getOrElse(defaultFeatureStatus)
-
-  private def featureStatus(feature: Feature): FeatureStatus =
-    getFeatureStatusFromProperties(feature).getOrElse(getFeatureStatusFromConfig(feature))
-
-  val isEadEnabled = {
-    featureStatus(Feature.ead) == FeatureStatus.enabled
-  }
+  val isEadEnabled = featureSwitchConfig.featureStatus(Feature.ead) == FeatureStatus.enabled
 }
