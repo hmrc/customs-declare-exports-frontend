@@ -106,11 +106,31 @@
                         )
                     ))
                 ))
+        )),
+        ,
+        declarationData.natureOfTransaction.map(natureOfTransaction =>
+            SummaryListRow(
+                classes = "nature-of-xxx-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.transaction.natureOfTransaction"))
+                ),
+                value = Value(
+                    content = Text(messages(s"declaration.summary.transaction.natureOfTransaction.${natureOfTransaction.natureType}"))
+                ),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = controllers.declaration.routes.NatureOfTransactionController.displayPage(mode).url,
+                            content = Text(messages("site.change")),
+                            visuallyHiddenText = Some(messages("declaration.summary.transaction.natureOfTransaction.change"))
+                        )
+                    ))
+                ))
         ))
     ),
-declarationData.previousDocuments.map(previousDocuments =>
-related_documents(mode, previousDocuments.documents)
-)
+    declarationData.previousDocuments.map(previousDocuments =>
+    related_documents(mode, previousDocuments.documents)
+    )
     )
 }
 
