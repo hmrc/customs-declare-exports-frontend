@@ -49,7 +49,7 @@
             )),
         declarationData.locations.officeOfExit.map(officeOfExit =>
             SummaryListRow(
-                classes = "location-officeOfExit",
+                classes = "location-officeOfExit-row",
                 key = Key(
                     content = Text(messages("declaration.summary.locations.officeOfExit"))
                 ),
@@ -71,7 +71,7 @@
         declarationData.locations.officeOfExit.flatMap(officeOfExit =>
             officeOfExit.circumstancesCode.map(code =>
                 SummaryListRow(
-                    classes = "location-expressConsignment",
+                    classes = "location-expressConsignment-row",
                     key = Key(
                         content = Text(messages("declaration.summary.locations.expressConsignment"))
                     ),

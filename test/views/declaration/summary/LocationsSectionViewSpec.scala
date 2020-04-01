@@ -16,32 +16,32 @@
 
 package views.declaration.summary
 
+import base.Injector
 import forms.declaration.GoodsLocationForm
 import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.locations_section
-import models.Mode
+import views.html.declaration.summary.locations_section_gds
 
-class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData {
+class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   val data = aDeclaration(withGoodsLocation(GoodsLocationForm("GBAUEMAEMAEMA")), withOfficeOfExit("123", Some("12")))
 
+  val section = instanceOf[locations_section_gds]
+
   "Locations section" must {
 
-    val view = locations_section(Mode.Normal, data)(messages, journeyRequest())
+    val view = section(Mode.Change, data)(messages, journeyRequest())
 
     "have a goods location code with change button" in {
 
-      view.getElementById("location-code-label").text() mustBe messages("declaration.summary.locations.goodsLocationCode")
-      view.getElementById("location-code").text() mustBe "GBAUEMAEMAEMA"
+      val row = view.getElementsByClass("declarationType-row")
+      row must haveSummaryKey(messages("declaration.summary.locations.goodsLocationCode"))
+      row must haveSummaryValue("GBAUEMAEMAEMA")
 
-      val List(change, accessibleChange) = view.getElementById("location-code-change").text().split(" ").toList
+      row must haveSummaryActionsText("site.change declaration.summary.locations.goodsLocationCode.change")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.locations.goodsLocationCode.change")
-
-      view.getElementById("location-code-change") must haveHref(controllers.declaration.routes.LocationController.displayPage())
+      row must haveSummaryActionsHref(controllers.declaration.routes.LocationController.displayPage(Mode.Change))
     }
 
     "have office of exit id with change button" in {
@@ -70,19 +70,13 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     "not have answers when goods location not asked" in {
-      val view = locations_section(Mode.Normal, aDeclarationAfter(data, withoutGoodsLocation()))(messages, journeyRequest())
+      val view = section(Mode.Normal, aDeclarationAfter(data, withoutGoodsLocation()))(messages, journeyRequest())
 
-      view.getElementById("location-code-label") mustBe null
-      view.getElementById("location-code") mustBe null
-      view.getElementById("location-code-change") mustBe null
-
-      view.getElementById("location-address-label") mustBe null
-      view.getElementById("location-address") mustBe null
-      view.getElementById("location-address-change") mustBe null
+      view.getElementsByClass("declarationType-row") mustBe empty
     }
 
     "not have answers when office of exit not asked" in {
-      val view = locations_section(Mode.Normal, aDeclarationAfter(data, withoutOfficeOfExit()))(messages, journeyRequest())
+      val view = section(Mode.Normal, aDeclarationAfter(data, withoutOfficeOfExit()))(messages, journeyRequest())
 
       view.getElementById("location-officeOfExit-label") mustBe null
       view.getElementById("location-officeOfExit") mustBe null
@@ -94,7 +88,7 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     "have answers when office of exit not answered" in {
-      val view = locations_section(Mode.Normal, aDeclarationAfter(data, withOptionalOfficeOfExit(None, Some("Yes"))))(messages, journeyRequest())
+      val view = section(Mode.Normal, aDeclarationAfter(data, withOptionalOfficeOfExit(None, Some("Yes"))))(messages, journeyRequest())
 
       view.getElementById("location-officeOfExit-label").text() mustBe messages("declaration.summary.locations.officeOfExit")
       view.getElementById("location-officeOfExit").text() mustBe ""
