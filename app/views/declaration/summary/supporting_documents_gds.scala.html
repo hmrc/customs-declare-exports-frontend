@@ -20,6 +20,7 @@
 @import models.Mode
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.summary_list
+@import views.declaration.summary.TableCell
 
 @this(
         govukTable: GovukTable,
@@ -45,9 +46,7 @@
                 TableRow(
                     content = Text(document.documentIdentifier.getOrElse(""))
                 ),
-                TableRow(
-                    content = HtmlContent(changeLink())
-                )
+                TableCell.changeLink(changeLink())
             )
         ),
         head = Some(List(
@@ -62,7 +61,6 @@
             )
         )),
         caption = Some(messages("declaration.summary.items.item.supportingDocuments")),
-        classes = "govuk-table govuk-!-margin-bottom-6",
         attributes = Map("id" -> s"supporting-documents-$itemNo")
     ))
 } else {
