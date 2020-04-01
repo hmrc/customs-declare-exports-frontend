@@ -29,7 +29,8 @@
         references_section: references_section_gds,
         countries_section: countries_section_gds,
         parties_section: parties_section_gds,
-        locations_section: locations_section_gds
+        locations_section: locations_section_gds,
+        transaction_section_gds: transaction_section_gds
 )
 
 @()(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
@@ -52,7 +53,7 @@
 
     @transaction_section(Mode.Draft, request.cacheModel)
 
-@transaction_section_gds(Mode.Draft, request.cacheModel)
+    @transaction_section_gds(Mode.Draft, request.cacheModel)
 
     @items_section(Mode.Draft, request.cacheModel)
 
