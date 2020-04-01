@@ -108,24 +108,24 @@
                 ))
         ),
         declarationData.previousDocuments.map(previousDocuments =>
-    @SummaryListRow(
-        classes = "item-amount-row",
-        key = Key(
-            content = Text(messages("declaration.summary.transaction.previous-documents"))
-        ),
-        value = Value(
-            content = Text(messages("site.no"))
-        ),
-        actions = Some(Actions(
-            items = Seq(
-                ActionItem(
-                    href = controllers.declaration.routes.PreviousDocumentsController.displayPage(mode).url,
-                    content = Text(messages("site.change")),
-                    visuallyHiddenText = Some(messages("declaration.summary.transaction.previousDocuments.change"))
-                )
-            ))
+            SummaryListRow(
+                classes = "item-amount-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.transaction.previousDocuments"))
+                ),
+                value = Value(
+                    content = Text(messages("site.no"))
+                ),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = controllers.declaration.routes.PreviousDocumentsController.displayPage(mode).url,
+                            content = Text(messages("site.change")),
+                            visuallyHiddenText = Some(messages("declaration.summary.transaction.previousDocuments.change"))
+                        )
+                ))
         ))
-
+    )
     ))
 }
 
