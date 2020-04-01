@@ -14,58 +14,56 @@
  * limitations under the License.
  *@
 
-@import models.requests.JourneyRequest
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.html.components.gds.summary_list
-@import views.ViewDates
 @import config.AppConfig
-@import models.viewmodels.HtmlTableRow
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.ViewDates
+@import views.html.components.gds.summary_list
 
 
 @this(
-    summaryList: summary_list,
-    appConfig: AppConfig
+        summaryList: summary_list,
+        appConfig: AppConfig
 )
 
 @(declarationData: ExportsDeclaration)(implicit messages: Messages)
 
 @summaryList("draft-information", Some(messages("declaration.summary.draft")), Seq(
-          Some(SummaryListRow(
-              classes = "declarationType-row",
-              key = Key(
-                  content = Text(messages("declaration.summary.draft.ducr"))
-          ),
-              value = Value(
-                  content = Text(declarationData.consignmentReferences.map(_.ducr.ducr).getOrElse(""))
-          ),
-          actions = Some(Actions(
+    Some(SummaryListRow(
+        classes = "declarationType-row",
+        key = Key(
+            content = Text(messages("declaration.summary.draft.ducr"))
+        ),
+        value = Value(
+            content = Text(declarationData.consignmentReferences.map(_.ducr.ducr).getOrElse(""))
+        ),
+        actions = Some(Actions(
 
-     ))
-)),
+        ))
+    )),
 
-            Some(SummaryListRow(
-                classes = "draft-createdDate",
-                key = Key(
-                    content = Text(messages("declaration.summary.draft.createdDate"))
-            ),
-                value = Value(
-                    content = Text(ViewDates.formatDateAtTime(declarationData.createdDateTime))
-            ),
-            actions = Some(Actions(
+    Some(SummaryListRow(
+        classes = "draft-createdDate",
+        key = Key(
+            content = Text(messages("declaration.summary.draft.createdDate"))
+        ),
+        value = Value(
+            content = Text(ViewDates.formatDateAtTime(declarationData.createdDateTime))
+        ),
+        actions = Some(Actions(
 
+        ))
+    )),
+
+    Some(SummaryListRow(
+        classes = "draft-expireDate",
+        key = Key(
+            content = Text(messages("declaration.summary.draft.expireDate"))
+        ),
+        value = Value(
+            content = Text(ViewDates.formatDateAtTime(declarationData.updatedDateTime.plusSeconds(appConfig.draftTimeToLive.toSeconds)))
+        ),
+        actions = Some(Actions(
+        ))
     ))
-)),
-
-            Some(SummaryListRow(
-                classes = "draft-expireDate",
-                key = Key(
-                    content = Text(messages("declaration.summary.draft.expireDate"))
-            ),
-                value = Value(
-                    content = Text(ViewDates.formatDateAtTime(declarationData.updatedDateTime.plusSeconds(appConfig.draftTimeToLive.toSeconds)))
-            ),
-            actions = Some(Actions(
-    ))
-))
 ))
 

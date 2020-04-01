@@ -14,83 +14,82 @@
  * limitations under the License.
  *@
 
+@import models.declaration.Locations
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.summary_list
-@import models.declaration.Locations
-@import services.Countries
 
 @this(summaryList: summary_list)
 
 @(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
-    @hasLocations(locations: Locations) = @{
-        locations.goodsLocation.isDefined || locations.officeOfExit.isDefined
-    }
-    @if(hasLocations(declarationData.locations)){
-            @summaryList("locations", Some(messages("declaration.summary.locations")), Seq(
-                declarationData.locations.goodsLocation.map(goodsLocation =>
-                    SummaryListRow(
-                        classes = "declarationType-row",
-                        key = Key(
-                            content = Text(messages("declaration.summary.locations.goodsLocationCode"))
-                    ),
-                        value = Value(
-                             content = Text(goodsLocation.code)
-),
-                    actions = Some(Actions(
-                       items = Seq(
-                           ActionItem(
-                                 href = controllers.declaration.routes.LocationController.displayPage(mode).url,
-                                 content = Text(messages("site.change")),
-                                 visuallyHiddenText = Some(messages("declaration.summary.locations.goodsLocationCode.change"))
+@hasLocations(locations: Locations) = @{
+    locations.goodsLocation.isDefined || locations.officeOfExit.isDefined
+}
+@if(hasLocations(declarationData.locations)) {
+    @summaryList("locations", Some(messages("declaration.summary.locations")), Seq(
+        declarationData.locations.goodsLocation.map(goodsLocation =>
+            SummaryListRow(
+                classes = "declarationType-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.locations.goodsLocationCode"))
+                ),
+                value = Value(
+                    content = Text(goodsLocation.code)
+                ),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = controllers.declaration.routes.LocationController.displayPage(mode).url,
+                            content = Text(messages("site.change")),
+                            visuallyHiddenText = Some(messages("declaration.summary.locations.goodsLocationCode.change"))
+                        )
                     )
-            )
-        ))
-    )),
-                declarationData.locations.officeOfExit.map(officeOfExit =>
-                    SummaryListRow(
-                        classes = "location-officeOfExit",
-                        key = Key(
-                            content = Text(messages("declaration.summary.locations.officeOfExit"))
-                    ),
-                        value = Value(
-                            content = Text(officeOfExit.officeId.getOrElse(""))
-                    ),
-                    actions = Some(Actions(
-                        items = Seq(
-                            ActionItem(
+                ))
+            )),
+        declarationData.locations.officeOfExit.map(officeOfExit =>
+            SummaryListRow(
+                classes = "location-officeOfExit",
+                key = Key(
+                    content = Text(messages("declaration.summary.locations.officeOfExit"))
+                ),
+                value = Value(
+                    content = Text(officeOfExit.officeId.getOrElse(""))
+                ),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
                             href = controllers.declaration.routes.OfficeOfExitController.displayPage(mode).url,
                             content = Text(messages("site.change")),
                             visuallyHiddenText = Some(messages("declaration.summary.locations.officeOfExit.change"))
+                        )
                     )
-                    )
-            ))
-    )),
+                ))
+            )),
 
 
-            declarationData.locations.officeOfExit.flatMap(officeOfExit =>
-                officeOfExit.circumstancesCode.map(code =>
-                    SummaryListRow(
-                        classes = "location-expressConsignment",
-                        key = Key(
-                            content = Text(messages("declaration.summary.locations.expressConsignment"))
+        declarationData.locations.officeOfExit.flatMap(officeOfExit =>
+            officeOfExit.circumstancesCode.map(code =>
+                SummaryListRow(
+                    classes = "location-expressConsignment",
+                    key = Key(
+                        content = Text(messages("declaration.summary.locations.expressConsignment"))
                     ),
-                        value = Value(
-                            content = Text(code)
+                    value = Value(
+                        content = Text(code)
                     ),
                     actions = Some(Actions(
                         items = Seq(
                             ActionItem(
-                            href = controllers.declaration.routes.OfficeOfExitController.displayPage(mode).url,
-                            content = Text(messages("site.change")),
-                            visuallyHiddenText = Some(messages("declaration.summary.locations.expressConsignment.change"))
+                                href = controllers.declaration.routes.OfficeOfExitController.displayPage(mode).url,
+                                content = Text(messages("site.change")),
+                                visuallyHiddenText = Some(messages("declaration.summary.locations.expressConsignment.change"))
                             )
                         )
                     ))
+                )
             )
+        ))
     )
-))
-)
 
 }

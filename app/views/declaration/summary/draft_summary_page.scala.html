@@ -25,7 +25,7 @@
 
 @this(
         main_template: views.html.main_template,
-        draftInfoSection: draft_info_section,
+        draftInfoSection: draft_info_section_gds,
         references_section: references_section_gds,
         countries_section: countries_section_gds,
         parties_section: parties_section_gds,
@@ -51,6 +51,7 @@
 
     @locations_section(Mode.Draft, request.cacheModel)
 
+  <!-- TODO - delete next line once transaction_section_gds complete -->
     @transaction_section(Mode.Draft, request.cacheModel)
 
     @transaction_section_gds(Mode.Draft, request.cacheModel)
