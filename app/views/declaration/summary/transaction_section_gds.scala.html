@@ -19,7 +19,7 @@
 @import views.html.components.gds.summary_list
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import models.Mode._
-
+@import views.html.declaration.summary.related_documents_gds
 
 @this(summaryList: summary_list)
 
@@ -106,31 +106,26 @@
                         )
                     ))
                 ))
-        )),
-        ,
-        declarationData.natureOfTransaction.map(natureOfTransaction =>
-            SummaryListRow(
-                classes = "nature-of-xxx-row",
-                key = Key(
-                    content = Text(messages("declaration.summary.transaction.natureOfTransaction"))
-                ),
-                value = Value(
-                    content = Text(messages(s"declaration.summary.transaction.natureOfTransaction.${natureOfTransaction.natureType}"))
-                ),
-                actions = Some(Actions(
-                    items = Seq(
-                        ActionItem(
-                            href = controllers.declaration.routes.NatureOfTransactionController.displayPage(mode).url,
-                            content = Text(messages("site.change")),
-                            visuallyHiddenText = Some(messages("declaration.summary.transaction.natureOfTransaction.change"))
-                        )
-                    ))
-                ))
+        ),
+        declarationData.previousDocuments.map(previousDocuments =>
+    @SummaryListRow(
+        classes = "item-amount-row",
+        key = Key(
+            content = Text(messages("declaration.summary.transaction.previous-documents"))
+        ),
+        value = Value(
+            content = Text(messages("site.no"))
+        ),
+        actions = Some(Actions(
+            items = Seq(
+                ActionItem(
+                    href = controllers.declaration.routes.PreviousDocumentsController.displayPage(mode).url,
+                    content = Text(messages("site.change")),
+                    visuallyHiddenText = Some(messages("declaration.summary.transaction.previousDocuments.change"))
+                )
+            ))
         ))
-    ),
-    declarationData.previousDocuments.map(previousDocuments =>
-    related_documents(mode, previousDocuments.documents)
-    )
-    )
+
+    ))
 }
 

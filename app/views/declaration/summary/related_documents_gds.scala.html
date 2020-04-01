@@ -1,0 +1,53 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import forms.declaration.Document
+@import models.requests.JourneyRequest
+@import models.viewmodels.HtmlTableRow
+@import services.DocumentType
+@import views.html.components.gds.summary_list
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import models.Mode._
+
+@(mode: Mode, documents: Seq[Document])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+
+@if(documents.isEmpty) {
+@*//    @components.table_row("previous-documents", HtmlTableRow(*@
+@*//        label = messages("declaration.summary.transaction.previousDocuments"),*@
+@*//        value = messages("site.no"),*@
+@*//        call = Some(controllers.declaration.routes.PreviousDocumentsController.displayPage(mode)),*@
+@*//        changeLabel = Some(messages("declaration.summary.transaction.previousDocuments.change"))*@
+@*//    ))*@
+
+  @SummaryListRow(
+      classes = "item-amount-row",
+      key = Key(
+          content = Text(messages("declaration.summary.transaction.previous-documents"))
+      ),
+      value = Value(
+          content = Text(messages("site.no"))
+      ),
+      actions = Some(Actions(
+          items = Seq(
+              ActionItem(
+                  href = controllers.declaration.routes.PreviousDocumentsController.displayPage(mode).url,
+                  content = Text(messages("site.change")),
+                  visuallyHiddenText = Some(messages("declaration.summary.transaction.previousDocuments.change"))
+              )
+          ))
+      ))
+}
+
