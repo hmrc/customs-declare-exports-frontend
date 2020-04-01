@@ -25,102 +25,94 @@
 
 @(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
-   @hasTransactionData(declarationData: ExportsDeclaration) = @{
-       declarationData.totalNumberOfItems.isDefined || declarationData.natureOfTransaction.isDefined || declarationData.previousDocuments.isDefined
-   }
+@hasTransactionData(declarationData: ExportsDeclaration) = @{
+   declarationData.totalNumberOfItems.isDefined || declarationData.natureOfTransaction.isDefined || declarationData.previousDocuments.isDefined
+}
 
-        @if(hasTransactionData(declarationData)){
-            @summaryList("transaction", Some(messages("declaration.summary.transaction")), Seq(
-            declarationData.totalNumberOfItems.map(totalNumberOfItems =>
-                SummaryListRow(
-                    classes = "item-amount",
-                    key = Key(
-                    content = Text(messages("declaration.summary.transaction.itemAmount"))
-                    ),
-                    value = Value(
-                    content = Text(totalNumberOfItems.totalAmountInvoiced.getOrElse(""))
-                    ),
-                    actions = Some(Actions(
-                    items = Seq(
-                 ActionItem(
-                    href = controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode).url,
-                    content = Text(messages("site.change")),
-                    visuallyHiddenText = Some(messages("declaration.summary.transaction.itemAmount.change"))
-                    )
-                 ))
-                ))
-            )
-        )
-   ),
-
+@if(hasTransactionData(declarationData)) {
+    @summaryList("transaction", Some(messages("declaration.summary.transaction")), Seq(
         declarationData.totalNumberOfItems.map(totalNumberOfItems =>
             SummaryListRow(
-                classes = "exchange-rate",
+                classes = "item-amount-row",
                 key = Key(
-                content = Text(messages("declaration.summary.transaction.exchangeRate"))
+                    content = Text(messages("declaration.summary.transaction.itemAmount"))
                 ),
                 value = Value(
-                content = Text(totalNumberOfItems.totalAmountInvoiced.getOrElse(""))
+                    content = Text(totalNumberOfItems.totalAmountInvoiced.getOrElse(""))
                 ),
                 actions = Some(Actions(
-                items = Seq(
-            ActionItem(
-                href = controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode).url,
-                content = Text(messages("site.change")),
-                visuallyHiddenText = Some(messages("declaration.summary.transaction.exchangeRate.change"))
-                )
-              ))
-             ))
-            )
-        ),
-
-        @declarationData.totalPackageQuantity.flatMap(totalPackageQuantity =>
-            totalPackageQuantity.totalPackage.map( totalPackage =>
-                SummaryListRow(
-                    classes = "total-no-of-packages",
-                    key = Key(
-                    content = Text(messages("declaration.summary.transaction.totalNoOfPackages"))
-                    ),
-                    value = Value(
-                    content = Text(totalPackage)
-                    ),
-                    actions = Some(Actions(
                     items = Seq(
-                ActionItem(
-                    href = controllers.declaration.routes.TotalPackageQuantityController.displayPage(mode).url,
-                    content = Text(messages("site.change")),
-                    visuallyHiddenText = Some(messages("declaration.summary.transaction.totalNoOfPackages.change"))
-                    )
+                        ActionItem(
+                            href = controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode).url,
+                            content = Text(messages("site.change")),
+                            visuallyHiddenText = Some(messages("declaration.summary.transaction.itemAmount.change"))
+                        )
+                    ))
                 ))
-            ))
-        )
-   ),
-
-        @declarationData.natureOfTransaction.map(natureOfTransaction =>
+        ),
+        declarationData.totalNumberOfItems.map(totalNumberOfItems =>
             SummaryListRow(
-                classes = "nature-of-transaction",
+                classes = "exchange-rate-row",
                 key = Key(
-                content = Text(messages("declaration.summary.transaction.natureOfTransaction"))
+                    content = Text(messages("declaration.summary.transaction.exchangeRate"))
                 ),
                 value = Value(
-                content = Text(messages(s"declaration.summary.transaction.natureOfTransaction.${natureOfTransaction.natureType}")
+                    content = Text(totalNumberOfItems.exchangeRate.getOrElse(""))
                 ),
-            actions = Some(Actions(
-            items = Seq(
-                ActionItem(
-                href = controllers.declaration.routes.NatureOfTransactionController.displayPage(mode).url,
-                    content = Text(messages("site.change")),
-                    visuallyHiddenText = Some(messages("declaration.summary.transaction.natureOfTransaction.change""))
-                    )
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = controllers.declaration.routes.TotalNumberOfItemsController.displayPage(mode).url,
+                            content = Text(messages("site.change")),
+                            visuallyHiddenText = Some(messages("declaration.summary.transaction.exchangeRate.change"))
+                        )
+                    ))
                 ))
-            ))
+        ),
+        declarationData.totalPackageQuantity.map(totalPackageQuantity =>
+            SummaryListRow(
+                classes = "total-no-of-packages-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.transaction.totalNoOfPackages"))
+                ),
+                value = Value(
+                    content = Text(totalPackageQuantity.totalPackage.getOrElse(""))
+                ),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = controllers.declaration.routes.TotalPackageQuantityController.displayPage(mode).url,
+                            content = Text(messages("site.change")),
+                            visuallyHiddenText = Some(messages("declaration.summary.transaction.totalNoOfPackages.change"))
+                        )
+                    ))
+                ))
+        ),
+        declarationData.natureOfTransaction.map(natureOfTransaction =>
+            SummaryListRow(
+                classes = "nature-of-transaction-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.transaction.natureOfTransaction"))
+                ),
+                value = Value(
+                    content = Text(messages(s"declaration.summary.transaction.natureOfTransaction.${natureOfTransaction.natureType}"))
+                ),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = controllers.declaration.routes.NatureOfTransactionController.displayPage(mode).url,
+                            content = Text(messages("site.change")),
+                            visuallyHiddenText = Some(messages("declaration.summary.transaction.natureOfTransaction.change"))
+                        )
+                    ))
+                ))
         )
-   ),
 
-        @declarationData.previousDocuments.map(previousDocuments =>
-            related_documents(mode, previousDocuments.documents)
-)
-)
-)
+
+    // related documents table here
+
+
+    )
+    )
 }
 
