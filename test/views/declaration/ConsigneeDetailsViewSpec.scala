@@ -50,15 +50,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
         val view = createView()
 
-        view.getElementById("section-header").text() must include(messages("supplementary.summary.parties.header"))
-      }
-
-      "display empty input with label for EORI" in {
-
-        val view = createView()
-
-        view.getElementById("details_eori-label").text() mustBe messages("supplementary.consignee.eori.info")
-        view.getElementById("details_eori").attr("value") mustBe empty
+        view.getElementById("section-header").text() must include(messages("declaration.section.2"))
       }
 
       "display empty input with label for Full name" in {
@@ -66,14 +58,6 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
         val view = createView()
 
         view.getElementById("details_address_fullName-label").text() mustBe messages("supplementary.address.fullName")
-        view.getElementById("details_address_fullName").attr("value") mustBe empty
-      }
-
-      "display address label" in {
-
-        val view = createView()
-
-        view.getElementById("address-header").text() mustBe messages("supplementary.consignee.address.info")
         view.getElementById("details_address_fullName").attr("value") mustBe empty
       }
 
@@ -140,20 +124,6 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
         view must haveFieldErrorLink("details", "#details")
 
         view.getElementById("error-message-details-input").text() mustBe messages("supplementary.namedEntityDetails.error")
-      }
-
-      "display error when EORI is provided, but is incorrect" in {
-
-        val view = createView(
-          ConsigneeDetails
-            .form()
-            .fillAndValidate(ConsigneeDetails(EntityDetails(Some(Eori(TestHelper.createRandomAlphanumericString(18))), None)))
-        )
-
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("details_eori", "#details_eori")
-
-        view.getElementById("error-message-details_eori-input").text() mustBe messages("supplementary.eori.error.format")
       }
 
       "display error for empty Full name" in {
@@ -426,19 +396,6 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
   "Consignee Details View when filled" should {
 
     onEveryDeclarationJourney() { implicit request =>
-      "display data in EORI input" in {
-
-        val form = ConsigneeDetails.form().fill(ConsigneeDetails(EntityDetails(Some(Eori("1234")), None)))
-        val view = createView(form)
-
-        view.getElementById("details_eori").attr("value") mustBe "1234"
-        view.getElementById("details_address_fullName").attr("value") mustBe empty
-        view.getElementById("details_address_addressLine").attr("value") mustBe empty
-        view.getElementById("details_address_townOrCity").attr("value") mustBe empty
-        view.getElementById("details_address_postCode").attr("value") mustBe empty
-        view.getElementById("details_address_country").attr("value") mustBe empty
-      }
-
       "display data in Business address inputs" in {
 
         val form = ConsigneeDetails
@@ -446,27 +403,11 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
           .fill(ConsigneeDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "Ukraine")))))
         val view = createView(form)
 
-        view.getElementById("details_eori").attr("value") mustBe empty
         view.getElementById("details_address_fullName").attr("value") mustBe "test"
         view.getElementById("details_address_addressLine").attr("value") mustBe "test1"
         view.getElementById("details_address_townOrCity").attr("value") mustBe "test2"
         view.getElementById("details_address_postCode").attr("value") mustBe "test3"
         view.getElementById("details_address_country").attr("value") mustBe "Ukraine"
-      }
-
-      "display data in both EORI and Business address inputs" in {
-
-        val form = ConsigneeDetails
-          .form()
-          .fill(ConsigneeDetails(EntityDetails(Some(Eori("1234")), Some(Address("test", "test1", "test2", "test3", "test4")))))
-        val view = createView(form)
-
-        view.getElementById("details_eori").attr("value") mustBe "1234"
-        view.getElementById("details_address_fullName").attr("value") mustBe "test"
-        view.getElementById("details_address_addressLine").attr("value") mustBe "test1"
-        view.getElementById("details_address_townOrCity").attr("value") mustBe "test2"
-        view.getElementById("details_address_postCode").attr("value") mustBe "test3"
-        view.getElementById("details_address_country").attr("value") mustBe "test4"
       }
     }
   }
