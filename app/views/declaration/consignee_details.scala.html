@@ -26,9 +26,7 @@
 
 @(mode: Mode, form: Form[ConsigneeDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
-
-@tariffBody = { @components.tariff_body_partial(messages("supplementary.consignee-details.help-item1"), messages("supplementary.consignee-details.help-item2"))(tariffBodyDesc)}
+@tariffBody = { @Html(messages("supplementary.consignee-details.help-item", components.details_content_link())) }
 
 @main_template(
     title = Title("supplementary.consignee.title", "supplementary.summary.parties.header")
@@ -39,28 +37,18 @@
 
     @components.heading(
         title = messages("supplementary.consignee.title"),
-        sectionHeader = messages("supplementary.summary.parties.header")
+        sectionHeader = messages("declaration.section.2")
     )
-
-    <p>@messages("supplementary.consignee.title.hint")</p>
 
     @helper.form(ConsigneeDetailsController.saveAddress(mode), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         @components.form_fields_wrapper(field = form("details")) {
 
-            @components.fields.field_text(
-                field = form("details.eori"),
-                label = Some(messages("supplementary.consignee.eori.info")),
-                labelClass = Some("heading-24")
-            )
-
-            <p class="mt-5">Or</p>
-
-            @components.address(form, "details.address", Some(messages("supplementary.consignee.address.info")))
+            @components.address(form, "details.address", None)
         }
 
-        @components.details(messages("site.details.summary_text_these")){
+        @components.details(messages("site.details.summary_text_this")){
            @tariffBody
         }
         @components.submit_button()

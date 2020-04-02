@@ -313,12 +313,11 @@ declaration.declarant-details.help.bodyText = Go to data element 3/18 Declarant 
 declaration.declarant.eori.empty = Enter your EORI number
 declaration.declarant.eori.error.format = Enter a valid EORI number, for example GB123456789000
 
-supplementary.consignee.title = Who is the consignee?
+supplementary.consignee.title = What is the consignee’s address?
 supplementary.consignee.title.hint = Enter the consignee’s EORI number or name and business address.
 supplementary.consignee.eori.info = Consignee’s EORI number
 supplementary.consignee.address.info = Consignee’s name and business address
-supplementary.consignee-details.help-item1 = Consignee’s EORI number, go to data element 3/10 Consignee’s Identification Number
-supplementary.consignee-details.help-item2 = Consignee’s name and business address, go to data element 3/9 Consignee Name and Address
+supplementary.consignee-details.help-item = Go to data element 3/9 Consignee Name and Address in the {0}
 
 supplementary.carrier.title = Who is the carrier?
 supplementary.carrier.title.hint = Enter the carrier’s EORI number or name and business address.
