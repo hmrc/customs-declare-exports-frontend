@@ -20,7 +20,7 @@ import java.time.LocalDateTime
 
 import base.Injector
 import config.AppConfig
-import models.Mode
+import models.{ExportsDeclaration, Mode}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import services.cache.ExportsTestData
@@ -34,41 +34,35 @@ class DraftInfoSectionViewSpec extends UnitViewSpec with ExportsTestData with Mo
   val appConfig = mock[AppConfig]
   val draftInfoPage = instanceOf[draft_info_section_gds]
   when(appConfig.draftTimeToLive).thenReturn(FiniteDuration(30, "day"))
-
+  val data = aDeclaration(withConsignmentReferences(ducr = ducr), withCreatedDate(localDateTime), withUpdateDate(localDateTime))
+  val ducr = "DUCR"
+  val localDateTime = LocalDateTime.of(2019, 11, 28, 14, 48)
+  val view = draftInfoPage(data)(messages)
+  val expectedCreatedTime = "28 Nov 2019 at 14:48"
+  val expectedUpdatedTime = "28 Dec 2019 at 14:48"
   "Draft info section" should {
 
     "display draft title" in {
 
-      val ducr = "DUCR"
-      val localDateTime = LocalDateTime.of(2019, 11, 28, 14, 48)
-      val data = aDeclaration(withConsignmentReferences(ducr = ducr), withCreatedDate(localDateTime), withUpdateDate(localDateTime))
+      val row = view.getElementsByClass("draft-ducr-row")
 
-      val expectedCreatedTime = "28 Nov 2019 at 14:48"
-      val expectedUpdatedTime = "28 Dec 2019 at 14:48"
-
-      val draftInfoPage = instanceOf[draft_info_section_gds]
-      val view = draftInfoPage(data)(messages)
-
-      view.getElementsByClass("draft-ducr-row").text() mustBe messages("declaration.summary.draft.ducr")
-      view.getElementsByClass("draft-ducr-row").text() mustBe
-        view.getElementsByClass("draft-createdDate-row").text() mustBe messages("declaration.summary.draft.createdDate")
-      view.getElementsByClass("draft-createdDate-row").text() mustBe expectedCreatedTime
-      view.getElementsByClass("draft-expireDate-row").text() mustBe messages("declaration.summary.draft.expireDate")
-      view.getElementsByClass("draft-expireDate-row").text() mustBe expectedUpdatedTime
-
-
-
-
-      val row = view.getElementsByClass("previous-documents-row")
-
-      row must haveSummaryKey(messages("declaration.summary.parties.holders"))
-      row must haveSummaryValue(messages("site.no"))
-
-      row must haveSummaryActionsText("site.change declaration.summary.transaction.previousDocuments.change")
-
-      row must haveSummaryActionsHref(controllers.declaration.routes.PreviousDocumentsController.displayPage(Mode.Normal))
-
-
+      row must haveSummaryKey(messages("declaration.summary.draft.ducr"))
+      row must haveSummaryValue(ducr)
     }
+
+  }
+
+  "display draft expected created time" in {
+    val row = view.getElementsByClass("draft-createdDate-row")
+
+    row must haveSummaryKey(messages("declaration.summary.draft.createdDate"))
+    row must haveSummaryValue(expectedCreatedTime)
+  }
+
+  "display draft expected updatedTime time" in {
+    val row = view.getElementsByClass("draft-expireDate-row")
+
+    row must haveSummaryKey(messages("declaration.summary.draft.createdDate"))
+    row must haveSummaryValue(expectedUpdatedTime)
   }
 }
