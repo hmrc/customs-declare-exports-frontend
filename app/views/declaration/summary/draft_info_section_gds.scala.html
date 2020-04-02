@@ -29,7 +29,7 @@
 
 @summaryList("draft-information", Some(messages("declaration.summary.draft")), Seq(
     Some(SummaryListRow(
-        classes = "declarationType-row",
+        classes = "draft-ducr-row",
         key = Key(
             content = Text(messages("declaration.summary.draft.ducr"))
         ),
@@ -42,7 +42,7 @@
     )),
 
     Some(SummaryListRow(
-        classes = "draft-createdDate",
+        classes = "draft-createdDate-row",
         key = Key(
             content = Text(messages("declaration.summary.draft.createdDate"))
         ),
@@ -55,7 +55,7 @@
     )),
 
     Some(SummaryListRow(
-        classes = "draft-expireDate",
+        classes = "draft-expireDate-row",
         key = Key(
             content = Text(messages("declaration.summary.draft.expireDate"))
         ),
@@ -63,6 +63,7 @@
             content = Text(ViewDates.formatDateAtTime(declarationData.updatedDateTime.plusSeconds(appConfig.draftTimeToLive.toSeconds)))
         ),
         actions = Some(Actions(
+
         ))
     ))
 ))

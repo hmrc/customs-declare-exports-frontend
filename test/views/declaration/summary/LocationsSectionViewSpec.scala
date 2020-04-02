@@ -46,27 +46,29 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
     "have office of exit id with change button" in {
 
-      view.getElementById("location-officeOfExit-label").text() mustBe messages("declaration.summary.locations.officeOfExit")
-      view.getElementById("location-officeOfExit").text() mustBe "123"
+      val view = section(Mode.Change, data)(messages, journeyRequest())
 
-      val List(change, accessibleChange) = view.getElementById("location-officeOfExit-change").text().split(" ").toList
+      val row = view.getElementsByClass("location-officeOfExit-row")
+      row must haveSummaryKey(messages("declaration.summary.locations.officeOfExit"))
+      row must haveSummaryValue("123")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.locations.officeOfExit.change")
+      row must haveSummaryActionsText("site.change declaration.summary.locations.officeOfExit.change")
 
-      view.getElementById("location-officeOfExit-change") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage())
+      row must haveSummaryActionsHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Change))
+
     }
 
     "have express consignment answer with change button" in {
-      view.getElementById("location-expressConsignment-label").text() mustBe messages("declaration.summary.locations.expressConsignment")
-      view.getElementById("location-expressConsignment").text() mustBe "12"
+      val view = section(Mode.Change, data)(messages, journeyRequest())
 
-      val List(change, accessibleChange) = view.getElementById("location-expressConsignment-change").text().split(" ").toList
+      val row = view.getElementsByClass("location-expressConsignment-row")
+      row must haveSummaryKey(messages("declaration.summary.locations.expressConsignment"))
+      row must haveSummaryValue("12")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.locations.expressConsignment.change")
+      row must haveSummaryActionsText("site.change declaration.summary.locations.expressConsignment.change")
 
-      view.getElementById("location-expressConsignment-change") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage())
+      row must haveSummaryActionsHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Change))
+
     }
 
     "not have answers when goods location not asked" in {
@@ -78,25 +80,33 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with In
     "not have answers when office of exit not asked" in {
       val view = section(Mode.Normal, aDeclarationAfter(data, withoutOfficeOfExit()))(messages, journeyRequest())
 
-      view.getElementById("location-officeOfExit-label") mustBe null
-      view.getElementById("location-officeOfExit") mustBe null
-      view.getElementById("location-officeOfExit-change") mustBe null
-
-      view.getElementById("location-expressConsignment-label") mustBe null
-      view.getElementById("location-expressConsignment") mustBe null
-      view.getElementById("location-expressConsignment-change") mustBe null
+      view.getElementsByClass("location-officeOfExit-row") mustBe empty
+      view.getElementsByClass("location-expressConsignment-row") mustBe empty
     }
 
     "have answers when office of exit not answered" in {
       val view = section(Mode.Normal, aDeclarationAfter(data, withOptionalOfficeOfExit(None, Some("Yes"))))(messages, journeyRequest())
+      val row = view.getElementsByClass("location-officeOfExit-row")
 
-      view.getElementById("location-officeOfExit-label").text() mustBe messages("declaration.summary.locations.officeOfExit")
-      view.getElementById("location-officeOfExit").text() mustBe ""
-      view.getElementById("location-officeOfExit-change") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage())
+      row must haveSummaryKey(messages("declaration.summary.locations.officeOfExit"))
+      row must haveSummaryValue("")
 
-      view.getElementById("location-expressConsignment-label").text() mustBe messages("declaration.summary.locations.expressConsignment")
-      view.getElementById("location-expressConsignment").text() mustBe "Yes"
-      view.getElementById("location-expressConsignment-change") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage())
+      row must haveSummaryActionsText("site.change declaration.summary.locations.officeOfExit.change")
+
+      row must haveSummaryActionsHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Normal))
+    }
+
+    "not have answers when office of exit not answered" in {
+      val view = section(Mode.Normal, aDeclarationAfter(data, withOptionalOfficeOfExit(None, Some("No"))))(messages, journeyRequest())
+
+
+      val row = view.getElementsByClass("location-officeOfExit-row")
+      row must haveSummaryKey(messages("declaration.summary.locations.officeOfExit"))
+      row must haveSummaryValue("")
+
+      row must haveSummaryActionsText("site.change declaration.summary.locations.officeOfExit.change")
+
+      row must haveSummaryActionsHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Normal))
     }
   }
 }

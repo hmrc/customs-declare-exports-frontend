@@ -37,12 +37,12 @@
 @if(documents.isEmpty) {
     @summaryList("previous-documents", None, Seq(
         Some(SummaryListRow(
-            classes = "previous-documents",
+            classes = "previous-documents-row",
             key = Key(Text(messages("declaration.summary.transaction.previousDocuments"))),
             value = Value(Text(messages("site.no"))),
             actions = Some(Actions(
                 items = Seq(
-                    ActionItem(
+                    ActionItem(``
                         href = controllers.declaration.routes.PreviousDocumentsController.displayPage(mode).url,
                         content = Text(messages("site.change")),
                         visuallyHiddenText = Some(messages("declaration.summary.transaction.previousDocuments.change"))
