@@ -15,34 +15,56 @@
  *@
 
 @import config.AppConfig
-@import models.viewmodels.HtmlTableRow
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.ViewDates
+@import views.html.components.gds.summary_list
 
-@this(appConfig: AppConfig)
+
+@this(
+        summaryList: summary_list,
+        appConfig: AppConfig
+)
 
 @(declarationData: ExportsDeclaration)(implicit messages: Messages)
 
-<div id="draft-information">
-    <span id="draft-info-header">@messages("declaration.summary.draft")</span>
+@summaryList("draft-information", Some(messages("declaration.summary.draft")), Seq(
+    Some(SummaryListRow(
+        classes = "draft-ducr-row",
+        key = Key(
+            content = Text(messages("declaration.summary.draft.ducr"))
+        ),
+        value = Value(
+            content = Text(declarationData.consignmentReferences.map(_.ducr.ducr).getOrElse(""))
+        ),
+        actions = Some(Actions(
 
-    @components.summary_list(None) {
-        @components.table_row("draft-ducr", HtmlTableRow(
-            label = messages("declaration.summary.draft.ducr"),
-            value = declarationData.consignmentReferences.map(_.ducr.ducr).toSeq,
-            call = None,
-            changeLabel = None
         ))
-        @components.table_row("draft-createdDate", HtmlTableRow(
-            label = messages("declaration.summary.draft.createdDate"),
-            value = Seq(ViewDates.formatDateAtTime(declarationData.createdDateTime)),
-            call = None,
-            changeLabel = None
+    )),
+
+    Some(SummaryListRow(
+        classes = "draft-createdDate-row",
+        key = Key(
+            content = Text(messages("declaration.summary.draft.createdDate"))
+        ),
+        value = Value(
+            content = Text(ViewDates.formatDateAtTime(declarationData.createdDateTime))
+        ),
+        actions = Some(Actions(
+
         ))
-        @components.table_row("draft-expireDate", HtmlTableRow(
-            label = messages("declaration.summary.draft.expireDate"),
-            value = Seq(ViewDates.formatDateAtTime(declarationData.updatedDateTime.plusSeconds(appConfig.draftTimeToLive.toSeconds))),
-            call = None,
-            changeLabel = None
+    )),
+
+    Some(SummaryListRow(
+        classes = "draft-expireDate-row",
+        key = Key(
+            content = Text(messages("declaration.summary.draft.expireDate"))
+        ),
+        value = Value(
+            content = Text(ViewDates.formatDateAtTime(declarationData.updatedDateTime.plusSeconds(appConfig.draftTimeToLive.toSeconds)))
+        ),
+        actions = Some(Actions(
+
         ))
-    }
-</div>
+    ))
+))
+

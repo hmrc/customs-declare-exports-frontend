@@ -21,13 +21,13 @@ import forms.declaration.GoodsLocationForm
 import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.locations_section_gds
+import views.html.declaration.summary.locations_section
 
 class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   val data = aDeclaration(withGoodsLocation(GoodsLocationForm("GBAUEMAEMAEMA")), withOfficeOfExit("123", Some("12")))
 
-  val section = instanceOf[locations_section_gds]
+  val section = instanceOf[locations_section]
 
   "Locations section" must {
 

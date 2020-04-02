@@ -17,15 +17,15 @@
 @import models.requests.JourneyRequest
 @import models.Mode
 
+@this(item_section: item_section)
+
 @(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 
-    @if(declarationData.items.nonEmpty) {
-        <div id="declaration-items-summary">
-        @components.summary_list(Some(messages("declaration.summary.items"))) {
-            @declarationData.items.toSeq.sortBy(_.sequenceId).map { item =>
-                @item_section(mode, item)
-            }
-        }
-        </div>
+@if(declarationData.items.nonEmpty) {
+
+    <h2 class="govuk-heading-m">@messages("declaration.summary.items")</h2>
+    @declarationData.items.toSeq.sortBy(_.sequenceId).map { item =>
+        @item_section(mode, item)
     }
+}
