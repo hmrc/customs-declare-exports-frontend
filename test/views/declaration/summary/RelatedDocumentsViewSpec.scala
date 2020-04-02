@@ -21,10 +21,10 @@ import forms.declaration.Document
 import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.related_documents_gds
+import views.html.declaration.summary.related_documents
 
 class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestData with Injector {
-  private val section = instanceOf[related_documents_gds]
+  private val section = instanceOf[related_documents]
 
   "Related documents" should {
 
@@ -63,15 +63,15 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestData with In
 
         val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
         row1ChangeLink must haveHref(controllers.declaration.routes.PreviousDocumentsController.displayPage(Mode.Change))
-        row1ChangeLink.text() mustBe messages("site.change declaration.summary.transaction.previousDocuments.change")
+        row1ChangeLink.text() mustBe "site.change " + messages("declaration.summary.transaction.previousDocuments.document.change", 0)
 
         val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
-        row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe messages("Proforma Invoice - 325")
-        row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe messages("123456")
+        row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe messages("Packing List - 271")
+        row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe messages("654321")
 
         val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
         row2ChangeLink must haveHref(controllers.declaration.routes.PreviousDocumentsController.displayPage(Mode.Change))
-        row2ChangeLink.text() mustBe messages("site.change declaration.summary.transaction.previousDocuments.change")
+        row2ChangeLink.text() mustBe "site.change " + messages("declaration.summary.transaction.previousDocuments.document.change", 1)
       }
     }
   }
