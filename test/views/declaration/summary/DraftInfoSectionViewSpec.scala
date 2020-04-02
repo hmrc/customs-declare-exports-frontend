@@ -29,10 +29,10 @@ import views.html.declaration.summary.draft_info_section_gds
 
 import scala.concurrent.duration.FiniteDuration
 
-class DraftInfoSectionViewSpec extends UnitViewSpec with ExportsTestData with MockitoSugar with Injector{
+class DraftInfoSectionViewSpec extends UnitViewSpec with ExportsTestData with MockitoSugar with Injector {
 
   val appConfig = mock[AppConfig]
-
+  val draftInfoPage = instanceOf[draft_info_section_gds]
   when(appConfig.draftTimeToLive).thenReturn(FiniteDuration(30, "day"))
 
   "Draft info section" should {
@@ -47,26 +47,28 @@ class DraftInfoSectionViewSpec extends UnitViewSpec with ExportsTestData with Mo
       val expectedUpdatedTime = "28 Dec 2019 at 14:48"
 
       val draftInfoPage = instanceOf[draft_info_section_gds]
-
       val view = draftInfoPage(data)(messages)
 
-      val row = view.getElementsByClass("draft-ducr-row")
-      row must haveSummaryKey(messages("declaration.summary.draft.ducr"))
- //     row must haveSummaryValue(ducr)
-
-      row must haveSummaryActionsText("site.change declarationData.consignmentReferences.map(_.ducr.ducr).getOrElse(\"\")")
-//
-//      row must haveSummaryActionsHref()
-
+      view.getElementsByClass("draft-ducr-row").text() mustBe messages("declaration.summary.draft.ducr")
+      view.getElementsByClass("draft-ducr-row").text() mustBe
+        view.getElementsByClass("draft-createdDate-row").text() mustBe messages("declaration.summary.draft.createdDate")
+      view.getElementsByClass("draft-createdDate-row").text() mustBe expectedCreatedTime
+      view.getElementsByClass("draft-expireDate-row").text() mustBe messages("declaration.summary.draft.expireDate")
+      view.getElementsByClass("draft-expireDate-row").text() mustBe expectedUpdatedTime
 
 
 
-//      view.getElementById("draft-ducr-label").text() mustBe messages("declaration.summary.draft.ducr")
-//      view.getElementById("draft-ducr").text() mustBe ducr
-//      view.getElementById("draft-createdDate-label").text() mustBe messages("declaration.summary.draft.createdDate")
-//      view.getElementById("draft-createdDate").text() mustBe expectedCreatedTime
-//      view.getElementById("draft-expireDate-label").text() mustBe messages("declaration.summary.draft.expireDate")
-//      view.getElementById("draft-expireDate").text() mustBe expectedUpdatedTime
+
+      val row = view.getElementsByClass("previous-documents-row")
+
+      row must haveSummaryKey(messages("declaration.summary.parties.holders"))
+      row must haveSummaryValue(messages("site.no"))
+
+      row must haveSummaryActionsText("site.change declaration.summary.transaction.previousDocuments.change")
+
+      row must haveSummaryActionsHref(controllers.declaration.routes.PreviousDocumentsController.displayPage(Mode.Normal))
+
+
     }
   }
 }
