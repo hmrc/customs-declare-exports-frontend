@@ -103,11 +103,7 @@ components.table_row(s"item-${item.sequenceId}-itemValue", HtmlTableRow(
     package_information(mode, item.id, item.sequenceId, packageInformation)
 )
 
-@item.additionalInformation.map(additionalInformation =>
-    union_and_national_codes(mode, item.id, item.sequenceId, additionalInformation.items)
-)
 
-@item.documentsProducedData.map(documentsProducedData =>
-    supporting_documents(mode, item.id, item.sequenceId, documentsProducedData.documents)
-)
+
+
 </table>
