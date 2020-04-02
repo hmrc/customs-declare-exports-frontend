@@ -21,7 +21,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.{DeclarationType, Mode}
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.references_section_gds
+import views.html.declaration.summary.references_section
 
 class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
@@ -32,7 +32,7 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with I
     withConsignmentReferences(ducr = "DUCR", lrn = "LRN")
   )
 
-  val section = instanceOf[references_section_gds]
+  val section = instanceOf[references_section]
 
   val view = section(Mode.Change, data)(messages, journeyRequest())
   val viewNoAnswers = section(Mode.Change, aDeclaration(withType(DeclarationType.STANDARD)))(messages, journeyRequest())

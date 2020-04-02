@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,23 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package config
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import play.twirl.api.HtmlFormat
+@import scala.collection.immutable
 
-import features.{Feature, FeatureStatus}
-import javax.inject.{Inject, Singleton}
+@this(govukButton : GovukButton)
 
-@Singleton
-class EadConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
+@(hiddenLabel: Option[String] = None)(implicit messages: Messages)
 
-  val isEadEnabled = featureSwitchConfig.featureStatus(Feature.ead) == FeatureStatus.enabled
-}
+@govukButton(Button(
+    classes = "govuk-button--secondary",
+    content = HtmlContent(HtmlFormat.fill(
+     immutable.Seq(
+      Html(s"""<span aria-hidden="true">${messages("site.add")}</span>"""),
+      Html(s"""<span class="govuk-visually-hidden">${messages(hiddenLabel.getOrElse("site.remove"))}</span>""")
+     )
+    )),
+    name = Some("Add")
+))

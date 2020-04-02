@@ -15,56 +15,111 @@
  *@
 
 @import models.requests.JourneyRequest
-@import models.viewmodels.HtmlTableRow
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds.summary_list
+
+@this(summaryList: summary_list)
 
 @(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
-<div id="declaration-references-summary">
-    @components.summary_list(Some(messages("declaration.summary.references"))) {
-        @components.table_row("declarationType", HtmlTableRow(
-            label = messages("declaration.summary.references.type"),
-            value = declarationData.`type`.toString().toLowerCase().capitalize,
-            call = Some(controllers.declaration.routes.DeclarationChoiceController.displayPage(mode)),
-            changeLabel = Some(messages("declaration.summary.references.type.change"))
-        ))
-      @declarationData.dispatchLocation.map(dispatchLocation =>
-          components.table_row("location", HtmlTableRow(
-              label = messages("declaration.summary.references.location"),
-              value = Seq(
-                  if(dispatchLocation.isOutsideEU){
-                      messages("site.yes")
-                  } else {
-                      messages("site.no")
-                  }
-              ),
-              call = Some(controllers.declaration.routes.DispatchLocationController.displayPage(mode)),
-              changeLabel = Some(messages("declaration.summary.references.location.change"))
-          ))
-      )
-
-      @declarationData.additionalDeclarationType.map(decType =>
-        components.table_row("additionalType", HtmlTableRow(
-            label = messages("declaration.summary.references.additionalType"),
-            value = messages(s"declaration.summary.references.additionalType.${decType.toString}"),
-            call = Some(controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage(mode)),
-            changeLabel = Some(messages("declaration.summary.references.additionalType.change"))
-        ))
-      )
-      @declarationData.consignmentReferences.map(refs =>
-          components.table_row("ducr", HtmlTableRow(
-              label = messages("declaration.summary.references.ducr"),
-              value = refs.ducr.ducr,
-              call = Some(controllers.declaration.routes.ConsignmentReferencesController.displayPage(mode)),
-              changeLabel = Some(messages("declaration.summary.references.ducr.change"))
-          ))
-      )
-      @declarationData.consignmentReferences.map(refs =>
-            components.table_row("lrn", HtmlTableRow(
-                label = messages("declaration.summary.references.lrn"),
-                value = refs.lrn.value,
-                call = Some(controllers.declaration.routes.ConsignmentReferencesController.displayPage(mode)),
-                changeLabel = Some(messages("declaration.summary.references.lrn.change"))
+@summaryList("declaration-references-summary", Some(messages("declaration.summary.references")), Seq(
+        Some(SummaryListRow(
+            classes = "declarationType-row",
+            key = Key(
+                content = Text(messages("declaration.summary.references.type"))
+            ),
+            value = Value(
+                content = Text(declarationData.`type`.toString().toLowerCase().capitalize)
+            ),
+            actions = Some(Actions(
+                items = Seq(
+                    ActionItem(
+                        href = controllers.declaration.routes.DeclarationChoiceController.displayPage(mode).url,
+                        content = Text(messages("site.change")),
+                        visuallyHiddenText = Some(messages("declaration.summary.references.type.change"))
+                    )
+                )
             ))
+        )),
+        declarationData.dispatchLocation.map(dispatchLocation =>
+            SummaryListRow(
+                classes = "location-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.references.location"))
+                ),
+                value = Value(
+                    content = Text(if(dispatchLocation.isOutsideEU) messages("site.yes") else messages("site.no"))
+                ),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = controllers.declaration.routes.DispatchLocationController.displayPage(mode).url,
+                            content = Text(messages("site.change")),
+                            visuallyHiddenText = Some(messages("declaration.summary.references.location.change"))
+                        )
+                    )
+                ))
+            )
+        ),
+        declarationData.additionalDeclarationType.map(decType =>
+            SummaryListRow(
+                classes = "additionalType-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.references.additionalType"))
+                ),
+                value = Value(
+                    content = Text(messages(s"declaration.summary.references.additionalType.${decType.toString}"))
+                ),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage(mode).url,
+                            content = Text(messages("site.change")),
+                            visuallyHiddenText = Some(messages("declaration.summary.references.additionalType.change"))
+                        )
+                    )
+                ))
+            )
+        ),
+        declarationData.consignmentReferences.map(refs =>
+            SummaryListRow(
+                classes = "ducr-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.references.ducr"))
+                ),
+                value = Value(
+                    content = Text(refs.ducr.ducr)
+                ),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = controllers.declaration.routes.ConsignmentReferencesController.displayPage(mode).url,
+                            content = Text(messages("site.change")),
+                            visuallyHiddenText = Some(messages("declaration.summary.references.ducr.change"))
+                        )
+                    )
+                ))
+            )
+        ),
+        declarationData.consignmentReferences.map(refs =>
+            SummaryListRow(
+                classes = "lrn-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.references.lrn"))
+                ),
+                value = Value(
+                    content = Text(refs.lrn.value)
+                ),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = controllers.declaration.routes.ConsignmentReferencesController.displayPage(mode).url,
+                            content = Text(messages("site.change")),
+                            visuallyHiddenText = Some(messages("declaration.summary.references.lrn.change"))
+                        )
+                    )
+                ))
+            )
         )
-    }
-</div>
+    )
+)
