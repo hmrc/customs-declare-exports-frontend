@@ -17,52 +17,60 @@
 @import config.AppConfig
 @import controllers.declaration.routes
 @import forms.declaration.LegalDeclaration
-@import models.{ExportsDeclaration, Mode}
+@import models.Mode
 @import models.requests.JourneyRequest
-@import models.viewmodels.HtmlTableRow
+@import views.{BackButton, Title}
+@import views.html.components.gds._
 @import views.html.declaration.summary._
-@import views.{Title, ViewDates}
 
-@this(main_template: views.html.main_template, draftInfoSection: draft_info_section)
+@this(
+        govukLayout: gdsMainTemplate,
+        pageTitle: pageTitle,
+        paragraphBody: paragraphBody,
+        errorSummary: errorSummary,
+        draftInfoSection: draft_info_section_gds,
+        references_section: references_section_gds,
+        countries_section: countries_section_gds,
+        parties_section: parties_section_gds,
+        locations_section: locations_section_gds,
+        transaction_section: transaction_section_gds,
+        items_section: items_section_gds,
+        warehouse_section: warehouse_section_gds,
+        transport_section: transport_section_gds,
+        legal_declaration: legal_declaration,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF,
+        saveAndContinue: saveAndContinue
+)
 
 @(legalDeclarationForm: Form[LegalDeclaration])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
+@govukLayout(
+    title = Title("declaration.summary.normal-header"),
+    backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal)))) {
 
-@main_template(title = Title("declaration.summary.normal-header")) {
+    @formHelper(action = routes.SummaryController.submitDeclaration(), 'autoComplete -> "off") {
+        @errorSummary(legalDeclarationForm.errors)
 
-    @components.back_link(controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal), Mode.Normal)
+        @pageTitle(messages("declaration.summary.normal-header"))
 
-    @components.error_summary(legalDeclarationForm.errors)
+        @references_section(Mode.Change, request.cacheModel)
 
-    @components.heading(title = messages("declaration.summary.normal-header"))
+        @parties_section(Mode.Change, request.cacheModel)
 
-    @references_section(Mode.Change, request.cacheModel)
+        @countries_section(Mode.Change, request.cacheModel)
 
-    @parties_section(Mode.Change, request.cacheModel)
+        @locations_section(Mode.Change, request.cacheModel)
 
-    @countries_section(Mode.Change, request.cacheModel)
+        @transaction_section(Mode.Change, request.cacheModel)
 
-    @locations_section(Mode.Change, request.cacheModel)
+        @items_section(Mode.Change, request.cacheModel)
 
-    @transaction_section(Mode.Change, request.cacheModel)
+        @warehouse_section(Mode.Change, request.cacheModel)
 
-    @items_section(Mode.Change, request.cacheModel)
-
-    @warehouse_section(Mode.Change, request.cacheModel)
-
-    @transport_section(Mode.Change, request.cacheModel)
-
-
-    @helper.form(action = routes.SummaryController.submitDeclaration(), 'id -> "summary") {
-        @helper.CSRF.formField
+        @transport_section(Mode.Change, request.cacheModel)
 
         @legal_declaration(legalDeclarationForm)
 
-        @components.submit_button("site.acceptAndSubmitDeclaration")
+        @saveAndContinue("site.acceptAndSubmitDeclaration")
     }
-    <script>
-        document.getElementById("summary").addEventListener("submit", function(event){
-            document.getElementById("submit").disabled = true;
-        });
-    </script>
 }

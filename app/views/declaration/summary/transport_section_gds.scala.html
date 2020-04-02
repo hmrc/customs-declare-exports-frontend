@@ -54,7 +54,7 @@
 }
 
 @if(sectionRequired(declarationData.transport)) {
-    @summaryList("transport", Some(messages("declaration.summary.transport")), Seq(
+    @summaryList("declaration-transport-summary", Some(messages("declaration.summary.transport")), Seq(
         declarationData.transport.borderModeOfTransportCode.map(borderModeOfTransportCode =>
             SummaryListRow(
                 classes = "border-transport-row",

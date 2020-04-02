@@ -30,7 +30,7 @@
 }
 
 @if(sectionRequired(declarationData.locations)) {
-    @summaryList("warehouse", Some(messages("declaration.summary.warehouse")), Seq(
+    @summaryList("declaration-warehouse-summary", Some(messages("declaration.summary.warehouse")), Seq(
         declarationData.locations.warehouseIdentification.map(warehouseIdentification =>
             SummaryListRow(
                 classes = "warehouse-id-row",

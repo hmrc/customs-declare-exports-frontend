@@ -22,8 +22,5 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.table.TableRow
 
 object TableCell {
 
-  def changeLink(html: Html) = TableRow(
-    classes = "govuk-table__cell--numeric",
-    content = HtmlContent(html)
-  )
+  def changeLink(html: Html) = TableRow(classes = "govuk-table__cell--numeric", content = HtmlContent(html))
 }

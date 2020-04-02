@@ -34,7 +34,7 @@
 
 @(mode: Mode, item: ExportItem)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
-@summaryList(s"item-${item.sequenceId}", Some(messages("declaration.summary.items.item.sequenceId", item.sequenceId)), Seq(
+@summaryList(s"declaration-items-summary-${item.sequenceId}", Some(messages("declaration.summary.items.item.sequenceId", item.sequenceId)), Seq(
     item.procedureCodes.map(data =>
         SummaryListRow(
             classes = s"item-${item.sequenceId}-procedureCode-row",
