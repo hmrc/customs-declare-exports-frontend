@@ -27,12 +27,36 @@ class DeclarationAdditionalActorsSpec extends WordSpec with MustMatchers {
   "DeclarationAdditionalActors mapping used for binding data" should {
 
     "return form with errors" when {
-      "provided with empty input for party type" in {
-        val form = DeclarationAdditionalActors.form().bind(correctEORIPartyNotSelectedJSON)
+      "provided with empty input for party type CS" in {
+        val form = DeclarationAdditionalActors.form().bind(emptyAdditionalActorsJSON("CS"))
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
-        form.errors.head.message must equal("supplementary.partyType.empty")
+        form.errors.head.message must equal("supplementary.eori.empty")
+      }
+
+      "provided with empty input for party type MF" in {
+        val form = DeclarationAdditionalActors.form().bind(emptyAdditionalActorsJSON("MF"))
+
+        form.hasErrors must be(true)
+        form.errors.length must equal(1)
+        form.errors.head.message must equal("supplementary.eori.empty")
+      }
+
+      "provided with empty input for party type FW" in {
+        val form = DeclarationAdditionalActors.form().bind(emptyAdditionalActorsJSON("FW"))
+
+        form.hasErrors must be(true)
+        form.errors.length must equal(1)
+        form.errors.head.message must equal("supplementary.eori.empty")
+      }
+
+      "provided with empty input for party type WH" in {
+        val form = DeclarationAdditionalActors.form().bind(emptyAdditionalActorsJSON("WH"))
+
+        form.hasErrors must be(true)
+        form.errors.length must equal(1)
+        form.errors.head.message must equal("supplementary.eori.empty")
       }
 
       "provided with unknown value for party type" in {
@@ -47,7 +71,7 @@ class DeclarationAdditionalActorsSpec extends WordSpec with MustMatchers {
     }
 
     "return form without errors" when {
-      "provided with valie input" in {
+      "provided with valid input" in {
         val form = DeclarationAdditionalActors.form().bind(correctAdditionalActorsJSON)
 
         form.hasErrors must be(false)
@@ -66,11 +90,13 @@ object DeclarationAdditionalActorsSpec {
   val incorrectAdditionalActors =
     DeclarationAdditionalActors(eori = Some(Eori("123456789123456789")), partyType = Some("Incorrect"))
 
-  val correctAdditionalActorsJSON: JsValue = JsObject(Map("eori" -> JsString("GB12345678912345"), "partyType" -> JsString(Consolidator)))
+  val correctAdditionalActorsJSON: JsValue = JsObject(Map("eoriCS" -> JsString("GB12345678912345"), "partyType" -> JsString(Consolidator)))
   val emptyAdditionalActorsJSON: JsValue = JsObject(Map("eori" -> JsString(""), "partyType" -> JsString("")))
 
-  val correctEORIPartyNotSelectedJSON: JsValue = JsObject(Map("eori" -> JsString("GB12345678912345")))
   val incorrectAdditionalActorsJSON: JsValue = JsObject(Map("eori" -> JsString("123456789123456789"), "partyType" -> JsString("Incorrect")))
+  def emptyAdditionalActorsJSON(partyType: String): JsValue = JsObject(Map(s"eori$partyType" -> JsString(""), "partyType" -> JsString(partyType)))
+  def incorrectAdditionalActorsJSON(partyType: String): JsValue =
+    JsObject(Map("eori" -> JsString("123456789123456789"), "partyType" -> JsString(partyType)))
 
   val correctAdditionalActorsMap: Map[String, String] = Map("eori" -> "eori1", "partyType" -> "CS")
 }

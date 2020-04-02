@@ -55,11 +55,11 @@ GET         /carrier-details                     controllers.declaration.Carrier
 
 POST        /carrier-details                     controllers.declaration.CarrierDetailsController.saveAddress(mode: models.Mode ?= models.Mode.Normal)
 
-# Declaration additional address
+# Declaration other parties
 
-GET         /additional-actors                   controllers.declaration.DeclarationAdditionalActorsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /other-parties-involved              controllers.declaration.DeclarationAdditionalActorsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /additional-actors                   controllers.declaration.DeclarationAdditionalActorsController.saveForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /other-parties-involved              controllers.declaration.DeclarationAdditionalActorsController.saveForm(mode: models.Mode ?= models.Mode.Normal)
 
 # Declaration holder of authorisation
 
