@@ -42,7 +42,7 @@
             value = Value(Text(messages("site.no"))),
             actions = Some(Actions(
                 items = Seq(
-                    ActionItem(``
+                    ActionItem(
                         href = controllers.declaration.routes.PreviousDocumentsController.displayPage(mode).url,
                         content = Text(messages("site.change")),
                         visuallyHiddenText = Some(messages("declaration.summary.transaction.previousDocuments.change"))
