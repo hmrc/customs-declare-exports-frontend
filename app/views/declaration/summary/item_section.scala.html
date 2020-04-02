@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import views.html.declaration.summary.onward_supply_relief
 @import views.html.declaration.summary.package_information
 @import views.html.declaration.summary.union_and_national_codes
 @import views.html.declaration.summary.supporting_documents
@@ -36,7 +35,6 @@ components.table_row(s"item-${item.sequenceId}-procedureCode", HtmlTableRow(
 ))
 )
 
-@onward_supply_relief(mode, item.id, item.sequenceId, item.fiscalInformation, item.additionalFiscalReferencesData)
 
 @item.commodityDetails.map(commodityDetails =>
     components.table_row(s"item-${item.sequenceId}-commodityCode", HtmlTableRow(
@@ -95,9 +93,7 @@ components.table_row(s"item-${item.sequenceId}-itemValue", HtmlTableRow(
 ))
 )
 
-@item.commodityMeasure.map(commodityMeasure =>
-    commodity_measure_section(mode, item, commodityMeasure)
-)
+
 
 @item.packageInformation.map(packageInformation =>
     package_information(mode, item.id, item.sequenceId, packageInformation)

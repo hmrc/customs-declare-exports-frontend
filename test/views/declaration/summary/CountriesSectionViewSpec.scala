@@ -21,11 +21,11 @@ import forms.declaration.countries.Country
 import models.{ExportsDeclaration, Mode}
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.countries_section_gds
+import views.html.declaration.summary.countries_section
 
 class CountriesSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
-  val section = instanceOf[countries_section_gds]
+  val section = instanceOf[countries_section]
 
   def view(data: ExportsDeclaration) = section(Mode.Change, data)(messages, journeyRequest())
 
