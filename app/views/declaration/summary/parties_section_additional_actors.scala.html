@@ -14,46 +14,85 @@
  * limitations under the License.
  *@
 
-@import forms.declaration.{DeclarationAdditionalActors, DeclarationHolder}
+@import forms.declaration.DeclarationAdditionalActors
 @import models.requests.JourneyRequest
-@import models.viewmodels.HtmlTableRow
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds.summary_list
+@import views.declaration.summary.TableCell
+
+@this(
+        govukTable: GovukTable,
+        summaryList: summary_list
+)
 
 @(mode: Mode, additionalActors: Seq[DeclarationAdditionalActors])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
-@actorPartyType(actor: DeclarationAdditionalActors) = {
-    @actor.partyType.map(partyType => messages(s"declaration.summary.parties.additional.$partyType")).getOrElse("")
+@actorPartyType(actor: DeclarationAdditionalActors) = @{
+    actor.partyType.map(partyType => messages(s"declaration.summary.parties.additional.$partyType")).getOrElse("")
 }
 
-@actorEori(actor: DeclarationAdditionalActors) = {
-    @actor.eori.getOrElse("")
+@actorEori(actor: DeclarationAdditionalActors) = @{
+    actor.eori.map(_.value).getOrElse("")
+}
+
+@changeLink(actor: DeclarationAdditionalActors) = {
+    <a class="govuk-link" href="@controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage(mode)">
+        @messages("site.change")
+        <span class="govuk-visually-hidden">@messages("declaration.summary.parties.additional.change", actorPartyType(actor), actorEori(actor))</span>
+    </a>
 }
 
 @if(additionalActors.isEmpty) {
-    @components.table_row("additionalActors", HtmlTableRow(
-        label = messages("declaration.summary.parties.additional"),
-        value = messages("site.no"),
-        call = Some(controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage(mode)),
-        changeLabel = Some(messages("declaration.summary.parties.additional.empty.change"))
-    ))
+    @summaryList("additionalActors", None, Seq(
+        Some(SummaryListRow(
+            classes = "additionalActors-row",
+            key = Key(
+                content = Text(messages("declaration.summary.parties.additional"))
+            ),
+            value = Value(
+                content = Text(messages("site.no"))
+            ),
+            actions = Some(Actions(
+                items = Seq(
+                    ActionItem(
+                        href = controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage(mode).url,
+                        content = Text(messages("site.change")),
+                        visuallyHiddenText = Some(messages("declaration.summary.parties.additional.empty.change"))
+                    )
+                )
+            ))
+        ))
+    ),
+        classes = "govuk-!-margin-bottom-3"
+    )
 }
 
 @if(additionalActors.nonEmpty) {
-    <caption class="heading-small"><span id="additionalActors">@messages("declaration.summary.parties.additional")</span></caption>
-    <tr class="section">
-        <td class="bold"><span id="additionalActors-type">@messages("declaration.summary.parties.additional.type")</span></td>
-        <td class="bold"><span id="additionalActors-eori">@messages("declaration.summary.parties.additional.eori")</span></td>
-        <td></td>
-    </tr>
-    @additionalActors.zipWithIndex.map { case (actor, index) =>
-        <tr class="section">
-            <td><span id="additionalActor-type-@index">@actorPartyType(actor)</span></td>
-            <td class="exports-summary-list__value"><span id="additionalActor-eori-@index">@actorEori(actor)</span></td>
-            <td class="exports-summary-list__actions">
-                <a href="@controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage(mode)" id="additionalActor-@index-change">
-                    <span aria-hidden="true">@messages("site.change")</span>
-                    <span class="visually-hidden">@messages("declaration.summary.parties.additional.change", actorPartyType(actor), actorEori(actor))</span>
-                </a>
-            </td>
-        </tr>
-    }
+    @govukTable(Table(
+        rows = additionalActors.map(actor =>
+            Seq(
+                TableRow(
+                    content = Text(actorPartyType(actor))
+                ),
+                TableRow(
+                    content = Text(actorEori(actor))
+                ),
+                TableCell.changeLink(changeLink(actor))
+            )
+        ),
+        head = Some(List(
+            HeadCell(
+                content = Text(messages("declaration.summary.parties.additional.type"))
+            ),
+            HeadCell(
+                content = Text(messages("declaration.summary.parties.additional.eori"))
+            ),
+            HeadCell(
+                content = Empty
+            )
+        )),
+        caption = Some(messages("declaration.summary.parties.additional")),
+        classes = "govuk-table govuk-!-margin-bottom-3",
+        attributes = Map("id" -> "additionalActors-table")
+    ))
 }

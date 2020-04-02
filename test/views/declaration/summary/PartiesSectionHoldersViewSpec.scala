@@ -22,7 +22,7 @@ import forms.declaration.DeclarationHolder
 import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.parties_section_holders_gds
+import views.html.declaration.summary.parties_section_holders
 
 class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
@@ -34,7 +34,7 @@ class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData wi
   val holders =
     Seq(DeclarationHolder(Some(authorisationTypeCode1), Some(Eori(eori1))), DeclarationHolder(Some(authorisationTypeCode2), Some(Eori(eori2))))
 
-  private val section = instanceOf[parties_section_holders_gds]
+  private val section = instanceOf[parties_section_holders]
 
   "Holders (authorised) parties section" should {
 

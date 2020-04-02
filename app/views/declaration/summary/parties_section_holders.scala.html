@@ -16,44 +16,80 @@
 
 @import forms.declaration.DeclarationHolder
 @import models.requests.JourneyRequest
-@import models.viewmodels.HtmlTableRow
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds.summary_list
+@import views.declaration.summary.TableCell
+
+@this(
+        govukTable: GovukTable,
+        summaryList: summary_list
+)
 
 @(mode: Mode, holders: Seq[DeclarationHolder])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
-@holderTypeCode(holder: DeclarationHolder) = {
-    @holder.authorisationTypeCode.getOrElse("")
+@holderTypeCode(holder: DeclarationHolder) = @{
+    holder.authorisationTypeCode.getOrElse("")
 }
 
-@holderEori(holder: DeclarationHolder) = {
-    @holder.eori.getOrElse("")
+@holderEori(holder: DeclarationHolder) = @{
+    holder.eori.map(_.value).getOrElse("")
+}
+
+@changeLink(holder: DeclarationHolder) = {
+    <a class="govuk-link" href="@controllers.declaration.routes.DeclarationHolderController.displayPage(mode)">
+        @messages("site.change")
+        <span class="govuk-visually-hidden">@messages("declaration.summary.parties.holders.change", holderTypeCode(holder), holderEori(holder))</span>
+    </a>
 }
 
 @if(holders.isEmpty) {
-    @components.table_row("holders", HtmlTableRow(
-        label = messages("declaration.summary.parties.holders"),
-        value = messages("site.no"),
-        call = Some(controllers.declaration.routes.DeclarationHolderController.displayPage(mode)),
-        changeLabel = Some(messages("declaration.summary.parties.holders.empty.change"))
+    @summaryList("holders", None, Seq(
+        Some(SummaryListRow(
+            classes = "holders-row",
+            key = Key(
+                content = Text(messages("declaration.summary.parties.holders"))
+            ),
+            value = Value(
+                content = Text(messages("site.no"))
+            ),
+            actions = Some(Actions(
+                items = Seq(
+                    ActionItem(
+                        href = controllers.declaration.routes.DeclarationHolderController.displayPage(mode).url,
+                        content = Text(messages("site.change")),
+                        visuallyHiddenText = Some(messages("declaration.summary.parties.holders.empty.change"))
+                    )
+                )
+            ))
+        ))
     ))
 }
 
 @if(holders.nonEmpty) {
-    <caption class="heading-small"><span id="holders">@messages("declaration.summary.parties.holders")</span></caption>
-    <tr class="section">
-        <td class="bold"><span id="holders-type">@messages("declaration.summary.parties.holders.type")</span></td>
-        <td class="bold"><span id="holders-eori">@messages("declaration.summary.parties.holders.eori")</span></td>
-        <td></td>
-    </tr>
-    @holders.zipWithIndex.map { case (holder, index) =>
-        <tr class="section">
-            <td><span id="holder-type-@index">@holderTypeCode(holder)</span></td>
-            <td class="exports-summary-list__value"><span id="holder-eori-@index">@holderEori(holder)</span></td>
-            <td class="exports-summary-list__actions">
-                <a href="@controllers.declaration.routes.DeclarationHolderController.displayPage(mode)" id="holder-@index-change">
-                    <span aria-hidden="true">@messages("site.change")</span>
-                    <span class="visually-hidden">@messages("declaration.summary.parties.holders.change", holderTypeCode(holder), holderEori(holder))</span>
-                </a>
-            </td>
-        </tr>
-    }
+    @govukTable(Table(
+        rows = holders.map(holder =>
+            Seq(
+                TableRow(
+                    content = Text(holderTypeCode(holder))
+                ),
+                TableRow(
+                    content = Text(holderEori(holder))
+                ),
+                TableCell.changeLink(changeLink(holder))
+            )
+        ),
+        head = Some(List(
+            HeadCell(
+                content = Text(messages("declaration.summary.parties.holders.type"))
+            ),
+            HeadCell(
+                content = Text(messages("declaration.summary.parties.holders.eori"))
+            ),
+            HeadCell(
+                content = Empty
+            )
+        )),
+        caption = Some(messages("declaration.summary.parties.holders")),
+        attributes = Map("id" -> "holders-table")
+    ))
 }

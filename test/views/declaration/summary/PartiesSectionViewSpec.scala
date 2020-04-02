@@ -22,7 +22,7 @@ import models.Mode
 import models.declaration.DeclarationAdditionalActorsData
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.parties_section_gds
+import views.html.declaration.summary.parties_section
 
 class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
@@ -39,7 +39,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Inje
     withDeclarationHolders()
   )
 
-  private val section = instanceOf[parties_section_gds]
+  private val section = instanceOf[parties_section]
 
   "Parties section" must {
 
