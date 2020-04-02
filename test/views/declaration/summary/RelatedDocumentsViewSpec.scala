@@ -35,7 +35,7 @@ class RelatedDocumentsViewSpec extends UnitViewSpec with ExportsTestData with In
         val view = section(Mode.Normal, Seq.empty)(messages, journeyRequest())
         val row = view.getElementsByClass("previous-documents-row")
 
-        row must haveSummaryKey(messages("declaration.summary.parties.holders"))
+        row must haveSummaryKey(messages("declaration.summary.transaction.previousDocuments"))
         row must haveSummaryValue(messages("site.no"))
 
         row must haveSummaryActionsText("site.change declaration.summary.transaction.previousDocuments.change")

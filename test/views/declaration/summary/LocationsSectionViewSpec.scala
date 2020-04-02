@@ -99,7 +99,6 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with In
     "not have answers when office of exit not answered" in {
       val view = section(Mode.Normal, aDeclarationAfter(data, withOptionalOfficeOfExit(None, Some("No"))))(messages, journeyRequest())
 
-
       val row = view.getElementsByClass("location-officeOfExit-row")
       row must haveSummaryKey(messages("declaration.summary.locations.officeOfExit"))
       row must haveSummaryValue("")

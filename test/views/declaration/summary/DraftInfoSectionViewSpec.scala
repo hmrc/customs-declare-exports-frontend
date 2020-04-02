@@ -20,6 +20,7 @@ import java.time.LocalDateTime
 
 import base.Injector
 import config.AppConfig
+import models.Mode
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import services.cache.ExportsTestData
@@ -28,7 +29,7 @@ import views.html.declaration.summary.draft_info_section_gds
 
 import scala.concurrent.duration.FiniteDuration
 
-class DraftInfoSectionViewSpec extends UnitViewSpec with ExportsTestData with MockitoSugar with Injector{
+class DraftInfoSectionViewSpec extends UnitViewSpec with ExportsTestData with MockitoSugar with Injector {
 
   val appConfig = mock[AppConfig]
   val draftInfoPage = instanceOf[draft_info_section_gds]
@@ -49,11 +50,25 @@ class DraftInfoSectionViewSpec extends UnitViewSpec with ExportsTestData with Mo
       val view = draftInfoPage(data)(messages)
 
       view.getElementsByClass("draft-ducr-row").text() mustBe messages("declaration.summary.draft.ducr")
-      view.getElementsByClass("draft-ducr").text() mustBe
-      view.getElementsByClass("draft-createdDate-row").text() mustBe messages("declaration.summary.draft.createdDate")
-      view.getElementsByClass("draft-createdDate").text() mustBe expectedCreatedTime
+      view.getElementsByClass("draft-ducr-row").text() mustBe
+        view.getElementsByClass("draft-createdDate-row").text() mustBe messages("declaration.summary.draft.createdDate")
+      view.getElementsByClass("draft-createdDate-row").text() mustBe expectedCreatedTime
       view.getElementsByClass("draft-expireDate-row").text() mustBe messages("declaration.summary.draft.expireDate")
-      view.getElementsByClass("draft-expireDate").text() mustBe expectedUpdatedTime
+      view.getElementsByClass("draft-expireDate-row").text() mustBe expectedUpdatedTime
+
+
+
+
+      val row = view.getElementsByClass("previous-documents-row")
+
+      row must haveSummaryKey(messages("declaration.summary.parties.holders"))
+      row must haveSummaryValue(messages("site.no"))
+
+      row must haveSummaryActionsText("site.change declaration.summary.transaction.previousDocuments.change")
+
+      row must haveSummaryActionsHref(controllers.declaration.routes.PreviousDocumentsController.displayPage(Mode.Normal))
+
+
     }
   }
 }
