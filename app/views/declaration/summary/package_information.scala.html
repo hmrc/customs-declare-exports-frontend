@@ -15,42 +15,79 @@
  *@
 
 @import forms.declaration.PackageInformation
-@import models.requests.JourneyRequest
-@import models.viewmodels.HtmlTableRow
 @import models.Mode
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds.summary_list
+@import views.declaration.summary.TableCell
+
+@this(
+        govukTable: GovukTable,
+        summaryList: summary_list
+)
 
 @(mode: Mode, itemId: String, itemNo: Int, packageInformation: Seq[PackageInformation])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
-<table>
-@if(packageInformation.nonEmpty) {
-
-    <caption class="heading-small"><span id="package-information-@itemNo">@messages("declaration.summary.items.item.packageInformation")</span></caption>
-    <tr class="section">
-        <td class="bold"><span id="package-information-type-@itemNo">@messages("declaration.summary.items.item.packageInformation.type")</span></td>
-        <td class="bold"><span id="package-information-number-@itemNo">@messages("declaration.summary.items.item.packageInformation.number")</span></td>
-        <td class="bold"><span id="package-information-markings-@itemNo">@messages("declaration.summary.items.item.packageInformation.markings")</span></td>
-        <td></td>
-    </tr>
-    @packageInformation.zipWithIndex.map { case (information, index) =>
-    <tr class="section">
-        <td class="exports-table__cell"><span id="package-information-@itemNo-code-@index">@information.typesOfPackagesText.getOrElse("")</span></td>
-        <td class="exports-table__cell"><span id="package-information-@itemNo-number-@index">@information.numberOfPackages.getOrElse("")</span></td>
-        <td class="exports-table__cell"><span id="package-information-@itemNo-marks-@index">@information.shippingMarks.getOrElse("")</span></td>
-        <td class="exports-table__cell exports-table__cell--numeric">
-            <a href="@controllers.declaration.routes.PackageInformationController.displayPage(mode, itemId)" id="package-information-@itemNo-change-@index">
-                <span aria-hidden="true">@messages("site.change")</span>
-                <span class="visually-hidden">@messages("declaration.summary.items.item.packageInformation.change", information.typesOfPackagesText, information.shippingMarks, itemNo)</span>
+@changeLink(information: PackageInformation) = {
+    <a class="govuk-link" href="@controllers.declaration.routes.PackageInformationController.displayPage(mode, itemId)">
+        @messages("site.change")
+        <span class="govuk-visually-hidden">@messages("declaration.summary.items.item.packageInformation.change", information.typesOfPackagesText, information.shippingMarks, itemNo)</span>
     </a>
-    </td>
-    </tr>
-    }
+}
+
+@if(packageInformation.nonEmpty) {
+    @govukTable(Table(
+        rows = packageInformation.map(information =>
+            Seq(
+                TableRow(
+                    content = Text(information.typesOfPackagesText.getOrElse(""))
+                ),
+                TableRow(
+                    content = Text(information.numberOfPackages.map(_.toString).getOrElse(""))
+                ),
+                TableRow(
+                    content = Text(information.shippingMarks.getOrElse(""))
+                ),
+                TableCell.changeLink(changeLink(information))
+            )
+        ),
+        head = Some(List(
+            HeadCell(
+                content = Text(messages("declaration.summary.items.item.packageInformation.type"))
+            ),
+            HeadCell(
+                content = Text(messages("declaration.summary.items.item.packageInformation.number"))
+            ),
+            HeadCell(
+                content = Text(messages("declaration.summary.items.item.packageInformation.markings"))
+            ),
+            HeadCell(
+                content = Empty
+            )
+        )),
+        caption = Some(messages("declaration.summary.items.item.packageInformation")),
+        classes = "govuk-table govuk-!-margin-bottom-3",
+        attributes = Map("id" -> s"package-information-$itemNo-table")
+    ))
 
 } else {
-    @components.table_row(s"package-information-$itemNo", HtmlTableRow(
-        label = messages("declaration.summary.items.item.packageInformation"),
-        value = "",
-        call = Some(controllers.declaration.routes.PackageInformationController.displayPage(mode, itemId)),
-        changeLabel = Some(messages("declaration.summary.items.item.netWeight.changeAll", itemNo))
-    ))
+    @summaryList(s"package-information-$itemNo", None, Seq(
+        Some(SummaryListRow(
+            classes = s"package-information-$itemNo-row",
+            key = Key(
+                content = Text(messages("declaration.summary.items.item.packageInformation"))
+            ),
+            actions = Some(Actions(
+                items = Seq(
+                    ActionItem(
+                        href = controllers.declaration.routes.PackageInformationController.displayPage(mode, itemId).url,
+                        content = Text(messages("site.change")),
+                        visuallyHiddenText = Some(messages("declaration.summary.items.item.packageInformation.changeAll", itemNo))
+                    )
+                )
+            ))
+        ))
+    ),
+        classes = "govuk-!-margin-bottom-3"
+    )
 }
-</table>

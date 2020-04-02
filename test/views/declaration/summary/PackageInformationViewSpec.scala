@@ -16,60 +16,59 @@
 
 package views.declaration.summary
 
+import base.Injector
 import forms.declaration.PackageInformation
 import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.package_information
 
-class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData {
+class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   "Package information" should {
 
+    val packageSection = instanceOf[package_information]
+
     "display title only and change link if Sequence is empty" in {
+      val view = packageSection(Mode.Normal, "itemId", 1, Seq.empty)(messages, journeyRequest())
+      val row = view.getElementsByClass("package-information-1-row")
 
-      val view = package_information(Mode.Normal, "itemId", 1, Seq.empty)(messages, journeyRequest())
+      row must haveSummaryKey(messages("declaration.summary.items.item.packageInformation"))
+      row must haveSummaryValue("")
 
-      view.getElementById("package-information-1-label").text() mustBe messages("declaration.summary.items.item.packageInformation")
-      view.getElementById("package-information-1-change") must haveHref(
-        controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, "itemId")
-      )
+      row must haveSummaryActionsText("site.change declaration.summary.items.item.packageInformation.changeAll")
+
+      row must haveSummaryActionsHref(controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, "itemId"))
     }
 
     "display package information section with multiple package information and change buttons" in {
 
       val data = Seq(PackageInformation(Some("PB"), Some(123), Some("first-marks")), PackageInformation(Some("QF"), Some(321), Some("second-marks")))
 
-      val view = package_information(Mode.Normal, "itemId", 1, data)(messages, journeyRequest())
+      val view = packageSection(Mode.Normal, "itemId", 1, data)(messages, journeyRequest())
+      val table = view.getElementById("package-information-1-table")
 
-      view.getElementById("package-information-1").text() mustBe messages("declaration.summary.items.item.packageInformation")
-      view.getElementById("package-information-type-1").text() mustBe messages("declaration.summary.items.item.packageInformation.type")
-      view.getElementById("package-information-number-1").text() mustBe messages("declaration.summary.items.item.packageInformation.number")
-      view.getElementById("package-information-markings-1").text() mustBe messages("declaration.summary.items.item.packageInformation.markings")
-      view.getElementById("package-information-1-code-0").text() mustBe "Open-ended box and pallet - PB"
-      view.getElementById("package-information-1-number-0").text() mustBe "123"
-      view.getElementById("package-information-1-marks-0").text() mustBe "first-marks"
+      table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.packageInformation")
 
-      val List(change1, accessibleChange1) = view.getElementById("package-information-1-change-0").text().split(" ").toList
+      table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.summary.items.item.packageInformation.type")
+      table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages("declaration.summary.items.item.packageInformation.number")
+      table.getElementsByClass("govuk-table__header").get(2).text() mustBe messages("declaration.summary.items.item.packageInformation.markings")
 
-      change1 mustBe messages("site.change")
-      accessibleChange1 mustBe messages("declaration.summary.items.item.packageInformation.change", "PB", "first-marks", 1)
+      val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
+      row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe "Open-ended box and pallet - PB"
+      row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe "123"
+      row1.getElementsByClass("govuk-table__cell").get(2).text() mustBe "first-marks"
+      val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(3).getElementsByTag("a").first()
+      row1ChangeLink must haveHref(controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, "itemId"))
+      row1ChangeLink.text() mustBe "site.change " + messages("declaration.summary.items.item.packageInformation.change", "PB", "first-marks", 1)
 
-      view.getElementById("package-information-1-change-0") must haveHref(
-        controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, "itemId")
-      )
-      view.getElementById("package-information-1-code-1").text() mustBe "Drum, plastic, non-removable head - QF"
-      view.getElementById("package-information-1-number-1").text() mustBe "321"
-      view.getElementById("package-information-1-marks-1").text() mustBe "second-marks"
-
-      val List(change2, accessibleChange2) = view.getElementById("package-information-1-change-1").text().split(" ").toList
-
-      change2 mustBe messages("site.change")
-      accessibleChange2 mustBe messages("declaration.summary.items.item.packageInformation.change", "PB", "second-marks", 1)
-
-      view.getElementById("package-information-1-change-1") must haveHref(
-        controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, "itemId")
-      )
+      val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
+      row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe "Drum, plastic, non-removable head - QF"
+      row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe "321"
+      row2.getElementsByClass("govuk-table__cell").get(2).text() mustBe "second-marks"
+      val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(3).getElementsByTag("a").first()
+      row2ChangeLink must haveHref(controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, "itemId"))
+      row2ChangeLink.text() mustBe "site.change " + messages("declaration.summary.items.item.packageInformation.change", "QF", "second-marks", 1)
     }
   }
 }

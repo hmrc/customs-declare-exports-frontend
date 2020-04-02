@@ -16,20 +16,23 @@
 
 package views.declaration.summary
 
+import base.Injector
 import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.items_section
+import views.html.declaration.summary.items_section_gds
 
-class ItemsSectionViewSpec extends UnitViewSpec with ExportsTestData {
+class ItemsSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   "Items section" should {
+
+    val itemsSection = instanceOf[items_section_gds]
 
     "display nothing" when {
 
       "there is no items in the declaration" in {
 
-        val view = items_section(Mode.Normal, aDeclaration())(messages, journeyRequest())
+        val view = itemsSection(Mode.Normal, aDeclaration())(messages, journeyRequest())
 
         view.getAllElements.text() must be(empty)
       }
@@ -39,12 +42,13 @@ class ItemsSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
       "item exists" in {
 
-        val data = aDeclaration(withItems(anItem(withSequenceId(1)), anItem(withSequenceId(2))))
+        val data =
+          aDeclaration(withItems(anItem(withSequenceId(1), withStatisticalValue("10")), anItem(withSequenceId(2), withProcedureCodes(Some("code")))))
 
-        val view = items_section(Mode.Normal, data)(messages, journeyRequest())
+        val view = itemsSection(Mode.Normal, data)(messages, journeyRequest())
 
-        view.getElementById("item-1-header").text() mustNot be(empty)
-        view.getElementById("item-2-header").text() mustNot be(empty)
+        view.getElementById("declaration-items-summary-1").text() mustNot be(empty)
+        view.getElementById("declaration-items-summary-2").text() mustNot be(empty)
       }
     }
   }

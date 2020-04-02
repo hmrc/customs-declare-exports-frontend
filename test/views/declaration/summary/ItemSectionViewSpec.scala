@@ -16,14 +16,15 @@
 
 package views.declaration.summary
 
+import base.Injector
 import forms.declaration._
 import forms.declaration.additionaldocuments.DocumentsProduced
 import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.item_section
+import views.html.declaration.summary.item_section_gds
 
-class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
+class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   val itemWithAnswers = anItem(
     withItemId("itemId"),
@@ -45,279 +46,247 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
   val itemWithoutAnswers = anItem(withItemId("itemId"), withSequenceId(1))
 
+  private val itemSection = instanceOf[item_section_gds]
+
   "Item section with item answers" should {
 
-    val view = item_section(Mode.Normal, itemWithAnswers)(messages, journeyRequest())
+    val view = itemSection(Mode.Normal, itemWithAnswers)(messages, journeyRequest())
 
     "have item header" in {
 
-      view.getElementById("item-1-header").text() mustBe messages("declaration.summary.items.item.sequenceId")
+      view.getElementsByClass("govuk-heading-m").text() mustBe messages("declaration.summary.items.item.sequenceId")
     }
 
     "have procedure codes separated by space with change buttons" in {
 
-      view.getElementById("item-1-procedureCode-label").text() mustBe messages("declaration.summary.items.item.procedureCode")
-      view.getElementById("item-1-procedureCode").text() mustBe "1234 000 111"
+      val row = view.getElementsByClass("item-1-procedureCode-row")
+      row must haveSummaryKey(messages("declaration.summary.items.item.procedureCode"))
+      row must haveSummaryValue("1234 000 111")
 
-      val List(change, accessibleChange) = view.getElementById("item-1-procedureCode-change").text().split(" ").toList
+      row must haveSummaryActionsText("site.change declaration.summary.items.item.procedureCode.change")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.items.item.procedureCode.change", 1)
+      row must haveSummaryActionsHref(controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, itemWithAnswers.id))
+    }
 
-      view.getElementById("item-1-procedureCode-change") must haveHref(
-        controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, itemWithAnswers.id)
+    "have onward supply answer with change button" in {
+
+      val row = view.getElementsByClass("item-1-onwardSupplyRelief-row")
+      row must haveSummaryKey(messages("declaration.summary.items.item.onwardSupplyRelief"))
+      row must haveSummaryValue("Yes")
+
+      row must haveSummaryActionsText("site.change declaration.summary.items.item.onwardSupplyRelief.change")
+
+      row must haveSummaryActionsHref(controllers.declaration.routes.FiscalInformationController.displayPage(Mode.Normal, itemWithAnswers.id))
+    }
+
+    "have VAT answer with change button" in {
+
+      val row = view.getElementsByClass("item-1-VATdetails-row")
+      row must haveSummaryKey(messages("declaration.summary.items.item.VATdetails"))
+      row must haveSummaryValue("GB1234")
+
+      row must haveSummaryActionsText("site.change declaration.summary.items.item.VATdetails.change")
+
+      row must haveSummaryActionsHref(
+        controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(Mode.Normal, itemWithAnswers.id)
       )
     }
 
     "have commodity code with change button" in {
 
-      view.getElementById("item-1-commodityCode-label").text() mustBe messages("declaration.summary.items.item.commodityCode")
-      view.getElementById("item-1-commodityCode").text() mustBe "231"
+      val row = view.getElementsByClass("item-1-commodityCode-row")
+      row must haveSummaryKey(messages("declaration.summary.items.item.commodityCode"))
+      row must haveSummaryValue("231")
 
-      val List(change, accessibleChange) = view.getElementById("item-1-commodityCode-change").text().split(" ").toList
+      row must haveSummaryActionsText("site.change declaration.summary.items.item.commodityCode.change")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.items.item.commodityCode.change", 1)
-
-      view.getElementById("item-1-commodityCode-change") must haveHref(
-        controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, itemWithAnswers.id)
-      )
+      row must haveSummaryActionsHref(controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, itemWithAnswers.id))
     }
 
     "have goods description with change button" in {
 
-      view.getElementById("item-1-goodsDescription-label").text() mustBe messages("declaration.summary.items.item.goodsDescription")
-      view.getElementById("item-1-goodsDescription").text() mustBe "description"
+      val row = view.getElementsByClass("item-1-goodsDescription-row")
+      row must haveSummaryKey(messages("declaration.summary.items.item.goodsDescription"))
+      row must haveSummaryValue("description")
 
-      val List(change, accessibleChange) = view.getElementById("item-1-goodsDescription-change").text().split(" ").toList
+      row must haveSummaryActionsText("site.change declaration.summary.items.item.goodsDescription.change")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.items.item.goodsDescription.change", 1)
-
-      view.getElementById("item-1-goodsDescription-change") must haveHref(
-        controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, itemWithAnswers.id)
-      )
+      row must haveSummaryActionsHref(controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, itemWithAnswers.id))
     }
 
     "have un dangerous goods code with change button" in {
 
-      view.getElementById("item-1-unDangerousGoodsCode-label").text() mustBe messages("declaration.summary.items.item.unDangerousGoodsCode")
-      view.getElementById("item-1-unDangerousGoodsCode").text() mustBe "345"
+      val row = view.getElementsByClass("item-1-unDangerousGoodsCode-row")
+      row must haveSummaryKey(messages("declaration.summary.items.item.unDangerousGoodsCode"))
+      row must haveSummaryValue("345")
 
-      val List(change, accessibleChange) = view.getElementById("item-1-unDangerousGoodsCode-change").text().split(" ").toList
+      row must haveSummaryActionsText("site.change declaration.summary.items.item.unDangerousGoodsCode.change")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.items.item.unDangerousGoodsCode.change", 1)
-
-      view.getElementById("item-1-unDangerousGoodsCode-change") must haveHref(
-        controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemWithAnswers.id)
-      )
+      row must haveSummaryActionsHref(controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemWithAnswers.id))
     }
 
     "have cus code with change button" in {
 
-      view.getElementById("item-1-cusCode-label").text() mustBe messages("declaration.summary.items.item.cusCode")
-      view.getElementById("item-1-cusCode").text() mustBe "321"
+      val row = view.getElementsByClass("item-1-cusCode-row")
+      row must haveSummaryKey(messages("declaration.summary.items.item.cusCode"))
+      row must haveSummaryValue("321")
 
-      val List(change, accessibleChange) = view.getElementById("item-1-cusCode-change").text().split(" ").toList
+      row must haveSummaryActionsText("site.change declaration.summary.items.item.cusCode.change")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.items.item.cusCode.change", 1)
-
-      view.getElementById("item-1-cusCode-change") must haveHref(
-        controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, itemWithAnswers.id)
-      )
+      row must haveSummaryActionsHref(controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, itemWithAnswers.id))
     }
 
     "have taric codes separated by comma with change button" in {
 
-      view.getElementById("item-1-taricAdditionalCodes-label").text() mustBe messages("declaration.summary.items.item.taricAdditionalCodes")
-      view.getElementById("item-1-taricAdditionalCodes").text() mustBe "999, 888"
+      val row = view.getElementsByClass("item-1-taricAdditionalCodes-row")
+      row must haveSummaryKey(messages("declaration.summary.items.item.taricAdditionalCodes"))
+      row must haveSummaryValue("999, 888")
 
-      val List(change, accessibleChange) = view.getElementById("item-1-taricAdditionalCodes-change").text().split(" ").toList
+      row must haveSummaryActionsText("site.change declaration.summary.items.item.taricAdditionalCodes.change")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.items.item.taricAdditionalCodes.change", 1)
-
-      view.getElementById("item-1-taricAdditionalCodes-change") must haveHref(
-        controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, itemWithAnswers.id)
-      )
+      row must haveSummaryActionsHref(controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, itemWithAnswers.id))
     }
 
     "have nact codes separated by comma with change button" in {
 
-      view.getElementById("item-1-nationalAdditionalCodes-label").text() mustBe messages("declaration.summary.items.item.nationalAdditionalCodes")
-      view.getElementById("item-1-nationalAdditionalCodes").text() mustBe "111, 222"
+      val row = view.getElementsByClass("item-1-nationalAdditionalCodes-row")
+      row must haveSummaryKey(messages("declaration.summary.items.item.nationalAdditionalCodes"))
+      row must haveSummaryValue("111, 222")
 
-      val List(change, accessibleChange) = view.getElementById("item-1-nationalAdditionalCodes-change").text().split(" ").toList
+      row must haveSummaryActionsText("site.change declaration.summary.items.item.nationalAdditionalCodes.change")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.items.item.nationalAdditionalCodes.change", 1)
-
-      view.getElementById("item-1-nationalAdditionalCodes-change") must haveHref(
-        controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, itemWithAnswers.id)
-      )
+      row must haveSummaryActionsHref(controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, itemWithAnswers.id))
     }
 
     "have statistical item value with change button" in {
 
-      view.getElementById("item-1-itemValue-label").text() mustBe messages("declaration.summary.items.item.itemValue")
-      view.getElementById("item-1-itemValue").text() mustBe "123"
+      val row = view.getElementsByClass("item-1-itemValue-row")
+      row must haveSummaryKey(messages("declaration.summary.items.item.itemValue"))
+      row must haveSummaryValue("123")
 
-      val List(change, accessibleChange) = view.getElementById("item-1-itemValue-change").text().split(" ").toList
+      row must haveSummaryActionsText("site.change declaration.summary.items.item.itemValue.change")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.items.item.itemValue.change", 1)
-
-      view.getElementById("item-1-itemValue-change") must haveHref(
-        controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, itemWithAnswers.id)
-      )
+      row must haveSummaryActionsHref(controllers.declaration.routes.StatisticalValueController.displayPage(Mode.Normal, itemWithAnswers.id))
     }
 
     "have supplementary units with change button" in {
 
-      view.getElementById("item-1-supplementaryUnits-label").text() mustBe messages("declaration.summary.items.item.supplementaryUnits")
-      view.getElementById("item-1-supplementaryUnits").text() mustBe "12"
+      val row = view.getElementsByClass("item-1-supplementaryUnits-row")
+      row must haveSummaryKey(messages("declaration.summary.items.item.supplementaryUnits"))
+      row must haveSummaryValue("12")
 
-      val List(change, accessibleChange) = view.getElementById("item-1-supplementaryUnits-change").text().split(" ").toList
+      row must haveSummaryActionsText("site.change declaration.summary.items.item.supplementaryUnits.change")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.items.item.supplementaryUnits.change", 1)
-
-      view.getElementById("item-1-supplementaryUnits-change") must haveHref(
-        controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, itemWithAnswers.id)
-      )
+      row must haveSummaryActionsHref(controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, itemWithAnswers.id))
     }
 
     "have gross weight with change button" in {
 
-      view.getElementById("item-1-grossWeight-label").text() mustBe messages("declaration.summary.items.item.grossWeight")
-      view.getElementById("item-1-grossWeight").text() mustBe "666"
+      val row = view.getElementsByClass("item-1-grossWeight-row")
+      row must haveSummaryKey(messages("declaration.summary.items.item.grossWeight"))
+      row must haveSummaryValue("666")
 
-      val List(change, accessibleChange) = view.getElementById("item-1-grossWeight-change").text().split(" ").toList
+      row must haveSummaryActionsText("site.change declaration.summary.items.item.grossWeight.change")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.items.item.grossWeight.change", 1)
-
-      view.getElementById("item-1-grossWeight-change") must haveHref(
-        controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, itemWithAnswers.id)
-      )
+      row must haveSummaryActionsHref(controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, itemWithAnswers.id))
     }
 
     "have net weight with change button" in {
 
-      view.getElementById("item-1-netWeight-label").text() mustBe messages("declaration.summary.items.item.netWeight")
-      view.getElementById("item-1-netWeight").text() mustBe "555"
+      val row = view.getElementsByClass("item-1-netWeight-row")
+      row must haveSummaryKey(messages("declaration.summary.items.item.netWeight"))
+      row must haveSummaryValue("555")
 
-      val List(change, accessibleChange) = view.getElementById("item-1-netWeight-change").text().split(" ").toList
+      row must haveSummaryActionsText("site.change declaration.summary.items.item.netWeight.change")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.items.item.netWeight.change", 1)
-
-      view.getElementById("item-1-netWeight-change") must haveHref(
-        controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, itemWithAnswers.id)
-      )
+      row must haveSummaryActionsHref(controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, itemWithAnswers.id))
     }
 
     "have package information section" in {
 
-      view.getElementById("package-information-1").text() mustBe messages("declaration.summary.items.item.packageInformation")
+      view.getElementById("package-information-1-table").getElementsByClass("govuk-table__caption").text() mustBe messages(
+        "declaration.summary.items.item.packageInformation"
+      )
     }
 
     "have union and national codes section" in {
 
-      view.getElementById("additional-information-1").text() mustBe messages("declaration.summary.items.item.additionalInformation")
+      view.getElementById("additional-information-1-table").getElementsByClass("govuk-table__caption").text() mustBe messages(
+        "declaration.summary.items.item.additionalInformation"
+      )
     }
 
     "have supporting documents section" in {
 
-      view.getElementById("supporting-documents-1").text() mustBe messages("declaration.summary.items.item.supportingDocuments")
+      view.getElementById("supporting-documents-1-table").getElementsByClass("govuk-table__caption").text() mustBe messages(
+        "declaration.summary.items.item.supportingDocuments"
+      )
     }
 
   }
 
   "Item section with no answers" should {
 
-    val view = item_section(Mode.Normal, itemWithoutAnswers)(messages, journeyRequest())
+    val view = itemSection(Mode.Normal, itemWithoutAnswers)(messages, journeyRequest())
 
     "not display procedure code" in {
 
-      view.getElementById("item-1-procedureCode-label") mustBe null
-      view.getElementById("item-1-procedureCode") mustBe null
-      view.getElementById("item-1-procedureCode-change") mustBe null
+      view.getElementsByClass("item-1-procedureCode-row") mustBe empty
     }
 
     "not display commodity code" in {
 
-      view.getElementById("item-1-commodityCode-label") mustBe null
-      view.getElementById("item-1-commodityCode") mustBe null
-      view.getElementById("item-1-commodityCode-change") mustBe null
+      view.getElementsByClass("item-1-commodityCode-row") mustBe empty
     }
 
     "not display goods description" in {
 
-      view.getElementById("item-1-goodsDescription-label") mustBe null
-      view.getElementById("item-1-goodsDescription") mustBe null
-      view.getElementById("item-1-goodsDescription-change") mustBe null
+      view.getElementsByClass("item-1-goodsDescription-row") mustBe empty
     }
 
     "not display UN Dangerous Goods Code" in {
 
-      view.getElementById("item-1-unDangerousGoodsCode-label") mustBe null
-      view.getElementById("item-1-unDangerousGoodsCode") mustBe null
-      view.getElementById("item-1-unDangerousGoodsCode-change") mustBe null
+      view.getElementsByClass("item-1-unDangerousGoodsCode-row") mustBe empty
     }
 
     "not display UN CUS Code" in {
 
-      view.getElementById("item-1-cusCode-label") mustBe null
-      view.getElementById("item-1-cusCode") mustBe null
-      view.getElementById("item-1-cusCode-change") mustBe null
+      view.getElementsByClass("item-1-cusCode-row") mustBe empty
     }
 
     "not display TARIC Codes" in {
 
-      view.getElementById("item-1-taricAdditionalCodes-label") mustBe null
-      view.getElementById("item-1-taricAdditionalCodes") mustBe null
-      view.getElementById("item-1-taricAdditionalCodes-change") mustBe null
+      view.getElementsByClass("itetaricAdditionalCodes-row") mustBe empty
     }
 
     "not display National Additional Codes" in {
 
-      view.getElementById("item-1-nationalAdditionalCodes-label") mustBe null
-      view.getElementById("item-1-nationalAdditionalCodes") mustBe null
-      view.getElementById("item-1-nationalAdditionalCodes-change") mustBe null
+      view.getElementsByClass("item-1-nationalAdditionalCodes-row") mustBe empty
     }
 
     "not display Item Value" in {
 
-      view.getElementById("item-1-itemValue-label") mustBe null
-      view.getElementById("item-1-itemValue") mustBe null
-      view.getElementById("item-1-itemValue-change") mustBe null
+      view.getElementsByClass("item-1-itemValue-row") mustBe empty
     }
 
     "not display Supplementary Units" in {
 
-      view.getElementById("item-1-supplementaryUnits-label") mustBe null
-      view.getElementById("item-1-supplementaryUnits") mustBe null
-      view.getElementById("item-1-supplementaryUnits-change") mustBe null
+      view.getElementsByClass("item-1-supplementaryUnits-row") mustBe empty
     }
 
     "not display Gross Weight" in {
 
-      view.getElementById("item-1-grossWeight-label") mustBe null
-      view.getElementById("item-1-grossWeight") mustBe null
-      view.getElementById("item-1-grossWeight-change") mustBe null
+      view.getElementsByClass("item-1-grossWeight-row") mustBe empty
     }
 
     "not display Net Weight" in {
 
-      view.getElementById("item-1-netWeight-label") mustBe null
-      view.getElementById("item-1-netWeight") mustBe null
-      view.getElementById("item-1-netWeight-change") mustBe null
+      view.getElementsByClass("item-1-netWeight-row") mustBe empty
     }
 
     "not display package information section" in {
+
+      view.getElementsByClass("item-1-commodityCode-row") mustBe empty
 
       view.getElementById("package-information-1") mustBe null
     }
