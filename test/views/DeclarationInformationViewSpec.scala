@@ -20,11 +20,12 @@ import java.time.LocalDateTime
 
 import base.Injector
 import com.typesafe.config.{Config, ConfigFactory}
-import config.{EadConfig, FeatureSwitchConfig}
+import config.{EadConfig, FeatureSwitchConfig, SfusConfig}
 import models.declaration.notifications.Notification
 import models.declaration.submissions.{Submission, SubmissionStatus}
 import play.api.Configuration
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, GovukTable}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import views.declaration.spec.UnitViewSpec
 import views.html.components.gds.gdsMainTemplate
 import views.html.declaration_information
@@ -34,17 +35,27 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
   private val gdsMainTemplate = instanceOf[gdsMainTemplate]
   private val govukSummaryList = instanceOf[GovukSummaryList]
   private val govukTable = instanceOf[GovukTable]
+  private val servicesConfig = instanceOf[ServicesConfig]
 
-  private val configWithEnabledEAD: Config =
-    ConfigFactory.parseString("microservice.services.features.ead=enabled")
-  private val configWithDisabledEAD: Config =
-    ConfigFactory.parseString("microservice.services.features.ead=disabled")
+  private val configWithFeaturesEnabled: Config =
+    ConfigFactory.parseString("""
+        |microservice.services.features.ead=enabled
+        |microservice.services.features.sfus=enabled
+      """.stripMargin)
+  private val configWithFeaturesDisabled: Config =
+    ConfigFactory.parseString("""
+        |microservice.services.features.ead=disabled
+        |microservice.services.features.sfus=disabled
+      """.stripMargin)
 
-  private val featureSwitchConfigEnabledEAD = new FeatureSwitchConfig(Configuration(configWithEnabledEAD))
-  private val featureSwitchConfigDisabledEAD = new FeatureSwitchConfig(Configuration(configWithDisabledEAD))
+  private val featureSwitchConfigEnabled = new FeatureSwitchConfig(Configuration(configWithFeaturesEnabled))
+  private val featureSwitchConfigDisabled = new FeatureSwitchConfig(Configuration(configWithFeaturesDisabled))
 
-  private val eadConfigEnabled = new EadConfig(featureSwitchConfigEnabledEAD)
-  private val eadConfigDisabled = new EadConfig(featureSwitchConfigDisabledEAD)
+  private val eadConfigEnabled = new EadConfig(featureSwitchConfigEnabled)
+  private val eadConfigDisabled = new EadConfig(featureSwitchConfigDisabled)
+
+  private val sfusConfigEnabled = new SfusConfig(featureSwitchConfigEnabled, servicesConfig)
+  private val sfusConfigDisabled = new SfusConfig(featureSwitchConfigDisabled, servicesConfig)
 
   private def submission(mrn: Option[String] = Some("mrn")): Submission =
     Submission(uuid = "id", eori = "eori", lrn = "lrn", mrn = mrn, ducr = Some("ducr"), actions = Seq.empty)
@@ -69,14 +80,24 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
     payload = ""
   )
 
-  private val notifications = Seq(notification, rejectedNotification)
+  private val additionalDocumentsNotification = Notification(
+    actionId = "actionId",
+    mrn = "mrn",
+    dateTimeIssued = LocalDateTime.of(2019, 3, 3, 10, 0, 0),
+    status = SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED,
+    errors = Seq.empty,
+    payload = ""
+  )
 
-  private val declarationInformationPageWithEad = new declaration_information(gdsMainTemplate, govukSummaryList, govukTable, eadConfigEnabled)
+  private val notifications = Seq(notification, rejectedNotification, additionalDocumentsNotification)
 
-  private val declarationInformationPageWithoutEad =
-    new declaration_information(gdsMainTemplate, govukSummaryList, govukTable, eadConfigDisabled)
+  private val declarationInformationPageWithFeatures =
+    new declaration_information(gdsMainTemplate, govukSummaryList, govukTable, eadConfigEnabled, sfusConfigEnabled)
 
-  private val viewWithEad = declarationInformationPageWithEad(submission, notifications)(request, messages)
+  private val declarationInformationPageWithoutFeatures =
+    new declaration_information(gdsMainTemplate, govukSummaryList, govukTable, eadConfigDisabled, sfusConfigDisabled)
+
+  private val viewWithFeatures = declarationInformationPageWithFeatures(submission, notifications)(request, messages)
 
   "Declaration information" should {
 
@@ -96,25 +117,25 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
     "contains page header" in {
 
-      viewWithEad.getElementsByTag("h1").first().text() mustBe "submissions.declarationInformation"
+      viewWithFeatures.getElementsByTag("h1").first().text() mustBe "submissions.declarationInformation"
     }
 
     "contains references table with correct labels" in {
 
-      viewWithEad.getElementsByTag("h2").first().text() mustBe "submissions.references"
-      viewWithEad.select(".submission__ucr .govuk-summary-list__key").first().text() mustBe "submissions.ucr"
-      viewWithEad.select(".submission__ucr .govuk-summary-list__value").first().text() mustBe submission.ducr.get
-      viewWithEad.select(".submission__lrn .govuk-summary-list__key").first().text() mustBe "submissions.lrn"
-      viewWithEad.select(".submission__lrn .govuk-summary-list__value").first().text() mustBe submission.lrn
-      viewWithEad.select(".submission__mrn .govuk-summary-list__key").first().text() mustBe "submissions.mrn"
-      viewWithEad.select(".submission__mrn .govuk-summary-list__value").first().text() mustBe submission.mrn.get
+      viewWithFeatures.getElementsByTag("h2").first().text() mustBe "submissions.references"
+      viewWithFeatures.select(".submission__ucr .govuk-summary-list__key").first().text() mustBe "submissions.ucr"
+      viewWithFeatures.select(".submission__ucr .govuk-summary-list__value").first().text() mustBe submission.ducr.get
+      viewWithFeatures.select(".submission__lrn .govuk-summary-list__key").first().text() mustBe "submissions.lrn"
+      viewWithFeatures.select(".submission__lrn .govuk-summary-list__value").first().text() mustBe submission.lrn
+      viewWithFeatures.select(".submission__mrn .govuk-summary-list__key").first().text() mustBe "submissions.mrn"
+      viewWithFeatures.select(".submission__mrn .govuk-summary-list__value").first().text() mustBe submission.mrn.get
     }
 
     "contains create EAD link" when {
 
       "feature flag is enabled" in {
 
-        val generateEADLink = viewWithEad.getElementById("generate-ead")
+        val generateEADLink = viewWithFeatures.getElementById("generate-ead")
 
         generateEADLink.text() mustBe "submissions.generateEAD"
         generateEADLink must haveHref(controllers.pdf.routes.EADController.generatePdf(submission.mrn.get))
@@ -125,39 +146,70 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
       "there is no mrn" in {
 
-        val view = declarationInformationPageWithoutEad(submission(None), notifications)(request, messages)
+        val view = declarationInformationPageWithoutFeatures(submission(None), notifications)(request, messages)
 
         view.getElementById("generate-ead") mustBe null
       }
 
       "feature flag is disabled" in {
 
-        val view = declarationInformationPageWithoutEad(submission, notifications)(request, messages)
+        val view = declarationInformationPageWithoutFeatures(submission, notifications)(request, messages)
 
         view.getElementById("generate-ead") mustBe null
       }
     }
 
+    "contains SFUS link" when {
+
+      "feature flag is enabled" in {
+
+        val sfusLink = viewWithFeatures.getElementById("notification_action_2")
+
+        sfusLink.text() mustBe "submissions.sfus"
+        sfusLink.child(0) must haveHref("http://localhost:6793/cds-file-upload-service/start")
+      }
+    }
+
+    "doesn't contain SFUS link" when {
+
+      "feature flag is disabled" in {
+
+        val view = declarationInformationPageWithoutFeatures(submission, notifications)(request, messages)
+
+        view.getElementById("notification_status_2").text() mustBe SubmissionStatus.format(SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)
+        view.getElementById("notification_date_time_2").text() mustBe "3 March 2019 at 10:00"
+        view.getElementById("notification_action_2").text() mustBe ""
+      }
+    }
+
     "contains rejected notification with correct data and view errors link" in {
 
-      viewWithEad.getElementById("notification_status_0").text() mustBe SubmissionStatus.format(SubmissionStatus.REJECTED)
-      viewWithEad.getElementById("notification_date_time_0").text() mustBe "2 February 2020 at 10:00"
-      viewWithEad.getElementById("notification_errors_0").text() mustBe "submissions.viewErrors"
-      viewWithEad.getElementById("notification_errors_0").child(0) must haveHref(
+      viewWithFeatures.getElementById("notification_status_0").text() mustBe SubmissionStatus.format(SubmissionStatus.REJECTED)
+      viewWithFeatures.getElementById("notification_date_time_0").text() mustBe "2 February 2020 at 10:00"
+      viewWithFeatures.getElementById("notification_action_0").text() mustBe "submissions.viewErrors"
+      viewWithFeatures.getElementById("notification_action_0").child(0) must haveHref(
         controllers.routes.RejectedNotificationsController.displayPage(submission.uuid)
       )
     }
 
     "contains accepted notification with correct data" in {
 
-      viewWithEad.getElementById("notification_status_1").text() mustBe SubmissionStatus.format(SubmissionStatus.ACCEPTED)
-      viewWithEad.getElementById("notification_date_time_1").text() mustBe "1 January 2020 at 00:00"
-      viewWithEad.getElementById("notification_errors_1").text() mustBe empty
+      viewWithFeatures.getElementById("notification_status_1").text() mustBe SubmissionStatus.format(SubmissionStatus.ACCEPTED)
+      viewWithFeatures.getElementById("notification_date_time_1").text() mustBe "1 January 2020 at 00:00"
+      viewWithFeatures.getElementById("notification_action_1").text() mustBe empty
+    }
+
+    "contains additional documents notification with redirect to SFUS link" in {
+
+      viewWithFeatures.getElementById("notification_status_2").text() mustBe SubmissionStatus.format(SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED)
+      viewWithFeatures.getElementById("notification_date_time_2").text() mustBe "3 March 2019 at 10:00"
+      viewWithFeatures.getElementById("notification_action_2").text() mustBe "submissions.sfus"
+      viewWithFeatures.getElementById("notification_action_2").child(0) must haveHref("http://localhost:6793/cds-file-upload-service/start")
     }
 
     "contains back link which links to the submission list" in {
 
-      val backButton = viewWithEad.getElementById("back-link")
+      val backButton = viewWithFeatures.getElementById("back-link")
 
       backButton.text() mustBe "site.backToDeclarations"
       backButton must haveHref(controllers.routes.SubmissionsController.displayListOfSubmissions())
