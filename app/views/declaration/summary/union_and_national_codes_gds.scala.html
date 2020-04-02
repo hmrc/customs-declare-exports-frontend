@@ -19,6 +19,7 @@
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.summary_list
+@import views.declaration.summary.TableCell
 
 @this(
         govukTable: GovukTable,
@@ -43,9 +44,7 @@
                 TableRow(
                     content = Text(information.description)
                 ),
-                TableRow(
-                    content = HtmlContent(changeLink(information))
-                )
+                TableCell.changeLink(changeLink(information))
             )
         ),
         head = Some(List(
@@ -60,7 +59,7 @@
             )
         )),
         caption = Some(messages("declaration.summary.items.item.additionalInformation")),
-        classes = "govuk-table govuk-!-margin-bottom-6",
+        classes = "govuk-table govuk-!-margin-bottom-3",
         attributes = Map("id" -> s"additional-information-$itemNo")
     ))
 } else {
@@ -80,5 +79,7 @@
                 )
             ))
         ))
-    ))
+    ),
+        classes = "govuk-!-margin-bottom-3"
+    )
 }

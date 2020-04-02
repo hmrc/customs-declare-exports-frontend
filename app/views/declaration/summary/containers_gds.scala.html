@@ -20,6 +20,7 @@
 @import models.Mode
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.summary_list
+@import views.declaration.summary.TableCell
 
 @this(
         govukTable: GovukTable,
@@ -45,9 +46,7 @@
                 TableRow(
                     content = Text(container.seals.map(_.id).mkString(", "))
                 ),
-                TableRow(
-                    content = HtmlContent(changeLink(container))
-                )
+                TableCell.changeLink(changeLink(container))
             )
         ),
         head = Some(List(

@@ -22,7 +22,7 @@
 
 @(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
-@summaryList("references", Some(messages("declaration.summary.references")), Seq(
+@summaryList("declaration-references-summary", Some(messages("declaration.summary.references")), Seq(
         Some(SummaryListRow(
             classes = "declarationType-row",
             key = Key(

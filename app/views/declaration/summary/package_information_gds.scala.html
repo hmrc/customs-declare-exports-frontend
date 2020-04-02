@@ -19,6 +19,7 @@
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.summary_list
+@import views.declaration.summary.TableCell
 
 @this(
         govukTable: GovukTable,
@@ -47,9 +48,7 @@
                 TableRow(
                     content = Text(information.shippingMarks.getOrElse(""))
                 ),
-                TableRow(
-                    content = HtmlContent(changeLink(information))
-                )
+                TableCell.changeLink(changeLink(information))
             )
         ),
         head = Some(List(
@@ -67,7 +66,7 @@
             )
         )),
         caption = Some(messages("declaration.summary.items.item.packageInformation")),
-        classes = "govuk-table govuk-!-margin-bottom-6",
+        classes = "govuk-table govuk-!-margin-bottom-3",
         attributes = Map("id" -> s"package-information-$itemNo")
     ))
 
@@ -88,5 +87,7 @@
                 )
             ))
         ))
-    ))
+    ),
+        classes = "govuk-!-margin-bottom-3"
+    )
 }

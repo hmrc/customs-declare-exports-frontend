@@ -32,7 +32,7 @@
 
 @if(sectionRequired(declarationData.locations)) {
 
-    @summaryList("countries", Some(messages("declaration.summary.countries")), Seq(
+    @summaryList("declaration-countries-summary", Some(messages("declaration.summary.countries")), Seq(
 
         declarationData.locations.originationCountry.map(originationCountry =>
             SummaryListRow(

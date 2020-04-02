@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.32
+// @version      1.33
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -898,8 +898,8 @@ function summary(){
         document.getElementById("fullName").value = 'Tim Tester';
         document.getElementById("jobRole").value = 'Tester';
         document.getElementById("email").value = 'tim@testing.com';
-        document.getElementById("confirmation").click()
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById("confirmation").click();
+        document.getElementById('submit').click();
 
         setDeclaration(0);
     }

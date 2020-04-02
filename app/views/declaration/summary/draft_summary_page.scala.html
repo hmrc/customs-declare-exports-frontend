@@ -16,15 +16,16 @@
 
 @import config.AppConfig
 @import controllers.declaration.routes
-@import forms.declaration.LegalDeclaration
-@import models.{ExportsDeclaration, Mode}
+@import models.Mode
 @import models.requests.JourneyRequest
-@import models.viewmodels.HtmlTableRow
+@import views.{BackButton, Title}
+@import views.html.components.gds.{linkButton, _}
 @import views.html.declaration.summary._
-@import views.{Title, ViewDates}
 
 @this(
-        main_template: views.html.main_template,
+        govukLayout: gdsMainTemplate,
+        pageTitle: pageTitle,
+        paragraphBody: paragraphBody,
         draftInfoSection: draft_info_section_gds,
         references_section: references_section_gds,
         countries_section: countries_section_gds,
@@ -33,16 +34,17 @@
         transaction_section: transaction_section_gds,
         items_section: items_section_gds,
         warehouse_section: warehouse_section_gds,
-        transport_section: transport_section_gds
+        transport_section: transport_section_gds,
+        linkButton: linkButton
 )
 
 @()(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Title("declaration.summary.saved-header")){
+@govukLayout(
+    title = Title("declaration.summary.saved-header"),
+    backButton = Some(BackButton(messages("site.back"), controllers.routes.SavedDeclarationsController.displayDeclarations()))) {
 
-    @components.back_link(controllers.routes.SavedDeclarationsController.displayDeclarations(), Mode.Draft)
-
-    @components.heading(title = messages("declaration.summary.saved-header"))
+    @pageTitle(messages("declaration.summary.saved-header"))
 
     @draftInfoSection(request.cacheModel)
 
@@ -62,8 +64,8 @@
 
     @transport_section(Mode.Draft, request.cacheModel)
 
-    <p class="mt-5">@messages("saved.declarations.summary.paragraph")</p>
 
-    <a class="button mt-3" id="draft-continue" href="@routes.DispatchLocationController.displayPage(Mode.Draft)">@messages("saved.declarations.summary.continue")</a>
+    @paragraphBody(messages("saved.declarations.summary.paragraph"))
 
+    @linkButton("saved.declarations.summary.continue", routes.DispatchLocationController.displayPage(Mode.Draft))
 }

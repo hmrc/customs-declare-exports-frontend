@@ -1,0 +1,39 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+
+@this(govukCheckboxes: GovukCheckboxes)
+
+@(
+        field: Field,
+        value: String = "true",
+        labelKey: String
+)(implicit messages: Messages)
+
+@govukCheckboxes(Checkboxes(
+    name = field.name,
+    items = Seq(
+        CheckboxItem(
+            id = Some(field.id),
+            name = Some(field.name),
+            value = value,
+            content = Text(messages(labelKey))
+        )
+    ),
+    errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message))))
+))

@@ -27,7 +27,7 @@
     locations.goodsLocation.isDefined || locations.officeOfExit.isDefined
 }
 @if(hasLocations(declarationData.locations)) {
-    @summaryList("locations", Some(messages("declaration.summary.locations")), Seq(
+    @summaryList("declaration-locations-summary", Some(messages("declaration.summary.locations")), Seq(
         declarationData.locations.goodsLocation.map(goodsLocation =>
             SummaryListRow(
                 classes = "declarationType-row",

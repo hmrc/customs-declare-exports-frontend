@@ -31,7 +31,7 @@
 }
 
 @if(hasTransactionData(declarationData)) {
-    @summaryList("transaction", Some(messages("declaration.summary.transaction")), Seq(
+    @summaryList("declaration-transaction-summary", Some(messages("declaration.summary.transaction")), Seq(
         declarationData.totalNumberOfItems.map(totalNumberOfItems =>
             SummaryListRow(
                 classes = "item-amount-row",
@@ -109,7 +109,7 @@
                 ))
         )
     ),
-        classes = "govuk-!-margin-bottom-6"
+        classes = "govuk-!-margin-bottom-3"
     )
 
     @declarationData.previousDocuments.map(previousDocuments =>

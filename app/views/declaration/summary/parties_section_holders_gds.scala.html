@@ -18,6 +18,7 @@
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.summary_list
+@import views.declaration.summary.TableCell
 
 @this(
         govukTable: GovukTable,
@@ -74,9 +75,7 @@
                 TableRow(
                     content = Text(holderEori(holder))
                 ),
-                TableRow(
-                    content = HtmlContent(changeLink(holder))
-                )
+                TableCell.changeLink(changeLink(holder))
             )
         ),
         head = Some(List(
@@ -91,7 +90,6 @@
             )
         )),
         caption = Some(messages("declaration.summary.parties.holders")),
-        classes = "govuk-table govuk-!-margin-bottom-6",
         attributes = Map("id" -> "holders-table")
     ))
 }

@@ -16,10 +16,11 @@
 
 package views.declaration.summary
 
+import base.Injector
 import config.AppConfig
-import forms.declaration.{LegalDeclaration, WarehouseIdentification}
+import forms.declaration.{CommodityDetails, LegalDeclaration, WarehouseIdentification}
+import models.ExportsDeclaration
 import models.Mode._
-import models.{ExportsDeclaration, Mode}
 import org.jsoup.nodes.Document
 import org.mockito.Mockito.when
 import services.cache.ExportsTestData
@@ -29,14 +30,14 @@ import views.html.declaration.summary._
 
 import scala.concurrent.duration.FiniteDuration
 
-class SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
+class SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
 
   val appConfig = mock[AppConfig]
   private val realMessages = validatedMessages
   when(appConfig.draftTimeToLive).thenReturn(FiniteDuration(30, "day"))
-  val draftInfoPage = new draft_info_section(appConfig)
+  val draftInfoPage = instanceOf[draft_info_section]
 
-  val normal_summaryPage = new normal_summary_page(mainTemplate, draftInfoPage)
+  val normal_summaryPage = instanceOf[normal_summary_page]
   def view(declaration: ExportsDeclaration = aDeclaration()): Document =
     normal_summaryPage(LegalDeclaration.form())(journeyRequest(declaration), realMessages, minimalAppConfig)
 
@@ -99,7 +100,7 @@ class SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
 
     "have transaction section" in {
 
-      view(declaration = aDeclaration(withPreviousDocuments())).getElementById("declaration-transaction-summary").text() mustNot be(empty)
+      view(declaration = aDeclaration(withNatureOfTransaction("1"))).getElementById("declaration-transaction-summary").text() mustNot be(empty)
     }
 
     "not have items section" in {
@@ -109,7 +110,10 @@ class SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
 
     "have items section" in {
 
-      view(declaration = aDeclaration(withItem())).getElementById("declaration-items-summary").text() mustNot be(empty)
+      val details = CommodityDetails(Some("12345678"), Some("Description"))
+      view(declaration = aDeclaration(withItem(anItem(withCommodityDetails(details)))))
+        .getElementById("declaration-items-summary-0")
+        .text() mustNot be(empty)
     }
 
     "not have warehouse section" in {
