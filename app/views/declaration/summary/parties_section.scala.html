@@ -116,7 +116,8 @@
             "carrier",
             carrier.details.eori,
             carrier.details.address,
-            controllers.declaration.routes.CarrierDetailsController.displayPage(mode)
+            controllers.declaration.routes.CarrierDetailsController.displayPage(mode),
+            isEoriDefault = false
         )).getOrElse(Seq.empty),
 
         classes = "govuk-!-margin-bottom-0"
