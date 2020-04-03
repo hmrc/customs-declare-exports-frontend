@@ -20,16 +20,26 @@ import play.api.data.format.Formatter
 import play.api.data.{FieldMapping, FormError}
 
 object Mapping {
-
   def requiredRadio(requiredKey: String = "error.required"): FieldMapping[String] =
     of(radioFormatter(requiredKey))
 
-  private def radioFormatter(requiredKey: String): Formatter[String] = new Formatter[String] {
+  def requiredRadio(requiredKey: String, choices: Seq[String]): FieldMapping[String] =
+    of(radioFormatter(requiredKey, choices))
+
+  def optionalRadio(requiredKey: String = "error.required", choices: Seq[String]): FieldMapping[String] =
+    of(radioFormatter(requiredKey, NoneOfTheAbove.value +: choices))
+
+  private def radioFormatter(requiredKey: String, allowedKeys: Seq[String] = Seq()): Formatter[String] = new Formatter[String] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
       data.get(key) match {
-        case None | Some("") => Left(Seq(FormError(key, requiredKey)))
-        case Some(s)         => Right(s)
+        case Some("")                           => Left(Seq(FormError(key, requiredKey)))
+        case Some(s) if allowedKeys.isEmpty     => Right(s)
+        case Some(s) if allowedKeys.contains(s) => Right(s)
+        case _                                  => Left(Seq(FormError(key, requiredKey)))
       }
     override def unbind(key: String, value: String): Map[String, String] = Map(key -> value)
   }
+}
+case object NoneOfTheAbove {
+  val value: String = "no"
 }

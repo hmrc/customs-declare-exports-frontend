@@ -48,11 +48,11 @@ class PartiesSectionAdditionalActorsViewSpec extends UnitViewSpec with ExportsTe
       val view = parties_section_additional_actors(Mode.Normal, additionalActors)(messages, journeyRequest())
 
       view.getElementById("additionalActors").text() mustBe messages("declaration.summary.parties.additional")
-      view.getElementById("additionalActors-type").text() mustBe messages("declaration.summary.parties.additional.type")
-      view.getElementById("additionalActors-eori").text() mustBe messages("declaration.summary.parties.additional.eori")
-      view.getElementById("additionalActor-type-0").text() mustBe messages("declaration.summary.parties.additional.CS")
+      view.getElementById("additionalActors-type").text() mustBe messages("declaration.additionalActors.partyType")
+      view.getElementById("additionalActors-eori").text() mustBe messages("declaration.additionalActors.eori")
+      view.getElementById("additionalActor-type-0").text() mustBe messages("declaration.partyType.CS")
       view.getElementById("additionalActor-eori-0").text() mustBe messages(eori1)
-      view.getElementById("additionalActor-type-1").text() mustBe messages("declaration.summary.parties.additional.MF")
+      view.getElementById("additionalActor-type-1").text() mustBe messages("declaration.partyType.MF")
       view.getElementById("additionalActor-eori-1").text() mustBe messages(eori2)
     }
 

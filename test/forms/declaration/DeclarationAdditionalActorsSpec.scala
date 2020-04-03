@@ -32,7 +32,7 @@ class DeclarationAdditionalActorsSpec extends WordSpec with MustMatchers {
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
-        form.errors.head.message must equal("supplementary.eori.empty")
+        form.errors.head.message must equal("declaration.eori.empty")
       }
 
       "provided with empty input for party type MF" in {
@@ -40,7 +40,7 @@ class DeclarationAdditionalActorsSpec extends WordSpec with MustMatchers {
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
-        form.errors.head.message must equal("supplementary.eori.empty")
+        form.errors.head.message must equal("declaration.eori.empty")
       }
 
       "provided with empty input for party type FW" in {
@@ -48,7 +48,7 @@ class DeclarationAdditionalActorsSpec extends WordSpec with MustMatchers {
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
-        form.errors.head.message must equal("supplementary.eori.empty")
+        form.errors.head.message must equal("declaration.eori.empty")
       }
 
       "provided with empty input for party type WH" in {
@@ -56,7 +56,7 @@ class DeclarationAdditionalActorsSpec extends WordSpec with MustMatchers {
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
-        form.errors.head.message must equal("supplementary.eori.empty")
+        form.errors.head.message must equal("declaration.eori.empty")
       }
 
       "provided with unknown value for party type" in {
@@ -66,7 +66,7 @@ class DeclarationAdditionalActorsSpec extends WordSpec with MustMatchers {
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
-        form.errors.head.message must equal("supplementary.partyType.error")
+        form.errors.head.message must equal("declaration.partyType.error")
       }
     }
 

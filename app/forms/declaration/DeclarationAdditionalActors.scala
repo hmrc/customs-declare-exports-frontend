@@ -17,19 +17,21 @@
 package forms.declaration
 
 import forms.DeclarationPage
+import forms.Mapping._
 import forms.common.Eori
-import forms.declaration.DeclarationAdditionalActors.PartyType
-import play.api.data.Forms.{optional, text}
-import play.api.data.{Form, Forms}
-import play.api.libs.json.{Format, JsValue, Json, OFormat, Reads}
+import play.api.data.{Form, Forms, Mapping}
+import play.api.libs.json.{Format, JsValue, Json}
 import uk.gov.voa.play.form.ConditionalMappings._
-import utils.validators.forms.FieldValidator._
 
 case class DeclarationAdditionalActors(eori: Option[Eori], partyType: Option[String]) {
 
+  import DeclarationAdditionalActors._
+
   def isDefined: Boolean = eori.isDefined && partyType.isDefined
 
-  def toJson: JsValue = Json.toJson(this)(DeclarationAdditionalActors.format)
+  def isAllowed: Boolean = partyType.exists(allowedPartyTypes.contains)
+
+  def toJson: JsValue = Json.toJson(this)(format)
 }
 
 object DeclarationAdditionalActors extends DeclarationPage {
@@ -43,16 +45,17 @@ object DeclarationAdditionalActors extends DeclarationPage {
 
   val formId = "DeclarationAdditionalActors"
 
-  val mapping = Forms.mapping(
-    "eoriCS" -> eoriMappingFor(PartyType.Consolidator),
+  val mapping: Mapping[DeclarationAdditionalActors] = Forms.mapping(
+    eoriMappingFor(PartyType.Consolidator),
     "eoriMF" -> eoriMappingFor(PartyType.Manufacturer),
     "eoriFW" -> eoriMappingFor(PartyType.FreightForwarder),
     "eoriWH" -> eoriMappingFor(PartyType.WarehouseKeeper),
-    "partyType" -> mandatory(text().verifying("supplementary.partyType.error", isContainedIn(allowedPartyTypes + "no")))
+    "partyType" -> optionalRadio("declaration.partyType.error", allowedPartyTypes.toSeq)
+      .transform[Option[String]](choice => Option(choice), choice => choice.getOrElse(""))
   )(form2Model)(model2Form)
 
-  private def eoriMappingFor(partyType: String) =
-    mandatoryIfEqual("partyType", partyType, Eori.mapping("supplementary"))
+  private def eoriMappingFor(partyType: String): Mapping[Option[Eori]] =
+    mandatoryIfEqual("partyType", partyType, Eori.mapping("declaration"))
 
   private def form2Model: (Option[Eori], Option[Eori], Option[Eori], Option[Eori], Option[String]) => DeclarationAdditionalActors = {
     case (eoriCS, eoriMF, eoriFW, eoriWH, partyType) =>

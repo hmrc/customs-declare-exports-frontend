@@ -23,7 +23,7 @@
 @(value: Option[String] = None, hiddenLabel: Option[String] = None)(implicit messages: Messages)
 
 @govukButton(Button(
- classes = "govuk-button--secondary",
+ classes = "govuk-button--secondary govuk-!-margin-0",
     content = HtmlContent(HtmlFormat.fill(
         immutable.Seq(
             Html(s"""<span aria-hidden="true">${messages("site.remove")}</span>"""),
