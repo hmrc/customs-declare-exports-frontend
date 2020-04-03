@@ -16,10 +16,11 @@
 
 package views.declaration
 
+import base.Injector
 import forms.declaration.TransportPayment
 import helpers.views.declaration.CommonMessages
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
@@ -29,9 +30,9 @@ import views.html.declaration.transport_payment
 import views.tags.ViewTest
 
 @ViewTest
-class TransportPaymentViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages {
+class TransportPaymentViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
 
-  private val page = new transport_payment(mainTemplate)
+  private val page = instanceOf[transport_payment]
   private val form: Form[TransportPayment] = TransportPayment.form()
   private val realMessages = validatedMessages
   private def createView(request: JourneyRequest[_]): Document =
@@ -42,11 +43,11 @@ class TransportPaymentViewSpec extends UnitViewSpec with ExportsTestData with St
       val view = createView(request)
 
       "display page title" in {
-        view.getElementById("title").text() must be(realMessages("declaration.transportInformation.transportPayment.paymentMethod"))
+        view.getElementsByTag("h1").text() must be(realMessages("declaration.transportInformation.transportPayment.paymentMethod"))
       }
 
       "display choices for payment method" in {
-        val choices = view.getElementById("paymentMethod")
+        val choices = view.getElementsByClass("govuk-fieldset").first()
         choices must containText(realMessages("declaration.transportInformation.transportPayment.paymentMethod.cash"))
         choices must containText(realMessages("declaration.transportInformation.transportPayment.paymentMethod.creditCard"))
         choices must containText(realMessages("declaration.transportInformation.transportPayment.paymentMethod.cheque"))

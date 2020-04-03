@@ -638,7 +638,8 @@ declaration.transportInformation.active.help-item1 = The details of the transpor
 declaration.transportInformation.active.help-item2 = The country the transport is registered in, go to data element 7/15 Nationality of active means of transport crossing the border.
 
 
-declaration.transportInformation.transportPayment.paymentMethod = How is the transport paid for?
+declaration.transportInformation.transportPayment.paymentMethod = If this is an express consignment, tell us how you paid for the transport
+declaration.transportInformation.transportPayment.section = Transport details
 declaration.transportInformation.transportPayment.paymentMethod.hint = If you are not submitting an express consignment, you can leave this blank.
 declaration.transportInformation.transportPayment.paymentMethod.cash = Payment in cash
 declaration.transportInformation.transportPayment.paymentMethod.creditCard = Payment by credit card

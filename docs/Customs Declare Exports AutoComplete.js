@@ -867,8 +867,8 @@ function borderTransport(){
 
 function transportPayment(){
     if (currentPageIs('/customs-declare-exports/declaration/transport-payment')) {
-        selectRadioOption(document.getElementById('paymentMethod'), 4)
-        document.getElementsByClassName('button')[0].click()
+        selectRadioOptionFromInputs(document.getElementsByName("paymentMethod"), 4);
+        document.getElementById('submit').click();
     }
 }
 
