@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import config.EadConfig
+@import config.{EadConfig, SfusConfig}
 @import views.html.components.gds.gdsMainTemplate
 @import models.declaration.notifications.Notification
 @import models.declaration.submissions.Submission
@@ -24,13 +24,23 @@
 @import views.Title
 @import views.ViewDates
 
-@this(govukLayout: gdsMainTemplate, govukSummaryList: GovukSummaryList, govukTable: GovukTable, eadDocumentConfig: EadConfig)
+@this(
+    govukLayout: gdsMainTemplate,
+    govukSummaryList: GovukSummaryList,
+    govukTable: GovukTable,
+    eadDocumentConfig: EadConfig,
+    sfusConfig: SfusConfig
+)
 
 @(submission: Submission, notifications: Seq[Notification])(implicit request: Request[_], messages: Messages)
 
-@errorLink(declarationID: String, status: SubmissionStatus.Value)= {
+@errorOrUploadFileLink(declarationID: String, status: SubmissionStatus.Value)= {
     @if(status == SubmissionStatus.REJECTED) {
         <a href="@routes.RejectedNotificationsController.displayPage(declarationID)">@messages("submissions.viewErrors")</a>
+    }
+
+    @if(status == SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED && sfusConfig.isSfusEnabled) {
+        <a href="@sfusConfig.sfusLink" target="_blank">@messages("submissions.sfus")</a>
     }
 }
 
@@ -101,8 +111,8 @@
                                 attributes = Map("id" -> s"notification_date_time_$index")
                             ),
                             TableRow(
-                                content = HtmlContent(errorLink(submission.uuid, notification.status)),
-                                attributes = Map("id" -> s"notification_errors_$index")
+                                content = HtmlContent(errorOrUploadFileLink(submission.uuid, notification.status)),
+                                attributes = Map("id" -> s"notification_action_$index")
                             )
                         )
                     },

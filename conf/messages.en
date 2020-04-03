@@ -403,6 +403,7 @@ submissions.declarationInformation = Declaration information
 submissions.references = References
 submissions.history = History
 submissions.viewErrors = View errors
+submissions.sfus = Upload files (opens in a new window or tab)
 submissions.generateEAD = Create an Export Accompanying Document (EAD)
 
 saved.declarations.title = Your saved declarations
