@@ -22,7 +22,7 @@ import models.Mode
 import models.declaration.Container
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary.containers_gds
+import views.html.declaration.summary.containers
 
 class ContainersViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
@@ -34,7 +34,7 @@ class ContainersViewSpec extends UnitViewSpec with ExportsTestData with Injector
   val containerWithSeals = Container(secondContainerID, Seq(Seal(firstSeal), Seal(secondSeal)))
   val containers = Seq(containerWithoutSeals, containerWithSeals)
 
-  val section = instanceOf[containers_gds]
+  val section = instanceOf[containers]
 
   "Containers" should {
 
