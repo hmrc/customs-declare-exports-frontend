@@ -177,7 +177,7 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
       val view = section(Mode.Normal, aDeclaration(withContainerData(Container("123", Seq.empty))))(messages, journeyRequest())
 
-      view.getElementById("containers").text() mustNot be(empty)
+      view.getElementById("containers-table").text() mustNot be(empty)
     }
   }
 }
