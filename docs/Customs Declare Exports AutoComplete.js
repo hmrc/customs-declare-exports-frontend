@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.32
+// @version      1.33
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -808,7 +808,8 @@ function addDocuments(){
 
 function warehouseIdentification(){
     if (currentPageIs('/customs-declare-exports/declaration/warehouse-identification')) {
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('code_no').checked = 'checked';
+        document.getElementById('submit').click();
     }
 }
 
@@ -866,8 +867,8 @@ function borderTransport(){
 
 function transportPayment(){
     if (currentPageIs('/customs-declare-exports/declaration/transport-payment')) {
-        selectRadioOption(document.getElementById('paymentMethod'), 4)
-        document.getElementsByClassName('button')[0].click()
+        selectRadioOptionFromInputs(document.getElementsByName("paymentMethod"), 4);
+        document.getElementById('submit').click();
     }
 }
 

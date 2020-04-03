@@ -17,6 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.WarehouseIdentificationController
+import forms.declaration.WarehouseIdentification
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
@@ -80,7 +81,8 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
   }
   "Warehouse Identification Controller on POST" when {
 
-    val body = Json.obj("identificationNumber" -> exampleWarehouseIdentificationNumber)
+    val body =
+      Json.obj(WarehouseIdentification.inWarehouseKey -> "Yes", WarehouseIdentification.warehouseIdKey -> exampleWarehouseIdentificationNumber)
 
     "we are on standard declaration journey" should {
 
