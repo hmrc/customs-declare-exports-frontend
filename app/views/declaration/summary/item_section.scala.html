@@ -14,9 +14,6 @@
  * limitations under the License.
  *@
 
-@import views.html.declaration.summary.package_information
-@import views.html.declaration.summary.union_and_national_codes
-@import views.html.declaration.summary.supporting_documents
 @import models.declaration.ExportItem
 @import models.requests.JourneyRequest
 @import models.Mode
@@ -233,7 +230,7 @@
             ))
         )
     ),
-    if(!journeyRequest.isType(DeclarationType.CLEARANCE))
+    if(journeyRequest.isType(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL))
         item.commodityMeasure.map(commodityMeasure =>
             SummaryListRow(
                 classes = s"item-${item.sequenceId}-supplementaryUnits-row",

@@ -18,7 +18,6 @@ package views.declaration
 
 import base.Injector
 import forms.declaration.GoodsLocationForm
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.DeclarationType._
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
@@ -38,21 +37,12 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
   private val page = instanceOf[goods_location]
   private val form: Form[GoodsLocationForm] = GoodsLocationForm.form()
 
-//  private val data =  aDeclaration(
-//    withType(DeclarationType.STANDARD),
-//    withGoodsLocation(page),
-//    withAdditionalDeclarationType(AdditionalDeclarationType.STANDARD_FRONTIER),
-//
-//  )
-
   private def createView(
     mode: Mode = Mode.Normal,
     form: Form[GoodsLocationForm] = form,
     messages: Messages = stubMessages(),
     declarationType: DeclarationType = DeclarationType.STANDARD
   ): Document = page(mode, form)(journeyRequest(declarationType), messages)
-
-  //val view = page(Mode.Change, data)(messages, journeyRequest())
 
   "Location View on empty page" should {
 

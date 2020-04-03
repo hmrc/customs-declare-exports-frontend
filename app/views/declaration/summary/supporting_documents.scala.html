@@ -16,20 +16,26 @@
 
 @import forms.declaration.additionaldocuments.DocumentsProduced
 @import models.requests.JourneyRequest
-@import models.viewmodels.HtmlTableRow
 @import models.Mode
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds.changeLink
 @import views.html.components.gds.summary_list
 @import views.declaration.summary.TableCell
 
 @this(
         govukTable: GovukTable,
+        changeLink: changeLink,
         summaryList: summary_list
 )
 
 @(mode: Mode, itemId: String, itemNo: Int, supportingDocuments: Seq[DocumentsProduced])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
-@changeLink() = {
+@change() = {
+    @changeLink(
+        messages("site.change"),
+        messages("declaration.summary.items.item.supportingDocuments.change", itemNo),
+        controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId)
+    )
     <a class="govuk-link" href="@controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId)">
         @messages("site.change")
         <span class="govuk-visually-hidden">@messages("declaration.summary.items.item.supportingDocuments.change", itemNo)</span>
@@ -46,7 +52,7 @@
                 TableRow(
                     content = Text(document.documentIdentifier.getOrElse(""))
                 ),
-                TableCell.changeLink(changeLink())
+                TableCell.changeLink(change())
             )
         ),
         head = Some(List(

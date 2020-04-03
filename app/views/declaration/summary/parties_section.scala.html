@@ -21,6 +21,7 @@
 @import forms.common.Address
 @import views.declaration.summary.EoriOrAddress
 @import views.html.declaration.summary._
+@import forms.common.Eori
 
 @this(
         summaryList: summary_list,
@@ -29,6 +30,20 @@
 )
 
 @(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+
+@eoriOrAddress(key: String, eori: Option[Eori], address: Option[Address], change: Call, isEoriDefault: Boolean = true) = @{
+    EoriOrAddress.rows(
+        key = key,
+        eori = eori,
+        address = address,
+        eoriLabel = s"declaration.summary.parties.$key.eori",
+        eoriChangeLabel = s"declaration.summary.parties.$key.eori.change",
+        addressLabel = s"declaration.summary.parties.$key.address",
+        addressChangeLabel = s"declaration.summary.parties.$key.address.change",
+        changeController = change,
+        isEoriDefault = isEoriDefault
+    )
+}
 
 @sectionRequired(parties: Parties) = @{
     parties.exporterDetails.isDefined ||
@@ -47,49 +62,33 @@
 @if(sectionRequired(declarationData.parties)) {
     @summaryList("declaration-parties-summary", Some(messages("declaration.summary.parties")),
 
-        declarationData.parties.exporterDetails.map(export => EoriOrAddress.rows(
-            key = "exporter",
-            eori = export.details.eori,
-            address = export.details.address,
-            eoriLabel = "declaration.summary.parties.exporter.eori",
-            eoriChangeLabel = "declaration.summary.parties.exporter.eori.change",
-            addressLabel = "declaration.summary.parties.exporter.address",
-            addressChangeLabel = "declaration.summary.parties.exporter.address.change",
-            changeController = controllers.declaration.routes.ExporterDetailsController.displayPage(mode)
+        declarationData.parties.exporterDetails.map(export => eoriOrAddress(
+            "exporter",
+            export.details.eori,
+            export.details.address,
+            controllers.declaration.routes.ExporterDetailsController.displayPage(mode)
         )).getOrElse(Seq.empty)
 
-        ++ declarationData.parties.consigneeDetails.map(consignee => EoriOrAddress.rows(
-            key = "consignee",
-            eori = consignee.details.eori,
-            address = consignee.details.address,
-            eoriLabel = "declaration.summary.parties.consignee.eori",
-            eoriChangeLabel = "declaration.summary.parties.consignee.eori.change",
-            addressLabel = "declaration.summary.parties.consignee.address",
-            addressChangeLabel = "declaration.summary.parties.consignee.address.change",
-            changeController = controllers.declaration.routes.ConsigneeDetailsController.displayPage(mode),
+        ++ declarationData.parties.consigneeDetails.map(consignee => eoriOrAddress(
+            "consignee",
+            consignee.details.eori,
+            consignee.details.address,
+            controllers.declaration.routes.ConsigneeDetailsController.displayPage(mode),
             isEoriDefault = false
         )).getOrElse(Seq.empty)
 
-        ++ declarationData.parties.declarantDetails.map(declarant => EoriOrAddress.rows(
-            key = "declarant",
-            eori = declarant.details.eori,
-            address = declarant.details.address,
-            eoriLabel = "declaration.summary.parties.declarant.eori",
-            eoriChangeLabel = "declaration.summary.parties.declarant.eori.change",
-            addressLabel = "declaration.summary.parties.declarant.address",
-            addressChangeLabel = "declaration.summary.parties.declarant.address.change",
-            changeController = controllers.declaration.routes.DeclarantDetailsController.displayPage(mode)
+        ++ declarationData.parties.declarantDetails.map(declarant => eoriOrAddress(
+            "declarant",
+            declarant.details.eori,
+            declarant.details.address,
+            controllers.declaration.routes.DeclarantDetailsController.displayPage(mode)
         )).getOrElse(Seq.empty)
 
-        ++ declarationData.parties.representativeDetails.map(representative => EoriOrAddress.rows(
-            key = "representative",
-            eori = representative.details.flatMap(_.eori),
-            address = representative.details.flatMap(_.address),
-            eoriLabel = "declaration.summary.parties.representative.eori",
-            eoriChangeLabel = "declaration.summary.parties.representative.eori.change",
-            addressLabel = "declaration.summary.parties.representative.address",
-            addressChangeLabel = "declaration.summary.parties.representative.address.change",
-            changeController = controllers.declaration.routes.RepresentativeDetailsController.displayPage(mode)
+        ++ declarationData.parties.representativeDetails.map(representative => eoriOrAddress(
+            "representative",
+            representative.details.flatMap(_.eori),
+            representative.details.flatMap(_.address),
+            controllers.declaration.routes.RepresentativeDetailsController.displayPage(mode)
         )).getOrElse(Seq.empty)
 
         ++ (Seq.empty :+ declarationData.parties.representativeDetails.map(representative =>
@@ -113,15 +112,11 @@
             )
         ))
 
-        ++ declarationData.parties.carrierDetails.map(carrier => EoriOrAddress.rows(
-            key = "carrier",
-            eori = carrier.details.eori,
-            address = carrier.details.address,
-            eoriLabel = "declaration.summary.parties.carrier.eori",
-            eoriChangeLabel = "declaration.summary.parties.carrier.eori.change",
-            addressLabel = "declaration.summary.parties.carrier.address",
-            addressChangeLabel = "declaration.summary.parties.carrier.address.change",
-            changeController = controllers.declaration.routes.CarrierDetailsController.displayPage(mode)
+        ++ declarationData.parties.carrierDetails.map(carrier => eoriOrAddress(
+            "carrier",
+            carrier.details.eori,
+            carrier.details.address,
+            controllers.declaration.routes.CarrierDetailsController.displayPage(mode)
         )).getOrElse(Seq.empty),
 
         classes = "govuk-!-margin-bottom-0"

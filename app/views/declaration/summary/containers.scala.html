@@ -18,21 +18,24 @@
 @import models.requests.JourneyRequest
 @import models.Mode
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds.changeLink
 @import views.html.components.gds.summary_list
 @import views.declaration.summary.TableCell
 
 @this(
         govukTable: GovukTable,
+        changeLink: changeLink,
         summaryList: summary_list
 )
 
 @(mode: Mode, containers: Seq[Container])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
-@changeLink(container: Container) = {
-    <a class="govuk-link" href="@controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode)">
-        @messages("site.change")
-        <span class="govuk-visually-hidden">@messages("declaration.summary.container.change", container.id)</span>
-    </a>
+@change(container: Container) = {
+    @changeLink(
+        messages("site.change"),
+        messages("declaration.summary.container.change", container.id),
+        controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode)
+    )
 }
 
 @if(containers.nonEmpty){
@@ -45,7 +48,7 @@
                 TableRow(
                     content = Text(container.seals.map(_.id).mkString(", "))
                 ),
-                TableCell.changeLink(changeLink(container))
+                TableCell.changeLink(change(container))
             )
         ),
         head = Some(List(

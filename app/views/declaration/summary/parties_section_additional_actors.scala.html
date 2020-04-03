@@ -17,11 +17,13 @@
 @import forms.declaration.DeclarationAdditionalActors
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds.changeLink
 @import views.html.components.gds.summary_list
 @import views.declaration.summary.TableCell
 
 @this(
         govukTable: GovukTable,
+        changeLink: changeLink,
         summaryList: summary_list
 )
 
@@ -35,11 +37,12 @@
     actor.eori.map(_.value).getOrElse("")
 }
 
-@changeLink(actor: DeclarationAdditionalActors) = {
-    <a class="govuk-link" href="@controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage(mode)">
-        @messages("site.change")
-        <span class="govuk-visually-hidden">@messages("declaration.summary.parties.additional.change", actorPartyType(actor), actorEori(actor))</span>
-    </a>
+@change(actor: DeclarationAdditionalActors) = {
+    @changeLink(
+        messages("site.change"),
+        messages("declaration.summary.parties.additional.change", actorPartyType(actor), actorEori(actor)),
+        controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage(mode)
+    )
 }
 
 @if(additionalActors.isEmpty) {
@@ -77,7 +80,7 @@
                 TableRow(
                     content = Text(actorEori(actor))
                 ),
-                TableCell.changeLink(changeLink(actor))
+                TableCell.changeLink(change(actor))
             )
         ),
         head = Some(List(

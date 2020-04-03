@@ -18,20 +18,23 @@
 @import models.requests.JourneyRequest
 @import services.DocumentType
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds.changeLink
 @import views.html.components.gds.summary_list
 
 @this(
         govukTable: GovukTable,
+        changeLink: changeLink,
         summaryList: summary_list
 )
 
 @(mode: Mode, documents: Seq[Document])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
-@changeLink(document: Document) = {
-    <a class="govuk-link" href="@controllers.declaration.routes.PreviousDocumentsController.displayPage(mode)">
-        @messages("site.change")
-        <span class="govuk-visually-hidden">@messages("declaration.summary.transaction.previousDocuments.document.change", document.documentReference)</span>
-    </a>
+@change(document: Document) = {
+    @changeLink(
+        messages("site.change"),
+        messages("declaration.summary.transaction.previousDocuments.document.change", document.documentReference),
+        controllers.declaration.routes.PreviousDocumentsController.displayPage(mode)
+    )
 }
 
 @if(documents.isEmpty) {
@@ -62,7 +65,7 @@
                     content = Text(document.documentReference)
                 ),
                 TableRow(
-                    content = HtmlContent(changeLink(document))
+                    content = HtmlContent(change(document))
                 )
             )
         ),
