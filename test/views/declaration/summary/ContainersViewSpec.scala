@@ -33,27 +33,32 @@ class ContainersViewSpec extends UnitViewSpec with ExportsTestData with Injector
   val containerWithoutSeals = Container(firstContainerID, Seq.empty)
   val containerWithSeals = Container(secondContainerID, Seq(Seal(firstSeal), Seal(secondSeal)))
   val containers = Seq(containerWithoutSeals, containerWithSeals)
-  private val section = instanceOf[containers_gds]
+
+  val section = instanceOf[containers_gds]
 
   "Containers" should {
 
-    "display all containers and seals" in {
-      val view = section(Mode.Normal, containers)(messages, journeyRequest())
-      val row = view.getElementsByClass("containers-row")
+    "display title only and change link" when {
 
-      row must haveSummaryKey(messages("declaration.summary.transport.containers"))
-      row must haveSummaryValue(messages("site.no"))
+      "Containers is empty" in {
 
-      row must haveSummaryActionsText("site.change declaration.summary.transport.containers.change")
+        val view = section(Mode.Normal, Seq.empty)(messages, journeyRequest())
+        val row = view.getElementsByClass("containers-row")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal))
+        row must haveSummaryKey(messages("declaration.summary.transport.containers"))
+        row must haveSummaryValue(messages("site.no"))
 
+        row must haveSummaryActionsText("site.change declaration.summary.transport.containers.change")
+
+        row must haveSummaryActionsHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal))
+      }
     }
-    "display change buttons for every container" in {
-      val view = section(Mode.Normal, containers)(messages, journeyRequest())
 
-      val table = view.getElementById("container")
-      table.getElementsByTag("caption").text() mustBe messages("declaration.summary.transport.containers")
+    "display all containers and seals" in {
+      val view = section(Mode.Change, containers)(messages, journeyRequest())
+
+      val table = view.getElementById("containers-table")
+      table.getElementsByTag("caption").text() mustBe messages("declaration.summary.container")
       table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.summary.container.id")
       table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages("declaration.summary.container.securitySeals")
 
@@ -63,11 +68,15 @@ class ContainersViewSpec extends UnitViewSpec with ExportsTestData with Injector
 
       val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
       row1ChangeLink must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Change))
-      row1ChangeLink.text() mustBe "site.change " + messages("declaration.summary.transport.containers.change", 0)
+      row1ChangeLink.text() mustBe "site.change " + messages("declaration.summary.container.change", 0)
 
       val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
       row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe messages(secondContainerID)
       row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe messages(s"$firstSeal, $secondSeal")
+
+      val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
+      row2ChangeLink must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Change))
+      row2ChangeLink.text() mustBe "site.change " + messages("declaration.summary.container.change", 1)
     }
   }
 }

@@ -17,13 +17,12 @@
 @import models.Mode
 @import models.declaration.Transport
 @import models.requests.JourneyRequest
-@import models.viewmodels.HtmlTableRow
 @import views.html.components.gds.summary_list
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
         summaryList: summary_list,
-        containers: containers_gds
+        containers: containers
 )
 
 @(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
