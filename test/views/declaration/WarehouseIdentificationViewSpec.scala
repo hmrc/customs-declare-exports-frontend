@@ -18,7 +18,9 @@ package views.declaration
 
 import base.Injector
 import forms.declaration.WarehouseIdentification
+import forms.declaration.WarehouseIdentification.AllowedInWarehouseAnswers
 import models.Mode
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
@@ -32,54 +34,86 @@ import views.tags.ViewTest
 @ViewTest
 class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  private val page = new warehouse_identification(mainTemplate)
+  private val page = instanceOf[warehouse_identification]
   private val form: Form[WarehouseIdentification] = WarehouseIdentification.form()
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[WarehouseIdentification] = form, messages: Messages = stubMessages()): Document =
-    page(mode, form)(journeyRequest(), messages)
+  private def createView(mode: Mode = Mode.Normal, form: Form[WarehouseIdentification] = form, messages: Messages = stubMessages())(
+    implicit request: JourneyRequest[_]
+  ): Document =
+    page(mode, form)(request, messages)
 
   "Warehouse Identification Number View" should {
-    val view = createView()
+    onEveryDeclarationJourney() { implicit request =>
+      val view = createView()
 
-    "have proper messages for labels" in {
-      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
-      messages must haveTranslationFor("declaration.warehouse.identification.sectionHeader")
-      messages must haveTranslationFor("declaration.warehouse.identification.title")
-      messages must haveTranslationFor("declaration.warehouse.identification.hint")
-      messages must haveTranslationFor("declaration.warehouse.identification.identificationNumber.error")
-      messages must haveTranslationFor("declaration.warehouse.identification.identificationNumber.empty")
+      "have proper messages for labels" in {
+        val messages = instanceOf[MessagesApi].preferred(journeyRequest())
+        messages must haveTranslationFor("declaration.warehouse.identification.sectionHeader")
+        messages must haveTranslationFor("declaration.warehouse.identification.title")
+        messages must haveTranslationFor("declaration.warehouse.identification.label")
+        messages must haveTranslationFor("declaration.warehouse.identification.label.hint")
+        messages must haveTranslationFor("declaration.warehouse.identification.identificationNumber.error")
+        messages must haveTranslationFor("declaration.warehouse.identification.identificationNumber.empty")
+      }
+
+      "display same page title as header" in {
+        val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
+        viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
+      }
+
+      "have the correct section header" in {
+        view.getElementById("section-header").text() must include("declaration.warehouse.identification.sectionHeader")
+      }
+
+      "have the correct page title" in {
+        view.getElementsByTag("h1").text() mustBe "declaration.warehouse.identification.title"
+      }
+
+      "display radio button with Yes option" in {
+        view.getElementById("code_yes").attr("value") mustBe AllowedInWarehouseAnswers.yes
+        view.getElementsByAttributeValue("for", "code_yes").text() mustBe "site.yes"
+      }
+      "display radio button with No option" in {
+        view.getElementById("code_no").attr("value") mustBe AllowedInWarehouseAnswers.no
+        view.getElementsByAttributeValue("for", "code_no").text() mustBe "site.no"
+      }
+
+      "display 'Back' button that links to 'Items Summary' page" in {
+        val backButton = view.getElementById("back-link")
+
+        backButton.text() mustBe "site.back"
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ItemsSummaryController.displayPage(Mode.Normal))
+      }
+
+      "display 'Save and continue' button on page" in {
+        view.getElementById("submit").text() mustBe "site.save_and_continue"
+      }
+
+      "display 'Save and return' button on page" in {
+        view.getElementById("submit_and_return").text() mustBe "site.save_and_come_back_later"
+      }
     }
+  }
 
-    "display same page title as header" in {
-      val viewWithMessage = createView(messages = realMessagesApi.preferred(request))
-      viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
-    }
+  "Warehouse Identification Number View for invalid input" should {
+    onEveryDeclarationJourney() { implicit request =>
+      "display error when code is empty" in {
+        val view = createView(form = WarehouseIdentification.form().fillAndValidate(WarehouseIdentification(Some(""))))
 
-    "have the correct section header" in {
-      view.getElementById("section-header").text() must include("declaration.warehouse.identification.sectionHeader")
-    }
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#identificationNumber")
 
-    "have the correct page title" in {
-      view.getElementById("title").text() mustBe "declaration.warehouse.identification.title"
-    }
+        view must containErrorElementWithMessage("declaration.warehouse.identification.identificationNumber.error")
+      }
 
-    "have the correct hint" in {
-      view.getElementById("hint").text() mustBe "declaration.warehouse.identification.hint"
-    }
+      "display error when code is incorrect" in {
+        val view = createView(form = WarehouseIdentification.form().fillAndValidate(WarehouseIdentification(Some("ABC!!!"))))
 
-    "display 'Back' button that links to 'Items Summary' page" in {
-      val backButton = view.getElementById("back-link")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#identificationNumber")
 
-      backButton.text() mustBe "site.back"
-      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ItemsSummaryController.displayPage(Mode.Normal))
-    }
-
-    "display 'Save and continue' button on page" in {
-      view.getElementById("submit").text() mustBe "site.save_and_continue"
-    }
-
-    "display 'Save and return' button on page" in {
-      view.getElementById("submit_and_return").text() mustBe "site.save_and_come_back_later"
+        view must containErrorElementWithMessage("declaration.warehouse.identification.identificationNumber.error")
+      }
     }
   }
 }

@@ -523,8 +523,9 @@ standard.officeOfExit.circumstancesCode.empty = Enter a valid circumstance code
 standard.officeOfExit.circumstancesCode.error = Enter a valid circumstance code
 
 declaration.warehouse.identification.sectionHeader = Locations
-declaration.warehouse.identification.title =  What is the warehouse identification number?
-declaration.warehouse.identification.hint = For example, R1234567GB. If the goods were not held in a warehouse you can leave this blank.
+declaration.warehouse.identification.title =  Were the goods in a warehouse?
+declaration.warehouse.identification.label =  Warehouse identification number
+declaration.warehouse.identification.label.hint =  For example, R1234567GB
 declaration.warehouse.identification.identificationNumber.error = Enter a valid warehouse identification number in the correct format. It must be no more than 36 characters.
 declaration.warehouse.identification.identificationNumber.empty = Enter the warehouse identification number
 
