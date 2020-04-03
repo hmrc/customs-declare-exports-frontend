@@ -119,7 +119,11 @@ class DeclarationHolderController @Inject()(
   ): Future[Result] =
     (userInput, cachedData.holders) match {
       case (DeclarationHolder(None, None), _) =>
-        Future.successful(navigateToNextPage(mode))
+        if (cachedData.holders.isEmpty)
+          updateCache(cachedData)
+            .map(_ => navigateToNextPage(mode))
+        else
+          Future.successful(navigateToNextPage(mode))
 
       case (holder, Seq()) =>
         holder match {
