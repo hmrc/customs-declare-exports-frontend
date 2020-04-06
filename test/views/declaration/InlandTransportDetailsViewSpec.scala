@@ -16,6 +16,7 @@
 
 package views.declaration
 
+import base.Injector
 import forms.declaration.InlandModeOfTransportCode
 import models.Mode
 import org.jsoup.nodes.Document
@@ -29,9 +30,9 @@ import views.html.declaration.inland_transport_details
 import views.tags.ViewTest
 
 @ViewTest
-class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData with Stubs {
+class InlandTransportDetailsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  private val page = new inland_transport_details(mainTemplate)
+  private val page = instanceOf[inland_transport_details]
   private val form: Form[InlandModeOfTransportCode] = InlandModeOfTransportCode.form()
 
   private def createView(mode: Mode = Mode.Normal, form: Form[InlandModeOfTransportCode] = form, messages: Messages = stubMessages()): Document =
