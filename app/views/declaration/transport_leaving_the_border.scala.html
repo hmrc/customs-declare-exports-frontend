@@ -19,50 +19,110 @@
 @import forms.declaration.ModeOfTransportCode._
 @import forms.declaration.TransportLeavingTheBorder
 @import models.requests.JourneyRequest
-@import views.Title
-@import views.components.inputs.RadioOption
+@import uk.gov.hmrc.govukfrontend.views.html.components.{Empty => _, _}
+@import views.{BackButton, Title}
+@import views.components.gds.Styles._
+@import views.html.components.gds._
 
-@this(main_template: main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukDetails : GovukDetails,
+        govukRadios: GovukRadios,
+        pageTitle: pageTitle,
+        exportsInputText: exportsInputText,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        saveButtons: saveButtons,
+        tariffDetails: tariffDetails,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(form: Form[TransportLeavingTheBorder], mode: Mode)(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBody = { @Html(messages("declaration.transport.leavingTheBorder.transportMode.help.bodyText", components.details_content_link())) }
 
-@main_template(
-    title = Title("declaration.transportInformation.title")
-) {
 
-    @components.back_link(Navigator.backLink(TransportLeavingTheBorder, mode), mode)
+@govukLayout(
+    title = Title("declaration.transport.leavingTheBorder.title", "declaration.transportInformation.title"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(TransportLeavingTheBorder, mode)))) {
 
-    @components.error_summary(form.errors)
+    @formHelper(action = TransportLeavingTheBorderController.submitForm(mode), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-    @components.heading(title = messages("declaration.transport.leavingTheBorder.title"))
+        @sectionHeader(messages("declaration.transportInformation.title"))
 
-    @helper.form(TransportLeavingTheBorderController.submitForm(mode), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+        @govukRadios(Radios(
+            name = "transportLeavingTheBorder",
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("declaration.transport.leavingTheBorder.title")),
+                    isPageHeading = true,
+                    classes = gdsPageLegend
+                ))
+            )),
 
-        @components.fields.field_radio(
-            field = form("transportLeavingTheBorder"),
-            legend = "",
-            hint = None,
-            inputs = Seq(
-                RadioOption("Border_Sea", Maritime.value, messages("declaration.transport.leavingTheBorder.transportMode.sea")),
-                RadioOption("Border_Rail", Rail.value, messages("declaration.transport.leavingTheBorder.transportMode.rail")),
-                RadioOption("Border_Road", Road.value, messages("declaration.transport.leavingTheBorder.transportMode.road")),
-                RadioOption("Border_Air", Air.value, messages("declaration.transport.leavingTheBorder.transportMode.air")),
-                RadioOption("Border_PostalOrMail", PostalConsignment.value, messages("declaration.transport.leavingTheBorder.transportMode.postalOrMail")),
-                RadioOption("Border_FixedTransportInstallations", FixedTransportInstallations.value, messages("declaration.transport.leavingTheBorder.transportMode.fixedTransportInstallations")),
-                RadioOption("Border_InlandWaterway", InlandWaterway.value, messages("declaration.transport.leavingTheBorder.transportMode.inlandWaterway")),
-                RadioOption("Border_Unknown", Unknown.value, messages("declaration.transport.leavingTheBorder.transportMode.unknown")),
-                RadioOption("Border_Empty", Empty.value, messages("declaration.transport.leavingTheBorder.transportMode.empty"))
-            ).filterNot(radioOption => (request.declarationType != DeclarationType.CLEARANCE) && radioOption.value.contains(Empty.value))
-        )
+            items = Seq(
+                RadioItem(
+                    id = Some("Border_Sea"),
+                    value = Some(Maritime.value),
+                    content = Text(messages("declaration.transport.leavingTheBorder.transportMode.sea")),
+                    checked = form("transportLeavingTheBorder").value.contains(Maritime.value)
+                ),
+                RadioItem(
+                    id = Some("Border_Rail"),
+                    value = Some(Rail.value),
+                    content = Text(messages("declaration.transport.leavingTheBorder.transportMode.rail")),
+                    checked = form("transportLeavingTheBorder").value.contains(Rail.value)
+                ),
+                RadioItem(
+                    id = Some("Border_Road"),
+                    value = Some(Road.value),
+                    content = Text(messages("declaration.transport.leavingTheBorder.transportMode.road")),
+                    checked = form("transportLeavingTheBorder").value.contains(Road.value)
+                ),
+                RadioItem(
+                    id = Some("Border_Air"),
+                    value = Some(Air.value),
+                    content = Text(messages("declaration.transport.leavingTheBorder.transportMode.air")),
+                    checked = form("transportLeavingTheBorder").value.contains(Air.value)
+                ),
+                RadioItem(
+                    id = Some("Border_PostalOrMail"),
+                    value = Some(PostalConsignment.value),
+                    content = Text(messages("declaration.transport.leavingTheBorder.transportMode.postalOrMail")),
+                    checked = form("transportLeavingTheBorder").value.contains(PostalConsignment.value)
+                ),
+                RadioItem(
+                    id = Some("Border_FixedTransportInstallations"),
+                    value = Some(FixedTransportInstallations.value),
+                    content = Text(messages("declaration.transport.leavingTheBorder.transportMode.fixedTransportInstallations")),
+                    checked = form("transportLeavingTheBorder").value.contains(FixedTransportInstallations.value)
+                ),
+                RadioItem(
+                    id = Some("Border_InlandWaterway"),
+                    value = Some(InlandWaterway.value),
+                    content = Text(messages("declaration.transport.leavingTheBorder.transportMode.inlandWaterway")),
+                    checked = form("transportLeavingTheBorder").value.contains(InlandWaterway.value)
+                ),
+                RadioItem(
+                    id = Some("Border_Unknown"),
+                    value = Some(Unknown.value),
+                    content = Text(messages("declaration.transport.leavingTheBorder.transportMode.unknown")),
+                    checked = form("transportLeavingTheBorder").value.contains(Unknown.value)
+                ),
+                RadioItem(
+                    id = Some("Border_Empty"),
+                    value = Some(Empty.value),
+                    content = Text(messages("declaration.transport.leavingTheBorder.transportMode.empty")),
+                    checked = form("transportLeavingTheBorder").value.contains(Empty.value)
+                )
+            ).filterNot(radioOption => (request.declarationType != DeclarationType.CLEARANCE) && radioOption.value.contains(Empty.value)),
+            errorMessage = form("transportLeavingTheBorder").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
 
-        @components.details(messages("site.details.summary_text_this")){
-            @tariffBody
-        }
-        @components.submit_button()
-        @components.buttons.save_and_return_later_button()
+        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+
+        @saveButtons()
     }
-
 }

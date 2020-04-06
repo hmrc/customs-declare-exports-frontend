@@ -843,8 +843,8 @@ function inlandTransportDetails(){
 
 function transportLeavingBorder(){
     if (currentPageIs('/customs-declare-exports/declaration/transport-leaving-the-border')) {
-        selectRadioOption(document.getElementById('transportLeavingTheBorder'), 0);
-        document.getElementsByClassName('button')[0].click()
+        selectRadioOptionFromInputs(document.getElementsByName('transportLeavingTheBorder'), 0);
+        document.getElementById('submit').click();
     }
 }
 
