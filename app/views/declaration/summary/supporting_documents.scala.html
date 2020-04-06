@@ -36,10 +36,6 @@
         messages("declaration.summary.items.item.supportingDocuments.change", itemNo),
         controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId)
     )
-    <a class="govuk-link" href="@controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId)">
-        @messages("site.change")
-        <span class="govuk-visually-hidden">@messages("declaration.summary.items.item.supportingDocuments.change", itemNo)</span>
-    </a>
 }
 
 @if(supportingDocuments.nonEmpty){
