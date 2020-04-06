@@ -535,7 +535,7 @@ declaration.warehouse.supervisingCustomsOffice.hint = If your goods have been al
 declaration.warehouse.supervisingCustomsOffice.error = Select a customs supervising office from the list
 
 declaration.warehouse.inlandTransportDetails.sectionHeader = Locations
-declaration.warehouse.inlandTransportDetails.title = What is the inland mode of transport?
+declaration.warehouse.inlandTransportDetails.title = What mode of transport took the goods from the warehouse to the border?
 declaration.warehouse.inlandTransportDetails.hint = The type of transport that will move the goods from a warehouse to the port where they will depart the EU.
 declaration.warehouse.inlandTransportDetails.error.incorrect = Select an inland mode of transport from the list
 declaration.warehouse.inlandTransportDetails.transportMode.sea = Sea transport
