@@ -18,10 +18,8 @@ package forms.declaration
 
 import forms.DeclarationPage
 import forms.common.Eori
-import models.DeclarationType.CLEARANCE
 import models.DeclarationType.DeclarationType
 import play.api.data.{Form, Forms, Mapping}
-import play.api.data.Forms.optional
 import play.api.libs.json.Json
 
 case class DeclarantDetails(details: EntityDetails)
@@ -34,15 +32,7 @@ object DeclarantDetails extends DeclarationPage {
   val defaultEntityMapping: Mapping[EntityDetails] = Forms
     .mapping("eori" -> Eori.mapping("declaration.declarant"))(eori => EntityDetails(Some(eori), None))(entityDetails => entityDetails.eori)
 
-  val optionalEntityMapping: Mapping[EntityDetails] = Forms.mapping("eori" -> optional(Eori.mapping("declaration.declarant")))(
-    eori => EntityDetails(eori, None)
-  )(entityDetails => Some(entityDetails.eori))
-
   val defaultMapping = Forms.mapping("details" -> defaultEntityMapping)(DeclarantDetails.apply)(DeclarantDetails.unapply)
-  val optionalMapping = Forms.mapping("details" -> optionalEntityMapping)(DeclarantDetails.apply)(DeclarantDetails.unapply)
 
-  def form(declarationType: DeclarationType): Form[DeclarantDetails] = declarationType match {
-    case CLEARANCE => Form(optionalMapping)
-    case _         => Form(defaultMapping)
-  }
+  def form(declarationType: DeclarationType): Form[DeclarantDetails] = Form(defaultMapping)
 }

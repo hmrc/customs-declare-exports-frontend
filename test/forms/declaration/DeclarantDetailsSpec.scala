@@ -24,7 +24,7 @@ class DeclarantDetailsSpec extends WordSpec with MustMatchers {
 
   import DeclarantDetailsSpec._
 
-  Seq(SUPPLEMENTARY, STANDARD, OCCASIONAL, SIMPLIFIED).map { decType =>
+  Seq(SUPPLEMENTARY, STANDARD, OCCASIONAL, SIMPLIFIED, CLEARANCE).map { decType =>
     "Declarant details mapping used for binding data" should {
 
       s"return form with errors for $decType journey" when {
@@ -64,19 +64,6 @@ class DeclarantDetailsSpec extends WordSpec with MustMatchers {
 
           form.hasErrors mustBe false
         }
-      }
-    }
-  }
-
-  "Declarant details mapping used for binding data" should {
-
-    "return form without errors for CLEARANCE journey" when {
-
-      "provided with empty input" in {
-
-        val form = DeclarantDetails.form(CLEARANCE).bind(emptyDeclarantDetailsJSON)
-
-        form.hasErrors mustBe false
       }
     }
   }
