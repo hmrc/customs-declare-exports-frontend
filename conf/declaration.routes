@@ -107,7 +107,7 @@ POST        /location-of-goods                   controllers.declaration.Locatio
 
 GET         /warehouse-details            controllers.declaration.WarehouseIdentificationController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /wwarehouse-details           controllers.declaration.WarehouseIdentificationController.saveIdentificationNumber(mode: models.Mode ?= models.Mode.Normal)
+POST        /warehouse-details           controllers.declaration.WarehouseIdentificationController.saveIdentificationNumber(mode: models.Mode ?= models.Mode.Normal)
 
 # Supervising Customs Office
 
