@@ -116,7 +116,7 @@
                         checked = form("inlandModeOfTransportCode").value.contains(Unknown.value)
                     )
                 ),
-                errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+                errorMessage = form("inlandModeOfTransportCode").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
             ))
 
             @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
