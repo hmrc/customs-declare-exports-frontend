@@ -16,6 +16,7 @@
 
 package views.declaration
 
+import base.Injector
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.declaration.TransportLeavingTheBorder
@@ -27,16 +28,16 @@ import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.transport_leaving_the_border
 
-class TransportLeavingTheBorderViewSpec extends UnitViewSpec with Stubs {
+class TransportLeavingTheBorderViewSpec extends UnitViewSpec with Stubs with Injector {
 
-  private val page = new transport_leaving_the_border(mainTemplate)
+  private val page = instanceOf[transport_leaving_the_border]
   private def view(implicit request: JourneyRequest[_]): Document = page(TransportLeavingTheBorder.form(request.declarationType), Mode.Normal)
 
   "Transport Leaving The Border Page" must {
 
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
-        view.getElementById("title").text() mustBe "declaration.transport.leavingTheBorder.title"
+        view.getElementsByTag("h1").text() mustBe "declaration.transport.leavingTheBorder.title"
       }
 
       "display 'Save and continue' button on page" in {
@@ -51,45 +52,43 @@ class TransportLeavingTheBorderViewSpec extends UnitViewSpec with Stubs {
 
       "display 'Mode of Transport' section" which {
 
-        val section = view.getElementById("transportLeavingTheBorder")
-
         "have 'Sea' option" in {
-          section.getElementById("Border_Sea-label").text() mustBe "declaration.transport.leavingTheBorder.transportMode.sea"
+          view.getElementsByAttributeValue("for", "Border_Sea").text() mustBe "declaration.transport.leavingTheBorder.transportMode.sea"
         }
 
         "have 'Road' option" in {
-          section.getElementById("Border_Road-label").text() mustBe "declaration.transport.leavingTheBorder.transportMode.road"
+          view.getElementsByAttributeValue("for", "Border_Road").text() mustBe "declaration.transport.leavingTheBorder.transportMode.road"
         }
 
         "have 'Rail' option" in {
-          section.getElementById("Border_Rail-label").text() mustBe "declaration.transport.leavingTheBorder.transportMode.rail"
+          view.getElementsByAttributeValue("for", "Border_Rail").text() mustBe "declaration.transport.leavingTheBorder.transportMode.rail"
         }
 
         "have 'Air' option" in {
-          section.getElementById("Border_Air-label").text() mustBe "declaration.transport.leavingTheBorder.transportMode.air"
+          view.getElementsByAttributeValue("for", "Border_Air").text() mustBe "declaration.transport.leavingTheBorder.transportMode.air"
         }
 
         "have 'Postal or Mail' option" in {
-          section
-            .getElementById("Border_PostalOrMail-label")
+          view
+            .getElementsByAttributeValue("for", "Border_PostalOrMail")
             .text() mustBe "declaration.transport.leavingTheBorder.transportMode.postalOrMail"
         }
 
         "have 'Fixed transport installations' option" in {
-          section
-            .getElementById("Border_FixedTransportInstallations-label")
+          view
+            .getElementsByAttributeValue("for", "Border_FixedTransportInstallations")
             .text() mustBe "declaration.transport.leavingTheBorder.transportMode.fixedTransportInstallations"
         }
 
         "have 'Inland waterway transport' option" in {
-          section
-            .getElementById("Border_InlandWaterway-label")
+          view
+            .getElementsByAttributeValue("for", "Border_InlandWaterway")
             .text() mustBe "declaration.transport.leavingTheBorder.transportMode.inlandWaterway"
         }
 
         "have 'Mode unknown' option" in {
-          section
-            .getElementById("Border_Unknown-label")
+          view
+            .getElementsByAttributeValue("for", "Border_Unknown")
             .text() mustBe "declaration.transport.leavingTheBorder.transportMode.unknown"
         }
       }
@@ -105,8 +104,7 @@ class TransportLeavingTheBorderViewSpec extends UnitViewSpec with Stubs {
 
     "display 'Mode of Transport' section" which {
       "not have 'I don't know' option" in {
-        val section = view.getElementById("transportLeavingTheBorder")
-        section.getElementById("Border_Empty-label") mustBe null
+        view.getElementsByAttributeValue("for", "Border_Empty") mustBe empty
       }
     }
   }
@@ -121,8 +119,8 @@ class TransportLeavingTheBorderViewSpec extends UnitViewSpec with Stubs {
     "display 'Mode of Transport' section" which {
       "have 'I don't know' option" in {
         val section = view.getElementById("transportLeavingTheBorder")
-        section
-          .getElementById("Border_Empty-label")
+        view
+          .getElementsByAttributeValue("for", "Border_Empty")
           .text() mustBe "declaration.transport.leavingTheBorder.transportMode.empty"
       }
     }

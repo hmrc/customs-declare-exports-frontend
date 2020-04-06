@@ -18,8 +18,10 @@ package forms.declaration
 
 import base.TestHelper.createRandomAlphanumericString
 import forms.LightFormMatchers
+import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.WarehouseIdentification._
 import forms.declaration.WarehouseIdentificationSpec._
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import play.api.libs.json.{JsObject, JsString}
 import unit.base.UnitSpec
 
 class WarehouseIdentificationSpec extends UnitSpec with LightFormMatchers {
@@ -27,44 +29,50 @@ class WarehouseIdentificationSpec extends UnitSpec with LightFormMatchers {
   import WarehouseIdentification._
 
   "Warehouse Identification Form" should {
+    "validate - no answer" in {
+      val incorrectWarehouseDetails = formData("", "")
+
+      form().bind(incorrectWarehouseDetails).errors.map(_.message) must contain("error.yesNo.required")
+    }
+
     "validate - more than 35 characters after type code" in {
-      val incorrectWarehouseDetails = warehouseIdentification(warehouseTypeCode + createRandomAlphanumericString(36))
+      val incorrectWarehouseDetails = formData(YesNoAnswers.yes, warehouseTypeCode + createRandomAlphanumericString(36))
 
       form().bind(incorrectWarehouseDetails).errors.map(_.message) must contain(identificationNumberError)
     }
 
     "validate - missing identification number" in {
-      val incorrectWarehouseDetails = warehouseIdentification(warehouseTypeCode)
+      val incorrectWarehouseDetails = formData(YesNoAnswers.yes, warehouseTypeCode)
 
       form().bind(incorrectWarehouseDetails).errors.map(_.message) must contain("declaration.warehouse.identification.identificationNumber.error")
     }
 
     "validate - missing warehouse type" in {
-      val incorrectWarehouseDetails = warehouseIdentification(warehouseId)
+      val incorrectWarehouseDetails = formData(YesNoAnswers.yes, warehouseId)
 
       form().bind(incorrectWarehouseDetails).errors.map(_.message) must contain(identificationNumberError)
     }
 
     "validate - invalid warehouse type" in {
-      val incorrectWarehouseDetails = warehouseIdentification(warehouseTypeCodeInvalid + warehouseId)
+      val incorrectWarehouseDetails = formData(YesNoAnswers.yes, warehouseTypeCodeInvalid + warehouseId)
 
       form().bind(incorrectWarehouseDetails).errors.map(_.message) must contain(identificationNumberError)
     }
 
     "validate correct empty identification" in {
-      val correctWarehouseDetails = warehouseIdentification("")
+      val correctWarehouseDetails = formData(YesNoAnswers.no, "")
 
       form().bind(correctWarehouseDetails) mustBe errorless
     }
 
     "validate correct ware house type and number" in {
-      val correctWarehouseDetails: JsValue = warehouseIdentification("R" + warehouseId)
+      val correctWarehouseDetails = formData(YesNoAnswers.yes, "R" + warehouseId)
 
       form().bind(correctWarehouseDetails) mustBe errorless
     }
 
     "validate max length" in {
-      val correctWarehouseDetails = warehouseIdentification(warehouseTypeCode + createRandomAlphanumericString(35))
+      val correctWarehouseDetails = formData(YesNoAnswers.yes, warehouseTypeCode + createRandomAlphanumericString(35))
 
       form().bind(correctWarehouseDetails) mustBe errorless
     }
@@ -77,6 +85,9 @@ object WarehouseIdentificationSpec {
   private val warehouseId = "1234567GB"
 
   val correctWarehouseDetails = WarehouseIdentification(Some(warehouseTypeCode + warehouseId))
+
+  def formData(inWarehouse: String, identifier: String) =
+    JsObject(Map(inWarehouseKey -> JsString(inWarehouse), warehouseIdKey -> JsString(identifier)))
 
   def warehouseIdentification(id: String) = JsObject(Map("identificationNumber" -> JsString(id)))
 
