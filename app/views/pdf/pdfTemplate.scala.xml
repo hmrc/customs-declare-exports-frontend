@@ -1,8 +1,9 @@
 @import models.dis.MrnStatus
+@import views.pdf.DeclarationType
 
 @this()
 
-@(mrn: String, mrnStatus: MrnStatus, base64Image: String, messages: Messages)
+@(mrn: String, mrnStatus: MrnStatus, base64Image: String)(implicit messages: Messages)
 
 <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
     <fo:layout-master-set>
@@ -31,7 +32,7 @@
             </fo:block-container>
             <fo:block-container absolute-position="absolute" top="35mm" width="50%" height="5mm">
                 <fo:block font-size="13pt" text-align="left" font-weight="bold"> @messages("pdf.template.declarationType"): </fo:block>
-                <fo:block font-size="13pt" text-align="left"> @mrnStatus.declarationType </fo:block>
+                <fo:block font-size="13pt" text-align="left"> @DeclarationType.translate(mrnStatus.declarationType) </fo:block>
             </fo:block-container>
             <fo:block-container absolute-position="absolute" top="56mm" left="0mm" width="80%" height="5mm">
                 <fo:block font-size="14pt" font-weight="bold" text-align="left">
