@@ -16,6 +16,7 @@
 
 package views.declaration.destinationCountries
 
+import base.Injector
 import controllers.declaration.routes
 import forms.declaration.countries.{Countries, Country}
 import forms.declaration.countries.Countries.{FirstRoutingCountryPage, NextRoutingCountryPage}
@@ -29,10 +30,10 @@ import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.destinationCountries.change_routing_country
 
-class ChangeRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
+class ChangeRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
 
   private val countryToChange = "GB"
-  private val changeRoutingCountryPage = new change_routing_country(mainTemplate)
+  private val changeRoutingCountryPage = instanceOf[change_routing_country]
 
   private def firstRoutingForm(request: JourneyRequest[_]): Form[Country] =
     Countries.form(FirstRoutingCountryPage)(request)
@@ -55,12 +56,12 @@ class ChangeRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsT
 
       s"have page question during changing first routing country for ${request.declarationType}" in {
 
-        firstRoutingView(request).getElementById("title").text() mustBe messages("declaration.firstRoutingCountry.question")
+        firstRoutingView(request).getElementsByClass("govuk-fieldset__legend").text() mustBe messages("declaration.firstRoutingCountry.question")
       }
 
       s"have page question during changing next routing country for ${request.declarationType}" in {
 
-        nextRoutingView(request).getElementById("title").text() mustBe messages("declaration.routingCountry.question")
+        nextRoutingView(request).getElementsByClass("govuk-fieldset__legend").text() mustBe messages("declaration.routingCountry.question")
       }
 
       s"display back button that links to 'Countries summary' for first routing country page for ${request.declarationType}" in {

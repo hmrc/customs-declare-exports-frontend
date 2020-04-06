@@ -16,6 +16,7 @@
 
 package views.declaration.destinationCountries
 
+import base.Injector
 import controllers.declaration.routes
 import forms.declaration.countries.Countries.DestinationCountryPage
 import forms.declaration.countries.{Countries, Country}
@@ -29,9 +30,9 @@ import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.destinationCountries.destination_country
 
-class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
+class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
 
-  private val destinationCountryPage = new destination_country(mainTemplate)
+  private val destinationCountryPage = instanceOf[destination_country]
 
   private def form(request: JourneyRequest[_]): Form[Country] = Countries.form(DestinationCountryPage)(request)
   private def view(request: JourneyRequest[_]): Html = destinationCountryPage(Mode.Normal, form(request))(request, messages)
@@ -54,7 +55,7 @@ class DestinationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
 
       s"display page question for ${request.declarationType}" in {
 
-        view(request).getElementById("title").text() mustBe messages("declaration.destinationCountry.question")
+        view(request).getElementsByClass("govuk-fieldset__legend").text() mustBe messages("declaration.destinationCountry.question")
       }
 
       s"display page heading for ${request.declarationType}" in {

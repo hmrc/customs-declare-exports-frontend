@@ -14,13 +14,14 @@ object AppDependencies {
     "uk.gov.hmrc"          %% "bootstrap-play-26"             % "1.3.0",
     "uk.gov.hmrc"          %% "play-frontend-govuk"           % "0.32.0-play-26",
     "uk.gov.hmrc"          %% "auth-client"                   % "2.32.1-play-26",
-    "org.webjars.npm"      %  "govuk-frontend"                % "3.4.0",
     "ai.x"                 %% "play-json-extensions"          % "0.40.2",
     "uk.gov.hmrc"          %% "play-whitelist-filter"         % "3.1.0-play-26",
     "com.typesafe.play"    %% "play-json-joda"                % "2.6.10",
     "com.github.tototoshi" %% "scala-csv"                     % "1.3.6",
     "com.dmanchester"      %% "playfop"                       % "1.0",
-    "net.sf.barcode4j"     %  "barcode4j"                     % "2.1"
+    "net.sf.barcode4j"     %  "barcode4j"                     % "2.1",
+    "org.webjars.npm"      %  "govuk-frontend"                % "3.4.0",
+    "org.webjars.npm"      %  "accessible-autocomplete"       % "2.0.2"
   )
 
   val test: Seq[ModuleID] = Seq(
