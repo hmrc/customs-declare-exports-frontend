@@ -17,8 +17,8 @@
 package views.declaration
 
 import base.Injector
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.WarehouseIdentification
-import forms.declaration.WarehouseIdentification.AllowedInWarehouseAnswers
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -70,11 +70,11 @@ class WarehouseIdentificationViewSpec extends UnitViewSpec with ExportsTestData 
       }
 
       "display radio button with Yes option" in {
-        view.getElementById("code_yes").attr("value") mustBe AllowedInWarehouseAnswers.yes
+        view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes
         view.getElementsByAttributeValue("for", "code_yes").text() mustBe "site.yes"
       }
       "display radio button with No option" in {
-        view.getElementById("code_no").attr("value") mustBe AllowedInWarehouseAnswers.no
+        view.getElementById("code_no").attr("value") mustBe YesNoAnswers.no
         view.getElementsByAttributeValue("for", "code_no").text() mustBe "site.no"
       }
 
