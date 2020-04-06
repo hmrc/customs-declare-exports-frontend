@@ -836,8 +836,8 @@ function supervisingCustomsOffice(){
 
 function inlandTransportDetails(){
     if (currentPageIs('/customs-declare-exports/declaration/inland-transport-details')) {
-        selectRadioOption(document.getElementById('inlandModeOfTransportCode'), 0);
-        document.getElementsByClassName('button')[0].click()
+        selectRadioOptionFromInputs(document.getElementsByName('inlandModeOfTransportCode'), 0);
+        document.getElementById('submit').click();
     }
 }
 
