@@ -35,7 +35,7 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
     "have a goods location code with change button" in {
 
-      val row = view.getElementsByClass("declarationType-row")
+      val row = view.getElementsByClass("goodsLocationCode-row")
       row must haveSummaryKey(messages("declaration.summary.locations.goodsLocationCode"))
       row must haveSummaryValue("GBAUEMAEMAEMA")
 
@@ -74,7 +74,7 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with In
     "not have answers when goods location not asked" in {
       val view = section(Mode.Normal, aDeclarationAfter(data, withoutGoodsLocation()))(messages, journeyRequest())
 
-      view.getElementsByClass("declarationType-row") mustBe empty
+      view.getElementsByClass("goodsLocationCode-row") mustBe empty
     }
 
     "not have answers when office of exit not asked" in {
