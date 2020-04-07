@@ -50,7 +50,7 @@
 }
 
 @removeButton(value: Option[String]) = @{ govukButton(Button(
-    classes = "govuk-button--secondary",
+    classes = "govuk-button--secondary govuk-!-margin-0",
     content = Text(messages("site.remove")),
     name = Some(messages("declaration.partyType.remove.hint")),
     value = value
@@ -138,7 +138,7 @@
                 checked = form("partyType").value.contains("no")
             )
         ),
-        errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        errorMessage = form("partyType").error.map(err => ErrorMessage(content = Text(messages("declaration.partyType.error"))))
     ))
 }
 

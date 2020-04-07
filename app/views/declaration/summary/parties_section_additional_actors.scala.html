@@ -21,7 +21,7 @@
 @(mode: Mode, additionalActors: Seq[DeclarationAdditionalActors])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @actorPartyType(actor: DeclarationAdditionalActors) = {
-    @actor.partyType.map(partyType => messages(s"declaration.summary.parties.additional.$partyType")).getOrElse("")
+    @actor.partyType.map(partyType => messages(s"declaration.partyType.$partyType")).getOrElse("")
 }
 
 @actorEori(actor: DeclarationAdditionalActors) = {
@@ -40,8 +40,8 @@
 @if(additionalActors.nonEmpty) {
     <caption class="heading-small"><span id="additionalActors">@messages("declaration.summary.parties.additional")</span></caption>
     <tr class="section">
-        <td class="bold"><span id="additionalActors-type">@messages("declaration.summary.parties.additional.type")</span></td>
-        <td class="bold"><span id="additionalActors-eori">@messages("declaration.summary.parties.additional.eori")</span></td>
+        <td class="bold"><span id="additionalActors-type">@messages("declaration.additionalActors.partyType")</span></td>
+        <td class="bold"><span id="additionalActors-eori">@messages("declaration.additionalActors.eori")</span></td>
         <td></td>
     </tr>
     @additionalActors.zipWithIndex.map { case (actor, index) =>

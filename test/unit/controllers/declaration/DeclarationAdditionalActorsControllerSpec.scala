@@ -21,7 +21,6 @@ import controllers.declaration.DeclarationAdditionalActorsController
 import controllers.util.Remove
 import forms.common.Eori
 import forms.declaration.DeclarationAdditionalActors
-import models.DeclarationType.CLEARANCE
 import models.{DeclarationType, Mode}
 import models.declaration.DeclarationAdditionalActorsData
 import play.api.libs.json.Json
@@ -56,7 +55,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
     aDeclaration(withDeclarationAdditionalActors(additionalActor))
 
   val maxAmountOfItems = aDeclaration(
-    withDeclarationAdditionalActors(DeclarationAdditionalActorsData(Seq.fill(DeclarationAdditionalActorsData.maxNumberOfItems)(additionalActor)))
+    withDeclarationAdditionalActors(DeclarationAdditionalActorsData(Seq.fill(DeclarationAdditionalActorsData.maxNumberOfActors)(additionalActor)))
   )
 
   "Declaration Additional Actors controller" should {

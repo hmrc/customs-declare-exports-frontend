@@ -20,13 +20,23 @@ import forms.declaration.DeclarationAdditionalActors
 import play.api.libs.json.Json
 
 case class DeclarationAdditionalActorsData(actors: Seq[DeclarationAdditionalActors]) {
-  def containsItem(actor: DeclarationAdditionalActors): Boolean = actors.contains(actor)
+  def addActor(actor: DeclarationAdditionalActors): DeclarationAdditionalActorsData =
+    if (actor.isAllowed) DeclarationAdditionalActorsData(actor +: actors) else this
 }
 
 object DeclarationAdditionalActorsData {
+
   implicit val format = Json.format[DeclarationAdditionalActorsData]
+
+  val maxNumberOfActors = 99
 
   val formId = "DeclarationAdditionalActorsData"
 
-  val maxNumberOfItems = 99
+  def actorsValidator(actor: DeclarationAdditionalActors, actors: Seq[DeclarationAdditionalActors]): Option[Seq[(String, String)]] =
+    (actor, actors) match {
+      case (_, actors) if actors.length >= maxNumberOfActors => Some(Seq(("", "declaration.additionalActors.maximumAmount.error")))
+      case (actor, actors) if actors.contains(actor)         => Some(Seq(("", "declaration.additionalActors.duplicated.error")))
+      case _                                                 => None
+    }
+
 }
