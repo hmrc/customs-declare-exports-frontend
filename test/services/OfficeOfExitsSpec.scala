@@ -24,13 +24,14 @@ class OfficeOfExitsSpec extends WordSpec with Matchers {
   "OfficeOfExits" should {
 
     "have 131 entries" in {
-      OfficeOfExits.all.length shouldBe 131
+      OfficeOfExits.all.length shouldBe 132
     }
 
     "read values from CSV and order by description, alphabetically ascending" in {
       OfficeOfExits.all should contain inOrder (
         OfficeOfExit("GB000411", "Aberdeen Airport"),
         OfficeOfExit("GB000060", "Dover/Folkestone Eurotunnel Freight"),
+        OfficeOfExit("IT014101", "Sezione Operativa Territoriale di MANFREDONIA"),
         OfficeOfExit("GB003280", "Workington")
       )
     }
