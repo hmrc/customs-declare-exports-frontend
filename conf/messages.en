@@ -377,7 +377,7 @@ declaration.additionalActors.partyType = Party type
 declaration.additionalActors.maximumAmount.error = Maximum amount of parties added
 declaration.additionalActors.duplicated.error = Party's details already added
 declaration.additionalActors.add.hint = Add party
-declaration.eori.empty = Enter a valid EORI
+declaration.eori.empty = Enter a valid EORI number. For example, GB123456789098.
 declaration.eori.error.format = Enter a valid EORI
 declaration.partyType = Party type
 declaration.partyType.eori = EORI number
@@ -386,7 +386,7 @@ declaration.partyType.MF = Manufacturer
 declaration.partyType.FW = Freight forwarder
 declaration.partyType.WH = Warehouse keeper
 declaration.partyType.empty = Select a party type
-declaration.partyType.error = Select a valid party type
+declaration.partyType.error = Select an option from the list
 declaration.partyType.remove.hint = Remove
 
 submissions.title = Your declarations

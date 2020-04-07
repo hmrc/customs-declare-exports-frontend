@@ -20,6 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.remove
 import controllers.util._
+import forms.NoneOfTheAbove
 import forms.declaration.DeclarationAdditionalActors
 import forms.declaration.DeclarationAdditionalActors.form
 import handlers.ErrorHandler
@@ -53,8 +54,9 @@ class DeclarationAdditionalActorsController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.parties.declarationAdditionalActorsData match {
-      case Some(data) => Ok(declarationAdditionalActorsPage(mode, form(), data.actors))
-      case _          => Ok(declarationAdditionalActorsPage(mode, form(), Seq()))
+      case Some(data) =>
+        Ok(declarationAdditionalActorsPage(mode, form().fill(DeclarationAdditionalActors(None, Some(NoneOfTheAbove.value))), data.actors))
+      case _ => Ok(declarationAdditionalActorsPage(mode, form(), Seq()))
     }
   }
 
