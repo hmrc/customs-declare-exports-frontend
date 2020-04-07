@@ -25,7 +25,6 @@ import forms.declaration.DeclarationAdditionalActors.form
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.DeclarationAdditionalActorsData
-import models.declaration.DeclarationAdditionalActorsData.maxNumberOfItems
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.{Form, FormError}
@@ -51,9 +50,6 @@ class DeclarationAdditionalActorsController @Inject()(
 
   val validTypes =
     Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
-
-  private val exceedMaximumNumberError = "supplementary.additionalActors.maximumAmount.error"
-  private val duplicateActorError = "supplementary.additionalActors.duplicated.error"
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.parties.declarationAdditionalActorsData match {
@@ -82,21 +78,18 @@ class DeclarationAdditionalActorsController @Inject()(
     implicit request: JourneyRequest[AnyContent],
     hc: HeaderCarrier
   ): Future[Result] =
-    (userInput, cachedData.actors) match {
-      case (_, actors) if actors.length >= maxNumberOfItems =>
-        handleErrorPage(mode, Seq(("", exceedMaximumNumberError)), userInput, cachedData.actors)
-
-      case (actor, actors) if actors.contains(actor) =>
-        handleErrorPage(mode, Seq(("", duplicateActorError)), userInput, cachedData.actors)
-
-      case (actor, actors) =>
-        if (actor.isDefined) {
-          val updatedCache = DeclarationAdditionalActorsData(actors :+ actor)
-          updateCache(updatedCache)
-            .map(_ => navigator.continueTo(mode, routes.DeclarationAdditionalActorsController.displayPage))
-        } else
-          handleErrorPage(mode, Seq(("eori", "supplementary.additionalActors.eori.isNotDefined")), userInput, cachedData.actors)
+    actorsValidator(mode, userInput, cachedData.actors) {
+      val updatedCache = DeclarationAdditionalActorsData(cachedData.actors).addActor(userInput)
+      updateCache(updatedCache)
+        .map(_ => navigator.continueTo(mode, routes.DeclarationAdditionalActorsController.displayPage))
     }
+
+  private def actorsValidator(mode: Mode, actor: DeclarationAdditionalActors, existingActors: Seq[DeclarationAdditionalActors])(
+    onSuccess: Future[Result]
+  )(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] =
+    DeclarationAdditionalActorsData
+      .actorsValidator(actor, existingActors)
+      .fold[Future[Result]](onSuccess)(errors => handleErrorPage(mode, errors, actor, existingActors))
 
   private def handleErrorPage(
     mode: Mode,
@@ -129,23 +122,16 @@ class DeclarationAdditionalActorsController @Inject()(
       case (actor, actors) => handleSaveAndContinueCache(mode, actor, actors)
     }
 
-  private def handleSaveAndContinueCache(mode: Mode, actor: DeclarationAdditionalActors, actors: Seq[DeclarationAdditionalActors])(
+  private def handleSaveAndContinueCache(mode: Mode, actor: DeclarationAdditionalActors, existingActors: Seq[DeclarationAdditionalActors])(
     implicit request: JourneyRequest[AnyContent]
-  ) =
-    if (actors.length >= maxNumberOfItems) {
-      handleErrorPage(mode, Seq(("", exceedMaximumNumberError)), actor, actors)
-    } else if (actors.contains(actor)) {
-      handleErrorPage(mode, Seq(("", duplicateActorError)), actor, actors)
-    } else {
-      saveAndRedirect(mode, actor, actors)
-    }
+  ): Future[Result] = actorsValidator(mode, actor, existingActors)(saveAndRedirect(mode, actor, existingActors))
 
   private def saveAndRedirect(mode: Mode, actor: DeclarationAdditionalActors, actors: Seq[DeclarationAdditionalActors])(
     implicit request: JourneyRequest[AnyContent],
     hc: HeaderCarrier
   ): Future[Result] =
     if (actor.isDefined) {
-      updateCache(DeclarationAdditionalActorsData(actors :+ actor))
+      updateCache(DeclarationAdditionalActorsData(actors).addActor(actor))
         .map(_ => navigator.continueTo(mode, routes.DeclarationHolderController.displayPage))
     } else updateCache(DeclarationAdditionalActorsData(actors)).map(_ => navigator.continueTo(mode, routes.DeclarationHolderController.displayPage))
 

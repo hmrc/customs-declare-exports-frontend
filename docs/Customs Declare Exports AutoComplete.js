@@ -808,7 +808,8 @@ function addDocuments(){
 
 function warehouseIdentification(){
     if (currentPageIs('/customs-declare-exports/declaration/warehouse-identification')) {
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('code_no').checked = 'checked';
+        document.getElementById('submit').click();
     }
 }
 
@@ -835,15 +836,15 @@ function supervisingCustomsOffice(){
 
 function inlandTransportDetails(){
     if (currentPageIs('/customs-declare-exports/declaration/inland-transport-details')) {
-        selectRadioOption(document.getElementById('inlandModeOfTransportCode'), 0);
-        document.getElementsByClassName('button')[0].click()
+        selectRadioOptionFromInputs(document.getElementsByName('inlandModeOfTransportCode'), 0);
+        document.getElementById('submit').click();
     }
 }
 
 function transportLeavingBorder(){
     if (currentPageIs('/customs-declare-exports/declaration/transport-leaving-the-border')) {
-        selectRadioOption(document.getElementById('transportLeavingTheBorder'), 0);
-        document.getElementsByClassName('button')[0].click()
+        selectRadioOptionFromInputs(document.getElementsByName('transportLeavingTheBorder'), 0);
+        document.getElementById('submit').click();
     }
 }
 
@@ -866,8 +867,8 @@ function borderTransport(){
 
 function transportPayment(){
     if (currentPageIs('/customs-declare-exports/declaration/transport-payment')) {
-        selectRadioOption(document.getElementById('paymentMethod'), 4)
-        document.getElementsByClassName('button')[0].click()
+        selectRadioOptionFromInputs(document.getElementsByName("paymentMethod"), 4);
+        document.getElementById('submit').click();
     }
 }
 

@@ -15,40 +15,76 @@
  *@
 
 @import controllers.declaration.routes
-@import models.requests.JourneyRequest
-@import forms.declaration.WarehouseIdentification
 @import controllers.navigation.Navigator
-@import views.Title
+@import forms.declaration.WarehouseIdentification
+@import forms.common.YesNoAnswer.YesNoAnswers._
+@import forms.declaration.WarehouseIdentification._
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.components.gds.Styles._
+@import views.html.components.gds._
 
-@this(main_template: views.html.main_template)
+@this(
+    govukLayout: gdsMainTemplate,
+    govukRadios: GovukRadios,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    exportsInputText: exportsInputText,
+    pageTitle: pageTitle,
+    saveButtons: saveButtons,
+    tariffDetails: tariffDetails,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, form: Form[WarehouseIdentification])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBody = { @Html(messages("declaration.type.warehouseInformationSummaryText", components.details_content_link())) }
 
-    @main_template(
-        title = Title("declaration.warehouse.identification.title")
-    ) {
+@govukLayout(
+    title = Title("declaration.warehouse.identification.title", "declaration.warehouse.identification.title"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(WarehouseIdentification, mode)))) {
 
-        @helper.form(routes.WarehouseIdentificationController.saveIdentificationNumber(mode), 'autoComplete -> "off") {
-            @helper.CSRF.formField
+    @formHelper(action = routes.WarehouseIdentificationController.saveIdentificationNumber(mode), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-            @components.back_link(Navigator.backLink(WarehouseIdentification, mode)(request))
+        @sectionHeader(messages("declaration.warehouse.identification.sectionHeader"))
 
-            @components.error_summary(form.errors)
+        @govukRadios(Radios(
+            name = inWarehouseKey,
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("declaration.warehouse.identification.title")),
+                    isPageHeading = true,
+                    classes = gdsPageLegend
+                ))
+            )),
+            items = Seq(
+                RadioItem(
+                    id = Some("code_yes"),
+                    value = Some(yes),
+                    content = Text(messages("site.yes")),
+                    conditionalHtml = Some(exportsInputText(
+                        field = form("identificationNumber"),
+                        labelClasses = "govuk-label",
+                        inputClasses = Some("govuk-input govuk-!-width-one-third"),
+                        labelKey = "declaration.warehouse.identification.label",
+                        hintKey = Some("declaration.warehouse.identification.label.hint")
+                    )),
+                    checked = form(inWarehouseKey).value.contains(yes)
+                ),
+                RadioItem(
+                    id = Some("code_no"),
+                    value = Some(no),
+                    content = Text(messages("site.no")),
+                    checked = form(inWarehouseKey).value.contains(no)
+                )
+            ),
+            errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
 
-            @components.heading(
-                sectionHeader = messages("declaration.warehouse.identification.sectionHeader"),
-                title = messages("declaration.warehouse.identification.title"),
-                hint = messages("declaration.warehouse.identification.hint")
-            )
+        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
 
-            @components.fields.field_text(field = form("identificationNumber"))
-
-            @components.details(messages("site.details.summary_text_this")){
-               @tariffBody
-            }
-            @components.submit_button()
-            @components.buttons.save_and_return_later_button()
-        }
+        @saveButtons()
     }
+}

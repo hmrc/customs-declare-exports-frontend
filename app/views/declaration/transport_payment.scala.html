@@ -17,57 +17,101 @@
 @import controllers.declaration.routes._
 @import forms.declaration.TransportPayment
 @import forms.declaration.TransportPayment._
-@import uk.gov.hmrc.play.views.html._
-@import views.components.inputs.RadioOption
 @import models.requests.JourneyRequest
-@import forms.Choice.AllowedChoiceValues
-@import services.model.Country
-@import services.Countries
-@import services.view.AutoCompleteItem
 @import controllers.navigation.Navigator
-@import views.Title
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.components.gds.Styles._
+@import views.html.components.gds._
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukDetails : GovukDetails,
+        govukRadios: GovukRadios,
+        pageTitle: pageTitle,
+        exportsInputText: exportsInputText,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        saveButtons: saveButtons,
+        tariffDetails: tariffDetails,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, form: Form[TransportPayment])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBody = { @Html(messages("declaration.transportInformation.transportPayment.paymentMethod.help.bodyText", components.details_content_link())) }
 
-@main_template(
-    title = Title("declaration.transportInformation.transportPayment.paymentMethod")
-) {
+@govukLayout(
+    title = Title("declaration.transportInformation.transportPayment.paymentMethod"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(TransportPayment, mode)))) {
 
-    @components.back_link(Navigator.backLink(TransportPayment, mode))
+    @formHelper(action = TransportPaymentController.submitForm(mode), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-    @helper.form(TransportPaymentController.submitForm(mode), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+        @sectionHeader(messages("declaration.transportInformation.transportPayment.section"))
 
-        @components.error_summary(form.errors)
+        @govukRadios(Radios(
+            name = "paymentMethod",
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("declaration.transportInformation.transportPayment.paymentMethod")),
+                    isPageHeading = true,
+                    classes = gdsPageLegend
+                ))
+            )),
+            hint = Some(Hint(
+                content = Text(messages("declaration.transportInformation.transportPayment.paymentMethod.hint"))
+            )),
+            items = Seq(
+                RadioItem(
+                    id = Some("cash"),
+                    value = Some(cash),
+                    content = Text(messages("declaration.transportInformation.transportPayment.paymentMethod.cash")),
+                    checked = form("paymentMethod").value.contains(cash)
+                ),
+                RadioItem(
+                    id = Some("creditCard"),
+                    value = Some(creditCard),
+                    content = Text(messages("declaration.transportInformation.transportPayment.paymentMethod.creditCard")),
+                    checked = form("paymentMethod").value.contains(creditCard)
+                ),
+                RadioItem(
+                    id = Some("cheque"),
+                    value = Some(cheque),
+                    content = Text(messages("declaration.transportInformation.transportPayment.paymentMethod.cheque")),
+                    checked = form("paymentMethod").value.contains(cheque)
+                ),
+                RadioItem(
+                    id = Some("other"),
+                    value = Some(other),
+                    content = Text(messages("declaration.transportInformation.transportPayment.paymentMethod.other")),
+                    checked = form("paymentMethod").value.contains(other)
+                ),
+                RadioItem(
+                    id = Some("eFunds"),
+                    value = Some(eFunds),
+                    content = Text(messages("declaration.transportInformation.transportPayment.paymentMethod.eFunds")),
+                    checked = form("paymentMethod").value.contains(eFunds)
+                ),
+                RadioItem(
+                    id = Some("accHolder"),
+                    value = Some(accHolder),
+                    content = Text(messages("declaration.transportInformation.transportPayment.paymentMethod.accHolder")),
+                    checked = form("paymentMethod").value.contains(accHolder)
+                ),
+                RadioItem(
+                    id = Some("notPrePaid"),
+                    value = Some(notPrePaid),
+                    content = Text(messages("declaration.transportInformation.transportPayment.paymentMethod.notPrePaid")),
+                    checked = form("paymentMethod").value.contains(notPrePaid)
+                )
+            ),
+            errorMessage = form("paymentMethod").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
 
-        @components.heading(
-            title = messages("declaration.transportInformation.transportPayment.paymentMethod"),
-            hint = messages("declaration.transportInformation.transportPayment.paymentMethod.hint")
-        )
+        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
 
-        @components.fields.field_radio(
-            field = form("paymentMethod"),
-            legend = "",
-            inputs = Seq(
-                RadioOption("cash", cash, messages("declaration.transportInformation.transportPayment.paymentMethod.cash")),
-                RadioOption("creditCard", creditCard, messages("declaration.transportInformation.transportPayment.paymentMethod.creditCard")),
-                RadioOption("cheque", cheque, messages("declaration.transportInformation.transportPayment.paymentMethod.cheque")),
-                RadioOption("other", other, messages("declaration.transportInformation.transportPayment.paymentMethod.other")),
-                RadioOption("eFunds", eFunds, messages("declaration.transportInformation.transportPayment.paymentMethod.eFunds")),
-                RadioOption("accHolder", accHolder, messages("declaration.transportInformation.transportPayment.paymentMethod.accHolder")),
-                RadioOption("notPrePaid", notPrePaid, messages("declaration.transportInformation.transportPayment.paymentMethod.notPrePaid"))
-            )
-        )
-
-        @components.details(messages("site.details.summary_text_this")){
-            @tariffBody
-        }
-        @components.submit_button()
-        @components.buttons.save_and_return_later_button()
+        @saveButtons()
     }
-
 }

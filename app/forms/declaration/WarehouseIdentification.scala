@@ -17,9 +17,12 @@
 package forms.declaration
 
 import forms.DeclarationPage
-import play.api.data.Forms.{optional, text}
+import forms.Mapping.requiredRadio
+import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
+import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
+import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
 
 case class WarehouseIdentification(identificationNumber: Option[String] = None)
@@ -29,18 +32,39 @@ object WarehouseIdentification extends DeclarationPage {
 
   val formId = "WarehouseIdentification"
 
+  val inWarehouseKey = "inWarehouse"
+  val warehouseIdKey = "identificationNumber"
+
+  private def form2Model: (String, Option[String]) => WarehouseIdentification = {
+    case (inWarehouse, warehouseId) =>
+      inWarehouse match {
+        case yes => WarehouseIdentification(warehouseId)
+        case no  => WarehouseIdentification(None)
+      }
+  }
+
+  private def model2Form: WarehouseIdentification => Option[(String, Option[String])] =
+    model =>
+      model.identificationNumber match {
+        case Some(id) => Some((yes, Some(id)))
+        case None     => Some((no, None))
+    }
+
   val validWarehouseTypes = Set('R', 'S', 'T', 'U', 'Y', 'Z')
 
   val mapping = Forms
     .mapping(
-      "identificationNumber" ->
-        optional(
+      inWarehouseKey -> requiredRadio("error.yesNo.required"),
+      warehouseIdKey ->
+        mandatoryIfEqual(
+          inWarehouseKey,
+          yes,
           text().verifying(
             "declaration.warehouse.identification.identificationNumber.error",
             startsWith(validWarehouseTypes) and noShorterThan(2) and noLongerThan(36) and isAlphanumeric
           )
         )
-    )(WarehouseIdentification.apply)(WarehouseIdentification.unapply)
+    )(form2Model)(model2Form)
 
   def form(): Form[WarehouseIdentification] = Form(mapping)
 }

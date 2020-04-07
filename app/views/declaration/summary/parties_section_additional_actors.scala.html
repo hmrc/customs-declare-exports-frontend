@@ -30,7 +30,7 @@
 @(mode: Mode, additionalActors: Seq[DeclarationAdditionalActors])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @actorPartyType(actor: DeclarationAdditionalActors) = @{
-    actor.partyType.map(partyType => messages(s"declaration.summary.parties.additional.$partyType")).getOrElse("")
+    actor.partyType.map(partyType => messages(s"declaration.partyType.$partyType")).getOrElse("")
 }
 
 @actorEori(actor: DeclarationAdditionalActors) = @{
@@ -85,10 +85,10 @@
         ),
         head = Some(List(
             HeadCell(
-                content = Text(messages("declaration.summary.parties.additional.type"))
+                content = Text(messages("declaration.additionalActors.partyType"))
             ),
             HeadCell(
-                content = Text(messages("declaration.summary.parties.additional.eori"))
+                content = Text(messages("declaration.additionalActors.eori"))
             ),
             HeadCell(
                 content = Empty

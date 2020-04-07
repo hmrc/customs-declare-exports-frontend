@@ -52,17 +52,15 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessag
       messages must haveTranslationFor("declaration.additionalActors.title")
       messages must haveTranslationFor("declaration.additionalActors.title.hint")
       messages must haveTranslationFor("declaration.additionalActors.eori")
-      messages must haveTranslationFor("supplementary.additionalActors.eori.isNotDefined")
+      messages must haveTranslationFor("declaration.eori.empty")
       messages must haveTranslationFor("declaration.additionalActors.partyType")
-      messages must haveTranslationFor("supplementary.additionalActors.maximumAmount.error")
-      messages must haveTranslationFor("supplementary.additionalActors.duplicated.error")
       messages must haveTranslationFor("declaration.partyType")
       messages must haveTranslationFor("declaration.partyType.CS")
       messages must haveTranslationFor("declaration.partyType.MF")
       messages must haveTranslationFor("declaration.partyType.FW")
       messages must haveTranslationFor("declaration.partyType.WH")
       messages must haveTranslationFor("declaration.partyType.empty")
-      messages must haveTranslationFor("supplementary.partyType.error")
+      messages must haveTranslationFor("declaration.partyType.error")
     }
   }
 
