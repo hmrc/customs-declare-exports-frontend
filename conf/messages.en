@@ -1059,6 +1059,7 @@ declaration.summary.items.item.supportingDocuments.code = Additional document ty
 declaration.summary.items.item.supportingDocuments.information = Additional document identifier
 declaration.summary.warehouse = Warehouse information
 declaration.summary.warehouse.id = Warehouse ID
+declaration.summary.warehouse.no.label = Warehouse
 declaration.summary.warehouse.id.change = Change warehouse ID
 declaration.summary.warehouse.supervisingOffice = Customs supervising office
 declaration.summary.warehouse.supervisingOffice.change = Change customs supervising office
