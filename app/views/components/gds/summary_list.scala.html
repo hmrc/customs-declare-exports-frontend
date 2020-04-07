@@ -14,18 +14,20 @@
  * limitations under the License.
  *@
 
-@import models.requests.JourneyRequest
-@import models.Mode
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukSummaryList
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 
-@this(item_section: item_section)
+@this(govukSummaryList: GovukSummaryList)
 
-@(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(id: String, heading: Option[String] = None, summaryListRows: Seq[Option[SummaryListRow]], classes: String = "govuk-!-margin-bottom-9")
 
-
-@if(declarationData.items.nonEmpty) {
-
-    <h2 class="govuk-heading-m">@messages("declaration.summary.items")</h2>
-    @declarationData.items.toSeq.sortBy(_.sequenceId).map { item =>
-        @item_section(mode, item)
-    }
+@heading.map { header =>
+ <h2 class="govuk-heading-m">@header</h2>
 }
+
+@govukSummaryList(SummaryList(
+ rows = summaryListRows.flatten,
+ classes = classes,
+ attributes = Map("id" -> id)
+))

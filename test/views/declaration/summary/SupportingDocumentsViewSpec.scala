@@ -16,13 +16,16 @@
 
 package views.declaration.summary
 
+import base.Injector
 import forms.declaration.additionaldocuments.DocumentsProduced
 import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.supporting_documents
 
-class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
+class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+
+  val section = instanceOf[supporting_documents]
 
   "Supporting documents view" should {
 
@@ -30,12 +33,15 @@ class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
 
       "there is no documents" in {
 
-        val view = supporting_documents(Mode.Normal, "itemId", 1, Seq.empty)(messages, journeyRequest())
+        val view = section(Mode.Normal, "itemId", 1, Seq.empty)(messages, journeyRequest())
+        val row = view.getElementsByClass("supporting-documents-1-row")
 
-        view.getElementById("supporting-documents-1-label").text() mustBe messages("declaration.summary.items.item.supportingDocuments")
-        view.getElementById("supporting-documents-1-change") must haveHref(
-          controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId")
-        )
+        row must haveSummaryKey(messages("declaration.summary.items.item.supportingDocuments"))
+        row must haveSummaryValue("")
+
+        row must haveSummaryActionsText("site.change declaration.summary.items.item.supportingDocuments.change")
+
+        row must haveSummaryActionsHref(controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId"))
       }
     }
 
@@ -45,35 +51,27 @@ class SupportingDocumentsViewSpec extends UnitViewSpec with ExportsTestData {
         DocumentsProduced(Some("typ1"), Some("identifier1"), None, None, None, None, None),
         DocumentsProduced(Some("typ2"), Some("identifier2"), None, None, None, None, None)
       )
-      val view = supporting_documents(Mode.Normal, "itemId", 1, documents)(messages, journeyRequest())
+      val view = section(Mode.Normal, "itemId", 1, documents)(messages, journeyRequest())
+      val table = view.getElementById("supporting-documents-1-table")
 
-      view.getElementById("supporting-documents-1").text() mustBe messages("declaration.summary.items.item.supportingDocuments")
-      view.getElementById("supporting-documents-code-1").text() mustBe messages("declaration.summary.items.item.supportingDocuments.code")
-      view.getElementById("supporting-documents-information-1").text() mustBe messages(
-        "declaration.summary.items.item.supportingDocuments.information"
-      )
-      view.getElementById("supporting-document-1-code-0").text() mustBe "typ1"
-      view.getElementById("supporting-document-1-information-0").text() mustBe "identifier1"
+      table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.supportingDocuments")
 
-      val List(change1, accessibleChange1) = view.getElementById("supporting-document-1-change-0").text().split(" ").toList
+      table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.summary.items.item.supportingDocuments.code")
+      table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages("declaration.summary.items.item.supportingDocuments.information")
 
-      change1 mustBe messages("site.change")
-      accessibleChange1 mustBe messages("declaration.summary.items.item.supportingDocuments.change", 1)
+      val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
+      row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe "typ1"
+      row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe "identifier1"
+      val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
+      row1ChangeLink must haveHref(controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId"))
+      row1ChangeLink.text() mustBe "site.change " + messages("declaration.summary.items.item.supportingDocuments.change", 1)
 
-      view.getElementById("supporting-document-1-change-0") must haveHref(
-        controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId")
-      )
-      view.getElementById("supporting-document-1-code-1").text() mustBe "typ2"
-      view.getElementById("supporting-document-1-information-1").text() mustBe "identifier2"
-
-      val List(change2, accessibleChange2) = view.getElementById("supporting-document-1-change-1").text().split(" ").toList
-
-      change2 mustBe messages("site.change")
-      accessibleChange2 mustBe messages("declaration.summary.items.item.supportingDocuments.change", 2)
-
-      view.getElementById("supporting-document-1-change-1") must haveHref(
-        controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId")
-      )
+      val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
+      row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe "typ2"
+      row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe "identifier2"
+      val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
+      row2ChangeLink must haveHref(controllers.declaration.routes.DocumentsProducedController.displayPage(Mode.Normal, "itemId"))
+      row2ChangeLink.text() mustBe "site.change " + messages("declaration.summary.items.item.supportingDocuments.change", 1)
     }
   }
 }

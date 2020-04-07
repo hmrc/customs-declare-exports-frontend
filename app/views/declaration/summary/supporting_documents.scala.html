@@ -16,39 +16,71 @@
 
 @import forms.declaration.additionaldocuments.DocumentsProduced
 @import models.requests.JourneyRequest
-@import models.viewmodels.HtmlTableRow
 @import models.Mode
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds.changeLink
+@import views.html.components.gds.summary_list
+@import views.declaration.summary.TableCell
+
+@this(
+        govukTable: GovukTable,
+        changeLink: changeLink,
+        summaryList: summary_list
+)
 
 @(mode: Mode, itemId: String, itemNo: Int, supportingDocuments: Seq[DocumentsProduced])(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
-<table>
+@change() = {
+    @changeLink(
+        messages("site.change"),
+        messages("declaration.summary.items.item.supportingDocuments.change", itemNo),
+        controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId)
+    )
+}
+
 @if(supportingDocuments.nonEmpty){
-
-    <caption class="heading-small"><span id="supporting-documents-@itemNo">@messages("declaration.summary.items.item.supportingDocuments")</span></caption>
-    <tr class="section">
-        <td class="bold"><span id="supporting-documents-code-@itemNo">@messages("declaration.summary.items.item.supportingDocuments.code")</span></td>
-        <td class="bold"><span id="supporting-documents-information-@itemNo">@messages("declaration.summary.items.item.supportingDocuments.information")</span></td>
-        <td></td>
-    </tr>
-    @supportingDocuments.zipWithIndex.map { case (document, index) =>
-        <tr class="section">
-            <td class="exports-summary-list__key_value"><span id="supporting-document-@itemNo-code-@index">@document.documentTypeCode.getOrElse("")</span></td>
-            <td class="exports-summary-list__value"><span id="supporting-document-@itemNo-information-@index">@document.documentIdentifier.getOrElse("")</span></td>
-            <td class="exports-summary-list__actions">
-                <a href="@controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId)" id="supporting-document-@itemNo-change-@index">
-                    <span aria-hidden="true">@messages("site.change")</span>
-                    <span class="visually-hidden">@messages("declaration.summary.items.item.supportingDocuments.change", itemNo)</span>
-                </a>
-            </td>
-        </tr>
-    }
-
+    @govukTable(Table(
+        rows = supportingDocuments.map(document =>
+            Seq(
+                TableRow(
+                    content = Text(document.documentTypeCode.getOrElse(""))
+                ),
+                TableRow(
+                    content = Text(document.documentIdentifier.getOrElse(""))
+                ),
+                TableCell.changeLink(change())
+            )
+        ),
+        head = Some(List(
+            HeadCell(
+                content = Text(messages("declaration.summary.items.item.supportingDocuments.code"))
+            ),
+            HeadCell(
+                content = Text(messages("declaration.summary.items.item.supportingDocuments.information"))
+            ),
+            HeadCell(
+                content = Empty
+            )
+        )),
+        caption = Some(messages("declaration.summary.items.item.supportingDocuments")),
+        attributes = Map("id" -> s"supporting-documents-$itemNo-table")
+    ))
 } else {
-    @components.table_row(s"supporting-documents-$itemNo", HtmlTableRow(
-        label = messages("declaration.summary.items.item.supportingDocuments"),
-        value = "",
-        call = Some(controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId)),
-        changeLabel = Some(messages("declaration.summary.items.item.supportingDocuments.change", itemNo))
+    @summaryList(s"supporting-documents-$itemNo", None, Seq(
+        Some(SummaryListRow(
+            classes = s"supporting-documents-$itemNo-row",
+            key = Key(
+                content = Text(messages("declaration.summary.items.item.supportingDocuments"))
+            ),
+            actions = Some(Actions(
+                items = Seq(
+                    ActionItem(
+                        href = controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId).url,
+                        content = Text(messages("site.change")),
+                        visuallyHiddenText = Some(messages("declaration.summary.items.item.supportingDocuments.change"))
+                    )
+                )
+            ))
+        ))
     ))
 }
-</table>

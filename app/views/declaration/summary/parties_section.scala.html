@@ -14,113 +14,120 @@
  * limitations under the License.
  *@
 
-@import models.DeclarationType._
 @import models.declaration.Parties
 @import models.requests.JourneyRequest
-@import models.viewmodels.HtmlTableRow
-@import models.DeclarationType._
-@import models.Mode._
-@import views.html.declaration.summary.parties_section_additional_actors
-@import views.html.declaration.summary.parties_section_holders
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds.summary_list
+@import forms.common.Address
+@import views.declaration.summary.EoriOrAddress
+@import views.html.declaration.summary._
+@import forms.common.Eori
+
+@this(
+        summaryList: summary_list,
+        additionalActorsSection: parties_section_additional_actors,
+        holdersSection: parties_section_holders
+)
 
 @(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
+@eoriOrAddress(key: String, eori: Option[Eori], address: Option[Address], change: Call, isEoriDefault: Boolean = true) = @{
+    EoriOrAddress.rows(
+        key = key,
+        eori = eori,
+        address = address,
+        eoriLabel = s"declaration.summary.parties.$key.eori",
+        eoriChangeLabel = s"declaration.summary.parties.$key.eori.change",
+        addressLabel = s"declaration.summary.parties.$key.address",
+        addressChangeLabel = s"declaration.summary.parties.$key.address.change",
+        changeController = change,
+        isEoriDefault = isEoriDefault
+    )
+}
+
 @sectionRequired(parties: Parties) = @{
     parties.exporterDetails.isDefined ||
-      parties.consigneeDetails.isDefined ||
-      parties.declarantDetails.isDefined ||
-      parties.representativeDetails.isDefined ||
-      parties.declarationAdditionalActorsData.isDefined ||
-      parties.declarationHoldersData.isDefined ||
-      parties.carrierDetails.isDefined
+            parties.consigneeDetails.isDefined ||
+            parties.declarantDetails.isDefined ||
+            parties.representativeDetails.isDefined ||
+            parties.declarationAdditionalActorsData.isDefined ||
+            parties.declarationHoldersData.isDefined ||
+            parties.carrierDetails.isDefined
+}
+
+@extractAddress(address: Address) = @{
+    Seq(address.fullName, address.addressLine, address.townOrCity, address.postCode, address.country).mkString("<br>")
 }
 
 @if(sectionRequired(declarationData.parties)) {
-    <div id="declaration-parties-summary">
-    @components.summary_list(Some(messages("declaration.summary.parties"))) {
-        @declarationData.parties.exporterDetails.map(exporter =>
-            eori_or_address_section(
-                id = "exporter",
-                eoriOption = exporter.details.eori,
-                eoriLabel = "declaration.summary.parties.exporter.eori",
-                address = exporter.details.address,
-                addressLabel = "declaration.summary.parties.exporter.address",
-                call = Some(controllers.declaration.routes.ExporterDetailsController.displayPage(mode)),
-                eoriChangeLabel = Some(messages("declaration.summary.parties.exporter.eori.change")),
-                addressChangeLabel = Some(messages("declaration.summary.parties.exporter.address.change"))
-            )
-        )
-        @declarationData.parties.consigneeDetails.map(consignee =>
-            eori_or_address_section(
-                id = "consignee",
-                eoriOption = consignee.details.eori,
-                eoriLabel = "declaration.summary.parties.consignee.eori",
-                address = consignee.details.address,
-                addressLabel = "declaration.summary.parties.consignee.address",
-                call = Some(controllers.declaration.routes.ConsigneeDetailsController.displayPage(mode)),
-                eoriChangeLabel = Some(messages("declaration.summary.parties.consignee.eori.change")),
-                addressChangeLabel = Some(messages("declaration.summary.parties.consignee.address.change")),
-                isEoriDefault = false
-            )
-        )
-        @declarationData.parties.declarantDetails.map(declarant =>
-            eori_or_address_section(
-                id = "declarant",
-                eoriOption = declarant.details.eori,
-                eoriLabel = "declaration.summary.parties.declarant.eori",
-                address = declarant.details.address,
-                addressLabel = "declaration.summary.parties.declarant.address",
-                call = Some(controllers.declaration.routes.DeclarantDetailsController.displayPage(mode)),
-                eoriChangeLabel = Some(messages("declaration.summary.parties.declarant.eori.change")),
-                addressChangeLabel = Some(messages("declaration.summary.parties.declarant.address.change"))
-            )
-        )
-        @declarationData.parties.representativeDetails.map(representative =>
-            eori_or_address_section(
-                id = "representative",
-                eoriOption = representative.details.flatMap(_.eori),
-                eoriLabel = "declaration.summary.parties.representative.eori",
-                address = representative.details.flatMap(_.address),
-                addressLabel = messages("declaration.summary.parties.representative.address"),
-                call = Some(controllers.declaration.routes.RepresentativeDetailsController.displayPage(mode)),
-                eoriChangeLabel = Some(messages("declaration.summary.parties.representative.eori.change")),
-                addressChangeLabel = Some(messages("declaration.summary.parties.representative.address.change"))
-            )
-        )
-        @declarationData.parties.representativeDetails.map(representative =>
-            components.table_row("representationType", HtmlTableRow(
-                label = messages("declaration.summary.parties.representative.type"),
-                value = representative.statusCode.map(code => messages(s"declaration.summary.parties.representative.type.$code")).getOrElse(""),
-                call = Some(controllers.declaration.routes.RepresentativeDetailsController.displayPage(mode)),
-                changeLabel = Some(messages("declaration.summary.parties.representative.type.change"))
-            ))
-        )
-        @declarationData.parties.carrierDetails.map(carrier =>
-            eori_or_address_section(
-                id = "carrier",
-                eoriOption = carrier.details.eori,
-                eoriLabel = "declaration.summary.parties.carrier.eori",
-                address = carrier.details.address,
-                addressLabel = "declaration.summary.parties.carrier.address",
-                call = Some(controllers.declaration.routes.CarrierDetailsController.displayPage(mode)),
-                eoriChangeLabel = Some(messages("declaration.summary.parties.carrier.eori.change")),
-                addressChangeLabel = Some(messages("declaration.summary.parties.carrier.address.change")),
-                isEoriDefault = false
-            )
-        )
+    @summaryList("declaration-parties-summary", Some(messages("declaration.summary.parties")),
 
-        @declarationData.parties.declarationAdditionalActorsData.map(additional =>
-            parties_section_additional_actors(
-                mode = mode,
-                additionalActors = additional.actors
-            )
-        )
+        declarationData.parties.exporterDetails.map(export => eoriOrAddress(
+            "exporter",
+            export.details.eori,
+            export.details.address,
+            controllers.declaration.routes.ExporterDetailsController.displayPage(mode)
+        )).getOrElse(Seq.empty)
 
-        @parties_section_holders(
-                mode = mode,
-                holders = declarationData.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
-            )
+        ++ declarationData.parties.consigneeDetails.map(consignee => eoriOrAddress(
+            "consignee",
+            consignee.details.eori,
+            consignee.details.address,
+            controllers.declaration.routes.ConsigneeDetailsController.displayPage(mode),
+            isEoriDefault = false
+        )).getOrElse(Seq.empty)
 
-    }
-    </div>
+        ++ declarationData.parties.declarantDetails.map(declarant => eoriOrAddress(
+            "declarant",
+            declarant.details.eori,
+            declarant.details.address,
+            controllers.declaration.routes.DeclarantDetailsController.displayPage(mode)
+        )).getOrElse(Seq.empty)
+
+        ++ declarationData.parties.representativeDetails.map(representative => eoriOrAddress(
+            "representative",
+            representative.details.flatMap(_.eori),
+            representative.details.flatMap(_.address),
+            controllers.declaration.routes.RepresentativeDetailsController.displayPage(mode)
+        )).getOrElse(Seq.empty)
+
+        ++ (Seq.empty :+ declarationData.parties.representativeDetails.map(representative =>
+            SummaryListRow(
+                classes = "representationType-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.parties.representative.type"))
+                ),
+                value = Value(
+                    content = Text(representative.statusCode.map(code => messages(s"declaration.summary.parties.representative.type.$code")).getOrElse(""))
+                ),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = controllers.declaration.routes.RepresentativeDetailsController.displayPage(mode).url,
+                            content = Text(messages("site.change")),
+                            visuallyHiddenText = Some(messages("declaration.summary.parties.representative.type.change"))
+                        )
+                    )
+                ))
+            )
+        ))
+
+        ++ declarationData.parties.carrierDetails.map(carrier => eoriOrAddress(
+            "carrier",
+            carrier.details.eori,
+            carrier.details.address,
+            controllers.declaration.routes.CarrierDetailsController.displayPage(mode),
+            isEoriDefault = false
+        )).getOrElse(Seq.empty),
+
+        classes = "govuk-!-margin-bottom-0"
+    )
+
+    @declarationData.parties.declarationAdditionalActorsData.map(data =>
+        additionalActorsSection(mode, data.actors)
+    )
+
+    @declarationData.parties.declarationHoldersData.map(data =>
+        holdersSection(mode, data.holders)
+    )
 }

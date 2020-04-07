@@ -16,13 +16,14 @@
 
 package views.declaration.summary
 
+import base.Injector
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.{DeclarationType, Mode}
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.references_section
 
-class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData {
+class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   val data = aDeclaration(
     withType(DeclarationType.STANDARD),
@@ -31,76 +32,66 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData {
     withConsignmentReferences(ducr = "DUCR", lrn = "LRN")
   )
 
-  val view = references_section(Mode.Change, data)(messages, journeyRequest())
-  val viewNoAnswers = references_section(Mode.Change, aDeclaration(withType(DeclarationType.STANDARD)))(messages, journeyRequest())
+  val section = instanceOf[references_section]
+
+  val view = section(Mode.Change, data)(messages, journeyRequest())
+  val viewNoAnswers = section(Mode.Change, aDeclaration(withType(DeclarationType.STANDARD)))(messages, journeyRequest())
 
   "References section" should {
 
     "have capitalized declaration type with change button" in {
 
-      view.getElementById("declarationType-label").text() mustBe messages("declaration.summary.references.type")
-      view.getElementById("declarationType").text() mustBe "Standard"
+      val row = view.getElementsByClass("declarationType-row")
+      row must haveSummaryKey(messages("declaration.summary.references.type"))
+      row must haveSummaryValue("Standard")
 
-      val List(change, accessibleChange) = view.getElementById("declarationType-change").text().split(" ").toList
+      row must haveSummaryActionsText("site.change declaration.summary.references.type.change")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.references.type.change")
-
-      view.getElementById("declarationType-change") must haveHref(controllers.declaration.routes.DeclarationChoiceController.displayPage(Mode.Change))
+      row must haveSummaryActionsHref(controllers.declaration.routes.DeclarationChoiceController.displayPage(Mode.Change))
     }
 
     "have dispatch location with change button" in {
 
-      view.getElementById("location-label").text() mustBe messages("declaration.summary.references.location")
-      view.getElementById("location").text() mustBe messages("site.yes")
+      val row = view.getElementsByClass("location-row")
+      row must haveSummaryKey(messages("declaration.summary.references.location"))
+      row must haveSummaryValue(messages("site.yes"))
 
-      val List(change, accessibleChange) = view.getElementById("location-change").text().split(" ").toList
+      row must haveSummaryActionsText("site.change declaration.summary.references.location.change")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.references.location.change")
-
-      view.getElementById("location-change") must haveHref(controllers.declaration.routes.DispatchLocationController.displayPage(Mode.Change))
+      row must haveSummaryActionsHref(controllers.declaration.routes.DispatchLocationController.displayPage(Mode.Change))
     }
 
     "have additional declaration type with change button" in {
 
-      view.getElementById("additionalType-label").text() mustBe messages("declaration.summary.references.additionalType")
-      view.getElementById("additionalType").text() mustBe messages("declaration.summary.references.additionalType.A")
+      val row = view.getElementsByClass("additionalType-row")
+      row must haveSummaryKey(messages("declaration.summary.references.additionalType"))
+      row must haveSummaryValue(messages("declaration.summary.references.additionalType.A"))
 
-      val List(change, accessibleChange) = view.getElementById("additionalType-change").text().split(" ").toList
+      row must haveSummaryActionsText("site.change declaration.summary.references.additionalType.change")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.references.additionalType.change")
-
-      view.getElementById("additionalType-change") must haveHref(
-        controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage(Mode.Change)
-      )
+      row must haveSummaryActionsHref(controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage(Mode.Change))
     }
 
     "have ducr with change button" in {
 
-      view.getElementById("ducr-label").text() mustBe messages("declaration.summary.references.ducr")
-      view.getElementById("ducr").text() mustBe "DUCR"
+      val row = view.getElementsByClass("ducr-row")
+      row must haveSummaryKey(messages("declaration.summary.references.ducr"))
+      row must haveSummaryValue("DUCR")
 
-      val List(change, accessibleChange) = view.getElementById("ducr-change").text().split(" ").toList
+      row must haveSummaryActionsText("site.change declaration.summary.references.ducr.change")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.references.ducr.change")
-
-      view.getElementById("ducr-change") must haveHref(controllers.declaration.routes.ConsignmentReferencesController.displayPage(Mode.Change))
+      row must haveSummaryActionsHref(controllers.declaration.routes.ConsignmentReferencesController.displayPage(Mode.Change))
     }
 
     "have lrn with change button" in {
 
-      view.getElementById("lrn-label").text() mustBe messages("declaration.summary.references.lrn")
-      view.getElementById("lrn").text() mustBe "LRN"
+      val row = view.getElementsByClass("lrn-row")
+      row must haveSummaryKey(messages("declaration.summary.references.lrn"))
+      row must haveSummaryValue("LRN")
 
-      val List(change, accessibleChange) = view.getElementById("lrn-change").text().split(" ").toList
+      row must haveSummaryActionsText("site.change declaration.summary.references.lrn.change")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.references.lrn.change")
-
-      view.getElementById("lrn-change") must haveHref(controllers.declaration.routes.ConsignmentReferencesController.displayPage(Mode.Change))
+      row must haveSummaryActionsHref(controllers.declaration.routes.ConsignmentReferencesController.displayPage(Mode.Change))
     }
   }
 
@@ -108,30 +99,29 @@ class ReferencesSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
     "have declaration type" in {
 
-      viewNoAnswers.getElementById("declarationType-label").text() mustBe messages("declaration.summary.references.type")
-      viewNoAnswers.getElementById("declarationType-change") must haveHref(
-        controllers.declaration.routes.DeclarationChoiceController.displayPage(Mode.Change)
-      )
+      val row = viewNoAnswers.getElementsByClass("declarationType-row")
+      row must haveSummaryKey(messages("declaration.summary.references.type"))
+      row must haveSummaryActionsHref(controllers.declaration.routes.DeclarationChoiceController.displayPage(Mode.Change))
     }
 
     "not have dispatch location" in {
 
-      viewNoAnswers.getElementById("location-label") mustBe null
+      viewNoAnswers.getElementsByClass("location-row") mustBe empty
     }
 
     "not have additional declaration type" in {
 
-      viewNoAnswers.getElementById("additionalType-label") mustBe null
+      viewNoAnswers.getElementsByClass("additionalType-row") mustBe empty
     }
 
     "not have have ducr" in {
 
-      viewNoAnswers.getElementById("ducr-label") mustBe null
+      viewNoAnswers.getElementsByClass("ducr-row") mustBe empty
     }
 
     "not have have lrn" in {
 
-      viewNoAnswers.getElementById("lrn-label") mustBe null
+      viewNoAnswers.getElementsByClass("lrn-row") mustBe empty
     }
   }
 }

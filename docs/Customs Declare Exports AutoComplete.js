@@ -899,8 +899,8 @@ function summary(){
         document.getElementById("fullName").value = 'Tim Tester';
         document.getElementById("jobRole").value = 'Tester';
         document.getElementById("email").value = 'tim@testing.com';
-        document.getElementById("confirmation").click()
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById("confirmation").click();
+        document.getElementById('submit').click();
 
         setDeclaration(0);
     }

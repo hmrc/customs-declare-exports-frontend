@@ -16,14 +16,15 @@
 
 package views.declaration.summary
 
+import base.Injector
 import forms.declaration.Seal
 import models.Mode
 import models.declaration.Container
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.summary
+import views.html.declaration.summary.containers
 
-class ContainersViewSpec extends UnitViewSpec with ExportsTestData {
+class ContainersViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   val firstContainerID = "951357"
   val secondContainerID = "456789"
@@ -33,38 +34,49 @@ class ContainersViewSpec extends UnitViewSpec with ExportsTestData {
   val containerWithSeals = Container(secondContainerID, Seq(Seal(firstSeal), Seal(secondSeal)))
   val containers = Seq(containerWithoutSeals, containerWithSeals)
 
+  val section = instanceOf[containers]
+
   "Containers" should {
 
-    "display all containers and seals" in {
+    "display title only and change link" when {
 
-      val view = summary.containers(Mode.Normal, containers)(messages, journeyRequest())
+      "Containers is empty" in {
 
-      view.getElementById("container").text() mustBe messages("declaration.summary.container")
-      view.getElementById("container-id").text() mustBe messages("declaration.summary.container.id")
-      view.getElementById("container-seals").text() mustBe messages("declaration.summary.container.securitySeals")
-      view.getElementById("container-0-id").text() mustBe firstContainerID
-      view.getElementById("container-0-seals").text() mustBe empty
-      view.getElementById("container-1-id").text() mustBe secondContainerID
-      view.getElementById("container-1-seals").text() mustBe s"$firstSeal, $secondSeal"
+        val view = section(Mode.Normal, Seq.empty)(messages, journeyRequest())
+        val row = view.getElementsByClass("containers-row")
+
+        row must haveSummaryKey(messages("declaration.summary.transport.containers"))
+        row must haveSummaryValue(messages("site.no"))
+
+        row must haveSummaryActionsText("site.change declaration.summary.transport.containers.change")
+
+        row must haveSummaryActionsHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Normal))
+      }
     }
 
-    "display change buttons for every container" in {
+    "display all containers and seals" in {
+      val view = section(Mode.Change, containers)(messages, journeyRequest())
 
-      val view = summary.containers(Mode.Normal, containers)(messages, journeyRequest())
+      val table = view.getElementById("containers-table")
+      table.getElementsByTag("caption").text() mustBe messages("declaration.summary.container")
+      table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.summary.container.id")
+      table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages("declaration.summary.container.securitySeals")
 
-      val List(change1, accessibleChange1) = view.getElementById("container-0-change").text().split(" ").toList
+      val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
+      row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe messages(firstContainerID)
+      row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe messages("")
 
-      change1 mustBe messages("site.change")
-      accessibleChange1 mustBe messages("declaration.summary.container.change", firstContainerID)
+      val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
+      row1ChangeLink must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Change))
+      row1ChangeLink.text() mustBe "site.change " + messages("declaration.summary.container.change", 0)
 
-      view.getElementById("container-0-change") must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary())
+      val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
+      row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe messages(secondContainerID)
+      row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe messages(s"$firstSeal, $secondSeal")
 
-      val List(change2, accessibleChange2) = view.getElementById("container-1-change").text().split(" ").toList
-
-      change2 mustBe messages("site.change")
-      accessibleChange2 mustBe messages("declaration.summary.container.change", secondContainerID)
-
-      view.getElementById("container-1-change") must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary())
+      val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
+      row2ChangeLink must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Change))
+      row2ChangeLink.text() mustBe "site.change " + messages("declaration.summary.container.change", 1)
     }
   }
 }

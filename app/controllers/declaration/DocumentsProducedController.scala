@@ -99,12 +99,11 @@ class DocumentsProducedController @Inject()(
   private def saveAndRedirect(mode: Mode, itemId: String, document: DocumentsProduced, documents: Seq[DocumentsProduced])(
     implicit request: JourneyRequest[AnyContent],
     hc: HeaderCarrier
-  ): Future[Result] =
-    if (document.isDefined) {
-      val updateDocs = DocumentsProducedData(documents :+ document)
-      updateModelInCache(itemId, document, updateDocs)
-        .map(_ => navigator.continueTo(mode, routes.ItemsSummaryController.displayPage))
-    } else Future.successful(navigator.continueTo(mode, routes.ItemsSummaryController.displayPage))
+  ): Future[Result] = {
+    val updateDocs = if (document.isDefined) DocumentsProducedData(documents :+ document) else DocumentsProducedData(documents)
+    updateModelInCache(itemId, document, updateDocs)
+      .map(_ => navigator.continueTo(mode, routes.ItemsSummaryController.displayPage))
+  }
 
   private def updateModelInCache(itemId: String, document: DocumentsProduced, updatedDocs: DocumentsProducedData)(
     implicit journeyRequest: JourneyRequest[AnyContent]

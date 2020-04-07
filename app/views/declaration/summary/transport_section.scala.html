@@ -17,7 +17,13 @@
 @import models.Mode
 @import models.declaration.Transport
 @import models.requests.JourneyRequest
-@import models.viewmodels.HtmlTableRow
+@import views.html.components.gds.summary_list
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+
+@this(
+        summaryList: summary_list,
+        containers: containers
+)
 
 @(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
@@ -47,67 +53,117 @@
 }
 
 @if(sectionRequired(declarationData.transport)) {
-    <div id="declaration-transport-summary">
-    @components.summary_list(Some(messages("declaration.summary.transport"))) {
-        @declarationData.transport.borderModeOfTransportCode.map(borderModeOfTransportCode =>
-            components.table_row("border-transport", HtmlTableRow(
-                label = messages("declaration.summary.transport.departure.transportCode.header"),
-                value = Seq(
-                    messages(s"declaration.summary.transport.departure.transportCode.${borderModeOfTransportCode.getCodeValue}")
+    @summaryList("declaration-transport-summary", Some(messages("declaration.summary.transport")), Seq(
+        declarationData.transport.borderModeOfTransportCode.map(borderModeOfTransportCode =>
+            SummaryListRow(
+                classes = "border-transport-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.transport.departure.transportCode.header"))
                 ),
-                call = Some(controllers.declaration.routes.TransportLeavingTheBorderController.displayPage(mode)),
-                changeLabel = Some(messages("declaration.summary.transport.departure.transportCode.header.change"))
-            ))
+                value = Value(
+                    content = Text(messages(s"declaration.summary.transport.departure.transportCode.${borderModeOfTransportCode.getCodeValue}"))
+                ),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = controllers.declaration.routes.TransportLeavingTheBorderController.displayPage(mode).url,
+                            content = Text(messages("site.change")),
+                            visuallyHiddenText = Some(messages("declaration.summary.transport.departure.transportCode.header.change"))
+                        )
+                    ))
+                ))
+        ),
+        if(declarationData.transport.meansOfTransportOnDepartureType.isDefined || declarationData.transport.meansOfTransportOnDepartureIDNumber.isDefined)
+          Some(
+              SummaryListRow(
+                  classes = "transport-reference-row",
+                  key = Key(
+                      content = Text(messages("declaration.summary.transport.departure.meansOfTransport.header"))
+                  ),
+                  value = Value(
+                      content = HtmlContent(messagesForDepartureMeansOfTransport(declarationData.transport).mkString("<br>"))
+                  ),
+                  actions = Some(Actions(
+                      items = Seq(
+                          ActionItem(
+                              href = controllers.declaration.routes.DepartureTransportController.displayPage(mode).url,
+                              content = Text(messages("site.change")),
+                              visuallyHiddenText = Some(messages("declaration.summary.transport.departure.meansOfTransport.header.change"))
+                          )
+                      ))
+                  ))
+          )
+        else
+         None,
+        if(declarationData.transport.meansOfTransportCrossingTheBorderType.isDefined && declarationData.transport.meansOfTransportCrossingTheBorderIDNumber.isDefined)
+            Some(
+                SummaryListRow(
+                    classes = "active-transport-type-row",
+                    key = Key(
+                        content = Text(messages("declaration.summary.transport.border.meansOfTransport.header"))
+                    ),
+                    value = Value(
+                        content = HtmlContent(messagesForBorderMeansOfTransport(declarationData.transport).mkString("<br>"))
+                    ),
+                    actions = Some(Actions(
+                        items = Seq(
+                            ActionItem(
+                                href = controllers.declaration.routes.BorderTransportController.displayPage(mode).url,
+                                content = Text(messages("site.change")),
+                                visuallyHiddenText = Some(messages("declaration.summary.transport.border.meansOfTransport.header.change"))
+                            )
+                        ))
+                    ))
+            )
+        else
+            None,
+        if(declarationData.transport.meansOfTransportCrossingTheBorderType.isDefined && declarationData.transport.meansOfTransportCrossingTheBorderIDNumber.isDefined)
+            Some(
+                SummaryListRow(
+                    classes = "active-transport-nationality-row",
+                    key = Key(
+                        content = Text(messages("declaration.summary.transport.activeTransportNationality"))
+                    ),
+                    value = Value(
+                        content = Text(declarationData.transport.meansOfTransportCrossingTheBorderNationality.getOrElse(""))
+                    ),
+                    actions = Some(Actions(
+                        items = Seq(
+                            ActionItem(
+                                href = controllers.declaration.routes.BorderTransportController.displayPage(mode).url,
+                                content = Text(messages("site.change")),
+                                visuallyHiddenText = Some(messages("declaration.summary.transport.activeTransportNationality.change"))
+                            )
+                        ))
+                    ))
+            )
+        else
+            None,
+        declarationData.transport.transportPayment.map(transportPayment =>
+            SummaryListRow(
+                classes = "transport-payment-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.transport.payment"))
+                ),
+                value = Value(
+                    content = Text(transportPayment.paymentMethod.map(code => messages(s"declaration.summary.transport.payment.$code")).getOrElse(""))
+                ),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = controllers.declaration.routes.TransportPaymentController.displayPage(mode).url,
+                            content = Text(messages("site.change")),
+                            visuallyHiddenText = Some(messages("declaration.summary.transport.payment.change"))
+                        )
+                    ))
+                ))
         )
 
-        @if(declarationData.transport.meansOfTransportOnDepartureType.isDefined || declarationData.transport.meansOfTransportOnDepartureIDNumber.isDefined) {
-            @components.table_row("transport-reference", HtmlTableRow(
-                label = messages("declaration.summary.transport.departure.meansOfTransport.header"),
-                value = messagesForDepartureMeansOfTransport(declarationData.transport),
-                call = Some(controllers.declaration.routes.DepartureTransportController.displayPage(mode)),
-                changeLabel = Some(messages("declaration.summary.transport.departure.meansOfTransport.header.change"))
-            ))
-        }
+    ),
+        classes = "govuk-!-margin-bottom-6"
+    )
 
-        @if(declarationData.transport.meansOfTransportCrossingTheBorderType.isDefined && declarationData.transport.meansOfTransportCrossingTheBorderIDNumber.isDefined) {
-            @components.table_row("active-transport-type", HtmlTableRow(
-                label = messages("declaration.summary.transport.border.meansOfTransport.header"),
-                value = messagesForBorderMeansOfTransport(declarationData.transport),
-                call = Some(controllers.declaration.routes.BorderTransportController.displayPage(mode)),
-                changeLabel = Some(messages("declaration.summary.transport.border.meansOfTransport.header.change"))
-            ))
-        }
-
-        @if(declarationData.transport.meansOfTransportCrossingTheBorderType.isDefined && declarationData.transport.meansOfTransportCrossingTheBorderIDNumber.isDefined) {
-            @components.table_row("active-transport-nationality", HtmlTableRow(
-                label = messages("declaration.summary.transport.activeTransportNationality"),
-                value = declarationData.transport.meansOfTransportCrossingTheBorderNationality.getOrElse(""),
-                call = Some(controllers.declaration.routes.BorderTransportController.displayPage(mode)),
-                changeLabel = Some(messages("declaration.summary.transport.activeTransportNationality.change"))
-            ))
-        }
-
-        @declarationData.transport.transportPayment.map(transportPayment =>
-            components.table_row("transport-payment", HtmlTableRow(
-                label = messages("declaration.summary.transport.payment"),
-                value = transportPayment.paymentMethod.map(code => messages(s"declaration.summary.transport.payment.$code")).getOrElse(""),
-                call = Some(controllers.declaration.routes.TransportPaymentController.displayPage(mode)),
-                changeLabel = Some(messages("declaration.summary.transport.payment.change"))
-            ))
-        )
-
-        @if(declarationData.transport.containers.exists(_.isEmpty)){
-            @components.table_row("containers", HtmlTableRow(
-              label = messages("declaration.summary.transport.containers"),
-              value = messages("site.no"),
-              call = Some(controllers.declaration.routes.TransportContainerController.displayContainerSummary(mode)),
-              changeLabel = Some(messages("declaration.summary.transport.containers.change"))
-            ))
-        }
-
-        @declarationData.transport.containers.map(containerSeq =>
-            containers(mode, containerSeq)
-        )
-    }
-    </div>
+    @declarationData.transport.containers.map(containerSeq =>
+        containers(mode, containerSeq)
+    )
 }

@@ -14,37 +14,61 @@
  * limitations under the License.
  *@
 
-@import models.declaration.Items
-@import models.viewmodels.HtmlTableRow
 @import forms.declaration.LegalDeclaration
-@import views.html.components.warning
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds._
+
+@this(
+        govukFieldset: GovukFieldset,
+        govukWarningText: GovukWarningText,
+        paragraphBody: paragraphBody,
+        exportsInputCheckbox: exportsInputCheckbox,
+        exportsInputText: exportsInputText
+)
 
 @(form: Form[LegalDeclaration])(implicit messages: Messages)
 
+@govukFieldset(Fieldset(
+    legend = Some(Legend(
+        content = Text(messages("legal.declaration.heading")),
+        classes = "govuk-fieldset__legend govuk-fieldset__legend--m"
+    )),
+    html = html
+))
 
-<h2 class="heading-medium legal-declaration-heading">@messages("legal.declaration.heading")</h2>
+@html = {
 
-<p>@messages("legal.declaration.info")</p>
+@paragraphBody(messages("legal.declaration.info"))
 
-@warning(messages("legal.declaration.warning"), containerClass = "mt-2, mb-2, legal-declaration-warning")
+@govukWarningText(WarningText(
+    iconFallbackText = messages("legal.declaration.warning.icontext"),
+    content = Text(messages("legal.declaration.warning"))
+))
 
-@components.fields.field_text(
- field = form("fullName"),
- label = Some(messages("legal.declaration.fullName"))
+@exportsInputText(
+    field = form("fullName"),
+    labelKey = "legal.declaration.fullName",
+    labelClasses = "govuk-label",
+    inputClasses = Some("govuk-input govuk-input--width-20")
 )
 
-@components.fields.field_text(
- field = form("jobRole"),
- label = Some(messages("legal.declaration.jobRole"))
+@exportsInputText(
+    field = form("jobRole"),
+    labelKey = "legal.declaration.jobRole",
+    labelClasses = "govuk-label",
+    inputClasses = Some("govuk-input govuk-input--width-20")
 )
 
-@components.fields.field_text(
- field = form("email"),
- label = Some(messages("legal.declaration.email"))
+@exportsInputText(
+    field = form("email"),
+    labelKey = "legal.declaration.email",
+    labelClasses = "govuk-label",
+    inputClasses = Some("govuk-input govuk-input--width-20")
 )
 
-@components.fields.field_checkbox(
- field = form("confirmation"),
- label = messages("legal.declaration.confirmation")
+@exportsInputCheckbox(
+    field = form("confirmation"),
+    labelKey = "legal.declaration.confirmation"
 )
 
+}

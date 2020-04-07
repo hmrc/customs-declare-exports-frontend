@@ -14,18 +14,10 @@
  * limitations under the License.
  *@
 
-@import models.requests.JourneyRequest
-@import models.Mode
+@this()
 
-@this(item_section: item_section)
+@(messageKey: String, call: Call)(implicit messages: Messages)
 
-@(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
-
-
-@if(declarationData.items.nonEmpty) {
-
-    <h2 class="govuk-heading-m">@messages("declaration.summary.items")</h2>
-    @declarationData.items.toSeq.sortBy(_.sequenceId).map { item =>
-        @item_section(mode, item)
-    }
-}
+<a href="@call.url" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+ @messages(messageKey)
+</a>

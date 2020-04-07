@@ -16,43 +16,80 @@
 
 @import models.declaration.Locations
 @import models.requests.JourneyRequest
-@import models.viewmodels.HtmlTableRow
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds.summary_list
+
+@this(summaryList: summary_list)
 
 @(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
 
 @hasLocations(locations: Locations) = @{
     locations.goodsLocation.isDefined || locations.officeOfExit.isDefined
 }
-
 @if(hasLocations(declarationData.locations)) {
-    <div id="declaration-locations-summary">
-        @components.summary_list(Some(messages("declaration.summary.locations"))) {
-            @declarationData.locations.goodsLocation.map(goodsLocation =>
-                components.table_row("location-code", HtmlTableRow(
-                    label = messages("declaration.summary.locations.goodsLocationCode"),
-                    value = goodsLocation.code,
-                    call = Some(controllers.declaration.routes.LocationController.displayPage(mode)),
-                    changeLabel = Some(messages("declaration.summary.locations.goodsLocationCode.change"))
+    @summaryList("declaration-locations-summary", Some(messages("declaration.summary.locations")), Seq(
+        declarationData.locations.goodsLocation.map(goodsLocation =>
+            SummaryListRow(
+                classes = "goodsLocationCode-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.locations.goodsLocationCode"))
+                ),
+                value = Value(
+                    content = Text(goodsLocation.code)
+                ),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = controllers.declaration.routes.LocationController.displayPage(mode).url,
+                            content = Text(messages("site.change")),
+                            visuallyHiddenText = Some(messages("declaration.summary.locations.goodsLocationCode.change"))
+                        )
+                    )
                 ))
-            )
-            @declarationData.locations.officeOfExit.map(officeOfExit =>
-                components.table_row("location-officeOfExit", HtmlTableRow(
-                    label = messages("declaration.summary.locations.officeOfExit"),
-                    value = officeOfExit.officeId.getOrElse(""),
-                    call = Some(controllers.declaration.routes.OfficeOfExitController.displayPage(mode)),
-                    changeLabel = Some(messages("declaration.summary.locations.officeOfExit.change"))
+            )),
+        declarationData.locations.officeOfExit.map(officeOfExit =>
+            SummaryListRow(
+                classes = "location-officeOfExit-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.locations.officeOfExit"))
+                ),
+                value = Value(
+                    content = Text(officeOfExit.officeId.getOrElse(""))
+                ),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = controllers.declaration.routes.OfficeOfExitController.displayPage(mode).url,
+                            content = Text(messages("site.change")),
+                            visuallyHiddenText = Some(messages("declaration.summary.locations.officeOfExit.change"))
+                        )
+                    )
                 ))
-            )
-            @declarationData.locations.officeOfExit.map(officeOfExit =>
-                officeOfExit.circumstancesCode.map(code =>
-                    components.table_row("location-expressConsignment", HtmlTableRow(
-                        label = messages("declaration.summary.locations.expressConsignment"),
-                        value = code,
-                        call = Some(controllers.declaration.routes.OfficeOfExitController.displayPage(mode)),
-                        changeLabel = Some(messages("declaration.summary.locations.expressConsignment.change"))
+            )),
+
+
+        declarationData.locations.officeOfExit.flatMap(officeOfExit =>
+            officeOfExit.circumstancesCode.map(code =>
+                SummaryListRow(
+                    classes = "location-expressConsignment-row",
+                    key = Key(
+                        content = Text(messages("declaration.summary.locations.expressConsignment"))
+                    ),
+                    value = Value(
+                        content = Text(code)
+                    ),
+                    actions = Some(Actions(
+                        items = Seq(
+                            ActionItem(
+                                href = controllers.declaration.routes.OfficeOfExitController.displayPage(mode).url,
+                                content = Text(messages("site.change")),
+                                visuallyHiddenText = Some(messages("declaration.summary.locations.expressConsignment.change"))
+                            )
+                        )
                     ))
                 )
             )
-        }
-    </div>
+        ))
+    )
+
 }
