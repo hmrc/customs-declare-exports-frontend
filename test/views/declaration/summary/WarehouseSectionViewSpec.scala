@@ -69,6 +69,15 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData with In
       row must haveSummaryActionsHref(controllers.declaration.routes.InlandTransportDetailsController.displayPage())
     }
 
+    "display warehouse label when user said 'no'" in {
+
+      val row = section(mode, aDeclarationAfter(data, withWarehouseIdentification(Some(WarehouseIdentification(None)))))(messages, journeyRequest())
+        .getElementsByClass("warehouse-id-row")
+
+      row must haveSummaryKey(messages("declaration.summary.warehouse.no.label"))
+      row must haveSummaryValue(messages("site.no"))
+    }
+
     "not display warehouse id when question not answered" in {
 
       val view = section(mode, aDeclarationAfter(data, withoutWarehouseIdentification()))(messages, journeyRequest())

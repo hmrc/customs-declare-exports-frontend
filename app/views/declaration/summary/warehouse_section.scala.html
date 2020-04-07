@@ -35,7 +35,7 @@
             SummaryListRow(
                 classes = "warehouse-id-row",
                 key = Key(
-                    content = Text(messages("declaration.summary.warehouse.id"))
+                    content = Text(messages( if(warehouseIdentification.identificationNumber.isDefined) "declaration.summary.warehouse.id" else "declaration.summary.warehouse.no.label"))
                 ),
                 value = Value(
                     content = Text(warehouseIdentification.identificationNumber.getOrElse(messages("site.no")))
