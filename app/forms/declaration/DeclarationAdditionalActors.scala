@@ -46,7 +46,7 @@ object DeclarationAdditionalActors extends DeclarationPage {
   val formId = "DeclarationAdditionalActors"
 
   val mapping: Mapping[DeclarationAdditionalActors] = Forms.mapping(
-    eoriMappingFor(PartyType.Consolidator),
+    "eoriCS" -> eoriMappingFor(PartyType.Consolidator),
     "eoriMF" -> eoriMappingFor(PartyType.Manufacturer),
     "eoriFW" -> eoriMappingFor(PartyType.FreightForwarder),
     "eoriWH" -> eoriMappingFor(PartyType.WarehouseKeeper),
