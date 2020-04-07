@@ -44,8 +44,6 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
     "have proper messages for labels" in {
       val messages = instanceOf[MessagesApi].preferred(journeyRequest())
       messages must haveTranslationFor("declaration.fiscalInformation.title")
-      messages must haveTranslationFor("declaration.fiscalInformation.question")
-      messages must haveTranslationFor("declaration.fiscalInformation.body")
       messages must haveTranslationFor("declaration.fiscalInformation.details.summary")
       messages must haveTranslationFor("declaration.fiscalInformation.details.item1")
       messages must haveTranslationFor("declaration.fiscalInformation.details.item2")
@@ -68,7 +66,7 @@ class FiscalInformationViewSpec extends UnitViewSpec with ExportsTestData with S
       val view = createView()
 
       "display page title" in {
-        view.getElementById("title").text() mustBe "declaration.fiscalInformation.title"
+        view.getElementsByTag("h1").text() mustBe "declaration.fiscalInformation.title"
       }
 
       "display section header" in {

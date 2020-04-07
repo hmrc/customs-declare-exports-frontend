@@ -70,7 +70,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
 
       "display page method is invoked and cache is empty" in {
 
-        val result = controller.displayPage(Mode.Normal, itemId, fastForward = true)(getRequest())
+        val result = controller.displayPage(Mode.Normal, itemId, fastForward = false)(getRequest())
 
         status(result) mustBe OK
         verify(mockFiscalInformationPage, times(1)).apply(any(), any(), any())(any(), any())
@@ -82,7 +82,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         val item = anItem(withFiscalInformation(FiscalInformation(yes)))
         withNewCaching(aDeclaration(withItems(item)))
 
-        val result = controller.displayPage(Mode.Normal, item.id, fastForward = true)(getRequest())
+        val result = controller.displayPage(Mode.Normal, item.id, fastForward = false)(getRequest())
 
         status(result) mustBe OK
         verify(mockFiscalInformationPage, times(1)).apply(any(), any(), any())(any(), any())
@@ -105,6 +105,8 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
     }
 
     "return 303 (SEE_OTHER)" when {
+
+      // TODO - new tests for fast-forward redirects when either OSR not relavent or existing OSR exists
 
       "user answer yes" in {
 

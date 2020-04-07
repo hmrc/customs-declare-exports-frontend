@@ -229,9 +229,31 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         verify(mockProcedureCodesPage, times(0)).apply(any(), any(), any(), any())(any(), any())
       }
 
-      "user save correct data" in {
+      "user save correct data with '1042' procedure code" in {
 
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
+        withNewCaching(aDeclaration(
+          withType(DeclarationType.SUPPLEMENTARY),
+          withItem(anItem(withItemId(itemId)))
+        ))
+
+        val correctForm =
+          Seq(("procedureCode", "1042"), ("additionalProcedureCode", "321"), saveAndContinueActionUrlEncoded)
+
+        val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.FiscalInformationController
+          .displayPage(Mode.Normal, "itemId12345")
+
+        verify(mockProcedureCodesPage, times(0)).apply(any(), any(), any(), any())(any(), any())
+      }
+
+      "user save correct data with non-'1042' procedure code" in {
+
+        withNewCaching(aDeclaration(
+          withType(DeclarationType.SUPPLEMENTARY),
+          withItem(anItem(withItemId(itemId)))
+        ))
 
         val correctForm =
           Seq(("procedureCode", "1234"), ("additionalProcedureCode", "321"), saveAndContinueActionUrlEncoded)
@@ -239,7 +261,7 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.FiscalInformationController
+        thePageNavigatedTo mustBe controllers.declaration.routes.CommodityDetailsController
           .displayPage(Mode.Normal, "itemId12345")
 
         verify(mockProcedureCodesPage, times(0)).apply(any(), any(), any(), any())(any(), any())
@@ -252,7 +274,7 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         withNewCaching(aDeclaration(withItem(item)))
 
         val correctForm =
-          Seq(("procedureCode", "1234"), saveAndContinueActionUrlEncoded)
+          Seq(("procedureCode", "1042"), saveAndContinueActionUrlEncoded)
 
         val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 

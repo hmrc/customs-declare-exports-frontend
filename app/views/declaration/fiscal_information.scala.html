@@ -60,21 +60,14 @@
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.fiscalInformation.header"))
-        @pageTitle(messages("declaration.fiscalInformation.title"))
-
-        @body(messages("declaration.fiscalInformation.body"))
-
-        @govukDetails(Details(
-            summary = Text(messages("declaration.fiscalInformation.details.summary")),
-            content = HtmlContent(fiscalInformationDetails)
-        ))
 
         @govukRadios(Radios(
             name = "onwardSupplyRelief",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("declaration.fiscalInformation.question")),
-                    classes = "govuk-fieldset__legend--m"
+                    content = Text(messages("declaration.fiscalInformation.title")),
+                    isPageHeading = true,
+                    classes = gdsPageLegend
                 ))
             )),
             items = Seq(
@@ -92,6 +85,11 @@
                 )
             ),
             errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
+
+        @govukDetails(Details(
+            summary = Text(messages("declaration.fiscalInformation.details.summary")),
+            content = HtmlContent(fiscalInformationDetails)
         ))
 
         @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))

@@ -40,19 +40,25 @@ case class ExportItem(
   documentsProducedData: Option[DocumentsProducedData] = None
 ) {
   def hasFiscalReferences: Boolean =
-    fiscalInformation.exists(_.onwardSupplyRelief == FiscalInformation.AllowedFiscalInformationAnswers.yes)
+    fiscalInformation.exists(_.onwardSupplyRelief == yes)
 
   val isCompleted: PartialFunction[DeclarationType, Boolean] = {
     case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
-      procedureCodes.isDefined && isFiscalInformationCompleted && statisticalValue.isDefined &&
+      isProcedureCodesAndFiscalInformationComplete && statisticalValue.isDefined &&
         packageInformation.nonEmpty && commodityMeasure.isDefined
     case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
-      procedureCodes.isDefined && isFiscalInformationCompleted && packageInformation.nonEmpty
+      isProcedureCodesAndFiscalInformationComplete && packageInformation.nonEmpty
   }
 
-  private def isFiscalInformationCompleted: Boolean =
-    if (fiscalInformation.exists(_.onwardSupplyRelief == yes)) additionalFiscalReferencesData.isDefined
-    else fiscalInformation.isDefined
+  private def isProcedureCodesAndFiscalInformationComplete = {
+
+    def isFiscalInformationCompleted: Boolean =
+      if (hasFiscalReferences) additionalFiscalReferencesData.isDefined
+      else fiscalInformation.isDefined
+
+    procedureCodes.flatMap(_.procedureCode).isDefined &&
+    (procedureCodes.flatMap(_.procedureCode).exists(code => !ProcedureCodesData.osrProcedureCodes.contains(code)) || isFiscalInformationCompleted)
+  }
 }
 
 object ExportItem {

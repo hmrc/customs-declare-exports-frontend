@@ -21,8 +21,9 @@ import controllers.navigation.Navigator
 import forms.declaration.FiscalInformation
 import forms.declaration.FiscalInformation._
 import javax.inject.Inject
-import models.{ExportsDeclaration, Mode}
+import models.declaration.ProcedureCodesData
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -43,10 +44,18 @@ class FiscalInformationController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode, itemId: String, fastForward: Boolean): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val cacheContainsFiscalReferenceData = request.cacheModel.itemBy(itemId).exists(_.additionalFiscalReferencesData.exists(_.references.nonEmpty))
+    def cacheContainsFiscalReferenceData = request.cacheModel.itemBy(itemId).exists(_.additionalFiscalReferencesData.exists(_.references.nonEmpty))
+    def cacheItemIneligibleForOSR =
+      request.cacheModel
+        .itemBy(itemId)
+        .flatMap(_.procedureCodes)
+        .flatMap(_.procedureCode)
+        .exists(code => !ProcedureCodesData.osrProcedureCodes.contains(code))
 
     if (fastForward && cacheContainsFiscalReferenceData) {
       navigator.continueTo(routes.AdditionalFiscalReferencesController.displayPage(mode, itemId))
+    } else if (fastForward && cacheItemIneligibleForOSR) {
+      navigator.continueTo(routes.ProcedureCodesController.displayPage(mode, itemId))
     } else {
       request.cacheModel.itemBy(itemId).flatMap(_.fiscalInformation) match {
         case Some(fiscalInformation) => Ok(fiscalInformationPage(mode, itemId, form().fill(fiscalInformation)))
