@@ -18,15 +18,13 @@ package config
 
 import features.{Feature, FeatureStatus}
 import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+import play.api.Configuration
 
 @Singleton
-class SfusConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig, servicesConfig: ServicesConfig) {
+class SfusConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig, config: Configuration) {
 
-  val sfusLink = servicesConfig.baseUrl("cds-file-upload-frontend") + servicesConfig.getConfString(
-    "cds-file-upload-frontend.start",
-    throw new IllegalStateException("Missing configuration for CDS File Upload frontend start")
-  )
+  val sfusLink =
+    config.getOptional[String]("urls.sfus").getOrElse(throw new IllegalStateException("Missing configuration for CDS File Upload frontend start"))
 
   val isSfusEnabled = featureSwitchConfig.featureStatus(Feature.sfus) == FeatureStatus.enabled
 }

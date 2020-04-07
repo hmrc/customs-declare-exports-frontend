@@ -35,17 +35,18 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
   private val gdsMainTemplate = instanceOf[gdsMainTemplate]
   private val govukSummaryList = instanceOf[GovukSummaryList]
   private val govukTable = instanceOf[GovukTable]
-  private val servicesConfig = instanceOf[ServicesConfig]
 
   private val configWithFeaturesEnabled: Config =
     ConfigFactory.parseString("""
         |microservice.services.features.ead=enabled
         |microservice.services.features.sfus=enabled
+        |urls.sfus="http://localhost:6793/cds-file-upload-service/start"
       """.stripMargin)
   private val configWithFeaturesDisabled: Config =
     ConfigFactory.parseString("""
         |microservice.services.features.ead=disabled
         |microservice.services.features.sfus=disabled
+        |urls.sfus="http://localhost:6793/cds-file-upload-service/start"
       """.stripMargin)
 
   private val featureSwitchConfigEnabled = new FeatureSwitchConfig(Configuration(configWithFeaturesEnabled))
@@ -54,8 +55,8 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
   private val eadConfigEnabled = new EadConfig(featureSwitchConfigEnabled)
   private val eadConfigDisabled = new EadConfig(featureSwitchConfigDisabled)
 
-  private val sfusConfigEnabled = new SfusConfig(featureSwitchConfigEnabled, servicesConfig)
-  private val sfusConfigDisabled = new SfusConfig(featureSwitchConfigDisabled, servicesConfig)
+  private val sfusConfigEnabled = new SfusConfig(featureSwitchConfigEnabled, Configuration(configWithFeaturesEnabled))
+  private val sfusConfigDisabled = new SfusConfig(featureSwitchConfigDisabled, Configuration(configWithFeaturesDisabled))
 
   private def submission(mrn: Option[String] = Some("mrn")): Submission =
     Submission(uuid = "id", eori = "eori", lrn = "lrn", mrn = mrn, ducr = Some("ducr"), actions = Seq.empty)
