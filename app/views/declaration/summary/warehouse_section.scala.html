@@ -38,7 +38,7 @@
                     content = Text(messages("declaration.summary.warehouse.id"))
                 ),
                 value = Value(
-                    content = Text(warehouseIdentification.identificationNumber.getOrElse(""))
+                    content = Text(warehouseIdentification.identificationNumber.getOrElse(messages("site.no")))
                 ),
                 actions = Some(Actions(
                     items = Seq(
