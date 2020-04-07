@@ -116,16 +116,6 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
   "Consignee Details View with invalid input" should {
 
     onEveryDeclarationJourney() { implicit request =>
-      "display error when both EORI and business details are empty" in {
-
-        val view = createView(ConsigneeDetails.form().bind(Map[String, String]()))
-
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("details", "#details")
-
-        view.getElementById("error-message-details-input").text() mustBe messages("supplementary.namedEntityDetails.error")
-      }
-
       "display error for empty Full name" in {
 
         val view = createView(
