@@ -80,6 +80,19 @@ class ExportItemSpec extends UnitSpec with ExportsItemBuilder {
           completedItem.isCompleted(DeclarationType.STANDARD) mustBe true
         }
 
+        "item does not contain procedure code '1042' and doesn't contain fiscal references" in {
+
+          val completedItem = anItem(
+            withItemId("id"),
+            withProcedureCodes(Some("1040"), Seq("000")),
+            withStatisticalValue(),
+            withPackageInformation(),
+            withCommodityMeasure(CommodityMeasure(None, Some("100"), Some("100")))
+          )
+
+          completedItem.isCompleted(DeclarationType.STANDARD) mustBe true
+        }
+
         "item is completed" in {
 
           val completedItem = anItem(
@@ -115,6 +128,13 @@ class ExportItemSpec extends UnitSpec with ExportsItemBuilder {
           ).copy(additionalFiscalReferencesData = None)
 
           completedItem.isCompleted(DeclarationType.SIMPLIFIED) mustBe false
+        }
+
+        "item does not contain procedure code '1042' and doesn't contain fiscal references" in {
+
+          val completedItem = anItem(withItemId("id"), withProcedureCodes(Some("1040"), Seq("000")), withPackageInformation())
+
+          completedItem.isCompleted(DeclarationType.SIMPLIFIED) mustBe true
         }
 
         "item is completed" in {

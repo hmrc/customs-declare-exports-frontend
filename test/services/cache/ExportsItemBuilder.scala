@@ -41,7 +41,7 @@ trait ExportsItemBuilder {
 
   def withoutProcedureCodes(): ItemModifier = _.copy(procedureCodes = None)
 
-  def withProcedureCodes(procedureCode: Option[String] = None, additionalProcedureCodes: Seq[String] = Seq.empty): ItemModifier =
+  def withProcedureCodes(procedureCode: Option[String] = Some("1042"), additionalProcedureCodes: Seq[String] = Seq.empty): ItemModifier =
     _.copy(procedureCodes = Some(ProcedureCodesData(procedureCode, additionalProcedureCodes)))
 
   def withoutAdditionalInformation(): ItemModifier = _.copy(additionalInformation = None)

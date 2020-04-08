@@ -20,6 +20,8 @@ import connectors.exchange.ExportsDeclarationExchange
 import models.ExportsDeclaration
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{never, verify, when}
+import org.mockito.invocation.InvocationOnMock
+import org.mockito.stubbing.Answer
 import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, Suite}
@@ -34,13 +36,17 @@ trait MockExportCacheService extends MockitoSugar with ExportsDeclarationBuilder
 
   def withNewCaching(dataToReturn: ExportsDeclaration): Unit = {
     when(mockExportsCacheService.update(any[ExportsDeclaration])(any()))
-      .thenReturn(Future.successful(Some(dataToReturn)))
+      .thenAnswer(withTheFirstArgument)
 
     when(mockExportsCacheService.create(any[ExportsDeclarationExchange])(any()))
       .thenReturn(Future.successful(dataToReturn.copy(id = "declarationId")))
 
     when(mockExportsCacheService.get(anyString)(any()))
       .thenReturn(Future.successful(Some(dataToReturn)))
+  }
+
+  private def withTheFirstArgument[T]: Answer[Future[Option[T]]] = new Answer[Future[Option[T]]] {
+    override def answer(invocation: InvocationOnMock): Future[Option[T]] = Future.successful(Some(invocation.getArgument(0)))
   }
 
   def withCreateResponse(declaration: ExportsDeclaration): Unit =

@@ -550,9 +550,7 @@ declaration.warehouse.inlandTransportDetails.transportMode.inlandWaterway = Inla
 declaration.warehouse.inlandTransportDetails.transportMode.unknown = Mode unknown, for example own propulsion
 declaration.warehouse.inlandTransportDetails.help.bodyText = Go to data element 7/5 Inland Mode of Transport in the UK Trade Tariff. {0}.
 
-declaration.fiscalInformation.title = Onward Supply Relief (OSR)
-declaration.fiscalInformation.question = Do you want to claim OSR?
-declaration.fiscalInformation.body = If you have entered a procedure code which starts ‘10 42’, please state whether you would like to claim for OSR.
+declaration.fiscalInformation.title = Do you want to claim Onward Supply Relief (OSR)?
 declaration.fiscalInformation.onwardSupplyRelief.empty = Select yes or no
 declaration.fiscalInformation.onwardSupplyRelief.error = Enter a valid value
 declaration.fiscalInformation.header = Items

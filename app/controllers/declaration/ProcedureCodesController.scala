@@ -125,22 +125,41 @@ class ProcedureCodesController @Inject()(
 
   private def updateCache(itemId: String, updatedProcedureCodes: ProcedureCodesData)(
     implicit r: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => {
-      model.updatedItem(itemId, item => item.copy(procedureCodes = Some(updatedProcedureCodes)))
-    })
+  ): Future[Option[ExportsDeclaration]] = {
+    def updatedModel(model: ExportsDeclaration): ExportsDeclaration =
+      updatedProcedureCodes.procedureCode match {
+        case Some(code) if ProcedureCodesData.osrProcedureCodes.contains(code) =>
+          model.updatedItem(itemId, item => item.copy(procedureCodes = Some(updatedProcedureCodes)))
+        case _ =>
+          model.updatedItem(
+            itemId,
+            item => item.copy(procedureCodes = Some(updatedProcedureCodes), fiscalInformation = None, additionalFiscalReferencesData = None)
+          )
+      }
+
+    updateExportsDeclarationSyncDirect(updatedModel(_))
+  }
 
   //scalastyle:off method.length
   private def saveAndContinueHandler(mode: Mode, itemId: String, userInput: ProcedureCodes, cachedData: ProcedureCodesData)(
     implicit request: JourneyRequest[AnyContent],
     hc: HeaderCarrier
-  ): Future[Result] =
+  ): Future[Result] = {
+
+    def nextPage =
+      (declaration: Option[ExportsDeclaration]) =>
+        declaration.flatMap(_.itemBy(itemId)).flatMap(_.procedureCodes).flatMap(_.procedureCode) match {
+          case Some(code) if ProcedureCodesData.osrProcedureCodes.contains(code) =>
+            navigator.continueTo(mode, routes.FiscalInformationController.displayPage(_, itemId))
+          case _ => navigator.continueTo(mode, routes.CommodityDetailsController.displayPage(_, itemId))
+      }
+
     (userInput, cachedData.additionalProcedureCodes) match {
       case (procedureCode, Seq()) =>
         procedureCode match {
           case ProcedureCodes(Some(procedureCode), Some(additionalCode)) =>
             updateCache(itemId, ProcedureCodesData(Some(procedureCode), Seq(additionalCode)))
-              .map(_ => navigator.continueTo(mode, routes.FiscalInformationController.displayPage(_, itemId)))
+              .map(nextPage)
           case ProcedureCodes(procedureCode, additionalCode) =>
             val procedureCodeError =
               procedureCode.fold(Seq(("procedureCode", "supplementary.procedureCodes.procedureCode.error.empty")))(_ => Seq[(String, String)]())
@@ -186,9 +205,10 @@ class ProcedureCodesController @Inject()(
               ProcedureCodesData(Some(procedureCode), cachedData.additionalProcedureCodes ++ additionalCode.fold(Seq[String]())(Seq(_)))
 
             updateCache(itemId, updatedCache)
-              .map(_ => navigator.continueTo(mode, routes.FiscalInformationController.displayPage(_, itemId)))
+              .map(nextPage)
         }
     }
+  }
 
   //scalastyle:on method.length
 
