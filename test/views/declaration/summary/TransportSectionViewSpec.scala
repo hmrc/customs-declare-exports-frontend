@@ -16,6 +16,7 @@
 
 package views.declaration.summary
 
+import base.Injector
 import forms.declaration.{ModeOfTransportCode, TransportCodes, TransportPayment}
 import models.Mode
 import models.declaration.Container
@@ -23,7 +24,7 @@ import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.transport_section
 
-class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
+class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   val data = aDeclaration(
     withDepartureTransport(ModeOfTransportCode.Maritime, "10", "identifier"),
@@ -32,176 +33,151 @@ class TransportSectionViewSpec extends UnitViewSpec with ExportsTestData {
     withTransportPayment(Some(TransportPayment(Some("A"))))
   )
 
+  val section = instanceOf[transport_section]
+
   "Transport section" should {
 
     "display border transport with change button" in {
-      val view = transport_section(Mode.Normal, data)(messages, journeyRequest())
+      val view = section(Mode.Normal, data)(messages, journeyRequest())
+      val row = view.getElementsByClass("border-transport-row")
 
-      view.getElementById("border-transport-label").text() mustBe messages("declaration.summary.transport.departure.transportCode.header")
-      view.getElementById("border-transport").text() mustBe messages("declaration.summary.transport.departure.transportCode.1")
+      row must haveSummaryKey(messages("declaration.summary.transport.departure.transportCode.header"))
+      row must haveSummaryValue(messages("declaration.summary.transport.departure.transportCode.1"))
 
-      val List(change, accessibleChange) = view.getElementById("border-transport-change").text().split(" ").toList
+      row must haveSummaryActionsText("site.change declaration.summary.transport.departure.transportCode.header.change")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.transport.departure.transportCode.header.change")
-
-      view.getElementById("border-transport-change") must haveHref(controllers.declaration.routes.TransportLeavingTheBorderController.displayPage())
+      row must haveSummaryActionsHref(controllers.declaration.routes.TransportLeavingTheBorderController.displayPage())
     }
 
     "display transport reference with change button" in {
-      val view = transport_section(Mode.Normal, data)(messages, journeyRequest())
+      val view = section(Mode.Normal, data)(messages, journeyRequest())
+      val row = view.getElementsByClass("transport-reference-row")
 
-      view.getElementById("transport-reference-label").text() mustBe messages("declaration.summary.transport.departure.meansOfTransport.header")
-      view.getElementById("transport-reference-0").text() mustBe messages("declaration.summary.transport.departure.meansOfTransport.10")
-      view.getElementById("transport-reference-1").text() mustBe "identifier"
+      row must haveSummaryKey(messages("declaration.summary.transport.departure.meansOfTransport.header"))
+      row must haveSummaryValue(s"${messages("declaration.summary.transport.departure.meansOfTransport.10")} identifier")
 
-      val List(change, accessibleChange) = view.getElementById("transport-reference-change").text().split(" ").toList
+      row must haveSummaryActionsText("site.change declaration.summary.transport.departure.meansOfTransport.header.change")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.transport.departure.meansOfTransport.header.change")
-
-      view.getElementById("transport-reference-change") must haveHref(controllers.declaration.routes.DepartureTransportController.displayPage())
+      row must haveSummaryActionsHref(controllers.declaration.routes.DepartureTransportController.displayPage())
     }
 
     "display transport reference if question skipped" in {
-      val view = transport_section(
+      val view = section(
         Mode.Normal,
         data.copy(transport = data.transport.copy(meansOfTransportOnDepartureType = None, meansOfTransportOnDepartureIDNumber = Some("")))
       )(messages, journeyRequest())
+      val row = view.getElementsByClass("transport-reference-row")
 
-      view.getElementById("transport-reference-label").text() mustBe messages("declaration.summary.transport.departure.meansOfTransport.header")
-      view.getElementById("transport-reference").text() mustBe ""
-      view.getElementById("transport-reference-change") must haveHref(controllers.declaration.routes.DepartureTransportController.displayPage())
+      row must haveSummaryKey(messages("declaration.summary.transport.departure.meansOfTransport.header"))
+      row must haveSummaryValue("")
+      row must haveSummaryActionsHref(controllers.declaration.routes.DepartureTransportController.displayPage())
     }
 
     "display transport reference if option none selected" in {
-      val view = transport_section(
+      val view = section(
         Mode.Normal,
         data.copy(
           transport =
             data.transport.copy(meansOfTransportOnDepartureType = Some(TransportCodes.OptionNone), meansOfTransportOnDepartureIDNumber = Some(""))
         )
       )(messages, journeyRequest())
+      val row = view.getElementsByClass("transport-reference-row")
 
-      view.getElementById("transport-reference-label").text() mustBe messages("declaration.summary.transport.departure.meansOfTransport.header")
-      view.getElementById("transport-reference").text() mustBe messages("declaration.summary.transport.departure.meansOfTransport.option_none")
-      view.getElementById("transport-reference-change") must haveHref(controllers.declaration.routes.DepartureTransportController.displayPage())
+      row must haveSummaryKey(messages("declaration.summary.transport.departure.meansOfTransport.header"))
+      row must haveSummaryValue(messages("declaration.summary.transport.departure.meansOfTransport.option_none"))
+      row must haveSummaryActionsHref(controllers.declaration.routes.DepartureTransportController.displayPage())
     }
 
     "display active transport type with change button" in {
-      val view = transport_section(Mode.Normal, data)(messages, journeyRequest())
+      val view = section(Mode.Normal, data)(messages, journeyRequest())
+      val row = view.getElementsByClass("active-transport-type-row")
 
-      view.getElementById("active-transport-type-label").text() mustBe messages("declaration.summary.transport.border.meansOfTransport.header")
-      view.getElementById("active-transport-type-0").text() mustBe messages("declaration.summary.transport.border.meansOfTransport.11")
-      view.getElementById("active-transport-type-1").text() mustBe "borderId"
+      row must haveSummaryKey(messages("declaration.summary.transport.border.meansOfTransport.header"))
+      row must haveSummaryValue(s"${messages("declaration.summary.transport.border.meansOfTransport.11")} borderId")
 
-      val List(change, accessibleChange) = view.getElementById("active-transport-type-change").text().split(" ").toList
+      row must haveSummaryActionsText("site.change declaration.summary.transport.border.meansOfTransport.header.change")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.transport.border.meansOfTransport.header.change")
-
-      view.getElementById("active-transport-type-change") must haveHref(controllers.declaration.routes.BorderTransportController.displayPage())
+      row must haveSummaryActionsHref(controllers.declaration.routes.BorderTransportController.displayPage())
     }
 
     "display active transport nationality with change button" in {
-      val view = transport_section(Mode.Normal, data)(messages, journeyRequest())
+      val view = section(Mode.Normal, data)(messages, journeyRequest())
+      val row = view.getElementsByClass("active-transport-nationality-row")
 
-      view.getElementById("active-transport-nationality-label").text() mustBe messages("declaration.summary.transport.activeTransportNationality")
-      view.getElementById("active-transport-nationality").text() mustBe "United Kingdom"
+      row must haveSummaryKey(messages("declaration.summary.transport.activeTransportNationality"))
+      row must haveSummaryValue("United Kingdom")
 
-      val List(change, accessibleChange) = view.getElementById("active-transport-nationality-change").text().split(" ").toList
+      row must haveSummaryActionsText("site.change declaration.summary.transport.activeTransportNationality.change")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.transport.activeTransportNationality.change")
-
-      view.getElementById("active-transport-nationality-change") must haveHref(controllers.declaration.routes.BorderTransportController.displayPage())
+      row must haveSummaryActionsHref(controllers.declaration.routes.BorderTransportController.displayPage())
     }
 
     "display transport payment with change button" in {
-      val view = transport_section(Mode.Normal, data)(messages, journeyRequest())
+      val view = section(Mode.Normal, data)(messages, journeyRequest())
+      val row = view.getElementsByClass("transport-payment-row")
 
-      view.getElementById("transport-payment-label").text() mustBe messages("declaration.summary.transport.payment")
-      view.getElementById("transport-payment").text() mustBe messages("declaration.summary.transport.payment.A")
+      row must haveSummaryKey(messages("declaration.summary.transport.payment"))
+      row must haveSummaryValue(messages("declaration.summary.transport.payment.A"))
 
-      val List(change, accessibleChange) = view.getElementById("transport-payment-change").text().split(" ").toList
+      row must haveSummaryActionsText("site.change declaration.summary.transport.payment.change")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.transport.payment.change")
-
-      view.getElementById("transport-payment-change") must haveHref(controllers.declaration.routes.TransportPaymentController.displayPage())
+      row must haveSummaryActionsHref(controllers.declaration.routes.TransportPaymentController.displayPage())
     }
 
     "display information about containers when user said 'No' with change button" in {
-      val view = transport_section(Mode.Normal, data)(messages, journeyRequest())
+      val view = section(Mode.Normal, data)(messages, journeyRequest())
+      val row = view.getElementsByClass("containers-row")
 
-      view.getElementById("containers-label").text() mustBe messages("declaration.summary.transport.containers")
-      view.getElementById("containers").text() mustBe "site.no"
+      row must haveSummaryKey(messages("declaration.summary.transport.containers"))
+      row must haveSummaryValue(messages("site.no"))
 
-      val List(change, accessibleChange) = view.getElementById("containers-change").text().split(" ").toList
+      row must haveSummaryActionsText("site.change declaration.summary.transport.containers.change")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.transport.containers.change")
-
-      view.getElementById("containers-change") must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary())
+      row must haveSummaryActionsHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary())
     }
 
     "not display border transport if question not answered" in {
-      val view = transport_section(Mode.Normal, aDeclarationAfter(data, withoutBorderModeOfTransportCode()))(messages, journeyRequest())
+      val view = section(Mode.Normal, aDeclarationAfter(data, withoutBorderModeOfTransportCode()))(messages, journeyRequest())
 
-      view.getElementById("border-transport-label") mustBe null
-      view.getElementById("border-transport") mustBe null
-      view.getElementById("border-transport-change") mustBe null
+      view.getElementsByClass("border-transport-row") mustBe empty
     }
 
     "not display transport reference if question not answered" in {
-      val view = transport_section(Mode.Normal, aDeclarationAfter(data, withoutMeansOfTransportOnDepartureType()))(messages, journeyRequest())
+      val view = section(Mode.Normal, aDeclarationAfter(data, withoutMeansOfTransportOnDepartureType()))(messages, journeyRequest())
 
-      view.getElementById("transport-reference-label") mustBe null
-      view.getElementById("transport-reference-0") mustBe null
-      view.getElementById("transport-reference-1") mustBe null
-      view.getElementById("transport-reference-change") mustBe null
+      view.getElementsByClass("transport-reference-row") mustBe empty
     }
 
     "not display active transport type if question not answered" in {
-      val view = transport_section(Mode.Normal, aDeclarationAfter(data, withoutBorderTransport()))(messages, journeyRequest())
+      val view = section(Mode.Normal, aDeclarationAfter(data, withoutBorderTransport()))(messages, journeyRequest())
 
-      view.getElementById("active-transport-type-label") mustBe null
-      view.getElementById("active-transport-type-0") mustBe null
-      view.getElementById("active-transport-type-1") mustBe null
-      view.getElementById("active-transport-type-change") mustBe null
+      view.getElementsByClass("active-transport-type-row") mustBe empty
     }
 
     "not display active transport nationality if question not answered" in {
-      val view = transport_section(Mode.Normal, aDeclarationAfter(data, withoutBorderTransport()))(messages, journeyRequest())
+      val view = section(Mode.Normal, aDeclarationAfter(data, withoutBorderTransport()))(messages, journeyRequest())
 
-      view.getElementById("active-transport-nationality-label") mustBe null
-      view.getElementById("active-transport-nationality") mustBe null
-      view.getElementById("active-transport-nationality-change") mustBe null
+      view.getElementsByClass("active-transport-nationality-row") mustBe empty
     }
 
     "not display transport payment if question not answered" in {
-      val view = transport_section(Mode.Normal, aDeclarationAfter(data, withoutTransportPayment()))(messages, journeyRequest())
+      val view = section(Mode.Normal, aDeclarationAfter(data, withoutTransportPayment()))(messages, journeyRequest())
 
-      view.getElementById("transport-payment-label") mustBe null
-      view.getElementById("transport-payment") mustBe null
-      view.getElementById("transport-payment-change") mustBe null
+      view.getElementsByClass("transport-payment-row") mustBe empty
     }
 
     "skip containers part if empty" in {
 
-      val view = transport_section(Mode.Normal, aDeclaration(withoutContainerData()))(messages, journeyRequest())
+      val view = section(Mode.Normal, aDeclaration(withoutContainerData()))(messages, journeyRequest())
 
-      view.getElementById("container") mustBe null
+      view.getElementsByClass("containers-row") mustBe empty
     }
 
     "display containers section (but not yes/no answer) if containers are not empty" in {
 
-      val view = transport_section(Mode.Normal, aDeclaration(withContainerData(Container("123", Seq.empty))))(messages, journeyRequest())
+      val view = section(Mode.Normal, aDeclaration(withContainerData(Container("123", Seq.empty))))(messages, journeyRequest())
 
-      view.getElementById("container").text() mustNot be(empty)
-
-      view.getElementById("containers-label") mustBe null
-      view.getElementById("containers-change") mustBe null
+      view.getElementById("containers-table").text() mustNot be(empty)
     }
   }
 }

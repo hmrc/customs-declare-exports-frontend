@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,20 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import models.requests.JourneyRequest
-@import models.Mode
+package views.declaration.summary
 
-@this(item_section: item_section)
+import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.table.TableRow
 
-@(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+object TableCell {
 
-
-@if(declarationData.items.nonEmpty) {
-
-    <h2 class="govuk-heading-m">@messages("declaration.summary.items")</h2>
-    @declarationData.items.toSeq.sortBy(_.sequenceId).map { item =>
-        @item_section(mode, item)
-    }
+  def changeLink(html: Html) = TableRow(classes = "govuk-table__cell--numeric", content = HtmlContent(html))
 }

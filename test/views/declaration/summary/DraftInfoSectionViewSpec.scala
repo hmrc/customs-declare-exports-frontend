@@ -18,6 +18,7 @@ package views.declaration.summary
 
 import java.time.LocalDateTime
 
+import base.Injector
 import config.AppConfig
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -27,7 +28,7 @@ import views.html.declaration.summary.draft_info_section
 
 import scala.concurrent.duration.FiniteDuration
 
-class DraftInfoSectionViewSpec extends UnitViewSpec with ExportsTestData with MockitoSugar {
+class DraftInfoSectionViewSpec extends UnitViewSpec with ExportsTestData with MockitoSugar with Injector {
 
   val appConfig = mock[AppConfig]
 
@@ -44,15 +45,20 @@ class DraftInfoSectionViewSpec extends UnitViewSpec with ExportsTestData with Mo
       val expectedCreatedTime = "28 Nov 2019 at 14:48"
       val expectedUpdatedTime = "28 Dec 2019 at 14:48"
 
-      val draftInfoPage = new draft_info_section(appConfig)
+      val draftInfoPage = instanceOf[draft_info_section]
       val view = draftInfoPage(data)(messages)
 
-      view.getElementById("draft-ducr-label").text() mustBe messages("declaration.summary.draft.ducr")
-      view.getElementById("draft-ducr").text() mustBe ducr
-      view.getElementById("draft-createdDate-label").text() mustBe messages("declaration.summary.draft.createdDate")
-      view.getElementById("draft-createdDate").text() mustBe expectedCreatedTime
-      view.getElementById("draft-expireDate-label").text() mustBe messages("declaration.summary.draft.expireDate")
-      view.getElementById("draft-expireDate").text() mustBe expectedUpdatedTime
+      val ducrRow = view.getElementsByClass("draft-ducr-row")
+      ducrRow must haveSummaryKey(messages("declaration.summary.draft.ducr"))
+      ducrRow must haveSummaryValue(ducr)
+
+      val createdRow = view.getElementsByClass("draft-createdDate-row")
+      createdRow must haveSummaryKey(messages("declaration.summary.draft.createdDate"))
+      createdRow must haveSummaryValue(expectedCreatedTime)
+
+      val expireRow = view.getElementsByClass("draft-expireDate-row")
+      expireRow must haveSummaryKey(messages("declaration.summary.draft.expireDate"))
+      expireRow must haveSummaryValue(expectedUpdatedTime)
     }
   }
 }

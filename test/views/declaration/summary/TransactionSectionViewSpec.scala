@@ -16,12 +16,13 @@
 
 package views.declaration.summary
 
+import base.Injector
 import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.transaction_section
 
-class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData {
+class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   val data = aDeclaration(
     withTotalNumberOfItems(Some("123"), Some("1.23")),
@@ -30,60 +31,58 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData {
     withPreviousDocuments()
   )
 
+  val section = instanceOf[transaction_section]
+
   "Transaction section" should {
 
-    val view = transaction_section(Mode.Normal, data)(messages, journeyRequest())
+    val view = section(Mode.Normal, data)(messages, journeyRequest())
 
     "have total amount invoiced with change button" in {
 
-      view.getElementById("item-amount-label").text() mustBe messages("declaration.summary.transaction.itemAmount")
-      view.getElementById("item-amount").text() mustBe "123"
+      val row = view.getElementsByClass("item-amount-row")
 
-      val List(change, accessibleChange) = view.getElementById("item-amount-change").text().split(" ").toList
+      row must haveSummaryKey(messages("declaration.summary.transaction.itemAmount"))
+      row must haveSummaryValue("123")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.transaction.itemAmount.change")
+      row must haveSummaryActionsText("site.change declaration.summary.transaction.itemAmount.change")
 
-      view.getElementById("item-amount-change") must haveHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage())
+      row must haveSummaryActionsHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage())
     }
 
     "have exchange rate with change button" in {
 
-      view.getElementById("exchange-rate-label").text() mustBe messages("declaration.summary.transaction.exchangeRate")
-      view.getElementById("exchange-rate").text() mustBe "1.23"
+      val row = view.getElementsByClass("exchange-rate-row")
 
-      val List(change, accessibleChange) = view.getElementById("exchange-rate-change").text().split(" ").toList
+      row must haveSummaryKey(messages("declaration.summary.transaction.exchangeRate"))
+      row must haveSummaryValue("1.23")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.transaction.exchangeRate.change")
+      row must haveSummaryActionsText("site.change declaration.summary.transaction.exchangeRate.change")
 
-      view.getElementById("exchange-rate-change") must haveHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage())
+      row must haveSummaryActionsHref(controllers.declaration.routes.TotalNumberOfItemsController.displayPage())
     }
 
     "have total package with change button" in {
 
-      view.getElementById("total-no-of-packages-label").text() mustBe messages("declaration.summary.transaction.totalNoOfPackages")
-      view.getElementById("total-no-of-packages").text() mustBe "12"
+      val row = view.getElementsByClass("total-no-of-packages-row")
 
-      val List(change, accessibleChange) = view.getElementById("total-no-of-packages-change").text().split(" ").toList
+      row must haveSummaryKey(messages("declaration.summary.transaction.totalNoOfPackages"))
+      row must haveSummaryValue("12")
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.transaction.totalNoOfPackages.change")
+      row must haveSummaryActionsText("site.change declaration.summary.transaction.totalNoOfPackages.change")
 
-      view.getElementById("total-no-of-packages-change") must haveHref(controllers.declaration.routes.TotalPackageQuantityController.displayPage())
+      row must haveSummaryActionsHref(controllers.declaration.routes.TotalPackageQuantityController.displayPage())
     }
 
     "have nature of transaction with change button" in {
 
-      view.getElementById("nature-of-transaction-label").text() mustBe messages("declaration.summary.transaction.natureOfTransaction")
-      view.getElementById("nature-of-transaction").text() mustBe messages("declaration.summary.transaction.natureOfTransaction.2")
+      val row = view.getElementsByClass("nature-of-transaction-row")
 
-      val List(change, accessibleChange) = view.getElementById("nature-of-transaction-change").text().split(" ").toList
+      row must haveSummaryKey(messages("declaration.summary.transaction.natureOfTransaction"))
+      row must haveSummaryValue(messages("declaration.summary.transaction.natureOfTransaction.2"))
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.transaction.natureOfTransaction.change")
+      row must haveSummaryActionsText("site.change declaration.summary.transaction.natureOfTransaction.change")
 
-      view.getElementById("nature-of-transaction-change") must haveHref(controllers.declaration.routes.NatureOfTransactionController.displayPage())
+      row must haveSummaryActionsHref(controllers.declaration.routes.NatureOfTransactionController.displayPage())
     }
 
     "have related documents section" in {
@@ -92,41 +91,33 @@ class TransactionSectionViewSpec extends UnitViewSpec with ExportsTestData {
     }
 
     "not display total amount invoiced when question not asked" in {
-      val view = transaction_section(Mode.Normal, aDeclarationAfter(data, withoutTotalNumberOfItems()))(messages, journeyRequest())
+      val view = section(Mode.Normal, aDeclarationAfter(data, withoutTotalNumberOfItems()))(messages, journeyRequest())
 
-      view.getElementById("item-amount-label") mustBe null
-      view.getElementById("item-amount") mustBe null
-      view.getElementById("item-amount-change") mustBe null
+      view.getElementsByClass("item-amount-row") mustBe empty
     }
 
     "not display exchange rate when question not asked" in {
-      val view = transaction_section(Mode.Normal, aDeclarationAfter(data, withoutTotalNumberOfItems()))(messages, journeyRequest())
+      val view = section(Mode.Normal, aDeclarationAfter(data, withoutTotalNumberOfItems()))(messages, journeyRequest())
 
-      view.getElementById("exchange-rate-label") mustBe null
-      view.getElementById("exchange-rate") mustBe null
-      view.getElementById("exchange-rate-change") mustBe null
+      view.getElementsByClass("exchange-rate-row") mustBe empty
     }
 
     "not display total package when question not asked" in {
-      val view = transaction_section(Mode.Normal, aDeclarationAfter(data, withoutTotalPackageQuantity))(messages, journeyRequest())
+      val view = section(Mode.Normal, aDeclarationAfter(data, withoutTotalPackageQuantity))(messages, journeyRequest())
 
-      view.getElementById("total-no-of-packages-label") mustBe null
-      view.getElementById("total-no-of-packages") mustBe null
-      view.getElementById("total-no-of-packages-change") mustBe null
+      view.getElementsByClass("total-no-of-packages-row") mustBe empty
     }
 
     "not display nature of transaction when question not asked" in {
-      val view = transaction_section(Mode.Normal, aDeclarationAfter(data, withoutNatureOfTransaction()))(messages, journeyRequest())
+      val view = section(Mode.Normal, aDeclarationAfter(data, withoutNatureOfTransaction()))(messages, journeyRequest())
 
-      view.getElementById("nature-of-transaction-label") mustBe null
-      view.getElementById("nature-of-transaction") mustBe null
-      view.getElementById("nature-of-transaction-change") mustBe null
+      view.getElementsByClass("nature-of-transaction-row") mustBe empty
     }
 
     "not display related documents section when question not asked" in {
-      val view = transaction_section(Mode.Normal, aDeclarationAfter(data, withoutPreviousDocuments()))(messages, journeyRequest())
+      val view = section(Mode.Normal, aDeclarationAfter(data, withoutPreviousDocuments()))(messages, journeyRequest())
 
-      view.getElementById("previous-documents") mustBe null
+      view.getElementsByClass("previous-documents-row") mustBe empty
     }
 
   }

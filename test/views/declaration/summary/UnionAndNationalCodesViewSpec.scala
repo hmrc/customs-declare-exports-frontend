@@ -16,13 +16,16 @@
 
 package views.declaration.summary
 
+import base.Injector
 import forms.declaration.AdditionalInformation
 import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.union_and_national_codes
 
-class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestData {
+class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestData with Injector {
+
+  val section = instanceOf[union_and_national_codes]
 
   "Union and national codes" should {
 
@@ -30,47 +33,44 @@ class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestData {
 
       "Sequence is empty" in {
 
-        val view = union_and_national_codes(Mode.Normal, "itemId", 1, Seq.empty)(messages, journeyRequest())
+        val view = section(Mode.Normal, "itemId", 1, Seq.empty)(messages, journeyRequest())
+        val row = view.getElementsByClass("additional-information-1-row")
 
-        view.getElementById("additional-information-1-label").text() mustBe messages("declaration.summary.items.item.additionalInformation")
-        view.getElementById("additional-information-1-change") must haveHref(
-          controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, "itemId")
-        )
+        row must haveSummaryKey(messages("declaration.summary.items.item.additionalInformation"))
+        row must haveSummaryValue("")
+
+        row must haveSummaryActionsText("site.change declaration.summary.items.item.additionalInformation.change")
+
+        row must haveSummaryActionsHref(controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, "itemId"))
       }
     }
 
     "display additional information with change buttons" in {
 
       val data = Seq(AdditionalInformation("12345", "description1"), AdditionalInformation("23456", "description2"))
-      val view = union_and_national_codes(Mode.Normal, "itemId", 1, data)(messages, journeyRequest())
+      val view = section(Mode.Normal, "itemId", 1, data)(messages, journeyRequest())
+      val table = view.getElementById("additional-information-1-table")
 
-      view.getElementById("additional-information-1").text() mustBe messages("declaration.summary.items.item.additionalInformation")
-      view.getElementById("additional-information-code-1").text() mustBe messages("declaration.summary.items.item.additionalInformation.code")
-      view.getElementById("additional-information-information-1").text() mustBe messages(
+      table.getElementsByTag("caption").text() mustBe messages("declaration.summary.items.item.additionalInformation")
+
+      table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.summary.items.item.additionalInformation.code")
+      table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages(
         "declaration.summary.items.item.additionalInformation.information"
       )
-      view.getElementById("additional-information-1-code-0").text() mustBe "12345"
-      view.getElementById("additional-information-1-information-0").text() mustBe "description1"
 
-      val List(change1, accessibleChange1) = view.getElementById("additional-information-1-change-0").text().split(" ").toList
+      val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
+      row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe "12345"
+      row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe "description1"
+      val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
+      row1ChangeLink must haveHref(controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, "itemId"))
+      row1ChangeLink.text() mustBe "site.change " + messages("declaration.summary.items.item.additionalInformation.change", 1)
 
-      change1 mustBe messages("site.change")
-      accessibleChange1 mustBe messages("declaration.summary.items.item.additionalInformation.change", 1)
-
-      view.getElementById("additional-information-1-change-0") must haveHref(
-        controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, "itemId")
-      )
-      view.getElementById("additional-information-1-code-1").text() mustBe "23456"
-      view.getElementById("additional-information-1-information-1").text() mustBe "description2"
-
-      val List(change, accessibleChange) = view.getElementById("additional-information-1-change-1").text().split(" ").toList
-
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.items.item.additionalInformation.change", 2)
-
-      view.getElementById("additional-information-1-change-1") must haveHref(
-        controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, "itemId")
-      )
+      val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
+      row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe "23456"
+      row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe "description2"
+      val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
+      row2ChangeLink must haveHref(controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, "itemId"))
+      row2ChangeLink.text() mustBe "site.change " + messages("declaration.summary.items.item.additionalInformation.change", 1)
     }
   }
 }

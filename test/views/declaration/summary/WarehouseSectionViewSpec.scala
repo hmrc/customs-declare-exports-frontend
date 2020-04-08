@@ -16,13 +16,14 @@
 
 package views.declaration.summary
 
+import base.Injector
 import forms.declaration.{InlandModeOfTransportCode, ModeOfTransportCode, SupervisingCustomsOffice, WarehouseIdentification}
 import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.warehouse_section
 
-class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData {
+class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   val data = aDeclaration(
     withWarehouseIdentification(Some(WarehouseIdentification(Some("12345")))),
@@ -32,71 +33,70 @@ class WarehouseSectionViewSpec extends UnitViewSpec with ExportsTestData {
 
   val mode = Mode.Normal
 
+  val section = instanceOf[warehouse_section]
+
   "Warehouse section" should {
 
-    val view = warehouse_section(mode, data)(messages, journeyRequest())
+    val view = section(mode, data)(messages, journeyRequest())
 
     "display warehouse id with change button" in {
+      val row = view.getElementsByClass("warehouse-id-row")
+      row must haveSummaryKey(messages("declaration.summary.warehouse.id"))
+      row must haveSummaryValue("12345")
 
-      view.getElementById("warehouse-id-label").text() mustBe messages("declaration.summary.warehouse.id")
-      view.getElementById("warehouse-id").text() mustBe "12345"
+      row must haveSummaryActionsText("site.change declaration.summary.warehouse.id.change")
 
-      val List(change, accessibleChange) = view.getElementById("warehouse-id-change").text().split(" ").toList
-
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.warehouse.id.change")
-
-      view.getElementById("warehouse-id-change") must haveHref(controllers.declaration.routes.WarehouseIdentificationController.displayPage())
+      row must haveSummaryActionsHref(controllers.declaration.routes.WarehouseIdentificationController.displayPage())
     }
 
     "display supervising office with change button" in {
+      val row = view.getElementsByClass("supervising-office-row")
+      row must haveSummaryKey(messages("declaration.summary.warehouse.supervisingOffice"))
+      row must haveSummaryValue("23456")
 
-      view.getElementById("supervising-office-label").text() mustBe messages("declaration.summary.warehouse.supervisingOffice")
-      view.getElementById("supervising-office").text() mustBe "23456"
+      row must haveSummaryActionsText("site.change declaration.summary.warehouse.supervisingOffice.change")
 
-      val List(change, accessibleChange) = view.getElementById("supervising-office-change").text().split(" ").toList
-
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.warehouse.supervisingOffice.change")
-
-      view.getElementById("supervising-office-change") must haveHref(controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage())
+      row must haveSummaryActionsHref(controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage())
     }
 
     "display mode of transport with change button" in {
+      val row = view.getElementsByClass("mode-of-transport-row")
+      row must haveSummaryKey(messages("declaration.summary.warehouse.inlandModeOfTransport"))
+      row must haveSummaryValue(messages("declaration.summary.warehouse.inlandModeOfTransport.Maritime"))
 
-      view.getElementById("mode-of-transport-label").text() mustBe messages("declaration.summary.warehouse.inlandModeOfTransport")
-      view.getElementById("mode-of-transport").text() mustBe messages("declaration.summary.warehouse.inlandModeOfTransport.Maritime")
+      row must haveSummaryActionsText("site.change declaration.summary.warehouse.inlandModeOfTransport.change")
 
-      val List(change, accessibleChange) = view.getElementById("mode-of-transport-change").text().split(" ").toList
+      row must haveSummaryActionsHref(controllers.declaration.routes.InlandTransportDetailsController.displayPage())
+    }
 
-      change mustBe messages("site.change")
-      accessibleChange mustBe messages("declaration.summary.warehouse.inlandModeOfTransport.change")
+    "display warehouse label when user said 'no'" in {
 
-      view.getElementById("mode-of-transport-change") must haveHref(controllers.declaration.routes.InlandTransportDetailsController.displayPage())
+      val row = section(mode, aDeclarationAfter(data, withWarehouseIdentification(Some(WarehouseIdentification(None)))))(messages, journeyRequest())
+        .getElementsByClass("warehouse-id-row")
+
+      row must haveSummaryKey(messages("declaration.summary.warehouse.no.label"))
+      row must haveSummaryValue(messages("site.no"))
     }
 
     "not display warehouse id when question not answered" in {
 
-      val view = warehouse_section(mode, aDeclarationAfter(data, withoutWarehouseIdentification()))(messages, journeyRequest())
+      val view = section(mode, aDeclarationAfter(data, withoutWarehouseIdentification()))(messages, journeyRequest())
 
-      view.getElementById("warehouse-id-label") mustBe null
-      view.getElementById("warehouse-id") mustBe null
+      view.getElementsByClass("warehouse-id-row") mustBe empty
     }
 
     "not display supervising office when question not answered" in {
 
-      val view = warehouse_section(mode, aDeclarationAfter(data, withoutSupervisingCustomsOffice()))(messages, journeyRequest())
+      val view = section(mode, aDeclarationAfter(data, withoutSupervisingCustomsOffice()))(messages, journeyRequest())
 
-      view.getElementById("supervising-office-label") mustBe null
-      view.getElementById("supervising-office-id") mustBe null
+      view.getElementsByClass("supervising-office-row") mustBe empty
     }
 
     "not display mode of transport when question not answered" in {
 
-      val view = warehouse_section(mode, aDeclarationAfter(data, withoutInlandModeOfTransportCode()))(messages, journeyRequest())
+      val view = section(mode, aDeclarationAfter(data, withoutInlandModeOfTransportCode()))(messages, journeyRequest())
 
-      view.getElementById("mode-of-transport-label") mustBe null
-      view.getElementById("mode-of-transport-id") mustBe null
+      view.getElementsByClass("mode-of-transport-row") mustBe empty
     }
   }
 

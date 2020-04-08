@@ -16,6 +16,7 @@
 
 package views.declaration.summary
 
+import base.Injector
 import forms.common.Eori
 import forms.declaration.DeclarationHolder
 import models.Mode
@@ -23,7 +24,7 @@ import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.parties_section_holders
 
-class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData {
+class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
   val eori1 = "eori1"
   val eori2 = "eori2"
@@ -33,58 +34,46 @@ class PartiesSectionHoldersViewSpec extends UnitViewSpec with ExportsTestData {
   val holders =
     Seq(DeclarationHolder(Some(authorisationTypeCode1), Some(Eori(eori1))), DeclarationHolder(Some(authorisationTypeCode2), Some(Eori(eori2))))
 
+  private val section = instanceOf[parties_section_holders]
+
   "Holders (authorised) parties section" should {
 
     "display holders with answer no if empty" in {
 
-      val view = parties_section_holders(Mode.Normal, Seq.empty)(messages, journeyRequest())
+      val view = section(Mode.Normal, Seq.empty)(messages, journeyRequest())
+      val row = view.getElementsByClass("holders-row")
 
-      view.getElementById("holders-label").text() mustBe messages("declaration.summary.parties.holders")
-      view.getElementById("holders").text() mustBe messages("site.no")
+      row must haveSummaryKey(messages("declaration.summary.parties.holders"))
+      row must haveSummaryValue(messages("site.no"))
+
+      row must haveSummaryActionsText("site.change declaration.summary.parties.holders.empty.change")
+
+      row must haveSummaryActionsHref(controllers.declaration.routes.DeclarationHolderController.displayPage(Mode.Normal))
     }
 
     "display holders if exists" in {
 
-      val view = parties_section_holders(Mode.Normal, holders)(messages, journeyRequest())
+      val view = section(Mode.Normal, holders)(messages, journeyRequest())
+      val table = view.getElementById("holders-table")
 
-      view.getElementById("holders").text() mustBe messages("declaration.summary.parties.holders")
-      view.getElementById("holders-type").text() mustBe messages("declaration.summary.parties.holders.type")
-      view.getElementById("holders-eori").text() mustBe messages("declaration.summary.parties.holders.eori")
-      view.getElementById("holder-type-0").text() mustBe messages(authorisationTypeCode1)
-      view.getElementById("holder-eori-0").text() mustBe messages(eori1)
-      view.getElementById("holder-type-1").text() mustBe messages(authorisationTypeCode2)
-      view.getElementById("holder-eori-1").text() mustBe messages(eori2)
-    }
+      table.getElementsByTag("caption").text() mustBe messages("declaration.summary.parties.holders")
 
-    "provide change button if there is no holders" in {
+      table.getElementsByClass("govuk-table__header").get(0).text() mustBe messages("declaration.summary.parties.holders.type")
+      table.getElementsByClass("govuk-table__header").get(1).text() mustBe messages("declaration.summary.parties.holders.eori")
 
-      val view = parties_section_holders(Mode.Normal, Seq.empty)(messages, journeyRequest())
+      val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
+      row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe messages(authorisationTypeCode1)
+      row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe messages(eori1)
+      val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
+      row1ChangeLink must haveHref(controllers.declaration.routes.DeclarationHolderController.displayPage())
+      row1ChangeLink.text() mustBe messages("site.change declaration.summary.parties.holders.change")
 
-      val List(changeHolder, accessibleChangeHolder) = view.getElementById("holders-change").text().split(" ").toList
-
-      changeHolder mustBe messages("site.change")
-      accessibleChangeHolder mustBe messages("declaration.summary.parties.holders.empty.change")
-
-      view.getElementById("holders-change") must haveHref(controllers.declaration.routes.DeclarationHolderController.displayPage())
-    }
-
-    "provide change button for every holder" in {
-
-      val view = parties_section_holders(Mode.Normal, holders)(messages, journeyRequest())
-
-      val List(change1, accessibleChange1) = view.getElementById("holder-0-change").text().split(" ").toList
-
-      change1 mustBe messages("site.change")
-      accessibleChange1 mustBe messages("declaration.summary.parties.holders.change", authorisationTypeCode1, eori1)
-
-      view.getElementById("holder-0-change") must haveHref(controllers.declaration.routes.DeclarationHolderController.displayPage())
-
-      val List(change2, accessibleChange2) = view.getElementById("holder-1-change").text().split(" ").toList
-
-      change2 mustBe messages("site.change")
-      accessibleChange2 mustBe messages("declaration.summary.parties.holders.change", authorisationTypeCode2, eori2)
-
-      view.getElementById("holder-1-change") must haveHref(controllers.declaration.routes.DeclarationHolderController.displayPage())
+      val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
+      row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe messages(authorisationTypeCode2)
+      row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe messages(eori2)
+      val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
+      row2ChangeLink must haveHref(controllers.declaration.routes.DeclarationHolderController.displayPage())
+      row2ChangeLink.text() mustBe messages("site.change declaration.summary.parties.holders.change")
     }
   }
 }

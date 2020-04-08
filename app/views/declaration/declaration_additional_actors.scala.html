@@ -23,6 +23,7 @@
 @import views.{BackButton, Title}
 @import views.html.components.gds._
 @import views.components.gds._
+@import views.components.gds.Styles._
 @import play.twirl.api.HtmlFormat
 @import scala.collection.immutable
 
@@ -175,7 +176,7 @@
         @govukFieldset(Fieldset(
             legend = Some(Legend(
                 content = Text(messages("declaration.additionalActors.title")),
-                classes = "govuk-fieldset__legend--xl",
+                classes = gdsPageLegend,
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(immutable.Seq(

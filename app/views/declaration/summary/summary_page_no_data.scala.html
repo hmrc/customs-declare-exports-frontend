@@ -15,19 +15,24 @@
  *@
 
 @import views.Title
+@import views.html.components.gds._
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        pageTitle: pageTitle,
+        paragraphBody: paragraphBody,
+        linkButton: linkButton
+)
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = Title("declaration.summary.noData.header")
-) {
+@govukLayout(
+    title = Title("declaration.summary.noData.header")){
 
-    @components.heading(
-        title = messages("declaration.summary.noData.header"),
-        hint = messages("declaration.summary.noData.header.secondary")
-    )
+    @pageTitle(messages("declaration.summary.noData.header"))
 
-    @components.button_link("declaration.summary.noData.button", "/customs-declare-exports/start", "summary-back-link")
+    @paragraphBody(messages("declaration.summary.noData.header.secondary"))
+
+    @linkButton("declaration.summary.noData.button", routes.StartController.displayStartPage())
+
 }

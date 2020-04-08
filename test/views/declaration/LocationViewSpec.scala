@@ -36,6 +36,7 @@ class LocationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with
 
   private val page = instanceOf[goods_location]
   private val form: Form[GoodsLocationForm] = GoodsLocationForm.form()
+
   private def createView(
     mode: Mode = Mode.Normal,
     form: Form[GoodsLocationForm] = form,

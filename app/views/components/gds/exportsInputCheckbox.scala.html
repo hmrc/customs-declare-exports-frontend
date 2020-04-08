@@ -14,18 +14,26 @@
  * limitations under the License.
  *@
 
-@import models.requests.JourneyRequest
-@import models.Mode
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
 
-@this(item_section: item_section)
+@this(govukCheckboxes: GovukCheckboxes)
 
-@(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
+@(
+        field: Field,
+        value: String = "true",
+        labelKey: String
+)(implicit messages: Messages)
 
-
-@if(declarationData.items.nonEmpty) {
-
-    <h2 class="govuk-heading-m">@messages("declaration.summary.items")</h2>
-    @declarationData.items.toSeq.sortBy(_.sequenceId).map { item =>
-        @item_section(mode, item)
-    }
-}
+@govukCheckboxes(Checkboxes(
+    name = field.name,
+    items = Seq(
+        CheckboxItem(
+            id = Some(field.id),
+            name = Some(field.name),
+            value = value,
+            content = Text(messages(labelKey))
+        )
+    ),
+    errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message))))
+))

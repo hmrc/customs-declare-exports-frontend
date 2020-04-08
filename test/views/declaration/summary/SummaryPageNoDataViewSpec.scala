@@ -16,14 +16,15 @@
 
 package views.declaration.summary
 
+import base.Injector
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.summary_page_no_data
 
-class SummaryPageNoDataViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
+class SummaryPageNoDataViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
 
-  val summaryPageNoData = new summary_page_no_data(mainTemplate)
+  val summaryPageNoData = instanceOf[summary_page_no_data]
   val view = summaryPageNoData()(request, messages)
 
   "Summary page no data" should {
@@ -35,15 +36,15 @@ class SummaryPageNoDataViewSpec extends UnitViewSpec with Stubs with ExportsTest
 
     "display correct hint" in {
 
-      view.getElementById("hint").text() mustBe messages("declaration.summary.noData.header.secondary")
+      view.getElementsByClass("govuk-body").text() mustBe messages("declaration.summary.noData.header.secondary")
     }
 
     "display back link which redirect to start page" in {
 
-      val backButton = view.getElementById("summary-back-link")
+      val backButton = view.getElementsByClass("govuk-button").first()
 
       backButton.text() mustBe messages("declaration.summary.noData.button")
-      backButton must haveHref("/customs-declare-exports/start")
+      backButton must haveHref(controllers.routes.StartController.displayStartPage)
     }
   }
 }
