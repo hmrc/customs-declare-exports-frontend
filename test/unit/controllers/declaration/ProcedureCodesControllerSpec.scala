@@ -19,9 +19,9 @@ package unit.controllers.declaration
 import controllers.declaration.ProcedureCodesController
 import controllers.util.Remove
 import forms.declaration.ProcedureCodes
-import models.{DeclarationType, Mode}
-import models.declaration.{ExportItem, ProcedureCodesData}
 import models.declaration.ProcedureCodesData.limitOfCodes
+import models.declaration.{ExportItem, ProcedureCodesData}
+import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -35,7 +35,7 @@ import views.html.declaration.procedure_codes
 
 class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks with OptionValues {
 
-  val mockProcedureCodesPage = mock[procedure_codes]
+  private val mockProcedureCodesPage = mock[procedure_codes]
 
   val controller = new ProcedureCodesController(
     mockAuthAction,
@@ -231,10 +231,7 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
 
       "user save correct data with '1042' procedure code" in {
 
-        withNewCaching(aDeclaration(
-          withType(DeclarationType.SUPPLEMENTARY),
-          withItem(anItem(withItemId(itemId)))
-        ))
+        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(anItem(withItemId(itemId)))))
 
         val correctForm =
           Seq(("procedureCode", "1042"), ("additionalProcedureCode", "321"), saveAndContinueActionUrlEncoded)
@@ -250,10 +247,7 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
 
       "user save correct data with non-'1042' procedure code" in {
 
-        withNewCaching(aDeclaration(
-          withType(DeclarationType.SUPPLEMENTARY),
-          withItem(anItem(withItemId(itemId)))
-        ))
+        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(anItem(withItemId(itemId)))))
 
         val correctForm =
           Seq(("procedureCode", "1234"), ("additionalProcedureCode", "321"), saveAndContinueActionUrlEncoded)

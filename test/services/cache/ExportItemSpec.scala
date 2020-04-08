@@ -132,11 +132,7 @@ class ExportItemSpec extends UnitSpec with ExportsItemBuilder {
 
         "item does not contain procedure code '1042' and doesn't contain fiscal references" in {
 
-          val completedItem = anItem(
-            withItemId("id"),
-            withProcedureCodes(Some("1040"), Seq("000")),
-            withPackageInformation()
-          )
+          val completedItem = anItem(withItemId("id"), withProcedureCodes(Some("1040"), Seq("000")), withPackageInformation())
 
           completedItem.isCompleted(DeclarationType.SIMPLIFIED) mustBe true
         }

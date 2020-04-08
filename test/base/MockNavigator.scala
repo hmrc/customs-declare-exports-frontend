@@ -50,6 +50,12 @@ trait MockNavigator extends MockitoSugar with BeforeAndAfterEach { self: Mockito
     captor.getValue.apply(Mode.Normal)
   }
 
+  protected def thePageNavigatedToCall: Call = {
+    val captor: ArgumentCaptor[Call] = ArgumentCaptor.forClass(classOf[Call])
+    Mockito.verify(navigator).continueTo(captor.capture())(any(), any())
+    captor.getValue
+  }
+
   protected def thePageRedirectedTo: Call = {
     val captor: ArgumentCaptor[Mode => Call] = ArgumentCaptor.forClass(classOf[Mode => Call])
     Mockito.verify(navigator).redirectTo(any(), captor.capture())(any(), any())
