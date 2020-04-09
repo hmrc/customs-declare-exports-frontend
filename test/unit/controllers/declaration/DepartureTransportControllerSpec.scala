@@ -57,7 +57,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
   private def nextPage(decType: DeclarationType) = decType match {
     case SUPPLEMENTARY => routes.BorderTransportController.displayPage()
     case STANDARD      => routes.BorderTransportController.displayPage()
-    case CLEARANCE     => routes.TransportContainerController.displayContainerSummary()
+    case CLEARANCE     => routes.TransportPaymentController.displayPage()
   }
 
   private def formData(transportType: String, reference: String) =
@@ -68,7 +68,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
       )
     )
 
-  "Border transport controller" when {
+  "Departure transport controller" when {
     onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { request =>
       "return 200 (OK)" when {
 

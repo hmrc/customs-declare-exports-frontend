@@ -68,7 +68,7 @@ class DepartureTransportController @Inject()(
   private def nextPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
     request.declarationType match {
       case DeclarationType.CLEARANCE =>
-        navigator.continueTo(mode, controllers.declaration.routes.TransportContainerController.displayContainerSummary)
+        navigator.continueTo(mode, controllers.declaration.routes.TransportPaymentController.displayPage)
       case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
         navigator.continueTo(mode, controllers.declaration.routes.BorderTransportController.displayPage)
     }

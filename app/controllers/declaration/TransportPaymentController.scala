@@ -41,10 +41,8 @@ class TransportPaymentController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
-
   def displayPage(mode: Mode): Action[AnyContent] =
-    (authenticate andThen journeyType(validTypes)) { implicit request =>
+    (authenticate andThen journeyType) { implicit request =>
       request.cacheModel.transport.transportPayment match {
         case Some(data) => Ok(transportPayment(mode, form().fill(data)))
         case _          => Ok(transportPayment(mode, form()))
@@ -52,7 +50,7 @@ class TransportPaymentController @Inject()(
     }
 
   def submitForm(mode: Mode): Action[AnyContent] =
-    (authenticate andThen journeyType(validTypes)).async { implicit request =>
+    (authenticate andThen journeyType).async { implicit request =>
       form()
         .bindFromRequest()
         .fold(
