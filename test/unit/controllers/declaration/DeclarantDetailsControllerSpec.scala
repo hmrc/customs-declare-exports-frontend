@@ -17,13 +17,14 @@
 package unit.controllers.declaration
 
 import controllers.declaration.DeclarantDetailsController
-import forms.common.Eori
-import forms.declaration.{DeclarantDetails, EntityDetails}
+import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.DeclarantEoirConfirmation
+import forms.declaration.DeclarantEoirConfirmation.isEoriKey
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.data.Form
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -32,7 +33,7 @@ import views.html.declaration.declarant_details
 class DeclarantDetailsControllerSpec extends ControllerSpec {
 
   trait SetUp {
-    val declarantDetailsPage = mock[declarant_details]
+    private val declarantDetailsPage = mock[declarant_details]
 
     val controller = new DeclarantDetailsController(
       mockAuthAction,
@@ -45,7 +46,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
-    when(declarantDetailsPage.apply(any[Mode], any[Form[DeclarantDetails]])(any(), any())).thenReturn(HtmlFormat.empty)
+    when(declarantDetailsPage.apply(any[Mode], any[Form[DeclarantEoirConfirmation]])(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   "Declarant Details Controller" should {
@@ -54,7 +55,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
       "display page method is invoked and cache is empty" in new SetUp {
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        private val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -63,7 +64,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withDeclarantDetails()))
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        private val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -73,9 +74,9 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
       "form contains incorrect values" in new SetUp {
 
-        val incorrectForm = Json.toJson(DeclarantDetails(EntityDetails(None, None)))
+        private val incorrectForm = JsObject(Map(isEoriKey -> JsString("wrong")))
 
-        val result = controller.saveAddress(Mode.Normal)(postRequest(incorrectForm))
+        private val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -83,9 +84,9 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
     "return 303 (SEE_OTHER) and redirect to exporter details page" in new SetUp {
 
-      val correctForm = Json.toJson(DeclarantDetails(EntityDetails(Some(Eori("GB12345678912345")), None)))
+      private val correctForm = JsObject(Map(isEoriKey -> JsString(YesNoAnswers.yes)))
 
-      val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
+      private val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
       await(result) mustBe aRedirectToTheNextPage
       thePageNavigatedTo mustBe controllers.declaration.routes.ExporterDetailsController.displayPage()

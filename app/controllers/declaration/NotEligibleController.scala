@@ -22,6 +22,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.not_eligible
+import views.html.declaration.not_declarant
 
 import scala.concurrent.ExecutionContext
 
@@ -29,11 +30,17 @@ class NotEligibleController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   mcc: MessagesControllerComponents,
-  notEligiblePage: not_eligible
+  notEligiblePage: not_eligible,
+  notDeclarantPage: not_declarant
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayNotEligible(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     Ok(notEligiblePage())
   }
+
+  def displayNotDeclarant(): Action[AnyContent] = Action { implicit request =>
+    Ok(notDeclarantPage())
+  }
+
 }

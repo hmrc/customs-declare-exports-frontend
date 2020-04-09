@@ -15,40 +15,63 @@
  *@
 
 @import controllers.navigation.Navigator
-@import forms.declaration.DeclarantDetails
+@import forms.common.YesNoAnswer.YesNoAnswers
+@import forms.declaration.{DeclarantDetails, DeclarantEoirConfirmation}
+@import forms.declaration.DeclarantEoirConfirmation.isEoriKey
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.components.gds.Styles._
 @import views.html.components.gds._
-@import views.BackButton
-@import views.Title
 
 @this(
-    govukLayout: gdsMainTemplate,
-    errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
-    exportsInputText: exportsInputText,
-    govukDetails : GovukDetails,
-    saveButtons: saveButtons,
-    tariffDetails: tariffDetails,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+govukLayout: gdsMainTemplate,
+errorSummary: errorSummary,
+sectionHeader: sectionHeader,
+govukRadios: GovukRadios,
+exportsInputText: exportsInputText,
+govukDetails : GovukDetails,
+saveButtons: saveButtons,
+tariffDetails: tariffDetails,
+formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(mode: Mode, form: Form[DeclarantDetails])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[DeclarantEoirConfirmation])(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
     title = Title("declaration.declarant.title"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarantDetails, mode)))) {
 
-    @formHelper(action = controllers.declaration.routes.DeclarantDetailsController.saveAddress(mode), 'autoComplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.DeclarantDetailsController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("supplementary.summary.parties.header"))
 
-        @exportsInputText(
-            field = form("details.eori"),
-            labelKey = "declaration.declarant.title",
-            isPageHeading = true
-        )
+        @govukRadios(Radios(
+            name = isEoriKey,
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("declaration.declarant.titleQuestion", request.eori)),
+                    isPageHeading = true,
+                    classes = gdsPageLegend
+                ))
+            )),
+            items = Seq(
+                RadioItem(
+                    id = Some("code_yes"),
+                    value = Some(YesNoAnswers.yes),
+                    content = Text(messages("site.yes")),
+                    checked = form(isEoriKey).value.contains(YesNoAnswers.yes)
+                ),
+                RadioItem(
+                    id = Some("code_no"),
+                    value = Some(YesNoAnswers.no),
+                    content = Text(messages("site.no")),
+                    checked = form(isEoriKey).value.contains(YesNoAnswers.no)
+                )
+            ),
+            errorMessage = form(isEoriKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
 
         @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(messages("declaration.declarant-details.help.bodyText", components.details_content_link())))
 

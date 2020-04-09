@@ -62,7 +62,19 @@
 @if(sectionRequired(declarationData.parties)) {
     @summaryList("declaration-parties-summary", Some(messages("declaration.summary.parties")),
 
-        declarationData.parties.exporterDetails.map(export => eoriOrAddress(
+        (Seq.empty :+ declarationData.parties.declarantDetails.map(declarant =>
+            SummaryListRow(
+                classes = "declarant-eori-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.parties.declarant.eori"))
+                ),
+                value = Value(
+                    content = Text(declarant.details.eori.map(_.value).getOrElse(""))
+                )
+            )
+        ))
+
+        ++ declarationData.parties.exporterDetails.map(export => eoriOrAddress(
             "exporter",
             export.details.eori,
             export.details.address,
@@ -75,13 +87,6 @@
             consignee.details.address,
             controllers.declaration.routes.ConsigneeDetailsController.displayPage(mode),
             isEoriDefault = false
-        )).getOrElse(Seq.empty)
-
-        ++ declarationData.parties.declarantDetails.map(declarant => eoriOrAddress(
-            "declarant",
-            declarant.details.eori,
-            declarant.details.address,
-            controllers.declaration.routes.DeclarantDetailsController.displayPage(mode)
         )).getOrElse(Seq.empty)
 
         ++ declarationData.parties.representativeDetails.map(representative => eoriOrAddress(

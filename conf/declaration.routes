@@ -17,7 +17,9 @@ POST        /type                                controllers.declaration.Additio
 
 # Not Eligible
 
-GET         /not-eligible                        controllers.declaration.NotEligibleController.displayPage()
+GET         /not-eligible                       controllers.declaration.NotEligibleController.displayNotEligible()
+
+GET         /not-declarant                      controllers.declaration.NotEligibleController.displayNotDeclarant()
 
 # Consignment references
 
@@ -35,7 +37,7 @@ POST        /exporter-details                    controllers.declaration.Exporte
 
 GET         /declarant-details                   controllers.declaration.DeclarantDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /declarant-details                   controllers.declaration.DeclarantDetailsController.saveAddress(mode: models.Mode ?= models.Mode.Normal)
+POST        /declarant-details                   controllers.declaration.DeclarantDetailsController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
 # Representative details
 

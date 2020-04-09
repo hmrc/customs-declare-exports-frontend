@@ -26,10 +26,10 @@ import views.html.declaration.summary.parties_section
 
 class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
-  val exampleEori = "GB123456"
-  val exampleAddress = Address("fullName", "addressLine", "townOrCity", "postCode", "GB")
-  val exampleAddressContents = "fullName addressLine townOrCity postCode GB"
-  val data = aDeclaration(
+  private val exampleEori = "GB123456"
+  private val exampleAddress = Address("fullName", "addressLine", "townOrCity", "postCode", "GB")
+  private val exampleAddressContents = "fullName addressLine townOrCity postCode GB"
+  private val data = aDeclaration(
     withExporterDetails(Some(Eori(exampleEori)), Some(exampleAddress)),
     withConsigneeDetails(Some(Eori(exampleEori)), Some(exampleAddress)),
     withDeclarantDetails(Some(Eori(exampleEori)), Some(exampleAddress)),
@@ -80,21 +80,12 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Inje
         addressRow must haveSummaryActionsHref(controllers.declaration.routes.ConsigneeDetailsController.displayPage(Mode.Change))
       }
 
-      "contains declarant details with change button" in {
+      "contains declarant eori" in {
 
         val eoriRow = view.getElementsByClass("declarant-eori-row")
 
         eoriRow must haveSummaryKey(messages("declaration.summary.parties.declarant.eori"))
         eoriRow must haveSummaryValue(exampleEori)
-        eoriRow must haveSummaryActionsText("site.change declaration.summary.parties.declarant.eori.change")
-        eoriRow must haveSummaryActionsHref(controllers.declaration.routes.DeclarantDetailsController.displayPage(Mode.Change))
-
-        val addressRow = view.getElementsByClass("declarant-address-row")
-
-        addressRow must haveSummaryKey(messages("declaration.summary.parties.declarant.address"))
-        addressRow must haveSummaryValue(exampleAddressContents)
-        addressRow must haveSummaryActionsText("site.change declaration.summary.parties.declarant.address.change")
-        addressRow must haveSummaryActionsHref(controllers.declaration.routes.DeclarantDetailsController.displayPage(Mode.Change))
       }
 
       "contains representative details with change button" in {

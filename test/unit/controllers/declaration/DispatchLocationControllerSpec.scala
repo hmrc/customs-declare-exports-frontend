@@ -31,7 +31,7 @@ import views.html.declaration.dispatch_location
 class DispatchLocationControllerSpec extends ControllerSpec {
 
   trait SetUp {
-    val dispatchLocationPage = mock[dispatch_location]
+    private val dispatchLocationPage = mock[dispatch_location]
 
     val controller = new DispatchLocationController(
       mockAuthAction,
@@ -53,7 +53,7 @@ class DispatchLocationControllerSpec extends ControllerSpec {
 
       "display page method is invoked and cache is empty" in new SetUp {
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        private val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -62,7 +62,7 @@ class DispatchLocationControllerSpec extends ControllerSpec {
 
         withNewCaching(aDeclaration(withDispatchLocation(OutsideEU)))
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        private val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) must be(OK)
       }
@@ -72,9 +72,9 @@ class DispatchLocationControllerSpec extends ControllerSpec {
 
       "form is incorrect" in new SetUp {
 
-        val incorrectForm = Json.toJson(DispatchLocation("incorrect"))
+        private val incorrectForm = Json.toJson(DispatchLocation("incorrect"))
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+        private val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -84,9 +84,9 @@ class DispatchLocationControllerSpec extends ControllerSpec {
 
       "form is correct" in new SetUp {
 
-        val correctForm = Json.toJson(DispatchLocation(OutsideEU))
+        private val correctForm = Json.toJson(DispatchLocation(OutsideEU))
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+        private val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage()
@@ -97,12 +97,12 @@ class DispatchLocationControllerSpec extends ControllerSpec {
 
       "form is correct" in new SetUp {
 
-        val correctForm = Json.toJson(DispatchLocation(SpecialFiscalTerritory))
+        private val correctForm = Json.toJson(DispatchLocation(SpecialFiscalTerritory))
 
-        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+        private val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.NotEligibleController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.NotEligibleController.displayNotEligible()
       }
     }
   }

@@ -291,6 +291,13 @@ notEligible.referenceTitle = Help and support
 notEligible.reference.support = If you are having problems making a declaration, phone: {0} 
 notEligible.reference.openingHours = Open 8am to 6pm, Monday to Friday (closed bank holidays).
 
+notDeclarent.title = Change your EORI number
+notDeclarent.description = Your EORI number is linked to your login details. To change them you will need to sign in using different Government Gateway details, or {0}.
+notDeclarent.descriptionLink = contact the EORI contact team
+notDeclarent.referenceTitle = Help and support
+notDeclarent.reference.support = If you are having problems making a declaration, phone: {0} 
+notDeclarent.reference.openingHours = Open 8am to 6pm, Monday to Friday (closed bank holidays).
+
 supplementary.consignmentReferences.heading = Your references
 supplementary.consignmentReferences.header =  Consignment references
 supplementary.consignmentReferences.ducr.info = Give this declaration a Unique Consignment Reference (UCR)
@@ -308,7 +315,9 @@ supplementary.consignor.address.info = Exporter’s name and business address
 supplementary.exporter-details.help-item1 = Exporter’s EORI number, go to data element 3/2 Exporter Identification Number
 supplementary.exporter-details.help-item2 = Exporter’s name and business address, go to data element 3/1 Exporter
 
-declaration.declarant.title = What is your EORI number?
+declaration.declarant.title = Is this your EORI number?
+declaration.declarant.titleQuestion = Is your EORI number {0}?
+declaration.declarant.change.eori = No, I need to change my EORI
 declaration.declarant-details.help.bodyText = Go to data element 3/18 Declarant Identification Number in the {0}.
 declaration.declarant.eori.empty = Enter your EORI number
 declaration.declarant.eori.error.format = Enter a valid EORI number, for example GB123456789000
@@ -950,7 +959,7 @@ declaration.summary.parties.consignee.eori = Consignee''s EORI number
 declaration.summary.parties.consignee.eori.change = Change Consignee''s EORI number
 declaration.summary.parties.consignee.address = Consignee''s address
 declaration.summary.parties.consignee.address.change = Change Consignee''s address
-declaration.summary.parties.declarant.eori = Declarant''s EORI number
+declaration.summary.parties.declarant.eori = Your EORI number
 declaration.summary.parties.declarant.eori.change = Change Declarant''s EORI number
 declaration.summary.parties.declarant.address = Declarant''s address
 declaration.summary.parties.declarant.address.change = Change Declarant''s address
