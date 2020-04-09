@@ -292,8 +292,10 @@ notEligible.reference.support = If you are having problems making a declaration,
 notEligible.reference.openingHours = Open 8am to 6pm, Monday to Friday (closed bank holidays).
 
 notDeclarent.title = Use a different EORI number
-notDeclarent.description = If you need to use a different EORI number, log in using the account with the EORI number you need for this declaration. If you need to change your login details {0}.
-notDeclarent.descriptionLink = contact the EORI contact team
+notDeclarent.paragraph1 = If you need to use a different EORI number you can {0}.
+notDeclarent.paragraph1Link = sign in using another Government Gateway ID
+notDeclarent.paragraph2 = If you need to use a different EORI number, log in using the account with the EORI number you need for this declaration. If you need to change your login details {0}.
+notDeclarent.paragraph2Link = contact the EORI contact team
 notDeclarent.referenceTitle = Help and support
 notDeclarent.reference.support = If you are having problems making a declaration, phone: {0} 
 notDeclarent.reference.openingHours = Open 8am to 6pm, Monday to Friday (closed bank holidays).
