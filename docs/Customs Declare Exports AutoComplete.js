@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.33
+// @version      1.34
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -295,8 +295,9 @@ function carrierDetails() {
 }
 
 function additionalActors(){
-    if (currentPageIs("/customs-declare-exports/declaration/additional-actors")) {
-        document.getElementsByClassName('button')[0].click()
+    if (currentPageIs("/customs-declare-exports/declaration/other-parties-involved")) {
+        selectRadioOptionFromInputs(document.getElementsByName("partyType"), 4);
+        document.getElementById('submit').click()
     }
 }
 
@@ -655,7 +656,7 @@ function packageInformation(){
             document.getElementsByClassName('button')[0].click()
         }
         else {
-            selectFromAutoPredict(document.getElementById('typesOfPackages-container'), "PK");
+            selectFromAutoPredict(document.getElementById('typesOfPackages-container'), "XD");
             document.getElementById('numberOfPackages').value ='10';
             document.getElementById('shippingMarks').value = 'Shipping description';
             document.getElementById('add').click();
@@ -678,6 +679,9 @@ function commodityMeasurments(){
             case 'E':
             case 'B':
                 document.getElementById('supplementaryUnits').value ='10';
+                document.getElementById('netMass').value ='500';
+                document.getElementById('grossMass').value ='700';
+                break;
             default:
                 document.getElementById('netMass').value ='500';
                 document.getElementById('grossMass').value ='700';
@@ -807,8 +811,8 @@ function addDocuments(){
 }
 
 function warehouseIdentification(){
-    if (currentPageIs('/customs-declare-exports/declaration/warehouse-identification')) {
-        document.getElementById('code_no').checked = 'checked';
+    if (currentPageIs('/customs-declare-exports/declaration/warehouse-details')) {
+        selectRadioOptionFromInputs(document.getElementsByName("inWarehouse"), 1);
         document.getElementById('submit').click();
     }
 }
@@ -899,7 +903,7 @@ function summary(){
         document.getElementById("fullName").value = 'Tim Tester';
         document.getElementById("jobRole").value = 'Tester';
         document.getElementById("email").value = 'tim@testing.com';
-        document.getElementById("confirmation").click();
+        document.getElementById("confirmation").click()
         document.getElementById('submit').click();
 
         setDeclaration(0);
