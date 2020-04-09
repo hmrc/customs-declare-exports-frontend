@@ -18,7 +18,6 @@ package unit.controllers.declaration
 
 import controllers.declaration._
 import forms.declaration.TransportPayment
-import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -66,7 +65,7 @@ class TransportPaymentControllerSpec extends ControllerSpec {
 
   "Transport Payment Controller" should {
 
-    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
+    onEveryDeclarationJourney() { request =>
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
@@ -115,32 +114,6 @@ class TransportPaymentControllerSpec extends ControllerSpec {
           thePageNavigatedTo mustBe routes.TransportContainerController.displayContainerSummary()
           verify(transportPaymentPage, times(0)).apply(any(), any())(any(), any())
         }
-      }
-
-    }
-
-    onJourney(CLEARANCE) { request =>
-      "return 303 (SEE_OTHER)" when {
-
-        "display page" in {
-          withNewCaching(request.cacheModel)
-
-          val result = controller.displayPage(Mode.Normal)(getRequest())
-
-          status(result) must be(SEE_OTHER)
-          redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
-        }
-
-        "submit" in {
-          withNewCaching(request.cacheModel)
-          val correctForm = formData(TransportPayment.other)
-
-          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
-
-          status(result) must be(SEE_OTHER)
-          redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
-        }
-
       }
 
     }
