@@ -23,18 +23,18 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
 
-case class DeclarantEoirConfirmation(answer: String)
+case class DeclarantEoriConfirmation(answer: String)
 
-object DeclarantEoirConfirmation extends DeclarationPage {
+object DeclarantEoriConfirmation extends DeclarationPage {
 
-  implicit val format: OFormat[DeclarantEoirConfirmation] = Json.format[DeclarantEoirConfirmation]
+  implicit val format: OFormat[DeclarantEoriConfirmation] = Json.format[DeclarantEoriConfirmation]
 
   val isEoriKey = "isEori"
 
   private val mapping =
     Forms.mapping(isEoriKey -> requiredRadio("error.yesNo.required").verifying("error.yesNo.required", isContainedIn(YesNoAnswer.allowedValues)))(
-      DeclarantEoirConfirmation.apply
-    )(DeclarantEoirConfirmation.unapply)
+      DeclarantEoriConfirmation.apply
+    )(DeclarantEoriConfirmation.unapply)
 
-  def form(): Form[DeclarantEoirConfirmation] = Form(mapping)
+  def form(): Form[DeclarantEoriConfirmation] = Form(mapping)
 }

@@ -20,7 +20,7 @@ import base.Injector
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.DeclarantEoirConfirmation
+import forms.declaration.DeclarantEoriConfirmation
 import helpers.views.declaration.CommonMessages
 import models.DeclarationType.DeclarationType
 import models.Mode
@@ -36,9 +36,9 @@ import views.tags.ViewTest
 @ViewTest
 class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
 
-  private def form(journeyType: DeclarationType): Form[DeclarantEoirConfirmation] = DeclarantEoirConfirmation.form()
+  private def form(journeyType: DeclarationType): Form[DeclarantEoriConfirmation] = DeclarantEoriConfirmation.form()
   private val declarantDetailsPage = instanceOf[declarant_details]
-  private def createView(form: Form[DeclarantEoirConfirmation]): Document =
+  private def createView(form: Form[DeclarantEoriConfirmation]): Document =
     declarantDetailsPage(Mode.Normal, form)(journeyRequest(), messages)
 
   "Declarant Details View on empty page" should {
@@ -107,7 +107,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
     onEveryDeclarationJourney() { implicit request =>
       "display error when answer is empty" in {
 
-        val view = createView(form(request.declarationType).fillAndValidate(DeclarantEoirConfirmation("")))
+        val view = createView(form(request.declarationType).fillAndValidate(DeclarantEoriConfirmation("")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#isEori")
@@ -119,7 +119,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
 
         val view = createView(
           form(request.declarationType)
-            .fillAndValidate(DeclarantEoirConfirmation("wrong"))
+            .fillAndValidate(DeclarantEoriConfirmation("wrong"))
         )
 
         view must haveGovukGlobalErrorSummary
@@ -136,7 +136,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
     onEveryDeclarationJourney() { implicit request =>
       "display answer input" in {
 
-        val form = DeclarantEoirConfirmation.form().fill(DeclarantEoirConfirmation(YesNoAnswers.yes))
+        val form = DeclarantEoriConfirmation.form().fill(DeclarantEoriConfirmation(YesNoAnswers.yes))
         val view = createView(form)
 
         view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes

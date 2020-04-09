@@ -18,8 +18,8 @@ package unit.controllers.declaration
 
 import controllers.declaration.DeclarantDetailsController
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.DeclarantEoirConfirmation
-import forms.declaration.DeclarantEoirConfirmation.isEoriKey
+import forms.declaration.DeclarantEoriConfirmation
+import forms.declaration.DeclarantEoriConfirmation.isEoriKey
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -46,7 +46,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
-    when(declarantDetailsPage.apply(any[Mode], any[Form[DeclarantEoirConfirmation]])(any(), any())).thenReturn(HtmlFormat.empty)
+    when(declarantDetailsPage.apply(any[Mode], any[Form[DeclarantEoriConfirmation]])(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   "Declarant Details Controller" should {

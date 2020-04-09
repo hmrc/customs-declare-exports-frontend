@@ -17,7 +17,7 @@
 package forms.declaration
 
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.DeclarantEoirConfirmation.isEoriKey
+import forms.declaration.DeclarantEoriConfirmation.isEoriKey
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
@@ -31,7 +31,7 @@ class DeclarantEoriConfirmationSpec extends WordSpec with MustMatchers {
 
       "provided with empty input" in {
 
-        val form = DeclarantEoirConfirmation.form().bind(emptyJSON)
+        val form = DeclarantEoriConfirmation.form().bind(emptyJSON)
 
         form.hasErrors mustBe true
         form.errors.length must equal(1)
@@ -40,7 +40,7 @@ class DeclarantEoriConfirmationSpec extends WordSpec with MustMatchers {
 
       "provided with invalid input" in {
 
-        val form = DeclarantEoirConfirmation.form().bind(invalidJSON)
+        val form = DeclarantEoriConfirmation.form().bind(invalidJSON)
 
         form.hasErrors mustBe true
         form.errors.length must equal(1)
@@ -49,7 +49,7 @@ class DeclarantEoriConfirmationSpec extends WordSpec with MustMatchers {
 
       "provided with valid input" in {
 
-        val form = DeclarantEoirConfirmation.form().bind(validJSON)
+        val form = DeclarantEoriConfirmation.form().bind(validJSON)
 
         form.hasErrors mustBe false
       }

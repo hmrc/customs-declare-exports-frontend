@@ -16,8 +16,8 @@
 
 @import controllers.navigation.Navigator
 @import forms.common.YesNoAnswer.YesNoAnswers
-@import forms.declaration.{DeclarantDetails, DeclarantEoirConfirmation}
-@import forms.declaration.DeclarantEoirConfirmation.isEoriKey
+@import forms.declaration.{DeclarantDetails, DeclarantEoriConfirmation}
+@import forms.declaration.DeclarantEoriConfirmation.isEoriKey
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title}
@@ -36,7 +36,7 @@ tariffDetails: tariffDetails,
 formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(mode: Mode, form: Form[DeclarantEoirConfirmation])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[DeclarantEoriConfirmation])(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
     title = Title("declaration.declarant.title"),

@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.Eori
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.{DeclarantDetails, DeclarantEoirConfirmation, EntityDetails}
+import forms.declaration.{DeclarantDetails, DeclarantEoriConfirmation, EntityDetails}
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -45,7 +45,7 @@ class DeclarantDetailsController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.parties.declarantDetails match {
-      case Some(_) => Ok(declarantDetailsPage(mode, form().fill(DeclarantEoirConfirmation(YesNoAnswers.yes))))
+      case Some(_) => Ok(declarantDetailsPage(mode, form().fill(DeclarantEoriConfirmation(YesNoAnswers.yes))))
       case _       => Ok(declarantDetailsPage(mode, form()))
     }
   }
@@ -60,12 +60,12 @@ class DeclarantDetailsController @Inject()(
             updateCache(DeclarantDetails(EntityDetails(Some(Eori(request.eori)), None)))
               .map(_ => navigator.continueTo(mode, controllers.declaration.routes.ExporterDetailsController.displayPage))
           else
-            Future.successful(SeeOther(controllers.declaration.routes.NotEligibleController.displayNotDeclarant().url).withNewSession)
+            Future(Redirect(controllers.declaration.routes.NotEligibleController.displayNotDeclarant()).withNewSession)
       )
   }
 
-  private def form()(implicit request: JourneyRequest[AnyContent]): Form[DeclarantEoirConfirmation] =
-    DeclarantEoirConfirmation.form()
+  private def form()(implicit request: JourneyRequest[AnyContent]): Form[DeclarantEoriConfirmation] =
+    DeclarantEoriConfirmation.form()
 
   private def updateCache(declarant: DeclarantDetails)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
