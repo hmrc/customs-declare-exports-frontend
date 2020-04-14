@@ -22,11 +22,12 @@
 @import views.declaration.summary.EoriOrAddress
 @import views.html.declaration.summary._
 @import forms.common.Eori
+@import forms.declaration.DeclarantDetails
 
 @this(
-        summaryList: summary_list,
-        additionalActorsSection: parties_section_additional_actors,
-        holdersSection: parties_section_holders
+    summaryList: summary_list,
+    additionalActorsSection: parties_section_additional_actors,
+    holdersSection: parties_section_holders
 )
 
 @(mode: Mode, declarationData: ExportsDeclaration)(implicit messages: Messages, journeyRequest: JourneyRequest[_])
@@ -59,25 +60,29 @@
     Seq(address.fullName, address.addressLine, address.townOrCity, address.postCode, address.country).mkString("<br>")
 }
 
+@declarantEori(declarant: DeclarantDetails) = {
+    <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+        <div class="govuk-summary-list__row declarant-eori-row">
+            <dt class="govuk-summary-list__key">
+                @messages("declaration.summary.parties.declarant.eori")
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @declarant.details.eori.map(_.value).getOrElse("")
+            </dd>
+        </div>
+    </dl>
+}
+
 @if(sectionRequired(declarationData.parties)) {
-    @summaryList("declaration-parties-summary", Some(messages("declaration.summary.parties")),
 
-        (Seq.empty :+ declarationData.parties.declarantDetails.map(declarant =>
-            SummaryListRow(
-                classes = "declarant-eori-row",
-                key = Key(
-                    content = Text(messages("declaration.summary.parties.declarant.eori"))
-                ),
-                value = Value(
-                    content = Text(declarant.details.eori.map(_.value).getOrElse(""))
-                ),
-                actions = Some(Actions(
-                    items = Seq(ActionItem())
-                ))
-            )
-        ))
+    <h2 class="govuk-heading-m">Parties</h2>
 
-        ++ declarationData.parties.exporterDetails.map(export => eoriOrAddress(
+    @declarationData.parties.declarantDetails.map(declarant =>
+        declarantEori(declarant)
+    )
+    @summaryList("declaration-parties-summary", None,
+
+        declarationData.parties.exporterDetails.map(export => eoriOrAddress(
             "exporter",
             export.details.eori,
             export.details.address,
