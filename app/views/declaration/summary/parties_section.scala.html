@@ -70,7 +70,10 @@
                 ),
                 value = Value(
                     content = Text(declarant.details.eori.map(_.value).getOrElse(""))
-                )
+                ),
+                actions = Some(Actions(
+                    items = Seq(ActionItem())
+                ))
             )
         ))
 
