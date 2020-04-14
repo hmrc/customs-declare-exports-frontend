@@ -17,22 +17,10 @@
 package forms.declaration
 
 import forms.DeclarationPage
-import forms.common.Eori
-import models.DeclarationType.DeclarationType
-import play.api.data.{Form, Forms, Mapping}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class DeclarantDetails(details: EntityDetails)
 
 object DeclarantDetails extends DeclarationPage {
-  implicit val format = Json.format[DeclarantDetails]
-
-  val id = "DeclarantDetails"
-
-  val defaultEntityMapping: Mapping[EntityDetails] = Forms
-    .mapping("eori" -> Eori.mapping("declaration.declarant"))(eori => EntityDetails(Some(eori), None))(entityDetails => entityDetails.eori)
-
-  val defaultMapping = Forms.mapping("details" -> defaultEntityMapping)(DeclarantDetails.apply)(DeclarantDetails.unapply)
-
-  def form(declarationType: DeclarationType): Form[DeclarantDetails] = Form(defaultMapping)
+  implicit val format: OFormat[DeclarantDetails] = Json.format[DeclarantDetails]
 }

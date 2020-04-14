@@ -19,34 +19,45 @@ package unit.controllers.declaration
 import controllers.declaration.NotEligibleController
 import models.DeclarationType
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{times, verify, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import views.html.declaration.not_eligible
+import views.html.declaration.{not_declarant, not_eligible}
 
 class NotEligibleControllerSpec extends ControllerSpec {
 
   trait SetUp {
-    val notEligiblePage = mock[not_eligible]
+    val notEligiblePage: not_eligible = mock[not_eligible]
+    val notDeclarantPage: not_declarant = mock[not_declarant]
 
     val controller =
-      new NotEligibleController(mockAuthAction, mockJourneyAction, stubMessagesControllerComponents(), notEligiblePage)(ec)
+      new NotEligibleController(mockAuthAction, mockJourneyAction, stubMessagesControllerComponents(), notEligiblePage, notDeclarantPage)(ec)
 
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
     when(notEligiblePage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
+    when(notDeclarantPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   "Not Eligible Controller" should {
 
     "return 200 (OK)" when {
 
-      "display method is invoked" in new SetUp {
+      "display not eligible location is invoked" in new SetUp {
 
-        val result = controller.displayPage()(getRequest())
+        private val result = controller.displayNotEligible()(getRequest())
 
         status(result) must be(OK)
+        verify(notEligiblePage, times(1)).apply()(any(), any())
+      }
+
+      "display not eligible user is invoked" in new SetUp {
+
+        private val result = controller.displayNotDeclarant()(getRequest())
+
+        status(result) must be(OK)
+        verify(notDeclarantPage, times(1)).apply()(any(), any())
       }
     }
   }

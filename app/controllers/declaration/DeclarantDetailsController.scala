@@ -18,7 +18,9 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.DeclarantDetails
+import forms.common.Eori
+import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.{DeclarantDetails, DeclarantEoriConfirmation, EntityDetails}
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -43,28 +45,30 @@ class DeclarantDetailsController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.parties.declarantDetails match {
-      case Some(data) => Ok(declarantDetailsPage(mode, form().fill(data)))
-      case _          => Ok(declarantDetailsPage(mode, form()))
+      case Some(_) => Ok(declarantDetailsPage(mode, form().fill(DeclarantEoriConfirmation(YesNoAnswers.yes))))
+      case _       => Ok(declarantDetailsPage(mode, form()))
     }
   }
 
-  def saveAddress(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(declarantDetailsPage(mode, formWithErrors))),
-        validDeclarantDetails =>
-          updateCache(validDeclarantDetails)
-            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.ExporterDetailsController.displayPage))
+        validForm =>
+          if (validForm.answer == YesNoAnswers.yes)
+            updateCache(DeclarantDetails(EntityDetails(Some(Eori(request.eori)), None)))
+              .map(_ => navigator.continueTo(mode, controllers.declaration.routes.ExporterDetailsController.displayPage))
+          else
+            Future(Redirect(controllers.declaration.routes.NotEligibleController.displayNotDeclarant()).withNewSession)
       )
   }
 
-  private def form()(implicit request: JourneyRequest[AnyContent]): Form[DeclarantDetails] =
-    DeclarantDetails.form(request.declarationType)
+  private def form()(implicit request: JourneyRequest[AnyContent]): Form[DeclarantEoriConfirmation] =
+    DeclarantEoriConfirmation.form()
 
-  private def updateCache(formData: DeclarantDetails)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+  private def updateCache(declarant: DeclarantDetails)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
-      val updatedParties = model.parties.copy(declarantDetails = Some(formData))
-      model.copy(parties = updatedParties)
+      model.copy(parties = model.parties.copy(declarantDetails = Some(declarant)))
     })
 }

@@ -16,11 +16,11 @@
 
 package views.declaration
 
-import base.{Injector, TestHelper}
+import base.Injector
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
-import forms.common.Eori
-import forms.declaration.{DeclarantDetails, EntityDetails}
+import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.DeclarantEoriConfirmation
 import helpers.views.declaration.CommonMessages
 import models.DeclarationType.DeclarationType
 import models.Mode
@@ -36,9 +36,9 @@ import views.tags.ViewTest
 @ViewTest
 class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
 
-  private def form(journeyType: DeclarationType): Form[DeclarantDetails] = DeclarantDetails.form(journeyType)
+  private def form(journeyType: DeclarationType): Form[DeclarantEoriConfirmation] = DeclarantEoriConfirmation.form()
   private val declarantDetailsPage = instanceOf[declarant_details]
-  private def createView(form: Form[DeclarantDetails]): Document =
+  private def createView(form: Form[DeclarantEoriConfirmation]): Document =
     declarantDetailsPage(Mode.Normal, form)(journeyRequest(), messages)
 
   "Declarant Details View on empty page" should {
@@ -57,11 +57,9 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
   "Declarant Details View on empty page" should {
 
     onEveryDeclarationJourney() { implicit request =>
-      "display input label as page title" in {
+      "display page title" in {
 
-        createView(form(request.declarationType)).getElementsByClass("govuk-label govuk-label--l").text() mustBe messages(
-          "declaration.declarant.title"
-        )
+        createView(form(request.declarationType)).getElementsByTag("h1").text() mustBe messages("declaration.declarant.titleQuestion")
       }
 
       "display section header" in {
@@ -71,12 +69,15 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
         )
       }
 
-      "display empty input with label for EORI" in {
-
+      "display radio button with Yes option" in {
         val view = createView(form(request.declarationType))
-
-        view.getElementsByAttributeValue("for", "details_eori").text() mustBe messages("declaration.declarant.title")
-        view.getElementById("details_eori").attr("value") mustBe empty
+        view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes
+        view.getElementsByAttributeValue("for", "code_yes").text() mustBe "site.yes"
+      }
+      "display radio button with No option" in {
+        val view = createView(form(request.declarationType))
+        view.getElementById("code_no").attr("value") mustBe YesNoAnswers.no
+        view.getElementsByAttributeValue("for", "code_no").text() mustBe "site.no"
       }
 
       "display 'Back' button that links to 'Consignment References' page" in {
@@ -104,12 +105,12 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
   "Declarant Details View with invalid input" should {
 
     onEveryDeclarationJourney() { implicit request =>
-      "display error when EORI is empty" in {
+      "display error when answer is empty" in {
 
-        val view = createView(DeclarantDetails.form(request.declarationType).fillAndValidate(DeclarantDetails(EntityDetails(Some(Eori("")), None))))
+        val view = createView(form(request.declarationType).fillAndValidate(DeclarantEoriConfirmation("")))
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#details_eori")
+        view must containErrorElementWithTagAndHref("a", "#isEori")
 
         view.getElementsByClass("govuk-error-message").text() contains messages("declaration.declarant.eori.empty")
       }
@@ -117,13 +118,12 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
       "display error when EORI is provided, but is incorrect" in {
 
         val view = createView(
-          DeclarantDetails
-            .form(request.declarationType)
-            .fillAndValidate(DeclarantDetails(EntityDetails(Some(Eori(TestHelper.createRandomAlphanumericString(19))), None)))
+          form(request.declarationType)
+            .fillAndValidate(DeclarantEoriConfirmation("wrong"))
         )
 
         view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#details_eori")
+        view must containErrorElementWithTagAndHref("a", "#isEori")
 
         view.getElementsByClass("govuk-error-message").text() contains messages("declaration.declarant.eori.error.format")
       }
@@ -134,12 +134,12 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
   "Declarant Details View when filled" should {
 
     onEveryDeclarationJourney() { implicit request =>
-      "display data in EORI input" in {
+      "display answer input" in {
 
-        val form = DeclarantDetails.form(request.declarationType).fill(DeclarantDetails(EntityDetails(Some(Eori("1234")), None)))
+        val form = DeclarantEoriConfirmation.form().fill(DeclarantEoriConfirmation(YesNoAnswers.yes))
         val view = createView(form)
 
-        view.getElementById("details_eori").attr("value") mustBe "1234"
+        view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes
       }
     }
   }
