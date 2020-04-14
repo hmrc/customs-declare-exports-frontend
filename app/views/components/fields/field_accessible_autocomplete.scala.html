@@ -40,14 +40,14 @@ To avoid problems, we need to remove [] from field.
 }
 
 <div id="@fieldNameWithoutBrackets-autocomplete-outer" class="govuk-form-group @if(allErrors.nonEmpty) {govuk-form-group--error}">
-    <label id="@(fieldNameWithoutBrackets)-label" for="@fieldNameWithoutBrackets" class="@if(labelClass.nonEmpty){@labelClass}" >
+    <label id="@(fieldNameWithoutBrackets)-label" for="@fieldNameWithoutBrackets" class="govuk-label@if(labelClass.nonEmpty){ @labelClass}" >
         @messages(label)
     </label>
 
     @allErrors.map { error => <span id="error-message-@{field.name}-input" class="govuk-error-message">@messages(error)</span> }
 
     @hintText.map { ht =>
-        <span class="form-hint" id="@(fieldNameWithoutBrackets)-hint">@ht</span>
+        <span class="govuk-hint" id="@(fieldNameWithoutBrackets)-hint">@ht</span>
     }
 
     @input_accessible_autocomplete(

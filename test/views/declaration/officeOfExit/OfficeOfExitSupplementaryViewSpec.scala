@@ -33,7 +33,7 @@ import views.tags.ViewTest
 @ViewTest
 class OfficeOfExitSupplementaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  private val page = new office_of_exit_supplementary(mainTemplate)
+  private val page = instanceOf[office_of_exit_supplementary]
   private val form: Form[OfficeOfExitSupplementary] = OfficeOfExitForms.supplementaryForm()
   private def createView(mode: Mode = Mode.Normal, form: Form[OfficeOfExitSupplementary] = form): Document =
     page(mode, form)(journeyRequest(SUPPLEMENTARY), stubMessages())
@@ -52,7 +52,7 @@ class OfficeOfExitSupplementaryViewSpec extends UnitViewSpec with ExportsTestDat
     }
 
     "display page title" in {
-      view.getElementById("title").text() mustBe "declaration.officeOfExit.title"
+      view.getElementsByClass("govuk-fieldset__heading").text() mustBe "declaration.officeOfExit.title"
     }
 
     "display section header" in {
@@ -95,7 +95,8 @@ class OfficeOfExitSupplementaryViewSpec extends UnitViewSpec with ExportsTestDat
       val view =
         createView(form = OfficeOfExitForms.supplementaryForm.fillAndValidate(OfficeOfExitSupplementary("123456789")))
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-title").text() must be("error.summary.title")
+
       haveFieldErrorLink("officeId", "#officeId")
 
       view.getElementById("error-message-officeId-input").text() mustBe "declaration.officeOfExit.length"
@@ -105,7 +106,7 @@ class OfficeOfExitSupplementaryViewSpec extends UnitViewSpec with ExportsTestDat
 
       val view = createView(form = OfficeOfExitForms.supplementaryForm.fillAndValidate(OfficeOfExitSupplementary("")))
 
-      checkErrorsSummary(view)
+      view.getElementById("error-summary-title").text() must be("error.summary.title")
       haveFieldErrorLink("officeId", "#officeId")
 
       view.getElementById("error-message-officeId-input").text() mustBe "declaration.officeOfExit.empty"

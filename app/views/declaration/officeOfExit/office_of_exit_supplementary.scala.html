@@ -14,48 +14,73 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes
 @import controllers.navigation.Navigator
 @import forms.declaration.officeOfExit.OfficeOfExitSupplementary
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds._
 @import models.requests.JourneyRequest
-@import services.OfficeOfExits
 @import services.view.AutoCompleteItem
+@import services.OfficeOfExits
 @import views.Title
+@import views.BackButton
+@import scala.collection.immutable
+@import play.twirl.api.HtmlFormat
 
-@this(main_template: views.html.main_template)
+
+@this(
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukDetails : GovukDetails,
+        govukFieldset: GovukFieldset,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        saveButtons: saveButtons,
+        tariffDetails: tariffDetails,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, form: Form[OfficeOfExitSupplementary])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
+@tariffBody = {
+@components.tariff_body_partial(
+    messages("supplementary.representative-details.help-item1"),
+    messages("supplementary.representative-details.help-item2")
+)(tariffBodyDesc)
+}
+@tariff = { @components.details(messages("site.details.summary_text_these")){ @tariffBody } }
 
-@tariffBody = { @components.tariff_body_partial(messages("supplementary.representative-details.help-item1"), messages("supplementary.representative-details.help-item2"))(tariffBodyDesc)}
+@autocomplete = {
+@components.fields.field_accessible_autocomplete(
+    field = form("officeId"),
+    label = messages("declaration.officeOfExit"),
+    labelClass = Some("form-label-bold"),
+    hintText = Some(messages("declaration.officeOfExit.hint")),
+    messages("declaration.officeOfExit.empty"),
+    AutoCompleteItem.fromOfficeOfExit(OfficeOfExits.all)
+)
+}
 
-@main_template(
-    title = Title("declaration.officeOfExit.title", "declaration.summary.locations.header")
-) {
-    @helper.form(routes.OfficeOfExitController.saveOffice(mode), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+@govukLayout(
+    title = Title("declaration.officeOfExit.title", "declaration.summary.locations.header"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(OfficeOfExitSupplementary, mode)))){
 
-        @components.back_link(Navigator.backLink(OfficeOfExitSupplementary, mode), mode)
+    @formHelper(action = controllers.declaration.routes.OfficeOfExitController.saveOffice(mode), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
+        @sectionHeader(messages("declaration.summary.locations.header"))
 
-        @components.heading(
-            sectionHeader = messages("declaration.summary.locations.header"),
-            title = messages("declaration.officeOfExit.title"))
-
-        @components.fields.field_autocomplete(
-                  field = form("officeId"),
-                  label = messages("declaration.officeOfExit"),
-                  labelClass = Some("form-label-bold"),
-                  hintText = Some(messages("declaration.officeOfExit.hint")),
-                  messages("standard.officeOfExit.empty"),
-                  AutoCompleteItem.fromOfficeOfExit(OfficeOfExits.all)
-              )
-        @components.details(messages("site.details.summary_text_these")){
-            @tariffBody
-        }
-        @components.submit_button()
-        @components.buttons.save_and_return_later_button()
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.officeOfExit.title")),
+                classes = "govuk-fieldset__legend--xl",
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+                autocomplete,
+                tariff,
+                saveButtons()
+            ))
+        ))
     }
 }
