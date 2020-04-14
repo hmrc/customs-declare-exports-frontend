@@ -18,6 +18,7 @@ package unit.controllers.declaration
 
 import controllers.declaration._
 import forms.declaration.TransportPayment
+import models.DeclarationType._
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -65,7 +66,7 @@ class TransportPaymentControllerSpec extends ControllerSpec {
 
   "Transport Payment Controller" should {
 
-    onEveryDeclarationJourney() { request =>
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
@@ -116,6 +117,21 @@ class TransportPaymentControllerSpec extends ControllerSpec {
         }
       }
 
+    }
+
+    onJourney(SUPPLEMENTARY) { request =>
+
+      "return 303 (SEE_OTHER)" when {
+
+        "display page method is invoked" in {
+          withNewCaching(request.cacheModel)
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) must be (SEE_OTHER)
+          redirectLocation(result) must contain(controllers.routes.StartController.displayStartPage().url)
+        }
+      }
     }
 
   }
