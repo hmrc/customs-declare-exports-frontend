@@ -24,6 +24,7 @@ import play.api.data.Form
 import services.cache.ExportsTestData
 import services.model.Country
 import unit.tools.Stubs
+import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.destinationCountries.routing_countries_summary
 
@@ -54,7 +55,7 @@ class RoutingCountriesSummaryViewSpec extends UnitViewSpec with Stubs with Expor
 
     "display page title for the table" in {
 
-      view.getElementsByClass("govuk-fieldset__legend--xl").text() mustBe messages("declaration.routingCountries.summary.header")
+      view.getElementsByClass(Styles.gdsPageLegend).text() mustBe messages("declaration.routingCountries.summary.header")
     }
 
     "display page question" in {

@@ -24,6 +24,7 @@
 @import services.OfficeOfExits
 @import views.Title
 @import views.BackButton
+@import views.components.gds.Styles
 @import scala.collection.immutable
 @import play.twirl.api.HtmlFormat
 
@@ -108,7 +109,7 @@
         @govukFieldset(Fieldset(
             legend = Some(Legend(
                 content = Text(messages("declaration.officeOfExit.title")),
-                classes = "govuk-fieldset__legend--xl",
+                classes = Styles.gdsPageLegend,
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(immutable.Seq(

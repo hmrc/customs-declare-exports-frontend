@@ -20,16 +20,15 @@
 @import forms.declaration.RoutingQuestionYesNo.{no, RemoveCountryPage, yes}
 @import models.requests.JourneyRequest
 @import services.model.Country
-@import views.components.inputs.RadioOption
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.Fieldset
-@import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.Legend
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.errormessage.ErrorMessage
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.Radios
 @import views.html.components.gds._
 @import views.BackButton
+@import views.components.gds.Styles
 @import views.Title
 
 @this(
@@ -95,7 +94,7 @@
         @govukFieldset(Fieldset(
             legend = Some(Legend(
                 content = Text(messages("declaration.routingCountries.remove.question")),
-                classes = "govuk-fieldset__legend--xl",
+                classes = Styles.gdsPageLegend,
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(immutable.Seq(

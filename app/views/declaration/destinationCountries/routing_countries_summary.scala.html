@@ -30,6 +30,7 @@
 @import views.html.components.gds.errorSummary
 @import views.html.components.gds.sectionHeader
 @import views.html.components.gds.saveButtons
+@import views.components.gds.Styles
 @import scala.collection.immutable
 @import play.twirl.api.HtmlFormat
 @import views.BackButton
@@ -146,7 +147,7 @@
         @govukFieldset(Fieldset(
             legend = Some(Legend(
                 content = Text(messages("declaration.routingCountries.summary.header", countriesOfRouting.size)),
-                classes = "govuk-fieldset__legend--xl",
+                classes = Styles.gdsPageLegend,
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(immutable.Seq(

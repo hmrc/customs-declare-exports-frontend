@@ -24,6 +24,7 @@
 @import services.view.AutoCompleteItem
 @import views.Title
 @import views.BackButton
+@import views.components.gds.Styles
 @import scala.collection.immutable
 @import play.twirl.api.HtmlFormat
 
@@ -39,7 +40,6 @@
         tariffDetails: tariffDetails,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
-
 
 @(mode: Mode, form: Form[Country])(implicit request: JourneyRequest[_], messages: Messages)
 
@@ -72,7 +72,7 @@
         @govukFieldset(Fieldset(
             legend = Some(Legend(
                 content = Text(messages("declaration.originationCountry.question")),
-                classes = "govuk-fieldset__legend--xl",
+                classes = Styles.gdsPageLegend,
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(immutable.Seq(

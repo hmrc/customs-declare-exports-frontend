@@ -24,6 +24,7 @@
 @import services.view.AutoCompleteItem
 @import views.Title
 @import views.BackButton
+@import views.components.gds.Styles
 @import scala.collection.immutable
 @import play.twirl.api.HtmlFormat
 
@@ -71,7 +72,7 @@
         @govukFieldset(Fieldset(
             legend = Some(Legend(
                 content = Text(messages("declaration.destinationCountry.question")),
-                classes = "govuk-fieldset__legend--xl",
+                classes = Styles.gdsPageLegend,
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(immutable.Seq(

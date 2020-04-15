@@ -24,6 +24,7 @@ import play.api.data.Form
 import services.cache.ExportsTestData
 import services.model.Country
 import unit.tools.Stubs
+import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.destinationCountries.remove_routing_country
 
@@ -48,7 +49,7 @@ class RemoveRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsT
 
     "display page question" in {
 
-      view.getElementsByClass("govuk-fieldset__legend--xl").text() mustBe messages("declaration.routingCountries.remove.question")
+      view.getElementsByClass(Styles.gdsPageLegend).text() mustBe messages("declaration.routingCountries.remove.question")
     }
 
     "display page header" in {
