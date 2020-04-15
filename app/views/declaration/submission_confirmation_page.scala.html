@@ -15,9 +15,21 @@
  *@
 
 @import models.responses.FlashKeys
-@import views.Title
 
-@this(main_template: views.html.main_template)
+@import controllers.navigation.Navigator
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.Title
+@import views.html.components.gds._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import play.twirl.api.HtmlFormat
+
+@this(
+        govukLayout: gdsMainTemplate,
+        govukPanel : GovukPanel,
+        govukButton: GovukButton,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @()(implicit request: Request[_], flash: Flash, messages: Messages)
 
@@ -25,21 +37,20 @@
 @viewDeclarationsLink = {<a id="submissions-link" href="@routes.SubmissionsController.displayListOfSubmissions()">@messages("declaration.confirmation.info.link")</a>}
 @lrnMessage(lrn: String) = {<div class="font-large">@messages("declaration.confirmation.lrn")</div> <div id="lrn-number" class="font-large bold">@lrn</div>}
 
-@main_template(
-    title = Title(titleKey)
-) {
+@govukLayout(title = Title(titleKey)) {
 
-    <div class="govuk-box-highlight">
-        <h1 class="heading-xlarge">
-            @messages(titleKey)
-        </h1>
+    @govukPanel(Panel(
+        title = Text(messages(titleKey)),
+        content = HtmlContent(flash.get(FlashKeys.lrn).map(lrn => lrnMessage(lrn)).getOrElse(HtmlFormat.empty))
+    ))
 
-        @flash.get(FlashKeys.lrn).map(lrn => lrnMessage(lrn))
-    </div>
-
-    <p>
-      @Html(messages("declaration.confirmation.info", viewDeclarationsLink))
+    <p class="govuk-body">
+        @Html(messages("declaration.confirmation.info", viewDeclarationsLink))
     </p>
 
-    @components.button_link(messageKey = "declaration.confirmation.submitAnotherDeclaration", href=routes.ChoiceController.displayPage().url)
+    @govukButton(Button(
+        href = Some(routes.ChoiceController.displayPage().url),
+        content = Text(messages("declaration.confirmation.submitAnotherDeclaration"
+        ))
+    ))
 }

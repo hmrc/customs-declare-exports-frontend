@@ -16,6 +16,7 @@
 
 package unit.controllers.declaration
 
+import base.Injector
 import controllers.declaration.ConfirmationController
 import play.api.mvc.{AnyContentAsEmpty, Flash, Request, Result}
 import play.api.test.Helpers._
@@ -24,11 +25,11 @@ import views.html.declaration.{draft_confirmation_page, submission_confirmation_
 
 import scala.concurrent.Future
 
-class ConfirmationControllerSpec extends ControllerSpec {
+class ConfirmationControllerSpec extends ControllerSpec with Injector {
 
   trait SetUp {
-    val submissionConfirmationPage = new submission_confirmation_page(mainTemplate)
-    val draftConfirmationPage = new draft_confirmation_page(mainTemplate)
+    val submissionConfirmationPage = instanceOf[submission_confirmation_page]
+    val draftConfirmationPage = instanceOf[draft_confirmation_page]
 
     val controller =
       new ConfirmationController(mockAuthAction, stubMessagesControllerComponents(), submissionConfirmationPage, draftConfirmationPage)(ec)
