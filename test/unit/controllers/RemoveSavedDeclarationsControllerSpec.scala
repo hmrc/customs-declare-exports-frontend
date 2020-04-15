@@ -18,15 +18,18 @@ package unit.controllers
 
 import controllers.RemoveSavedDeclarationsController
 import forms.RemoveDraftDeclaration
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.remove_declaration
 
 class RemoveSavedDeclarationsControllerSpec extends ControllerSpec {
 
   trait SetUp {
-    val removeDeclarationPage = new remove_declaration(mainTemplate)
+    val removeDeclarationPage = mock[remove_declaration]
 
     val controller = new RemoveSavedDeclarationsController(
       mockAuthAction,
@@ -37,6 +40,8 @@ class RemoveSavedDeclarationsControllerSpec extends ControllerSpec {
     )(ec)
 
     authorizedUser()
+
+    when(removeDeclarationPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   "Submissions controller" should {
