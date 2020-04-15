@@ -30,18 +30,20 @@ import views.tags.ViewTest
 @ViewTest
 class SubmissionConfirmationPageViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  private val page = new submission_confirmation_page(mainTemplate)
+  private val page = instanceOf[submission_confirmation_page]
   private val realMessages = validatedMessages
   private val withoutFlash = new Flash(Map.empty)
   private def withFlash(devType: DeclarationType) = new Flash(Map(FlashKeys.lrn -> "some-lrn", FlashKeys.decType -> devType.toString))
   private def createView(flash: Flash): Document =
     page()(journeyRequest(), flash, realMessages)
 
+  private def getHighlightBox(view: Document) = view.getElementsByClass("govuk-panel govuk-panel--confirmation").first()
+
   "Confirmation Page View on empty page" should {
     val view = createView(withoutFlash)
 
     "display header with default" in {
-      val highlightBox = view.selectFirst("article>div.govuk-box-highlight")
+      val highlightBox = getHighlightBox(view)
       highlightBox must containText("Declaration has been submitted")
       highlightBox mustNot containText("The LRN is")
     }
@@ -52,7 +54,7 @@ class SubmissionConfirmationPageViewSpec extends UnitViewSpec with ExportsTestDa
     }
 
     "render start again button" in {
-      val button = view.getElementsByClass("button").first()
+      val button = view.getElementsByClass("govuk-button").first()
       button must haveHref(controllers.routes.ChoiceController.displayPage().url)
       button must containText("Back to start")
     }
@@ -61,20 +63,37 @@ class SubmissionConfirmationPageViewSpec extends UnitViewSpec with ExportsTestDa
   "Confirmation Page View when filled" should {
 
     "display header with declaration type Standard and LRN" in {
-      val highlightBox = createView(withFlash(DeclarationType.STANDARD)).selectFirst("article>div.govuk-box-highlight")
+      val view = createView(withFlash(DeclarationType.STANDARD))
+      val highlightBox = getHighlightBox(view)
       highlightBox must containText("Standard declaration has been submitted")
       highlightBox must containText("The LRN is some-lrn")
     }
 
     "display header with declaration type Simplified and LRN" in {
-      val highlightBox = createView(withFlash(DeclarationType.SIMPLIFIED)).selectFirst("article>div.govuk-box-highlight")
+      val view = createView(withFlash(DeclarationType.SIMPLIFIED))
+      val highlightBox = getHighlightBox(view)
       highlightBox must containText("Simplified declaration has been submitted")
       highlightBox must containText("The LRN is some-lrn")
     }
 
     "display header with declaration type Supplementary and LRN" in {
-      val highlightBox = createView(withFlash(DeclarationType.SUPPLEMENTARY)).selectFirst("article>div.govuk-box-highlight")
+      val view = createView(withFlash(DeclarationType.SUPPLEMENTARY))
+      val highlightBox = getHighlightBox(view)
       highlightBox must containText("Supplementary declaration has been submitted")
+      highlightBox must containText("The LRN is some-lrn")
+    }
+
+    "display header with declaration type Occasional and LRN" in {
+      val view = createView(withFlash(DeclarationType.OCCASIONAL))
+      val highlightBox = getHighlightBox(view)
+      highlightBox must containText("Occasional simplified declaration has been submitted")
+      highlightBox must containText("The LRN is some-lrn")
+    }
+
+    "display header with declaration type Clearance and LRN" in {
+      val view = createView(withFlash(DeclarationType.CLEARANCE))
+      val highlightBox = getHighlightBox(view)
+      highlightBox must containText("Customs clearance request has been submitted")
       highlightBox must containText("The LRN is some-lrn")
     }
   }
