@@ -50,7 +50,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
         val view = createView()
 
-        view.getElementById("section-header").text() must include(messages("declaration.section.2"))
+        view.getElementById("section-header").text() must include(messages("supplementary.summary.parties.header"))
       }
 
       "display empty input with label for Full name" in {
