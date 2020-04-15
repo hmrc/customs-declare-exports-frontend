@@ -14,60 +14,96 @@
  * limitations under the License.
  *@
 
-@import java.time.ZoneId
-@import java.time.Instant
 @import controllers.routes._
-@import controllers.util._
 @import forms.RemoveDraftDeclaration
 @import views.ViewDates
-@import uk.gov.hmrc.play.views.html._
-@import views.html.components.pagination
-@import views.components.inputs.RadioOption
-@import views.Title
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds._
+@import views.components.gds.Styles._
+@import views.{BackButton, Title}
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukFieldset : GovukFieldset,
+        pageTitle: pageTitle,
+        govukRadios: GovukRadios,
+        govukTable: GovukTable,
+        errorSummary: errorSummary,
+        saveAndContinue: saveAndContinue,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 
-@(declaration: ExportsDeclaration, form : Form[RemoveDraftDeclaration])(implicit request: Request[_], messages: Messages)
+@(declaration: ExportsDeclaration, form: Form[RemoveDraftDeclaration])(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = Title("saved.declarations.remove.title"),
-    fullWidth = true
-) {
-
-    @components.back_link(routes.SavedDeclarationsController.displayDeclarations())
-
-    <div class="column-two-thirds">
-        @components.error_summary(form.errors)
-
-        <h1>@messages("saved.declarations.remove.title")</h1>
-
-        <table>
-            <tr class="table-row table-head">
-                <th class="table-cell table-head">@messages("saved.declarations.ducr")</th>
-                <th class="table-cell table-head">@messages("saved.declarations.dateSaved")</th>
-            </tr>
-
-            <tr class="table-row">
-                <td class="table-cell">
-                    @declaration.ducr.getOrElse(messages("saved.declarations.noDucr"))
-                </td>
-                <td class="table-cell">@ViewDates.formatDateAtTime(declaration.updatedDateTime)</td>
-            </tr>
-        </table>
-
-        <br />
-
-        @helper.form(RemoveSavedDeclarationsController.removeDeclaration(declaration.id), 'autoComplete -> "off") {
-            @helper.CSRF.formField
-
-            @components.fields.field_radio(
-                field = form("remove"),
-                legend = "",
-                inputs = Seq(RadioOption("Yes", "true", messages("site.yes")), RadioOption("No", "false", messages("site.no")))
+@declarationTable = {
+    @govukTable(Table(
+        rows = Seq(
+            Seq(
+                TableRow(
+                    content = Text(declaration.ducr.getOrElse(messages("saved.declarations.noDucr")))
+                ),
+                TableRow(
+                    content = Text(ViewDates.formatDateAtTime(declaration.updatedDateTime))
+                )
             )
+        ),
+        head = Some(List(
+            HeadCell(
+                content = Text(messages("saved.declarations.ducr"))
+            ),
+            HeadCell(
+                content = Text(messages("saved.declarations.dateSaved"))
+            )
+        ))
+    ))
+}
 
-            @components.submit_button("saved.declarations.remove.submitButton")
-        }
-    </div>
+@radios = {
+    @govukRadios(Radios(
+        name = "remove",
+        fieldset = Some(Fieldset(
+            legend = None
+        )),
+        items = Seq(
+            RadioItem(
+                id = Some("Yes"),
+                value = Some("true"),
+                content = Text(messages("site.yes")),
+                checked = form("remove").value.contains("true")
+            ),
+            RadioItem(
+                id = Some("No"),
+                value = Some("false"),
+                content = Text(messages("site.no")),
+                checked = form("remove").value.contains("false")
+            )
+        ),
+        errorMessage = form("remove").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*))))
+    ))
+}
+
+@fieldSetHtml = {
+  @declarationTable
+  @radios
+  @saveAndContinue("saved.declarations.remove.submitButton")
+}
+
+@govukLayout(
+    title = Title("saved.declarations.remove.title"),
+    backButton = Some(BackButton(messages("site.back"), routes.SavedDeclarationsController.displayDeclarations()))) {
+
+    @formHelper(action = RemoveSavedDeclarationsController.removeDeclaration(declaration.id), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
+
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("saved.declarations.remove.title")),
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = fieldSetHtml
+        ))
+    }
+
 }

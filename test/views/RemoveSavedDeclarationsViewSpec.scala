@@ -18,30 +18,28 @@ package views
 
 import java.time.{LocalDateTime, ZoneOffset}
 
-import base.ExportsTestData
-import base.ExportsTestData._
+import base.{ExportsTestData, Injector}
 import forms.declaration.ConsignmentReferences
 import forms.{Ducr, Lrn, RemoveDraftDeclaration}
 import helpers.views.declaration.CommonMessages
 import models.{DeclarationStatus, ExportsDeclaration}
-import org.jsoup.nodes.Element
+import org.jsoup.nodes.{Document, Element}
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
-import play.twirl.api.Html
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.remove_declaration
 import views.tags.ViewTest
 
 @ViewTest
-class RemoveSavedDeclarationsViewSpec extends UnitViewSpec with CommonMessages with Stubs {
+class RemoveSavedDeclarationsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   val title: String = "saved.declarations.remove.title"
   val ducr: String = "saved.declarations.ducr"
   val dateSaved: String = "saved.declarations.dateSaved"
 
-  private val removeSavedDeclarationsPage = new remove_declaration(mainTemplate)
+  private val removeSavedDeclarationsPage = instanceOf[remove_declaration]
 
   private def decWithDucr(index: Int = 1) = ExportsTestData.aDeclaration(
     withStatus(DeclarationStatus.DRAFT),
@@ -53,7 +51,7 @@ class RemoveSavedDeclarationsViewSpec extends UnitViewSpec with CommonMessages w
     dec: ExportsDeclaration,
     form: Form[RemoveDraftDeclaration] = RemoveDraftDeclaration.form,
     messages: Messages = stubMessages()
-  ) =
+  ): Document =
     removeSavedDeclarationsPage(declaration = dec, form)(request, messages)
 
   "Remove Saved Declarations View" should {
@@ -68,10 +66,10 @@ class RemoveSavedDeclarationsViewSpec extends UnitViewSpec with CommonMessages w
 
       view.getElementsByTag("h1").text() mustBe messages(title)
 
-      tableCell(view)(0, 0).text() mustBe messages(ducr)
-      tableCell(view)(0, 1).text() mustBe messages(dateSaved)
-      tableCell(view)(1, 0).text() mustBe messages("DUCR-XXXX-1")
-      tableCell(view)(1, 1).text() mustBe messages("1 Jan 2019 at 10:00")
+      tableHeader(view)(0).text() mustBe messages(ducr)
+      tableHeader(view)(1).text() mustBe messages(dateSaved)
+      tableCell(view)(0, 0).text() mustBe "DUCR-XXXX-1"
+      tableCell(view)(0, 1).text() mustBe "1 Jan 2019 at 10:00"
 
       numberOfTableRows(view) mustBe 1
 
@@ -82,19 +80,28 @@ class RemoveSavedDeclarationsViewSpec extends UnitViewSpec with CommonMessages w
 
       val view = createView(decWithDucr(), RemoveDraftDeclaration.form.bind(Map[String, String]()))
 
-      view.getElementById("error-summary-heading").text() mustBe messages("error.summary.title")
+      view must haveGovukGlobalErrorSummary
+      view must containErrorElementWithTagAndHref("a", "#remove")
 
-      view.getElementById("error-message-remove-input").text() mustBe
-        messages("saved.declarations.remove.option.error.empty")
+      view must containErrorElementWithMessage("saved.declarations.remove.option.error.empty")
     }
   }
 
-  private def numberOfTableRows(view: Html) = view.getElementsByClass("table-row").size() - 1
+  private def numberOfTableRows(view: Document) = view.getElementsByClass("govuk-table__row").size() - 1
 
-  private def tableCell(view: Html)(row: Int, column: Int): Element =
+  private def tableHeader(view: Document)(column: Int): Element =
     view
-      .getElementsByClass("table-row")
+      .getElementsByClass("govuk-table__head")
+      .first()
+      .getElementsByClass("govuk-table__header")
+      .get(column)
+
+  private def tableCell(view: Document)(row: Int, column: Int): Element =
+    view
+      .getElementsByClass("govuk-table__body")
+      .first()
+      .getElementsByClass("govuk-table__row")
       .get(row)
-      .getElementsByClass("table-cell")
+      .getElementsByClass("govuk-table__cell")
       .get(column)
 }
