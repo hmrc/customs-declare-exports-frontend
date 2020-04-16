@@ -1,0 +1,96 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.components.gds.PaginationUtil
+@import views.components.gds.PaginationUtil.PaginationItem._
+
+@(id: String = "pagination",
+  singularName: String = "result",
+  pluralName: String = "results",
+  pager: Paginated[_],
+  onChange: Int => Call
+)(implicit messages: Messages)
+
+@firstElementOnPageIndex = @{(pager.page.index - 1) * pager.page.size + 1}
+@lastElementOnPageIndex = @{(pager.page.index - 1) * pager.page.size + pager.currentPageSize}
+@rangePart = {@firstElementOnPageIndex – @lastElementOnPageIndex}
+
+@singularOrPlural = @{
+  if(pager.total == 1){
+    singularName
+  } else {
+    pluralName
+  }
+}
+
+<nav class="ceds-pagination" role="navigation" aria-label="Pagination Navigation">
+
+  <div class="ceds-pagination__summary">
+    @if(pager.nonEmpty) {
+
+      @if(pager.pagesAmount == 1) {
+        <p class="govuk-body">@{messages("saved.declarations.pagination.showing")} @{pager.total} @singularOrPlural</p>
+      } else {
+        <p class="govuk-body">@{messages("saved.declarations.pagination.showing")} @{rangePart} @{messages("saved.declarations.pagination.of")} @{pager.total} @singularOrPlural</p>
+      }
+
+    } else {
+      <p class="govuk-body">@{messages("saved.declarations.pagination.showing.no")} @{pluralName}</p>
+    }
+  </div>
+
+  @if(pager.pagesAmount > 1) {
+    <div id="@id-controls" class="ceds-pagination__controls">
+
+      <ul class="ceds-pagination__items">
+
+        @defining(pager.pagesAmount) { pageCount: Int =>
+
+          @if(pager.page.index > 1) {
+            <li class="ceds-pagination__item ceds-pagination__item--prev">
+              <a id="@id-page_previous" class="ceds-pagination__link" href="@onChange(pager.page.index - 1)" aria-label="Go to Previous Page">Previous</a>
+            </li>
+          }
+
+          @for(paginationItem <- PaginationUtil.paginationElements(pager.page.index, pager.pagesAmount)) {
+            @paginationItem match {
+              case PageNumber(pageNumber) => {
+                <li class="ceds-pagination__item">
+                  <a id="@id-page_@pageNumber" class="ceds-pagination__link" href="@onChange(pageNumber)" aria-label="Go to Page @pageNumber">@{paginationItem.value}</a>
+                </li>
+              }
+              case Dots => {
+                <li class="ceds-pagination__item ceds-pagination__item--dots">@{paginationItem.value}</li>
+              }
+              case ActivePageNumber(pageNumber) => {
+                <li id="@id-page_active" class="ceds-pagination__item ceds-pagination__item--active" aria-label="Current Page, Page @pageNumber" aria-current="true">@{paginationItem.value}</li>
+              }
+            }
+          }
+
+          @if(pager.page.index < pageCount) {
+            <li class="ceds-pagination__item ceds-pagination__item--next">
+              <a id="@id-page_next" class="ceds-pagination__link" href="@onChange(pager.page.index + 1)" aria-label="Go to Next Page">Next</a>
+            </li>
+          }
+        }
+
+      </ul>
+
+    </div>
+  }
+
+</nav>

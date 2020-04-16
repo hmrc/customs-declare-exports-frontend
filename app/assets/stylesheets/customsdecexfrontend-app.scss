@@ -1,20 +1,15 @@
 @import 'partials/_variables';
 @import 'partials/_base';
-
 @import 'partials/_forms';
 @import 'partials/_tabular-data';
 @import 'partials/_typography';
-
 @import 'partials/_utilities';
-
 @import 'partials/_shame';
 @import 'partials/_autocomplete';
-
 @import 'partials/_lists.scss';
-
 @import 'partials/_exports.scss';
-
 @import 'partials/_currency_input.scss';
+@import 'partials/pagination';
 
 $govuk-assets-path: '/customs-declare-exports/assets/';
 $govuk-images-path: "/customs-declare-exports/assets/lib/govuk-frontend/govuk/assets/images/";

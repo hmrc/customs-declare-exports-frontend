@@ -114,12 +114,20 @@ trait Stubs {
     new GovukBackLink()
   )
 
+  val gdsGovukFlexibleLayout = new govukFlexibleLayout(
+    new components.GovukTemplate(govukHeader = new GovukHeader(), govukFooter = new GovukFooter(), new GovukSkipLink()),
+    new GovukHeader(),
+    new GovukFooter(),
+    new GovukBackLink()
+  )
+
   val govukHeader = new GovukHeader()
   val sHeader = new siteHeader(govukHeader)
   val pBanner = new phaseBanner(new GovukPhaseBanner(new govukTag()))
   val gdsMainTemplate = new gdsMainTemplate(
     govukHeader = govukHeader,
     govukLayout = gdsGovukLayout,
+    govukFlexibleLayout = gdsGovukFlexibleLayout,
     govukPhaseBanner = new components.GovukPhaseBanner(new govukTag()),
     govukBackLink = new components.GovukBackLink(),
     siteHeader = sHeader,
