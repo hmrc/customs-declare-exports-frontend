@@ -18,12 +18,12 @@ package views
 
 import play.api.i18n.Messages
 
-case class Title(headingKey: String, sectionKey: String = "") {
+case class Title(headingKey: String, sectionKey: String = "", headingArg: String = "") {
 
   def toString(implicit messages: Messages): String =
     if (sectionKey.isEmpty) {
-      messages("title.format", messages(headingKey), messages("service.name"))
+      messages("title.format", messages(headingKey, headingArg), messages("service.name"))
     } else {
-      messages("title.withSection.format", messages(headingKey), messages(sectionKey), messages("service.name"))
+      messages("title.withSection.format", messages(headingKey, headingArg), messages(sectionKey), messages("service.name"))
     }
 }

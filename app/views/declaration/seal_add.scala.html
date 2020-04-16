@@ -20,36 +20,51 @@
 @import controllers.util.Remove
 @import views.components.fields.LabelledValue
 @import views.Title
+@import controllers.declaration.routes._
+@import controllers.navigation.Navigator
+@import models.requests.JourneyRequest
+@import views.{BackButton, Title}
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.html.components.gds._
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        exportsInputText: exportsInputText,
+        saveButtons: saveButtons,
+        tariffDetails: tariffDetails,
+        pageTitle: pageTitle,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, form: Form[Seal], containerId: String)(implicit request: Request[_], messages: Messages)
 
 @tariffBody = { @Html(messages("declaration.type.sealsSummaryText", components.details_content_link())) }
 
-@main_template(
-    title = Title(messages("standard.seal.title", containerId))
-) {
+@govukLayout(
+    title = Title("declaration.seal.title", "declaration.seal.summary.heading", containerId),
+    backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.SealController.displaySealSummary(mode, containerId)))) {
 
-    @components.back_link(controllers.declaration.routes.SealController.displaySealSummary(mode, containerId), mode)
-
-    @components.error_summary(form.errors)
-
-    @components.heading(title = messages("standard.seal.title", containerId))
-
-    @helper.form(SealController.submitAddSeal(mode, containerId), 'autoComplete -> "off") {
+    @formHelper(action = SealController.submitAddSeal(mode, containerId), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
-        @components.fields.field_text(
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("declaration.seal.summary.heading"))
+        @pageTitle(messages("declaration.seal.title", containerId))
+
+        @exportsInputText(
             field = form("id"),
-            label = Some(messages("standard.seal.question")),
-            labelClass = Some("bold-small")
+            labelKey = "declaration.seal.question",
+            inputClasses = Some("govuk-input--width-20")
         )
-        @components.details(messages("site.details.summary_text_this")){
-            @tariffBody
-        }
-        @components.submit_button()
-        @components.buttons.save_and_return_later_button()
+
+        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+
+        @saveButtons()
     }
 
 }

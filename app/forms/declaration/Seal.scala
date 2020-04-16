@@ -30,8 +30,8 @@ object Seal {
   val formMapping: Mapping[Seal] = Forms.mapping(
     "id" ->
       text()
-        .verifying("standard.transport.sealId.empty.error", nonEmpty)
-        .verifying("standard.transport.sealId.error.invalid", isEmpty or (isAlphanumeric and noLongerThan(20)))
+        .verifying("declaration.transport.sealId.empty.error", nonEmpty)
+        .verifying("declaration.transport.sealId.error.invalid", isEmpty or (isAlphanumeric and noLongerThan(20)))
   )(Seal.apply)(Seal.unapply)
 
   def form(): Form[Seal] = Form(formMapping)
