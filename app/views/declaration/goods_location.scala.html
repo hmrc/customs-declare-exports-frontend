@@ -47,7 +47,6 @@
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(GoodsLocationForm, mode)))) {
 
     @formHelper(action = LocationController.saveLocation(mode), 'autoComplete -> "off") {
-    @helper.CSRF.formField
 
         @errorSummary(form.errors)
 

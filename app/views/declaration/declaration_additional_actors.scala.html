@@ -167,8 +167,7 @@
     title = Title("declaration.additionalActors.title"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarationAdditionalActors, mode)))) {
 
-    @helper.form(DeclarationAdditionalActorsController.saveForm(mode), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+    @formHelper(action = DeclarationAdditionalActorsController.saveForm(mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 

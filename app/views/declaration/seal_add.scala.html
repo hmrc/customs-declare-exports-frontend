@@ -49,7 +49,6 @@
     backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.SealController.displaySealSummary(mode, containerId)))) {
 
     @formHelper(action = SealController.submitAddSeal(mode, containerId), 'autoComplete -> "off") {
-        @helper.CSRF.formField
 
         @errorSummary(form.errors)
 
