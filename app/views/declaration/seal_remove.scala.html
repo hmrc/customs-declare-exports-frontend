@@ -82,13 +82,13 @@
 }
 
 @govukLayout(
-    title = Title("declaration.seal.remove.title", "", containerId),
+    title = Title("declaration.seal.remove.title", "declaration.seal.section", containerId),
     backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.SealController.displaySealSummary(mode, containerId)))) {
 
     @formHelper(action = SealController.submitSealRemove(mode, containerId, sealId), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.seal.summary.heading"))
+        @sectionHeader(messages("declaration.seal.section"))
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(

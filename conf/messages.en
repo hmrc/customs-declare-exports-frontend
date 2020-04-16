@@ -1159,6 +1159,7 @@ supplementary.addgoodsitems.addallpages.error = Date of validity cannot be empty
 declaration.itemsSummary.item.incorrect = Item {0} does not contains all mandatory data
 
 declaration.seal.title = Security seals for container {0}
+declaration.seal.section = Transport details
 declaration.seal.question = What is the security seal?
 declaration.seal.summary.heading = Security seals
 declaration.seal.summary.noSeals = No seals
