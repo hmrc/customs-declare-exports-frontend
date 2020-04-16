@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.35
+// @version      1.36
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -358,36 +358,45 @@ function holderOfAuthorisation(){
 
 function originationCountry(){
     if (currentPageIs("/customs-declare-exports/declaration/origination-country")) {
-        selectFromAutoPredict(document.getElementById("countryCode-container"), "GB");
-        document.getElementsByClassName('button')[0].click()
+        document.querySelector("#countryCode-container input").value = 'United Kingdom - GB';
+        setTimeout(() => {
+            document.getElementById('countryCode__option--0').dispatchEvent(new Event("click"));
+            document.getElementById('submit').click();
+        } , 250);
     }
 }
 
 function destinationCountry(){
     if (currentPageIs("/customs-declare-exports/declaration/destination-country")) {
-        selectFromAutoPredict(document.getElementById("countryCode-container"), "US");
-        document.getElementsByClassName('button')[0].click()
+        document.querySelector("#countryCode-container input").value = 'United States of America - US';
+        setTimeout(() => {
+            document.getElementById('countryCode__option--0').dispatchEvent(new Event("click"));
+            document.getElementById('submit').click();
+        } , 250);
     }
 }
 
 function countryOfRouting(){
     if (currentPageIs("/customs-declare-exports/declaration/country-of-routing")) {
-        document.getElementById('Yes').click()
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('Yes').click();
+        document.getElementById('submit').click();
     }
 }
 
 function countriesOfRouting(){
     if (currentPageIs("/customs-declare-exports/declaration/countries-of-routing")) {
-        selectFromAutoPredict(document.getElementById("countryCode-container"), "GB");
-        document.getElementsByClassName('button')[0].click()
+        document.querySelector("#countryCode-container input").value = 'China - CN';
+        setTimeout(() => {
+            document.getElementById('countryCode__option--0').dispatchEvent(new Event("click"));
+            document.getElementById('submit').click();
+        } , 250);
     }
 }
 
 function countriesOfRoutingSummary(){
     if (currentPageIs("/customs-declare-exports/declaration/countries-summary")) {
-        document.getElementById('No').click()
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('No').click();
+        document.getElementById('submit').click();
     }
 }
 
@@ -424,23 +433,25 @@ function officeOfExit(){
             case 'F':
             case 'K':
             case 'Y':
-                selectFromAutoPredict(document.getElementById('officeId-container'), "GB000041");
+                document.querySelector("#officeId-container input").value = 'GB000041';
                 break;
             case 'J':
-                selectFromAutoPredict(document.getElementById('officeId-container'), "GB000054");
+                document.querySelector("#officeId-container input").value = 'GB000054';
                 break;
             case 'Z':
-                selectFromAutoPredict(document.getElementById('officeId-container'), "GB000051");
+                document.querySelector("#officeId-container input").value = 'GB000051';
                 break;
             default:
-                selectFromAutoPredict(document.getElementById('officeId-container'), "GB000434");
+                document.querySelector("#officeId-container input").value = 'GB000434';
         }
 
-        if(document.getElementById("circumstancesCode")) {
-            selectRadioOption(document.getElementById("circumstancesCode"), 1);
-        }
-
-        document.getElementsByClassName('button')[0].click()
+        setTimeout(() => {
+            document.getElementById('officeId__option--0').dispatchEvent(new Event("click"));
+            if(document.getElementById('Yes')) {
+                document.getElementById('Yes').click()
+            }
+            document.getElementById('submit').click()
+        } , 250);
     }
 }
 

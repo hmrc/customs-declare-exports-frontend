@@ -14,50 +14,73 @@
  * limitations under the License.
  *@
 
+@import controllers.navigation.Navigator
 @import controllers.declaration.routes
-@import forms.declaration.countries.Countries.CountryPage
+@import forms.declaration.countries.Countries._
 @import forms.declaration.countries.Country
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds._
 @import models.requests.JourneyRequest
 @import services.Countries
 @import services.view.AutoCompleteItem
 @import views.Title
+@import views.BackButton
+@import views.components.gds.Styles
+@import scala.collection.immutable
+@import play.twirl.api.HtmlFormat
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukRadios: GovukRadios,
+        govukDetails : GovukDetails,
+        govukFieldset: GovukFieldset,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        saveButtons: saveButtons,
+        tariffDetails: tariffDetails,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, form: Form[Country], page: CountryPage)(implicit request: JourneyRequest[_], messages: Messages)
 
-@main_template(
-    title = Title("declaration.routingCountry.title", "declaration.routingCountry.heading")
-) {
+@tariff = {
+@components.details(messages("site.details.summary_text_this")) {
+    @Html(messages("declaration.routingQuestion.help.bodyText", components.details_content_link()))
+}
+}
 
-    @components.back_link(routes.RoutingCountriesController.displayRoutingQuestion())
+@autocomplete = {
+@components.fields.field_accessible_autocomplete(
+    form("countryCode"),
+    "",
+    None,
+    None,
+    messages("declaration.routingCountry.empty"),
+    AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
+)
+}
 
-    @components.error_summary(form.errors)
+@govukLayout(
+    title = Title(s"declaration.${page.id}.question", "declaration.routingCountry.heading"),
+    backButton = Some(BackButton(messages("site.back"), routes.RoutingCountriesController.displayRoutingQuestion()))){
 
-    @components.heading(
-        title = messages(s"declaration.${page.id}.question"),
-        sectionHeader = messages("declaration.routingCountry.heading")
-    )
+    @formHelper(action = controllers.declaration.routes.RoutingCountriesController.submitRoutingCountry(mode), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-    @helper.form(routes.RoutingCountriesController.submitRoutingCountry(mode), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+        @sectionHeader(messages("declaration.routingCountry.heading"))
 
-        @components.fields.field_autocomplete(
-            form("countryCode"),
-            "",
-            None,
-            None,
-            messages(s"declaration.${page.id}.empty"),
-            AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
-        )
-        @components.details(messages("site.details.summary_text_this")){
-            @Html(messages("declaration.routingQuestion.help.bodyText", components.details_content_link()))
-        }
-        <div class="section mb-0">
-            @components.buttons.save_and_continue_button()
-        </div>
-        <div class="section">
-            @components.buttons.save_and_return_later_button()
-        </div>
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages(s"declaration.${page.id}.question")),
+                classes = Styles.gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+                autocomplete,
+                tariff,
+                saveButtons()
+            ))
+        ))
     }
 }

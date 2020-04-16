@@ -32,7 +32,7 @@ import views.tags.ViewTest
 @ViewTest
 class OfficeOfExitStandardViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  private val page: office_of_exit_standard = new office_of_exit_standard(mainTemplate)
+  private val page: office_of_exit_standard = instanceOf[office_of_exit_standard]
   private val form: Form[OfficeOfExitStandard] = OfficeOfExitForms.standardForm()
   private def createView(mode: Mode = Mode.Normal, form: Form[OfficeOfExitStandard] = form): Document =
     page(mode, form)(journeyRequest(), stubMessages())
@@ -58,7 +58,7 @@ class OfficeOfExitStandardViewSpec extends UnitViewSpec with ExportsTestData wit
     "Office of Exit View on empty page for standard" should {
 
       "display page title" in {
-        view.getElementById("title").text() mustBe "declaration.officeOfExit.title"
+        view.getElementsByClass("govuk-fieldset__heading").text() mustBe "declaration.officeOfExit.title"
       }
 
       "display section header" in {
@@ -72,7 +72,7 @@ class OfficeOfExitStandardViewSpec extends UnitViewSpec with ExportsTestData wit
       }
 
       "display circumstances code question" in {
-        view.getElementById("circumstancesCode-label").text() mustBe "standard.officeOfExit.circumstancesCode"
+        view.getElementsByClass("govuk-fieldset__legend--m").text() mustBe "standard.officeOfExit.circumstancesCode"
         view.getElementById("circumstancesCode-hint").text() mustBe "standard.officeOfExit.circumstancesCode.hint"
       }
 
@@ -102,15 +102,23 @@ class OfficeOfExitStandardViewSpec extends UnitViewSpec with ExportsTestData wit
         val form = OfficeOfExitForms.standardForm.fillAndValidate(data)
         val view = createView(form = form)
 
-        checkErrorsSummary(view)
+        view.getElementById("error-summary-title").text() must be("error.summary.title")
 
-        view.getElementById("officeId-error").text() mustBe "declaration.officeOfExit.empty"
+        view
+          .getElementsByClass("govuk-list govuk-error-summary__list")
+          .get(0)
+          .getElementsByTag("li")
+          .get(0)
+          .text() mustBe "declaration.officeOfExit.empty"
         view.getElementById("error-message-officeId-input").text() mustBe "declaration.officeOfExit.empty"
 
-        view.getElementById("circumstancesCode-error").text() mustBe "standard.officeOfExit.circumstancesCode.error"
         view
-          .getElementById("error-message-circumstancesCode-input")
+          .getElementsByClass("govuk-list govuk-error-summary__list")
+          .get(0)
+          .getElementsByTag("li")
+          .get(1)
           .text() mustBe "standard.officeOfExit.circumstancesCode.error"
+        view.getElementById("circumstancesCode-error").text() must include("standard.officeOfExit.circumstancesCode.error")
       }
 
       "display errors when all inputs are incorrect" in {
@@ -118,9 +126,14 @@ class OfficeOfExitStandardViewSpec extends UnitViewSpec with ExportsTestData wit
         val form = OfficeOfExitForms.standardForm.fillAndValidate(data)
         val view = createView(form = form)
 
-        checkErrorsSummary(view)
+        view.getElementById("error-summary-title").text() must be("error.summary.title")
 
-        view.getElementById("officeId-error").text() mustBe "declaration.officeOfExit.length"
+        view
+          .getElementsByClass("govuk-list govuk-error-summary__list")
+          .get(0)
+          .getElementsByTag("li")
+          .get(0)
+          .text() mustBe "declaration.officeOfExit.length"
         view.getElementById("error-message-officeId-input").text() mustBe "declaration.officeOfExit.length"
       }
 
@@ -129,9 +142,14 @@ class OfficeOfExitStandardViewSpec extends UnitViewSpec with ExportsTestData wit
         val form = OfficeOfExitForms.standardForm.fillAndValidate(data)
         val view = createView(form = form)
 
-        checkErrorsSummary(view)
+        view.getElementById("error-summary-title").text() must be("error.summary.title")
 
-        view.getElementById("officeId-error").text() mustBe "declaration.officeOfExit.specialCharacters"
+        view
+          .getElementsByClass("govuk-list govuk-error-summary__list")
+          .get(0)
+          .getElementsByTag("li")
+          .get(0)
+          .text() mustBe "declaration.officeOfExit.specialCharacters"
         view.getElementById("error-message-officeId-input").text() mustBe "declaration.officeOfExit.specialCharacters"
       }
     }

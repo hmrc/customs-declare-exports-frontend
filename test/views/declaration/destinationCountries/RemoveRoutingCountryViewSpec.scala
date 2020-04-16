@@ -16,6 +16,7 @@
 
 package views.declaration.destinationCountries
 
+import base.Injector
 import controllers.declaration.routes
 import forms.declaration.RoutingQuestionYesNo
 import models.Mode
@@ -23,15 +24,16 @@ import play.api.data.Form
 import services.cache.ExportsTestData
 import services.model.Country
 import unit.tools.Stubs
+import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.destinationCountries.remove_routing_country
 
-class RemoveRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
+class RemoveRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
 
   val country = Country("Poland", "PL")
   val form: Form[Boolean] = RoutingQuestionYesNo.form()
 
-  val removeRoutingCountryPage = new remove_routing_country(mainTemplate)
+  val removeRoutingCountryPage = instanceOf[remove_routing_country]
   val view = removeRoutingCountryPage(Mode.Normal, form, country)(journeyRequest(), messages)
 
   "Remove routing country page" should {
@@ -47,7 +49,7 @@ class RemoveRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsT
 
     "display page question" in {
 
-      view.getElementById("title").text() mustBe messages("declaration.routingCountries.remove.question")
+      view.getElementsByClass(Styles.gdsPageLegend).text() mustBe messages("declaration.routingCountries.remove.question")
     }
 
     "display page header" in {
@@ -67,8 +69,8 @@ class RemoveRoutingCountryViewSpec extends UnitViewSpec with Stubs with ExportsT
 
     "display Yes/No radio options" in {
 
-      view.getElementById("Yes-label").text() mustBe messages("site.yes")
-      view.getElementById("No-label").text() mustBe messages("site.no")
+      view.getElementsByAttributeValue("for", "Yes").text().text() mustBe messages("site.yes")
+      view.getElementsByAttributeValue("for", "No").text() mustBe messages("site.no")
     }
 
     "display back button that links to 'Countries summary' page" in {

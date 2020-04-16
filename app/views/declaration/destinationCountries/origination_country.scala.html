@@ -14,54 +14,72 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes
 @import controllers.navigation.Navigator
 @import forms.declaration.countries.Countries.OriginationCountryPage
 @import forms.declaration.countries.Country
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds._
 @import models.requests.JourneyRequest
 @import services.Countries
 @import services.view.AutoCompleteItem
 @import views.Title
+@import views.BackButton
+@import views.components.gds.Styles
+@import scala.collection.immutable
+@import play.twirl.api.HtmlFormat
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukRadios: GovukRadios,
+        govukDetails : GovukDetails,
+        govukFieldset: GovukFieldset,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        saveButtons: saveButtons,
+        tariffDetails: tariffDetails,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, form: Form[Country])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tariffBody = {@Html(messages("declaration.type.originationCountrySummaryText", components.details_content_link()))}
+@tariff = {
+    @components.details(messages("declaration.type.tariff_summary_text")) {
+        @Html(messages("declaration.type.originationCountrySummaryText", components.details_content_link()))
+    }
+}
 
-@main_template(
-    title = Title("declaration.originationCountry.title", "declaration.originationCountry.heading")
-) {
-
-    @components.back_link(Navigator.backLink(OriginationCountryPage, mode))
-
-    @components.error_summary(form.errors)
-
-    @components.heading(
-        title = messages("declaration.originationCountry.question"),
-        sectionHeader = messages("declaration.originationCountry.heading")
+@autocomplete = {
+    @components.fields.field_accessible_autocomplete(
+        form("countryCode"),
+        "",
+        None,
+        None,
+        messages("declaration.originationCountry.empty"),
+        AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
     )
+}
 
-    @helper.form(routes.OriginationCountryController.submit(mode), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+@govukLayout(
+    title = Title("declaration.originationCountry.title", "declaration.originationCountry.heading"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(OriginationCountryPage, mode)))){
 
-        @components.fields.field_autocomplete(
-            form("countryCode"),
-            "",
-            None,
-            None,
-            messages("declaration.originationCountry.empty"),
-            AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
-        )
+    @formHelper(action = controllers.declaration.routes.OriginationCountryController.submit(mode), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-        @components.details(messages("declaration.type.tariff_summary_text")){
-           @tariffBody
-        }
-        <div class="section mb-0">
-            @components.buttons.save_and_continue_button()
-        </div>
-        <div class="section">
-            @components.buttons.save_and_return_later_button()
-        </div>
+        @sectionHeader(messages("declaration.originationCountry.heading"))
+
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.originationCountry.question")),
+                classes = Styles.gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+                autocomplete,
+                tariff,
+                saveButtons()
+            ))
+        ))
     }
 }

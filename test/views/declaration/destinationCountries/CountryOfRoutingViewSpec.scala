@@ -16,6 +16,7 @@
 
 package views.declaration.destinationCountries
 
+import base.Injector
 import controllers.declaration.routes
 import forms.declaration.countries.{Countries, Country}
 import forms.declaration.countries.Countries.{FirstRoutingCountryPage, NextRoutingCountryPage}
@@ -29,9 +30,9 @@ import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.destinationCountries.country_of_routing
 
-class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
+class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
 
-  private val countryOfRoutingPage = new country_of_routing(mainTemplate)
+  private val countryOfRoutingPage = instanceOf[country_of_routing]
 
   private def firstRoutingForm(request: JourneyRequest[_]): Form[Country] =
     Countries.form(FirstRoutingCountryPage)(request)
@@ -87,10 +88,9 @@ class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestD
     }
 
     "First Routing Country view" should {
-
       "have page question" in {
 
-        firstRoutingView(request).getElementById("title").text() mustBe messages("declaration.firstRoutingCountry.question")
+        firstRoutingView(request).getElementsByClass("govuk-fieldset__legend").text() mustBe messages("declaration.firstRoutingCountry.question")
       }
     }
 
@@ -98,7 +98,7 @@ class CountryOfRoutingViewSpec extends UnitViewSpec with Stubs with ExportsTestD
 
       "have page question" in {
 
-        nextRoutingView(request).getElementById("title").text() mustBe messages("declaration.routingCountry.question")
+        nextRoutingView(request).getElementsByClass("govuk-fieldset__legend").text() mustBe messages("declaration.routingCountry.question")
       }
     }
   }

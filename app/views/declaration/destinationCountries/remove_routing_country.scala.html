@@ -14,57 +14,94 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes
 @import controllers.navigation.Navigator
+@import play.twirl.api.HtmlFormat
+@import scala.collection.immutable
 @import forms.declaration.RoutingQuestionYesNo.{no, RemoveCountryPage, yes}
 @import models.requests.JourneyRequest
 @import services.model.Country
-@import views.components.inputs.RadioOption
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.Fieldset
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.errormessage.ErrorMessage
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.Radios
+@import views.html.components.gds._
+@import views.BackButton
+@import views.components.gds.Styles
 @import views.Title
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukFieldset: GovukFieldset,
+        govukButton: GovukButton,
+        govukRadios: GovukRadios,
+        govukDetails : GovukDetails,
+        govukTable : GovukTable,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        saveButtons: saveButtons,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
+
 
 @(mode: Mode, form: Form[Boolean], countryToRemove: Country)(implicit request: JourneyRequest[AnyContent], messages: Messages)
 
-@main_template(
-    title = Title("declaration.routingCountries.remove.title", "declaration.routingCountries.remove.heading")
-) {
+@routingTable = {
+    @govukTable(Table(
+        rows = Seq(Seq(TableRow(
+            content = Text(countryToRemove.asString()),
+            attributes = Map("id" -> "country-to-remove")
+        ))),
+        head = Some(List(HeadCell(
+            content = Text(messages("declaration.routingCountries.remove.countryHeader")),
+            attributes = Map("id" -> "country-header")
+        ))),
+        firstCellIsHeader = false
+  ))
+}
 
-    @components.back_link(Navigator.backLink(RemoveCountryPage, mode), mode)
-
-    @components.error_summary(form.errors)
-
-    @components.heading(
-        title = messages("declaration.routingCountries.remove.question"),
-        sectionHeader = messages("declaration.routingCountries.remove.heading")
-    )
-
-    <table id="remove-country-table" class="form-group">
-        <thead>
-            <th class="table-head" id="country-header">@messages("declaration.routingCountries.remove.countryHeader")</th>
-        </thead>
-        <tbody>
-            <td class="table-cell" id="country-to-remove">@countryToRemove.asString()</td>
-        </tbody>
-    </table>
-
-    @helper.form(routes.RoutingCountriesSummaryController.submitRemoveCountry(mode, countryToRemove.countryCode), 'autoComplete -> "off") {
-        @helper.CSRF.formField
-
-        @components.fields.field_radio(
-            field = form("answer"),
-            legend = "",
-            inputs = Seq(
-                RadioOption("Yes", yes, messages("site.yes")),
-                RadioOption("No", no, messages("site.no"))
+@radios = {
+    @govukRadios(Radios(
+        name = "answer",
+        items = Seq(
+            RadioItem(
+                id = Some("Yes"),
+                value = Some(yes),
+                content = Text(messages("site.yes")),
+                checked = form("answer").value.contains("Yes")
+            ),
+            RadioItem(
+                id = Some("No"),
+                value = Some(no),
+                content = Text(messages("site.no")),
+                checked = form("answer").value.contains("No")
             )
-        )
+            ),
+            errorMessage = form("answer").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+    ))
+}
 
-        <div class="section mb-0">
-            @components.buttons.save_and_continue_button()
-        </div>
-        <div class="section">
-            @components.buttons.save_and_return_later_button()
-        </div>
+@govukLayout(
+    title = Title("declaration.routingCountries.remove.title", "declaration.routingCountries.remove.heading"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RemoveCountryPage, mode)))){
+
+    @formHelper(action = controllers.declaration.routes.RoutingCountriesSummaryController.submitRemoveCountry(mode, countryToRemove.countryCode), 'autoComplete -> "off") {
+
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("declaration.routingCountries.remove.heading"))
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.routingCountries.remove.question")),
+                classes = Styles.gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+                routingTable,
+                radios,
+                saveButtons()
+            ))
+        ))
     }
 }

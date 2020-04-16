@@ -16,6 +16,7 @@
 
 package views.declaration.destinationCountries
 
+import base.Injector
 import controllers.declaration.routes
 import forms.declaration.RoutingQuestionYesNo
 import models.Mode
@@ -25,12 +26,11 @@ import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.destinationCountries.routing_country_question
 
-class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
+class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
 
   val countryOfDestination = "Poland"
   val form: Form[Boolean] = RoutingQuestionYesNo.form()
-
-  val routingQuestionPage = new routing_country_question(mainTemplate)
+  val routingQuestionPage = instanceOf[routing_country_question]
   val view = routingQuestionPage(Mode.Normal, form, countryOfDestination)(journeyRequest(), messages)
 
   "Routing country question page" should {
@@ -53,13 +53,13 @@ class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with Export
 
     "have page question" in {
 
-      view.getElementById("title").text() mustBe messages("declaration.routingQuestion.question")
+      view.getElementsByClass("govuk-fieldset__heading").text() mustBe messages("declaration.routingQuestion.question")
     }
 
     "have Yes/No answers" in {
 
-      view.getElementById("Yes-label").text() mustBe messages("site.yes")
-      view.getElementById("No-label").text() mustBe messages("site.no")
+      view.getElementsByAttributeValue("for", "Yes").text().text() mustBe messages("site.yes")
+      view.getElementsByAttributeValue("for", "No").text() mustBe messages("site.no")
     }
 
     "display Tariff section text" in {

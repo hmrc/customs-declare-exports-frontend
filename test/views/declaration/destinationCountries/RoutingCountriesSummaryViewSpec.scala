@@ -16,6 +16,7 @@
 
 package views.declaration.destinationCountries
 
+import base.Injector
 import controllers.declaration.routes
 import forms.declaration.RoutingQuestionYesNo
 import models.Mode
@@ -23,15 +24,16 @@ import play.api.data.Form
 import services.cache.ExportsTestData
 import services.model.Country
 import unit.tools.Stubs
+import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.destinationCountries.routing_countries_summary
 
-class RoutingCountriesSummaryViewSpec extends UnitViewSpec with Stubs with ExportsTestData {
+class RoutingCountriesSummaryViewSpec extends UnitViewSpec with Stubs with ExportsTestData with Injector {
 
   val countries = Seq(Country("France", "FR"), Country("Poland", "PL"))
   val form: Form[Boolean] = RoutingQuestionYesNo.form()
 
-  val routingCountriesSummaryPage = new routing_countries_summary(mainTemplate)
+  val routingCountriesSummaryPage = instanceOf[routing_countries_summary]
   val view = routingCountriesSummaryPage(Mode.Normal, form, countries)(journeyRequest(), messages)
 
   "Routing Countries Summary" should {
@@ -53,18 +55,18 @@ class RoutingCountriesSummaryViewSpec extends UnitViewSpec with Stubs with Expor
 
     "display page title for the table" in {
 
-      view.getElementById("title").text() mustBe messages("declaration.routingCountries.summary.header")
+      view.getElementsByClass(Styles.gdsPageLegend).text() mustBe messages("declaration.routingCountries.summary.header")
     }
 
     "display page question" in {
 
-      view.getElementById("answer-label").text() mustBe messages("declaration.routingCountries.summary.question")
+      view.getElementsByClass("govuk-fieldset__legend--m").text() mustBe messages("declaration.routingCountries.summary.question")
     }
 
     "have Yes/No answers" in {
 
-      view.getElementById("Yes-label").text() mustBe messages("site.yes")
-      view.getElementById("No-label").text() mustBe messages("site.no")
+      view.getElementsByAttributeValue("for", "Yes").text().text() mustBe messages("site.yes")
+      view.getElementsByAttributeValue("for", "No").text() mustBe messages("site.no")
     }
 
     "display back button that links to 'Destination country' page" in {

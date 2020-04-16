@@ -19,26 +19,39 @@
 @import forms.declaration.RoutingQuestionYesNo.{no, RoutingQuestionPage, yes}
 @import models.requests.JourneyRequest
 @import services.model.Country
-@import views.components.inputs.RadioOption
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.Fieldset
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.Legend
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.errormessage.ErrorMessage
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.Radios
+@import views.html.components.gds.gdsMainTemplate
+@import views.html.components.gds.errorSummary
+@import views.html.components.gds.sectionHeader
+@import views.html.components.gds.saveButtons
+@import views.components.gds.Styles
+@import scala.collection.immutable
+@import play.twirl.api.HtmlFormat
+@import views.BackButton
 @import views.Title
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukFieldset: GovukFieldset,
+        govukButton: GovukButton,
+        govukRadios: GovukRadios,
+        govukDetails : GovukDetails,
+        govukSummaryList : GovukSummaryList,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        saveButtons: saveButtons,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, form: Form[Boolean], countriesOfRouting: Seq[Country])(implicit request: JourneyRequest[AnyContent], messages: Messages)
 
-@main_template(
-    title = Title("declaration.routingCountries.summary.title", "declaration.routingCountries.summary.heading")
-) {
-
-    @components.back_link(Navigator.backLink(RoutingQuestionPage, mode), mode)
-
-    @components.error_summary(form.errors)
-
-    @components.heading(
-        title = messages("declaration.routingCountries.summary.header", countriesOfRouting.size),
-        sectionHeader = messages("declaration.routingCountries.summary.heading")
-    )
-
+@routingCountriesTableOld = {
     <table id="routing-countries-table" class="form-group">
         <tbody>
             @countriesOfRouting.zipWithIndex.map { case (country, index) =>
@@ -61,24 +74,87 @@
             }
         </tbody>
     </table>
+}
 
-    @helper.form(routes.RoutingCountriesSummaryController.submit(mode), 'autoComplete -> "off") {
-        @helper.CSRF.formField
-
-        @components.fields.field_radio(
-            field = form("answer"),
-            legend = messages("declaration.routingCountries.summary.question"),
-            inputs = Seq(
-                RadioOption("Yes", yes, messages("site.yes")),
-                RadioOption("No", no, messages("site.no"))
+@rountingCountriesList = {
+    @govukSummaryList(SummaryList(
+        rows = countriesOfRouting.zipWithIndex.map { case (country, index) =>
+            SummaryListRow(
+                key = Key(
+                    content = Text(messages("declaration.routingCountries.summary.table.code"))
+                ),
+                value = Value(
+                    content = Text(country.asString())
+                ),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = routes.RoutingCountriesSummaryController.displayChangeCountryPage(mode, country.countryCode).url,
+                            content = Text(messages("site.change")),
+                            visuallyHiddenText = Some(messages("declaration.routingCountries.summary.change.hint", country.countryName))
+                        ),
+                        ActionItem(
+                            href = routes.RoutingCountriesSummaryController.displayRemoveCountryPage(mode, country.countryCode).url,
+                            content = Text(messages("site.remove")),
+                            visuallyHiddenText = Some(messages("declaration.routingCountries.summary.remove.hint", country.countryName))
+                        )
+                    ),
+                    classes = ""
+                ))
             )
-        )
+        }
+    ))
+}
 
-        <div class="section mb-0">
-            @components.buttons.save_and_continue_button()
-        </div>
-        <div class="section">
-            @components.buttons.save_and_return_later_button()
-        </div>
+@radios = {
+    @govukRadios(Radios(
+        name = "answer",
+        fieldset = Some(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.routingCountries.summary.question")),
+                classes= "govuk-fieldset__legend--m",
+                isPageHeading = false
+            ))
+        )),
+        items = Seq(
+            RadioItem(
+                id = Some("Yes"),
+                value = Some(yes),
+                content = Text(messages("site.yes")),
+                checked = form("answer").value.contains("Yes")
+            ),
+            RadioItem(
+                id = Some("No"),
+                value = Some(no),
+                content = Text(messages("site.no")),
+                checked = form("answer").value.contains("No")
+            )
+            ),
+            errorMessage = form("answer").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+    ))
+}
+
+
+@govukLayout(
+    title = Title("declaration.routingCountries.summary.title", "declaration.routingCountries.summary.heading"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RoutingQuestionPage, mode)))){
+
+    @formHelper(action = controllers.declaration.routes.RoutingCountriesSummaryController.submit(mode), 'autoComplete -> "off") {
+
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("declaration.routingCountries.summary.heading"))
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.routingCountries.summary.header", countriesOfRouting.size)),
+                classes = Styles.gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+                rountingCountriesList,
+                radios,
+                saveButtons()
+            ))
+        ))
     }
 }
