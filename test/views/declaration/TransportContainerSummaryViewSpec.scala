@@ -59,7 +59,7 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestDat
       val view = createView(containers = Seq(Container(containerId, Seq.empty)))
 
       view.getElementById("containers-row0-container").text() must be(containerId)
-      view.getElementById("containers-row0-seals").text() must be(realMessages("standard.seal.summary.noSeals"))
+      view.getElementById("containers-row0-seals").text() must be(realMessages("declaration.seal.summary.noSeals"))
     }
 
     "display 'Back' button that links to 'transport payment' page" in {
