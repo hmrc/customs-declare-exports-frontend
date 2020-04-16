@@ -62,7 +62,7 @@ class SealSpec extends WordSpec with MustMatchers {
 
         result.errors.length must be(1)
         error.key must be("id")
-        error.message must be("standard.transport.sealId.empty.error")
+        error.message must be("declaration.transport.sealId.empty.error")
       }
 
       "id field is not alphanumeric" in {
@@ -73,7 +73,7 @@ class SealSpec extends WordSpec with MustMatchers {
         val error = result.errors.head
 
         error.key must be("id")
-        error.message must be("standard.transport.sealId.error.invalid")
+        error.message must be("declaration.transport.sealId.error.invalid")
       }
 
       "id field is longer than 20 characters" in {
@@ -84,7 +84,7 @@ class SealSpec extends WordSpec with MustMatchers {
         val error = result.errors.head
 
         error.key must be("id")
-        error.message must be("standard.transport.sealId.error.invalid")
+        error.message must be("declaration.transport.sealId.error.invalid")
       }
 
       "id field is longer than 20 characters with invalid charaters" in {
@@ -95,7 +95,7 @@ class SealSpec extends WordSpec with MustMatchers {
         val error = result.errors.head
 
         error.key must be("id")
-        error.message must be("standard.transport.sealId.error.invalid")
+        error.message must be("declaration.transport.sealId.error.invalid")
       }
     }
   }

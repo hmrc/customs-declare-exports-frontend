@@ -16,6 +16,7 @@
 
 package views.declaration
 
+import base.Injector
 import forms.declaration.Seal
 import helpers.views.declaration.CommonMessages
 import models.Mode
@@ -28,11 +29,11 @@ import views.html.declaration.seal_add
 import views.tags.ViewTest
 
 @ViewTest
-class SealAddViewSpec extends UnitViewSpec with Stubs with MustMatchers with CommonMessages {
+class SealAddViewSpec extends UnitViewSpec with Stubs with MustMatchers with CommonMessages with Injector {
 
   val containerId = "867126538"
   private val form: Form[Seal] = Seal.form()
-  private val page = new seal_add(mainTemplate)
+  private val page = instanceOf[seal_add]
 
   private def createView(form: Form[Seal] = form): Document = page(Mode.Normal, form, containerId)
 
@@ -40,7 +41,7 @@ class SealAddViewSpec extends UnitViewSpec with Stubs with MustMatchers with Com
     val view = createView()
 
     "display page title" in {
-      view.getElementById("title").text() must be(messages("standard.seal.title"))
+      view.getElementById("title").text() must be(messages("declaration.seal.title"))
     }
 
     "display 'Back' button that links to 'seals summary' page" in {
@@ -68,13 +69,19 @@ class SealAddViewSpec extends UnitViewSpec with Stubs with MustMatchers with Com
     "display error if nothing is entered" in {
       val view = createView(Seal.form().bind(Map[String, String]()))
 
-      view.select("#error-message-id-input").text() must be(messages("error.required"))
+      view must haveGovukGlobalErrorSummary
+      view must containErrorElementWithTagAndHref("a", "#id")
+
+      view must containErrorElementWithMessage("error.required")
     }
 
     "display error if incorrect seal is entered" in {
       val view = createView(Seal.form().fillAndValidate(Seal("Invalid!!!")))
 
-      view.select("#error-message-id-input").text() must be(messages("standard.transport.sealId.error.invalid"))
+      view must haveGovukGlobalErrorSummary
+      view must containErrorElementWithTagAndHref("a", "#id")
+
+      view must containErrorElementWithMessage("declaration.transport.sealId.error.invalid")
     }
 
   }

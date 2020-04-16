@@ -21,7 +21,10 @@ import controllers.util.{Remove, SaveAndContinue, SaveAndReturn}
 import forms.declaration.Seal
 import models.declaration.Container
 import models.{DeclarationType, Mode}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
 import views.html.declaration.{seal_add, seal_remove, seal_summary}
@@ -29,9 +32,9 @@ import views.html.declaration.{seal_add, seal_remove, seal_summary}
 class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
   trait SetUp {
-    val sealAddPage = new seal_add(mainTemplate)
-    val sealRemovePage = new seal_remove(mainTemplate)
-    val sealSummaryPage = new seal_summary(mainTemplate)
+    val sealAddPage = mock[seal_add]
+    val sealRemovePage = mock[seal_remove]
+    val sealSummaryPage = mock[seal_summary]
 
     val containerId = "3436532313"
     val sealId = "623847987324"
@@ -51,6 +54,9 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks {
     authorizedUser()
     setupErrorHandler()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
+    when(sealAddPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(sealRemovePage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(sealSummaryPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   "Seal Controller" should {

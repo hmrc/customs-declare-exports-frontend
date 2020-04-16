@@ -27,7 +27,7 @@
     content = HtmlContent(HtmlFormat.fill(
         immutable.Seq(
             Html(s"""<span aria-hidden="true">${messages("site.remove")}</span>"""),
-            Html(s"""<span class="govuk-visually-hidden">${messages(hiddenLabel.getOrElse("site.remove"))}</span>""")
+            Html(s"""<span class="govuk-visually-hidden">${hiddenLabel.getOrElse(messages("site.remove"))}</span>""")
         )
     )),
  name = Some("Remove"),

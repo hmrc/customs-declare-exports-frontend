@@ -16,11 +16,11 @@
 
 package views.declaration
 
+import base.Injector
 import forms.common.YesNoAnswer
 import forms.declaration.Seal
 import helpers.views.declaration.CommonMessages
 import models.Mode
-import models.declaration.Container
 import org.jsoup.nodes.Document
 import org.scalatest.MustMatchers
 import play.api.data.Form
@@ -30,22 +30,22 @@ import views.html.declaration.seal_summary
 import views.tags.ViewTest
 
 @ViewTest
-class SealSummaryViewSpec extends UnitViewSpec with Stubs with MustMatchers with CommonMessages {
+class SealSummaryViewSpec extends UnitViewSpec with Stubs with MustMatchers with CommonMessages with Injector {
 
   val containerId = "212374"
   val sealId = "76434574"
-  val container = Some(Container(containerId, Seq(Seal(sealId))))
+  val seals = Seq(Seal(sealId))
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
-  private val page = new seal_summary(mainTemplate)
+  private val page = instanceOf[seal_summary]
 
-  private def createView(form: Form[YesNoAnswer] = form, container: Option[Container] = container): Document =
-    page(Mode.Normal, form, container)
+  private def createView(form: Form[YesNoAnswer] = form): Document =
+    page(Mode.Normal, form, containerId, seals)
 
   "Seal Summary View" should {
     val view = createView()
 
     "display page title" in {
-      view.getElementById("title").text() must be(messages("standard.seal.title"))
+      view.getElementsByTag("h1").text() must be(messages("declaration.seal.title"))
     }
 
     "display summary of seals" in {
@@ -77,7 +77,10 @@ class SealSummaryViewSpec extends UnitViewSpec with Stubs with MustMatchers with
     "display error if nothing is entered" in {
       val view = createView(YesNoAnswer.form().bind(Map[String, String]()))
 
-      view.select("#error-message-yesNo-input").text() must be(messages("error.yesNo.required"))
+      view must haveGovukGlobalErrorSummary
+      view must containErrorElementWithTagAndHref("a", "#yesNo")
+
+      view must containErrorElementWithMessage("error.yesNo.required")
     }
 
   }

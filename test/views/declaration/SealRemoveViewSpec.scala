@@ -16,6 +16,7 @@
 
 package views.declaration
 
+import base.Injector
 import forms.common.YesNoAnswer
 import forms.declaration.Seal
 import helpers.views.declaration.CommonMessages
@@ -30,13 +31,13 @@ import views.html.declaration.seal_remove
 import views.tags.ViewTest
 
 @ViewTest
-class SealRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers with CommonMessages {
+class SealRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers with CommonMessages with Injector {
 
   val containerId = "42354542"
   val sealId = "SealToRemove54214"
   val container = Some(Container(containerId, Seq(Seal(sealId))))
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
-  private val page = new seal_remove(mainTemplate)
+  private val page = instanceOf[seal_remove]
 
   private def createView(form: Form[YesNoAnswer] = form, containerId: String = containerId, sealId: String = sealId): Document =
     page(Mode.Normal, form, containerId, sealId)
@@ -46,7 +47,7 @@ class SealRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers with 
     val view = createView()
 
     "display page title" in {
-      view.getElementById("title").text() must be(messages("standard.seal.remove.title"))
+      view.getElementsByTag("h1").text() must be(messages("declaration.seal.remove.title"))
     }
 
     "display seal to remove" in {
@@ -77,7 +78,10 @@ class SealRemoveViewSpec extends UnitViewSpec with Stubs with MustMatchers with 
     "display error if nothing is entered" in {
       val view = createView(YesNoAnswer.form().bind(Map[String, String]()))
 
-      view.select("#error-message-yesNo-input").text() must be(messages("error.yesNo.required"))
+      view must haveGovukGlobalErrorSummary
+      view must containErrorElementWithTagAndHref("a", "#yesNo")
+
+      view must containErrorElementWithMessage("error.yesNo.required")
     }
 
   }

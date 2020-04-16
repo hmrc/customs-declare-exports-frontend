@@ -17,56 +17,92 @@
 @import controllers.declaration.routes._
 @import forms.common.YesNoAnswer
 @import forms.common.YesNoAnswer.YesNoAnswers._
-@import models.declaration.Container
-@import views.components.fields.LabelledValue
-@import views.components.inputs.RadioOption
-@import forms.declaration.Seal
 @import views.Title
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.components.gds.Styles._
+@import views.html.components.gds._
+@import scala.collection.immutable
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        sectionHeader: sectionHeader,
+        govukFieldset: GovukFieldset,
+        pageTitle: pageTitle,
+        govukRadios: GovukRadios,
+        govukButton: GovukButton,
+        govukTable: GovukTable,
+        errorSummary: errorSummary,
+        saveButtons: saveButtons,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, form: Form[YesNoAnswer], containerId: String, sealId: String)(implicit request: Request[_], messages: Messages)
 
+@sealsTable = {
 
-@main_template(
-    title = Title(messages("standard.seal.remove.title", containerId))
-) {
-
-    @components.back_link(controllers.declaration.routes.SealController.displaySealSummary(mode, containerId), mode)
-
-    @components.error_summary(form.errors)
-
-    @components.heading(title = messages("standard.seal.remove.title", containerId))
-
-    @helper.form(SealController.submitSealRemove(mode, containerId, sealId), 'autoComplete -> "off") {
-        @helper.CSRF.formField
-
-        <div class="field-group mb-2">
-            <table id="seal-table">
-                <thead>
-                    <tr>
-                        <th>@messages("standard.seal.remove.heading")</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td >@sealId</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-        @components.fields.field_radio(
-            field = form("yesNo"),
-            legend = "",
-            inputs = Seq(
-                RadioOption("Yes", yes, messages("site.yes")),
-                RadioOption("No", no, messages("site.no"))
+    @govukTable(Table(
+        rows = Seq(
+            Seq(
+                TableRow(
+                    content = Text(sealId)
+                )
             )
-        )
+        ),
+        head = Some(List(
+            HeadCell(
+                content = Text(messages("declaration.seal.summary.heading")),
+                colspan = Some(2)
+            )
+        )),
+        attributes = Map("id" -> "seal-table")
+    ))
+}
 
-        @components.submit_button()
-        @components.buttons.save_and_return_later_button()
+@removeSealRadios = {
+        @govukRadios(Radios(
+        name = "yesNo",
+        items = Seq(
+            RadioItem(
+                id = Some("Yes"),
+                value = Some(yes),
+                content = Text(messages("site.yes")),
+                checked = form("yesNo").value.contains(yes)
+            ),
+            RadioItem(
+                id = Some("No"),
+                value = Some(no),
+                content = Text(messages("site.no")),
+                checked = form("yesNo").value.contains(no)
+            )
+        ),
+        errorMessage = form("yesNo").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*))))
+    ))
+}
+
+@govukLayout(
+    title = Title("declaration.seal.remove.title", "declaration.seal.section", containerId),
+    backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.SealController.displaySealSummary(mode, containerId)))) {
+
+    @formHelper(action = SealController.submitSealRemove(mode, containerId, sealId), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("declaration.seal.section"))
+
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.seal.remove.title", containerId)),
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+                sealsTable,
+                removeSealRadios,
+                saveButtons()
+            ))
+        ))
     }
+
 }
 

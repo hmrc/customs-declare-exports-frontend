@@ -50,7 +50,7 @@
                   <thead>
                       <tr>
                           <th>@messages("declaration.transportInformation.containerId.title")</th>
-                          <th scope="col" colspan="3">@messages("standard.seal.summary.heading")</th>
+                          <th scope="col" colspan="3">@messages("declaration.seal.summary.heading")</th>
                       </tr>
                   </thead>
                   <tbody>
@@ -58,7 +58,7 @@
                     <tr id="containers-row@index">
                         <th scope="row" id="containers-row@index-container">@{container.id}</th>
                         @if(container.seals.isEmpty){
-                            <td id="containers-row@index-seals">@messages("standard.seal.summary.noSeals")</td>
+                            <td id="containers-row@index-seals">@messages("declaration.seal.summary.noSeals")</td>
                         } else {
                             <td id="containers-row@index-seals">@Html(container.seals.map(_.id).mkString("<br/>"))</td>
                         }

@@ -70,7 +70,7 @@ class SealController @Inject()(
   }
 
   def displaySealSummary(mode: Mode, containerId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(summaryPage(mode, YesNoAnswer.form(), request.cacheModel.containerBy(containerId)))
+    Ok(summaryPage(mode, YesNoAnswer.form(), containerId, seals(containerId)))
   }
 
   def submitSummaryAction(mode: Mode, containerId: String): Action[AnyContent] =
@@ -93,12 +93,14 @@ class SealController @Inject()(
 
   private def sealId(values: Seq[String]): String = values.headOption.getOrElse("")
 
+  private def seals(containerId: String)(implicit request: JourneyRequest[AnyContent]) =
+    request.cacheModel.containerBy(containerId).map(_.seals).getOrElse(Seq.empty)
+
   private def addSealAnswer(mode: Mode, containerId: String)(implicit request: JourneyRequest[AnyContent]) =
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[YesNoAnswer]) =>
-          Future.successful(BadRequest(summaryPage(mode, formWithErrors, request.cacheModel.containerBy(containerId)))),
+        (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(summaryPage(mode, formWithErrors, containerId, seals(containerId)))),
         formData =>
           formData.answer match {
             case YesNoAnswers.yes =>

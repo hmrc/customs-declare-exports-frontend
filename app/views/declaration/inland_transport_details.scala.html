@@ -49,7 +49,6 @@
         backButton = Some(BackButton(messages("site.back"), Navigator.backLink(InlandModeOfTransportCode, mode)))) {
 
         @formHelper(routes.InlandTransportDetailsController.submit(mode), 'autoComplete -> "off") {
-            @helper.CSRF.formField
             @errorSummary(form.errors)
 
             @sectionHeader(messages("declaration.summary.locations.header"))
