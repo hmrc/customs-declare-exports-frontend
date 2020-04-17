@@ -39,14 +39,14 @@ object TotalPackageQuantity extends DeclarationPage {
   private val optionalMapping = Forms.mapping(
     "totalPackage" -> optional(
       text()
-        .verifying("supplementary.totalPackageQuantity.error", isNumeric and noLongerThan(8))
+        .verifying("declaration.totalPackageQuantity.error", isNumeric and noLongerThan(8))
     )
   )(TotalPackageQuantity.apply)(TotalPackageQuantity.unapply)
 
   private val requiredMapping = Forms.mapping(
     "totalPackage" -> text()
-      .verifying("supplementary.totalPackageQuantity.empty", nonEmpty)
-      .verifying("supplementary.totalPackageQuantity.error", isEmpty or (isNumeric and noLongerThan(8)))
+      .verifying("declaration.totalPackageQuantity.empty", nonEmpty)
+      .verifying("declaration.totalPackageQuantity.error", isEmpty or (isNumeric and noLongerThan(8)))
   )(TotalPackageQuantity.applyRequired)(TotalPackageQuantity.unapplyRequired)
 
   def form(declarationType: DeclarationType): Form[TotalPackageQuantity] = declarationType match {

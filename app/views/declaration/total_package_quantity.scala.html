@@ -17,40 +17,51 @@
 @import controllers.declaration.routes._
 @import forms.declaration.TotalNumberOfItems
 @import uk.gov.hmrc.play.views.html._
-@import views.Title
-@import controllers.navigation.Navigator
 @import models.requests.JourneyRequest
 @import forms.declaration.TotalPackageQuantity
+@import controllers.navigation.Navigator
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.html.components.gds._
+@import views.components.gds.Styles._
 
-@this(main_template: views.html.main_template)
+@this(
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    errorSummary: errorSummary,
+    pageTitle: pageTitle,
+    exportsInputText: exportsInputText,
+    sectionHeader: sectionHeader,
+    tariffDetails: tariffDetails,
+    saveButtons: saveButtons,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, form: Form[TotalPackageQuantity])(implicit request: JourneyRequest[_], messages: Messages)
 
-@main_template(
-    title = Title("supplementary.valueOfItems", "declaration.totalPackageQuantity.title")
+@tariffBody = { @Html(messages("declaration.totalPackageQuantity.help.bodyText", components.details_content_link())) }
+
+@govukLayout(
+    title = Title("supplementary.valueOfItems", "declaration.totalPackageQuantity.title"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(TotalPackageQuantity, mode)))
 ) {
-    @helper.form(TotalPackageQuantityController.saveTotalPackageQuantity(mode), 'autoComplete -> "off") {
-        @helper.CSRF.formField
 
-        @components.back_link(Navigator.backLink(TotalPackageQuantity, mode), mode)
+    @formHelper(action = TotalPackageQuantityController.saveTotalPackageQuantity(mode), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
+        @sectionHeader(messages("supplementary.items"))
 
-        @components.heading(
-            sectionHeader = messages("supplementary.items"),
-            title = messages("declaration.totalPackageQuantity.title")
-        )
-
-        @components.fields.field_text(
+        @exportsInputText(
+            labelKey = "declaration.totalPackageQuantity.title",
             field = form("totalPackage"),
-            label = Some(""),
-            labelClass = Some("")
+            isPageHeading = true,
+            headingClasses = gdsPageLabelXl,
+            inputClasses = Some("govuk-input--width-10")
         )
 
-        @components.details(messages("site.details.summary_text_this")){
-            @Html(messages("supplementary.totalPackageQuantity.help.bodyText", components.details_content_link()))
-        }
-        @components.submit_button()
-        @components.buttons.save_and_return_later_button()
+        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+
+        @saveButtons()
     }
 }
