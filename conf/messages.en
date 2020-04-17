@@ -615,10 +615,10 @@ supplementary.totalNumberOfItems = 1/9 What were the total number of items?
 supplementary.totalNumberOfItems.hint = Up to a maximum of 999 items
 supplementary.totalNumberOfItems.empty = Enter total number of items
 supplementary.totalNumberOfItems.error = Total number of items must correspond to the number of items actually on the declaration
-supplementary.totalPackageQuantity = Total number of packages
-supplementary.totalPackageQuantity.empty = Enter the total number of packages
-supplementary.totalPackageQuantity.error = Enter the total number of packages
-supplementary.totalPackageQuantity.help.bodyText = Go to data element 6/18 Total packages in the {0}
+declaration.totalPackageQuantity = Total number of packages
+declaration.totalPackageQuantity.empty = Enter the total number of packages
+declaration.totalPackageQuantity.error = Enter the total number of packages
+declaration.totalPackageQuantity.help.bodyText = Go to data element 6/18 Total packages in the {0}
 
 declaration.totalPackageQuantity.title = What is the total number of packages you want to add?
 declaration.totalPackageQuantity.error.required = Enter total number of packages

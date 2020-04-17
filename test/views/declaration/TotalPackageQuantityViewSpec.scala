@@ -29,7 +29,7 @@ import views.html.declaration.total_package_quantity
 
 class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  val template = new total_package_quantity(mainTemplate)
+  val template = instanceOf[total_package_quantity]
 
   "Total Package Quantity view" when {
 
@@ -37,9 +37,9 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
       "have proper messages for keys" in {
         val messages = instanceOf[MessagesApi].preferred(journeyRequest())
         messages must haveTranslationFor("declaration.totalPackageQuantity.title")
-        messages must haveTranslationFor("supplementary.totalPackageQuantity")
-        messages must haveTranslationFor("supplementary.totalPackageQuantity.empty")
-        messages must haveTranslationFor("supplementary.totalPackageQuantity.error")
+        messages must haveTranslationFor("declaration.totalPackageQuantity")
+        messages must haveTranslationFor("declaration.totalPackageQuantity.empty")
+        messages must haveTranslationFor("declaration.totalPackageQuantity.error")
         messages must haveTranslationFor("declaration.totalPackageQuantity.error.required")
         messages must haveTranslationFor("site.details.summary_text_this")
       }
@@ -58,11 +58,10 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
         }
 
         "display header" in {
-          view.getElementById("title").text() must be("declaration.totalPackageQuantity.title")
+          view.getElementsByClass("govuk-label").first().text() must be("declaration.totalPackageQuantity.title")
         }
 
         "display empty input with label for Total Package" in {
-          view.getElementById("totalPackage-label").text() must be("")
           view.getElementById("totalPackage").attr("value") mustBe empty
         }
 
@@ -86,8 +85,8 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestData wit
             val form = TotalPackageQuantity.form(request.declarationType).withError("totalPackage", "supplementary.totalPackageQuantity.error")
             val view: Document = template.apply(Mode.Normal, form)(request, messages)
 
-            view must haveGlobalErrorSummary
-            view must haveFieldErrorLink("totalPackage", "#totalPackage")
+            view must haveGovukGlobalErrorSummary
+            view must containErrorElementWithTagAndHref("a", "#totalPackage")
           }
         }
 
