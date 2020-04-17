@@ -20,9 +20,25 @@
 @import forms.declaration.ContainerFirst._
 @import models.requests.JourneyRequest
 @import views.Title
-@import views.components.inputs.RadioOption
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.components.gds.Styles._
+@import views.html.components.gds._
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukRadios: GovukRadios,
+        govukDetails : GovukDetails,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        exportsInputText: exportsInputText,
+        body: paragraphBody,
+        pageTitle: pageTitle,
+        saveButtons: saveButtons,
+        tariffDetails: tariffDetails,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, form: Form[ContainerFirst])(implicit request: JourneyRequest[_], messages: Messages)
 
@@ -30,46 +46,49 @@
 
 @tariffBody = { @components.tariff_body_partial(messages("declaration.type.containerAddFirstItemListOne"), messages("declaration.type.containerAddFirstItemListTwo"))(tariffBodyDesc)}
 
+@govukLayout(
+    title = Title("declaration.transportInformation.containers.first.title", "declaration.transportInformation.containers.section"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ContainerFirst, mode)))) {
 
-@main_template(
-    title = Title("declaration.transportInformation.containers.first.title")
-) {
+    @formHelper(action = TransportContainerController.submitAddContainer(mode), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-    @components.back_link(Navigator.backLink(ContainerFirst, mode))
+        @sectionHeader(messages("declaration.transportInformation.containers.section"))
 
-    @components.error_summary(form.errors)
-
-    @components.heading(title = messages("declaration.transportInformation.containers.first.title"))
-
-    @helper.form(TransportContainerController.submitAddContainer(mode), 'autoComplete -> "off") {
-        @helper.CSRF.formField
-
-        @components.fields.field_radio(
-            field = form(hasContainerKey),
-            legend = "",
-            inputs = Seq(
-                RadioOption(
-                    id = "code_yes",
-                    value = HasContainerAnswers.yes,
-                    message = messages("declaration.transportInformation.containers.yes"),
-                    revealComponent = Some(components.fields.field_text(
+        @govukRadios(Radios(
+            name = hasContainerKey,
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("declaration.transportInformation.containers.first.title")),
+                    isPageHeading = true,
+                    classes = gdsPageLegend
+                ))
+            )),
+            items = Seq(
+                RadioItem(
+                    id = Some("code_yes"),
+                    value = Some(HasContainerAnswers.yes),
+                    content = Text(messages("declaration.transportInformation.containers.yes")),
+                    conditionalHtml = Some(exportsInputText(
                         field = form(containerIdKey),
-                        label = Some(messages("declaration.transportInformation.containerId"))
-                    ))
+                        labelClasses = "govuk-label",
+                        inputClasses = Some("govuk-input govuk-input--width-20"),
+                        labelKey = "declaration.transportInformation.containerId"
+                    )),
+                    checked = form(hasContainerKey).value.contains(HasContainerAnswers.yes)
                 ),
-                RadioOption(
-                    id = "code_no",
-                    value = HasContainerAnswers.no,
-                    message = messages("declaration.transportInformation.containers.no")
+                RadioItem(
+                    id = Some("code_no"),
+                    value = Some(HasContainerAnswers.no),
+                    content = Text(messages("declaration.transportInformation.containers.no")),
+                    checked = form(hasContainerKey).value.contains(HasContainerAnswers.no)
                 )
-            )
-        )
+            ),
+            errorMessage = form(hasContainerKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
 
-        @components.details(messages("site.details.summary_text_these")){
-            @tariffBody
-        }
-        @components.submit_button()
-        @components.buttons.save_and_return_later_button()
+        @tariffDetails(messages("site.details.summary_text_these"), HtmlContent(tariffBody))
+
+        @saveButtons()
     }
-
 }

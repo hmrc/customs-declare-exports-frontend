@@ -20,32 +20,45 @@
 @import forms.declaration.ContainerAdd._
 @import models.requests.JourneyRequest
 @import views.Title
+@import views.{BackButton, Title}
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds._
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        exportsInputText: exportsInputText,
+        saveButtons: saveButtons,
+        tariffDetails: tariffDetails,
+        pageTitle: pageTitle,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, form: Form[ContainerAdd])(implicit request: JourneyRequest[_], messages: Messages)
 
-@main_template(
-    title = Title("declaration.transportInformation.containers.title")
-) {
+@tariffBody = { @Html(messages("declaration.type.container.summary.help.text", components.details_content_link())) }
 
-    @components.back_link(Navigator.backLink(ContainerAdd, mode))
+@govukLayout(
+    title = Title("declaration.transportInformation.containers.add.title", "declaration.transportInformation.containers.section"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ContainerAdd, mode)))) {
 
-    @components.error_summary(form.errors)
+    @formHelper(action = TransportContainerController.submitAddContainer(mode), 'autoComplete -> "off") {
 
-    @components.heading(title = messages("declaration.transportInformation.containers.title"))
+        @errorSummary(form.errors)
 
-    @helper.form(TransportContainerController.submitAddContainer(mode), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+        @sectionHeader(messages("declaration.transportInformation.containers.section"))
 
-        @components.fields.field_text(
+        @exportsInputText(
             field = form(containerIdKey),
-            label = Some(messages("declaration.transportInformation.containers.add.label")),
-            labelClass = Some("bold-small")
+            labelKey = "declaration.transportInformation.containers.add.title",
+            isPageHeading = true,
+            inputClasses = Some("govuk-input--width-20")
         )
 
-        @components.submit_button()
-        @components.buttons.save_and_return_later_button()
-    }
+        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
 
+        @saveButtons()
+    }
 }

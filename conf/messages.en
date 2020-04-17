@@ -708,8 +708,9 @@ declaration.transportInformation.meansOfTransport.CrossingTheBorder.IDNumber.err
 
 
 declaration.transportInformation.containers.title = Container information
+declaration.transportInformation.containers.section = Transport details
 declaration.transportInformation.containers.add = Do you need to add another container?
-declaration.transportInformation.containers.add.label = What is the container ID?
+declaration.transportInformation.containers.add.title = What is the container ID?
 declaration.transportInformation.containerId.title = Container ID
 declaration.transportInformation.containers.remove = Remove container
 declaration.transportInformation.containers.remove.hint = Remove container {0}
@@ -1158,15 +1159,13 @@ supplementary.itemsSummary.noOfPackages = Number of packages
 supplementary.addgoodsitems.addallpages.error = Date of validity cannot be empty
 declaration.itemsSummary.item.incorrect = Item {0} does not contains all mandatory data
 
-declaration.seal.title = Security seals for container {0}
+declaration.seal.title = What is the security seal for container {0}?
 declaration.seal.section = Transport details
-declaration.seal.question = What is the security seal?
 declaration.seal.summary.heading = Security seals
 declaration.seal.summary.noSeals = No seals
 declaration.seal.add.first = Does container {0} have any security seals?
 declaration.seal.add.another = Do you need to add another security seal?
 declaration.seal.remove.title = Are you sure you want to remove this security seal for container {0}?
-declaration.seal.remove.heading = Security seal
 declaration.seal.remove.hint = Remove security seal {0}
 declaration.transport.sealId.empty.error = Enter a seal ID
 declaration.transport.sealId.error.invalid = Seal ID must not be more than 20 alpha numeric characters

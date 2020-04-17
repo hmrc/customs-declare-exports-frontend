@@ -16,16 +16,8 @@
 
 @import controllers.declaration.routes._
 @import forms.declaration.Seal
-@import uk.gov.hmrc.play.views.html._
-@import controllers.util.Remove
-@import views.components.fields.LabelledValue
-@import views.Title
-@import controllers.declaration.routes._
-@import controllers.navigation.Navigator
-@import models.requests.JourneyRequest
 @import views.{BackButton, Title}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.components.gds.Styles._
 @import views.html.components.gds._
 
 @this(
@@ -53,11 +45,12 @@
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.seal.section"))
-        @pageTitle(messages("declaration.seal.title", containerId))
 
         @exportsInputText(
             field = form("id"),
-            labelKey = "declaration.seal.question",
+            labelKey = "declaration.seal.title",
+            labelArg = containerId,
+            isPageHeading = true,
             inputClasses = Some("govuk-input--width-20")
         )
 

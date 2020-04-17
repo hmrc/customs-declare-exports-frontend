@@ -16,6 +16,7 @@
 
 package views.declaration
 
+import base.Injector
 import forms.declaration.ContainerAdd
 import helpers.views.declaration.CommonMessages
 import models.Mode
@@ -29,10 +30,10 @@ import views.html.declaration.transport_container_add
 import views.tags.ViewTest
 
 @ViewTest
-class TransportContainerAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs with MustMatchers with CommonMessages {
+class TransportContainerAddViewSpec extends UnitViewSpec with ExportsTestData with Stubs with MustMatchers with CommonMessages with Injector {
 
   private val form: Form[ContainerAdd] = ContainerAdd.form()
-  private val page = new transport_container_add(mainTemplate)
+  private val page = instanceOf[transport_container_add]
   private val realMessages = validatedMessages
 
   private def createView(form: Form[ContainerAdd] = form): Document =
@@ -42,7 +43,7 @@ class TransportContainerAddViewSpec extends UnitViewSpec with ExportsTestData wi
     val view = createView()
 
     "display page title" in {
-      view.getElementById("title").text() must be(realMessages("declaration.transportInformation.containers.title"))
+      view.getElementsByTag("h1").text() must be(realMessages("declaration.transportInformation.containers.add.title"))
     }
 
     "display 'Back' button that links to 'containers summary' page" in {
@@ -69,13 +70,19 @@ class TransportContainerAddViewSpec extends UnitViewSpec with ExportsTestData wi
     "display error if nothing is entered" in {
       val view = createView(ContainerAdd.form().bind(Map[String, String]()))
 
-      view.select("#error-message-id-input").text() must be(realMessages("declaration.transportInformation.containerId.empty"))
+      view must haveGovukGlobalErrorSummary
+      view must containErrorElementWithTagAndHref("a", "#id")
+
+      view must containErrorElementWithMessage(realMessages("declaration.transportInformation.containerId.empty"))
     }
 
     "display error if incorrect containerId is entered" in {
       val view = createView(ContainerAdd.form().fillAndValidate(ContainerAdd(Some("12345678901234567890"))))
 
-      view.select("#error-message-id-input").text() must be(realMessages("declaration.transportInformation.containerId.error.length"))
+      view must haveGovukGlobalErrorSummary
+      view must containErrorElementWithTagAndHref("a", "#id")
+
+      view must containErrorElementWithMessage(realMessages("declaration.transportInformation.containerId.error.length"))
     }
 
   }
