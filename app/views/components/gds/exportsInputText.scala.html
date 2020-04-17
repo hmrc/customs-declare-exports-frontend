@@ -22,6 +22,7 @@
 @(
         field: Field,
         labelKey: String,
+        labelArg: String = "",
         hintKey: Option[String] = None,
         isPageHeading: Boolean = false,
         headingClasses: String = gdsPageLabel,
@@ -31,9 +32,9 @@
 
 @buildLabel = @{
     if(isPageHeading) {
-        Label(content = Text(messages(labelKey)), isPageHeading = true, classes = headingClasses)
+        Label(content = Text(messages(labelKey, labelArg)), isPageHeading = true, classes = headingClasses)
     } else {
-        Label(content = Text(messages(labelKey)), classes = labelClasses)
+        Label(content = Text(messages(labelKey, labelArg)), classes = labelClasses)
     }
 }
 

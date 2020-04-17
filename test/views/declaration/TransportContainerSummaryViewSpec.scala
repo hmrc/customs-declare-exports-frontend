@@ -16,6 +16,7 @@
 
 package views.declaration
 
+import base.Injector
 import forms.common.YesNoAnswer
 import forms.declaration.Seal
 import helpers.views.declaration.CommonMessages
@@ -31,14 +32,14 @@ import views.html.declaration.transport_container_summary
 import views.tags.ViewTest
 
 @ViewTest
-class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs with MustMatchers with CommonMessages {
+class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs with MustMatchers with CommonMessages with Injector {
 
   val containerId = "212374"
   val sealId = "76434574"
   val container = Container(containerId, Seq(Seal(sealId)))
   private val realMessages = validatedMessages
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
-  private val page = new transport_container_summary(mainTemplate)
+  private val page = instanceOf[transport_container_summary]
 
   private def createView(form: Form[YesNoAnswer] = form, containers: Seq[Container] = Seq(container)): Document =
     page(Mode.Normal, form, containers)(journeyRequest(), realMessages)
@@ -47,7 +48,7 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestDat
     val view = createView()
 
     "display page title" in {
-      view.getElementById("title").text() must be(realMessages("declaration.transportInformation.containers.title"))
+      view.getElementsByTag("h1").text() must be(realMessages("declaration.transportInformation.containers.title"))
     }
 
     "display summary of container with seals" in {
@@ -85,7 +86,10 @@ class TransportContainerSummaryViewSpec extends UnitViewSpec with ExportsTestDat
     "display error if nothing is entered" in {
       val view = createView(YesNoAnswer.form().bind(Map[String, String]()))
 
-      view.select("#error-message-yesNo-input").text() must be(realMessages("error.yesNo.required"))
+      view must haveGovukGlobalErrorSummary
+      view must containErrorElementWithTagAndHref("a", "#yesNo")
+
+      view must containErrorElementWithMessage(realMessages("error.yesNo.required"))
     }
 
   }

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.36
+// @version      1.37
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -878,23 +878,22 @@ function addContainer(){
     if (currentPageIs('/customs-declare-exports/declaration/container')) {
         document.getElementById('code_yes').checked = 'checked';
         document.getElementById('id').value = '123456';
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('submit').click()
     }
 }
 
 function addSeals(){
     if (currentPageIs('/customs-declare-exports/declaration/containers/123456/seals')) {
-        document.getElementById('No').click();
-        document.getElementsByClassName('button')[0].click();
+        selectRadioOptionFromInputs(document.getElementsByName("yesNo"), 1);
+        document.getElementById('submit').click();
     }
 }
 
 function containersSummary() {
     if (currentPageIs('/customs-declare-exports/declaration/containers')) {
-        selectRadioOption(document.getElementById('yesNo'), 1);
-        document.getElementsByClassName('button')[0].click()
+        selectRadioOptionFromInputs(document.getElementsByName("yesNo"), 1);
+        document.getElementById('submit').click();
     }
-}
 
 function summary(){
     if (currentPageIs('/customs-declare-exports/declaration/summary')) {

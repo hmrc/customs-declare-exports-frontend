@@ -21,77 +21,122 @@
 @import forms.declaration.ContainerFirst
 @import models.declaration.Container
 @import models.requests.JourneyRequest
-@import views.Title
-@import views.components.fields.LabelledValue
-@import views.components.inputs.RadioOption
-@import views.html.components.buttons.remove_button
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.components.gds.Styles._
+@import views.html.components.gds._
+@import scala.collection.immutable
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        sectionHeader: sectionHeader,
+        govukFieldset: GovukFieldset,
+        pageTitle: pageTitle,
+        removeButton: removeButton,
+        changeButton: changeButton,
+        govukRadios: GovukRadios,
+        govukButton: GovukButton,
+        govukTable: GovukTable,
+        errorSummary: errorSummary,
+        tariffDetails: tariffDetails,
+        saveButtons: saveButtons,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, form: Form[YesNoAnswer], containers: Seq[Container])(implicit request: JourneyRequest[_], messages: Messages)
 
-@main_template(
-    title = Title("declaration.transportInformation.containers.title")
-) {
+@tariffBody = {
+    @Html(messages("declaration.type.container.summary.help.text", components.details_content_link()))
+}
 
-    @components.back_link(Navigator.backLink(ContainerFirst, mode))
+@containersTable = {
+    @if(containers.nonEmpty) {
+        @govukTable(Table(
+            attributes = Map("id" -> "container-table"),
+            rows = containers.zipWithIndex.map{ case(container, index) =>
+                Seq(
+                    TableRow(
+                        content = Text(container.id),
+                        attributes = Map("id" -> s"containers-row$index-container")
+                    ),
+                    TableRow(
+                        content = if(container.seals.isEmpty) Text(messages("declaration.seal.summary.noSeals")) else HtmlContent(container.seals.map(_.id).mkString("<br/>")),
+                        attributes = Map("id" -> s"containers-row$index-seals")
+                    ),
+                    TableRow(
+                        content = HtmlContent(removeButton(Some(container.id), Some(messages("declaration.transportInformation.containers.remove.hint", container.id)))),
+                        attributes = Map("id" -> s"containers-row$index-remove_button")
+                    ),
+                    TableRow(
+                        content = HtmlContent(changeButton("declaration.transportInformation.containers.change", SealController.displaySealSummary(mode, container.id), Some(messages("declaration.transportInformation.containers.change.hint", container.id)))),
+                        attributes = Map("id" -> s"containers-row$index-change_button")
+                    )
+                )
+            },
+            head = Some(List(
+                HeadCell(
+                    content = Text(messages("declaration.transportInformation.containerId.title"))
+                ),
+                HeadCell(
+                    content = Text(messages("declaration.seal.summary.heading")),
+                    colspan = Some(3)
+                )
+            ))
+        ))
 
-    @components.error_summary(form.errors)
+    }
+}
 
-    @components.heading(title = messages("declaration.transportInformation.containers.title"))
-
-    @helper.form(TransportContainerController.submitSummaryAction(mode), 'autoComplete -> "off") {
-        @helper.CSRF.formField
-
-        @if(containers.nonEmpty) {
-
-            <div class="field-group mb-2">
-                <table id="container-table">
-                  <thead>
-                      <tr>
-                          <th>@messages("declaration.transportInformation.containerId.title")</th>
-                          <th scope="col" colspan="3">@messages("declaration.seal.summary.heading")</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                  @for((container, index) <- containers.zipWithIndex) {
-                    <tr id="containers-row@index">
-                        <th scope="row" id="containers-row@index-container">@{container.id}</th>
-                        @if(container.seals.isEmpty){
-                            <td id="containers-row@index-seals">@messages("declaration.seal.summary.noSeals")</td>
-                        } else {
-                            <td id="containers-row@index-seals">@Html(container.seals.map(_.id).mkString("<br/>"))</td>
-                        }
-                        <td id="containers-row@index-remove_button">
-                            @remove_button(element = LabelledValue(container.id), buttonClass="button-link", label="declaration.transportInformation.containers.remove", hint="declaration.transportInformation.containers.remove.hint")
-                        </td>
-                        <td>
-                            <a class="button-link" href="@SealController.displaySealSummary(mode, container.id)">
-                                <span aria-hidden="true">@messages("declaration.transportInformation.containers.change")</span>
-                                <span class="visually-hidden">@messages("declaration.transportInformation.containers.change.hint", container.id)</span>
-                            </a>
-                        </td>
-                    </tr>
-                  }
-                  </tbody>
-                </table>
-            </div>
-        }
-
-        @components.fields.field_radio(
-            field = form("yesNo"),
-            legend = messages("declaration.transportInformation.containers.add"),
-            inputs = Seq(
-                RadioOption("Yes", yes, messages("site.yes")),
-                RadioOption("No", no, messages("site.no"))
+@addContainerRadios = {
+    @govukRadios(Radios(
+        name = "yesNo",
+        fieldset = Some(Fieldset(
+                        legend = Some(Legend(
+                            content = Text(messages("declaration.transportInformation.containers.add")),
+                            classes = "govuk-fieldset__legend--m"
+                        ))
+                    )),
+        items = Seq(
+            RadioItem(
+                id = Some("Yes"),
+                value = Some(yes),
+                content = Text(messages("site.yes")),
+                checked = form("yesNo").value.contains(yes)
+            ),
+            RadioItem(
+                id = Some("No"),
+                value = Some(no),
+                content = Text(messages("site.no")),
+                checked = form("yesNo").value.contains(no)
             )
-        )
+        ),
+        errorMessage = form("yesNo").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*))))
+    ))
+}
 
-        @components.details(messages("site.details.summary_text_this")){
-            @Html(messages("declaration.type.container.summary.help.text", components.details_content_link()))
-        }
-        @components.submit_button()
-        @components.buttons.save_and_return_later_button()
+@govukLayout(
+    title = Title("declaration.transportInformation.containers.title", "declaration.transportInformation.containers.section"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ContainerFirst, mode)))) {
+
+    @formHelper(action = TransportContainerController.submitSummaryAction(mode), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("declaration.transportInformation.containers.section"))
+
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.transportInformation.containers.title")),
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+                containersTable,
+                addContainerRadios,
+                tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+                saveButtons()
+            ))
+        ))
     }
 
 }
