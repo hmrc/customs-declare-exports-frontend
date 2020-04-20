@@ -33,7 +33,7 @@ import views.tags.ViewTest
 @ViewTest
 class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector with CommonMessages {
 
-  private val page = new border_transport(mainTemplate)
+  private val page = instanceOf[border_transport]
   private val form: Form[BorderTransport] = BorderTransport.form()
   private val realMessages = validatedMessages
 
@@ -56,7 +56,7 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
     }
 
     "display page title" in {
-      view.getElementById("title") must containText(realMessages("declaration.transportInformation.active.title"))
+      view.getElementsByTag("h1").first() must containText(realMessages("declaration.transportInformation.active.title"))
     }
 
     "display 'Save and continue' button on page" in {
@@ -71,11 +71,11 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
   val havingMeansOfTransport: Document => Unit = (view: Document) => {
     def hasSectionFor(view: Document, transportType: String) = {
       view
-        .getElementById(s"$transportType-label") must containText(realMessages(s"declaration.transportInformation.meansOfTransport.$transportType"))
+        .getElementsByAttributeValue("for", transportType)
+        .first() must containText(realMessages(s"declaration.transportInformation.meansOfTransport.$transportType"))
       view
-        .getElementById(s"borderTransportReference_$transportType-label") must containText(
-        realMessages(s"declaration.transportInformation.meansOfTransport.$transportType.label")
-      )
+        .getElementsByAttributeValue("for", s"borderTransportReference_$transportType")
+        .first() must containText(realMessages(s"declaration.transportInformation.meansOfTransport.$transportType.label"))
     }
 
     "display 'Means of Transport' section" which {
@@ -87,9 +87,9 @@ class BorderTransportViewSpec extends UnitViewSpec with ExportsTestData with Stu
       }
       "has label" in {
         view
-          .getElementById("borderTransportType-label") must containText(
-          realMessages("declaration.transportInformation.meansOfTransport.crossingTheBorder.header")
-        )
+          .getElementById("borderTransportType-fieldSet")
+          .getElementsByClass("govuk-fieldset__legend")
+          .first() must containText(realMessages("declaration.transportInformation.meansOfTransport.crossingTheBorder.header"))
       }
       "has hint" in {
         view
