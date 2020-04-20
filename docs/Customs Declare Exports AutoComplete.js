@@ -474,11 +474,11 @@ function totalNumberOfPackages(){
         switch(getDeclaration()){
             case 'K':
                 document.getElementById('totalPackage').value ='500';
-                document.getElementsByClassName('button')[0].click()
+                document.getElementById('submit').click();
                 break;
             default:
                 document.getElementById('totalPackage').value ='1';
-                document.getElementsByClassName('button')[0].click()
+                document.getElementById('submit').click();
         }
     }
 }
@@ -854,7 +854,7 @@ function departureTransport(){
     if (currentPageIs('/customs-declare-exports/declaration/departure-transport')) {
         selectRadioOptionFromInputs(document.getElementsByName("meansOfTransportOnDepartureType"), 1)
         document.getElementById("meansOfTransportOnDepartureIDNumber_11").value = 'SHIP1'
-        document.getElementById('submit').click()
+        document.getElementById('submit').click();
     }
 }
 
@@ -863,7 +863,7 @@ function borderTransport(){
         selectFromAutoPredict(document.getElementById('borderTransportNationality-container'), "United Kingdom");
         document.getElementById('nameOfVessel').checked = 'checked';
         document.getElementById("borderTransportReference_nameOfVessel").value = 'Superfast Hawk Millenium';
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('submit').click();
     }
 }
 
