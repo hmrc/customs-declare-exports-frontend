@@ -28,8 +28,25 @@
 @import models.declaration.ExportItem
 @import views.Title
 @import controllers.navigation.{Navigator, ItemId}
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.html.components.gds._
+@import views.components.gds.Styles._
+@import play.twirl.api.HtmlFormat
+@import scala.collection.immutable
 
-@this(main_template: views.html.main_template, appConfig: AppConfig)
+@this(govukLayout: gdsMainTemplate,
+        govukFieldset: GovukFieldset,
+        govukTable : GovukTable,
+        addButton: addButton,
+        removeButton: removeButton,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        exportsInputText: exportsInputText,
+        tariffDetails: tariffDetails,
+        saveButtons: saveButtons,
+        appConfig: AppConfig,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(
         mode: Mode,
@@ -43,43 +60,67 @@
 
 @tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.taricAdditionalCodes.header.tradeTariff.link")</a>}
 
-@main_template(
-    title = Title("declaration.taricAdditionalCodes.header", "supplementary.items")
-) {
+@pageHint = {
+    <span class="govuk-hint">
+        @Html(messages("declaration.taricAdditionalCodes.header.hint", tradeTariffLink))
+    </span>
+}
 
-    @helper.form(routes.TaricCodeController.submitForm(mode, itemId), 'autocomplete -> "off") {
-        @helper.CSRF.formField
-
-        @components.back_link(Navigator.backLink(TaricCode, mode, ItemId(itemId)), mode)
-
-        @components.error_summary(form.errors)
-
-
-        @components.heading(
-            sectionHeader = messages("supplementary.items"),
-            title = messages("declaration.taricAdditionalCodes.header"),
-            hintHtml = Some(Html(messages("declaration.taricAdditionalCodes.header.hint", tradeTariffLink)))
-        )
-
-        @components.fields.field_text_multiple_values(
-            field = form(taricCodeKey),
-            label = "",
-            elementsTableHeading = Some(messages("declaration.taricAdditionalCodes.table.header")),
-            elements = taricCodes.map(_.taricCode),
-            labelClass = Some("bold-small"),
-            addHint = "declaration.taricAdditionalCodes.add.hint",
-            removeHint = "declaration.taricAdditionalCodes.remove.hint"
-        )
-
-       @components.details(messages("site.details.summary_text_this")){
-          @tariffBody
-        }
-        <div class="section mb-0">
-        @components.buttons.save_and_continue_button()
-        </div>
-        <div class="section">
-        @components.buttons.save_and_return_later_button()
-        </div>
+@taricCodesTable = {
+    @if(taricCodes.nonEmpty) {
+        @govukTable(Table(
+            attributes = Map("id" -> "taricCode-table"),
+            rows = taricCodes.zipWithIndex.map{ case(code, index) =>
+                Seq(
+                    TableRow(
+                        content = Text(code.taricCode),
+                        attributes = Map("id" -> s"taricCode-table-row$index-label")
+                    ),
+                    TableRow(
+                        content = HtmlContent(removeButton(Some(code.taricCode), Some(messages("declaration.taricAdditionalCodes.remove.hint", code.taricCode)))),
+                        attributes = Map("id" -> s"taricCode-table-row$index-remove_button")
+                    )
+                )
+            },
+            head = Some(List(
+                HeadCell(
+                    content = Text(messages("declaration.taricAdditionalCodes.table.header")),
+                    colspan = Some(2)
+                )
+            ))
+        ))
     }
+}
 
+@govukLayout(
+    title = Title("declaration.taricAdditionalCodes.header", "supplementary.items"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(TaricCode, mode, ItemId(itemId))))) {
+
+    @formHelper(action = routes.TaricCodeController.submitForm(mode, itemId), 'autoComplete -> "off") {
+
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("supplementary.items"))
+
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.taricAdditionalCodes.header")),
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+                pageHint,
+                taricCodesTable,
+                exportsInputText(
+                    field = form(taricCodeKey),
+                    labelKey = "declaration.taricAdditionalCodes.label",
+                    inputClasses = Some("govuk-input--width-10")
+                ),
+                tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+                addButton(Some("declaration.taricAdditionalCodes.add.hint")),
+                saveButtons()
+            ))
+        ))
+
+    }
 }

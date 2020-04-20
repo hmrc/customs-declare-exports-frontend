@@ -15,14 +15,27 @@
  *@
 
 @import forms.declaration.ProcedureCodes
-@import uk.gov.hmrc.play.views.html._
-@import views.components.fields.LabelledValue
-@import views.Title
 @import models.Mode
 @import models.requests.JourneyRequest
 @import controllers.navigation.Navigator
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.html.components.gds._
+@import views.components.gds.Styles._
+@import play.twirl.api.HtmlFormat
+@import scala.collection.immutable
 
-@this(main_template: views.html.main_template)
+@this(govukLayout: gdsMainTemplate,
+        govukFieldset: GovukFieldset,
+        govukTable : GovukTable,
+        addButton: addButton,
+        removeButton: removeButton,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        exportsInputText: exportsInputText,
+        tariffDetails: tariffDetails,
+        saveButtons: saveButtons,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(mode: Mode, itemId: String, form: Form[ProcedureCodes], codes: Seq[String])(implicit request: JourneyRequest[_], messages: Messages)
 
@@ -30,45 +43,67 @@
 
 @tariffBody = { @components.tariff_body_partial(messages("declaration.type.procedureCodeDescListItemOne"), messages("declaration.type.procedureCodeDescListItemTwo"))(tariffBodyDesc)}
 
-    @main_template(
-        title = Title("supplementary.procedureCodes.title", "supplementary.items")
-     ) {
-
-
-        @helper.form(controllers.declaration.routes.ProcedureCodesController.submitProcedureCodes(mode, itemId), 'autoComplete -> "off") {
-            @helper.CSRF.formField
-
-            @components.back_link(Navigator.backLink(ProcedureCodes, mode), mode)
-
-            @components.error_summary(form.errors)
-
-            @components.heading(
-                sectionHeader = messages("supplementary.items"),
-                title = messages("supplementary.procedureCodes.title")
-            )
-
-            @components.fields.field_text(
-                field = form("procedureCode"),
-                label = Some(messages("supplementary.procedureCodes.procedureCode.header")),
-                hint = Some(messages("supplementary.procedureCodes.procedureCode.header.hint")),
-                labelClass = Some("bold-small")
-            )
-
-            @components.fields.field_text_multiple_values(
-                field = form("additionalProcedureCode"),
-                label = messages("supplementary.procedureCodes.additionalProcedureCode.header"),
-                hint = Some(messages("supplementary.procedureCodes.additionalProcedureCode.header.hint")),
-                elementsTableHeading = Some(messages("supplementary.procedureCodes.procedureCode.item.header")),
-                elements = codes,
-                labelClass = Some("bold-small"),
-                includeAddButton = false,
-                removeHint = "supplementary.procedureCodes.additionalProcedureCode.remove.hint"
-            )
-
-            @components.details(messages("declaration.type.consignmentTariff_summary_text")){
-              @tariffBody
-            }
-            @components.add_save_button(addHint = "supplementary.procedureCodes.additionalProcedureCode.add.hint")
-            @components.buttons.save_and_return_later_button()
-        }
+@additionalCodesTable = {
+    @if(codes.nonEmpty) {
+        @govukTable(Table(
+            rows = codes.zipWithIndex.map{ case(code, index) =>
+                Seq(
+                    TableRow(
+                        content = Text(code),
+                        attributes = Map("id" -> s"removable_elements-row$index-label")
+                    ),
+                    TableRow(
+                        content = HtmlContent(removeButton(Some(code), Some(messages("declaration.procedureCodes.additionalProcedureCode.remove.hint", code)))),
+                        attributes = Map("id" -> s"removable_elements-row$index-remove_button")
+                    )
+                )
+            },
+            head = Some(List(
+                HeadCell(
+                    content = Text(messages("declaration.procedureCodes.additionalProcedureCode.table.header")),
+                    attributes = Map("id" -> s"removable_elements-heading"),
+                    colspan = Some(2)
+                )
+            ))
+        ))
     }
+}
+
+@govukLayout(
+    title = Title("declaration.procedureCodes.title", "supplementary.items"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ProcedureCodes, mode)))) {
+
+    @formHelper(action = controllers.declaration.routes.ProcedureCodesController.submitProcedureCodes(mode, itemId), 'autoComplete -> "off") {
+
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("supplementary.items"))
+
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.procedureCodes.title")),
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+                exportsInputText(
+                    field = form("procedureCode"),
+                    labelKey = "declaration.procedureCodes.procedureCode.header",
+                    hintKey = Some("declaration.procedureCodes.procedureCode.header.hint"),
+                    inputClasses = Some("govuk-input--width-20")
+                ),
+                additionalCodesTable,
+                exportsInputText(
+                    field = form("additionalProcedureCode"),
+                    labelKey = "declaration.procedureCodes.additionalProcedureCode.header",
+                    hintKey = Some("declaration.procedureCodes.additionalProcedureCode.header.hint"),
+                    inputClasses = Some("govuk-input--width-20")
+                ),
+                tariffDetails(messages("declaration.type.consignmentTariff_summary_text"), HtmlContent(tariffBody)),
+                addButton(Some(messages("declaration.procedureCodes.additionalProcedureCode.add.hint"))),
+                saveButtons()
+            ))
+        ))
+
+    }
+}

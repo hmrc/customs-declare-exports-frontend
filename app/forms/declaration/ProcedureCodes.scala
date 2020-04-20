@@ -39,13 +39,13 @@ object ProcedureCodes extends DeclarationPage {
   val mapping = Forms.mapping(
     "procedureCode" -> optional(
       text()
-        .verifying("supplementary.procedureCodes.procedureCode.error.empty", _.trim.nonEmpty)
-        .verifying("supplementary.procedureCodes.procedureCode.error.invalid", isEmpty or (hasSpecificLength(procedureCodeLength) and isAlphanumeric))
+        .verifying("declaration.procedureCodes.procedureCode.error.empty", _.trim.nonEmpty)
+        .verifying("declaration.procedureCodes.procedureCode.error.invalid", isEmpty or (hasSpecificLength(procedureCodeLength) and isAlphanumeric))
     ),
     "additionalProcedureCode" -> optional(
       text()
         .verifying(
-          "supplementary.procedureCodes.additionalProcedureCode.error.invalid",
+          "declaration.procedureCodes.additionalProcedureCode.error.invalid",
           isEmpty or (hasSpecificLength(additionalProcedureCodeLength) and isAlphanumeric)
         )
     )
