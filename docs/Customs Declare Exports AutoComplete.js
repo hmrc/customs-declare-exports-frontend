@@ -894,6 +894,7 @@ function containersSummary() {
         selectRadioOptionFromInputs(document.getElementsByName("yesNo"), 1);
         document.getElementById('submit').click();
     }
+}
 
 function summary(){
     if (currentPageIs('/customs-declare-exports/declaration/summary')) {
