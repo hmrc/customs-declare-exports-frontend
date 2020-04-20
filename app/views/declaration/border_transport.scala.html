@@ -26,8 +26,27 @@
 @import services.view.AutoCompleteItem
 @import controllers.navigation.Navigator
 @import views.Title
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.components.gds.Styles._
+@import views.html.components.gds.{errorSummary, gdsMainTemplate, _}
+@import scala.collection.immutable
+@import play.twirl.api.HtmlFormat
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukFieldset: GovukFieldset,
+        govukButton: GovukButton,
+        govukDetails : GovukDetails,
+        govukRadios: GovukRadios,
+        pageTitle: pageTitle,
+        exportsInputText: exportsInputText,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        saveButtons: saveButtons,
+        tariffDetails: tariffDetails,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, form: Form[BorderTransport])(implicit request: JourneyRequest[_], messages: Messages)
 
@@ -35,68 +54,79 @@
 
 @tariffBody = { @components.tariff_body_partial(messages("declaration.transportInformation.active.help-item1"), messages("declaration.transportInformation.active.help-item2"))(tariffBodyDesc)}
 
+@inputField(transportType: String, labelKey: String) = @{Some(exportsInputText(
+    field = form(s"borderTransportReference_$transportType"),
+    labelClasses = "govuk-label",
+    inputClasses = Some("govuk-input govuk-!-width-one-third"),
+    labelKey = labelKey
+))
+}
 
-@radioOption(id: String, value: String) = @{RadioOption(
-    id = id,
-    value = value,
-    message = messages(s"declaration.transportInformation.meansOfTransport.$id"),
-    revealComponent = Some(components.fields.field_text(
-        field = form(s"borderTransportReference_$id"),
-        label = Some(messages(s"declaration.transportInformation.meansOfTransport.$id.label"))
+@radioOption(id: String, value: String) = @{RadioItem(
+    id = Some(id),
+    value = Some(value),
+    content = Text(messages(s"declaration.transportInformation.meansOfTransport.$id")),
+    conditionalHtml = inputField(id, s"declaration.transportInformation.meansOfTransport.$id.label"),
+    checked = form("borderTransportType").value.contains(value))}
+
+@borderTransportType = {
+    @govukRadios(Radios(
+        name = "borderTransportType",
+        fieldset = Some(Fieldset(
+            attributes = Map("id" -> "borderTransportType-fieldSet"),
+            legend = Some(Legend(
+                content = Text(messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.header"))
+            ))
+        )),
+        hint = Some(Hint(
+            content = Text(messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.header.hint"))
+        )),
+        items = Seq(
+            radioOption("IMOShipIDNumber", IMOShipIDNumber),
+            radioOption("nameOfVessel", NameOfVessel),
+            radioOption("wagonNumber", WagonNumber),
+            radioOption("vehicleRegistrationNumber", VehicleRegistrationNumber),
+            radioOption("IATAFlightNumber", IATAFlightNumber),
+            radioOption("aircraftRegistrationNumber", AircraftRegistrationNumber),
+            radioOption("europeanVesselIDNumber", EuropeanVesselIDNumber),
+            radioOption("nameOfInlandWaterwayVessel", NameOfInlandWaterwayVessel)
+        ),
+        errorMessage = form("meansOfTransportOnDepartureType").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+    ))
+}
+
+@borderTransportNationality = {
+    @components.fields.field_accessible_autocomplete(
+        form("borderTransportNationality"),
+        "declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header",
+        None,
+        None,
+        messages("declaration.destinationCountries.countriesOfRouting.empty"),
+        AutoCompleteItem.fromCountry(Countries.allCountries)
     )
-))}
+}
 
-@main_template(
-    title = Title("declaration.transportInformation.active.title")
-) {
+@govukLayout(
+    title = Title("declaration.transportInformation.active.title", "declaration.transportInformation.title"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(BorderTransport, mode)))) {
 
-    @components.back_link(Navigator.backLink(BorderTransport, mode))
+    @formHelper(action = BorderTransportController.submitForm(mode), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-    @helper.form(BorderTransportController.submitForm(mode), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+        @sectionHeader(messages("declaration.transportInformation.title"))
 
-        @components.error_summary(form.errors)
-
-        @components.heading(title = messages("declaration.transportInformation.active.title"))
-
-        @components.fields.field_radio(
-            field = form("borderTransportType"),
-            legend = messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.header"),
-            hint = Some(messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.header.hint")),
-            inputs = Seq(
-                radioOption("IMOShipIDNumber",IMOShipIDNumber),
-                radioOption("nameOfVessel",NameOfVessel),
-                radioOption("wagonNumber", WagonNumber),
-                radioOption("vehicleRegistrationNumber", VehicleRegistrationNumber),
-                radioOption("IATAFlightNumber", IATAFlightNumber),
-                radioOption("aircraftRegistrationNumber", AircraftRegistrationNumber),
-                radioOption("europeanVesselIDNumber", EuropeanVesselIDNumber),
-                radioOption("nameOfInlandWaterwayVessel", NameOfInlandWaterwayVessel)
-            )
-        )
-
-        @components.fields.field_autocomplete(
-            form("borderTransportNationality"),
-            "declaration.transportInformation.meansOfTransport.crossingTheBorder.nationality.header",
-            Some("form-label-bold"),
-            None,
-            messages("declaration.destinationCountries.countriesOfRouting.empty"),
-            AutoCompleteItem.fromCountry(Countries.allCountries),
-            'autocomplete -> "off",
-            '_inputClass -> "form-control form-control--block",
-            'spellcheck -> "false",
-            'ariaautocomplete -> "list",
-            'ariahaspopup -> "true",
-            'ariaowns -> "suggestions-list",
-            'ariaactivedescendant -> "true",
-            'otherErrorFields -> Seq("countryCode")
-        )
-
-        @components.details(messages("site.details.summary_text_these")){
-            @tariffBody
-        }
-        @components.submit_button()
-        @components.buttons.save_and_return_later_button()
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.transportInformation.active.title")),
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+                borderTransportType,
+                borderTransportNationality,
+                tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+                saveButtons()
+            ))
+        ))
     }
-
 }
