@@ -30,7 +30,7 @@
         sectionHeader: sectionHeader,
         govukFieldset: GovukFieldset,
         pageTitle: pageTitle,
-        removeButton: removeButton,
+        changeLink: changeLink,
         govukRadios: GovukRadios,
         govukButton: GovukButton,
         govukTable: GovukTable,
@@ -56,7 +56,7 @@
                     attributes = Map("id" -> s"removable_elements-row$index-label")
                 ),
                 TableRow(
-                    content = HtmlContent(removeButton(Some(seal.id), Some(messages("declaration.seal.remove.hint", seal.id)))),
+                    content = HtmlContent(changeLink(messages("site.remove"), messages("declaration.seal.remove.hint", seal.id), SealController.submitSealRemove(mode, containerId, seal.id))),
                     attributes = Map("id" -> s"removable_elements-row$index-remove_button")
                 )
             )
