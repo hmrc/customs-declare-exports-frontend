@@ -27,6 +27,7 @@ import play.api.i18n.MessagesApi
 import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
+import views.components.gds.Styles
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.items_summary
 import views.tags.ViewTest
@@ -34,7 +35,7 @@ import views.tags.ViewTest
 @ViewTest
 class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  private val page = new items_summary(mainTemplate)
+  private val page = instanceOf[items_summary]
   private def createView(mode: Mode = Mode.Normal, items: List[ExportItem] = List.empty, itemErrors: Seq[FormError] = Seq.empty): Document =
     page(mode, items, itemErrors)(journeyRequest(), stubMessages())
 
@@ -58,16 +59,16 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
 
     "render title" when {
       "no items" in {
-        view.getElementById("title").text() mustBe "supplementary.itemsAdd.title"
+        view.getElementsByClass(Styles.gdsPageLegend).text() mustBe "supplementary.itemsAdd.title"
       }
 
       "one item" in {
-        view.getElementById("title").text() mustBe "supplementary.itemsAdd.title"
+        view.getElementsByClass(Styles.gdsPageLegend).text() mustBe "supplementary.itemsAdd.title"
       }
 
       "many items" in {
         val view = createView(items = List(ExportItem("id1"), ExportItem("id2")))
-        view.getElementById("title").text() mustBe "supplementary.itemsAdd.titleWithItems"
+        view.getElementsByClass(Styles.gdsPageLegend).text() mustBe "supplementary.itemsAdd.titleWithItems"
       }
     }
 
@@ -106,21 +107,27 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
         val rows = view.getElementsByTag("tr")
         rows must have(size(3))
 
-        rows.get(1) must haveId("item_0")
         rows.get(1).getElementById("item_0--sequence_id") must containText("1")
         rows.get(1).getElementById("item_0--procedure_code") must containText("procedure-code1")
         rows.get(1).getElementById("item_0--item_type") must containText("item-type1")
         rows.get(1).getElementById("item_0--package_count").text() must be("1")
-        rows.get(1).getElementById("item_0--change") must haveHref(routes.ProcedureCodesController.displayPage(Mode.Normal, "id1"))
-        rows.get(1).getElementById("item_0--remove") must haveHref(routes.ItemsSummaryController.removeItem(Mode.Normal, "id1"))
+        rows.get(1).getElementById("item_0--change").getElementsByTag("a").get(0) must haveHref(
+          routes.ProcedureCodesController.displayPage(Mode.Normal, "id1")
+        )
+        rows.get(1).getElementById("item_0--remove").getElementsByTag("a").get(0) must haveHref(
+          routes.ItemsSummaryController.removeItem(Mode.Normal, "id1")
+        )
 
-        rows.get(2) must haveId("item_1")
         rows.get(2).getElementById("item_1--sequence_id") must containText("2")
         rows.get(2).getElementById("item_1--procedure_code") must containText("procedure-code2")
         rows.get(2).getElementById("item_1--item_type") must containText("item-type2")
         rows.get(2).getElementById("item_1--package_count").text() must be("2")
-        rows.get(2).getElementById("item_1--change") must haveHref(routes.ProcedureCodesController.displayPage(Mode.Normal, "id2"))
-        rows.get(2).getElementById("item_1--remove") must haveHref(routes.ItemsSummaryController.removeItem(Mode.Normal, "id2"))
+        rows.get(2).getElementById("item_1--change").getElementsByTag("a").get(0) must haveHref(
+          routes.ProcedureCodesController.displayPage(Mode.Normal, "id2")
+        )
+        rows.get(2).getElementById("item_1--remove").getElementsByTag("a").get(0) must haveHref(
+          routes.ItemsSummaryController.removeItem(Mode.Normal, "id2")
+        )
       }
 
       "item has two package information elements with one having empty number of packages" in {
@@ -142,28 +149,31 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
         val rows = view.getElementsByTag("tr")
         rows must have(size(2))
 
-        rows.get(1) must haveId("item_0")
         rows.get(1).getElementById("item_0--sequence_id") must containText("1")
         rows.get(1).getElementById("item_0--procedure_code") must containText("procedure-code1")
         rows.get(1).getElementById("item_0--item_type") must containText("item-type1")
         rows.get(1).getElementById("item_0--package_count").text() must be("1")
-        rows.get(1).getElementById("item_0--change") must haveHref(routes.ProcedureCodesController.displayPage(Mode.Normal, "id1"))
-        rows.get(1).getElementById("item_0--remove") must haveHref(routes.ItemsSummaryController.removeItem(Mode.Normal, "id1"))
+        rows.get(1).getElementById("item_0--change").getElementsByTag("a").get(0) must haveHref(
+          routes.ProcedureCodesController.displayPage(Mode.Normal, "id1")
+        )
+        rows.get(1).getElementById("item_0--remove").getElementsByTag("a").get(0) must haveHref(
+          routes.ItemsSummaryController.removeItem(Mode.Normal, "id1")
+        )
 
       }
     }
 
     "render actions section" when {
       "no items" in {
-        view.getElementById("add").text() mustBe "site.add.item site.add.item"
+        view.getElementById("add").text() must include("site.add.item")
         view must not(containElementWithID("submit"))
-        view must not(containElementWithID("submit_and_return"))
+        view must containElementWithID("submit_and_return")
       }
 
       "some items" in {
         val view = createView(items = List(ExportItem("id")))
 
-        view.getElementById("add").text() mustBe "site.add.anotherItem site.add.anotherItem"
+        view.getElementById("add").text() must include("site.add.anotherItem")
         view must containElementWithID("submit")
         view must containElementWithID("submit_and_return")
       }
@@ -178,10 +188,10 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
         val errors = Seq(FormError("item_0", Seq("declaration.itemsSummary.item.incorrect"), itemSequenceId))
         val view = createView(items = items, itemErrors = errors)
 
-        view must haveGlobalErrorSummary
-        view must containElementWithID("item_0-error")
-        view.getElementById("item_0-error").text() mustBe messages("declaration.itemsSummary.item.incorrect", itemSequenceId)
-        view.getElementById("item_0-error") must haveHref("#item_0")
+        view must haveGovukGlobalErrorSummary
+        view must containElementWithClass("govuk-error-summary__list")
+        view must containErrorElementWithTagAndHref("a", "#item_0")
+        view must containErrorElementWithMessage(messages("declaration.itemsSummary.item.incorrect", itemSequenceId))
       }
     }
   }
