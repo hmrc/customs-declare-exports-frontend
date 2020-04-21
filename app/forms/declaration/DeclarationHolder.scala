@@ -36,7 +36,7 @@ object DeclarationHolder extends DeclarationPage {
       text()
         .verifying("declaration.declarationHolder.authorisationCode.invalid", isContainedIn(HolderOfAuthorisationCode.all.map(_.value)))
     ),
-    "eori" -> optional(Eori.mapping("supplementary"))
+    "eori" -> optional(Eori.mapping("declaration"))
   )(DeclarationHolder.apply)(DeclarationHolder.unapply)
 
   def form(): Form[DeclarationHolder] = Form(mapping)

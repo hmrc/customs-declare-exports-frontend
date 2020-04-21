@@ -91,7 +91,7 @@ class DeclarationHolderController @Inject()(
       case (DeclarationHolder(authCode, eori), _) =>
         val authCodeError =
           authCode.fold(Seq(("authorisationTypeCode", "declaration.declarationHolder.authorisationCode.empty")))(_ => Seq[(String, String)]())
-        val eoriError = eori.fold(Seq(("eori", "supplementary.eori.empty")))(_ => Seq[(String, String)]())
+        val eoriError = eori.fold(Seq(("eori", "declaration.eori.empty")))(_ => Seq[(String, String)]())
 
         handleErrorPage(mode, authCodeError ++ eoriError, userInput, cachedData.holders)
     }
@@ -137,7 +137,7 @@ class DeclarationHolderController @Inject()(
               _ => Seq[(String, String)]()
             )
 
-            val eoriError = maybeEori.fold(Seq(("eori", "supplementary.eori.empty")))(_ => Seq[(String, String)]())
+            val eoriError = maybeEori.fold(Seq(("eori", "declaration.eori.empty")))(_ => Seq[(String, String)]())
 
             handleErrorPage(mode, typeCodeError ++ eoriError, userInput, Seq())
         }
@@ -161,7 +161,7 @@ class DeclarationHolderController @Inject()(
               _ => Seq[(String, String)]()
             )
 
-            val eoriError = maybeEori.fold(Seq(("eori", "supplementary.eori.empty")))(_ => Seq[(String, String)]())
+            val eoriError = maybeEori.fold(Seq(("eori", "declaration.eori.empty")))(_ => Seq[(String, String)]())
 
             handleErrorPage(mode, typeCodeError ++ eoriError, userInput, holders)
         }

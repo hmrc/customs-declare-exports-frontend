@@ -151,7 +151,7 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#eori")
 
-        view must containErrorElementWithMessage("supplementary.eori.error.format")
+        view must containErrorElementWithMessage("declaration.eori.error.format")
       }
 
       "display error for both incorrect fields" in {
@@ -170,7 +170,7 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
         view must containErrorElementWithTagAndHref("a", "#eori")
 
         view must containErrorElementWithMessage("declaration.declarationHolder.authorisationCode.invalid")
-        view must containErrorElementWithMessage("supplementary.eori.error.format")
+        view must containErrorElementWithMessage("declaration.eori.error.format")
 
       }
     }
