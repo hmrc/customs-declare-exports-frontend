@@ -16,12 +16,26 @@
 
 @import controllers.declaration.routes
 @import models.declaration.ExportItem
-@import uk.gov.hmrc.play.views.html._
-@import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
-@import views.Title
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.html.components.gds._
+@import views.components.gds.Styles._
+@import play.twirl.api.HtmlFormat
+@import scala.collection.immutable
 
-@this(main_template: views.html.main_template)
-
+@this(govukLayout: gdsMainTemplate,
+        govukFieldset: GovukFieldset,
+        govukButton: GovukButton,
+        govukRadios: GovukRadios,
+        govukTable : GovukTable,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        exportsInputText: exportsInputText,
+        tariffDetails: tariffDetails,
+        saveAndContinue: saveAndContinue,
+        addButton: addButton,
+        removeButton: removeButton,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(mode: Mode, items: List[ExportItem], itemsErrors: Seq[FormError] = Seq.empty)(implicit request: Request[_], messages: Messages)
 
@@ -30,79 +44,122 @@
     else { messages("supplementary.itemsAdd.titleWithItems", items.length) }
 }
 
-@main_template(
-    title = Title(titleMessage, "supplementary.items")
-) {
-    @components.back_link(routes.PreviousDocumentsController.displayPage(mode), mode)
+@pageHint = {
+    <span class="govuk-hint">
+        @messages("supplementary.itemsAdd.title.hint")
+    </span>
+}
 
-    @components.error_summary(itemsErrors)
+@addButtonMessage = @{
+    if(items.isEmpty) { messages("site.add.item") }
+    else { messages("site.add.anotherItem") }
+}
 
-    @components.heading(
-        sectionHeader = messages("supplementary.items"),
-        title = titleMessage,
-        hint = messages("supplementary.itemsAdd.title.hint")
-    )
-
+@itemsSaveButtons(items: List[ExportItem]) = {
     @if(items.nonEmpty) {
-        <table id="item_table" class="form-group">
-            <thead>
-                <tr id="item_table--headers">
-                    <th scope="col">@messages("supplementary.itemsSummary.itemNumber")</th>
-                    <th scope="col">@messages("supplementary.itemsSummary.procedureCode")</th>
-                    <th scope="col">@messages("supplementary.itemsSummary.commodityCode")</th>
-                    <th scope="col">@messages("supplementary.itemsSummary.noOfPackages")</th>
-                    <th scope="col" colspan="2"></th>
-                </tr>
-            </thead>
-            <tbody>
-
-            @items.zipWithIndex.map { case (item, index) =>
-                <tr id="item_@index">
-                    <th id="item_@index--sequence_id" scope="row">@item.sequenceId</th>
-                    <td id="item_@index--procedure_code">@item.procedureCodes.map(_.procedureCode).getOrElse("") </td>
-                    <td id="item_@index--item_type" >@item.commodityDetails.map(_.combinedNomenclatureCode) </td>
-                    <td id="item_@index--package_count">
-                        <ol type="1">@item.packageInformation.getOrElse(List.empty).map(packageInfo =>
-                            packageInfo.numberOfPackages.map(packages => <li>{packages}</li>)
-                        )
-                        </ol>
-                    </td>
-                    <td>
-                        <a id="item_@index--change" href="@routes.ProcedureCodesController.displayPage(mode, item.id)">
-                            <span aria-hidden="true">@messages("site.change")</span>
-                            <span class="visuallyhidden">@{messages("supplementary.itemsAdd.change.hint", item.sequenceId)}</span>
-                        </a>
-                    </td>
-                    <td>
-                        <a id="item_@index--remove" class="button button--gray" href="@routes.ItemsSummaryController.removeItem(mode, item.id)">
-                            <span aria-hidden="true">@messages("site.remove")</span>
-                            <span class="visuallyhidden">@{messages("supplementary.itemsAdd.remove.hint", item.sequenceId)}</span>
-                        </a>
-                    </td>
-                </tr>
-            }
-
-            </tbody>
-        </table>
+        @saveAndContinue("site.save_and_continue")
     }
-    @helper.form(routes.ItemsSummaryController.submit(mode), 'autocomplete -> "off") {
-        @helper.CSRF.formField
+    <p class="govuk-body">
+        @saveAsDraft("site.save_and_come_back_later")
+    </p>
+}
 
-        <div class="section">
-            @if(items.isEmpty) {
-                @components.buttons.add_button("site.add.item", "site.add.item")
-            } else {
-                @components.buttons.add_button("site.add.anotherItem", "site.add.anotherItem")
-            }
+@changeLink(item: ExportItem) = {
+    <a class="govuk-link" href="@routes.ProcedureCodesController.displayPage(mode, item.id).url">
+        @messages("site.change")
+        <span class="govuk-visually-hidden">
+            @messages("supplementary.itemsAdd.change.hint", item.sequenceId)
+        </span>
+    </a>
+}
 
-            @if(items.nonEmpty) {
-                @components.buttons.save_and_continue_button()
+@noOfPackagesSection(item: ExportItem) = {
+    @item.packageInformation.map { packageInformationList =>
+        @if(packageInformationList.drop(1).isEmpty) {
+            @packageInformationList.map { packageInfo =>
+                @packageInfo.numberOfPackages.getOrElse("")
             }
-        </div>
-        @if(items.nonEmpty) {
-            <div class="section">
-                @components.buttons.save_and_return_later_button()
-            </div>
+        } else {
+            <ol>
+                @packageInformationList.map { packageInfo =>
+                    @packageInfo.numberOfPackages.map( packages =>
+                        <li>{packages}</li>
+                    )
+                }
+            </ol>
         }
     }
 }
+
+@itemsTable = {
+    @if(items.nonEmpty) {
+        @govukTable(Table(
+            attributes = Map("id" -> "item_table"),
+            head = Some(Seq(
+                HeadCell(content = Text(messages("supplementary.itemsSummary.itemNumber"))),
+                HeadCell(content = Text(messages("supplementary.itemsSummary.procedureCode"))),
+                HeadCell(content = Text(messages("supplementary.itemsSummary.commodityCode"))),
+                HeadCell(content = Text(messages("supplementary.itemsSummary.noOfPackages"))),
+                HeadCell(colspan = Some(2))
+            )),
+            rows = items.zipWithIndex.map { case (item, index) =>
+                Seq(
+                    TableRow(
+                        content = Text(item.sequenceId.toString),
+                        attributes = Map("id" -> s"item_$index--sequence_id")
+                    ),
+                    TableRow(
+                        content = Text(item.procedureCodes.flatMap(_.procedureCode).getOrElse("")),
+                        attributes = Map("id" -> s"item_$index--procedure_code")
+                    ),
+                    TableRow(
+                        content = Text(item.commodityDetails.flatMap(_.combinedNomenclatureCode).getOrElse("")),
+                        attributes = Map("id" -> s"item_$index--item_type")
+                    ),
+                    TableRow(
+                        content = HtmlContent(noOfPackagesSection(item).toString),
+                        attributes = Map("id" -> s"item_$index--package_count")
+                    ),
+                    TableRow(
+                        content = HtmlContent(changeLink(item).toString()),
+                        attributes = Map("id" -> s"item_$index--change")
+                    ),
+                    TableRow(
+                        content = HtmlContent(removeButton(
+                            href = Some(routes.ItemsSummaryController.removeItem(mode, item.id).url),
+                            hiddenLabel = Some(messages("supplementary.itemsAdd.remove.hint", item.sequenceId))
+                        )),
+                        attributes = Map("id" -> s"item_$index--remove")
+                    )
+                )
+            }
+        ))
+    }
+}
+
+@govukLayout(
+    title = Title(titleMessage, "supplementary.items"),
+    backButton = Some(BackButton(messages("site.back"), routes.PreviousDocumentsController.displayPage(mode)))) {
+
+    @formHelper(action = routes.ItemsSummaryController.submit(mode), 'autoComplete -> "off") {
+
+        @errorSummary(itemsErrors)
+
+        @sectionHeader(messages("supplementary.items"))
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages(titleMessage)),
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+                pageHint,
+                itemsTable,
+                addButton(label = addButtonMessage, hiddenLabel = Some(addButtonMessage)),
+                itemsSaveButtons(items)
+            ))
+        ))
+    }
+}
+
+

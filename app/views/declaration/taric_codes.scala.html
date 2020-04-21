@@ -16,9 +16,17 @@
 
 @import config.AppConfig
 @import controllers.declaration.routes
+@import controllers.util.SaveAndContinue
+@import forms.Choice.AllowedChoiceValues
 @import forms.declaration.TaricCode
 @import forms.declaration.TaricCode._
 @import models.requests.JourneyRequest
+@import uk.gov.hmrc.play.views.html._
+@import services.NationalAdditionalCode
+@import services.view.AutoCompleteItem
+@import forms.declaration.AdditionalFiscalReference
+@import models.declaration.ExportItem
+@import views.Title
 @import controllers.navigation.{Navigator, ItemId}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title}
@@ -69,7 +77,7 @@
                         attributes = Map("id" -> s"taricCode-table-row$index-label")
                     ),
                     TableRow(
-                        content = HtmlContent(removeButton(Some(code.taricCode), Some(messages("declaration.taricAdditionalCodes.remove.hint", code.taricCode)))),
+                        content = HtmlContent(removeButton(value = Some(code.taricCode), hiddenLabel = Some(messages("declaration.taricAdditionalCodes.remove.hint", code.taricCode)))),
                         attributes = Map("id" -> s"taricCode-table-row$index-remove_button")
                     )
                 )
@@ -109,7 +117,7 @@
                     inputClasses = Some("govuk-input--width-10")
                 ),
                 tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
-                addButton(Some("declaration.taricAdditionalCodes.add.hint")),
+                addButton(hiddenLabel = Some(messages("declaration.taricAdditionalCodes.add.hint"))),
                 saveButtons()
             ))
         ))

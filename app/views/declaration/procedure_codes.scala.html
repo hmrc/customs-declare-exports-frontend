@@ -53,7 +53,7 @@
                         attributes = Map("id" -> s"additionalProcedureCode-table-row$index-label")
                     ),
                     TableRow(
-                        content = HtmlContent(removeButton(Some(code), Some(messages("declaration.procedureCodes.additionalProcedureCode.remove.hint", code)))),
+                        content = HtmlContent(removeButton(value = Some(code), hiddenLabel = Some(messages("declaration.procedureCodes.additionalProcedureCode.remove.hint", code)))),
                         attributes = Map("id" -> s"additionalProcedureCode-table-row$index-remove_button")
                     )
                 )
@@ -99,7 +99,7 @@
                     inputClasses = Some("govuk-input--width-20")
                 ),
                 tariffDetails(messages("declaration.type.consignmentTariff_summary_text"), HtmlContent(tariffBody)),
-                addButton(Some(messages("declaration.procedureCodes.additionalProcedureCode.add.hint"))),
+                addButton(hiddenLabel = Some(messages("declaration.procedureCodes.additionalProcedureCode.add.hint"))),
                 saveButtons()
             ))
         ))

@@ -20,16 +20,14 @@
 
 @this(govukButton : GovukButton)
 
-@(hiddenLabel: Option[String] = None)(implicit messages: Messages)
+@(label: String = "site.add", hiddenLabel: Option[String] = None)(implicit messages: Messages)
 
 @govukButton(Button(
     classes = "govuk-button--secondary",
-    content = HtmlContent(HtmlFormat.fill(
-     immutable.Seq(
-      Html(s"""<span aria-hidden="true">${messages("site.add")}</span>"""),
-      Html(s"""<span class="govuk-visually-hidden">${messages(hiddenLabel.getOrElse("site.remove"))}</span>""")
-     )
-    )),
+    content = HtmlContent(HtmlFormat.fill(immutable.Seq(
+        Html(s"""<span aria-hidden="true">${messages(label)}</span>"""),
+        Html(s"""<span class="govuk-visually-hidden">${hiddenLabel.getOrElse(messages("site.add"))}</span>""")
+    ))),
     name = Some("Add"),
     attributes = Map("id" -> "add")
 ))

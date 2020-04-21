@@ -69,6 +69,7 @@ site.remove.hint = Remove {0}
 site.change = Change
 site.add.item = Add item
 site.add.anotherItem = Add another item
+site.add.anotherItem.hint = Add another item
 
 site.details.summary_text_this = For more information about this
 site.details.summary_text_these = For more information about these
