@@ -71,7 +71,7 @@
                         attributes = Map("id" -> s"nactCode-table-row$index-label")
                     ),
                     TableRow(
-                        content = HtmlContent(removeButton(Some(code.nactCode), Some(messages("declaration.nationalAdditionalCode.remove.hint", code.nactCode)))),
+                        content = HtmlContent(removeButton(value = Some(code.nactCode), hiddenLabel = Some(messages("declaration.nationalAdditionalCode.remove.hint", code.nactCode)))),
                         attributes = Map("id" -> s"nactCode-table-row$index-remove_button")
                     )
                 )
@@ -114,7 +114,7 @@
                     AutoCompleteItem.fromNationalAdditionalCode(NationalAdditionalCode.all)
                 ),
                 tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
-                addButton(Some("declaration.nationalAdditionalCode.add.hint")),
+                addButton(hiddenLabel = Some(messages("declaration.nationalAdditionalCode.add.hint"))),
                 saveButtons()
             ))
         ))
