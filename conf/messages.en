@@ -794,16 +794,18 @@ declaration.taricAdditionalCodes.table.header = TARIC code
 declaration.taricAdditionalCodes.remove.hint = Remove TARIC code {0}
 declaration.taricAdditionalCodes.help.bodyText = Go to data element 6/16 Commodity Code: TARIC Additional Code in the {0}
 
-declaration.nationalAdditionalCode.header = Do these goods require a national additional (NACT) code?
-declaration.nationalAdditionalCode.header.hint = You can find this in ‘Export measures and restrictions’ tab in the {0}. If no additional code is required, leave blank.
+declaration.nationalAdditionalCode.header = National additional code
+declaration.nationalAdditionalCode.header.hint = This is a {0} that will be used to calculate the duties and taxes applicable. It can be found in the {1} under the ‘Export measures and restrictions’ tab of your commodity code.
+declaration.nationalAdditionalCode.header.nactCode.link = four-digit code
 declaration.nationalAdditionalCode.header.tradeTariff.link = UK Trade Tariff
-declaration.nationalAdditionalCode.error.empty = Enter a National Additional Code
+declaration.nationalAdditionalCode.label = Do these goods require a national additional code?
+declaration.nationalAdditionalCode.error.empty = Enter a national additional code
 declaration.nationalAdditionalCode.error.invalid = Enter a valid national additional code
 declaration.nationalAdditionalCode.error.maxAmount = Maximum number of codes added
 declaration.nationalAdditionalCode.error.duplicate = National additional code already added
-declaration.nationalAdditionalCode.add.hint = Add National Additional Code
-declaration.nationalAdditionalCode.table.header = NACT Code
-declaration.nationalAdditionalCode.remove.hint = Remove National Additional Code {0}
+declaration.nationalAdditionalCode.add.hint = Add national additional code
+declaration.nationalAdditionalCode.table.header = National additional Code
+declaration.nationalAdditionalCode.remove.hint = Remove national additional code {0}
 declaration.nationalAdditionalCode.help.bodyText = Go to data element 6/17 National Additional Code in the {0}
 
 declaration.statisticalValue.header = What is the total cost of exporting these goods?
