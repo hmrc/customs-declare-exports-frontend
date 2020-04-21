@@ -40,6 +40,8 @@
         exportsInputCheckbox: exportsInputCheckbox,
         exportsInputText: exportsInputText,
         tariffDetails: tariffDetails,
+        addButton: addButton,
+        removeButton: removeButton,
         saveButtons: saveButtons,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
@@ -47,34 +49,6 @@
 @(mode: Mode, form: Form[DeclarationHolder], holders: Seq[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBody = { @Html(messages("declaration.type.holderOfAuthorisationSummaryText", components.details_content_link())) }
-
-@addButton = @{
-govukButton(Button(
-    classes = "govuk-button--secondary",
-    content = HtmlContent(HtmlFormat.fill(
-        immutable.Seq(
-            Html(s"""<span aria-hidden="true">${messages("site.add")}</span>"""),
-            Html(s"""<span class="govuk-visually-hidden">${messages("supplementary.additionalActors.add.hint")}</span>""")
-        )
-    )),
-    name = Some("Add"),
-    attributes = Map("id" -> "add")
-))
-}
-
-@removeButton(value: Option[String]) = @{
-govukButton(Button(
-    classes = "govuk-button--secondary govuk-!-margin-0",
-    content = HtmlContent(HtmlFormat.fill(
-        immutable.Seq(
-            Html(s"""<span aria-hidden="true">${messages("site.remove")}</span>"""),
-            Html(s"""<span class="govuk-visually-hidden">${messages("site.remove.hint", value.getOrElse(""))}</span>""")
-        )
-    )),
-    name = Some(messages("site.remove")),
-    value = value
-))
-}
 
 @holdersTable = {
     @if(holders.nonEmpty) {
@@ -93,7 +67,7 @@ govukButton(Button(
             },
             head = Some(List(
                 HeadCell(
-                    content = Text(messages("supplementary.declarationHolder.authorisationCode")),
+                    content = Text(messages("declaration.declarationHolder.authorisationCode")),
                     colspan = Some(2)
                 )
             ))
@@ -102,7 +76,7 @@ govukButton(Button(
 }
 
 @govukLayout(
-    title = Title("supplementary.declarationHolder.title", "supplementary.summary.parties.header"),
+    title = Title("declaration.declarationHolder.title", "supplementary.summary.parties.header"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarationHolder, mode)))
 ) {
 
@@ -111,30 +85,30 @@ govukButton(Button(
 
         @sectionHeader(messages("supplementary.summary.parties.header"))
 
-        @pageTitle(messages("supplementary.declarationHolder.title"))
+        @pageTitle(messages("declaration.declarationHolder.title"))
 
-        <p class="govuk-body">@messages("supplementary.declarationHolder.title.hint")</p>
+        <p class="govuk-body">@messages("declaration.declarationHolder.title.hint")</p>
 
         @holdersTable
 
         @components.fields.field_accessible_autocomplete(
             field = form("authorisationTypeCode"),
-            label = messages("supplementary.declarationHolder.authorisationCode"),
+            label = messages("declaration.declarationHolder.authorisationCode"),
             labelClass = Some("govuk-label--m"),
-            hintText = Some(messages("supplementary.declarationHolder.authorisationCode.hint")),
-            emptySelectValue = messages("supplementary.declarationHolder.authorisationCode.empty"),
+            hintText = Some(messages("declaration.declarationHolder.authorisationCode.hint")),
+            emptySelectValue = messages("declaration.declarationHolder.authorisationCode.empty"),
             items = AutoCompleteItem.fromHolderOfAuthorisationCode(HolderOfAuthorisationCode.all)
         )
 
         @exportsInputText(
             field = form("eori"),
-            labelKey = "supplementary.declarationHolder.eori",
+            labelKey = "declaration.declarationHolder.eori",
             isPageHeading = false
         )
 
         @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
 
-        @addButton
+        @addButton(label = messages("site.add"))
         @saveButtons()
     }
 }

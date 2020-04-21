@@ -433,16 +433,16 @@ saved.declarations.remove.title = Are you sure you want to remove this declarati
 saved.declarations.remove.submitButton = Continue
 saved.declarations.remove.option.error.empty = Select an option
 
-supplementary.declarationHolder.title = What authorisation is required for this export?
-supplementary.declarationHolder.title.hint = This will depend on the type of procedure code used for this export. If no authorisation is needed, leave this page blank and continue.
-supplementary.declarationHolder.eori = EORI number of the authorised party
-supplementary.declarationHolder.authorisationCode = Authorisation code
-supplementary.declarationHolder.authorisationCode.hint = A code up to 4 characters for the type of authorisation.
-supplementary.declarationHolder.authorisationCode.invalid = Enter a valid authorisation code
-supplementary.declarationHolder.authorisationCode.empty = Enter a valid authorisation code
-supplementary.declarationHolders.maximumAmount.error = Maximum amount of holders added
-supplementary.declarationHolders.duplicated = Holder's details already added
-supplementary.declarationHolders.add.hint = Add an authorised party
+declaration.declarationHolder.title = What authorisation is required for this export?
+declaration.declarationHolder.title.hint = This will depend on the type of procedure code used for this export. If no authorisation is needed, leave this page blank and continue.
+declaration.declarationHolder.eori = EORI number of the authorised party
+declaration.declarationHolder.authorisationCode = Authorisation code
+declaration.declarationHolder.authorisationCode.hint = A code up to 4 characters for the type of authorisation.
+declaration.declarationHolder.authorisationCode.invalid = Enter a valid authorisation code
+declaration.declarationHolder.authorisationCode.empty = Enter a valid authorisation code
+declaration.declarationHolders.maximumAmount.error = Maximum amount of holders added
+declaration.declarationHolders.duplicated = Holder's details already added
+declaration.declarationHolders.add.hint = Add an authorised party
 
 declaration.originationCountry.title = Origination country
 declaration.originationCountry.heading = Locations
