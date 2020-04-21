@@ -20,62 +20,121 @@
 @import services.HolderOfAuthorisationCode
 @import services.view.AutoCompleteItem
 @import views.components.fields.LabelledValue
-@import views.Title
-@import controllers.navigation.Navigator
 @import models.requests.JourneyRequest
 @import models.Mode._
+@import controllers.navigation.Navigator
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.html.components.gds._
+@import play.twirl.api.HtmlFormat
+@import scala.collection.immutable
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukTable : GovukTable,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        pageTitle: pageTitle,
+        exportsInputCheckbox: exportsInputCheckbox,
+        exportsInputText: exportsInputText,
+        tariffDetails: tariffDetails,
+        saveButtons: saveButtons,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, form: Form[DeclarationHolder], holders: Seq[DeclarationHolder])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBody = { @Html(messages("declaration.type.holderOfAuthorisationSummaryText", components.details_content_link())) }
 
-@main_template(
-    title = Title("supplementary.declarationHolder.title", "supplementary.summary.parties.header")
+@addButton = @{
+govukButton(Button(
+    classes = "govuk-button--secondary",
+    content = HtmlContent(HtmlFormat.fill(
+        immutable.Seq(
+            Html(s"""<span aria-hidden="true">${messages("site.add")}</span>"""),
+            Html(s"""<span class="govuk-visually-hidden">${messages("supplementary.additionalActors.add.hint")}</span>""")
+        )
+    )),
+    name = Some("Add"),
+    attributes = Map("id" -> "add")
+))
+}
+
+@removeButton(value: Option[String]) = @{
+govukButton(Button(
+    classes = "govuk-button--secondary govuk-!-margin-0",
+    content = HtmlContent(HtmlFormat.fill(
+        immutable.Seq(
+            Html(s"""<span aria-hidden="true">${messages("site.remove")}</span>"""),
+            Html(s"""<span class="govuk-visually-hidden">${messages("site.remove.hint", value.getOrElse(""))}</span>""")
+        )
+    )),
+    name = Some(messages("site.remove")),
+    value = value
+))
+}
+
+@holdersTable = {
+    @if(holders.nonEmpty) {
+        @govukTable(Table(
+            rows = holders.map(_.toString).zipWithIndex.map { case (holder, index) =>
+                Seq(
+                    TableRow(
+                        content = Text(holder),
+                        attributes = Map("id" -> s"holder_$index")
+                    ),
+                    TableRow(
+                        content = HtmlContent(removeButton(Some(holder))),
+                        attributes = Map("id" -> s"holder_action_$index")
+                    )
+                )
+            },
+            head = Some(List(
+                HeadCell(
+                    content = Text(messages("supplementary.declarationHolder.authorisationCode")),
+                    colspan = Some(2)
+                )
+            ))
+        ))
+    }
+}
+
+@govukLayout(
+    title = Title("supplementary.declarationHolder.title", "supplementary.summary.parties.header"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarationHolder, mode)))
 ) {
 
-    @components.back_link(Navigator.backLink(DeclarationHolder, mode), mode)
+    @formHelper(action = DeclarationHolderController.submitHoldersOfAuthorisation(mode), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-    @components.error_summary(form.errors)
+        @sectionHeader(messages("supplementary.summary.parties.header"))
 
-    @components.heading(
-        title = messages("supplementary.declarationHolder.title"),
-        sectionHeader = messages("supplementary.summary.parties.header")
-    )
+        @pageTitle(messages("supplementary.declarationHolder.title"))
 
-    <p>@messages("supplementary.declarationHolder.title.hint")</p>
+        <p class="govuk-body">@messages("supplementary.declarationHolder.title.hint")</p>
 
-    @helper.form(DeclarationHolderController.submitHoldersOfAuthorisation(mode), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+        @holdersTable
 
-        @if(holders.nonEmpty) {
-            @components.fields.removable_elements_table(
-                title = Some(messages("supplementary.declarationHolder.authorisationCode")),
-                elements = holders.map(_.toString).map(LabelledValue(_))
-            )
-        }
-
-        @components.fields.field_autocomplete(
+        @components.fields.field_accessible_autocomplete(
             field = form("authorisationTypeCode"),
             label = messages("supplementary.declarationHolder.authorisationCode"),
-            labelClass = Some("form-label-bold"),
+            labelClass = Some("govuk-label--m"),
             hintText = Some(messages("supplementary.declarationHolder.authorisationCode.hint")),
             emptySelectValue = messages("supplementary.declarationHolder.authorisationCode.empty"),
             items = AutoCompleteItem.fromHolderOfAuthorisationCode(HolderOfAuthorisationCode.all)
         )
 
-        @components.fields.field_text(
+        @exportsInputText(
             field = form("eori"),
-            label = Some(messages("supplementary.declarationHolder.eori")),
-            hint = Some(messages("supplementary.eori.hint")),
-            labelClass = Some("form-label-bold")
+            labelKey = "supplementary.declarationHolder.eori",
+            isPageHeading = false
         )
 
-        @components.details(messages("site.details.summary_text_this")){
-            @tariffBody
-        }
-        @components.add_save_button(addHint = "supplementary.declarationHolders.add.hint")
-        @components.buttons.save_and_return_later_button()
+        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+
+        @addButton
+        @saveButtons()
     }
 }
