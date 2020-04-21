@@ -32,7 +32,7 @@ import views.tags.ViewTest
 @ViewTest
 class ProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  private val page = new procedure_codes(mainTemplate)
+  private val page = instanceOf[procedure_codes]
   private val form: Form[ProcedureCodes] = ProcedureCodes.form()
   private def createView(mode: Mode = Mode.Normal, form: Form[ProcedureCodes] = form, codes: Seq[String] = Seq.empty): Document =
     page(mode, "itemId", form, codes)(journeyRequest(), stubMessages())
@@ -42,16 +42,16 @@ class ProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData with Stub
 
     "have proper messages for labels" in {
       val messages = instanceOf[MessagesApi].preferred(journeyRequest())
-      messages must haveTranslationFor("supplementary.procedureCodes.title")
+      messages must haveTranslationFor("declaration.procedureCodes.title")
       messages must haveTranslationFor("supplementary.items")
-      messages must haveTranslationFor("supplementary.procedureCodes.procedureCode.header")
-      messages must haveTranslationFor("supplementary.procedureCodes.procedureCode.header.hint")
-      messages must haveTranslationFor("supplementary.procedureCodes.additionalProcedureCode.header")
-      messages must haveTranslationFor("supplementary.procedureCodes.additionalProcedureCode.header.hint")
+      messages must haveTranslationFor("declaration.procedureCodes.procedureCode.header")
+      messages must haveTranslationFor("declaration.procedureCodes.procedureCode.header.hint")
+      messages must haveTranslationFor("declaration.procedureCodes.additionalProcedureCode.header")
+      messages must haveTranslationFor("declaration.procedureCodes.additionalProcedureCode.header.hint")
     }
 
     "display page title" in {
-      view.getElementById("title").text() mustBe "supplementary.procedureCodes.title"
+      view.getElementsByTag("h1").text() mustBe "declaration.procedureCodes.title"
     }
 
     "display section header" in {
@@ -59,18 +59,18 @@ class ProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData with Stub
     }
 
     "display empty input with label for Procedure Code" in {
-      view.getElementById("procedureCode-label").text() mustBe "supplementary.procedureCodes.procedureCode.header"
-      view.getElementById("procedureCode-hint").text() mustBe "supplementary.procedureCodes.procedureCode.header.hint"
+      view.getElementsByAttributeValue("for", "procedureCode").text() mustBe "declaration.procedureCodes.procedureCode.header"
+      view.getElementById("procedureCode-hint").text() mustBe "declaration.procedureCodes.procedureCode.header.hint"
       view.getElementById("procedureCode").attr("value") mustBe empty
     }
 
     "display empty input with label for Additional Procedure Codes" in {
       view
-        .getElementById("additionalProcedureCode-label")
-        .text() mustBe "supplementary.procedureCodes.additionalProcedureCode.header"
+        .getElementsByAttributeValue("for", "additionalProcedureCode")
+        .text() mustBe "declaration.procedureCodes.additionalProcedureCode.header"
       view
         .getElementById("additionalProcedureCode-hint")
-        .text() mustBe "supplementary.procedureCodes.additionalProcedureCode.header.hint"
+        .text() mustBe "declaration.procedureCodes.additionalProcedureCode.header.hint"
       view.getElementById("additionalProcedureCode").attr("value") mustBe empty
     }
 
@@ -84,7 +84,8 @@ class ProcedureCodesViewSpec extends UnitViewSpec with ExportsTestData with Stub
 
     "display both 'Add' and 'Save and continue' button on page" in {
       val addButton = view.getElementById("add")
-      addButton.text() mustBe "site.add supplementary.procedureCodes.additionalProcedureCode.add.hint"
+      addButton.text() must include("site.add")
+      addButton.text() must include("declaration.procedureCodes.additionalProcedureCode.add.hint")
 
       val saveButton = view.getElementById("submit")
       saveButton.text() mustBe "site.save_and_continue"

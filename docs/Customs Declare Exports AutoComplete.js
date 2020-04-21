@@ -556,7 +556,7 @@ function procedureCodes(){
                 document.getElementById('procedureCode').value ='1040';
                 document.getElementById('additionalProcedureCode').value ='1CS';
         }
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('submit').click();
     }
 }
 
@@ -630,7 +630,7 @@ function cusCode(){
 
 function taricCodes(){
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/taric-codes')) {
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('submit').click();
     }
 }
 
