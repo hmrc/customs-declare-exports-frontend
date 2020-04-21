@@ -21,49 +21,135 @@
 @import views.Title
 @import models.requests.JourneyRequest
 @import controllers.navigation.Navigator
+@import services.Countries
+@import scala.collection.immutable
 
-@this(main_template: views.html.main_template)
+
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds._
+@import services.view.AutoCompleteItem
+@import views.BackButton
+@import play.twirl.api.HtmlFormat
+@import views.components.gds.Styles
+
+@this(
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    govukDetails : GovukDetails,
+    govukFieldset: GovukFieldset,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    saveButtons: saveButtons,
+    tariffDetails: tariffDetails,
+    exportsInputText: exportsInputText,
+    pageTitle: pageTitle,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, form: Form[ExporterDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
 
-@tariffBody = { @components.tariff_body_partial(messages("supplementary.exporter-details.help-item1"), messages("supplementary.exporter-details.help-item2"))(tariffBodyDesc)}
+@tariffBody = {
+    @components.tariff_body_partial(
+                    messages("supplementary.exporter-details.help-item1"),
+                    messages("supplementary.exporter-details.help-item2")
+                )(tariffBodyDesc)
+}
 
-@main_template(
-    title = Title("supplementary.consignor.title", "supplementary.summary.parties.header")
-) {
-    @helper.form(ExporterDetailsController.saveAddress(mode), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+@tariff = { @components.details(messages("site.details.summary_text_these")){ @tariffBody } }
 
-        @components.back_link(Navigator.backLink(ExporterDetails, mode), mode)
+@pageHint = {
+    <span class="govuk-hint">
+        @messages("supplementary.consignor.title.hint")
+    </span>
+}
 
-        @components.error_summary(form.errors)
+@exportsName = {
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+        @messages("supplementary.exporter-details-name-address")
+    </legend>
+}
 
-        @components.heading(
-            sectionHeader = messages("supplementary.summary.parties.header"),
-            title = messages("supplementary.consignor.title")
+@or = {
+    <p class="govuk-body">Or</p>
+}
+
+@autocomplete = {
+    @components.fields.field_accessible_autocomplete(
+        form("countryCode"),
+        "",
+        None,
+        None,
+        messages("declaration.originationCountry.empty"),
+        AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
+    )
+}
+
+@govukLayout(
+    title = Title("supplementary.consignor.title", "supplementary.summary.parties.header"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ExporterDetails, mode)))){
+
+    @formHelper(action = ExporterDetailsController.saveAddress(mode), 'autoComplete -> "off") {
+
+
+
+    @errorSummary(form.errors)
+
+    @sectionHeader(messages("supplementary.summary.parties.header"))
+
+    @pageTitle(messages("supplementary.consignor.title"))
+
+    @pageHint
+
+
+
+    @exportsInputText(
+    field = form("details.eori"),
+    labelKey = "supplementary.consignor.eori"
+    )
+
+    @or
+
+    @exportsName
+
+        @exportsInputText(
+            field = form("details_address_fullName"),
+            labelKey = "supplementary.address.fullName",
+            labelClasses = "govuk-label",
+            inputClasses = Some("govuk-input govuk-input--width-30")
+
+        )
+        @exportsInputText(
+            field = form("details_address_addressLine"),
+            labelKey = "supplementary.address.addressLine",
+            labelClasses = "govuk-label",
+            inputClasses = Some("govuk-input govuk-input--width-30")
+        )
+        @exportsInputText(
+            field = form("details_address_townOrCity"),
+            labelKey = "supplementary.address.townOrCity",
+            labelClasses = "govuk-label",
+            inputClasses = Some("govuk-input govuk-input--width-20")
+        )
+        @exportsInputText(
+            field = form("details_address_postCode"),
+            labelKey = "supplementary.address.postCode",
+            labelClasses = "govuk-label",
+            inputClasses = Some("govuk-input govuk-input--width-10")
         )
 
-        <p>@messages("supplementary.consignor.title.hint")</p>
-
-        @components.form_fields_wrapper(field = form("details")) {
-
-            @components.fields.field_text(
-                field = form("details.eori"),
-                label = Some(messages("supplementary.consignor.eori")),
-                labelClass = Some("heading-24")
-            )
-
-            <p class="mt-3 mb-3">Or</p>
-
-            @components.address(form, "details.address", Some(messages("supplementary.consignor.address.info")))
-        }
-
-       @components.details(messages("site.details.summary_text_these")){
-        @tariffBody
-       }
-        @components.submit_button()
-        @components.buttons.save_and_return_later_button()
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+            content = Text(messages("supplementary.address.country")),
+            classes = "govuk-label"
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+            autocomplete,
+            tariff,
+            saveButtons()
+            ))
+        ))
     }
 }

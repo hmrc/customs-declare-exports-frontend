@@ -316,6 +316,7 @@ supplementary.consignor.eori = Exporter’s EORI number
 supplementary.consignor.address.info = Exporter’s name and business address
 supplementary.exporter-details.help-item1 = Exporter’s EORI number, go to data element 3/2 Exporter Identification Number
 supplementary.exporter-details.help-item2 = Exporter’s name and business address, go to data element 3/1 Exporter
+supplementary.exporter-details-name-address = Exporter’s name and address
 
 declaration.declarant.title = Is this your EORI number?
 declaration.declarant.titleQuestion = Is your EORI number {0}?

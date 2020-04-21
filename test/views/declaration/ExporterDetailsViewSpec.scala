@@ -37,7 +37,7 @@ import views.tags.ViewTest
 @ViewTest
 class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
-  private val exporterDetailsPage = new exporter_details(mainTemplate)
+  private val exporterDetailsPage = instanceOf[exporter_details]
 
   private def form(journeyType: DeclarationType): Form[ExporterDetails] = ExporterDetails.form(journeyType)
 
@@ -63,7 +63,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
         val view = createView(form(request.declarationType))
 
-        view.getElementById("details_eori-label").text() mustBe messages("supplementary.consignor.eori")
+        view.getElementsByAttributeValue("for","details_eori").text() mustBe messages("supplementary.consignor.eori")
         view.getElementById("details_eori").attr("value") mustBe empty
       }
 
@@ -71,31 +71,29 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
         val view = createView(form(request.declarationType))
 
-        view.getElementById("details_address_fullName-label").text() mustBe messages("supplementary.address.fullName")
+        view.getElementsByAttributeValue("for","details_address_fullName").text() mustBe messages("supplementary.address.fullName")
         view.getElementById("details_address_fullName").attr("value") mustBe empty
       }
 
       "display empty input with label for Address" in {
 
         val view = createView(form(request.declarationType))
-
-        view.getElementById("details_address_addressLine-label").text() mustBe messages("supplementary.address.addressLine")
+        view.getElementsByAttributeValue("for","details_address_addressLine").text() mustBe messages("supplementary.address.addressLine")
         view.getElementById("details_address_addressLine").attr("value") mustBe empty
       }
 
       "display empty input with label for Town or City" in {
 
         val view = createView(form(request.declarationType))
-
-        view.getElementById("details_address_townOrCity-label").text() mustBe messages("supplementary.address.townOrCity")
+        view.getElementsByAttributeValue("for","details_address_townOrCity").text() mustBe messages("supplementary.address.townOrCity")
         view.getElementById("details_address_townOrCity").attr("value") mustBe empty
       }
 
       "display empty input with label for Postcode" in {
 
         val view = createView(form(request.declarationType))
+        view.getElementsByAttributeValue("for","details_address_postCode").text() mustBe messages("supplementary.address.postCode")
 
-        view.getElementById("details_address_postCode-label").text() mustBe messages("supplementary.address.postCode")
         view.getElementById("details_address_postCode").attr("value") mustBe empty
       }
 
@@ -103,8 +101,8 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
         val view = createView(form(request.declarationType))
 
-        view.getElementById("details_address_country-label").text() mustBe messages("supplementary.address.country")
-        view.getElementById("details_address_country").attr("value") mustBe empty
+        view.getElementsByClass("govuk-fieldset__legend govuk-label").text() mustBe messages("supplementary.address.country")
+        view.getElementById("countryCode").attr("value") mustBe empty
       }
 
       "display 'Back' button that links to 'Declarant Details' page" in {
@@ -134,6 +132,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
       "display error when both EORI and business details are empty" in {
 
         val view = createView(form(request.declarationType).bind(Map[String, String]()))
+
 
         checkErrorsSummary(view)
         view must haveFieldErrorLink("details", "#details")
