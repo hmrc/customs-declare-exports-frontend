@@ -16,20 +16,31 @@
 
 @import config.AppConfig
 @import controllers.declaration.routes
-@import controllers.util.SaveAndContinue
 @import controllers.navigation._
-@import forms.Choice.AllowedChoiceValues
 @import forms.declaration.NactCode
 @import forms.declaration.NactCode._
 @import models.requests.JourneyRequest
-@import uk.gov.hmrc.play.views.html._
 @import services.NationalAdditionalCode
 @import services.view.AutoCompleteItem
-@import forms.declaration.AdditionalFiscalReference
-@import models.declaration.ExportItem
-@import views.Title
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.html.components.gds._
+@import views.components.gds.Styles._
+@import play.twirl.api.HtmlFormat
+@import scala.collection.immutable
 
-@this(main_template: views.html.main_template, appConfig: AppConfig)
+@this(govukLayout: gdsMainTemplate,
+        govukFieldset: GovukFieldset,
+        govukTable : GovukTable,
+        addButton: addButton,
+        removeButton: removeButton,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        exportsInputText: exportsInputText,
+        tariffDetails: tariffDetails,
+        saveButtons: saveButtons,
+        appConfig: AppConfig,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(
         mode: Mode,
@@ -40,50 +51,73 @@
 
 @tariffBody = { @Html(messages("declaration.nationalAdditionalCode.help.bodyText", components.details_content_link())) }
 
+@nactCodeLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.nationalAdditionalCode.header.nactCode.link")</a>}
 @tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.nationalAdditionalCode.header.tradeTariff.link")</a>}
 
-@main_template(
-    title = Title("declaration.nationalAdditionalCode.header", "supplementary.items")
-) {
+@pageHint = {
+    <span class="govuk-hint">
+    @Html(messages("declaration.nationalAdditionalCode.header.hint", nactCodeLink, tradeTariffLink))
+    </span>
+}
 
-    @helper.form(routes.NactCodeController.submitForm(mode, itemId), 'autocomplete -> "off") {
-        @helper.CSRF.formField
-
-        @components.back_link(Navigator.backLink(NactCode, mode, ItemId(itemId)))
-
-        @components.error_summary(form.errors)
-
-
-        @components.heading(
-            sectionHeader = messages("supplementary.items"),
-            title = messages("declaration.nationalAdditionalCode.header"),
-            hintHtml = Some(Html(messages("declaration.nationalAdditionalCode.header.hint", tradeTariffLink)))
-        )
-
-        @components.fields.field_multiple_values(
-            field = form(nactCodeKey),
-            label = "",
-            elements = nactCodes.map(_.nactCode),
-            elementsTableHeading = Some(messages("declaration.nationalAdditionalCode.table.header")),
-            labelClass = Some("bold-small"),
-            input = components.inputs.input_autocomplete(
-                field = form(nactCodeKey),
-                emptySelectValue = messages("declaration.nationalAdditionalCode.error.empty"),
-                items = AutoCompleteItem.fromNationalAdditionalCode(NationalAdditionalCode.all)
-            ),
-            addHint = "declaration.nationalAdditionalCode.add.hint",
-            removeHint = "declaration.nationalAdditionalCode.remove.hint"
-        )
-
-        @components.details(messages("site.details.summary_text_this")){
-           @tariffBody
-        }
-        <div class="section mb-0">
-        @components.buttons.save_and_continue_button()
-        </div>
-        <div class="section">
-        @components.buttons.save_and_return_later_button()
-        </div>
+@nactCodesTable = {
+    @if(nactCodes.nonEmpty) {
+        @govukTable(Table(
+            attributes = Map("id" -> "nactCode-table"),
+            rows = nactCodes.zipWithIndex.map{ case(code, index) =>
+                Seq(
+                    TableRow(
+                        content = Text(code.nactCode),
+                        attributes = Map("id" -> s"nactCode-table-row$index-label")
+                    ),
+                    TableRow(
+                        content = HtmlContent(removeButton(value = Some(code.nactCode), hiddenLabel = Some(messages("declaration.nationalAdditionalCode.remove.hint", code.nactCode)))),
+                        attributes = Map("id" -> s"nactCode-table-row$index-remove_button")
+                    )
+                )
+            },
+            head = Some(List(
+                HeadCell(
+                    content = Text(messages("declaration.nationalAdditionalCode.table.header")),
+                    colspan = Some(2)
+                )
+            ))
+        ))
     }
+}
 
+@govukLayout(
+    title = Title("declaration.nationalAdditionalCode.header", "supplementary.items"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(NactCode, mode, ItemId(itemId))))) {
+
+    @formHelper(action = routes.NactCodeController.submitForm(mode, itemId), 'autoComplete -> "off") {
+
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("supplementary.items"))
+
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.nationalAdditionalCode.header")),
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+                pageHint,
+                nactCodesTable,
+                components.fields.field_accessible_autocomplete(
+                    form(nactCodeKey),
+                    "declaration.nationalAdditionalCode.label",
+                    Some("govuk-label--m"),
+                    None,
+                    messages("declaration.nationalAdditionalCode.error.empty"),
+                    AutoCompleteItem.fromNationalAdditionalCode(NationalAdditionalCode.all)
+                ),
+                tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+                addButton(hiddenLabel = Some(messages("declaration.nationalAdditionalCode.add.hint"))),
+                saveButtons()
+            ))
+        ))
+
+    }
 }
