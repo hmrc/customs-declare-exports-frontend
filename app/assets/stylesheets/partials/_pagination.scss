@@ -1,47 +1,48 @@
 
-.ceds-pagination {}
+.ceds-pagination {
 
-.ceds-pagination__summary {
-  @extend .govuk-grid-column-one-half;
-}
-
-.ceds-pagination__controls {
-  @extend .govuk-grid-column-one-half;
-  @extend .align-right;
-}
-
-.ceds-pagination__items {
-  display: inline;
-}
-
-// Can it be changed to class?
-.ceds-pagination__items .ceds-pagination__item {
-  display: inline;
-  margin: 0 5px;
-}
-
-@media (min-width: 641px) {
-  .ceds-pagination__item--next {
-    margin-left: 10px;
+  &__summary {
+    @extend .govuk-grid-column-one-half;
   }
-}
 
-.ceds-pagination__item {
-  @extend .govuk-body;
-}
+  &__controls {
+    @extend .govuk-grid-column-one-half;
+    @extend .align-right;
+  }
 
-.ceds-pagination__item--prev, .ceds-pagination__item--next {
-  margin-right: 10px;
-}
+  &__items {
+    display: inline;
+  }
 
-.ceds-pagination__item--dots {
-  @extend .govuk-\!-font-weight-bold;
-}
+  &__items &__item {
+    display: inline;
+    margin: 0 5px;
+  }
 
-.ceds-pagination__item--active {
-  @extend .govuk-\!-font-weight-bold;
-}
+  @media (min-width: 641px) {
+    &__item--next {
+      margin-left: 10px;
+    }
+  }
 
-.ceds-pagination__link {
-  @extend .govuk-link--no-visited-state
+  &__item {
+    @extend .govuk-body;
+  }
+
+  &__item--prev, &__item--next {
+    margin-right: 10px;
+  }
+
+  &__item--dots {
+    @extend .govuk-\!-font-weight-bold;
+  }
+
+  &__item--active {
+    @extend .govuk-\!-font-weight-bold;
+  }
+
+  &__link {
+    @extend .govuk-link--no-visited-state
+  }
+
 }
