@@ -21,14 +21,17 @@ import controllers.util.Remove
 import forms.declaration.AdditionalInformation
 import models.declaration.{AdditionalInformationData, ExportItem}
 import models.{DeclarationType, ExportsDeclaration, Mode}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
 import views.html.declaration.additional_information
 
 class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
-  val additionalInformationPage = new additional_information(mainTemplate)
+  val additionalInformationPage = mock[additional_information]
 
   val controller = new AdditionalInformationController(
     mockAuthAction,
@@ -49,6 +52,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
     super.beforeEach()
     setupErrorHandler()
     authorizedUser()
+    when(additionalInformationPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   val itemCacheData =

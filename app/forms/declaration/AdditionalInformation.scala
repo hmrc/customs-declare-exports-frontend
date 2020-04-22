@@ -34,12 +34,12 @@ object AdditionalInformation extends DeclarationPage {
   val mapping = Forms.mapping(
     "code" ->
       text()
-        .verifying("supplementary.additionalInformation.code.empty", nonEmpty)
-        .verifying("supplementary.additionalInformation.code.error", isEmpty or (isAlphanumeric and hasSpecificLength(5))),
+        .verifying("declaration.additionalInformation.code.empty", nonEmpty)
+        .verifying("declaration.additionalInformation.code.error", isEmpty or (isAlphanumeric and hasSpecificLength(5))),
     "description" ->
       text()
         .verifying(
-          "supplementary.additionalInformation.description.error",
+          "declaration.additionalInformation.description.error",
           isEmpty or (noLongerThan(70) and isAlphanumericWithAllowedSpecialCharacters)
         )
   )(AdditionalInformation.apply)(AdditionalInformation.unapply)

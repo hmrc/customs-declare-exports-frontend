@@ -22,71 +22,97 @@
 @import views.Title
 @import views.components.fields.LabelledValue
 @import views.html.components.buttons.remove_button
+@import controllers.navigation.{Navigator, ItemId}
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.html.components.gds._
+@import views.components.gds.Styles._
+@import play.twirl.api.HtmlFormat
+@import scala.collection.immutable
 
-@this(main_template: views.html.main_template)
+@this(govukLayout: gdsMainTemplate,
+        govukFieldset: GovukFieldset,
+        govukTable : GovukTable,
+        addButton: addButton,
+        removeButton: removeButton,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        exportsInputText: exportsInputText,
+        exportsInputTextArea: exportsInputTextArea,
+        tariffDetails: tariffDetails,
+        saveButtons: saveButtons,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(mode: Mode, itemId: String, form: Form[AdditionalInformation], items: Seq[AdditionalInformation])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBody = { @Html(messages("declaration.type.additionalActorsSummaryText", components.details_content_link())) }
 
+@additionalInformationTable = {
+    @if(items.nonEmpty) {
+        @govukTable(Table(
+            attributes = Map("id" -> "additional_information"),
+            rows = items.zipWithIndex.map{ case(item, index) =>
+                Seq(
+                    TableRow(
+                        content = Text(item.code),
+                        attributes = Map("id" -> s"additional_information-row$index-code")
+                    ),
+                    TableRow(
+                        content = Text(item.description),
+                        attributes = Map("id" -> s"additional_information-row$index-info")
+                    ),
+                    TableRow(
+                        content = HtmlContent(removeButton(value = Some(item.toString), hiddenLabel = Some(messages("declaration.additionalInformation.remove.hint", item.code)))),
+                        attributes = Map("id" -> s"additional_information-row$index-remove_button")
+                    )
+                )
+            },
+            head = Some(List(
+                HeadCell(
+                    content = Text(messages("declaration.additionalInformation.table.headers.code"))
+                ),
+                HeadCell(
+                    content = Text(messages("declaration.additionalInformation.table.headers.description")),
+                    colspan = Some(2)
+                )
+            ))
+        ))
+    }
+}
 
-@main_template(
-    title = Title("supplementary.additionalInformation.title", "supplementary.summary.yourReferences.header")
-) {
+@govukLayout(
+    title = Title("declaration.additionalInformation.title", "supplementary.summary.yourReferences.header"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalInformation, mode, ItemId(itemId))))) {
 
-    @components.back_link(Navigator.backLink(AdditionalInformation, mode, ItemId(itemId)))
+    @formHelper(action = AdditionalInformationController.saveAdditionalInfo(mode, itemId), 'autoComplete -> "off") {
 
-    @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-    @components.heading(
-        title = messages("supplementary.additionalInformation.title"),
-        sectionHeader = messages("supplementary.summary.yourReferences.header")
-    )
+        @sectionHeader(messages("supplementary.summary.yourReferences.header"))
 
-    @helper.form(AdditionalInformationController.saveAdditionalInfo(mode, itemId), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.additionalInformation.title")),
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+                additionalInformationTable,
+                exportsInputText(
+                    field = form("code"),
+                    labelKey = "declaration.additionalInformation.code",
+                    inputClasses = Some("govuk-input--width-20")
+                ),
+                exportsInputTextArea(
+                    field = form("description"),
+                    labelKey = "declaration.additionalInformation.description",
+                    inputClasses = Some("govuk-input--width-20")
+                ),
+                tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+                addButton(hiddenLabel = Some(messages("declaration.additionalInformation.add.hint"))),
+                saveButtons()
+            ))
+        ))
 
-        @if(items.nonEmpty){
-
-            <div class="field-group mb-2">
-                <table id="additional_information">
-                    <thead>
-                        <tr>
-                            <th class="code-header" scope="col">@messages("supplementary.additionalInformation.table.headers.code")</th>
-                            <th class="description-header" scope="col">@messages("supplementary.additionalInformation.table.headers.description")</th>
-                            <td></td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @for((elem, index) <- items.zipWithIndex) {
-                        <tr id="removable_elements__row@index">
-                            <th class="code-row" id="removable_elements-row@index-code" scope="row">@{elem.code}</th>
-                            <td class="description-row" id="removable_elements-row@index-info">@{elem.description}</td>
-                            <td id="removable_elements-row@index-remove_button">
-                                @remove_button(element = LabelledValue(elem.toString))
-                            </td>
-                        </tr>
-                    }
-                    </tbody>
-                </table>
-            </div>
-        }
-
-        @components.fields.field_text(
-            field = form("code"),
-            label = Some(messages("supplementary.additionalInformation.code")),
-            labelClass = Some("bold-small")
-        )
-
-        @components.fields.field_textarea(
-            field = form("description"),
-            label = messages("supplementary.additionalInformation.description"),
-            labelClass = Some("bold-small")
-        )
-        @components.details(messages("site.details.summary_text_this")){
-          @tariffBody
-        }
-        @components.add_save_button(addHint = "supplementary.additionalInformation.add.hint")
-        @components.buttons.save_and_return_later_button()
     }
 }

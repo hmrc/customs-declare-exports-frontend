@@ -847,18 +847,19 @@ supplementary.previousDocuments.remove.hint = Remove document {0} type {1} refer
 supplementary.previousDocuments.add.hint = Add document
 
 
-supplementary.additionalInformation.title = Enter additional information
-supplementary.additionalInformation.code = Enter the union or national code
-supplementary.additionalInformation.item.code = 2/2 union or national code
-supplementary.additionalInformation.code.error = Enter a valid code
-supplementary.additionalInformation.code.empty = Enter an additional information code
-supplementary.additionalInformation.description = Enter the information required
-supplementary.additionalInformation.add.hint = Add additional information
-supplementary.additionalInformation.item.description = 2/2 information
-supplementary.additionalInformation.description.error = Enter a description
-supplementary.additionalInformation.description.empty = Enter a description
-supplementary.additionalInformation.table.headers.code = Code
-supplementary.additionalInformation.table.headers.description = Required information
+declaration.additionalInformation.title = Enter additional information
+declaration.additionalInformation.code = Enter the union or national code
+declaration.additionalInformation.item.code = 2/2 union or national code
+declaration.additionalInformation.code.error = Enter a valid code
+declaration.additionalInformation.code.empty = Enter an additional information code
+declaration.additionalInformation.description = Enter the information required
+declaration.additionalInformation.add.hint = Add additional information
+declaration.additionalInformation.remove.hint = Remove code {0}
+declaration.additionalInformation.item.description = 2/2 information
+declaration.additionalInformation.description.error = Enter a description
+declaration.additionalInformation.description.empty = Enter a description
+declaration.additionalInformation.table.headers.code = Code
+declaration.additionalInformation.table.headers.description = Required information
 
 declaration.natureOfTransaction.header = Consignment information
 declaration.natureOfTransaction.title = What was the nature of the transaction?

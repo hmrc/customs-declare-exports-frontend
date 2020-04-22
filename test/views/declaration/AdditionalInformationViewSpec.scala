@@ -37,7 +37,7 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
   val itemId = "a7sc78"
   private val form: Form[AdditionalInformation] = AdditionalInformation.form()
 
-  private val page = new additional_information(mainTemplate)
+  private val page = instanceOf[additional_information]
 
   private def createView(declarationType: DeclarationType = DeclarationType.STANDARD, form: Form[AdditionalInformation] = form): Document =
     page(Mode.Normal, itemId, form, Seq())(journeyRequest(declarationType), messages)
@@ -48,15 +48,15 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
 
       val messages = instanceOf[MessagesApi].preferred(request)
 
-      messages must haveTranslationFor("supplementary.additionalInformation.title")
-      messages must haveTranslationFor("supplementary.additionalInformation.code")
-      messages must haveTranslationFor("supplementary.additionalInformation.item.code")
-      messages must haveTranslationFor("supplementary.additionalInformation.code.error")
-      messages must haveTranslationFor("supplementary.additionalInformation.code.empty")
-      messages must haveTranslationFor("supplementary.additionalInformation.description")
-      messages must haveTranslationFor("supplementary.additionalInformation.item.description")
-      messages must haveTranslationFor("supplementary.additionalInformation.description.error")
-      messages must haveTranslationFor("supplementary.additionalInformation.description.empty")
+      messages must haveTranslationFor("declaration.additionalInformation.title")
+      messages must haveTranslationFor("declaration.additionalInformation.code")
+      messages must haveTranslationFor("declaration.additionalInformation.item.code")
+      messages must haveTranslationFor("declaration.additionalInformation.code.error")
+      messages must haveTranslationFor("declaration.additionalInformation.code.empty")
+      messages must haveTranslationFor("declaration.additionalInformation.description")
+      messages must haveTranslationFor("declaration.additionalInformation.item.description")
+      messages must haveTranslationFor("declaration.additionalInformation.description.error")
+      messages must haveTranslationFor("declaration.additionalInformation.description.empty")
     }
   }
 
@@ -64,7 +64,7 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
 
     "display page title" in {
 
-      createView().getElementById("title").text() mustBe messages("supplementary.additionalInformation.title")
+      createView().getElementsByTag("h1").text() mustBe messages("declaration.additionalInformation.title")
     }
 
     "display section header" in {
@@ -76,7 +76,7 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
 
       val view = createView()
 
-      view.getElementById("code-label").text() mustBe messages("supplementary.additionalInformation.code")
+      view.getElementsByAttributeValue("for", "code").text() mustBe messages("declaration.additionalInformation.code")
       view.getElementById("code").attr("value") mustBe empty
     }
 
@@ -84,7 +84,7 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
 
       val view = createView()
 
-      view.getElementById("description-label").text() mustBe messages("supplementary.additionalInformation.description")
+      view.getElementsByAttributeValue("for", "description").text() mustBe messages("declaration.additionalInformation.description")
       view.getElementById("description").attr("value") mustBe empty
     }
 
@@ -154,28 +154,28 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
       val view = page(Mode.Normal, itemId, form, Seq(AdditionalInformation("12345", "12345678")))(journeyRequest(DeclarationType.STANDARD), messages)
 
       "has Code header" in {
-        view.select("#additional_information thead .code-header").first().text() mustBe "supplementary.additionalInformation.table.headers.code"
+        view.select("#additional_information thead tr th").get(0).text() mustBe "declaration.additionalInformation.table.headers.code"
       }
 
       "has 'Required information' header" in {
         view
-          .select("#additional_information thead .description-header")
-          .first()
-          .text() mustBe "supplementary.additionalInformation.table.headers.description"
+          .select("#additional_information thead tr th")
+          .get(1)
+          .text() mustBe "declaration.additionalInformation.table.headers.description"
       }
 
       "has row with 'Code' in " in {
-        view.select("table tbody tr:nth-child(1) .code-row").first().text() mustBe "12345"
+        view.select("#additional_information-row0-code").first().text() mustBe "12345"
       }
 
       "has row wiht 'Required information" in {
-        view.select("table tbody tr:nth-child(1) .description-row").first().text() mustBe "12345678"
+        view.select("#additional_information-row0-info").first().text() mustBe "12345678"
       }
 
       "has 'Remove' button" in {
 
-        val removeButton = view.select("table tbody tr:nth-child(1) .remove").first()
-        removeButton.text() mustBe "site.remove site.remove.hint"
+        val removeButton = view.select("#additional_information-row0-remove_button .govuk-button").first()
+        removeButton.text() mustBe "site.removedeclaration.additionalInformation.remove.hint"
         removeButton.attr("name") mustBe "Remove"
       }
 
