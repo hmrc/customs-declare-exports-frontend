@@ -25,7 +25,8 @@
         hintKey: Option[String] = None,
         isPageHeading: Boolean = false,
         headingClasses: String = gdsPageLabel,
-        labelClasses: String = "govuk-label--m"
+        labelClasses: String = "govuk-label--m",
+        inputClasses: Option[String] = None
 )(implicit messages: Messages)
 
 @buildLabel = @{
@@ -41,5 +42,6 @@
     name = field.name,
     value = field.value,
     label = buildLabel,
-    hint = hintKey.map(key => Hint(content = Text(messages(key))))
+    hint = hintKey.map(key => Hint(content = Text(messages(key)))),
+    classes = inputClasses.getOrElse("")
 ))
