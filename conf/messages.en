@@ -339,7 +339,7 @@ declaration.carrier.eori.info = Carrier’s EORI number
 declaration.carrier.address.info = Carrier’s name and business address
 declaration.carrier-details.help-item1 = Carrier’s EORI number, go to data element 3/32 Carrier Identification Number
 declaration.carrier-details.help-item2 = Carrier’s name and business address, go to data element 3/31 Carrier Name and Address
-
+declaration.carrier.error.addressAndEori = Enter only one of EORI or address
 
 supplementary.representative.title = Representation information
 supplementary.representative.legend = What type of representation was agreed?
@@ -948,7 +948,6 @@ declaration.commodityMeasure.units.hint = Enter weight in kilograms
 
 declaration.summary.locations.header = Locations
 declaration.summary.parties.header = Parties
-supplementary.summary.parties.header = Parties
 supplementary.summary.yourReferences.header = Your references
 
 declaration.summary.normal-header = Check your answers before making this declaration
