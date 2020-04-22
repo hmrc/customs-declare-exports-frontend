@@ -16,6 +16,7 @@
 
 package unit.controllers.declaration
 
+import base.Injector
 import controllers.declaration.DeclarationHolderController
 import controllers.util.Remove
 import forms.common.Eori
@@ -27,10 +28,10 @@ import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
 import views.html.declaration.declaration_holder
 
-class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMocks {
+class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMocks with Injector {
 
   trait SetUp {
-    val declarationHolderPage = new declaration_holder(mainTemplate)
+    val declarationHolderPage = instanceOf[declaration_holder]
 
     val controller = new DeclarationHolderController(
       mockAuthAction,

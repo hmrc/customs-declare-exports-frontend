@@ -37,7 +37,7 @@ import DeclarationType._
 class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   private val form: Form[DeclarationHolder] = DeclarationHolder.form()
-  private val declarationHolderPage = new declaration_holder(mainTemplate)
+  private val declarationHolderPage = instanceOf[declaration_holder]
   private def createView(form: Form[DeclarationHolder] = form)(implicit request: JourneyRequest[_]): Document =
     declarationHolderPage(Mode.Normal, form, Seq())(request, messages)
 
@@ -47,15 +47,16 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
 
       val messages = instanceOf[MessagesApi].preferred(request)
 
-      messages must haveTranslationFor("supplementary.declarationHolder.title")
-      messages must haveTranslationFor("supplementary.declarationHolder.title.hint")
-      messages must haveTranslationFor("supplementary.declarationHolder.eori")
-      messages must haveTranslationFor("supplementary.declarationHolder.authorisationCode")
-      messages must haveTranslationFor("supplementary.declarationHolder.authorisationCode.hint")
-      messages must haveTranslationFor("supplementary.declarationHolder.authorisationCode.invalid")
-      messages must haveTranslationFor("supplementary.declarationHolder.authorisationCode.empty")
-      messages must haveTranslationFor("supplementary.declarationHolders.maximumAmount.error")
-      messages must haveTranslationFor("supplementary.declarationHolders.duplicated")
+      messages must haveTranslationFor("declaration.declarationHolder.title")
+      messages must haveTranslationFor("declaration.declarationHolder.title.hint")
+      messages must haveTranslationFor("declaration.declarationHolder.eori")
+      messages must haveTranslationFor("declaration.declarationHolder.authorisationCode")
+      messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.remove.hint")
+      messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.hint")
+      messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.invalid")
+      messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.empty")
+      messages must haveTranslationFor("declaration.declarationHolders.maximumAmount.error")
+      messages must haveTranslationFor("declaration.declarationHolders.duplicated")
     }
   }
 
@@ -65,7 +66,7 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
 
       "display page title" in {
 
-        document.getElementById("title").text() mustBe messages("supplementary.declarationHolder.title")
+        document.getElementById("title").text() mustBe messages("declaration.declarationHolder.title")
       }
 
       "display section header" in {
@@ -75,20 +76,18 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
 
       "display empty input with label for Authorisation Code" in {
 
-        document.getElementById("authorisationTypeCode-label").text() mustBe messages("supplementary.declarationHolder.authorisationCode")
-        document.getElementById("authorisationTypeCode-hint").text() mustBe messages("supplementary.declarationHolder.authorisationCode.hint")
+        document.getElementById("authorisationTypeCode-label").text() mustBe messages("declaration.declarationHolder.authorisationCode")
+        document.getElementById("authorisationTypeCode-hint").text() mustBe messages("declaration.declarationHolder.authorisationCode.hint")
         document.getElementById("authorisationTypeCode").attr("value") mustBe empty
       }
 
       "display empty input with label for EORI" in {
 
-        document.getElementById("eori-label").text() mustBe messages("supplementary.declarationHolder.eori")
+        document.getElementsByAttributeValue("for", "eori").text() mustBe messages("declaration.declarationHolder.eori")
         document.getElementById("eori").attr("value") mustBe empty
       }
 
-      "display both 'Add' and 'Save and continue' button on page" in {
-        val addButton = document.getElementById("add")
-        addButton.text() mustBe messages("site.add supplementary.declarationHolders.add.hint")
+      "display 'Save and continue' button on page" in {
 
         val saveAndContinueButton = document.getElementById("submit")
         saveAndContinueButton.text() mustBe messages(saveAndContinueCaption)
@@ -136,10 +135,10 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
             .fillAndValidate(DeclarationHolder(Some("12345"), Some(Eori(TestHelper.createRandomAlphanumericString(17)))))
         )
 
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("authorisationTypeCode", "#authorisationTypeCode")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#authorisationTypeCode")
 
-        view.select("#error-message-authorisationTypeCode-input").text() mustBe messages("supplementary.declarationHolder.authorisationCode.invalid")
+        view must containErrorElementWithMessage("declaration.declarationHolder.authorisationCode.invalid")
       }
 
       "display error for incorrect EORI" in {
@@ -150,10 +149,10 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
             .fillAndValidate(DeclarationHolder(Some("ACE"), Some(Eori(TestHelper.createRandomAlphanumericString(18)))))
         )
 
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("eori", "#eori")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#eori")
 
-        view.select("#error-message-eori-input").text() mustBe messages("supplementary.eori.error.format")
+        view must containErrorElementWithMessage("declaration.eori.error.format")
       }
 
       "display error for both incorrect fields" in {
@@ -166,12 +165,14 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
             )
         )
 
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("authorisationTypeCode", "#authorisationTypeCode")
-        view must haveFieldErrorLink("eori", "#eori")
+        view must haveGovukGlobalErrorSummary
 
-        view.select("#error-message-authorisationTypeCode-input").text() mustBe messages("supplementary.declarationHolder.authorisationCode.invalid")
-        view.select("#error-message-eori-input").text() mustBe messages("supplementary.eori.error.format")
+        view must containErrorElementWithTagAndHref("a", "#authorisationTypeCode")
+        view must containErrorElementWithTagAndHref("a", "#eori")
+
+        view must containErrorElementWithMessage("declaration.declarationHolder.authorisationCode.invalid")
+        view must containErrorElementWithMessage("declaration.eori.error.format")
+
       }
     }
   }
@@ -207,11 +208,11 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
         val view =
           declarationHolderPage(Mode.Normal, form, Seq(DeclarationHolder(Some("1234"), Some(Eori("1234")))))(request, messages)
 
-        view.getElementById("removable_elements-row0-label").text() mustBe "1234-1234"
+        view.getElementById("holder_0").text() mustBe "1234-1234"
 
-        val removeButton = view.getElementsByClass("remove button--secondary")
+        val removeButton = view.getElementById("holder_action_0").getElementsByClass("govuk-button")
 
-        removeButton.text() mustBe "site.remove site.remove.hint"
+        removeButton.text() mustBe "site.removedeclaration.declarationHolder.authorisationCode.remove.hint"
         removeButton.attr("value") mustBe "1234-1234"
       }
     }
