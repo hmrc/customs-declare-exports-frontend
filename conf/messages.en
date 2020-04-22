@@ -437,6 +437,7 @@ declaration.declarationHolder.title = What authorisation is required for this ex
 declaration.declarationHolder.title.hint = This will depend on the type of procedure code used for this export. If no authorisation is needed, leave this page blank and continue.
 declaration.declarationHolder.eori = EORI number of the authorised party
 declaration.declarationHolder.authorisationCode = Authorisation code
+declaration.declarationHolder.authorisationCode.remove.hint = Remove authorisation code {0}.
 declaration.declarationHolder.authorisationCode.hint = A code up to 4 characters for the type of authorisation.
 declaration.declarationHolder.authorisationCode.invalid = Enter a valid authorisation code
 declaration.declarationHolder.authorisationCode.empty = Enter a valid authorisation code

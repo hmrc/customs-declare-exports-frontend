@@ -51,6 +51,7 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
       messages must haveTranslationFor("declaration.declarationHolder.title.hint")
       messages must haveTranslationFor("declaration.declarationHolder.eori")
       messages must haveTranslationFor("declaration.declarationHolder.authorisationCode")
+      messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.remove.hint")
       messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.hint")
       messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.invalid")
       messages must haveTranslationFor("declaration.declarationHolder.authorisationCode.empty")
@@ -211,7 +212,7 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
 
         val removeButton = view.getElementById("holder_action_0").getElementsByClass("govuk-button")
 
-        removeButton.text() mustBe "site.removesite.remove"
+        removeButton.text() mustBe "site.removedeclaration.declarationHolder.authorisationCode.remove.hint"
         removeButton.attr("value") mustBe "1234-1234"
       }
     }

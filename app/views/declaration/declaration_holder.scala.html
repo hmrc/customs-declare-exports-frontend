@@ -60,7 +60,9 @@
                         attributes = Map("id" -> s"holder_$index")
                     ),
                     TableRow(
-                        content = HtmlContent(removeButton(Some(holder))),
+                        content = HtmlContent(removeButton(
+                            value = Some(holder)
+                            , hiddenLabel = Some(messages("declaration.declarationHolder.authorisationCode.remove.hint", holder)))),
                         attributes = Map("id" -> s"holder_action_$index")
                     )
                 )
