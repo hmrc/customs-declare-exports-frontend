@@ -89,14 +89,14 @@
                     field = form("procedureCode"),
                     labelKey = "declaration.procedureCodes.procedureCode.header",
                     hintKey = Some("declaration.procedureCodes.procedureCode.header.hint"),
-                    inputClasses = Some("govuk-input--width-20")
+                    inputClasses = Some("govuk-input--width-4")
                 ),
                 additionalCodesTable,
                 exportsInputText(
                     field = form("additionalProcedureCode"),
                     labelKey = "declaration.procedureCodes.additionalProcedureCode.header",
                     hintKey = Some("declaration.procedureCodes.additionalProcedureCode.header.hint"),
-                    inputClasses = Some("govuk-input--width-20")
+                    inputClasses = Some("govuk-input--width-4")
                 ),
                 tariffDetails(messages("declaration.type.consignmentTariff_summary_text"), HtmlContent(tariffBody)),
                 addButton(hiddenLabel = Some(messages("declaration.procedureCodes.additionalProcedureCode.add.hint"))),
