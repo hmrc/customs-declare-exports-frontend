@@ -78,7 +78,7 @@
 
 @autocomplete = {
     @components.fields.field_accessible_autocomplete(
-        form("countryCode"),
+        form("details.address.country"),
         label = messages("supplementary.address.country"),
         None,
         None,
@@ -89,7 +89,7 @@
 
 @fullName = {
     @exportsInputText(
-        field = form("details_address_fullName"),
+        field = form("details.address.fullName"),
         labelKey = "supplementary.address.fullName",
         labelClasses = "govuk-label",
         inputClasses = Some("govuk-input govuk-input--width-30")
@@ -98,7 +98,7 @@
 
 @addressLine = {
     @exportsInputText(
-        field = form("details_address_addressLine"),
+        field = form("details.address.addressLine"),
         labelKey = "supplementary.address.addressLine",
         labelClasses = "govuk-label",
         inputClasses = Some("govuk-input govuk-input--width-30")
@@ -107,7 +107,7 @@
 
 @townCity = {
     @exportsInputText(
-        field = form("details_address_townOrCity"),
+        field = form("details.address.townOrCity"),
         labelKey = "supplementary.address.townOrCity",
         labelClasses = "govuk-label",
         inputClasses = Some("govuk-input govuk-input--width-20")
@@ -116,7 +116,7 @@
 
 @postcode = {
     @exportsInputText(
-        field = form("details_address_postCode"),
+        field = form("details.address.postCode"),
         labelKey = "supplementary.address.postCode",
         labelClasses = "govuk-label",
         inputClasses = Some("govuk-input govuk-input--width-10")
@@ -151,7 +151,7 @@
 
 
         @govukFieldset(Fieldset(
-attributes = Map("id" -> "details"),
+            attributes = Map("id" -> "details"),
             legend = Some(Legend(
             content = Text(messages("")),
             classes = "govuk-label"

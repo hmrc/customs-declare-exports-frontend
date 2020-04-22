@@ -101,8 +101,10 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
         val view = createView(form(request.declarationType))
 
-        view.getElementById("countryCode-label").text() mustBe messages("supplementary.address.country")
-        view.getElementById("countryCode").attr("value") mustBe empty
+
+        view.getElementsByAttributeValue("for","details_address_country").text() mustBe messages("supplementary.address.country")
+
+        view.getElementById("details_address_country").attr("value") mustBe empty
       }
 
       "display 'Back' button that links to 'Declarant Details' page" in {
@@ -133,14 +135,10 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
         val view = createView(form(request.declarationType).bind(Map[String, String]()))
 
-
-//        checkErrorsSummary(view)
-//        view must haveFieldErrorLink("details", "#details")
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#details")
-        view.getElementById("details").text() must include(messages("supplementary.namedEntityDetails.error"))
+        view.getElementsByClass("govuk-list govuk-error-summary__list").text() must include(messages("supplementary.namedEntityDetails.error"))
 
-      //  view.select("#error-message-details-input").text() mustBe messages("supplementary.namedEntityDetails.error")
       }
 
       "display error when EORI is provided, but is incorrect" in {
@@ -150,11 +148,9 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
             .fillAndValidate(ExporterDetails(EntityDetails(Some(Eori(TestHelper.createRandomAlphanumericString(18))), None)))
         )
 
-        checkErrorsSummary(view)
-
-        view must haveFieldErrorLink("details_eori", "#details_eori")
-
-        view.select("#error-message-details_eori-input").text() mustBe messages("supplementary.eori.error.format")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#details_eori")
+        view.getElementById("details_eori-error") must containMessage("supplementary.eori.error.format")
       }
 
       "display error for empty Full name" in {
@@ -164,10 +160,10 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
             .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("", "Test Street", "Leeds", "LS18BN", "England")))))
         )
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink("details_address_fullName", "#details_address_fullName")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#details_address_fullName")
+        view.getElementById("details_address_fullName-error") must containMessage("supplementary.address.fullName.empty")
 
-        view.select("#error-message-details_address_fullName-input").text() mustBe messages("supplementary.address.fullName.empty")
       }
 
       "display error for incorrect Full name" in {
@@ -181,10 +177,9 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
             )
         )
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink("details_address_fullName", "#details_address_fullName")
-
-        view.select("#error-message-details_address_fullName-input").text() mustBe messages("supplementary.address.fullName.error")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#details_address_fullName")
+        view.getElementById("details_address_fullName-error") must containMessage("supplementary.address.fullName.error")
       }
 
       "display error for empty Address" in {
@@ -194,10 +189,10 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
             .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "", "Leeds", "LS18BN", "England")))))
         )
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink("details_address_addressLine", "#details_address_addressLine")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#details_address_addressLine")
+        view.getElementById("details_address_addressLine-error") must containMessage("supplementary.address.addressLine.empty")
 
-        view.select("#error-message-details_address_addressLine-input").text() mustBe messages("supplementary.address.addressLine.empty")
       }
 
       "display error for incorrect Address" in {
@@ -211,10 +206,9 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
             )
         )
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink("details_address_addressLine", "#details_address_addressLine")
-
-        view.select("#error-message-details_address_addressLine-input").text() mustBe messages("supplementary.address.addressLine.error")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#details_address_addressLine")
+        view.getElementById("details_address_addressLine-error") must containMessage("supplementary.address.addressLine.error")
       }
 
       "display error for empty Town or city" in {
@@ -224,10 +218,10 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
             .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "", "LS18BN", "England")))))
         )
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink("details_address_townOrCity", "#details_address_townOrCity")
 
-        view.select("#error-message-details_address_townOrCity-input").text() mustBe messages("supplementary.address.townOrCity.empty")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#details_address_townOrCity")
+        view.getElementById("details_address_townOrCity-error") must containMessage("supplementary.address.townOrCity.empty")
       }
 
       "display error for incorrect Town or city" in {
@@ -241,10 +235,9 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
             )
         )
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink("details_address_townOrCity", "#details_address_townOrCity")
-
-        view.select("#error-message-details_address_townOrCity-input").text() mustBe messages("supplementary.address.townOrCity.error")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#details_address_townOrCity")
+        view.getElementById("details_address_townOrCity-error") must containMessage("supplementary.address.townOrCity.error")
       }
 
       "display error for empty Postcode" in {
@@ -253,10 +246,10 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
           form(request.declarationType)
             .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "", "England")))))
         )
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink("details_address_postCode", "#details_address_postCode")
 
-        view.select("#error-message-details_address_postCode-input").text() mustBe messages("supplementary.address.postCode.empty")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#details_address_postCode")
+        view.getElementById("details_address_postCode-error") must containMessage("supplementary.address.postCode.empty")
       }
 
       "display error for incorrect Postcode" in {
@@ -270,10 +263,9 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
             )
         )
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink("details_address_postCode", "#details_address_postCode")
-
-        view.select("#error-message-details_address_postCode-input").text() mustBe messages("supplementary.address.postCode.error")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#details_address_postCode")
+        view.getElementById("details_address_postCode-error") must containMessage("supplementary.address.postCode.error")
       }
 
       "display error for empty Country" in {
@@ -283,10 +275,10 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
             .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "")))))
         )
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink("details_address_country", "#details_address_country")
 
-        view.select("span.error-message").text() mustBe messages("supplementary.address.country.empty")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#details_address_country")
+        view.getElementById("error-message-details.address.country-input") must containMessage("supplementary.address.country.empty")
       }
 
       "display error for incorrect Country" in {
@@ -296,10 +288,9 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
             .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "Barcelona")))))
         )
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink("details_address_country", "#details_address_country")
-
-        view.select("span.error-message").text() mustBe messages("supplementary.address.country.error")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#details_address_country")
+        view.getElementById("error-message-details.address.country-input") must containMessage("supplementary.address.country.error")
       }
 
       "display errors when everything except Full name is empty" in {
@@ -309,16 +300,16 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
             .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "", "", "", "")))))
         )
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink("details_address_addressLine", "#details_address_addressLine")
-        view must haveFieldErrorLink("details_address_townOrCity", "#details_address_townOrCity")
-        view must haveFieldErrorLink("details_address_postCode", "#details_address_postCode")
-        view must haveFieldErrorLink("details_address_country", "#details_address_country")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#details_address_addressLine")
+        view.getElementById("details_address_addressLine-error") must containMessage("supplementary.address.addressLine.empty")
+        view must containErrorElementWithTagAndHref("a", "#details_address_townOrCity")
+        view.getElementById("details_address_townOrCity-error") must containMessage("supplementary.address.townOrCity.empty")
+        view must containErrorElementWithTagAndHref("a", "#details_address_postCode")
+        view.getElementById("details_address_postCode-error") must containMessage("supplementary.address.postCode.empty")
+        view must containErrorElementWithTagAndHref("a", "#details_address_country")
+        view.getElementById("error-message-details.address.country-input") must containMessage("supplementary.address.country.empty")
 
-        view.select("#error-message-details_address_addressLine-input").text() mustBe messages("supplementary.address.addressLine.empty")
-        view.select("#error-message-details_address_townOrCity-input").text() mustBe messages("supplementary.address.townOrCity.empty")
-        view.select("#error-message-details_address_postCode-input").text() mustBe messages("supplementary.address.postCode.empty")
-        view.select("span.error-message").text() mustBe messages("supplementary.address.country.empty")
       }
 
       "display errors when everything except Country is empty" in {
@@ -328,16 +319,16 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
             .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("", "", "", "", "Ukraine")))))
         )
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink("details_address_fullName", "#details_address_fullName")
-        view must haveFieldErrorLink("details_address_addressLine", "#details_address_addressLine")
-        view must haveFieldErrorLink("details_address_townOrCity", "#details_address_townOrCity")
-        view must haveFieldErrorLink("details_address_postCode", "#details_address_postCode")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#details_address_fullName")
+        view.getElementById("details_address_fullName-error") must containMessage("supplementary.address.fullName.empty")
+        view must containErrorElementWithTagAndHref("a", "#details_address_addressLine")
+        view.getElementById("details_address_addressLine-error") must containMessage("supplementary.address.addressLine.empty")
+        view must containErrorElementWithTagAndHref("a", "#details_address_townOrCity")
+        view.getElementById("details_address_townOrCity-error") must containMessage("supplementary.address.townOrCity.empty")
+        view must containErrorElementWithTagAndHref("a", "#details_address_postCode")
+        view.getElementById("details_address_postCode-error") must containMessage("supplementary.address.postCode.empty")
 
-        view.select("#error-message-details_address_fullName-input").text() mustBe messages("supplementary.address.fullName.empty")
-        view.select("#error-message-details_address_addressLine-input").text() mustBe messages("supplementary.address.addressLine.empty")
-        view.select("#error-message-details_address_townOrCity-input").text() mustBe messages("supplementary.address.townOrCity.empty")
-        view.select("#error-message-details_address_postCode-input").text() mustBe messages("supplementary.address.postCode.empty")
       }
 
       "display errors when everything except Full name is incorrect" in {
@@ -362,16 +353,14 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
             )
         )
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink("details_address_addressLine", "#details_address_addressLine")
-        view must haveFieldErrorLink("details_address_townOrCity", "#details_address_townOrCity")
-        view must haveFieldErrorLink("details_address_postCode", "#details_address_postCode")
-        view must haveFieldErrorLink("details_address_country", "#details_address_country")
-
-        view.select("#error-message-details_address_addressLine-input").text() mustBe messages("supplementary.address.addressLine.error")
-        view.select("#error-message-details_address_townOrCity-input").text() mustBe messages("supplementary.address.townOrCity.error")
-        view.select("#error-message-details_address_postCode-input").text() mustBe messages("supplementary.address.postCode.error")
-        view.select("span.error-message").text() mustBe messages("supplementary.address.country.error")
+        view must containErrorElementWithTagAndHref("a", "#details_address_addressLine")
+        view.getElementById("details_address_addressLine-error") must containMessage("supplementary.address.addressLine.error")
+        view must containErrorElementWithTagAndHref("a", "#details_address_townOrCity")
+        view.getElementById("details_address_townOrCity-error") must containMessage("supplementary.address.townOrCity.error")
+        view must containErrorElementWithTagAndHref("a", "#details_address_postCode")
+        view.getElementById("details_address_postCode-error") must containMessage("supplementary.address.postCode.error")
+        view must containErrorElementWithTagAndHref("a", "#details_address_country")
+        view.getElementById("error-message-details.address.country-input") must containMessage("supplementary.address.country.error")
       }
 
       "display errors when everything except Country is incorrect" in {
@@ -396,16 +385,15 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
             )
         )
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink("details_address_fullName", "#details_address_fullName")
-        view must haveFieldErrorLink("details_address_addressLine", "#details_address_addressLine")
-        view must haveFieldErrorLink("details_address_townOrCity", "#details_address_townOrCity")
-        view must haveFieldErrorLink("details_address_postCode", "#details_address_postCode")
-
-        view.select("#error-message-details_address_fullName-input").text() mustBe messages("supplementary.address.fullName.error")
-        view.select("#error-message-details_address_addressLine-input").text() mustBe messages("supplementary.address.addressLine.error")
-        view.select("#error-message-details_address_townOrCity-input").text() mustBe messages("supplementary.address.townOrCity.error")
-        view.select("#error-message-details_address_postCode-input").text() mustBe messages("supplementary.address.postCode.error")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#details_address_fullName")
+        view.getElementById("details_address_fullName-error") must containMessage("supplementary.address.fullName.error")
+        view must containErrorElementWithTagAndHref("a", "#details_address_addressLine")
+        view.getElementById("details_address_addressLine-error") must containMessage("supplementary.address.addressLine.error")
+        view must containErrorElementWithTagAndHref("a", "#details_address_townOrCity")
+        view.getElementById("details_address_townOrCity-error") must containMessage("supplementary.address.townOrCity.error")
+        view must containErrorElementWithTagAndHref("a", "#details_address_postCode")
+        view.getElementById("details_address_postCode-error") must containMessage("supplementary.address.postCode.error")
       }
     }
   }
