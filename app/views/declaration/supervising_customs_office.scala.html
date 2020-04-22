@@ -57,10 +57,10 @@
 @autocomplete = {
     @components.fields.field_accessible_autocomplete(
         field = form("supervisingCustomsOffice"),
-        label = "",
+        label = messages("declaration.warehouse.supervisingCustomsOffice.label"),
         labelClass = None,
         hintText = None,
-        emptySelectValue = messages("supplementary.packageInformation.typesOfPackages.empty"),
+        emptySelectValue = messages("declaration.warehouse.supervisingCustomsOffice.label"),
         items = AutoCompleteItem.fromSupervisingCustomsOffice(CustomsOffices.all)
     )
 }

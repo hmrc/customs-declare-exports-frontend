@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.40
+// @version      1.41
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -306,7 +306,7 @@ function holderOfAuthorisation(){
                     document.getElementById('eori').value = 'GB717572504502801';
                     document.getElementById('add').click();
                 } else {
-                    document.getElementsByClassName('button')[0].click();
+                    document.getElementById('submit').click();
                 }
                 break;
             case 'Z':
@@ -319,38 +319,38 @@ function holderOfAuthorisation(){
                     document.getElementById('eori').value = 'GB717572504502801';
                     document.getElementById('add').click();
                 } else {
-                    document.getElementsByClassName('button')[0].click();
+                    document.getElementById('submit').click();
                 }
                 break;
             case 'F':
             case 'Y':
                 selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "SDE");
                 document.getElementById('eori').value = 'GB717572504502801';
-                document.getElementsByClassName('button')[0].click();
+                document.getElementById('submit').click();
                 break;
             case 'J':
                 selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "EIR");
                 document.getElementById('eori').value = 'GB717572504502811';
-                document.getElementsByClassName('button')[0].click();
+                document.getElementById('submit').click();
                 break;
             case 'B':
                 selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "CSE");
                 document.getElementById('eori').value = 'GB717572504502801';
-                document.getElementsByClassName('button')[0].click();
+                document.getElementById('submit').click();
                 break;
             case 'A':
                 selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "CSE");
                 document.getElementById('eori').value = 'GB717572504502802';
-                document.getElementsByClassName('button')[0].click();
+                document.getElementById('submit').click();
                 break;
             case 'D':
                 selectFromAutoPredict(document.getElementById('authorisationTypeCode-container'), "AEOC");
                 document.getElementById('eori').value = 'GB717572504502811';
-                document.getElementsByClassName('button')[0].click();
+                document.getElementById('submit').click();
                 break;
             case 'E':
             case 'K':
-                document.getElementsByClassName('button')[0].click();
+                document.getElementById('submit').click();
                 break;
         }
     }
@@ -358,21 +358,15 @@ function holderOfAuthorisation(){
 
 function originationCountry(){
     if (currentPageIs("/customs-declare-exports/declaration/origination-country")) {
-        document.querySelector("#countryCode-container input").value = 'United Kingdom - GB';
-        setTimeout(() => {
-            document.getElementById('countryCode__option--0').dispatchEvent(new Event("click"));
-            document.getElementById('submit').click();
-        } , 250);
+        selectFromAutoPredict(document.getElementById("countryCode-container"), "GB");
+        document.getElementById('submit').click();
     }
 }
 
 function destinationCountry(){
     if (currentPageIs("/customs-declare-exports/declaration/destination-country")) {
-        document.querySelector("#countryCode-container input").value = 'United States of America - US';
-        setTimeout(() => {
-            document.getElementById('countryCode__option--0').dispatchEvent(new Event("click"));
-            document.getElementById('submit').click();
-        } , 250);
+        selectFromAutoPredict(document.getElementById("countryCode-container"), "US");
+        document.getElementById('submit').click();
     }
 }
 
@@ -385,11 +379,8 @@ function countryOfRouting(){
 
 function countriesOfRouting(){
     if (currentPageIs("/customs-declare-exports/declaration/countries-of-routing")) {
-        document.querySelector("#countryCode-container input").value = 'China - CN';
-        setTimeout(() => {
-            document.getElementById('countryCode__option--0').dispatchEvent(new Event("click"));
-            document.getElementById('submit').click();
-        } , 250);
+        selectFromAutoPredict(document.getElementById("countryCode-container"), "CN");
+        document.getElementById('submit').click();
     }
 }
 
@@ -433,25 +424,22 @@ function officeOfExit(){
             case 'F':
             case 'K':
             case 'Y':
-                document.querySelector("#officeId-container input").value = 'GB000041';
+                selectFromAutoPredict(document.getElementById('officeId-container'), "GB000041");
                 break;
             case 'J':
-                document.querySelector("#officeId-container input").value = 'GB000054';
+                selectFromAutoPredict(document.getElementById('officeId-container'), "GB000054");
                 break;
             case 'Z':
-                document.querySelector("#officeId-container input").value = 'GB000051';
+                selectFromAutoPredict(document.getElementById('officeId-container'), "GB000051");
                 break;
             default:
-                document.querySelector("#officeId-container input").value = 'GB000434';
+                selectFromAutoPredict(document.getElementById('officeId-container'), "GB000434");
         }
 
-        setTimeout(() => {
-            document.getElementById('officeId__option--0').dispatchEvent(new Event("click"));
-            if(document.getElementById('Yes')) {
-                document.getElementById('Yes').click()
-            }
-            document.getElementById('submit').click()
-        } , 250);
+        if(document.getElementById('Yes')) {
+            document.getElementById('Yes').click()
+        }
+        document.getElementById('submit').click();
     }
 }
 
@@ -832,7 +820,7 @@ function supervisingCustomsOffice(){
             default:
                 selectFromAutoPredict(document.getElementById('supervisingCustomsOffice-container'), "GBLBA001");
         }
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('submit').click();
     }
 }
 
