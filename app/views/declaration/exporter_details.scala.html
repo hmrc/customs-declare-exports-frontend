@@ -41,7 +41,7 @@
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     saveButtons: saveButtons,
-    tariffDetails: tariffDetails,
+    group_address: group_address,
     exportsInputText: exportsInputText,
     pageTitle: pageTitle,
     formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
@@ -76,51 +76,10 @@
     <p class="govuk-body">Or</p>
 }
 
-@autocomplete = {
-    @components.fields.field_accessible_autocomplete(
-        form("details.address.country"),
-        label = messages("supplementary.address.country"),
-        None,
-        None,
-        messages("declaration.originationCountry.empty"),
-        AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
-    )
-}
 
-@fullName = {
-    @exportsInputText(
-        field = form("details.address.fullName"),
-        labelKey = "supplementary.address.fullName",
-        labelClasses = "govuk-label",
-        inputClasses = Some("govuk-input govuk-input--width-30")
-    )
-}
 
-@addressLine = {
-    @exportsInputText(
-        field = form("details.address.addressLine"),
-        labelKey = "supplementary.address.addressLine",
-        labelClasses = "govuk-label",
-        inputClasses = Some("govuk-input govuk-input--width-30")
-    )
-}
-
-@townCity = {
-    @exportsInputText(
-        field = form("details.address.townOrCity"),
-        labelKey = "supplementary.address.townOrCity",
-        labelClasses = "govuk-label",
-        inputClasses = Some("govuk-input govuk-input--width-20")
-    )
-}
-
-@postcode = {
-    @exportsInputText(
-        field = form("details.address.postCode"),
-        labelKey = "supplementary.address.postCode",
-        labelClasses = "govuk-label",
-        inputClasses = Some("govuk-input govuk-input--width-10")
-    )
+@groupAddress = {
+    @group_address(form, "supplementary.address","details.address")
 }
 @govukLayout(
     title = Title("supplementary.consignor.title", "supplementary.summary.parties.header"),
@@ -157,11 +116,7 @@
             classes = "govuk-label"
             )),
             html = HtmlFormat.fill(immutable.Seq(
-            fullName,
-            addressLine,
-            townCity,
-            postcode,
-            autocomplete,
+            groupAddress,
             tariff,
             saveButtons()
             ))

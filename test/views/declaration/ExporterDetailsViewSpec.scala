@@ -63,7 +63,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
         val view = createView(form(request.declarationType))
 
-        view.getElementsByAttributeValue("for","details_eori").text() mustBe messages("supplementary.consignor.eori")
+        view.getElementsByAttributeValue("for", "details_eori").text() mustBe messages("supplementary.consignor.eori")
         view.getElementById("details_eori").attr("value") mustBe empty
       }
 
@@ -71,28 +71,28 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
         val view = createView(form(request.declarationType))
 
-        view.getElementsByAttributeValue("for","details_address_fullName").text() mustBe messages("supplementary.address.fullName")
+        view.getElementsByAttributeValue("for", "details_address_fullName").text() mustBe messages("supplementary.address.fullName")
         view.getElementById("details_address_fullName").attr("value") mustBe empty
       }
 
       "display empty input with label for Address" in {
 
         val view = createView(form(request.declarationType))
-        view.getElementsByAttributeValue("for","details_address_addressLine").text() mustBe messages("supplementary.address.addressLine")
+        view.getElementsByAttributeValue("for", "details_address_addressLine").text() mustBe messages("supplementary.address.addressLine")
         view.getElementById("details_address_addressLine").attr("value") mustBe empty
       }
 
       "display empty input with label for Town or City" in {
 
         val view = createView(form(request.declarationType))
-        view.getElementsByAttributeValue("for","details_address_townOrCity").text() mustBe messages("supplementary.address.townOrCity")
+        view.getElementsByAttributeValue("for", "details_address_townOrCity").text() mustBe messages("supplementary.address.townOrCity")
         view.getElementById("details_address_townOrCity").attr("value") mustBe empty
       }
 
       "display empty input with label for Postcode" in {
 
         val view = createView(form(request.declarationType))
-        view.getElementsByAttributeValue("for","details_address_postCode").text() mustBe messages("supplementary.address.postCode")
+        view.getElementsByAttributeValue("for", "details_address_postCode").text() mustBe messages("supplementary.address.postCode")
 
         view.getElementById("details_address_postCode").attr("value") mustBe empty
       }
@@ -101,8 +101,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
         val view = createView(form(request.declarationType))
 
-
-        view.getElementsByAttributeValue("for","details_address_country").text() mustBe messages("supplementary.address.country")
+        view.getElementsByAttributeValue("for", "details_address_country").text() mustBe messages("supplementary.address.country")
 
         view.getElementById("details_address_country").attr("value") mustBe empty
       }
@@ -218,7 +217,6 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
             .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "", "LS18BN", "England")))))
         )
 
-
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#details_address_townOrCity")
         view.getElementById("details_address_townOrCity-error") must containMessage("supplementary.address.townOrCity.empty")
@@ -274,7 +272,6 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
           form(request.declarationType)
             .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "")))))
         )
-
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#details_address_country")
