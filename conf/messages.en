@@ -551,6 +551,7 @@ declaration.warehouse.supervisingCustomsOffice.sectionHeader = Locations
 declaration.warehouse.supervisingCustomsOffice.title = Where is the supervising customs office?
 declaration.warehouse.supervisingCustomsOffice.hint = If your goods have been altered or are being sent out to be altered, this is the office that gives authorisation for that procedure.
 declaration.warehouse.supervisingCustomsOffice.error = Select a customs supervising office from the list
+declaration.warehouse.supervisingCustomsOffice.label = Select a customs supervising office
 
 declaration.warehouse.inlandTransportDetails.sectionHeader = Locations
 declaration.warehouse.inlandTransportDetails.title = What mode of transport took the goods from the warehouse to the border?

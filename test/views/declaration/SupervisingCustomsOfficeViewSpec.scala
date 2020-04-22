@@ -16,6 +16,7 @@
 
 package views.declaration
 
+import base.Injector
 import forms.declaration.SupervisingCustomsOffice
 import models.Mode
 import org.jsoup.nodes.Document
@@ -29,9 +30,9 @@ import views.html.declaration.supervising_customs_office
 import views.tags.ViewTest
 
 @ViewTest
-class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestData with Stubs {
+class SupervisingCustomsOfficerfrViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  private val page = new supervising_customs_office(mainTemplate)
+  private val page = instanceOf[supervising_customs_office]
   private val form: Form[SupervisingCustomsOffice] = SupervisingCustomsOffice.form()
 
   private def createView(mode: Mode = Mode.Normal, form: Form[SupervisingCustomsOffice] = form, messages: Messages = stubMessages()): Document =
