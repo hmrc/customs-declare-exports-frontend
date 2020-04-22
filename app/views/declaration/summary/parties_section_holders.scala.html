@@ -17,13 +17,13 @@
 @import forms.declaration.DeclarationHolder
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.html.components.gds.changeLink
+@import views.html.components.gds.link
 @import views.html.components.gds.summary_list
 @import views.declaration.summary.TableCell
 
 @this(
         govukTable: GovukTable,
-        changeLink: changeLink,
+        changeLink: link,
         summaryList: summary_list
 )
 
@@ -40,7 +40,7 @@
 @change(holder: DeclarationHolder) = {
     @changeLink(
         messages("site.change"),
-        messages("declaration.summary.parties.holders.change", holderTypeCode(holder), holderEori(holder)),
+        Some(messages("declaration.summary.parties.holders.change", holderTypeCode(holder), holderEori(holder))),
         controllers.declaration.routes.DeclarationHolderController.displayPage(mode)
     )
 }

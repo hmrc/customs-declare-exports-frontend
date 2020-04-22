@@ -78,10 +78,10 @@ class DeclarationHolderController @Inject()(
   ): Future[Result] =
     (userInput, cachedData.holders) match {
       case (_, holders) if holders.length >= limitOfHolders =>
-        handleErrorPage(mode, Seq(("", "supplementary.declarationHolders.maximumAmount.error")), userInput, cachedData.holders)
+        handleErrorPage(mode, Seq(("", "declaration.declarationHolders.maximumAmount.error")), userInput, cachedData.holders)
 
       case (holder, holders) if holders.contains(holder) =>
-        handleErrorPage(mode, Seq(("", "supplementary.declarationHolders.duplicated")), userInput, cachedData.holders)
+        handleErrorPage(mode, Seq(("", "declaration.declarationHolders.duplicated")), userInput, cachedData.holders)
 
       case (holder, holders) if holder.authorisationTypeCode.isDefined && holder.eori.isDefined =>
         val updatedCache = DeclarationHoldersData(holders :+ holder)
@@ -90,8 +90,8 @@ class DeclarationHolderController @Inject()(
 
       case (DeclarationHolder(authCode, eori), _) =>
         val authCodeError =
-          authCode.fold(Seq(("authorisationTypeCode", "supplementary.declarationHolder.authorisationCode.empty")))(_ => Seq[(String, String)]())
-        val eoriError = eori.fold(Seq(("eori", "supplementary.eori.empty")))(_ => Seq[(String, String)]())
+          authCode.fold(Seq(("authorisationTypeCode", "declaration.declarationHolder.authorisationCode.empty")))(_ => Seq[(String, String)]())
+        val eoriError = eori.fold(Seq(("eori", "declaration.eori.empty")))(_ => Seq[(String, String)]())
 
         handleErrorPage(mode, authCodeError ++ eoriError, userInput, cachedData.holders)
     }
@@ -133,11 +133,11 @@ class DeclarationHolderController @Inject()(
               .map(_ => navigateToNextPage(mode))
 
           case DeclarationHolder(maybeTypeCode, maybeEori) =>
-            val typeCodeError = maybeTypeCode.fold(Seq(("authorisationTypeCode", "supplementary.declarationHolder.authorisationCode.empty")))(
+            val typeCodeError = maybeTypeCode.fold(Seq(("authorisationTypeCode", "declaration.declarationHolder.authorisationCode.empty")))(
               _ => Seq[(String, String)]()
             )
 
-            val eoriError = maybeEori.fold(Seq(("eori", "supplementary.eori.empty")))(_ => Seq[(String, String)]())
+            val eoriError = maybeEori.fold(Seq(("eori", "declaration.eori.empty")))(_ => Seq[(String, String)]())
 
             handleErrorPage(mode, typeCodeError ++ eoriError, userInput, Seq())
         }
@@ -145,10 +145,10 @@ class DeclarationHolderController @Inject()(
       case (holder, holders) =>
         holder match {
           case _ if holders.length >= limitOfHolders =>
-            handleErrorPage(mode, Seq(("", "supplementary.declarationHolders.maximumAmount.error")), userInput, holders)
+            handleErrorPage(mode, Seq(("", "declaration.declarationHolders.maximumAmount.error")), userInput, holders)
 
           case _ if holders.contains(holder) =>
-            handleErrorPage(mode, Seq(("", "supplementary.declarationHolders.duplicated")), userInput, holders)
+            handleErrorPage(mode, Seq(("", "declaration.declarationHolders.duplicated")), userInput, holders)
 
           case _ if holder.authorisationTypeCode.isDefined == holder.eori.isDefined =>
             val updatedHolders = if (holder.authorisationTypeCode.isDefined) holders :+ holder else holders
@@ -157,11 +157,11 @@ class DeclarationHolderController @Inject()(
               .map(_ => navigateToNextPage(mode))
 
           case DeclarationHolder(maybeTypeCode, maybeEori) =>
-            val typeCodeError = maybeTypeCode.fold(Seq(("authorisationTypeCode", "supplementary.declarationHolder.authorisationCode.empty")))(
+            val typeCodeError = maybeTypeCode.fold(Seq(("authorisationTypeCode", "declaration.declarationHolder.authorisationCode.empty")))(
               _ => Seq[(String, String)]()
             )
 
-            val eoriError = maybeEori.fold(Seq(("eori", "supplementary.eori.empty")))(_ => Seq[(String, String)]())
+            val eoriError = maybeEori.fold(Seq(("eori", "declaration.eori.empty")))(_ => Seq[(String, String)]())
 
             handleErrorPage(mode, typeCodeError ++ eoriError, userInput, holders)
         }

@@ -14,62 +14,66 @@
  * limitations under the License.
  *@
 
-@import java.time.ZoneId
-@import java.time.Instant
-@import controllers.routes._
-@import controllers.util._
-@import forms.CancelDeclaration
-@import views.ViewDates
-@import uk.gov.hmrc.play.views.html._
-@import views.html.components.pagination
-@import views.components.inputs.RadioOption
 @import forms.Choice
 @import forms.Choice.AllowedChoiceValues.ContinueDec
-@import views.Title
+@import views.{BackButton, Title}
+@import views.html.components.gds.{gdsMainTemplate, link, pageTitle, pagination}
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.ViewDates.formatDateTimeFullMonth
 
-@this(main_template: views.html.main_template)
+@this(
+  govukLayout: gdsMainTemplate,
+  pageTitle: pageTitle,
+  link: link,
+  govukTable: GovukTable
+)
 
 @(declarations: Paginated[ExportsDeclaration])(implicit request: Request[_], messages: Messages)
 
-@main_template(
+@savedDeclarations = @{
+  declarations.currentPageElements.map { declaration =>
+    Seq(
+      TableRow(content = HtmlContent(link(text = declaration.ducr.getOrElse(messages("saved.declarations.noDucr")), call = routes.SavedDeclarationsController.continueDeclaration(declaration.id)))),
+      TableRow(content = HtmlContent(formatDateTimeFullMonth(declaration.updatedDateTime))),
+      TableRow(content = HtmlContent(link(text = messages("site.remove"), call = routes.RemoveSavedDeclarationsController.displayPage(declaration.id))))
+    )
+  }
+}
+
+@govukLayout(
     title = Title("saved.declarations.title"),
-    fullWidth = true
+    backButton = Some(BackButton(messages("site.backToSelectionPage"), routes.ChoiceController.displayPage(Some(Choice(ContinueDec))))),
+    useCustomContentWidth = true
 ) {
 
-    @components.back_link(routes.ChoiceController.displayPage(Some(Choice(ContinueDec))))
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
 
-    <h1>@messages("saved.declarations.title")</h1>
+      @pageTitle(text = messages("saved.declarations.title"), classes = "govuk-heading-xl")
 
-    <table>
-        <tr class="table-row">
-            <th class="table-cell table-head">@messages("saved.declarations.ducr")</th>
-            <th class="table-cell table-head">@messages("saved.declarations.dateSaved")</th>
-            <th class="table-cell table-head"></th>
-        </tr>
+      @govukTable(Table(
+        head = Some(Seq(
+          HeadCell(content = Text(messages("saved.declarations.ducr"))),
+          HeadCell(content = Text(messages("saved.declarations.dateSaved"))),
+          HeadCell()
+        )),
+        rows = savedDeclarations
+      ))
 
-        @for(declaration <- declarations.results) {
-            <tr class="table-row">
-                <td class="table-cell">
-                    <a href="@routes.SavedDeclarationsController.continueDeclaration(declaration.id)">
-                    @declaration.ducr.getOrElse(messages("saved.declarations.noDucr"))
-                    </a>
-                </td>
-                <td class="table-cell">@ViewDates.formatDateAtTime(declaration.updatedDateTime)</td>
-                <td class="table-cell">
-                    <a href="@routes.RemoveSavedDeclarationsController.displayPage(declaration.id)">
-                        @messages("site.remove")
-                    </a>
-                </td>
-            </tr>
-        }
-    </table>
+
+
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
 
     @pagination(
-        singularName = messages("saved.declarations.pagination.singular"),
-        pluralName = messages("saved.declarations.pagination.plural"),
-        pager = declarations,
-        containerClass = Some("mt-2 mb-1"),
-        linksClass = Some("mt-2"),
-        onChange = page => controllers.routes.SavedDeclarationsController.displayDeclarations(page)
+      singularName = messages("saved.declarations.pagination.singular"),
+      pluralName = messages("saved.declarations.pagination.plural"),
+      pager = declarations,
+      onChange = page => controllers.routes.SavedDeclarationsController.displayDeclarations(page)
     )
+
+  </div>
+
 }

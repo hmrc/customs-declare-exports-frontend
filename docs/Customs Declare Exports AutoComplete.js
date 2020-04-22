@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.38
+// @version      1.40
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -556,7 +556,7 @@ function procedureCodes(){
                 document.getElementById('procedureCode').value ='1040';
                 document.getElementById('additionalProcedureCode').value ='1CS';
         }
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('submit').click();
     }
 }
 
@@ -630,13 +630,13 @@ function cusCode(){
 
 function taricCodes(){
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/taric-codes')) {
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('submit').click();
     }
 }
 
 function nactCodes(){
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/nact-codes')) {
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('submit').click();
     }
 }
 
@@ -702,19 +702,19 @@ function additionalInformation(){
                     document.getElementById('description').value ='IPOSDE';
                     document.getElementById('add').click();
                 } else {
-                    document.getElementsByClassName('button')[0].click()
+                    document.getElementById('submit').click();
                 }
                 break;
             case 'K':
             case 'Z':
                 document.getElementById('code').value ='00600';
                 document.getElementById('description').value ='EXPORTER';
-                document.getElementsByClassName('button')[0].click()
+                document.getElementById('submit').click();
                 break;
             default:
                 document.getElementById('code').value ='00400';
                 document.getElementById('description').value ='EXPORTER';
-                document.getElementsByClassName('button')[0].click()
+                document.getElementById('submit').click();
         }
     }
 }

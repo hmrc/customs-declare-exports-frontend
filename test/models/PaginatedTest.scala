@@ -21,9 +21,9 @@ import play.api.libs.json.{JsSuccess, Json}
 
 class PaginatedTest extends PlaySpec {
 
-  private val results = Paginated(results = Seq("value"), Page(index = 1, size = 2), total = 3)
+  private val results = Paginated(currentPageElements = Seq("value"), Page(index = 1, size = 2), total = 3)
   private val json =
-    Json.obj("results" -> Json.arr("value"), "page" -> Json.obj("index" -> 1, "size" -> 2), "total" -> 3)
+    Json.obj("currentPageElements" -> Json.arr("value"), "page" -> Json.obj("index" -> 1, "size" -> 2), "total" -> 3)
 
   "Paginated" should {
     "convert to JSON" in {

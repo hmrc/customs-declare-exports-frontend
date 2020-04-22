@@ -20,12 +20,13 @@ import play.api.libs.json._
 
 import scala.util.Try
 
-case class Paginated[T](results: Seq[T], page: Page, total: Long) {
-  def map[A](mapper: T => A): Paginated[A] = Paginated(results.map(mapper), page, total)
-  def nonEmpty: Boolean = results.nonEmpty
-  def pageCount: Int = Math.ceil(total.toDouble / page.size).toInt
-  def size: Int = results.size
+case class Paginated[T](currentPageElements: Seq[T], page: Page, total: Long) {
+  def map[A](mapper: T => A): Paginated[A] = Paginated(currentPageElements.map(mapper), page, total)
+  def nonEmpty: Boolean = currentPageElements.nonEmpty
+  def pagesAmount: Int = Math.ceil(total.toDouble / page.size).toInt
+  def currentPageSize: Int = currentPageElements.size
 }
+
 object Paginated {
   def apply[T](results: T*): Paginated[T] = Paginated[T](results, Page(), results.size)
   def empty[T](page: Page) = Paginated(Seq.empty[T], page, 0)
@@ -34,7 +35,7 @@ object Paginated {
     override def reads(json: JsValue): JsResult[Paginated[T]] =
       Try {
         new Paginated[T](
-          (json \ "results") match {
+          (json \ "currentPageElements") match {
             case JsDefined(JsArray(results)) => results.map(_.as[T])
             case _                           => throw new IllegalArgumentException("Invalid result set")
           },
@@ -50,6 +51,10 @@ object Paginated {
 
   implicit def writes[T](implicit fmt: Writes[T]): Writes[Paginated[T]] = new Writes[Paginated[T]] {
     override def writes(paged: Paginated[T]): JsValue =
-      Json.obj("results" -> JsArray(paged.results.map(fmt.writes)), "page" -> Json.toJson(paged.page), "total" -> JsNumber(paged.total))
+      Json.obj(
+        "currentPageElements" -> JsArray(paged.currentPageElements.map(fmt.writes)),
+        "page" -> Json.toJson(paged.page),
+        "total" -> JsNumber(paged.total)
+      )
   }
 }

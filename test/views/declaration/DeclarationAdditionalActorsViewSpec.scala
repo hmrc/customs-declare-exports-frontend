@@ -100,7 +100,8 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessag
 
       "display both 'Add' and 'Save and continue' button on page" in {
         val addButton = view.getElementsByAttributeValueMatching("name", Add.toString).first()
-        addButton.text() mustBe "site.addsupplementary.additionalActors.add.hint"
+        addButton.text() must include("site.add")
+        addButton.text() must include("declaration.additionalActors.add.hint")
 
         val saveAndContinueButton = view.getElementsByAttributeValueMatching("name", SaveAndContinue.toString).first()
         saveAndContinueButton.text() mustBe messages(saveAndContinueCaption)

@@ -22,14 +22,18 @@
 @this(
         govukHeader: GovukHeader,
         govukLayout: GovukLayout,
+        govukFlexibleLayout: govukFlexibleLayout,
         govukPhaseBanner: GovukPhaseBanner,
         govukBackLink: GovukBackLink,
         siteHeader: components.gds.siteHeader,
         phaseBanner: components.gds.phaseBanner
 )
 
-@(  title: Title,
-    backButton: Option[BackButton] = None)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
+@(
+  title: Title,
+  backButton: Option[BackButton] = None,
+  useCustomContentWidth: Boolean = false
+)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 @head = {
     <link rel="shortcut icon" href='@routes.Assets.versioned("/lib/govuk-frontend/govuk/assets/images/favicon.ico")' type="image/x-icon" />
@@ -69,7 +73,8 @@
         FooterItem(href = Some("help"), text = Some("Help using GOV.UK"))
 )}
 
-@govukLayout(
+@if(useCustomContentWidth) {
+  @govukFlexibleLayout(
     pageTitle = Some(title.toString),
     headBlock = Some(head),
     beforeContentBlock = Some(beforeContentBlock),
@@ -77,4 +82,15 @@
     scriptsBlock = Some(scripts),
     headerBlock = Some(siteHeader()),
     footerItems = footer
-)(contentBlock)
+  )(contentBlock)
+} else {
+  @govukLayout(
+    pageTitle = Some(title.toString),
+    headBlock = Some(head),
+    beforeContentBlock = Some(beforeContentBlock),
+    bodyEndBlock = None,
+    scriptsBlock = Some(scripts),
+    headerBlock = Some(siteHeader()),
+    footerItems = footer
+  )(contentBlock)
+}

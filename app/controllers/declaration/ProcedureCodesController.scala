@@ -84,7 +84,7 @@ class ProcedureCodesController @Inject()(
         handleErrorPage(
           mode,
           itemId,
-          Seq(("", "supplementary.procedureCodes.additionalProcedureCode.maximumAmount.error")),
+          Seq(("", "declaration.procedureCodes.additionalProcedureCode.maximumAmount.error")),
           userInput,
           cachedData.additionalProcedureCodes
         )
@@ -93,7 +93,7 @@ class ProcedureCodesController @Inject()(
         handleErrorPage(
           mode,
           itemId,
-          Seq(("additionalProcedureCode", "supplementary.procedureCodes.additionalProcedureCode.empty")),
+          Seq(("additionalProcedureCode", "declaration.procedureCodes.additionalProcedureCode.empty")),
           userInput,
           cachedData.additionalProcedureCodes
         )
@@ -102,7 +102,7 @@ class ProcedureCodesController @Inject()(
         handleErrorPage(
           mode,
           itemId,
-          Seq(("additionalProcedureCode", "supplementary.procedureCodes.additionalProcedureCode.duplication")),
+          Seq(("additionalProcedureCode", "declaration.procedureCodes.additionalProcedureCode.duplication")),
           userInput,
           cachedData.additionalProcedureCodes
         )
@@ -162,10 +162,10 @@ class ProcedureCodesController @Inject()(
               .map(nextPage)
           case ProcedureCodes(procedureCode, additionalCode) =>
             val procedureCodeError =
-              procedureCode.fold(Seq(("procedureCode", "supplementary.procedureCodes.procedureCode.error.empty")))(_ => Seq[(String, String)]())
+              procedureCode.fold(Seq(("procedureCode", "declaration.procedureCodes.procedureCode.error.empty")))(_ => Seq[(String, String)]())
 
             val additionalCodeError = additionalCode.fold(
-              Seq(("additionalProcedureCode", "supplementary.procedureCodes.additionalProcedureCode.mandatory.error"))
+              Seq(("additionalProcedureCode", "declaration.procedureCodes.additionalProcedureCode.mandatory.error"))
             )(_ => Seq[(String, String)]())
 
             handleErrorPage(mode, itemId, procedureCodeError ++ additionalCodeError, userInput, cachedData.additionalProcedureCodes)
@@ -177,7 +177,7 @@ class ProcedureCodesController @Inject()(
             handleErrorPage(
               mode,
               itemId,
-              Seq(("procedureCode", "supplementary.procedureCodes.procedureCode.error.empty")),
+              Seq(("procedureCode", "declaration.procedureCodes.procedureCode.error.empty")),
               userInput,
               cachedData.additionalProcedureCodes
             )
@@ -186,7 +186,7 @@ class ProcedureCodesController @Inject()(
             handleErrorPage(
               mode,
               itemId,
-              Seq(("", "supplementary.procedureCodes.additionalProcedureCode.maximumAmount.error")),
+              Seq(("", "declaration.procedureCodes.additionalProcedureCode.maximumAmount.error")),
               userInput,
               cachedData.additionalProcedureCodes
             )
@@ -195,7 +195,7 @@ class ProcedureCodesController @Inject()(
             handleErrorPage(
               mode,
               itemId,
-              Seq(("additionalProcedureCode", "supplementary.procedureCodes.additionalProcedureCode.duplication")),
+              Seq(("additionalProcedureCode", "declaration.procedureCodes.additionalProcedureCode.duplication")),
               userInput,
               cachedData.additionalProcedureCodes
             )
