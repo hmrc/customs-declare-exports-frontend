@@ -18,8 +18,7 @@ package views
 
 import java.time.{LocalDateTime, ZoneOffset}
 
-import base.ExportsTestData
-import base.ExportsTestData._
+import base.{ExportsTestData, Injector}
 import controllers.routes
 import forms.Choice.AllowedChoiceValues.ContinueDec
 import forms.declaration.ConsignmentReferences
@@ -31,18 +30,18 @@ import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
 import unit.tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.declaration.spec.{UnitViewSpec, ViewMatchers}
 import views.html.saved_declarations
 import views.tags.ViewTest
 
 @ViewTest
-class SavedDeclarationsViewSpec extends UnitViewSpec with CommonMessages with Stubs {
+class SavedDeclarationsViewSpec extends UnitViewSpec with Injector with ViewMatchers {
 
   val title: String = "saved.declarations.title"
   val ducr: String = "saved.declarations.ducr"
   val dateSaved: String = "saved.declarations.dateSaved"
 
-  private val savedDeclarationsPage = new saved_declarations(mainTemplate)
+  private val savedDeclarationsPage = instanceOf[saved_declarations]
   private val decWithoutDucr = ExportsTestData.aDeclaration(
     withStatus(DeclarationStatus.DRAFT),
     withUpdateTime(LocalDateTime.of(2019, 1, 1, 9, 45, 0).toInstant(ZoneOffset.UTC))
@@ -73,14 +72,12 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with CommonMessages with St
 
       view.title() must include(view.getElementsByTag("h1").text())
 
-      tableCell(view)(0, 0).text() mustBe messages(ducr)
-      tableCell(view)(0, 1).text() mustBe messages(dateSaved)
+      tableHead(view)(0).text() mustBe messages(ducr)
+      tableHead(view)(1).text() mustBe messages(dateSaved)
 
       numberOfTableRows(view) mustBe 0
 
-      view
-        .getElementById("pagination-none")
-        .text() mustBe s"Showing no ${messages("saved.declarations.pagination.plural")}"
+      view.getElementsByClass("ceds-pagination") mustNot be(empty)
     }
 
     "display declarations" in {
@@ -89,37 +86,10 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with CommonMessages with St
       numberOfTableRows(view) mustBe 1
 
       tableCell(view)(1, 0).text() mustBe messages("saved.declarations.noDucr")
-      tableCell(view)(1, 1).text() mustBe "1 Jan 2019 at 09:45"
+      tableCell(view)(1, 1).text() mustBe "1 January 2019 at 09:45"
       tableCell(view)(1, 2).text() mustBe messages("site.remove")
 
-      view.getElementById("pagination-one").text() mustBe "Showing 1 saved.declarations.pagination.singular"
-    }
-
-    "display pagination controls" in {
-      val decs = (1 to 8).map(decWithDucr(_))
-      val view = createView(declarations = decs, page = 2, pageSize = 10, total = 28)
-
-      numberOfTableRows(view) mustBe 8
-
-      tableCell(view)(1, 0).text() mustBe "DUCR-XXXX-1"
-      tableCell(view)(1, 2).text() mustBe messages("site.remove")
-      tableCell(view)(8, 2).text() mustBe messages("site.remove")
-      tableCell(view)(8, 0).text() mustBe "DUCR-XXXX-8"
-
-      view.getElementById("pagination-some").text() mustBe "Showing 11 - 18 of 28 saved.declarations.pagination.plural"
-
-      view.getElementById("pagination-page_back").attr("href") mustBe routes.SavedDeclarationsController
-        .displayDeclarations()
-        .url
-      view.getElementById("pagination-page_1").attr("href") mustBe routes.SavedDeclarationsController
-        .displayDeclarations()
-        .url
-      view.getElementById("pagination-page_current").text() mustBe "2"
-      view.getElementById("pagination-page_3").attr("href") mustBe
-        routes.SavedDeclarationsController.displayDeclarations(3).url
-      view.getElementById("pagination-page_next").attr("href") mustBe
-        routes.SavedDeclarationsController.displayDeclarations(3).url
-
+      view.getElementsByClass("ceds-pagination") mustNot be(empty)
     }
 
     "display 'Back' button that links to 'Choice' page with 'Continue saved declarations' selected" in {
@@ -131,12 +101,19 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with CommonMessages with St
 
   }
 
-  private def numberOfTableRows(view: Html) = view.getElementsByClass("table-row").size() - 1
+  private def numberOfTableRows(view: Html) = view.getElementsByClass("govuk-table__row").size() - 1
+
+  private def tableHead(view: Html)(column: Int): Element =
+    view
+      .select(".govuk-table__head")
+      .first()
+      .getElementsByClass("govuk-table__header")
+      .get(column)
 
   private def tableCell(view: Html)(row: Int, column: Int): Element =
     view
-      .select(".table-row")
+      .select(".govuk-table__row")
       .get(row)
-      .getElementsByClass("table-cell")
+      .getElementsByClass("govuk-table__cell")
       .get(column)
 }

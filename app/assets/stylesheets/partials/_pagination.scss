@@ -1,0 +1,48 @@
+
+.ceds-pagination {
+
+  &__summary {
+    @extend .govuk-grid-column-one-half;
+  }
+
+  &__controls {
+    @extend .govuk-grid-column-one-half;
+    @extend .align-right;
+  }
+
+  &__items {
+    display: inline;
+  }
+
+  &__items &__item {
+    display: inline;
+    margin: 0 5px;
+  }
+
+  @media (min-width: 641px) {
+    &__item--next {
+      margin-left: 10px;
+    }
+  }
+
+  &__item {
+    @extend .govuk-body;
+  }
+
+  &__item--prev, &__item--next {
+    margin-right: 10px;
+  }
+
+  &__item--dots {
+    @extend .govuk-\!-font-weight-bold;
+  }
+
+  &__item--active {
+    @extend .govuk-\!-font-weight-bold;
+  }
+
+  &__link {
+    @extend .govuk-link--no-visited-state
+  }
+
+}

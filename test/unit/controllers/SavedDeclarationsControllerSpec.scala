@@ -18,23 +18,30 @@ package unit.controllers
 
 import controllers.SavedDeclarationsController
 import models.requests.ExportsSessionKeys
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.saved_declarations
 
 class SavedDeclarationsControllerSpec extends ControllerSpec {
 
-  trait SetUp {
-    val savedDeclarationsPage = new saved_declarations(mainTemplate)
+  private val savedDeclarationsPage = mock[saved_declarations]
 
-    val controller = new SavedDeclarationsController(
-      mockAuthAction,
-      mockCustomsDeclareExportsConnector,
-      stubMessagesControllerComponents(),
-      savedDeclarationsPage,
-      config
-    )(ec)
+  private val controller = new SavedDeclarationsController(
+    mockAuthAction,
+    mockCustomsDeclareExportsConnector,
+    stubMessagesControllerComponents(),
+    savedDeclarationsPage,
+    config
+  )(ec)
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    reset(savedDeclarationsPage)
+    when(savedDeclarationsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     authorizedUser()
   }
 
@@ -42,7 +49,7 @@ class SavedDeclarationsControllerSpec extends ControllerSpec {
 
     "return 200 (OK)" when {
 
-      "display declarations method is invoked" in new SetUp {
+      "display declarations method is invoked" in {
 
         listOfDraftDeclarations()
 
@@ -53,7 +60,7 @@ class SavedDeclarationsControllerSpec extends ControllerSpec {
     }
 
     "return 303 (SEE_OTHER)" when {
-      "continue declaration found" in new SetUp {
+      "continue declaration found" in {
 
         getDeclaration("123")
 
@@ -63,7 +70,7 @@ class SavedDeclarationsControllerSpec extends ControllerSpec {
         session(result).get(ExportsSessionKeys.declarationId) must be(Some("123"))
       }
 
-      "continue declaration not found" in new SetUp {
+      "continue declaration not found" in {
 
         declarationNotFound
         val result = controller.continueDeclaration("123")(getRequest())

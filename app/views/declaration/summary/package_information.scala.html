@@ -18,13 +18,13 @@
 @import models.Mode
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.html.components.gds.changeLink
+@import views.html.components.gds.link
 @import views.html.components.gds.summary_list
 @import views.declaration.summary.TableCell
 
 @this(
         govukTable: GovukTable,
-        changeLink: changeLink,
+        changeLink: link,
         summaryList: summary_list
 )
 
@@ -33,7 +33,7 @@
 @change(information: PackageInformation) = {
   @changeLink(
         messages("site.change"),
-        messages("declaration.summary.items.item.packageInformation.change", information.typesOfPackagesText, information.shippingMarks, itemNo),
+        Some(messages("declaration.summary.items.item.packageInformation.change", information.typesOfPackagesText, information.shippingMarks, itemNo)),
         controllers.declaration.routes.PackageInformationController.displayPage(mode, itemId)
     )
 }
