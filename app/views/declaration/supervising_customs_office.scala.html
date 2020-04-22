@@ -14,50 +14,78 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes
-@import models.requests.JourneyRequest
-@import forms.declaration.SupervisingCustomsOffice
 @import controllers.navigation.Navigator
+@import forms.declaration.SupervisingCustomsOffice
 @import services.CustomsOffices
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds._
+@import models.requests.JourneyRequest
 @import services.view.AutoCompleteItem
 @import views.Title
+@import views.BackButton
+@import views.components.gds.Styles
+@import scala.collection.immutable
+@import play.twirl.api.HtmlFormat
 
-@this(main_template: views.html.main_template)
-
+@this(
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    govukDetails : GovukDetails,
+    govukFieldset: GovukFieldset,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    saveButtons: saveButtons,
+    tariffDetails: tariffDetails,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, form: Form[SupervisingCustomsOffice])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tariffBody = { @Html(messages("declaration.type.supervisingCustomsOfficeSummaryText", components.details_content_link()))}
+@pageHint = {
+    <span class="govuk-hint">
+        @messages("declaration.warehouse.supervisingCustomsOffice.hint")
+    </span>
+}
 
-    @main_template(
-        title = Title("declaration.warehouse.supervisingCustomsOffice.title")
-    ) {
-
-        @helper.form(routes.SupervisingCustomsOfficeController.submit(mode), 'autoComplete -> "off") {
-            @helper.CSRF.formField
-
-            @components.back_link(Navigator.backLink(SupervisingCustomsOffice, mode)(request))
-
-            @components.error_summary(form.errors)
-
-            @components.heading(
-                sectionHeader = messages("declaration.warehouse.supervisingCustomsOffice.sectionHeader"),
-                title = messages("declaration.warehouse.supervisingCustomsOffice.title"),
-                hint = messages("declaration.warehouse.supervisingCustomsOffice.hint")
-            )
-
-            @components.fields.field_autocomplete(
-                field = form("supervisingCustomsOffice"),
-                label = messages(""),
-                labelClass = Some("form-label-bold"),
-                hintText = None,
-                emptySelectValue = messages("supplementary.packageInformation.typesOfPackages.empty"),
-                items = AutoCompleteItem.fromSupervisingCustomsOffice(CustomsOffices.all))
-
-            @components.details(messages("site.details.summary_text_these")){
-                @tariffBody
-            }
-            @components.submit_button()
-            @components.buttons.save_and_return_later_button()
-        }
+@tariff = {
+    @components.details(messages("site.details.summary_text_these")) {
+        @Html(messages("declaration.type.supervisingCustomsOfficeSummaryText", components.details_content_link()))
     }
+}
+
+@autocomplete = {
+    @components.fields.field_accessible_autocomplete(
+        field = form("supervisingCustomsOffice"),
+        label = "",
+        labelClass = None,
+        hintText = None,
+        emptySelectValue = messages("supplementary.packageInformation.typesOfPackages.empty"),
+        items = AutoCompleteItem.fromSupervisingCustomsOffice(CustomsOffices.all)
+    )
+}
+
+@govukLayout(
+    title = Title("declaration.warehouse.supervisingCustomsOffice.title"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(SupervisingCustomsOffice, mode)))){
+
+    @formHelper(action = controllers.declaration.routes.SupervisingCustomsOfficeController.submit(mode), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("declaration.warehouse.supervisingCustomsOffice.sectionHeader"))
+
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.warehouse.supervisingCustomsOffice.title")),
+                classes = Styles.gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+                pageHint,
+                autocomplete,
+                tariff,
+                saveButtons()
+            ))
+        ))
+    }
+}
