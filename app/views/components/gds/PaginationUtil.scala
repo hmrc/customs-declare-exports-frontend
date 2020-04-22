@@ -22,7 +22,7 @@ import views.components.gds.PaginationUtil.PaginationItem._
 
 object PaginationUtil {
 
-  def paginationElements(currentPageIndex: Int, pagesTotal: Int, neighbourPagesAmount: Int = 1): List[PaginationItem] = {
+  def paginationElements(currentPageIndex: Int, pagesTotal: Int, neighbourPagesAmount: Int = 1): Seq[PaginationItem] = {
 
     def isCurrentPage(pageNumber: Int): Boolean = pageNumber == currentPageIndex
 
@@ -38,10 +38,12 @@ object PaginationUtil {
     val neighbourPagesNumbers = ((currentPageIndex - neighbourPagesAmount) to (currentPageIndex + neighbourPagesAmount))
       .filter(pageNumber => pageNumber > 0 && pageNumber <= pagesTotal)
 
-    val leadingElements: List[PaginationItem] = abs(neighbourPagesNumbers.head - 1) match {
-      case 0 => Nil
-      case 1 => List(PageNumber(1))
-      case _ => List(PageNumber(1), Dots)
+    val leadingElements: Seq[PaginationItem] = neighbourPagesNumbers.take(1).flatMap { firstNeighbourPageNumber =>
+      abs(firstNeighbourPageNumber - 1) match {
+        case 0 => Nil
+        case 1 => List(PageNumber(1))
+        case _ => List(PageNumber(1), Dots)
+      }
     }
 
     val neighbourElements: Seq[PaginationItem] = neighbourPagesNumbers.map { pageNumber =>
@@ -51,10 +53,12 @@ object PaginationUtil {
         PageNumber(pageNumber)
     }
 
-    val trailingElements: List[PaginationItem] = abs(neighbourPagesNumbers.last - pagesTotal) match {
-      case 0 => Nil
-      case 1 => List(PageNumber(pagesTotal))
-      case _ => List(Dots, PageNumber(pagesTotal))
+    val trailingElements: Seq[PaginationItem] = neighbourPagesNumbers.takeRight(1).flatMap { lastNeighbourPageNumber =>
+      abs(lastNeighbourPageNumber - pagesTotal) match {
+        case 0 => Nil
+        case 1 => List(PageNumber(pagesTotal))
+        case _ => List(Dots, PageNumber(pagesTotal))
+      }
     }
 
     leadingElements ++ neighbourElements ++ trailingElements
