@@ -101,7 +101,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
         val view = createView(form(request.declarationType))
 
-        view.getElementsByClass("govuk-fieldset__legend govuk-label").text() mustBe messages("supplementary.address.country")
+        view.getElementById("countryCode-label").text() mustBe messages("supplementary.address.country")
         view.getElementById("countryCode").attr("value") mustBe empty
       }
 
@@ -134,10 +134,13 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
         val view = createView(form(request.declarationType).bind(Map[String, String]()))
 
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink("details", "#details")
+//        checkErrorsSummary(view)
+//        view must haveFieldErrorLink("details", "#details")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#details")
+        view.getElementById("details").text() must include(messages("supplementary.namedEntityDetails.error"))
 
-        view.select("#error-message-details-input").text() mustBe messages("supplementary.namedEntityDetails.error")
+      //  view.select("#error-message-details-input").text() mustBe messages("supplementary.namedEntityDetails.error")
       }
 
       "display error when EORI is provided, but is incorrect" in {

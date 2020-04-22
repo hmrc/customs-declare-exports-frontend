@@ -79,7 +79,7 @@
 @autocomplete = {
     @components.fields.field_accessible_autocomplete(
         form("countryCode"),
-        "",
+        label = messages("supplementary.address.country"),
         None,
         None,
         messages("declaration.originationCountry.empty"),
@@ -87,6 +87,41 @@
     )
 }
 
+@fullName = {
+    @exportsInputText(
+        field = form("details_address_fullName"),
+        labelKey = "supplementary.address.fullName",
+        labelClasses = "govuk-label",
+        inputClasses = Some("govuk-input govuk-input--width-30")
+    )
+}
+
+@addressLine = {
+    @exportsInputText(
+        field = form("details_address_addressLine"),
+        labelKey = "supplementary.address.addressLine",
+        labelClasses = "govuk-label",
+        inputClasses = Some("govuk-input govuk-input--width-30")
+    )
+}
+
+@townCity = {
+    @exportsInputText(
+        field = form("details_address_townOrCity"),
+        labelKey = "supplementary.address.townOrCity",
+        labelClasses = "govuk-label",
+        inputClasses = Some("govuk-input govuk-input--width-20")
+    )
+}
+
+@postcode = {
+    @exportsInputText(
+        field = form("details_address_postCode"),
+        labelKey = "supplementary.address.postCode",
+        labelClasses = "govuk-label",
+        inputClasses = Some("govuk-input govuk-input--width-10")
+    )
+}
 @govukLayout(
     title = Title("supplementary.consignor.title", "supplementary.summary.parties.header"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ExporterDetails, mode)))){
@@ -114,38 +149,18 @@
 
     @exportsName
 
-        @exportsInputText(
-            field = form("details_address_fullName"),
-            labelKey = "supplementary.address.fullName",
-            labelClasses = "govuk-label",
-            inputClasses = Some("govuk-input govuk-input--width-30")
-
-        )
-        @exportsInputText(
-            field = form("details_address_addressLine"),
-            labelKey = "supplementary.address.addressLine",
-            labelClasses = "govuk-label",
-            inputClasses = Some("govuk-input govuk-input--width-30")
-        )
-        @exportsInputText(
-            field = form("details_address_townOrCity"),
-            labelKey = "supplementary.address.townOrCity",
-            labelClasses = "govuk-label",
-            inputClasses = Some("govuk-input govuk-input--width-20")
-        )
-        @exportsInputText(
-            field = form("details_address_postCode"),
-            labelKey = "supplementary.address.postCode",
-            labelClasses = "govuk-label",
-            inputClasses = Some("govuk-input govuk-input--width-10")
-        )
 
         @govukFieldset(Fieldset(
+attributes = Map("id" -> "details"),
             legend = Some(Legend(
-            content = Text(messages("supplementary.address.country")),
+            content = Text(messages("")),
             classes = "govuk-label"
             )),
             html = HtmlFormat.fill(immutable.Seq(
+            fullName,
+            addressLine,
+            townCity,
+            postcode,
             autocomplete,
             tariff,
             saveButtons()
