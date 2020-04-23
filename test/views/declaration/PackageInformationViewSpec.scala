@@ -33,8 +33,8 @@ import views.tags.ViewTest
 @ViewTest
 class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  val page = new package_information(mainTemplate)
-  val packageInformation = PackageInformation(Some("typesOfPackages"), Some(10), Some("packs"))
+  private val page = instanceOf[package_information]
+  private val packageInformation = PackageInformation(Some("typesOfPackages"), Some(10), Some("packs"))
   private val form: Form[PackageInformation] = PackageInformation.form(STANDARD)
 
   private def createView(
@@ -46,15 +46,15 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
 
   "have proper messages for labels" in {
     val messages = instanceOf[MessagesApi].preferred(journeyRequest())
-    messages must haveTranslationFor("supplementary.packageInformation.title")
+    messages must haveTranslationFor("declaration.packageInformation.title")
     messages must haveTranslationFor("supplementary.items")
-    messages must haveTranslationFor("supplementary.packageInformation.typesOfPackages")
-    messages must haveTranslationFor("supplementary.packageInformation.numberOfPackages")
-    messages must haveTranslationFor("supplementary.packageInformation.shippingMarks")
-    messages must haveTranslationFor("supplementary.packageInformation.shippingMarks.hint")
-    messages must haveTranslationFor("supplementary.packageInformation.table.heading")
-    messages must haveTranslationFor("supplementary.packageInformation.numberOfPackages")
-    messages must haveTranslationFor("supplementary.packageInformation.table.multiple.heading")
+    messages must haveTranslationFor("declaration.packageInformation.typesOfPackages")
+    messages must haveTranslationFor("declaration.packageInformation.numberOfPackages")
+    messages must haveTranslationFor("declaration.packageInformation.shippingMarks")
+    messages must haveTranslationFor("declaration.packageInformation.shippingMarks.hint")
+    messages must haveTranslationFor("declaration.packageInformation.table.heading")
+    messages must haveTranslationFor("declaration.packageInformation.numberOfPackages")
+    messages must haveTranslationFor("declaration.packageInformation.table.multiple.heading")
   }
 
   "Package Information View back link" should {
@@ -82,7 +82,7 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
     val view = createView()
 
     "display page title" in {
-      view.getElementById("title").text() mustBe "supplementary.packageInformation.title"
+      view.getElementById("title").text() mustBe "declaration.packageInformation.title"
     }
 
     "display section header" in {
@@ -90,23 +90,24 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
     }
 
     "display empty input with label for Types of Packages" in {
-      view.getElementById("typesOfPackages-label").text() mustBe "supplementary.packageInformation.typesOfPackages"
+      view.getElementById("typesOfPackages-label").text() mustBe "declaration.packageInformation.typesOfPackages"
       view.getElementById("typesOfPackages").attr("value") mustBe empty
     }
 
     "display empty input with label for Number of Packages" in {
-      view.getElementById("numberOfPackages-label").text() mustBe "supplementary.packageInformation.numberOfPackages"
+      view.getElementsByAttributeValue("for", "numberOfPackages").first().text() mustBe "declaration.packageInformation.numberOfPackages"
       view.getElementById("numberOfPackages").attr("value") mustBe empty
     }
 
     "display empty input with label for Shipping Marks" in {
-      view.getElementById("shippingMarks-label").text() mustBe "supplementary.packageInformation.shippingMarks"
-      view.getElementById("shippingMarks-hint").text() mustBe "supplementary.packageInformation.shippingMarks.hint"
+      view.getElementsByAttributeValue("for", "shippingMarks").first().text() mustBe "declaration.packageInformation.shippingMarks"
+      view.getElementById("shippingMarks-hint").text() mustBe "declaration.packageInformation.shippingMarks.hint"
       view.getElementById("shippingMarks").attr("value") mustBe empty
     }
 
     "display both 'Add' and 'Save and continue' button on page" in {
-      view.getElementById("add").text() mustBe "site.add supplementary.packageInformation.add.hint"
+      view.getElementById("add") must containMessage("site.add")
+      view.getElementById("add") must containMessage("declaration.packageInformation.add.hint")
       view.getElementById("submit").text() mustBe "site.save_and_continue"
     }
 
@@ -198,17 +199,17 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
       val view = createView(packages = Seq(PackageInformation(Some("PA"), Some(100), Some("Shipping Mark"))))
 
       // check table header
-      view.select("table>caption").text() mustBe "supplementary.packageInformation.table.heading"
-      view.select("table>thead>tr>th:nth-child(1)").text() mustBe "supplementary.packageInformation.typesOfPackages"
-      view.select("table>thead>tr>th:nth-child(2)").text() mustBe "supplementary.packageInformation.numberOfPackages"
-      view.select("table>thead>tr>th:nth-child(3)").text() mustBe "supplementary.packageInformation.shippingMarks"
+      view.select("table>caption").text() mustBe "declaration.packageInformation.table.heading"
+      view.select("table>thead>tr>th:nth-child(1)").text() mustBe "declaration.packageInformation.typesOfPackages"
+      view.select("table>thead>tr>th:nth-child(2)").text() mustBe "declaration.packageInformation.numberOfPackages"
+      view.select("table>thead>tr>th:nth-child(3)").text() mustBe "declaration.packageInformation.shippingMarks"
       // remove button column
       view.select("form>table>thead>tr>td").text() must be("")
 
       // check row
-      view.select("table>tbody>tr>th:nth-child(1)").text() mustBe "PA"
-      view.select("table>tbody>tr>td:nth-child(2)").text() mustBe "100"
-      view.select("table>tbody>tr>td:nth-child(3)").text() mustBe "Shipping Mark"
+      view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() mustBe "PA"
+      view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(2)").text() mustBe "100"
+      view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)").text() mustBe "Shipping Mark"
     }
 
     "display two rows with data in table" in {
@@ -219,21 +220,21 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
       )
 
       // check table header
-      view.select("table>caption").text() mustBe "supplementary.packageInformation.table.multiple.heading"
-      view.select("table>thead>tr>th:nth-child(1)").text() mustBe "supplementary.packageInformation.typesOfPackages"
-      view.select("table>thead>tr>th:nth-child(2)").text() mustBe "supplementary.packageInformation.numberOfPackages"
-      view.select("table>thead>tr>th:nth-child(3)").text() mustBe "supplementary.packageInformation.shippingMarks"
+      view.select("table>caption").text() mustBe "declaration.packageInformation.table.multiple.heading"
+      view.select("table>thead>tr>th:nth-child(1)").text() mustBe "declaration.packageInformation.typesOfPackages"
+      view.select("table>thead>tr>th:nth-child(2)").text() mustBe "declaration.packageInformation.numberOfPackages"
+      view.select("table>thead>tr>th:nth-child(3)").text() mustBe "declaration.packageInformation.shippingMarks"
       // remove button column
       view.select("form>table>thead>tr>td").text() must be("")
 
       // check rows
-      view.select("table>tbody>tr>th:nth-child(1)").text() must include("PA")
-      view.select("table>tbody>tr>td:nth-child(2)").text() must include("100")
-      view.select("table>tbody>tr>td:nth-child(3)").text() must include("Shipping Mark")
+      view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() mustBe "PA"
+      view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(2)").text() mustBe "100"
+      view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)").text() mustBe "Shipping Mark"
 
-      view.select("table>tbody>tr:nth-child(2)>th:nth-child(1)").text() must include("PB")
-      view.select("table>tbody>tr:nth-child(2)>td:nth-child(2)").text() must include("101")
-      view.select("table>tbody>tr:nth-child(2)>td:nth-child(3)").text() must include("Shipping Mark")
+      view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(1)").text() mustBe "PB"
+      view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(2)").text() mustBe "101"
+      view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(3)").text() mustBe "Shipping Mark"
     }
   }
 }
