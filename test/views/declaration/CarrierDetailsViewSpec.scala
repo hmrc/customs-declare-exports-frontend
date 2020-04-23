@@ -46,10 +46,10 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
     "have correct messages" in {
 
       val messages = instanceOf[MessagesApi].preferred(request)
-      messages must haveTranslationFor("supplementary.carrier.title")
-      messages must haveTranslationFor("supplementary.carrier.title.hint")
-      messages must haveTranslationFor("supplementary.carrier.eori.info")
-      messages must haveTranslationFor("supplementary.carrier.address.info")
+      messages must haveTranslationFor("declaration.carrier.title")
+      messages must haveTranslationFor("declaration.carrier.title.hint")
+      messages must haveTranslationFor("declaration.carrier.eori.info")
+      messages must haveTranslationFor("declaration.carrier.address.info")
     }
   }
 
@@ -59,12 +59,12 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
       val view = createView()
       "display page title" in {
 
-        view.getElementById("title").text() mustBe messages("supplementary.carrier.title")
+        view.getElementById("title").text() mustBe messages("declaration.carrier.title")
       }
 
       "display empty input with label for EORI" in {
 
-        view.getElementsByAttributeValue("for", "details_eori").text() mustBe messages("supplementary.carrier.eori.info")
+        view.getElementsByAttributeValue("for", "details_eori").text() mustBe messages("declaration.carrier.eori.info")
         view.getElementById("details_eori").attr("value") mustBe empty
       }
 

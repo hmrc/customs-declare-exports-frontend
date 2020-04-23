@@ -331,12 +331,12 @@ supplementary.consignee.eori.info = Consignee’s EORI number
 supplementary.consignee.address.info = Consignee’s name and business address
 supplementary.consignee-details.help-item = Go to data element 3/9 Consignee Name and Address in the {0}
 
-supplementary.carrier.title = Who is the carrier?
-supplementary.carrier.title.hint = Enter the carrier’s EORI number or name and business address.
-supplementary.carrier.eori.info = Carrier’s EORI number
-supplementary.carrier.address.info = Carrier’s name and business address
-supplementary.carrier-details.help-item1 = Carrier’s EORI number, go to data element 3/32 Carrier Identification Number
-supplementary.carrier-details.help-item2 = Carrier’s name and business address, go to data element 3/31 Carrier Name and Address
+declaration.carrier.title = Who is the carrier?
+declaration.carrier.title.hint = Enter the carrier’s EORI number or name and business address.
+declaration.carrier.eori.info = Carrier’s EORI number
+declaration.carrier.address.info = Carrier’s name and business address
+declaration.carrier-details.help-item1 = Carrier’s EORI number, go to data element 3/32 Carrier Identification Number
+declaration.carrier-details.help-item2 = Carrier’s name and business address, go to data element 3/31 Carrier Name and Address
 
 
 supplementary.representative.title = Representation information
