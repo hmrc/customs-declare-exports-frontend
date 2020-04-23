@@ -78,14 +78,14 @@
 }
 
 @govukLayout(
-    title = Title("declaration.declarationHolder.title", "supplementary.summary.parties.header"),
+    title = Title("declaration.declarationHolder.title", "declaration.summary.parties.header"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarationHolder, mode)))
 ) {
 
     @formHelper(action = DeclarationHolderController.submitHoldersOfAuthorisation(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("supplementary.summary.parties.header"))
+        @sectionHeader(messages("declaration.summary.parties.header"))
 
         @pageTitle(messages("declaration.declarationHolder.title"))
 

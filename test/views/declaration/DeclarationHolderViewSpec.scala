@@ -71,7 +71,7 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
 
       "display section header" in {
 
-        document.getElementById("section-header").text() must include(messages("supplementary.summary.parties.header"))
+        document.getElementById("section-header").text() must include(messages("declaration.summary.parties.header"))
       }
 
       "display empty input with label for Authorisation Code" in {

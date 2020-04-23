@@ -84,7 +84,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
     "have proper messages for labels" in {
       val messages = instanceOf[MessagesApi].preferred(journeyRequest())
       messages must haveTranslationFor("declaration.consignee.title")
-      messages must haveTranslationFor("supplementary.summary.parties.header")
+      messages must haveTranslationFor("declaration.summary.parties.header")
       messages must haveTranslationFor("supplementary.address.fullName")
       messages must haveTranslationFor("supplementary.address.fullName.empty")
       messages must haveTranslationFor("supplementary.address.fullName.error")
@@ -115,7 +115,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
         val view = createView()
 
-        view.getElementById("section-header").text() must include(messages("supplementary.summary.parties.header"))
+        view.getElementById("section-header").text() must include(messages("declaration.summary.parties.header"))
       }
 
       "display empty input with label for Full name" in {

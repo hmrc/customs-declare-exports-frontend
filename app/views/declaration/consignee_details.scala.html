@@ -49,13 +49,13 @@
 @tariffBody = { @Html(messages("declaration.consignee-details.help-item", components.details_content_link())) }
 
 @govukLayout(
-    title = Title("declaration.consignee.title", "supplementary.summary.parties.header"),
+    title = Title("declaration.consignee.title", "declaration.summary.parties.header"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ConsigneeDetails, mode)))) {
 
     @formHelper(action = ConsigneeDetailsController.saveAddress(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("supplementary.summary.parties.header"))
+        @sectionHeader(messages("declaration.summary.parties.header"))
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(

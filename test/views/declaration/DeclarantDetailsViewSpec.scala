@@ -48,7 +48,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
       val messages = instanceOf[MessagesApi].preferred(request)
 
       messages must haveTranslationFor("declaration.declarant.title")
-      messages must haveTranslationFor("supplementary.summary.parties.header")
+      messages must haveTranslationFor("declaration.summary.parties.header")
       messages must haveTranslationFor("declaration.declarant.eori.error.format")
       messages must haveTranslationFor("declaration.declarant.eori.empty")
     }
@@ -64,9 +64,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
 
       "display section header" in {
 
-        createView(form(request.declarationType)).getElementById("section-header").text() must include(
-          messages("supplementary.summary.parties.header")
-        )
+        createView(form(request.declarationType)).getElementById("section-header").text() must include(messages("declaration.summary.parties.header"))
       }
 
       "display radio button with Yes option" in {

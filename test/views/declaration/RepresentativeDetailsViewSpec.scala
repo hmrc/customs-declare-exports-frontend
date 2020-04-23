@@ -43,7 +43,7 @@ class RepresentativeDetailsViewSpec extends UnitViewSpec with ExportsTestData wi
     "have proper messages for labels" in {
       val messages = instanceOf[MessagesApi].preferred(journeyRequest())
       messages must haveTranslationFor("supplementary.representative.title")
-      messages must haveTranslationFor("supplementary.summary.parties.header")
+      messages must haveTranslationFor("declaration.summary.parties.header")
       messages must haveTranslationFor("supplementary.representative.legend")
       messages must haveTranslationFor("supplementary.representative.representationType.direct")
       messages must haveTranslationFor("supplementary.representative.representationType.direct.hint")
