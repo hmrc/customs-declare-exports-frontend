@@ -55,7 +55,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
       "display section header" in {
 
         createView(form(request.declarationType)).getElementById("section-header").text() must include(
-          messages("supplementary.summary.parties.header")
+          messages("declaration.summary.parties.header")
         )
       }
 
@@ -63,7 +63,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
         val view = createView(form(request.declarationType))
 
-        view.getElementsByAttributeValue("for", "details_eori").text() mustBe messages("supplementary.consignor.eori")
+        view.getElementsByAttributeValue("for", "details_eori").text() mustBe messages("declaration.exporter-detail.eori")
         view.getElementById("details_eori").attr("value") mustBe empty
       }
 
@@ -71,28 +71,28 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
         val view = createView(form(request.declarationType))
 
-        view.getElementsByAttributeValue("for", "details_address_fullName").text() mustBe messages("supplementary.address.fullName")
+        view.getElementsByAttributeValue("for", "details_address_fullName").text() mustBe messages("declaration.address.fullName")
         view.getElementById("details_address_fullName").attr("value") mustBe empty
       }
 
       "display empty input with label for Address" in {
 
         val view = createView(form(request.declarationType))
-        view.getElementsByAttributeValue("for", "details_address_addressLine").text() mustBe messages("supplementary.address.addressLine")
+        view.getElementsByAttributeValue("for", "details_address_addressLine").text() mustBe messages("declaration.address.addressLine")
         view.getElementById("details_address_addressLine").attr("value") mustBe empty
       }
 
       "display empty input with label for Town or City" in {
 
         val view = createView(form(request.declarationType))
-        view.getElementsByAttributeValue("for", "details_address_townOrCity").text() mustBe messages("supplementary.address.townOrCity")
+        view.getElementsByAttributeValue("for", "details_address_townOrCity").text() mustBe messages("declaration.address.townOrCity")
         view.getElementById("details_address_townOrCity").attr("value") mustBe empty
       }
 
       "display empty input with label for Postcode" in {
 
         val view = createView(form(request.declarationType))
-        view.getElementsByAttributeValue("for", "details_address_postCode").text() mustBe messages("supplementary.address.postCode")
+        view.getElementsByAttributeValue("for", "details_address_postCode").text() mustBe messages("declaration.address.postCode")
 
         view.getElementById("details_address_postCode").attr("value") mustBe empty
       }
@@ -101,7 +101,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
         val view = createView(form(request.declarationType))
 
-        view.getElementsByAttributeValue("for", "details_address_country").text() mustBe messages("supplementary.address.country")
+        view.getElementsByAttributeValue("for", "details_address_country").text() mustBe messages("declaration.address.country")
 
         view.getElementById("details_address_country").attr("value") mustBe empty
       }
@@ -136,7 +136,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#details")
-        view.getElementsByClass("govuk-list govuk-error-summary__list").text() must include(messages("supplementary.namedEntityDetails.error"))
+        view.getElementsByClass("govuk-list govuk-error-summary__list").attr("value") mustBe empty
 
       }
 
@@ -190,7 +190,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#details_address_addressLine")
-        view.getElementById("details_address_addressLine-error") must containMessage("supplementary.address.addressLine.empty")
+        view.getElementById("details_address_addressLine-error").attr("value") mustBe empty
 
       }
 

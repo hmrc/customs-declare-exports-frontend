@@ -314,10 +314,14 @@ supplementary.consignmentReferences.lrn.error.specialCharacter = Enter an LRN in
 supplementary.consignor.title = Who is the exporter?
 supplementary.consignor.title.hint = Enter the exporter’s EORI number or name and business address.
 supplementary.consignor.eori = Exporter’s EORI number
+declaration.exporter-detail.eori = Exporter’s EORI number
+declaration.exporter-detail.title = Who is the exporter?
 supplementary.consignor.address.info = Exporter’s name and business address
-supplementary.exporter-details.help-item1 = Exporter’s EORI number, go to data element 3/2 Exporter Identification Number
-supplementary.exporter-details.help-item2 = Exporter’s name and business address, go to data element 3/1 Exporter
-supplementary.exporter-details-name-address = Exporter’s name and address
+declaration.exporter-details.help-item1 = Exporter’s EORI number, go to data element 3/2 Exporter Identification Number
+declaration.exporter-details.help-item2 = Exporter’s name and business address, go to data element 3/1 Exporter
+declaration.exporter-detail.title = Who is the exporter?
+declaration.exporter-detail.title.hint = Enter the exporter’s EORI number or name and business address.
+
 
 declaration.declarant.title = Is this your EORI number?
 declaration.declarant.titleQuestion = Is your EORI number {0}?
@@ -364,6 +368,22 @@ supplementary.eori.hint = The number starts with a country code, for example FR 
 supplementary.eori.error.format = EORI number must start with 2 letters followed by up to 15 characters or digits
 supplementary.eori.empty = Enter a valid EORI
 
+declaration.address.fullName = Full name
+declaration.address.fullName.error = Enter a name, up to 35 characters
+declaration.address.fullName.empty = Enter a name, up to 35 characters
+declaration.address.addressLine = Address line 1
+declaration.address.addressLine.error = Enter an address line 1, up to 35 characters
+declaration.address.addressLine.empty = Enter an address line 1, up to 35 characters
+declaration.address.townOrCity = Town or city
+declaration.address.townOrCity.error = Enter a town or city, up to 35 characters
+declaration.address.townOrCity.empty = Enter a town or city, up to 35 characters
+declaration.address.postCode = Postcode
+declaration.address.postCode.error = Enter a postcode in the correct format or type 'unknown' if there is no postcode
+declaration.address.postCode.empty = Enter a postcode in the correct format or type 'unknown' if there is no postcode
+declaration.address.country = Country
+declaration.address.country.error = Enter a valid country
+declaration.address.country.empty = Enter a valid country
+
 supplementary.address.fullName = Full name
 supplementary.address.fullName.error = Enter a name, up to 35 characters
 supplementary.address.fullName.empty = Enter a name, up to 35 characters
@@ -381,7 +401,7 @@ supplementary.address.country.error = Enter a valid country
 supplementary.address.country.empty = Enter a valid country
 
 supplementary.namedEntityDetails.error = Enter an EORI or full address details
-
+declaration.namedEntityDetails.error = Enter an EORI or full address details
 declaration.additionalActors.title = Is anyone else involved in exporting these goods?
 declaration.additionalActors.title.hint = Include any additional parties not yet provided
 declaration.additionalActors.eori = EORI number
@@ -929,6 +949,7 @@ declaration.commodityMeasure.units.hint = Enter weight in kilograms
 
 
 declaration.summary.locations.header = Locations
+declaration.summary.parties.header = Parties
 supplementary.summary.parties.header = Parties
 supplementary.summary.yourReferences.header = Your references
 

@@ -53,8 +53,8 @@
 
 @tariffBody = {
     @components.tariff_body_partial(
-                    messages("supplementary.exporter-details.help-item1"),
-                    messages("supplementary.exporter-details.help-item2")
+                    messages("declaration.exporter-details.help-item1"),
+                    messages("declaration.exporter-details.help-item2")
                 )(tariffBodyDesc)
 }
 
@@ -62,13 +62,13 @@
 
 @pageHint = {
     <span class="govuk-hint">
-        @messages("supplementary.consignor.title.hint")
+        @messages("declaration.exporter-detail.title.hint")
     </span>
 }
 
 @exportsName = {
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-        @messages("supplementary.exporter-details-name-address")
+        @messages("declaration.exporter-detail.title.hint")
     </legend>
 }
 
@@ -79,10 +79,10 @@
 
 
 @groupAddress = {
-    @group_address(form, "supplementary.address","details.address")
+    @group_address(form,"declaration.address","details.address")
 }
 @govukLayout(
-    title = Title("supplementary.consignor.title", "supplementary.summary.parties.header"),
+    title = Title("declaration.exporter-detail.title", "declaration.summary.parties.header"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ExporterDetails, mode)))){
 
     @formHelper(action = ExporterDetailsController.saveAddress(mode), 'autoComplete -> "off") {
@@ -91,9 +91,9 @@
 
     @errorSummary(form.errors)
 
-    @sectionHeader(messages("supplementary.summary.parties.header"))
+    @sectionHeader(messages("declaration.summary.parties.header"))
 
-    @pageTitle(messages("supplementary.consignor.title"))
+    @pageTitle(messages("declaration.exporter-detail.title"))
 
     @pageHint
 
@@ -101,7 +101,7 @@
 
     @exportsInputText(
     field = form("details.eori"),
-    labelKey = "supplementary.consignor.eori"
+    labelKey = "declaration.exporter-detail.eori"
     )
 
     @or
