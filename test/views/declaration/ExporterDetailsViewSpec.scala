@@ -54,9 +54,7 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
 
       "display section header" in {
 
-        createView(form(request.declarationType)).getElementById("section-header").text() must include(
-          messages("declaration.summary.parties.header")
-        )
+        createView(form(request.declarationType)).getElementById("section-header").text() must include(messages("declaration.summary.parties.header"))
       }
 
       "display empty input with label for EORI" in {
