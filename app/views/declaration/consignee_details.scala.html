@@ -46,7 +46,7 @@
 
 @(mode: Mode, form: Form[ConsigneeDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tariffBody = { @Html(messages("supplementary.consignee-details.help-item", components.details_content_link())) }
+@tariffBody = { @Html(messages("declaration.consignee-details.help-item", components.details_content_link())) }
 
 @govukLayout(
     title = Title("declaration.consignee.title", "supplementary.summary.parties.header"),

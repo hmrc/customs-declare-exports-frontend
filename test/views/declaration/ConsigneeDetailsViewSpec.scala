@@ -26,6 +26,7 @@ import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
+import play.api.i18n.MessagesApi
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.consignee_details
@@ -79,6 +80,30 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
   }
 
   "Consignee Details View on empty page" should {
+
+    "have proper messages for labels" in {
+      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
+      messages must haveTranslationFor("declaration.consignee.title")
+      messages must haveTranslationFor("supplementary.summary.parties.header")
+      messages must haveTranslationFor("supplementary.address.fullName")
+      messages must haveTranslationFor("supplementary.address.fullName.empty")
+      messages must haveTranslationFor("supplementary.address.fullName.error")
+      messages must haveTranslationFor("supplementary.address.addressLine")
+      messages must haveTranslationFor("supplementary.address.addressLine.empty")
+      messages must haveTranslationFor("supplementary.address.addressLine.error")
+      messages must haveTranslationFor("supplementary.address.townOrCity")
+      messages must haveTranslationFor("supplementary.address.townOrCity.empty")
+      messages must haveTranslationFor("supplementary.address.townOrCity.error")
+      messages must haveTranslationFor("supplementary.address.postCode")
+      messages must haveTranslationFor("supplementary.address.postCode.empty")
+      messages must haveTranslationFor("supplementary.address.postCode.error")
+      messages must haveTranslationFor("supplementary.address.country")
+      messages must haveTranslationFor("supplementary.address.country.empty")
+      messages must haveTranslationFor("supplementary.address.country.error")
+      messages must haveTranslationFor("site.save_and_continue")
+      messages must haveTranslationFor("declaration.type.consignmentTariffText")
+      messages must haveTranslationFor("declaration.consignee-details.help-item")
+    }
 
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
