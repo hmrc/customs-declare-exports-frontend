@@ -21,49 +21,95 @@
 @import views.Title
 @import models.requests.JourneyRequest
 @import controllers.navigation.Navigator
+@import services.Countries
+@import scala.collection.immutable
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds._
+@import services.view.AutoCompleteItem
+@import views.BackButton
+@import play.twirl.api.HtmlFormat
+@import views.components.gds.Styles
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukRadios: GovukRadios,
+        govukDetails : GovukDetails,
+        govukFieldset: GovukFieldset,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        saveButtons: saveButtons,
+        group_address: group_address,
+        exportsInputText: exportsInputText,
+        pageTitle: pageTitle,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, form: Form[CarrierDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
+@tariffBody = {
+    @components.tariff_body_partial(
+    messages("declaration.carrier-details.help-item1"),
+    messages("declaration.carrier-details.help-item2")
+    )(tariffBodyDesc)
+}
+@tariff = { @components.details(messages("site.details.summary_text_these")){ @tariffBody } }
 
-@tariffBody = { @components.tariff_body_partial(messages("supplementary.carrier-details.help-item1"), messages("supplementary.carrier-details.help-item2"))(tariffBodyDesc)}
+@pageHint = {
+    <span class="govuk-hint">
+        @messages("declaration.carrier.title.hint")
+    </span>
+}
 
-@main_template(
-    title = Title("supplementary.carrier.title", "supplementary.summary.parties.header")
-) {
-    @components.back_link(Navigator.backLink(CarrierDetails, mode), mode)
+@exportsName = {
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+        @messages("declaration.carrier.address.info")
+    </legend>
+}
 
-    @components.error_summary(form.errors)
+@or = {
+<p class="govuk-body">Or</p>
+}
 
-    @components.heading(
-        sectionHeader = messages("supplementary.summary.parties.header"),
-        title = messages("supplementary.carrier.title")
-    )
+@groupAddress = {
+    @group_address(form, "supplementary.address","details.address")
+}
 
-    <p>@messages("supplementary.carrier.title.hint")</p>
+@govukLayout(
+    title = Title("declaration.carrier.title", "supplementary.summary.parties.header"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(CarrierDetails, mode)))) {
 
-    @helper.form(CarrierDetailsController.saveAddress(mode), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+        @formHelper(action = CarrierDetailsController.saveAddress(mode), 'autoComplete -> "off") {
 
-        @components.form_fields_wrapper(field = form("details")) {
+            @errorSummary(form.errors)
 
-            @components.fields.field_text(
+            @sectionHeader(messages("supplementary.summary.parties.header"))
+
+            @pageTitle(messages("declaration.carrier.title"))
+
+            @pageHint
+
+            @exportsInputText(
                 field = form("details.eori"),
-                label = Some(messages("supplementary.carrier.eori.info")),
-                labelClass = Some("heading-24")
+                labelKey = "declaration.carrier.eori.info"
             )
 
-            <p class="mt-5">Or</p>
+        @or
 
-            @components.address(form, "details.address", Some(messages("supplementary.carrier.address.info")))
-        }
+        @exportsName
 
-        @components.details(messages("site.details.summary_text_these")){
-          @tariffBody
-        }
-        @components.submit_button()
-        @components.buttons.save_and_return_later_button()
+        @govukFieldset(Fieldset(
+            attributes = Map("id" -> "details"),
+            legend = Some(Legend(
+                content = Text(messages("")),
+                classes = "govuk-label"
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+                groupAddress,
+                tariff,
+                saveButtons()
+            ))
+        ))
     }
 }
