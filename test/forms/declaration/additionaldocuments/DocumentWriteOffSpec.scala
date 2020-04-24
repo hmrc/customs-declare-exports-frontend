@@ -30,26 +30,18 @@ class DocumentWriteOffSpec extends WordSpec with MustMatchers {
 
       "provided with Measurement Unit" which {
 
-        "is longer than 5 characters" in {
+        "is not 3 characters" in {
 
           val input = JsObject(Map(measurementUnitKey -> JsString("AB3456")))
-          val expectedErrors = Seq(FormError(measurementUnitKey, "supplementary.addDocument.measurementUnit.error.length"))
+          val expectedErrors = Seq(FormError(measurementUnitKey, "declaration.addDocument.measurementUnit.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
 
-        "is shorter than 3 characters" in {
-
-          val input = JsObject(Map(measurementUnitKey -> JsString("AB")))
-          val expectedErrors = Seq(FormError(measurementUnitKey, "supplementary.addDocument.measurementUnit.error.length"))
-
-          testFailedValidationErrors(input, expectedErrors)
-        }
-
-        "contains special characters different than hash" in {
+        "contains special characters" in {
 
           val input = JsObject(Map(measurementUnitKey -> JsString("AB!@")))
-          val expectedErrors = Seq(FormError(measurementUnitKey, "supplementary.addDocument.measurementUnit.error.specialCharacters"))
+          val expectedErrors = Seq(FormError(measurementUnitKey, "declaration.addDocument.measurementUnit.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -60,7 +52,7 @@ class DocumentWriteOffSpec extends WordSpec with MustMatchers {
         "has more than 16 digits in total" in {
 
           val input = JsObject(Map(documentQuantityKey -> JsString("1234567890.1234567")))
-          val expectedErrors = Seq(FormError(documentQuantityKey, "supplementary.addDocument.documentQuantity.error.precision"))
+          val expectedErrors = Seq(FormError(documentQuantityKey, "declaration.addDocument.documentQuantity.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -68,7 +60,7 @@ class DocumentWriteOffSpec extends WordSpec with MustMatchers {
         "has more than 6 decimal places" in {
 
           val input = JsObject(Map(documentQuantityKey -> JsString("0.1234567")))
-          val expectedErrors = Seq(FormError(documentQuantityKey, "supplementary.addDocument.documentQuantity.error.scale"))
+          val expectedErrors = Seq(FormError(documentQuantityKey, "declaration.addDocument.documentQuantity.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -76,26 +68,10 @@ class DocumentWriteOffSpec extends WordSpec with MustMatchers {
         "is smaller than zero" in {
 
           val input = JsObject(Map(documentQuantityKey -> JsString("-1.23")))
-          val expectedErrors = Seq(FormError(documentQuantityKey, "supplementary.addDocument.documentQuantity.error"))
+          val expectedErrors = Seq(FormError(documentQuantityKey, "declaration.addDocument.documentQuantity.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
-      }
-
-      "provided with correct Measurement Unit but no Document Quantity" in {
-
-        val input = JsObject(Map(measurementUnitKey -> JsString("AB34")))
-        val expectedErrors = Seq(FormError("", "supplementary.addDocument.error.measurementUnitAndQuantity"))
-
-        testFailedValidationErrors(input, expectedErrors)
-      }
-
-      "provided with correct Document Quantity but no Measurement Unit" in {
-
-        val input = JsObject(Map(documentQuantityKey -> JsString("123.45")))
-        val expectedErrors = Seq(FormError("", "supplementary.addDocument.error.measurementUnitAndQuantity"))
-
-        testFailedValidationErrors(input, expectedErrors)
       }
 
       def testFailedValidationErrors(input: JsValue, expectedErrors: Seq[FormError]): Unit = {
@@ -105,24 +81,14 @@ class DocumentWriteOffSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "Document Write Off mapping" should {
-
-    "allow hash character" in {
-
-      val input = JsObject(Map(measurementUnitKey -> JsString("AB#12"), documentQuantityKey -> JsString("0.123")))
-      val form = DocumentWriteOff.form().bind(input)
-
-      form.errors mustBe empty
-    }
-  }
 }
 
 object DocumentWriteOffSpec {
 
   val correctDocumentWriteOff =
-    DocumentWriteOff(measurementUnit = Some("AB12"), documentQuantity = Some(BigDecimal("1234567890.123456")))
+    DocumentWriteOff(measurementUnit = Some("ABC"), documentQuantity = Some(BigDecimal("1234567890.123456")))
 
-  val correctDocumentWriteOffJSON = JsObject(Map(measurementUnitKey -> JsString("AB12"), documentQuantityKey -> JsString("1234567890.123456")))
+  val correctDocumentWriteOffJSON = JsObject(Map(measurementUnitKey -> JsString("ABC"), documentQuantityKey -> JsString("1234567890.123456")))
 
   val incorrectDocumentWriteOff =
     DocumentWriteOff(measurementUnit = Some(TestHelper.createRandomAlphanumericString(6)), documentQuantity = Some(BigDecimal("12345678901234567")))

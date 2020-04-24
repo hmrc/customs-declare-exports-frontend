@@ -16,44 +16,78 @@
 
 package forms.declaration.additionaldocuments
 
-import play.api.data.Forms.{bigDecimal, optional, text}
-import play.api.data.{Form, Forms}
+import play.api.data.Forms.{optional, text}
+import play.api.data.{Form, FormError, Forms}
 import play.api.libs.json.Json
-import utils.validators.forms.FieldValidator.{isAlphanumericWithSpecialCharacters, lengthInRange}
+import utils.validators.forms.FieldValidator._
 
 case class DocumentWriteOff(measurementUnit: Option[String], documentQuantity: Option[BigDecimal])
 
 object DocumentWriteOff {
 
+  def convert(measurementUnit: Option[String], documentQuantity: Option[String]): DocumentWriteOff =
+    new DocumentWriteOff(measurementUnit, documentQuantity.map(BigDecimal(_)))
+
   implicit val format = Json.format[DocumentWriteOff]
 
-  private val measurementUnitMinLength = 3
-  private val measurementUnitMaxLength = 5
+  private val measurementUnitLength = 3
+  private val qualifierLength = 1
   private val documentQuantityMaxLength = 16
   private val documentQuantityMaxDecimalPlaces = 6
 
+  val documentWriteOffKey = "documentWriteOff"
   val measurementUnitKey = "measurementUnit"
+  val qualifierKey = "qualifier"
   val documentQuantityKey = "documentQuantity"
+
+  private def form2Model: (Option[String], Option[String], Option[String]) => DocumentWriteOff = {
+    case (unit, None, quantity)      => convert(unit, quantity)
+    case (unit, qualifier, quantity) => convert(Some(Seq(unit, qualifier).flatten.mkString("#")), quantity)
+  }
+
+  private def model2Form: DocumentWriteOff => Option[(Option[String], Option[String], Option[String])] =
+    model => {
+      val unitAndQualifier: Option[Array[String]] = model.measurementUnit.map(_.split("#"))
+      Some(unitAndQualifier.flatMap(_.headOption), unitAndQualifier.flatMap(_.lift(1)), model.documentQuantity.map(_.toString()))
+    }
 
   val mapping = Forms
     .mapping(
       measurementUnitKey -> optional(
         text()
-          .verifying("supplementary.addDocument.measurementUnit.error.length", lengthInRange(measurementUnitMinLength)(measurementUnitMaxLength))
-          .verifying("supplementary.addDocument.measurementUnit.error.specialCharacters", isAlphanumericWithSpecialCharacters(Set('#')))
+          .verifying("declaration.addDocument.measurementUnit.error", hasSpecificLength(measurementUnitLength) and isAlphanumeric)
+      ),
+      qualifierKey -> optional(
+        text()
+          .verifying("declaration.addDocument.qualifier.error", hasSpecificLength(qualifierLength) and isAlphanumeric)
       ),
       documentQuantityKey -> optional(
-        bigDecimal
-          .verifying("supplementary.addDocument.documentQuantity.error.precision", _.precision <= documentQuantityMaxLength)
-          .verifying("supplementary.addDocument.documentQuantity.error.scale", _.scale <= documentQuantityMaxDecimalPlaces)
-          .verifying("supplementary.addDocument.documentQuantity.error", _ >= 0)
+        text()
+          .verifying(
+            "declaration.addDocument.documentQuantity.error",
+            input => input.isEmpty || noLongerThan(documentQuantityMaxLength)(input.replaceAll("\\.", ""))
+          )
+          .verifying(
+            "declaration.addDocument.documentQuantity.error",
+            isEmpty or isDecimalWithNoMoreDecimalPlacesThan(documentQuantityMaxDecimalPlaces)
+          )
       )
-    )(DocumentWriteOff.apply)(DocumentWriteOff.unapply)
-    .verifying("supplementary.addDocument.error.measurementUnitAndQuantity", validateMeasurementUnitAndDocumentQuantity(_))
-
-  private def validateMeasurementUnitAndDocumentQuantity(documentWriteOff: DocumentWriteOff): Boolean =
-    (documentWriteOff.measurementUnit.isEmpty && documentWriteOff.documentQuantity.isEmpty) ||
-      (documentWriteOff.measurementUnit.nonEmpty && documentWriteOff.documentQuantity.nonEmpty)
+    )(form2Model)(model2Form)
 
   def form(): Form[DocumentWriteOff] = Form(mapping)
+
+  def globalErrors(writeOff: DocumentWriteOff): Seq[FormError] = {
+
+    def missingUnits =
+      if ((writeOff.measurementUnit.isEmpty && writeOff.documentQuantity.isDefined) || writeOff.measurementUnit.exists(_.length == qualifierLength))
+        Seq(FormError(s"$documentWriteOffKey.$measurementUnitKey", "declaration.addDocument.measurementUnit.error"))
+      else Seq.empty
+
+    def missingQuantity =
+      if (writeOff.measurementUnit.isDefined && writeOff.documentQuantity.isEmpty)
+        Seq(FormError(s"$documentWriteOffKey.$documentQuantityKey", "declaration.addDocument.documentQuantity.error"))
+      else Seq.empty
+
+    missingUnits ++ missingQuantity
+  }
 }
