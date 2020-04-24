@@ -16,34 +16,99 @@
 
 package views.declaration
 
-import base.TestHelper
+import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
-import forms.common.{Address, Eori}
+import forms.common.Address
 import forms.declaration.{ConsigneeDetails, EntityDetails}
 import helpers.views.declaration.CommonMessages
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
+import play.api.i18n.MessagesApi
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.consignee_details
 import views.tags.ViewTest
 
 @ViewTest
-class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs {
+class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   val form: Form[ConsigneeDetails] = ConsigneeDetails.form()
-  val consigneeDetailsPage = new consignee_details(mainTemplate)
-  private def createView(form: Form[ConsigneeDetails] = form)(implicit request: JourneyRequest[_]): Document = consigneeDetailsPage(Mode.Normal, form)
+  val consigneeDetailsPage = instanceOf[consignee_details]
+  private def createView(form: Form[ConsigneeDetails] = form)(implicit request: JourneyRequest[_]): Document =
+    consigneeDetailsPage(Mode.Normal, form)(request, messages)
+
+  val allFields = Seq("fullName", "addressLine", "townOrCity", "addressLine", "postCode", "country")
+  val validAddress = Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "England")
+  val emptyAddress = Address("", "", "", "", "")
+  val randomAddress = Address(
+    TestHelper.createRandomAlphanumericString(71),
+    TestHelper.createRandomAlphanumericString(71),
+    TestHelper.createRandomAlphanumericString(71),
+    TestHelper.createRandomAlphanumericString(71),
+    TestHelper.createRandomAlphanumericString(71)
+  )
+
+  def createViewWithAddressError(address: Address)(implicit request: JourneyRequest[_]): Document = {
+    val view = createView(
+      ConsigneeDetails
+        .form()
+        .fillAndValidate(ConsigneeDetails(EntityDetails(None, Some(address))))
+    )
+    view must haveGovukGlobalErrorSummary
+    view
+  }
+
+  def assertAllAddressValidation(errorKey: String, fieldName: String, address: Address, fields: Seq[String] = allFields)(
+    implicit request: JourneyRequest[_]
+  ): Unit = {
+
+    val view = createViewWithAddressError(address)
+    fields.filterNot(_ == fieldName).foreach { key =>
+      view must containErrorElementWithTagAndHref("a", s"#details_address_$key")
+      view must containErrorElementWithMessage(s"supplementary.address.$key.$errorKey")
+    }
+  }
+
+  def assertAddressValidation(errorKey: String, fieldName: String, address: Address)(implicit request: JourneyRequest[_]): Unit = {
+
+    val view = createViewWithAddressError(address)
+    view must containErrorElementWithTagAndHref("a", s"#details_address_$fieldName")
+    view must containErrorElementWithMessage(s"supplementary.address.$fieldName.$errorKey")
+  }
 
   "Consignee Details View on empty page" should {
+
+    "have proper messages for labels" in {
+      val messages = instanceOf[MessagesApi].preferred(journeyRequest())
+      messages must haveTranslationFor("declaration.consignee.title")
+      messages must haveTranslationFor("supplementary.summary.parties.header")
+      messages must haveTranslationFor("supplementary.address.fullName")
+      messages must haveTranslationFor("supplementary.address.fullName.empty")
+      messages must haveTranslationFor("supplementary.address.fullName.error")
+      messages must haveTranslationFor("supplementary.address.addressLine")
+      messages must haveTranslationFor("supplementary.address.addressLine.empty")
+      messages must haveTranslationFor("supplementary.address.addressLine.error")
+      messages must haveTranslationFor("supplementary.address.townOrCity")
+      messages must haveTranslationFor("supplementary.address.townOrCity.empty")
+      messages must haveTranslationFor("supplementary.address.townOrCity.error")
+      messages must haveTranslationFor("supplementary.address.postCode")
+      messages must haveTranslationFor("supplementary.address.postCode.empty")
+      messages must haveTranslationFor("supplementary.address.postCode.error")
+      messages must haveTranslationFor("supplementary.address.country")
+      messages must haveTranslationFor("supplementary.address.country.empty")
+      messages must haveTranslationFor("supplementary.address.country.error")
+      messages must haveTranslationFor("site.save_and_continue")
+      messages must haveTranslationFor("declaration.type.consignmentTariffText")
+      messages must haveTranslationFor("declaration.consignee-details.help-item")
+    }
 
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
 
-        createView().getElementById("title").text() mustBe messages("supplementary.consignee.title")
+        createView().getElementsByClass("govuk-fieldset__heading").first().text() mustBe messages("declaration.consignee.title")
       }
 
       "display section header" in {
@@ -57,7 +122,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
         val view = createView()
 
-        view.getElementById("details_address_fullName-label").text() mustBe messages("supplementary.address.fullName")
+        view.getElementsByAttributeValue("for", "details_address_fullName").first().text() mustBe messages("supplementary.address.fullName")
         view.getElementById("details_address_fullName").attr("value") mustBe empty
       }
 
@@ -65,7 +130,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
         val view = createView()
 
-        view.getElementById("details_address_addressLine-label").text() mustBe messages("supplementary.address.addressLine")
+        view.getElementsByAttributeValue("for", "details_address_addressLine").first().text() mustBe messages("supplementary.address.addressLine")
         view.getElementById("details_address_addressLine").attr("value") mustBe empty
       }
 
@@ -73,7 +138,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
         val view = createView()
 
-        view.getElementById("details_address_townOrCity-label").text() mustBe messages("supplementary.address.townOrCity")
+        view.getElementsByAttributeValue("for", "details_address_townOrCity").first().text() mustBe messages("supplementary.address.townOrCity")
         view.getElementById("details_address_townOrCity").attr("value") mustBe empty
       }
 
@@ -81,7 +146,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
         val view = createView()
 
-        view.getElementById("details_address_postCode-label").text() mustBe messages("supplementary.address.postCode")
+        view.getElementsByAttributeValue("for", "details_address_postCode").first().text() mustBe messages("supplementary.address.postCode")
         view.getElementById("details_address_postCode").attr("value") mustBe empty
       }
 
@@ -89,7 +154,7 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
         val view = createView()
 
-        view.getElementById("details_address_country-label").text() mustBe messages("supplementary.address.country")
+        view.getElementsByAttributeValue("for", "details_address_country").first().text() mustBe messages("supplementary.address.country")
         view.getElementById("details_address_country").attr("value") mustBe empty
       }
 
@@ -118,268 +183,91 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
     onEveryDeclarationJourney() { implicit request =>
       "display error for empty Full name" in {
 
-        val view = createView(
-          ConsigneeDetails
-            .form()
-            .fillAndValidate(ConsigneeDetails(EntityDetails(None, Some(Address("", "Test Street", "Leeds", "LS18BN", "England")))))
-        )
-
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("details_address_fullName", "#details_address_fullName")
-
-        view.getElementById("error-message-details_address_fullName-input").text() mustBe messages("supplementary.address.fullName.empty")
+        val emptyFullNameAddress = validAddress.copy(fullName = "")
+        assertAddressValidation("empty", "fullName", emptyFullNameAddress)
       }
 
       "display error for incorrect Full name" in {
 
-        val view = createView(
-          ConsigneeDetails
-            .form()
-            .fillAndValidate(
-              ConsigneeDetails(
-                EntityDetails(None, Some(Address(TestHelper.createRandomAlphanumericString(71), "Test Street", "Leeds", "LS18BN", "England")))
-              )
-            )
-        )
-
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("details_address_fullName", "#details_address_fullName")
-
-        view.getElementById("error-message-details_address_fullName-input").text() mustBe messages("supplementary.address.fullName.error")
+        val invalidFullNameAddress = validAddress.copy(fullName = TestHelper.createRandomAlphanumericString(71))
+        assertAddressValidation("error", "fullName", invalidFullNameAddress)
       }
 
-      "display error for empty Address" in {
+      "display error for empty Address Line" in {
 
-        val view = createView(
-          ConsigneeDetails
-            .form()
-            .fillAndValidate(ConsigneeDetails(EntityDetails(None, Some(Address("Marco Polo", "", "Leeds", "LS18BN", "England")))))
-        )
-
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("details_address_addressLine", "#details_address_addressLine")
-
-        view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages("supplementary.address.addressLine.empty")
+        val emptyAddressLineAddress = validAddress.copy(addressLine = "")
+        assertAddressValidation("empty", "addressLine", emptyAddressLineAddress)
       }
 
-      "display error for incorrect Address" in {
+      "display error for incorrect Address Line" in {
 
-        val view = createView(
-          ConsigneeDetails
-            .form()
-            .fillAndValidate(
-              ConsigneeDetails(
-                EntityDetails(None, Some(Address("Marco Polo", TestHelper.createRandomAlphanumericString(71), "Leeds", "LS18BN", "England")))
-              )
-            )
-        )
-
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("details_address_addressLine", "#details_address_addressLine")
-
-        view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages("supplementary.address.addressLine.error")
+        val invalidAddressLineAddress = validAddress.copy(addressLine = TestHelper.createRandomAlphanumericString(71))
+        assertAddressValidation("error", "addressLine", invalidAddressLineAddress)
       }
 
       "display error for empty Town or city" in {
 
-        val view = createView(
-          ConsigneeDetails
-            .form()
-            .fillAndValidate(ConsigneeDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "", "LS18BN", "England")))))
-        )
-
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("details_address_townOrCity", "#details_address_townOrCity")
-
-        view.getElementById("error-message-details_address_townOrCity-input").text() mustBe messages("supplementary.address.townOrCity.empty")
+        val emptyTownOrCityAddress = validAddress.copy(townOrCity = "")
+        assertAddressValidation("empty", "townOrCity", emptyTownOrCityAddress)
       }
 
       "display error for incorrect Town or city" in {
 
-        val view = createView(
-          ConsigneeDetails
-            .form()
-            .fillAndValidate(
-              ConsigneeDetails(
-                EntityDetails(None, Some(Address("Marco Polo", "Test Street", TestHelper.createRandomAlphanumericString(71), "LS18BN", "England")))
-              )
-            )
-        )
-
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("details_address_townOrCity", "#details_address_townOrCity")
-
-        view.getElementById("error-message-details_address_townOrCity-input").text() mustBe messages("supplementary.address.townOrCity.error")
+        val invalidTownOrCityAddress = validAddress.copy(townOrCity = TestHelper.createRandomAlphanumericString(71))
+        assertAddressValidation("error", "townOrCity", invalidTownOrCityAddress)
       }
 
       "display error for empty Postcode" in {
 
-        val view = createView(
-          ConsigneeDetails
-            .form()
-            .fillAndValidate(ConsigneeDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "", "England")))))
-        )
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("details_address_postCode", "#details_address_postCode")
-
-        view.getElementById("error-message-details_address_postCode-input").text() mustBe messages("supplementary.address.postCode.empty")
+        val emptyPostCodeAddress = validAddress.copy(postCode = "")
+        assertAddressValidation("empty", "postCode", emptyPostCodeAddress)
       }
 
       "display error for incorrect Postcode" in {
 
-        val view = createView(
-          ConsigneeDetails
-            .form()
-            .fillAndValidate(
-              ConsigneeDetails(
-                EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", TestHelper.createRandomAlphanumericString(71), "England")))
-              )
-            )
-        )
-
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("details_address_postCode", "#details_address_postCode")
-
-        view.getElementById("error-message-details_address_postCode-input").text() mustBe messages("supplementary.address.postCode.error")
+        val invalidPostCodeAddress = validAddress.copy(postCode = TestHelper.createRandomAlphanumericString(71))
+        assertAddressValidation("error", "postCode", invalidPostCodeAddress)
       }
 
       "display error for empty Country" in {
 
-        val view = createView(
-          ConsigneeDetails
-            .form()
-            .fillAndValidate(ConsigneeDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "")))))
-        )
-
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("details_address_country", "#details_address_country")
-
-        view.select("span.error-message").text() mustBe messages("supplementary.address.country.empty")
+        val emptyCountryAddress = validAddress.copy(country = "")
+        assertAddressValidation("empty", "country", emptyCountryAddress)
       }
 
       "display error for incorrect Country" in {
 
-        val view = createView(
-          ConsigneeDetails
-            .form()
-            .fillAndValidate(ConsigneeDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "Barcelona")))))
-        )
-
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("details_address_country", "#details_address_country")
-
-        view.select("span.error-message").text() mustBe messages("supplementary.address.country.error")
+        val invalidCountryAddress = validAddress.copy(country = TestHelper.createRandomAlphanumericString(71))
+        assertAddressValidation("error", "country", invalidCountryAddress)
       }
 
-      "display errors when everything except Full name is empty" in {
+      "display errors" when {
 
-        val view = createView(
-          ConsigneeDetails
-            .form()
-            .fillAndValidate(ConsigneeDetails(EntityDetails(None, Some(Address("Marco Polo", "", "", "", "")))))
-        )
+        "everything except Full name is empty" in {
 
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("details_address_addressLine", "#details_address_addressLine")
-        view must haveFieldErrorLink("details_address_townOrCity", "#details_address_townOrCity")
-        view must haveFieldErrorLink("details_address_postCode", "#details_address_postCode")
-        view must haveFieldErrorLink("details_address_country", "#details_address_country")
+          val fullNameOnlyAddress = emptyAddress.copy(fullName = "Marco polo")
+          assertAllAddressValidation("empty", "fullName", fullNameOnlyAddress)
+        }
 
-        view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages("supplementary.address.addressLine.empty")
-        view.getElementById("error-message-details_address_townOrCity-input").text() mustBe messages("supplementary.address.townOrCity.empty")
-        view.getElementById("error-message-details_address_postCode-input").text() mustBe messages("supplementary.address.postCode.empty")
-        view.select("span.error-message").text() mustBe messages("supplementary.address.country.empty")
+        "everything except Country is empty" in {
+
+          val countryOnlyAddress = emptyAddress.copy(country = "Ukraine")
+          assertAllAddressValidation("empty", "country", countryOnlyAddress)
+        }
+
+        "everything except Full name is incorrect" in {
+
+          val fullNameOnlyAddress = randomAddress.copy(fullName = "Marco polo")
+          assertAllAddressValidation("error", "fullName", fullNameOnlyAddress)
+        }
+
+        "everything except Country is incorrect" in {
+
+          val countryOnlyAddress = randomAddress.copy(country = "Ukraine")
+          assertAllAddressValidation("error", "country", countryOnlyAddress)
+        }
       }
 
-      "display errors when everything except Country is empty" in {
-
-        val view = createView(
-          ConsigneeDetails
-            .form()
-            .fillAndValidate(ConsigneeDetails(EntityDetails(None, Some(Address("", "", "", "", "Ukraine")))))
-        )
-
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("details_address_fullName", "#details_address_fullName")
-        view must haveFieldErrorLink("details_address_addressLine", "#details_address_addressLine")
-        view must haveFieldErrorLink("details_address_townOrCity", "#details_address_townOrCity")
-        view must haveFieldErrorLink("details_address_postCode", "#details_address_postCode")
-
-        view.getElementById("error-message-details_address_fullName-input").text() mustBe messages("supplementary.address.fullName.empty")
-        view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages("supplementary.address.addressLine.empty")
-        view.getElementById("error-message-details_address_townOrCity-input").text() mustBe messages("supplementary.address.townOrCity.empty")
-        view.getElementById("error-message-details_address_postCode-input").text() mustBe messages("supplementary.address.postCode.empty")
-      }
-
-      "display errors when everything except Full name is incorrect" in {
-
-        val view = createView(
-          ConsigneeDetails
-            .form()
-            .fillAndValidate(
-              ConsigneeDetails(
-                EntityDetails(
-                  None,
-                  Some(
-                    Address(
-                      "Marco Polo",
-                      TestHelper.createRandomAlphanumericString(71),
-                      TestHelper.createRandomAlphanumericString(71),
-                      TestHelper.createRandomAlphanumericString(71),
-                      TestHelper.createRandomAlphanumericString(71)
-                    )
-                  )
-                )
-              )
-            )
-        )
-
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("details_address_addressLine", "#details_address_addressLine")
-        view must haveFieldErrorLink("details_address_townOrCity", "#details_address_townOrCity")
-        view must haveFieldErrorLink("details_address_postCode", "#details_address_postCode")
-        view must haveFieldErrorLink("details_address_country", "#details_address_country")
-
-        view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages("supplementary.address.addressLine.error")
-        view.getElementById("error-message-details_address_townOrCity-input").text() mustBe messages("supplementary.address.townOrCity.error")
-        view.getElementById("error-message-details_address_postCode-input").text() mustBe messages("supplementary.address.postCode.error")
-        view.select("span.error-message").text() mustBe messages("supplementary.address.country.error")
-      }
-
-      "display errors when everything except Country is incorrect" in {
-
-        val view = createView(
-          ConsigneeDetails
-            .form()
-            .fillAndValidate(
-              ConsigneeDetails(
-                EntityDetails(
-                  None,
-                  Some(
-                    Address(
-                      TestHelper.createRandomAlphanumericString(71),
-                      TestHelper.createRandomAlphanumericString(71),
-                      TestHelper.createRandomAlphanumericString(71),
-                      TestHelper.createRandomAlphanumericString(71),
-                      "Ukraine"
-                    )
-                  )
-                )
-              )
-            )
-        )
-
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("details_address_fullName", "#details_address_fullName")
-        view must haveFieldErrorLink("details_address_addressLine", "#details_address_addressLine")
-        view must haveFieldErrorLink("details_address_townOrCity", "#details_address_townOrCity")
-        view must haveFieldErrorLink("details_address_postCode", "#details_address_postCode")
-
-        view.getElementById("error-message-details_address_fullName-input").text() mustBe messages("supplementary.address.fullName.error")
-        view.getElementById("error-message-details_address_addressLine-input").text() mustBe messages("supplementary.address.addressLine.error")
-        view.getElementById("error-message-details_address_townOrCity-input").text() mustBe messages("supplementary.address.townOrCity.error")
-        view.getElementById("error-message-details_address_postCode-input").text() mustBe messages("supplementary.address.postCode.error")
-      }
     }
   }
 

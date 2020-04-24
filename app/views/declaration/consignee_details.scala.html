@@ -16,42 +16,60 @@
 
 @import controllers.declaration.routes._
 @import forms.declaration.ConsigneeDetails
-@import services.model.Country
 @import uk.gov.hmrc.play.views.html._
-@import views.Title
 @import models.requests.JourneyRequest
 @import controllers.navigation.Navigator
+@import config.AppConfig
+@import views.{BackButton, Title}
+@import views.html.components.gds._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukDetails, govukFieldset}
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.{Fieldset, Legend}
+@import views.components.gds.Styles._
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukDetails : GovukDetails,
+        govukFieldset: govukFieldset,
+        pageTitle: pageTitle,
+        inputText: exportsInputText,
+        inputTextArea: exportsInputTextArea,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        saveButtons: saveButtons,
+        tariffDetails: tariffDetails,
+        appConfig: AppConfig,
+        group_address: group_address,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, form: Form[ConsigneeDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tariffBody = { @Html(messages("supplementary.consignee-details.help-item", components.details_content_link())) }
+@tariffBody = { @Html(messages("declaration.consignee-details.help-item", components.details_content_link())) }
 
-@main_template(
-    title = Title("supplementary.consignee.title", "supplementary.summary.parties.header")
-) {
-    @components.back_link(Navigator.backLink(ConsigneeDetails, mode), mode)
+@govukLayout(
+    title = Title("declaration.consignee.title", "supplementary.summary.parties.header"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ConsigneeDetails, mode)))) {
 
-    @components.error_summary(form.errors)
+    @formHelper(action = ConsigneeDetailsController.saveAddress(mode), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-    @components.heading(
-        title = messages("supplementary.consignee.title"),
-        sectionHeader = messages("supplementary.summary.parties.header")
-    )
+        @sectionHeader(messages("supplementary.summary.parties.header"))
 
-    @helper.form(ConsigneeDetailsController.saveAddress(mode), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.consignee.title")),
+                classes = gdsPageLabel,
+                isPageHeading = true
+            )),
+            html = group_address(form, "supplementary.address", "details.address")
+            ))
 
-        @components.form_fields_wrapper(field = form("details")) {
 
-            @components.address(form, "details.address", None)
-        }
+        @tariffDetails(messages("declaration.type.consignmentTariff_summary_text"), HtmlContent(tariffBody))
 
-        @components.details(messages("site.details.summary_text_this")){
-           @tariffBody
-        }
-        @components.submit_button()
-        @components.buttons.save_and_return_later_button()
+        @saveButtons()
+
     }
 }
