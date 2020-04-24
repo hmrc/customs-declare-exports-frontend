@@ -20,7 +20,7 @@ import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.common.{Address, Eori}
-import forms.declaration.{CarrierDetails, EntityDetails}
+import forms.declaration.{CarrierDetails, CarrierDetailsSpec, EntityDetails}
 import helpers.views.declaration.CommonMessages
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
@@ -118,6 +118,22 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
   }
 
   "Carrier Details View with invalid input" should {
+
+    onEveryDeclarationJourney() { implicit request =>
+      "display error when both EORI and Address are supplied" in {
+
+        val view = createView(
+          CarrierDetails
+            .form(request.declarationType)
+            .bind(CarrierDetailsSpec.correctCarrierDetailsJSON)
+        )
+
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#details")
+
+        view.getElementsByClass("govuk-list govuk-error-summary__list").text() must include(messages("declaration.carrier.error.addressAndEori"))
+      }
+    }
 
     onJourney(DeclarationType.STANDARD, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED) { implicit request =>
       "display error when both EORI and business details are empty" in {

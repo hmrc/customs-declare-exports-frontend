@@ -20,6 +20,7 @@ import forms.common.{Address, Eori}
 import play.api.data.Forms.optional
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
+import utils.validators.forms.FieldValidator._
 
 case class EntityDetails(
   eori: Option[Eori], // alphanumeric, max length 17 characters
@@ -32,7 +33,17 @@ object EntityDetails {
   val optionalMapping = Forms
     .mapping("eori" -> optional(Eori.mapping("supplementary")), "address" -> optional(Address.mapping))(EntityDetails.apply)(EntityDetails.unapply)
 
-  val defaultMapping = optionalMapping.verifying("supplementary.namedEntityDetails.error", validateNamedEntityDetails(_))
+  val defaultMapping = optionalMapping
+    .verifying("supplementary.namedEntityDetails.error", validateNamedEntityDetails(_))
+
+  val eitherEoriOrAddressMapping = defaultMapping
+    .verifying(
+      "declaration.carrier.error.addressAndEori",
+      details => !validateNamedEntityDetails(details) or (details.eori.isDefined ^ details.address.isDefined)
+    )
+
+  val eitherEoriOrAddressOptionalMapping = optionalMapping
+    .verifying("declaration.carrier.error.addressAndEori", details => details.eori.isEmpty || details.address.isEmpty)
 
   private def validateNamedEntityDetails(namedEntity: EntityDetails): Boolean =
     !(namedEntity.eori.isEmpty && namedEntity.address.isEmpty)
