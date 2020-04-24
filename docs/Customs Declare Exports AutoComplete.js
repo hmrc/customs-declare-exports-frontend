@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.41
+// @version      1.42
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -637,18 +637,15 @@ function statisticalValue(){
 
 function packageInformation(){
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/package-information')) {
-        if (document.getElementsByClassName('button--secondary').length > 1) {
+        if (document.getElementsByClassName('govuk-button--secondary').length > 1) {
             console.log("More than one secondary buttons");
-            document.getElementsByClassName('button')[0].click()
+            document.getElementById('submit').click()
         }
         else {
             selectFromAutoPredict(document.getElementById('typesOfPackages-container'), "XD");
             document.getElementById('numberOfPackages').value ='10';
             document.getElementById('shippingMarks').value = 'Shipping description';
             document.getElementById('add').click();
-            document.getElementById('add').on('click', function() {
-                document.getElementsByClassName('button')[0].click()
-            });
         }
     }
 }
