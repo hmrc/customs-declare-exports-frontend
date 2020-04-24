@@ -33,7 +33,7 @@ class DocumentWriteOffSpec extends WordSpec with MustMatchers {
         "is not 3 characters" in {
 
           val input = JsObject(Map(measurementUnitKey -> JsString("AB3456")))
-          val expectedErrors = Seq(FormError(measurementUnitKey, "supplementary.addDocument.measurementUnit.error"))
+          val expectedErrors = Seq(FormError(measurementUnitKey, "declaration.addDocument.measurementUnit.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -41,7 +41,7 @@ class DocumentWriteOffSpec extends WordSpec with MustMatchers {
         "contains special characters" in {
 
           val input = JsObject(Map(measurementUnitKey -> JsString("AB!@")))
-          val expectedErrors = Seq(FormError(measurementUnitKey, "supplementary.addDocument.measurementUnit.error"))
+          val expectedErrors = Seq(FormError(measurementUnitKey, "declaration.addDocument.measurementUnit.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -52,7 +52,7 @@ class DocumentWriteOffSpec extends WordSpec with MustMatchers {
         "has more than 16 digits in total" in {
 
           val input = JsObject(Map(documentQuantityKey -> JsString("1234567890.1234567")))
-          val expectedErrors = Seq(FormError(documentQuantityKey, "supplementary.addDocument.documentQuantity.error"))
+          val expectedErrors = Seq(FormError(documentQuantityKey, "declaration.addDocument.documentQuantity.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -60,7 +60,7 @@ class DocumentWriteOffSpec extends WordSpec with MustMatchers {
         "has more than 6 decimal places" in {
 
           val input = JsObject(Map(documentQuantityKey -> JsString("0.1234567")))
-          val expectedErrors = Seq(FormError(documentQuantityKey, "supplementary.addDocument.documentQuantity.error"))
+          val expectedErrors = Seq(FormError(documentQuantityKey, "declaration.addDocument.documentQuantity.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -68,7 +68,7 @@ class DocumentWriteOffSpec extends WordSpec with MustMatchers {
         "is smaller than zero" in {
 
           val input = JsObject(Map(documentQuantityKey -> JsString("-1.23")))
-          val expectedErrors = Seq(FormError(documentQuantityKey, "supplementary.addDocument.documentQuantity.error"))
+          val expectedErrors = Seq(FormError(documentQuantityKey, "declaration.addDocument.documentQuantity.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }

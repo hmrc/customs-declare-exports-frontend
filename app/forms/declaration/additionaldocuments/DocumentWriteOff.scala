@@ -56,20 +56,20 @@ object DocumentWriteOff {
     .mapping(
       measurementUnitKey -> optional(
         text()
-          .verifying("supplementary.addDocument.measurementUnit.error", hasSpecificLength(measurementUnitLength) and isAlphanumeric)
+          .verifying("declaration.addDocument.measurementUnit.error", hasSpecificLength(measurementUnitLength) and isAlphanumeric)
       ),
       qualifierKey -> optional(
         text()
-          .verifying("supplementary.addDocument.qualifier.error", hasSpecificLength(qualifierLength) and isAlphanumeric)
+          .verifying("declaration.addDocument.qualifier.error", hasSpecificLength(qualifierLength) and isAlphanumeric)
       ),
       documentQuantityKey -> optional(
         text()
           .verifying(
-            "supplementary.addDocument.documentQuantity.error",
+            "declaration.addDocument.documentQuantity.error",
             input => input.isEmpty || noLongerThan(documentQuantityMaxLength)(input.replaceAll("\\.", ""))
           )
           .verifying(
-            "supplementary.addDocument.documentQuantity.error",
+            "declaration.addDocument.documentQuantity.error",
             isEmpty or isDecimalWithNoMoreDecimalPlacesThan(documentQuantityMaxDecimalPlaces)
           )
       )
@@ -81,12 +81,12 @@ object DocumentWriteOff {
 
     def missingUnits =
       if ((writeOff.measurementUnit.isEmpty && writeOff.documentQuantity.isDefined) || writeOff.measurementUnit.exists(_.length == qualifierLength))
-        Seq(FormError(s"$documentWriteOffKey.$measurementUnitKey", "supplementary.addDocument.measurementUnit.error"))
+        Seq(FormError(s"$documentWriteOffKey.$measurementUnitKey", "declaration.addDocument.measurementUnit.error"))
       else Seq.empty
 
     def missingQuantity =
       if (writeOff.measurementUnit.isDefined && writeOff.documentQuantity.isEmpty)
-        Seq(FormError(s"$documentWriteOffKey.$documentQuantityKey", "supplementary.addDocument.documentQuantity.error"))
+        Seq(FormError(s"$documentWriteOffKey.$documentQuantityKey", "declaration.addDocument.documentQuantity.error"))
       else Seq.empty
 
     missingUnits ++ missingQuantity

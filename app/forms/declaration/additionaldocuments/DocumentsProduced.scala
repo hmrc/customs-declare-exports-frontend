@@ -60,20 +60,18 @@ object DocumentsProduced extends DeclarationPage {
 
   val mapping = Forms
     .mapping(
-      documentTypeCodeKey -> optional(text().verifying("supplementary.addDocument.documentTypeCode.error", hasSpecificLength(4) and isAlphanumeric)),
+      documentTypeCodeKey -> optional(text().verifying("declaration.addDocument.documentTypeCode.error", hasSpecificLength(4) and isAlphanumeric)),
       documentIdentifierKey -> optional(
-        text().verifying(
-          "supplementary.addDocument.documentIdentifier.error",
-          nonEmpty and isAlphanumericWithAllowedSpecialCharacters and noLongerThan(35)
-        )
+        text()
+          .verifying("declaration.addDocument.documentIdentifier.error", nonEmpty and isAlphanumericWithAllowedSpecialCharacters and noLongerThan(35))
       ),
-      documentStatusKey -> optional(text().verifying("supplementary.addDocument.documentStatus.error", noLongerThan(2) and isAllCapitalLetter)),
+      documentStatusKey -> optional(text().verifying("declaration.addDocument.documentStatus.error", noLongerThan(2) and isAllCapitalLetter)),
       documentStatusReasonKey -> optional(
-        text().verifying("supplementary.addDocument.documentStatusReason.error", noLongerThan(35) and isAlphanumeric)
+        text().verifying("declaration.addDocument.documentStatusReason.error", noLongerThan(35) and isAlphanumeric)
       ),
       issuingAuthorityNameKey -> optional(
         text()
-          .verifying("supplementary.addDocument.issuingAuthorityName.error.length", noLongerThan(issuingAuthorityNameMaxLength))
+          .verifying("declaration.addDocument.issuingAuthorityName.error.length", noLongerThan(issuingAuthorityNameMaxLength))
       ),
       dateOfValidityKey -> optional(Date.mapping),
       documentWriteOffKey -> optional(DocumentWriteOff.mapping)
@@ -89,7 +87,7 @@ object DocumentsProduced extends DeclarationPage {
     def withMeasurementUnitGroupErrors(formErrors: Seq[FormError]) =
       if (formErrors.exists(_.key.endsWith(measurementUnitKey)) && formErrors.exists(_.key.endsWith(qualifierKey)))
         Seq(
-          FormError(s"$documentWriteOffKey.$measurementUnitKey", "supplementary.addDocument.measurementUnitAndQualifier.error"),
+          FormError(s"$documentWriteOffKey.$measurementUnitKey", "declaration.addDocument.measurementUnitAndQualifier.error"),
           FormError(s"$documentWriteOffKey.$qualifierKey", "")
         ) ++ formErrors.filter(err => !err.key.endsWith(measurementUnitKey) && !err.key.endsWith(qualifierKey))
       else
@@ -98,12 +96,4 @@ object DocumentsProduced extends DeclarationPage {
     form.copy(errors = withMeasurementUnitGroupErrors(form.errors) ++ form.value.map(validate).getOrElse(Seq.empty))
   }
 
-  def tmp = {
-    val day = Some(FormError("key", "message"))
-    val month = Some(FormError("key", "message"))
-    val year = Some(FormError("key", "message"))
-
-    val s = Seq(day, month, year).flatten.map(_.message).mkString("<br>")
-
-  }
 }

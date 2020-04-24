@@ -88,10 +88,10 @@ class DocumentsProducedController @Inject()(
   ) =
     document match {
       case _ if documents.length >= maxNumberOfItems =>
-        handleErrorPage(mode, itemId, Seq(("", "supplementary.addDocument.error.maximumAmount")), document, documents)
+        handleErrorPage(mode, itemId, Seq(("", "declaration.addDocument.error.maximumAmount")), document, documents)
 
       case _ if documents.contains(document) =>
-        handleErrorPage(mode, itemId, Seq(("", "supplementary.addDocument.error.duplicated")), document, documents)
+        handleErrorPage(mode, itemId, Seq(("", "declaration.addDocument.error.duplicated")), document, documents)
 
       case _ => saveAndRedirect(mode, itemId, document, documents)
     }
@@ -115,17 +115,17 @@ class DocumentsProducedController @Inject()(
   ): Future[Result] =
     (userInput, cachedData.documents) match {
       case (_, documents) if documents.length >= maxNumberOfItems =>
-        handleErrorPage(mode, itemId, Seq(("", "supplementary.addDocument.error.maximumAmount")), userInput, cachedData.documents)
+        handleErrorPage(mode, itemId, Seq(("", "declaration.addDocument.error.maximumAmount")), userInput, cachedData.documents)
 
       case (document, documents) if documents.contains(document) =>
-        handleErrorPage(mode, itemId, Seq(("", "supplementary.addDocument.error.duplicated")), userInput, cachedData.documents)
+        handleErrorPage(mode, itemId, Seq(("", "declaration.addDocument.error.duplicated")), userInput, cachedData.documents)
 
       case (document, documents) =>
         if (document.isDefined) {
           updateCache(itemId, DocumentsProducedData(documents :+ document))
             .map(_ => navigator.continueTo(mode, routes.DocumentsProducedController.displayPage(_, itemId)))
         } else
-          handleErrorPage(mode, itemId, Seq(("", "supplementary.addDocument.error.notDefined")), userInput, cachedData.documents)
+          handleErrorPage(mode, itemId, Seq(("", "declaration.addDocument.error.notDefined")), userInput, cachedData.documents)
     }
 
   private def removeItem(mode: Mode, itemId: String, values: Seq[String], boundForm: Form[DocumentsProduced], cachedData: DocumentsProducedData)(

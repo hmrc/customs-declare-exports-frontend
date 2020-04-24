@@ -63,17 +63,17 @@
                     attributes = Map("id" -> s"documents_produced-row$index-identifier")
                 ),
                 TableRow(
-                    content = HtmlContent(removeButton(value = Some(document.toJson.toString), hiddenLabel = Some(messages("supplementary.addDocument.remove.hint", document.documentIdentifier.getOrElse(""))))),
+                    content = HtmlContent(removeButton(value = Some(document.toJson.toString), hiddenLabel = Some(messages("declaration.addDocument.remove.hint", document.documentIdentifier.getOrElse(""))))),
                     attributes = Map("id" -> s"documents_produced-row$index-remove_button")
                 )
             )
         },
         head = Some(List(
             HeadCell(
-                content = Text(messages("supplementary.addDocument.summary.documentTypeCode"))
+                content = Text(messages("declaration.addDocument.summary.documentTypeCode"))
             ),
             HeadCell(
-                content = Text(messages("supplementary.addDocument.summary.documentIdentifier")),
+                content = Text(messages("declaration.addDocument.summary.documentIdentifier")),
                 colspan = Some(2)
             )
         ))
@@ -98,7 +98,7 @@
 @measurementUnitAndQualifierContent = {
 
     <span class="govuk-hint">
-        @Html(messages("supplementary.addDocument.measurementUnit.hint"))
+        @Html(messages("declaration.addDocument.measurementUnit.hint"))
     </span>
 
     @measurementErrors.map { error =>
@@ -112,14 +112,14 @@
         <div class="govuk-date-input__item">
         @measurementInput(
             field = measurementUnitField,
-            labelKey = "supplementary.addDocument.measurementUnit",
+            labelKey = "declaration.addDocument.measurementUnit",
             inputClasses = "govuk-input--width-4"
         )
         </div>
         <div class="govuk-date-input__item">
         @measurementInput(
             field = qualifierField,
-            labelKey = "supplementary.addDocument.qualifier",
+            labelKey = "declaration.addDocument.qualifier",
             inputClasses = "govuk-input--width-2"
         )
         </div>
@@ -131,7 +131,7 @@
 
           @govukFieldset(Fieldset(
               legend = Some(Legend(
-                  content = Text(messages("supplementary.addDocument.measurementUnit.header")),
+                  content = Text(messages("declaration.addDocument.measurementUnit.header")),
                   classes = "govuk-fieldset__legend--m"
               )),
               attributes = Map("id" -> "measurementUnitAndQualifier"),
@@ -143,7 +143,7 @@
 }
 
 @govukLayout(
-    title = Title("supplementary.addDocument.title", "supplementary.summary.yourReferences.header"),
+    title = Title("declaration.addDocument.title", "supplementary.summary.yourReferences.header"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DocumentsProduced, mode, ItemId(itemId))))) {
 
     @formHelper(action = DocumentsProducedController.saveForm(mode, itemId), 'autoComplete -> "off") {
@@ -154,7 +154,7 @@
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(
-                content = Text(messages("supplementary.addDocument.title")),
+                content = Text(messages("declaration.addDocument.title")),
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
@@ -162,49 +162,49 @@
                 documentsTable,
                 exportsInputText(
                     field = form(documentTypeCodeKey),
-                    labelKey = "supplementary.addDocument.documentTypeCode",
-                    hintKey = Some("supplementary.addDocument.documentTypeCode.hint"),
+                    labelKey = "declaration.addDocument.documentTypeCode",
+                    hintKey = Some("declaration.addDocument.documentTypeCode.hint"),
                     inputClasses = Some("govuk-input--width-4")
                 ),
                 exportsInputText(
                     field = form(documentIdentifierKey),
-                    labelKey = "supplementary.addDocument.documentIdentifier",
-                    hintKey = Some("supplementary.addDocument.documentIdentifier.hint"),
+                    labelKey = "declaration.addDocument.documentIdentifier",
+                    hintKey = Some("declaration.addDocument.documentIdentifier.hint"),
                     inputClasses = Some("govuk-input--width-30")
                 ),
                 exportsInputText(
                     field = form(documentStatusKey),
-                    labelKey = "supplementary.addDocument.documentStatus",
-                    hintKey = Some("supplementary.addDocument.documentStatus.hint"),
+                    labelKey = "declaration.addDocument.documentStatus",
+                    hintKey = Some("declaration.addDocument.documentStatus.hint"),
                     inputClasses = Some("govuk-input--width-2")
                 ),
                 exportsInputText(
                     field = form(documentStatusReasonKey),
-                    labelKey = "supplementary.addDocument.documentStatusReason",
-                    hintKey = Some("supplementary.addDocument.documentStatusReason.hint"),
+                    labelKey = "declaration.addDocument.documentStatusReason",
+                    hintKey = Some("declaration.addDocument.documentStatusReason.hint"),
                     inputClasses = Some("govuk-input--width-30")
                 ),
                 exportsInputTextArea(
                     field = form(issuingAuthorityNameKey),
-                    labelKey = "supplementary.addDocument.issuingAuthorityName",
-                    hintKey = Some("supplementary.addDocument.issuingAuthorityName.hint"),
+                    labelKey = "declaration.addDocument.issuingAuthorityName",
+                    hintKey = Some("declaration.addDocument.issuingAuthorityName.hint"),
                     inputClasses = Some("govuk-input--width-20")
                 ),
                 exportsDateInput(
                     fieldName = dateOfValidityKey,
                     form = form,
-                    labelKey = "supplementary.addDocument.dateOfValidity",
-                    hintKey = Some("supplementary.addDocument.dateOfValidity.hint")
+                    labelKey = "declaration.addDocument.dateOfValidity",
+                    hintKey = Some("declaration.addDocument.dateOfValidity.hint")
                 ),
                 measurementUnitAndQualifier,
                 exportsInputText(
                     field = form(s"$documentWriteOffKey.$documentQuantityKey"),
-                    labelKey = "supplementary.addDocument.documentQuantity",
-                    hintKey = Some("supplementary.addDocument.documentQuantity.hint"),
+                    labelKey = "declaration.addDocument.documentQuantity",
+                    hintKey = Some("declaration.addDocument.documentQuantity.hint"),
                     inputClasses = Some("govuk-input--width-20")
                 ),
                 tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
-                addButton(hiddenLabel = Some(messages("supplementary.addDocument.add.hint"))),
+                addButton(hiddenLabel = Some(messages("declaration.addDocument.add.hint"))),
                 saveButtons()
             ))
         ))
