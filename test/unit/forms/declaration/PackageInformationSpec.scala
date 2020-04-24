@@ -111,7 +111,7 @@ class PackageInformationSpec extends UnitViewSpec {
         val errorMessages = result.errors.map(_.message)
 
         errorMessages must be(
-          List("supplementary.packageInformation.typesOfPackages.empty", "error.number", "supplementary.packageInformation.shippingMarks.empty")
+          List("declaration.packageInformation.typesOfPackages.empty", "error.number", "declaration.packageInformation.shippingMarks.empty")
         )
       }
 
@@ -130,9 +130,9 @@ class PackageInformationSpec extends UnitViewSpec {
         errorKeys must be(List("typesOfPackages", "numberOfPackages", "shippingMarks"))
         errorMessages must be(
           List(
-            "supplementary.packageInformation.typesOfPackages.error",
-            "supplementary.packageInformation.numberOfPackages.error",
-            "supplementary.packageInformation.shippingMarks.lengthError"
+            "declaration.packageInformation.typesOfPackages.error",
+            "declaration.packageInformation.numberOfPackages.error",
+            "declaration.packageInformation.shippingMarks.lengthError"
           )
         )
       }
@@ -144,7 +144,7 @@ class PackageInformationSpec extends UnitViewSpec {
         val result = formAllFieldsMandatory.bind(incorrectForm)
 
         val errorMessages = result.errors.map(_.message)
-        errorMessages mustBe List("supplementary.packageInformation.numberOfPackages.error")
+        errorMessages mustBe List("declaration.packageInformation.numberOfPackages.error")
       }
 
       "number of packages is 100000" in {
@@ -154,7 +154,7 @@ class PackageInformationSpec extends UnitViewSpec {
         val result = formAllFieldsMandatory.bind(incorrectForm)
 
         val errorMessages = result.errors.map(_.message)
-        errorMessages mustBe List("supplementary.packageInformation.numberOfPackages.error")
+        errorMessages mustBe List("declaration.packageInformation.numberOfPackages.error")
       }
     }
   }
@@ -269,9 +269,9 @@ class PackageInformationSpec extends UnitViewSpec {
         errorKeys must be(List("typesOfPackages", "numberOfPackages", "shippingMarks"))
         errorMessages must be(
           List(
-            "supplementary.packageInformation.typesOfPackages.error",
-            "supplementary.packageInformation.numberOfPackages.error",
-            "supplementary.packageInformation.shippingMarks.lengthError"
+            "declaration.packageInformation.typesOfPackages.error",
+            "declaration.packageInformation.numberOfPackages.error",
+            "declaration.packageInformation.shippingMarks.lengthError"
           )
         )
       }
@@ -283,7 +283,7 @@ class PackageInformationSpec extends UnitViewSpec {
         val result = formAllFieldsOptional.bind(incorrectForm)
 
         val errorMessages = result.errors.map(_.message)
-        errorMessages must be(List("supplementary.packageInformation.empty"))
+        errorMessages must be(List("declaration.packageInformation.empty"))
       }
 
       "number of packages is -1" in {
@@ -293,7 +293,7 @@ class PackageInformationSpec extends UnitViewSpec {
         val result = formAllFieldsOptional.bind(incorrectForm)
 
         val errorMessages = result.errors.map(_.message)
-        errorMessages mustBe List("supplementary.packageInformation.numberOfPackages.error")
+        errorMessages mustBe List("declaration.packageInformation.numberOfPackages.error")
       }
 
       "number of packages is 100000" in {
@@ -303,7 +303,7 @@ class PackageInformationSpec extends UnitViewSpec {
         val result = formAllFieldsOptional.bind(incorrectForm)
 
         val errorMessages = result.errors.map(_.message)
-        errorMessages mustBe List("supplementary.packageInformation.numberOfPackages.error")
+        errorMessages mustBe List("declaration.packageInformation.numberOfPackages.error")
       }
     }
   }
