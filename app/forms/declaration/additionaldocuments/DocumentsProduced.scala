@@ -18,8 +18,9 @@ package forms.declaration.additionaldocuments
 
 import forms.DeclarationPage
 import forms.common.Date
+import forms.declaration.additionaldocuments.DocumentWriteOff._
 import play.api.data.Forms._
-import play.api.data.{Form, Forms}
+import play.api.data.{Form, FormError, Forms}
 import play.api.libs.json.{JsValue, Json}
 import utils.validators.forms.FieldValidator._
 
@@ -56,7 +57,6 @@ object DocumentsProduced extends DeclarationPage {
   val documentStatusReasonKey = "documentStatusReason"
   val issuingAuthorityNameKey = "issuingAuthorityName"
   val dateOfValidityKey = "dateOfValidity"
-  val documentWriteOffKey = "documentWriteOff"
 
   val mapping = Forms
     .mapping(
@@ -80,4 +80,30 @@ object DocumentsProduced extends DeclarationPage {
     )(DocumentsProduced.apply)(DocumentsProduced.unapply)
 
   def form(): Form[DocumentsProduced] = Form(mapping)
+
+  def fieldGroupValidation(form: Form[DocumentsProduced]): Form[DocumentsProduced] = {
+
+    def validate(docs: DocumentsProduced) =
+      docs.documentWriteOff.map(wo => DocumentWriteOff.validate(wo)).getOrElse(Seq.empty)
+
+    def withMeasurementUnitGroupErrors(formErrors: Seq[FormError]) =
+      if (formErrors.exists(_.key.endsWith(measurementUnitKey)) && formErrors.exists(_.key.endsWith(qualifierKey)))
+        Seq(
+          FormError(s"$documentWriteOffKey.$measurementUnitKey", "supplementary.addDocument.measurementUnitAndQualifier.error"),
+          FormError(s"$documentWriteOffKey.$qualifierKey", "")
+        ) ++ formErrors.filter(err => !err.key.endsWith(measurementUnitKey) && !err.key.endsWith(qualifierKey))
+      else
+        formErrors
+
+    form.copy(errors = withMeasurementUnitGroupErrors(form.errors) ++ form.value.map(validate).getOrElse(Seq.empty))
+  }
+
+  def tmp = {
+    val day = Some(FormError("key", "message"))
+    val month = Some(FormError("key", "message"))
+    val year = Some(FormError("key", "message"))
+
+    val s = Seq(day, month, year).flatten.map(_.message).mkString("<br>")
+
+  }
 }

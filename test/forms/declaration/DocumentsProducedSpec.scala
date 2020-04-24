@@ -159,29 +159,12 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
       }
       "provided with Document WriteOff" which {
 
-        "has missing Measurement Unit" in {
-
-          val input =
-            JsObject(Map(documentWriteOffKey -> JsObject(Map(documentQuantityKey -> JsString("1234567890.123456")))))
-          val expectedErrors = Seq(FormError(documentWriteOffKey, "supplementary.addDocument.error.measurementUnitAndQuantity"))
-
-          testFailedValidationErrors(input, expectedErrors)
-        }
-
-        "has missing Document Quantity" in {
-
-          val input = JsObject(Map(documentWriteOffKey -> JsObject(Map(measurementUnitKey -> JsString("AB12")))))
-          val expectedErrors = Seq(FormError(documentWriteOffKey, "supplementary.addDocument.error.measurementUnitAndQuantity"))
-
-          testFailedValidationErrors(input, expectedErrors)
-        }
-
         "contains errors in its fields" in {
 
           val input = JsObject(Map(documentWriteOffKey -> incorrectDocumentWriteOffJSON))
           val expectedErrors = Seq(
-            FormError(s"$documentWriteOffKey.$measurementUnitKey", "supplementary.addDocument.measurementUnit.error.length"),
-            FormError(s"$documentWriteOffKey.$documentQuantityKey", "supplementary.addDocument.documentQuantity.error.precision")
+            FormError(s"$documentWriteOffKey.$measurementUnitKey", "supplementary.addDocument.measurementUnit.error"),
+            FormError(s"$documentWriteOffKey.$documentQuantityKey", "supplementary.addDocument.documentQuantity.error")
           )
 
           testFailedValidationErrors(input, expectedErrors)
@@ -216,7 +199,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
         form.errors mustBe empty
       }
 
-      "provide the correct data with #" in {
+      "provide the correct data" in {
 
         val input = JsObject(
           Map(
@@ -226,7 +209,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
             documentStatusReasonKey -> JsString("DocumentStatusReason"),
             issuingAuthorityNameKey -> JsString("Issuing Authority Name"),
             dateOfValidityKey -> correctDateJSON,
-            documentWriteOffKey -> Json.toJson(DocumentWriteOff(Some("AB#12"), Some(12)))
+            documentWriteOffKey -> Json.toJson(DocumentWriteOff(Some("ABC"), Some(12)))
           )
         )
         val form = DocumentsProduced.form.bind(input)

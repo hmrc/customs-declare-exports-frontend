@@ -15,17 +15,32 @@
  *@
 
 @import controllers.declaration.routes._
-@import controllers.util.Remove
 @import controllers.navigation.{Navigator, ItemId}
 @import models.requests.JourneyRequest
 @import forms.declaration.additionaldocuments.DocumentWriteOff._
 @import forms.declaration.additionaldocuments.DocumentsProduced
 @import forms.declaration.additionaldocuments.DocumentsProduced._
-@import uk.gov.hmrc.play.views.html._
-@import views.Title
-@import views.components.fields.LabelledValue
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.html.components.gds._
+@import views.components.gds.Styles._
+@import play.twirl.api.HtmlFormat
+@import scala.collection.immutable
 
-@this(main_template: views.html.main_template)
+@this(govukLayout: gdsMainTemplate,
+        govukFieldset: GovukFieldset,
+        govukTable : GovukTable,
+        govukInput: GovukInput,
+        addButton: addButton,
+        removeButton: removeButton,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        exportsInputText: exportsInputText,
+        exportsInputTextArea: exportsInputTextArea,
+        exportsDateInput: exportsDateInput,
+        tariffDetails: tariffDetails,
+        saveButtons: saveButtons,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(mode: Mode, itemId: String, form: Form[DocumentsProduced], documents: Seq[DocumentsProduced])(implicit request: JourneyRequest[_], messages: Messages)
 
@@ -33,113 +48,166 @@
 
 @tariffBody = { @components.tariff_body_partial(messages("declaration.type.documentProcudedListItemOne"), messages("declaration.type.documentProcudedListItemTwo"))(tariffBodyDesc)}
 
-@main_template(title = Title("supplementary.addDocument.title", "supplementary.summary.yourReferences.header")) {
-
-    @components.back_link(Navigator.backLink(DocumentsProduced, mode, ItemId(itemId)), mode)
-
-    @components.error_summary(form.errors)
-
-    @components.heading(
-        sectionHeader = messages("supplementary.summary.yourReferences.header"),
-        title = messages("supplementary.addDocument.title"),
-        hint = messages("supplementary.addDocument.hint")
-    )
-
-    @helper.form(DocumentsProducedController.saveForm(mode, itemId), 'autoComplete -> "off") {
-        @helper.CSRF.formField
-
-        @if(documents.nonEmpty) {
-            <table class="form-group documents">
-                <thead>
-                    <tr>
-                        <th scope="col" class="document-type">@messages("supplementary.addDocument.documentTypeCode")</th>
-                        <th scope="col" class="document-identifier">@messages("supplementary.addDocument.documentIdentifier")</th>
-                        <th scope="col" class="document-status">@messages("supplementary.addDocument.documentStatus")</th>
-                        <th scope="col" class="document-status-reason">@messages("supplementary.addDocument.documentStatusReason")</th>
-                        <th scope="col" class="document-issuing-authority">@messages("supplementary.addDocument.issuingAuthorityName")</th>
-                        <th scope="col" class="date-of-validity">@messages("supplementary.addDocument.dateOfValidity")</th>
-                        <th scope="col" class="measurement-unit">@messages("supplementary.addDocument.measurementUnit")</th>
-                        <th scope="col" class="document-quantity">@messages("supplementary.addDocument.documentQuantity")</th>
-                        <td></td>
-                    </tr>
-                </thead>
-                <tbody>
-                @documents.zipWithIndex.map { case (item, index) =>
-                    <tr>
-                        <th scope="row" class="document-type">@item.documentTypeCode</th>
-                        <td class="document-identifier">@item.documentIdentifier</td>
-                        <td class="document-status">@item.documentStatus</td>
-                        <td class="document-status-reason">@item.documentStatusReason</td>
-                        <td class="document-issuing-authority">@item.issuingAuthorityName</td>
-                        <td class="date-of-validity">@item.dateOfValidity</td>
-                        <td class="measurement-unit">@item.documentWriteOff.map(_.measurementUnit)</td>
-                        <td class="document-quantity">@item.documentWriteOff.map(_.documentQuantity)</td>
-                        <td class="actions">@components.buttons.remove_button(element = LabelledValue(item.toJson), hint = messages("supplementary.addDocument.remove.hint", item.documentIdentifier.getOrElse("")))</td>
-                    </tr>
-                }
-                </tbody>
-            </table>
-        }
-
-        @components.fields.field_text(
-            field = form(documentTypeCodeKey),
-            label = Some(messages("supplementary.addDocument.documentTypeCode")),
-            labelClass = Some("bold-small")
-        )
-
-
-        @components.fields.field_text(
-            field = form(documentIdentifierKey),
-            label = Some(messages("supplementary.addDocument.documentIdentifier")),
-            labelClass = Some("bold-small"),
-            hint = Some(messages("supplementary.addDocument.documentIdentifier.hint"))
-        )
-
-
-        @components.fields.field_text(
-            field = form(documentStatusKey),
-            label = Some(messages("supplementary.addDocument.documentStatus")),
-            labelClass = Some("bold-small")
-        )
-
-        @components.fields.field_text(
-            field = form(documentStatusReasonKey),
-            label = Some(messages("supplementary.addDocument.documentStatusReason")),
-            labelClass = Some("bold-small")
-        )
-
-        @components.fields.field_text(
-            field = form(issuingAuthorityNameKey),
-            label = Some(messages("supplementary.addDocument.issuingAuthorityName")),
-            labelClass = Some("bold-small")
-        )
-
-        @components.fields.field_date(
-            field = form(dateOfValidityKey),
-            label = messages("supplementary.addDocument.dateOfValidity"),
-            form = form
-        )
-
-        @components.form_fields_wrapper(field = form(documentWriteOffKey)) {
-
-            @components.fields.field_text(
-                field = form(s"$documentWriteOffKey.$measurementUnitKey"),
-                label = Some(messages("supplementary.addDocument.measurementUnit")),
-                labelClass = Some("bold-small")
+@documentsTable = {
+    @if(documents.nonEmpty) {
+    @govukTable(Table(
+        attributes = Map("id" -> "documents_produced"),
+        rows = documents.zipWithIndex.map{ case(document, index) =>
+            Seq(
+                TableRow(
+                    content = Text(document.documentTypeCode.getOrElse("")),
+                    attributes = Map("id" -> s"documents_produced-row$index-code")
+                ),
+                TableRow(
+                    content = Text(document.documentIdentifier.getOrElse("")),
+                    attributes = Map("id" -> s"documents_produced-row$index-identifier")
+                ),
+                TableRow(
+                    content = HtmlContent(removeButton(value = Some(document.toJson.toString), hiddenLabel = Some(messages("supplementary.addDocument.remove.hint", document.documentIdentifier.getOrElse(""))))),
+                    attributes = Map("id" -> s"documents_produced-row$index-remove_button")
+                )
             )
-
-            @components.fields.field_text(
-                field = form(s"$documentWriteOffKey.$documentQuantityKey"),
-                label = Some(messages("supplementary.addDocument.documentQuantity")),
-                labelClass = Some("bold-small")
+        },
+        head = Some(List(
+            HeadCell(
+                content = Text(messages("supplementary.addDocument.summary.documentTypeCode"))
+            ),
+            HeadCell(
+                content = Text(messages("supplementary.addDocument.summary.documentIdentifier")),
+                colspan = Some(2)
             )
-        }
-    @components.details(messages("declaration.type.consignmentTariff_summary_text")){
-        @tariffBody
+        ))
+    ))
+}
+}
+
+@measurementInput(field: Field, labelKey: String, inputClasses: String) = {
+    @govukInput(Input(
+        id = field.id,
+        name = field.name,
+        value = field.value,
+        label = Label(content = Text(messages(labelKey)), classes = "govuk-label"),
+        classes = s"$inputClasses ${if(field.hasErrors) "govuk-input--error"}"
+    ))
+}
+
+@measurementUnitField = @{form(s"$documentWriteOffKey.$measurementUnitKey")}
+@qualifierField = @{form(s"$documentWriteOffKey.$qualifierKey")}
+@measurementErrors = @{measurementUnitField.errors ++ qualifierField.errors}
+
+@measurementUnitAndQualifierContent = {
+
+    <span class="govuk-hint">
+        @Html(messages("supplementary.addDocument.measurementUnit.hint"))
+    </span>
+
+    @measurementErrors.map { error =>
+        <span class="govuk-error-message">
+            <span class="govuk-visually-hidden">@messages("site.accessibility.error")</span>
+            @messages(error.message, error.args: _*)
+        </span>
     }
 
+    <div class="govuk-date-input">
+        <div class="govuk-date-input__item">
+        @measurementInput(
+            field = measurementUnitField,
+            labelKey = "supplementary.addDocument.measurementUnit",
+            inputClasses = "govuk-input--width-4"
+        )
+        </div>
+        <div class="govuk-date-input__item">
+        @measurementInput(
+            field = qualifierField,
+            labelKey = "supplementary.addDocument.qualifier",
+            inputClasses = "govuk-input--width-2"
+        )
+        </div>
+    </div>
+}
 
-    @components.add_save_button(addHint = "supplementary.addDocument.add.hint")
-            @components.buttons.save_and_return_later_button()
-        }
+@measurementUnitAndQualifier = {
+      <div class="govuk-form-group @if(measurementErrors.nonEmpty){govuk-form-group--error}">
+
+          @govukFieldset(Fieldset(
+              legend = Some(Legend(
+                  content = Text(messages("supplementary.addDocument.measurementUnit.header")),
+                  classes = "govuk-fieldset__legend--m"
+              )),
+              attributes = Map("id" -> "measurementUnitAndQualifier"),
+              html = HtmlFormat.fill(immutable.Seq(
+                  measurementUnitAndQualifierContent
+              )
+              )))
+      </div>
+}
+
+@govukLayout(
+    title = Title("supplementary.addDocument.title", "supplementary.summary.yourReferences.header"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DocumentsProduced, mode, ItemId(itemId))))) {
+
+    @formHelper(action = DocumentsProducedController.saveForm(mode, itemId), 'autoComplete -> "off") {
+
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("supplementary.summary.yourReferences.header"))
+
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("supplementary.addDocument.title")),
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+                documentsTable,
+                exportsInputText(
+                    field = form(documentTypeCodeKey),
+                    labelKey = "supplementary.addDocument.documentTypeCode",
+                    hintKey = Some("supplementary.addDocument.documentTypeCode.hint"),
+                    inputClasses = Some("govuk-input--width-4")
+                ),
+                exportsInputText(
+                    field = form(documentIdentifierKey),
+                    labelKey = "supplementary.addDocument.documentIdentifier",
+                    hintKey = Some("supplementary.addDocument.documentIdentifier.hint"),
+                    inputClasses = Some("govuk-input--width-30")
+                ),
+                exportsInputText(
+                    field = form(documentStatusKey),
+                    labelKey = "supplementary.addDocument.documentStatus",
+                    hintKey = Some("supplementary.addDocument.documentStatus.hint"),
+                    inputClasses = Some("govuk-input--width-2")
+                ),
+                exportsInputText(
+                    field = form(documentStatusReasonKey),
+                    labelKey = "supplementary.addDocument.documentStatusReason",
+                    hintKey = Some("supplementary.addDocument.documentStatusReason.hint"),
+                    inputClasses = Some("govuk-input--width-30")
+                ),
+                exportsInputTextArea(
+                    field = form(issuingAuthorityNameKey),
+                    labelKey = "supplementary.addDocument.issuingAuthorityName",
+                    hintKey = Some("supplementary.addDocument.issuingAuthorityName.hint"),
+                    inputClasses = Some("govuk-input--width-20")
+                ),
+                exportsDateInput(
+                    fieldName = dateOfValidityKey,
+                    form = form,
+                    labelKey = "supplementary.addDocument.dateOfValidity",
+                    hintKey = Some("supplementary.addDocument.dateOfValidity.hint")
+                ),
+                measurementUnitAndQualifier,
+                exportsInputText(
+                    field = form(s"$documentWriteOffKey.$documentQuantityKey"),
+                    labelKey = "supplementary.addDocument.documentQuantity",
+                    hintKey = Some("supplementary.addDocument.documentQuantity.hint"),
+                    inputClasses = Some("govuk-input--width-20")
+                ),
+                tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+                addButton(hiddenLabel = Some(messages("supplementary.addDocument.add.hint"))),
+                saveButtons()
+            ))
+        ))
+
     }
+}

@@ -19,8 +19,8 @@ package unit.controllers.declaration
 import controllers.declaration.DocumentsProducedController
 import controllers.util.Remove
 import forms.declaration.additionaldocuments.DocumentsProduced
-import models.{DeclarationType, Mode}
 import models.declaration.DocumentsProducedData
+import models.{DeclarationType, Mode}
 import org.mockito.ArgumentMatchers.{any, refEq}
 import org.mockito.Mockito.{reset, times, verify, when}
 import play.api.test.Helpers._
@@ -29,7 +29,7 @@ import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
 import views.html.declaration.documents_produced
 
-class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMocks {
+class DocumentsProducedControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
   val mockDocumentProducedPage = mock[documents_produced]
 
@@ -99,14 +99,31 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
     "return 400 (BAD_REQUEST) during adding" when {
 
-      "user put incorrect data" in {
-
-        val incorrectForm = Seq(("documentTypeCode", "12345"), addActionUrlEncoded())
-
+      def verifyBadRequest(incorrectForm: Seq[(String, String)]) = {
         val result = controller.saveForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) mustBe BAD_REQUEST
         verify(mockDocumentProducedPage, times(1)).apply(refEq(Mode.Normal), any(), any(), any())(any(), any())
+      }
+
+      "user put incorrect data" in {
+
+        verifyBadRequest(Seq(("documentTypeCode", "12345"), addActionUrlEncoded()))
+      }
+
+      "user entered measurement unit without quantity" in {
+
+        verifyBadRequest(Seq(("documentWriteOff.measurementUnit", "KGM"), addActionUrlEncoded()))
+      }
+
+      "user entered quantity without measurement unit" in {
+
+        verifyBadRequest(Seq(("documentWriteOff.documentQuantity", "1000"), addActionUrlEncoded()))
+      }
+
+      "user entered qualifier without measurement unit" in {
+
+        verifyBadRequest(Seq(("documentWriteOff.qualifier", "A"), ("documentWriteOff.documentQuantity", "1000"), addActionUrlEncoded()))
       }
 
       "user put duplicated item" in {
@@ -193,7 +210,14 @@ class DocumentProducedControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
       "user correctly add new item" in {
 
-        val correctForm = Seq(("documentTypeCode", "1234"), addActionUrlEncoded())
+        val correctForm =
+          Seq(
+            ("documentTypeCode", "1234"),
+            ("documentWriteOff.measurementUnit", "KGM"),
+            ("documentWriteOff.qualifier", "A"),
+            ("documentWriteOff.documentQuantity", "1000"),
+            addActionUrlEncoded()
+          )
 
         val result = controller.saveForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 

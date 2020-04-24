@@ -20,8 +20,8 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.remove
 import controllers.util._
-import forms.declaration.additionaldocuments.DocumentsProduced
-import forms.declaration.additionaldocuments.DocumentsProduced.form
+import forms.declaration.additionaldocuments.DocumentsProduced.{fieldGroupValidation, form}
+import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.DocumentsProducedData
@@ -57,7 +57,7 @@ class DocumentsProducedController @Inject()(
   }
 
   def saveForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = form().bindFromRequest()
+    val boundForm = fieldGroupValidation(form().bindFromRequest())
     val actionTypeOpt = FormAction.bindFromRequest()
     val cache =
       request.cacheModel
