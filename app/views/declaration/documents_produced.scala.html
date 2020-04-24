@@ -56,24 +56,26 @@
             Seq(
                 TableRow(
                     content = Text(document.documentTypeCode.getOrElse("")),
-                    attributes = Map("id" -> s"documents_produced-row$index-code")
+                    classes = "document-type"
                 ),
                 TableRow(
                     content = Text(document.documentIdentifier.getOrElse("")),
-                    attributes = Map("id" -> s"documents_produced-row$index-identifier")
+                    classes = "document-identifier"
                 ),
                 TableRow(
                     content = HtmlContent(removeButton(value = Some(document.toJson.toString), hiddenLabel = Some(messages("declaration.addDocument.remove.hint", document.documentIdentifier.getOrElse(""))))),
-                    attributes = Map("id" -> s"documents_produced-row$index-remove_button")
+                    classes = "remove_button"
                 )
             )
         },
         head = Some(List(
             HeadCell(
-                content = Text(messages("declaration.addDocument.summary.documentTypeCode"))
+                content = Text(messages("declaration.addDocument.summary.documentTypeCode")),
+                classes = "document-type"
             ),
             HeadCell(
                 content = Text(messages("declaration.addDocument.summary.documentIdentifier")),
+                classes = "document-identifier",
                 colspan = Some(2)
             )
         ))

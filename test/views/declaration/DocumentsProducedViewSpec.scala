@@ -411,16 +411,18 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
 
         "have data row" that {
 
+          val row = view.selectFirst("#documents_produced tbody tr")
+
           "have Document Type" in {
-            view.getElementById("documents_produced-row0-code").text() must equal(correctDocumentsProduced.documentTypeCode.get)
+            row.selectFirst(".document-type").text() must equal(correctDocumentsProduced.documentTypeCode.get)
           }
 
           "have Document Identifier" in {
-            view.getElementById("documents_produced-row0-identifier").text() must equal(correctDocumentsProduced.documentIdentifier.get)
+            row.selectFirst(".document-identifier").text() must equal(correctDocumentsProduced.documentIdentifier.get)
           }
 
           "have remove button" in {
-            val removeButton = view.getElementById("documents_produced-row0-remove_button").selectFirst("button")
+            val removeButton = row.selectFirst(".remove_button button")
             removeButton.text() mustBe messages("site.removedeclaration.addDocument.remove.hint")
             removeButton.attr("value") mustBe correctDocumentsProduced.toJson.toString()
           }

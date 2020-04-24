@@ -79,18 +79,20 @@ object DocumentsProduced extends DeclarationPage {
 
   def form(): Form[DocumentsProduced] = Form(mapping)
 
-  def fieldGroupValidation(form: Form[DocumentsProduced]): Form[DocumentsProduced] = {
+  def globalErrors(form: Form[DocumentsProduced]): Form[DocumentsProduced] = {
 
     def validate(docs: DocumentsProduced) =
-      docs.documentWriteOff.map(wo => DocumentWriteOff.validate(wo)).getOrElse(Seq.empty)
+      docs.documentWriteOff.map(wo => DocumentWriteOff.globalErrors(wo)).getOrElse(Seq.empty)
 
     def withMeasurementUnitGroupErrors(formErrors: Seq[FormError]) =
-      if (formErrors.exists(_.key.endsWith(measurementUnitKey)) && formErrors.exists(_.key.endsWith(qualifierKey)))
-        Seq(
+      if (formErrors.exists(_.key.endsWith(measurementUnitKey)) && formErrors.exists(_.key.endsWith(qualifierKey))) {
+        val additionalErrors = Seq(
           FormError(s"$documentWriteOffKey.$measurementUnitKey", "declaration.addDocument.measurementUnitAndQualifier.error"),
           FormError(s"$documentWriteOffKey.$qualifierKey", "")
-        ) ++ formErrors.filter(err => !err.key.endsWith(measurementUnitKey) && !err.key.endsWith(qualifierKey))
-      else
+        )
+        val filteredErrors = formErrors.filter(err => !err.key.endsWith(measurementUnitKey) && !err.key.endsWith(qualifierKey))
+        additionalErrors ++ filteredErrors
+      } else
         formErrors
 
     form.copy(errors = withMeasurementUnitGroupErrors(form.errors) ++ form.value.map(validate).getOrElse(Seq.empty))

@@ -41,7 +41,6 @@ object DocumentWriteOff {
   val documentQuantityKey = "documentQuantity"
 
   private def form2Model: (Option[String], Option[String], Option[String]) => DocumentWriteOff = {
-    case (None, None, quantity)      => convert(None, quantity)
     case (unit, None, quantity)      => convert(unit, quantity)
     case (unit, qualifier, quantity) => convert(Some(Seq(unit, qualifier).flatten.mkString("#")), quantity)
   }
@@ -77,7 +76,7 @@ object DocumentWriteOff {
 
   def form(): Form[DocumentWriteOff] = Form(mapping)
 
-  def validate(writeOff: DocumentWriteOff): Seq[FormError] = {
+  def globalErrors(writeOff: DocumentWriteOff): Seq[FormError] = {
 
     def missingUnits =
       if ((writeOff.measurementUnit.isEmpty && writeOff.documentQuantity.isDefined) || writeOff.measurementUnit.exists(_.length == qualifierLength))

@@ -737,7 +737,7 @@ function addDocuments(){
                     document.getElementById('documentIdentifier').value ='GBCSE717572504502801';
                     document.getElementById('add').click();
                 } else {
-                    document.getElementsByClassName('button')[0].click()
+                    document.getElementById('submit').click();
                 }
                 break;
             case 'Z':
@@ -750,7 +750,7 @@ function addDocuments(){
                     document.getElementById('documentIdentifier').value ='GBMOU717572504502802';
                     document.getElementById('add').click();
                 } else {
-                    document.getElementsByClassName('button')[0].click()
+                    document.getElementById('submit').click();
                 }
                 break;
             case 'Y':
@@ -771,39 +771,39 @@ function addDocuments(){
                     document.getElementById('documentWriteOff_documentQuantity').value = '100';
                     document.getElementById('add').click();
                 } else {
-                    document.getElementsByClassName('button')[0].click()
+                    document.getElementById('submit').click();
                 }
                 break;
             case 'F':
                 document.getElementById('documentTypeCode').value ='C512';
                 document.getElementById('documentIdentifier').value ='GBSDE717572504502801';
-                document.getElementsByClassName('button')[0].click()
+                document.getElementById('submit').click();
                 break;
             case 'J':
                 document.getElementById('documentTypeCode').value ='C514';
                 document.getElementById('documentIdentifier').value ='GBEIR717572504502811';
-                document.getElementsByClassName('button')[0].click()
+                document.getElementById('submit').click();
                 break;
             case 'A':
                 document.getElementById('documentTypeCode').value ='C676';
                 document.getElementById('documentIdentifier').value ='GBCSE717572504502802';
-                document.getElementsByClassName('button')[0].click()
+                document.getElementById('submit').click();
                 break;
             case 'B':
                 document.getElementById('documentTypeCode').value = 'C676';
                 document.getElementById('documentIdentifier').value = 'GBCSE717572504502801';
-                document.getElementsByClassName('button')[0].click()
+                document.getElementById('submit').click();
                 break;
             case 'E':
-                document.getElementsByClassName('button')[0].click()
+                document.getElementById('submit').click();
                 break;
             case 'K':
-                document.getElementsByClassName('button')[0].click()
+                document.getElementById('submit').click();
                 break;
             default:
                 document.getElementById('documentTypeCode').value ='C501';
                 document.getElementById('documentIdentifier').value ='GBAEOC717572504502811';
-                document.getElementsByClassName('button')[0].click()
+                document.getElementById('submit').click();
         }
     }
 }
