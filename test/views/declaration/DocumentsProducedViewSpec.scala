@@ -45,7 +45,7 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
   private val mode = Mode.Normal
 
   private val form: Form[DocumentsProduced] = DocumentsProduced.form()
-  private val documentsProducedPage = new documents_produced(mainTemplate)
+  private val documentsProducedPage = instanceOf[documents_produced]
   private def createView(form: Form[DocumentsProduced] = form, cachedDocuments: Seq[DocumentsProduced] = Seq())(
     implicit request: JourneyRequest[_]
   ): Document =
@@ -56,23 +56,21 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
     "have correct message keys" in {
 
       val messages = instanceOf[MessagesApi].preferred(request)
-      messages must haveTranslationFor("supplementary.addDocument.documentTypeCode")
-      messages must haveTranslationFor("supplementary.addDocument.documentIdentifier")
-      messages must haveTranslationFor("supplementary.addDocument.documentIdentifier.hint")
-      messages must haveTranslationFor("supplementary.addDocument.documentIdentifier.error")
-      messages must haveTranslationFor("supplementary.addDocument.documentStatusReason")
-      messages must haveTranslationFor("supplementary.addDocument.documentStatusReason.error")
-      messages must haveTranslationFor("supplementary.addDocument.documentQuantity")
-      messages must haveTranslationFor("supplementary.addDocument.documentQuantity.error")
-      messages must haveTranslationFor("supplementary.addDocument.documentQuantity.error.scale")
-      messages must haveTranslationFor("supplementary.addDocument.documentQuantity.error.precision")
-      messages must haveTranslationFor("supplementary.addDocument.documentStatus")
-      messages must haveTranslationFor("supplementary.addDocument.documentStatus.error")
-      messages must haveTranslationFor("supplementary.addDocument.issuingAuthorityName")
-      messages must haveTranslationFor("supplementary.addDocument.issuingAuthorityName.error.length")
-      messages must haveTranslationFor("supplementary.addDocument.error.maximumAmount")
-      messages must haveTranslationFor("supplementary.addDocument.error.duplicated")
-      messages must haveTranslationFor("supplementary.addDocument.error.notDefined")
+      messages must haveTranslationFor("declaration.addDocument.documentTypeCode")
+      messages must haveTranslationFor("declaration.addDocument.documentIdentifier")
+      messages must haveTranslationFor("declaration.addDocument.documentIdentifier.hint")
+      messages must haveTranslationFor("declaration.addDocument.documentIdentifier.error")
+      messages must haveTranslationFor("declaration.addDocument.documentStatusReason")
+      messages must haveTranslationFor("declaration.addDocument.documentStatusReason.error")
+      messages must haveTranslationFor("declaration.addDocument.documentQuantity")
+      messages must haveTranslationFor("declaration.addDocument.documentQuantity.error")
+      messages must haveTranslationFor("declaration.addDocument.documentStatus")
+      messages must haveTranslationFor("declaration.addDocument.documentStatus.error")
+      messages must haveTranslationFor("declaration.addDocument.issuingAuthorityName")
+      messages must haveTranslationFor("declaration.addDocument.issuingAuthorityName.error.length")
+      messages must haveTranslationFor("declaration.addDocument.error.maximumAmount")
+      messages must haveTranslationFor("declaration.addDocument.error.duplicated")
+      messages must haveTranslationFor("declaration.addDocument.error.notDefined")
     }
   }
 
@@ -81,60 +79,65 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
       val view = createView()
 
       "display page title" in {
-        view.getElementById("title").text() mustBe messagesKey("supplementary.addDocument.title")
+        view.getElementsByTag("h1").text() mustBe messagesKey("declaration.addDocument.title")
       }
 
       "display section header" in {
         view.getElementById("section-header").text() must include("supplementary.summary.yourReferences.header")
       }
 
-      "display header with hint" in {
-        view.getElementById("hint").text() mustBe messagesKey("supplementary.addDocument.hint")
-      }
-
       "display empty input with label for Document type code" in {
-        view.getElementById(s"$documentTypeCodeKey-label").text() mustBe messagesKey("supplementary.addDocument.documentTypeCode")
-        view.getElementById(s"$documentTypeCodeKey").attr("value") mustBe empty
+        view.getElementsByAttributeValue("for", documentTypeCodeKey).text() mustBe messagesKey("declaration.addDocument.documentTypeCode")
+        view.getElementById(s"$documentTypeCodeKey-hint").text() mustBe messagesKey("declaration.addDocument.documentTypeCode.hint")
+        view.getElementById(documentTypeCodeKey).attr("value") mustBe empty
       }
 
       "display empty input with label and hint for Document identifier" in {
-        view.getElementById(s"$documentIdentifierKey-label").text() mustBe messagesKey("supplementary.addDocument.documentIdentifier")
-        view.getElementById(s"$documentIdentifierKey-hint").text() mustBe messagesKey("supplementary.addDocument.documentIdentifier.hint")
-
-        view.getElementById(s"$documentIdentifierKey").attr("value") mustBe empty
+        view.getElementsByAttributeValue("for", documentIdentifierKey).text() mustBe messagesKey("declaration.addDocument.documentIdentifier")
+        view.getElementById(s"$documentIdentifierKey-hint").text() mustBe messagesKey("declaration.addDocument.documentIdentifier.hint")
+        view.getElementById(documentIdentifierKey).attr("value") mustBe empty
       }
 
       "display empty input with label for Document status" in {
-        view.getElementById(s"$documentStatusKey-label").text() mustBe messagesKey("supplementary.addDocument.documentStatus")
+        view.getElementsByAttributeValue("for", documentStatusKey).text() mustBe messagesKey("declaration.addDocument.documentStatus")
+        view.getElementById(s"$documentStatusKey-hint").text() mustBe messagesKey("declaration.addDocument.documentStatus.hint")
         view.getElementById(s"$documentStatusKey").attr("value") mustBe empty
       }
 
       "display empty input with label for Document status reason" in {
-        view.getElementById(s"$documentStatusReasonKey-label").text() mustBe messagesKey("supplementary.addDocument.documentStatusReason")
-        view.getElementById(s"$documentStatusReasonKey").attr("value") mustBe empty
+        view.getElementsByAttributeValue("for", documentStatusReasonKey).text() mustBe messagesKey("declaration.addDocument.documentStatusReason")
+        view.getElementById(s"$documentStatusReasonKey-hint").text() mustBe messagesKey("declaration.addDocument.documentStatusReason.hint")
+        view.getElementById(documentStatusReasonKey).attr("value") mustBe empty
       }
 
       "display empty input with label for Issuing Authority Name" in {
-        view.getElementById(s"$issuingAuthorityNameKey-label").text() mustBe messagesKey("supplementary.addDocument.issuingAuthorityName")
+        view.getElementsByAttributeValue("for", issuingAuthorityNameKey).text() mustBe messagesKey("declaration.addDocument.issuingAuthorityName")
+        view.getElementById(s"$issuingAuthorityNameKey-hint").text() mustBe messagesKey("declaration.addDocument.issuingAuthorityName.hint")
         view.getElementById(issuingAuthorityNameKey).attr("value") mustBe empty
       }
 
       "display empty input with label for Date of Validity" in {
-        view.getElementById(s"$dateOfValidityKey-label").text() mustBe messagesKey("supplementary.addDocument.dateOfValidity")
-        view.getElementById(dateOfValidityKey).attr("value") mustBe empty
+        view.getElementById(dateOfValidityKey).getElementsByTag("legend").text() mustBe messagesKey("declaration.addDocument.dateOfValidity")
+        view.getElementById(s"$dateOfValidityKey-hint").text() mustBe messagesKey("declaration.addDocument.dateOfValidity.hint")
       }
 
       "display empty input with label for Measurement Unit" in {
-        view.getElementById(s"${documentWriteOffKey}_$measurementUnitKey-label").text() mustBe messagesKey(
-          "supplementary.addDocument.measurementUnit"
+        view.getElementById("measurementUnitAndQualifier").getElementsByTag("legend").text() mustBe messagesKey(
+          "declaration.addDocument.measurementUnit.header"
+        )
+        view.getElementsByAttributeValue("for", s"${documentWriteOffKey}_$measurementUnitKey").text() mustBe messagesKey(
+          "declaration.addDocument.measurementUnit"
         )
         view.getElementById(s"${documentWriteOffKey}_$measurementUnitKey").attr("value") mustBe empty
+        view.getElementsByAttributeValue("for", s"${documentWriteOffKey}_$qualifierKey").text() mustBe messagesKey(
+          "declaration.addDocument.qualifier"
+        )
+        view.getElementById(s"${documentWriteOffKey}_$qualifierKey").attr("value") mustBe empty
       }
 
       "display empty input with label for Document quantity" in {
-        view.getElementById(s"${documentWriteOffKey}_$documentQuantityKey-label").text() mustBe
-          messagesKey("supplementary.addDocument.documentQuantity")
-
+        view.getElementsByAttributeValue("for", s"${documentWriteOffKey}_$documentQuantityKey").text() mustBe
+          messagesKey("declaration.addDocument.documentQuantity")
         view.getElementById(s"${documentWriteOffKey}_$documentQuantityKey").attr("value") mustBe empty
       }
 
@@ -148,7 +151,7 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
 
       "display both 'Add' and 'Save and continue' button on page" in {
         val addButton = view.getElementById("add")
-        addButton.text() mustBe "site.add supplementary.addDocument.add.hint"
+        addButton.text() mustBe "site.adddeclaration.addDocument.add.hint"
 
         val saveAndContinueButton = view.getElementById("submit")
         saveAndContinueButton.text() mustBe messagesKey(saveAndContinueCaption)
@@ -169,10 +172,10 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
             .fillAndValidate(correctDocumentsProduced.copy(documentTypeCode = Some(TestHelper.createRandomAlphanumericString(5))))
         )
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink(s"$documentTypeCodeKey", s"#$documentTypeCodeKey")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", s"#$documentTypeCodeKey")
 
-        view.select(s"#error-message-$documentTypeCodeKey-input").text() mustBe messagesKey("supplementary.addDocument.documentTypeCode.error")
+        view must containErrorElementWithMessage("declaration.addDocument.documentTypeCode.error")
       }
 
       "display error for Document identifier" in {
@@ -182,12 +185,10 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
         val view =
           createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentIdentifier)))
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink(s"$documentIdentifierKey", s"#$documentIdentifierKey")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", s"#$documentIdentifierKey")
 
-        view
-          .select(s"#error-message-$documentIdentifierKey-input")
-          .text() mustBe messagesKey("supplementary.addDocument.documentIdentifier.error")
+        view must containErrorElementWithMessage("declaration.addDocument.documentIdentifier.error")
       }
 
       "display error for Document status" in {
@@ -197,10 +198,10 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
             .fillAndValidate(correctDocumentsProduced.copy(documentStatus = Some("ABC")))
         )
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink(s"$documentStatusKey", s"#$documentStatusKey")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", s"#$documentStatusKey")
 
-        view.select(s"#error-message-$documentStatusKey-input").text() mustBe messagesKey("supplementary.addDocument.documentStatus.error")
+        view must containErrorElementWithMessage("declaration.addDocument.documentStatus.error")
       }
 
       "display error for Document status reason" in {
@@ -210,12 +211,10 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
             .fillAndValidate(correctDocumentsProduced.copy(documentStatusReason = Some(TestHelper.createRandomAlphanumericString(36))))
         )
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink(s"$documentStatusReasonKey", s"#$documentStatusReasonKey")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", s"#$documentStatusReasonKey")
 
-        view.select(s"#error-message-$documentStatusReasonKey-input").text() mustBe messagesKey(
-          "supplementary.addDocument.documentStatusReason.error"
-        )
+        view must containErrorElementWithMessage("declaration.addDocument.documentStatusReason.error")
       }
 
       "display error for Issuing Authority Name" in {
@@ -225,11 +224,10 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
             .fillAndValidate(correctDocumentsProduced.copy(issuingAuthorityName = Some(TestHelper.createRandomAlphanumericString(71))))
         )
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink(s"$issuingAuthorityNameKey", s"#$issuingAuthorityNameKey")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", s"#$issuingAuthorityNameKey")
 
-        view.select(s"#error-message-$issuingAuthorityNameKey-input").text() mustBe
-          messagesKey("supplementary.addDocument.issuingAuthorityName.error.length")
+        view must containErrorElementWithMessage("declaration.addDocument.issuingAuthorityName.error")
       }
 
       "display error for Date of Validity" when {
@@ -247,10 +245,10 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
               )
           )
 
-          checkErrorsSummary(view)
-          view must haveFieldErrorLink(s"$dateOfValidityKey", s"#$dateOfValidityKey")
+          view must haveGovukGlobalErrorSummary
+          view must containErrorElementWithTagAndHref("a", s"#$dateOfValidityKey")
 
-          view.select(s"#error-message-$dateOfValidityKey-input").text() mustBe messages("dateTime.date.error.outOfRange")
+          view must containErrorElementWithMessage("dateTime.date.error.outOfRange")
         }
 
         "provided with non-existing month and day" in {
@@ -260,10 +258,23 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
               .bind(correctDocumentsProducedMap ++ Map(s"$dateOfValidityKey.$monthKey" -> "13", s"$dateOfValidityKey.$dayKey" -> "32"))
           )
 
-          checkErrorsSummary(view)
-          view must haveFieldErrorLink(s"$dateOfValidityKey", s"#$dateOfValidityKey")
+          view must haveGovukGlobalErrorSummary
+          view must containErrorElementWithTagAndHref("a", s"#$dateOfValidityKey")
 
-          view.select(s"#error-message-$dateOfValidityKey-input").text() mustBe messages("dateTime.date.error.format")
+          view must containErrorElementWithMessage("dateTime.date.error.format")
+        }
+
+        "provided with partial date" in {
+
+          val view = createView(
+            DocumentsProduced.form
+              .bind(Map(s"$dateOfValidityKey.$monthKey" -> "12", s"$dateOfValidityKey.$dayKey" -> "25"))
+          )
+
+          view must haveGovukGlobalErrorSummary
+          view must containErrorElementWithTagAndHref("a", s"#${dateOfValidityKey}_$yearKey")
+
+          view must containErrorElementWithMessage("dateTime.date.year.error.empty")
         }
       }
 
@@ -275,11 +286,10 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
           )
           val view = createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectMeasurementUnit)))
 
-          checkErrorsSummary(view)
-          view must haveFieldErrorLink(s"${documentWriteOffKey}_$measurementUnitKey", s"#${documentWriteOffKey}_$measurementUnitKey")
+          view must haveGovukGlobalErrorSummary
+          view must containErrorElementWithTagAndHref("a", s"#${documentWriteOffKey}_$measurementUnitKey")
 
-          view.select(s"#error-message-${documentWriteOffKey}_$measurementUnitKey-input").text() mustBe
-            messagesKey("supplementary.addDocument.measurementUnit.error.length")
+          view must containErrorElementWithMessage("declaration.addDocument.measurementUnit.error")
         }
 
         "unit text contains special characters" in {
@@ -287,11 +297,10 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
             correctDocumentsProduced.copy(documentWriteOff = Some(correctDocumentWriteOff.copy(measurementUnit = Some("!@#$"))))
           val view = createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectMeasurementUnit)))
 
-          checkErrorsSummary(view)
-          view must haveFieldErrorLink(s"${documentWriteOffKey}_$measurementUnitKey", s"#${documentWriteOffKey}_$measurementUnitKey")
+          view must haveGovukGlobalErrorSummary
+          view must containErrorElementWithTagAndHref("a", s"#${documentWriteOffKey}_$measurementUnitKey")
 
-          view.select(s"#error-message-${documentWriteOffKey}_$measurementUnitKey-input").text() mustBe
-            messagesKey("supplementary.addDocument.measurementUnit.error.specialCharacters")
+          view must containErrorElementWithMessage("declaration.addDocument.measurementUnit.error")
         }
 
       }
@@ -304,11 +313,10 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
           )
           val view = createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentQuantity)))
 
-          checkErrorsSummary(view)
-          view must haveFieldErrorLink(s"${documentWriteOffKey}_$documentQuantityKey", s"#${documentWriteOffKey}_$documentQuantityKey")
+          view must haveGovukGlobalErrorSummary
+          view must containErrorElementWithTagAndHref("a", s"#${documentWriteOffKey}_$documentQuantityKey")
 
-          view.select(s"#error-message-${documentWriteOffKey}_$documentQuantityKey-input").text() mustBe
-            messagesKey("supplementary.addDocument.documentQuantity.error.precision")
+          view must containErrorElementWithMessage("declaration.addDocument.documentQuantity.error")
         }
 
         "there is scale error" in {
@@ -316,11 +324,10 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
             correctDocumentsProduced.copy(documentWriteOff = Some(correctDocumentWriteOff.copy(documentQuantity = Some(0.000000001D))))
           val view = createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentQuantity)))
 
-          checkErrorsSummary(view)
-          view must haveFieldErrorLink(s"${documentWriteOffKey}_$documentQuantityKey", s"#${documentWriteOffKey}_$documentQuantityKey")
+          view must haveGovukGlobalErrorSummary
+          view must containErrorElementWithTagAndHref("a", s"#${documentWriteOffKey}_$documentQuantityKey")
 
-          view.select(s"#error-message-${documentWriteOffKey}_$documentQuantityKey-input").text() mustBe
-            messagesKey("supplementary.addDocument.documentQuantity.error.scale")
+          view must containErrorElementWithMessage("declaration.addDocument.documentQuantity.error")
         }
 
         "there is error in quantity" in {
@@ -328,44 +335,10 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
             correctDocumentsProduced.copy(documentWriteOff = Some(correctDocumentWriteOff.copy(documentQuantity = Some(-1))))
           val view = createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentQuantity)))
 
-          checkErrorsSummary(view)
-          view must haveFieldErrorLink(s"${documentWriteOffKey}_$documentQuantityKey", s"#${documentWriteOffKey}_$documentQuantityKey")
+          view must haveGovukGlobalErrorSummary
+          view must containErrorElementWithTagAndHref("a", s"#${documentWriteOffKey}_$documentQuantityKey")
 
-          view.select(s"#error-message-${documentWriteOffKey}_$documentQuantityKey-input").text() mustBe
-            messagesKey("supplementary.addDocument.documentQuantity.error")
-        }
-      }
-
-      "display error for Document WriteOff" when {
-
-        "provided with Measurement Unit but no Document Quantity" in {
-
-          val documentsProducedWithIncorrectDocumentWriteOff = correctDocumentsProduced.copy(
-            documentWriteOff = Some(emptyDocumentWriteOff.copy(measurementUnit = correctDocumentWriteOff.measurementUnit))
-          )
-          val view =
-            createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentWriteOff)))
-
-          checkErrorsSummary(view)
-          view must haveFieldErrorLink(s"$documentWriteOffKey", s"#$documentWriteOffKey")
-
-          view.select(s"#error-message-$documentWriteOffKey-input").text() mustBe
-            messagesKey("supplementary.addDocument.error.measurementUnitAndQuantity")
-        }
-
-        "provided with Document Quantity but no Measurement Unit" in {
-
-          val documentsProducedWithIncorrectDocumentWriteOff = correctDocumentsProduced.copy(
-            documentWriteOff = Some(emptyDocumentWriteOff.copy(documentQuantity = correctDocumentWriteOff.documentQuantity))
-          )
-          val view =
-            createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentWriteOff)))
-
-          checkErrorsSummary(view)
-          view must haveFieldErrorLink(s"$documentWriteOffKey", s"#$documentWriteOffKey")
-
-          view.select(s"#error-message-$documentWriteOffKey-input").text() mustBe
-            messagesKey("supplementary.addDocument.error.measurementUnitAndQuantity")
+          view must containErrorElementWithMessage("declaration.addDocument.documentQuantity.error")
         }
       }
 
@@ -375,32 +348,24 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
 
         val view = createView(form)
 
-        checkErrorsSummary(view)
-        view must haveFieldErrorLink(s"$documentTypeCodeKey", s"#$documentTypeCodeKey")
-        view must haveFieldErrorLink(s"$documentIdentifierKey", s"#$documentIdentifierKey")
-        view must haveFieldErrorLink(s"$documentStatusKey", s"#$documentStatusKey")
-        view must haveFieldErrorLink(s"$documentStatusReasonKey", s"#$documentStatusReasonKey")
-        view must haveFieldErrorLink(s"$issuingAuthorityNameKey", s"#$issuingAuthorityNameKey")
-        view must haveFieldErrorLink(s"$dateOfValidityKey", s"#$dateOfValidityKey")
-        view must haveFieldErrorLink(s"${documentWriteOffKey}_$measurementUnitKey", s"#${documentWriteOffKey}_$measurementUnitKey")
-        view must haveFieldErrorLink(s"${documentWriteOffKey}_$documentQuantityKey", s"#${documentWriteOffKey}_$documentQuantityKey")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", s"#${documentTypeCodeKey}")
+        view must containErrorElementWithTagAndHref("a", s"#${documentIdentifierKey}")
+        view must containErrorElementWithTagAndHref("a", s"#${documentStatusKey}")
+        view must containErrorElementWithTagAndHref("a", s"#${documentStatusReasonKey}")
+        view must containErrorElementWithTagAndHref("a", s"#${issuingAuthorityNameKey}")
+        view must containErrorElementWithTagAndHref("a", s"#${dateOfValidityKey}")
+        view must containErrorElementWithTagAndHref("a", s"#${documentWriteOffKey}_$measurementUnitKey")
+        view must containErrorElementWithTagAndHref("a", s"#${documentWriteOffKey}_$documentQuantityKey")
 
-        view.select(s"#error-message-$documentTypeCodeKey-input").text() mustBe messagesKey("supplementary.addDocument.documentTypeCode.error")
-        view
-          .select(s"#error-message-$documentIdentifierKey-input")
-          .text() mustBe messagesKey("supplementary.addDocument.documentIdentifier.error")
-
-        view.select(s"#error-message-$documentStatusKey-input").text() mustBe messagesKey("supplementary.addDocument.documentStatus.error")
-        view.select(s"#error-message-$documentStatusReasonKey-input").text() mustBe messagesKey(
-          "supplementary.addDocument.documentStatusReason.error"
-        )
-        view.select(s"#error-message-$issuingAuthorityNameKey-input").text() mustBe
-          messagesKey("supplementary.addDocument.issuingAuthorityName.error.length")
-        view.select(s"#error-message-$dateOfValidityKey-input").text() mustBe messagesKey("dateTime.date.error.format")
-        view.select(s"#error-message-${documentWriteOffKey}_$measurementUnitKey-input").text() mustBe
-          messagesKey("supplementary.addDocument.measurementUnit.error.length")
-        view.select(s"#error-message-${documentWriteOffKey}_$documentQuantityKey-input").text() mustBe
-          messagesKey("supplementary.addDocument.documentQuantity.error.precision")
+        view must containErrorElementWithMessage("declaration.addDocument.documentTypeCode.error")
+        view must containErrorElementWithMessage("declaration.addDocument.documentIdentifier.error")
+        view must containErrorElementWithMessage("declaration.addDocument.documentStatus.error")
+        view must containErrorElementWithMessage("declaration.addDocument.documentStatusReason.error")
+        view must containErrorElementWithMessage("declaration.addDocument.issuingAuthorityName.error")
+        view must containErrorElementWithMessage("dateTime.date.error.format")
+        view must containErrorElementWithMessage("declaration.addDocument.measurementUnit.error")
+        view must containErrorElementWithMessage("declaration.addDocument.documentQuantity.error")
       }
     }
   }
@@ -417,7 +382,7 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
         view.getElementById(documentIdentifierKey).attr("value") must equal(data.documentIdentifier.value)
         view.getElementById(documentStatusKey).attr("value") must equal(data.documentStatus.value)
         view.getElementById(documentStatusReasonKey).attr("value") must equal(data.documentStatusReason.value)
-        view.getElementById(issuingAuthorityNameKey).attr("value") must equal(data.issuingAuthorityName.value)
+        view.getElementById(issuingAuthorityNameKey).text() must equal(data.issuingAuthorityName.value)
         view.getElementById(s"${dateOfValidityKey}_$dayKey").attr("value") must equal(data.dateOfValidity.value.day.value.toString)
         view.getElementById(s"${dateOfValidityKey}_$monthKey").attr("value") must equal(data.dateOfValidity.value.month.value.toString)
         view.getElementById(s"${dateOfValidityKey}_$yearKey").attr("value") must equal(data.dateOfValidity.value.year.value.toString)
@@ -432,38 +397,21 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
         val view = createView(cachedDocuments = Seq(correctDocumentsProduced))
 
         "have header row" that {
-          val header = view.selectFirst(".documents thead tr")
+          val header = view.getElementById("documents_produced")
 
           "have header for Document Type" in {
-            header.selectFirst(".document-type").text() mustBe messagesKey("supplementary.addDocument.documentTypeCode")
+            header.getElementsByClass("govuk-table__header").get(0).text() mustBe messagesKey("declaration.addDocument.summary.documentTypeCode")
           }
 
           "have header for Document Identifier" in {
-            header.selectFirst(".document-identifier").text() mustBe messagesKey("supplementary.addDocument.documentIdentifier")
+            header.getElementsByClass("govuk-table__header").get(1).text() mustBe messagesKey("declaration.addDocument.summary.documentIdentifier")
           }
-          "have header for Document Status" in {
-            header.selectFirst(".document-status").text() mustBe messagesKey("supplementary.addDocument.documentStatus")
-          }
-          "have header for Document Status Reason" in {
-            header.selectFirst(".document-status-reason").text() mustBe messagesKey("supplementary.addDocument.documentStatusReason")
-          }
-          "have header for Document Issuing Authroity" in {
-            header.selectFirst(".document-issuing-authority").text() mustBe messagesKey("supplementary.addDocument.issuingAuthorityName")
-          }
-          "have header for Document Date of Validtiy" in {
-            header.selectFirst(".date-of-validity").text() mustBe messagesKey("supplementary.addDocument.dateOfValidity")
-          }
-          "have header for Document Measurement Unit" in {
-            header.selectFirst(".measurement-unit").text() mustBe messagesKey("supplementary.addDocument.measurementUnit")
-          }
-          "have header for Document Quntity" in {
-            header.selectFirst(".document-quantity").text() mustBe messagesKey("supplementary.addDocument.documentQuantity")
-          }
+
         }
 
         "have data row" that {
 
-          val row = view.select(".documents tbody tr").first()
+          val row = view.selectFirst("#documents_produced tbody tr")
 
           "have Document Type" in {
             row.selectFirst(".document-type").text() must equal(correctDocumentsProduced.documentTypeCode.get)
@@ -472,32 +420,10 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
           "have Document Identifier" in {
             row.selectFirst(".document-identifier").text() must equal(correctDocumentsProduced.documentIdentifier.get)
           }
-          "have Document Status" in {
-            row.selectFirst(".document-status").text() must equal(correctDocumentsProduced.documentStatus.get)
-          }
-          "have Document Status Reason" in {
-            row.selectFirst(".document-status-reason").text() must equal(correctDocumentsProduced.documentStatusReason.get)
-          }
-
-          "have Document Issuing Authority" in {
-            row.selectFirst(".document-issuing-authority").text() must equal(correctDocumentsProduced.issuingAuthorityName.get)
-          }
-
-          "have Document Date of Validity" in {
-            row.selectFirst(".date-of-validity").text() must equal(correctDocumentsProduced.dateOfValidity.get.toString)
-          }
-
-          "have Document Measurment Unit" in {
-            row.selectFirst(".measurement-unit").text() must equal(correctDocumentsProduced.documentWriteOff.get.measurementUnit.get)
-          }
-
-          "have Document Quantitiy" in {
-            row.selectFirst(".document-quantity").text() must equal(correctDocumentsProduced.documentWriteOff.get.documentQuantity.get.toString)
-          }
 
           "have remove button" in {
-            val removeButton = row.selectFirst(".actions .remove")
-            removeButton.text() mustBe messages("site.remove supplementary.addDocument.remove.hint")
+            val removeButton = row.selectFirst(".remove_button button")
+            removeButton.text() mustBe messages("site.removedeclaration.addDocument.remove.hint")
             removeButton.attr("value") mustBe correctDocumentsProduced.toJson.toString()
           }
         }

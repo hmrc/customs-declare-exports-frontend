@@ -28,28 +28,28 @@
     field = form(s"${addressPrefix}.fullName"),
     labelKey = s"$labelPrefix.fullName",
     labelClasses = "govuk-label",
-    inputClasses = Some("govuk-input govuk-input--width-30")
+    defaultInputClasses = "govuk-input--width-30"
 )
 
 @exportsInputText(
     field = form(s"${addressPrefix}.addressLine"),
     labelKey = s"$labelPrefix.addressLine",
     labelClasses = "govuk-label",
-    inputClasses = Some("govuk-input--width-30")
+    defaultInputClasses = "govuk-input--width-30"
 )
 
 @exportsInputText(
     field = form(s"${addressPrefix}.townOrCity"),
     labelKey = s"$labelPrefix.townOrCity",
     labelClasses = "govuk-label",
-    inputClasses = Some("govuk-input govuk-input--width-20")
+    defaultInputClasses = "govuk-input govuk-input--width-20"
 )
 
 @exportsInputText(
     field = form(s"${addressPrefix}.postCode"),
     labelKey = s"$labelPrefix.postCode",
     labelClasses = "govuk-label",
-    inputClasses = Some("govuk-input govuk-input--width-10")
+    defaultInputClasses = "govuk-input govuk-input--width-10"
 )
 
 @components.fields.field_accessible_autocomplete(

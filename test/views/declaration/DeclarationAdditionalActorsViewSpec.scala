@@ -76,7 +76,7 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessag
 
       "display section header" in {
 
-        view.getElementById("section-header").text() must include(messages("supplementary.summary.parties.header"))
+        view.getElementById("section-header").text() must include(messages("declaration.summary.parties.header"))
       }
 
       "display five radio buttons with description (not selected)" in {

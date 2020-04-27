@@ -49,15 +49,15 @@ object PackageInformation extends DeclarationPage {
 
   private val mappingTypesOfPackagesOptional: Mapping[Option[String]] = optional(
     text()
-      .verifying("supplementary.packageInformation.typesOfPackages.error", isContainedIn(PackageTypes.all.map(_.code)))
+      .verifying("declaration.packageInformation.typesOfPackages.error", isContainedIn(PackageTypes.all.map(_.code)))
   )
 
   private val mappingTypesOfPackagesMandatory: Mapping[Option[String]] =
-    mappingTypesOfPackagesOptional.verifying("supplementary.packageInformation.typesOfPackages.empty", isPresent)
+    mappingTypesOfPackagesOptional.verifying("declaration.packageInformation.typesOfPackages.empty", isPresent)
 
   private val mappingNumberOfPackagesOptional: Mapping[Option[Int]] = optional(
     number()
-      .verifying("supplementary.packageInformation.numberOfPackages.error", isInRange(NumberOfPackagesLimitLower, NumberOfPackagesLimitUpper))
+      .verifying("declaration.packageInformation.numberOfPackages.error", isInRange(NumberOfPackagesLimitLower, NumberOfPackagesLimitUpper))
   )
 
   private val mappingNumberOfPackagesMandatory: Mapping[Option[Int]] =
@@ -65,12 +65,12 @@ object PackageInformation extends DeclarationPage {
 
   private val mappingShippingMarksOptional: Mapping[Option[String]] = optional(
     text()
-      .verifying("supplementary.packageInformation.shippingMarks.characterError", isEmpty or isAlphanumericWithAllowedSpecialCharacters)
-      .verifying("supplementary.packageInformation.shippingMarks.lengthError", isEmpty or noLongerThan(42))
+      .verifying("declaration.packageInformation.shippingMarks.characterError", isEmpty or isAlphanumericWithAllowedSpecialCharacters)
+      .verifying("declaration.packageInformation.shippingMarks.lengthError", isEmpty or noLongerThan(42))
   )
 
   private val mappingShippingMarksMandatory: Mapping[Option[String]] =
-    mappingShippingMarksOptional.verifying("supplementary.packageInformation.shippingMarks.empty", isPresent)
+    mappingShippingMarksOptional.verifying("declaration.packageInformation.shippingMarks.empty", isPresent)
 
   val mappingAllFieldsMandatory = Forms
     .mapping(
@@ -85,7 +85,7 @@ object PackageInformation extends DeclarationPage {
       "numberOfPackages" -> mappingNumberOfPackagesOptional,
       "shippingMarks" -> mappingShippingMarksOptional
     )(PackageInformation.apply)(PackageInformation.unapply)
-    .verifying("supplementary.packageInformation.empty", _.nonEmpty)
+    .verifying("declaration.packageInformation.empty", _.nonEmpty)
 
   def form(declarationType: DeclarationType): Form[PackageInformation] = declarationType match {
     case CLEARANCE => Form(mappingAllFieldsOptional)

@@ -21,7 +21,10 @@ import controllers.util.{Add, SaveAndContinue}
 import forms.declaration.PackageInformation
 import models.DeclarationType._
 import models.Mode
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import services.cache.ExportsItemBuilder
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
@@ -30,7 +33,7 @@ import views.html.declaration.package_information
 class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerMocks with ExportsItemBuilder {
 
   trait SetUp {
-    val packageInformationPage = new package_information(mainTemplate)
+    val packageInformationPage = mock[package_information]
 
     val controller = new PackageInformationController(
       mockAuthAction,
@@ -49,6 +52,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
     authorizedUser()
     withNewCaching(aDeclaration(withType(SUPPLEMENTARY)))
     setupErrorHandler()
+    when(packageInformationPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   "Package Information Controller" should {
