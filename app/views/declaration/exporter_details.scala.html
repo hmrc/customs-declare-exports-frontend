@@ -87,38 +87,34 @@
 
     @formHelper(action = ExporterDetailsController.saveAddress(mode), 'autoComplete -> "off") {
 
+        @errorSummary(form.errors)
 
+        @sectionHeader(messages("declaration.summary.parties.header"))
 
-    @errorSummary(form.errors)
+        @pageTitle(messages("declaration.exporter-detail.title"))
 
-    @sectionHeader(messages("declaration.summary.parties.header"))
+        @pageHint
 
-    @pageTitle(messages("declaration.exporter-detail.title"))
+        @exportsInputText(
+        field = form("details.eori"),
+        labelKey = "declaration.exporter-detail.eori"
+        )
 
-    @pageHint
+        @or
 
-
-
-    @exportsInputText(
-    field = form("details.eori"),
-    labelKey = "declaration.exporter-detail.eori"
-    )
-
-    @or
-
-    @exportsName
+        @exportsName
 
 
         @govukFieldset(Fieldset(
             attributes = Map("id" -> "details"),
             legend = Some(Legend(
-            content = Text(messages("")),
-            classes = "govuk-label"
+                content = Text(messages("")),
+                classes = "govuk-label"
             )),
             html = HtmlFormat.fill(immutable.Seq(
-            groupAddress,
-            tariff,
-            saveButtons()
+                groupAddress,
+                tariff,
+                saveButtons()
             ))
         ))
     }

@@ -958,7 +958,6 @@ declaration.commodityMeasure.units.hint = Enter weight in kilograms
 
 declaration.summary.locations.header = Locations
 declaration.summary.parties.header = Parties
-supplementary.summary.parties.header = Parties
 supplementary.summary.yourReferences.header = Your references
 
 declaration.summary.normal-header = Check your answers before making this declaration
