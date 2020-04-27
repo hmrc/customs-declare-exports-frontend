@@ -65,31 +65,6 @@
                         )
                     )
                 ))
-            )),
-
-
-        declarationData.locations.officeOfExit.flatMap(officeOfExit =>
-            officeOfExit.circumstancesCode.map(code =>
-                SummaryListRow(
-                    classes = "location-expressConsignment-row",
-                    key = Key(
-                        content = Text(messages("declaration.summary.locations.expressConsignment"))
-                    ),
-                    value = Value(
-                        content = Text(code)
-                    ),
-                    actions = Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = controllers.declaration.routes.OfficeOfExitController.displayPage(mode).url,
-                                content = Text(messages("site.change")),
-                                visuallyHiddenText = Some(messages("declaration.summary.locations.expressConsignment.change"))
-                            )
-                        )
-                    ))
-                )
-            )
-        ))
-    )
-
+            ))
+    ))
 }

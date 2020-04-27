@@ -21,11 +21,10 @@ import java.util.UUID
 
 import forms.common.{Address, Eori}
 import forms.declaration.DispatchLocation.AllowedDispatchLocations.OutsideEU
-import forms.declaration._
+import forms.declaration.{OfficeOfExit, _}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.declaration.countries.Country
-import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Ducr, Lrn}
 import models.DeclarationStatus.DeclarationStatus
 import models.DeclarationType.DeclarationType
@@ -339,11 +338,11 @@ trait ExportsDeclarationBuilder {
   def withoutOfficeOfExit(): ExportsDeclarationModifier =
     cache => cache.copy(locations = cache.locations.copy(officeOfExit = None))
 
-  def withOfficeOfExit(officeId: String = "", circumstancesCode: Option[String] = None): ExportsDeclarationModifier =
-    withOptionalOfficeOfExit(Some(officeId), circumstancesCode)
+  def withOfficeOfExit(officeId: String = "", answer: String = AllowedOfficeOfExitAnswers.no): ExportsDeclarationModifier =
+    withOptionalOfficeOfExit(Some(officeId), answer)
 
-  def withOptionalOfficeOfExit(officeId: Option[String] = None, circumstancesCode: Option[String] = None): ExportsDeclarationModifier =
-    cache => cache.copy(locations = cache.locations.copy(officeOfExit = Some(OfficeOfExit(officeId, circumstancesCode))))
+  def withOptionalOfficeOfExit(officeId: Option[String] = None, answer: String = AllowedOfficeOfExitAnswers.no): ExportsDeclarationModifier =
+    cache => cache.copy(locations = cache.locations.copy(officeOfExit = Some(OfficeOfExit(officeId, answer))))
 
   def withTransportPayment(data: Option[TransportPayment]): ExportsDeclarationModifier =
     cache => {

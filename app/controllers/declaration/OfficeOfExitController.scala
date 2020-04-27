@@ -18,7 +18,8 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitClearance, OfficeOfExitStandard, OfficeOfExitSupplementary}
+import forms.declaration.OfficeOfExit.form
+import forms.declaration.{AllowedOfficeOfExitAnswers, OfficeOfExit}
 import javax.inject.Inject
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
@@ -26,11 +27,9 @@ import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import play.twirl.api.Html
 import services.cache.ExportsCacheService
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.officeOfExit._
+import views.html.declaration.office_of_exit
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -39,100 +38,45 @@ class OfficeOfExitController @Inject()(
   journeyType: JourneyAction,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  officeOfExitSupplementaryPage: office_of_exit_supplementary,
-  officeOfExitStandardPage: office_of_exit_standard,
-  officeOfExitClearancePage: office_of_exit_clearance,
+  officeOfExitPage: office_of_exit,
   override val exportsCacheService: ExportsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
-  import forms.declaration.officeOfExit.OfficeOfExitForms._
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.declarationType match {
-      case DeclarationType.SUPPLEMENTARY                                                      => Ok(supplementaryPage(mode))
-      case DeclarationType.CLEARANCE                                                          => Ok(clearancePage(mode))
-      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL => Ok(standardPage(mode))
+    request.cacheModel.locations.officeOfExit match {
+      case Some(data) => Ok(officeOfExitPage(mode, form().fill(data)))
+      case _          => Ok(officeOfExitPage(mode, form()))
     }
   }
-
-  private def supplementaryPage(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Html =
-    request.cacheModel.locations.officeOfExit match {
-      case Some(data) => officeOfExitSupplementaryPage(mode, supplementaryForm().fill(OfficeOfExitSupplementary(data)))
-      case _          => officeOfExitSupplementaryPage(mode, supplementaryForm())
-    }
-
-  private def standardPage(mode: Mode)(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Html =
-    request.cacheModel.locations.officeOfExit match {
-      case Some(data) => officeOfExitStandardPage(mode, standardForm().fill(OfficeOfExitStandard(data)))
-      case _          => officeOfExitStandardPage(mode, standardForm())
-    }
-
-  private def clearancePage(mode: Mode)(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Html =
-    request.cacheModel.locations.officeOfExit match {
-      case Some(data) => officeOfExitClearancePage(mode, clearanceForm().fill(OfficeOfExitClearance(data)))
-      case _          => officeOfExitClearancePage(mode, clearanceForm())
-    }
 
   def saveOffice(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    request.declarationType match {
-      case DeclarationType.SUPPLEMENTARY                                                      => saveSupplementaryOffice(mode)
-      case DeclarationType.CLEARANCE                                                          => saveClearanceOffice(mode)
-      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL => saveStandardOffice(mode)
-    }
+    form()
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[OfficeOfExit]) => {
+          val formWithAdjustedErrors = formWithErrors
+
+          Future.successful(BadRequest(officeOfExitPage(mode, formWithAdjustedErrors)))
+        },
+        form =>
+          updateCache(form)
+            .map(_ => navigator.continueTo(mode, nextPage(request.declarationType, form.answer)))
+      )
   }
 
-  private def saveSupplementaryOffice(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    supplementaryForm()
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[OfficeOfExitSupplementary]) => Future.successful(BadRequest(officeOfExitSupplementaryPage(mode, formWithErrors))),
-        form =>
-          updateCache(form)
-            .map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
-      )
-
-  private def saveStandardOffice(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    standardForm()
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[OfficeOfExitStandard]) => {
-          val formWithAdjustedErrors = formWithErrors
-
-          Future.successful(BadRequest(officeOfExitStandardPage(mode, formWithAdjustedErrors)))
-        },
-        form =>
-          updateCache(form)
-            .map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
-      )
-
-  private def saveClearanceOffice(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    clearanceForm()
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[OfficeOfExitClearance]) => {
-          val formWithAdjustedErrors = formWithErrors
-
-          Future.successful(BadRequest(officeOfExitClearancePage(mode, formWithAdjustedErrors)))
-        },
-        form =>
-          updateCache(form)
-            .map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
-      )
-
-  private def updateCache(formData: OfficeOfExitSupplementary)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData)))))
-
-  private def updateCache(formData: OfficeOfExitStandard)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData)))))
-
-  private def updateCache(formData: OfficeOfExitClearance)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData)))))
-
-  private def nextPage(declarationType: DeclarationType): Mode => Call =
-    declarationType match {
-      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
-        controllers.declaration.routes.TotalNumberOfItemsController.displayPage
-      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
-        controllers.declaration.routes.PreviousDocumentsController.displayPage
+  private def nextPage(declarationType: DeclarationType, answer: String): Mode => Call =
+    if (answer == AllowedOfficeOfExitAnswers.no) {
+      controllers.declaration.routes.TotalNumberOfItemsController.displayPage
+    } else {
+      declarationType match {
+        case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
+          controllers.declaration.routes.TotalNumberOfItemsController.displayPage
+        case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
+          controllers.declaration.routes.PreviousDocumentsController.displayPage
+      }
     }
+
+  private def updateCache(formData: OfficeOfExit)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(officeOfExit = Some(formData))))
 }

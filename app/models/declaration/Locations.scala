@@ -16,9 +16,8 @@
 
 package models.declaration
 
-import forms.declaration._
+import forms.declaration.{OfficeOfExit, _}
 import forms.declaration.countries.Country
-import forms.declaration.officeOfExit.OfficeOfExit
 import models.ExportsDeclaration
 import play.api.libs.json.Json
 
