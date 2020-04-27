@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.42
+// @version      1.43
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -221,7 +221,7 @@ function consignmentRefereences(){
 function exporterDetails(){
     if (currentPageIs("/customs-declare-exports/declaration/exporter-details")) {
         document.getElementById('details_eori').value = 'GB717572504502801';
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('submit').click()
     }
 }
 
@@ -233,7 +233,7 @@ function consigneeDetails(){
         document.getElementById('details_address_postCode').value = '10001';
 
         selectFromAutoPredict(document.getElementById('details_address_country-container'), "United States of America");
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('submit').click()
     }
 }
 
