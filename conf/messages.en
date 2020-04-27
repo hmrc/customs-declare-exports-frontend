@@ -321,7 +321,7 @@ declaration.exporter-details.help-item1 = Exporter’s EORI number, go to data e
 declaration.exporter-details.help-item2 = Exporter’s name and business address, go to data element 3/1 Exporter
 declaration.exporter-detail.title = Who is the exporter?
 declaration.exporter-detail.title.hint = Enter the exporter’s EORI number or name and business address.
-
+declaration.exporter-detail.addressHeading = Exporter’s name and address
 
 declaration.declarant.title = Is this your EORI number?
 declaration.declarant.titleQuestion = Is your EORI number {0}?
