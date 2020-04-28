@@ -16,6 +16,7 @@
 
 package views.cancellation
 
+import base.Injector
 import base.TestHelper.createRandomAlphanumericString
 import controllers.routes
 import forms.Choice.AllowedChoiceValues.CancelDec
@@ -30,31 +31,22 @@ import views.html.cancel_declaration
 import views.tags.ViewTest
 
 @ViewTest
-class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with Stubs {
+class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
   private val form: Form[CancelDeclaration] = CancelDeclaration.form
-  private val cancelDeclarationPage = new cancel_declaration(mainTemplate)
+  private val cancelDeclarationPage = instanceOf[cancel_declaration]
 
-  def testView(
-    functionalReferenceId: String,
-    mrn: String,
-    statementDescription: String,
-    cancellationReason: String,
-    elementId: String,
-    hrefPageLink: String,
-    idOfErrorElement: String,
-    expectedMessage: String
-  ): Unit = {
+  def testView(mrn: String, description: String, key: String, errorType: String): Unit = {
 
     val view = createView(
       CancelDeclaration.form
-        .fillAndValidate(CancelDeclaration(Lrn(functionalReferenceId), mrn, statementDescription, cancellationReason))
+        .fillAndValidate(CancelDeclaration(Lrn("1SA123456789012-1FSA1234567"), mrn, description, NoLongerRequired.toString))
     )
 
-    view must haveGlobalErrorSummary
-    view must haveFieldErrorLink(elementId, hrefPageLink)
+    view must haveGovukGlobalErrorSummary
+    view must containErrorElementWithTagAndHref("a", s"#$key")
 
-    view.getElementById(idOfErrorElement).text() mustBe expectedMessage
+    view must containErrorElementWithMessage(messages(s"cancellation.$key.error.$errorType"))
   }
 
   private def createView(form: Form[CancelDeclaration] = form): Document =
@@ -71,7 +63,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
 
       val view = createView()
 
-      view.getElementById("functionalReferenceId-label").text() mustBe messages("cancellation.functionalReferenceId")
+      view.getElementsByAttributeValue("for", "functionalReferenceId").text() mustBe messages("cancellation.functionalReferenceId")
       view.getElementById("functionalReferenceId").attr("value") mustBe empty
     }
 
@@ -79,7 +71,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
 
       val view = createView()
 
-      view.getElementById("mrn-label").text() mustBe messages("cancellation.mrn")
+      view.getElementsByAttributeValue("for", "mrn").text() mustBe messages("cancellation.mrn")
       view.getElementById("mrn").attr("value") mustBe empty
     }
 
@@ -87,16 +79,8 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
 
       val view = createView()
 
-      view.getElementById("statementDescription-label").text() mustBe messages("cancellation.statementDescription")
+      view.getElementsByAttributeValue("for", "statementDescription").text() mustBe messages("cancellation.statementDescription")
       view.getElementById("statementDescription").attr("value") mustBe empty
-    }
-
-    "display empty input with label for 'Country'" in {
-
-      val view = createView()
-
-      view.getElementById("changeReason-label").text() mustBe messages("cancellation.changeReason")
-      view.getElementById("changeReason").attr("value") mustBe empty
     }
 
     "display three radio buttons with description (not selected)" in {
@@ -105,17 +89,17 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
 
       val noLongerRequired = view.getElementById("noLongerRequired")
       noLongerRequired.attr("checked") mustBe empty
-      val noLongerRequiredLabel = view.getElementById("noLongerRequired-label")
+      val noLongerRequiredLabel = view.getElementsByAttributeValue("for", "noLongerRequired")
       noLongerRequiredLabel.text() mustBe messages("cancellation.reason.noLongerRequired")
 
       val otherReason = view.getElementById("otherReason")
       otherReason.attr("checked") mustBe empty
-      val otherReasonLabel = view.getElementById("otherReason-label")
+      val otherReasonLabel = view.getElementsByAttributeValue("for", "otherReason")
       otherReasonLabel.text() mustBe messages("cancellation.reason.otherReason")
 
       val duplication = view.getElementById("duplication")
       duplication.attr("checked") mustBe empty
-      val duplicationLabel = view.getElementById("duplication-label")
+      val duplicationLabel = view.getElementsByAttributeValue("for", "duplication")
       duplicationLabel.text() mustBe messages("cancellation.reason.duplication")
     }
 
@@ -142,27 +126,27 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
       val view = createView(CancelDeclaration.form.bind(Map[String, String]()))
 
       "functionalReferenceID is empty" in {
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("functionalReferenceId", "#functionalReferenceId")
-        view.getElementById("error-message-functionalReferenceId-input").text() mustBe messages("error.required")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#functionalReferenceId")
+        view must containErrorElementWithMessage("error.required")
       }
 
       "mrn is empty" in {
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("mrn", "#mrn")
-        view.getElementById("error-message-mrn-input").text() mustBe messages("error.required")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#mrn")
+        view must containErrorElementWithMessage("error.required")
       }
 
       "statementDescription is empty" in {
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("statementDescription", "#statementDescription")
-        view.getElementById("error-message-statementDescription-input").text() mustBe messages("error.required")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#statementDescription")
+        view must containErrorElementWithMessage("error.required")
       }
 
       "changeReason is empty" in {
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("changeReason", "#changeReason")
-        view.getElementById("error-message-changeReason-input").text() mustBe messages("cancellation.changeReason.error.wrongValue")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#changeReason")
+        view must containErrorElementWithMessage("cancellation.changeReason.error.wrongValue")
       }
     }
 
@@ -181,11 +165,10 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
             )
         )
 
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("functionalReferenceId", "#functionalReferenceId")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#functionalReferenceId")
 
-        view.getElementById("error-message-functionalReferenceId-input").text() mustBe
-          messages("cancellation.functionalReferenceId.error.length")
+        view must containErrorElementWithMessage("cancellation.functionalReferenceId.error.length")
       }
 
       "is entered but is in the wrong format" in {
@@ -195,11 +178,10 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
             .fillAndValidate(CancelDeclaration(Lrn("12345566++"), "123456789", "Some Description", NoLongerRequired.toString))
         )
 
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("functionalReferenceId", "#functionalReferenceId")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#functionalReferenceId")
 
-        view.getElementById("error-message-functionalReferenceId-input").text() mustBe
-          messages("cancellation.functionalReferenceId.error.specialCharacter")
+        view must containErrorElementWithMessage("cancellation.functionalReferenceId.error.specialCharacter")
       }
     }
 
@@ -214,25 +196,15 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
             )
         )
 
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("mrn", "#mrn")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#mrn")
 
-        view.getElementById("error-message-mrn-input").text() mustBe
-          messages("cancellation.mrn.error.tooLong")
+        view must containErrorElementWithMessage("cancellation.mrn.error.tooLong")
       }
 
       "is empty" in {
 
-        testView(
-          "1SA123456789012-1FSA1234567",
-          "",
-          "Some Description",
-          NoLongerRequired.toString,
-          "mrn",
-          "#mrn",
-          "error-message-mrn-input",
-          messages("cancellation.mrn.error.empty")
-        )
+        testView("", "Some Description", "mrn", "empty")
       }
 
       "is entered but is in the wrong format" in {
@@ -242,11 +214,10 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
             .fillAndValidate(CancelDeclaration(Lrn("1SA123456789012-1FSA1234567"), "1234567890123-", "Some Description", NoLongerRequired.toString))
         )
 
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("mrn", "#mrn")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#mrn")
 
-        view.getElementById("error-message-mrn-input").text() mustBe
-          messages("cancellation.mrn.error.wrongFormat")
+        view must containErrorElementWithMessage("cancellation.mrn.error.wrongFormat")
       }
     }
 
@@ -254,30 +225,13 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
 
       "is entered but is too long" in {
 
-        testView(
-          "1SA123456789012-1FSA1234567",
-          "123456789",
-          createRandomAlphanumericString(600),
-          NoLongerRequired.toString,
-          "statementDescription",
-          "#statementDescription",
-          "error-message-statementDescription-input",
-          messages("cancellation.statementDescription.error.invalid")
-        )
+        val longDesc = createRandomAlphanumericString(600)
+        testView("123456789", longDesc, "statementDescription", "invalid")
       }
 
       "is empty " in {
 
-        testView(
-          "1SA123456789012-1FSA1234567",
-          "123456789",
-          "",
-          NoLongerRequired.toString,
-          "statementDescription",
-          "#statementDescription",
-          "error-message-statementDescription-input",
-          messages("cancellation.statementDescription.error.empty")
-        )
+        testView("123456789", "", "statementDescription", "empty")
       }
 
       "is entered but is in the wrong format" in {
@@ -289,11 +243,10 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
             )
         )
 
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("statementDescription", "#statementDescription")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#statementDescription")
 
-        view.getElementById("error-message-statementDescription-input").text() mustBe
-          messages("cancellation.statementDescription.error.invalid")
+        view must containErrorElementWithMessage("cancellation.statementDescription.error.invalid")
       }
     }
 
@@ -305,11 +258,10 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
             .fillAndValidate(CancelDeclaration(Lrn("1SA123456789012-1FSA1234567"), "1234567890123", "Some Description", "wrong value"))
         )
 
-        view must haveGlobalErrorSummary
-        view must haveFieldErrorLink("changeReason", "#changeReason")
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#changeReason")
 
-        view.getElementById("error-message-changeReason-input").text() mustBe
-          messages("cancellation.changeReason.error.wrongValue")
+        view must containErrorElementWithMessage("cancellation.changeReason.error.wrongValue")
       }
     }
   }
