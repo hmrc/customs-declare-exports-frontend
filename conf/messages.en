@@ -322,7 +322,7 @@ declaration.exporter-details.help-item1 = Exporter’s EORI number, go to data e
 declaration.exporter-details.help-item2 = Exporter’s name and business address, go to data element 3/1 Exporter
 declaration.exporter-detail.title = Who is the exporter?
 declaration.exporter-detail.title.hint = Enter the exporter’s EORI number or name and business address.
-
+declaration.exporter-detail.addressHeading = Exporter’s name and address
 
 declaration.declarant.title = Is this your EORI number?
 declaration.declarant.titleQuestion = Is your EORI number {0}?
@@ -916,7 +916,7 @@ declaration.natureOfTransaction.error = Nature of transaction type not allowed w
 declaration.natureOfTransaction.help.bodyText = Go to data element 8/5 Nature of Transaction in the {0}.
 
 declaration.packageInformation.title = Package Information
-declaration.packageInformation.remove = Remove Packaging Information 
+declaration.packageInformation.remove = Remove Packaging Information
 declaration.packageInformation.remove.hint = Remove package type {0} shipping reference {1}
 declaration.packageInformation.add.hint = Add packaging information
 declaration.packageInformation.table.heading= 1 Package added

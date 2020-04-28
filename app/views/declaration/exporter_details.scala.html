@@ -68,7 +68,7 @@
 
 @exportsName = {
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-        @messages("declaration.exporter-detail.title.hint")
+        @messages("declaration.exporter-detail.addressHeading")
     </legend>
 }
 
@@ -79,7 +79,6 @@
 @groupAddress = {
     @group_address(form,"declaration.address","details.address")
 }
-
 @govukLayout(
     title = Title("declaration.exporter-detail.title", "declaration.summary.parties.header"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ExporterDetails, mode)))){
@@ -97,19 +96,18 @@
         @exportsInputText(
             field = form("details.eori"),
             labelKey = "declaration.exporter-detail.eori"
-        )
+         )
 
         @or
 
-        @exportsName
-
         @govukFieldset(Fieldset(
             attributes = Map("id" -> "details"),
-            legend = Some(Legend(
-                content = Text(messages("")),
-                classes = "govuk-label"
+                legend = Some(Legend(
+                    content = Text(messages("")),
+                    classes = "govuk-label"
             )),
             html = HtmlFormat.fill(immutable.Seq(
+                exportsName,
                 groupAddress,
                 tariff,
                 saveButtons()
