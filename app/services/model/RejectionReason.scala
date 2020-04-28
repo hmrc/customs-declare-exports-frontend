@@ -28,7 +28,8 @@ import scala.io.Source
 case class RejectionReason(code: String, cdsDescription: String, exportsDescription: String, pointer: Option[Pointer])
 
 object RejectionReason {
-  val allRejectedErrors: List[RejectionReason] = {
+
+  val allRejectionReasons: List[RejectionReason] = {
     val reader =
       CSVReader.open(Source.fromURL(getClass.getClassLoader.getResource("code-lists/errors-dms-rej-list.csv"), "UTF-8"))
 
@@ -37,10 +38,13 @@ object RejectionReason {
     errors.map(RejectionReason.apply)
   }
 
+  def unknown(errorCode: String, pointer: Option[Pointer]) = RejectionReason(errorCode, "Unknown error", "Unknown error", pointer)
+
   implicit val format: OFormat[RejectionReason] = Json.format[RejectionReason]
   private val logger = Logger(this.getClass)
 
   def apply(list: List[String]): RejectionReason = list match {
+    case code :: cdsDescription :: "" :: Nil                 => RejectionReason(code, cdsDescription, cdsDescription, None)
     case code :: cdsDescription :: exportsDescription :: Nil => RejectionReason(code, cdsDescription, exportsDescription, None)
     case error =>
       logger.warn("Incorrect error: " + error)
@@ -48,27 +52,22 @@ object RejectionReason {
   }
 
   def fromNotifications(notifications: Seq[Notification])(implicit messages: Messages): Seq[RejectionReason] = {
-    val rejectionNotification = notifications.find(_.isStatusRejected)
+    val rejectedNotification = notifications.find(_.isStatusRejected)
 
-    rejectionNotification.map { notification =>
+    rejectedNotification.map { notification =>
       notification.errors.map { error =>
-        RejectionReason(
-          error.validationCode,
-          getCdsErrorDescription(error.validationCode),
-          getExportsErrorDescription(error.validationCode),
-          error.pointer.filter { p =>
-            val defined = messages.isDefinedAt(p.messageKey)
-            if (!defined) logger.warn("Missing error message key: " + p.messageKey)
-            defined
-          }
-        )
+        val pointer = error.pointer.filter { p =>
+          val defined = messages.isDefinedAt(p.messageKey)
+          if (!defined) logger.warn("Missing error message key: " + p.messageKey)
+          defined
+        }
+
+        allRejectionReasons
+          .find(_.code == error.validationCode)
+          .map(_.copy(pointer = pointer))
+          .getOrElse(unknown(error.validationCode, pointer))
       }
     }.getOrElse(Seq.empty)
   }
 
-  def getCdsErrorDescription(errorCode: String): String =
-    allRejectedErrors.find(_.code == errorCode).map(_.cdsDescription).getOrElse("Unknown error")
-
-  def getExportsErrorDescription(errorCode: String): String =
-    allRejectedErrors.find(_.code == errorCode).map(_.exportsDescription).getOrElse("Unknown error")
 }

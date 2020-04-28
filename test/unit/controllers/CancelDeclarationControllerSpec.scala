@@ -38,7 +38,7 @@ class CancelDeclarationControllerSpec extends ControllerSpec with ErrorHandlerMo
 
   trait SetUp {
     val mockAuditService = mock[AuditService]
-    val cancelDeclarationPage = new cancel_declaration(mainTemplate)
+    val cancelDeclarationPage = instanceOf[cancel_declaration]
     val cancelConfirmationPage = new cancellation_confirmation_page(mainTemplate)
 
     val controller = new CancelDeclarationController(

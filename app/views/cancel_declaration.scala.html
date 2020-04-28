@@ -16,61 +16,90 @@
 
 @import controllers.routes._
 @import forms.CancelDeclaration
-@import uk.gov.hmrc.play.views.html._
-
-@import views.components.inputs.RadioOption
-@import forms.cancellation.CancellationChangeReason
 @import forms.cancellation.CancellationChangeReason.{NoLongerRequired, Duplication, OtherReason}
 @import forms.Choice
 @import forms.Choice.AllowedChoiceValues.CancelDec
 @import views.Title
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.BackButton
+@import views.html.components.gds._
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukRadios: govukRadios,
+        errorSummary: errorSummary,
+        pageTitle: pageTitle,
+        exportsInputText: exportsInputText,
+        exportsInputTextArea: exportsInputTextArea,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(form: Form[CancelDeclaration])(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = Title("cancellation.title")
+@govukLayout(
+    title = Title("cancellation.title"),
+    backButton = Some(BackButton(messages("site.backToSelectionPage"), controllers.routes.ChoiceController.displayPage(Some(Choice(CancelDec)))))
 ) {
 
-    @helper.form(action = CancelDeclarationController.onSubmit(), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+    @formHelper(action = CancelDeclarationController.onSubmit(), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-        @components.back_link(controllers.routes.ChoiceController.displayPage(Some(Choice(CancelDec))))
+        @pageTitle(messages("cancellation.title"))
 
-        @components.error_summary(form.errors)
-
-        @components.heading(title = messages("cancellation.title"))
-
-        @components.fields.field_text(
+        @exportsInputText(
             field = form("functionalReferenceId"),
-            label = Some(messages("cancellation.functionalReferenceId")),
-            labelClass = Some("bold-small")
+            inputClasses = Some("govuk-!-width-two-thirds"),
+            labelKey = "cancellation.functionalReferenceId",
+            labelClasses = "govuk-label"
         )
 
-        @components.fields.field_text(
+        @exportsInputText(
             field = form("mrn"),
-            label = Some(messages("cancellation.mrn")),
-            labelClass = Some("bold-small")
+            inputClasses = Some("govuk-!-width-two-thirds"),
+            labelKey = "cancellation.mrn",
+            labelClasses = "govuk-label"
         )
 
-        @components.fields.field_textarea(
+        @exportsInputTextArea(
             field = form("statementDescription"),
-            label = messages("cancellation.statementDescription"),
-            labelClass = Some("bold-small")
+            inputClasses = Some("govuk-!-width-two-thirds"),
+            labelKey = "cancellation.statementDescription",
+            labelClasses = "govuk-label"
         )
 
-        @components.fields.field_radio(
-            field = form("changeReason"),
-            legend = messages("cancellation.changeReason"),
-            inputs = Seq(
-                RadioOption("noLongerRequired", NoLongerRequired.toString, messages("cancellation.reason.noLongerRequired")),
-                RadioOption("duplication", Duplication.toString, messages("cancellation.reason.duplication")),
-                RadioOption("otherReason", OtherReason.toString, messages("cancellation.reason.otherReason"))
+        @govukRadios(Radios(
+            name = "changeReason",
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("cancellation.changeReason")),
+                    isPageHeading = false,
+                    classes = "govuk-fieldset__legend govuk-fieldset__legend--m"
+                ))
+            )),
+            items = Seq(
+                RadioItem(
+                    id = Some("noLongerRequired"),
+                    value = Some(NoLongerRequired.toString),
+                    content = Text(messages("cancellation.reason.noLongerRequired")),
+                    checked = form("changeReason").value.contains(NoLongerRequired.toString)
+                ),
+                RadioItem(
+                    id = Some("duplication"),
+                    value = Some(Duplication.toString),
+                    content = Text(messages("cancellation.reason.duplication")),
+                    checked = form("changeReason").value.contains(NoLongerRequired.toString)
+                ),
+                RadioItem(
+                    id = Some("otherReason"),
+                    value = Some(OtherReason.toString),
+                    content = Text(messages("cancellation.reason.otherReason")),
+                    checked = form("changeReason").value.contains(OtherReason.toString)
+                )
             ),
-            legendClass = Some("bold-small")
-        )
+            errorMessage = form("changeReason").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
 
-        @components.submit_button("cancellation.submitButton")
+        @govukButton(Button(content = Text(messages("cancellation.submitButton")), attributes = Map("id" -> "submit", "name" -> "Save")))
     }
 }
