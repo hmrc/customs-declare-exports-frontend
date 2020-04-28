@@ -29,7 +29,7 @@ case class RejectionReason(code: String, cdsDescription: String, exportsDescript
 
 object RejectionReason {
 
-  val allRejectionErrors: List[RejectionReason] = {
+  val allRejectionReasons: List[RejectionReason] = {
     val reader =
       CSVReader.open(Source.fromURL(getClass.getClassLoader.getResource("code-lists/errors-dms-rej-list.csv"), "UTF-8"))
 
@@ -44,6 +44,7 @@ object RejectionReason {
   private val logger = Logger(this.getClass)
 
   def apply(list: List[String]): RejectionReason = list match {
+    case code :: cdsDescription :: "" :: Nil                 => RejectionReason(code, cdsDescription, cdsDescription, None)
     case code :: cdsDescription :: exportsDescription :: Nil => RejectionReason(code, cdsDescription, exportsDescription, None)
     case error =>
       logger.warn("Incorrect error: " + error)
@@ -61,7 +62,7 @@ object RejectionReason {
           defined
         }
 
-        allRejectionErrors
+        allRejectionReasons
           .find(_.code == error.validationCode)
           .map(_.copy(pointer = pointer))
           .getOrElse(unknown(error.validationCode, pointer))
