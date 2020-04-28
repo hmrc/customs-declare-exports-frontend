@@ -43,5 +43,6 @@
     value = field.value,
     label = buildLabel,
     hint = hintKey.map(key => Hint(content = Text(messages(key)))),
-    classes = inputClasses.getOrElse("")
+    classes = inputClasses.getOrElse(""),
+    errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message))))
 ))
