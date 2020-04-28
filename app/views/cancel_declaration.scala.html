@@ -45,61 +45,61 @@
     @formHelper(action = CancelDeclarationController.onSubmit(), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        <div class="govuk-grid-column-two-thirds">
+        @pageTitle(messages("cancellation.title"))
 
-            @pageTitle(messages("cancellation.title"))
+        @exportsInputText(
+            field = form("functionalReferenceId"),
+            inputClasses = Some("govuk-!-width-two-thirds"),
+            labelKey = "cancellation.functionalReferenceId",
+            labelClasses = "govuk-label"
+        )
 
-            @exportsInputText(
-                field = form("functionalReferenceId"),
-                labelKey = "cancellation.functionalReferenceId",
-                labelClasses = ""
-            )
+        @exportsInputText(
+            field = form("mrn"),
+            inputClasses = Some("govuk-!-width-two-thirds"),
+            labelKey = "cancellation.mrn",
+            labelClasses = "govuk-label"
+        )
 
-            @exportsInputText(
-                field = form("mrn"),
-                labelKey = "cancellation.mrn",
-                labelClasses = ""
-            )
+        @exportsInputTextArea(
+            field = form("statementDescription"),
+            inputClasses = Some("govuk-!-width-two-thirds"),
+            labelKey = "cancellation.statementDescription",
+            labelClasses = "govuk-label"
+        )
 
-            @exportsInputTextArea(
-                field = form("statementDescription"),
-                labelKey = "cancellation.statementDescription",
-                labelClasses = ""
-            )
-
-            @govukRadios(Radios(
-                name = "changeReason",
-                fieldset = Some(Fieldset(
-                    legend = Some(Legend(
-                        content = Text(messages("cancellation.changeReason")),
-                        isPageHeading = false,
-                        classes = "govuk-fieldset__legend govuk-fieldset__legend--m"
-                    ))
-                )),
-                items = Seq(
-                    RadioItem(
-                        id = Some("noLongerRequired"),
-                        value = Some(NoLongerRequired.toString),
-                        content = Text(messages("cancellation.reason.noLongerRequired")),
-                        checked = form("changeReason").value.contains(NoLongerRequired.toString)
-                    ),
-                    RadioItem(
-                        id = Some("duplication"),
-                        value = Some(Duplication.toString),
-                        content = Text(messages("cancellation.reason.duplication")),
-                        checked = form("changeReason").value.contains(NoLongerRequired.toString)
-                    ),
-                    RadioItem(
-                        id = Some("otherReason"),
-                        value = Some(OtherReason.toString),
-                        content = Text(messages("cancellation.reason.otherReason")),
-                        checked = form("changeReason").value.contains(OtherReason.toString)
-                    )
+        @govukRadios(Radios(
+            name = "changeReason",
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("cancellation.changeReason")),
+                    isPageHeading = false,
+                    classes = "govuk-fieldset__legend govuk-fieldset__legend--m"
+                ))
+            )),
+            items = Seq(
+                RadioItem(
+                    id = Some("noLongerRequired"),
+                    value = Some(NoLongerRequired.toString),
+                    content = Text(messages("cancellation.reason.noLongerRequired")),
+                    checked = form("changeReason").value.contains(NoLongerRequired.toString)
                 ),
-                errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
-            ))
+                RadioItem(
+                    id = Some("duplication"),
+                    value = Some(Duplication.toString),
+                    content = Text(messages("cancellation.reason.duplication")),
+                    checked = form("changeReason").value.contains(NoLongerRequired.toString)
+                ),
+                RadioItem(
+                    id = Some("otherReason"),
+                    value = Some(OtherReason.toString),
+                    content = Text(messages("cancellation.reason.otherReason")),
+                    checked = form("changeReason").value.contains(OtherReason.toString)
+                )
+            ),
+            errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
 
-            @govukButton(Button(content = Text(messages("cancellation.submitButton")), attributes = Map("id" -> "submit", "name" -> "Save")))
-        </div>
+        @govukButton(Button(content = Text(messages("cancellation.submitButton")), attributes = Map("id" -> "submit", "name" -> "Save")))
     }
 }
