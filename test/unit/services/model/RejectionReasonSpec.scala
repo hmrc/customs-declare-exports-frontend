@@ -53,14 +53,14 @@ class RejectionReasonSpec extends UnitSpec {
   "All Errors" should {
     "have 136 errors" in {
 
-      allRejectedErrors.length mustBe 136
+      allRejectionErrors.length mustBe 136
     }
 
     "contain correct values" in {
 
-      allRejectedErrors must contain(RejectionReason("CDS40049", "Quota exhausted.", "Quota exhausted", None))
-      allRejectedErrors must contain(RejectionReason("CDS40051", "Quota blocked.", "Quota blocked", None))
-      allRejectedErrors must contain(
+      allRejectionErrors must contain(RejectionReason("CDS40049", "Quota exhausted.", "Quota exhausted", None))
+      allRejectionErrors must contain(RejectionReason("CDS40051", "Quota blocked.", "Quota blocked", None))
+      allRejectionErrors must contain(
         RejectionReason(
           "CDS12087",
           "Relation error: VAT Declaring Party Identification (D.E. 3/40), where mandated, must be supplied at either header or item.",
@@ -68,7 +68,7 @@ class RejectionReasonSpec extends UnitSpec {
           None
         )
       )
-      allRejectedErrors must contain(
+      allRejectionErrors must contain(
         RejectionReason("CDS12108", "Obligation error: DUCR is mandatory on an Export Declaration.", "An export declaration needs a DUCR", None)
       )
     }
@@ -83,26 +83,14 @@ class RejectionReasonSpec extends UnitSpec {
       val expectedRejectionReason =
         RejectionReason("CDS12015", expectedMessage, "Declaration does not exist or is not ready to process the request", None)
 
-      allRejectedErrors must contain(expectedRejectionReason)
-    }
-  }
-
-  "Get Error  Description" should {
-
-    "correctly return error description" in {
-
-      getCdsErrorDescription("CDS12016") mustBe "Date error: Date of acceptance is not allowed."
-    }
-
-    "return Unknown error when error code is not in rejected errors" in {
-
-      getCdsErrorDescription("unknown code") mustBe "Unknown error"
+      allRejectionErrors must contain(expectedRejectionReason)
     }
   }
 
   "Map from Notifications" should {
+
     "map to Rejected Reason" when {
-      val nonRejectionNotification =
+      val acceptedNotification =
         Notification("convId", "mrn", LocalDateTime.now(), SubmissionStatus.ACCEPTED, Seq.empty, "")
 
       "list is empty" in {
@@ -110,10 +98,11 @@ class RejectionReasonSpec extends UnitSpec {
       }
 
       "list doesn't contain rejected notification" in {
-        fromNotifications(Seq(nonRejectionNotification))(messages) mustBe Seq.empty
+        fromNotifications(Seq(acceptedNotification))(messages) mustBe Seq.empty
       }
 
       "list contains rejected notification" when {
+
         "pointer is known" in {
           given(messages.isDefinedAt("field.x.$.z")).willReturn(true)
           val error = NotificationError("CDS12016", Some(Pointer("x.#0.z")))
