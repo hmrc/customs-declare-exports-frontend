@@ -76,8 +76,6 @@
     <p class="govuk-body">Or</p>
 }
 
-
-
 @groupAddress = {
     @group_address(form,"declaration.address","details.address")
 }
@@ -96,22 +94,20 @@
         @pageHint
 
         @exportsInputText(
-        field = form("details.eori"),
-        labelKey = "declaration.exporter-detail.eori"
-        )
+            field = form("details.eori"),
+            labelKey = "declaration.exporter-detail.eori"
+         )
 
         @or
 
-        @exportsName
-
-
         @govukFieldset(Fieldset(
             attributes = Map("id" -> "details"),
-            legend = Some(Legend(
-                content = Text(messages("")),
-                classes = "govuk-label"
+                legend = Some(Legend(
+                    content = Text(messages("")),
+                    classes = "govuk-label"
             )),
             html = HtmlFormat.fill(immutable.Seq(
+                exportsName,
                 groupAddress,
                 tariff,
                 saveButtons()
