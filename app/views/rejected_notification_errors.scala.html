@@ -72,7 +72,10 @@
                 rows = summaryRows
             ))
 
-            @link(text = messages("rejected.notification.continue"), call = routes.SubmissionsController.amend(submission.uuid))
+            @link(
+                text = messages("rejected.notification.continue"),
+                call = routes.SubmissionsController.amend(submission.uuid)
+            )
 
         </div>
     </div>
