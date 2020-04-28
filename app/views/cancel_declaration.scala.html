@@ -97,7 +97,7 @@
                     checked = form("changeReason").value.contains(OtherReason.toString)
                 )
             ),
-            errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            errorMessage = form("changeReason").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
         @govukButton(Button(content = Text(messages("cancellation.submitButton")), attributes = Map("id" -> "submit", "name" -> "Save")))
