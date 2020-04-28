@@ -31,13 +31,7 @@ lazy val microservice = Project(appName, file("."))
     testGrouping in IntegrationTest := TestPhases.oneForkedJvmPerTest((definedTests in IntegrationTest).value),
     parallelExecution in IntegrationTest := false
   )
-  .settings(
-    resolvers ++= Seq(
-      Resolver.bintrayRepo("hmrc", "releases"),
-      Resolver.jcenterRepo,
-      Resolver.bintrayRepo("emueller", "maven")
-    )
-  )
+  .settings(resolvers ++= Seq(Resolver.bintrayRepo("hmrc", "releases"), Resolver.jcenterRepo, Resolver.bintrayRepo("emueller", "maven")))
   .settings(publishingSettings: _*)
   .settings(
     // concatenate js

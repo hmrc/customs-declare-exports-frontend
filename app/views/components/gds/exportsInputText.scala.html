@@ -27,9 +27,9 @@
         isPageHeading: Boolean = false,
         headingClasses: String = gdsPageLabel,
         labelClasses: String = "govuk-label--m",
+        defaultInputClasses: String = "govuk-!-width-two-thirds",
         inputClasses: Option[String] = None
 )(implicit messages: Messages)
-
 @buildLabel = @{
     if(isPageHeading) {
         Label(content = Text(messages(labelKey, labelArg)), isPageHeading = true, classes = headingClasses)
@@ -45,5 +45,5 @@
     label = buildLabel,
     hint = hintKey.map(key => Hint(content = Text(messages(key)))),
     errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message)))),
-    classes = "govuk-!-width-two-thirds" + inputClasses.map(clazz => s" $clazz").getOrElse("")
+    classes = defaultInputClasses + inputClasses.map(clazz => s" $clazz").getOrElse("")
 ))
