@@ -1249,13 +1249,11 @@ legal.declaration.email.error=Enter a valid email address
 legal.declaration.confirmation=I confirm the information given is correct to the best of my knowledge
 legal.declaration.confirmation.missing=You must confirm this information is correct
 
-rejected.notification.mrn = MRN {0}
-rejected.notification.title = There are errors in this declaration
-rejected.notification.header.fieldName = Name
-rejected.notification.header.errorCode = Error code
-rejected.notification.header.errorDescription = Description of error
-rejected.notification.information = You will need to review your answers and fix the errors before you can resubmit.
-rejected.notification.continue = Correct and re-submit declaration (opens in a new window or tab)
+rejected.notification.ducr = DUCR {0}
+rejected.notification.ducr.missing = No DUCR
+rejected.notification.title = Declaration errors
+rejected.notification.description.format = {0} Error code {1}.
+rejected.notification.continue = Continue to check your answers
 
 
 summary.amend.information = You will start at the beginning of the declaration

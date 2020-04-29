@@ -16,9 +16,9 @@
 
 @this()
 
-@(text: String, textHidden: Option[String] = None, call: Call)
+@(text: String, textHidden: Option[String] = None, call: Call, target: String = "_self")
 
-<a class="govuk-link" href="@call">
+<a class="govuk-link" href="@call" target=@target >
   @text
   @if(textHidden.isDefined){
     <span class="govuk-visually-hidden">@{textHidden.getOrElse("")}</span>

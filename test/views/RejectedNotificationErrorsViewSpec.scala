@@ -17,16 +17,12 @@
 package views
 
 import base.Injector
-import com.typesafe.config.ConfigFactory
-import config.AppConfig
 import controllers.routes
 import models.Pointer
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{Action, Submission}
 import org.jsoup.nodes.Document
-import play.api.Configuration
 import play.api.i18n.MessagesApi
-import play.api.test.Helpers._
 import services.model.RejectionReason
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -34,7 +30,7 @@ import views.html.rejected_notification_errors
 
 class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with Injector {
 
-  private val page = new rejected_notification_errors(mainTemplate, minimalAppConfig)
+  private val page = instanceOf[rejected_notification_errors]
   private val ducr = Some("DUCR")
   private val submission =
     Submission("submissionId", "eori", "lrn", ducr = ducr, actions = Seq(Action("convId", SubmissionRequest)))
@@ -46,12 +42,8 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
     "have proper messages for labels" in {
 
       val messages = instanceOf[MessagesApi].preferred(request)
-      messages must haveTranslationFor("rejected.notification.mrn")
+      messages must haveTranslationFor("rejected.notification.ducr")
       messages must haveTranslationFor("rejected.notification.title")
-      messages must haveTranslationFor("rejected.notification.header.fieldName")
-      messages must haveTranslationFor("rejected.notification.header.errorCode")
-      messages must haveTranslationFor("rejected.notification.header.errorDescription")
-      messages must haveTranslationFor("rejected.notification.information")
       messages must haveTranslationFor("rejected.notification.continue")
     }
 
@@ -60,24 +52,17 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
       defaultView.getElementById("title").text() mustBe messages("rejected.notification.title")
     }
 
+    "have correct section header" in {
+
+      defaultView.getElementById("section-header").text() mustBe messages("rejected.notification.ducr")
+    }
+
     "have correct back link" in {
 
       val backLink = defaultView.getElementById("back-link")
 
       backLink.text() mustBe messages("site.back")
       backLink.attr("href") mustBe routes.SubmissionsController.displayDeclarationWithNotifications(submission.uuid).url
-    }
-
-    "must contain information" in {
-
-      defaultView.getElementById("information").text() mustBe messages("rejected.notification.information")
-    }
-
-    "must contain table headers" in {
-
-      contentAsString(defaultView) must include(messages("rejected.notification.header.fieldName"))
-      contentAsString(defaultView) must include(messages("rejected.notification.header.errorCode"))
-      contentAsString(defaultView) must include(messages("rejected.notification.header.errorDescription"))
     }
 
     "must contain notifications" when {
@@ -92,10 +77,12 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
       "fully populated and we are using the exports error descriptions" in {
         val doc: Document = view(Seq(reason))
 
-        doc must containElementWithID("rejected_notifications-row-0")
-        doc.getElementById("rejected_notifications-row-0-name").text() mustBe messages("field.declaration.consignmentReferences.lrn")
-        doc.getElementById("rejected_notifications-row-0-code").text() mustBe "rejectionCode"
-        doc.getElementById("rejected_notifications-row-0-description").text() mustBe "exportsRejectionDescription"
+        doc.getElementsByClass("rejected_notifications-row-0-name").text() mustBe messages("field.declaration.consignmentReferences.lrn")
+        doc.getElementsByClass("rejected_notifications-row-0-description").text() mustBe messages(
+          "rejected.notification.description.format",
+          "exportsRejectionDescription",
+          "rejectionCode"
+        )
       }
 
       "pointer " in {
@@ -108,8 +95,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
 
         val doc: Document = view(Seq(reason))
 
-        doc must containElementWithID("rejected_notifications-row-0")
-        doc.getElementById("rejected_notifications-row-0-name").text() mustBe messages(
+        doc.getElementsByClass("rejected_notifications-row-0-name").text() mustBe messages(
           "field.declaration.goodsShipment.governmentAgencyGoodsItem.$.additionalDocument.$.id",
           "0",
           "1"
@@ -119,10 +105,8 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
 
     "must contain continue link" in {
 
-      val continueLink = defaultView.getElementById("continue")
-
+      val continueLink = defaultView.getElementsByAttributeValue("href", routes.SubmissionsController.amend(submission.uuid).url)
       continueLink.text() mustBe messages("rejected.notification.continue")
-      continueLink.attr("href") mustBe routes.SubmissionsController.amend(submission.uuid).url
     }
   }
 }

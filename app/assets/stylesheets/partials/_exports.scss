@@ -47,6 +47,8 @@ a.button--gray, button.button--gray, .button--gray:visited {
 .rejected-field-name {
   ol, ul {
     margin: 0;
+    padding-inline-start: 0;
+    list-style-type: none;
   }
 
   li {
@@ -70,7 +72,7 @@ a.button--gray, button.button--gray, .button--gray:visited {
   }
 }
 
-th.rejected-field-name, td.rejected-field-name {
+dt.rejected-field-name {
   white-space: nowrap;
 }
 

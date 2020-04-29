@@ -16,56 +16,68 @@
 
 @import models.declaration.submissions.Submission
 @import services.model.RejectionReason
-@import views.Title
 @import config.AppConfig
+@import views.{BackButton, Title}
+@import views.html.components.gds._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@this(main_template: views.html.main_template, appConfig: AppConfig)
+@this(
+        govukLayout: gdsMainTemplate,
+        pageTitle: pageTitle,
+        sectionHeader: sectionHeader,
+        link: link,
+        govukTable: GovukTable,
+        govukSummaryList : GovukSummaryList,
+        appConfig: AppConfig
+)
 
 @(submission: Submission, errors: Seq[RejectionReason])(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Title("rejected.notification.title"), fullWidth = true) {
+@errorDesciption(error: RejectionReason) = @{
+  val description = if(appConfig.isUsingImprovedErrorMessages) error.exportsDescription else error.cdsDescription
+  if(description.endsWith(".")) description else s"$description."
+}
 
-    @components.back_link(routes.SubmissionsController.displayDeclarationWithNotifications(submission.uuid))
+@summaryRows = @{
+    errors.zipWithIndex.map {zippedError =>
+        zippedError match {
+            case (error, index) => SummaryListRow(
+                key = Key(
+                    content = HtmlContent(error.pointer.map(p => messages(p.messageKey, p.sequenceArgs: _*)).getOrElse("")),
+                    classes = s"rejected-field-name rejected_notifications-row-$index-name"
+                ),
+                value = Value(
+                    content = Text(messages("rejected.notification.description.format", errorDesciption(error), error.code)),
+                    classes = s"rejected_notifications-row-$index-description"
+                ),
+                actions = None // TODO CEDS 2371
+            )
+    }
+    }
+}
 
-    <br/>
+@govukLayout(
+    title = Title("rejected.notification.title"),
+    backButton = Some(BackButton(messages("site.back"), routes.SubmissionsController.displayDeclarationWithNotifications(submission.uuid))),
+    useCustomContentWidth = true
+) {
 
-    @components.heading(
-        sectionHeader = messages("rejected.notification.mrn", submission.mrn.getOrElse("No MRN")),
-        title = messages("rejected.notification.title"))
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
 
-    <span id="information">@messages("rejected.notification.information")</span>
+            @sectionHeader(messages("rejected.notification.ducr", submission.ducr.getOrElse(messages("rejected.notification.ducr.missing"))))
+            @pageTitle(text = messages("rejected.notification.title"))
 
-    <table>
-        <thead>
-            <tr class="table-row">
-                <th class="table-cell table-head rejected-field-name">@messages("rejected.notification.header.fieldName")</th>
-                <th class="table-cell table-head rejected-error-description">@messages("rejected.notification.header.errorDescription")</th>
-                <th class="table-cell table-head rejected-error-code">@messages("rejected.notification.header.errorCode")</th>
-            </tr>
-        </thead>
+            @govukSummaryList(SummaryList(
+                rows = summaryRows
+            ))
 
-        <tbody>
-            @for((error, index) <- errors.zipWithIndex) {
-              <tr class="table-row" id="rejected_notifications-row-@index">
-                <th class="table-cell table-head rejected-field-name" id="rejected_notifications-row-@index-name">
-                    @Html(error.pointer.map(p => messages(p.messageKey, p.sequenceArgs: _*)).getOrElse(""))
-                </th>
-                <td class="table-cell rejected-error-description" id="rejected_notifications-row-@index-description">
-                    @if(appConfig.isUsingImprovedErrorMessages) {
-                        @error.exportsDescription
-                    } else {
-                        @error.cdsDescription
-                    }
-                </td>
-                <td class="table-cell rejected-error-code" id="rejected_notifications-row-@index-code">@error.code</td>
-              </tr>
-            }
-        </tbody>
-    </table>
+            @link(
+                text = messages("rejected.notification.continue"),
+                call = routes.SubmissionsController.amend(submission.uuid)
+            )
 
-    <br/>
-    <br/>
+        </div>
+    </div>
 
-    <a href="@routes.SubmissionsController.amend(submission.uuid)"
-        target="_blank" id="continue">@messages("rejected.notification.continue")</a>
 }
