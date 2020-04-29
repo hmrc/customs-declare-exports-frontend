@@ -32,6 +32,7 @@
         govukLayout: gdsMainTemplate,
         pageTitle: pageTitle,
         govukTable : GovukTable,
+        link: link,
         linkButton: linkButton
 )
 
@@ -42,9 +43,9 @@
 }
 
 @ucrLink(submission: Submission) = @{
-    HtmlContent(
-    s"""<a href="${routes.SubmissionsController.displayDeclarationWithNotifications(submission.uuid)}">${submission.ducr.getOrElse("")}</a>"""
-    )
+  HtmlContent(
+    link(submission.ducr.getOrElse(""), None, routes.SubmissionsController.displayDeclarationWithNotifications(submission.uuid))
+  )
 }
 
 @govukLayout(
