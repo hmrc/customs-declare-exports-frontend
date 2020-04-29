@@ -20,6 +20,7 @@ import java.time.{Instant, LocalDate, LocalDateTime}
 import java.util.UUID
 
 import akka.util.Timeout
+import base.Injector
 import connectors.exchange.ExportsDeclarationExchange
 import controllers.SubmissionsController
 import models.declaration.notifications.Notification
@@ -40,7 +41,7 @@ import views.html.{declaration_information, submissions}
 import scala.concurrent.Future.successful
 import scala.concurrent.duration._
 
-class SubmissionsControllerSpec extends ControllerSpec with BeforeAndAfterEach {
+class SubmissionsControllerSpec extends ControllerSpec with BeforeAndAfterEach with Injector {
 
   private val notification =
     Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.UNKNOWN, Seq.empty, "payload")
@@ -61,7 +62,7 @@ class SubmissionsControllerSpec extends ControllerSpec with BeforeAndAfterEach {
     reset(declarationInformationPage)
 
   trait SetUp {
-    val submissionsPage = new submissions(mainTemplate)
+    val submissionsPage = instanceOf[submissions]
     val controller =
       new SubmissionsController(
         mockAuthAction,
