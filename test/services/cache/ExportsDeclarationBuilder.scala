@@ -344,6 +344,9 @@ trait ExportsDeclarationBuilder {
   def withOptionalOfficeOfExit(officeId: Option[String] = None, answer: String = AllowedOfficeOfExitAnswers.no): ExportsDeclarationModifier =
     cache => cache.copy(locations = cache.locations.copy(officeOfExit = Some(OfficeOfExit(officeId, answer))))
 
+  def withOfficeOfExitOutsideUk(officeId: String = ""): ExportsDeclarationModifier =
+    cache => cache.copy(locations = cache.locations.copy(officeOfExitOutsideUk = Some(OfficeOfExitOutsideUk(officeId))))
+
   def withTransportPayment(data: Option[TransportPayment]): ExportsDeclarationModifier =
     cache => {
       cache.copy(transport = cache.transport.copy(transportPayment = data))

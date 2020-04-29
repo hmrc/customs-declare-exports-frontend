@@ -37,7 +37,7 @@ import services.audit.{AuditService, AuditTypes}
 import uk.gov.hmrc.http.HeaderCarrier
 
 class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
-
+  
   def continueTo(mode: Mode, factory: Mode => Call)(implicit req: JourneyRequest[AnyContent], hc: HeaderCarrier): Result =
     (mode, FormAction.bindFromRequest) match {
       case (ErrorFix, Add) | (ErrorFix, Remove(_)) => Results.Redirect(factory(mode))
@@ -49,6 +49,15 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
         goToDraftConfirmation()
       case _ => Results.Redirect(factory(mode))
     }
+
+  private def goToDraftConfirmation()(implicit req: JourneyRequest[_]): Result = {
+    val updatedDateTime = req.cacheModel.updatedDateTime
+    val expiry = updatedDateTime.plusSeconds(appConfig.draftTimeToLive.toSeconds)
+    Results
+      .Redirect(controllers.declaration.routes.ConfirmationController.displayDraftConfirmation())
+      .flashing(FlashKeys.expiryDate -> expiry.toEpochMilli.toString)
+      .removingFromSession(ExportsSessionKeys.declarationId)
+  }
 
 }
 
@@ -99,6 +108,7 @@ object Navigator {
     case GoodsLocationForm         => controllers.declaration.routes.DestinationCountryController.displayPage
     case DeclarationHolder         => controllers.declaration.routes.ConsigneeDetailsController.displayPage
     case OfficeOfExit              => controllers.declaration.routes.LocationController.displayPage
+    case OfficeOfExitOutsideUk     => controllers.declaration.routes.OfficeOfExitController.displayPage
     case SupervisingCustomsOffice  => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case TransportLeavingTheBorder => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case WarehouseIdentification   => controllers.declaration.routes.ItemsSummaryController.displayPage
@@ -122,6 +132,7 @@ object Navigator {
     case DestinationCountryPage      => controllers.declaration.routes.OriginationCountryController.displayPage
     case GoodsLocationForm           => controllers.declaration.routes.DestinationCountryController.displayPage
     case OfficeOfExit                => controllers.declaration.routes.LocationController.displayPage
+    case OfficeOfExitOutsideUk       => controllers.declaration.routes.OfficeOfExitController.displayPage
     case DeclarationHolder           => controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage
     case SupervisingCustomsOffice    => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
@@ -210,6 +221,7 @@ object Navigator {
     case RepresentativeStatus                 => controllers.declaration.routes.RepresentativeEntityController.displayPage
     case CarrierDetails                       => controllers.declaration.routes.RepresentativeStatusController.displayPage
     case OfficeOfExit                         => controllers.declaration.routes.LocationController.displayPage
+    case OfficeOfExitOutsideUk                => controllers.declaration.routes.OfficeOfExitController.displayPage
     case AdditionalDeclarationTypeStandardDec => controllers.declaration.routes.DispatchLocationController.displayPage
     case TotalNumberOfItems                   => controllers.declaration.routes.OfficeOfExitController.displayPage
     case NatureOfTransaction                  => controllers.declaration.routes.TotalPackageQuantityController.displayPage

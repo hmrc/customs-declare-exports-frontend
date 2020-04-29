@@ -16,7 +16,7 @@
 
 package models.declaration
 
-import forms.declaration.{OfficeOfExit, _}
+import forms.declaration.{OfficeOfExit, OfficeOfExitOutsideUk, _}
 import forms.declaration.countries.Country
 import models.ExportsDeclaration
 import play.api.libs.json.Json
@@ -28,6 +28,7 @@ case class Locations(
   routingCountries: Seq[Country] = Seq.empty,
   goodsLocation: Option[GoodsLocation] = None,
   officeOfExit: Option[OfficeOfExit] = None,
+  officeOfExitOutsideUk: Option[OfficeOfExitOutsideUk] = None,
   supervisingCustomsOffice: Option[SupervisingCustomsOffice] = None,
   warehouseIdentification: Option[WarehouseIdentification] = None,
   inlandModeOfTransportCode: Option[InlandModeOfTransportCode] = None
@@ -45,6 +46,7 @@ object Locations {
     routingCountries = cacheData.locations.routingCountries,
     goodsLocation = cacheData.locations.goodsLocation,
     officeOfExit = cacheData.locations.officeOfExit,
+    officeOfExitOutsideUk = cacheData.locations.officeOfExitOutsideUk,
     supervisingCustomsOffice = cacheData.locations.supervisingCustomsOffice,
     warehouseIdentification = cacheData.locations.warehouseIdentification,
     inlandModeOfTransportCode = cacheData.locations.inlandModeOfTransportCode

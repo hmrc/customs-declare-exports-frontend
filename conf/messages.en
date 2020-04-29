@@ -568,6 +568,14 @@ declaration.officeOfExit.help-item1 = Go to data element 5/12 Customs Office of 
 declaration.officeOfExit.answer.empty = Select where is the Office of Exit
 declaration.officeOfExit.answer.error = Select where is the Office of Exit
 
+declaration.officeOfExitOutsideUk.title = Where is the office of exit?
+declaration.officeOfExitOutsideUk.hint = Enter the office of exit reference number which is a two-character country code followed by six digits. For example, NL000703. 
+declaration.officeOfExitOutsideUk.empty = Enter an office of exit
+declaration.officeOfExitOutsideUk.length = Enter an 8 characters office of exit code 
+declaration.officeOfExitOutsideUk.specialCharacters = Only letters and digits are allowed for an office of exit
+declaration.officeOfExitOutsideUk.format = Enter the office of exit reference in the correct format
+declaration.officeOfExitOutsideUk.help-item1 = Go to data element 5/12 Customs Office of Exit in the {0}
+
 declaration.warehouse.identification.sectionHeader = Locations
 declaration.warehouse.identification.title =  Were the goods in a warehouse?
 declaration.warehouse.identification.label =  Warehouse identification number

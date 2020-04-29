@@ -143,6 +143,12 @@ GET         /office-of-exit                      controllers.declaration.OfficeO
 
 POST        /office-of-exit                      controllers.declaration.OfficeOfExitController.saveOffice(mode: models.Mode ?= models.Mode.Normal)
 
+# Office of exit outside UK
+
+GET         /office-of-exit-outside-uk           controllers.declaration.OfficeOfExitOutsideUkController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /office-of-exit-outside-uk           controllers.declaration.OfficeOfExitOutsideUkController.saveOffice(mode: models.Mode ?= models.Mode.Normal)
+
 # Total number of items
 
 GET         /total-numbers-of-items              controllers.declaration.TotalNumberOfItemsController.displayPage(mode: models.Mode ?= models.Mode.Normal)

@@ -18,8 +18,8 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.OfficeOfExit.form
-import forms.declaration.{AllowedOfficeOfExitAnswers, OfficeOfExit}
+import forms.declaration.OfficeOfExitOutsideUk
+import forms.declaration.OfficeOfExitOutsideUk.form
 import javax.inject.Inject
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
@@ -29,24 +29,24 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.office_of_exit
+import views.html.declaration.office_of_exit_outside_uk
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class OfficeOfExitController @Inject()(
+class OfficeOfExitOutsideUkController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  officeOfExitPage: office_of_exit,
+  officeOfExitOutsideUkPage: office_of_exit_outside_uk,
   override val exportsCacheService: ExportsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.locations.officeOfExit match {
-      case Some(data) => Ok(officeOfExitPage(mode, form().fill(data)))
-      case _          => Ok(officeOfExitPage(mode, form()))
+    request.cacheModel.locations.officeOfExitOutsideUk match {
+      case Some(data) => Ok(officeOfExitOutsideUkPage(mode, form().fill(data)))
+      case _          => Ok(officeOfExitOutsideUkPage(mode, form()))
     }
   }
 
@@ -54,29 +54,24 @@ class OfficeOfExitController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[OfficeOfExit]) => {
+        (formWithErrors: Form[OfficeOfExitOutsideUk]) => {
           val formWithAdjustedErrors = formWithErrors
-
-          Future.successful(BadRequest(officeOfExitPage(mode, formWithAdjustedErrors)))
+          Future.successful(BadRequest(officeOfExitOutsideUkPage(mode, formWithAdjustedErrors)))
         },
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(mode, nextPage(request.declarationType, form.answer)))
+            .map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
       )
   }
 
-  private def nextPage(declarationType: DeclarationType, answer: String): Mode => Call =
-    if (answer == AllowedOfficeOfExitAnswers.no) {
-      controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage
-    } else {
-      declarationType match {
-        case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
-          controllers.declaration.routes.TotalNumberOfItemsController.displayPage
-        case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
-          controllers.declaration.routes.PreviousDocumentsController.displayPage
-      }
+  private def nextPage(declarationType: DeclarationType): Mode => Call =
+    declarationType match {
+      case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
+        controllers.declaration.routes.TotalNumberOfItemsController.displayPage
+      case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
+        controllers.declaration.routes.PreviousDocumentsController.displayPage
     }
 
-  private def updateCache(formData: OfficeOfExit)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(officeOfExit = Some(formData))))
+  private def updateCache(formData: OfficeOfExitOutsideUk)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(officeOfExitOutsideUk = Some(formData))))
 }
