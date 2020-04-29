@@ -420,6 +420,7 @@ declaration.partyType.error = Select an option from the list
 declaration.partyType.remove.hint = Remove
 
 submissions.title = Your declarations
+submissions.hidden.text = View consignment {0}
 submissions.eori = Eori
 submissions.conversationId = ConversationId
 submissions.ucr = UCR

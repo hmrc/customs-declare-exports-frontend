@@ -44,7 +44,7 @@
 
 @ucrLink(submission: Submission) = @{
   HtmlContent(
-    link(submission.ducr.getOrElse(""), None, routes.SubmissionsController.displayDeclarationWithNotifications(submission.uuid))
+    link(submission.ducr.getOrElse(""), Some(messages("submissions.hidden.text", submission.ducr.getOrElse(""))), routes.SubmissionsController.displayDeclarationWithNotifications(submission.uuid))
   )
 }
 

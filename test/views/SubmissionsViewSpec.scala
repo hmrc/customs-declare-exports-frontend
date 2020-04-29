@@ -105,7 +105,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
       "all fields are populated" in {
         val view = createView(Seq(submission -> Seq(notification)))
 
-        tableCell(view)(1, 0).text() mustBe "ducr"
+        tableCell(view)(1, 0).text() mustBe "ducr submissions.hidden.text"
         tableCell(view)(1, 1).text() mustBe "lrn"
         tableCell(view)(1, 2).text() mustBe "mrn"
         tableCell(view)(1, 3).text() mustBe "1 January 2019 at 00:00"
@@ -118,7 +118,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
         val submissionWithOptionalFieldsEmpty = submission.copy(ducr = None, mrn = None)
         val view = createView(Seq(submissionWithOptionalFieldsEmpty -> Seq(notification)))
 
-        tableCell(view)(1, 0).text() mustBe empty
+        tableCell(view)(1, 0).text() mustBe "submissions.hidden.text"
         tableCell(view)(1, 1).text() mustBe "lrn"
         tableCell(view)(1, 2).text() mustBe empty
         tableCell(view)(1, 3).text() mustBe "1 January 2019 at 00:00"
@@ -136,7 +136,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
       "submission has link when contains rejected notification" in {
         val view = createView(Seq(submission -> Seq(rejectedNotification)))
 
-        tableCell(view)(1, 0).text() mustBe submission.ducr.get
+        tableCell(view)(1, 0).text() must include(submission.ducr.get)
         tableCell(view)(1, 0).toString must include(routes.SubmissionsController.displayDeclarationWithNotifications(submission.uuid).url)
       }
 
