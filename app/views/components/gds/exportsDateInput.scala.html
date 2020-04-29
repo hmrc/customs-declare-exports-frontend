@@ -37,7 +37,7 @@
 }
 
 @dateInput(DateInput(
-  id = Some(fieldName),
+  id = fieldName,
   fieldset = Some(Fieldset(
     legend = Some(Legend(
       content = Text(messages(labelKey)),
@@ -47,27 +47,27 @@
   )),
   hint = hintKey.map(h => Hint(content = Text(messages(h)))),
   errorMessage = errorMessages,
-  items = Some(Seq(
+  items = Seq(
     InputItem(
-      id = Some(s"${fieldName}_$dayKey"),
+      id = s"${fieldName}_$dayKey",
       name = dayField.name,
       label = Some(messages("date.day")),
       value = dayField.value,
       classes = "govuk-input--width-2"
     ),
     InputItem(
-      id = Some(s"${fieldName}_$monthKey"),
+      id = s"${fieldName}_$monthKey",
       name = monthField.name,
       label = Some(messages("date.month")),
       value = monthField.value,
       classes = "govuk-input--width-2"
     ),
     InputItem(
-      id = Some(s"${fieldName}_$yearKey"),
+      id = s"${fieldName}_$yearKey",
       name = yearField.name,
       label = Some(messages("date.year")),
       value = yearField.value,
       classes = "govuk-input--width-4"
     )
-  ))
+  )
 ))
