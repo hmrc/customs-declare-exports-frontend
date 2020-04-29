@@ -38,7 +38,7 @@ import views.tags.ViewTest
 @ViewTest
 class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  private val page = new submissions(mainTemplate)
+  private val page = instanceOf[submissions]
   private def createView(data: Seq[(Submission, Seq[Notification])] = Seq.empty, messages: Messages = stubMessages()): Html =
     page(data)(request, messages)
 
@@ -63,11 +63,11 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
     }
 
     "display page messages" in {
-      tableCell(view)(0, 0).text() mustBe "submissions.ucr.header"
-      tableCell(view)(0, 1).text() mustBe "submissions.lrn.header"
-      tableCell(view)(0, 2).text() mustBe "submissions.mrn.header"
-      tableCell(view)(0, 3).text() mustBe "submissions.dateAndTime.header"
-      tableCell(view)(0, 4).text() mustBe "submissions.status.header"
+      tableHead(view)(0).text() mustBe "submissions.ucr.header"
+      tableHead(view)(1).text() mustBe "submissions.lrn.header"
+      tableHead(view)(2).text() mustBe "submissions.mrn.header"
+      tableHead(view)(3).text() mustBe "submissions.dateAndTime.header"
+      tableHead(view)(4).text() mustBe "submissions.status.header"
     }
 
     "display page submissions" when {
@@ -156,7 +156,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
     }
 
     "display 'Start a new declaration' link on page" in {
-      val startButton = view.select(".button")
+      val startButton = view.getElementsByClass("govuk-button").first()
       startButton.text() mustBe "supplementary.startNewDec"
       startButton.attr("href") mustBe routes.ChoiceController.displayPage().url
     }
@@ -164,8 +164,15 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
 
   private def tableCell(view: Html)(row: Int, column: Int): Element =
     view
-      .select(".table-row")
+      .select(".govuk-table__row")
       .get(row)
-      .getElementsByClass("table-cell")
+      .getElementsByClass("govuk-table__cell")
+      .get(column)
+
+  private def tableHead(view: Html)(column: Int): Element =
+    view
+      .select(".govuk-table__head")
+      .first()
+      .getElementsByClass("govuk-table__header")
       .get(column)
 }

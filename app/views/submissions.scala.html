@@ -24,44 +24,80 @@
 @import forms.Choice
 @import forms.Choice.AllowedChoiceValues.Submissions
 @import views.Title
+@import views.html.components.gds._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.BackButton
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        pageTitle: pageTitle,
+        govukTable : GovukTable,
+        linkButton: linkButton
+)
 
 @(submissions: Seq[(Submission, Seq[Notification])])(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = Title("submissions.title"),
-    fullWidth = true
-) {
+@headCell(key: String) = @{
+    HeadCell( content = Text(messages(s"submissions.$key.header")) )
+}
 
-    @components.back_link(
-        href = routes.ChoiceController.displayPage(Some(Choice(Submissions))),
-        backMessage = "site.backToSelectionPage"
+@ucrLink(submission: Submission) = @{
+    HtmlContent(
+    s"""<a href="${routes.SubmissionsController.displayDeclarationWithNotifications(submission.uuid)}">${submission.ducr.getOrElse("")}</a>"""
     )
+}
 
-    <h1>@messages("submissions.title")</h1>
+@govukLayout(
+    title = Title("submissions.title"),
+    backButton = Some(BackButton(messages("site.backToSelectionPage"), routes.ChoiceController.displayPage(Some(Choice(Submissions))))),
+    useCustomContentWidth = true) {
 
-    <table>
-        <tr class="table-row">
-            <th class="table-cell table-head" scope="col">@messages("submissions.ucr.header")</th>
-            <th class="table-cell table-head" scope="col">@messages("submissions.lrn.header")</th>
-            <th class="table-cell table-head" scope="col">@messages("submissions.mrn.header")</th>
-            <th class="table-cell table-head" scope="col">@messages("submissions.dateAndTime.header")</th>
-            <th class="table-cell table-head" scope="col">@messages("submissions.status.header")</th>
-        </tr>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
 
-        @for( (submission, notifications) <- submissions ){
-            <tr class="table-row">
-                <th class="table-cell" scope="row">
-                    <a href="@routes.SubmissionsController.displayDeclarationWithNotifications(submission.uuid)">@submission.ducr</a>
-                </th>
-                <td class="table-cell">@submission.lrn</td>
-                <td class="table-cell">@submission.mrn</td>
-                <td class="table-cell">@{submission.actions.find(_.requestType == SubmissionRequest).map(_.requestTimestamp).map(ViewDates.submissionDateTimeFormatter.withZone(ZoneId.systemDefault()).format(_))}</td>
-                <td class="table-cell">@{SubmissionStatus.format(notifications.headOption.map(n => n.status).getOrElse(SubmissionStatus.PENDING))}</td>
-            </tr>
-        }
-    </table>
+            @pageTitle(messages("submissions.title"))
 
-    @components.button_link("supplementary.startNewDec", routes.ChoiceController.displayPage().url)
+            @govukTable(Table(
+                attributes = Map("id" -> "additional_information"),
+                rows = submissions.zipWithIndex.map{ case((submission, notifications), index) =>
+                    Seq(
+                        TableRow(
+                            content = ucrLink(submission),
+                            attributes = Map("id" -> s"submission-row$index-ucr")
+                        ),
+                        TableRow(
+                            content = Text(submission.lrn),
+                            attributes = Map("id" -> s"submission-row$index-lrn")
+                        ),
+                        TableRow(
+                            content = Text(submission.mrn.getOrElse("")),
+                            attributes = Map("id" -> s"submission-row$index-mrn")
+                        ),
+                        TableRow(
+                            content = Text(
+                                submission.actions.find(_.requestType == SubmissionRequest).map(_.requestTimestamp).map(ViewDates.submissionDateTimeFormatter.withZone(ZoneId.systemDefault()).format(_)).getOrElse("")
+                            ),
+                            attributes = Map("id" -> s"submission-row$index-dateAndTime")
+                        ),
+                        TableRow(
+                            content = Text(
+                                SubmissionStatus.format(notifications.headOption.map(n => n.status).getOrElse(SubmissionStatus.PENDING))
+                            ),
+                            attributes = Map("id" -> s"submission-row$index-status")
+                        )
+                    )
+                },
+                head = Some(List(
+                    headCell("ucr"),
+                    headCell("lrn"),
+                    headCell("mrn"),
+                    headCell("dateAndTime"),
+                    headCell("status")
+                ))
+            ))
+
+            @linkButton("supplementary.startNewDec", routes.ChoiceController.displayPage())
+
+        </div>
+    </div>
 }
