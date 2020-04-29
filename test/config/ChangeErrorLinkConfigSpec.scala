@@ -20,43 +20,43 @@ import com.typesafe.config.{Config, ConfigFactory}
 import play.api.Configuration
 import unit.base.UnitSpec
 
-class EadConfigSpec extends UnitSpec {
+class ChangeErrorLinkConfigSpec extends UnitSpec {
 
-  private val configWithEnabledEAD: Config =
-    ConfigFactory.parseString("microservice.services.features.ead=enabled")
-  private val configWithDisabledEAD: Config =
-    ConfigFactory.parseString("microservice.services.features.ead=disabled")
+  private val configWithChangeLinkEnabled: Config =
+    ConfigFactory.parseString("microservice.services.features.changeErrorLink=enabled")
+  private val configWithChangeLinkDisabled: Config =
+    ConfigFactory.parseString("microservice.services.features.changeErrorLink=disabled")
   private val emptyConfig: Config =
     ConfigFactory.parseString("microservice.services.features.default=disabled")
 
   def featureSwitchConfig(config: Configuration): FeatureSwitchConfig = new FeatureSwitchConfig(config)
 
-  "EAD Document config" should {
+  "Change Error Link config" should {
 
     "return true" when {
 
-      "ead feature is enabled" in {
+      "change error link feature is enabled" in {
 
-        val eadConfig = new EadConfig(featureSwitchConfig(Configuration(configWithEnabledEAD)))
+        val changeErrorLinkConfig = new ChangeErrorLinkConfig(featureSwitchConfig(Configuration(configWithChangeLinkEnabled)))
 
-        eadConfig.isEadEnabled mustBe true
+        changeErrorLinkConfig.isEnabled mustBe true
       }
     }
 
     "return false" when {
 
-      "ead feature is diabled" in {
+      "ead document feature is diabled" in {
 
-        val eadConfig = new EadConfig(featureSwitchConfig(Configuration(configWithDisabledEAD)))
+        val changeErrorLinkConfig = new ChangeErrorLinkConfig(featureSwitchConfig(Configuration(configWithChangeLinkDisabled)))
 
-        eadConfig.isEadEnabled mustBe false
+        changeErrorLinkConfig.isEnabled mustBe false
       }
 
-      "ead feature config doesn't exist" in {
+      "ead document feature config doesn't exist" in {
 
-        val eadConfig = new EadConfig(featureSwitchConfig(Configuration(emptyConfig)))
+        val changeErrorLinkConfig = new ChangeErrorLinkConfig(featureSwitchConfig(Configuration(emptyConfig)))
 
-        eadConfig.isEadEnabled mustBe false
+        changeErrorLinkConfig.isEnabled mustBe false
       }
     }
   }
