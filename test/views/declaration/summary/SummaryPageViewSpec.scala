@@ -18,6 +18,8 @@ package views.declaration.summary
 
 import base.Injector
 import config.AppConfig
+import forms.common.YesNoAnswer.YesNoAnswers
+import forms.common.YesNoAnswer.YesNoAnswers.yes
 import forms.declaration.{CommodityDetails, LegalDeclaration, WarehouseIdentification}
 import models.ExportsDeclaration
 import models.Mode._
@@ -88,9 +90,18 @@ class SummaryPageViewSpec extends UnitViewSpec with Stubs with ExportsTestData w
       view().getElementById("declaration-locations-summary") mustBe null
     }
 
-    "have locations section" in {
+    "have locations section with UK office of exit" in {
 
-      view(declaration = aDeclaration(withOfficeOfExit())).getElementById("declaration-locations-summary").text() mustNot be(empty)
+      view(declaration = aDeclaration(withOfficeOfExit(officeId = "office-Id", answer = yes)))
+        .getElementById("declaration-locations-summary")
+        .text() must include("office-Id")
+    }
+
+    "have locations section with office of exit outside UK" in {
+
+      view(declaration = aDeclaration(withOfficeOfExit(), withOfficeOfExitOutsideUk("office-id-outside-uk")))
+        .getElementById("declaration-locations-summary")
+        .text() must include("office-id-outside-uk")
     }
 
     "not have transaction section" in {

@@ -18,6 +18,7 @@
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds.summary_list
+@import forms.common.YesNoAnswer.YesNoAnswers
 
 @this(summaryList: summary_list)
 
@@ -54,7 +55,12 @@
                     content = Text(messages("declaration.summary.locations.officeOfExit"))
                 ),
                 value = Value(
-                    content = Text(officeOfExit.officeId.getOrElse(""))
+                    content = Text(
+                        officeOfExit.answer match {
+                            case YesNoAnswers.yes => officeOfExit.officeId.getOrElse("")
+                            case YesNoAnswers.no  => declarationData.locations.officeOfExitOutsideUk.map(_.officeId).getOrElse("")
+                        }
+                    )
                 ),
                 actions = Some(Actions(
                     items = Seq(
