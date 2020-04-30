@@ -39,18 +39,19 @@ class RejectionReasonSpec extends UnitSpec {
       val errorCode = "ErrorCode"
       val cdsErrorDescription = "Error description"
       val exportsErrorDescription = "Improved Error description"
-      val error = List(errorCode, cdsErrorDescription, exportsErrorDescription)
+      val url = "/url"
+      val error = List(errorCode, cdsErrorDescription, exportsErrorDescription, url)
 
-      RejectionReason.apply(error) mustBe RejectionReason(errorCode, cdsErrorDescription, exportsErrorDescription, None)
+      RejectionReason.apply(error) mustBe RejectionReason(errorCode, cdsErrorDescription, exportsErrorDescription, Some(url), None)
     }
 
     "create correct error from a single description" in {
 
       val errorCode = "ErrorCode"
       val cdsErrorDescription = "Error description"
-      val error = List(errorCode, cdsErrorDescription, "")
+      val error = List(errorCode, cdsErrorDescription, "", "")
 
-      RejectionReason.apply(error) mustBe RejectionReason(errorCode, cdsErrorDescription, cdsErrorDescription, None)
+      RejectionReason.apply(error) mustBe RejectionReason(errorCode, cdsErrorDescription, cdsErrorDescription, None, None)
     }
 
     "throw an exception when input is incorrect" in {
@@ -109,6 +110,7 @@ class RejectionReasonSpec extends UnitSpec {
               "CDS12016",
               "Date Error: The acceptance date must not be in the future and must not be more than 180 days in the past",
               "The acceptance date cannot be more than 180 days in the past",
+              None,
               Some(Pointer("x.#0.z"))
             )
           )
@@ -125,6 +127,7 @@ class RejectionReasonSpec extends UnitSpec {
               "CDS12016",
               "Date Error: The acceptance date must not be in the future and must not be more than 180 days in the past",
               "The acceptance date cannot be more than 180 days in the past",
+              None,
               None
             )
           )
@@ -140,6 +143,7 @@ class RejectionReasonSpec extends UnitSpec {
               "CDS12016",
               "Date Error: The acceptance date must not be in the future and must not be more than 180 days in the past",
               "The acceptance date cannot be more than 180 days in the past",
+              None,
               None
             )
           )

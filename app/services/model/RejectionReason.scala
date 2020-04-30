@@ -25,7 +25,7 @@ import play.api.libs.json.{Json, OFormat}
 
 import scala.io.Source
 
-case class RejectionReason(code: String, cdsDescription: String, exportsDescription: String, pointer: Option[Pointer])
+case class RejectionReason(code: String, cdsDescription: String, exportsDescription: String, url: Option[String], pointer: Option[Pointer])
 
 object RejectionReason {
 
@@ -38,18 +38,23 @@ object RejectionReason {
     errors.map(RejectionReason.apply)
   }
 
-  def unknown(errorCode: String, pointer: Option[Pointer]) = RejectionReason(errorCode, "Unknown error", "Unknown error", pointer)
+  def unknown(errorCode: String, pointer: Option[Pointer]) = RejectionReason(errorCode, "Unknown error", "Unknown error", None, pointer)
 
   implicit val format: OFormat[RejectionReason] = Json.format[RejectionReason]
   private val logger = Logger(this.getClass)
 
   def apply(list: List[String]): RejectionReason = list match {
-    case code :: cdsDescription :: "" :: Nil                 => RejectionReason(code, cdsDescription, cdsDescription, None)
-    case code :: cdsDescription :: exportsDescription :: Nil => RejectionReason(code, cdsDescription, exportsDescription, None)
+    case code :: cdsDescription :: exportsDescription :: url :: Nil =>
+      RejectionReason(code, cdsDescription, applyExportsDescription(cdsDescription, exportsDescription), applyErrorUrl(url), None)
     case error =>
       logger.warn("Incorrect error: " + error)
       throw new IllegalArgumentException("Error has incorrect structure")
   }
+
+  private def applyExportsDescription(cdsDescription: String, exportsDescription: String): String =
+    if (exportsDescription.isEmpty) cdsDescription else exportsDescription
+
+  private def applyErrorUrl(url: String): Option[String] = if (url.isEmpty) None else Some(url)
 
   def fromNotifications(notifications: Seq[Notification])(implicit messages: Messages): Seq[RejectionReason] = {
     val rejectedNotification = notifications.find(_.isStatusRejected)

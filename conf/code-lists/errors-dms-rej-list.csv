@@ -1,199 +1,199 @@
-CDS10001,Obligation Error: Mandatory Data Element has not been provided,Obligation error: Mandatory Data Element has not been provided
-CDS10002,Obligation Error: Data Element is not allowed,Obligation error: Data Element is not allowed
-CDS10003,Obligation Error: Number of Occurrences exceeds what is allowed for the Data Element,Obligation error: Number of Occurrences exceeds what is allowed for the Data Element
-CDS10004,Commodity code Error: Mandatory data element not provided and/or format error and/or number of occurrences exceeds what is allowed for the data element,Commodity code error: Mandatory data element not provided or format error or number of occurrences exceeds what is allowed for the data element
-CDS10010,Format Error: Data element has invalid format,Format error: Data element has invalid format
-CDS10020,Data Error: Data Element contains invalid value,Data error: Data element contains invalid value
-CDS10021,Data Error: Value must be positive,Domain error: value can not be lower than 0
-CDS10044,Document is not allowed,Document is not allowed
-CDS10045,Calculated item Customs value is negative. Check Declaration valuation data,Calculated customs value is not allowed to be below zero
-CDS11003,Relation Error: The value declared in Total Number of Items (D.E. 1/9) does not corespond with the number of Goods Items on the Declaration,Relation error: The value of ItemTotal is invalid; it does not correspond to the number of times that ItemNumber is used in the declaration.
-CDS11004,"Relation Error: The combination of the Requested Procedure, Previous Procedure and Additional Procedure is invalid",This is not a recognised procedure code in the UCC guidelines
-CDS11005,Relation Error: The Requested Procedure (D.E. 1/10) for each Goods Item must derive the same Declaration Category (e.g. H1) or acceptance date is not valid. No further validation has been carried out.,Each item must fit with the same declared procedure code
-CDS11006,Relation Error: Net Mass must be lower than Gross Mass,The net mass must be lower than the gross mass
-CDS11007,Relation Error: The submitter of the Additional Message differs from the original Declaration,A different person submitted the original declaration
-CDS11012,Element is not allowed to be amended on this Declaration Type,Cannot change this element on this declaration type
-CDS12003,Uniqueness Error: Reuse of LRN (D.E. 2/5) is not allowed within 48 hours,You cannot use the same LRN on different declarations in the space of 48 hours
-CDS12005,Authorisation Error: Party ID unknown or invalid.,Authorization error: Party ID unknown or invalid.
-CDS12006,License Error: License has expired; or License ID cannot be recognised; or License ID does not belong to the party on the declaration; or License declared has insufficient balance remaining; or License does not apply to the goods or country declared,Invalid import/export license number
-CDS12007,Authorisation Error: Authorisation has expired; or Authorisation reference number does not belong to the party on the declaration; or Authorisation reference number provided is not recognised,Authorization error: authorization not valid for declaration
-CDS12013,Authorisation Error: provided VAT number is not a valid destination for VAT transfer,
-CDS12014,Sequence Error: A Goods Arrival Notification must follow a pre-lodged Declaration,A Goods Arrival Notification must follow a pre-lodged declaration.
-CDS12015,Sequence Error: AdditionalMessage.declarationReference does not refer to an existing declaration or the existing declaration is not in a permissable state to process the request,Declaration does not exist or is not ready to process the request
-CDS12016,Date Error: The acceptance date must not be in the future and must not be more than 180 days in the past,The acceptance date cannot be more than 180 days in the past
-CDS12022,Relation Error: The Goods Item Number (D.E. 1/6) is larger than the total number of Goods Items on the Declaration,The item number declared is higher than the number of items on the declaration
-CDS12024,Uniqueness Error: The value declared should be unique,Uniqueness error: The Item number is not unique
-CDS12026,Uniqueness Error: The same Data Element cannot be amended more than once in the same request,The same data element cannot be amended more than once in the same request
-CDS12031,Sequence Error: Goods Arrival Notification must be submitted within 30 days,Goods arrival notification must be submitted within 30 days
-CDS12034,Relation Error: Submission channel of the amendment must be the same as the original Declaration,Any amendments must be made using the same service as the original declaration
-CDS12036,Sequence Error: A new request cannot be submitted until a response is received to your previous request,A new request cannot be submitted until a response is received to your previous request
-CDS12042,Relation Error: elements must be identical within the GoodsItem,Relation error: elements must be identical within the GoodsItem
-CDS12046,Process Error: Goods Arrival Notification was not received within 30 days of the pre-lodged Declaration,Goods arrival notification was late
-CDS12050,A valid Requested Procedure (D.E. 1/10) has not been provided or acceptance date is not valid. No further validation has been carried out.,Procedure code: the requested procedure is not valid
-CDS12052,A valid Declaration Type (D.E. 1/2) has not been provided or acceptance date is not valid. No further validation has been carried out,Declaration type: the declaration type is not valid
-CDS12056,Relation Error: the combination of elements is not allowed,Relation error: the combination of elements is not allowed
-CDS12057,Relation Error: The invoice currency must be the same for every Goods Item on the Declaration,The invoice currency must be the same for every goods item on the declaration
-CDS12058,"Relation Error: When the packaging quantity is zero, then there must be another goods item with the same marks and numbers having a quantity greater than zero",At least one packaging quantity must be greater than zero
-CDS12070,Relation Error: The value supplied in Data Element 1 mandates the completion of Data Element 2,Relation error: The value supplied in Data Element 1 mandates the completion of Data Element 2
-CDS12071,Relation Error: Data Element must be supplied at either header or item level and cannot be declared at both levels,Relation error: Data Element must be supplied at either header or item level and cannot be declared at both levels
-CDS12072,"Relation Error: Either Data Element 1 or Data Element 2 must be supplied, but not both","You can only supply one [element], not both"
-CDS12073,Relation Error: Data Element must be supplied at header or item level,Relation error: Data Element must be supplied at header or item level
-CDS12074,"Relation Error: Because Data Element 1 is not supplied, Data Element 2 is mandatory","Relation error: Because Data Element 1 is not supplied, Data Element 2 is mandatory"
-CDS12075,Relation Error: Data Element 2 must not be supplied with this value in Data Element 1,Relation error: Data Element 2 must not be supplied with this value in Data Element 1
-CDS12077,Relation Error: A valid value must be supplied in Data Element 2 as Data Element 1 is present,Relation error: A valid value must be supplied in Data Element 2 as Data Element 1 is present
-CDS12078,"Relation Error: As no Deferment Account Number is provided in D.E. 2/6, an immediate Method of Payment must be offered in D.E. 4/8","Relation error: As no Deferment Account Number is provided in D.E. 2/6, an immediate Method of Payment must be offered in D.E. 4/8"
-CDS12079,Relation Error: Data Element 2 must not be supplied with Data Element 1,Relation error: Data Element 2 must not be supplied with Data Element 1
-CDS12080,Relation Error: Combination of Addition / Deduction codes (D.E. 4/9) is not allowed,Combination of addition / deduction codes is not allowed
-CDS12081,Relation Error: Importer (D.E. 3/16) & Exporter (D.E. 3/2) must not be the same party,Importer and exporter must not be the same
-CDS12082,Relation Error: The currency declared in D.E. 4/11 must be the same as the currency declared in D.E. 4/14,The currency declared in the total amount invoiced must be the same declared for the item price
-CDS12083,"Relation Error: For Country of Preferential Origin D.E. 5/16 where mandated, only provide one country or country group, not both",Only one country of preferential origin or country group can be entered
-CDS12084,"Relation Error: Either Consignee Name (D.E. 3/9) or Consignee Identification Number (D.E. 3/10) must be supplied, but not both",You cannot enter both the consignee's EORI and address
-CDS12086,"Relation Error: Either Carrier Name (D.E. 3/31) or Carrier Identification Number (D.E. 3/32) must be supplied, but not both",You cannot enter both the carrier's EORI and address
-CDS12087,"Relation Error: VAT Declaring Party Identification (D.E. 3/40), where mandated, must be supplied at either header or item","Relation error: VAT Declaring Party Identification (D.E. 3/40), where mandated, must be supplied at either header or item"
-CDS12088,Relation Error: Either Agent Name (D.E. 3/19) or Agent Identification Number (D.E. 3/20) must be supplied,You cannot enter both the representative's EORI and address
-CDS12089,Relation Error: Consignee Party Name (D.E.3/9) must be supplied at either header or item level,Relation error: Consignee Party Name (D.E.3/9) must be supplied at either header  or item level
-CDS12090,Relation Error: Carrier Name (D.E. 3/31) or Carrier Identification Number (D.E. 3/32) must be supplied for the 17X Additional Procedure Code at either header or item level,Relation error: Carrier Name (D.E. 3/31) or Carrier Identification Number (D.E. 3/32)  must be supplied for the 17X Additional Procedure  Code at either header or item level
-CDS12091,Relation Error: Consignee (D.E. 3/10) & Exporter (D.E. 3/1) must not be the same Party,Consignee and exporter cannot be the same
-CDS12092,Relation Error: Seller (D.E. 3/25) & Exporter (D.E. 3/1) must not be the same Party,Relation error: Seller (D.E. 3/25) & Exporter (D.E. 3/1) must not be the same Party
-CDS12095,Relation Error: Additional Procedure Combination (D.E. 1/11) can only be used when Country of Dispatch/Export (D.E. 5/14) Exportation Country is a Third Country,Country of dispatch needs to be a third country when using this procedure code
-CDS12096,Relation Error: Provided Authorisation Type (D.E. 3/39) requires specific document in Additional Documents,Relation error: Provided Authorisation Type (D.E. 3/39) requires specific document in Additional Documents
-CDS12097,Relation Error: Combination Additional Procedure Code (D.E. 1/11) and Country of Destination in D.E. 5/8 is not allowed,Country of destination is not available with the procedure code provided
-CDS12098,Relation Error: Combination of Means of Transport (D.E. 7/14) and Delivery Terms in D.E. 4/1 is not allowed,Relation error: Combination of Means of Transport (D.E. 7/14) in DE 7/14 and Delivery Terms in DE 4/1 is not allowed
-CDS12099,Relation Error: Combination of elements that make up the Goods Location Code (D.E. 5/23) is invalid,Invalid goods location code
-CDS12100,Relation Error: Combination of Delivery terms (D.E. 4/1) and Addition/Deduction code (D.E. 4/9) is not allowed,Relation error: Combination of TradeÂ  terms (D.E. 4/1) and Addition/Deduction code (D.E .4/9) is not allowed
-CDS12101,Relation Error: Declared Tax Type (D.E. 4/3) is not allowed in combination with the Additional Procedure,Relation error: Declared Tax Type (D.E.4/3) is not allowed in combination with the Additional Procedure
-CDS12102,Relation Error: Deferred Payment Method in D.E. 4/8 is Required with the duty deferment account number provided in D.E. 2/6,Relation error: Deferred Payment Method in DE 4/8 is Required with the duty deferment account number provided in D.E. 2/6
-CDS12103,Relation Error: Valid delivery destination is required in D.E. 5/8 for a CO declaration,Relation error: Valid delivery destination is required in D.E.5/8 for a CO declaration
-CDS12104,Relation Error: Valid Import Procedure code (D.E. 1/10) is required,Valid import procedure code is required
-CDS12105,Relation Error: Addition/Deduction code (D.E. 4/9) not allowed with the declared Additional Procedure Code (D.E.1/11),Relation error: Addition/Deduction code (D.E. 4/9) not allowed with the declared Additional Procedure Code (D.E.1/11)
-CDS12106,Relation Error: Appropriate Additional Information Code must be provided in D.E. 2/2 with Additional Procedure Code 1CL,Relation error: Appropriate Additional Information Code must be provided in D.E.2/2 with Additional Procedure Code 1CL
-CDS12107,Relation Error: Conditions not met for the requested simplification. Please see CDS Trade Tariff Vol.3 Appendix 4,Relation error: Conditions not met for the requested simplification. Please see CDS Trade Tariff Vol.3 Appendix 4
-CDS12108,Obligation Error: DUCR is mandatory on an Export Declaration,An export declaration needs a DUCR
-CDS12109,"Obligation Error: When providing fixed rate of exchange rate in D.E. 4/15, a currency code of GBP must be supplied",Agreed fixed rate of exchange needs to be in GBP
-CDS12110,Relation Error: A Quota Order number (D.E. 8/1) cannot be provided in combination with this Preference Code (D.E. 4/17),Relation error: A Quota Order number (D.E.8/1) cannot be provided in combination with this Preference Code (D.E. 4/17)
-CDS12111,Relation Error: The provided tax amount (D.E. 4/6 or D.E. 4/7) must always be declared with currency code GBP,The declared tax amount must be in GBP
-CDS12112,Relation Error: Airfreight related additions/deduction code must be provided in DE 4/9 when an airport place of loading is provided in DE 5/21,Relation error: Airfreight related additions/deduction code must be provided in DE 4/9 when an airport place of loading is provided in DE 5/21
-CDS12113,Relation Error: Authorisation holder CGU requires a guarantee type of 0 or 1 to be provided in D.E.8/2,Relation error: Authorisation holder CGU requires a guarantee type of 0 or 1 to be provided in D.E.8/2
-CDS12114,Relation Error: Value declared must be less than 100 as D.E. 4/9 Additions/Deductions code is a percentage,Relation error: Value declared must be less than 100 as D.E. 4/9 Additions/Deductions code is a percentage
-CDS12115,Relation Error: Declared Procedure Code (D.E. 1/10 and / or 1/11) mandates the use of Additional Document (D.E. 2/3) 185C,The declared procedure code requires additional document 185C
-CDS12117,Relation Error: Importer (D.E. 3/16) & Buyer (D.E. 3/27) must not be the same party,Relation error: Importer (D.E. 3/16) & Buyer (D.E. 3/27) must not be the same party
-CDS12118,Relation Error: Consignor (D.E.3/1) information must be supplied for the 17X Additional Procedure Code at either header or item level and cannot be declared at both levels,Relation error: Consignor (D.E.3/1) information must be supplied for the 17X Additional Procedure Code at either header or item level and cannot be declared at both levels
-CDS12119,Relation Error: Declared Additional Document (D.E. 2/3) is not allowed with this Procedure Code (D.E. 1/10 or D.E. 1/11),The declared additional document is not valid with the declared procedure code
-CDS12120,Relation Error: The appropriate authorisation has not been declared for this Declaration Type (D.E. 1/2),
-CDS12121,Relation Error: This combination of Additional Information codes (D.E. 2/2) is not allowed,
-CDS12123,Data Error: Value must be greater than 0,
-CDS12125,DAN Error: Account number is not recognised; or Account is suspended or revoked; or Parties declared on the declaration do not have authority to use account number provided,
-CDS12135,Relation Error: Country of Export (DE 5/14) must be supplied at either header or item level,
-CDS12136,Relation Error: Provided Additional Procedure Code (D.E. 1/11) necessitates indirect representation (D.E. 3/21) for the following declaration types: C F Y J K Z,
-CDS12137,Uniqueness Error: Only a single MUCR can be declared in D.E. 2/1 at Header level on an imports declaration,
-CDS12138,Relation Error: Provided Additional Procedure Code (D.E. 1/11) cannot be used on a Type J/K (EIDR) declaration,
-CDS12139,Relation Error: Additional Information Code OVR01 must be provided in D.E. 2/2 when entering a manual tax amount in D.E. 4/6 or D.E. 4/7,
-CDS13000,Credibility check: incredible value found,Credibility check: incredible value found
-CDS19999,Additional errors found,Additional errors found
-CDS20001,Related movement not (yet) found,Related movement not (yet) found
-CDS20003,Related movement not found,Related movement not found
-CDS40001,Missing reference date,Missing reference date
-CDS40002,Invalid because of future reference date,
-CDS40003,Commodity code can not be declared,Commodity code can not be declared
-CDS40004,Subheading can not be declared,
-CDS40005,Additional antidumping code missing,
-CDS40006,Multiple meursing additional codes,
-CDS40007,Duplicate value,Duplicate value
-CDS40008,Additional agricultural code missing,Additional agricultural code missing
-CDS40010,Data element value does not apply,Data element value does not apply
-CDS40011,Missing data element value,Missing data element value
-CDS40012,Data element has invalid format,
-CDS40013,Data element contains invalid value,Data element contains invalid value
-CDS40040,Non existing value,
-CDS40044,Disallowed Document,
-CDS40045,Missing document,
-CDS40046,Condition not fulfilled,
-CDS40047,Prohibition,
-CDS40048,Provisional measure closed,
-CDS40049,Quota exhausted,Quota exhausted
-CDS40050,Quota critical,Quota critical
-CDS40051,Quota blocked,Quota blocked
-CDS40052,Quota blocked and critical,
-CDS40053,Quota suspended,
-CDS40054,Classification changes for definitive measure,
-CDS40055,Internal quota system error,
-CDS40056,Parent to commodity code not found.,
-CDS40057,Abnormally high drawing request,
-CDS40058,Incompatible preference code and country code of despatch,
-CDS40059,Incomplete measure or commodity code,Incomplete measure or commodity code
-CDS40062,Licence Quota - (e.g. Agricultural quota) not managed by TAXUD,
-CDS40063,Incomplete preferential document,
-CDS40064,Additional codes for export refund available,
-CDS40065,No applicable measures found,
-CDS40066,Tariff condition not fulfilled,Tariff condition not fulfilled
-CDS40067,Confilcting documents,
-CDS49997,Other information,
-CDS49998,Other warnings,Other warnings
-CDS49999,Other errors,Other errors
-CDS50000,Response from ALVS is not release,
-CDS50001,"Invalid UCR Format, DUCR or MUCR",Invalid format of DUCR/MUCR
-CDS50002,MUCR can not be declared into as it is shut,MUCR can not be declared into as it is shut
-CDS50003,UCR is not at the top of its' consolidation,UCR is not at the top of its' consolidation
-CDS50004,Cannot consolidate the MUCR as it is not shut,MUCR should be shut before consolidating
-CDS50005,Immediate parent MUCR cannot already be within it's same tree/consolidation,Parent MUCR cannot already be in this consolidation
-CDS50006,Cannot find the consolidation,Cannot find the consolidation
-CDS50007,Consolidation already shut,Consolidation already shut
-CDS50008,UCR Type does not match UCR Format ,Incorrect UCR format
-CDS50009,Given parent is not a MUCR,Given parent is not a MUCR
-CDS50010,Declaration does not exist,Declaration does not exist
-CDS50011,UCR is already associated to given MUCR,This UCR is already associated to this MUCR
-CDS50012,Prior movement for the UCR is not at the same location as given on the EDL,All prior movements for this UCR need to be the same as the export depart location
-CDS50013,No prior EAL can be found for the UCR at the location given on the EDL,This UCR needs an export arrival at location
-CDS50014,Not all declaration(s) have P2P ,Not all declaration(s) have P2P (permission to proceed)
-CDS50015,Declaration is cancelled/terminated/invalidated/handled externally/rejected,Declaration unable to proceed
-CDS50016,"Unknown Declaration ID, DUCR or MUCR","Unknown UCR, DUCR, or MUCR"
-CDS50017,Consolidation has reached maximum number of levels/items within a level ,Maximum number of items/levels reached
-CDS50018,Goods Departure/Arrival Date/Time is invalid,The date and time is invalid
-CDS50019,Cannot depart the MUCR from UK as MUCR is not Shut,Shut MUCR before departing
-CDS50020,Message sent with a future date/time (greater than 25hours in the future),Cannot be more than 25 hours in the future
-CDS50021,UCR is not for a MUCR,This UCR is not for a MUCR
-CDS50022,UCR to be disassociated does not exist ,Enter a valid UCR
-CDS50023,UCR to be disassociated is not already associated,The UCR needs to be associated before it can be disassociated
-CDS50024,Master UCR/UCR field completion does not match the EAC action ,Cannot complete association because UCR does not match
-CDS50025,MUCR is empty,A MUCR is needed
-CDS50026,IE906 (Exit message failed validation/processing in DMS) was received as a result of an exit message ,Exit message failed validation
-CDS50027,Role/Location-Based Authorisation failed (PDS) ,Role/location authorisation failed
-CDS50028,Goods Location is invalid ,Enter a valid goods location code
-CDS50029,MUCR has been departed ,MUCR has already been departed
-CDS50030,UCR cannot be associated as it has been Rejected Upon Arrival,UCR cannot be associated as it has been rejected upon arrival
-CDS71236,Licence not valid for declared Country of Origin,
-CDS71252,Licence not valid for declared Country of Dispatch,
-CDS70758,Licence is not valid for declared Country of Destination,
-CDS77001,Quantity must be provided for Document Category,
-CDS77005,Reason for waiver must be declared for Document Category,
-CDS70761,Licence has insufficient quantity remaining to meet claim,
-CDS71216,Transaction not permitted; Licence is inactive and is no longer available for use,
-CDS71206,Licence is already exhausted,
-CDS71204,Licence is already surrendered,
-CDS77004,Reservation could not be made,
-CDS12132,DUCR format not valid,
-CDS12133,MUCR format not valid,
-CDS12134,DUCR and MUCR formats not valid,
-CDS12062,External Validation DUCR result: validation errors encountered,External ILE validation DUCR result - not OK
-CDS12044?,External Validation MUCR result: validation errors encountered,
-CDS10046,Missing document not required for requested procedure,
-CDS20002,Related movement does not match declaration,
-CDS40069,Quota closed,
-CDS40068,Additional Excise code is missing,
-CDS70711,Licence Error: Electronic licence does not exist,
-CDS70719,Licence Error: Electronic licence quoted although Document Status Code indicated paper licence,
-CDS70724,Licence Error: Licence is not valid,
-CDS70739,Licence Error: An Import licence cannot be used on an Export declaration,
-CDS70740,Licence Error: Importer/Exporter is not the owner of the licence,
-CDS70760,Licence Error: Licence is not valid for the declared goods item,
-CDS70791,Licence Error: Licence line number does not exist on the licence,
-CDS71115,Licence Error: An Export licence cannot be used on an Import declaration,
-CDS71200,Uniqueness Error: Document Codes with identical IDs are not permitted on a single goods item,
-CDS71201,Licence Error: All instances of a licence for a declaration must use a consistent Document Status Code,
-CDS71203,"Licence Error: Document Status Code ""EL"" or ""EP"" is not allowed on a Single Use licence",
-CDS71262,"Licence Error: Document Status Code ""EA"" can only be declared on Type Y declarations",
-CDS73329,Licence Error: Licence cannot be declared on declaration category/declaration type combination,
-CDS77000,Obligation Error: ID must be provided for declared Document Code,
-CDS77002,Obligation Error: Document Status Code must be provided for declared Document Code,
-CDS77003,Licence Error: DUCR must be provided for an Import declaration with a Licence,
-CDS14000,Credibility check: incredible quota value found,
+CDS10001,Obligation Error: Mandatory Data Element has not been provided,Obligation error: Mandatory Data Element has not been provided,
+CDS10002,Obligation Error: Data Element is not allowed,Obligation error: Data Element is not allowed,
+CDS10003,Obligation Error: Number of Occurrences exceeds what is allowed for the Data Element,Obligation error: Number of Occurrences exceeds what is allowed for the Data Element,
+CDS10004,Commodity code Error: Mandatory data element not provided and/or format error and/or number of occurrences exceeds what is allowed for the data element,Commodity code error: Mandatory data element not provided or format error or number of occurrences exceeds what is allowed for the data element,
+CDS10010,Format Error: Data element has invalid format,Format error: Data element has invalid format,
+CDS10020,Data Error: Data Element contains invalid value,Data error: Data element contains invalid value,
+CDS10021,Data Error: Value must be positive,Domain error: value can not be lower than 0,
+CDS10044,Document is not allowed,Document is not allowed,
+CDS10045,Calculated item Customs value is negative. Check Declaration valuation data,Calculated customs value is not allowed to be below zero,
+CDS11003,Relation Error: The value declared in Total Number of Items (D.E. 1/9) does not corespond with the number of Goods Items on the Declaration,Relation error: The value of ItemTotal is invalid; it does not correspond to the number of times that ItemNumber is used in the declaration.,
+CDS11004,"Relation Error: The combination of the Requested Procedure, Previous Procedure and Additional Procedure is invalid",This is not a recognised procedure code in the UCC guidelines,
+CDS11005,Relation Error: The Requested Procedure (D.E. 1/10) for each Goods Item must derive the same Declaration Category (e.g. H1) or acceptance date is not valid. No further validation has been carried out.,Each item must fit with the same declared procedure code,
+CDS11006,Relation Error: Net Mass must be lower than Gross Mass,The net mass must be lower than the gross mass,
+CDS11007,Relation Error: The submitter of the Additional Message differs from the original Declaration,A different person submitted the original declaration,
+CDS11012,Element is not allowed to be amended on this Declaration Type,Cannot change this element on this declaration type,
+CDS12003,Uniqueness Error: Reuse of LRN (D.E. 2/5) is not allowed within 48 hours,You cannot use the same LRN on different declarations in the space of 48 hours,
+CDS12005,Authorisation Error: Party ID unknown or invalid.,Authorization error: Party ID unknown or invalid.,
+CDS12006,License Error: License has expired; or License ID cannot be recognised; or License ID does not belong to the party on the declaration; or License declared has insufficient balance remaining; or License does not apply to the goods or country declared,Invalid import/export license number,
+CDS12007,Authorisation Error: Authorisation has expired; or Authorisation reference number does not belong to the party on the declaration; or Authorisation reference number provided is not recognised,Authorization error: authorization not valid for declaration,
+CDS12013,Authorisation Error: provided VAT number is not a valid destination for VAT transfer,,
+CDS12014,Sequence Error: A Goods Arrival Notification must follow a pre-lodged Declaration,A Goods Arrival Notification must follow a pre-lodged declaration.,
+CDS12015,Sequence Error: AdditionalMessage.declarationReference does not refer to an existing declaration or the existing declaration is not in a permissable state to process the request,Declaration does not exist or is not ready to process the request,
+CDS12016,Date Error: The acceptance date must not be in the future and must not be more than 180 days in the past,The acceptance date cannot be more than 180 days in the past,
+CDS12022,Relation Error: The Goods Item Number (D.E. 1/6) is larger than the total number of Goods Items on the Declaration,The item number declared is higher than the number of items on the declaration,
+CDS12024,Uniqueness Error: The value declared should be unique,Uniqueness error: The Item number is not unique,
+CDS12026,Uniqueness Error: The same Data Element cannot be amended more than once in the same request,The same data element cannot be amended more than once in the same request,
+CDS12031,Sequence Error: Goods Arrival Notification must be submitted within 30 days,Goods arrival notification must be submitted within 30 days,
+CDS12034,Relation Error: Submission channel of the amendment must be the same as the original Declaration,Any amendments must be made using the same service as the original declaration,
+CDS12036,Sequence Error: A new request cannot be submitted until a response is received to your previous request,A new request cannot be submitted until a response is received to your previous request,
+CDS12042,Relation Error: elements must be identical within the GoodsItem,Relation error: elements must be identical within the GoodsItem,
+CDS12046,Process Error: Goods Arrival Notification was not received within 30 days of the pre-lodged Declaration,Goods arrival notification was late,
+CDS12050,A valid Requested Procedure (D.E. 1/10) has not been provided or acceptance date is not valid. No further validation has been carried out.,Procedure code: the requested procedure is not valid,
+CDS12052,A valid Declaration Type (D.E. 1/2) has not been provided or acceptance date is not valid. No further validation has been carried out,Declaration type: the declaration type is not valid,
+CDS12056,Relation Error: the combination of elements is not allowed,Relation error: the combination of elements is not allowed,
+CDS12057,Relation Error: The invoice currency must be the same for every Goods Item on the Declaration,The invoice currency must be the same for every goods item on the declaration,
+CDS12058,"Relation Error: When the packaging quantity is zero, then there must be another goods item with the same marks and numbers having a quantity greater than zero",At least one packaging quantity must be greater than zero,
+CDS12070,Relation Error: The value supplied in Data Element 1 mandates the completion of Data Element 2,Relation error: The value supplied in Data Element 1 mandates the completion of Data Element 2,
+CDS12071,Relation Error: Data Element must be supplied at either header or item level and cannot be declared at both levels,Relation error: Data Element must be supplied at either header or item level and cannot be declared at both levels,
+CDS12072,"Relation Error: Either Data Element 1 or Data Element 2 must be supplied, but not both","You can only supply one [element], not both",
+CDS12073,Relation Error: Data Element must be supplied at header or item level,Relation error: Data Element must be supplied at header or item level,
+CDS12074,"Relation Error: Because Data Element 1 is not supplied, Data Element 2 is mandatory","Relation error: Because Data Element 1 is not supplied, Data Element 2 is mandatory",
+CDS12075,Relation Error: Data Element 2 must not be supplied with this value in Data Element 1,Relation error: Data Element 2 must not be supplied with this value in Data Element 1,
+CDS12077,Relation Error: A valid value must be supplied in Data Element 2 as Data Element 1 is present,Relation error: A valid value must be supplied in Data Element 2 as Data Element 1 is present,
+CDS12078,"Relation Error: As no Deferment Account Number is provided in D.E. 2/6, an immediate Method of Payment must be offered in D.E. 4/8","Relation error: As no Deferment Account Number is provided in D.E. 2/6, an immediate Method of Payment must be offered in D.E. 4/8",
+CDS12079,Relation Error: Data Element 2 must not be supplied with Data Element 1,Relation error: Data Element 2 must not be supplied with Data Element 1,
+CDS12080,Relation Error: Combination of Addition / Deduction codes (D.E. 4/9) is not allowed,Combination of addition / deduction codes is not allowed,
+CDS12081,Relation Error: Importer (D.E. 3/16) & Exporter (D.E. 3/2) must not be the same party,Importer and exporter must not be the same,
+CDS12082,Relation Error: The currency declared in D.E. 4/11 must be the same as the currency declared in D.E. 4/14,The currency declared in the total amount invoiced must be the same declared for the item price,
+CDS12083,"Relation Error: For Country of Preferential Origin D.E. 5/16 where mandated, only provide one country or country group, not both",Only one country of preferential origin or country group can be entered,
+CDS12084,"Relation Error: Either Consignee Name (D.E. 3/9) or Consignee Identification Number (D.E. 3/10) must be supplied, but not both",You cannot enter both the consignee's EORI and address,
+CDS12086,"Relation Error: Either Carrier Name (D.E. 3/31) or Carrier Identification Number (D.E. 3/32) must be supplied, but not both",You cannot enter both the carrier's EORI and address,
+CDS12087,"Relation Error: VAT Declaring Party Identification (D.E. 3/40), where mandated, must be supplied at either header or item","Relation error: VAT Declaring Party Identification (D.E. 3/40), where mandated, must be supplied at either header or item",
+CDS12088,Relation Error: Either Agent Name (D.E. 3/19) or Agent Identification Number (D.E. 3/20) must be supplied,You cannot enter both the representative's EORI and address,
+CDS12089,Relation Error: Consignee Party Name (D.E.3/9) must be supplied at either header or item level,Relation error: Consignee Party Name (D.E.3/9) must be supplied at either header  or item level,
+CDS12090,Relation Error: Carrier Name (D.E. 3/31) or Carrier Identification Number (D.E. 3/32) must be supplied for the 17X Additional Procedure Code at either header or item level,Relation error: Carrier Name (D.E. 3/31) or Carrier Identification Number (D.E. 3/32)  must be supplied for the 17X Additional Procedure  Code at either header or item level,
+CDS12091,Relation Error: Consignee (D.E. 3/10) & Exporter (D.E. 3/1) must not be the same Party,Consignee and exporter cannot be the same,
+CDS12092,Relation Error: Seller (D.E. 3/25) & Exporter (D.E. 3/1) must not be the same Party,Relation error: Seller (D.E. 3/25) & Exporter (D.E. 3/1) must not be the same Party,
+CDS12095,Relation Error: Additional Procedure Combination (D.E. 1/11) can only be used when Country of Dispatch/Export (D.E. 5/14) Exportation Country is a Third Country,Country of dispatch needs to be a third country when using this procedure code,
+CDS12096,Relation Error: Provided Authorisation Type (D.E. 3/39) requires specific document in Additional Documents,Relation error: Provided Authorisation Type (D.E. 3/39) requires specific document in Additional Documents,
+CDS12097,Relation Error: Combination Additional Procedure Code (D.E. 1/11) and Country of Destination in D.E. 5/8 is not allowed,Country of destination is not available with the procedure code provided,
+CDS12098,Relation Error: Combination of Means of Transport (D.E. 7/14) and Delivery Terms in D.E. 4/1 is not allowed,Relation error: Combination of Means of Transport (D.E. 7/14) in DE 7/14 and Delivery Terms in DE 4/1 is not allowed,
+CDS12099,Relation Error: Combination of elements that make up the Goods Location Code (D.E. 5/23) is invalid,Invalid goods location code,
+CDS12100,Relation Error: Combination of Delivery terms (D.E. 4/1) and Addition/Deduction code (D.E. 4/9) is not allowed,Relation error: Combination of TradeÂ  terms (D.E. 4/1) and Addition/Deduction code (D.E .4/9) is not allowed,
+CDS12101,Relation Error: Declared Tax Type (D.E. 4/3) is not allowed in combination with the Additional Procedure,Relation error: Declared Tax Type (D.E.4/3) is not allowed in combination with the Additional Procedure,
+CDS12102,Relation Error: Deferred Payment Method in D.E. 4/8 is Required with the duty deferment account number provided in D.E. 2/6,Relation error: Deferred Payment Method in DE 4/8 is Required with the duty deferment account number provided in D.E. 2/6,
+CDS12103,Relation Error: Valid delivery destination is required in D.E. 5/8 for a CO declaration,Relation error: Valid delivery destination is required in D.E.5/8 for a CO declaration,
+CDS12104,Relation Error: Valid Import Procedure code (D.E. 1/10) is required,Valid import procedure code is required,
+CDS12105,Relation Error: Addition/Deduction code (D.E. 4/9) not allowed with the declared Additional Procedure Code (D.E.1/11),Relation error: Addition/Deduction code (D.E. 4/9) not allowed with the declared Additional Procedure Code (D.E.1/11),
+CDS12106,Relation Error: Appropriate Additional Information Code must be provided in D.E. 2/2 with Additional Procedure Code 1CL,Relation error: Appropriate Additional Information Code must be provided in D.E.2/2 with Additional Procedure Code 1CL,
+CDS12107,Relation Error: Conditions not met for the requested simplification. Please see CDS Trade Tariff Vol.3 Appendix 4,Relation error: Conditions not met for the requested simplification. Please see CDS Trade Tariff Vol.3 Appendix 4,
+CDS12108,Obligation Error: DUCR is mandatory on an Export Declaration,An export declaration needs a DUCR,
+CDS12109,"Obligation Error: When providing fixed rate of exchange rate in D.E. 4/15, a currency code of GBP must be supplied",Agreed fixed rate of exchange needs to be in GBP,
+CDS12110,Relation Error: A Quota Order number (D.E. 8/1) cannot be provided in combination with this Preference Code (D.E. 4/17),Relation error: A Quota Order number (D.E.8/1) cannot be provided in combination with this Preference Code (D.E. 4/17),
+CDS12111,Relation Error: The provided tax amount (D.E. 4/6 or D.E. 4/7) must always be declared with currency code GBP,The declared tax amount must be in GBP,
+CDS12112,Relation Error: Airfreight related additions/deduction code must be provided in DE 4/9 when an airport place of loading is provided in DE 5/21,Relation error: Airfreight related additions/deduction code must be provided in DE 4/9 when an airport place of loading is provided in DE 5/21,
+CDS12113,Relation Error: Authorisation holder CGU requires a guarantee type of 0 or 1 to be provided in D.E.8/2,Relation error: Authorisation holder CGU requires a guarantee type of 0 or 1 to be provided in D.E.8/2,
+CDS12114,Relation Error: Value declared must be less than 100 as D.E. 4/9 Additions/Deductions code is a percentage,Relation error: Value declared must be less than 100 as D.E. 4/9 Additions/Deductions code is a percentage,
+CDS12115,Relation Error: Declared Procedure Code (D.E. 1/10 and / or 1/11) mandates the use of Additional Document (D.E. 2/3) 185C,The declared procedure code requires additional document 185C,
+CDS12117,Relation Error: Importer (D.E. 3/16) & Buyer (D.E. 3/27) must not be the same party,Relation error: Importer (D.E. 3/16) & Buyer (D.E. 3/27) must not be the same party,
+CDS12118,Relation Error: Consignor (D.E.3/1) information must be supplied for the 17X Additional Procedure Code at either header or item level and cannot be declared at both levels,Relation error: Consignor (D.E.3/1) information must be supplied for the 17X Additional Procedure Code at either header or item level and cannot be declared at both levels,
+CDS12119,Relation Error: Declared Additional Document (D.E. 2/3) is not allowed with this Procedure Code (D.E. 1/10 or D.E. 1/11),The declared additional document is not valid with the declared procedure code,
+CDS12120,Relation Error: The appropriate authorisation has not been declared for this Declaration Type (D.E. 1/2),,
+CDS12121,Relation Error: This combination of Additional Information codes (D.E. 2/2) is not allowed,,
+CDS12123,Data Error: Value must be greater than 0,,
+CDS12125,DAN Error: Account number is not recognised; or Account is suspended or revoked; or Parties declared on the declaration do not have authority to use account number provided,,
+CDS12135,Relation Error: Country of Export (DE 5/14) must be supplied at either header or item level,,
+CDS12136,Relation Error: Provided Additional Procedure Code (D.E. 1/11) necessitates indirect representation (D.E. 3/21) for the following declaration types: C F Y J K Z,,
+CDS12137,Uniqueness Error: Only a single MUCR can be declared in D.E. 2/1 at Header level on an imports declaration,,
+CDS12138,Relation Error: Provided Additional Procedure Code (D.E. 1/11) cannot be used on a Type J/K (EIDR) declaration,,
+CDS12139,Relation Error: Additional Information Code OVR01 must be provided in D.E. 2/2 when entering a manual tax amount in D.E. 4/6 or D.E. 4/7,,
+CDS13000,Credibility check: incredible value found,Credibility check: incredible value found,
+CDS19999,Additional errors found,Additional errors found,
+CDS20001,Related movement not (yet) found,Related movement not (yet) found,
+CDS20003,Related movement not found,Related movement not found,
+CDS40001,Missing reference date,Missing reference date,
+CDS40002,Invalid because of future reference date,,
+CDS40003,Commodity code can not be declared,Commodity code can not be declared,
+CDS40004,Subheading can not be declared,,
+CDS40005,Additional antidumping code missing,,
+CDS40006,Multiple meursing additional codes,,
+CDS40007,Duplicate value,Duplicate value,
+CDS40008,Additional agricultural code missing,Additional agricultural code missing,
+CDS40010,Data element value does not apply,Data element value does not apply,
+CDS40011,Missing data element value,Missing data element value,
+CDS40012,Data element has invalid format,,
+CDS40013,Data element contains invalid value,Data element contains invalid value,
+CDS40040,Non existing value,,
+CDS40044,Disallowed Document,,
+CDS40045,Missing document,,
+CDS40046,Condition not fulfilled,,
+CDS40047,Prohibition,,
+CDS40048,Provisional measure closed,,
+CDS40049,Quota exhausted,Quota exhausted,
+CDS40050,Quota critical,Quota critical,
+CDS40051,Quota blocked,Quota blocked,
+CDS40052,Quota blocked and critical,,
+CDS40053,Quota suspended,,
+CDS40054,Classification changes for definitive measure,,
+CDS40055,Internal quota system error,,
+CDS40056,Parent to commodity code not found.,,
+CDS40057,Abnormally high drawing request,,
+CDS40058,Incompatible preference code and country code of despatch,,
+CDS40059,Incomplete measure or commodity code,Incomplete measure or commodity code,
+CDS40062,Licence Quota - (e.g. Agricultural quota) not managed by TAXUD,,
+CDS40063,Incomplete preferential document,,
+CDS40064,Additional codes for export refund available,,
+CDS40065,No applicable measures found,,
+CDS40066,Tariff condition not fulfilled,Tariff condition not fulfilled,
+CDS40067,Confilcting documents,,
+CDS49997,Other information,,
+CDS49998,Other warnings,Other warnings,
+CDS49999,Other errors,Other errors,
+CDS50000,Response from ALVS is not release,,
+CDS50001,"Invalid UCR Format, DUCR or MUCR",Invalid format of DUCR/MUCR,
+CDS50002,MUCR can not be declared into as it is shut,MUCR can not be declared into as it is shut,
+CDS50003,UCR is not at the top of its' consolidation,UCR is not at the top of its' consolidation,
+CDS50004,Cannot consolidate the MUCR as it is not shut,MUCR should be shut before consolidating,
+CDS50005,Immediate parent MUCR cannot already be within it's same tree/consolidation,Parent MUCR cannot already be in this consolidation,
+CDS50006,Cannot find the consolidation,Cannot find the consolidation,
+CDS50007,Consolidation already shut,Consolidation already shut,
+CDS50008,UCR Type does not match UCR Format ,Incorrect UCR format,
+CDS50009,Given parent is not a MUCR,Given parent is not a MUCR,
+CDS50010,Declaration does not exist,Declaration does not exist,
+CDS50011,UCR is already associated to given MUCR,This UCR is already associated to this MUCR,
+CDS50012,Prior movement for the UCR is not at the same location as given on the EDL,All prior movements for this UCR need to be the same as the export depart location,
+CDS50013,No prior EAL can be found for the UCR at the location given on the EDL,This UCR needs an export arrival at location,
+CDS50014,Not all declaration(s) have P2P ,Not all declaration(s) have P2P (permission to proceed),
+CDS50015,Declaration is cancelled/terminated/invalidated/handled externally/rejected,Declaration unable to proceed,
+CDS50016,"Unknown Declaration ID, DUCR or MUCR","Unknown UCR, DUCR, or MUCR",
+CDS50017,Consolidation has reached maximum number of levels/items within a level ,Maximum number of items/levels reached,
+CDS50018,Goods Departure/Arrival Date/Time is invalid,The date and time is invalid,
+CDS50019,Cannot depart the MUCR from UK as MUCR is not Shut,Shut MUCR before departing,
+CDS50020,Message sent with a future date/time (greater than 25hours in the future),Cannot be more than 25 hours in the future,
+CDS50021,UCR is not for a MUCR,This UCR is not for a MUCR,
+CDS50022,UCR to be disassociated does not exist ,Enter a valid UCR,
+CDS50023,UCR to be disassociated is not already associated,The UCR needs to be associated before it can be disassociated,
+CDS50024,Master UCR/UCR field completion does not match the EAC action ,Cannot complete association because UCR does not match,
+CDS50025,MUCR is empty,A MUCR is needed,
+CDS50026,IE906 (Exit message failed validation/processing in DMS) was received as a result of an exit message ,Exit message failed validation,
+CDS50027,Role/Location-Based Authorisation failed (PDS) ,Role/location authorisation failed,
+CDS50028,Goods Location is invalid ,Enter a valid goods location code,
+CDS50029,MUCR has been departed ,MUCR has already been departed,
+CDS50030,UCR cannot be associated as it has been Rejected Upon Arrival,UCR cannot be associated as it has been rejected upon arrival,
+CDS71236,Licence not valid for declared Country of Origin,,
+CDS71252,Licence not valid for declared Country of Dispatch,,
+CDS70758,Licence is not valid for declared Country of Destination,,
+CDS77001,Quantity must be provided for Document Category,,
+CDS77005,Reason for waiver must be declared for Document Category,,
+CDS70761,Licence has insufficient quantity remaining to meet claim,,
+CDS71216,Transaction not permitted; Licence is inactive and is no longer available for use,,
+CDS71206,Licence is already exhausted,,
+CDS71204,Licence is already surrendered,,
+CDS77004,Reservation could not be made,,
+CDS12132,DUCR format not valid,,
+CDS12133,MUCR format not valid,,
+CDS12134,DUCR and MUCR formats not valid,,
+CDS12062,External Validation DUCR result: validation errors encountered,External ILE validation DUCR result - not OK,
+CDS12044?,External Validation MUCR result: validation errors encountered,,
+CDS10046,Missing document not required for requested procedure,,
+CDS20002,Related movement does not match declaration,,
+CDS40069,Quota closed,,
+CDS40068,Additional Excise code is missing,,
+CDS70711,Licence Error: Electronic licence does not exist,,
+CDS70719,Licence Error: Electronic licence quoted although Document Status Code indicated paper licence,,
+CDS70724,Licence Error: Licence is not valid,,
+CDS70739,Licence Error: An Import licence cannot be used on an Export declaration,,
+CDS70740,Licence Error: Importer/Exporter is not the owner of the licence,,
+CDS70760,Licence Error: Licence is not valid for the declared goods item,,
+CDS70791,Licence Error: Licence line number does not exist on the licence,,
+CDS71115,Licence Error: An Export licence cannot be used on an Import declaration,,
+CDS71200,Uniqueness Error: Document Codes with identical IDs are not permitted on a single goods item,,
+CDS71201,Licence Error: All instances of a licence for a declaration must use a consistent Document Status Code,,
+CDS71203,"Licence Error: Document Status Code ""EL"" or ""EP"" is not allowed on a Single Use licence",,
+CDS71262,"Licence Error: Document Status Code ""EA"" can only be declared on Type Y declarations",,
+CDS73329,Licence Error: Licence cannot be declared on declaration category/declaration type combination,,
+CDS77000,Obligation Error: ID must be provided for declared Document Code,,
+CDS77002,Obligation Error: Document Status Code must be provided for declared Document Code,,
+CDS77003,Licence Error: DUCR must be provided for an Import declaration with a Licence,,
+CDS14000,Credibility check: incredible quota value found,,

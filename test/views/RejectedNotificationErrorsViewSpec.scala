@@ -71,6 +71,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
           "rejectionCode",
           "cdsRejectionDescription",
           "exportsRejectionDescription",
+          None,
           Some(Pointer("declaration.consignmentReferences.lrn"))
         )
 
@@ -90,6 +91,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
           "rejectionCode",
           "cdsRejectionDescription",
           "exportsRejectionDescription",
+          None,
           Some(Pointer("declaration.goodsShipment.governmentAgencyGoodsItem.#0.additionalDocument.#1.id"))
         )
 
