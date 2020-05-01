@@ -41,9 +41,17 @@ POST        /declarant-details                   controllers.declaration.Declara
 
 # Representative details
 
-GET         /representative-details              controllers.declaration.RepresentativeDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /are-you-representing-another-agent  controllers.declaration.RepresentativeAgentController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /representative-details              controllers.declaration.RepresentativeDetailsController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /are-you-representing-another-agent  controllers.declaration.RepresentativeAgentController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
+GET         /representatives-eori-number         controllers.declaration.RepresentativeEntityController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /representatives-eori-number         controllers.declaration.RepresentativeEntityController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
+GET         /representation-type-agreed          controllers.declaration.RepresentativeStatusController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /representation-type-agreed          controllers.declaration.RepresentativeStatusController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
 # Consignee details
 

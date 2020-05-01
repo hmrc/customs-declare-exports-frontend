@@ -16,9 +16,8 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.RepresentativeDetailsController
-import forms.common.Eori
-import forms.declaration.{EntityDetails, RepresentativeDetails}
+import controllers.declaration.RepresentativeStatusController
+import forms.declaration.RepresentativeStatus
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -29,41 +28,43 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import views.html.declaration.representative_details
+import views.html.declaration.representative_details_status
 
-class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValues {
+class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValues {
 
-  val mockRepresentativeDetailsPage = mock[representative_details]
+  val mockPage = mock[representative_details_status]
 
-  val controller = new RepresentativeDetailsController(
+  val controller = new RepresentativeStatusController(
     mockAuthAction,
     mockJourneyAction,
     navigator,
     mockExportsCacheService,
     stubMessagesControllerComponents(),
-    mockRepresentativeDetailsPage
+    mockPage
   )(ec)
 
-  val eori = "GB12345678912345"
+  val statusCode = "2"
 
-  def theResponseForm: Form[RepresentativeDetails] = {
-    val formCaptor = ArgumentCaptor.forClass(classOf[Form[RepresentativeDetails]])
-    verify(mockRepresentativeDetailsPage).apply(any(), formCaptor.capture())(any(), any())
+  def theResponseForm: Form[RepresentativeStatus] = {
+    val formCaptor = ArgumentCaptor.forClass(classOf[Form[RepresentativeStatus]])
+    verify(mockPage).apply(any(), any(), formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockRepresentativeDetailsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockRepresentativeDetailsPage)
+    reset(mockPage)
     super.afterEach()
   }
 
-  "Representative Details controller" must {
+  def verifyPage(numberOfTimes: Int) = verify(mockPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
+
+  "Representative Status controller" must {
 
     onEveryDeclarationJourney() { request =>
       "return 200 (OK)" when {
@@ -75,23 +76,21 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
           status(result) mustBe OK
-          verify(mockRepresentativeDetailsPage, times(1)).apply(any(), any())(any(), any())
+          verifyPage(1)
 
           theResponseForm.value mustBe empty
         }
 
         "display page method is invoked with data in cache" in {
 
-          withNewCaching(
-            aDeclarationAfter(request.cacheModel, withRepresentativeDetails(RepresentativeDetails(Some(EntityDetails(Some(Eori(eori)), None)), None)))
-          )
+          withNewCaching(aDeclarationAfter(request.cacheModel, withRepresentativeDetails(None, Some(statusCode), None)))
 
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
           status(result) mustBe (OK)
-          verify(mockRepresentativeDetailsPage, times(1)).apply(any(), any())(any(), any())
+          verifyPage(1)
 
-          theResponseForm.value.value.details.value.eori.value mustBe Eori(eori)
+          theResponseForm.value.flatMap(_.statusCode) mustBe Some(statusCode)
         }
       }
 
@@ -101,12 +100,12 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
 
           withNewCaching(request.cacheModel)
 
-          val incorrectForm = Json.toJson(RepresentativeDetails(None, Some("incorrect")))
+          val incorrectForm = Json.toJson(RepresentativeStatus(Some("invalid")))
 
           val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
 
           status(result) mustBe BAD_REQUEST
-          verify(mockRepresentativeDetailsPage, times(1)).apply(any(), any())(any(), any())
+          verifyPage(1)
         }
       }
     }
@@ -116,14 +115,14 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
 
         withNewCaching(request.cacheModel)
 
-        val correctForm = Json.toJson(RepresentativeDetails(Some(EntityDetails(Some(Eori(eori)), None)), Some("2")))
+        val correctForm = Json.toJson(RepresentativeStatus(Some(statusCode)))
 
         val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage()
 
-        verify(mockRepresentativeDetailsPage, times(0)).apply(any(), any())(any(), any())
+        verifyPage(0)
       }
     }
 
@@ -132,14 +131,14 @@ class RepresentativeDetailsControllerSpec extends ControllerSpec with OptionValu
 
         withNewCaching(request.cacheModel)
 
-        val correctForm = Json.toJson(RepresentativeDetails(Some(EntityDetails(Some(Eori(eori)), None)), Some("2")))
+        val correctForm = Json.toJson(RepresentativeStatus(Some(statusCode)))
 
         val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.CarrierDetailsController.displayPage()
 
-        verify(mockRepresentativeDetailsPage, times(0)).apply(any(), any())(any(), any())
+        verifyPage(0)
       }
     }
   }

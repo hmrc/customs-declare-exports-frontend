@@ -16,7 +16,7 @@
 
 package models.declaration
 
-import forms.declaration._
+import forms.declaration.{CarrierDetails, ConsigneeDetails, DeclarantDetails, ExporterDetails}
 import models.ExportsDeclaration
 import play.api.libs.json.Json
 

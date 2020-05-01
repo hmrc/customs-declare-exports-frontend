@@ -18,44 +18,44 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.RepresentativeDetails
+import forms.declaration.{RepresentativeEntity, RepresentativeStatus}
 import javax.inject.Inject
 import models.DeclarationType.DeclarationType
+import models.declaration.RepresentativeDetails
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.representative_details
+import views.html.declaration.representative_details_status
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RepresentativeDetailsController @Inject()(
+class RepresentativeStatusController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   navigator: Navigator,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
-  representativeDetailsPage: representative_details
+  representativeStatusPage: representative_details_status
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.parties.representativeDetails match {
-      case Some(data) => Ok(representativeDetailsPage(mode, RepresentativeDetails.form().fill(data)))
-      case _          => Ok(representativeDetailsPage(mode, RepresentativeDetails.form()))
+    request.cacheModel.parties.representativeDetails.map(_.statusCode) match {
+      case Some(data) => Ok(representativeStatusPage(mode, navigationForm, form().fill(RepresentativeStatus(data))))
+      case _          => Ok(representativeStatusPage(mode, navigationForm, form()))
     }
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    RepresentativeDetails
-      .form()
+    form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[RepresentativeDetails]) =>
-          Future.successful(BadRequest(representativeDetailsPage(mode, RepresentativeDetails.adjustErrors(formWithErrors)))),
+        (formWithErrors: Form[RepresentativeStatus]) => Future.successful(BadRequest(representativeStatusPage(mode, navigationForm, formWithErrors))),
         validRepresentativeDetails => updateCache(validRepresentativeDetails).map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
       )
   }
@@ -68,9 +68,24 @@ class RepresentativeDetailsController @Inject()(
         controllers.declaration.routes.CarrierDetailsController.displayPage
     }
 
-  private def updateCache(formData: RepresentativeDetails)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+  private def navigationForm()(implicit request: JourneyRequest[AnyContent]) =
+    if (request.cacheModel.parties.representativeDetails.flatMap(_.details).isDefined) RepresentativeStatus else RepresentativeEntity
+
+  override protected def updateExportsDeclarationSync(
+    update: ExportsDeclaration => Option[ExportsDeclaration]
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    super.updateExportsDeclarationSync(update)
+
+  private def updateCache(formData: RepresentativeStatus)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>
-      val updatedParties = model.parties.copy(representativeDetails = Some(formData))
+      val representativeDetails: RepresentativeDetails = model.parties.representativeDetails.getOrElse(RepresentativeDetails())
+      val updatedParties = model.parties.copy(representativeDetails = Some(representativeDetails.copy(statusCode = formData.statusCode)))
       model.copy(parties = updatedParties)
     }
+
+  private def form()(implicit request: JourneyRequest[AnyContent]) =
+    if (request.cacheModel.parties.representativeDetails.flatMap(_.details).nonEmpty)
+      RepresentativeStatus.formRequired()
+    else
+      RepresentativeStatus.formOptional()
 }

@@ -15,13 +15,16 @@
  *@
 
 @import controllers.declaration.routes._
-@import forms.declaration.RepresentativeDetails
-@import forms.declaration.RepresentativeDetails.StatusCodes._
+@import forms.DeclarationPage
+@import forms.declaration.RepresentativeEntity
+@import forms.declaration.RepresentativeStatus
+@import forms.declaration.RepresentativeStatus.StatusCodes._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.Title
 @import models.requests.JourneyRequest
 @import controllers.navigation.Navigator
 @import views.html.components.gds._
+@import views.components.gds.Styles._
 @import views.BackButton
 
 @this(govukLayout: gdsMainTemplate,
@@ -36,33 +39,26 @@
         saveButtons: saveButtons,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
-@(mode: Mode, form: Form[RepresentativeDetails])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, navigationForm: DeclarationPage, form: Form[RepresentativeStatus])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tariffBody = {
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("supplementary.representative-details.help-item1")</li>
-        <li>@messages("supplementary.representative-details.help-item2")</li>
-    </ul>
-  }
+@tariffBody = { @Html(messages("declaration.representative-status.help-item", components.details_content_link())) }
 
 @govukLayout(
-    title = Title("supplementary.representative.title"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RepresentativeDetails, mode)))) {
+    title = Title("declaration.representative.status.title"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(navigationForm, mode)))) {
 
-    @formHelper(action = RepresentativeDetailsController.submitForm(mode), 'autoComplete -> "off") {
+    @formHelper(action = RepresentativeStatusController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.summary.parties.header"))
-
-        @pageTitle(messages("supplementary.representative.title"))
 
         @govukRadios(Radios(
             name = "statusCode",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("supplementary.representative.legend")),
-                    isPageHeading = false,
-                    classes = "govuk-fieldset__legend govuk-fieldset__legend--m"
+                    content = Text(messages("declaration.representative.status.title")),
+                    isPageHeading = true,
+                    classes = gdsPageLegend
                 ))
             )),
             items = Seq(
@@ -85,17 +81,10 @@
                     checked = form("statusCode").value.contains(IndirectRepresentative.toString)
                 )
             ),
-            errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            errorMessage = form("statusCode").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
-        @exportsInputText(
-            field = form("details.eori"),
-            labelKey = "supplementary.representative.eori.legend",
-            hintKey = Some("supplementary.representative.eori.hint"),
-            isPageHeading = false
-        )
-
-        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(messages("declaration.type.consignmentTariffText", components.gds.detailsContentLink(), tariffBody)))
+        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
 
         @saveButtons()
     }

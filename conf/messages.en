@@ -342,6 +342,18 @@ declaration.carrier-details.help-item1 = Carrier’s EORI number, go to data ele
 declaration.carrier-details.help-item2 = Carrier’s name and business address, go to data element 3/31 Carrier Name and Address
 declaration.carrier.error.addressAndEori = Enter only one of EORI or address
 
+
+declaration.representative.agent.title = Are you representing another agent?
+declaration.representative.agent.hint = This applies if you are completing this declaration on behalf of another agent
+declaration.representative.entity.title = What is the first representative’s EORI number?
+declaration.representative.entity.eori.empty = Enter the representative’s EORI number
+declaration.representative.entity.eori.error.format = Enter a valid EORI number, for example GB123456789000
+declaration.representative-entity.help-item = Go to data element 3/20 Representative Identification Number in the {0}
+declaration.representative.status.title = What type of representation will be used?
+declaration.representative-status.help-item = Go to data element 3/21 Representative Status Code in the {0}
+declaration.representative-status.error = Enter a valid representative status
+
+
 supplementary.representative.title = Representation information
 supplementary.representative.legend = What type of representation was agreed?
 supplementary.representative.hint = Enter the representative’s EORI number or name and business address. If no representative was used, leave this page blank and continue.
@@ -1013,6 +1025,10 @@ declaration.summary.parties.representative.type.change = Change type of represen
 declaration.summary.parties.representative.type.1 = Declarant
 declaration.summary.parties.representative.type.2 = Direct
 declaration.summary.parties.representative.type.3 = Indirect
+declaration.summary.parties.representative.agent = Representing another agent
+declaration.summary.parties.representative.agent.change = representing another agent
+declaration.summary.parties.representative.agent.yes = Yes
+declaration.summary.parties.representative.agent.no = No
 declaration.summary.parties.carrier.eori = Carrier’s EORI number
 declaration.summary.parties.carrier.eori.change = Change Carrier’s EORI number
 declaration.summary.parties.carrier.address = Carrier’s address
