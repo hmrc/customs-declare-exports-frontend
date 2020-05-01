@@ -235,6 +235,12 @@ GET          /items/:itemId/commodity-measure                   controllers.decl
 
 POST         /items/:itemId/commodity-measure                   controllers.declaration.CommodityMeasureController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
 
+# Additional Information Request
+
+GET          /items/:itemId/additional-information-required     controllers.declaration.AdditionalInformationRequiredController.displayPage(mode:models.Mode ?= models.Mode.Normal, itemId)
+
+POST        /items/:itemId/additional-information-required       controllers.declaration.AdditionalInformationRequiredController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
 # Additional information
 
 GET         /items/:itemId/additional-information              controllers.declaration.AdditionalInformationController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
