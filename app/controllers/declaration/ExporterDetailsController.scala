@@ -55,7 +55,7 @@ class ExporterDetailsController @Inject()(
         (formWithErrors: Form[ExporterDetails]) => Future.successful(BadRequest(exporterDetailsPage(mode, formWithErrors))),
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.ConsigneeDetailsController.displayPage))
+            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.RepresentativeAgentController.displayPage))
       )
   }
 

@@ -22,7 +22,7 @@ import controllers.util.SaveAndReturn
 import forms.common.Address
 import forms.declaration.{ConsigneeDetails, EntityDetails}
 import helpers.views.declaration.CommonMessages
-import models.Mode
+import models.{DeclarationType, Mode}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -158,14 +158,6 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
         view.getElementById("details_address_country").attr("value") mustBe empty
       }
 
-      "display 'Back' button that links to 'Exporter Details' page" in {
-
-        val backButton = createView().getElementById("back-link")
-
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.ExporterDetailsController.displayPage().url
-      }
-
       "display 'Save and continue' button on page" in {
         createView().getElementById("submit").text() mustBe messages(saveAndContinueCaption)
       }
@@ -286,6 +278,29 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
         view.getElementById("details_address_townOrCity").attr("value") mustBe "test2"
         view.getElementById("details_address_postCode").attr("value") mustBe "test3"
         view.getElementById("details_address_country").attr("value") mustBe "Ukraine"
+      }
+    }
+  }
+
+  "Consignee Details View back links" should {
+
+    onJourney(DeclarationType.STANDARD, DeclarationType.CLEARANCE, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { implicit request =>
+      "display 'Back' button that links to 'Carrier Details' page" in {
+
+        val backButton = createView().getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.CarrierDetailsController.displayPage().url
+      }
+    }
+
+    onJourney(DeclarationType.SUPPLEMENTARY) { implicit request =>
+      "display 'Back' button that links to 'Representative Details' page" in {
+
+        val backButton = createView().getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.RepresentativeStatusController.displayPage().url
       }
     }
   }

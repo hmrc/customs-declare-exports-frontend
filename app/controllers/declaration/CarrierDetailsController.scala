@@ -20,12 +20,11 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.CarrierDetails
 import javax.inject.Inject
-import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.carrier_details
@@ -62,17 +61,9 @@ class CarrierDetailsController @Inject()(
           (formWithErrors: Form[CarrierDetails]) => Future.successful(BadRequest(carrierDetailsPage(mode, formWithErrors))),
           form =>
             updateCache(form).map { _ =>
-              navigator.continueTo(mode, nextPage(request.declarationType))
+              navigator.continueTo(mode, controllers.declaration.routes.ConsigneeDetailsController.displayPage)
           }
         )
-    }
-
-  private def nextPage(declarationType: DeclarationType): Mode => Call =
-    declarationType match {
-      case DeclarationType.CLEARANCE =>
-        controllers.declaration.routes.DeclarationHolderController.displayPage
-      case _ =>
-        controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage
     }
 
   private def updateCache(formData: CarrierDetails)(implicit req: JourneyRequest[AnyContent]) =

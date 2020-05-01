@@ -64,42 +64,44 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
   }
 
   "Exporter Details Controller" should {
-    "return 200 OK" when {
-      "details are empty" in {
-        val declaration = aDeclaration()
-        withNewCaching(declaration)
-        val response = controller.displayPage(Mode.Normal)(getRequest(declaration))
-        status(response) mustBe OK
+    onEveryDeclarationJourney() { request =>
+      "return 200 OK" when {
+        "details are empty" in {
+          withNewCaching(request.cacheModel)
+          val response = controller.displayPage(Mode.Normal)(getRequest())
+          status(response) mustBe OK
+        }
+        "details are filled" in {
+          withNewCaching(
+            aDeclarationAfter(
+              request.cacheModel,
+              withExporterDetails(eori = Some(Eori("99980")), address = Some(Address("CaptainAmerica", "Test Street", "Leeds", "LS18BN", "Portugal")))
+            )
+          )
+          val response = controller.displayPage(Mode.Normal)(getRequest())
+          status(response) mustBe OK
+          val details = theResponseForm.value.value.details
+          details.eori mustBe defined
+          details.address mustBe defined
+        }
       }
-      "details are filled" in {
-        val declaration = aDeclaration(
-          withExporterDetails(eori = Some(Eori("99980")), address = Some(Address("CaptainAmerica", "Test Street", "Leeds", "LS18BN", "Portugal")))
-        )
-        withNewCaching(declaration)
-        val response = controller.displayPage(Mode.Normal)(getRequest(declaration))
-        status(response) mustBe OK
-        val details = theResponseForm.value.value.details
-        details.eori mustBe defined
-        details.address mustBe defined
+      "return 400 bad request" when {
+        "form contains errors" in {
+          withNewCaching(request.cacheModel)
+          val body = Json.obj("details" -> Json.obj("eori" -> "!nva!id"))
+          val response = controller.saveAddress(Mode.Normal)(postRequest(body))
+          status(response) mustBe BAD_REQUEST
+        }
       }
-    }
-    "return 400 bad request" when {
-      "form contains erros" in {
-        val declaration = aDeclaration()
-        withNewCaching(declaration)
-        val response = controller.saveAddress(Mode.Normal)(postRequest(Json.obj(), declaration))
-        status(response) mustBe BAD_REQUEST
-      }
-    }
-    "return 303 (SEE_OTHER) and redirect to consignee details page" when {
-      "correct form is submitted" in {
-        val declaration = aDeclaration()
-        withNewCaching(declaration)
-        val body = Json.obj("details" -> Json.obj("eori" -> "GB213472539481923"))
-        val response = controller.saveAddress(Mode.Normal)(postRequest(body, declaration))
+      "return 303 (SEE_OTHER) and redirect to representative details page" when {
+        "correct form is submitted" in {
+          withNewCaching(request.cacheModel)
+          val body = Json.obj("details" -> Json.obj("eori" -> "GB213472539481923"))
+          val response = controller.saveAddress(Mode.Normal)(postRequest(body))
 
-        await(response) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ConsigneeDetailsController.displayPage()
+          await(response) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeAgentController.displayPage()
+        }
       }
     }
   }
