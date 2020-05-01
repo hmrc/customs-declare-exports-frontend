@@ -216,7 +216,6 @@ object Navigator {
     case DeclarantDetails                     => controllers.declaration.routes.ConsignmentReferencesController.displayPage
     case ExporterDetails                      => controllers.declaration.routes.DeclarantDetailsController.displayPage
     case ConsigneeDetails                     => controllers.declaration.routes.ExporterDetailsController.displayPage
-    case RepresentativeDetails                => controllers.declaration.routes.ConsigneeDetailsController.displayPage
     case RepresentativeAgent                  => controllers.declaration.routes.ConsigneeDetailsController.displayPage
     case RepresentativeEntity                 => controllers.declaration.routes.RepresentativeAgentController.displayPage
     case RepresentativeStatus                 => controllers.declaration.routes.RepresentativeEntityController.displayPage

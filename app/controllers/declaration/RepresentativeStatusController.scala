@@ -18,6 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
+import forms.DeclarationPage
 import forms.declaration.{RepresentativeEntity, RepresentativeStatus}
 import javax.inject.Inject
 import models.DeclarationType.DeclarationType
@@ -68,13 +69,8 @@ class RepresentativeStatusController @Inject()(
         controllers.declaration.routes.CarrierDetailsController.displayPage
     }
 
-  private def navigationForm()(implicit request: JourneyRequest[AnyContent]) =
+  private def navigationForm()(implicit request: JourneyRequest[AnyContent]): DeclarationPage =
     if (request.cacheModel.parties.representativeDetails.flatMap(_.details).isDefined) RepresentativeStatus else RepresentativeEntity
-
-  override protected def updateExportsDeclarationSync(
-    update: ExportsDeclaration => Option[ExportsDeclaration]
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    super.updateExportsDeclarationSync(update)
 
   private def updateCache(formData: RepresentativeStatus)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>

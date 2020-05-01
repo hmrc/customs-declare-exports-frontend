@@ -65,18 +65,18 @@
                 RadioItem(
                     id = Some(DirectRepresentative.toString),
                     value = Some(DirectRepresentative.toString),
-                    content = Text(messages("supplementary.representative.representationType.direct")),
+                    content = Text(messages("declaration.representative.representationType.direct")),
                     hint = Some(Hint(
-                        content = Text(messages("supplementary.representative.representationType.direct.hint"))
+                        content = Text(messages("declaration.representative.representationType.direct.hint"))
                     )),
                     checked = form("statusCode").value.contains(DirectRepresentative.toString)
                 ),
                 RadioItem(
                     id = Some(IndirectRepresentative.toString),
                     value = Some(IndirectRepresentative.toString),
-                    content = Text(messages("supplementary.representative.representationType.indirect")),
+                    content = Text(messages("declaration.representative.representationType.indirect")),
                     hint = Some(Hint(
-                        content = Text(messages("supplementary.representative.representationType.indirect.hint"))
+                        content = Text(messages("declaration.representative.representationType.indirect.hint"))
                     )),
                     checked = form("statusCode").value.contains(IndirectRepresentative.toString)
                 )

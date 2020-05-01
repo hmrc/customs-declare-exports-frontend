@@ -32,7 +32,8 @@ object RepresentativeAgent extends DeclarationPage {
 
   val mapping = Forms
     .mapping(
-      "representingAgent" -> requiredRadio("error.yesNo.required").verifying("error.yesNo.required", isContainedIn(YesNoAnswer.allowedValues))
+      "representingAgent" -> requiredRadio("declaration.representative.agent.error")
+        .verifying("declaration.representative.agent.error", isContainedIn(YesNoAnswer.allowedValues))
     )(RepresentativeAgent.apply)(RepresentativeAgent.unapply)
 
   def form(): Form[RepresentativeAgent] = Form(mapping)

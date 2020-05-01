@@ -33,7 +33,7 @@ class RepresentativeAgentSpec extends WordSpec with MustMatchers {
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
-        form.errors.head.message must equal("error.yesNo.required")
+        form.errors.head.message must equal("declaration.representative.agent.error")
       }
 
       "provided with missing response" in {
@@ -41,7 +41,7 @@ class RepresentativeAgentSpec extends WordSpec with MustMatchers {
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
-        form.errors.head.message must equal("error.yesNo.required")
+        form.errors.head.message must equal("declaration.representative.agent.error")
       }
     }
 

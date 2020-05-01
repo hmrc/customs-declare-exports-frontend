@@ -345,28 +345,19 @@ declaration.carrier.error.addressAndEori = Enter only one of EORI or address
 
 declaration.representative.agent.title = Are you representing another agent?
 declaration.representative.agent.hint = This applies if you are completing this declaration on behalf of another agent
+declaration.representative.agent.error = Select yes if you are representing another agent
 declaration.representative.entity.title = What is the first representative’s EORI number?
 declaration.representative.entity.eori.empty = Enter the representative’s EORI number
-declaration.representative.entity.eori.error.format = Enter a valid EORI number, for example GB123456789000
+declaration.representative.entity.eori.error.format = Enter an EORI number, for example GB123456789000
 declaration.representative-entity.help-item = Go to data element 3/20 Representative Identification Number in the {0}
 declaration.representative.status.title = What type of representation will be used?
 declaration.representative-status.help-item = Go to data element 3/21 Representative Status Code in the {0}
-declaration.representative-status.error = Enter a valid representative status
+declaration.representative-status.error = Select the type of representation
+declaration.representative.representationType.direct = Direct representative
+declaration.representative.representationType.direct.hint = The representative is accepting legal responsibility for the exporter
+declaration.representative.representationType.indirect = Indirect representative
+declaration.representative.representationType.indirect.hint = The representative is sharing legal responsibility with the exporter
 
-
-supplementary.representative.title = Representation information
-supplementary.representative.legend = What type of representation was agreed?
-supplementary.representative.hint = Enter the representative’s EORI number or name and business address. If no representative was used, leave this page blank and continue.
-supplementary.representative.eori.legend = What is the representative’s EORI number?
-supplementary.representative.eori.hint = If you are an agent representing another agent, tell us their EORI number, otherwise leave it blank
-supplementary.representative.address.info = Representative’s name and business address
-supplementary.representative.representationType.error.empty = Enter a valid representative status
-supplementary.representative.representationType.error.wrongValue = Enter a valid representative status
-supplementary.representative.representationType.declarant = I am declaring for the company I work for or own
-supplementary.representative.representationType.direct = Direct representative
-supplementary.representative.representationType.direct.hint = The representative is accepting legal responsibility for the exporter
-supplementary.representative.representationType.indirect = Indirect representative
-supplementary.representative.representationType.indirect.hint = The representative is sharing legal responsibility with the exporter
 supplementary.representative-details.help-item1 = What type of representation was agreed, go to data element 3/21 Representative Status Code
 supplementary.representative-details.help-item2 = Representative’s EORI number, go to data element 3/20 Representative Identification Number
 supplementary.representative-details.representative-details-page.error = Enter a valid representative status if you have an EORI
