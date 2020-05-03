@@ -925,7 +925,6 @@ function summary(){
         document.getElementById("jobRole").value = 'Tester';
         document.getElementById("email").value = 'tim@testing.com';
         document.getElementById("confirmation").click()
-        document.getElementById('submit').click();
 
         setDeclaration(0);
     }
