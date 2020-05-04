@@ -14,9 +14,8 @@
  * limitations under the License.
  *@
 
-@import models.declaration.submissions.Submission
+@import config.{AppConfig, ChangeErrorLinkConfig}
 @import services.model.RejectionReason
-@import config.AppConfig
 @import views.{BackButton, Title}
 @import views.html.components.gds._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -28,14 +27,31 @@
         link: link,
         govukTable: GovukTable,
         govukSummaryList : GovukSummaryList,
-        appConfig: AppConfig
+        appConfig: AppConfig,
+        changeErrorLinkConfig: ChangeErrorLinkConfig
 )
 
-@(submission: Submission, errors: Seq[RejectionReason])(implicit request: Request[_], messages: Messages)
+@(declaration: ExportsDeclaration, errors: Seq[RejectionReason])(implicit request: Request[_], messages: Messages)
 
 @errorDesciption(error: RejectionReason) = @{
   val description = if(appConfig.isUsingImprovedErrorMessages) error.exportsDescription else error.cdsDescription
   if(description.endsWith(".")) description else s"$description."
+}
+
+@errorChangeAction(error: RejectionReason) = @{
+  if(changeErrorLinkConfig.isEnabled && error.url.isDefined && error.pointer.isDefined) {
+    val urlToPageWithError = error.pointer.get.url(error.url.get, declaration)
+    val url = routes.SubmissionsController.amendErrors(declaration.id, urlToPageWithError).url
+
+    val action = ActionItem(
+      href = url,
+      content = Text(messages("site.change")),
+      visuallyHiddenText = Some(error.pointer.map(p => messages(p.messageKey, p.sequenceArgs: _*)).getOrElse("")),
+      classes = ""
+    )
+
+    Some(Actions(items = Seq(action)))
+  } else None
 }
 
 @summaryRows = @{
@@ -50,22 +66,22 @@
                     content = Text(messages("rejected.notification.description.format", errorDesciption(error), error.code)),
                     classes = s"rejected_notifications-row-$index-description"
                 ),
-                actions = None // TODO CEDS 2371
+                actions = errorChangeAction(error)
             )
-    }
+        }
     }
 }
 
 @govukLayout(
     title = Title("rejected.notification.title"),
-    backButton = Some(BackButton(messages("site.back"), routes.SubmissionsController.displayDeclarationWithNotifications(submission.uuid))),
+    backButton = Some(BackButton(messages("site.back"), routes.SubmissionsController.displayDeclarationWithNotifications(declaration.id))),
     useCustomContentWidth = true
 ) {
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
 
-            @sectionHeader(messages("rejected.notification.ducr", submission.ducr.getOrElse(messages("rejected.notification.ducr.missing"))))
+            @sectionHeader(messages("rejected.notification.ducr", declaration.ducr.getOrElse(messages("rejected.notification.ducr.missing"))))
             @pageTitle(text = messages("rejected.notification.title"))
 
             @govukSummaryList(SummaryList(
@@ -74,7 +90,7 @@
 
             @link(
                 text = messages("rejected.notification.continue"),
-                call = routes.SubmissionsController.amend(submission.uuid)
+                call = routes.SubmissionsController.amend(declaration.id)
             )
 
         </div>

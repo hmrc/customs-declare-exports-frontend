@@ -53,9 +53,9 @@ class FiscalInformationController @Inject()(
         .exists(code => !ProcedureCodesData.osrProcedureCodes.contains(code))
 
     if (fastForward && cacheContainsFiscalReferenceData) {
-      navigator.continueTo(routes.AdditionalFiscalReferencesController.displayPage(mode, itemId))
+      navigator.continueTo(mode, routes.AdditionalFiscalReferencesController.displayPage(_, itemId))
     } else if (fastForward && cacheItemIneligibleForOSR) {
-      navigator.continueTo(routes.ProcedureCodesController.displayPage(mode, itemId))
+      navigator.continueTo(mode, routes.ProcedureCodesController.displayPage(_, itemId))
     } else {
       request.cacheModel.itemBy(itemId).flatMap(_.fiscalInformation) match {
         case Some(fiscalInformation) => Ok(fiscalInformationPage(mode, itemId, form().fill(fiscalInformation)))

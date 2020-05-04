@@ -16,10 +16,13 @@
 
 package models
 
+import forms.declaration.Seal
+import models.declaration.Container
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsString, JsSuccess, Json}
+import services.cache.ExportsTestData
 
-class PointerSpec extends WordSpec with MustMatchers {
+class PointerSpec extends WordSpec with MustMatchers with ExportsTestData {
 
   "PointerSection" should {
     val field = PointerSection("ABC", PointerSectionType.FIELD)
@@ -74,4 +77,100 @@ class PointerSpec extends WordSpec with MustMatchers {
     }
   }
 
+  "Pointer" should {
+
+    "correctly build url for item" in {
+
+      val sections = Seq(
+        PointerSection("declaration", PointerSectionType.FIELD),
+        PointerSection("items", PointerSectionType.FIELD),
+        PointerSection("2", PointerSectionType.SEQUENCE),
+        PointerSection("documentProduced", PointerSectionType.FIELD),
+        PointerSection("1", PointerSectionType.SEQUENCE),
+        PointerSection("documentStatus", PointerSectionType.FIELD)
+      )
+      val pointer = Pointer(sections)
+      val url = "/customs-declare-exports/declaration/items/ITEM_ID/add-document"
+      val expectedItemId = "itemId2"
+      val declaration =
+        aDeclaration(withItems(anItem(withSequenceId(1), withItemId("itemId1")), anItem(withSequenceId(2), withItemId(expectedItemId))))
+
+      val expectedUrl = s"/customs-declare-exports/declaration/items/$expectedItemId/add-document"
+
+      pointer.url(url, declaration) mustBe expectedUrl
+    }
+
+    "return default url for item" when {
+
+      "declaration doesn't have that item" in {
+
+        val sections = Seq(
+          PointerSection("declaration", PointerSectionType.FIELD),
+          PointerSection("items", PointerSectionType.FIELD),
+          PointerSection("1", PointerSectionType.SEQUENCE),
+          PointerSection("documentProduced", PointerSectionType.FIELD),
+          PointerSection("1", PointerSectionType.SEQUENCE),
+          PointerSection("documentStatus", PointerSectionType.FIELD)
+        )
+        val pointer = Pointer(sections)
+        val url = "/customs-declare-exports/declaration/items/ITEM_ID/add-document"
+        val declaration = aDeclaration()
+
+        val expectedUrl = s"/customs-declare-exports/declaration/export-items"
+
+        pointer.url(url, declaration) mustBe expectedUrl
+      }
+    }
+
+    "correctly build url for container" in {
+
+      val sections = Seq(
+        PointerSection("declaration", PointerSectionType.FIELD),
+        PointerSection("containers", PointerSectionType.FIELD),
+        PointerSection("2", PointerSectionType.SEQUENCE),
+        PointerSection("seals", PointerSectionType.FIELD),
+        PointerSection("1", PointerSectionType.SEQUENCE),
+        PointerSection("id", PointerSectionType.FIELD)
+      )
+      val pointer = Pointer(sections)
+      val url = "/customs-declare-exports/declaration/containers/CONTAINER_ID/seals"
+      val expectedContainerId = "containerId2"
+      val declaration = aDeclaration(withContainerData(Seq(Container("containerId2", Seq.empty), Container(expectedContainerId, Seq(Seal("1234"))))))
+
+      val expectedUrl = s"/customs-declare-exports/declaration/containers/$expectedContainerId/seals"
+
+      pointer.url(url, declaration) mustBe expectedUrl
+    }
+
+    "return default url for container" when {
+
+      "declaration doesn't have that container" in {
+
+        val sections = Seq(
+          PointerSection("declaration", PointerSectionType.FIELD),
+          PointerSection("items", PointerSectionType.FIELD),
+          PointerSection("1", PointerSectionType.SEQUENCE),
+          PointerSection("documentProduced", PointerSectionType.FIELD),
+          PointerSection("1", PointerSectionType.SEQUENCE),
+          PointerSection("documentStatus", PointerSectionType.FIELD)
+        )
+        val pointer = Pointer(sections)
+        val url = "/customs-declare-exports/declaration/containers/CONTAINER_ID/seals"
+        val declaration = aDeclaration()
+
+        val expectedUrl = s"/customs-declare-exports/declaration/containers"
+
+        pointer.url(url, declaration) mustBe expectedUrl
+      }
+    }
+
+    "correctly build url page which is not related with items or containers" in {
+
+      val pointer = Pointer(Seq.empty)
+      val url = "/customs-declare-exports/declaration/consignmentReferences"
+      val declaration = aDeclaration()
+
+      pointer.url(url, declaration) mustBe url
+    }
+  }
 }

@@ -29,11 +29,13 @@ import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.when
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.stubbing.{Answer, OngoingStubbing}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
+// TODO This mock should extends BeforeAndAfterEach trait and has methods beforeEach and afterEach
 trait MockConnectors extends MockitoSugar {
   lazy val mockCustomsDeclareExportsConnector: CustomsDeclareExportsConnector = mock[CustomsDeclareExportsConnector]
 

@@ -83,6 +83,14 @@ class RejectionReasonSpec extends UnitSpec {
     }
   }
 
+  "DMS error with code CDS40045" should {
+
+    "have the correct url" in {
+
+      allRejectionReasons.find(_.code == "CDS40045").flatMap(_.url) mustBe Some("/customs-declare-exports/declaration/items/ITEM_ID/add-document")
+    }
+  }
+
   "Map from Notifications" should {
 
     "map to Rejected Reason" when {

@@ -106,7 +106,7 @@ CDS40012,Data element has invalid format,,
 CDS40013,Data element contains invalid value,Data element contains invalid value,
 CDS40040,Non existing value,,
 CDS40044,Disallowed Document,,
-CDS40045,Missing document,,
+CDS40045,Missing document,,/customs-declare-exports/declaration/items/ITEM_ID/add-document
 CDS40046,Condition not fulfilled,,
 CDS40047,Prohibition,,
 CDS40048,Provisional measure closed,,

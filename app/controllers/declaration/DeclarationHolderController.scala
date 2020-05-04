@@ -86,7 +86,7 @@ class DeclarationHolderController @Inject()(
       case (holder, holders) if holder.authorisationTypeCode.isDefined && holder.eori.isDefined =>
         val updatedCache = DeclarationHoldersData(holders :+ holder)
         updateCache(updatedCache)
-          .map(_ => navigator.continueTo(controllers.declaration.routes.DeclarationHolderController.displayPage(mode)))
+          .map(_ => navigator.continueTo(mode, controllers.declaration.routes.DeclarationHolderController.displayPage(_)))
 
       case (DeclarationHolder(authCode, eori), _) =>
         val authCodeError =

@@ -16,6 +16,8 @@
 
 package models.requests
 
+import java.util.UUID
+
 import base.MockAuthAction
 import models.DeclarationType
 import play.api.mvc.AnyContentAsEmpty
@@ -24,7 +26,8 @@ import unit.base.UnitSpec
 
 class JourneyRequestSpec extends UnitSpec with ExportsDeclarationBuilder with MockAuthAction {
 
-  val declaration = aDeclaration(withType(DeclarationType.OCCASIONAL))
+  val sourceId = UUID.randomUUID().toString
+  val declaration = aDeclaration(withType(DeclarationType.OCCASIONAL), withSourceId(sourceId))
   val authenticatedRequest = getAuthenticatedRequest()
   val request = new JourneyRequest(authenticatedRequest, declaration)
 
@@ -33,6 +36,11 @@ class JourneyRequestSpec extends UnitSpec with ExportsDeclarationBuilder with Mo
     "have a correct declaration type" in {
 
       request.declarationType mustBe DeclarationType.OCCASIONAL
+    }
+
+    "have correct source dec Id" in {
+
+      request.sourceDecId mustBe Some(sourceId)
     }
 
     "check if type is contained in allowed values" in {
