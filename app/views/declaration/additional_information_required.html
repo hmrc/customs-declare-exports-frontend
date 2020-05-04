@@ -36,7 +36,7 @@ tariffDetails: tariffDetails,
 formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, form: Form[AdditionalInformation])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
     title = Title("declaration.additionalInformationRequired.title"),

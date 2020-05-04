@@ -239,7 +239,7 @@ POST         /items/:itemId/commodity-measure                   controllers.decl
 
 GET          /items/:itemId/additional-information-required     controllers.declaration.AdditionalInformationRequiredController.displayPage(mode:models.Mode ?= models.Mode.Normal, itemId)
 
-POST        /items/:itemId/additional-information-required       controllers.declaration.AdditionalInformationRequiredController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /items/:itemId/additional-information-required       controllers.declaration.AdditionalInformationRequiredController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
 
 # Additional information
 

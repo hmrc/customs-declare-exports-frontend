@@ -18,22 +18,17 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.AdditionalInformation.form
-import forms.declaration.DispatchLocation.AllowedDispatchLocations
-import forms.declaration.DispatchLocation
-import forms.declaration.AdditionalInformationRequired
-//import forms.declaration.DispatchLocation.AllowedDispatchLocations
+import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.YesNoAnswers
 import javax.inject.Inject
-import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.{Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.additional_information_required
-
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ExecutionContext}
 
 class AdditionalInformationRequiredController @Inject()(
   authenticate: AuthAction,
@@ -41,40 +36,31 @@ class AdditionalInformationRequiredController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  additionalInfoReqPage: additional_information_required
+  additionalInfoReq: additional_information_required
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.itemBy(itemId) match {
-      case Some(data) => Ok(additionalInfoReqPage(mode, itemId, form().fill(data)))
-      case _          => Ok(additionalInfoReqPage(mode, itemId, form()))
-    }
+   Ok(additionalInfoReq(mode, itemId, YesNoAnswer.form()))
   }
 
-  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    DispatchLocation
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    YesNoAnswer
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[AdditionalInformationRequiredController]) => Future.successful(BadRequest(additionalInfoReqPage(mode, formWithErrors))),
-        validDispatchLocation =>
-          updateCache(validDispatchLocation)
-            .map(_ => navigator.continueTo(mode, nextPage(validDispatchLocation)))
-      )
+        (formWithErrors: Form[YesNoAnswer]) => BadRequest(additionalInfoReq(mode, formWithErrors)),
+        validYesNo => navigator.continueTo(mode, nextPage(yesNoAnswer = validYesNo, itemId)))
+
   }
 
-  private def nextPage(providedAdditionalInfoReq: DispatchLocation): Mode => Call =
-    providedAdditionalInfoReq.dispatchLocation match {
-      case AllowedDispatchLocations.OutsideEU =>
-        controllers.declaration.routes.AdditionalInformationController.displayPage
-      case AllowedDispatchLocations.SpecialFiscalTerritory =>
-        _ =>
-          controllers.declaration.routes.NotEligibleController.displayNotEligible()
+  private def nextPage(yesNoAnswer: YesNoAnswer, itemId:String): Mode => Call = mode =>
+    yesNoAnswer.answer match {
+      case YesNoAnswers.yes =>
+        controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId)
+      case YesNoAnswers.no =>
+          controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId)
     }
 
-  private def updateCache(formData: DispatchLocation)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.copy(dispatchLocation = Some(formData)))
 
 }
-j
