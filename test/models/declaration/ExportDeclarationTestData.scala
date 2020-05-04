@@ -27,7 +27,6 @@ import forms.declaration.DispatchLocationSpec._
 import forms.declaration.ExporterDetailsSpec._
 import forms.declaration.NatureOfTransactionSpec._
 import forms.declaration.OfficeOfExitSupplementarySpec._
-import forms.declaration.RepresentativeDetailsSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
@@ -71,7 +70,7 @@ object ExportDeclarationTestData {
       exporterDetails = Some(correctExporterDetails),
       declarantDetails = Some(correctDeclarantDetailsEORIOnly),
       consigneeDetails = Some(ConsigneeDetails(EntityDetailsSpec.correctEntityDetails)),
-      representativeDetails = Some(correctRepresentativeDetails),
+      representativeDetails = None, //Some(correctRepresentativeDetails),
       declarationAdditionalActorsData = Some(correctAdditionalActorsData),
       declarationHoldersData = Some(correctDeclarationHoldersData),
       carrierDetails = Some(CarrierDetails(EntityDetailsSpec.correctEntityDetails))
@@ -127,7 +126,7 @@ object ExportDeclarationTestData {
       exporterDetails = Some(correctExporterDetails),
       declarantDetails = Some(correctDeclarantDetailsEORIOnly),
       consigneeDetails = Some(ConsigneeDetails(EntityDetailsSpec.correctEntityDetails)),
-      representativeDetails = Some(correctRepresentativeDetails),
+      representativeDetails = None, //Some(correctRepresentativeDetails),
       declarationAdditionalActorsData = Some(DeclarationAdditionalActorsData(Seq(correctAdditionalActors1))),
       declarationHoldersData = Some(
         DeclarationHoldersData(

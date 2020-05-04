@@ -224,9 +224,12 @@ trait ExportsDeclarationBuilder {
   def withDeclarationAdditionalActors(declarationAdditionalActorsData: DeclarationAdditionalActorsData): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(declarationAdditionalActorsData = Some(declarationAdditionalActorsData)))
 
-  def withRepresentativeDetails(eori: Option[Eori], address: Option[Address], statusCode: Option[String]): ExportsDeclarationModifier =
+  def withRepresentativeDetails(eori: Option[Eori], statusCode: Option[String], representingOtherAgent: Option[String]): ExportsDeclarationModifier =
     cache =>
-      cache.copy(parties = cache.parties.copy(representativeDetails = Some(RepresentativeDetails(Some(EntityDetails(eori, address)), statusCode))))
+      cache.copy(
+        parties =
+          cache.parties.copy(representativeDetails = Some(RepresentativeDetails(Some(EntityDetails(eori, None)), statusCode, representingOtherAgent)))
+    )
 
   def withRepresentativeDetails(representativeDetails: RepresentativeDetails): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(representativeDetails = Some(representativeDetails)))

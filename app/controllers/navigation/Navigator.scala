@@ -139,7 +139,7 @@ object Navigator {
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case TransportLeavingTheBorder   => controllers.declaration.routes.InlandTransportDetailsController.displayPage
     case WarehouseIdentification     => controllers.declaration.routes.ItemsSummaryController.displayPage
-    case DeclarationAdditionalActors => controllers.declaration.routes.RepresentativeDetailsController.displayPage
+    case DeclarationAdditionalActors => controllers.declaration.routes.RepresentativeStatusController.displayPage
     case TotalPackageQuantity        => controllers.declaration.routes.TotalNumberOfItemsController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
   }
@@ -216,8 +216,10 @@ object Navigator {
     case DeclarantDetails                     => controllers.declaration.routes.ConsignmentReferencesController.displayPage
     case ExporterDetails                      => controllers.declaration.routes.DeclarantDetailsController.displayPage
     case ConsigneeDetails                     => controllers.declaration.routes.ExporterDetailsController.displayPage
-    case RepresentativeDetails                => controllers.declaration.routes.ConsigneeDetailsController.displayPage
-    case CarrierDetails                       => controllers.declaration.routes.RepresentativeDetailsController.displayPage
+    case RepresentativeAgent                  => controllers.declaration.routes.ConsigneeDetailsController.displayPage
+    case RepresentativeEntity                 => controllers.declaration.routes.RepresentativeAgentController.displayPage
+    case RepresentativeStatus                 => controllers.declaration.routes.RepresentativeEntityController.displayPage
+    case CarrierDetails                       => controllers.declaration.routes.RepresentativeStatusController.displayPage
     case OfficeOfExitStandard                 => controllers.declaration.routes.LocationController.displayPage
     case AdditionalDeclarationTypeStandardDec => controllers.declaration.routes.DispatchLocationController.displayPage
     case TotalNumberOfItems                   => controllers.declaration.routes.OfficeOfExitController.displayPage

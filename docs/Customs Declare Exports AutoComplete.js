@@ -244,8 +244,24 @@ function declarantDetails(){
     }
 }
 
-function representativeDetails(){
-    if (currentPageIs("/customs-declare-exports/declaration/representative-details")) {
+function representingAnotherAgent(){
+    if (currentPageIs("/are-you-representing-another-agent")) {
+
+        switch(getDeclaration()) {
+            case 'A':
+            case 'D':
+                selectRadioOptionFromInputs(document.getElementsByName("representingAgent"), 1);
+                break;
+            default:
+                selectRadioOptionFromInputs(document.getElementsByName("representingAgent"), 0);
+                break;
+        }
+        document.getElementById('submit').click()
+    }
+}
+
+function representativeEori(){
+    if (currentPageIs("/customs-declare-exports/declaration/representatives-eori-number")) {
 
         switch(getDeclaration()) {
             case 'A':
@@ -259,10 +275,32 @@ function representativeDetails(){
             case 'Y':
             case 'Z':
                 document.getElementById('details_eori').value = 'GB717572504502801';
-                selectRadioOptionFromInputs(document.getElementsByName("statusCode"), 0);
                 break;
             case 'J':
                 document.getElementById('details_eori').value = 'GB717572504502809';
+                break;
+        }
+        document.getElementById('submit').click()
+    }
+}
+
+function representativeType(){
+    if (currentPageIs("/customs-declare-exports/declaration/representation-type-agreed")) {
+
+        switch(getDeclaration()) {
+            case 'A':
+            case 'D':
+                break;
+            case 'B':
+            case 'C':
+            case 'E':
+            case 'F':
+            case 'K':
+            case 'Y':
+            case 'Z':
+                selectRadioOptionFromInputs(document.getElementsByName("statusCode"), 0);
+                break;
+            case 'J':
                 selectRadioOptionFromInputs(document.getElementsByName("statusCode"), 1);
                 break;
         }
@@ -913,7 +951,9 @@ function completeJourney() {
     declarantDetails();
     exporterDetails();
     consigneeDetails();
-    representativeDetails();
+    representingAnotherAgent();
+    representativeEori();
+    representativeType()
     carrierDetails();
     additionalActors();
     holderOfAuthorisation();

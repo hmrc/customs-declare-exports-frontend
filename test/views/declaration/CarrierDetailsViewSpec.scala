@@ -98,12 +98,12 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
         view.getElementById("details_address_country").attr("value") mustBe empty
       }
 
-      "display 'Back' button that links to 'Representative Details' page" in {
+      "display 'Back' button that links to 'Representative Status' page" in {
 
         val backButton = view.getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.RepresentativeDetailsController.displayPage().url
+        backButton.attr("href") mustBe routes.RepresentativeStatusController.displayPage().url
       }
 
       "display 'Save and continue' button on page" in {
