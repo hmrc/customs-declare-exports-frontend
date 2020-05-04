@@ -48,7 +48,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
     super.beforeEach()
 
     authorizedUser()
-    when(mockCarrierDetailsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockCarrierDetailsPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -59,9 +59,12 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
   def theResponseForm: Form[CarrierDetails] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[CarrierDetails]])
-    verify(mockCarrierDetailsPage).apply(any(), captor.capture())(any(), any())
+    verify(mockCarrierDetailsPage).apply(any(), any(), captor.capture())(any(), any())
     captor.getValue
   }
+
+  def verifyPageInvocations(numberOfInvocations: Int) =
+    verify(mockCarrierDetailsPage, times(numberOfInvocations)).apply(any(), any(), any())(any(), any())
 
   "Carrier Details Controller display page" should {
 
@@ -76,7 +79,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
           val result = controller.displayPage(Mode.Normal)(getRequest())
 
           status(result) mustBe OK
-          verify(mockCarrierDetailsPage, times(1)).apply(any(), any())(any(), any())
+          verifyPageInvocations(1)
 
           theResponseForm.value mustBe Some(CarrierDetails(EntityDetails(eori, None)))
         }
@@ -93,7 +96,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
 
-        verify(mockCarrierDetailsPage, times(0)).apply(any(), any())(any(), any())
+        verifyPageInvocations(0)
       }
 
       onJourney(SUPPLEMENTARY) { request =>
@@ -106,7 +109,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
 
-          verify(mockCarrierDetailsPage, times(0)).apply(any(), any())(any(), any())
+          verifyPageInvocations(0)
         }
       }
     }

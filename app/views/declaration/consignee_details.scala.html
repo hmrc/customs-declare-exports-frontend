@@ -15,8 +15,8 @@
  *@
 
 @import controllers.declaration.routes._
+@import forms.DeclarationPage
 @import forms.declaration.ConsigneeDetails
-@import uk.gov.hmrc.play.views.html._
 @import models.requests.JourneyRequest
 @import controllers.navigation.Navigator
 @import config.AppConfig
@@ -44,13 +44,13 @@
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(mode: Mode, form: Form[ConsigneeDetails])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, navigationForm: DeclarationPage, form: Form[ConsigneeDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBody = { @Html(messages("declaration.consignee-details.help-item", components.details_content_link())) }
 
 @govukLayout(
     title = Title("declaration.consignee.title", "declaration.summary.parties.header"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ConsigneeDetails, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(navigationForm, mode)))) {
 
     @formHelper(action = ConsigneeDetailsController.saveAddress(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)

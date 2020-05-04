@@ -16,8 +16,8 @@
 
 @import controllers.navigation.Navigator
 @import forms.common.YesNoAnswer.YesNoAnswers
-@import forms.declaration.{DeclarantDetails, DeclarantEoriConfirmation}
-@import forms.declaration.DeclarantEoriConfirmation.isEoriKey
+@import forms.declaration.DeclarantIsExporter
+@import forms.declaration.DeclarantIsExporter.answerKey
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title}
@@ -36,45 +36,44 @@
     formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(mode: Mode, form: Form[DeclarantEoriConfirmation])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[DeclarantIsExporter])(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
-    title = Title("declaration.declarant.title"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarantDetails, mode)))) {
+    title = Title("declaration.declarant.exporter.title"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarantIsExporter, mode)))) {
 
-    @formHelper(action = controllers.declaration.routes.DeclarantDetailsController.submitForm(mode), 'autoComplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.DeclarantExporterController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.summary.parties.header"))
 
         @govukRadios(Radios(
-            name = isEoriKey,
+            name = answerKey,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("declaration.declarant.titleQuestion", request.eori)),
+                    content = Text(messages("declaration.declarant.exporter.title", request.eori)),
                     isPageHeading = true,
                     classes = gdsPageLegend
                 ))
             )),
-            hint = Some(Hint(content = Text(messages("declaration.declarant.hint")))),
             items = Seq(
                 RadioItem(
-                    id = Some("code_yes"),
+                    id = Some("answer_yes"),
                     value = Some(YesNoAnswers.yes),
-                    content = Text(messages("site.yes")),
-                    checked = form(isEoriKey).value.contains(YesNoAnswers.yes)
+                    content = Text(messages("declaration.declarant.exporter.answer.yes")),
+                    checked = form(answerKey).value.contains(YesNoAnswers.yes)
                 ),
                 RadioItem(
-                    id = Some("code_no"),
+                    id = Some("answer_no"),
                     value = Some(YesNoAnswers.no),
-                    content = Text(messages("site.no")),
-                    checked = form(isEoriKey).value.contains(YesNoAnswers.no)
+                    content = Text(messages("declaration.declarant.exporter.answer.no")),
+                    checked = form(answerKey).value.contains(YesNoAnswers.no)
                 )
             ),
-            errorMessage = form(isEoriKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            errorMessage = form(answerKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
-        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(messages("declaration.declarant-details.help.bodyText", components.details_content_link())))
+        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(messages("declaration.declarant.exporter.help-item", components.details_content_link())))
 
         @saveButtons()
     }

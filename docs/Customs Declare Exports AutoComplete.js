@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.44
+// @version      1.45
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -215,6 +215,13 @@ function consignmentRefereences(){
         document.getElementById('lrn').value = 'QSLRN' + Math.floor(Math.random() * 8999) + 100;
         document.getElementById('ducr_ducr').value = '8GB123456' + Math.floor(Math.random() * 899999 + 100000) + '-101SHIP1';
         document.getElementById('submit').click()
+    }
+}
+
+function declarantExporterDetails(){
+    if (currentPageIs("/customs-declare-exports/declaration/are-you-the-exporter")) {
+        document.getElementById('answer_no').checked = 'checked';
+        document.getElementById('submit').click();
     }
 }
 
@@ -949,6 +956,7 @@ function completeJourney() {
 
     // parties
     declarantDetails();
+    declarantExporterDetails();
     exporterDetails();
     consigneeDetails();
     representingAnotherAgent();

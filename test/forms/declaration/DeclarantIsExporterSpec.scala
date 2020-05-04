@@ -17,39 +17,39 @@
 package forms.declaration
 
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.DeclarantEoriConfirmation.isEoriKey
+import forms.declaration.DeclarantIsExporter.answerKey
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-class DeclarantEoriConfirmationSpec extends WordSpec with MustMatchers {
+class DeclarantIsExporterSpec extends WordSpec with MustMatchers {
 
-  import DeclarantEoriConfirmationSpec._
+  import DeclarantIsExporterSpec._
 
-  "Declarant EORI confirmation mapping used for binding data" should {
+  "DeclarantIsExporter mapping used for binding data" should {
 
     "return form with errors" when {
 
       "provided with empty input" in {
 
-        val form = DeclarantEoriConfirmation.form().bind(emptyJSON)
+        val form = DeclarantIsExporter.form().bind(emptyJSON)
 
         form.hasErrors mustBe true
         form.errors.length must equal(1)
-        form.errors.head.message must equal("declaration.declarant.error")
+        form.errors.head.message must equal("declaration.declarant.exporter.error")
       }
 
       "provided with invalid input" in {
 
-        val form = DeclarantEoriConfirmation.form().bind(invalidJSON)
+        val form = DeclarantIsExporter.form().bind(invalidJSON)
 
         form.hasErrors mustBe true
         form.errors.length must equal(1)
-        form.errors.head.message must equal("declaration.declarant.error")
+        form.errors.head.message must equal("declaration.declarant.exporter.error")
       }
 
       "provided with valid input" in {
 
-        val form = DeclarantEoriConfirmation.form().bind(validJSON)
+        val form = DeclarantIsExporter.form().bind(validJSON)
 
         form.hasErrors mustBe false
       }
@@ -58,9 +58,9 @@ class DeclarantEoriConfirmationSpec extends WordSpec with MustMatchers {
 
 }
 
-object DeclarantEoriConfirmationSpec {
+object DeclarantIsExporterSpec {
 
-  val emptyJSON: JsValue = JsObject(Map(isEoriKey -> JsString("")))
-  val invalidJSON: JsValue = JsObject(Map(isEoriKey -> JsString("invalid")))
-  val validJSON: JsValue = JsObject(Map(isEoriKey -> JsString(YesNoAnswers.yes)))
+  val emptyJSON: JsValue = JsObject(Map(answerKey -> JsString("")))
+  val invalidJSON: JsValue = JsObject(Map(answerKey -> JsString("invalid")))
+  val validJSON: JsValue = JsObject(Map(answerKey -> JsString(YesNoAnswers.yes)))
 }

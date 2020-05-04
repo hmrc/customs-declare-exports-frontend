@@ -19,22 +19,26 @@ package forms.declaration
 import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.YesNoAnswers.yes
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
 
-case class DeclarantEoriConfirmation(answer: String)
+case class DeclarantIsExporter(answer: String) {
+  def isExporter: Boolean = answer == yes
+}
 
-object DeclarantEoriConfirmation extends DeclarationPage {
+object DeclarantIsExporter extends DeclarationPage {
 
-  implicit val format: OFormat[DeclarantEoriConfirmation] = Json.format[DeclarantEoriConfirmation]
+  implicit val format: OFormat[DeclarantIsExporter] = Json.format[DeclarantIsExporter]
 
-  val isEoriKey = "isEori"
+  val answerKey = "answer"
 
   private val mapping =
     Forms.mapping(
-      isEoriKey -> requiredRadio("declaration.declarant.error").verifying("declaration.declarant.error", isContainedIn(YesNoAnswer.allowedValues))
-    )(DeclarantEoriConfirmation.apply)(DeclarantEoriConfirmation.unapply)
+      answerKey -> requiredRadio("declaration.declarant.exporter.error")
+        .verifying("declaration.declarant.exporter.error", isContainedIn(YesNoAnswer.allowedValues))
+    )(DeclarantIsExporter.apply)(DeclarantIsExporter.unapply)
 
-  def form(): Form[DeclarantEoriConfirmation] = Form(mapping)
+  def form(): Form[DeclarantIsExporter] = Form(mapping)
 }

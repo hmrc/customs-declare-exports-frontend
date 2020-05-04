@@ -19,8 +19,9 @@ package views.declaration
 import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
+import forms.DeclarationPage
 import forms.common.{Address, Eori}
-import forms.declaration.{CarrierDetails, CarrierDetailsSpec, EntityDetails}
+import forms.declaration.{CarrierDetails, CarrierDetailsSpec, EntityDetails, ExporterDetails}
 import helpers.views.declaration.CommonMessages
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
@@ -38,8 +39,10 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
   val form: Form[CarrierDetails] = CarrierDetails.form(DeclarationType.STANDARD)
   private val carrierDetailsPage = instanceOf[carrier_details]
 
-  private def createView(form: Form[CarrierDetails] = form)(implicit journeyRequest: JourneyRequest[_]): Document =
-    carrierDetailsPage(Mode.Normal, form)
+  private def createView(form: Form[CarrierDetails] = form, navigationForm: DeclarationPage = CarrierDetails)(
+    implicit journeyRequest: JourneyRequest[_]
+  ): Document =
+    carrierDetailsPage(Mode.Normal, navigationForm, form)
 
   "Carrier Details" should {
 
@@ -104,6 +107,14 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         backButton.text() mustBe messages(backCaption)
         backButton.attr("href") mustBe routes.RepresentativeStatusController.displayPage().url
+      }
+
+      "display 'Back' button that links to 'Is Declarant Exporter' page" in {
+
+        val backButton = createView(navigationForm = ExporterDetails).getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.DeclarantExporterController.displayPage().url
       }
 
       "display 'Save and continue' button on page" in {
