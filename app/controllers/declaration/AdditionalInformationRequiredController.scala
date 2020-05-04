@@ -41,7 +41,7 @@ class AdditionalInformationRequiredController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-   Ok(additionalInfoReq(mode, itemId, YesNoAnswer.form()))
+    Ok(additionalInfoReq(mode, itemId, YesNoAnswer.form()))
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
@@ -50,17 +50,18 @@ class AdditionalInformationRequiredController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[YesNoAnswer]) => BadRequest(additionalInfoReq(mode, itemId, formWithErrors)),
-        validYesNo => navigator.continueTo(mode, nextPage(yesNoAnswer = validYesNo, itemId)))
+        validYesNo => navigator.continueTo(mode, nextPage(yesNoAnswer = validYesNo, itemId))
+      )
 
   }
 
-  private def nextPage(yesNoAnswer: YesNoAnswer, itemId:String): Mode => Call = mode =>
-    yesNoAnswer.answer match {
-      case YesNoAnswers.yes =>
-        controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId)
-      case YesNoAnswers.no =>
+  private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String): Mode => Call =
+    mode =>
+      yesNoAnswer.answer match {
+        case YesNoAnswers.yes =>
+          controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId)
+        case YesNoAnswers.no =>
           controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId)
     }
-
 
 }

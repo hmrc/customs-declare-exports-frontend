@@ -18,7 +18,6 @@ package views.declaration
 
 import base.Injector
 import controllers.declaration.routes
-import controllers.util.SaveAndReturn
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import helpers.views.declaration.CommonMessages
@@ -37,11 +36,9 @@ import views.tags.ViewTest
 @ViewTest
 class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
   val itemId = "a7sc78"
-  private def form(journeyType:DeclarationType): Form[YesNoAnswer] = YesNoAnswer.form()
+  private def form(journeyType: DeclarationType): Form[YesNoAnswer] = YesNoAnswer.form()
   private val additionalInfoReqPage = instanceOf[additional_information_required]
-  private def createView(form: Form[YesNoAnswer])
-                        (implicit request: JourneyRequest[_])
-                            : Document = additionalInfoReqPage(Mode.Normal,itemId, form)
+  private def createView(form: Form[YesNoAnswer])(implicit request: JourneyRequest[_]): Document = additionalInfoReqPage(Mode.Normal, itemId, form)
 
   "Additional Information Required View on empty page" should {
 
@@ -58,37 +55,34 @@ class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTes
   }
 
   "Additional Information Required View on empty page" should {
-    val view = createView()
 
-    onEveryDeclarationJourney() {implicit request =>
+    onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
-        createView(form(request.declarationType)).getElementById("h1").text() mustBe messages("declaration.additionalInformationRequired.title")
+        createView(form(request.declarationType)).getElementsByTag("h1").text() mustBe messages("declaration.additionalInformationRequired.title")
       }
 
-
-    "display section header" in {
-      createView(form(request.declarationType)).getElementById("section-header").text() mustBe messages("declaration.summary.parties.header")
-    }
+      "display section header" in {
+        createView(form(request.declarationType)).getElementById("section-header").text() mustBe messages("declaration.summary.parties.header")
+      }
 
       "display radio button with Yes option" in {
         val view = createView(form(request.declarationType))
-        view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes
-        view.getElementsByAttributeValue("for", "code_yes").text() mustBe "site.yes"
+        view.getElementById("required_Yes").attr("value") mustBe YesNoAnswers.yes
+        view.getElementsByAttributeValue("for", "required_Yes").text() mustBe "site.yes"
       }
       "display radio button with No option" in {
         val view = createView(form(request.declarationType))
-        view.getElementById("code_no").attr("value") mustBe YesNoAnswers.no
-        view.getElementsByAttributeValue("for", "code_no").text() mustBe "site.no"
+        view.getElementById("required_No").attr("value") mustBe YesNoAnswers.no
+        view.getElementsByAttributeValue("for", "required_No").text() mustBe "site.no"
       }
-
 
       "display 'Back' button that links to the 'Commodity Measure' page" in {
 
-        val  backLinkContainer = view.getElementById("back-link")
+        val view = createView(form(request.declarationType))
         val backButton = view.getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.CONFIRM.displayPage().url
+        backButton.attr("href") mustBe routes.CommodityMeasureController.displayPage(Mode.Normal, itemId).url
       }
 
       "display 'Save and continue' button on page" in {
@@ -96,11 +90,6 @@ class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTes
         saveButton.text() mustBe messages(saveAndContinueCaption)
       }
 
-      "display 'Save and return' button on page" in {
-        val saveButton = createView(form(request.declarationType)).getElementById("submit_and_return")
-        saveButton.text() mustBe messages(saveAndReturnCaption)
-        saveButton.attr("name") mustBe SaveAndReturn.toString
-      }
+    }
   }
-}
 }
