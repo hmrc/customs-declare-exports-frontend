@@ -19,12 +19,12 @@ package views.declaration
 import base.Injector
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
+import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import models.DeclarationType.DeclarationType
-import forms.declaration.AdditionalInformationRequired
 import helpers.views.declaration.CommonMessages
 import models.DeclarationType.DeclarationType
-import models.{DeclarationType, Mode}
+import models.requests.JourneyRequest
+import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -36,12 +36,12 @@ import views.tags.ViewTest
 
 @ViewTest
 class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTestData with CommonMessages with Stubs with Injector {
-
-  private def form(journeyType:DeclarationType): Form[AdditionalInformationRequired] = AdditionalInformationRequired.form()
+  val itemId = "a7sc78"
+  private def form(journeyType:DeclarationType): Form[YesNoAnswer] = YesNoAnswer.form()
   private val additionalInfoReqPage = instanceOf[additional_information_required]
-  private def createView(form: Form[AdditionalInformationRequired]): Document =
-    additionalInfoReqPage(Mode.Normal, form)(journeyRequest(), messages)
-
+  private def createView(form: Form[YesNoAnswer])
+                        (implicit request: JourneyRequest[_])
+                            : Document = additionalInfoReqPage(Mode.Normal,itemId, form)
 
   "Additional Information Required View on empty page" should {
 
@@ -58,6 +58,7 @@ class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTes
   }
 
   "Additional Information Required View on empty page" should {
+    val view = createView()
 
     onEveryDeclarationJourney() {implicit request =>
       "display page title" in {
@@ -81,9 +82,9 @@ class AdditionalInformationRequiredViewSpec extends UnitViewSpec with ExportsTes
       }
 
 
-      "display 'Back' button that links to 'WHAT' page" in {
+      "display 'Back' button that links to the 'Commodity Measure' page" in {
 
-        val view = additionalInfoReqPage(Mode.Normal, form(request.declarationType))(journeyRequest(), messages)
+        val  backLinkContainer = view.getElementById("back-link")
         val backButton = view.getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)

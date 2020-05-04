@@ -18,8 +18,6 @@
 @import controllers.navigation.Navigator
 @import forms.common.YesNoAnswer.YesNoAnswers
 @import forms.common.YesNoAnswer
-@import forms.declaration.{DeclarantDetails, DeclarantEoriConfirmation}
-@import forms.declaration.DeclarantEoriConfirmation.isEoriKey
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title}
@@ -42,18 +40,18 @@
 
 @govukLayout(
     title = Title("declaration.additionalInformationRequired.title"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarantDetails, mode, ItemId(itemId))))) {
+    backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.CommodityMeasureController.displayPage(mode, (itemId))))) {
 
-    @formHelper(action = controllers.declaration.routes.DeclarantDetailsController.submitForm(mode), 'autoComplete -> "off") {
+    @formHelper(action = controllers.declaration.routes.AdditionalInformationRequiredController.submitForm(mode, (itemId)), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.summary.parties.header"))
 
         @govukRadios(Radios(
-            name = isEoriKey,
+            name = "yesNo",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("declaration.additionalInformationRequired.title", request.eori)),
+                    content = Text(messages("declaration.additionalInformationRequired.title")),
                     isPageHeading = true,
                     classes = gdsPageLegend
                 ))
@@ -63,19 +61,19 @@
             )),
             items = Seq(
                 RadioItem(
-                    id = Some("code_yes"),
+                    id = Some("required_Yes"),
                     value = Some(YesNoAnswers.yes),
                     content = Text(messages("site.yes")),
-                    checked = form(isEoriKey).value.contains(YesNoAnswers.yes)
+                    checked = form("yesNo").value.contains(YesNoAnswers.yes)
                 ),
                 RadioItem(
-                    id = Some("code_no"),
+                    id = Some("required_No"),
                     value = Some(YesNoAnswers.no),
                     content = Text(messages("site.no")),
-                    checked = form(isEoriKey).value.contains(YesNoAnswers.no)
+                    checked = form("yesNo").value.contains(YesNoAnswers.no)
                 )
             ),
-            errorMessage = form(isEoriKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            errorMessage = form("yesNo").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
         @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(messages("declaration.declarant-details.help.bodyText", components.details_content_link())))
