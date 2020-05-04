@@ -19,8 +19,8 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.RoutingQuestionYesNo
-import forms.declaration.countries.{Countries, Country}
 import forms.declaration.countries.Countries.{FirstRoutingCountryPage, NextRoutingCountryPage}
+import forms.declaration.countries.{Countries, Country}
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -52,7 +52,7 @@ class RoutingCountriesSummaryController @Inject()(
     if (countries.nonEmpty) {
       Ok(routingCountriesSummaryPage(mode, RoutingQuestionYesNo.form(), countries))
     } else {
-      navigator.redirectTo(mode, controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(_))
+      navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(_))
     }
   }
 
@@ -81,7 +81,7 @@ class RoutingCountriesSummaryController @Inject()(
     val country = services.Countries.countryCodeMap(countryCode)
 
     if (isCountryPresentedInCache) Ok(removeRoutingCountryPage(mode, RoutingQuestionYesNo.form(), country))
-    else navigator.redirectTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
+    else navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
   }
 
   def submitRemoveCountry(mode: Mode, countryCode: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -112,7 +112,7 @@ class RoutingCountriesSummaryController @Inject()(
     val page = if (countryIndex > 0) NextRoutingCountryPage else FirstRoutingCountryPage
 
     if (isCountryPresentedInCache) Ok(changeRoutingCountryPage(mode, Countries.form(page).fill(Country(Some(countryCode))), page, countryCode))
-    else navigator.redirectTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
+    else navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
   }
 
   def submitChangeCountry(mode: Mode, countryToChange: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>

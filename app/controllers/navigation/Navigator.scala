@@ -46,14 +46,19 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
     }
 
   def continueTo(mode: Mode, factory: Mode => Call)(implicit req: JourneyRequest[AnyContent], hc: HeaderCarrier): Result =
-    redirectTo(mode.next, factory)
-
-  def redirectTo(mode: Mode, factory: Mode => Call)(implicit req: JourneyRequest[AnyContent], hc: HeaderCarrier): Result =
     FormAction.bindFromRequest match {
       case SaveAndReturn =>
         auditService.auditAllPagesUserInput(AuditTypes.SaveAndReturnSubmission, req.cacheModel)
         goToDraftConfirmation()
-      case _ => Results.Redirect(factory(mode))
+      case _ => Results.Redirect(factory(mode.next))
+    }
+
+  def continueTo(mode: Mode, itemId: String, factory: (Mode, String) => Call)(implicit req: JourneyRequest[AnyContent], hc: HeaderCarrier): Result =
+    FormAction.bindFromRequest match {
+      case SaveAndReturn =>
+        auditService.auditAllPagesUserInput(AuditTypes.SaveAndReturnSubmission, req.cacheModel)
+        goToDraftConfirmation()
+      case _ => Results.Redirect(factory(mode.next, itemId))
     }
 
   private def goToDraftConfirmation()(implicit req: JourneyRequest[_]): Result = {

@@ -16,7 +16,6 @@
 
 package base
 
-import config.AppConfig
 import controllers.navigation.Navigator
 import models.Mode
 import models.requests.JourneyRequest
@@ -26,8 +25,7 @@ import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status
-import play.api.mvc.{AnyContent, Call, ResponseHeader, Result, Results}
-import services.audit.AuditService
+import play.api.mvc.{AnyContent, Call, ResponseHeader, Result}
 import uk.gov.hmrc.http.HeaderCarrier
 
 trait MockNavigator extends MockitoSugar with BeforeAndAfterEach { self: MockitoSugar with Suite =>
@@ -40,7 +38,6 @@ trait MockNavigator extends MockitoSugar with BeforeAndAfterEach { self: Mockito
   override protected def beforeEach(): Unit = {
     given(navigator.continueTo(any[Call])(any[JourneyRequest[AnyContent]], any())).willReturn(aRedirectToTheNextPage)
     given(navigator.continueTo(any[Mode], any[Mode => Call]())(any[JourneyRequest[AnyContent]], any())).willReturn(aRedirectToTheNextPage)
-    given(navigator.redirectTo(any[Mode], any[Mode => Call]())(any[JourneyRequest[AnyContent]], any())).willReturn(aRedirectToTheNextPage)
     given(aRedirectToTheNextPage.header).willReturn(ResponseHeader(Status.SEE_OTHER))
   }
 
@@ -54,12 +51,6 @@ trait MockNavigator extends MockitoSugar with BeforeAndAfterEach { self: Mockito
     val captor: ArgumentCaptor[Call] = ArgumentCaptor.forClass(classOf[Call])
     Mockito.verify(navigator).continueTo(captor.capture())(any(), any())
     captor.getValue
-  }
-
-  protected def thePageRedirectedTo: Call = {
-    val captor: ArgumentCaptor[Mode => Call] = ArgumentCaptor.forClass(classOf[Mode => Call])
-    Mockito.verify(navigator).redirectTo(any(), captor.capture())(any(), any())
-    captor.getValue.apply(Mode.Normal)
   }
 
   override protected def afterEach(): Unit = {

@@ -22,8 +22,8 @@ import forms.declaration.RoutingQuestionYesNo._
 import forms.declaration.countries.Countries
 import forms.declaration.countries.Countries.{FirstRoutingCountryPage, NextRoutingCountryPage}
 import javax.inject.Inject
-import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.Countries.findByCode
@@ -46,7 +46,7 @@ class RoutingCountriesController @Inject()(
 
   def displayRoutingQuestion(mode: Mode, fastForward: Boolean): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (fastForward && request.cacheModel.containRoutingCountries()) {
-      navigator.redirectTo(mode, routes.RoutingCountriesSummaryController.displayPage)
+      navigator.continueTo(mode, routes.RoutingCountriesSummaryController.displayPage)
     } else {
       val destinationCountryCode = request.cacheModel.locations.destinationCountry.flatMap(_.code)
       val destinationCountryName = destinationCountryCode.map(findByCode(_)).map(_.countryName).getOrElse("")

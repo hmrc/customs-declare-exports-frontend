@@ -144,7 +144,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
         val result = controller.displayRoutingQuestion(Mode.Normal, true)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageRedirectedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
       }
 
       "user answered Yes for Routing Question" in {
