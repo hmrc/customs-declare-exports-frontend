@@ -49,7 +49,7 @@ class AdditionalInformationRequiredController @Inject()(
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[YesNoAnswer]) => BadRequest(additionalInfoReq(mode, formWithErrors)),
+        (formWithErrors: Form[YesNoAnswer]) => BadRequest(additionalInfoReq(mode, itemId, formWithErrors)),
         validYesNo => navigator.continueTo(mode, nextPage(yesNoAnswer = validYesNo, itemId)))
 
   }

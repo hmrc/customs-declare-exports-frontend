@@ -14,8 +14,10 @@
  * limitations under the License.
  *@
 
+@import controllers.navigation.ItemId
 @import controllers.navigation.Navigator
 @import forms.common.YesNoAnswer.YesNoAnswers
+@import forms.common.YesNoAnswer
 @import forms.declaration.{DeclarantDetails, DeclarantEoriConfirmation}
 @import forms.declaration.DeclarantEoriConfirmation.isEoriKey
 @import models.requests.JourneyRequest
@@ -25,22 +27,22 @@
 @import views.html.components.gds._
 
 @this(
-govukLayout: gdsMainTemplate,
-errorSummary: errorSummary,
-sectionHeader: sectionHeader,
-govukRadios: GovukRadios,
-exportsInputText: exportsInputText,
-govukDetails : GovukDetails,
-saveButtons: saveButtons,
-tariffDetails: tariffDetails,
-formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    govukRadios: GovukRadios,
+    exportsInputText: exportsInputText,
+    govukDetails : GovukDetails,
+    saveButtons: saveButtons,
+    tariffDetails: tariffDetails,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(mode: Mode, itemId: String, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
     title = Title("declaration.additionalInformationRequired.title"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarantDetails, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarantDetails, mode, ItemId(itemId))))) {
 
     @formHelper(action = controllers.declaration.routes.DeclarantDetailsController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
