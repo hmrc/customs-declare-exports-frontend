@@ -130,7 +130,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
     "return 303 (SEE_OTHER)" when {
 
-      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { request =>
+      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
         "with valid journey type" in {
 
           withNewCaching(request.cacheModel)
@@ -139,20 +139,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
           val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage()
-        }
-      }
-
-      onJourney(CLEARANCE) { request =>
-        "with valid journey type" in {
-
-          withNewCaching(request.cacheModel)
-          val correctForm = Json.toJson(CarrierDetails(EntityDetails(Some(Eori("GB12345678912345")), None)))
-
-          val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderController.displayPage()
+          thePageNavigatedTo mustBe controllers.declaration.routes.ConsigneeDetailsController.displayPage()
         }
       }
 

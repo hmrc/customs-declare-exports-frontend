@@ -110,13 +110,13 @@ class DeclarationHolderViewSpec extends UnitViewSpec with CommonMessages with St
     }
 
     onJourney(CLEARANCE) { implicit request =>
-      "display 'Back' button that links to 'Carrier Details' page" in {
+      "display 'Back' button that links to 'Consignee Details' page" in {
 
         val document = createView()
         val backButton = document.getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.CarrierDetailsController.displayPage().url
+        backButton.attr("href") mustBe routes.ConsigneeDetailsController.displayPage().url
       }
     }
   }

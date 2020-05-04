@@ -21,10 +21,10 @@ import controllers.navigation.Navigator
 import forms.declaration.ConsigneeDetails
 import javax.inject.Inject
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.consignee_details
@@ -59,9 +59,17 @@ class ConsigneeDetailsController @Inject()(
         (formWithErrors: Form[ConsigneeDetails]) => Future.successful(BadRequest(consigneeDetailsPage(mode, formWithErrors))),
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.RepresentativeAgentController.displayPage))
+            .map(_ => navigator.continueTo(mode, nextPage()))
       )
   }
+
+  private def nextPage()(implicit request: JourneyRequest[AnyContent]): Mode => Call =
+    request.declarationType match {
+      case DeclarationType.CLEARANCE =>
+        controllers.declaration.routes.DeclarationHolderController.displayPage
+      case _ =>
+        controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage
+    }
 
   private def updateCache(formData: ConsigneeDetails)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>

@@ -111,7 +111,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
     }
 
     onJourney(DeclarationType.SUPPLEMENTARY) { request =>
-      "return 303 (SEE_OTHER) and redirect to additional actors page" in {
+      "return 303 (SEE_OTHER) and redirect to consignee page" in {
 
         withNewCaching(request.cacheModel)
 
@@ -120,7 +120,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
         val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.ConsigneeDetailsController.displayPage()
 
         verifyPage(0)
       }

@@ -19,6 +19,7 @@ package views.declaration
 import base.Injector
 import forms.declaration.RepresentativeAgent
 import models.Mode
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
@@ -32,79 +33,80 @@ class RepresentativeDetailsAgentViewSpec extends UnitViewSpec with ExportsTestDa
 
   private val page = instanceOf[representative_details_agent]
   private val form: Form[RepresentativeAgent] = RepresentativeAgent.form()
-  override val request = journeyRequest()
   override implicit val messages = validatedMessages(request)
-  private def createView(mode: Mode = Mode.Normal, form: Form[RepresentativeAgent] = form): Document =
+  private def createView(mode: Mode = Mode.Normal, form: Form[RepresentativeAgent] = form)(implicit request: JourneyRequest[_]): Document =
     page(mode, form)(request, messages)
 
   "Representative Details Agent View on empty page" should {
-    val view = createView()
+    onEveryDeclarationJourney() { implicit request =>
+      val view = createView()
 
-    "display page title" in {
-      view.getElementsByTag("h1").first() must containMessage("declaration.representative.agent.title")
-    }
+      "display page title" in {
+        view.getElementsByTag("h1").first() must containMessage("declaration.representative.agent.title")
+      }
 
-    "display two radio buttons with description (not selected)" in {
+      "display two radio buttons with description (not selected)" in {
 
-      val view = createView(form = RepresentativeAgent.form())
+        view.getElementsByClass("govuk-radios__item").size mustBe 2
 
-      view.getElementsByClass("govuk-radios__item").size mustBe 2
+        val optionDirect = view.getElementById("agent_yes")
+        optionDirect.attr("checked") mustBe empty
 
-      val optionDirect = view.getElementById("agent_yes")
-      optionDirect.attr("checked") mustBe empty
+        val optionIndirect = view.getElementById("agent_no")
+        optionIndirect.attr("checked") mustBe empty
 
-      val optionIndirect = view.getElementById("agent_no")
-      optionIndirect.attr("checked") mustBe empty
+      }
 
-    }
+      "display 'Back' button that links to 'Exporter Details' page" in {
+        val view = createView()
 
-    "display 'Back' button that links to 'Consignee Details' page" in {
+        val backButton = view.getElementById("back-link")
 
-      val backButton = view.getElementById("back-link")
+        backButton must containMessage("site.back")
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ExporterDetailsController.displayPage(Mode.Normal))
+      }
 
-      backButton must containMessage("site.back")
-      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ConsigneeDetailsController.displayPage(Mode.Normal))
-    }
+      "display 'Save and continue' button on page" in {
+        val saveButton = view.getElementById("submit")
+        saveButton must containMessage("site.save_and_continue")
+      }
 
-    "display 'Save and continue' button on page" in {
-      val saveButton = view.getElementById("submit")
-      saveButton must containMessage("site.save_and_continue")
-    }
-
-    "display 'Save and return' button on page" in {
-      val saveAndReturnButton = view.getElementById("submit_and_return")
-      saveAndReturnButton must containMessage("site.save_and_come_back_later")
+      "display 'Save and return' button on page" in {
+        val saveAndReturnButton = view.getElementById("submit_and_return")
+        saveAndReturnButton must containMessage("site.save_and_come_back_later")
+      }
     }
   }
 
   "Representative Details Status View for invalid input" should {
+    onEveryDeclarationJourney() { implicit request =>
+      "display errors when answer is incorrect" in {
 
-    "display errors when answer is incorrect" in {
+        val view = createView(
+          form = RepresentativeAgent
+            .form()
+            .bind(Map("representingAgent" -> "invalid"))
+        )
 
-      val view = createView(
-        form = RepresentativeAgent
-          .form()
-          .bind(Map("representingAgent" -> "invalid"))
-      )
+        view must haveGovukGlobalErrorSummary
+        view must containErrorElementWithTagAndHref("a", "#representingAgent")
 
-      view must haveGovukGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", "#representingAgent")
-
-      view.getElementsByClass("#govuk-error-message").text() contains messages("choicePage.input.error.empty")
+        view.getElementsByClass("#govuk-error-message").text() contains messages("choicePage.input.error.empty")
+      }
     }
   }
 
   "Representative Details Status View when filled" should {
+    onEveryDeclarationJourney() { implicit request =>
+      "display data" in {
 
-    "display data" in {
+        val form = RepresentativeAgent
+          .form()
+          .bind(Map("representingAgent" -> "Yes"))
+        val view = createView(form = form)
 
-      val form = RepresentativeAgent
-        .form()
-        .bind(Map("representingAgent" -> "Yes"))
-      val view = createView(form = form)
-
-      view.getElementById("agent_yes").getElementsByAttribute("checked").size() mustBe 1
+        view.getElementById("agent_yes").getElementsByAttribute("checked").size() mustBe 1
+      }
     }
-
   }
 }

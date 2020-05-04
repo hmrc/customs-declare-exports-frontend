@@ -72,6 +72,7 @@ case class ItemId(id: String)
 object Navigator {
 
   val standard: PartialFunction[DeclarationPage, Mode => Call] = {
+    case ConsigneeDetails            => controllers.declaration.routes.CarrierDetailsController.displayPage
     case BorderTransport             => controllers.declaration.routes.DepartureTransportController.displayPage
     case TransportPayment            => controllers.declaration.routes.BorderTransportController.displayPage
     case ContainerFirst              => controllers.declaration.routes.TransportPaymentController.displayPage
@@ -88,7 +89,7 @@ object Navigator {
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case TransportLeavingTheBorder   => controllers.declaration.routes.InlandTransportDetailsController.displayPage
     case WarehouseIdentification     => controllers.declaration.routes.ItemsSummaryController.displayPage
-    case DeclarationAdditionalActors => controllers.declaration.routes.CarrierDetailsController.displayPage
+    case DeclarationAdditionalActors => controllers.declaration.routes.ConsigneeDetailsController.displayPage
     case TotalPackageQuantity        => controllers.declaration.routes.TotalNumberOfItemsController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
@@ -101,6 +102,7 @@ object Navigator {
   }
 
   val clearance: PartialFunction[DeclarationPage, Mode => Call] = {
+    case ConsigneeDetails          => controllers.declaration.routes.CarrierDetailsController.displayPage
     case TransportPayment          => controllers.declaration.routes.DepartureTransportController.displayPage
     case ContainerFirst            => controllers.declaration.routes.TransportPaymentController.displayPage
     case ContainerAdd              => controllers.declaration.routes.TransportContainerController.displayContainerSummary
@@ -110,7 +112,7 @@ object Navigator {
     case RemoveCountryPage         => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case ChangeCountryPage         => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case GoodsLocationForm         => controllers.declaration.routes.DestinationCountryController.displayPage
-    case DeclarationHolder         => controllers.declaration.routes.CarrierDetailsController.displayPage
+    case DeclarationHolder         => controllers.declaration.routes.ConsigneeDetailsController.displayPage
     case OfficeOfExitClearance     => controllers.declaration.routes.LocationController.displayPage
     case SupervisingCustomsOffice  => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case TransportLeavingTheBorder => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
@@ -126,6 +128,7 @@ object Navigator {
   }
 
   val supplementary: PartialFunction[DeclarationPage, Mode => Call] = {
+    case ConsigneeDetails            => controllers.declaration.routes.RepresentativeStatusController.displayPage
     case BorderTransport             => controllers.declaration.routes.DepartureTransportController.displayPage
     case ContainerFirst              => controllers.declaration.routes.BorderTransportController.displayPage
     case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
@@ -139,7 +142,7 @@ object Navigator {
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case TransportLeavingTheBorder   => controllers.declaration.routes.InlandTransportDetailsController.displayPage
     case WarehouseIdentification     => controllers.declaration.routes.ItemsSummaryController.displayPage
-    case DeclarationAdditionalActors => controllers.declaration.routes.RepresentativeStatusController.displayPage
+    case DeclarationAdditionalActors => controllers.declaration.routes.ConsigneeDetailsController.displayPage
     case TotalPackageQuantity        => controllers.declaration.routes.TotalNumberOfItemsController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
   }
@@ -152,6 +155,8 @@ object Navigator {
   }
 
   val simplified: PartialFunction[DeclarationPage, Mode => Call] = {
+    case ConsigneeDetails            => controllers.declaration.routes.CarrierDetailsController.displayPage
+    case DeclarationAdditionalActors => controllers.declaration.routes.ConsigneeDetailsController.displayPage
     case TransportPayment            => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case ContainerFirst              => controllers.declaration.routes.TransportPaymentController.displayPage
     case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
@@ -166,7 +171,6 @@ object Navigator {
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case TransportLeavingTheBorder   => controllers.declaration.routes.InlandTransportDetailsController.displayPage
     case WarehouseIdentification     => controllers.declaration.routes.ItemsSummaryController.displayPage
-    case DeclarationAdditionalActors => controllers.declaration.routes.CarrierDetailsController.displayPage
     case TotalPackageQuantity        => controllers.declaration.routes.TotalNumberOfItemsController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
   }
@@ -179,7 +183,8 @@ object Navigator {
   }
 
   val occasional: PartialFunction[DeclarationPage, Mode => Call] = {
-
+    case ConsigneeDetails            => controllers.declaration.routes.CarrierDetailsController.displayPage
+    case DeclarationAdditionalActors => controllers.declaration.routes.ConsigneeDetailsController.displayPage
     case TransportPayment            => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case ContainerFirst              => controllers.declaration.routes.TransportPaymentController.displayPage
     case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
@@ -194,7 +199,6 @@ object Navigator {
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case TransportLeavingTheBorder   => controllers.declaration.routes.InlandTransportDetailsController.displayPage
     case WarehouseIdentification     => controllers.declaration.routes.ItemsSummaryController.displayPage
-    case DeclarationAdditionalActors => controllers.declaration.routes.CarrierDetailsController.displayPage
     case TotalPackageQuantity        => controllers.declaration.routes.TotalNumberOfItemsController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
   }
@@ -215,8 +219,7 @@ object Navigator {
     case ConsignmentReferences                => controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage
     case DeclarantDetails                     => controllers.declaration.routes.ConsignmentReferencesController.displayPage
     case ExporterDetails                      => controllers.declaration.routes.DeclarantDetailsController.displayPage
-    case ConsigneeDetails                     => controllers.declaration.routes.ExporterDetailsController.displayPage
-    case RepresentativeAgent                  => controllers.declaration.routes.ConsigneeDetailsController.displayPage
+    case RepresentativeAgent                  => controllers.declaration.routes.ExporterDetailsController.displayPage
     case RepresentativeEntity                 => controllers.declaration.routes.RepresentativeAgentController.displayPage
     case RepresentativeStatus                 => controllers.declaration.routes.RepresentativeEntityController.displayPage
     case CarrierDetails                       => controllers.declaration.routes.RepresentativeStatusController.displayPage

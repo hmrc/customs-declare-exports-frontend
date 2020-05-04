@@ -64,7 +64,7 @@ class RepresentativeStatusController @Inject()(
   private def nextPage(declarationType: DeclarationType): Mode => Call =
     declarationType match {
       case DeclarationType.SUPPLEMENTARY =>
-        controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage
+        controllers.declaration.routes.ConsigneeDetailsController.displayPage
       case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
         controllers.declaration.routes.CarrierDetailsController.displayPage
     }
