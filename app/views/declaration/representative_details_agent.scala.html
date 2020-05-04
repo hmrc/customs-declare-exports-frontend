@@ -35,6 +35,8 @@
 
 @(mode: Mode, form: Form[RepresentativeAgent])(implicit request: JourneyRequest[_], messages: Messages)
 
+@tariffBody = { @Html(messages("declaration.representative-entity.help-item", components.details_content_link())) }
+
 @govukLayout(
     title = Title("declaration.representative.agent.title"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RepresentativeAgent, mode)))) {
@@ -72,6 +74,8 @@
             ),
             errorMessage = form("representingAgent").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
+
+        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
 
         @saveButtons()
     }
