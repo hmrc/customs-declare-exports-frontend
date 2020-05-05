@@ -17,7 +17,7 @@
 package services.model
 
 import com.github.tototoshi.csv._
-import models.Pointer
+import models.{ExportsDeclaration, Pointer}
 import models.declaration.notifications.Notification
 import play.api.Logger
 import play.api.i18n.Messages
@@ -67,12 +67,59 @@ object RejectionReason {
           defined
         }
 
-        allRejectionReasons
+        val url = error.url
+
+        val rejectedReason = allRejectionReasons
           .find(_.code == error.validationCode)
           .map(_.copy(pointer = pointer))
           .getOrElse(unknown(error.validationCode, pointer))
+
+        if (url.isDefined) {
+          rejectedReason.copy(url = url)
+        } else rejectedReason
       }
     }.getOrElse(Seq.empty)
   }
 
+  /**
+    * Placeholders for Item Id and Container Id.
+    * Those placeholders are used in pointer urls in the error-dms-rej-list.csv
+    */
+  private val itemIdPlaceholder = "ITEM_ID"
+  private val containerIdPlaceholder = "CONTAINER_ID"
+
+  /**
+    * Build a url for items and containers.
+    * For other pages return the input url.
+    * Items contains ITEM_ID to replace with real item Id
+    * Containers contains CONTAINER_ID to replace with real container Id
+    */
+  def url(url: String, declaration: ExportsDeclaration, pointerOpt: Option[Pointer]): String = {
+    val defaultItemsUrl = "/customs-declare-exports/declaration/export-items"
+    val defaultContainersUrl = "/customs-declare-exports/declaration/containers"
+
+    if (url.contains(itemIdPlaceholder)) {
+      pointerOpt match {
+        case Some(pointer) =>
+          pointer.sequenceArgs.headOption.flatMap { itemNo =>
+            declaration.items.find(_.sequenceId.toString == itemNo).map { item =>
+              url.replace(itemIdPlaceholder, item.id)
+            }
+          }.getOrElse(defaultItemsUrl)
+        case _ => defaultItemsUrl
+      }
+    } else if (url.contains(containerIdPlaceholder)) {
+      pointerOpt match {
+        case Some(pointer) =>
+          pointer.sequenceArgs.headOption.flatMap { containerNo =>
+            (try {
+              Some(declaration.containers.apply(containerNo.toInt - 1))
+            } catch {
+              case _: Throwable => None
+            }).map(container => url.replace(containerIdPlaceholder, container.id))
+          }.getOrElse(defaultContainersUrl)
+        case _ => defaultContainersUrl
+      }
+    } else url
+  }
 }

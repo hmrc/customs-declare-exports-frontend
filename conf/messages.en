@@ -1328,6 +1328,7 @@ field.declaration.containers.container.$.seals.seal.$.id = <ol><li>Container {0}
 field.declaration.locations.destinationCountries.countryOfDestination = Destination country
 field.declaration.locations.destinationCountries.countryOfDispatch = Country of dispatch
 field.declaration.items.$.itemType.statisticalValue = Statistical item value
+field.declaration.items.$.documentProduced = <ol><li>Item {0}</li><li>Additional document</li><ol>
 field.declaration.items.$.documentProduced.$.documentIdentifier = <ol><li>Item {0}</li><li>Additional document {1}</li><li>Identifier</li></ol>
 field.declaration.items.$.documentProduced.$.documentTypeCode = <ol><li>Item {0}</li><li>Additional document {1}</li><li>Type code</li></ol>
 field.declaration.items.$.documentProduced.$.dateOfValidity = <ol><li>Item {0}</li><li>Additional document {1}</li><li>Date of validity</li></ol>

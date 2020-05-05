@@ -18,16 +18,19 @@ package unit.services.model
 
 import java.time.LocalDateTime
 
-import models.Pointer
+import forms.declaration.Seal
+import models.declaration.Container
+import models.{Pointer, PointerSection, PointerSectionType}
 import models.declaration.notifications.{Notification, NotificationError}
 import models.declaration.submissions.SubmissionStatus
 import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito.given
 import play.api.i18n.Messages
+import services.cache.ExportsTestData
 import services.model.RejectionReason
 import unit.base.UnitSpec
 
-class RejectionReasonSpec extends UnitSpec {
+class RejectionReasonSpec extends UnitSpec with ExportsTestData {
 
   import services.model.RejectionReason._
   private val messages = mock[Messages]
@@ -109,7 +112,7 @@ class RejectionReasonSpec extends UnitSpec {
 
         "pointer is known" in {
           given(messages.isDefinedAt("field.x.$.z")).willReturn(true)
-          val error = NotificationError("CDS12016", Some(Pointer("x.#0.z")))
+          val error = NotificationError("CDS12016", Some(Pointer("x.#0.z")), None)
           val notification =
             Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, Seq(error), "")
 
@@ -126,7 +129,7 @@ class RejectionReasonSpec extends UnitSpec {
 
         "pointer is unknown" in {
           given(messages.isDefinedAt(anyString())).willReturn(false)
-          val error = NotificationError("CDS12016", Some(Pointer("x.#0.z")))
+          val error = NotificationError("CDS12016", Some(Pointer("x.#0.z")), None)
           val notification =
             Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, Seq(error), "")
 
@@ -142,7 +145,7 @@ class RejectionReasonSpec extends UnitSpec {
         }
 
         "pointer is empty" in {
-          val error = NotificationError("CDS12016", None)
+          val error = NotificationError("CDS12016", None, None)
           val notification =
             Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, Seq(error), "")
 
@@ -157,6 +160,124 @@ class RejectionReasonSpec extends UnitSpec {
           )
         }
       }
+    }
+  }
+
+  "Rejection Reason" should {
+
+    "correctly build url for item" in {
+
+      val sections = Seq(
+        PointerSection("declaration", PointerSectionType.FIELD),
+        PointerSection("items", PointerSectionType.FIELD),
+        PointerSection("2", PointerSectionType.SEQUENCE),
+        PointerSection("documentProduced", PointerSectionType.FIELD),
+        PointerSection("1", PointerSectionType.SEQUENCE),
+        PointerSection("documentStatus", PointerSectionType.FIELD)
+      )
+      val pointer = Pointer(sections)
+      val url = "/customs-declare-exports/declaration/items/ITEM_ID/add-document"
+      val expectedItemId = "itemId2"
+      val declaration =
+        aDeclaration(withItems(anItem(withSequenceId(1), withItemId("itemId1")), anItem(withSequenceId(2), withItemId(expectedItemId))))
+
+      val expectedUrl = s"/customs-declare-exports/declaration/items/$expectedItemId/add-document"
+
+      RejectionReason.url(url, declaration, Some(pointer)) mustBe expectedUrl
+    }
+
+    "return default url for item" when {
+
+      "declaration doesn't have that item" in {
+
+        val sections = Seq(
+          PointerSection("declaration", PointerSectionType.FIELD),
+          PointerSection("items", PointerSectionType.FIELD),
+          PointerSection("1", PointerSectionType.SEQUENCE),
+          PointerSection("documentProduced", PointerSectionType.FIELD),
+          PointerSection("1", PointerSectionType.SEQUENCE),
+          PointerSection("documentStatus", PointerSectionType.FIELD)
+        )
+        val pointer = Pointer(sections)
+        val url = "/customs-declare-exports/declaration/items/ITEM_ID/add-document"
+        val declaration = aDeclaration()
+
+        val expectedUrl = s"/customs-declare-exports/declaration/export-items"
+
+        RejectionReason.url(url, declaration, Some(pointer)) mustBe expectedUrl
+      }
+
+      "pointer is missing" in {
+
+        val url = "/customs-declare-exports/declaration/containers/ITEM_ID/seals"
+        val declaration =
+          aDeclaration(withItems(anItem(withSequenceId(1), withItemId("itemId1")), anItem(withSequenceId(2), withItemId("itemId2"))))
+
+        val expectedUrl = "/customs-declare-exports/declaration/export-items"
+
+        RejectionReason.url(url, declaration, None) mustBe expectedUrl
+      }
+    }
+
+    "correctly build url for container" in {
+
+      val sections = Seq(
+        PointerSection("declaration", PointerSectionType.FIELD),
+        PointerSection("containers", PointerSectionType.FIELD),
+        PointerSection("2", PointerSectionType.SEQUENCE),
+        PointerSection("seals", PointerSectionType.FIELD),
+        PointerSection("1", PointerSectionType.SEQUENCE),
+        PointerSection("id", PointerSectionType.FIELD)
+      )
+      val pointer = Pointer(sections)
+      val url = "/customs-declare-exports/declaration/containers/CONTAINER_ID/seals"
+      val expectedContainerId = "containerId2"
+      val declaration = aDeclaration(withContainerData(Seq(Container("containerId1", Seq.empty), Container(expectedContainerId, Seq(Seal("1234"))))))
+
+      val expectedUrl = s"/customs-declare-exports/declaration/containers/$expectedContainerId/seals"
+
+      RejectionReason.url(url, declaration, Some(pointer)) mustBe expectedUrl
+    }
+
+    "return default url for container" when {
+
+      "declaration doesn't have that container" in {
+
+        val sections = Seq(
+          PointerSection("declaration", PointerSectionType.FIELD),
+          PointerSection("items", PointerSectionType.FIELD),
+          PointerSection("1", PointerSectionType.SEQUENCE),
+          PointerSection("documentProduced", PointerSectionType.FIELD),
+          PointerSection("1", PointerSectionType.SEQUENCE),
+          PointerSection("documentStatus", PointerSectionType.FIELD)
+        )
+        val pointer = Pointer(sections)
+        val url = "/customs-declare-exports/declaration/containers/CONTAINER_ID/seals"
+        val declaration = aDeclaration()
+
+        val expectedUrl = s"/customs-declare-exports/declaration/containers"
+
+        RejectionReason.url(url, declaration, Some(pointer)) mustBe expectedUrl
+      }
+
+      "pointer is missing" in {
+
+        val url = "/customs-declare-exports/declaration/containers/CONTAINER_ID/seals"
+        val declaration = aDeclaration(withContainerData(Seq(Container("containerId1", Seq.empty), Container("containerId2", Seq(Seal("1234"))))))
+
+        val expectedUrl = "/customs-declare-exports/declaration/containers"
+
+        RejectionReason.url(url, declaration, None) mustBe expectedUrl
+      }
+    }
+
+    "correctly build url page which is not related with items or containers" in {
+
+      val pointer = Pointer(Seq.empty)
+      val url = "/customs-declare-exports/declaration/consignmentReferences"
+      val declaration = aDeclaration()
+
+      RejectionReason.url(url, declaration, Some(pointer)) mustBe url
     }
   }
 }

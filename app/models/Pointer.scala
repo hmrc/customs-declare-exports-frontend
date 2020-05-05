@@ -62,42 +62,6 @@ case class Pointer(sections: Seq[PointerSection]) {
   // e.g. ABC.DEF.#1.GHI (if the pointer contains a sequence with index 1)
   // e.g. ABC.DEF.GHI (if the pointer doesnt contain a sequence)
   override def toString: String = sections.map(_.toString).mkString(".")
-
-  /**
-    * Placeholders for Item Id and Container Id.
-    * Those placeholders are used in pointer urls in the error-dms-rej-list.csv
-    */
-  private val itemIdPlaceholder = "ITEM_ID"
-  private val containerIdPlaceholder = "CONTAINER_ID"
-
-  /**
-    * Build a url for items and containers.
-    * For other pages return the input url.
-    * Items contains ITEM_ID to replace with real item Id
-    * Containers contains CONTAINER_ID to replace with real container Id
-    */
-  def url(url: String, declaration: ExportsDeclaration): String =
-    if (url.contains(itemIdPlaceholder)) {
-      val defaultItemsUrl = "/customs-declare-exports/declaration/export-items"
-      val itemNoOpt = sequenceArgs.headOption
-
-      itemNoOpt.flatMap { itemNo =>
-        declaration.items.find(_.sequenceId.toString == itemNo).map { item =>
-          url.replace(itemIdPlaceholder, item.id)
-        }
-      }.getOrElse(defaultItemsUrl)
-    } else if (url.contains(containerIdPlaceholder)) {
-      val defaultContainersUrl = "/customs-declare-exports/declaration/containers"
-      val containerNoOpt = sequenceArgs.headOption
-
-      containerNoOpt.flatMap { containerNo =>
-        (try {
-          Some(declaration.containers.apply(containerNo.toInt - 1))
-        } catch {
-          case _: Throwable => None
-        }).map(container => url.replace(containerIdPlaceholder, container.id))
-      }.getOrElse(defaultContainersUrl)
-    } else url
 }
 
 object Pointer {

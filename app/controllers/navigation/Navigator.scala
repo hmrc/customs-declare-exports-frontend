@@ -17,7 +17,7 @@
 package controllers.navigation
 
 import config.AppConfig
-import controllers.util.{FormAction, SaveAndReturn}
+import controllers.util.{Add, FormAction, Remove, SaveAndReturn}
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.RoutingQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingQuestionPage}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeStandardDec
@@ -39,22 +39,15 @@ import uk.gov.hmrc.http.HeaderCarrier
 class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
 
   def continueTo(mode: Mode, factory: Mode => Call)(implicit req: JourneyRequest[AnyContent], hc: HeaderCarrier): Result =
-    redirectTo(mode.next, factory)
-
-  private def redirectTo(mode: Mode, factory: Mode => Call)(implicit req: JourneyRequest[AnyContent], hc: HeaderCarrier): Result =
-    mode match {
-      case ErrorFix if (req.sourceDecId.isDefined) =>
+    (mode, FormAction.bindFromRequest) match {
+      case (ErrorFix, Add) | (ErrorFix, Remove(_)) => Results.Redirect(factory(mode))
+      case (ErrorFix, _) if (req.sourceDecId.isDefined) =>
         Results.Redirect(controllers.routes.RejectedNotificationsController.displayPage(req.sourceDecId.get))
-      case ErrorFix => Results.Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
-      case _        => continueTo(factory(mode))
-    }
-
-  private def continueTo(call: Call)(implicit req: JourneyRequest[AnyContent], hc: HeaderCarrier): Result =
-    FormAction.bindFromRequest match {
-      case SaveAndReturn =>
+      case (ErrorFix, _) => Results.Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
+      case (_, SaveAndReturn) =>
         auditService.auditAllPagesUserInput(AuditTypes.SaveAndReturnSubmission, req.cacheModel)
         goToDraftConfirmation()
-      case _ => Results.Redirect(call)
+      case _ => Results.Redirect(factory(mode))
     }
 
   private def goToDraftConfirmation()(implicit req: JourneyRequest[_]): Result = {
