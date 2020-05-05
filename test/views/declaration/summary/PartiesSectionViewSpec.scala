@@ -19,7 +19,7 @@ package views.declaration.summary
 import base.Injector
 import forms.common.{Address, Eori}
 import models.Mode
-import models.declaration.DeclarationAdditionalActorsData
+import models.declaration.{DeclarationAdditionalActorsData, RepresentativeDetails}
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.parties_section
@@ -117,6 +117,17 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Inje
         eoriRow must haveSummaryValue(exampleEori)
         eoriRow must haveSummaryActionsText("site.change declaration.summary.parties.representative.eori.change")
         eoriRow must haveSummaryActionsHref(controllers.declaration.routes.RepresentativeEntityController.displayPage(Mode.Change))
+      }
+
+      "does not contains representative eori when not representing another agent" in {
+
+        val nonAgentView = section(
+          Mode.Change,
+          data.copy(parties = data.parties.copy(representativeDetails = Some(RepresentativeDetails(None, Some("2"), Some("No")))))
+        )(messages, request)
+        val eoriRow = nonAgentView.getElementsByClass("representative-eori-row")
+
+        eoriRow.text() must be(empty)
       }
 
       "contains representative status code with change button" in {

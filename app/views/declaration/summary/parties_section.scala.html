@@ -132,10 +132,10 @@
             )
         ))
 
-        ++ declarationData.parties.representativeDetails.map(representative => eoriOrAddress(
+        ++ declarationData.parties.representativeDetails.flatMap(_.details).map(details => eoriOrAddress(
             "representative",
-            representative.details.flatMap(_.eori),
-            representative.details.flatMap(_.address),
+            details.eori,
+            details.address,
             controllers.declaration.routes.RepresentativeEntityController.displayPage(mode)
         )).getOrElse(Seq.empty)
 
