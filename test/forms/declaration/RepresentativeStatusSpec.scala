@@ -28,7 +28,7 @@ class RepresentativeStatusSpec extends WordSpec with MustMatchers {
     "return form with errors" when {
 
       "provided with unrecognized status code" in {
-        val form = RepresentativeStatus.formOptional().bind(representativeStatusJSON("invalid"))
+        val form = RepresentativeStatus.form().bind(representativeStatusJSON("invalid"))
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -36,7 +36,7 @@ class RepresentativeStatusSpec extends WordSpec with MustMatchers {
       }
 
       "provided with missing status code when its required" in {
-        val form = RepresentativeStatus.formRequired().bind(representativeStatusJSON(""))
+        val form = RepresentativeStatus.form().bind(representativeStatusJSON(""))
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -46,16 +46,11 @@ class RepresentativeStatusSpec extends WordSpec with MustMatchers {
 
     "return form without errors" when {
       "provided with valid value for status code" in {
-        val form = RepresentativeStatus.formRequired().bind(representativeStatusJSON(DirectRepresentative))
+        val form = RepresentativeStatus.form().bind(representativeStatusJSON(DirectRepresentative))
 
         form.hasErrors must be(false)
       }
 
-      "provided with missing value for status code when its optional" in {
-        val form = RepresentativeStatus.formOptional().bind(representativeStatusJSON(""))
-
-        form.hasErrors must be(false)
-      }
     }
 
   }

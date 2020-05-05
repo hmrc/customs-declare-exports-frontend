@@ -18,7 +18,6 @@ package forms.declaration
 
 import forms.DeclarationPage
 import forms.Mapping.requiredRadio
-import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
@@ -34,19 +33,13 @@ object RepresentativeStatus extends DeclarationPage {
 
   val formId = "RepresentativeStatus"
 
-  val optionalMapping = Forms
-    .mapping(
-      "statusCode" -> optional(text().verifying("declaration.representative-status.error", isContainedIn(representativeStatusCodeAllowedValues)))
-    )(RepresentativeStatus.apply)(RepresentativeStatus.unapply)
-
-  val requiredMapping = Forms
+  val mapping = Forms
     .mapping(
       "statusCode" -> requiredRadio("declaration.representative-status.error")
         .verifying("declaration.representative-status.error", isContainedIn(representativeStatusCodeAllowedValues))
     )(status => RepresentativeStatus(Some(status)))(model => model.statusCode)
 
-  def formOptional(): Form[RepresentativeStatus] = Form(optionalMapping)
-  def formRequired(): Form[RepresentativeStatus] = Form(requiredMapping)
+  def form(): Form[RepresentativeStatus] = Form(mapping)
 
   object StatusCodes {
     val Declarant = "1"

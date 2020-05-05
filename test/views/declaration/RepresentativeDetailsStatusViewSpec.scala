@@ -33,7 +33,7 @@ import views.tags.ViewTest
 class RepresentativeDetailsStatusViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[representative_details_status]
-  private val form: Form[RepresentativeStatus] = RepresentativeStatus.formOptional()
+  private val form: Form[RepresentativeStatus] = RepresentativeStatus.form()
   override val request = journeyRequest()
   override implicit val messages = validatedMessages(request)
   private def createView(
@@ -52,7 +52,7 @@ class RepresentativeDetailsStatusViewSpec extends UnitViewSpec with ExportsTestD
 
     "display two radio buttons with description (not selected)" in {
 
-      val view = createView(form = RepresentativeStatus.formOptional().fill(RepresentativeStatus(None)))
+      val view = createView(form = RepresentativeStatus.form().fill(RepresentativeStatus(None)))
 
       view.getElementsByClass("govuk-radios__item").size mustBe 2
 
@@ -89,7 +89,7 @@ class RepresentativeDetailsStatusViewSpec extends UnitViewSpec with ExportsTestD
 
       val view = createView(
         form = RepresentativeStatus
-          .formOptional()
+          .form()
           .bind(Map("statusCode" -> "invalid"))
       )
 
@@ -105,7 +105,7 @@ class RepresentativeDetailsStatusViewSpec extends UnitViewSpec with ExportsTestD
     "display data" in {
 
       val form = RepresentativeStatus
-        .formOptional()
+        .form()
         .bind(Map("statusCode" -> "2"))
       val view = createView(form = form)
 
