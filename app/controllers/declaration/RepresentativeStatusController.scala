@@ -19,6 +19,7 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.DeclarationPage
+import forms.declaration.RepresentativeStatus.form
 import forms.declaration.{RepresentativeEntity, RepresentativeStatus}
 import javax.inject.Inject
 import models.DeclarationType.DeclarationType
@@ -29,7 +30,6 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.representative_details_status
 
@@ -78,10 +78,4 @@ class RepresentativeStatusController @Inject()(
       val updatedParties = model.parties.copy(representativeDetails = Some(representativeDetails.copy(statusCode = formData.statusCode)))
       model.copy(parties = updatedParties)
     }
-
-  private def form()(implicit request: JourneyRequest[AnyContent]) =
-    if (request.cacheModel.parties.representativeDetails.flatMap(_.details).nonEmpty)
-      RepresentativeStatus.formRequired()
-    else
-      RepresentativeStatus.formOptional()
 }
