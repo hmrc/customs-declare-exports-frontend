@@ -30,6 +30,7 @@ import javax.inject.Inject
 import models.DeclarationType._
 import models.Mode
 import models.Mode.ErrorFix
+import models.declaration.ExportItem
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
 import play.api.mvc.{AnyContent, Call, Result, Results}
@@ -224,6 +225,7 @@ object Navigator {
     case NatureOfTransaction                  => controllers.declaration.routes.TotalPackageQuantityController.displayPage
     case ProcedureCodes                       => controllers.declaration.routes.ItemsSummaryController.displayPage
     case DepartureTransport                   => controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
+    case ExportItem                           => controllers.declaration.routes.PreviousDocumentsController.displayPage
   }
 
   val commonItem: PartialFunction[DeclarationPage, (Mode, String) => Call] = {

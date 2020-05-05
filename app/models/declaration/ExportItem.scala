@@ -16,6 +16,7 @@
 
 package models.declaration
 
+import forms.DeclarationPage
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers.yes
 import forms.declaration._
 import models.DeclarationType
@@ -61,7 +62,7 @@ case class ExportItem(
   }
 }
 
-object ExportItem {
+object ExportItem extends DeclarationPage {
 
   implicit val format = Json.format[ExportItem]
 }
