@@ -30,6 +30,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Inje
   private val exampleAddress = Address("fullName", "addressLine", "townOrCity", "postCode", "GB")
   private val exampleAddressContents = "fullName addressLine townOrCity postCode GB"
   private val data = aDeclaration(
+    withDeclarantIsExporter("No"),
     withExporterDetails(Some(Eori(exampleEori)), Some(exampleAddress)),
     withConsigneeDetails(Some(Eori(exampleEori)), Some(exampleAddress)),
     withDeclarantDetails(Some(Eori(exampleEori)), Some(exampleAddress)),
@@ -45,6 +46,16 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Inje
 
     onEveryDeclarationJourney() { request =>
       val view = section(Mode.Change, data)(messages, request)
+
+      "contains 'are you exporter' with change button" in {
+
+        val isExporterRow = view.getElementsByClass("declarantIsExporter-row")
+
+        isExporterRow must haveSummaryKey(messages("declaration.summary.parties.declarantIsExporter"))
+        isExporterRow must haveSummaryValue(messages("declaration.summary.parties.declarantIsExporter.no"))
+        isExporterRow must haveSummaryActionsText("site.change declaration.summary.parties.declarantIsExporter.change")
+        isExporterRow must haveSummaryActionsHref(controllers.declaration.routes.DeclarantExporterController.displayPage(Mode.Change))
+      }
 
       "contains exporter details with change button" in {
 

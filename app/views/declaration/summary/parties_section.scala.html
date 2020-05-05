@@ -83,19 +83,32 @@
     )
     @summaryList("declaration-parties-summary", None,
 
-        declarationData.parties.exporterDetails.map(export => eoriOrAddress(
+        (Seq.empty :+ declarationData.parties.declarantIsExporter.map(isExporter =>
+            SummaryListRow(
+                classes = "declarantIsExporter-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.parties.declarantIsExporter"))
+                ),
+                value = Value(
+                    content = Text(messages(s"declaration.summary.parties.declarantIsExporter.${isExporter.answer.toLowerCase}"))
+                ),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = controllers.declaration.routes.DeclarantExporterController.displayPage(mode).url,
+                            content = Text(messages("site.change")),
+                            visuallyHiddenText = Some(messages("declaration.summary.parties.declarantIsExporter.change"))
+                        )
+                    )
+                ))
+            )
+        ))
+
+        ++ declarationData.parties.exporterDetails.map(export => eoriOrAddress(
             "exporter",
             export.details.eori,
             export.details.address,
             controllers.declaration.routes.ExporterDetailsController.displayPage(mode)
-        )).getOrElse(Seq.empty)
-
-        ++ declarationData.parties.consigneeDetails.map(consignee => eoriOrAddress(
-            "consignee",
-            consignee.details.eori,
-            consignee.details.address,
-            controllers.declaration.routes.ConsigneeDetailsController.displayPage(mode),
-            isEoriDefault = false
         )).getOrElse(Seq.empty)
 
         ++ (Seq.empty :+ declarationData.parties.representativeDetails.map(_.representingOtherAgent).map(agent =>
@@ -152,6 +165,14 @@
             carrier.details.eori,
             carrier.details.address,
             controllers.declaration.routes.CarrierDetailsController.displayPage(mode),
+            isEoriDefault = false
+        )).getOrElse(Seq.empty)
+
+        ++ declarationData.parties.consigneeDetails.map(consignee => eoriOrAddress(
+            "consignee",
+            consignee.details.eori,
+            consignee.details.address,
+            controllers.declaration.routes.ConsigneeDetailsController.displayPage(mode),
             isEoriDefault = false
         )).getOrElse(Seq.empty),
 

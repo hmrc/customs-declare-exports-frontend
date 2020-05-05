@@ -19,11 +19,12 @@ package views.declaration
 import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
+import forms.DeclarationPage
 import forms.common.Address
-import forms.declaration.{ConsigneeDetails, EntityDetails}
+import forms.declaration.{ConsigneeDetails, EntityDetails, ExporterDetails}
 import helpers.views.declaration.CommonMessages
-import models.{DeclarationType, Mode}
 import models.requests.JourneyRequest
+import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -37,8 +38,10 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
   val form: Form[ConsigneeDetails] = ConsigneeDetails.form()
   val consigneeDetailsPage = instanceOf[consignee_details]
-  private def createView(form: Form[ConsigneeDetails] = form)(implicit request: JourneyRequest[_]): Document =
-    consigneeDetailsPage(Mode.Normal, form)(request, messages)
+  private def createView(form: Form[ConsigneeDetails] = form, navigationForm: DeclarationPage = ConsigneeDetails)(
+    implicit request: JourneyRequest[_]
+  ): Document =
+    consigneeDetailsPage(Mode.Normal, navigationForm, form)(request, messages)
 
   val allFields = Seq("fullName", "addressLine", "townOrCity", "addressLine", "postCode", "country")
   val validAddress = Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "England")
@@ -292,6 +295,14 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
         backButton.text() mustBe messages(backCaption)
         backButton.attr("href") mustBe routes.CarrierDetailsController.displayPage().url
       }
+
+      "display 'Back' button that links to 'Declarant is exporter?' page" in {
+
+        val backButton = createView(navigationForm = ExporterDetails).getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.DeclarantExporterController.displayPage().url
+      }
     }
 
     onJourney(DeclarationType.SUPPLEMENTARY) { implicit request =>
@@ -301,6 +312,14 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
         backButton.text() mustBe messages(backCaption)
         backButton.attr("href") mustBe routes.RepresentativeStatusController.displayPage().url
+      }
+
+      "display 'Back' button that links to 'Declarant is exporter?' page" in {
+
+        val backButton = createView(navigationForm = ExporterDetails).getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.DeclarantExporterController.displayPage().url
       }
     }
   }

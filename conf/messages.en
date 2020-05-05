@@ -326,10 +326,19 @@ declaration.exporter-detail.addressHeading = Exporter’s name and address
 
 declaration.declarant.title = Is this your EORI number?
 declaration.declarant.titleQuestion = Is your EORI number {0}?
+declaration.declarant.hint = By selecting yes you are confirming that this EORI number belongs to the declarant of this export declaration
+declaration.declarant.error = Select yes if this EORI number is correct
 declaration.declarant.change.eori = No, I need to change my EORI
 declaration.declarant-details.help.bodyText = Go to data element 3/18 Declarant Identification Number in the {0}.
 declaration.declarant.eori.empty = Enter your EORI number
 declaration.declarant.eori.error.format = Enter a valid EORI number, for example GB123456789000
+
+declaration.declarant.exporter.title = Are you the exporter?
+declaration.declarant.exporter.answer.yes = Yes
+declaration.declarant.exporter.answer.no = No, I’m representing the exporter
+declaration.declarant.exporter.error = Select yes if you are also the exporter
+declaration.declarant.exporter.help-item = Go to data element 3/2 Exporter Identification Number in the {0}
+
 
 declaration.consignee.title = What is the consignee’s address?
 declaration.consignee-details.help-item = Go to data element 3/9 Consignee Name and Address in the {0}
@@ -996,6 +1005,10 @@ declaration.summary.references.ducr.change = DUCR
 declaration.summary.references.lrn = LRN
 declaration.summary.references.lrn.change = LRN
 declaration.summary.parties = Parties
+declaration.summary.parties.declarantIsExporter = Are you the exporter?
+declaration.summary.parties.declarantIsExporter.yes = Yes
+declaration.summary.parties.declarantIsExporter.no = No
+declaration.summary.parties.declarantIsExporter.change = are you the exporter
 declaration.summary.parties.exporter.eori = Exporter’s EORI number
 declaration.summary.parties.exporter.eori.change = Exporter’s EORI number
 declaration.summary.parties.exporter.address = Exporter’s address

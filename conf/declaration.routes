@@ -21,6 +21,18 @@ GET         /not-eligible                       controllers.declaration.NotEligi
 
 GET         /not-declarant                      controllers.declaration.NotEligibleController.displayNotDeclarant()
 
+# Declarant EORI
+
+GET         /declarant-details                   controllers.declaration.DeclarantDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /declarant-details                   controllers.declaration.DeclarantDetailsController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
+# Declarant is exporter
+
+GET         /are-you-the-exporter                controllers.declaration.DeclarantExporterController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /are-you-the-exporter                controllers.declaration.DeclarantExporterController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
 # Consignment references
 
 GET         /consignment-references              controllers.declaration.ConsignmentReferencesController.displayPage(mode: models.Mode ?= models.Mode.Normal)
@@ -32,12 +44,6 @@ POST        /consignment-references              controllers.declaration.Consign
 GET         /exporter-details                    controllers.declaration.ExporterDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
 POST        /exporter-details                    controllers.declaration.ExporterDetailsController.saveAddress(mode: models.Mode ?= models.Mode.Normal)
-
-# Declarant address
-
-GET         /declarant-details                   controllers.declaration.DeclarantDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
-
-POST        /declarant-details                   controllers.declaration.DeclarantDetailsController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
 # Representative details
 

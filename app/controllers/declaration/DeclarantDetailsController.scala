@@ -58,7 +58,7 @@ class DeclarantDetailsController @Inject()(
         validForm =>
           if (validForm.answer == YesNoAnswers.yes)
             updateCache(DeclarantDetails(EntityDetails(Some(Eori(request.eori)), None)))
-              .map(_ => navigator.continueTo(mode, controllers.declaration.routes.ExporterDetailsController.displayPage))
+              .map(_ => navigator.continueTo(mode, controllers.declaration.routes.DeclarantExporterController.displayPage))
           else
             Future(Redirect(controllers.declaration.routes.NotEligibleController.displayNotDeclarant()).withNewSession)
       )

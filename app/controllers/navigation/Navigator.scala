@@ -218,7 +218,8 @@ object Navigator {
     case DispatchLocation                     => controllers.declaration.routes.DeclarationChoiceController.displayPage
     case ConsignmentReferences                => controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage
     case DeclarantDetails                     => controllers.declaration.routes.ConsignmentReferencesController.displayPage
-    case ExporterDetails                      => controllers.declaration.routes.DeclarantDetailsController.displayPage
+    case DeclarantIsExporter                  => controllers.declaration.routes.DeclarantDetailsController.displayPage
+    case ExporterDetails                      => controllers.declaration.routes.DeclarantExporterController.displayPage
     case RepresentativeAgent                  => controllers.declaration.routes.ExporterDetailsController.displayPage
     case RepresentativeEntity                 => controllers.declaration.routes.RepresentativeAgentController.displayPage
     case RepresentativeStatus                 => controllers.declaration.routes.RepresentativeEntityController.displayPage

@@ -18,7 +18,8 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.CarrierDetails
+import forms.DeclarationPage
+import forms.declaration.{CarrierDetails, ExporterDetails}
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
@@ -48,8 +49,8 @@ class CarrierDetailsController @Inject()(
   def displayPage(mode: Mode): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)) { implicit request =>
       request.cacheModel.parties.carrierDetails match {
-        case Some(data) => Ok(carrierDetailsPage(mode, form().fill(data)))
-        case _          => Ok(carrierDetailsPage(mode, form()))
+        case Some(data) => Ok(carrierDetailsPage(mode, navigationForm, form().fill(data)))
+        case _          => Ok(carrierDetailsPage(mode, navigationForm, form()))
       }
     }
 
@@ -58,13 +59,16 @@ class CarrierDetailsController @Inject()(
       form()
         .bindFromRequest()
         .fold(
-          (formWithErrors: Form[CarrierDetails]) => Future.successful(BadRequest(carrierDetailsPage(mode, formWithErrors))),
+          (formWithErrors: Form[CarrierDetails]) => Future.successful(BadRequest(carrierDetailsPage(mode, navigationForm, formWithErrors))),
           form =>
             updateCache(form).map { _ =>
               navigator.continueTo(mode, controllers.declaration.routes.ConsigneeDetailsController.displayPage)
           }
         )
     }
+
+  private def navigationForm(implicit request: JourneyRequest[AnyContent]): DeclarationPage =
+    if (request.cacheModel.parties.declarantIsExporter.exists(_.isExporter)) ExporterDetails else CarrierDetails
 
   private def updateCache(formData: CarrierDetails)(implicit req: JourneyRequest[AnyContent]) =
     updateExportsDeclarationSyncDirect(model => {
