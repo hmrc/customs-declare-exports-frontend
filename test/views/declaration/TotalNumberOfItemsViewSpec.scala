@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.Injector
+import forms.DeclarationPage
 import forms.declaration.TotalNumberOfItems
 import models.Mode
 import models.requests.JourneyRequest
@@ -35,10 +36,14 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
 
   private val page = instanceOf[total_number_of_items]
   private val form: Form[TotalNumberOfItems] = TotalNumberOfItems.form()
-  private def createView(mode: Mode = Mode.Normal, form: Form[TotalNumberOfItems] = form, messages: Messages = stubMessages())(
-    implicit request: JourneyRequest[_]
-  ): Document =
-    page(mode, form)(request, messages)
+
+  private def createView(
+    mode: Mode = Mode.Normal,
+    navigationForm: DeclarationPage = TotalNumberOfItems,
+    form: Form[TotalNumberOfItems] = form,
+    messages: Messages = stubMessages()
+  )(implicit request: JourneyRequest[_]): Document =
+    page(mode, navigationForm, form)(request, messages)
 
   "Total Number Of Items View on empty page" should {
 
@@ -87,7 +92,7 @@ class TotalNumberOfItemsViewSpec extends UnitViewSpec with ExportsTestData with 
         val backButton = view.getElementById("back-link")
 
         backButton.text() must be("site.back")
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Normal))
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage(Mode.Normal))
       }
 
       "display 'Save and continue' button on page" in {

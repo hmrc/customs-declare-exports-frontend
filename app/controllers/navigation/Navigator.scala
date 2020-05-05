@@ -38,7 +38,7 @@ import services.audit.{AuditService, AuditTypes}
 import uk.gov.hmrc.http.HeaderCarrier
 
 class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
-  
+
   def continueTo(mode: Mode, factory: Mode => Call)(implicit req: JourneyRequest[AnyContent], hc: HeaderCarrier): Result =
     (mode, FormAction.bindFromRequest) match {
       case (ErrorFix, Add) | (ErrorFix, Remove(_)) => Results.Redirect(factory(mode))
@@ -101,7 +101,7 @@ object Navigator {
     case TransportPayment          => controllers.declaration.routes.DepartureTransportController.displayPage
     case ContainerFirst            => controllers.declaration.routes.TransportPaymentController.displayPage
     case ContainerAdd              => controllers.declaration.routes.TransportContainerController.displayContainerSummary
-    case Document                  => controllers.declaration.routes.OfficeOfExitController.displayPage
+    case Document                  => controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage
     case DestinationCountryPage    => controllers.declaration.routes.DeclarationHolderController.displayPage
     case RoutingQuestionPage       => controllers.declaration.routes.DestinationCountryController.displayPage
     case RemoveCountryPage         => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
@@ -224,7 +224,7 @@ object Navigator {
     case OfficeOfExitInsideUK                 => controllers.declaration.routes.LocationController.displayPage
     case OfficeOfExitOutsideUK                => controllers.declaration.routes.OfficeOfExitController.displayPage
     case AdditionalDeclarationTypeStandardDec => controllers.declaration.routes.DispatchLocationController.displayPage
-    case TotalNumberOfItems                   => controllers.declaration.routes.OfficeOfExitController.displayPage
+    case TotalNumberOfItems                   => controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage
     case NatureOfTransaction                  => controllers.declaration.routes.TotalPackageQuantityController.displayPage
     case ProcedureCodes                       => controllers.declaration.routes.ItemsSummaryController.displayPage
     case DepartureTransport                   => controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
