@@ -18,8 +18,8 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.OfficeOfExitOutsideUk
-import forms.declaration.OfficeOfExitOutsideUk.form
+import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitOutsideUK}
+import forms.declaration.officeOfExit.OfficeOfExitOutsideUK.form
 import javax.inject.Inject
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
@@ -44,8 +44,8 @@ class OfficeOfExitOutsideUkController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.locations.officeOfExitOutsideUk match {
-      case Some(data) => Ok(officeOfExitOutsideUkPage(mode, form().fill(data)))
+    request.cacheModel.locations.officeOfExit match {
+      case Some(data) => Ok(officeOfExitOutsideUkPage(mode, form().fill(OfficeOfExitOutsideUK(data))))
       case _          => Ok(officeOfExitOutsideUkPage(mode, form()))
     }
   }
@@ -54,7 +54,7 @@ class OfficeOfExitOutsideUkController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[OfficeOfExitOutsideUk]) => {
+        (formWithErrors: Form[OfficeOfExitOutsideUK]) => {
           val formWithAdjustedErrors = formWithErrors
           Future.successful(BadRequest(officeOfExitOutsideUkPage(mode, formWithAdjustedErrors)))
         },
@@ -72,6 +72,6 @@ class OfficeOfExitOutsideUkController @Inject()(
         controllers.declaration.routes.PreviousDocumentsController.displayPage
     }
 
-  private def updateCache(formData: OfficeOfExitOutsideUk)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(officeOfExitOutsideUk = Some(formData))))
+  private def updateCache(formData: OfficeOfExitOutsideUK)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData)))))
 }

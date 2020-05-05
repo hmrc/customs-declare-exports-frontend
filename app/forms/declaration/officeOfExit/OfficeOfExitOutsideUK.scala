@@ -14,26 +14,33 @@
  * limitations under the License.
  */
 
-package forms.declaration
+package forms.declaration.officeOfExit
 
 import forms.DeclarationPage
 import play.api.data.Forms.text
-import play.api.data.{Form, Forms, Mapping}
+import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class OfficeOfExitOutsideUk(officeId: String)
+case class OfficeOfExitOutsideUK(officeId: String)
 
-object OfficeOfExitOutsideUk extends DeclarationPage {
-  implicit val format = Json.format[OfficeOfExitOutsideUk]
+object OfficeOfExitOutsideUK extends DeclarationPage {
+  implicit val format = Json.format[OfficeOfExitOutsideUK]
 
   val formId = "OfficeOfExitOutsideUk"
 
-  val mapping: Mapping[OfficeOfExitOutsideUk] = Forms.mapping(
+  val mapping = Forms.mapping(
     "officeId" -> text()
       .verifying("declaration.officeOfExitOutsideUk.empty", nonEmpty)
       .verifying("declaration.officeOfExitOutsideUk.format", isEmpty or isValidOfficeOfExit)
-  )(OfficeOfExitOutsideUk.apply)(OfficeOfExitOutsideUk.unapply)
+  )(OfficeOfExitOutsideUK.apply)(OfficeOfExitOutsideUK.unapply)
 
-  def form(): Form[OfficeOfExitOutsideUk] = Form(mapping)
+  def form(): Form[OfficeOfExitOutsideUK] = Form(OfficeOfExitOutsideUK.mapping)
+
+  def apply(officeOfExit: OfficeOfExit): OfficeOfExitOutsideUK =
+    officeOfExit.isUkOfficeOfExit match {
+      case Some(AllowedUKOfficeOfExitAnswers.yes) => OfficeOfExitOutsideUK("")
+      case Some(AllowedUKOfficeOfExitAnswers.no)  => OfficeOfExitOutsideUK(officeOfExit.officeId.getOrElse(""))
+    }
+
 }

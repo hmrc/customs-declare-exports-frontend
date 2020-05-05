@@ -23,6 +23,7 @@ import forms.declaration.RoutingQuestionYesNo.{ChangeCountryPage, RemoveCountryP
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeStandardDec
 import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.countries.Countries.{DestinationCountryPage, OriginationCountryPage}
+import forms.declaration.officeOfExit.{OfficeOfExitInsideUK, OfficeOfExitOutsideUK}
 import forms.declaration.{BorderTransport, Document, PackageInformation, _}
 import forms.{Choice, DeclarationPage}
 import javax.inject.Inject
@@ -107,8 +108,8 @@ object Navigator {
     case ChangeCountryPage         => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case GoodsLocationForm         => controllers.declaration.routes.DestinationCountryController.displayPage
     case DeclarationHolder         => controllers.declaration.routes.ConsigneeDetailsController.displayPage
-    case OfficeOfExit              => controllers.declaration.routes.LocationController.displayPage
-    case OfficeOfExitOutsideUk     => controllers.declaration.routes.OfficeOfExitController.displayPage
+    case OfficeOfExitInsideUK      => controllers.declaration.routes.LocationController.displayPage
+    case OfficeOfExitOutsideUK     => controllers.declaration.routes.OfficeOfExitController.displayPage
     case SupervisingCustomsOffice  => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case TransportLeavingTheBorder => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case WarehouseIdentification   => controllers.declaration.routes.ItemsSummaryController.displayPage
@@ -131,8 +132,8 @@ object Navigator {
     case OriginationCountryPage      => controllers.declaration.routes.DeclarationHolderController.displayPage
     case DestinationCountryPage      => controllers.declaration.routes.OriginationCountryController.displayPage
     case GoodsLocationForm           => controllers.declaration.routes.DestinationCountryController.displayPage
-    case OfficeOfExit                => controllers.declaration.routes.LocationController.displayPage
-    case OfficeOfExitOutsideUk       => controllers.declaration.routes.OfficeOfExitController.displayPage
+    case OfficeOfExitInsideUK        => controllers.declaration.routes.LocationController.displayPage
+    case OfficeOfExitOutsideUK       => controllers.declaration.routes.OfficeOfExitController.displayPage
     case DeclarationHolder           => controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage
     case SupervisingCustomsOffice    => controllers.declaration.routes.WarehouseIdentificationController.displayPage
     case InlandModeOfTransportCode   => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
@@ -220,8 +221,8 @@ object Navigator {
     case RepresentativeEntity                 => controllers.declaration.routes.RepresentativeAgentController.displayPage
     case RepresentativeStatus                 => controllers.declaration.routes.RepresentativeEntityController.displayPage
     case CarrierDetails                       => controllers.declaration.routes.RepresentativeStatusController.displayPage
-    case OfficeOfExit                         => controllers.declaration.routes.LocationController.displayPage
-    case OfficeOfExitOutsideUk                => controllers.declaration.routes.OfficeOfExitController.displayPage
+    case OfficeOfExitInsideUK                 => controllers.declaration.routes.LocationController.displayPage
+    case OfficeOfExitOutsideUK                => controllers.declaration.routes.OfficeOfExitController.displayPage
     case AdditionalDeclarationTypeStandardDec => controllers.declaration.routes.DispatchLocationController.displayPage
     case TotalNumberOfItems                   => controllers.declaration.routes.OfficeOfExitController.displayPage
     case NatureOfTransaction                  => controllers.declaration.routes.TotalPackageQuantityController.displayPage

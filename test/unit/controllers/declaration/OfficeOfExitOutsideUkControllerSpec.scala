@@ -17,7 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.OfficeOfExitOutsideUkController
-import forms.declaration.OfficeOfExitOutsideUk
+import forms.declaration.officeOfExit.OfficeOfExitOutsideUK
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -46,8 +46,8 @@ class OfficeOfExitOutsideUkControllerSpec extends ControllerSpec with OptionValu
   def checkViewInteractions(noOfInvocations: Int = 1): Unit =
     verify(mockPage, times(noOfInvocations)).apply(any(), any())(any(), any())
 
-  def theResponseForm: Form[OfficeOfExitOutsideUk] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[OfficeOfExitOutsideUk]])
+  def theResponseForm: Form[OfficeOfExitOutsideUK] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[OfficeOfExitOutsideUK]])
     verify(mockPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
@@ -80,7 +80,7 @@ class OfficeOfExitOutsideUkControllerSpec extends ControllerSpec with OptionValu
       "display page method is invoked and cache contains data" in {
 
         val officeId = "officeId"
-        withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExitOutsideUk(officeId)))
+        withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExitOutsideUK(officeId)))
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
@@ -98,7 +98,7 @@ class OfficeOfExitOutsideUkControllerSpec extends ControllerSpec with OptionValu
 
         withNewCaching(request.cacheModel)
 
-        val incorrectForm = Json.toJson(OfficeOfExitOutsideUk("!@#$"))
+        val incorrectForm = Json.toJson(OfficeOfExitOutsideUK("!@#$"))
 
         val result = controller.saveOffice(Mode.Normal)(postRequest(incorrectForm))
 
@@ -110,7 +110,7 @@ class OfficeOfExitOutsideUkControllerSpec extends ControllerSpec with OptionValu
 
         withNewCaching(request.cacheModel)
 
-        val incorrectForm = Json.toJson(OfficeOfExitOutsideUk(""))
+        val incorrectForm = Json.toJson(OfficeOfExitOutsideUK(""))
 
         val result = controller.saveOffice(Mode.Normal)(postRequest(incorrectForm))
 
@@ -122,7 +122,7 @@ class OfficeOfExitOutsideUkControllerSpec extends ControllerSpec with OptionValu
 
         withNewCaching(request.cacheModel)
 
-        val incorrectForm = Json.toJson(OfficeOfExitOutsideUk("GB34567890"))
+        val incorrectForm = Json.toJson(OfficeOfExitOutsideUK("GB34567890"))
 
         val result = controller.saveOffice(Mode.Normal)(postRequest(incorrectForm))
 
@@ -134,7 +134,7 @@ class OfficeOfExitOutsideUkControllerSpec extends ControllerSpec with OptionValu
 
         withNewCaching(request.cacheModel)
 
-        val incorrectForm = Json.toJson(OfficeOfExitOutsideUk("34567890"))
+        val incorrectForm = Json.toJson(OfficeOfExitOutsideUK("34567890"))
 
         val result = controller.saveOffice(Mode.Normal)(postRequest(incorrectForm))
 
@@ -150,7 +150,7 @@ class OfficeOfExitOutsideUkControllerSpec extends ControllerSpec with OptionValu
 
         withNewCaching(request.cacheModel)
 
-        val correctForm = Json.toJson(OfficeOfExitOutsideUk("GB123456"))
+        val correctForm = Json.toJson(OfficeOfExitOutsideUK("GB123456"))
 
         val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
 
@@ -165,7 +165,7 @@ class OfficeOfExitOutsideUkControllerSpec extends ControllerSpec with OptionValu
 
         withNewCaching(request.cacheModel)
 
-        val correctForm = Json.toJson(OfficeOfExitOutsideUk("GB123456"))
+        val correctForm = Json.toJson(OfficeOfExitOutsideUK("GB123456"))
 
         val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
 

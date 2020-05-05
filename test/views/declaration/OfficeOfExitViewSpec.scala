@@ -18,7 +18,7 @@ package views.declaration
 
 import base.Injector
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.OfficeOfExit
+import forms.declaration.officeOfExit.OfficeOfExitInsideUK
 import models.Mode
 import org.jsoup.nodes.Document
 import org.scalatest.Matchers._
@@ -36,14 +36,14 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
 
   private val page: office_of_exit = instanceOf[office_of_exit]
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[OfficeOfExit] = OfficeOfExit.form()): Document =
+  private def createView(mode: Mode = Mode.Normal, form: Form[OfficeOfExitInsideUK] = OfficeOfExitInsideUK.form()): Document =
     page(mode, form)(journeyRequest(), stubMessages())
 
   "Office of Exit View" should {
     val view = createView()
     onEveryDeclarationJourney() { implicit request =>
       "display answer input" in {
-        val officeOfExit = OfficeOfExit.form().fill(OfficeOfExit(Some("officeId"), YesNoAnswers.yes))
+        val officeOfExit = OfficeOfExitInsideUK.form().fill(OfficeOfExitInsideUK(Some("officeId"), YesNoAnswers.yes))
         val view = createView(form = officeOfExit)
 
         view
@@ -73,7 +73,7 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
 
       "display office of exit question" in {
         view.getElementById("officeId-label").text() mustBe "declaration.officeOfExit"
-        view.getElementById("answer-hint").text() mustBe "declaration.officeOfExit.hint"
+        view.getElementById("isUkOfficeOfExit-hint").text() mustBe "declaration.officeOfExit.hint"
         view.getElementById("officeId").attr("value") mustBe empty
       }
 
@@ -98,19 +98,19 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
       "handle invalid input" should {
 
         "display errors when all inputs are empty" in {
-          val data = OfficeOfExit(None, "")
-          val view = createView(form = OfficeOfExit.form().fillAndValidate(data))
+          val data = OfficeOfExitInsideUK(None, "")
+          val view = createView(form = OfficeOfExitInsideUK.form().fillAndValidate(data))
 
           view.getElementById("error-summary-title").text() must be("error.summary.title")
 
           view must haveGovukGlobalErrorSummary
-          view must containErrorElementWithTagAndHref("a", "#answer")
-          view must containErrorElementWithMessage("declaration.officeOfExit.answer.empty")
+          view must containErrorElementWithTagAndHref("a", "#isUkOfficeOfExit")
+          view must containErrorElementWithMessage("declaration.officeOfExit.isUkOfficeOfExit.empty")
         }
 
         "display errors when all inputs are incorrect" in {
-          val data = OfficeOfExit(Some("123456"), "Yes")
-          val form = OfficeOfExit.form().fillAndValidate(data)
+          val data = OfficeOfExitInsideUK(Some("123456"), "Yes")
+          val form = OfficeOfExitInsideUK.form().fillAndValidate(data)
           val view = createView(form = form)
 
           view.getElementById("error-summary-title").text() must be("error.summary.title")
@@ -125,8 +125,8 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestData with Stubs 
         }
 
         "display errors when office of exit contains special characters" in {
-          val data = OfficeOfExit(Some("12#$%^78"), "Yes")
-          val form = OfficeOfExit.form().fillAndValidate(data)
+          val data = OfficeOfExitInsideUK(Some("12#$%^78"), "Yes")
+          val form = OfficeOfExitInsideUK.form().fillAndValidate(data)
           val view = createView(form = form)
 
           view.getElementById("error-summary-title").text() must be("error.summary.title")

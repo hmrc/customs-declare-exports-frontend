@@ -565,8 +565,7 @@ declaration.officeOfExit.empty = Select an office of exit from the list
 declaration.officeOfExit.length = Select an office of exit from the list
 declaration.officeOfExit.specialCharacters = Select an office of exit from the list
 declaration.officeOfExit.help-item1 = Go to data element 5/12 Customs Office of Exit in the {0}
-declaration.officeOfExit.answer.empty = Select where is the Office of Exit
-declaration.officeOfExit.answer.error = Select where is the Office of Exit
+declaration.officeOfExit.isUkOfficeOfExit.empty = Select where is the Office of Exit
 
 declaration.officeOfExitOutsideUk.title = Where is the office of exit?
 declaration.officeOfExitOutsideUk.hint = Enter the office of exit reference number which is a two-character country code followed by six digits. For example, NL000703. 

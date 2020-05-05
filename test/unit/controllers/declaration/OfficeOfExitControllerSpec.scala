@@ -17,7 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.OfficeOfExitController
-import forms.declaration.{AllowedOfficeOfExitAnswers, OfficeOfExit}
+import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExitInsideUK}
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -46,8 +46,8 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
   def checkViewInteractions(noOfInvocations: Int = 1): Unit =
     verify(mockOfficeOfExitPage, times(noOfInvocations)).apply(any(), any())(any(), any())
 
-  def theResponseForm: Form[OfficeOfExit] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[OfficeOfExit]])
+  def theResponseForm: Form[OfficeOfExitInsideUK] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[OfficeOfExitInsideUK]])
     verify(mockOfficeOfExitPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
@@ -89,7 +89,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
         checkViewInteractions()
 
         theResponseForm.value.value.officeId mustBe Some(officeId)
-        theResponseForm.value.value.answer mustBe answer
+        theResponseForm.value.value.isUkOfficeOfExit mustBe answer
       }
     }
   }
@@ -100,7 +100,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         withNewCaching(request.cacheModel)
 
-        val incorrectForm = Json.toJson(OfficeOfExit(Some("!@#$"), "wrong"))
+        val incorrectForm = Json.toJson(OfficeOfExitInsideUK(Some("!@#$"), "wrong"))
 
         val result = controller.saveOffice(Mode.Normal)(postRequest(incorrectForm))
 
@@ -116,7 +116,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         withNewCaching(request.cacheModel)
 
-        val correctForm = Json.toJson(OfficeOfExit(Some("officeId"), AllowedOfficeOfExitAnswers.yes))
+        val correctForm = Json.toJson(OfficeOfExitInsideUK(Some("GB123456"), AllowedUKOfficeOfExitAnswers.yes))
 
         val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
 
@@ -129,7 +129,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         withNewCaching(request.cacheModel)
 
-        val correctForm = Json.toJson(OfficeOfExit(None, AllowedOfficeOfExitAnswers.no))
+        val correctForm = Json.toJson(OfficeOfExitInsideUK(None, AllowedUKOfficeOfExitAnswers.no))
 
         val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
 
@@ -144,7 +144,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         withNewCaching(request.cacheModel)
 
-        val correctForm = Json.toJson(OfficeOfExit(Some("officeId"), AllowedOfficeOfExitAnswers.yes))
+        val correctForm = Json.toJson(OfficeOfExitInsideUK(Some("GB123456"), AllowedUKOfficeOfExitAnswers.yes))
 
         val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
 
@@ -157,7 +157,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         withNewCaching(request.cacheModel)
 
-        val correctForm = Json.toJson(OfficeOfExit(None, AllowedOfficeOfExitAnswers.no))
+        val correctForm = Json.toJson(OfficeOfExitInsideUK(None, AllowedUKOfficeOfExitAnswers.no))
 
         val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
 

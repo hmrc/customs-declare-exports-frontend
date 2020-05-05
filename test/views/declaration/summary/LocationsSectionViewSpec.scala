@@ -17,7 +17,8 @@
 package views.declaration.summary
 
 import base.Injector
-import forms.declaration.{AllowedOfficeOfExitAnswers, GoodsLocationForm}
+import forms.declaration.GoodsLocationForm
+import forms.declaration.officeOfExit.AllowedUKOfficeOfExitAnswers
 import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
@@ -25,7 +26,7 @@ import views.html.declaration.summary.locations_section
 
 class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
-  val data = aDeclaration(withGoodsLocation(GoodsLocationForm("GBAUEMAEMAEMA")), withOfficeOfExit("123", AllowedOfficeOfExitAnswers.yes))
+  val data = aDeclaration(withGoodsLocation(GoodsLocationForm("GBAUEMAEMAEMA")), withOfficeOfExit("123", AllowedUKOfficeOfExitAnswers.yes))
 
   val section = instanceOf[locations_section]
 
@@ -72,7 +73,10 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
     "have answers when office of exit not answered" in {
       val view =
-        section(Mode.Normal, aDeclarationAfter(data, withOptionalOfficeOfExit(None, AllowedOfficeOfExitAnswers.no)))(messages, journeyRequest())
+        section(Mode.Normal, aDeclarationAfter(data, withOptionalOfficeOfExit(None, Some(AllowedUKOfficeOfExitAnswers.no))))(
+          messages,
+          journeyRequest()
+        )
       val row = view.getElementsByClass("location-officeOfExit-row")
 
       row must haveSummaryKey(messages("declaration.summary.locations.officeOfExit"))
@@ -85,7 +89,10 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
     "not have answers when office of exit not answered" in {
       val view =
-        section(Mode.Normal, aDeclarationAfter(data, withOptionalOfficeOfExit(None, AllowedOfficeOfExitAnswers.no)))(messages, journeyRequest())
+        section(Mode.Normal, aDeclarationAfter(data, withOptionalOfficeOfExit(None, Some(AllowedUKOfficeOfExitAnswers.no))))(
+          messages,
+          journeyRequest()
+        )
 
       val row = view.getElementsByClass("location-officeOfExit-row")
       row must haveSummaryKey(messages("declaration.summary.locations.officeOfExit"))

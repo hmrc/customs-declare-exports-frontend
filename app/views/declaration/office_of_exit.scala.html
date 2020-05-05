@@ -15,7 +15,7 @@
  *@
 
 @import controllers.navigation.Navigator
-@import forms.declaration.OfficeOfExit
+@import forms.declaration.officeOfExit.OfficeOfExitInsideUK
 @import forms.common.YesNoAnswer.YesNoAnswers.{yes, no}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds._
@@ -39,7 +39,8 @@
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(mode: Mode, form: Form[OfficeOfExit])(implicit request: JourneyRequest[_], messages: Messages)
+
+@(mode: Mode, form: Form[OfficeOfExitInsideUK])(implicit request: JourneyRequest[_], messages: Messages)
 
 @autocomplete = {
     @components.fields.field_accessible_autocomplete(
@@ -54,7 +55,7 @@
 
 @govukLayout(
     title = Title("declaration.officeOfExit.title", "declaration.summary.locations.header"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(OfficeOfExit, mode)))){
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(OfficeOfExitInsideUK, mode)))){
 
     @formHelper(action = controllers.declaration.routes.OfficeOfExitController.saveOffice(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)
@@ -62,7 +63,7 @@
         @sectionHeader(messages("declaration.summary.locations.header"))
 
         @govukRadios(Radios(
-            name = "answer",
+            name = "isUkOfficeOfExit",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
                     content = Text(messages("declaration.officeOfExit.title")),
@@ -77,17 +78,17 @@
                     value = Some(yes),
                     content = Text(messages("site.yes")),
                     conditionalHtml = Some(autocomplete),
-                    checked = form("answer").value.contains("Yes")
+                    checked = form("isUkOfficeOfExit").value.contains("Yes")
                 ),
                 RadioItem(
                     id = Some("No"),
                     value = Some(no),
                     content = Text(messages("site.no")),
-                    checked = form("answer").value.contains("No")
+                    checked = form("isUkOfficeOfExit").value.contains("No")
                 )
             ),
-            attributes = Map("id" -> "answer"),
-            errorMessage = form("answer").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            attributes = Map("id" -> "isUkOfficeOfExit"),
+            errorMessage = form("isUkOfficeOfExit").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
         @components.details(messages("site.details.summary_text_this")){

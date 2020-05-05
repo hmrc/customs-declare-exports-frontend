@@ -17,7 +17,7 @@
 package views.declaration
 
 import base.Injector
-import forms.declaration.OfficeOfExitOutsideUk
+import forms.declaration.officeOfExit.OfficeOfExitOutsideUK
 import models.Mode
 import org.jsoup.nodes.Document
 import org.scalatest.Matchers._
@@ -36,7 +36,7 @@ class OfficeOfExitOutsideUkViewSpec extends UnitViewSpec with ExportsTestData wi
 
   private val page: office_of_exit_outside_uk = instanceOf[office_of_exit_outside_uk]
 
-  private def createView(mode: Mode = Mode.Normal, form: Form[OfficeOfExitOutsideUk] = OfficeOfExitOutsideUk.form()): Document =
+  private def createView(mode: Mode = Mode.Normal, form: Form[OfficeOfExitOutsideUK] = OfficeOfExitOutsideUK.form()): Document =
     page(mode, form)(journeyRequest(), stubMessages())
 
   "Office of Exit View" should {
@@ -87,8 +87,8 @@ class OfficeOfExitOutsideUkViewSpec extends UnitViewSpec with ExportsTestData wi
       "handle invalid input" should {
 
         "display errors when all inputs are empty" in {
-          val data = OfficeOfExitOutsideUk("")
-          val view = createView(form = OfficeOfExitOutsideUk.form().fillAndValidate(data))
+          val data = OfficeOfExitOutsideUK("")
+          val view = createView(form = OfficeOfExitOutsideUK.form().fillAndValidate(data))
 
           view.getElementById("error-summary-title").text() must be("error.summary.title")
 
@@ -98,8 +98,8 @@ class OfficeOfExitOutsideUkViewSpec extends UnitViewSpec with ExportsTestData wi
         }
 
         "display errors when format is incorrect" in {
-          val data = OfficeOfExitOutsideUk("123456")
-          val form = OfficeOfExitOutsideUk.form().fillAndValidate(data)
+          val data = OfficeOfExitOutsideUK("123456")
+          val form = OfficeOfExitOutsideUK.form().fillAndValidate(data)
           val view = createView(form = form)
 
           view.getElementById("error-summary-title").text() must be("error.summary.title")
@@ -110,8 +110,8 @@ class OfficeOfExitOutsideUkViewSpec extends UnitViewSpec with ExportsTestData wi
         }
 
         "display errors when office of exit contains special characters" in {
-          val data = OfficeOfExitOutsideUk("12#$%^78")
-          val form = OfficeOfExitOutsideUk.form().fillAndValidate(data)
+          val data = OfficeOfExitOutsideUK("12#$%^78")
+          val form = OfficeOfExitOutsideUK.form().fillAndValidate(data)
           val view = createView(form = form)
 
           view must haveGovukGlobalErrorSummary

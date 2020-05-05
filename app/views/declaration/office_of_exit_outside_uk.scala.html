@@ -15,7 +15,7 @@
  *@
 
 @import controllers.navigation.Navigator
-@import forms.declaration.OfficeOfExitOutsideUk
+@import forms.declaration.officeOfExit.OfficeOfExitOutsideUK
 @import views.html.components.gds._
 @import views.components.gds.Styles._
 @import models.requests.JourneyRequest
@@ -32,11 +32,11 @@
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(mode: Mode, form: Form[OfficeOfExitOutsideUk])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[OfficeOfExitOutsideUK])(implicit request: JourneyRequest[_], messages: Messages)
 
 @govukLayout(
     title = Title("declaration.officeOfExitOutsideUk.title", "declaration.summary.locations.header"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(OfficeOfExitOutsideUk, mode)))){
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(OfficeOfExitOutsideUK, mode)))){
 
     @formHelper(action = controllers.declaration.routes.OfficeOfExitOutsideUkController.saveOffice(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)

@@ -18,8 +18,8 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.OfficeOfExit.form
-import forms.declaration.{AllowedOfficeOfExitAnswers, OfficeOfExit}
+import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit, OfficeOfExitInsideUK}
+import forms.declaration.officeOfExit.OfficeOfExitInsideUK.form
 import javax.inject.Inject
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
@@ -45,7 +45,7 @@ class OfficeOfExitController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.locations.officeOfExit match {
-      case Some(data) => Ok(officeOfExitPage(mode, form().fill(data)))
+      case Some(data) => Ok(officeOfExitPage(mode, form().fill(OfficeOfExitInsideUK(data))))
       case _          => Ok(officeOfExitPage(mode, form()))
     }
   }
@@ -54,19 +54,19 @@ class OfficeOfExitController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[OfficeOfExit]) => {
+        (formWithErrors: Form[OfficeOfExitInsideUK]) => {
           val formWithAdjustedErrors = formWithErrors
 
           Future.successful(BadRequest(officeOfExitPage(mode, formWithAdjustedErrors)))
         },
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(mode, nextPage(request.declarationType, form.answer)))
+            .map(_ => navigator.continueTo(mode, nextPage(request.declarationType, form.isUkOfficeOfExit)))
       )
   }
 
   private def nextPage(declarationType: DeclarationType, answer: String): Mode => Call =
-    if (answer == AllowedOfficeOfExitAnswers.no) {
+    if (answer == AllowedUKOfficeOfExitAnswers.no) {
       controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage
     } else {
       declarationType match {
@@ -77,6 +77,6 @@ class OfficeOfExitController @Inject()(
       }
     }
 
-  private def updateCache(formData: OfficeOfExit)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(officeOfExit = Some(formData))))
+  private def updateCache(formData: OfficeOfExitInsideUK)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData)))))
 }
