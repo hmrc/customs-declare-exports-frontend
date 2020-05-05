@@ -73,5 +73,4 @@ class PointerSpec extends WordSpec with MustMatchers {
       Json.fromJson(JsString("ABC.#123.000.#321"))(Pointer.format) mustBe JsSuccess(pointer)
     }
   }
-
 }

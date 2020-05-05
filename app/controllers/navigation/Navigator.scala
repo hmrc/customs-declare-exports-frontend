@@ -17,7 +17,7 @@
 package controllers.navigation
 
 import config.AppConfig
-import controllers.util.{FormAction, SaveAndReturn}
+import controllers.util.{Add, FormAction, Remove, SaveAndReturn}
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.RoutingQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingQuestionPage}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeStandardDec
@@ -29,6 +29,8 @@ import forms.{Choice, DeclarationPage}
 import javax.inject.Inject
 import models.DeclarationType._
 import models.Mode
+import models.Mode.ErrorFix
+import models.declaration.ExportItem
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
 import play.api.mvc.{AnyContent, Call, Result, Results}
@@ -37,20 +39,13 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
 
-  def continueTo(call: Call)(implicit req: JourneyRequest[AnyContent], hc: HeaderCarrier): Result =
-    FormAction.bindFromRequest match {
-      case SaveAndReturn =>
-        auditService.auditAllPagesUserInput(AuditTypes.SaveAndReturnSubmission, req.cacheModel)
-        goToDraftConfirmation()
-      case _ => Results.Redirect(call)
-    }
-
   def continueTo(mode: Mode, factory: Mode => Call)(implicit req: JourneyRequest[AnyContent], hc: HeaderCarrier): Result =
-    redirectTo(mode.next, factory)
-
-  def redirectTo(mode: Mode, factory: Mode => Call)(implicit req: JourneyRequest[AnyContent], hc: HeaderCarrier): Result =
-    FormAction.bindFromRequest match {
-      case SaveAndReturn =>
+    (mode, FormAction.bindFromRequest) match {
+      case (ErrorFix, Add) | (ErrorFix, Remove(_)) => Results.Redirect(factory(mode))
+      case (ErrorFix, _) if (req.sourceDecId.isDefined) =>
+        Results.Redirect(controllers.routes.RejectedNotificationsController.displayPage(req.sourceDecId.get))
+      case (ErrorFix, _) => Results.Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
+      case (_, SaveAndReturn) =>
         auditService.auditAllPagesUserInput(AuditTypes.SaveAndReturnSubmission, req.cacheModel)
         goToDraftConfirmation()
       case _ => Results.Redirect(factory(mode))
@@ -230,6 +225,7 @@ object Navigator {
     case NatureOfTransaction                  => controllers.declaration.routes.TotalPackageQuantityController.displayPage
     case ProcedureCodes                       => controllers.declaration.routes.ItemsSummaryController.displayPage
     case DepartureTransport                   => controllers.declaration.routes.TransportLeavingTheBorderController.displayPage
+    case ExportItem                           => controllers.declaration.routes.PreviousDocumentsController.displayPage
   }
 
   val commonItem: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
@@ -245,9 +241,11 @@ object Navigator {
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
     mode match {
-      case Mode.Change      => controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
-      case Mode.ChangeAmend => controllers.declaration.routes.SummaryController.displayPage(Mode.Amend)
-      case Mode.Draft       => controllers.declaration.routes.SummaryController.displayPage(Mode.Draft)
+      case Mode.ErrorFix if (request.sourceDecId.isDefined) => controllers.routes.RejectedNotificationsController.displayPage(request.sourceDecId.get)
+      case Mode.ErrorFix                                    => controllers.routes.SubmissionsController.displayListOfSubmissions()
+      case Mode.Change                                      => controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
+      case Mode.ChangeAmend                                 => controllers.declaration.routes.SummaryController.displayPage(Mode.Amend)
+      case Mode.Draft                                       => controllers.declaration.routes.SummaryController.displayPage(Mode.Draft)
       case _ =>
         val specific = request.declarationType match {
           case STANDARD      => standard
@@ -261,9 +259,11 @@ object Navigator {
 
   def backLink(page: DeclarationPage, mode: Mode, itemId: ItemId)(implicit request: JourneyRequest[_]): Call =
     mode match {
-      case Mode.Change      => controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
-      case Mode.ChangeAmend => controllers.declaration.routes.SummaryController.displayPage(Mode.Amend)
-      case Mode.Draft       => controllers.declaration.routes.SummaryController.displayPage(Mode.Draft)
+      case Mode.ErrorFix if (request.sourceDecId.isDefined) => controllers.routes.RejectedNotificationsController.displayPage(request.sourceDecId.get)
+      case Mode.ErrorFix                                    => controllers.routes.SubmissionsController.displayListOfSubmissions()
+      case Mode.Change                                      => controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
+      case Mode.ChangeAmend                                 => controllers.declaration.routes.SummaryController.displayPage(Mode.Amend)
+      case Mode.Draft                                       => controllers.declaration.routes.SummaryController.displayPage(Mode.Draft)
       case _ =>
         val specific = request.declarationType match {
           case STANDARD      => standardItemPage
@@ -274,5 +274,4 @@ object Navigator {
         }
         commonItem.orElse(specific)(page)(mode, itemId.id)
     }
-
 }

@@ -15,7 +15,9 @@
  *@
 
 @import controllers.declaration.routes
+@import controllers.navigation.Navigator
 @import models.declaration.ExportItem
+@import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title}
 @import views.html.components.gds._
@@ -37,7 +39,7 @@
         removeButton: removeButton,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
-@(mode: Mode, items: List[ExportItem], itemsErrors: Seq[FormError] = Seq.empty)(implicit request: Request[_], messages: Messages)
+@(mode: Mode, items: List[ExportItem], itemsErrors: Seq[FormError] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
 
 @titleMessage = @{
     if(items.isEmpty) { messages("supplementary.itemsAdd.title") }
@@ -139,7 +141,7 @@
 
 @govukLayout(
     title = Title(titleMessage, "supplementary.items"),
-    backButton = Some(BackButton(messages("site.back"), routes.PreviousDocumentsController.displayPage(mode)))) {
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ExportItem, mode)))) {
 
     @formHelper(action = routes.ItemsSummaryController.submit(mode), 'autoComplete -> "off") {
 

@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package models.declaration.notifications
+package config
 
-import models.Pointer
-import play.api.libs.json.Json
+import features.{Feature, FeatureStatus}
+import javax.inject.Inject
 
-case class NotificationError(validationCode: String, pointer: Option[Pointer], url: Option[String])
+class ChangeErrorLinkConfig @Inject()(featureSwitchConfig: FeatureSwitchConfig) {
 
-object NotificationError {
-  implicit val format = Json.format[NotificationError]
+  val isEnabled = featureSwitchConfig.featureStatus(Feature.changeErrorLink) == FeatureStatus.enabled
 }

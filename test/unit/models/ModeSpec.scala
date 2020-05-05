@@ -16,7 +16,7 @@
 
 package unit.models
 
-import models.Mode.{Amend, Change, ChangeAmend, Draft, Normal}
+import models.Mode.{Amend, Change, ChangeAmend, Draft, ErrorFix, Normal}
 import unit.base.UnitSpec
 
 class ModeSpec extends UnitSpec {
@@ -51,4 +51,9 @@ class ModeSpec extends UnitSpec {
     }
   }
 
+  "Error-Fix" must {
+    "be same after submitting page" in {
+      ErrorFix.next mustBe ErrorFix
+    }
+  }
 }

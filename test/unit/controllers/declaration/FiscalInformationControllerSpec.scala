@@ -143,7 +143,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.displayPage(Mode.Normal, item.id, fastForward = true)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedToCall mustBe controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(Mode.Normal, item.id)
+        thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(Mode.Normal, item.id)
         verifyPageAccessed(0)
       }
 
@@ -155,7 +155,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.displayPage(Mode.Normal, item.id, fastForward = true)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedToCall mustBe controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, item.id)
+        thePageNavigatedTo mustBe controllers.declaration.routes.ProcedureCodesController.displayPage(Mode.Normal, item.id)
         verifyPageAccessed(0)
       }
     }

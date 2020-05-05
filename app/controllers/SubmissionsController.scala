@@ -21,10 +21,11 @@ import connectors.exchange.ExportsDeclarationExchange
 import controllers.actions.AuthAction
 import controllers.util.SubmissionDisplayHelper
 import javax.inject.Inject
-import models.Mode
-import models.requests.ExportsSessionKeys
+import models.{ExportsDeclaration, Mode}
+import models.Mode.ErrorFix
+import models.requests.{AuthenticatedRequest, ExportsSessionKeys}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.{declaration_information, submissions}
 
@@ -60,18 +61,41 @@ class SubmissionsController @Inject()(
   }
 
   def amend(id: String): Action[AnyContent] = authenticate.async { implicit request =>
+    val redirect = Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.Amend))
+
+    val actualDeclaration: Future[Option[ExportsDeclaration]] = request.declarationId.map { decId =>
+      customsDeclareExportsConnector.findDeclaration(decId)
+    }.getOrElse(Future.successful(None))
+
+    actualDeclaration.flatMap {
+      case Some(_) => Future.successful(Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.Amend)))
+      case _       => createNewDraftDec(id, redirect)
+    }
+  }
+
+  def amendErrors(id: String, redirectUrl: String): Action[AnyContent] = authenticate.async { implicit request =>
+    val redirectUrlWithMode = redirectUrl + ErrorFix.queryParameter
+    val redirect = Redirect(redirectUrlWithMode)
+
+    val actualDeclaration: Future[Option[ExportsDeclaration]] = request.declarationId.map { decId =>
+      customsDeclareExportsConnector.findDeclaration(decId)
+    }.getOrElse(Future.successful(None))
+
+    actualDeclaration.flatMap {
+      case Some(dec) if dec.sourceId == Some(id) => Future.successful(redirect)
+      case _                                     => createNewDraftDec(id, redirect)
+    }
+  }
+
+  private def createNewDraftDec(id: String, redirect: Result)(implicit request: AuthenticatedRequest[AnyContent]) =
     customsDeclareExportsConnector.findDeclaration(id) flatMap {
       case Some(declaration) =>
         val amendedDeclaration = ExportsDeclarationExchange.withoutId(declaration.amend())
         customsDeclareExportsConnector
           .createDeclaration(amendedDeclaration)
           .map { created =>
-            Redirect(controllers.declaration.routes.SummaryController.displayPage(Mode.Amend))
-              .addingToSession(ExportsSessionKeys.declarationId -> created.id)
+            redirect.addingToSession(ExportsSessionKeys.declarationId -> created.id)
           }
       case _ => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
     }
-
-  }
-
 }
