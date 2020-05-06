@@ -24,14 +24,13 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.session_timed_out
 
 import scala.concurrent.ExecutionContext
-import scala.concurrent.Future.successful
 
 class SessionTimeoutController @Inject()(authenticate: AuthAction, mcc: MessagesControllerComponents, sessionTimedOut: session_timed_out)(
   implicit ec: ExecutionContext
 ) extends FrontendController(mcc) with I18nSupport {
 
-  def signOut(): Action[AnyContent] = authenticate.async { implicit request =>
-    successful(Results.Redirect(routes.SessionTimeoutController.signedOut()).withNewSession)
+  def signOut(): Action[AnyContent] = authenticate { implicit request =>
+    Results.Redirect(routes.SessionTimeoutController.signedOut()).withNewSession
   }
 
   def signedOut(): Action[AnyContent] = Action { implicit request =>
