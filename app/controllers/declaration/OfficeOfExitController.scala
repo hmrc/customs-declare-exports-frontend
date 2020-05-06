@@ -18,8 +18,8 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit, OfficeOfExitInsideUK}
 import forms.declaration.officeOfExit.OfficeOfExitInsideUK.form
+import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit, OfficeOfExitInsideUK}
 import javax.inject.Inject
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
@@ -60,7 +60,7 @@ class OfficeOfExitController @Inject()(
           Future.successful(BadRequest(officeOfExitPage(mode, formWithAdjustedErrors)))
         },
         form =>
-          updateCache(form)
+          updateCache(form, request.cacheModel.locations.officeOfExit)
             .map(_ => navigator.continueTo(mode, nextPage(request.declarationType, form.isUkOfficeOfExit)))
       )
   }
@@ -77,6 +77,10 @@ class OfficeOfExitController @Inject()(
       }
     }
 
-  private def updateCache(formData: OfficeOfExitInsideUK)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData)))))
+  private def updateCache(formData: OfficeOfExitInsideUK, officeOfExit: Option[OfficeOfExit])(
+    implicit r: JourneyRequest[AnyContent]
+  ): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(
+      model => model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData, officeOfExit))))
+    )
 }
