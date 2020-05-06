@@ -244,6 +244,18 @@ startPage.afterDeclaringGoods.header = After you’ve declared your goods
 startPage.afterDeclaringGoods.line.1 = You’ll need to
 startPage.afterDeclaringGoods.line.1.link = Tell HMRC when goods you’re exporting arrive at or leave the UK port
 
+sessionTimout.title = For your security, we signed you out
+sessionTimout.paragraph.saved = We saved your answers.
+sessionTimout.signin.button = Sign in
+sessionTimout.back.button = Back to GOV.UK
+
+timeoutDialog.title = Your application will timeout soon
+timeoutDialog.message = For your security, we will log you out in
+timeoutDialog.keepAlive.text= Continue declaration
+timeoutDialog.signout.text= Sign out
+
+
+
 choicePage.input.error.empty = Choose a valid option
 choicePage.input.error.incorrectValue = Choose a valid option
 

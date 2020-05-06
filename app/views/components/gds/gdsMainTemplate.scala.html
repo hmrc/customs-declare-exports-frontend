@@ -18,6 +18,10 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import views.BackButton
 @import views.Title
+@import uk.gov.hmrc.hmrcfrontend.views.html.components._
+@import views.html.components.gds.timeoutDialog
+@import config.TimeoutDialogConfig
+@import models.requests.AuthenticatedRequest
 
 @this(
         govukHeader: GovukHeader,
@@ -26,7 +30,8 @@
         govukPhaseBanner: GovukPhaseBanner,
         govukBackLink: GovukBackLink,
         siteHeader: components.gds.siteHeader,
-        phaseBanner: components.gds.phaseBanner
+        phaseBanner: components.gds.phaseBanner,
+        timeoutDialogConfig: TimeoutDialogConfig
 )
 
 @(
@@ -34,6 +39,8 @@
   backButton: Option[BackButton] = None,
   useCustomContentWidth: Boolean = false
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
+
+@useTimeoutDialog = @{ request.isInstanceOf[AuthenticatedRequest[_]]}
 
 @head = {
     <link rel="shortcut icon" href='@routes.Assets.versioned("/lib/govuk-frontend/govuk/assets/images/favicon.ico")' type="image/x-icon" />
@@ -46,6 +53,12 @@
 @scripts = {
     <script src='@routes.Assets.versioned("javascripts/google.tag.manager.min.js")'> </script>
     <script src="@routes.Assets.versioned("javascripts/show-hide-content.js")" type="text/javascript"></script>
+
+    @if(useTimeoutDialog) {
+        <script src='@routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
+        <script src='@routes.Assets.versioned("javascripts/timeoutDialog.js")'> </script>
+    }
+
     <script src='@routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
     <script>window.GOVUKFrontend.initAll();</script>
 }
@@ -56,6 +69,10 @@
     <!-- End Google Tag Manager (noscript) -->
 
     @phaseBanner("beta")
+
+    @if(useTimeoutDialog) {
+        @timeoutDialog(request.uri, timeoutDialogConfig.timeout, timeoutDialogConfig.countdown)
+    }
 
     @backButton.map(back =>
         govukBackLink(BackLink(
