@@ -49,3 +49,9 @@ GET         /start                                         controllers.StartCont
 GET         /choice                                        controllers.ChoiceController.displayPage(previousChoice: Option[forms.Choice] ?= None)
 
 POST        /choice                                        controllers.ChoiceController.submitChoice()
+
+# Session timeout
+
+GET         /sign-out                                       controllers.SessionTimeoutController.signOut()
+
+GET         /we-signed-you-out                              controllers.SessionTimeoutController.signedOut()

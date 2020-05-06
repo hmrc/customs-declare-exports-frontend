@@ -17,7 +17,7 @@
 package unit.tools
 
 import com.typesafe.config.{Config, ConfigFactory}
-import config.AppConfig
+import config.{AppConfig, TimeoutDialogConfig}
 import play.api.Mode.Test
 import play.api.http.{DefaultFileMimeTypes, FileMimeTypes, FileMimeTypesConfiguration}
 import play.api.i18n.{Langs, MessagesApi}
@@ -68,6 +68,8 @@ trait Stubs {
       |metrics.jvm=false
       |metrics.logback=false
       |draft.timeToLive=1d
+      |timeoutDialog.timeout=13min
+      |timeoutDialog.countdown=3min
       |list-of-available-journeys = "SMP,STD,CAN,SUB,CON"
       |microservice.services.features.use-improved-error-messages=true
       |urls.tradeTariff=tradeTariff
@@ -82,6 +84,7 @@ trait Stubs {
   private def runMode(conf: Configuration): RunMode = new RunMode(conf, Test)
   private def servicesConfig(conf: Configuration) = new ServicesConfig(conf, runMode(conf))
   private def appConfig(conf: Configuration) = new AppConfig(conf, environment, servicesConfig(conf), "AppName")
+  private def timeoutDialogConfig() = new TimeoutDialogConfig(servicesConfig(minimalConfiguration))
 
   val minimalAppConfig = appConfig(minimalConfiguration)
 
@@ -131,6 +134,7 @@ trait Stubs {
     govukPhaseBanner = new components.GovukPhaseBanner(new govukTag()),
     govukBackLink = new components.GovukBackLink(),
     siteHeader = sHeader,
-    phaseBanner = pBanner
+    phaseBanner = pBanner,
+    timeoutDialogConfig = timeoutDialogConfig()
   )
 }
