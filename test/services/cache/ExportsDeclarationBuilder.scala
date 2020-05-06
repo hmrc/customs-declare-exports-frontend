@@ -19,7 +19,7 @@ package services.cache
 import java.time.{Instant, LocalDate, LocalDateTime, ZoneOffset}
 import java.util.UUID
 
-import forms.common.{Address, Eori}
+import forms.common.{Address, Eori, YesNoAnswer}
 import forms.declaration.DispatchLocation.AllowedDispatchLocations.OutsideEU
 import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit}
 import forms.declaration._
@@ -145,6 +145,9 @@ trait ExportsDeclarationBuilder {
     cache => cache.copy(items = cache.items ++ (1 to count).map(index => ExportItem(id = uuid, sequenceId = index)).toSet)
 
   private def uuid: String = UUID.randomUUID().toString
+
+  def withEntryIntoDeclarantsRecords(isEidr: String = "Yes"): ExportsDeclarationModifier =
+    cache => cache.copy(parties = cache.parties.copy(isEntryIntoDeclarantsRecords = Some(YesNoAnswer(isEidr))))
 
   def withoutExporterDetails(): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(exporterDetails = None))

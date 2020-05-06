@@ -324,6 +324,11 @@ supplementary.consignmentReferences.lrn.error.empty = Enter an LRN in the correc
 supplementary.consignmentReferences.lrn.error.length = LRN cannot exceed 22 characters
 supplementary.consignmentReferences.lrn.error.specialCharacter = Enter an LRN in the correct format
 
+declaration.entryIntoDeclarantRecords.title = Is this an entry into declarant’s records (EIDR)?
+declaration.entryIntoDeclarantRecords.answer.yes = Yes
+declaration.entryIntoDeclarantRecords.answer.no = No
+declaration.entryIntoDeclarantRecords.error = Select yes if this is an entry into the declarant’s records
+
 supplementary.consignor.title = Who is the exporter?
 supplementary.consignor.title.hint = Enter the exporter’s EORI number or name and business address.
 supplementary.consignor.eori = Exporter’s EORI number
@@ -332,7 +337,6 @@ declaration.exporter-detail.title = Who is the exporter?
 supplementary.consignor.address.info = Exporter’s name and business address
 declaration.exporter-details.help-item1 = Exporter’s EORI number, go to data element 3/2 Exporter Identification Number
 declaration.exporter-details.help-item2 = Exporter’s name and business address, go to data element 3/1 Exporter
-declaration.exporter-detail.title = Who is the exporter?
 declaration.exporter-detail.title.hint = Enter the exporter’s EORI number or name and business address.
 declaration.exporter-detail.addressHeading = Exporter’s name and address
 
