@@ -94,6 +94,9 @@ trait ViewMatchers {
   def haveFieldError(fieldName: String, content: String): Matcher[Element] =
     new ContainElementWithIDMatcher(s"error-message-$fieldName-input") and new ElementContainsFieldError(fieldName, content)
 
+  def haveGovukFieldError(fieldName: String, content: String): Matcher[Element] =
+    new ContainElementWithIDMatcher(s"$fieldName-error") and new ElementContainsGovukFieldError(fieldName, content)
+
   def haveFieldErrorLink(fieldName: String, link: String): Matcher[Element] =
     new ElementContainsFieldErrorLink(fieldName, link)
 
@@ -169,8 +172,8 @@ trait ViewMatchers {
 
   class ElementSelectedMatcher(expected: Boolean) extends Matcher[Element] {
     override def apply(left: Element): MatchResult = {
-      def isChecked = left.getElementsByAttribute("checked").size() == 1
-      MatchResult(left != null && isChecked == expected, s"Element was not selected\n${actualContentWas(left)}", s"Element was selected")
+      val isChecked = left.getElementsByAttribute("checked").size() == 1
+      MatchResult(left != null && isChecked == expected, s"Element was not selected\n${actualContentWas(left)}", "Element was selected")
     }
   }
 
@@ -287,6 +290,18 @@ trait ViewMatchers {
   class ElementContainsFieldError(fieldName: String, content: String = "") extends Matcher[Element] {
     override def apply(left: Element): MatchResult = {
       val element = left.getElementById(s"error-message-$fieldName-input")
+      val fieldErrorElement = if (element == null) left else element
+      MatchResult(
+        fieldErrorElement.text().contains(content),
+        s"Element did not contain {$content}\n${actualContentWas(fieldErrorElement)}",
+        s"Element contained {$content}"
+      )
+    }
+  }
+
+  class ElementContainsGovukFieldError(fieldName: String, content: String = "") extends Matcher[Element] {
+    override def apply(left: Element): MatchResult = {
+      val element = left.getElementById(s"$fieldName-error")
       val fieldErrorElement = if (element == null) left else element
       MatchResult(
         fieldErrorElement.text().contains(content),

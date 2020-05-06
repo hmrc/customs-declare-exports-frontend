@@ -16,8 +16,9 @@
 
 package models.declaration
 
+import forms.common.YesNoAnswer
 import forms.declaration.consignor.ConsignorDetails
-import forms.declaration.{CarrierDetails, ConsigneeDetails, DeclarantDetails, DeclarantIsExporter, ExporterDetails, IsExs}
+import forms.declaration._
 import models.ExportsDeclaration
 import play.api.libs.json.Json
 
@@ -31,7 +32,8 @@ case class Parties(
   representativeDetails: Option[RepresentativeDetails] = None,
   declarationAdditionalActorsData: Option[DeclarationAdditionalActorsData] = None,
   declarationHoldersData: Option[DeclarationHoldersData] = None,
-  carrierDetails: Option[CarrierDetails] = None
+  carrierDetails: Option[CarrierDetails] = None,
+  isEntryIntoDeclarantsRecords: Option[YesNoAnswer] = None
 )
 
 object Parties {

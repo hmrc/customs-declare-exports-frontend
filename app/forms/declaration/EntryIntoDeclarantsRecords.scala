@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-package views.components.gds
+package forms.declaration
 
-object Styles {
+import forms.DeclarationPage
+import forms.common.YesNoAnswer
+import play.api.data.Form
 
-  val gdsPageLegend = "govuk-fieldset__legend--l"
-  val gdsPageLegendLarge = "govuk-fieldset__legend--xl"
-  val gdsPageHeading = "govuk-heading-l"
-  val gdsPageLabel = "govuk-label--l"
+object EntryIntoDeclarantsRecords extends DeclarationPage {
+
+  val fieldName = "is-entry-into-declarant-records"
+  private val errorKey = "declaration.entryIntoDeclarantRecords.error"
+
+  def form(): Form[YesNoAnswer] = YesNoAnswer.form(fieldName, errorKey)
 }

@@ -80,11 +80,10 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with C
 
       "display 'Back' button that links to 'Declarant Details' page" in {
 
-        val view = declarantExporterPage(Mode.Normal, DeclarantIsExporter.form())(journeyRequest(), messages)
-        val backButton = view.getElementById("back-link")
+        val backButton = createView().getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.DeclarantDetailsController.displayPage().url
+        backButton must haveHref(routes.DeclarantDetailsController.displayPage().url)
       }
 
       "display 'Save and continue' button on page" in {
@@ -138,7 +137,7 @@ class DeclarantExporterViewSpec extends UnitViewSpec with ExportsTestData with C
         val form = DeclarantIsExporter.form().fill(DeclarantIsExporter(YesNoAnswers.yes))
         val view = createView(form)
 
-        view.getElementById("answer_yes").attr("value") mustBe YesNoAnswers.yes
+        view.getElementById("answer_yes") must beSelected
       }
     }
   }
