@@ -151,4 +151,6 @@ object FieldValidator {
   private val eoriPattern = Pattern.compile("^[a-zA-Z]{2}[\\da-zA-Z]+$")
   val isValidEORIPattern: String => Boolean = (name: String) => eoriPattern.matcher(name).matches()
 
+  private val officeOfExitPattern = Pattern.compile("^[a-zA-Z]{2}[0-9]{6}$")
+  val isValidOfficeOfExit: String => Boolean = (name: String) => officeOfExitPattern.matcher(name).matches()
 }

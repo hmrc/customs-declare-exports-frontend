@@ -16,6 +16,7 @@
 
 @import controllers.declaration.routes._
 @import forms.declaration.TotalNumberOfItems
+@import forms.DeclarationPage
 @import uk.gov.hmrc.play.views.html._
 @import views.Title
 @import controllers.navigation.Navigator
@@ -37,7 +38,8 @@
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(mode: Mode, form: Form[TotalNumberOfItems])(implicit request: JourneyRequest[_], messages: Messages)
+
+@(mode: Mode, navigationForm: DeclarationPage, form: Form[TotalNumberOfItems])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
 
@@ -46,7 +48,7 @@
 
 @govukLayout(
     title = Title("declaration.invoice.details.title", "declaration.invoice.details.header"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(TotalNumberOfItems, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(navigationForm, mode)))) {
 
     @formHelper(action = TotalNumberOfItemsController.saveNoOfItems(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)

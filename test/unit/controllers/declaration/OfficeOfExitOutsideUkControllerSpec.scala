@@ -16,8 +16,8 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.OfficeOfExitController
-import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExitInsideUK}
+import controllers.declaration.OfficeOfExitOutsideUkController
+import forms.declaration.officeOfExit.OfficeOfExitOutsideUK
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -28,39 +28,39 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import views.html.declaration.office_of_exit
+import views.html.declaration.office_of_exit_outside_uk
 
-class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
+class OfficeOfExitOutsideUkControllerSpec extends ControllerSpec with OptionValues {
 
-  val mockOfficeOfExitPage = mock[office_of_exit]
+  val mockPage = mock[office_of_exit_outside_uk]
 
-  val controller = new OfficeOfExitController(
+  val controller = new OfficeOfExitOutsideUkController(
     mockAuthAction,
     mockJourneyAction,
     navigator,
     stubMessagesControllerComponents(),
-    mockOfficeOfExitPage,
+    mockPage,
     mockExportsCacheService
   )(ec)
 
   def checkViewInteractions(noOfInvocations: Int = 1): Unit =
-    verify(mockOfficeOfExitPage, times(noOfInvocations)).apply(any(), any())(any(), any())
+    verify(mockPage, times(noOfInvocations)).apply(any(), any())(any(), any())
 
-  def theResponseForm: Form[OfficeOfExitInsideUK] = {
-    val captor = ArgumentCaptor.forClass(classOf[Form[OfficeOfExitInsideUK]])
-    verify(mockOfficeOfExitPage).apply(any(), captor.capture())(any(), any())
+  def theResponseForm: Form[OfficeOfExitOutsideUK] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[OfficeOfExitOutsideUK]])
+    verify(mockPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockOfficeOfExitPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     super.afterEach()
-    reset(mockOfficeOfExitPage)
+    reset(mockPage)
   }
 
   "should return a 200 (OK)" when {
@@ -80,27 +80,61 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
       "display page method is invoked and cache contains data" in {
 
         val officeId = "officeId"
-        val answer = "Yes"
-        withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExit(officeId, answer)))
+        withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExitOutsideUK(officeId)))
 
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
         checkViewInteractions()
 
-        theResponseForm.value.value.officeId mustBe Some(officeId)
-        theResponseForm.value.value.isUkOfficeOfExit mustBe answer
+        theResponseForm.value.value.officeId mustBe officeId
       }
     }
   }
 
   "should return a 400 (BAD_REQUEST)" when {
     onEveryDeclarationJourney() { request =>
-      "form is incorrect" in {
+      "invalid characters are submitted" in {
 
         withNewCaching(request.cacheModel)
 
-        val incorrectForm = Json.toJson(OfficeOfExitInsideUK(Some("!@#$"), "wrong"))
+        val incorrectForm = Json.toJson(OfficeOfExitOutsideUK("!@#$"))
+
+        val result = controller.saveOffice(Mode.Normal)(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+        checkViewInteractions()
+      }
+
+      "form is empty" in {
+
+        withNewCaching(request.cacheModel)
+
+        val incorrectForm = Json.toJson(OfficeOfExitOutsideUK(""))
+
+        val result = controller.saveOffice(Mode.Normal)(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+        checkViewInteractions()
+      }
+
+      "office code is bigger than 8 characters" in {
+
+        withNewCaching(request.cacheModel)
+
+        val incorrectForm = Json.toJson(OfficeOfExitOutsideUK("GB34567890"))
+
+        val result = controller.saveOffice(Mode.Normal)(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+        checkViewInteractions()
+      }
+
+      "office code is in the wrong format" in {
+
+        withNewCaching(request.cacheModel)
+
+        val incorrectForm = Json.toJson(OfficeOfExitOutsideUK("34567890"))
 
         val result = controller.saveOffice(Mode.Normal)(postRequest(incorrectForm))
 
@@ -116,25 +150,12 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         withNewCaching(request.cacheModel)
 
-        val correctForm = Json.toJson(OfficeOfExitInsideUK(Some("GB123456"), AllowedUKOfficeOfExitAnswers.yes))
+        val correctForm = Json.toJson(OfficeOfExitOutsideUK("GB123456"))
 
         val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.TotalNumberOfItemsController.displayPage()
-        checkViewInteractions(0)
-      }
-
-      "a non UK Office of Exit is being used" in {
-
-        withNewCaching(request.cacheModel)
-
-        val correctForm = Json.toJson(OfficeOfExitInsideUK(None, AllowedUKOfficeOfExitAnswers.no))
-
-        val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage()
         checkViewInteractions(0)
       }
     }
@@ -144,25 +165,12 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         withNewCaching(request.cacheModel)
 
-        val correctForm = Json.toJson(OfficeOfExitInsideUK(Some("GB123456"), AllowedUKOfficeOfExitAnswers.yes))
+        val correctForm = Json.toJson(OfficeOfExitOutsideUK("GB123456"))
 
         val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
-        checkViewInteractions(0)
-      }
-
-      "a non UK Office of Exit is being used" in {
-
-        withNewCaching(request.cacheModel)
-
-        val correctForm = Json.toJson(OfficeOfExitInsideUK(None, AllowedUKOfficeOfExitAnswers.no))
-
-        val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage()
         checkViewInteractions(0)
       }
     }

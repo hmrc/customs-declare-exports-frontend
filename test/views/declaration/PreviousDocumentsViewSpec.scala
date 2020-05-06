@@ -16,6 +16,7 @@
 
 package views.declaration
 import base.Injector
+import forms.DeclarationPage
 import forms.declaration.Document
 import models.DeclarationType.DeclarationType
 import models.{DeclarationType, Mode}
@@ -39,9 +40,10 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
     form: Form[Document] = form,
     documents: Seq[Document] = Seq.empty,
     messages: Messages = stubMessages(),
+    navigationForm: DeclarationPage = Document,
     declarationType: DeclarationType = DeclarationType.STANDARD
   ): JsonDocument =
-    page(mode, form, documents)(journeyRequest(declarationType), messages)
+    page(mode, navigationForm, form, documents)(journeyRequest(declarationType), messages)
 
   "Previous Documents View on empty page" should {
     val view = createView()

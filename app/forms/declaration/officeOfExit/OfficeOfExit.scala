@@ -17,22 +17,21 @@
 package forms.declaration.officeOfExit
 import play.api.libs.json.Json
 
-case class OfficeOfExit(officeId: Option[String], circumstancesCode: Option[String])
+case class OfficeOfExit(officeId: Option[String], isUkOfficeOfExit: Option[String])
 
 object OfficeOfExit {
   implicit val format = Json.format[OfficeOfExit]
 
-  def from(officeOfExitSupplementary: OfficeOfExitSupplementary): OfficeOfExit =
-    OfficeOfExit(Some(officeOfExitSupplementary.officeId), None)
+  def from(officeOfExitOutsideUK: OfficeOfExitOutsideUK): OfficeOfExit =
+    OfficeOfExit(Some(officeOfExitOutsideUK.officeId), Some(AllowedUKOfficeOfExitAnswers.no))
 
-  def from(officeOfExitStandard: OfficeOfExitStandard): OfficeOfExit =
-    OfficeOfExit(Some(officeOfExitStandard.officeId), Some(officeOfExitStandard.circumstancesCode))
+  def from(officeOfExitInsideUK: OfficeOfExitInsideUK): OfficeOfExit = officeOfExitInsideUK.isUkOfficeOfExit match {
+    case AllowedUKOfficeOfExitAnswers.yes => OfficeOfExit(officeOfExitInsideUK.officeId, Some(officeOfExitInsideUK.isUkOfficeOfExit))
+    case _                                => OfficeOfExit(None, Some(AllowedUKOfficeOfExitAnswers.no))
+  }
 
-  def from(officeOfExitClearance: OfficeOfExitClearance): OfficeOfExit =
-    OfficeOfExit(officeOfExitClearance.officeId, Some(officeOfExitClearance.circumstancesCode))
 }
-
-object AllowedCircumstancesCodeAnswers {
+object AllowedUKOfficeOfExitAnswers {
   val yes = "Yes"
   val no = "No"
 

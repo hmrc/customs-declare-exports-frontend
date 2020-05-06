@@ -96,7 +96,6 @@ class SummaryMessagesSpec extends UnitViewSpec {
       messages must haveTranslationFor("declaration.summary.locations")
       messages must haveTranslationFor("declaration.summary.locations.goodsLocationCode")
       messages must haveTranslationFor("declaration.summary.locations.officeOfExit")
-      messages must haveTranslationFor("declaration.summary.locations.expressConsignment")
     }
 
     "have defined transaction messages" in {

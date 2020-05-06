@@ -16,9 +16,9 @@
 
 package models.declaration
 
-import forms.declaration._
 import forms.declaration.countries.Country
 import forms.declaration.officeOfExit.OfficeOfExit
+import forms.declaration.{InlandModeOfTransportCode, SupervisingCustomsOffice, WarehouseIdentification}
 import models.ExportsDeclaration
 import play.api.libs.json.Json
 

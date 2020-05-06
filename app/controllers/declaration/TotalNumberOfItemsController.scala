@@ -18,7 +18,10 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
+import forms.DeclarationPage
 import forms.declaration.TotalNumberOfItems
+import forms.declaration.officeOfExit.AllowedUKOfficeOfExitAnswers.{no, yes}
+import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExitInsideUK, OfficeOfExitOutsideUK}
 import javax.inject.Inject
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
@@ -47,8 +50,8 @@ class TotalNumberOfItemsController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.totalNumberOfItems match {
-      case Some(data) => Ok(totalNumberOfItemsPage(mode, form().fill(data)))
-      case _          => Ok(totalNumberOfItemsPage(mode, form()))
+      case Some(data) => Ok(totalNumberOfItemsPage(mode, navigationForm, form().fill(data)))
+      case _          => Ok(totalNumberOfItemsPage(mode, navigationForm, form()))
     }
   }
 
@@ -56,10 +59,15 @@ class TotalNumberOfItemsController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[TotalNumberOfItems]) => Future.successful(BadRequest(totalNumberOfItemsPage(mode, formWithErrors))),
+        (formWithErrors: Form[TotalNumberOfItems]) => Future.successful(BadRequest(totalNumberOfItemsPage(mode, navigationForm(), formWithErrors))),
         formData => updateCache(formData).map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
       )
   }
+
+  private def navigationForm()(implicit request: JourneyRequest[AnyContent]): DeclarationPage =
+    if (request.cacheModel.locations.officeOfExit.flatMap(_.isUkOfficeOfExit).getOrElse(no) == yes)
+      OfficeOfExitOutsideUK
+    else TotalNumberOfItems
 
   private def nextPage(declarationType: DeclarationType): Mode => Call =
     controllers.declaration.routes.TotalPackageQuantityController.displayPage

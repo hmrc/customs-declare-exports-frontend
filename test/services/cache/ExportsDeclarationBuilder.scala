@@ -21,11 +21,11 @@ import java.util.UUID
 
 import forms.common.{Address, Eori}
 import forms.declaration.DispatchLocation.AllowedDispatchLocations.OutsideEU
+import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit}
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.declaration.countries.Country
-import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Ducr, Lrn}
 import models.DeclarationStatus.DeclarationStatus
 import models.DeclarationType.DeclarationType
@@ -339,11 +339,17 @@ trait ExportsDeclarationBuilder {
   def withoutOfficeOfExit(): ExportsDeclarationModifier =
     cache => cache.copy(locations = cache.locations.copy(officeOfExit = None))
 
-  def withOfficeOfExit(officeId: String = "", circumstancesCode: Option[String] = None): ExportsDeclarationModifier =
-    withOptionalOfficeOfExit(Some(officeId), circumstancesCode)
+  def withOfficeOfExit(officeId: String = "", isUkOfficeOfExit: String = AllowedUKOfficeOfExitAnswers.yes): ExportsDeclarationModifier =
+    withOptionalOfficeOfExit(Some(officeId), Some(isUkOfficeOfExit))
 
-  def withOptionalOfficeOfExit(officeId: Option[String] = None, circumstancesCode: Option[String] = None): ExportsDeclarationModifier =
-    cache => cache.copy(locations = cache.locations.copy(officeOfExit = Some(OfficeOfExit(officeId, circumstancesCode))))
+  def withOptionalOfficeOfExit(
+    officeId: Option[String] = None,
+    isUkOfficeOfExit: Option[String] = Some(AllowedUKOfficeOfExitAnswers.yes)
+  ): ExportsDeclarationModifier =
+    cache => cache.copy(locations = cache.locations.copy(officeOfExit = Some(OfficeOfExit(officeId, isUkOfficeOfExit))))
+
+  def withOfficeOfExitOutsideUK(officeId: String = ""): ExportsDeclarationModifier =
+    cache => cache.copy(locations = cache.locations.copy(officeOfExit = Some(OfficeOfExit(Some(officeId), Some(AllowedUKOfficeOfExitAnswers.no)))))
 
   def withTransportPayment(data: Option[TransportPayment]): ExportsDeclarationModifier =
     cache => {

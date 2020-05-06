@@ -138,6 +138,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
         val view = createView(form)
 
         view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes
+        view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes
       }
     }
   }

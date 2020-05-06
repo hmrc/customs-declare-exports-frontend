@@ -16,13 +16,8 @@
 
 package forms.declaration
 
-import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitSupplementary}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-object OfficeOfExitSupplementarySpec {
-  val correctOfficeOfExit = OfficeOfExit.from(OfficeOfExitSupplementary(officeId = "123qwe12"))
-
-  val correctOfficeOfExitJSON: JsValue = JsObject(Map("officeId" -> JsString("123qwe12")))
-  val emptyOfficeOfExitJSON: JsValue = JsObject(Map("officeId" -> JsString("")))
-  val incorrectOfficeOfExitJSON: JsValue = JsObject(Map("officeId" -> JsString("office")))
+object OfficeOfExitSpec {
+  val correctOfficeOfExitJSON: JsValue = JsObject(Map("officeId" -> JsString("123qwe12"), "answer" -> JsString("Yes")))
 }
