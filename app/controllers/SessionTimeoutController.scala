@@ -26,7 +26,7 @@ import views.html.session_timed_out
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future.successful
 
-class SessionTimeoutController @Inject()(authenticate: AuthAction, sessionTimedOut: session_timed_out, mcc: MessagesControllerComponents)(
+class SessionTimeoutController @Inject()(authenticate: AuthAction, mcc: MessagesControllerComponents, sessionTimedOut: session_timed_out)(
   implicit ec: ExecutionContext
 ) extends FrontendController(mcc) with I18nSupport {
 
