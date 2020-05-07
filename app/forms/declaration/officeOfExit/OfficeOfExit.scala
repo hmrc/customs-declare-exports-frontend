@@ -25,11 +25,15 @@ object OfficeOfExit {
   def from(officeOfExitOutsideUK: OfficeOfExitOutsideUK): OfficeOfExit =
     OfficeOfExit(Some(officeOfExitOutsideUK.officeId), Some(AllowedUKOfficeOfExitAnswers.no))
 
-  def from(officeOfExitInsideUK: OfficeOfExitInsideUK): OfficeOfExit = officeOfExitInsideUK.isUkOfficeOfExit match {
-    case AllowedUKOfficeOfExitAnswers.yes => OfficeOfExit(officeOfExitInsideUK.officeId, Some(officeOfExitInsideUK.isUkOfficeOfExit))
-    case _                                => OfficeOfExit(None, Some(AllowedUKOfficeOfExitAnswers.no))
-  }
-
+  def from(officeOfExitInsideUK: OfficeOfExitInsideUK, existingValue: Option[OfficeOfExit]): OfficeOfExit =
+    officeOfExitInsideUK.isUkOfficeOfExit match {
+      case AllowedUKOfficeOfExitAnswers.yes => OfficeOfExit(officeOfExitInsideUK.officeId, Some(officeOfExitInsideUK.isUkOfficeOfExit))
+      case AllowedUKOfficeOfExitAnswers.no =>
+        existingValue.flatMap(_.isUkOfficeOfExit) match {
+          case Some(AllowedUKOfficeOfExitAnswers.no) => OfficeOfExit(existingValue.flatMap(_.officeId), Some(AllowedUKOfficeOfExitAnswers.no))
+          case _                                     => OfficeOfExit(None, Some(AllowedUKOfficeOfExitAnswers.no))
+        }
+    }
 }
 object AllowedUKOfficeOfExitAnswers {
   val yes = "Yes"

@@ -17,7 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.OfficeOfExitController
-import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExitInsideUK}
+import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit, OfficeOfExitInsideUK}
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -77,9 +77,9 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
         theResponseForm.value mustBe empty
       }
 
-      "display page method is invoked and cache contains data" in {
+      "display page method is invoked and cache contains Office Of Exit inside UK" in {
 
-        val officeId = "officeId"
+        val officeId = "GB123456"
         val answer = "Yes"
         withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExit(officeId, answer)))
 
@@ -89,6 +89,21 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
         checkViewInteractions()
 
         theResponseForm.value.value.officeId mustBe Some(officeId)
+        theResponseForm.value.value.isUkOfficeOfExit mustBe answer
+      }
+
+      "display page method is invoked and cache contains Office Of Exit outside UK" in {
+
+        val officeId = "NL123456"
+        val answer = "No"
+        withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExit(officeId, answer)))
+
+        val result = controller.displayPage(Mode.Normal)(getRequest())
+
+        status(result) mustBe OK
+        checkViewInteractions()
+
+        theResponseForm.value.value.officeId mustBe None
         theResponseForm.value.value.isUkOfficeOfExit mustBe answer
       }
     }
@@ -116,26 +131,89 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         withNewCaching(request.cacheModel)
 
-        val correctForm = Json.toJson(OfficeOfExitInsideUK(Some("GB123456"), AllowedUKOfficeOfExitAnswers.yes))
+        val officeOfExitInput = Some("GB123456");
+        val isUKOfficeOfExitInput = AllowedUKOfficeOfExitAnswers.yes
+
+        val correctForm = Json.toJson(OfficeOfExitInsideUK(officeOfExitInput, isUKOfficeOfExitInput))
 
         val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.TotalNumberOfItemsController.displayPage()
         checkViewInteractions(0)
+        theCacheModelUpdated.locations.officeOfExit must be(Some(OfficeOfExit(officeOfExitInput, Some(isUKOfficeOfExitInput))))
       }
 
-      "a non UK Office of Exit is being used" in {
+      "the non UK Office of Exit option is selected" in {
 
         withNewCaching(request.cacheModel)
 
-        val correctForm = Json.toJson(OfficeOfExitInsideUK(None, AllowedUKOfficeOfExitAnswers.no))
+        val officeOfExitInput = None;
+        val isUKOfficeOfExitInput = AllowedUKOfficeOfExitAnswers.no
+
+        val correctForm = Json.toJson(OfficeOfExitInsideUK(officeOfExitInput, isUKOfficeOfExitInput))
 
         val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage()
         checkViewInteractions(0)
+        theCacheModelUpdated.locations.officeOfExit must be(Some(OfficeOfExit(officeOfExitInput, Some(isUKOfficeOfExitInput))))
+      }
+
+      "the non UK Office of Exit option is selected, but already has Office Of Exit Outside UK in the cache" in {
+
+        val officeOfExitFromCache = "NL000123";
+        withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExit(officeOfExitFromCache, AllowedUKOfficeOfExitAnswers.no)))
+
+        val officeOfExitInput = None;
+        val isUKOfficeOfExitInput = AllowedUKOfficeOfExitAnswers.no
+
+        val correctForm = Json.toJson(OfficeOfExitInsideUK(officeOfExitInput, isUKOfficeOfExitInput))
+
+        val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage()
+        checkViewInteractions(0)
+        theCacheModelUpdated.locations.officeOfExit must be(Some(OfficeOfExit(Some(officeOfExitFromCache), Some(isUKOfficeOfExitInput))))
+      }
+
+      "the non UK Office of Exit option is selected, but has Office Of Exit Inside UK in the cache" in {
+
+        val officeOfExitFromCache = "GB000123";
+        withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExit(officeOfExitFromCache, AllowedUKOfficeOfExitAnswers.yes)))
+
+        val officeOfExitInput = None;
+        val isUKOfficeOfExitInput = AllowedUKOfficeOfExitAnswers.no
+
+        val correctForm = Json.toJson(OfficeOfExitInsideUK(officeOfExitInput, isUKOfficeOfExitInput))
+
+        val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage()
+        checkViewInteractions(0)
+        theCacheModelUpdated.locations.officeOfExit must be(Some(OfficeOfExit(None, Some(isUKOfficeOfExitInput))))
+      }
+
+      "the non UK Office of Exit option is selected, " +
+        "the UK Office of Exit is selected by mistake and already has an existing Office Of Exit Inside UK in the cache" in {
+
+        val officeOfExitFromCache = "GB000123";
+        withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExit(officeOfExitFromCache, AllowedUKOfficeOfExitAnswers.yes)))
+
+        val officeOfExitInput = None;
+        val isUKOfficeOfExitInput = AllowedUKOfficeOfExitAnswers.no
+
+        val correctForm = Json.toJson(OfficeOfExitInsideUK(officeOfExitInput, isUKOfficeOfExitInput))
+
+        val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage()
+        checkViewInteractions(0)
+        theCacheModelUpdated.locations.officeOfExit must be(Some(OfficeOfExit(None, Some(isUKOfficeOfExitInput))))
       }
     }
 
@@ -144,26 +222,89 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         withNewCaching(request.cacheModel)
 
-        val correctForm = Json.toJson(OfficeOfExitInsideUK(Some("GB123456"), AllowedUKOfficeOfExitAnswers.yes))
+        val officeOfExitInput = Some("GB123456");
+        val isUKOfficeOfExitInput = AllowedUKOfficeOfExitAnswers.yes
+
+        val correctForm = Json.toJson(OfficeOfExitInsideUK(officeOfExitInput, isUKOfficeOfExitInput))
 
         val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
         checkViewInteractions(0)
+        theCacheModelUpdated.locations.officeOfExit must be(Some(OfficeOfExit(officeOfExitInput, Some(isUKOfficeOfExitInput))))
       }
 
-      "a non UK Office of Exit is being used" in {
+      "the non UK Office of Exit option is selected" in {
 
         withNewCaching(request.cacheModel)
 
-        val correctForm = Json.toJson(OfficeOfExitInsideUK(None, AllowedUKOfficeOfExitAnswers.no))
+        val officeOfExitInput = None;
+        val isUKOfficeOfExitInput = AllowedUKOfficeOfExitAnswers.no
+
+        val correctForm = Json.toJson(OfficeOfExitInsideUK(officeOfExitInput, isUKOfficeOfExitInput))
 
         val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage()
         checkViewInteractions(0)
+        theCacheModelUpdated.locations.officeOfExit must be(Some(OfficeOfExit(officeOfExitInput, Some(isUKOfficeOfExitInput))))
+      }
+
+      "the non UK Office of Exit option is selected, but already has Office Of Exit Outside UK in the cache" in {
+
+        val officeOfExitFromCache = "NL000123";
+        withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExit(officeOfExitFromCache, AllowedUKOfficeOfExitAnswers.no)))
+
+        val officeOfExitInput = None;
+        val isUKOfficeOfExitInput = AllowedUKOfficeOfExitAnswers.no
+
+        val correctForm = Json.toJson(OfficeOfExitInsideUK(officeOfExitInput, isUKOfficeOfExitInput))
+
+        val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage()
+        checkViewInteractions(0)
+        theCacheModelUpdated.locations.officeOfExit must be(Some(OfficeOfExit(Some(officeOfExitFromCache), Some(isUKOfficeOfExitInput))))
+      }
+
+      "the non UK Office of Exit option is selected, but has Office Of Exit Inside UK in the cache" in {
+
+        val officeOfExitFromCache = "GB000123";
+        withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExit(officeOfExitFromCache, AllowedUKOfficeOfExitAnswers.yes)))
+
+        val officeOfExitInput = None;
+        val isUKOfficeOfExitInput = AllowedUKOfficeOfExitAnswers.no
+
+        val correctForm = Json.toJson(OfficeOfExitInsideUK(officeOfExitInput, isUKOfficeOfExitInput))
+
+        val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage()
+        checkViewInteractions(0)
+        theCacheModelUpdated.locations.officeOfExit must be(Some(OfficeOfExit(None, Some(isUKOfficeOfExitInput))))
+      }
+
+      "the non UK Office of Exit option is selected, " +
+        "the UK Office of Exit is selected by mistake and already has an existing Office Of Exit Inside UK in the cache" in {
+
+        val officeOfExitFromCache = "GB000123";
+        withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExit(officeOfExitFromCache, AllowedUKOfficeOfExitAnswers.yes)))
+
+        val officeOfExitInput = "GB000124";
+        val isUKOfficeOfExitInput = AllowedUKOfficeOfExitAnswers.no
+
+        val correctForm = Json.toJson(OfficeOfExitInsideUK(Some(officeOfExitInput), isUKOfficeOfExitInput))
+
+        val result = controller.saveOffice(Mode.Normal)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.OfficeOfExitOutsideUkController.displayPage()
+        checkViewInteractions(0)
+        theCacheModelUpdated.locations.officeOfExit must be(Some(OfficeOfExit(None, Some(isUKOfficeOfExitInput))))
       }
     }
   }
