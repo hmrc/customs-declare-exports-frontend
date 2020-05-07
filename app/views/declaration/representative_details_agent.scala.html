@@ -15,6 +15,7 @@
  *@
 
 @import controllers.declaration.routes._
+@import forms.DeclarationPage
 @import forms.declaration.RepresentativeAgent
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import forms.common.YesNoAnswer.YesNoAnswers
@@ -33,13 +34,13 @@
         saveButtons: saveButtons,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
-@(mode: Mode, form: Form[RepresentativeAgent])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, navigationForm: DeclarationPage, form: Form[RepresentativeAgent])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBody = { @Html(messages("declaration.representative-entity.help-item", components.details_content_link())) }
 
 @govukLayout(
     title = Title("declaration.representative.agent.title"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RepresentativeAgent, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(navigationForm, mode)))) {
 
     @formHelper(action = RepresentativeAgentController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)

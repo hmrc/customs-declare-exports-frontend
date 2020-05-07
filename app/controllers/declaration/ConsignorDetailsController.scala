@@ -18,59 +18,51 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.ExporterDetails
+import forms.declaration.consignor.ConsignorDetails
 import javax.inject.Inject
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.exporter_details
+import views.html.declaration.consignor_details
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ExporterDetailsController @Inject()(
+class ConsignorDetailsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  exporterDetailsPage: exporter_details
+  consignorDetailsPage: consignor_details
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    request.cacheModel.parties.exporterDetails match {
-      case Some(data) => Ok(exporterDetailsPage(mode, form().fill(data)))
-      case _          => Ok(exporterDetailsPage(mode, form()))
+    request.cacheModel.parties.consignorDetails match {
+      case Some(data) => Ok(consignorDetailsPage(mode, ConsignorDetails.form().fill(data)))
+      case _          => Ok(consignorDetailsPage(mode, ConsignorDetails.form()))
     }
   }
 
   def saveAddress(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form()
+    ConsignorDetails
+      .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ExporterDetails]) => Future.successful(BadRequest(exporterDetailsPage(mode, formWithErrors))),
+        (formWithErrors: Form[ConsignorDetails]) => Future.successful(BadRequest(consignorDetailsPage(mode, formWithErrors))),
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(mode, nextPage()))
+            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.RepresentativeAgentController.displayPage))
       )
   }
 
-  def nextPage()(implicit request: JourneyRequest[AnyContent]): Mode => Call =
-    request.declarationType match {
-      case DeclarationType.CLEARANCE => controllers.declaration.routes.ConsignorEoriNumberController.displayPage
-      case _                         => controllers.declaration.routes.RepresentativeAgentController.displayPage
-    }
-
-  private def updateCache(formData: ExporterDetails)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => {
-      val updatedParties = model.parties.copy(exporterDetails = Some(formData))
+  private def updateCache(formData: ConsignorDetails)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect { model =>
+      val updatedParties = model.parties.copy(consignorDetails = Some(formData))
       model.copy(parties = updatedParties)
-    })
-
-  private def form()(implicit request: JourneyRequest[AnyContent]): Form[ExporterDetails] =
-    ExporterDetails.form(request.declarationType)
+    }
 }
