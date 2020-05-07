@@ -65,7 +65,9 @@ class ConsigneeDetailsController @Inject()(
   }
 
   private def navigationForm(implicit request: JourneyRequest[AnyContent]): DeclarationPage =
-    if (request.cacheModel.parties.declarantIsExporter.exists(_.isExporter)) ExporterDetails else ConsigneeDetails
+    if (request.declarationType == DeclarationType.SUPPLEMENTARY && request.cacheModel.parties.declarantIsExporter.exists(_.isExporter))
+      ExporterDetails
+    else ConsigneeDetails
 
   private def nextPage()(implicit request: JourneyRequest[AnyContent]): Mode => Call =
     request.declarationType match {
