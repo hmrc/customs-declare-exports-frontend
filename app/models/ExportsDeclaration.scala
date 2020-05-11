@@ -18,6 +18,8 @@ package models
 
 import java.time.{Clock, Instant}
 
+import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.declaration.countries.Country
@@ -119,6 +121,8 @@ case class ExportsDeclaration(
     val currentTime = Instant.now(clock)
     this.copy(status = DeclarationStatus.DRAFT, createdDateTime = currentTime, updatedDateTime = currentTime, sourceId = Some(id))
   }
+
+  def isEntryIntoDeclarantsRecords: Boolean = parties.isEntryIntoDeclarantsRecords.exists(_.answer == YesNoAnswers.yes)
 }
 
 object ExportsDeclaration {

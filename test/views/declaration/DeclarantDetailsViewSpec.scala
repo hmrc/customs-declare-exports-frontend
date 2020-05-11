@@ -22,7 +22,7 @@ import controllers.util.SaveAndReturn
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantEoriConfirmation
 import helpers.views.declaration.CommonMessages
-import models.DeclarationType.DeclarationType
+import models.DeclarationType.{DeclarationType, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.Mode
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -68,34 +68,51 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestData with Co
       }
 
       "display radio button with Yes option" in {
+
         val view = createView(form(request.declarationType))
         view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes
         view.getElementsByAttributeValue("for", "code_yes").text() mustBe "site.yes"
       }
       "display radio button with No option" in {
+
         val view = createView(form(request.declarationType))
         view.getElementById("code_no").attr("value") mustBe YesNoAnswers.no
         view.getElementsByAttributeValue("for", "code_no").text() mustBe "site.no"
       }
 
-      "display 'Back' button that links to 'Consignment References' page" in {
-
-        val view = declarantDetailsPage(Mode.Normal, form(request.declarationType))(journeyRequest(), messages)
-        val backButton = view.getElementById("back-link")
-
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.ConsignmentReferencesController.displayPage().url
-      }
-
       "display 'Save and continue' button on page" in {
+
         val saveButton = createView(form(request.declarationType)).getElementById("submit")
         saveButton.text() mustBe messages(saveAndContinueCaption)
       }
 
       "display 'Save and return' button on page" in {
+
         val saveButton = createView(form(request.declarationType)).getElementById("submit_and_return")
         saveButton.text() mustBe messages(saveAndReturnCaption)
         saveButton.attr("name") mustBe SaveAndReturn.toString
+      }
+    }
+
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
+      "display 'Back' button that links to 'Consignment References' page" in {
+
+        val view = declarantDetailsPage(Mode.Normal, form(request.declarationType))(request, messages)
+        val backButton = view.getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.ConsignmentReferencesController.displayPage().url
+      }
+    }
+
+    onClearance { request =>
+      "display 'Back' button that links to 'Entry into Declarant's Records' page" in {
+
+        val view = declarantDetailsPage(Mode.Normal, form(request.declarationType))(request, messages)
+        val backButton = view.getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.EntryIntoDeclarantsRecordsController.displayPage().url
       }
     }
   }

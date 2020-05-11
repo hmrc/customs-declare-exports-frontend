@@ -81,7 +81,7 @@
 }
 @govukLayout(
     title = Title("declaration.exporter-detail.title", "declaration.summary.parties.header"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ExporterDetails, mode)))){
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ExporterDetails, mode, request.cacheModel)))){
 
     @formHelper(action = ExporterDetailsController.saveAddress(mode), 'autoComplete -> "off") {
 
