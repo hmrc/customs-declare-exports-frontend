@@ -905,9 +905,7 @@ supplementary.previousDocuments.goodsItemIdentifier.label = Goods Item Identifie
 supplementary.previousDocuments.remove.hint = Remove document {0} type {1} reference {2}
 supplementary.previousDocuments.add.hint = Add document
 
-declaration.additionalInformationRequired.title = Do you need to add additional information?
-declaration.additionalInformationRequired.hint = This can be determined by the commodity code or procedure code used
-declaration.additionalInformationRequired.error = Select if the item has an additional code
+
 declaration.additionalInformation.title = Enter additional information
 declaration.additionalInformation.code = Enter the union or national code
 declaration.additionalInformation.item.code = 2/2 union or national code

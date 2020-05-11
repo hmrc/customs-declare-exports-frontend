@@ -112,7 +112,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
         val result = controller.submitForm(Mode.Normal, "itemId")(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, "itemId")
+        thePageNavigatedTo mustBe routes.AdditionalInformationController.displayPage(Mode.Normal, "itemId")
       }
     }
   }
