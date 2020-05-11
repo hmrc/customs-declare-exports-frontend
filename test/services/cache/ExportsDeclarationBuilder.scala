@@ -149,6 +149,9 @@ trait ExportsDeclarationBuilder {
   def withEntryIntoDeclarantsRecords(isEidr: String = "Yes"): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(isEntryIntoDeclarantsRecords = Some(YesNoAnswer(isEidr))))
 
+  def withPersonPresentingGoodsDetails(eori: Option[Eori] = None): ExportsDeclarationModifier =
+    cache => cache.copy(parties = cache.parties.copy(personPresentingGoodsDetails = eori.map(PersonPresentingGoodsDetails(_))))
+
   def withoutExporterDetails(): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(exporterDetails = None))
 

@@ -1,0 +1,60 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.declaration.routes._
+@import forms.declaration.PersonPresentingGoodsDetails
+@import forms.declaration.PersonPresentingGoodsDetails._
+@import models.requests.JourneyRequest
+@import controllers.navigation.Navigator
+@import views.{BackButton, Title}
+@import views.html.components.gds._
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+@import views.components.gds.Styles._
+
+@this(
+        govukLayout: gdsMainTemplate,
+        exportsInputText: exportsInputText,
+        inputText: exportsInputText,
+        errorSummary: errorSummary,
+        saveButtons: saveButtons,
+        tariffDetails: tariffDetails,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
+
+@(mode: Mode, form: Form[PersonPresentingGoodsDetails])(implicit request: JourneyRequest[_], messages: Messages)
+
+@tariffBody = { @Html(messages("declaration.personPresentingGoodsDetails.help-item", components.details_content_link())) }
+
+@govukLayout(
+    title = Title("declaration.personPresentingGoodsDetails.title"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(PersonPresentingGoodsDetails, mode)))) {
+
+    @formHelper(action = controllers.declaration.routes.PersonPresentingGoodsDetailsController.submitForm(mode), 'autocomplete -> "off") {
+      @errorSummary(form.errors)
+    
+      @exportsInputText(
+        field = form(fieldName),
+        labelKey = "declaration.personPresentingGoodsDetails.title",
+        isPageHeading = true,
+        headingClasses = gdsPageLabelLarge
+      )
+
+      @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+
+      @saveButtons()
+    }
+}
+

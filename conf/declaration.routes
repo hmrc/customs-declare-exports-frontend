@@ -45,6 +45,12 @@ GET         /entry-into-declarants-records       controllers.declaration.EntryIn
 
 POST        /entry-into-declarants-records       controllers.declaration.EntryIntoDeclarantsRecordsController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
+# Person presenting goods
+
+GET         /person-presenting-goods             controllers.declaration.PersonPresentingGoodsDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /person-presenting-goods             controllers.declaration.PersonPresentingGoodsDetailsController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
 # Exporter address
 
 GET         /exporter-details                    controllers.declaration.ExporterDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)

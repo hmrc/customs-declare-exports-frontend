@@ -14,13 +14,23 @@
  * limitations under the License.
  */
 
-package views.components.gds
+package forms.declaration
 
-object Styles {
+import forms.DeclarationPage
+import forms.common.Eori
+import play.api.data.{Form, Forms}
+import play.api.libs.json.Json
 
-  val gdsPageLegend = "govuk-fieldset__legend--l"
-  val gdsPageLegendLarge = "govuk-fieldset__legend--xl"
-  val gdsPageHeading = "govuk-heading-l"
-  val gdsPageLabel = "govuk-label--l"
-  val gdsPageLabelLarge = "govuk-label--xl"
+case class PersonPresentingGoodsDetails(eori: Eori)
+
+object PersonPresentingGoodsDetails extends DeclarationPage {
+  implicit val format = Json.format[PersonPresentingGoodsDetails]
+
+  val fieldName = "eori"
+
+  private val mapping = Forms.mapping(fieldName -> Eori.mapping("declaration.personPresentingGoodsDetails"))(PersonPresentingGoodsDetails.apply)(
+    PersonPresentingGoodsDetails.unapply
+  )
+
+  def form() = Form(mapping)
 }

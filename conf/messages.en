@@ -311,7 +311,7 @@ notDeclarent.paragraph1Link = sign in using another Government Gateway ID
 notDeclarent.paragraph2 = If there is a problem with your EORI number {0}.
 notDeclarent.paragraph2Link = contact the EORI contact team
 notDeclarent.referenceTitle = Help and support
-notDeclarent.reference.support = If you are having problems making a declaration, phone: {0} 
+notDeclarent.reference.support = If you are having problems making a declaration, phone: {0}
 notDeclarent.reference.openingHours = Open 8am to 6pm, Monday to Friday (closed bank holidays).
 
 supplementary.consignmentReferences.heading = Your references
@@ -328,6 +328,11 @@ declaration.entryIntoDeclarantRecords.title = Is this an entry into declarant’
 declaration.entryIntoDeclarantRecords.answer.yes = Yes
 declaration.entryIntoDeclarantRecords.answer.no = No
 declaration.entryIntoDeclarantRecords.error = Select yes if this is an entry into the declarant’s records
+
+declaration.personPresentingGoodsDetails.title = What is the EORI number of the person presenting the goods to customs?
+declaration.personPresentingGoodsDetails.eori.empty = Enter an EORI in the correct format. For example, GB123456789000
+declaration.personPresentingGoodsDetails.eori.error.format = Enter an EORI in the correct format. For example, GB123456789000
+declaration.personPresentingGoodsDetails.help-item = Go to data element 3/41 Presenter Identification Number in the {0}
 
 supplementary.consignor.title = Who is the exporter?
 supplementary.consignor.title.hint = Enter the exporter’s EORI number or name and business address.

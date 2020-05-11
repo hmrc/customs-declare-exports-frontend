@@ -16,11 +16,10 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.EntryIntoDeclarantsRecordsController
-import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.EntryIntoDeclarantsRecords
-import models.DeclarationType._
+import controllers.declaration.PersonPresentingGoodsDetailsController
+import forms.common.Eori
+import forms.declaration.PersonPresentingGoodsDetails
+import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.{ExportsDeclaration, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
@@ -31,14 +30,15 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import views.html.declaration.entry_into_declarants_records
+import views.html.declaration.person_presenting_goods_details
 
-class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with ScalaFutures {
+class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with ScalaFutures {
 
-  private val page = mock[entry_into_declarants_records]
-  implicit private val implicitHeaderCarrier = hc
+  private val testEori = "GB1234567890000"
 
-  private val controller = new EntryIntoDeclarantsRecordsController(
+  private val page = mock[person_presenting_goods_details]
+
+  private val controller = new PersonPresentingGoodsDetailsController(
     mockAuthAction,
     mockJourneyAction,
     mockExportsCacheService,
@@ -58,8 +58,8 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
     super.afterEach()
   }
 
-  def theFormPassedToView: Form[YesNoAnswer] = {
-    val formCaptor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
+  def theFormPassedToView: Form[PersonPresentingGoodsDetails] = {
+    val formCaptor = ArgumentCaptor.forClass(classOf[Form[PersonPresentingGoodsDetails]])
     verify(page).apply(any(), formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
@@ -70,7 +70,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
     modelCaptor.getValue
   }
 
-  "EntryIntoDeclarantsRecordsController on displayPage" when {
+  "PersonPresentingGoodsDetailsController on displayPage" when {
 
     onClearance { request =>
       "everything works correctly" should {
@@ -95,12 +95,12 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
 
         "call page view, passing form with data from cache" in {
 
-          withNewCaching(aDeclarationAfter(request.cacheModel, withEntryIntoDeclarantsRecords()))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withPersonPresentingGoodsDetails(Some(Eori(testEori)))))
 
           controller.displayPage(Mode.Normal)(getRequest()).futureValue
 
           theFormPassedToView.value mustBe defined
-          theFormPassedToView.value.map(_.answer) mustBe Some(YesNoAnswers.yes)
+          theFormPassedToView.value.map(_.eori) mustBe Some(Eori(testEori))
         }
       }
     }
@@ -126,7 +126,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
     }
   }
 
-  "EntryIntoDeclarantsRecordsController on submitForm" when {
+  "PersonPresentingGoodsDetailsController on submitForm" when {
 
     onClearance { request =>
       "everything works correctly" should {
@@ -134,27 +134,37 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
         "return 303 (SEE_OTHER)" in {
 
           withNewCaching(request.cacheModel)
-          val correctForm = Json.toJson(Map(EntryIntoDeclarantsRecords.fieldName -> YesNoAnswers.yes))
+          val correctForm = Json.toJson(Map(PersonPresentingGoodsDetails.fieldName -> testEori))
 
           val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
           status(result) mustBe SEE_OTHER
         }
 
-        "call Cache to update it" in {
+        "redirect to Exporter Details page" in {
 
           withNewCaching(request.cacheModel)
-          val correctForm = Json.toJson(Map(EntryIntoDeclarantsRecords.fieldName -> YesNoAnswers.yes))
+          val correctForm = Json.toJson(Map(PersonPresentingGoodsDetails.fieldName -> testEori))
 
           controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
 
-          theModelPassedToCacheUpdate.parties.isEntryIntoDeclarantsRecords mustBe Some(YesNoAnswer(YesNoAnswers.yes))
+          thePageNavigatedTo mustBe controllers.declaration.routes.ExporterDetailsController.displayPage()
+        }
+
+        "call Cache to update it" in {
+
+          withNewCaching(request.cacheModel)
+          val correctForm = Json.toJson(Map(PersonPresentingGoodsDetails.fieldName -> testEori))
+
+          controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
+
+          theModelPassedToCacheUpdate.parties.personPresentingGoodsDetails mustBe Some(PersonPresentingGoodsDetails(Eori(testEori)))
         }
 
         "call Navigator" in {
 
           withNewCaching(request.cacheModel)
-          val correctForm = Json.toJson(Map(EntryIntoDeclarantsRecords.fieldName -> YesNoAnswers.yes))
+          val correctForm = Json.toJson(Map(PersonPresentingGoodsDetails.fieldName -> testEori))
 
           controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
 
@@ -162,37 +172,13 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
         }
       }
 
-      "provided with 'Yes' answer" should {
-        "redirect to Person Presenting the Goods page" in {
-
-          withNewCaching(request.cacheModel)
-          val correctForm = Json.toJson(Map(EntryIntoDeclarantsRecords.fieldName -> YesNoAnswers.yes))
-
-          controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
-
-          thePageNavigatedTo mustBe controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage()
-        }
-      }
-
-      "provided with 'No' answer" should {
-        "redirect to Declarant Details page" in {
-
-          withNewCaching(request.cacheModel)
-          val correctForm = Json.toJson(Map(EntryIntoDeclarantsRecords.fieldName -> YesNoAnswers.no))
-
-          controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
-
-          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarantDetailsController.displayPage()
-        }
-      }
-
       "provided with incorrect data" should {
         "return 400 (BAD_REQUEST)" in {
 
           withNewCaching(request.cacheModel)
-          val incorrectForm = Json.toJson(Map(EntryIntoDeclarantsRecords.fieldName -> "Incorrect"))
+          val correctForm = Json.toJson(Map(PersonPresentingGoodsDetails.fieldName -> "Incorrect!@#"))
 
-          val result = controller.submitForm(Mode.Normal)(postRequest(incorrectForm))
+          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
           status(result) mustBe BAD_REQUEST
         }
@@ -203,7 +189,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
       "return 303 (SEE_OTHER)" in {
 
         withNewCaching(request.cacheModel)
-        val correctForm = Json.toJson(YesNoAnswer(YesNoAnswers.yes))
+        val correctForm = Json.toJson(Map(PersonPresentingGoodsDetails.fieldName -> testEori))
 
         val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
@@ -213,7 +199,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
       "redirect to start page" in {
 
         withNewCaching(request.cacheModel)
-        val correctForm = Json.toJson(YesNoAnswer(YesNoAnswers.yes))
+        val correctForm = Json.toJson(Map(PersonPresentingGoodsDetails.fieldName -> testEori))
 
         val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
