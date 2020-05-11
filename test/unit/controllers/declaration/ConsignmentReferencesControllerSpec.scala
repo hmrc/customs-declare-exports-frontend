@@ -19,6 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.ConsignmentReferencesController
 import forms.declaration.ConsignmentReferences
 import forms.{Ducr, Lrn}
+import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -49,42 +50,63 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
 
   "Consignment References controller" should {
 
-    "return 200 (OK)" when {
+    onEveryDeclarationJourney() { request =>
+      "return 200 (OK)" when {
 
-      "display page method is invoked and cache is empty" in new SetUp {
+        "display page method is invoked and cache is empty" in new SetUp {
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+          withNewCaching(request.cacheModel)
 
-        status(result) must be(OK)
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) must be(OK)
+        }
+
+        "display page method is invoked and cache contains data" in new SetUp {
+
+          withNewCaching(aDeclaration(withConsignmentReferences()))
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) must be(OK)
+        }
       }
 
-      "display page method is invoked and cache contains data" in new SetUp {
+      "return 400 (BAD_REQUEST)" in new SetUp {
 
-        withNewCaching(aDeclaration(withConsignmentReferences()))
+        withNewCaching(request.cacheModel)
+        val incorrectForm = Json.toJson(ConsignmentReferences(Ducr("1234"), Lrn("")))
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+        val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(incorrectForm))
 
-        status(result) must be(OK)
+        status(result) must be(BAD_REQUEST)
       }
     }
 
-    "return 400 (BAD_REQUEST)" in new SetUp {
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
+      "return 303 (SEE_OTHER) and redirect to declarant details page" in new SetUp {
 
-      val incorrectForm = Json.toJson(ConsignmentReferences(Ducr("1234"), Lrn("")))
+        withNewCaching(request.cacheModel)
+        val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN))
 
-      val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(incorrectForm))
+        val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(correctForm))
 
-      status(result) must be(BAD_REQUEST)
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.DeclarantDetailsController.displayPage()
+      }
     }
 
-    "return 303 (SEE_OTHER) and redirect to declarant details page" in new SetUp {
+    onClearance { request =>
+      "return 303 (SEE_OTHER) and redirect to Entry into Declarant's Records page" in new SetUp {
 
-      val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN))
+        withNewCaching(request.cacheModel)
+        val correctForm = Json.toJson(ConsignmentReferences(Ducr(DUCR), LRN))
 
-      val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(correctForm))
+        val result = controller.submitConsignmentReferences(Mode.Normal)(postRequest(correctForm))
 
-      await(result) mustBe aRedirectToTheNextPage
-      thePageNavigatedTo mustBe controllers.declaration.routes.DeclarantDetailsController.displayPage()
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.EntryIntoDeclarantsRecordsController.displayPage()
+      }
     }
   }
 }
