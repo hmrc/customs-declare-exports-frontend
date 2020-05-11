@@ -18,35 +18,34 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.EntryIntoDeclarantsRecords.form
+import forms.declaration.PersonPresentingGoodsDetails
+import forms.declaration.PersonPresentingGoodsDetails.form
 import javax.inject.Inject
 import models.DeclarationType.CLEARANCE
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.entry_into_declarants_records
+import views.html.declaration.person_presenting_goods_details
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class EntryIntoDeclarantsRecordsController @Inject()(
+class PersonPresentingGoodsDetailsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  entryIntoDeclarantsRecordsPage: entry_into_declarants_records
+  personPresentingGoodsDetailsPage: person_presenting_goods_details
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(CLEARANCE)) { implicit request =>
-    request.cacheModel.parties.isEntryIntoDeclarantsRecords match {
-      case Some(data) => Ok(entryIntoDeclarantsRecordsPage(mode, form().fill(data)))
-      case _          => Ok(entryIntoDeclarantsRecordsPage(mode, form()))
+    request.cacheModel.parties.personPresentingGoodsDetails match {
+      case Some(data) => Ok(personPresentingGoodsDetailsPage(mode, form().fill(data)))
+      case _          => Ok(personPresentingGoodsDetailsPage(mode, form()))
     }
   }
 
@@ -54,18 +53,12 @@ class EntryIntoDeclarantsRecordsController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(entryIntoDeclarantsRecordsPage(mode, formWithErrors))),
-        validData => updateCache(validData).map(_ => navigator.continueTo(mode, nextPage(validData)))
+        formWithErrors => Future.successful(BadRequest(personPresentingGoodsDetailsPage(mode, formWithErrors))),
+        validData => updateCache(validData).map(_ => navigator.continueTo(mode, controllers.declaration.routes.ExporterDetailsController.displayPage))
       )
   }
 
-  private def updateCache(validData: YesNoAnswer)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.copy(parties = model.parties.copy(isEntryIntoDeclarantsRecords = Some(validData))))
-
-  private def nextPage(answer: YesNoAnswer): Mode => Call =
-    if (answer.answer == YesNoAnswers.yes)
-      controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage
-    else
-      controllers.declaration.routes.DeclarantDetailsController.displayPage
+  private def updateCache(validData: PersonPresentingGoodsDetails)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => model.copy(parties = model.parties.copy(personPresentingGoodsDetails = Some(validData))))
 
 }
