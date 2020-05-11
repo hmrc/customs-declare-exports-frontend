@@ -21,7 +21,7 @@ import controllers.navigation.Navigator
 import forms.DeclarationPage
 import forms.common.Eori
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.{CarrierDetails, ExporterDetails}
+import forms.declaration.ExporterDetails
 import forms.declaration.consignor.ConsignorEoriNumber.form
 import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import javax.inject.Inject
@@ -50,8 +50,8 @@ class ConsignorEoriNumberController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     request.cacheModel.parties.consignorDetails match {
-      case Some(data) => Ok(consignorEoriDetailsPage(mode, navigationForm, form().fill(ConsignorEoriNumber(data))))
-      case _          => Ok(consignorEoriDetailsPage(mode, navigationForm, form()))
+      case Some(data) => Ok(consignorEoriDetailsPage(mode, form().fill(ConsignorEoriNumber(data))))
+      case _          => Ok(consignorEoriDetailsPage(mode, form()))
     }
   }
 
@@ -62,7 +62,7 @@ class ConsignorEoriNumberController @Inject()(
         (formWithErrors: Form[ConsignorEoriNumber]) => {
           val formWithAdjustedErrors = formWithErrors
 
-          Future.successful(BadRequest(consignorEoriDetailsPage(mode, navigationForm, formWithAdjustedErrors)))
+          Future.successful(BadRequest(consignorEoriDetailsPage(mode, formWithAdjustedErrors)))
         },
         form =>
           updateCache(form, request.cacheModel.parties.consignorDetails)
@@ -70,15 +70,10 @@ class ConsignorEoriNumberController @Inject()(
       )
   }
 
-  private def navigationForm(implicit request: JourneyRequest[AnyContent]): DeclarationPage = {
-    val declarantEori: Option[Eori] = request.cacheModel.parties.declarantDetails.flatMap(_.details.eori)
-    val exporterEori: Option[Eori] = request.cacheModel.parties.exporterDetails.flatMap(_.details.eori)
-
-    if (declarantEori == exporterEori) ExporterDetails else ConsignorEoriNumber
-  }
-
-  private def nextPage(hasEori: Option[String]): Mode => Call =
-    if (hasEori.getOrElse(YesNoAnswers.no) == YesNoAnswers.yes) {
+  private def nextPage(hasEori: Option[String])(implicit request: JourneyRequest[_]): Mode => Call =
+    if (hasEori.getOrElse(YesNoAnswers.no) == YesNoAnswers.yes && request.isDeclarantExporter) {
+      controllers.declaration.routes.CarrierDetailsController.displayPage
+    } else if (hasEori.getOrElse(YesNoAnswers.no) == YesNoAnswers.yes) {
       controllers.declaration.routes.RepresentativeAgentController.displayPage
     } else {
       controllers.declaration.routes.ConsignorDetailsController.displayPage

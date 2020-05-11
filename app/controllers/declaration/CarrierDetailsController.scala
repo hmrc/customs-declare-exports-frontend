@@ -19,10 +19,12 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.DeclarationPage
-import forms.declaration.{CarrierDetails, ExporterDetails}
+import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
+import forms.declaration.{CarrierDetails, ExporterDetails, IsExs, RepresentativeAgent}
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
+import models.DeclarationType.CLEARANCE
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -49,8 +51,8 @@ class CarrierDetailsController @Inject()(
   def displayPage(mode: Mode): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)) { implicit request =>
       request.cacheModel.parties.carrierDetails match {
-        case Some(data) => Ok(carrierDetailsPage(mode, navigationForm, form().fill(data)))
-        case _          => Ok(carrierDetailsPage(mode, navigationForm, form()))
+        case Some(data) => Ok(carrierDetailsPage(mode, navigationPage, form().fill(data)))
+        case _          => Ok(carrierDetailsPage(mode, navigationPage, form()))
       }
     }
 
@@ -59,7 +61,7 @@ class CarrierDetailsController @Inject()(
       form()
         .bindFromRequest()
         .fold(
-          (formWithErrors: Form[CarrierDetails]) => Future.successful(BadRequest(carrierDetailsPage(mode, navigationForm, formWithErrors))),
+          (formWithErrors: Form[CarrierDetails]) => Future.successful(BadRequest(carrierDetailsPage(mode, navigationPage, formWithErrors))),
           form =>
             updateCache(form).map { _ =>
               navigator.continueTo(mode, controllers.declaration.routes.ConsigneeDetailsController.displayPage)
@@ -67,8 +69,12 @@ class CarrierDetailsController @Inject()(
         )
     }
 
-  private def navigationForm(implicit request: JourneyRequest[AnyContent]): DeclarationPage =
-    if (request.cacheModel.parties.declarantIsExporter.exists(_.isExporter)) ExporterDetails else CarrierDetails
+  private def navigationPage(implicit request: JourneyRequest[_]): DeclarationPage =
+    request.declarationType match {
+      case CLEARANCE if request.cacheModel.parties.consignorDetails.flatMap(_.details.eori.map(_.value)).getOrElse("").nonEmpty => ConsignorDetails
+      case CLEARANCE if request.cacheModel.parties.consignorDetails.flatMap(_.details.address).isDefined                        => RepresentativeAgent
+      case _                                                                                                                    => CarrierDetails
+    }
 
   private def updateCache(formData: CarrierDetails)(implicit req: JourneyRequest[AnyContent]) =
     updateExportsDeclarationSyncDirect(model => {

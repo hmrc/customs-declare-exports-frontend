@@ -45,6 +45,12 @@ GET         /exporter-details                    controllers.declaration.Exporte
 
 POST        /exporter-details                    controllers.declaration.ExporterDetailsController.saveAddress(mode: models.Mode ?= models.Mode.Normal)
 
+# EXS Declaration
+
+GET         /is-this-exs                         controllers.declaration.IsExsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /is-this-exs                         controllers.declaration.IsExsController.submit(mode: models.Mode ?= models.Mode.Normal)
+
 # Representative details
 
 GET         /are-you-representing-another-agent  controllers.declaration.RepresentativeAgentController.displayPage(mode: models.Mode ?= models.Mode.Normal)

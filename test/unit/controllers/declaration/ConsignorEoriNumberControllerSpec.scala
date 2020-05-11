@@ -48,18 +48,18 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
   )(ec)
 
   def checkViewInteractions(noOfInvocations: Int = 1): Unit =
-    verify(mockConsignorEoriNumberPage, times(noOfInvocations)).apply(any(), any(), any())(any(), any())
+    verify(mockConsignorEoriNumberPage, times(noOfInvocations)).apply(any(), any())(any(), any())
 
   def theResponseForm: Form[ConsignorEoriNumber] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[ConsignorEoriNumber]])
-    verify(mockConsignorEoriNumberPage).apply(any(), any(), captor.capture())(any(), any())
+    verify(mockConsignorEoriNumberPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockConsignorEoriNumberPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockConsignorEoriNumberPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {

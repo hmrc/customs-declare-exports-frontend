@@ -15,6 +15,7 @@
  */
 
 package forms.declaration
+
 import forms.DeclarationPage
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import play.api.data.{Form, Forms}
@@ -24,8 +25,6 @@ case class ExporterDetails(details: EntityDetails)
 
 object ExporterDetails extends DeclarationPage {
   implicit val format = Json.format[ExporterDetails]
-
-  val id = "ExporterDetails"
 
   val defaultMapping = Forms.mapping("details" -> EntityDetails.defaultMapping)(ExporterDetails.apply)(ExporterDetails.unapply)
 

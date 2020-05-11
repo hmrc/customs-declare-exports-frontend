@@ -52,5 +52,35 @@ class JourneyRequestSpec extends UnitSpec with ExportsDeclarationBuilder with Mo
     "check if eori is correct" in {
       request.eori mustBe "12345"
     }
+
+    "return correct value for isDeclarantExports" when {
+
+      "declarant is an exporter" in {
+
+        val declaration = aDeclaration(withType(DeclarationType.OCCASIONAL), withDeclarantIsExporter())
+        val authenticatedRequest = getAuthenticatedRequest()
+        val request = new JourneyRequest(authenticatedRequest, declaration)
+
+        request.isDeclarantExporter mustBe true
+      }
+
+      "declarant is not an exporter" in {
+
+        val declaration = aDeclaration(withType(DeclarationType.OCCASIONAL), withDeclarantIsExporter("No"))
+        val authenticatedRequest = getAuthenticatedRequest()
+        val request = new JourneyRequest(authenticatedRequest, declaration)
+
+        request.isDeclarantExporter mustBe false
+      }
+
+      "user didn't answer on this question" in {
+
+        val declaration = aDeclaration(withType(DeclarationType.OCCASIONAL))
+        val authenticatedRequest = getAuthenticatedRequest()
+        val request = new JourneyRequest(authenticatedRequest, declaration)
+
+        request.isDeclarantExporter mustBe false
+      }
+    }
   }
 }
