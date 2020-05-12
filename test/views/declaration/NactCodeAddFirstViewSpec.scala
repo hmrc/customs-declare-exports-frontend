@@ -70,7 +70,7 @@ class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with St
       val view = createView(NactCodeFirst.form().fillAndValidate(NactCodeFirst(Some("12345678901234567890"))))
 
       view must haveGovukGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", "#code")
+      view must containErrorElementWithTagAndHref("a", "#nactCode")
 
       view must containErrorElementWithMessage(realMessages("declaration.nationalAdditionalCode.error.invalid"))
     }
@@ -79,7 +79,7 @@ class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with St
       val view = createView(NactCodeFirst.form().fillAndValidate(NactCodeFirst(Some(""))))
 
       view must haveGovukGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", "#code")
+      view must containErrorElementWithTagAndHref("a", "#nactCode")
 
       view must containErrorElementWithMessage(realMessages("declaration.nationalAdditionalCode.error.empty"))
     }
@@ -92,7 +92,7 @@ class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with St
 
       val view = createView(NactCodeFirst.form().fill(NactCodeFirst(Some("VATR"))))
 
-      view.getElementById("code").attr("value") must be("VATR")
+      view.getElementById("nactCode").attr("value") must be("VATR")
     }
   }
 }

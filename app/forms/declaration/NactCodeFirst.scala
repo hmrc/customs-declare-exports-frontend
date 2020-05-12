@@ -32,7 +32,7 @@ object NactCodeFirst extends DeclarationPage {
   implicit val format = Json.format[NactCodeFirst]
 
   val hasNactCodeKey = "hasNact"
-  val nactCodeKey = "code"
+  val nactCodeKey = "nactCode"
 
   private def form2Model: (String, Option[String]) => NactCodeFirst = {
     case (hasNactCode, code) =>
