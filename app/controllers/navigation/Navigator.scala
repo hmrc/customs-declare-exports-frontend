@@ -138,7 +138,6 @@ object Navigator {
   val supplementary: PartialFunction[DeclarationPage, Mode => Call] = {
     case DeclarantDetails            => controllers.declaration.routes.ConsignmentReferencesController.displayPage
     case ExporterDetails             => controllers.declaration.routes.DeclarantExporterController.displayPage
-    case ConsigneeDetails            => controllers.declaration.routes.RepresentativeStatusController.displayPage
     case CarrierDetails              => controllers.declaration.routes.RepresentativeStatusController.displayPage
     case BorderTransport             => controllers.declaration.routes.DepartureTransportController.displayPage
     case ContainerFirst              => controllers.declaration.routes.BorderTransportController.displayPage
@@ -268,6 +267,37 @@ object Navigator {
     case DocumentsProduced         => controllers.declaration.routes.AdditionalInformationController.displayPage
   }
 
+  val commonCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = Map.empty
+  val standardCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = Map.empty
+  val supplementaryCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
+    case ConsigneeDetails => consigneeDetailsPreviousPage
+  }
+  val simplifiedCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = Map.empty
+  val occasionalCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = Map.empty
+
+  val clearanceCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
+    case ExporterDetails => exporterDetailsPreviousPage
+    case CarrierDetails  => carrierDetailsPreviousPage
+  }
+
+  private def exporterDetailsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.isEntryIntoDeclarantsRecords)
+      controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage(mode)
+    else
+      controllers.declaration.routes.DeclarantExporterController.displayPage(mode)
+
+  private def carrierDetailsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.parties.declarantIsExporter.exists(_.isExporter))
+      controllers.declaration.routes.DeclarantExporterController.displayPage(mode)
+    else
+      controllers.declaration.routes.RepresentativeStatusController.displayPage(mode)
+
+  private def consigneeDetailsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.`type` == SUPPLEMENTARY && cacheModel.parties.declarantIsExporter.exists(_.isExporter))
+      controllers.declaration.routes.DeclarantExporterController.displayPage(mode)
+    else
+      controllers.declaration.routes.RepresentativeStatusController.displayPage(mode)
+
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
     mode match {
       case Mode.ErrorFix if (request.sourceDecId.isDefined) => controllers.routes.RejectedNotificationsController.displayPage(request.sourceDecId.get)
@@ -285,30 +315,6 @@ object Navigator {
         }
         common.orElse(specific)(page)(mode)
     }
-
-  val commonCacheDependent: PartialFunction[DeclarationPage, Any => Call] = Map.empty
-  val standardCacheDependent: PartialFunction[DeclarationPage, Any => Call] = Map.empty
-  val supplementaryCacheDependent: PartialFunction[DeclarationPage, Any => Call] = Map.empty
-  val simplifiedCacheDependent: PartialFunction[DeclarationPage, Any => Call] = Map.empty
-  val occasionalCacheDependent: PartialFunction[DeclarationPage, Any => Call] = Map.empty
-
-  val clearanceCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
-    case ExporterDetails => exporterDetailsPreviousPage
-    case CarrierDetails  => carrierDetailsPreviousPage
-    case page            => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
-  }
-
-  private def exporterDetailsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (cacheModel.isEntryIntoDeclarantsRecords)
-      controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage(mode)
-    else
-      controllers.declaration.routes.DeclarantExporterController.displayPage(mode)
-
-  private def carrierDetailsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (cacheModel.parties.declarantIsExporter.exists(_.isExporter))
-      controllers.declaration.routes.DeclarantExporterController.displayPage(mode)
-    else
-      controllers.declaration.routes.RepresentativeStatusController.displayPage(mode)
 
   def backLink(page: DeclarationPage, mode: Mode, cacheModel: ExportsDeclaration)(implicit request: JourneyRequest[_]): Call =
     mode match {

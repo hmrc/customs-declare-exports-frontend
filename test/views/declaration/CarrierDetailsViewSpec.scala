@@ -148,7 +148,6 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
           backButton.attr("href") mustBe routes.DeclarantExporterController.displayPage().url
         }
       }
-
     }
   }
 

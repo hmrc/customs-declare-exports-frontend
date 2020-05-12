@@ -47,8 +47,8 @@ class ConsigneeDetailsController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.parties.consigneeDetails match {
-      case Some(data) => Ok(consigneeDetailsPage(mode, navigationForm, ConsigneeDetails.form().fill(data)))
-      case _          => Ok(consigneeDetailsPage(mode, navigationForm, ConsigneeDetails.form()))
+      case Some(data) => Ok(consigneeDetailsPage(mode, ConsigneeDetails.form().fill(data)))
+      case _          => Ok(consigneeDetailsPage(mode, ConsigneeDetails.form()))
     }
   }
 
@@ -57,17 +57,12 @@ class ConsigneeDetailsController @Inject()(
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ConsigneeDetails]) => Future.successful(BadRequest(consigneeDetailsPage(mode, navigationForm, formWithErrors))),
+        (formWithErrors: Form[ConsigneeDetails]) => Future.successful(BadRequest(consigneeDetailsPage(mode, formWithErrors))),
         form =>
           updateCache(form)
             .map(_ => navigator.continueTo(mode, nextPage()))
       )
   }
-
-  private def navigationForm(implicit request: JourneyRequest[AnyContent]): DeclarationPage =
-    if (request.declarationType == DeclarationType.SUPPLEMENTARY && request.cacheModel.parties.declarantIsExporter.exists(_.isExporter))
-      ExporterDetails
-    else ConsigneeDetails
 
   private def nextPage()(implicit request: JourneyRequest[AnyContent]): Mode => Call =
     request.declarationType match {
