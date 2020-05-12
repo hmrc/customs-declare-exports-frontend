@@ -117,5 +117,34 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
         }
       }
     }
+
+    onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL, SIMPLIFIED) { request =>
+      "redirect to start" in {
+        withNewCaching(request.cacheModel)
+
+        val correctForm =
+          Json.toJson(ConsignorDetails(EntityDetails(None, Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom")))))
+
+        val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
+
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+      }
+    }
+
+    onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL, SIMPLIFIED) { request =>
+      "return 200 (OK)" when {
+
+        "display page method is invoked and cache is empty" in {
+
+          withNewCaching(request.cacheModel)
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
+        }
+      }
+    }
   }
 }

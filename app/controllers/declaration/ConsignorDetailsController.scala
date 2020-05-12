@@ -21,7 +21,7 @@ import controllers.navigation.Navigator
 import forms.declaration.consignor.ConsignorDetails
 import javax.inject.Inject
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -41,14 +41,16 @@ class ConsignorDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  val validJourneys = Seq(DeclarationType.CLEARANCE)
+
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     request.cacheModel.parties.consignorDetails match {
       case Some(data) => Ok(consignorDetailsPage(mode, ConsignorDetails.form().fill(data)))
       case _          => Ok(consignorDetailsPage(mode, ConsignorDetails.form()))
     }
   }
 
-  def saveAddress(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def saveAddress(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
     ConsignorDetails
       .form()
       .bindFromRequest()

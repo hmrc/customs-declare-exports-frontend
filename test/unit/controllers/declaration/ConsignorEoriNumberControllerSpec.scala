@@ -21,6 +21,7 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
 import forms.declaration.EntityDetails
 import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
+import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -123,6 +124,17 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
         checkViewInteractions()
 
         theResponseForm.value mustBe None
+      }
+    }
+
+    onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL, SIMPLIFIED) { request =>
+      "redirect to start" in {
+        withNewCaching(request.cacheModel)
+
+        val result = controller.displayPage(Mode.Normal)(getRequest())
+
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
       }
     }
   }
@@ -280,6 +292,22 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
         thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeAgentController.displayPage()
         checkViewInteractions(0)
         theCacheModelUpdated.parties.consignorDetails must be(Some(ConsignorDetails(EntityDetails(eoriInput, None))))
+      }
+    }
+
+    onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL, SIMPLIFIED) { request =>
+      "redirect to start" in {
+        val eoriCached = Some(Eori("GB123456789000"))
+        val eoriInput = Some(Eori("GB123456789000"))
+
+        withNewCaching(aDeclarationAfter(request.cacheModel, withConsignorDetails(eoriCached, None)))
+
+        val correctForm = Json.toJson(ConsignorEoriNumber(eori = eoriInput, hasEori = Some(YesNoAnswers.yes)))
+
+        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
+
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result) mustBe Some(controllers.routes.StartController.displayStartPage.url)
       }
     }
   }

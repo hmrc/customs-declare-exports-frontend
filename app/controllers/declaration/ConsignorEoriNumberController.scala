@@ -19,13 +19,14 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.DeclarationPage
+import forms.common.Eori
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.{CarrierDetails, ExporterDetails}
 import forms.declaration.consignor.ConsignorEoriNumber.form
 import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import javax.inject.Inject
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -45,14 +46,16 @@ class ConsignorEoriNumberController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  val validJourneys = Seq(DeclarationType.CLEARANCE)
+
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     request.cacheModel.parties.consignorDetails match {
       case Some(data) => Ok(consignorEoriDetailsPage(mode, navigationForm, form().fill(ConsignorEoriNumber(data))))
       case _          => Ok(consignorEoriDetailsPage(mode, navigationForm, form()))
     }
   }
 
-  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submit(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
@@ -67,8 +70,12 @@ class ConsignorEoriNumberController @Inject()(
       )
   }
 
-  private def navigationForm(implicit request: JourneyRequest[AnyContent]): DeclarationPage =
-    if (request.cacheModel.parties.declarantIsExporter.exists(_.isExporter)) ExporterDetails else ConsignorEoriNumber
+  private def navigationForm(implicit request: JourneyRequest[AnyContent]): DeclarationPage = {
+    val declarantEori: Option[Eori] = request.cacheModel.parties.declarantDetails.flatMap(_.details.eori)
+    val exporterEori: Option[Eori] = request.cacheModel.parties.exporterDetails.flatMap(_.details.eori)
+
+    if (declarantEori == exporterEori) ExporterDetails else ConsignorEoriNumber
+  }
 
   private def nextPage(hasEori: Option[String]): Mode => Call =
     if (hasEori.getOrElse(YesNoAnswers.no) == YesNoAnswers.yes) {
