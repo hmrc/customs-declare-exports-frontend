@@ -16,6 +16,7 @@
 
 package models.declaration
 
+import forms.common.YesNoAnswer
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers.yes
 import forms.declaration._
 import models.DeclarationType
@@ -36,6 +37,7 @@ case class ExportItem(
   nactCodes: Option[List[NactCode]] = None,
   packageInformation: Option[List[PackageInformation]] = None,
   commodityMeasure: Option[CommodityMeasure] = None,
+  additionalInformationReq: Option[YesNoAnswer] = None,
   additionalInformation: Option[AdditionalInformationData] = None,
   documentsProducedData: Option[DocumentsProducedData] = None
 ) {

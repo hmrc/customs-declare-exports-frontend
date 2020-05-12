@@ -45,7 +45,7 @@
     @formHelper(action = controllers.declaration.routes.AdditionalInformationRequiredController.submitForm(mode, (itemId)), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.summary.parties.header"))
+        @sectionHeader(messages("supplementary.consignmentReferences.heading"))
 
         @govukRadios(Radios(
             name = "yesNo",

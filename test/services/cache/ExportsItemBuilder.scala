@@ -18,6 +18,7 @@ package services.cache
 
 import java.util.UUID
 
+import forms.common.YesNoAnswer
 import forms.declaration._
 import forms.declaration.additionaldocuments.DocumentsProduced
 import models.declaration._
@@ -51,6 +52,9 @@ trait ExportsItemBuilder {
 
   def withFiscalInformation(fiscalInformation: FiscalInformation): ItemModifier =
     _.copy(fiscalInformation = Some(fiscalInformation))
+
+  def withAdditionalInformationRequired(data: YesNoAnswer): ItemModifier =
+    _.copy(additionalInformationReq = Some(data))
 
   def withAdditionalFiscalReferenceData(data: AdditionalFiscalReferencesData): ItemModifier =
     _.copy(additionalFiscalReferencesData = Some(data))
