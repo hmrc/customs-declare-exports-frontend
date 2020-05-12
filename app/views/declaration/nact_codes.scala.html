@@ -17,47 +17,53 @@
 @import config.AppConfig
 @import controllers.declaration.routes
 @import controllers.navigation._
+@import forms.declaration.NactCodeFirst
 @import forms.declaration.NactCode
-@import forms.declaration.NactCode._
 @import models.requests.JourneyRequest
-@import services.NationalAdditionalCode
-@import services.view.AutoCompleteItem
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title}
 @import views.html.components.gds._
+@import forms.common.YesNoAnswer
 @import views.components.gds.Styles._
 @import play.twirl.api.HtmlFormat
 @import scala.collection.immutable
+@import forms.common.YesNoAnswer.YesNoAnswers
 
-@this(govukLayout: gdsMainTemplate,
-        govukFieldset: GovukFieldset,
-        govukTable : GovukTable,
-        addButton: addButton,
-        removeButton: removeButton,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        exportsInputText: exportsInputText,
-        tariffDetails: tariffDetails,
-        saveButtons: saveButtons,
-        appConfig: AppConfig,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+@this(
+    govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    govukTable : GovukTable,
+    govukRadios: GovukRadios,
+    link: link,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    exportsInputText: exportsInputText,
+    tariffDetails: tariffDetails,
+    saveButtons: saveButtons,
+    appConfig: AppConfig,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(
         mode: Mode,
         itemId: String,
-        form: Form[NactCode],
+        form: Form[YesNoAnswer],
         nactCodes: Seq[NactCode] = Seq.empty
 )(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBody = { @Html(messages("declaration.nationalAdditionalCode.help.bodyText", components.details_content_link())) }
 
-@nactCodeLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.nationalAdditionalCode.header.nactCode.link")</a>}
-@tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.nationalAdditionalCode.header.tradeTariff.link")</a>}
+@title = @{
+  if(nactCodes.size == 1)
+        Title("declaration.nationalAdditionalCode.header.singular", "supplementary.items")
+  else
+        Title("declaration.nationalAdditionalCode.header.plural", "supplementary.items", nactCodes.size.toString)
+}
 
-@pageHint = {
-    <span class="govuk-hint">
-    @Html(messages("declaration.nationalAdditionalCode.header.hint", nactCodeLink, tradeTariffLink))
-    </span>
+@header = @{
+    if(nactCodes.size == 1)
+        Text(messages("declaration.nationalAdditionalCode.header.singular"))
+    else
+        Text(messages("declaration.nationalAdditionalCode.header.plural", nactCodes.size))
 }
 
 @nactCodesTable = {
@@ -71,7 +77,8 @@
                         attributes = Map("id" -> s"nactCode-table-row$index-label")
                     ),
                     TableRow(
-                        content = HtmlContent(removeButton(value = Some(code.nactCode), hiddenLabel = Some(messages("declaration.nationalAdditionalCode.remove.hint", code.nactCode)))),
+                        content = HtmlContent(link(messages("site.remove"), Some(messages("declaration.nationalAdditionalCode.remove.hint", code.nactCode)), routes.NactCodeRemoveController.displayPage(mode, itemId, code.nactCode))),
+                        classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"nactCode-table-row$index-remove_button")
                     )
                 )
@@ -86,11 +93,37 @@
     }
 }
 
-@govukLayout(
-    title = Title("declaration.nationalAdditionalCode.header", "supplementary.items"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(NactCode, mode, ItemId(itemId))))) {
+@anotherNactCodeQuestion = {
+    @govukRadios(Radios(
+        name = "yesNo",
+        fieldset = Some(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.nationalAdditionalCode.label"))
+            ))
+        )),
+        items = Seq(
+            RadioItem(
+                id = Some("code_yes"),
+                value = Some(YesNoAnswers.yes),
+                content = Text(messages("site.yes")),
+                checked = form("yesNo").value.contains(YesNoAnswers.yes)
+            ),
+            RadioItem(
+                id = Some("code_no"),
+                value = Some(YesNoAnswers.no),
+                content = Text(messages("site.no")),
+                checked = form("yesNo").value.contains(YesNoAnswers.no)
+            )
+        ),
+        errorMessage = form("yesNo").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+    ))
+    }
 
-    @formHelper(action = routes.NactCodeController.submitForm(mode, itemId), 'autoComplete -> "off") {
+@govukLayout(
+    title = title,
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(NactCodeFirst, mode, ItemId(itemId))))) {
+
+    @formHelper(action = routes.NactCodeSummaryController.submitForm(mode, itemId), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
@@ -98,23 +131,14 @@
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(
-                content = Text(messages("declaration.nationalAdditionalCode.header")),
+                content = header,
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(immutable.Seq(
-                pageHint,
                 nactCodesTable,
-                components.fields.field_accessible_autocomplete(
-                    form(nactCodeKey),
-                    "declaration.nationalAdditionalCode.label",
-                    Some("govuk-label--m"),
-                    None,
-                    messages("declaration.nationalAdditionalCode.error.empty"),
-                    AutoCompleteItem.fromNationalAdditionalCode(NationalAdditionalCode.all)
-                ),
+                anotherNactCodeQuestion,
                 tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
-                addButton(hiddenLabel = Some(messages("declaration.nationalAdditionalCode.add.hint"))),
                 saveButtons()
             ))
         ))

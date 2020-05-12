@@ -155,7 +155,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
 
       row must haveSummaryActionsText("site.change declaration.summary.items.item.nationalAdditionalCodes.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, itemWithAnswers.id))
+      row must haveSummaryActionsHref(controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, itemWithAnswers.id))
     }
 
     "have statistical item value with change button" in {

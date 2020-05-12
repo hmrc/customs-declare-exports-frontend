@@ -74,7 +74,7 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
     "display back link for Simplified declaration" in {
       val view = createView(decType = DeclarationType.SIMPLIFIED)
       view must containElementWithID("back-link")
-      view.getElementById("back-link") must haveHref(controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, "itemId"))
+      view.getElementById("back-link") must haveHref(controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, "itemId"))
     }
   }
 

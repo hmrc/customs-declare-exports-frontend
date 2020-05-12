@@ -855,12 +855,18 @@ declaration.taricAdditionalCodes.table.header = TARIC code
 declaration.taricAdditionalCodes.remove.hint = Remove TARIC code {0}
 declaration.taricAdditionalCodes.help.bodyText = Go to data element 6/16 Commodity Code: TARIC Additional Code in the {0}
 
-declaration.nationalAdditionalCode.header = National additional code
+declaration.nationalAdditionalCode.addfirst.header = Do these goods require a national additional code?
+declaration.nationalAdditionalCode.addfirst.label = National additional code
+declaration.nationalAdditionalCode.addnext.header = What is the next national additional code?
+declaration.nationalAdditionalCode.remove.header = Are you sure you want to remove this national additional code?
+
+declaration.nationalAdditionalCode.header.singular = You have added 1 national additional code
+declaration.nationalAdditionalCode.header.plural = You have added {0} national additional codes
 declaration.nationalAdditionalCode.header.hint = This is a {0} that will be used to calculate the duties and taxes applicable. It can be found in the {1} under the ‘Export measures and restrictions’ tab of your commodity code.
 declaration.nationalAdditionalCode.header.nactCode.link = four-digit code
 declaration.nationalAdditionalCode.header.tradeTariff.link = UK Trade Tariff
-declaration.nationalAdditionalCode.label = Do these goods require a national additional code?
-declaration.nationalAdditionalCode.error.empty = Enter a national additional code
+declaration.nationalAdditionalCode.label = Do you need to add another national additional code?
+declaration.nationalAdditionalCode.error.empty = Select a national additional code
 declaration.nationalAdditionalCode.error.invalid = Enter a valid national additional code
 declaration.nationalAdditionalCode.error.maxAmount = Maximum number of codes added
 declaration.nationalAdditionalCode.error.duplicate = National additional code already added
