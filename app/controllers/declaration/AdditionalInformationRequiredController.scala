@@ -21,14 +21,17 @@ import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import javax.inject.Inject
-import models.{Mode}
+import models.declaration.AdditionalInformationData
+import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.additional_information_required
-import scala.concurrent.{ExecutionContext}
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalInformationRequiredController @Inject()(
   authenticate: AuthAction,
@@ -44,24 +47,27 @@ class AdditionalInformationRequiredController @Inject()(
     Ok(additionalInfoReq(mode, itemId, YesNoAnswer.form()))
   }
 
-  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     YesNoAnswer
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[YesNoAnswer]) => BadRequest(additionalInfoReq(mode, itemId, formWithErrors)),
-        validYesNo => navigator.continueTo(mode, nextPage(yesNoAnswer = validYesNo, itemId))
+        (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(additionalInfoReq(mode, itemId, formWithErrors))),
+        validYesNo =>
+          updateCache(itemId).map { _ =>
+            navigator.continueTo(mode, nextPage(yesNoAnswer = validYesNo, itemId))
+        }
       )
-
   }
+  private def updateCache(itemId: String)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(additionalInformation = Some(AdditionalInformationData(Seq.empty)))))
 
   private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String): Mode => Call =
-    mode =>
-      yesNoAnswer.answer match {
-        case YesNoAnswers.yes =>
-          controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId)
-        case YesNoAnswers.no =>
-          controllers.declaration.routes.DocumentsProducedController.displayPage(mode, itemId)
+    yesNoAnswer.answer match {
+      case YesNoAnswers.yes =>
+        controllers.declaration.routes.AdditionalInformationController.displayPage(_, itemId)
+      case YesNoAnswers.no =>
+        controllers.declaration.routes.DocumentsProducedController.displayPage(_, itemId)
     }
 
 }
