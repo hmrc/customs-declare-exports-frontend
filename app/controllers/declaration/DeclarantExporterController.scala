@@ -64,7 +64,9 @@ class DeclarantExporterController @Inject()(
       request.declarationType match {
         case DeclarationType.SUPPLEMENTARY =>
           controllers.declaration.routes.ConsigneeDetailsController.displayPage
-        case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
+        case DeclarationType.CLEARANCE =>
+          controllers.declaration.routes.ConsignorEoriNumberController.displayPage
+        case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
           controllers.declaration.routes.CarrierDetailsController.displayPage
       }
     } else controllers.declaration.routes.ExporterDetailsController.displayPage

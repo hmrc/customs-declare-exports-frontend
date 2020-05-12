@@ -19,7 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.ExporterDetailsController
 import forms.common.{Address, Eori}
 import forms.declaration.ExporterDetails
-import models.Mode
+import models.{DeclarationType, Mode}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -64,7 +64,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
   }
 
   "Exporter Details Controller" should {
-    onEveryDeclarationJourney() { request =>
+    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED) { request =>
       "return 200 OK" when {
         "details are empty" in {
           withNewCaching(request.cacheModel)
@@ -101,6 +101,19 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
 
           await(response) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeAgentController.displayPage()
+        }
+      }
+    }
+
+    onJourney(DeclarationType.CLEARANCE) { request =>
+      "return 303 (SEE_OTHER) and redirect to cosignor eori number page" when {
+        "correct form is submitted" in {
+          withNewCaching(request.cacheModel)
+          val body = Json.obj("details" -> Json.obj("eori" -> "GB213472539481923"))
+          val response = controller.saveAddress(Mode.Normal)(postRequest(body))
+
+          await(response) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.ConsignorEoriNumberController.displayPage()
         }
       }
     }

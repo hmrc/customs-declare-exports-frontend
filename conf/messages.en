@@ -355,6 +355,14 @@ declaration.declarant.exporter.help-item = Go to data element 3/2 Exporter Ident
 declaration.consignee.title = What is the consignee’s address?
 declaration.consignee-details.help-item = Go to data element 3/9 Consignee Name and Address in the {0}
 
+declaration.consignorEori.title = Does the consignor have an EORI number?
+declaration.consignorEori.eori.label = EORI number
+declaration.consignorEori.help-item1 = Go to data element 3/8 Consignor Identification Number in the {0}
+declaration.consignorEori.hasEori.empty = Select if the consignor has an EORI number
+
+declaration.consignorAddress.title = What is the consignor’s name and address?
+declaration.consignorAddress.help-item1 = Go to data element 3/7 Consignor in the {0}
+
 declaration.carrier.title = Who is the carrier?
 declaration.carrier.title.hint = Enter the carrier’s EORI number or name and business address.
 declaration.carrier.eori.info = Carrier’s EORI number
@@ -1038,6 +1046,10 @@ declaration.summary.parties.consignee.eori = Consignee’s EORI number
 declaration.summary.parties.consignee.eori.change = Consignee’s EORI number
 declaration.summary.parties.consignee.address = Consignee’s address
 declaration.summary.parties.consignee.address.change = Consignee’s address
+declaration.summary.parties.consignor.eori = Consignor’s EORI number
+declaration.summary.parties.consignor.eori.change = Consignor’s EORI number
+declaration.summary.parties.consignor.address = Consignor’s address
+declaration.summary.parties.consignor.address.change = Consignor’s address
 declaration.summary.parties.declarant.eori = Your EORI number
 declaration.summary.parties.declarant.eori.change = Declarant’s EORI number
 declaration.summary.parties.declarant.address = Declarant’s address
