@@ -54,13 +54,18 @@ class AdditionalInformationRequiredController @Inject()(
       .fold(
         (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(additionalInfoReq(mode, itemId, formWithErrors))),
         validYesNo =>
-          updateCache(itemId).map { _ =>
-            navigator.continueTo(mode, nextPage(yesNoAnswer = validYesNo, itemId))
+          updateCache(validYesNo, itemId).map { _ =>
+            navigator.continueTo(mode, nextPage(validYesNo, itemId))
         }
       )
   }
-  private def updateCache(itemId: String)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(additionalInformation = Some(AdditionalInformationData(Seq.empty)))))
+  private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] = {
+    val updatedAdditionalInformation = yesNoAnswer.answer match {
+      case YesNoAnswers.yes => r.cacheModel.itemBy(itemId).flatMap(_.additionalInformation).getOrElse(AdditionalInformationData(Seq.empty))
+      case YesNoAnswers.no => AdditionalInformationData(Seq.empty)
+    }
+    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(additionalInformation = Some(updatedAdditionalInformation))))
+  }
 
   private def nextPage(yesNoAnswer: YesNoAnswer, itemId: String): Mode => Call =
     yesNoAnswer.answer match {
