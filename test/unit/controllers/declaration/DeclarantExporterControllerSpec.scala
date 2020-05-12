@@ -124,7 +124,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
       }
     }
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL, DeclarationType.CLEARANCE) { request =>
+    onJourney(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
       "return 303 (SEE_OTHER) and redirect to carrier page when declarant is exporter" in {
 
         withNewCaching(request.cacheModel)
@@ -135,6 +135,22 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.CarrierDetailsController.displayPage()
+
+        verifyPage(0)
+      }
+    }
+
+    onJourney(DeclarationType.CLEARANCE) { request =>
+      "return 303 (SEE_OTHER) and redirect to carrier page when declarant is exporter" in {
+
+        withNewCaching(request.cacheModel)
+
+        val correctForm = Json.toJson(DeclarantIsExporter("Yes"))
+
+        val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.ConsignorEoriNumberController.displayPage()
 
         verifyPage(0)
       }

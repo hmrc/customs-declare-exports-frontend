@@ -25,6 +25,7 @@ import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExi
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.countries.Country
 import forms.{Ducr, Lrn}
 import models.DeclarationStatus.DeclarationStatus
@@ -217,6 +218,12 @@ trait ExportsDeclarationBuilder {
 
   def withConsigneeDetails(eori: Option[Eori], address: Option[Address]): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(consigneeDetails = Some(ConsigneeDetails(EntityDetails(eori, address)))))
+
+  def withConsignorDetails(consignorDetails: ConsignorDetails): ExportsDeclarationModifier =
+    cache => cache.copy(parties = cache.parties.copy(consignorDetails = Some(consignorDetails)))
+
+  def withConsignorDetails(eori: Option[Eori], address: Option[Address]): ExportsDeclarationModifier =
+    cache => cache.copy(parties = cache.parties.copy(consignorDetails = Some(ConsignorDetails(EntityDetails(eori, address)))))
 
   def withoutConsigneeDetails(): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(consigneeDetails = None))

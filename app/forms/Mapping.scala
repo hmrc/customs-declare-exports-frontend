@@ -27,7 +27,16 @@ object Mapping {
     of(radioFormatter(requiredKey, choices))
 
   def optionalRadio(requiredKey: String = "error.required", choices: Seq[String]): FieldMapping[String] =
-    of(radioFormatter(requiredKey, NoneOfTheAbove.value +: choices))
+    of(optionalRadioFormatter(requiredKey, NoneOfTheAbove.value +: choices))
+
+  private def optionalRadioFormatter(requiredKey: String, allowedKeys: Seq[String] = Seq()): Formatter[String] = new Formatter[String] {
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
+      data.get(key) match {
+        case Some(s) if !allowedKeys.contains(s) => Left(Seq(FormError(key, requiredKey)))
+        case s                                   => Right(s.getOrElse(""))
+      }
+    override def unbind(key: String, value: String): Map[String, String] = Map(key -> value)
+  }
 
   private def radioFormatter(requiredKey: String, allowedKeys: Seq[String] = Seq()): Formatter[String] = new Formatter[String] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =

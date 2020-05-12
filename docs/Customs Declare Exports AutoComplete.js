@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.46
+// @version      1.47
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -240,6 +240,26 @@ function consigneeDetails(){
         document.getElementById('details_address_postCode').value = '10001';
 
         selectFromAutoPredict(document.getElementById('details_address_country-container'), "United States of America");
+        document.getElementById('submit').click()
+    }
+}
+
+function consignorAddress(){
+    if (currentPageIs("/customs-declare-exports/declaration/consignor-address")) {
+        document.getElementById('details_address_fullName').value = 'Bags Export';
+        document.getElementById('details_address_addressLine').value = '1 Bags Avenue';
+        document.getElementById('details_address_townOrCity').value = 'New York';
+        document.getElementById('details_address_postCode').value = '10001';
+
+        selectFromAutoPredict(document.getElementById('details_address_country-container'), "United States of America");
+        document.getElementById('submit').click()
+    }
+}
+
+function consignorEoriNumber(){
+    if (currentPageIs("/customs-declare-exports/declaration/consignor-eori-number")) {
+        document.getElementById('Yes').checked = 'checked';
+        document.getElementById('eori').value = 'GB123456789000';
         document.getElementById('submit').click()
     }
 }
@@ -958,6 +978,8 @@ function completeJourney() {
     declarantExporterDetails();
     exporterDetails();
     consigneeDetails();
+    consignorEoriNumber();
+    consignorAddress();
     representingAnotherAgent();
     representativeEori();
     representativeType()
