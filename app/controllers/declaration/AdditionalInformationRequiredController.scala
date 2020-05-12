@@ -62,7 +62,7 @@ class AdditionalInformationRequiredController @Inject()(
   private def updateCache(yesNoAnswer: YesNoAnswer, itemId: String)(implicit r: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] = {
     val updatedAdditionalInformation = yesNoAnswer.answer match {
       case YesNoAnswers.yes => r.cacheModel.itemBy(itemId).flatMap(_.additionalInformation).getOrElse(AdditionalInformationData(Seq.empty))
-      case YesNoAnswers.no => AdditionalInformationData(Seq.empty)
+      case YesNoAnswers.no  => AdditionalInformationData(Seq.empty)
     }
     updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(additionalInformation = Some(updatedAdditionalInformation))))
   }
