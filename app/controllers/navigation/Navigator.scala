@@ -25,15 +25,15 @@ import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import forms.declaration.countries.Countries.{DestinationCountryPage, OriginationCountryPage}
 import forms.declaration.officeOfExit.{OfficeOfExitInsideUK, OfficeOfExitOutsideUK}
-import forms.declaration.{BorderTransport, Document, PackageInformation, _}
+import forms.declaration.{BorderTransport, CarrierDetails, Document, PackageInformation, _}
 import forms.{Choice, DeclarationPage}
 import javax.inject.Inject
 import models.DeclarationType._
-import models.{ExportsDeclaration, Mode}
 import models.Mode.ErrorFix
 import models.declaration.ExportItem
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
+import models.{ExportsDeclaration, Mode}
 import play.api.mvc.{AnyContent, Call, Result, Results}
 import services.audit.{AuditService, AuditTypes}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -71,6 +71,7 @@ object Navigator {
     case DeclarantDetails            => controllers.declaration.routes.ConsignmentReferencesController.displayPage
     case ExporterDetails             => controllers.declaration.routes.DeclarantExporterController.displayPage
     case ConsigneeDetails            => controllers.declaration.routes.CarrierDetailsController.displayPage
+    case CarrierDetails              => controllers.declaration.routes.RepresentativeStatusController.displayPage
     case BorderTransport             => controllers.declaration.routes.DepartureTransportController.displayPage
     case TransportPayment            => controllers.declaration.routes.BorderTransportController.displayPage
     case ContainerFirst              => controllers.declaration.routes.TransportPaymentController.displayPage
@@ -138,6 +139,7 @@ object Navigator {
     case DeclarantDetails            => controllers.declaration.routes.ConsignmentReferencesController.displayPage
     case ExporterDetails             => controllers.declaration.routes.DeclarantExporterController.displayPage
     case ConsigneeDetails            => controllers.declaration.routes.RepresentativeStatusController.displayPage
+    case CarrierDetails              => controllers.declaration.routes.RepresentativeStatusController.displayPage
     case BorderTransport             => controllers.declaration.routes.DepartureTransportController.displayPage
     case ContainerFirst              => controllers.declaration.routes.BorderTransportController.displayPage
     case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
@@ -170,6 +172,7 @@ object Navigator {
     case DeclarantDetails            => controllers.declaration.routes.ConsignmentReferencesController.displayPage
     case ExporterDetails             => controllers.declaration.routes.DeclarantExporterController.displayPage
     case ConsigneeDetails            => controllers.declaration.routes.CarrierDetailsController.displayPage
+    case CarrierDetails              => controllers.declaration.routes.RepresentativeStatusController.displayPage
     case DeclarationAdditionalActors => controllers.declaration.routes.ConsigneeDetailsController.displayPage
     case TransportPayment            => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case ContainerFirst              => controllers.declaration.routes.TransportPaymentController.displayPage
@@ -203,6 +206,7 @@ object Navigator {
     case DeclarantDetails            => controllers.declaration.routes.ConsignmentReferencesController.displayPage
     case ExporterDetails             => controllers.declaration.routes.DeclarantExporterController.displayPage
     case ConsigneeDetails            => controllers.declaration.routes.CarrierDetailsController.displayPage
+    case CarrierDetails              => controllers.declaration.routes.RepresentativeStatusController.displayPage
     case DeclarationAdditionalActors => controllers.declaration.routes.ConsigneeDetailsController.displayPage
     case TransportPayment            => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
     case ContainerFirst              => controllers.declaration.routes.TransportPaymentController.displayPage
@@ -243,7 +247,6 @@ object Navigator {
     case RepresentativeAgent                  => controllers.declaration.routes.ExporterDetailsController.displayPage
     case RepresentativeEntity                 => controllers.declaration.routes.RepresentativeAgentController.displayPage
     case RepresentativeStatus                 => controllers.declaration.routes.RepresentativeEntityController.displayPage
-    case CarrierDetails                       => controllers.declaration.routes.RepresentativeStatusController.displayPage
     case OfficeOfExitInsideUK                 => controllers.declaration.routes.LocationController.displayPage
     case OfficeOfExitOutsideUK                => controllers.declaration.routes.OfficeOfExitController.displayPage
     case AdditionalDeclarationTypeStandardDec => controllers.declaration.routes.DispatchLocationController.displayPage
@@ -291,6 +294,7 @@ object Navigator {
 
   val clearanceCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
     case ExporterDetails => exporterDetailsPreviousPage
+    case CarrierDetails  => carrierDetailsPreviousPage
     case page            => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }
 
@@ -300,6 +304,12 @@ object Navigator {
     else
       controllers.declaration.routes.DeclarantExporterController.displayPage(mode)
 
+  private def carrierDetailsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.parties.declarantIsExporter.exists(_.isExporter))
+      controllers.declaration.routes.DeclarantExporterController.displayPage(mode)
+    else
+      controllers.declaration.routes.RepresentativeStatusController.displayPage(mode)
+
   def backLink(page: DeclarationPage, mode: Mode, cacheModel: ExportsDeclaration)(implicit request: JourneyRequest[_]): Call =
     mode match {
       case Mode.ErrorFix if (request.sourceDecId.isDefined) => controllers.routes.RejectedNotificationsController.displayPage(request.sourceDecId.get)
@@ -307,7 +317,7 @@ object Navigator {
       case Mode.Change                                      => controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
       case Mode.ChangeAmend                                 => controllers.declaration.routes.SummaryController.displayPage(Mode.Amend)
       case Mode.Draft                                       => controllers.declaration.routes.SummaryController.displayPage(Mode.Draft)
-      case _                                                =>
+      case _ =>
         val specific = request.declarationType match {
           case STANDARD      => standardCacheDependent.orElse(standard)
           case SUPPLEMENTARY => supplementaryCacheDependent.orElse(supplementary)

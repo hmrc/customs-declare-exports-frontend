@@ -20,9 +20,12 @@ import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.DeclarationPage
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
-import forms.declaration.{CarrierDetails, CarrierDetailsSpec, EntityDetails, ExporterDetails}
+import forms.declaration.{CarrierDetails, CarrierDetailsSpec, DeclarantIsExporter, EntityDetails, ExporterDetails}
 import helpers.views.declaration.CommonMessages
+import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.declaration.Parties
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
@@ -39,10 +42,8 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
   val form: Form[CarrierDetails] = CarrierDetails.form(DeclarationType.STANDARD)
   private val carrierDetailsPage = instanceOf[carrier_details]
 
-  private def createView(form: Form[CarrierDetails] = form, navigationForm: DeclarationPage = CarrierDetails)(
-    implicit journeyRequest: JourneyRequest[_]
-  ): Document =
-    carrierDetailsPage(Mode.Normal, navigationForm, form)
+  private def createView(form: Form[CarrierDetails] = form)(implicit journeyRequest: JourneyRequest[_]): Document =
+    carrierDetailsPage(Mode.Normal, form)
 
   "Carrier Details" should {
 
@@ -101,22 +102,6 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
         view.getElementById("details_address_country").attr("value") mustBe empty
       }
 
-      "display 'Back' button that links to 'Representative Status' page" in {
-
-        val backButton = view.getElementById("back-link")
-
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.RepresentativeStatusController.displayPage().url
-      }
-
-      "display 'Back' button that links to 'Is Declarant Exporter' page" in {
-
-        val backButton = createView(navigationForm = ExporterDetails).getElementById("back-link")
-
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.DeclarantExporterController.displayPage().url
-      }
-
       "display 'Save and continue' button on page" in {
         view.getElementById("submit").text() mustBe messages(saveAndContinueCaption)
       }
@@ -125,6 +110,45 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
         view.getElementById("submit_and_return").text() mustBe messages(saveAndReturnCaption)
         view.getElementById("submit_and_return").attr("name") mustBe SaveAndReturn.toString
       }
+    }
+
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
+      "display 'Back' button that links to 'Representative Status' page" in {
+
+        val backButton = createView().getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.RepresentativeStatusController.displayPage().url
+      }
+    }
+
+    onClearance { request =>
+      "display 'Back' button that links to 'Representative Status' page" when {
+        "user have answered 'No' on 'Is Declarant an Exporter' page" in {
+
+          val cachedParties = Parties(declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.no)))
+          val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
+
+          val backButton = createView()(requestWithCachedParties).getElementById("back-link")
+
+          backButton.text() mustBe messages(backCaption)
+          backButton.attr("href") mustBe routes.RepresentativeStatusController.displayPage().url
+        }
+      }
+
+      "display 'Back' button that links to 'Is Declarant Exporter' page" when {
+        "user have answered 'Yes' on 'Is Declarant an Exporter' page" in {
+
+          val cachedParties = Parties(declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.yes)))
+          val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
+
+          val backButton = createView()(requestWithCachedParties).getElementById("back-link")
+
+          backButton.text() mustBe messages(backCaption)
+          backButton.attr("href") mustBe routes.DeclarantExporterController.displayPage().url
+        }
+      }
+
     }
   }
 
