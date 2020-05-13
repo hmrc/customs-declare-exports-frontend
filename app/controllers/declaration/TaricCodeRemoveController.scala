@@ -20,10 +20,9 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.{form, YesNoAnswers}
-import forms.declaration.{NactCode, TaricCode}
 import javax.inject.Inject
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -55,7 +54,7 @@ class TaricCodeRemoveController @Inject()(
         formData => {
           formData.answer match {
             case YesNoAnswers.yes =>
-              updateExportsCache(itemId, request.cacheModel.itemBy(itemId).flatMap(_.taricCodes).getOrElse(Seq.empty).filterNot(_.taricCode == code))
+              updateExportsCache(itemId, code)
                 .map(_ => navigator.continueTo(mode, routes.TaricCodeSummaryController.displayPage(_, itemId)))
             case YesNoAnswers.no =>
               Future.successful(navigator.continueTo(Mode.Normal, routes.TaricCodeSummaryController.displayPage(_, itemId)))
@@ -64,8 +63,10 @@ class TaricCodeRemoveController @Inject()(
       )
   }
 
-  private def updateExportsCache(itemId: String, updatedCache: Seq[TaricCode])(
-    implicit r: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(taricCodes = Some(updatedCache.toList))))
+  private def updateExportsCache(itemId: String, taricCodeToRemove: String)(
+    implicit request: JourneyRequest[AnyContent]
+  ): Future[Option[ExportsDeclaration]] = {
+    val updatedCodes = request.cacheModel.itemBy(itemId).flatMap(_.taricCodes).getOrElse(Seq.empty).filterNot(_.taricCode == taricCodeToRemove)
+    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(taricCodes = Some(updatedCodes.toList))))
+  }
 }
