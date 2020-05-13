@@ -15,7 +15,6 @@
  *@
 
 @import controllers.declaration.routes._
-@import forms.DeclarationPage
 @import forms.declaration.RepresentativeAgent
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import forms.common.YesNoAnswer.YesNoAnswers
@@ -40,7 +39,7 @@
 
 @govukLayout(
     title = Title("declaration.representative.agent.title"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RepresentativeAgent, mode, request.cacheModel)))) {
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(RepresentativeAgent, mode)))) {
 
     @formHelper(action = RepresentativeAgentController.submitForm(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)

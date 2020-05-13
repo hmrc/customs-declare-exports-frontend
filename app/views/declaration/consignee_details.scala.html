@@ -14,11 +14,10 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes._
-@import forms.DeclarationPage
-@import forms.declaration.ConsigneeDetails
-@import models.requests.JourneyRequest
+@import config.AppConfig
 @import controllers.navigation.Navigator
+@import forms.declaration.ConsigneeDetails
+@import models.requests.JourneyRequestgation.Navigator
 @import config.AppConfig
 @import views.{BackButton, Title}
 @import views.html.components.gds._
@@ -50,7 +49,7 @@
 
 @govukLayout(
     title = Title("declaration.consignee.title", "declaration.summary.parties.header"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ConsigneeDetails, mode, request.cacheModel)))) {
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ConsigneeDetails, mode)))) {
 
     @formHelper(action = ConsigneeDetailsController.saveAddress(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)

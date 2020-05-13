@@ -15,7 +15,6 @@
  *@
 
 @import controllers.declaration.routes._
-@import forms.DeclarationPage
 @import forms.declaration.CarrierDetails
 @import services.model.Country
 @import uk.gov.hmrc.play.views.html._
@@ -79,7 +78,7 @@
 
 @govukLayout(
     title = Title("declaration.carrier.title", "declaration.summary.parties.header"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(CarrierDetails, mode, request.cacheModel)))) {
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(CarrierDetails, mode)))) {
 
         @formHelper(action = CarrierDetailsController.saveAddress(mode), 'autoComplete -> "off") {
 

@@ -242,7 +242,6 @@ object Navigator {
     case DispatchLocation                     => controllers.declaration.routes.DeclarationChoiceController.displayPage
     case ConsignmentReferences                => controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage
     case DeclarantIsExporter                  => controllers.declaration.routes.DeclarantDetailsController.displayPage
-    case RepresentativeAgent                  => controllers.declaration.routes.ExporterDetailsController.displayPage
     case RepresentativeEntity                 => controllers.declaration.routes.RepresentativeAgentController.displayPage
     case RepresentativeStatus                 => controllers.declaration.routes.RepresentativeEntityController.displayPage
     case OfficeOfExitInsideUK                 => controllers.declaration.routes.LocationController.displayPage
@@ -324,24 +323,6 @@ object Navigator {
       case Mode.Draft                                       => controllers.declaration.routes.SummaryController.displayPage(Mode.Draft)
       case _ =>
         val specific = request.declarationType match {
-          case STANDARD      => standard
-          case SUPPLEMENTARY => supplementary
-          case SIMPLIFIED    => simplified
-          case OCCASIONAL    => occasional
-          case CLEARANCE     => clearance
-        }
-        common.orElse(specific)(page)(mode)
-    }
-
-  def backLink(page: DeclarationPage, mode: Mode, cacheModel: ExportsDeclaration)(implicit request: JourneyRequest[_]): Call =
-    mode match {
-      case Mode.ErrorFix if (request.sourceDecId.isDefined) => controllers.routes.RejectedNotificationsController.displayPage(request.sourceDecId.get)
-      case Mode.ErrorFix                                    => controllers.routes.SubmissionsController.displayListOfSubmissions()
-      case Mode.Change                                      => controllers.declaration.routes.SummaryController.displayPage(Mode.Normal)
-      case Mode.ChangeAmend                                 => controllers.declaration.routes.SummaryController.displayPage(Mode.Amend)
-      case Mode.Draft                                       => controllers.declaration.routes.SummaryController.displayPage(Mode.Draft)
-      case _ =>
-        val specific = request.declarationType match {
           case STANDARD      => standardCacheDependent.orElse(standard)
           case SUPPLEMENTARY => supplementaryCacheDependent.orElse(supplementary)
           case SIMPLIFIED    => simplifiedCacheDependent.orElse(simplified)
@@ -349,9 +330,9 @@ object Navigator {
           case CLEARANCE     => clearanceCacheDependent.orElse(clearance)
         }
 
-        commonCacheDependent.orElse(specific)(page) match {
+        commonCacheDependent.orElse(common).orElse(specific)(page) match {
           case mapping: (Mode => Call)                       => mapping(mode)
-          case mapping: ((ExportsDeclaration, Mode) => Call) => mapping(cacheModel, mode)
+          case mapping: ((ExportsDeclaration, Mode) => Call) => mapping(request.cacheModel, mode)
         }
     }
 

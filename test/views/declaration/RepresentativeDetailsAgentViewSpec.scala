@@ -17,14 +17,13 @@
 package views.declaration
 
 import base.Injector
-import forms.DeclarationPage
 import forms.common.Eori
-import forms.declaration.{EntityDetails, RepresentativeAgent}
 import forms.declaration.consignor.ConsignorDetails
+import forms.declaration.{EntityDetails, RepresentativeAgent}
 import models.DeclarationType._
+import models.Mode
 import models.declaration.Parties
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
