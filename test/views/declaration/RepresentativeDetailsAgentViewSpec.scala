@@ -17,9 +17,11 @@
 package views.declaration
 
 import base.Injector
+import forms.DeclarationPage
 import forms.declaration.RepresentativeAgent
-import models.Mode
+import forms.declaration.consignor.ConsignorDetails
 import models.requests.JourneyRequest
+import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
@@ -34,8 +36,11 @@ class RepresentativeDetailsAgentViewSpec extends UnitViewSpec with ExportsTestDa
   private val page = instanceOf[representative_details_agent]
   private val form: Form[RepresentativeAgent] = RepresentativeAgent.form()
   override implicit val messages = validatedMessages(request)
-  private def createView(mode: Mode = Mode.Normal, form: Form[RepresentativeAgent] = form)(implicit request: JourneyRequest[_]): Document =
-    page(mode, form)(request, messages)
+
+  private def createView(mode: Mode = Mode.Normal, navigationForm: DeclarationPage = RepresentativeAgent, form: Form[RepresentativeAgent] = form)(
+    implicit request: JourneyRequest[_]
+  ): Document =
+    page(mode, navigationForm, form)(request, messages)
 
   "Representative Details Agent View on empty page" should {
     onEveryDeclarationJourney() { implicit request =>
@@ -57,15 +62,6 @@ class RepresentativeDetailsAgentViewSpec extends UnitViewSpec with ExportsTestDa
 
       }
 
-      "display 'Back' button that links to 'Exporter Details' page" in {
-        val view = createView()
-
-        val backButton = view.getElementById("back-link")
-
-        backButton must containMessage("site.back")
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ExporterDetailsController.displayPage(Mode.Normal))
-      }
-
       "display 'Save and continue' button on page" in {
         val saveButton = view.getElementById("submit")
         saveButton must containMessage("site.save_and_continue")
@@ -76,22 +72,57 @@ class RepresentativeDetailsAgentViewSpec extends UnitViewSpec with ExportsTestDa
         saveAndReturnButton must containMessage("site.save_and_come_back_later")
       }
     }
-  }
 
-  "Representative Details Status View for invalid input" should {
-    onEveryDeclarationJourney() { implicit request =>
-      "display errors when answer is incorrect" in {
+    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { implicit request =>
+      val view = createView()
 
-        val view = createView(
-          form = RepresentativeAgent
-            .form()
-            .bind(Map("representingAgent" -> "invalid"))
-        )
+      "display 'Back' button that links to 'Exporter Details' page" in {
+        val view = createView()
 
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#representingAgent")
+        val backButton = view.getElementById("back-link")
 
-        view.getElementsByClass("#govuk-error-message").text() contains messages("choicePage.input.error.empty")
+        backButton must containMessage("site.back")
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ExporterDetailsController.displayPage(Mode.Normal))
+      }
+
+      onJourney(DeclarationType.CLEARANCE) { implicit request =>
+        val view = createView()
+
+        "display 'Back' button that links to 'Consignor Details' page" in {
+          val view = createView()
+
+          val backButton = view.getElementById("back-link")
+
+          backButton must containMessage("site.back")
+          backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ConsignorDetailsController.displayPage(Mode.Normal))
+        }
+
+        "display 'Back' button that links to 'Consignor Eori Number' page" in {
+          val view = createView(navigationForm = ConsignorDetails)
+
+          val backButton = view.getElementById("back-link")
+
+          backButton must containMessage("site.back")
+          backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ConsignorEoriNumberController.displayPage(Mode.Normal))
+        }
+      }
+    }
+
+    "Representative Details Status View for invalid input" should {
+      onEveryDeclarationJourney() { implicit request =>
+        "display errors when answer is incorrect" in {
+
+          val view = createView(
+            form = RepresentativeAgent
+              .form()
+              .bind(Map("representingAgent" -> "invalid"))
+          )
+
+          view must haveGovukGlobalErrorSummary
+          view must containErrorElementWithTagAndHref("a", "#representingAgent")
+
+          view.getElementsByClass("#govuk-error-message").text() contains messages("choicePage.input.error.empty")
+        }
       }
     }
   }

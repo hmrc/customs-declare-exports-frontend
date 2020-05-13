@@ -76,7 +76,7 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
 
         backButton.text() mustBe "site.back"
         backButton.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, itemId = "itemId")
+          controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, itemId = "itemId")
         )
       }
 
@@ -117,7 +117,7 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
 
         backButton.text() mustBe "site.back"
         backButton.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, itemId = "itemId")
+          controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, itemId = "itemId")
         )
       }
 
@@ -158,7 +158,7 @@ class StatisticalValueViewSpec extends UnitViewSpec with ExportsTestData with St
 
         backButton.text() mustBe "site.back"
         backButton.getElementById("back-link") must haveHref(
-          controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, itemId = "itemId")
+          controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, itemId = "itemId")
         )
       }
 

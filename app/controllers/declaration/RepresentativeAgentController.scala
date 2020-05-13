@@ -18,9 +18,12 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
+import forms.DeclarationPage
 import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
-import forms.declaration.RepresentativeAgent
+import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
+import forms.declaration.{ExporterDetails, RepresentativeAgent}
 import javax.inject.Inject
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.declaration.RepresentativeDetails
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -45,8 +48,8 @@ class RepresentativeAgentController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.parties.representativeDetails.flatMap(_.representingOtherAgent) match {
-      case Some(data) => Ok(representativeAgentPage(mode, RepresentativeAgent.form().fill(RepresentativeAgent(data))))
-      case _          => Ok(representativeAgentPage(mode, RepresentativeAgent.form()))
+      case Some(data) => Ok(representativeAgentPage(mode, navigationForm, RepresentativeAgent.form().fill(RepresentativeAgent(data))))
+      case _          => Ok(representativeAgentPage(mode, navigationForm, RepresentativeAgent.form()))
     }
   }
 
@@ -55,11 +58,17 @@ class RepresentativeAgentController @Inject()(
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[RepresentativeAgent]) => Future.successful(BadRequest(representativeAgentPage(mode, formWithErrors))),
+        (formWithErrors: Form[RepresentativeAgent]) => Future.successful(BadRequest(representativeAgentPage(mode, navigationForm, formWithErrors))),
         validRepresentativeDetails =>
           updateCache(validRepresentativeDetails).map(_ => navigator.continueTo(mode, nextPage(validRepresentativeDetails)))
       )
   }
+
+  private def navigationForm(implicit request: JourneyRequest[AnyContent]): DeclarationPage =
+    request.declarationType match {
+      case CLEARANCE => if (request.cacheModel.parties.consignorDetails.exists(_.details.eori.nonEmpty)) ConsignorDetails else RepresentativeAgent
+      case _         => RepresentativeAgent
+    }
 
   private def nextPage(formData: RepresentativeAgent): Mode => Call =
     if (formData.representingAgent == yes) controllers.declaration.routes.RepresentativeEntityController.displayPage

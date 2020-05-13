@@ -15,44 +15,8 @@
  *@
 
 @import services.view.AutoCompleteItem
-@import views.html.helper._
-@import views.html.components.inputs.input_accessible_autocomplete
+@import views.html.components.fields.field_accessible_autocomplete_with_header
 
 @(field: Field, label: String, labelClass: Option[String], hintText: Option[String], emptySelectValue: String, items: List[AutoCompleteItem], args: (Symbol, Any)*)(implicit messages: Messages)
-@*
-Some fields contains Sequence as type of the field, e.g. countries of routing on destination countries page.
-JQuery treats [] as element's attribute and tried evaluated this.
-To avoid problems, we need to remove [] from field.
-*@
-@fieldNameWithoutBrackets = @{
-    field.name.replace("[]", "").replace(".", "_")
-}
 
-@elements = @{
-    FieldElements(field.id, field, null, args.toMap, messages)
-}
-
-@allErrors = @{
-    elements.errors ++ args.flatMap {
-        case ('otherErrors, otherErrors: Seq[_]) => otherErrors.map(_.toString)
-        case _ => Seq.empty
-    }
-}
-
-<div id="@fieldNameWithoutBrackets-autocomplete-outer" class="govuk-form-group @if(allErrors.nonEmpty) {govuk-form-group--error}">
-    <label id="@(fieldNameWithoutBrackets)-label" for="@fieldNameWithoutBrackets" class="govuk-label@if(labelClass.nonEmpty){ @labelClass}" >
-        @messages(label)
-    </label>
-
-    @allErrors.map { error => <span id="error-message-@{field.name}-input" class="govuk-error-message">@messages(error)</span> }
-
-    @hintText.map { ht =>
-        <span class="govuk-hint" id="@(fieldNameWithoutBrackets)-hint">@ht</span>
-    }
-
-    @input_accessible_autocomplete(
-        field = field,
-        emptySelectValue = emptySelectValue,
-        items = items
-    )
-</div>
+@field_accessible_autocomplete_with_header(field, label, labelClass, hintText, emptySelectValue, items, false, args:_*)

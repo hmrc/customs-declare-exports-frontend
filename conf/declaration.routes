@@ -65,6 +65,18 @@ GET         /consignee-details                   controllers.declaration.Consign
 
 POST        /consignee-details                   controllers.declaration.ConsigneeDetailsController.saveAddress(mode: models.Mode ?= models.Mode.Normal)
 
+# Consignor Eori Number
+
+GET         /consignor-eori-number               controllers.declaration.ConsignorEoriNumberController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /consignor-eori-number               controllers.declaration.ConsignorEoriNumberController.submit(mode: models.Mode ?= models.Mode.Normal)
+
+# Consignor details
+
+GET         /consignor-address                   controllers.declaration.ConsignorDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /consignor-address                   controllers.declaration.ConsignorDetailsController.saveAddress(mode: models.Mode ?= models.Mode.Normal)
+
 # Carrier details
 
 GET         /carrier-details                     controllers.declaration.CarrierDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
@@ -121,9 +133,9 @@ POST        /location-of-goods                   controllers.declaration.Locatio
 
 # Identification of a Warehouse
 
-GET         /warehouse-details            controllers.declaration.WarehouseIdentificationController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /warehouse-details                   controllers.declaration.WarehouseIdentificationController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /warehouse-details           controllers.declaration.WarehouseIdentificationController.saveIdentificationNumber(mode: models.Mode ?= models.Mode.Normal)
+POST        /warehouse-details                   controllers.declaration.WarehouseIdentificationController.saveIdentificationNumber(mode: models.Mode ?= models.Mode.Normal)
 
 # Supervising Customs Office
 
@@ -232,9 +244,18 @@ POST        /items/:itemId/taric-codes                         controllers.decla
 
 # NACT Code
 
-GET         /items/:itemId/nact-codes                          controllers.declaration.NactCodeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/national-additional-code            controllers.declaration.NactCodeAddController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
 
-POST        /items/:itemId/nact-codes                          controllers.declaration.NactCodeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/national-additional-code            controllers.declaration.NactCodeAddController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+GET         /items/:itemId/national-additional-codes-list      controllers.declaration.NactCodeSummaryController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+POST        /items/:itemId/national-additional-codes-list      controllers.declaration.NactCodeSummaryController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+GET         /items/:itemId/national-additional-code/:code/remove            controllers.declaration.NactCodeRemoveController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, code)
+
+POST        /items/:itemId/national-additional-code/:code/remove            controllers.declaration.NactCodeRemoveController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, code)
+
 
 # Statistical Value
 

@@ -17,7 +17,8 @@
 package views.declaration
 
 import base.Injector
-import config.AppConfig
+import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.NactCode
 import helpers.views.declaration.CommonMessages
 import models.DeclarationType._
@@ -34,113 +35,50 @@ import views.tags.ViewTest
 @ViewTest
 class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
 
-  private val appConfig = instanceOf[AppConfig]
   private val page = instanceOf[nact_codes]
   private val itemId = "item1"
   private val realMessages = validatedMessages
-  private def createView(form: Form[NactCode], codes: List[NactCode], request: JourneyRequest[_]): Document =
+  private def createView(form: Form[YesNoAnswer], codes: List[NactCode], request: JourneyRequest[_]): Document =
     page(Mode.Normal, itemId, form, codes)(request, realMessages)
-
-  def nactCodeView(request: JourneyRequest[_], taricCode: Option[NactCode] = None, codes: List[NactCode] = List.empty): Unit = {
-    val form = taricCode.fold(NactCode.form)(NactCode.form.fill(_))
-    val view = createView(form, codes, request)
-
-    "display page title" in {
-
-      view.getElementById("title").text() mustBe realMessages("declaration.nationalAdditionalCode.header")
-    }
-
-    "display NACT input field" in {
-      val expectedCode = taricCode.map(_.nactCode).getOrElse("")
-      view.getElementById(NactCode.nactCodeKey).attr("value") mustBe expectedCode
-    }
-
-    "display existing NACT codes table" in {
-      codes.zipWithIndex.foreach {
-        case (code, index) => {
-          view.getElementById(s"nactCode-table-row$index-label").text mustBe code.nactCode
-          var removeButton = view.getElementById(s"nactCode-table-row$index-remove_button")
-          removeButton.text must include(realMessages(removeCaption))
-          removeButton.text must include(realMessages("declaration.nationalAdditionalCode.remove.hint", code.nactCode))
-        }
-      }
-    }
-
-    "display 'Add' button on page" in {
-
-      val addButton = view.getElementById("add")
-      addButton.text() must include(realMessages(addCaption))
-      addButton.text() must include(realMessages("declaration.nationalAdditionalCode.add.hint"))
-    }
-
-    "display 'Back' button that links to 'TARIC Code' page" in {
-      val backButton = view.getElementById("back-link")
-
-      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, itemId))
-    }
-
-    "display 'Save and continue' button on page" in {
-
-      val saveButton = view.select("#submit")
-      saveButton.text() mustBe realMessages(saveAndContinueCaption)
-    }
-  }
 
   "NACT Code View on empty page" must {
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
-      val view = createView(NactCode.form, List.empty, request)
+      val view = createView(YesNoAnswer.form(), List.empty, request)
 
       "display page title" in {
-
-        view.getElementsByTag("h1").text() mustBe realMessages("declaration.nationalAdditionalCode.header")
+        view.getElementsByTag("h1").text() mustBe realMessages("declaration.nationalAdditionalCode.header.plural", "0")
       }
 
-      "display taric code input field" in {
-        view.getElementById(NactCode.nactCodeKey).attr("value") mustBe empty
+      "display radio button with Yes option" in {
+        view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes
+        view.getElementsByAttributeValue("for", "code_yes").text() mustBe realMessages("site.yes")
       }
-
-      "display 'Add' button on page" in {
-
-        val addButton = view.getElementById("add")
-        addButton.text() must include(realMessages(addCaption))
-        addButton.text() must include(realMessages("declaration.nationalAdditionalCode.add.hint"))
+      "display radio button with No option" in {
+        view.getElementById("code_no").attr("value") mustBe YesNoAnswers.no
+        view.getElementsByAttributeValue("for", "code_no").text() mustBe realMessages("site.no")
       }
 
       "display 'Save and continue' button on page" in {
-
         val saveButton = view.select("#submit")
         saveButton.text() mustBe realMessages(saveAndContinueCaption)
       }
-    }
 
-    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
       "display 'Back' button that links to 'TARIC Code' page" in {
-
-        val view = createView(NactCode.form, List.empty, request)
-
         val backButton = view.getElementById("back-link")
-
         backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, itemId))
       }
     }
   }
 
   "NACT Code View on populated page" when {
-    val code = NactCode("1234")
-    val form = NactCode.form.fill(code)
     val codes = List(NactCode("ABCD"), NactCode("4321"))
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
-      val view = createView(form, codes, request)
+      val view = createView(YesNoAnswer.form, codes, request)
 
       "display page title" in {
 
-        view.getElementsByTag("h1").text() mustBe realMessages("declaration.nationalAdditionalCode.header")
-      }
-
-      "display NACT code input field" in {
-        val expectedCode = code.nactCode
-        view.getElementById(NactCode.nactCodeKey).attr("value") mustBe expectedCode
+        view.getElementsByTag("h1").text() mustBe realMessages("declaration.nationalAdditionalCode.header.plural", "2")
       }
 
       "display existing NACT codes table" in {
@@ -153,31 +91,19 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
           }
         }
       }
-
-      "display 'Add' button on page" in {
-
-        val addButton = view.getElementById("add")
-        addButton.text() must include(realMessages(addCaption))
-        addButton.text() must include(realMessages("declaration.nationalAdditionalCode.add.hint"))
-      }
-
-      "display 'Save and continue' button on page" in {
-
-        val saveButton = view.select("#submit")
-        saveButton.text() mustBe realMessages(saveAndContinueCaption)
-      }
     }
+  }
+
+  "NACT Code View with single code" when {
+    val codes = List(NactCode("ABCD"))
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
-      "display 'Back' button that links to 'TARIC Code' page" in {
+      val view = createView(YesNoAnswer.form, codes, request)
 
-        val view = createView(NactCode.form, List.empty, request)
+      "display page title" in {
 
-        val backButton = view.getElementById("back-link")
-
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, itemId))
+        view.getElementsByTag("h1").text() mustBe realMessages("declaration.nationalAdditionalCode.header.singular")
       }
     }
-
   }
 }

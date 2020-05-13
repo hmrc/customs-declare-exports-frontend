@@ -197,12 +197,12 @@
                 content = Text(messages("declaration.summary.items.item.nationalAdditionalCodes"))
             ),
             value = Value(
-                content = Text(nactCodes.map(_.nactCode).mkString(", "))
+                content = Text(if(nactCodes.isEmpty) messages("site.no") else nactCodes.map(_.nactCode).mkString(", "))
             ),
             actions = Some(Actions(
                 items = Seq(
                     ActionItem(
-                        href = controllers.declaration.routes.NactCodeController.displayPage(mode, item.id).url,
+                        href = controllers.declaration.routes.NactCodeSummaryController.displayPage(mode, item.id).url,
                         content = Text(messages("site.change")),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.nationalAdditionalCodes.change", item.sequenceId))
                     )
