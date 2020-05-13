@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.47
+// @version      1.48
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -681,7 +681,8 @@ function cusCode(){
 }
 
 function taricCodes(){
-    if (currentPageIs('/customs-declare-exports/declaration/items/.*/taric-codes')) {
+    if (currentPageIs('/customs-declare-exports/declaration/items/.*/additional-taric-code')) {
+        document.getElementById('code_no').checked = 'checked';
         document.getElementById('submit').click();
     }
 }
