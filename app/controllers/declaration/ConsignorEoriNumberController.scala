@@ -71,7 +71,7 @@ class ConsignorEoriNumberController @Inject()(
   }
 
   private def nextPage(hasEori: Option[String])(implicit request: JourneyRequest[_]): Mode => Call =
-    if (hasEori.getOrElse(YesNoAnswers.no) == YesNoAnswers.yes && request.isDeclarantExporter) {
+    if (hasEori.getOrElse(YesNoAnswers.no) == YesNoAnswers.yes && request.cacheModel.isDeclarantExporter) {
       controllers.declaration.routes.CarrierDetailsController.displayPage
     } else if (hasEori.getOrElse(YesNoAnswers.no) == YesNoAnswers.yes) {
       controllers.declaration.routes.RepresentativeAgentController.displayPage

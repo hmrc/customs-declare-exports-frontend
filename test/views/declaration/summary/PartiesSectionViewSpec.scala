@@ -18,6 +18,7 @@ package views.declaration.summary
 
 import base.Injector
 import forms.common.{Address, Eori}
+import forms.declaration.IsExs
 import models.Mode
 import models.declaration.{DeclarationAdditionalActorsData, RepresentativeDetails}
 import services.cache.ExportsTestData
@@ -31,6 +32,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Inje
   private val exampleAddressContents = "fullName addressLine townOrCity postCode GB"
   private val data = aDeclaration(
     withDeclarantIsExporter("No"),
+    withIsExs(IsExs("No")),
     withExporterDetails(Some(Eori(exampleEori)), Some(exampleAddress)),
     withConsigneeDetails(Some(Eori(exampleEori)), Some(exampleAddress)),
     withDeclarantDetails(Some(Eori(exampleEori)), Some(exampleAddress)),
@@ -217,4 +219,18 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Inje
     view.getAllElements.text() must be(empty)
   }
 
+  "Parties section" must {
+    onClearance { implicit request =>
+      val view = section(Mode.Change, data)(messages, request)
+      "contains 'Is Exs' section with change button" in {
+
+        val isExsRow = view.getElementsByClass("isExs-row")
+
+        isExsRow must haveSummaryKey(messages("declaration.summary.parties.exs"))
+        isExsRow must haveSummaryValue(messages("No"))
+        isExsRow must haveSummaryActionsText("site.change declaration.summary.parties.exs.change")
+        isExsRow must haveSummaryActionsHref(controllers.declaration.routes.IsExsController.displayPage(Mode.Change))
+      }
+    }
+  }
 }

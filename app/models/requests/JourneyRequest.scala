@@ -25,6 +25,4 @@ class JourneyRequest[+A](val authenticatedRequest: AuthenticatedRequest[A], val 
   val sourceDecId: Option[String] = cacheModel.sourceId
   def isType(`type`: DeclarationType*): Boolean = `type`.contains(declarationType)
   def eori: String = authenticatedRequest.user.eori
-
-  def isDeclarantExporter: Boolean = cacheModel.parties.declarantIsExporter.exists(_.isExporter)
 }

@@ -63,7 +63,7 @@ class IsExsController @Inject()(
   }
 
   private def navigationPage(implicit request: JourneyRequest[_]): DeclarationPage =
-    if (request.isDeclarantExporter) ExporterDetails else IsExs
+    if (request.cacheModel.isDeclarantExporter) ExporterDetails else IsExs
 
   private def updateCache(answer: IsExs)(implicit request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => {
@@ -75,7 +75,7 @@ class IsExsController @Inject()(
     isExs.isExs match {
       case YesNoAnswers.yes => controllers.declaration.routes.ConsignorEoriNumberController.displayPage
       case YesNoAnswers.no =>
-        if (request.isDeclarantExporter) controllers.declaration.routes.ConsigneeDetailsController.displayPage
+        if (request.cacheModel.isDeclarantExporter) controllers.declaration.routes.ConsigneeDetailsController.displayPage
         else controllers.declaration.routes.RepresentativeAgentController.displayPage
     }
 }

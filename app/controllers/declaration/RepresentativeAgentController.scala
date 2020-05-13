@@ -66,7 +66,8 @@ class RepresentativeAgentController @Inject()(
 
   private def navigationPage(implicit request: JourneyRequest[AnyContent]): DeclarationPage =
     request.declarationType match {
-      case CLEARANCE if (!request.isDeclarantExporter && request.cacheModel.parties.isExs.map(_.isExs).getOrElse("") == "No")   => ConsignorEoriNumber
+      case CLEARANCE if (!request.cacheModel.isDeclarantExporter && request.cacheModel.parties.isExs.map(_.isExs).getOrElse("") == "No") =>
+        ConsignorEoriNumber
       case CLEARANCE if request.cacheModel.parties.consignorDetails.flatMap(_.details.eori.map(_.value)).getOrElse("").nonEmpty => ConsignorDetails
       case _                                                                                                                    => RepresentativeAgent
     }

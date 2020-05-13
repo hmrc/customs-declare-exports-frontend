@@ -67,9 +67,10 @@ class ConsigneeDetailsController @Inject()(
   }
 
   private def navigationPage(implicit request: JourneyRequest[AnyContent]): DeclarationPage = request.declarationType match {
-    case CLEARANCE if (request.isDeclarantExporter && request.cacheModel.parties.isExs.map(_.isExs).getOrElse("") == "No") => ConsignorEoriNumber
-    case SUPPLEMENTARY if (request.isDeclarantExporter)                                                                    => ExporterDetails
-    case _                                                                                                                 => ConsigneeDetails
+    case CLEARANCE if (request.cacheModel.isDeclarantExporter && request.cacheModel.parties.isExs.map(_.isExs).getOrElse("") == "No") =>
+      ConsignorEoriNumber
+    case SUPPLEMENTARY if (request.cacheModel.isDeclarantExporter) => ExporterDetails
+    case _                                                         => ConsigneeDetails
   }
 
   private def nextPage()(implicit request: JourneyRequest[AnyContent]): Mode => Call =

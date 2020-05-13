@@ -45,26 +45,26 @@ class IsExsSpec extends UnitSpec {
         IsExs.form.fillAndValidate(IsExs("No")).errors mustBe empty
       }
     }
-  }
 
-  "has error" when {
+    "has error" when {
 
-    "there is no answer" in {
+      "there is no answer" in {
 
-      val expectedError = FormError(IsExs.isExsKey, "declaration.exs.error")
+        val expectedError = FormError(IsExs.isExsKey, "declaration.exs.error")
 
-      val result = IsExs.form.fillAndValidate(IsExs(""))
-      result.errors.size mustBe 1
-      result.errors.head mustBe expectedError
-    }
+        val result = IsExs.form.fillAndValidate(IsExs(""))
+        result.errors.size mustBe 1
+        result.errors.head mustBe expectedError
+      }
 
-    "there is incorrect answer (Not possible throught the UI)" in {
+      "there is incorrect answer (Not possible throught the UI)" in {
 
-      val expectedError = FormError(IsExs.isExsKey, "declaration.exs.error")
+        val expectedError = FormError(IsExs.isExsKey, "declaration.exs.error")
 
-      val result = IsExs.form.fillAndValidate(IsExs("incorrect"))
-      result.errors.size mustBe 1
-      result.errors.head mustBe expectedError
+        val result = IsExs.form.fillAndValidate(IsExs("incorrect"))
+        result.errors.size mustBe 1
+        result.errors.head mustBe expectedError
+      }
     }
   }
 }

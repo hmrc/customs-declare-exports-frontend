@@ -54,4 +54,30 @@ class ExportsDeclarationSpec extends WordSpec with MustMatchers with ExportsDecl
     }
   }
 
+  "Exports Declaration" should {
+
+    "return correct value for isDeclarantExports" when {
+
+      "declarant is an exporter" in {
+
+        val declaration = aDeclaration(withType(DeclarationType.OCCASIONAL), withDeclarantIsExporter())
+
+        declaration.isDeclarantExporter mustBe true
+      }
+
+      "declarant is not an exporter" in {
+
+        val declaration = aDeclaration(withType(DeclarationType.OCCASIONAL), withDeclarantIsExporter("No"))
+
+        declaration.isDeclarantExporter mustBe false
+      }
+
+      "user didn't answer on this question" in {
+
+        val declaration = aDeclaration(withType(DeclarationType.OCCASIONAL))
+
+        declaration.isDeclarantExporter mustBe false
+      }
+    }
+  }
 }

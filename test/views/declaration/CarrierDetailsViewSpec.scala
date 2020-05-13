@@ -21,6 +21,7 @@ import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.DeclarationPage
 import forms.common.{Address, Eori}
+import forms.declaration.consignor.ConsignorEoriNumber
 import forms.declaration.{CarrierDetails, CarrierDetailsSpec, EntityDetails, ExporterDetails}
 import helpers.views.declaration.CommonMessages
 import models.requests.JourneyRequest
@@ -143,6 +144,16 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
         view must containErrorElementWithTagAndHref("a", "#details")
 
         view.getElementsByClass("govuk-list govuk-error-summary__list").text() must include(messages("declaration.carrier.error.addressAndEori"))
+      }
+    }
+
+    onClearance { implicit request =>
+      "display 'Back' button that links to 'Is Exs' page" in {
+
+        val backButton = createView(navigationForm = ConsignorEoriNumber).getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.IsExsController.displayPage().url
       }
     }
 
