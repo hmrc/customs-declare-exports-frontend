@@ -19,6 +19,7 @@ package controllers.navigation
 import config.AppConfig
 import controllers.util.{Add, FormAction, Remove, SaveAndReturn}
 import forms.Choice.AllowedChoiceValues
+import forms.common.Eori
 import forms.declaration.RoutingQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingQuestionPage}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeStandardDec
 import forms.declaration.additionaldocuments.DocumentsProduced
@@ -117,16 +118,14 @@ object Navigator {
     case ChangeCountryPage            => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case GoodsLocationForm            => controllers.declaration.routes.DestinationCountryController.displayPage
     case DeclarationHolder            => controllers.declaration.routes.ConsigneeDetailsController.displayPage
-    case ConsignorEoriNumber          => controllers.declaration.routes.ExporterDetailsController.displayPage
     case ConsignorDetails             => controllers.declaration.routes.ConsignorEoriNumberController.displayPage
-
-    case OfficeOfExitInsideUK      => controllers.declaration.routes.LocationController.displayPage
-    case OfficeOfExitOutsideUK     => controllers.declaration.routes.OfficeOfExitController.displayPage
-    case SupervisingCustomsOffice  => controllers.declaration.routes.WarehouseIdentificationController.displayPage
-    case TransportLeavingTheBorder => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
-    case WarehouseIdentification   => controllers.declaration.routes.ItemsSummaryController.displayPage
-    case TotalPackageQuantity      => controllers.declaration.routes.OfficeOfExitController.displayPage
-    case page                      => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
+    case OfficeOfExitInsideUK         => controllers.declaration.routes.LocationController.displayPage
+    case OfficeOfExitOutsideUK        => controllers.declaration.routes.OfficeOfExitController.displayPage
+    case SupervisingCustomsOffice     => controllers.declaration.routes.WarehouseIdentificationController.displayPage
+    case TransportLeavingTheBorder    => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
+    case WarehouseIdentification      => controllers.declaration.routes.ItemsSummaryController.displayPage
+    case TotalPackageQuantity         => controllers.declaration.routes.OfficeOfExitController.displayPage
+    case page                         => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }
 
   val clearanceItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
@@ -278,6 +277,7 @@ object Navigator {
   val clearanceCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
     case ExporterDetails     => exporterDetailsClearancePreviousPage
     case CarrierDetails      => carrierDetailsClearancePreviousPage
+    case ConsignorEoriNumber => consignorEoriNumberClearancePreviousPage
     case RepresentativeAgent => representativeAgentClearancePreviousPage
   }
 
@@ -298,6 +298,16 @@ object Navigator {
       controllers.declaration.routes.DeclarantExporterController.displayPage(mode)
     else
       controllers.declaration.routes.RepresentativeStatusController.displayPage(mode)
+
+  private def consignorEoriNumberClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call = {
+    val declarantEori: Option[Eori] = cacheModel.parties.declarantDetails.flatMap(_.details.eori)
+    val exporterEori: Option[Eori] = cacheModel.parties.exporterDetails.flatMap(_.details.eori)
+
+    if (declarantEori.isDefined && exporterEori.isDefined && declarantEori == exporterEori)
+      controllers.declaration.routes.DeclarantExporterController.displayPage(mode)
+    else
+      controllers.declaration.routes.ExporterDetailsController.displayPage(mode)
+  }
 
   private def representativeAgentClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.`type` == CLEARANCE && cacheModel.parties.consignorDetails.exists(_.details.eori.nonEmpty))

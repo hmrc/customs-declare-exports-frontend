@@ -36,7 +36,7 @@
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(mode: Mode, navigationForm: DeclarationPage, form: Form[ConsignorEoriNumber])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[ConsignorEoriNumber])(implicit request: JourneyRequest[_], messages: Messages)
 
 @eoriInput = {
     @exportsInputText(
@@ -47,7 +47,7 @@
 
 @govukLayout(
     title = Title("declaration.consignorEori.title", "declaration.summary.parties.header"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(navigationForm, mode)))){
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(ConsignorEoriNumber, mode, request.cacheModel)))){
 
     @formHelper(action = controllers.declaration.routes.ConsignorEoriNumberController.submit(mode), 'autoComplete -> "off") {
         @errorSummary(form.errors)

@@ -18,10 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.DeclarationPage
-import forms.common.Eori
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.{CarrierDetails, ExporterDetails}
 import forms.declaration.consignor.ConsignorEoriNumber.form
 import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import javax.inject.Inject
@@ -46,12 +43,12 @@ class ConsignorEoriNumberController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  val validJourneys = Seq(DeclarationType.CLEARANCE)
+  private val validJourneys = Seq(DeclarationType.CLEARANCE)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     request.cacheModel.parties.consignorDetails match {
-      case Some(data) => Ok(consignorEoriDetailsPage(mode, navigationForm, form().fill(ConsignorEoriNumber(data))))
-      case _          => Ok(consignorEoriDetailsPage(mode, navigationForm, form()))
+      case Some(data) => Ok(consignorEoriDetailsPage(mode, form().fill(ConsignorEoriNumber(data))))
+      case _          => Ok(consignorEoriDetailsPage(mode, form()))
     }
   }
 
@@ -62,19 +59,12 @@ class ConsignorEoriNumberController @Inject()(
         (formWithErrors: Form[ConsignorEoriNumber]) => {
           val formWithAdjustedErrors = formWithErrors
 
-          Future.successful(BadRequest(consignorEoriDetailsPage(mode, navigationForm, formWithAdjustedErrors)))
+          Future.successful(BadRequest(consignorEoriDetailsPage(mode, formWithAdjustedErrors)))
         },
         form =>
           updateCache(form, request.cacheModel.parties.consignorDetails)
             .map(_ => navigator.continueTo(mode, nextPage(form.hasEori)))
       )
-  }
-
-  private def navigationForm(implicit request: JourneyRequest[AnyContent]): DeclarationPage = {
-    val declarantEori: Option[Eori] = request.cacheModel.parties.declarantDetails.flatMap(_.details.eori)
-    val exporterEori: Option[Eori] = request.cacheModel.parties.exporterDetails.flatMap(_.details.eori)
-
-    if (declarantEori == exporterEori) ExporterDetails else ConsignorEoriNumber
   }
 
   private def nextPage(hasEori: Option[String]): Mode => Call =
