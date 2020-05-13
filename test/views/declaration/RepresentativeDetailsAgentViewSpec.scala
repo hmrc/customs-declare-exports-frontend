@@ -18,8 +18,11 @@ package views.declaration
 
 import base.Injector
 import forms.DeclarationPage
-import forms.declaration.RepresentativeAgent
+import forms.common.Eori
+import forms.declaration.{EntityDetails, RepresentativeAgent}
 import forms.declaration.consignor.ConsignorDetails
+import models.DeclarationType._
+import models.declaration.Parties
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
@@ -37,10 +40,8 @@ class RepresentativeDetailsAgentViewSpec extends UnitViewSpec with ExportsTestDa
   private val form: Form[RepresentativeAgent] = RepresentativeAgent.form()
   override implicit val messages = validatedMessages(request)
 
-  private def createView(mode: Mode = Mode.Normal, navigationForm: DeclarationPage = RepresentativeAgent, form: Form[RepresentativeAgent] = form)(
-    implicit request: JourneyRequest[_]
-  ): Document =
-    page(mode, navigationForm, form)(request, messages)
+  private def createView(mode: Mode = Mode.Normal, form: Form[RepresentativeAgent] = form)(implicit request: JourneyRequest[_]): Document =
+    page(mode, form)(request, messages)
 
   "Representative Details Agent View on empty page" should {
     onEveryDeclarationJourney() { implicit request =>
@@ -73,9 +74,7 @@ class RepresentativeDetailsAgentViewSpec extends UnitViewSpec with ExportsTestDa
       }
     }
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { implicit request =>
-      val view = createView()
-
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
       "display 'Back' button that links to 'Exporter Details' page" in {
         val view = createView()
 
@@ -84,27 +83,29 @@ class RepresentativeDetailsAgentViewSpec extends UnitViewSpec with ExportsTestDa
         backButton must containMessage("site.back")
         backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ExporterDetailsController.displayPage(Mode.Normal))
       }
+    }
 
-      onJourney(DeclarationType.CLEARANCE) { implicit request =>
-        val view = createView()
+    onJourney(CLEARANCE) { request =>
+      "display 'Back' button that links to 'Consignor Details' page" in {
 
-        "display 'Back' button that links to 'Consignor Details' page" in {
-          val view = createView()
+        val cachedParties = Parties()
+        val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
 
-          val backButton = view.getElementById("back-link")
+        val backButton = createView()(requestWithCachedParties).getElementById("back-link")
 
-          backButton must containMessage("site.back")
-          backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ConsignorDetailsController.displayPage(Mode.Normal))
-        }
+        backButton must containMessage("site.back")
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ConsignorDetailsController.displayPage(Mode.Normal))
+      }
 
-        "display 'Back' button that links to 'Consignor Eori Number' page" in {
-          val view = createView(navigationForm = ConsignorDetails)
+      "display 'Back' button that links to 'Consignor Eori Number' page" in {
 
-          val backButton = view.getElementById("back-link")
+        val cachedParties = Parties(consignorDetails = Some(ConsignorDetails(EntityDetails(eori = Some(Eori("GB1234567890000")), None))))
+        val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
 
-          backButton must containMessage("site.back")
-          backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ConsignorEoriNumberController.displayPage(Mode.Normal))
-        }
+        val backButton = createView()(requestWithCachedParties).getElementById("back-link")
+
+        backButton must containMessage("site.back")
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ConsignorEoriNumberController.displayPage(Mode.Normal))
       }
     }
 

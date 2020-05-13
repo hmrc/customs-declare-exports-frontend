@@ -117,16 +117,16 @@ object Navigator {
     case ChangeCountryPage            => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case GoodsLocationForm            => controllers.declaration.routes.DestinationCountryController.displayPage
     case DeclarationHolder            => controllers.declaration.routes.ConsigneeDetailsController.displayPage
-    case ConsignorEoriNumber       => controllers.declaration.routes.ExporterDetailsController.displayPage
-    case ConsignorDetails          => controllers.declaration.routes.ConsignorEoriNumberController.displayPage
-    case RepresentativeAgent       => controllers.declaration.routes.ConsignorDetailsController.displayPage
-    case OfficeOfExitInsideUK         => controllers.declaration.routes.LocationController.displayPage
-    case OfficeOfExitOutsideUK        => controllers.declaration.routes.OfficeOfExitController.displayPage
-    case SupervisingCustomsOffice     => controllers.declaration.routes.WarehouseIdentificationController.displayPage
-    case TransportLeavingTheBorder    => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
-    case WarehouseIdentification      => controllers.declaration.routes.ItemsSummaryController.displayPage
-    case TotalPackageQuantity         => controllers.declaration.routes.OfficeOfExitController.displayPage
-    case page                         => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
+    case ConsignorEoriNumber          => controllers.declaration.routes.ExporterDetailsController.displayPage
+    case ConsignorDetails             => controllers.declaration.routes.ConsignorEoriNumberController.displayPage
+
+    case OfficeOfExitInsideUK      => controllers.declaration.routes.LocationController.displayPage
+    case OfficeOfExitOutsideUK     => controllers.declaration.routes.OfficeOfExitController.displayPage
+    case SupervisingCustomsOffice  => controllers.declaration.routes.WarehouseIdentificationController.displayPage
+    case TransportLeavingTheBorder => controllers.declaration.routes.SupervisingCustomsOfficeController.displayPage
+    case WarehouseIdentification   => controllers.declaration.routes.ItemsSummaryController.displayPage
+    case TotalPackageQuantity      => controllers.declaration.routes.OfficeOfExitController.displayPage
+    case page                      => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }
 
   val clearanceItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
@@ -270,33 +270,40 @@ object Navigator {
   val commonCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = Map.empty
   val standardCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = Map.empty
   val supplementaryCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
-    case ConsigneeDetails => consigneeDetailsPreviousPage
+    case ConsigneeDetails => consigneeDetailsSupplementaryPreviousPage
   }
   val simplifiedCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = Map.empty
   val occasionalCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = Map.empty
 
   val clearanceCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
-    case ExporterDetails => exporterDetailsPreviousPage
-    case CarrierDetails  => carrierDetailsPreviousPage
+    case ExporterDetails     => exporterDetailsClearancePreviousPage
+    case CarrierDetails      => carrierDetailsClearancePreviousPage
+    case RepresentativeAgent => representativeAgentClearancePreviousPage
   }
 
-  private def exporterDetailsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+  private def exporterDetailsClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.isEntryIntoDeclarantsRecords)
       controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage(mode)
     else
       controllers.declaration.routes.DeclarantExporterController.displayPage(mode)
 
-  private def carrierDetailsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+  private def carrierDetailsClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.parties.declarantIsExporter.exists(_.isExporter))
       controllers.declaration.routes.DeclarantExporterController.displayPage(mode)
     else
       controllers.declaration.routes.RepresentativeStatusController.displayPage(mode)
 
-  private def consigneeDetailsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+  private def consigneeDetailsSupplementaryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.`type` == SUPPLEMENTARY && cacheModel.parties.declarantIsExporter.exists(_.isExporter))
       controllers.declaration.routes.DeclarantExporterController.displayPage(mode)
     else
       controllers.declaration.routes.RepresentativeStatusController.displayPage(mode)
+
+  private def representativeAgentClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.`type` == CLEARANCE && cacheModel.parties.consignorDetails.exists(_.details.eori.nonEmpty))
+      controllers.declaration.routes.ConsignorEoriNumberController.displayPage(mode)
+    else
+      controllers.declaration.routes.ConsignorDetailsController.displayPage(mode)
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
     mode match {
