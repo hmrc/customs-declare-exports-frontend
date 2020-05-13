@@ -73,7 +73,7 @@ class CusCodeController @Inject()(
 
   def nextPage(itemId: String, declarationType: DeclarationType): Mode => Call =
     if (declarationType == DeclarationType.CLEARANCE) {
-      controllers.declaration.routes.NactCodeController.displayPage(_, itemId)
+      controllers.declaration.routes.NactCodeSummaryController.displayPage(_, itemId)
     } else {
       controllers.declaration.routes.TaricCodeController.displayPage(_, itemId)
     }

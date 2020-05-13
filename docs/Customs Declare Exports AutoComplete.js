@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.43
+// @version      1.47
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -218,6 +218,13 @@ function consignmentRefereences(){
     }
 }
 
+function declarantExporterDetails(){
+    if (currentPageIs("/customs-declare-exports/declaration/are-you-the-exporter")) {
+        document.getElementById('answer_no').checked = 'checked';
+        document.getElementById('submit').click();
+    }
+}
+
 function exporterDetails(){
     if (currentPageIs("/customs-declare-exports/declaration/exporter-details")) {
         document.getElementById('details_eori').value = 'GB717572504502801';
@@ -237,6 +244,26 @@ function consigneeDetails(){
     }
 }
 
+function consignorAddress(){
+    if (currentPageIs("/customs-declare-exports/declaration/consignor-address")) {
+        document.getElementById('details_address_fullName').value = 'Bags Export';
+        document.getElementById('details_address_addressLine').value = '1 Bags Avenue';
+        document.getElementById('details_address_townOrCity').value = 'New York';
+        document.getElementById('details_address_postCode').value = '10001';
+
+        selectFromAutoPredict(document.getElementById('details_address_country-container'), "United States of America");
+        document.getElementById('submit').click()
+    }
+}
+
+function consignorEoriNumber(){
+    if (currentPageIs("/customs-declare-exports/declaration/consignor-eori-number")) {
+        document.getElementById('Yes').checked = 'checked';
+        document.getElementById('eori').value = 'GB123456789000';
+        document.getElementById('submit').click()
+    }
+}
+
 function declarantDetails(){
     if (currentPageIs("/customs-declare-exports/declaration/declarant-details")) {
         document.getElementById('code_yes').checked = 'checked';
@@ -244,8 +271,24 @@ function declarantDetails(){
     }
 }
 
-function representativeDetails(){
-    if (currentPageIs("/customs-declare-exports/declaration/representative-details")) {
+function representingAnotherAgent(){
+    if (currentPageIs("/are-you-representing-another-agent")) {
+
+        switch(getDeclaration()) {
+            case 'A':
+            case 'D':
+                selectRadioOptionFromInputs(document.getElementsByName("representingAgent"), 1);
+                break;
+            default:
+                selectRadioOptionFromInputs(document.getElementsByName("representingAgent"), 0);
+                break;
+        }
+        document.getElementById('submit').click()
+    }
+}
+
+function representativeEori(){
+    if (currentPageIs("/customs-declare-exports/declaration/representatives-eori-number")) {
 
         switch(getDeclaration()) {
             case 'A':
@@ -259,10 +302,31 @@ function representativeDetails(){
             case 'Y':
             case 'Z':
                 document.getElementById('details_eori').value = 'GB717572504502801';
-                selectRadioOptionFromInputs(document.getElementsByName("statusCode"), 0);
                 break;
             case 'J':
                 document.getElementById('details_eori').value = 'GB717572504502809';
+                break;
+        }
+        document.getElementById('submit').click()
+    }
+}
+
+function representativeType(){
+    if (currentPageIs("/customs-declare-exports/declaration/representation-type-agreed")) {
+
+        switch(getDeclaration()) {
+            case 'A':
+            case 'D':
+            case 'B':
+            case 'C':
+            case 'E':
+            case 'F':
+            case 'K':
+            case 'Y':
+            case 'Z':
+                selectRadioOptionFromInputs(document.getElementsByName("statusCode"), 0);
+                break;
+            case 'J':
                 selectRadioOptionFromInputs(document.getElementsByName("statusCode"), 1);
                 break;
         }
@@ -623,7 +687,8 @@ function taricCodes(){
 }
 
 function nactCodes(){
-    if (currentPageIs('/customs-declare-exports/declaration/items/.*/nact-codes')) {
+    if (currentPageIs('/customs-declare-exports/declaration/items/.*/national-additional-code')) {
+        document.getElementById('code_no').checked = 'checked';
         document.getElementById('submit').click();
     }
 }
@@ -887,7 +952,6 @@ function summary(){
         document.getElementById("jobRole").value = 'Tester';
         document.getElementById("email").value = 'tim@testing.com';
         document.getElementById("confirmation").click()
-        document.getElementById('submit').click();
 
         setDeclaration(0);
     }
@@ -912,9 +976,14 @@ function completeJourney() {
 
     // parties
     declarantDetails();
+    declarantExporterDetails();
     exporterDetails();
     consigneeDetails();
-    representativeDetails();
+    consignorEoriNumber();
+    consignorAddress();
+    representingAnotherAgent();
+    representativeEori();
+    representativeType()
     carrierDetails();
     additionalActors();
     holderOfAuthorisation();

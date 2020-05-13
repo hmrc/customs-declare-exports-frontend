@@ -35,7 +35,7 @@ class EadConfigSpec extends UnitSpec {
 
     "return true" when {
 
-      "ead document feature is enabled" in {
+      "ead feature is enabled" in {
 
         val eadConfig = new EadConfig(featureSwitchConfig(Configuration(configWithEnabledEAD)))
 
@@ -45,14 +45,14 @@ class EadConfigSpec extends UnitSpec {
 
     "return false" when {
 
-      "ead document feature is diabled" in {
+      "ead feature is diabled" in {
 
         val eadConfig = new EadConfig(featureSwitchConfig(Configuration(configWithDisabledEAD)))
 
         eadConfig.isEadEnabled mustBe false
       }
 
-      "ead document feature config doesn't exist" in {
+      "ead feature config doesn't exist" in {
 
         val eadConfig = new EadConfig(featureSwitchConfig(Configuration(emptyConfig)))
 

@@ -83,41 +83,75 @@
     )
     @summaryList("declaration-parties-summary", None,
 
-        declarationData.parties.exporterDetails.map(export => eoriOrAddress(
+        (Seq.empty :+ declarationData.parties.declarantIsExporter.map(isExporter =>
+            SummaryListRow(
+                classes = "declarantIsExporter-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.parties.declarantIsExporter"))
+                ),
+                value = Value(
+                    content = Text(messages(s"declaration.summary.parties.declarantIsExporter.${isExporter.answer.toLowerCase}"))
+                ),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = controllers.declaration.routes.DeclarantExporterController.displayPage(mode).url,
+                            content = Text(messages("site.change")),
+                            visuallyHiddenText = Some(messages("declaration.summary.parties.declarantIsExporter.change"))
+                        )
+                    )
+                ))
+            )
+        ))
+
+        ++ declarationData.parties.exporterDetails.map(export => eoriOrAddress(
             "exporter",
             export.details.eori,
             export.details.address,
             controllers.declaration.routes.ExporterDetailsController.displayPage(mode)
         )).getOrElse(Seq.empty)
 
-        ++ declarationData.parties.consigneeDetails.map(consignee => eoriOrAddress(
-            "consignee",
-            consignee.details.eori,
-            consignee.details.address,
-            controllers.declaration.routes.ConsigneeDetailsController.displayPage(mode),
-            isEoriDefault = false
-        )).getOrElse(Seq.empty)
+        ++ (Seq.empty :+ declarationData.parties.representativeDetails.map(_.representingOtherAgent).map(agent =>
+            SummaryListRow(
+                classes = "representingAnotherAgent-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.parties.representative.agent"))
+                ),
+                value = Value(
+                    content = Text(agent.map(answer => messages(s"declaration.summary.parties.representative.agent.${answer.toLowerCase}")).getOrElse(""))
+                ),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = controllers.declaration.routes.RepresentativeAgentController.displayPage(mode).url,
+                            content = Text(messages("site.change")),
+                            visuallyHiddenText = Some(messages("declaration.summary.parties.representative.agent.change"))
+                        )
+                    )
+                ))
+            )
+        ))
 
-        ++ declarationData.parties.representativeDetails.map(representative => eoriOrAddress(
+        ++ declarationData.parties.representativeDetails.flatMap(_.details).map(details => eoriOrAddress(
             "representative",
-            representative.details.flatMap(_.eori),
-            representative.details.flatMap(_.address),
-            controllers.declaration.routes.RepresentativeDetailsController.displayPage(mode)
+            details.eori,
+            details.address,
+            controllers.declaration.routes.RepresentativeEntityController.displayPage(mode)
         )).getOrElse(Seq.empty)
 
-        ++ (Seq.empty :+ declarationData.parties.representativeDetails.map(representative =>
+        ++ (Seq.empty :+ declarationData.parties.representativeDetails.map(_.statusCode).map(statusCode =>
             SummaryListRow(
                 classes = "representationType-row",
                 key = Key(
                     content = Text(messages("declaration.summary.parties.representative.type"))
                 ),
                 value = Value(
-                    content = Text(representative.statusCode.map(code => messages(s"declaration.summary.parties.representative.type.$code")).getOrElse(""))
+                    content = Text(statusCode.map(code => messages(s"declaration.summary.parties.representative.type.$code")).getOrElse(""))
                 ),
                 actions = Some(Actions(
                     items = Seq(
                         ActionItem(
-                            href = controllers.declaration.routes.RepresentativeDetailsController.displayPage(mode).url,
+                            href = controllers.declaration.routes.RepresentativeStatusController.displayPage(mode).url,
                             content = Text(messages("site.change")),
                             visuallyHiddenText = Some(messages("declaration.summary.parties.representative.type.change"))
                         )
@@ -131,6 +165,22 @@
             carrier.details.eori,
             carrier.details.address,
             controllers.declaration.routes.CarrierDetailsController.displayPage(mode),
+            isEoriDefault = false
+        )).getOrElse(Seq.empty)
+
+        ++ declarationData.parties.consigneeDetails.map(consignee => eoriOrAddress(
+            "consignee",
+            consignee.details.eori,
+            consignee.details.address,
+            controllers.declaration.routes.ConsigneeDetailsController.displayPage(mode),
+            isEoriDefault = false
+        )).getOrElse(Seq.empty)
+
+        ++ declarationData.parties.consignorDetails.map(consignor => eoriOrAddress(
+            "consignor",
+            consignor.details.eori,
+            consignor.details.address,
+            controllers.declaration.routes.ConsignorEoriNumberController.displayPage(mode),
             isEoriDefault = false
         )).getOrElse(Seq.empty),
 

@@ -16,7 +16,7 @@
 
 package models.declaration
 
-import forms.common.YesNoAnswer
+import forms.DeclarationPage
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers.yes
 import forms.declaration._
 import models.DeclarationType
@@ -37,7 +37,6 @@ case class ExportItem(
   nactCodes: Option[List[NactCode]] = None,
   packageInformation: Option[List[PackageInformation]] = None,
   commodityMeasure: Option[CommodityMeasure] = None,
-  additionalInformationReq: Option[YesNoAnswer] = None,
   additionalInformation: Option[AdditionalInformationData] = None,
   documentsProducedData: Option[DocumentsProducedData] = None
 ) {
@@ -63,7 +62,7 @@ case class ExportItem(
   }
 }
 
-object ExportItem {
+object ExportItem extends DeclarationPage {
 
   implicit val format = Json.format[ExportItem]
 }

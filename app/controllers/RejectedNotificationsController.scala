@@ -37,10 +37,10 @@ class RejectedNotificationsController @Inject()(
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(id: String): Action[AnyContent] = authenticate.async { implicit request =>
-    customsDeclareExportsConnector.findSubmission(id).flatMap {
-      case Some(submission) =>
+    customsDeclareExportsConnector.findDeclaration(id).flatMap {
+      case Some(declaration) =>
         customsDeclareExportsConnector.findNotifications(id).map { notifications =>
-          Ok(rejectedNotificationPage(submission, RejectionReason.fromNotifications(notifications)))
+          Ok(rejectedNotificationPage(declaration, RejectionReason.fromNotifications(notifications)))
         }
       case None => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
     }

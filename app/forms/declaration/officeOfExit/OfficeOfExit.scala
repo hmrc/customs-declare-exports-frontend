@@ -17,22 +17,25 @@
 package forms.declaration.officeOfExit
 import play.api.libs.json.Json
 
-case class OfficeOfExit(officeId: Option[String], circumstancesCode: Option[String])
+case class OfficeOfExit(officeId: Option[String], isUkOfficeOfExit: Option[String])
 
 object OfficeOfExit {
   implicit val format = Json.format[OfficeOfExit]
 
-  def from(officeOfExitSupplementary: OfficeOfExitSupplementary): OfficeOfExit =
-    OfficeOfExit(Some(officeOfExitSupplementary.officeId), None)
+  def from(officeOfExitOutsideUK: OfficeOfExitOutsideUK): OfficeOfExit =
+    OfficeOfExit(Some(officeOfExitOutsideUK.officeId), Some(AllowedUKOfficeOfExitAnswers.no))
 
-  def from(officeOfExitStandard: OfficeOfExitStandard): OfficeOfExit =
-    OfficeOfExit(Some(officeOfExitStandard.officeId), Some(officeOfExitStandard.circumstancesCode))
-
-  def from(officeOfExitClearance: OfficeOfExitClearance): OfficeOfExit =
-    OfficeOfExit(officeOfExitClearance.officeId, Some(officeOfExitClearance.circumstancesCode))
+  def from(officeOfExitInsideUK: OfficeOfExitInsideUK, existingValue: Option[OfficeOfExit]): OfficeOfExit =
+    officeOfExitInsideUK.isUkOfficeOfExit match {
+      case AllowedUKOfficeOfExitAnswers.yes => OfficeOfExit(officeOfExitInsideUK.officeId, Some(officeOfExitInsideUK.isUkOfficeOfExit))
+      case AllowedUKOfficeOfExitAnswers.no =>
+        existingValue.flatMap(_.isUkOfficeOfExit) match {
+          case Some(AllowedUKOfficeOfExitAnswers.no) => OfficeOfExit(existingValue.flatMap(_.officeId), Some(AllowedUKOfficeOfExitAnswers.no))
+          case _                                     => OfficeOfExit(None, Some(AllowedUKOfficeOfExitAnswers.no))
+        }
+    }
 }
-
-object AllowedCircumstancesCodeAnswers {
+object AllowedUKOfficeOfExitAnswers {
   val yes = "Yes"
   val no = "No"
 

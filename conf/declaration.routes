@@ -21,6 +21,18 @@ GET         /not-eligible                       controllers.declaration.NotEligi
 
 GET         /not-declarant                      controllers.declaration.NotEligibleController.displayNotDeclarant()
 
+# Declarant EORI
+
+GET         /declarant-details                   controllers.declaration.DeclarantDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /declarant-details                   controllers.declaration.DeclarantDetailsController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
+# Declarant is exporter
+
+GET         /are-you-the-exporter                controllers.declaration.DeclarantExporterController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /are-you-the-exporter                controllers.declaration.DeclarantExporterController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
 # Consignment references
 
 GET         /consignment-references              controllers.declaration.ConsignmentReferencesController.displayPage(mode: models.Mode ?= models.Mode.Normal)
@@ -33,23 +45,37 @@ GET         /exporter-details                    controllers.declaration.Exporte
 
 POST        /exporter-details                    controllers.declaration.ExporterDetailsController.saveAddress(mode: models.Mode ?= models.Mode.Normal)
 
-# Declarant address
-
-GET         /declarant-details                   controllers.declaration.DeclarantDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
-
-POST        /declarant-details                   controllers.declaration.DeclarantDetailsController.submitForm(mode: models.Mode ?= models.Mode.Normal)
-
 # Representative details
 
-GET         /representative-details              controllers.declaration.RepresentativeDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /are-you-representing-another-agent  controllers.declaration.RepresentativeAgentController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /representative-details              controllers.declaration.RepresentativeDetailsController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+POST        /are-you-representing-another-agent  controllers.declaration.RepresentativeAgentController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
+GET         /representatives-eori-number         controllers.declaration.RepresentativeEntityController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /representatives-eori-number         controllers.declaration.RepresentativeEntityController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
+GET         /representation-type-agreed          controllers.declaration.RepresentativeStatusController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /representation-type-agreed          controllers.declaration.RepresentativeStatusController.submitForm(mode: models.Mode ?= models.Mode.Normal)
 
 # Consignee details
 
 GET         /consignee-details                   controllers.declaration.ConsigneeDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
 POST        /consignee-details                   controllers.declaration.ConsigneeDetailsController.saveAddress(mode: models.Mode ?= models.Mode.Normal)
+
+# Consignor Eori Number
+
+GET         /consignor-eori-number               controllers.declaration.ConsignorEoriNumberController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /consignor-eori-number               controllers.declaration.ConsignorEoriNumberController.submit(mode: models.Mode ?= models.Mode.Normal)
+
+# Consignor details
+
+GET         /consignor-address                   controllers.declaration.ConsignorDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /consignor-address                   controllers.declaration.ConsignorDetailsController.saveAddress(mode: models.Mode ?= models.Mode.Normal)
 
 # Carrier details
 
@@ -107,9 +133,9 @@ POST        /location-of-goods                   controllers.declaration.Locatio
 
 # Identification of a Warehouse
 
-GET         /warehouse-details            controllers.declaration.WarehouseIdentificationController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+GET         /warehouse-details                   controllers.declaration.WarehouseIdentificationController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
-POST        /warehouse-details           controllers.declaration.WarehouseIdentificationController.saveIdentificationNumber(mode: models.Mode ?= models.Mode.Normal)
+POST        /warehouse-details                   controllers.declaration.WarehouseIdentificationController.saveIdentificationNumber(mode: models.Mode ?= models.Mode.Normal)
 
 # Supervising Customs Office
 
@@ -128,6 +154,12 @@ POST        /inland-transport-details            controllers.declaration.InlandT
 GET         /office-of-exit                      controllers.declaration.OfficeOfExitController.displayPage(mode: models.Mode ?= models.Mode.Normal)
 
 POST        /office-of-exit                      controllers.declaration.OfficeOfExitController.saveOffice(mode: models.Mode ?= models.Mode.Normal)
+
+# Office of exit outside UK
+
+GET         /office-of-exit-outside-uk           controllers.declaration.OfficeOfExitOutsideUkController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /office-of-exit-outside-uk           controllers.declaration.OfficeOfExitOutsideUkController.saveOffice(mode: models.Mode ?= models.Mode.Normal)
 
 # Total number of items
 
@@ -212,9 +244,18 @@ POST        /items/:itemId/taric-codes                         controllers.decla
 
 # NACT Code
 
-GET         /items/:itemId/nact-codes                          controllers.declaration.NactCodeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/national-additional-code            controllers.declaration.NactCodeAddController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
 
-POST        /items/:itemId/nact-codes                          controllers.declaration.NactCodeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/national-additional-code            controllers.declaration.NactCodeAddController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+GET         /items/:itemId/national-additional-codes-list      controllers.declaration.NactCodeSummaryController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+POST        /items/:itemId/national-additional-codes-list      controllers.declaration.NactCodeSummaryController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+GET         /items/:itemId/national-additional-code/:code/remove            controllers.declaration.NactCodeRemoveController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, code)
+
+POST        /items/:itemId/national-additional-code/:code/remove            controllers.declaration.NactCodeRemoveController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, code)
+
 
 # Statistical Value
 
@@ -234,12 +275,6 @@ POST        /items/:itemId/package-information                 controllers.decla
 GET          /items/:itemId/commodity-measure                   controllers.declaration.CommodityMeasureController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
 
 POST         /items/:itemId/commodity-measure                   controllers.declaration.CommodityMeasureController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
-
-# Additional Information Request
-
-GET          /items/:itemId/additional-information-required     controllers.declaration.AdditionalInformationRequiredController.displayPage(mode:models.Mode ?= models.Mode.Normal, itemId)
-
-POST        /items/:itemId/additional-information-required       controllers.declaration.AdditionalInformationRequiredController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
 
 # Additional information
 

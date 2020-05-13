@@ -49,13 +49,21 @@ object Mode {
     override val next: Mode = Amend
   }
 
+  case object ErrorFix extends Mode {
+    override val name: String = "Error-Fix"
+
+    override val next: Mode = this
+
+    val queryParameter: String = s"?mode=$name"
+  }
+
   case object Draft extends Mode {
     override val name: String = "Draft"
 
     override val next: Mode = Normal
   }
 
-  private val modes = Set[Mode](Normal, Amend, Draft, Change, ChangeAmend)
+  private val modes = Set[Mode](Normal, Amend, Draft, Change, ChangeAmend, ErrorFix)
 
   def withName(str: String): Option[Mode] =
     modes.find(_.name == str)

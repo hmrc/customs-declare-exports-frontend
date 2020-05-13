@@ -30,6 +30,7 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
 import unit.tools.Stubs
+import utils.FakeRequestCSRFSupport._
 
 import scala.concurrent.Future
 
@@ -249,19 +250,15 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks {
       )
     )
 
-  def getAuthenticatedRequest(declarationId: String = "declarationId"): AuthenticatedRequest[AnyContentAsEmpty.type] = {
-    import utils.FakeRequestCSRFSupport._
+  def getAuthenticatedRequest(declarationId: String = "declarationId"): AuthenticatedRequest[AnyContentAsEmpty.type] =
     new AuthenticatedRequest(FakeRequest("GET", "").withSession((ExportsSessionKeys.declarationId, declarationId)).withCSRFToken, exampleUser)
-  }
 
-  def getRequest(): Request[AnyContentAsEmpty.type] = {
-    import utils.FakeRequestCSRFSupport._
+  def getRequest(): Request[AnyContentAsEmpty.type] =
     FakeRequest("GET", "").withSession((ExportsSessionKeys.declarationId, "declarationId")).withCSRFToken
-  }
 
-  def getRequest(uri: String, declarationId: String): Request[AnyContentAsEmpty.type] = {
-    import utils.FakeRequestCSRFSupport._
-    FakeRequest("GET", uri).withSession((ExportsSessionKeys.declarationId, declarationId)).withCSRFToken
-  }
-
+  def getRequest(declarationId: Option[String]): Request[AnyContentAsEmpty.type] =
+    declarationId match {
+      case Some(decId) => FakeRequest("GET", "").withSession((ExportsSessionKeys.declarationId, decId)).withCSRFToken
+      case _           => FakeRequest("GET", "").withCSRFToken
+    }
 }

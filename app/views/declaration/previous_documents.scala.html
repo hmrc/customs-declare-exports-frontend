@@ -16,6 +16,7 @@
 
 @import controllers.declaration.routes._
 @import controllers.navigation.Navigator
+@import forms.DeclarationPage
 @import forms.declaration.Document
 @import forms.declaration.Document.AllowedValues._
 @import uk.gov.hmrc.play.views.html._
@@ -28,7 +29,7 @@
 
 @this(main_template: views.html.main_template)
 
-@(mode: Mode, form: Form[Document], documents: Seq[Document])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, navigationForm: DeclarationPage, form: Form[Document], documents: Seq[Document])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBody = { @Html(messages("declaration.type.previousDocumentsSummaryText", components.details_content_link())) }
 
@@ -36,7 +37,7 @@
     title = Title("supplementary.previousDocuments.title", "supplementary.consignmentReferences.heading")
 ) {
 
-    @components.back_link(Navigator.backLink(Document, mode))
+    @components.back_link(Navigator.backLink(navigationForm, mode))
 
     @components.error_summary(form.errors)
 

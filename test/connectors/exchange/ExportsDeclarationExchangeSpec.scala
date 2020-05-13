@@ -220,7 +220,7 @@ object ExportsDeclarationExchangeSpec {
       |    },
       |    "officeOfExit": {
       |      "officeId": "GB000054",
-      |      "circumstancesCode": "No"
+      |      "answer": "Yes"
       |    },
       |    "supervisingCustomsOffice": {
       |      "supervisingCustomsOffice": "GBLBA001"

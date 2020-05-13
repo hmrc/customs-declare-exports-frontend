@@ -49,7 +49,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
     super.beforeEach()
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
-    when(mockPreviousDocumentsPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPreviousDocumentsPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -60,7 +60,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
   def theResponse: (Form[Document], Seq[Document]) = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[Document]])
     val dataCaptor = ArgumentCaptor.forClass(classOf[Seq[Document]])
-    verify(mockPreviousDocumentsPage).apply(any(), formCaptor.capture(), dataCaptor.capture())(any(), any())
+    verify(mockPreviousDocumentsPage).apply(any(), any(), formCaptor.capture(), dataCaptor.capture())(any(), any())
     (formCaptor.getValue, dataCaptor.getValue)
   }
 
@@ -73,7 +73,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
-        verify(mockPreviousDocumentsPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockPreviousDocumentsPage, times(1)).apply(any(), any(), any(), any())(any(), any())
 
         val (responseForm, responseSeq) = theResponse
         responseForm.value mustBe empty
@@ -88,7 +88,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
         val result = controller.displayPage(Mode.Normal)(getRequest())
 
         status(result) mustBe OK
-        verify(mockPreviousDocumentsPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockPreviousDocumentsPage, times(1)).apply(any(), any(), any(), any())(any(), any())
 
         val (responseForm, responseSeq) = theResponse
         responseForm.value mustBe empty
@@ -111,7 +111,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
         val result = controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(wrongAction: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockPreviousDocumentsPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockPreviousDocumentsPage, times(1)).apply(any(), any(), any(), any())(any(), any())
       }
     }
 
@@ -130,7 +130,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
         val result = controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockPreviousDocumentsPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockPreviousDocumentsPage, times(1)).apply(any(), any(), any(), any())(any(), any())
       }
 
       "user put duplicated item" in {
@@ -149,7 +149,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
         val result = controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockPreviousDocumentsPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockPreviousDocumentsPage, times(1)).apply(any(), any(), any(), any())(any(), any())
       }
 
       "user reach maximum amount of items" in {
@@ -168,7 +168,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
         val result = controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockPreviousDocumentsPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockPreviousDocumentsPage, times(1)).apply(any(), any(), any(), any())(any(), any())
       }
     }
 
@@ -187,7 +187,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
         val result = controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockPreviousDocumentsPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockPreviousDocumentsPage, times(1)).apply(any(), any(), any(), any())(any(), any())
       }
 
       "user put duplicated item" in {
@@ -206,7 +206,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
         val result = controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockPreviousDocumentsPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockPreviousDocumentsPage, times(1)).apply(any(), any(), any(), any())(any(), any())
       }
 
       "user reach maximum amount of items" in {
@@ -225,7 +225,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
         val result = controller.savePreviousDocuments(Mode.Normal)(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) mustBe BAD_REQUEST
-        verify(mockPreviousDocumentsPage, times(1)).apply(any(), any(), any())(any(), any())
+        verify(mockPreviousDocumentsPage, times(1)).apply(any(), any(), any(), any())(any(), any())
       }
     }
 
@@ -246,7 +246,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.PreviousDocumentsController.displayPage()
 
-        verify(mockPreviousDocumentsPage, times(0)).apply(any(), any(), any())(any(), any())
+        verify(mockPreviousDocumentsPage, times(0)).apply(any(), any(), any(), any())(any(), any())
       }
 
       "user save correct data" in {
@@ -264,7 +264,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayPage()
 
-        verify(mockPreviousDocumentsPage, times(0)).apply(any(), any(), any())(any(), any())
+        verify(mockPreviousDocumentsPage, times(0)).apply(any(), any(), any(), any())(any(), any())
       }
 
       "user save correct data without new item" in {
@@ -277,7 +277,7 @@ class PreviousDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMo
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.ItemsSummaryController.displayPage()
-        verify(mockPreviousDocumentsPage, times(0)).apply(any(), any(), any())(any(), any())
+        verify(mockPreviousDocumentsPage, times(0)).apply(any(), any(), any(), any())(any(), any())
       }
 
       "user remove existing item" in {

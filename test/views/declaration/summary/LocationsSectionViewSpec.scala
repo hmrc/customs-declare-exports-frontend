@@ -18,6 +18,7 @@ package views.declaration.summary
 
 import base.Injector
 import forms.declaration.GoodsLocationForm
+import forms.declaration.officeOfExit.AllowedUKOfficeOfExitAnswers
 import models.Mode
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
@@ -25,7 +26,7 @@ import views.html.declaration.summary.locations_section
 
 class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with Injector {
 
-  val data = aDeclaration(withGoodsLocation(GoodsLocationForm("GBAUEMAEMAEMA")), withOfficeOfExit("123", Some("12")))
+  val data = aDeclaration(withGoodsLocation(GoodsLocationForm("GBAUEMAEMAEMA")), withOfficeOfExit("123", AllowedUKOfficeOfExitAnswers.yes))
 
   val section = instanceOf[locations_section]
 
@@ -58,19 +59,6 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with In
 
     }
 
-    "have express consignment answer with change button" in {
-      val view = section(Mode.Change, data)(messages, journeyRequest())
-
-      val row = view.getElementsByClass("location-expressConsignment-row")
-      row must haveSummaryKey(messages("declaration.summary.locations.expressConsignment"))
-      row must haveSummaryValue("12")
-
-      row must haveSummaryActionsText("site.change declaration.summary.locations.expressConsignment.change")
-
-      row must haveSummaryActionsHref(controllers.declaration.routes.OfficeOfExitController.displayPage(Mode.Change))
-
-    }
-
     "not have answers when goods location not asked" in {
       val view = section(Mode.Normal, aDeclarationAfter(data, withoutGoodsLocation()))(messages, journeyRequest())
 
@@ -81,11 +69,14 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with In
       val view = section(Mode.Normal, aDeclarationAfter(data, withoutOfficeOfExit()))(messages, journeyRequest())
 
       view.getElementsByClass("location-officeOfExit-row") mustBe empty
-      view.getElementsByClass("location-expressConsignment-row") mustBe empty
     }
 
     "have answers when office of exit not answered" in {
-      val view = section(Mode.Normal, aDeclarationAfter(data, withOptionalOfficeOfExit(None, Some("Yes"))))(messages, journeyRequest())
+      val view =
+        section(Mode.Normal, aDeclarationAfter(data, withOptionalOfficeOfExit(None, Some(AllowedUKOfficeOfExitAnswers.no))))(
+          messages,
+          journeyRequest()
+        )
       val row = view.getElementsByClass("location-officeOfExit-row")
 
       row must haveSummaryKey(messages("declaration.summary.locations.officeOfExit"))
@@ -97,7 +88,11 @@ class LocationsSectionViewSpec extends UnitViewSpec with ExportsTestData with In
     }
 
     "not have answers when office of exit not answered" in {
-      val view = section(Mode.Normal, aDeclarationAfter(data, withOptionalOfficeOfExit(None, Some("No"))))(messages, journeyRequest())
+      val view =
+        section(Mode.Normal, aDeclarationAfter(data, withOptionalOfficeOfExit(None, Some(AllowedUKOfficeOfExitAnswers.no))))(
+          messages,
+          journeyRequest()
+        )
 
       val row = view.getElementsByClass("location-officeOfExit-row")
       row must haveSummaryKey(messages("declaration.summary.locations.officeOfExit"))

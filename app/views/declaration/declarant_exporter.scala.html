@@ -1,0 +1,80 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.navigation.Navigator
+@import forms.common.YesNoAnswer.YesNoAnswers
+@import forms.declaration.DeclarantIsExporter
+@import forms.declaration.DeclarantIsExporter.answerKey
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.components.gds.Styles._
+@import views.html.components.gds._
+
+@this(
+    govukLayout: gdsMainTemplate,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    govukRadios: GovukRadios,
+    exportsInputText: exportsInputText,
+    govukDetails : GovukDetails,
+    saveButtons: saveButtons,
+    tariffDetails: tariffDetails,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
+
+@(mode: Mode, form: Form[DeclarantIsExporter])(implicit request: JourneyRequest[_], messages: Messages)
+
+@govukLayout(
+    title = Title("declaration.declarant.exporter.title"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DeclarantIsExporter, mode)))) {
+
+    @formHelper(action = controllers.declaration.routes.DeclarantExporterController.submitForm(mode), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("supplementary.consignmentReferences.heading"))
+
+        @govukRadios(Radios(
+            name = answerKey,
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("declaration.declarant.exporter.title", request.eori)),
+                    isPageHeading = true,
+                    classes = gdsPageLegend
+                ))
+            )),
+            items = Seq(
+                RadioItem(
+                    id = Some("answer_yes"),
+                    value = Some(YesNoAnswers.yes),
+                    content = Text(messages("declaration.declarant.exporter.answer.yes")),
+                    checked = form(answerKey).value.contains(YesNoAnswers.yes)
+                ),
+                RadioItem(
+                    id = Some("answer_no"),
+                    value = Some(YesNoAnswers.no),
+                    content = Text(messages("declaration.declarant.exporter.answer.no")),
+                    checked = form(answerKey).value.contains(YesNoAnswers.no)
+                )
+            ),
+            errorMessage = form(answerKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
+
+        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(messages("declaration.declarant.exporter.help-item", components.details_content_link())))
+
+        @saveButtons()
+    }
+}

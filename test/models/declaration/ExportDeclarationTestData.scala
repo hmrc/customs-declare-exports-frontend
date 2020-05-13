@@ -26,13 +26,12 @@ import forms.declaration.DeclarationAdditionalActorsSpec.correctAdditionalActors
 import forms.declaration.DispatchLocationSpec._
 import forms.declaration.ExporterDetailsSpec._
 import forms.declaration.NatureOfTransactionSpec._
-import forms.declaration.OfficeOfExitSupplementarySpec._
-import forms.declaration.RepresentativeDetailsSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
 import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
 import forms.declaration.countries.Country
+import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit}
 import forms.{CancelDeclaration, Lrn}
 import models.declaration.DeclarationAdditionalActorsDataSpec._
 import models.declaration.DeclarationHoldersDataSpec._
@@ -71,7 +70,7 @@ object ExportDeclarationTestData {
       exporterDetails = Some(correctExporterDetails),
       declarantDetails = Some(correctDeclarantDetailsEORIOnly),
       consigneeDetails = Some(ConsigneeDetails(EntityDetailsSpec.correctEntityDetails)),
-      representativeDetails = Some(correctRepresentativeDetails),
+      representativeDetails = None, //Some(correctRepresentativeDetails),
       declarationAdditionalActorsData = Some(correctAdditionalActorsData),
       declarationHoldersData = Some(correctDeclarationHoldersData),
       carrierDetails = Some(CarrierDetails(EntityDetailsSpec.correctEntityDetails))
@@ -82,7 +81,7 @@ object ExportDeclarationTestData {
       hasRoutingCountries = Some(true),
       routingCountries = Seq(Country(Some("FR"))),
       goodsLocation = Some(GoodsLocationForm("GBAUEMAEMAEMA").toModel),
-      officeOfExit = Some(correctOfficeOfExit),
+      officeOfExit = Some(OfficeOfExit(Some("officeId"), Some(AllowedUKOfficeOfExitAnswers.yes))),
       warehouseIdentification = Some(WarehouseIdentificationSpec.correctWarehouseDetails),
       supervisingCustomsOffice = Some(SupervisingCustomsOfficeSpec.correctSupervisingCustomsOffice),
       inlandModeOfTransportCode = Some(InlandModeOfTransportCodeSpec.correctInlandModeOfTransportCode)
@@ -127,7 +126,7 @@ object ExportDeclarationTestData {
       exporterDetails = Some(correctExporterDetails),
       declarantDetails = Some(correctDeclarantDetailsEORIOnly),
       consigneeDetails = Some(ConsigneeDetails(EntityDetailsSpec.correctEntityDetails)),
-      representativeDetails = Some(correctRepresentativeDetails),
+      representativeDetails = None, //Some(correctRepresentativeDetails),
       declarationAdditionalActorsData = Some(DeclarationAdditionalActorsData(Seq(correctAdditionalActors1))),
       declarationHoldersData = Some(
         DeclarationHoldersData(
@@ -145,7 +144,7 @@ object ExportDeclarationTestData {
       hasRoutingCountries = Some(true),
       routingCountries = Seq(Country(Some("FR"))),
       goodsLocation = Some(GoodsLocationForm("GBAUEMAEMAEMA").toModel),
-      officeOfExit = Some(correctOfficeOfExit),
+      officeOfExit = Some(OfficeOfExit(Some("officeId"), Some(AllowedUKOfficeOfExitAnswers.yes))),
       warehouseIdentification = Some(WarehouseIdentificationSpec.correctWarehouseDetails),
       supervisingCustomsOffice = Some(SupervisingCustomsOfficeSpec.correctSupervisingCustomsOffice),
       inlandModeOfTransportCode = Some(InlandModeOfTransportCodeSpec.correctInlandModeOfTransportCode)

@@ -19,23 +19,22 @@ package views
 import base.Injector
 import controllers.routes
 import models.Pointer
-import models.declaration.submissions.RequestType.SubmissionRequest
-import models.declaration.submissions.{Action, Submission}
 import org.jsoup.nodes.Document
 import play.api.i18n.MessagesApi
+import services.cache.ExportsTestData
 import services.model.RejectionReason
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.rejected_notification_errors
 
-class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with Injector {
+class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[rejected_notification_errors]
-  private val ducr = Some("DUCR")
-  private val submission =
-    Submission("submissionId", "eori", "lrn", ducr = ducr, actions = Seq(Action("convId", SubmissionRequest)))
-  private def view(reasons: Seq[RejectionReason] = Seq.empty) = page(submission, reasons)(request, messages)
-  val defaultView = view()
+
+  private val declaration = aDeclaration(withConsignmentReferences("DUCR", "lrn"))
+
+  private def view(reasons: Seq[RejectionReason] = Seq.empty): Document = page(declaration, reasons)(request, messages)
+  val defaultView: Document = view()
 
   "Rejected notification errors page" should {
 
@@ -62,7 +61,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
       val backLink = defaultView.getElementById("back-link")
 
       backLink.text() mustBe messages("site.back")
-      backLink.attr("href") mustBe routes.SubmissionsController.displayDeclarationWithNotifications(submission.uuid).url
+      backLink.attr("href") mustBe routes.SubmissionsController.displayDeclarationWithNotifications(declaration.id).url
     }
 
     "must contain notifications" when {
@@ -71,6 +70,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
           "rejectionCode",
           "cdsRejectionDescription",
           "exportsRejectionDescription",
+          None,
           Some(Pointer("declaration.consignmentReferences.lrn"))
         )
 
@@ -90,6 +90,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
           "rejectionCode",
           "cdsRejectionDescription",
           "exportsRejectionDescription",
+          None,
           Some(Pointer("declaration.goodsShipment.governmentAgencyGoodsItem.#0.additionalDocument.#1.id"))
         )
 
@@ -105,8 +106,33 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with Stubs with In
 
     "must contain continue link" in {
 
-      val continueLink = defaultView.getElementsByAttributeValue("href", routes.SubmissionsController.amend(submission.uuid).url)
+      val continueLink = defaultView.getElementsByAttributeValue("href", routes.SubmissionsController.amend(declaration.id).url)
       continueLink.text() mustBe messages("rejected.notification.continue")
+    }
+
+    "contain change error link" when {
+
+      "link for the error exists" in {
+
+        val itemId = "12sd31"
+        val declaration = aDeclaration(withConsignmentReferences("DUCR", "lrn"), withItem(anItem(withSequenceId(1), withItemId(itemId))))
+
+        val expectedUrl = s"/customs-declare-exports/declaration/items/$itemId/add-document"
+
+        val reason = RejectionReason(
+          "CDS40045",
+          "cdsRejectionDescription",
+          "exportsRejectionDescription",
+          Some(expectedUrl),
+          Some(Pointer("declaration.items.#1.documentProduced.#1.documentStatus"))
+        )
+
+        val view: Document = page(declaration, Seq(reason))(request, messages)
+
+        val changeLink = view.getElementsByClass("govuk-link").first()
+
+        changeLink must haveHref(controllers.routes.SubmissionsController.amendErrors(declaration.id, reason.url.get).url)
+      }
     }
   }
 }

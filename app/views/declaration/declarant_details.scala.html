@@ -25,15 +25,15 @@
 @import views.html.components.gds._
 
 @this(
-govukLayout: gdsMainTemplate,
-errorSummary: errorSummary,
-sectionHeader: sectionHeader,
-govukRadios: GovukRadios,
-exportsInputText: exportsInputText,
-govukDetails : GovukDetails,
-saveButtons: saveButtons,
-tariffDetails: tariffDetails,
-formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    govukRadios: GovukRadios,
+    exportsInputText: exportsInputText,
+    govukDetails : GovukDetails,
+    saveButtons: saveButtons,
+    tariffDetails: tariffDetails,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(mode: Mode, form: Form[DeclarantEoriConfirmation])(implicit request: JourneyRequest[_], messages: Messages)
@@ -56,6 +56,7 @@ formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
                     classes = gdsPageLegend
                 ))
             )),
+            hint = Some(Hint(content = Text(messages("declaration.declarant.hint")))),
             items = Seq(
                 RadioItem(
                     id = Some("code_yes"),

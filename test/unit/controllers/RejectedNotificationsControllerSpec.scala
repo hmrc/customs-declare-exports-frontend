@@ -40,9 +40,7 @@ class RejectedNotificationsControllerSpec extends ControllerSpec with OptionValu
     mockRejectedNotificationPage
   )(global)
 
-  private val submissionId = "SubmissionId"
-  private val action = Action("convId", SubmissionRequest)
-  private val submission = Submission(submissionId, "eori", "lrn", actions = Seq(action))
+  private val declarationId = "DeclarationId"
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -63,10 +61,10 @@ class RejectedNotificationsControllerSpec extends ControllerSpec with OptionValu
 
       "display page method is invoked with submission and notifications" in {
 
-        findSubmission(submissionId, Some(submission))
-        findNotifications(submissionId)
+        getDeclaration(declarationId)
+        findNotifications(declarationId)
 
-        val result = controller.displayPage(submissionId)(getRequest())
+        val result = controller.displayPage(declarationId)(getRequest())
 
         status(result) mustBe OK
         verify(mockRejectedNotificationPage).apply(any(), any())(any(), any())
@@ -77,9 +75,9 @@ class RejectedNotificationsControllerSpec extends ControllerSpec with OptionValu
 
       "display page method is invoked without submission" in {
 
-        findSubmission(submissionId, None)
+        declarationNotFound
 
-        val result = controller.displayPage(submissionId)(getRequest())
+        val result = controller.displayPage(declarationId)(getRequest())
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.SubmissionsController.displayListOfSubmissions().url

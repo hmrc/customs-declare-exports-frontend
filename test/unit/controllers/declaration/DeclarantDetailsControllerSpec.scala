@@ -82,14 +82,14 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
       }
     }
 
-    "return 303 (SEE_OTHER) and redirect to exporter details page" in new SetUp {
+    "return 303 (SEE_OTHER) and redirect to is declarant exporter details page" in new SetUp {
 
       private val correctForm = JsObject(Map(isEoriKey -> JsString(YesNoAnswers.yes)))
 
       private val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
       await(result) mustBe aRedirectToTheNextPage
-      thePageNavigatedTo mustBe controllers.declaration.routes.ExporterDetailsController.displayPage()
+      thePageNavigatedTo mustBe controllers.declaration.routes.DeclarantExporterController.displayPage()
     }
   }
 }

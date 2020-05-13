@@ -19,6 +19,7 @@ package unit.controllers.declaration
 import controllers.declaration.ConsigneeDetailsController
 import forms.common.Address
 import forms.declaration.{ConsigneeDetails, EntityDetails}
+import models.DeclarationType._
 import models.Mode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -45,7 +46,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
     super.beforeEach()
 
     authorizedUser()
-    when(consigneeDetailsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(consigneeDetailsPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -56,57 +57,81 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
 
   "Consignee Details controller" should {
 
-    "return 200 (OK)" when {
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { request =>
+      "return 200 (OK)" when {
 
-      "display page method is invoked and cache is empty" in {
+        "display page method is invoked and cache is empty" in {
 
-        withNewCaching(aDeclaration())
+          withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage(Mode.Normal)(getRequest())
+          val result = controller.displayPage(Mode.Normal)(getRequest())
 
-        status(result) must be(OK)
+          status(result) must be(OK)
+        }
+
+        "display page method is invoked and cache contains data" in {
+
+          withNewCaching(
+            aDeclarationAfter(
+              request.cacheModel,
+              withConsigneeDetails(None, Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom")))
+            )
+          )
+
+          val result = controller.displayPage(Mode.Normal)(getRequest())
+
+          status(result) must be(OK)
+        }
       }
 
-      "display page method is invoked and cache contains data" in {
+      "return 400 (BAD_REQUEST)" when {
 
-        val modelWithDetails =
-          aDeclaration(withConsigneeDetails(None, Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom"))))
+        "form is incorrect" in {
 
-        withNewCaching(modelWithDetails)
+          withNewCaching(request.cacheModel)
 
-        val result = controller.displayPage(Mode.Normal)(getRequest(modelWithDetails))
+          val incorrectForm = Json.toJson(ConsigneeDetails(EntityDetails(None, None)))
 
-        status(result) must be(OK)
+          val result = controller.saveAddress(Mode.Normal)(postRequest(incorrectForm))
+
+          status(result) must be(BAD_REQUEST)
+        }
       }
     }
 
-    "return 400 (BAD_REQUEST)" when {
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { request =>
+      "return 303 (SEE_OTHER) and redirect to representative details page" when {
 
-      "form is incorrect" in {
+        "form is correct" in {
 
-        withNewCaching(aDeclaration())
+          withNewCaching(request.cacheModel)
 
-        val incorrectForm = Json.toJson(ConsigneeDetails(EntityDetails(None, None)))
+          val correctForm =
+            Json.toJson(ConsigneeDetails(EntityDetails(None, Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom")))))
 
-        val result = controller.saveAddress(Mode.Normal)(postRequest(incorrectForm))
+          val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 
-        status(result) must be(BAD_REQUEST)
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage()
+        }
       }
     }
 
-    "return 303 (SEE_OTHER) and redirect to representative details page" when {
+    onJourney(CLEARANCE) { request =>
+      "return 303 (SEE_OTHER) and redirect to representative details page" when {
 
-      "form is correct" in {
+        "form is correct" in {
 
-        withNewCaching(aDeclaration())
+          withNewCaching(request.cacheModel)
 
-        val correctForm =
-          Json.toJson(ConsigneeDetails(EntityDetails(None, Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom")))))
+          val correctForm =
+            Json.toJson(ConsigneeDetails(EntityDetails(None, Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom")))))
 
-        val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
+          val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
 
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeDetailsController.displayPage()
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.DeclarationHolderController.displayPage()
+        }
       }
     }
   }

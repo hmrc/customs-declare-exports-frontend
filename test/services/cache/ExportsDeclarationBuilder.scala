@@ -21,11 +21,12 @@ import java.util.UUID
 
 import forms.common.{Address, Eori}
 import forms.declaration.DispatchLocation.AllowedDispatchLocations.OutsideEU
+import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit}
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.countries.Country
-import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Ducr, Lrn}
 import models.DeclarationStatus.DeclarationStatus
 import models.DeclarationType.DeclarationType
@@ -157,6 +158,9 @@ trait ExportsDeclarationBuilder {
   def withDeclarantDetails(eori: Option[Eori] = None, address: Option[Address] = None): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(declarantDetails = Some(DeclarantDetails(EntityDetails(eori, address)))))
 
+  def withDeclarantIsExporter(isExporter: String = "Yes"): ExportsDeclarationModifier =
+    cache => cache.copy(parties = cache.parties.copy(declarantIsExporter = Some(DeclarantIsExporter(isExporter))))
+
   def withoutDeclarationHolders(): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(declarationHoldersData = None))
 
@@ -215,6 +219,12 @@ trait ExportsDeclarationBuilder {
   def withConsigneeDetails(eori: Option[Eori], address: Option[Address]): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(consigneeDetails = Some(ConsigneeDetails(EntityDetails(eori, address)))))
 
+  def withConsignorDetails(consignorDetails: ConsignorDetails): ExportsDeclarationModifier =
+    cache => cache.copy(parties = cache.parties.copy(consignorDetails = Some(consignorDetails)))
+
+  def withConsignorDetails(eori: Option[Eori], address: Option[Address]): ExportsDeclarationModifier =
+    cache => cache.copy(parties = cache.parties.copy(consignorDetails = Some(ConsignorDetails(EntityDetails(eori, address)))))
+
   def withoutConsigneeDetails(): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(consigneeDetails = None))
 
@@ -224,9 +234,12 @@ trait ExportsDeclarationBuilder {
   def withDeclarationAdditionalActors(declarationAdditionalActorsData: DeclarationAdditionalActorsData): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(declarationAdditionalActorsData = Some(declarationAdditionalActorsData)))
 
-  def withRepresentativeDetails(eori: Option[Eori], address: Option[Address], statusCode: Option[String]): ExportsDeclarationModifier =
+  def withRepresentativeDetails(eori: Option[Eori], statusCode: Option[String], representingOtherAgent: Option[String]): ExportsDeclarationModifier =
     cache =>
-      cache.copy(parties = cache.parties.copy(representativeDetails = Some(RepresentativeDetails(Some(EntityDetails(eori, address)), statusCode))))
+      cache.copy(
+        parties =
+          cache.parties.copy(representativeDetails = Some(RepresentativeDetails(Some(EntityDetails(eori, None)), statusCode, representingOtherAgent)))
+    )
 
   def withRepresentativeDetails(representativeDetails: RepresentativeDetails): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(representativeDetails = Some(representativeDetails)))
@@ -333,11 +346,17 @@ trait ExportsDeclarationBuilder {
   def withoutOfficeOfExit(): ExportsDeclarationModifier =
     cache => cache.copy(locations = cache.locations.copy(officeOfExit = None))
 
-  def withOfficeOfExit(officeId: String = "", circumstancesCode: Option[String] = None): ExportsDeclarationModifier =
-    withOptionalOfficeOfExit(Some(officeId), circumstancesCode)
+  def withOfficeOfExit(officeId: String = "", isUkOfficeOfExit: String = AllowedUKOfficeOfExitAnswers.yes): ExportsDeclarationModifier =
+    withOptionalOfficeOfExit(Some(officeId), Some(isUkOfficeOfExit))
 
-  def withOptionalOfficeOfExit(officeId: Option[String] = None, circumstancesCode: Option[String] = None): ExportsDeclarationModifier =
-    cache => cache.copy(locations = cache.locations.copy(officeOfExit = Some(OfficeOfExit(officeId, circumstancesCode))))
+  def withOptionalOfficeOfExit(
+    officeId: Option[String] = None,
+    isUkOfficeOfExit: Option[String] = Some(AllowedUKOfficeOfExitAnswers.yes)
+  ): ExportsDeclarationModifier =
+    cache => cache.copy(locations = cache.locations.copy(officeOfExit = Some(OfficeOfExit(officeId, isUkOfficeOfExit))))
+
+  def withOfficeOfExitOutsideUK(officeId: String = ""): ExportsDeclarationModifier =
+    cache => cache.copy(locations = cache.locations.copy(officeOfExit = Some(OfficeOfExit(Some(officeId), Some(AllowedUKOfficeOfExitAnswers.no)))))
 
   def withTransportPayment(data: Option[TransportPayment]): ExportsDeclarationModifier =
     cache => {

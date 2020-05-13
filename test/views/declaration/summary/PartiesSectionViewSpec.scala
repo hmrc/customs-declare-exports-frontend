@@ -19,7 +19,7 @@ package views.declaration.summary
 import base.Injector
 import forms.common.{Address, Eori}
 import models.Mode
-import models.declaration.DeclarationAdditionalActorsData
+import models.declaration.{DeclarationAdditionalActorsData, RepresentativeDetails}
 import services.cache.ExportsTestData
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.parties_section
@@ -30,10 +30,11 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Inje
   private val exampleAddress = Address("fullName", "addressLine", "townOrCity", "postCode", "GB")
   private val exampleAddressContents = "fullName addressLine townOrCity postCode GB"
   private val data = aDeclaration(
+    withDeclarantIsExporter("No"),
     withExporterDetails(Some(Eori(exampleEori)), Some(exampleAddress)),
     withConsigneeDetails(Some(Eori(exampleEori)), Some(exampleAddress)),
     withDeclarantDetails(Some(Eori(exampleEori)), Some(exampleAddress)),
-    withRepresentativeDetails(Some(Eori(exampleEori)), Some(exampleAddress), Some("1")),
+    withRepresentativeDetails(Some(Eori(exampleEori)), Some("1"), Some("Yes")),
     withCarrierDetails(Some(Eori(exampleEori)), Some(exampleAddress)),
     withDeclarationAdditionalActors(DeclarationAdditionalActorsData(Seq.empty)),
     withDeclarationHolders()
@@ -45,6 +46,16 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Inje
 
     onEveryDeclarationJourney() { request =>
       val view = section(Mode.Change, data)(messages, request)
+
+      "contains 'are you exporter' with change button" in {
+
+        val isExporterRow = view.getElementsByClass("declarantIsExporter-row")
+
+        isExporterRow must haveSummaryKey(messages("declaration.summary.parties.declarantIsExporter"))
+        isExporterRow must haveSummaryValue(messages("declaration.summary.parties.declarantIsExporter.no"))
+        isExporterRow must haveSummaryActionsText("site.change declaration.summary.parties.declarantIsExporter.change")
+        isExporterRow must haveSummaryActionsHref(controllers.declaration.routes.DeclarantExporterController.displayPage(Mode.Change))
+      }
 
       "contains exporter details with change button" in {
 
@@ -88,24 +99,38 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Inje
         eoriRow must haveSummaryValue(exampleEori)
       }
 
-      "contains representative details with change button" in {
+      "contains representing another agent with change button" in {
+
+        val eoriRow = view.getElementsByClass("representingAnotherAgent-row")
+
+        eoriRow must haveSummaryKey(messages("declaration.summary.parties.representative.agent"))
+        eoriRow must haveSummaryValue(messages("declaration.summary.parties.representative.agent.yes"))
+        eoriRow must haveSummaryActionsText("site.change declaration.summary.parties.representative.agent.change")
+        eoriRow must haveSummaryActionsHref(controllers.declaration.routes.RepresentativeAgentController.displayPage(Mode.Change))
+      }
+
+      "contains representative eori with change button" in {
 
         val eoriRow = view.getElementsByClass("representative-eori-row")
 
         eoriRow must haveSummaryKey(messages("declaration.summary.parties.representative.eori"))
         eoriRow must haveSummaryValue(exampleEori)
         eoriRow must haveSummaryActionsText("site.change declaration.summary.parties.representative.eori.change")
-        eoriRow must haveSummaryActionsHref(controllers.declaration.routes.RepresentativeDetailsController.displayPage(Mode.Change))
-
-        val addressRow = view.getElementsByClass("representative-address-row")
-
-        addressRow must haveSummaryKey(messages("declaration.summary.parties.representative.address"))
-        addressRow must haveSummaryValue(exampleAddressContents)
-        addressRow must haveSummaryActionsText("site.change declaration.summary.parties.representative.address.change")
-        addressRow must haveSummaryActionsHref(controllers.declaration.routes.RepresentativeDetailsController.displayPage(Mode.Change))
+        eoriRow must haveSummaryActionsHref(controllers.declaration.routes.RepresentativeEntityController.displayPage(Mode.Change))
       }
 
-      "display status code with change button" in {
+      "does not contains representative eori when not representing another agent" in {
+
+        val nonAgentView = section(
+          Mode.Change,
+          data.copy(parties = data.parties.copy(representativeDetails = Some(RepresentativeDetails(None, Some("2"), Some("No")))))
+        )(messages, request)
+        val eoriRow = nonAgentView.getElementsByClass("representative-eori-row")
+
+        eoriRow.text() must be(empty)
+      }
+
+      "contains representative status code with change button" in {
 
         val row = view.getElementsByClass("representationType-row")
 
@@ -113,10 +138,10 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Inje
         row must haveSummaryValue(messages("declaration.summary.parties.representative.type.1"))
 
         row must haveSummaryActionsText("site.change declaration.summary.parties.representative.type.change")
-        row must haveSummaryActionsHref(controllers.declaration.routes.RepresentativeDetailsController.displayPage(Mode.Change))
+        row must haveSummaryActionsHref(controllers.declaration.routes.RepresentativeStatusController.displayPage(Mode.Change))
       }
 
-      "display additional actors section" in {
+      "contains additional actors section" in {
 
         val row = view.getElementsByClass("additionalActors-row")
 
@@ -124,7 +149,7 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Inje
         row must haveSummaryValue(messages("site.no"))
       }
 
-      "display holders section" in {
+      "contains holders section" in {
 
         val row = view.getElementsByClass("holders-row")
 

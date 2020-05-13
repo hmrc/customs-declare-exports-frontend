@@ -21,7 +21,9 @@ import java.util.concurrent.TimeUnit
 
 import config.AppConfig
 import controllers.util._
-import models.SignedInUser
+import forms.DeclarationPage
+import forms.declaration.CarrierDetails
+import models.{Mode, SignedInUser}
 import models.requests.{AuthenticatedRequest, ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
 import org.mockito.ArgumentMatchers
@@ -42,7 +44,8 @@ import scala.concurrent.duration.FiniteDuration
 
 class NavigatorSpec extends WordSpec with Matchers with MockitoSugar with ExportsDeclarationBuilder {
 
-  private val call = Call("GET", "url")
+  private val mode = Mode.Normal
+  private val call: Mode => Call = _ => Call("GET", "url")
   private val config = mock[AppConfig]
   private val auditService = mock[AuditService]
   private val hc: HeaderCarrier = mock[HeaderCarrier]
@@ -65,7 +68,7 @@ class NavigatorSpec extends WordSpec with Matchers with MockitoSugar with Export
     "Go to Save as Draft" in {
       given(config.draftTimeToLive).willReturn(FiniteDuration(10, TimeUnit.DAYS))
 
-      val result = navigator.continueTo(call)(request(Some(SaveAndReturn)), hc)
+      val result = navigator.continueTo(mode, call(_))(request(Some(SaveAndReturn)), hc)
 
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(controllers.declaration.routes.ConfirmationController.displayDraftConfirmation().url)
@@ -77,7 +80,7 @@ class NavigatorSpec extends WordSpec with Matchers with MockitoSugar with Export
 
     "Go to URL provided" when {
       "Save And Continue" in {
-        val result = navigator.continueTo(call)(request(Some(SaveAndContinue)), hc)
+        val result = navigator.continueTo(mode, call(_))(request(Some(SaveAndContinue)), hc)
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some("url")
@@ -85,7 +88,7 @@ class NavigatorSpec extends WordSpec with Matchers with MockitoSugar with Export
       }
 
       "Add" in {
-        val result = navigator.continueTo(call)(request(Some(Add)), hc)
+        val result = navigator.continueTo(mode, call(_))(request(Some(Add)), hc)
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some("url")
@@ -93,7 +96,7 @@ class NavigatorSpec extends WordSpec with Matchers with MockitoSugar with Export
       }
 
       "Remove" in {
-        val result = navigator.continueTo(call)(request(Some(Remove(Seq.empty))), hc)
+        val result = navigator.continueTo(mode, call(_))(request(Some(Remove(Seq.empty))), hc)
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some("url")
@@ -101,7 +104,7 @@ class NavigatorSpec extends WordSpec with Matchers with MockitoSugar with Export
       }
 
       "Unknown Action" in {
-        val result = navigator.continueTo(call)(request(Some(Unknown)), hc)
+        val result = navigator.continueTo(mode, call(_))(request(Some(Unknown)), hc)
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some("url")
@@ -110,6 +113,79 @@ class NavigatorSpec extends WordSpec with Matchers with MockitoSugar with Export
     }
   }
 
-  private implicit def result2future: Result => Future[Result] = Future.successful
+  "Navigator" should {
 
+    val authenticatedRequest = new AuthenticatedRequest[AnyContent](
+      FakeRequest("GET", "uri")
+        .withSession(ExportsSessionKeys.declarationId -> "declarationId"),
+      mock[SignedInUser]
+    )
+
+    "redirect to RejectedNotificationsController.displayPage" when {
+
+      val sourceId = "1234"
+      val declaration = aDeclaration(withSourceId(sourceId))
+
+      "continueTo method is invoked with mode ErrorFix and sourceId in request" in {
+
+        val request = new JourneyRequest[AnyContent](authenticatedRequest, declaration)
+
+        val result = navigator.continueTo(Mode.ErrorFix, call)(request, hc)
+
+        redirectLocation(result) shouldBe Some(controllers.routes.RejectedNotificationsController.displayPage(sourceId).url)
+      }
+
+      "backLink method is invoked with mode ErrorFix and sourceId in request" in {
+
+        val request = new JourneyRequest[AnyContent](authenticatedRequest, declaration)
+
+        val result = Navigator.backLink(CarrierDetails, Mode.ErrorFix)(request)
+
+        result shouldBe controllers.routes.RejectedNotificationsController.displayPage(sourceId)
+      }
+
+      "backLink method for items is invoked with mode ErrorFix and sourceId in request" in {
+
+        val request = new JourneyRequest[AnyContent](authenticatedRequest, declaration)
+
+        val result = Navigator.backLink(CarrierDetails, Mode.ErrorFix, ItemId("123456"))(request)
+
+        result shouldBe controllers.routes.RejectedNotificationsController.displayPage(sourceId)
+      }
+    }
+
+    "redirect to SubmissionsController.displayListOfSubmissions" when {
+
+      val declaration = aDeclaration(withoutSourceId())
+
+      "continueTo method is invoked with mode ErrorFix but without sourceId in request" in {
+
+        val request = new JourneyRequest[AnyContent](authenticatedRequest, declaration)
+
+        val result = navigator.continueTo(Mode.ErrorFix, call)(request, hc)
+
+        redirectLocation(result) shouldBe Some(controllers.routes.SubmissionsController.displayListOfSubmissions().url)
+      }
+
+      "backLink method is invoked with mode ErrorFix but without sourceId in request" in {
+
+        val request = new JourneyRequest[AnyContent](authenticatedRequest, declaration)
+
+        val result = Navigator.backLink(CarrierDetails, Mode.ErrorFix)(request)
+
+        result shouldBe controllers.routes.SubmissionsController.displayListOfSubmissions()
+      }
+
+      "backLink method for items is invoked with mode ErrorFix but without sourceId in request" in {
+
+        val request = new JourneyRequest[AnyContent](authenticatedRequest, declaration)
+
+        val result = Navigator.backLink(CarrierDetails, Mode.ErrorFix, ItemId("123456"))(request)
+
+        result shouldBe controllers.routes.SubmissionsController.displayListOfSubmissions()
+      }
+    }
+  }
+
+  private implicit def result2future: Result => Future[Result] = Future.successful
 }

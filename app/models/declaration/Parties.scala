@@ -16,14 +16,17 @@
 
 package models.declaration
 
-import forms.declaration._
+import forms.declaration.consignor.ConsignorDetails
+import forms.declaration.{CarrierDetails, ConsigneeDetails, DeclarantDetails, DeclarantIsExporter, ExporterDetails}
 import models.ExportsDeclaration
 import play.api.libs.json.Json
 
 case class Parties(
   exporterDetails: Option[ExporterDetails] = None,
   consigneeDetails: Option[ConsigneeDetails] = None,
+  consignorDetails: Option[ConsignorDetails] = None,
   declarantDetails: Option[DeclarantDetails] = None,
+  declarantIsExporter: Option[DeclarantIsExporter] = None,
   representativeDetails: Option[RepresentativeDetails] = None,
   declarationAdditionalActorsData: Option[DeclarationAdditionalActorsData] = None,
   declarationHoldersData: Option[DeclarationHoldersData] = None,
@@ -38,6 +41,7 @@ object Parties {
   def apply(cacheData: ExportsDeclaration): Parties = Parties(
     exporterDetails = cacheData.parties.exporterDetails,
     consigneeDetails = cacheData.parties.consigneeDetails,
+    consignorDetails = cacheData.parties.consignorDetails,
     declarantDetails = cacheData.parties.declarantDetails,
     representativeDetails = cacheData.parties.representativeDetails,
     declarationAdditionalActorsData = cacheData.parties.declarationAdditionalActorsData,

@@ -35,7 +35,7 @@ class DeclarantEoriConfirmationSpec extends WordSpec with MustMatchers {
 
         form.hasErrors mustBe true
         form.errors.length must equal(1)
-        form.errors.head.message must equal("error.yesNo.required")
+        form.errors.head.message must equal("declaration.declarant.error")
       }
 
       "provided with invalid input" in {
@@ -44,7 +44,7 @@ class DeclarantEoriConfirmationSpec extends WordSpec with MustMatchers {
 
         form.hasErrors mustBe true
         form.errors.length must equal(1)
-        form.errors.head.message must equal("error.yesNo.required")
+        form.errors.head.message must equal("declaration.declarant.error")
       }
 
       "provided with valid input" in {

@@ -18,13 +18,14 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.ConsigneeDetails
+import forms.DeclarationPage
+import forms.declaration.{ConsigneeDetails, ExporterDetails}
 import javax.inject.Inject
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.consignee_details
@@ -46,8 +47,8 @@ class ConsigneeDetailsController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.parties.consigneeDetails match {
-      case Some(data) => Ok(consigneeDetailsPage(mode, ConsigneeDetails.form().fill(data)))
-      case _          => Ok(consigneeDetailsPage(mode, ConsigneeDetails.form()))
+      case Some(data) => Ok(consigneeDetailsPage(mode, navigationForm, ConsigneeDetails.form().fill(data)))
+      case _          => Ok(consigneeDetailsPage(mode, navigationForm, ConsigneeDetails.form()))
     }
   }
 
@@ -56,12 +57,25 @@ class ConsigneeDetailsController @Inject()(
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ConsigneeDetails]) => Future.successful(BadRequest(consigneeDetailsPage(mode, formWithErrors))),
+        (formWithErrors: Form[ConsigneeDetails]) => Future.successful(BadRequest(consigneeDetailsPage(mode, navigationForm, formWithErrors))),
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.RepresentativeDetailsController.displayPage))
+            .map(_ => navigator.continueTo(mode, nextPage()))
       )
   }
+
+  private def navigationForm(implicit request: JourneyRequest[AnyContent]): DeclarationPage =
+    if (request.declarationType == DeclarationType.SUPPLEMENTARY && request.cacheModel.parties.declarantIsExporter.exists(_.isExporter))
+      ExporterDetails
+    else ConsigneeDetails
+
+  private def nextPage()(implicit request: JourneyRequest[AnyContent]): Mode => Call =
+    request.declarationType match {
+      case DeclarationType.CLEARANCE =>
+        controllers.declaration.routes.DeclarationHolderController.displayPage
+      case _ =>
+        controllers.declaration.routes.DeclarationAdditionalActorsController.displayPage
+    }
 
   private def updateCache(formData: ConsigneeDetails)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>

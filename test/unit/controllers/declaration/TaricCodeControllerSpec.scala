@@ -146,7 +146,7 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
           val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(body: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeController.displayPage(Mode.Normal, "itemId")
+          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, "itemId")
           verifyPageInvoked(0)
         }
       }

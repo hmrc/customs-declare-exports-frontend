@@ -1,0 +1,92 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.declaration.routes._
+@import forms.DeclarationPage
+@import forms.declaration.RepresentativeEntity
+@import forms.declaration.RepresentativeStatus
+@import forms.declaration.RepresentativeStatus.StatusCodes._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.Title
+@import models.requests.JourneyRequest
+@import controllers.navigation.Navigator
+@import views.html.components.gds._
+@import views.components.gds.Styles._
+@import views.BackButton
+
+@this(govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        govukRadios: GovukRadios,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        pageTitle: pageTitle,
+        exportsInputText: exportsInputText,
+        govukInput : GovukInput,
+        tariffDetails: tariffDetails,
+        saveButtons: saveButtons,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+
+@(mode: Mode, navigationForm: DeclarationPage, form: Form[RepresentativeStatus])(implicit request: JourneyRequest[_], messages: Messages)
+
+@tariffBody = { @Html(messages("declaration.representative-status.help-item", components.details_content_link())) }
+
+@govukLayout(
+    title = Title("declaration.representative.status.title"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(navigationForm, mode)))) {
+
+    @formHelper(action = RepresentativeStatusController.submitForm(mode), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("declaration.summary.parties.header"))
+
+        @govukRadios(Radios(
+            name = "statusCode",
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("declaration.representative.status.title")),
+                    isPageHeading = true,
+                    classes = gdsPageLegend
+                ))
+            )),
+            items = Seq(
+                RadioItem(
+                    id = Some(DirectRepresentative.toString),
+                    value = Some(DirectRepresentative.toString),
+                    content = Text(messages("declaration.representative.representationType.direct")),
+                    hint = Some(Hint(
+                        content = Text(messages("declaration.representative.representationType.direct.hint"))
+                    )),
+                    checked = form("statusCode").value.contains(DirectRepresentative.toString)
+                ),
+                RadioItem(
+                    id = Some(IndirectRepresentative.toString),
+                    value = Some(IndirectRepresentative.toString),
+                    content = Text(messages("declaration.representative.representationType.indirect")),
+                    hint = Some(Hint(
+                        content = Text(messages("declaration.representative.representationType.indirect.hint"))
+                    )),
+                    checked = form("statusCode").value.contains(IndirectRepresentative.toString)
+                )
+            ),
+            errorMessage = form("statusCode").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
+
+        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+
+        @saveButtons()
+    }
+}
+

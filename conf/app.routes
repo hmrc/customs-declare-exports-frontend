@@ -22,6 +22,8 @@ GET         /submissions/:id/information                   controllers.Submissio
 
 GET         /submissions/:id                               controllers.SubmissionsController.amend(id: String)
 
+GET         /submissions/:id/:url                          controllers.SubmissionsController.amendErrors(id: String, url: String)
+
 # Cancel declaration
 
 GET         /cancel-declaration                            controllers.CancelDeclarationController.displayPage()
@@ -47,3 +49,9 @@ GET         /start                                         controllers.StartCont
 GET         /choice                                        controllers.ChoiceController.displayPage(previousChoice: Option[forms.Choice] ?= None)
 
 POST        /choice                                        controllers.ChoiceController.submitChoice()
+
+# Session timeout
+
+GET         /sign-out                                       controllers.SessionTimeoutController.signOut()
+
+GET         /we-signed-you-out                              controllers.SessionTimeoutController.signedOut()

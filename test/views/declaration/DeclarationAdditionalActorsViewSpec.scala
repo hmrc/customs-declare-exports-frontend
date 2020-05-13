@@ -111,26 +111,14 @@ class DeclarationAdditionalActorsViewSpec extends UnitViewSpec with CommonMessag
       }
     }
 
-    onJourney(DeclarationType.SUPPLEMENTARY) { request =>
-      "display 'Back' button that links to 'Representative Details' page" in {
-
-        val view = declarationAdditionalActorsPage(Mode.Normal, form, Seq())(request, messages)
-
-        val backButton = view.getElementById("back-link")
-
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.RepresentativeDetailsController.displayPage().url
-      }
-    }
-
-    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { request =>
-      "display 'Back' button that links to 'Carrier Details' page" in {
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { request =>
+      "display 'Back' button that links to 'Consignee Details' page" in {
 
         val view = declarationAdditionalActorsPage(Mode.Normal, form, Seq())(request, messages)
         val backButton = view.getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.CarrierDetailsController.displayPage().url
+        backButton.attr("href") mustBe routes.ConsigneeDetailsController.displayPage().url
       }
     }
 
