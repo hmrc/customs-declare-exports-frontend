@@ -18,7 +18,6 @@ package models
 
 import java.time.{Clock, Instant}
 
-import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
@@ -123,6 +122,7 @@ case class ExportsDeclaration(
   }
 
   def isEntryIntoDeclarantsRecords: Boolean = parties.isEntryIntoDeclarantsRecords.exists(_.answer == YesNoAnswers.yes)
+  def isNotEntryIntoDeclarantsRecords: Boolean = !isEntryIntoDeclarantsRecords
 }
 
 object ExportsDeclaration {
