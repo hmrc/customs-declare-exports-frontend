@@ -95,7 +95,7 @@ object Navigator {
     case AdditionalInformation => controllers.declaration.routes.CommodityMeasureController.displayPage
     case CusCode               => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
     case NactCode              => controllers.declaration.routes.NactCodeSummaryController.displayPage
-    case NactCodeFirst         => controllers.declaration.routes.TaricCodeController.displayPage
+    case NactCodeFirst         => controllers.declaration.routes.TaricCodeSummaryController.displayPage
     case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
 
@@ -155,7 +155,7 @@ object Navigator {
     case AdditionalInformation => controllers.declaration.routes.CommodityMeasureController.displayPage
     case CusCode               => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
     case NactCode              => controllers.declaration.routes.NactCodeSummaryController.displayPage
-    case NactCodeFirst         => controllers.declaration.routes.TaricCodeController.displayPage
+    case NactCodeFirst         => controllers.declaration.routes.TaricCodeSummaryController.displayPage
     case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
   }
 
@@ -186,7 +186,7 @@ object Navigator {
     case AdditionalInformation => controllers.declaration.routes.PackageInformationController.displayPage
     case CusCode               => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
     case NactCode              => controllers.declaration.routes.NactCodeSummaryController.displayPage
-    case NactCodeFirst         => controllers.declaration.routes.TaricCodeController.displayPage
+    case NactCodeFirst         => controllers.declaration.routes.TaricCodeSummaryController.displayPage
     case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
   }
 
@@ -218,7 +218,7 @@ object Navigator {
     case AdditionalInformation => controllers.declaration.routes.PackageInformationController.displayPage
     case CusCode               => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
     case NactCode              => controllers.declaration.routes.NactCodeSummaryController.displayPage
-    case NactCodeFirst         => controllers.declaration.routes.TaricCodeController.displayPage
+    case NactCodeFirst         => controllers.declaration.routes.TaricCodeSummaryController.displayPage
     case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
   }
 
@@ -249,7 +249,8 @@ object Navigator {
     case AdditionalFiscalReference => controllers.declaration.routes.FiscalInformationController.displayPage(_, _, fastForward = false)
     case CommodityDetails          => controllers.declaration.routes.FiscalInformationController.displayPage(_, _, fastForward = true)
     case UNDangerousGoodsCode      => controllers.declaration.routes.CommodityDetailsController.displayPage
-    case TaricCode                 => controllers.declaration.routes.CusCodeController.displayPage
+    case TaricCode                 => controllers.declaration.routes.TaricCodeSummaryController.displayPage
+    case TaricCodeFirst            => controllers.declaration.routes.CusCodeController.displayPage
     case StatisticalValue          => controllers.declaration.routes.NactCodeSummaryController.displayPage
     case CommodityMeasure          => controllers.declaration.routes.PackageInformationController.displayPage
     case DocumentsProduced         => controllers.declaration.routes.AdditionalInformationController.displayPage

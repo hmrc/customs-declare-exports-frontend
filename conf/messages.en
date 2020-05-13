@@ -852,15 +852,20 @@ declaration.cusCode.error.length = CUS Code must be exactly 8 characters long
 declaration.cusCode.error.specialCharacters = CUS Code cannot contain special characters
 declaration.cusCode.help.bodyText = Go to data element 6/13 CUS Code for Chemicals in the {0}.
 
-declaration.taricAdditionalCodes.header = Additional TARIC codes
-declaration.taricAdditionalCodes.header.hint = This will be the four digits that come after the commodity code in the {0}. If no additional codes are required, leave blank.
+declaration.taricAdditionalCodes.addfirst.header = Is there an additional code?
+declaration.taricAdditionalCodes.addfirst.label = Additional code
+declaration.taricAdditionalCodes.addnext.header = What is the next additional code?
+declaration.taricAdditionalCodes.remove.header = Are you sure you want to remove this additional code?
+
+declaration.taricAdditionalCodes.header.singular = You have added 1 additional code
+declaration.taricAdditionalCodes.header.plural = You have added {0} additional codes
+declaration.taricAdditionalCodes.header.hint = This is a four-digit code, also known as the TARIC additional code. It can be found in the {0} under the ‘Export measures and restrictions’ tab of your commodity code.
 declaration.taricAdditionalCodes.header.tradeTariff.link = UK Trade Tariff
-declaration.taricAdditionalCodes.label = Do you need to add a TARIC additional code?
+declaration.taricAdditionalCodes.label = Do you need to add another additional code?
 declaration.taricAdditionalCodes.error.empty = Enter a TARIC code
 declaration.taricAdditionalCodes.error.invalid = Additional code must be 4 alpha numeric characters exactly
-declaration.taricAdditionalCodes.add.hint = Add TARIC code
-declaration.taricAdditionalCodes.table.header = TARIC code
-declaration.taricAdditionalCodes.remove.hint = Remove TARIC code {0}
+declaration.taricAdditionalCodes.table.header = Additional code
+declaration.taricAdditionalCodes.remove.hint = Remove additional code code {0}
 declaration.taricAdditionalCodes.help.bodyText = Go to data element 6/16 Commodity Code: TARIC Additional Code in the {0}
 
 declaration.nationalAdditionalCode.addfirst.header = Do these goods require a national additional code?
@@ -878,7 +883,6 @@ declaration.nationalAdditionalCode.error.empty = Select a national additional co
 declaration.nationalAdditionalCode.error.invalid = Enter a valid national additional code
 declaration.nationalAdditionalCode.error.maxAmount = Maximum number of codes added
 declaration.nationalAdditionalCode.error.duplicate = National additional code already added
-declaration.nationalAdditionalCode.add.hint = Add national additional code
 declaration.nationalAdditionalCode.table.header = National additional Code
 declaration.nationalAdditionalCode.remove.hint = Remove national additional code {0}
 declaration.nationalAdditionalCode.help.bodyText = Go to data element 6/17 National Additional Code in the {0}

@@ -16,8 +16,9 @@
 
 @import controllers.declaration.routes._
 @import controllers.navigation.Navigator
-@import forms.declaration.NactCodeFirst
-@import forms.declaration.NactCodeFirst._
+@import forms.declaration.TaricCodeFirst
+@import forms.declaration.TaricCodeFirst._
+@import forms.declaration.TaricCode._
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title}
@@ -25,9 +26,7 @@
 @import views.html.components.gds._
 @import config.AppConfig
 @import forms.common.YesNoAnswer.YesNoAnswers
-@import services.view.AutoCompleteItem
 @import controllers.navigation.ItemId
-@import services.NationalAdditionalCode
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -45,58 +44,55 @@
     formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(mode: Mode, itemId: String, form: Form[NactCodeFirst])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, itemId: String, form: Form[TaricCodeFirst])(implicit request: JourneyRequest[_], messages: Messages)
 
-@tariffBody = { @Html(messages("declaration.nationalAdditionalCode.help.bodyText", components.details_content_link())) }
+@tariffBody = { @Html(messages("declaration.taricAdditionalCodes.help.bodyText", components.details_content_link())) }
 
-@nactCodeLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.nationalAdditionalCode.header.nactCode.link")</a>}
-@tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.nationalAdditionalCode.header.tradeTariff.link")</a>}
+@tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.taricAdditionalCodes.header.tradeTariff.link")</a>}
 
 @govukLayout(
-    title = Title("declaration.nationalAdditionalCode.addfirst.header", "supplementary.items"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(NactCodeFirst, mode, ItemId(itemId))))) {
+    title = Title("declaration.taricAdditionalCodes.addfirst.header", "supplementary.items"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(TaricCodeFirst, mode, ItemId(itemId))))) {
 
-    @formHelper(action = NactCodeAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
+    @formHelper(action = TaricCodeAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("supplementary.items"))
 
         @govukRadios(Radios(
-            name = hasNactCodeKey,
+            name = hasTaricCodeKey,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("declaration.nationalAdditionalCode.addfirst.header")),
+                    content = Text(messages("declaration.taricAdditionalCodes.addfirst.header")),
                     isPageHeading = true,
                     classes = gdsPageLegend
                 ))
             )),
-            hint = Some(Hint(content = HtmlContent(messages("declaration.nationalAdditionalCode.header.hint", nactCodeLink, tradeTariffLink)))),
+            hint = Some(Hint(content = HtmlContent(messages("declaration.taricAdditionalCodes.header.hint", tradeTariffLink)))),
             items = Seq(
                 RadioItem(
                     id = Some("code_yes"),
                     value = Some(YesNoAnswers.yes),
                     content = Text(messages("site.yes")),
-                    conditionalHtml = Some(components.fields.field_accessible_autocomplete(
-                        form(nactCodeKey),
-                        "declaration.nationalAdditionalCode.addfirst.label",
-                        None,
-                        None,
-                        messages("declaration.nationalAdditionalCode.error.empty"),
-                        AutoCompleteItem.fromNationalAdditionalCode(NationalAdditionalCode.all)
+                    conditionalHtml = Some(exportsInputText(
+                        field = form(taricCodeKey),
+                        labelKey = "declaration.taricAdditionalCodes.addfirst.label",
+                        labelClasses = "govuk-label",
+                        inputClasses = Some("govuk-input--width-10")
                     )),
-                    checked = form(hasNactCodeKey).value.contains(YesNoAnswers.yes)
+                    checked = form(hasTaricCodeKey).value.contains(YesNoAnswers.yes)
                 ),
                 RadioItem(
                     id = Some("code_no"),
                     value = Some(YesNoAnswers.no),
                     content = Text(messages("site.no")),
-                    checked = form(hasNactCodeKey).value.contains(YesNoAnswers.no)
+                    checked = form(hasTaricCodeKey).value.contains(YesNoAnswers.no)
                 )
             ),
-            errorMessage = form(hasNactCodeKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            errorMessage = form(hasTaricCodeKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
-        @tariffDetails(messages("site.details.summary_text_these"), HtmlContent(tariffBody))
+        @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
 
         @saveButtons()
     }
