@@ -53,6 +53,9 @@ trait ExportsItemBuilder {
   def withFiscalInformation(fiscalInformation: FiscalInformation): ItemModifier =
     _.copy(fiscalInformation = Some(fiscalInformation))
 
+  def withAdditionalInformationRequired(data: YesNoAnswer): ItemModifier =
+    _.copy(additionalInformationReq = Some(data))
+
   def withAdditionalFiscalReferenceData(data: AdditionalFiscalReferencesData): ItemModifier =
     _.copy(additionalFiscalReferencesData = Some(data))
 
