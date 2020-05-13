@@ -469,6 +469,9 @@ submissions.history = History
 submissions.viewErrors = View errors
 submissions.sfus = Upload files (opens in a new window or tab)
 submissions.generateEAD = Create an Export Accompanying Document (EAD)
+submissions.tab.rejected.title = Rejected declarations
+submissions.tab.action.title = Declarations with an action
+submissions.tab.other.title = Other declarartions
 
 saved.declarations.title = Your saved declarations
 saved.declarations.ducr = DUCR

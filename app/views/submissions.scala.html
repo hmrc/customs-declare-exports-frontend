@@ -27,13 +27,15 @@
 @import views.html.components.gds._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.BackButton
+@import controllers.util.SubmissionDisplayHelper
 
 @this(
-        govukLayout: gdsMainTemplate,
-        pageTitle: pageTitle,
-        govukTable : GovukTable,
-        link: link,
-        linkButton: linkButton
+govukLayout: gdsMainTemplate,
+pageTitle: pageTitle,
+govukTabs : GovukTabs,
+govukTable : GovukTable,
+link: link,
+linkButton: linkButton
 )
 
 @(submissions: Seq[(Submission, Seq[Notification])])(implicit request: Request[_], messages: Messages)
@@ -48,6 +50,50 @@
   )
 }
 
+@tabTable(id: String, title: String, tabSubmissions: Seq[(Submission, Seq[Notification])]) = {
+
+    <h2 class="govuk-heading-l">@messages(title)</h2>
+
+    @govukTable(Table(
+        attributes = Map("id" -> s"submissions-tab-$id"),
+        rows = tabSubmissions.zipWithIndex.map{ case((submission, notifications), index) =>
+            Seq(
+                TableRow(
+                    content = ucrLink(submission),
+                    attributes = Map("id" -> s"submission-tab-$id-row$index-ucr")
+                ),
+                TableRow(
+                    content = Text(submission.lrn),
+                    attributes = Map("id" -> s"submission-tab-$id-row$index-lrn")
+                ),
+                TableRow(
+                    content = Text(submission.mrn.getOrElse("")),
+                    attributes = Map("id" -> s"submission-tab-$id-row$index-mrn")
+                ),
+                TableRow(
+                    content = Text(
+                        submission.actions.find(_.requestType == SubmissionRequest).map(_.requestTimestamp).map(ViewDates.submissionDateTimeFormatter.withZone(ZoneId.systemDefault()).format(_)).getOrElse("")
+                    ),
+                    attributes = Map("id" -> s"submission-tab-$id-row$index-dateAndTime")
+                ),
+                TableRow(
+                    content = Text(
+                        SubmissionStatus.format(notifications.headOption.map(n => n.status).getOrElse(SubmissionStatus.PENDING))
+                    ),
+                    attributes = Map("id" -> s"submission-tab-$id-row$index-status")
+                )
+            )
+        },
+        head = Some(List(
+            headCell("ucr"),
+            headCell("lrn"),
+            headCell("mrn"),
+            headCell("dateAndTime"),
+            headCell("status")
+        ))
+    ))
+}
+
 @govukLayout(
     title = Title("submissions.title"),
     backButton = Some(BackButton(messages("site.backToSelectionPage"), routes.ChoiceController.displayPage(Some(Choice(Submissions))))),
@@ -58,44 +104,50 @@
 
             @pageTitle(messages("submissions.title"))
 
-            @govukTable(Table(
-                attributes = Map("id" -> "additional_information"),
-                rows = submissions.zipWithIndex.map{ case((submission, notifications), index) =>
-                    Seq(
-                        TableRow(
-                            content = ucrLink(submission),
-                            attributes = Map("id" -> s"submission-row$index-ucr")
-                        ),
-                        TableRow(
-                            content = Text(submission.lrn),
-                            attributes = Map("id" -> s"submission-row$index-lrn")
-                        ),
-                        TableRow(
-                            content = Text(submission.mrn.getOrElse("")),
-                            attributes = Map("id" -> s"submission-row$index-mrn")
-                        ),
-                        TableRow(
-                            content = Text(
-                                submission.actions.find(_.requestType == SubmissionRequest).map(_.requestTimestamp).map(ViewDates.submissionDateTimeFormatter.withZone(ZoneId.systemDefault()).format(_)).getOrElse("")
-                            ),
-                            attributes = Map("id" -> s"submission-row$index-dateAndTime")
-                        ),
-                        TableRow(
-                            content = Text(
-                                SubmissionStatus.format(notifications.headOption.map(n => n.status).getOrElse(SubmissionStatus.PENDING))
-                            ),
-                            attributes = Map("id" -> s"submission-row$index-status")
+            @govukTabs(Tabs(
+                items = Seq(
+                    TabItem(
+                        id = Some("rejected-submissions"),
+                        label = messages("submissions.tab.rejected.title"),
+                        panel = TabPanel(
+                            content = HtmlContent(
+                                tabTable(
+                                    "rejected",
+                                    "submissions.tab.rejected.title",
+                                    SubmissionDisplayHelper.filterSubmissions(submissions, notification => SubmissionStatus.rejectedStatuses.contains(notification.status))
+                                )
+                            )
+                        )
+                    ),
+                    TabItem(
+                        id = Some("action-submissions"),
+                        label = messages("submissions.tab.action.title"),
+                        panel = TabPanel(
+                            content = HtmlContent(
+                                tabTable(
+                                    "action",
+                                    "submissions.tab.action.title",
+                                    SubmissionDisplayHelper.filterSubmissions(submissions, notification => SubmissionStatus.actionRequiredStatuses.contains(notification.status))
+                                )
+                            )
+                        )
+                    ),
+                    TabItem(
+                        id = Some("other-submissions"),
+                        label = messages("submissions.tab.other.title"),
+                        panel = TabPanel(
+                            content = HtmlContent(
+                                tabTable(
+                                    "other",
+                                    "submissions.tab.other.title",
+                                    SubmissionDisplayHelper.filterSubmissions(submissions, notification => SubmissionStatus.otherStatuses.contains(notification.status))
+                                )
+                            )
                         )
                     )
-                },
-                head = Some(List(
-                    headCell("ucr"),
-                    headCell("lrn"),
-                    headCell("mrn"),
-                    headCell("dateAndTime"),
-                    headCell("status")
-                ))
+                )
             ))
+
 
             @linkButton("supplementary.startNewDec", routes.ChoiceController.displayPage())
 

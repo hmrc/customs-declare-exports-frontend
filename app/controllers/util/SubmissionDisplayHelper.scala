@@ -35,4 +35,6 @@ object SubmissionDisplayHelper {
       (submission, currentSubmissionNotifications)
     }.sortBy(_._1)(Submission.newestEarlierOrdering)
 
+  def filterSubmissions(submissions: Seq[(Submission, Seq[Notification])], condition: Notification => Boolean): Seq[(Submission, Seq[Notification])] =
+    submissions.filter(sub => sub._2.headOption.exists(condition))
 }
