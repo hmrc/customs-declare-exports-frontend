@@ -19,8 +19,6 @@ package views.components.gds
 object Styles {
 
   val gdsPageLegend = "govuk-fieldset__legend--l"
-  val gdsPageLegendLarge = "govuk-fieldset__legend--xl"
   val gdsPageHeading = "govuk-heading-l"
   val gdsPageLabel = "govuk-label--l"
-  val gdsPageLabelLarge = "govuk-label--xl"
 }

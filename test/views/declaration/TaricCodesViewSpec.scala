@@ -73,7 +73,7 @@ class TaricCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wi
     val codes = List(TaricCode("ABCD"), TaricCode("4321"))
 
     onEveryDeclarationJourney() { request =>
-      val view = createView(YesNoAnswer.form, codes, request)
+      val view = createView(YesNoAnswer.form(), codes, request)
 
       "display page title" in {
 
@@ -97,7 +97,7 @@ class TaricCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wi
     val codes = List(TaricCode("ABCD"))
 
     onEveryDeclarationJourney() { request =>
-      val view = createView(YesNoAnswer.form, codes, request)
+      val view = createView(YesNoAnswer.form(), codes, request)
 
       "display page title" in {
 
