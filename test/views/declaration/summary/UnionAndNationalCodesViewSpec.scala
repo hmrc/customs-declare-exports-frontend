@@ -37,11 +37,11 @@ class UnionAndNationalCodesViewSpec extends UnitViewSpec with ExportsTestData wi
         val row = view.getElementsByClass("additional-information-1-row")
 
         row must haveSummaryKey(messages("declaration.summary.items.item.additionalInformation"))
-        row must haveSummaryValue("")
+        row must haveSummaryValue("site.no")
 
         row must haveSummaryActionsText("site.change declaration.summary.items.item.additionalInformation.change")
 
-        row must haveSummaryActionsHref(controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, "itemId"))
+        row must haveSummaryActionsHref(controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, "itemId"))
       }
     }
 
