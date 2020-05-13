@@ -280,6 +280,12 @@ object Navigator {
     case RepresentativeAgent => representativeAgentClearancePreviousPage
   }
 
+  private def consigneeDetailsSupplementaryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.parties.declarantIsExporter.exists(_.isExporter))
+      controllers.declaration.routes.DeclarantExporterController.displayPage(mode)
+    else
+      controllers.declaration.routes.RepresentativeStatusController.displayPage(mode)
+
   private def exporterDetailsClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.isEntryIntoDeclarantsRecords)
       controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage(mode)
@@ -288,12 +294,6 @@ object Navigator {
 
   private def carrierDetailsClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.parties.declarantIsExporter.exists(_.isExporter))
-      controllers.declaration.routes.DeclarantExporterController.displayPage(mode)
-    else
-      controllers.declaration.routes.RepresentativeStatusController.displayPage(mode)
-
-  private def consigneeDetailsSupplementaryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (cacheModel.`type` == SUPPLEMENTARY && cacheModel.parties.declarantIsExporter.exists(_.isExporter))
       controllers.declaration.routes.DeclarantExporterController.displayPage(mode)
     else
       controllers.declaration.routes.RepresentativeStatusController.displayPage(mode)
