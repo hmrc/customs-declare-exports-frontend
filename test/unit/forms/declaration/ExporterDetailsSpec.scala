@@ -17,17 +17,20 @@
 package unit.forms.declaration
 
 import forms.LightFormMatchers
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.ExporterDetails
 import models.DeclarationType._
+import models.ExportsDeclaration
 import org.scalatest.{MustMatchers, WordSpec}
+import unit.base.JourneyTypeTestRunner
 
-class ExporterDetailsSpec extends WordSpec with MustMatchers with LightFormMatchers {
+class ExporterDetailsSpec extends WordSpec with MustMatchers with LightFormMatchers with JourneyTypeTestRunner {
 
   import forms.declaration.ExporterDetailsSpec._
 
-  Seq(SUPPLEMENTARY, STANDARD, OCCASIONAL, SIMPLIFIED, CLEARANCE).map { decType =>
-    s"Exporter Details form for $decType" should {
-      val outcomeFromIncorrectForm = ExporterDetails.form(decType).bind(incorrectExporterDetailsJSON)
+  onEveryDeclarationJourney() { request =>
+    s"Exporter Details form for ${request.declarationType}" should {
+      val outcomeFromIncorrectForm = ExporterDetails.form(request.declarationType).bind(incorrectExporterDetailsJSON)
       "validate eori and address" in {
         outcomeFromIncorrectForm.error("details.eori") must haveMessage("supplementary.eori.error.format")
       }
@@ -48,31 +51,51 @@ class ExporterDetailsSpec extends WordSpec with MustMatchers with LightFormMatch
       }
 
       "bind correctly to EORI only request" in {
-        ExporterDetails.form(decType).bind(correctExporterDetailsEORIOnlyJSON) mustBe errorless
+        ExporterDetails.form(request.declarationType).bind(correctExporterDetailsEORIOnlyJSON) mustBe errorless
       }
 
       "bind correctly to address only data" in {
-        ExporterDetails.form(decType).bind(correctExporterDetailsAddressOnlyJSON) mustBe errorless
+        ExporterDetails.form(request.declarationType).bind(correctExporterDetailsAddressOnlyJSON) mustBe errorless
       }
 
       "bind correctly to EORI and address data at once" in {
-        ExporterDetails.form(decType).bind(correctExporterDetailsJSON) mustBe errorless
+        ExporterDetails.form(request.declarationType).bind(correctExporterDetailsJSON) mustBe errorless
       }
     }
   }
 
-  Seq(CLEARANCE).map { decType =>
-    s"Exporter Details form for $decType" should {
-      "allow an empty eori and empty address" in {
-        ExporterDetails.form(decType).bind(emptyExporterDetailsJSON) mustBe errorless
+  onClearance { request =>
+    s"Exporter Details form for ${request.declarationType}" when {
+
+      "it is EIDR" should {
+        "validate is eori and address is non empty" in {
+
+          val cachedModel: ExportsDeclaration = aDeclaration(withEntryIntoDeclarantsRecords(YesNoAnswers.yes))
+
+          ExporterDetails.form(request.declarationType, Some(cachedModel)).bind(emptyExporterDetailsJSON).error("details") must haveMessage(
+            "supplementary.namedEntityDetails.error"
+          )
+        }
+      }
+
+      "it is not EIDR" should {
+        "allow an empty eori and empty address" in {
+
+          val cachedModel = aDeclaration(withEntryIntoDeclarantsRecords(YesNoAnswers.no))
+
+          ExporterDetails.form(request.declarationType, Some(cachedModel)).bind(emptyExporterDetailsJSON) mustBe errorless
+        }
       }
     }
   }
 
-  Seq(SUPPLEMENTARY, STANDARD, OCCASIONAL, SIMPLIFIED).map { decType =>
-    s"Exporter Details form for $decType" should {
+  onJourney(SUPPLEMENTARY, STANDARD, OCCASIONAL, SIMPLIFIED) { request =>
+    s"Exporter Details form for ${request.declarationType}" should {
       "validate is eori and address is non empty" in {
-        ExporterDetails.form(decType).bind(emptyExporterDetailsJSON).error("details") must haveMessage("supplementary.namedEntityDetails.error")
+
+        ExporterDetails.form(request.declarationType).bind(emptyExporterDetailsJSON).error("details") must haveMessage(
+          "supplementary.namedEntityDetails.error"
+        )
       }
     }
   }
