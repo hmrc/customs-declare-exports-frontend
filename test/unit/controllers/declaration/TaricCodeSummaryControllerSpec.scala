@@ -16,11 +16,8 @@
 
 package unit.controllers.declaration
 
-import base.TestHelper
-import controllers.declaration.TaricCodeController
-import controllers.util.{Add, SaveAndContinue}
+import controllers.declaration.TaricCodeSummaryController
 import forms.declaration.TaricCode
-import forms.declaration.TaricCode.taricCodeKey
 import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -29,18 +26,16 @@ import org.scalatest.OptionValues
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
-import unit.mock.ErrorHandlerMocks
 import views.html.declaration.taric_codes
 
-class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with OptionValues {
+class TaricCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
 
   val mockPage = mock[taric_codes]
 
   val controller =
-    new TaricCodeController(
+    new TaricCodeSummaryController(
       mockAuthAction,
       mockJourneyAction,
-      mockErrorHandler,
       mockExportsCacheService,
       navigator,
       stubMessagesControllerComponents(),
@@ -66,24 +61,10 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
 
   private def verifyPageInvoked(numberOfTimes: Int = 1) = verify(mockPage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
-  val item = anItem()
+  "Taric Code Summary Controller" should {
 
-  "TARIC Code controller" must {
-
-    onEveryDeclarationJourney(withItems(item)) { request =>
+    onEveryDeclarationJourney() { request =>
       "return 200 (OK)" that {
-        "display page method is invoked and cache is empty" in {
-
-          withNewCaching(request.cacheModel)
-
-          val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
-
-          status(result) mustBe OK
-          verifyPageInvoked()
-
-          theTaricCodes mustBe empty
-        }
-
         "display page method is invoked and cache contains data" in {
           val taricCode = TaricCode("1234")
           val item = anItem(withTaricCodes(taricCode))
@@ -98,58 +79,66 @@ class TaricCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with
         }
       }
 
-      "user adds invalid code" in {
-        withNewCaching(request.cacheModel)
-
-        val body = Seq((taricCodeKey, "invalidCode"), (Add.toString, ""))
-
-        val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(body: _*))
-
-        status(result) mustBe BAD_REQUEST
-        verifyPageInvoked()
-      }
-
       "return 400 (BAD_REQUEST)" when {
-        "user adds duplicate code" in {
-          val taricCode = TaricCode("1234")
+
+        "user submits invalid answer" in {
+          val taricCode = TaricCode("ABCD")
           val item = anItem(withTaricCodes(taricCode))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-          val body = Seq((taricCodeKey, "1234"), (Add.toString, ""))
-
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(body: _*))
-
-          status(result) mustBe BAD_REQUEST
-          verifyPageInvoked()
-        }
-
-        "user adds too many codes" in {
-          val taricCodes = List.fill(99)(TaricCode(TestHelper.createRandomAlphanumericString(4)))
-          val item = anItem(withTaricCodes(taricCodes))
-          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
-
-          val body = Seq((taricCodeKey, "1234"), (Add.toString, ""))
-
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(body: _*))
+          val requestBody = Seq("yesNo" -> "invalid")
+          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyPageInvoked()
         }
+
       }
+
       "return 303 (SEE_OTHER)" when {
-        "user submits valid code" in {
-          val item = anItem(withItemId("itemId"))
+
+        "there is no taric codes in the cache" in {
+          val item = anItem()
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-          val body = Seq((taricCodeKey, "1234"), (SaveAndContinue.toString, ""))
-
-          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(body: _*))
+          val result = controller.displayPage(Mode.Normal, item.id)(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, "itemId")
-          verifyPageInvoked(0)
+          thePageNavigatedTo mustBe controllers.declaration.routes.TaricCodeAddController.displayPage(Mode.Normal, item.id)
         }
+
+        "user submits valid Yes answer" in {
+          val taricCode = TaricCode("ASDF")
+          val item = anItem(withTaricCodes(taricCode))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
+
+          val requestBody = Seq("yesNo" -> "Yes")
+          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.TaricCodeAddController.displayPage(Mode.Normal, item.id)
+        }
+
       }
     }
+
+    onEveryDeclarationJourney() { request =>
+      "re-direct to next question" when {
+
+        "user submits valid No answer" in {
+          val taricCode = TaricCode("QWER")
+          val item = anItem(withTaricCodes(taricCode))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
+
+          val requestBody = Seq("yesNo" -> "No")
+          val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.NactCodeSummaryController.displayPage(Mode.Normal, item.id)
+        }
+
+      }
+    }
+
   }
 }
