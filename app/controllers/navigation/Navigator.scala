@@ -94,7 +94,8 @@ object Navigator {
     case PackageInformation    => controllers.declaration.routes.StatisticalValueController.displayPage
     case AdditionalInformation => controllers.declaration.routes.CommodityMeasureController.displayPage
     case CusCode               => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
-    case NactCode              => controllers.declaration.routes.TaricCodeController.displayPage
+    case NactCode              => controllers.declaration.routes.NactCodeSummaryController.displayPage
+    case NactCodeFirst         => controllers.declaration.routes.TaricCodeController.displayPage
     case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
 
@@ -153,7 +154,8 @@ object Navigator {
     case PackageInformation    => controllers.declaration.routes.StatisticalValueController.displayPage
     case AdditionalInformation => controllers.declaration.routes.CommodityMeasureController.displayPage
     case CusCode               => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
-    case NactCode              => controllers.declaration.routes.TaricCodeController.displayPage
+    case NactCode              => controllers.declaration.routes.NactCodeSummaryController.displayPage
+    case NactCodeFirst         => controllers.declaration.routes.TaricCodeController.displayPage
     case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
   }
 
@@ -180,10 +182,11 @@ object Navigator {
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
   }
   val simplifiedItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
-    case PackageInformation    => controllers.declaration.routes.NactCodeController.displayPage
+    case PackageInformation    => controllers.declaration.routes.NactCodeSummaryController.displayPage
     case AdditionalInformation => controllers.declaration.routes.PackageInformationController.displayPage
     case CusCode               => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
-    case NactCode              => controllers.declaration.routes.TaricCodeController.displayPage
+    case NactCode              => controllers.declaration.routes.NactCodeSummaryController.displayPage
+    case NactCodeFirst         => controllers.declaration.routes.TaricCodeController.displayPage
     case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
   }
 
@@ -211,10 +214,11 @@ object Navigator {
   }
 
   val occasionalItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
-    case PackageInformation    => controllers.declaration.routes.NactCodeController.displayPage
+    case PackageInformation    => controllers.declaration.routes.NactCodeSummaryController.displayPage
     case AdditionalInformation => controllers.declaration.routes.PackageInformationController.displayPage
     case CusCode               => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
-    case NactCode              => controllers.declaration.routes.TaricCodeController.displayPage
+    case NactCode              => controllers.declaration.routes.NactCodeSummaryController.displayPage
+    case NactCodeFirst         => controllers.declaration.routes.TaricCodeController.displayPage
     case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
   }
 
@@ -246,7 +250,7 @@ object Navigator {
     case CommodityDetails          => controllers.declaration.routes.FiscalInformationController.displayPage(_, _, fastForward = true)
     case UNDangerousGoodsCode      => controllers.declaration.routes.CommodityDetailsController.displayPage
     case TaricCode                 => controllers.declaration.routes.CusCodeController.displayPage
-    case StatisticalValue          => controllers.declaration.routes.NactCodeController.displayPage
+    case StatisticalValue          => controllers.declaration.routes.NactCodeSummaryController.displayPage
     case CommodityMeasure          => controllers.declaration.routes.PackageInformationController.displayPage
     case DocumentsProduced         => controllers.declaration.routes.AdditionalInformationController.displayPage
   }

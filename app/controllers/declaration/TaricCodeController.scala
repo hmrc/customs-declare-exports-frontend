@@ -93,7 +93,7 @@ class TaricCodeController @Inject()(
         formWithErrors => Future.successful(BadRequest(taricCodesPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
           updateExportsCache(itemId, updatedCache)
-            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.NactCodeController.displayPage(_, itemId)))
+            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.NactCodeSummaryController.displayPage(_, itemId)))
       )
 
   private def updateExportsCache(itemId: String, updatedCache: Seq[TaricCode])(

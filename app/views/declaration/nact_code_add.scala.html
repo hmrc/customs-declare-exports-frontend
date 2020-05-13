@@ -1,0 +1,76 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.declaration.routes._
+@import controllers.navigation.Navigator
+@import forms.declaration.NactCode
+@import forms.declaration.NactCode._
+@import models.requests.JourneyRequest
+@import views.{BackButton, Title}
+@import config.AppConfig
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds._
+@import services.view.AutoCompleteItem
+@import services.NationalAdditionalCode
+@import controllers.navigation.ItemId
+@import views.components.gds.Styles._
+
+@this(
+        govukLayout: gdsMainTemplate,
+        govukButton: GovukButton,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        exportsInputText: exportsInputText,
+        saveButtons: saveButtons,
+        tariffDetails: tariffDetails,
+        pageTitle: pageTitle,
+        appConfig: AppConfig,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
+
+@(mode: Mode, itemId: String, form: Form[NactCode])(implicit request: JourneyRequest[_], messages: Messages)
+
+@tariffBody = { @Html(messages("declaration.nationalAdditionalCode.help.bodyText", components.details_content_link())) }
+
+@nactCodeLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.nationalAdditionalCode.header.nactCode.link")</a>}
+@tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.nationalAdditionalCode.header.tradeTariff.link")</a>}
+
+@govukLayout(
+    title = Title("declaration.nationalAdditionalCode.addnext.header", "supplementary.items"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(NactCode, mode, ItemId(itemId))))) {
+
+    @formHelper(action = NactCodeAddController.submitForm(mode, itemId), 'autoComplete -> "off") {
+
+      @errorSummary(form.errors)
+
+      @sectionHeader(messages("supplementary.items"))
+
+      @components.fields.field_accessible_autocomplete_with_header(
+          form(nactCodeKey),
+          "declaration.nationalAdditionalCode.addnext.header",
+          Some(gdsPageLabel),
+          None,
+          messages("declaration.nationalAdditionalCode.error.empty"),
+          AutoCompleteItem.fromNationalAdditionalCode(NationalAdditionalCode.all),
+          true
+      )
+
+      @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))
+
+      @saveButtons()
+
+    }
+}

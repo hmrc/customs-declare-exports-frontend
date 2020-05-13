@@ -244,9 +244,18 @@ POST        /items/:itemId/taric-codes                         controllers.decla
 
 # NACT Code
 
-GET         /items/:itemId/nact-codes                          controllers.declaration.NactCodeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/national-additional-code            controllers.declaration.NactCodeAddController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
 
-POST        /items/:itemId/nact-codes                          controllers.declaration.NactCodeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/national-additional-code            controllers.declaration.NactCodeAddController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+GET         /items/:itemId/national-additional-codes-list      controllers.declaration.NactCodeSummaryController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+POST        /items/:itemId/national-additional-codes-list      controllers.declaration.NactCodeSummaryController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+GET         /items/:itemId/national-additional-code/:code/remove            controllers.declaration.NactCodeRemoveController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, code)
+
+POST        /items/:itemId/national-additional-code/:code/remove            controllers.declaration.NactCodeRemoveController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, code)
+
 
 # Statistical Value
 

@@ -687,7 +687,8 @@ function taricCodes(){
 }
 
 function nactCodes(){
-    if (currentPageIs('/customs-declare-exports/declaration/items/.*/nact-codes')) {
+    if (currentPageIs('/customs-declare-exports/declaration/items/.*/national-additional-code')) {
+        document.getElementById('code_no').checked = 'checked';
         document.getElementById('submit').click();
     }
 }
