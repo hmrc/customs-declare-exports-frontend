@@ -266,16 +266,22 @@ object Navigator {
   }
 
   val commonCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = Map.empty
-  val standardCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = Map.empty
+  val standardCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
+    case CarrierDetails => carrierDetailsPreviousPage
+  }
   val supplementaryCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
     case ConsigneeDetails => consigneeDetailsSupplementaryPreviousPage
   }
-  val simplifiedCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = Map.empty
-  val occasionalCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = Map.empty
+  val simplifiedCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
+    case CarrierDetails => carrierDetailsPreviousPage
+  }
+  val occasionalCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
+    case CarrierDetails => carrierDetailsPreviousPage
+  }
 
   val clearanceCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
     case ExporterDetails     => exporterDetailsClearancePreviousPage
-    case CarrierDetails      => carrierDetailsClearancePreviousPage
+    case CarrierDetails      => carrierDetailsPreviousPage
     case ConsignorEoriNumber => consignorEoriNumberClearancePreviousPage
     case RepresentativeAgent => representativeAgentClearancePreviousPage
   }
@@ -292,7 +298,7 @@ object Navigator {
     else
       controllers.declaration.routes.DeclarantExporterController.displayPage(mode)
 
-  private def carrierDetailsClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+  private def carrierDetailsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.parties.declarantIsExporter.exists(_.isExporter))
       controllers.declaration.routes.DeclarantExporterController.displayPage(mode)
     else

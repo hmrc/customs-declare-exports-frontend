@@ -19,12 +19,11 @@ package views.declaration
 import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
-import forms.DeclarationPage
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
-import forms.declaration.{CarrierDetails, CarrierDetailsSpec, DeclarantIsExporter, EntityDetails, ExporterDetails}
+import forms.declaration.{CarrierDetails, CarrierDetailsSpec, DeclarantIsExporter, EntityDetails}
 import helpers.views.declaration.CommonMessages
-import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD}
 import models.declaration.Parties
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
@@ -112,17 +111,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
       }
     }
 
-    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
-      "display 'Back' button that links to 'Representative Status' page" in {
-
-        val backButton = createView().getElementById("back-link")
-
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.RepresentativeStatusController.displayPage().url
-      }
-    }
-
-    onClearance { request =>
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
       "display 'Back' button that links to 'Representative Status' page" when {
         "user have answered 'No' on 'Is Declarant an Exporter' page" in {
 
