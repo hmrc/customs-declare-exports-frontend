@@ -19,12 +19,12 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.DeclarationPage
-import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
-import forms.declaration.{CarrierDetails, ExporterDetails, IsExs, RepresentativeAgent}
+import forms.declaration.consignor.ConsignorDetails
+import forms.declaration.{CarrierDetails, RepresentativeAgent}
 import javax.inject.Inject
+import models.DeclarationType.CLEARANCE
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
-import models.DeclarationType.CLEARANCE
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -46,14 +46,22 @@ class CarrierDetailsController @Inject()(
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL, DeclarationType.CLEARANCE)
 
-  private def form()(implicit request: JourneyRequest[_]) = CarrierDetails.form(request.declarationType)
-
   def displayPage(mode: Mode): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)) { implicit request =>
       request.cacheModel.parties.carrierDetails match {
         case Some(data) => Ok(carrierDetailsPage(mode, navigationPage, form().fill(data)))
         case _          => Ok(carrierDetailsPage(mode, navigationPage, form()))
       }
+    }
+
+  private def form()(implicit request: JourneyRequest[_]) = CarrierDetails.form(request.declarationType)
+
+  private def navigationPage(implicit request: JourneyRequest[_]): DeclarationPage =
+    request.declarationType match {
+      case CLEARANCE if !request.cacheModel.parties.declarantIsExporter.exists(_.isExporter)                                    => CarrierDetails
+      case CLEARANCE if request.cacheModel.parties.consignorDetails.flatMap(_.details.eori.map(_.value)).getOrElse("").nonEmpty => ConsignorDetails
+      case CLEARANCE if request.cacheModel.parties.consignorDetails.flatMap(_.details.address).isDefined                        => RepresentativeAgent
+      case _                                                                                                                    => CarrierDetails
     }
 
   def saveAddress(mode: Mode): Action[AnyContent] =
@@ -67,13 +75,6 @@ class CarrierDetailsController @Inject()(
               navigator.continueTo(mode, controllers.declaration.routes.ConsigneeDetailsController.displayPage)
           }
         )
-    }
-
-  private def navigationPage(implicit request: JourneyRequest[_]): DeclarationPage =
-    request.declarationType match {
-      case CLEARANCE if request.cacheModel.parties.consignorDetails.flatMap(_.details.eori.map(_.value)).getOrElse("").nonEmpty => ConsignorDetails
-      case CLEARANCE if request.cacheModel.parties.consignorDetails.flatMap(_.details.address).isDefined                        => RepresentativeAgent
-      case _                                                                                                                    => CarrierDetails
     }
 
   private def updateCache(formData: CarrierDetails)(implicit req: JourneyRequest[AnyContent]) =
