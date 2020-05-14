@@ -166,6 +166,13 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
         tableCell(tab("rejected", view))(1, 0).text() must include("ducr_rejected")
         tableCell(tab("action", view))(1, 0).text() must include("ducr_action")
       }
+
+      "submissions without status are shown on 'other' tab" in {
+        val view =
+          createView(Seq(submissionWithDucr("ducr_pending") -> Seq.empty))
+
+        tableCell(tab("other", view))(1, 0).text() must include("ducr_pending")
+      }
     }
 
     "display 'Back' button that links to 'Choice' page with Submissions selected" in {
