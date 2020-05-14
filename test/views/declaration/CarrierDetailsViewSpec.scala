@@ -19,13 +19,15 @@ package views.declaration
 import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
-import forms.DeclarationPage
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
-import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
-import forms.declaration.{CarrierDetails, CarrierDetailsSpec, EntityDetails, ExporterDetails, RepresentativeAgent}
+import forms.declaration.consignor.ConsignorDetails
+import forms.declaration._
 import helpers.views.declaration.CommonMessages
+import models.DeclarationType._
+import models.Mode
+import models.declaration.Parties
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -37,13 +39,11 @@ import views.tags.ViewTest
 @ViewTest
 class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
-  val form: Form[CarrierDetails] = CarrierDetails.form(DeclarationType.STANDARD)
+  val form: Form[CarrierDetails] = CarrierDetails.form(STANDARD)
   private val carrierDetailsPage = instanceOf[carrier_details]
 
-  private def createView(form: Form[CarrierDetails] = form, navigationForm: DeclarationPage = CarrierDetails)(
-    implicit journeyRequest: JourneyRequest[_]
-  ): Document =
-    carrierDetailsPage(Mode.Normal, navigationForm, form)
+  private def createView(form: Form[CarrierDetails] = form)(implicit journeyRequest: JourneyRequest[_]): Document =
+    carrierDetailsPage(Mode.Normal, form)
 
   "Carrier Details" should {
 
@@ -59,7 +59,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
   "Carrier Details View on empty page" should {
 
-    onEveryDeclarationJourney() { implicit request =>
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { implicit request =>
       val view = createView()
       "display page title" in {
 
@@ -102,22 +102,6 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
         view.getElementById("details_address_country").attr("value") mustBe empty
       }
 
-      "display 'Back' button that links to 'Representative Status' page" in {
-
-        val backButton = view.getElementById("back-link")
-
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.RepresentativeStatusController.displayPage().url
-      }
-
-      "display 'Back' button that links to 'Is Declarant Exporter' page" in {
-
-        val backButton = createView(navigationForm = ExporterDetails).getElementById("back-link")
-
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.DeclarantExporterController.displayPage().url
-      }
-
       "display 'Save and continue' button on page" in {
         view.getElementById("submit").text() mustBe messages(saveAndContinueCaption)
       }
@@ -127,11 +111,79 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
         view.getElementById("submit_and_return").attr("name") mustBe SaveAndReturn.toString
       }
     }
+
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { request =>
+      "display 'Back' button that links to 'Representative Status' page" in {
+
+        val cachedParties = Parties(declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.no)))
+        val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
+
+        val backButton = createView()(requestWithCachedParties).getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.RepresentativeStatusController.displayPage().url
+      }
+
+      "display 'Back' button that links to 'Is Declarant Exporter' page" in {
+
+        val cachedParties = Parties(declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.yes)))
+        val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
+
+        val backButton = createView()(requestWithCachedParties).getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.DeclarantExporterController.displayPage().url
+      }
+    }
+
+    onClearance { request =>
+      "display 'Back' button that links to 'Consignor Eori Number' page" in {
+
+        val cachedParties = Parties(
+          isExs = Some(IsExs(YesNoAnswers.yes)),
+          declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.yes)),
+          consignorDetails = Some(ConsignorDetails(EntityDetails(eori = Some(Eori("GB1234567890000")), None)))
+        )
+        val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
+
+        val backButton = createView()(requestWithCachedParties).getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.ConsignorEoriNumberController.displayPage().url
+      }
+
+      "display 'Back' button that links to 'Consignor Address' page" in {
+
+        val cachedParties = Parties(
+          isExs = Some(IsExs(YesNoAnswers.yes)),
+          declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.yes)),
+          consignorDetails =
+            Some(ConsignorDetails(EntityDetails(None, address = Some(Address("fullName", "addressLine", "townOrCity", "postCode", "country")))))
+        )
+        val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
+
+        val backButton = createView()(requestWithCachedParties).getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.ConsignorDetailsController.displayPage().url
+      }
+
+      "display 'Back' button that links to 'Representative Status' page" in {
+
+        val cachedParties = Parties(declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.no)))
+        val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
+
+        val backButton = createView()(requestWithCachedParties).getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.RepresentativeStatusController.displayPage().url
+      }
+    }
   }
 
   "Carrier Details View with invalid input" should {
 
-    onEveryDeclarationJourney() { implicit request =>
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { implicit request =>
       "display error when both EORI and Address are supplied" in {
 
         val view = createView(
@@ -145,43 +197,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
         view.getElementsByClass("govuk-list govuk-error-summary__list").text() must include(messages("declaration.carrier.error.addressAndEori"))
       }
-    }
 
-    onClearance { implicit request =>
-      "display 'Back' button that links to 'Is Exs' page" in {
-
-        val backButton = createView(navigationForm = ConsignorEoriNumber).getElementById("back-link")
-
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.IsExsController.displayPage().url
-      }
-
-      "display 'Back' button that links to 'Consignor Eori Number' page" in {
-
-        val backButton = createView(navigationForm = ConsignorDetails).getElementById("back-link")
-
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.ConsignorEoriNumberController.displayPage().url
-      }
-
-      "display 'Back' button that links to 'Consignor Address' page" in {
-
-        val backButton = createView(navigationForm = RepresentativeAgent).getElementById("back-link")
-
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.ConsignorDetailsController.displayPage().url
-      }
-
-      "display 'Back' button that links to 'Representative Status' page" in {
-
-        val backButton = createView(navigationForm = CarrierDetails).getElementById("back-link")
-
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.RepresentativeStatusController.displayPage().url
-      }
-    }
-
-    onJourney(DeclarationType.STANDARD, DeclarationType.OCCASIONAL, DeclarationType.SIMPLIFIED) { implicit request =>
       "display error when both EORI and business details are empty" in {
 
         val view = createView(CarrierDetails.form(request.declarationType).bind(Map[String, String]()))
@@ -459,7 +475,7 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
 
   "Carrier Details View when filled" should {
 
-    onEveryDeclarationJourney() { implicit request =>
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { implicit request =>
       "display data in EORI input" in {
 
         val form = CarrierDetails.form(request.declarationType).fill(CarrierDetails(EntityDetails(Some(Eori("1234")), None)))

@@ -341,6 +341,7 @@ declaration.exporter-detail.eori = Exporter’s EORI number
 supplementary.consignor.address.info = Exporter’s name and business address
 declaration.exporter-details.help-item1 = Exporter’s EORI number, go to data element 3/2 Exporter Identification Number
 declaration.exporter-details.help-item2 = Exporter’s name and business address, go to data element 3/1 Exporter
+declaration.exporter-detail.title = Who is the exporter?
 declaration.exporter-detail.title.hint = Enter the exporter’s EORI number or name and business address.
 declaration.exporter-detail.addressHeading = Exporter’s name and address
 

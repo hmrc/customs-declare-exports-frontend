@@ -56,10 +56,13 @@ class ConsignmentReferencesController @Inject()(
         (formWithErrors: Form[ConsignmentReferences]) => Future.successful(BadRequest(consignmentReferencesPage(mode, formWithErrors))),
         validConsignmentReferences =>
           updateCache(validConsignmentReferences)
-            .map(_ => navigator.continueTo(mode, request.declarationType match {
-              case DeclarationType.CLEARANCE => controllers.declaration.routes.EntryIntoDeclarantsRecordsController.displayPage
-              case _ => controllers.declaration.routes.DeclarantDetailsController.displayPage
-            }))
+            .map(
+              _ =>
+                navigator.continueTo(mode, request.declarationType match {
+                  case DeclarationType.CLEARANCE => controllers.declaration.routes.EntryIntoDeclarantsRecordsController.displayPage
+                  case _                         => controllers.declaration.routes.DeclarantDetailsController.displayPage
+                })
+          )
       )
   }
 

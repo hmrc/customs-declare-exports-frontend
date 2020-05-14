@@ -123,6 +123,8 @@ case class ExportsDeclaration(
     this.copy(status = DeclarationStatus.DRAFT, createdDateTime = currentTime, updatedDateTime = currentTime, sourceId = Some(id))
   }
 
+  def isExs: Boolean = parties.isExs.exists(_.isExs == YesNoAnswers.yes)
+
   def isEntryIntoDeclarantsRecords: Boolean = parties.isEntryIntoDeclarantsRecords.exists(_.answer == YesNoAnswers.yes)
   def isNotEntryIntoDeclarantsRecords: Boolean = !isEntryIntoDeclarantsRecords
 }

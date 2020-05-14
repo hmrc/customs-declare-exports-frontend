@@ -46,7 +46,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
     super.beforeEach()
 
     authorizedUser()
-    when(consigneeDetailsPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(consigneeDetailsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {

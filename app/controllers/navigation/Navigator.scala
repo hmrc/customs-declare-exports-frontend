@@ -25,15 +25,15 @@ import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import forms.declaration.countries.Countries.{DestinationCountryPage, OriginationCountryPage}
 import forms.declaration.officeOfExit.{OfficeOfExitInsideUK, OfficeOfExitOutsideUK}
-import forms.declaration.{BorderTransport, Document, PackageInformation, _}
+import forms.declaration.{BorderTransport, ConsigneeDetails, Document, PackageInformation, _}
 import forms.{Choice, DeclarationPage}
 import javax.inject.Inject
 import models.DeclarationType._
-import models.{ExportsDeclaration, Mode}
 import models.Mode.ErrorFix
 import models.declaration.ExportItem
 import models.requests.{ExportsSessionKeys, JourneyRequest}
 import models.responses.FlashKeys
+import models.{ExportsDeclaration, Mode}
 import play.api.mvc.{AnyContent, Call, Result, Results}
 import services.audit.{AuditService, AuditTypes}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -102,11 +102,10 @@ object Navigator {
   }
 
   val clearance: PartialFunction[DeclarationPage, Mode => Call] = {
-    case IsExs                     => controllers.declaration.routes.ExporterDetailsController.displayPage
+    case IsExs                        => controllers.declaration.routes.ExporterDetailsController.displayPage
     case EntryIntoDeclarantsRecords   => controllers.declaration.routes.ConsignmentReferencesController.displayPage
     case DeclarantDetails             => controllers.declaration.routes.EntryIntoDeclarantsRecordsController.displayPage
     case PersonPresentingGoodsDetails => controllers.declaration.routes.EntryIntoDeclarantsRecordsController.displayPage
-    case ConsigneeDetails             => controllers.declaration.routes.CarrierDetailsController.displayPage
     case TransportPayment             => controllers.declaration.routes.DepartureTransportController.displayPage
     case ContainerFirst               => controllers.declaration.routes.TransportPaymentController.displayPage
     case ContainerAdd                 => controllers.declaration.routes.TransportContainerController.displayContainerSummary
@@ -117,9 +116,8 @@ object Navigator {
     case ChangeCountryPage            => controllers.declaration.routes.RoutingCountriesSummaryController.displayPage
     case GoodsLocationForm            => controllers.declaration.routes.DestinationCountryController.displayPage
     case DeclarationHolder            => controllers.declaration.routes.ConsigneeDetailsController.displayPage
-    case ConsignorEoriNumber       => controllers.declaration.routes.ExporterDetailsController.displayPage
-    case ConsignorDetails          => controllers.declaration.routes.ConsignorEoriNumberController.displayPage
-    case RepresentativeAgent       => controllers.declaration.routes.ConsignorDetailsController.displayPage
+    case ConsignorEoriNumber          => controllers.declaration.routes.IsExsController.displayPage
+    case ConsignorDetails             => controllers.declaration.routes.ConsignorEoriNumberController.displayPage
     case OfficeOfExitInsideUK         => controllers.declaration.routes.LocationController.displayPage
     case OfficeOfExitOutsideUK        => controllers.declaration.routes.OfficeOfExitController.displayPage
     case SupervisingCustomsOffice     => controllers.declaration.routes.WarehouseIdentificationController.displayPage
@@ -138,7 +136,6 @@ object Navigator {
   val supplementary: PartialFunction[DeclarationPage, Mode => Call] = {
     case DeclarantDetails            => controllers.declaration.routes.ConsignmentReferencesController.displayPage
     case ExporterDetails             => controllers.declaration.routes.DeclarantExporterController.displayPage
-    case ConsigneeDetails            => controllers.declaration.routes.RepresentativeStatusController.displayPage
     case BorderTransport             => controllers.declaration.routes.DepartureTransportController.displayPage
     case ContainerFirst              => controllers.declaration.routes.BorderTransportController.displayPage
     case ContainerAdd                => controllers.declaration.routes.TransportContainerController.displayContainerSummary
@@ -241,10 +238,8 @@ object Navigator {
     case DispatchLocation                     => controllers.declaration.routes.DeclarationChoiceController.displayPage
     case ConsignmentReferences                => controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage
     case DeclarantIsExporter                  => controllers.declaration.routes.DeclarantDetailsController.displayPage
-    case RepresentativeAgent                  => controllers.declaration.routes.ExporterDetailsController.displayPage
     case RepresentativeEntity                 => controllers.declaration.routes.RepresentativeAgentController.displayPage
     case RepresentativeStatus                 => controllers.declaration.routes.RepresentativeEntityController.displayPage
-    case CarrierDetails                       => controllers.declaration.routes.RepresentativeStatusController.displayPage
     case OfficeOfExitInsideUK                 => controllers.declaration.routes.LocationController.displayPage
     case OfficeOfExitOutsideUK                => controllers.declaration.routes.OfficeOfExitController.displayPage
     case AdditionalDeclarationTypeStandardDec => controllers.declaration.routes.DispatchLocationController.displayPage
@@ -267,22 +262,80 @@ object Navigator {
     case DocumentsProduced         => controllers.declaration.routes.AdditionalInformationController.displayPage
   }
 
-  val commonCacheDependent: PartialFunction[DeclarationPage, Any => Call] = Map.empty
-  val standardCacheDependent: PartialFunction[DeclarationPage, Any => Call] = Map.empty
-  val supplementaryCacheDependent: PartialFunction[DeclarationPage, Any => Call] = Map.empty
-  val simplifiedCacheDependent: PartialFunction[DeclarationPage, Any => Call] = Map.empty
-  val occasionalCacheDependent: PartialFunction[DeclarationPage, Any => Call] = Map.empty
+  val commonCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = Map.empty
 
-  val clearanceCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
-    case ExporterDetails => exporterDetailsPreviousPage
+  val standardCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
+    case CarrierDetails => carrierDetailsPreviousPage
   }
 
-  private def exporterDetailsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+  val supplementaryCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
+    case ConsigneeDetails => consigneeDetailsSupplementaryPreviousPage
+  }
+
+  private def consigneeDetailsSupplementaryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.isDeclarantExporter)
+      controllers.declaration.routes.DeclarantExporterController.displayPage(mode)
+    else
+      controllers.declaration.routes.RepresentativeStatusController.displayPage(mode)
+
+  val simplifiedCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
+    case CarrierDetails => carrierDetailsPreviousPage
+  }
+
+  val occasionalCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
+    case CarrierDetails => carrierDetailsPreviousPage
+  }
+
+  val clearanceCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
+    case ExporterDetails     => exporterDetailsClearancePreviousPage
+    case CarrierDetails      => carrierDetailsClearancePreviousPage
+    case ConsigneeDetails    => consigneeDetailsClearancePreviousPage
+    case RepresentativeAgent => representativeAgentClearancePreviousPage
+  }
+
+  private def exporterDetailsClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.isEntryIntoDeclarantsRecords)
       controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage(mode)
     else
       controllers.declaration.routes.DeclarantExporterController.displayPage(mode)
 
+  private def carrierDetailsPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.parties.declarantIsExporter.exists(_.isExporter))
+      controllers.declaration.routes.DeclarantExporterController.displayPage(mode)
+    else
+      controllers.declaration.routes.RepresentativeStatusController.displayPage(mode)
+
+  private def carrierDetailsClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (!cacheModel.parties.declarantIsExporter.exists(_.isExporter))
+      controllers.declaration.routes.RepresentativeStatusController.displayPage(mode)
+    else {
+      if (cacheModel.isExs && cacheModel.parties.consignorDetails.flatMap(_.details.eori.map(_.value)).getOrElse("").nonEmpty)
+        controllers.declaration.routes.ConsignorEoriNumberController.displayPage(mode)
+      else if (cacheModel.isExs && cacheModel.parties.consignorDetails.flatMap(_.details.address).isDefined)
+        controllers.declaration.routes.ConsignorDetailsController.displayPage(mode)
+      else
+        throw new IllegalArgumentException("Cannot find back-link route for current state from CarrierDetails on clearance")
+    }
+
+  private def consigneeDetailsClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.isExs)
+      controllers.declaration.routes.CarrierDetailsController.displayPage(mode)
+    else {
+      if (cacheModel.isDeclarantExporter)
+        controllers.declaration.routes.IsExsController.displayPage(mode)
+      else
+        controllers.declaration.routes.RepresentativeStatusController.displayPage(mode)
+    }
+
+  private def representativeAgentClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.isExs) {
+      if (cacheModel.parties.consignorDetails.flatMap(_.details.eori.map(_.value)).getOrElse("").nonEmpty)
+        controllers.declaration.routes.ConsignorEoriNumberController.displayPage(mode)
+      else
+        controllers.declaration.routes.ConsignorDetailsController.displayPage(mode)
+    } else {
+      controllers.declaration.routes.IsExsController.displayPage(mode)
+    }
 
   def backLink(page: DeclarationPage, mode: Mode)(implicit request: JourneyRequest[_]): Call =
     mode match {

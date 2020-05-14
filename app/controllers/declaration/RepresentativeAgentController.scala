@@ -48,8 +48,8 @@ class RepresentativeAgentController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.parties.representativeDetails.flatMap(_.representingOtherAgent) match {
-      case Some(data) => Ok(representativeAgentPage(mode, navigationPage, RepresentativeAgent.form().fill(RepresentativeAgent(data))))
-      case _          => Ok(representativeAgentPage(mode, navigationPage, RepresentativeAgent.form()))
+      case Some(data) => Ok(representativeAgentPage(mode, RepresentativeAgent.form().fill(RepresentativeAgent(data))))
+      case _          => Ok(representativeAgentPage(mode, RepresentativeAgent.form()))
     }
   }
 
@@ -58,19 +58,11 @@ class RepresentativeAgentController @Inject()(
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[RepresentativeAgent]) => Future.successful(BadRequest(representativeAgentPage(mode, navigationPage, formWithErrors))),
+        (formWithErrors: Form[RepresentativeAgent]) => Future.successful(BadRequest(representativeAgentPage(mode, formWithErrors))),
         validRepresentativeDetails =>
           updateCache(validRepresentativeDetails).map(_ => navigator.continueTo(mode, nextPage(validRepresentativeDetails)))
       )
   }
-
-  private def navigationPage(implicit request: JourneyRequest[AnyContent]): DeclarationPage =
-    request.declarationType match {
-      case CLEARANCE if (!request.cacheModel.isDeclarantExporter && request.cacheModel.parties.isExs.map(_.isExs).getOrElse("") == "No") =>
-        ConsignorEoriNumber
-      case CLEARANCE if request.cacheModel.parties.consignorDetails.flatMap(_.details.eori.map(_.value)).getOrElse("").nonEmpty => ConsignorDetails
-      case _                                                                                                                    => RepresentativeAgent
-    }
 
   private def nextPage(formData: RepresentativeAgent): Mode => Call =
     if (formData.representingAgent == yes) controllers.declaration.routes.RepresentativeEntityController.displayPage
