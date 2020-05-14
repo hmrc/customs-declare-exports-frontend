@@ -15,6 +15,7 @@
  */
 
 package models.declaration.submissions
+import models.declaration.submissions
 import play.api.libs.json.Format
 import utils.EnumJson
 
@@ -46,4 +47,7 @@ object SubmissionStatus extends Enumeration {
     case UNKNOWN                         => "Unknown status"
   }
 
+  val rejectedStatuses: Set[submissions.SubmissionStatus.Value] = Set(REJECTED)
+  val actionRequiredStatuses: Set[submissions.SubmissionStatus.Value] = Set(ADDITIONAL_DOCUMENTS_REQUIRED, UNDERGOING_PHYSICAL_CHECK)
+  val otherStatuses: Set[submissions.SubmissionStatus.Value] = values &~ rejectedStatuses &~ actionRequiredStatuses
 }
