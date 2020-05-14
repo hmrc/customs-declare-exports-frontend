@@ -17,6 +17,7 @@
 package views.declaration
 
 import base.Injector
+import controllers.declaration.routes
 import controllers.util.{Add, SaveAndContinue, SaveAndReturn}
 import forms.declaration.AdditionalInformation
 import helpers.views.declaration.CommonMessages
@@ -94,7 +95,7 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
         val backButton = createView().getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") must endWith(s"/items/$itemId/commodity-measure")
+        backButton.attr("href") mustBe routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, itemId).url
       }
 
       "on the Simplified journey" in {
@@ -102,7 +103,7 @@ class AdditionalInformationViewSpec extends UnitViewSpec with ExportsTestData wi
         val backButton = createView(declarationType = DeclarationType.SIMPLIFIED).getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") must endWith(s"/items/$itemId/package-information")
+        backButton.attr("href") mustBe routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, itemId).url
       }
     }
 

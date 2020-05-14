@@ -98,7 +98,7 @@ class PackageInformationController @Inject()(
       case SUPPLEMENTARY | STANDARD | CLEARANCE =>
         controllers.declaration.routes.CommodityMeasureController.displayPage(_, itemId)
       case SIMPLIFIED | OCCASIONAL =>
-        controllers.declaration.routes.AdditionalInformationController.displayPage(_, itemId)
+        controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(_, itemId)
     }
 
   private def addItem(mode: Mode, itemId: String, boundForm: Form[PackageInformation], cachedData: Seq[PackageInformation])(

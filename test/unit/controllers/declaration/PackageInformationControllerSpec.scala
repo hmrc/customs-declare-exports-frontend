@@ -204,7 +204,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
           val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(Mode.Normal, itemId)
         }
       }
 

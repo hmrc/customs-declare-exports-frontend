@@ -72,10 +72,13 @@
             key = Key(
                 content = Text(messages("declaration.summary.items.item.additionalInformation"))
             ),
+            value = Value(
+                content = Text(messages("site.no"))
+            ),
             actions = Some(Actions(
                 items = Seq(
                     ActionItem(
-                        href = controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId).url,
+                        href = controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(mode, itemId).url,
                         content = Text(messages("site.change")),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.additionalInformation.change"))
                     )

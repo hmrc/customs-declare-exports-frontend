@@ -230,6 +230,12 @@ GET         /items/:itemId/commodity-details                   controllers.decla
 
 POST        /items/:itemId/commodity-details                   controllers.declaration.CommodityDetailsController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
 
+# Additional Information Request
+
+GET          /items/:itemId/additional-information-required     controllers.declaration.AdditionalInformationRequiredController.displayPage(mode:models.Mode ?= models.Mode.Normal, itemId)
+
+POST        /items/:itemId/additional-information-required       controllers.declaration.AdditionalInformationRequiredController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+
 # UN Dangerous Goods Code
 
 GET         /items/:itemId/un-dangerous-goods-code             controllers.declaration.UNDangerousGoodsCodeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)

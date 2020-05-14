@@ -18,6 +18,7 @@ package services.cache
 
 import java.util.UUID
 
+import forms.common.YesNoAnswer
 import forms.declaration._
 import forms.declaration.additionaldocuments.DocumentsProduced
 import models.declaration._
