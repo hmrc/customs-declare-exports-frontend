@@ -17,11 +17,11 @@
 package unit.controllers.declaration
 
 import controllers.declaration.ConsignorDetailsController
-import forms.common.Address
+import forms.common.{Address, Eori}
 import forms.declaration.EntityDetails
 import forms.declaration.consignor.ConsignorDetails
 import models.DeclarationType._
-import models.Mode
+import models.{DeclarationType, Mode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.libs.json.Json
@@ -114,6 +114,28 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeAgentController.displayPage()
+        }
+      }
+      "return 303 (SEE_OTHER) and redirect to carrier details page" when {
+
+        "form is correct" in {
+
+          withNewCaching(
+            aDeclaration(
+              withType(DeclarationType.CLEARANCE),
+              withDeclarantIsExporter(),
+              withDeclarantDetails(eori = Some(Eori("GB12345678"))),
+              withExporterDetails(eori = Some(Eori("GB12345678")))
+            )
+          )
+
+          val correctForm =
+            Json.toJson(ConsignorDetails(EntityDetails(None, Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom")))))
+
+          val result = controller.saveAddress(Mode.Normal)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.CarrierDetailsController.displayPage()
         }
       }
     }

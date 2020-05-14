@@ -141,7 +141,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
     }
 
     onJourney(DeclarationType.CLEARANCE) { request =>
-      "return 303 (SEE_OTHER) and redirect to carrier page when declarant is exporter" in {
+      "return 303 (SEE_OTHER) and redirect to isExs page when declarant is exporter" in {
 
         withNewCaching(request.cacheModel)
 
@@ -150,7 +150,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ConsignorEoriNumberController.displayPage()
+        thePageNavigatedTo mustBe controllers.declaration.routes.IsExsController.displayPage()
 
         verifyPage(0)
       }

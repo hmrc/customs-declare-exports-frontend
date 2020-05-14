@@ -25,12 +25,6 @@ class ExporterDetailsSpec extends WordSpec with MustMatchers with LightFormMatch
 
   import forms.declaration.ExporterDetailsSpec._
 
-  "Exporter Details" should {
-    "have correct id" in {
-      ExporterDetails.id mustEqual "ExporterDetails"
-    }
-  }
-
   Seq(SUPPLEMENTARY, STANDARD, OCCASIONAL, SIMPLIFIED, CLEARANCE).map { decType =>
     s"Exporter Details form for $decType" should {
       val outcomeFromIncorrectForm = ExporterDetails.form(decType).bind(incorrectExporterDetailsJSON)

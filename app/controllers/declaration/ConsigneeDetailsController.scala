@@ -19,10 +19,12 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.DeclarationPage
+import forms.declaration.consignor.ConsignorEoriNumber
 import forms.declaration.{ConsigneeDetails, ExporterDetails}
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.DeclarationType.{CLEARANCE, SUPPLEMENTARY}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -47,8 +49,8 @@ class ConsigneeDetailsController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.parties.consigneeDetails match {
-      case Some(data) => Ok(consigneeDetailsPage(mode, navigationForm, ConsigneeDetails.form().fill(data)))
-      case _          => Ok(consigneeDetailsPage(mode, navigationForm, ConsigneeDetails.form()))
+      case Some(data) => Ok(consigneeDetailsPage(mode, navigationPage, ConsigneeDetails.form().fill(data)))
+      case _          => Ok(consigneeDetailsPage(mode, navigationPage, ConsigneeDetails.form()))
     }
   }
 
@@ -57,17 +59,19 @@ class ConsigneeDetailsController @Inject()(
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ConsigneeDetails]) => Future.successful(BadRequest(consigneeDetailsPage(mode, navigationForm, formWithErrors))),
+        (formWithErrors: Form[ConsigneeDetails]) => Future.successful(BadRequest(consigneeDetailsPage(mode, navigationPage, formWithErrors))),
         form =>
           updateCache(form)
             .map(_ => navigator.continueTo(mode, nextPage()))
       )
   }
 
-  private def navigationForm(implicit request: JourneyRequest[AnyContent]): DeclarationPage =
-    if (request.declarationType == DeclarationType.SUPPLEMENTARY && request.cacheModel.parties.declarantIsExporter.exists(_.isExporter))
-      ExporterDetails
-    else ConsigneeDetails
+  private def navigationPage(implicit request: JourneyRequest[AnyContent]): DeclarationPage = request.declarationType match {
+    case CLEARANCE if (request.cacheModel.isDeclarantExporter && request.cacheModel.parties.isExs.map(_.isExs).getOrElse("") == "No") =>
+      ConsignorEoriNumber
+    case SUPPLEMENTARY if (request.cacheModel.isDeclarantExporter) => ExporterDetails
+    case _                                                         => ConsigneeDetails
+  }
 
   private def nextPage()(implicit request: JourneyRequest[AnyContent]): Mode => Call =
     request.declarationType match {

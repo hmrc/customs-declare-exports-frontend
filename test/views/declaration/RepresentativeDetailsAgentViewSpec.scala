@@ -19,7 +19,7 @@ package views.declaration
 import base.Injector
 import forms.DeclarationPage
 import forms.declaration.RepresentativeAgent
-import forms.declaration.consignor.ConsignorDetails
+import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
@@ -86,8 +86,6 @@ class RepresentativeDetailsAgentViewSpec extends UnitViewSpec with ExportsTestDa
       }
 
       onJourney(DeclarationType.CLEARANCE) { implicit request =>
-        val view = createView()
-
         "display 'Back' button that links to 'Consignor Details' page" in {
           val view = createView()
 
@@ -104,6 +102,15 @@ class RepresentativeDetailsAgentViewSpec extends UnitViewSpec with ExportsTestDa
 
           backButton must containMessage("site.back")
           backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ConsignorEoriNumberController.displayPage(Mode.Normal))
+        }
+
+        "display 'Back' button that links to 'Is Exs' page" in {
+          val view = createView(navigationForm = ConsignorEoriNumber)
+
+          val backButton = view.getElementById("back-link")
+
+          backButton must containMessage("site.back")
+          backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.IsExsController.displayPage(Mode.Normal))
         }
       }
     }

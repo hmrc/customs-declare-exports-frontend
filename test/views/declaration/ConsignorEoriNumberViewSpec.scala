@@ -39,12 +39,8 @@ class ConsignorEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with
 
   private val page: consignor_eori_number = instanceOf[consignor_eori_number]
 
-  private def createView(
-    mode: Mode = Mode.Normal,
-    navigationForm: DeclarationPage = ConsignorEoriNumber,
-    form: Form[ConsignorEoriNumber] = ConsignorEoriNumber.form()
-  ): Document =
-    page(mode, navigationForm, form)(journeyRequest(DeclarationType.CLEARANCE), stubMessages())
+  private def createView(mode: Mode = Mode.Normal, form: Form[ConsignorEoriNumber] = ConsignorEoriNumber.form()): Document =
+    page(mode, form)(journeyRequest(DeclarationType.CLEARANCE), stubMessages())
 
   "Consignor Eori Number View" should {
     val view = createView()
@@ -86,15 +82,7 @@ class ConsignorEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with
         val backButton = view.getElementById("back-link")
 
         backButton.text() mustBe "site.back"
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.ExporterDetailsController.displayPage(Mode.Normal))
-      }
-
-      "display 'Back' button that links to 'Are you the Exporter' page" in {
-
-        val backButton = createView(navigationForm = ExporterDetails).getElementById("back-link")
-
-        backButton.text() mustBe "site.back"
-        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.DeclarantExporterController.displayPage(Mode.Normal))
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.IsExsController.displayPage(Mode.Normal))
       }
 
       "display 'Save and continue' button" in {

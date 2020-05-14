@@ -328,13 +328,16 @@ supplementary.consignor.title = Who is the exporter?
 supplementary.consignor.title.hint = Enter the exporter’s EORI number or name and business address.
 supplementary.consignor.eori = Exporter’s EORI number
 declaration.exporter-detail.eori = Exporter’s EORI number
-declaration.exporter-detail.title = Who is the exporter?
 supplementary.consignor.address.info = Exporter’s name and business address
 declaration.exporter-details.help-item1 = Exporter’s EORI number, go to data element 3/2 Exporter Identification Number
 declaration.exporter-details.help-item2 = Exporter’s name and business address, go to data element 3/1 Exporter
 declaration.exporter-detail.title = Who is the exporter?
 declaration.exporter-detail.title.hint = Enter the exporter’s EORI number or name and business address.
 declaration.exporter-detail.addressHeading = Exporter’s name and address
+
+declaration.exs.title = Do you need to give us safety and security information?
+declaration.exs.hint = This is also known as an exit summary declaration (EXS)
+declaration.exs.error = Select yes if you are the declaring an EXS
 
 declaration.declarant.title = Is this your EORI number?
 declaration.declarant.titleQuestion = Is your EORI number {0}?
@@ -1044,6 +1047,8 @@ declaration.summary.parties.declarantIsExporter.no = No
 declaration.summary.parties.declarantIsExporter.change = are you the exporter
 declaration.summary.parties.exporter.eori = Exporter’s EORI number
 declaration.summary.parties.exporter.eori.change = Exporter’s EORI number
+declaration.summary.parties.exs = Safety and security information given
+declaration.summary.parties.exs.change = Safety and security information given
 declaration.summary.parties.exporter.address = Exporter’s address
 declaration.summary.parties.exporter.address.change = Exporter’s address
 declaration.summary.parties.consignee.eori = Consignee’s EORI number
