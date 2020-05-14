@@ -161,6 +161,25 @@ class SubmissionDisplayHelperSpec extends WordSpec with MustMatchers {
 
       result.map(_._1) must contain inOrder (submission_2, submission, submission_3)
     }
+
+    "filter submissions" should {
+      "return submissions that match the notification test" in {
+        val submissions = Seq(submission -> Seq(notification), submission_2 -> Seq(notification_2), submission_3 -> Seq(notification_3))
+
+        val result1 = SubmissionDisplayHelper.filterSubmissions(submissions, _ == notification)
+        result1 must equal(Seq(submission -> Seq(notification)))
+
+        val result2 = SubmissionDisplayHelper.filterSubmissions(submissions, _.status == SubmissionStatus.REJECTED)
+        result2 must equal(Seq(submission_2 -> Seq(notification_2)))
+      }
+
+      "return submissions that have missing notification" in {
+        val submissions = Seq(submission -> Seq.empty)
+
+        SubmissionDisplayHelper.filterSubmissions(submissions, _ => true) must equal(submissions)
+        SubmissionDisplayHelper.filterSubmissions(submissions, _ => false) must equal(submissions)
+      }
+    }
   }
 
 }
@@ -218,7 +237,7 @@ object SubmissionDisplayHelperSpec {
     actionId = conversationId,
     mrn = mrn,
     dateTimeIssued = dateTimeIssued,
-    status = SubmissionStatus.UNKNOWN,
+    status = SubmissionStatus.ACCEPTED,
     errors = errors,
     payload = payload
   )
@@ -226,7 +245,7 @@ object SubmissionDisplayHelperSpec {
     actionId = conversationId,
     mrn = mrn,
     dateTimeIssued = dateTimeIssued_2,
-    status = SubmissionStatus.UNKNOWN,
+    status = SubmissionStatus.REJECTED,
     errors = errors,
     payload = payload_2
   )
@@ -234,7 +253,7 @@ object SubmissionDisplayHelperSpec {
     actionId = conversationId_2,
     mrn = mrn,
     dateTimeIssued = dateTimeIssued_3,
-    status = SubmissionStatus.UNKNOWN,
+    status = SubmissionStatus.ACCEPTED,
     errors = Seq.empty,
     payload = payload_3
   )

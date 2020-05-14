@@ -15,20 +15,6 @@ needs to be behind the dropdown arrow.
 
 /*
 ====================================
-CSS to support GDS Design System Tables
-Context: Each item may have multiple packages and so we need to render
-a list within the table cell. By setting 'vertical-align: middle' we
-guarantee a smooth rendering correctly aligned with the buttons.
-This is not a GDS Design system standard, this is a hybrid, that hopefully will
-be removed once we implement the two-step remove change link.
-====================================
-*/
-.govuk-table__header, .govuk-table__cell {
-  vertical-align: middle;
-}
-
-/*
-====================================
 CSS to support GDS Design System Ordered lists inside table cells
 Context: Each item may have multiple packages and so we need to render
 a list within the table cell.

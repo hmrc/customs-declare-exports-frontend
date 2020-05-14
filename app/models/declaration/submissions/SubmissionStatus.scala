@@ -48,6 +48,6 @@ object SubmissionStatus extends Enumeration {
   }
 
   val rejectedStatuses: Set[submissions.SubmissionStatus.Value] = Set(REJECTED)
-  val actionRequiredStatuses: Set[submissions.SubmissionStatus.Value] = Set(ADDITIONAL_DOCUMENTS_REQUIRED)
+  val actionRequiredStatuses: Set[submissions.SubmissionStatus.Value] = Set(ADDITIONAL_DOCUMENTS_REQUIRED, UNDERGOING_PHYSICAL_CHECK)
   val otherStatuses: Set[submissions.SubmissionStatus.Value] = values &~ rejectedStatuses &~ actionRequiredStatuses
 }

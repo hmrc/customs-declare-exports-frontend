@@ -75,16 +75,12 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
 
       val actionCancellation = Action(requestType = CancellationRequest, id = "conv-id", requestTimestamp = LocalDateTime.of(2021, 1, 1, 0, 0, 0))
 
-      val submission = Submission(
-        uuid = "id",
-        eori = "eori",
-        lrn = "lrn",
-        mrn = Some("mrn"),
-        ducr = Some("ducr"),
-        actions = Seq(actionSubmission, actionCancellation)
-      )
+      def submissionWithDucr(ducr: String = "ducr") =
+        Submission(uuid = "id", eori = "eori", lrn = "lrn", mrn = Some("mrn"), ducr = Some(ducr), actions = Seq(actionSubmission, actionCancellation))
 
-      val notification = Notification(
+      val submission = submissionWithDucr()
+
+      val acceptedNotification = Notification(
         actionId = "action-id",
         mrn = "mrn",
         dateTimeIssued = LocalDateTime.of(2020, 1, 1, 0, 0, 0),
@@ -102,8 +98,17 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
         payload = ""
       )
 
+      val actionNotification = Notification(
+        actionId = "actionId",
+        mrn = "mrn",
+        dateTimeIssued = LocalDateTime.now(),
+        status = SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED,
+        errors = Seq.empty,
+        payload = ""
+      )
+
       "all fields are populated" in {
-        val view = createView(Seq(submission -> Seq(notification)))
+        val view = tab("other", createView(Seq(submission -> Seq(acceptedNotification))))
 
         tableCell(view)(1, 0).text() mustBe "ducr submissions.hidden.text"
         tableCell(view)(1, 1).text() mustBe "lrn"
@@ -116,7 +121,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
 
       "optional fields are unpopulated" in {
         val submissionWithOptionalFieldsEmpty = submission.copy(ducr = None, mrn = None)
-        val view = createView(Seq(submissionWithOptionalFieldsEmpty -> Seq(notification)))
+        val view = tab("other", createView(Seq(submissionWithOptionalFieldsEmpty -> Seq(acceptedNotification))))
 
         tableCell(view)(1, 0).text() mustBe "submissions.hidden.text"
         tableCell(view)(1, 1).text() mustBe "lrn"
@@ -128,13 +133,13 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
       }
 
       "submission status is 'pending' due to missing notification" in {
-        val view = createView(Seq(submission -> Seq.empty))
+        val view = tab("other", createView(Seq(submission -> Seq.empty)))
 
         tableCell(view)(1, 4).text() mustBe "Pending"
       }
 
       "submission has link when contains rejected notification" in {
-        val view = createView(Seq(submission -> Seq(rejectedNotification)))
+        val view = tab("rejected", createView(Seq(submission -> Seq(rejectedNotification))))
 
         tableCell(view)(1, 0).text() must include(submission.ducr.get)
         tableCell(view)(1, 0).toString must include(routes.SubmissionsController.displayDeclarationWithNotifications(submission.uuid).url)
@@ -142,9 +147,24 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
 
       "submission date is unknown due to missing submit action" in {
         val submissionWithMissingSubmitAction = submission.copy(actions = Seq(actionCancellation))
-        val view = createView(Seq(submissionWithMissingSubmitAction -> Seq(notification)))
+        val view = tab("other", createView(Seq(submissionWithMissingSubmitAction -> Seq(acceptedNotification))))
 
         tableCell(view)(1, 3).text() mustBe empty
+      }
+
+      "submissions are shown on correct tabs" in {
+        val view =
+          createView(
+            Seq(
+              submissionWithDucr("ducr_accepted") -> Seq(acceptedNotification),
+              submissionWithDucr("ducr_rejected") -> Seq(rejectedNotification),
+              submissionWithDucr("ducr_action") -> Seq(actionNotification)
+            )
+          )
+
+        tableCell(tab("other", view))(1, 0).text() must include("ducr_accepted")
+        tableCell(tab("rejected", view))(1, 0).text() must include("ducr_rejected")
+        tableCell(tab("action", view))(1, 0).text() must include("ducr_action")
       }
     }
 
@@ -162,14 +182,16 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
     }
   }
 
-  private def tableCell(view: Html)(row: Int, column: Int): Element =
+  private def tab(tab: String, view: Html): Element = view.getElementById(s"$tab-submissions")
+
+  private def tableCell(view: Element)(row: Int, column: Int): Element =
     view
       .select(".govuk-table__row")
       .get(row)
       .getElementsByClass("govuk-table__cell")
       .get(column)
 
-  private def tableHead(view: Html)(column: Int): Element =
+  private def tableHead(view: Element)(column: Int): Element =
     view
       .select(".govuk-table__head")
       .first()
