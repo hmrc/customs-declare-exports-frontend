@@ -24,7 +24,7 @@ import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.consignor_details
@@ -58,9 +58,16 @@ class ConsignorDetailsController @Inject()(
         (formWithErrors: Form[ConsignorDetails]) => Future.successful(BadRequest(consignorDetailsPage(mode, formWithErrors))),
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.RepresentativeAgentController.displayPage))
+            .map(_ => navigator.continueTo(mode, nextPage()))
       )
   }
+
+  private def nextPage()(implicit request: JourneyRequest[_]): Mode => Call =
+    if (request.cacheModel.isDeclarantExporter) {
+      controllers.declaration.routes.CarrierDetailsController.displayPage
+    } else {
+      controllers.declaration.routes.RepresentativeAgentController.displayPage
+    }
 
   private def updateCache(formData: ConsignorDetails)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>

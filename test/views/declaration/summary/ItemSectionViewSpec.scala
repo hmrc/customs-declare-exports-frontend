@@ -144,7 +144,7 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestData with Injecto
 
       row must haveSummaryActionsText("site.change declaration.summary.items.item.taricAdditionalCodes.change")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, itemWithAnswers.id))
+      row must haveSummaryActionsHref(controllers.declaration.routes.TaricCodeSummaryController.displayPage(Mode.Normal, itemWithAnswers.id))
     }
 
     "have nact codes separated by comma with change button" in {

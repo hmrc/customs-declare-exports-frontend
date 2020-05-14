@@ -20,7 +20,6 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.{form, YesNoAnswers}
-import forms.declaration.NactCode
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
@@ -58,7 +57,7 @@ class NactCodeRemoveController @Inject()(
           formData => {
             formData.answer match {
               case YesNoAnswers.yes =>
-                updateExportsCache(itemId, request.cacheModel.itemBy(itemId).flatMap(_.nactCodes).getOrElse(Seq.empty).filterNot(_.nactCode == code))
+                updateExportsCache(itemId, code)
                   .map(_ => navigator.continueTo(mode, routes.NactCodeSummaryController.displayPage(_, itemId)))
               case YesNoAnswers.no =>
                 Future.successful(navigator.continueTo(Mode.Normal, routes.NactCodeSummaryController.displayPage(_, itemId)))
@@ -67,8 +66,10 @@ class NactCodeRemoveController @Inject()(
         )
   }
 
-  private def updateExportsCache(itemId: String, updatedCache: Seq[NactCode])(
-    implicit r: JourneyRequest[AnyContent]
-  ): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(nactCodes = Some(updatedCache.toList))))
+  private def updateExportsCache(itemId: String, nactCodeToRemove: String)(
+    implicit request: JourneyRequest[AnyContent]
+  ): Future[Option[ExportsDeclaration]] = {
+    val updatedCodes = request.cacheModel.itemBy(itemId).flatMap(_.nactCodes).getOrElse(Seq.empty).filterNot(_.nactCode == nactCodeToRemove)
+    updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(nactCodes = Some(updatedCodes.toList))))
+  }
 }

@@ -41,7 +41,8 @@
     tariffDetails: tariffDetails,
     saveButtons: saveButtons,
     appConfig: AppConfig,
-    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(
         mode: Mode,
@@ -93,12 +94,19 @@
     }
 }
 
+@radioLegendContent = {
+    <h2 class="govuk-fieldset__heading">
+        @messages("declaration.nationalAdditionalCode.label")
+    </h2>
+}
+
 @anotherNactCodeQuestion = {
     @govukRadios(Radios(
         name = "yesNo",
         fieldset = Some(Fieldset(
             legend = Some(Legend(
-                content = Text(messages("declaration.nationalAdditionalCode.label"))
+                content = HtmlContent(radioLegendContent),
+                classes = "govuk-fieldset__legend--m"
             ))
         )),
         items = Seq(

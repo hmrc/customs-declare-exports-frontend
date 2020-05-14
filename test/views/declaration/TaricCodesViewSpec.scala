@@ -17,11 +17,12 @@
 package views.declaration
 
 import base.Injector
-import config.AppConfig
+import forms.common.YesNoAnswer
+import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.TaricCode
 import helpers.views.declaration.CommonMessages
-import models.DeclarationType.DeclarationType
-import models.{DeclarationType, Mode}
+import models.Mode
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestData
@@ -33,75 +34,76 @@ import views.tags.ViewTest
 @ViewTest
 class TaricCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs with CommonMessages with Injector {
 
-  private val appConfig = instanceOf[AppConfig]
   private val page = instanceOf[taric_codes]
   private val itemId = "item1"
   private val realMessages = validatedMessages
-  private def createView(declarationType: DeclarationType, form: Form[TaricCode], codes: List[TaricCode]): Document =
-    page(Mode.Normal, itemId, form, codes)(journeyRequest(declarationType), realMessages)
+  private def createView(form: Form[YesNoAnswer], codes: List[TaricCode], request: JourneyRequest[_]): Document =
+    page(Mode.Normal, itemId, form, codes)(request, realMessages)
 
-  def taricCodeView(declarationType: DeclarationType, taricCode: Option[TaricCode] = None, codes: List[TaricCode] = List.empty): Unit = {
-    val form = taricCode.fold(TaricCode.form)(TaricCode.form.fill(_))
-    val view = createView(declarationType, form, codes)
+  "Taric Code View on empty page" must {
+    onEveryDeclarationJourney() { request =>
+      val view = createView(YesNoAnswer.form(), List.empty, request)
 
-    "display page title" in {
-
-      view.getElementsByTag("h1").text() mustBe realMessages("declaration.taricAdditionalCodes.header")
-    }
-
-    "display taric code input field" in {
-      val expectedCode = taricCode.map(_.taricCode).getOrElse("")
-      view.getElementById(TaricCode.taricCodeKey).attr("value") mustBe expectedCode
-    }
-
-    "display existing taric codes table" in {
-      codes.zipWithIndex.foreach {
-        case (code, index) => {
-          view.getElementById(s"taricCode-table-row$index-label").text mustBe code.taricCode
-          var removeButton = view.getElementById(s"taricCode-table-row$index-remove_button")
-          removeButton.text must include(realMessages(removeCaption))
-          removeButton.text must include(realMessages("declaration.taricAdditionalCodes.remove.hint", code.taricCode))
-        }
+      "display page title" in {
+        view.getElementsByTag("h1").text() mustBe realMessages("declaration.taricAdditionalCodes.header.plural", "0")
       }
-    }
 
-    "display 'Add' button on page" in {
+      "display radio button with Yes option" in {
+        view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes
+        view.getElementsByAttributeValue("for", "code_yes").text() mustBe realMessages("site.yes")
+      }
+      "display radio button with No option" in {
+        view.getElementById("code_no").attr("value") mustBe YesNoAnswers.no
+        view.getElementsByAttributeValue("for", "code_no").text() mustBe realMessages("site.no")
+      }
 
-      val addButton = view.getElementById("add")
-      addButton.text() must include(realMessages(addCaption))
-      addButton.text() must include(realMessages("declaration.taricAdditionalCodes.add.hint"))
-    }
+      "display 'Save and continue' button on page" in {
+        val saveButton = view.select("#submit")
+        saveButton.text() mustBe realMessages(saveAndContinueCaption)
+      }
 
-    "display 'Back' button that links to 'CUS Code' page" in {
-      val backButton = view.getElementById("back-link")
-
-      backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, itemId))
-    }
-
-    "display 'Save and continue' button on page" in {
-
-      val saveButton = view.select("#submit")
-      saveButton.text() mustBe realMessages(saveAndContinueCaption)
-    }
-  }
-
-  "Taric Code View on empty page" when {
-
-    for (decType <- DeclarationType.values) {
-      s"we are on $decType journey" should {
-        behave like taricCodeView(decType)
+      "display 'Back' button that links to 'CUS Code' page" in {
+        val backButton = view.getElementById("back-link")
+        backButton.getElementById("back-link") must haveHref(controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, itemId))
       }
     }
   }
 
   "Taric Code View on populated page" when {
-    val taricCode = Some(TaricCode("1234"))
-    val existingCodes = List(TaricCode("ABCD"), TaricCode("4321"))
+    val codes = List(TaricCode("ABCD"), TaricCode("4321"))
 
-    for (decType <- DeclarationType.values) {
-      s"we are on $decType journey" should {
-        behave like taricCodeView(decType, taricCode, existingCodes)
+    onEveryDeclarationJourney() { request =>
+      val view = createView(YesNoAnswer.form, codes, request)
+
+      "display page title" in {
+
+        view.getElementsByTag("h1").text() mustBe realMessages("declaration.taricAdditionalCodes.header.plural", "2")
+      }
+
+      "display existing NACT codes table" in {
+        codes.zipWithIndex.foreach {
+          case (code, index) => {
+            view.getElementById(s"taricCode-table-row$index-label").text mustBe code.taricCode
+            var removeButton = view.getElementById(s"taricCode-table-row$index-remove_button")
+            removeButton.text must include(realMessages(removeCaption))
+            removeButton.text must include(realMessages("declaration.taricAdditionalCodes.remove.hint", code.taricCode))
+          }
+        }
       }
     }
   }
+
+  "Taric Code View with single code" when {
+    val codes = List(TaricCode("ABCD"))
+
+    onEveryDeclarationJourney() { request =>
+      val view = createView(YesNoAnswer.form, codes, request)
+
+      "display page title" in {
+
+        view.getElementsByTag("h1").text() mustBe realMessages("declaration.taricAdditionalCodes.header.singular")
+      }
+    }
+  }
+
 }

@@ -106,14 +106,14 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
     }
 
     onJourney(DeclarationType.CLEARANCE) { request =>
-      "return 303 (SEE_OTHER) and redirect to cosignor eori number page" when {
+      "return 303 (SEE_OTHER) and redirect to Is Exs page" when {
         "correct form is submitted" in {
           withNewCaching(request.cacheModel)
           val body = Json.obj("details" -> Json.obj("eori" -> "GB213472539481923"))
           val response = controller.saveAddress(Mode.Normal)(postRequest(body))
 
           await(response) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.ConsignorEoriNumberController.displayPage()
+          thePageNavigatedTo mustBe controllers.declaration.routes.IsExsController.displayPage()
         }
       }
     }

@@ -17,7 +17,7 @@
 package views.declaration
 
 import base.Injector
-import forms.declaration.NactCodeFirst
+import forms.declaration.TaricCodeFirst
 import helpers.views.declaration.CommonMessages
 import models.Mode
 import org.jsoup.nodes.Document
@@ -26,33 +26,31 @@ import play.api.data.Form
 import services.cache.ExportsTestData
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
-import views.html.declaration.nact_code_add_first
+import views.html.declaration.taric_code_add_first
 import views.tags.ViewTest
 
 @ViewTest
-class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with Stubs with MustMatchers with CommonMessages with Injector {
+class TaricCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with Stubs with MustMatchers with CommonMessages with Injector {
 
   private val itemId = "item1"
-  private val form: Form[NactCodeFirst] = NactCodeFirst.form()
-  private val page = instanceOf[nact_code_add_first]
+  private val form: Form[TaricCodeFirst] = TaricCodeFirst.form()
+  private val page = instanceOf[taric_code_add_first]
   private val realMessages = validatedMessages
 
-  private def createView(form: Form[NactCodeFirst] = form): Document =
+  private def createView(form: Form[TaricCodeFirst] = form): Document =
     page(Mode.Normal, itemId, form)(journeyRequest(), realMessages)
 
-  "Nact Code Add First View" should {
+  "Taric Code Add First View" should {
     val view = createView()
 
     "display page title" in {
-      view.getElementsByTag("h1").text() must be(realMessages("declaration.nationalAdditionalCode.addfirst.header"))
+      view.getElementsByTag("h1").text() must be(realMessages("declaration.taricAdditionalCodes.addfirst.header"))
     }
 
-    "display 'Back' button that links to 'taric codes' page" in {
+    "display 'Back' button that links to 'CUS codes' page" in {
       val backLinkContainer = view.getElementById("back-link")
 
-      backLinkContainer.getElementById("back-link") must haveHref(
-        controllers.declaration.routes.TaricCodeSummaryController.displayPage(Mode.Normal, itemId)
-      )
+      backLinkContainer.getElementById("back-link") must haveHref(controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, itemId))
     }
 
     "display 'Save and continue' button on page" in {
@@ -66,35 +64,35 @@ class NactCodeAddFirstViewSpec extends UnitViewSpec with ExportsTestData with St
     }
   }
 
-  "Nact Code Add First View for invalid input" should {
+  "Taric Code Add First View for invalid input" should {
 
     "display errors when invalid" in {
-      val view = createView(NactCodeFirst.form().fillAndValidate(NactCodeFirst(Some("12345678901234567890"))))
+      val view = createView(TaricCodeFirst.form().fillAndValidate(TaricCodeFirst(Some("12345678901234567890"))))
 
       view must haveGovukGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", "#nactCode")
+      view must containErrorElementWithTagAndHref("a", "#taricCode")
 
-      view must containErrorElementWithMessage(realMessages("declaration.nationalAdditionalCode.error.invalid"))
+      view must containErrorElementWithMessage(realMessages("declaration.taricAdditionalCodes.error.invalid"))
     }
 
     "display errors when empty" in {
-      val view = createView(NactCodeFirst.form().fillAndValidate(NactCodeFirst(Some(""))))
+      val view = createView(TaricCodeFirst.form().fillAndValidate(TaricCodeFirst(Some(""))))
 
       view must haveGovukGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", "#nactCode")
+      view must containErrorElementWithTagAndHref("a", "#taricCode")
 
-      view must containErrorElementWithMessage(realMessages("declaration.nationalAdditionalCode.error.empty"))
+      view must containErrorElementWithMessage(realMessages("declaration.taricAdditionalCodes.error.empty"))
     }
 
   }
 
-  "Nact Code Add First View when filled" should {
+  "Taric Code Add First View when filled" should {
 
-    "display data in nact code input" in {
+    "display data in taric code input" in {
 
-      val view = createView(NactCodeFirst.form().fill(NactCodeFirst(Some("VATR"))))
+      val view = createView(TaricCodeFirst.form().fill(TaricCodeFirst(Some("ABCD"))))
 
-      view.getElementById("nactCode").attr("value") must be("VATR")
+      view.getElementById("taricCode").attr("value") must be("ABCD")
     }
   }
 }

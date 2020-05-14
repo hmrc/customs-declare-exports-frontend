@@ -177,12 +177,12 @@
                 content = Text(messages("declaration.summary.items.item.taricAdditionalCodes"))
             ),
             value = Value(
-                content = Text(taricCodes.map(_.taricCode).mkString(", "))
+                content = Text(if(taricCodes.isEmpty) messages("site.no") else taricCodes.map(_.taricCode).mkString(", "))
             ),
             actions = Some(Actions(
                 items = Seq(
                     ActionItem(
-                        href = controllers.declaration.routes.TaricCodeController.displayPage(mode, item.id).url,
+                        href = controllers.declaration.routes.TaricCodeSummaryController.displayPage(mode, item.id).url,
                         content = Text(messages("site.change")),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.taricAdditionalCodes.change", item.sequenceId))
                     )

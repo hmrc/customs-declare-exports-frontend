@@ -45,6 +45,12 @@ GET         /exporter-details                    controllers.declaration.Exporte
 
 POST        /exporter-details                    controllers.declaration.ExporterDetailsController.saveAddress(mode: models.Mode ?= models.Mode.Normal)
 
+# EXS Declaration
+
+GET         /is-this-exs                         controllers.declaration.IsExsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /is-this-exs                         controllers.declaration.IsExsController.submit(mode: models.Mode ?= models.Mode.Normal)
+
 # Representative details
 
 GET         /are-you-representing-another-agent  controllers.declaration.RepresentativeAgentController.displayPage(mode: models.Mode ?= models.Mode.Normal)
@@ -238,9 +244,17 @@ POST        /items/:itemId/cus-code                            controllers.decla
 
 # TARIC Code
 
-GET         /items/:itemId/taric-codes                         controllers.declaration.TaricCodeController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/additional-taric-code               controllers.declaration.TaricCodeAddController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
 
-POST        /items/:itemId/taric-codes                         controllers.declaration.TaricCodeController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/additional-taric-code               controllers.declaration.TaricCodeAddController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+GET         /items/:itemId/additional-taric-codes-list         controllers.declaration.TaricCodeSummaryController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+POST        /items/:itemId/additional-taric-codes-list         controllers.declaration.TaricCodeSummaryController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+GET         /items/:itemId/additional-taric-code/:code/remove  controllers.declaration.TaricCodeRemoveController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, code)
+
+POST        /items/:itemId/additional-taric-code/:code/remove  controllers.declaration.TaricCodeRemoveController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, code)
 
 # NACT Code
 
@@ -255,7 +269,6 @@ POST        /items/:itemId/national-additional-codes-list      controllers.decla
 GET         /items/:itemId/national-additional-code/:code/remove            controllers.declaration.NactCodeRemoveController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, code)
 
 POST        /items/:itemId/national-additional-code/:code/remove            controllers.declaration.NactCodeRemoveController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, code)
-
 
 # Statistical Value
 
