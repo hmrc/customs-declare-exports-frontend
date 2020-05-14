@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.DeclarationPage
 import forms.declaration.consignor.ConsignorDetails
-import forms.declaration.{CarrierDetails, RepresentativeAgent}
+import forms.declaration.{CarrierDetails, ExporterDetails, RepresentativeAgent}
 import javax.inject.Inject
 import models.DeclarationType.CLEARANCE
 import models.requests.JourneyRequest
@@ -61,7 +61,8 @@ class CarrierDetailsController @Inject()(
       case CLEARANCE if !request.cacheModel.parties.declarantIsExporter.exists(_.isExporter)                                    => CarrierDetails
       case CLEARANCE if request.cacheModel.parties.consignorDetails.flatMap(_.details.eori.map(_.value)).getOrElse("").nonEmpty => ConsignorDetails
       case CLEARANCE if request.cacheModel.parties.consignorDetails.flatMap(_.details.address).isDefined                        => RepresentativeAgent
-      case _                                                                                                                    => CarrierDetails
+      case _ =>
+        if (request.cacheModel.parties.declarantIsExporter.exists(_.isExporter)) ExporterDetails else CarrierDetails
     }
 
   def saveAddress(mode: Mode): Action[AnyContent] =
