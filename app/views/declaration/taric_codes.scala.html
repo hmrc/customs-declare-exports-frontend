@@ -17,45 +17,57 @@
 @import config.AppConfig
 @import controllers.declaration.routes
 @import forms.declaration.TaricCode
+@import forms.declaration.TaricCodeFirst
 @import forms.declaration.TaricCode._
 @import models.requests.JourneyRequest
 @import controllers.navigation.{Navigator, ItemId}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title}
+@import forms.common.YesNoAnswer
+@import forms.common.YesNoAnswer.YesNoAnswers
 @import views.html.components.gds._
 @import views.components.gds.Styles._
 @import play.twirl.api.HtmlFormat
 @import scala.collection.immutable
 
-@this(govukLayout: gdsMainTemplate,
-        govukFieldset: GovukFieldset,
-        govukTable : GovukTable,
-        addButton: addButton,
-        removeButton: removeButton,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        exportsInputText: exportsInputText,
-        tariffDetails: tariffDetails,
-        saveButtons: saveButtons,
-        appConfig: AppConfig,
-        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
+@this(
+    govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    govukTable : GovukTable,
+    govukRadios: GovukRadios,
+    addButton: addButton,
+    link: link,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    exportsInputText: exportsInputText,
+    tariffDetails: tariffDetails,
+    saveButtons: saveButtons,
+    appConfig: AppConfig,
+    formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(
         mode: Mode,
         itemId: String,
-        form: Form[TaricCode],
+        form: Form[YesNoAnswer],
         taricCodes: Seq[TaricCode] = Seq.empty
 )(implicit request: JourneyRequest[_], messages: Messages)
 
 
 @tariffBody = { @Html(messages("declaration.taricAdditionalCodes.help.bodyText", components.details_content_link())) }
 
-@tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.taricAdditionalCodes.header.tradeTariff.link")</a>}
+@title = @{
+    if(taricCodes.size == 1)
+        Title("declaration.taricAdditionalCodes.header.singular", "supplementary.items")
+    else
+        Title("declaration.taricAdditionalCodes.header.plural", "supplementary.items", taricCodes.size.toString)
+}
 
-@pageHint = {
-    <span class="govuk-hint">
-        @Html(messages("declaration.taricAdditionalCodes.header.hint", tradeTariffLink))
-    </span>
+@header = @{
+    if(taricCodes.size == 1)
+        Text(messages("declaration.taricAdditionalCodes.header.singular"))
+    else
+        Text(messages("declaration.taricAdditionalCodes.header.plural", taricCodes.size))
 }
 
 @taricCodesTable = {
@@ -69,7 +81,8 @@
                         attributes = Map("id" -> s"taricCode-table-row$index-label")
                     ),
                     TableRow(
-                        content = HtmlContent(removeButton(value = Some(code.taricCode), hiddenLabel = Some(messages("declaration.taricAdditionalCodes.remove.hint", code.taricCode)))),
+                        content = HtmlContent(link(messages("site.remove"), Some(messages("declaration.taricAdditionalCodes.remove.hint", code.taricCode)), routes.TaricCodeRemoveController.displayPage(mode, itemId, code.taricCode))),
+                        classes = "govuk-table__cell--numeric",
                         attributes = Map("id" -> s"taricCode-table-row$index-remove_button")
                     )
                 )
@@ -84,11 +97,44 @@
     }
 }
 
-@govukLayout(
-    title = Title("declaration.taricAdditionalCodes.header", "supplementary.items"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(TaricCode, mode, ItemId(itemId))))) {
+@radioLegendContent = {
+    <h2 class="govuk-fieldset__heading">
+    @messages("declaration.taricAdditionalCodes.label")
+    </h2>
+}
 
-    @formHelper(action = routes.TaricCodeController.submitForm(mode, itemId), 'autoComplete -> "off") {
+@anotherTaricCodeQuestion = {
+    @govukRadios(Radios(
+        name = "yesNo",
+        fieldset = Some(Fieldset(
+            legend = Some(Legend(
+                content = HtmlContent(radioLegendContent),
+                classes = "govuk-fieldset__legend--m"
+            ))
+        )),
+        items = Seq(
+            RadioItem(
+                id = Some("code_yes"),
+                value = Some(YesNoAnswers.yes),
+                content = Text(messages("site.yes")),
+                checked = form("yesNo").value.contains(YesNoAnswers.yes)
+            ),
+            RadioItem(
+                id = Some("code_no"),
+                value = Some(YesNoAnswers.no),
+                content = Text(messages("site.no")),
+                checked = form("yesNo").value.contains(YesNoAnswers.no)
+            )
+        ),
+        errorMessage = form("yesNo").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+    ))
+}
+
+@govukLayout(
+    title = title,
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(TaricCodeFirst, mode, ItemId(itemId))))) {
+
+    @formHelper(action = routes.TaricCodeSummaryController.submitForm(mode, itemId), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
@@ -96,20 +142,14 @@
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(
-                content = Text(messages("declaration.taricAdditionalCodes.header")),
+                content = header,
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(immutable.Seq(
-                pageHint,
                 taricCodesTable,
-                exportsInputText(
-                    field = form(taricCodeKey),
-                    labelKey = "declaration.taricAdditionalCodes.label",
-                    inputClasses = Some("govuk-input--width-10")
-                ),
+                anotherTaricCodeQuestion,
                 tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
-                addButton(hiddenLabel = Some(messages("declaration.taricAdditionalCodes.add.hint"))),
                 saveButtons()
             ))
         ))

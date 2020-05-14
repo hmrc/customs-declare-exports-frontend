@@ -20,6 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.ExporterDetails
 import javax.inject.Inject
+import models.DeclarationType.CLEARANCE
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
@@ -55,13 +56,13 @@ class ExporterDetailsController @Inject()(
         (formWithErrors: Form[ExporterDetails]) => Future.successful(BadRequest(exporterDetailsPage(mode, formWithErrors))),
         form =>
           updateCache(form)
-            .map(_ => navigator.continueTo(mode, nextPage()))
+            .map(_ => navigator.continueTo(mode, nextPage))
       )
   }
 
-  def nextPage()(implicit request: JourneyRequest[AnyContent]): Mode => Call =
+  def nextPage(implicit request: JourneyRequest[AnyContent]): Mode => Call =
     request.declarationType match {
-      case DeclarationType.CLEARANCE => controllers.declaration.routes.ConsignorEoriNumberController.displayPage
+      case DeclarationType.CLEARANCE => controllers.declaration.routes.IsExsController.displayPage
       case _                         => controllers.declaration.routes.RepresentativeAgentController.displayPage
     }
 

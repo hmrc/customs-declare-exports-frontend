@@ -17,12 +17,13 @@
 package models.declaration
 
 import forms.declaration.consignor.ConsignorDetails
-import forms.declaration.{CarrierDetails, ConsigneeDetails, DeclarantDetails, DeclarantIsExporter, ExporterDetails}
+import forms.declaration.{CarrierDetails, ConsigneeDetails, DeclarantDetails, DeclarantIsExporter, ExporterDetails, IsExs}
 import models.ExportsDeclaration
 import play.api.libs.json.Json
 
 case class Parties(
   exporterDetails: Option[ExporterDetails] = None,
+  isExs: Option[IsExs] = None,
   consigneeDetails: Option[ConsigneeDetails] = None,
   consignorDetails: Option[ConsignorDetails] = None,
   declarantDetails: Option[DeclarantDetails] = None,

@@ -21,7 +21,8 @@ import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.DeclarationPage
 import forms.common.{Address, Eori}
-import forms.declaration.{CarrierDetails, CarrierDetailsSpec, EntityDetails, ExporterDetails}
+import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
+import forms.declaration.{CarrierDetails, CarrierDetailsSpec, EntityDetails, ExporterDetails, RepresentativeAgent}
 import helpers.views.declaration.CommonMessages
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
@@ -143,6 +144,40 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
         view must containErrorElementWithTagAndHref("a", "#details")
 
         view.getElementsByClass("govuk-list govuk-error-summary__list").text() must include(messages("declaration.carrier.error.addressAndEori"))
+      }
+    }
+
+    onClearance { implicit request =>
+      "display 'Back' button that links to 'Is Exs' page" in {
+
+        val backButton = createView(navigationForm = ConsignorEoriNumber).getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.IsExsController.displayPage().url
+      }
+
+      "display 'Back' button that links to 'Consignor Eori Number' page" in {
+
+        val backButton = createView(navigationForm = ConsignorDetails).getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.ConsignorEoriNumberController.displayPage().url
+      }
+
+      "display 'Back' button that links to 'Consignor Address' page" in {
+
+        val backButton = createView(navigationForm = RepresentativeAgent).getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.ConsignorDetailsController.displayPage().url
+      }
+
+      "display 'Back' button that links to 'Representative Status' page" in {
+
+        val backButton = createView(navigationForm = CarrierDetails).getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.RepresentativeStatusController.displayPage().url
       }
     }
 
