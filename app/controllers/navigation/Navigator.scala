@@ -309,12 +309,10 @@ object Navigator {
     if (!cacheModel.parties.declarantIsExporter.exists(_.isExporter))
       controllers.declaration.routes.RepresentativeStatusController.displayPage(mode)
     else {
-      if (cacheModel.isExs && cacheModel.parties.consignorDetails.flatMap(_.details.eori.map(_.value)).getOrElse("").nonEmpty)
-        controllers.declaration.routes.ConsignorEoriNumberController.displayPage(mode)
-      else if (cacheModel.isExs && cacheModel.parties.consignorDetails.flatMap(_.details.address).isDefined)
+      if (cacheModel.parties.consignorDetails.flatMap(_.details.address).isDefined)
         controllers.declaration.routes.ConsignorDetailsController.displayPage(mode)
       else
-        throw new IllegalArgumentException("Cannot find back-link route for current state from CarrierDetails on clearance")
+        controllers.declaration.routes.ConsignorEoriNumberController.displayPage(mode)
     }
 
   private def consigneeDetailsClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
@@ -329,10 +327,10 @@ object Navigator {
 
   private def representativeAgentClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.isExs) {
-      if (cacheModel.parties.consignorDetails.flatMap(_.details.eori.map(_.value)).getOrElse("").nonEmpty)
-        controllers.declaration.routes.ConsignorEoriNumberController.displayPage(mode)
-      else
+      if (cacheModel.isExs && cacheModel.parties.consignorDetails.flatMap(_.details.address).isDefined)
         controllers.declaration.routes.ConsignorDetailsController.displayPage(mode)
+      else
+        controllers.declaration.routes.ConsignorEoriNumberController.displayPage(mode)
     } else {
       controllers.declaration.routes.IsExsController.displayPage(mode)
     }
