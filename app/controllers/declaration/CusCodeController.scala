@@ -75,6 +75,6 @@ class CusCodeController @Inject()(
     if (declarationType == DeclarationType.CLEARANCE) {
       controllers.declaration.routes.NactCodeSummaryController.displayPage(_, itemId)
     } else {
-      controllers.declaration.routes.TaricCodeController.displayPage(_, itemId)
+      controllers.declaration.routes.TaricCodeSummaryController.displayPage(_, itemId)
     }
 }

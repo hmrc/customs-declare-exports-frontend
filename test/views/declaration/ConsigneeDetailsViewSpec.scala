@@ -21,6 +21,7 @@ import controllers.declaration.routes
 import controllers.util.SaveAndReturn
 import forms.DeclarationPage
 import forms.common.Address
+import forms.declaration.consignor.ConsignorEoriNumber
 import forms.declaration.{ConsigneeDetails, EntityDetails, ExporterDetails}
 import helpers.views.declaration.CommonMessages
 import models.requests.JourneyRequest
@@ -302,6 +303,16 @@ class ConsigneeDetailsViewSpec extends UnitViewSpec with CommonMessages with Stu
 
         backButton.text() mustBe messages(backCaption)
         backButton.attr("href") mustBe routes.DeclarantExporterController.displayPage().url
+      }
+    }
+
+    onClearance { implicit request =>
+      "display 'Back' button that links to 'Is Exs?' page" in {
+
+        val backButton = createView(navigationForm = ConsignorEoriNumber).getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.IsExsController.displayPage().url
       }
     }
 

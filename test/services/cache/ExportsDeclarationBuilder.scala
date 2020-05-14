@@ -374,4 +374,8 @@ trait ExportsDeclarationBuilder {
     cache => {
       cache.copy(transport = cache.transport.copy(containers = None))
     }
+
+  def withIsExs(data: IsExs = IsExs("Yes")): ExportsDeclarationModifier = cache => cache.copy(parties = cache.parties.copy(isExs = Some(data)))
+
+  def withoutIsExs(): ExportsDeclarationModifier = cache => cache.copy(parties = cache.parties.copy(isExs = None))
 }

@@ -111,6 +111,27 @@
             controllers.declaration.routes.ExporterDetailsController.displayPage(mode)
         )).getOrElse(Seq.empty)
 
+        ++ (Seq.empty :+ declarationData.parties.isExs.map { exs =>
+            SummaryListRow(
+                classes = "isExs-row",
+                key = Key(
+                    content = Text(messages("declaration.summary.parties.exs"))
+                ),
+                value = Value(
+                    content = Text(exs.isExs)
+                ),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = controllers.declaration.routes.IsExsController.displayPage(mode).url,
+                            content = Text(messages("site.change")),
+                            visuallyHiddenText = Some(messages("declaration.summary.parties.exs.change"))
+                        )
+                    )
+                ))
+            )
+        })
+
         ++ (Seq.empty :+ declarationData.parties.representativeDetails.map(_.representingOtherAgent).map(agent =>
             SummaryListRow(
                 classes = "representingAnotherAgent-row",

@@ -114,7 +114,7 @@ class CusCodeControllerSpec extends ControllerSpec {
           val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.TaricCodeController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe controllers.declaration.routes.TaricCodeSummaryController.displayPage(Mode.Normal, itemId)
           verify(mockPage, times(0)).apply(any(), any(), any())(any(), any())
         }
       }
