@@ -120,10 +120,14 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
 
         "form is correct" in {
 
-          withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE),
-            withDeclarantIsExporter(),
-            withDeclarantDetails(eori = Some(Eori("GB12345678"))),
-            withExporterDetails(eori = Some(Eori("GB12345678")))))
+          withNewCaching(
+            aDeclaration(
+              withType(DeclarationType.CLEARANCE),
+              withDeclarantIsExporter(),
+              withDeclarantDetails(eori = Some(Eori("GB12345678"))),
+              withExporterDetails(eori = Some(Eori("GB12345678")))
+            )
+          )
 
           val correctForm =
             Json.toJson(ConsignorDetails(EntityDetails(None, Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom")))))

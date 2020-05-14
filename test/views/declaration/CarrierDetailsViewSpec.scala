@@ -164,7 +164,6 @@ class CarrierDetailsViewSpec extends UnitViewSpec with CommonMessages with Stubs
         backButton.attr("href") mustBe routes.ConsignorEoriNumberController.displayPage().url
       }
 
-
       "display 'Back' button that links to 'Consignor Address' page" in {
 
         val backButton = createView(navigationForm = RepresentativeAgent).getElementById("back-link")
