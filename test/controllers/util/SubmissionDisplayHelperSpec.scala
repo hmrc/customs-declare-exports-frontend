@@ -177,14 +177,14 @@ class SubmissionDisplayHelperSpec extends WordSpec with MustMatchers {
       }
 
       "return submissions that have missing notifications" in {
-        val submissions = Seq(submission -> Seq(notification), submission_3 -> Seq(notification_2), submission_3 -> Seq.empty)
+        val submissions = Seq(submission -> Seq(notification), submission_2 -> Seq(notification_2), submission_3 -> Seq.empty)
 
         val results = SubmissionDisplayHelper.filterSubmissions(
           submissions,
           notifications => notifications.isEmpty || notifications.headOption.map(_.status).exists(SubmissionStatus.otherStatuses.contains)
         )
 
-        results must equal(Seq(submission -> Seq(notification), Seq(submission_3 -> Seq.empty)))
+        results must equal(Seq(submission -> Seq(notification), submission_3 -> Seq.empty))
       }
     }
   }
