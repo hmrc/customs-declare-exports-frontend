@@ -19,11 +19,13 @@ package views.declaration
 import base.{Injector, TestHelper}
 import controllers.declaration.routes
 import controllers.util.SaveAndReturn
-import forms.common.{Address, Eori}
+import forms.common.YesNoAnswer.YesNoAnswers
+import forms.common.{Address, Eori, YesNoAnswer}
 import forms.declaration.{EntityDetails, ExporterDetails}
 import helpers.views.declaration.CommonMessages
 import models.DeclarationType._
 import models.Mode
+import models.declaration.Parties
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -104,14 +106,6 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
         view.getElementById("details_address_country").attr("value") mustBe empty
       }
 
-      "display 'Back' button that links to 'Declarant Is Exporter' page" in {
-
-        val backButton = createView(form(request.declarationType)).getElementById("back-link")
-
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe routes.DeclarantExporterController.displayPage().url
-      }
-
       "display 'Save and continue' button" in {
         val saveButton = createView(form(request.declarationType)).getElementById("submit")
         saveButton.text() mustBe messages(saveAndContinueCaption)
@@ -121,6 +115,44 @@ class ExporterDetailsViewSpec extends UnitViewSpec with CommonMessages with Stub
         val saveButton = createView(form(request.declarationType)).getElementById("submit_and_return")
         saveButton.text() mustBe messages(saveAndReturnCaption)
         saveButton.attr("name") mustBe SaveAndReturn.toString
+      }
+    }
+
+    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
+      "display 'Back' button that links to 'Declarant Is Exporter' page" in {
+
+        val backButton = createView(form(request.declarationType)).getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe routes.DeclarantExporterController.displayPage().url
+      }
+    }
+
+    onClearance { request =>
+      "display 'Back' button that links to 'Declarant Is Exporter' page" when {
+        "user have answered 'No' on 'Entry into Declarant's Records' page" in {
+
+          val cachedParties = Parties(isEntryIntoDeclarantsRecords = Some(YesNoAnswer(YesNoAnswers.no)))
+          val requestWithCachedEidr = journeyRequest(simpleClearanceDeclaration.copy(parties = cachedParties))
+
+          val backButton = createView(form(request.declarationType))(requestWithCachedEidr).getElementById("back-link")
+
+          backButton.text() mustBe messages(backCaption)
+          backButton.attr("href") mustBe routes.DeclarantExporterController.displayPage().url
+        }
+      }
+
+      "display 'Back' button that links to 'Person Presenting Goods Details' page" when {
+        "user have answered 'Yes' on 'Entry into Declarant's Records' page" in {
+
+          val cachedParties = Parties(isEntryIntoDeclarantsRecords = Some(YesNoAnswer(YesNoAnswers.yes)))
+          val requestWithCachedEidr = journeyRequest(simpleClearanceDeclaration.copy(parties = cachedParties))
+
+          val backButton = createView(form(request.declarationType))(requestWithCachedEidr).getElementById("back-link")
+
+          backButton.text() mustBe messages(backCaption)
+          backButton.attr("href") mustBe routes.PersonPresentingGoodsDetailsController.displayPage().url
+        }
       }
     }
   }

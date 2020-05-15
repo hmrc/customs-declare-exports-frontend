@@ -76,7 +76,7 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
     val codes = List(NactCode("ABCD"), NactCode("4321"))
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
-      val view = createView(YesNoAnswer.form, codes, request)
+      val view = createView(YesNoAnswer.form(), codes, request)
 
       "display page title" in {
 
@@ -100,7 +100,7 @@ class NactCodesViewSpec extends UnitViewSpec with ExportsTestData with Stubs wit
     val codes = List(NactCode("ABCD"))
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
-      val view = createView(YesNoAnswer.form, codes, request)
+      val view = createView(YesNoAnswer.form(), codes, request)
 
       "display page title" in {
 

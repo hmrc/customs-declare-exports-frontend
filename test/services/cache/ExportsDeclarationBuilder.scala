@@ -19,14 +19,14 @@ package services.cache
 import java.time.{Instant, LocalDate, LocalDateTime, ZoneOffset}
 import java.util.UUID
 
-import forms.common.{Address, Eori}
+import forms.common.{Address, Eori, YesNoAnswer}
 import forms.declaration.DispatchLocation.AllowedDispatchLocations.OutsideEU
-import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit}
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.countries.Country
+import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExit}
 import forms.{Ducr, Lrn}
 import models.DeclarationStatus.DeclarationStatus
 import models.DeclarationType.DeclarationType
@@ -145,6 +145,12 @@ trait ExportsDeclarationBuilder {
     cache => cache.copy(items = cache.items ++ (1 to count).map(index => ExportItem(id = uuid, sequenceId = index)).toSet)
 
   private def uuid: String = UUID.randomUUID().toString
+
+  def withEntryIntoDeclarantsRecords(isEidr: String = "Yes"): ExportsDeclarationModifier =
+    cache => cache.copy(parties = cache.parties.copy(isEntryIntoDeclarantsRecords = Some(YesNoAnswer(isEidr))))
+
+  def withPersonPresentingGoodsDetails(eori: Option[Eori] = None): ExportsDeclarationModifier =
+    cache => cache.copy(parties = cache.parties.copy(personPresentingGoodsDetails = eori.map(PersonPresentingGoodsDetails(_))))
 
   def withoutExporterDetails(): ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(exporterDetails = None))

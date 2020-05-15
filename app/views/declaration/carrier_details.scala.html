@@ -46,7 +46,7 @@
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
-@(mode: Mode, navigationForm: DeclarationPage, form: Form[CarrierDetails])(implicit request: JourneyRequest[_], messages: Messages)
+@(mode: Mode, form: Form[CarrierDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
 @tariffBody = {
@@ -79,7 +79,7 @@
 
 @govukLayout(
     title = Title("declaration.carrier.title", "declaration.summary.parties.header"),
-    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(navigationForm, mode)))) {
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(CarrierDetails, mode)))) {
 
         @formHelper(action = CarrierDetailsController.saveAddress(mode), 'autoComplete -> "off") {
 

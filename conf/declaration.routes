@@ -39,6 +39,18 @@ GET         /consignment-references              controllers.declaration.Consign
 
 POST        /consignment-references              controllers.declaration.ConsignmentReferencesController.submitConsignmentReferences(mode: models.Mode ?= models.Mode.Normal)
 
+# Entry into Declarant records
+
+GET         /entry-into-declarants-records       controllers.declaration.EntryIntoDeclarantsRecordsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /entry-into-declarants-records       controllers.declaration.EntryIntoDeclarantsRecordsController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
+# Person presenting goods
+
+GET         /person-presenting-goods             controllers.declaration.PersonPresentingGoodsDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)
+
+POST        /person-presenting-goods             controllers.declaration.PersonPresentingGoodsDetailsController.submitForm(mode: models.Mode ?= models.Mode.Normal)
+
 # Exporter address
 
 GET         /exporter-details                    controllers.declaration.ExporterDetailsController.displayPage(mode: models.Mode ?= models.Mode.Normal)

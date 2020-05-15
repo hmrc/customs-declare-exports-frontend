@@ -37,14 +37,14 @@ class DeclarantExporterController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  declaranExporterPage: declarant_exporter
+  declarantExporterPage: declarant_exporter
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.parties.declarantIsExporter match {
-      case Some(data) => Ok(declaranExporterPage(mode, form().fill(data)))
-      case _          => Ok(declaranExporterPage(mode, form()))
+      case Some(data) => Ok(declarantExporterPage(mode, form().fill(data)))
+      case _          => Ok(declarantExporterPage(mode, form()))
     }
   }
 
@@ -52,7 +52,7 @@ class DeclarantExporterController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(declaranExporterPage(mode, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(declarantExporterPage(mode, formWithErrors))),
         validForm =>
           updateCache(validForm)
             .map(_ => navigator.continueTo(mode, nextPage(validForm)))

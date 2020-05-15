@@ -22,7 +22,7 @@ import forms.DeclarationPage
 import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.{CarrierDetails, ExporterDetails, RepresentativeAgent}
 import javax.inject.Inject
-import models.DeclarationType.CLEARANCE
+import models.DeclarationType._
 import models.requests.JourneyRequest
 import models.{DeclarationType, Mode}
 import play.api.data.Form
@@ -44,33 +44,24 @@ class CarrierDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL, DeclarationType.CLEARANCE)
+  private val validTypes = Seq(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE)
 
   def displayPage(mode: Mode): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)) { implicit request =>
       request.cacheModel.parties.carrierDetails match {
-        case Some(data) => Ok(carrierDetailsPage(mode, navigationPage, form().fill(data)))
-        case _          => Ok(carrierDetailsPage(mode, navigationPage, form()))
+        case Some(data) => Ok(carrierDetailsPage(mode, form().fill(data)))
+        case _          => Ok(carrierDetailsPage(mode, form()))
       }
     }
 
   private def form()(implicit request: JourneyRequest[_]) = CarrierDetails.form(request.declarationType)
-
-  private def navigationPage(implicit request: JourneyRequest[_]): DeclarationPage =
-    request.declarationType match {
-      case CLEARANCE if !request.cacheModel.parties.declarantIsExporter.exists(_.isExporter)                                    => CarrierDetails
-      case CLEARANCE if request.cacheModel.parties.consignorDetails.flatMap(_.details.eori.map(_.value)).getOrElse("").nonEmpty => ConsignorDetails
-      case CLEARANCE if request.cacheModel.parties.consignorDetails.flatMap(_.details.address).isDefined                        => RepresentativeAgent
-      case _ =>
-        if (request.cacheModel.parties.declarantIsExporter.exists(_.isExporter)) ExporterDetails else CarrierDetails
-    }
 
   def saveAddress(mode: Mode): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)).async { implicit request =>
       form()
         .bindFromRequest()
         .fold(
-          (formWithErrors: Form[CarrierDetails]) => Future.successful(BadRequest(carrierDetailsPage(mode, navigationPage, formWithErrors))),
+          (formWithErrors: Form[CarrierDetails]) => Future.successful(BadRequest(carrierDetailsPage(mode, formWithErrors))),
           form =>
             updateCache(form).map { _ =>
               navigator.continueTo(mode, controllers.declaration.routes.ConsigneeDetailsController.displayPage)

@@ -18,6 +18,7 @@ package forms.declaration
 
 import forms.DeclarationPage
 import models.DeclarationType.{CLEARANCE, DeclarationType}
+import models.ExportsDeclaration
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 
@@ -30,8 +31,8 @@ object ExporterDetails extends DeclarationPage {
 
   val optionalMapping = Forms.mapping("details" -> EntityDetails.optionalMapping)(ExporterDetails.apply)(ExporterDetails.unapply)
 
-  def form(declarationType: DeclarationType): Form[ExporterDetails] = declarationType match {
-    case CLEARANCE => Form(optionalMapping)
-    case _         => Form(defaultMapping)
+  def form(declarationType: DeclarationType, cachedModel: Option[ExportsDeclaration] = None): Form[ExporterDetails] = declarationType match {
+    case CLEARANCE if cachedModel.exists(_.isNotEntryIntoDeclarantsRecords) => Form(optionalMapping)
+    case _                                                                  => Form(defaultMapping)
   }
 }

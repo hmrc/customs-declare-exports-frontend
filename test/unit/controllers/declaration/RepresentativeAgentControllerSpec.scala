@@ -45,14 +45,14 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
 
   def theResponseForm: Form[RepresentativeAgent] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[RepresentativeAgent]])
-    verify(mockPage).apply(any(), any(), formCaptor.capture())(any(), any())
+    verify(mockPage).apply(any(), formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -60,7 +60,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
     super.afterEach()
   }
 
-  def verifyPage(numberOfTimes: Int) = verify(mockPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
+  def verifyPage(numberOfTimes: Int) = verify(mockPage, times(numberOfTimes)).apply(any(), any())(any(), any())
 
   "Representative Agent controller" must {
 

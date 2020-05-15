@@ -48,7 +48,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
     super.beforeEach()
 
     authorizedUser()
-    when(mockCarrierDetailsPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockCarrierDetailsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -59,12 +59,12 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
   def theResponseForm: Form[CarrierDetails] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[CarrierDetails]])
-    verify(mockCarrierDetailsPage).apply(any(), any(), captor.capture())(any(), any())
+    verify(mockCarrierDetailsPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
   def verifyPageInvocations(numberOfInvocations: Int) =
-    verify(mockCarrierDetailsPage, times(numberOfInvocations)).apply(any(), any(), any())(any(), any())
+    verify(mockCarrierDetailsPage, times(numberOfInvocations)).apply(any(), any())(any(), any())
 
   "Carrier Details Controller display page" should {
 
