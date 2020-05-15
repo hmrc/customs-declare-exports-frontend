@@ -17,7 +17,7 @@
 package services.model
 
 import services.view.AutoCompleteItem
-import services.{DocumentType, HolderOfAuthorisationCode, NationalAdditionalCode}
+import services.{DocumentType, HolderOfAuthorisationCode}
 import unit.base.UnitSpec
 
 class AutoCompleteItemSpec extends UnitSpec {
@@ -44,10 +44,6 @@ class AutoCompleteItemSpec extends UnitSpec {
 
     "map from document type" in {
       AutoCompleteItem.fromDocumentType(List(DocumentType("description", "code"))) mustBe List(AutoCompleteItem("description - code", "code"))
-    }
-
-    "map from national additional code" in {
-      AutoCompleteItem.fromNationalAdditionalCode(List(NationalAdditionalCode("code"))) mustBe List(AutoCompleteItem("code", "code"))
     }
 
     "map from holder of authorisation code" in {

@@ -18,6 +18,7 @@
 @import controllers.navigation.Navigator
 @import forms.declaration.NactCodeFirst
 @import forms.declaration.NactCodeFirst._
+@import forms.declaration.NactCode._
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.{BackButton, Title}
@@ -25,9 +26,7 @@
 @import views.html.components.gds._
 @import config.AppConfig
 @import forms.common.YesNoAnswer.YesNoAnswers
-@import services.view.AutoCompleteItem
 @import controllers.navigation.ItemId
-@import services.NationalAdditionalCode
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -76,13 +75,11 @@
                     id = Some("code_yes"),
                     value = Some(YesNoAnswers.yes),
                     content = Text(messages("site.yes")),
-                    conditionalHtml = Some(components.fields.field_accessible_autocomplete(
-                        form(nactCodeKey),
-                        "declaration.nationalAdditionalCode.addfirst.label",
-                        None,
-                        None,
-                        messages("declaration.nationalAdditionalCode.error.empty"),
-                        AutoCompleteItem.fromNationalAdditionalCode(NationalAdditionalCode.all)
+                    conditionalHtml = Some(exportsInputText(
+                        field = form(nactCodeKey),
+                        labelKey = "declaration.nationalAdditionalCode.addfirst.label",
+                        labelClasses = "govuk-label",
+                        inputClasses = Some("govuk-input--width-10")
                     )),
                     checked = form(hasNactCodeKey).value.contains(YesNoAnswers.yes)
                 ),

@@ -19,10 +19,10 @@ package forms.declaration
 import forms.DeclarationPage
 import forms.Mapping.requiredRadio
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.NactCode.{nactCodeKey, nactCodeLength}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import services.NationalAdditionalCode
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
 
@@ -32,7 +32,6 @@ object NactCodeFirst extends DeclarationPage {
   implicit val format = Json.format[NactCodeFirst]
 
   val hasNactCodeKey = "hasNact"
-  val nactCodeKey = "nactCode"
 
   private def form2Model: (String, Option[String]) => NactCodeFirst = {
     case (hasNactCode, code) =>
@@ -56,7 +55,7 @@ object NactCodeFirst extends DeclarationPage {
       YesNoAnswers.yes,
       text()
         .verifying("declaration.nationalAdditionalCode.error.empty", nonEmpty)
-        .verifying("declaration.nationalAdditionalCode.error.invalid", isEmpty or isContainedIn(NationalAdditionalCode.all.map(_.value)))
+        .verifying("declaration.nationalAdditionalCode.error.invalid", isEmpty or (hasSpecificLength(nactCodeLength) and isAlphanumeric))
     )
   )(form2Model)(model2Form)
 

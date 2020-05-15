@@ -23,10 +23,7 @@
 @import config.AppConfig
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds._
-@import services.view.AutoCompleteItem
-@import services.NationalAdditionalCode
 @import controllers.navigation.ItemId
-@import views.components.gds.Styles._
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -58,14 +55,11 @@
 
       @sectionHeader(messages("supplementary.items"))
 
-      @components.fields.field_accessible_autocomplete_with_header(
-          form(nactCodeKey),
-          "declaration.nationalAdditionalCode.addnext.header",
-          Some(gdsPageLabel),
-          None,
-          messages("declaration.nationalAdditionalCode.error.empty"),
-          AutoCompleteItem.fromNationalAdditionalCode(NationalAdditionalCode.all),
-          true
+      @exportsInputText(
+        field = form(nactCodeKey),
+        labelKey = "declaration.nationalAdditionalCode.addnext.header",
+        inputClasses = Some("govuk-input--width-10"),
+        isPageHeading = true
       )
 
       @tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody))

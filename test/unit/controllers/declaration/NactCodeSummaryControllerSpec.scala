@@ -174,7 +174,7 @@ class NactCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
           val item = anItem()
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-          val requestBody = Seq(NactCodeFirst.hasNactCodeKey -> "Yes", NactCodeFirst.nactCodeKey -> "VATR")
+          val requestBody = Seq(NactCodeFirst.hasNactCodeKey -> "Yes", NactCode.nactCodeKey -> "VATR")
           val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe SEE_OTHER
