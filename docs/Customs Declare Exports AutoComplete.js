@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.49
+// @version      1.50
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -214,6 +214,20 @@ function consignmentRefereences(){
     if (currentPageIs("/customs-declare-exports/declaration/consignment-references")) {
         document.getElementById('lrn').value = 'QSLRN' + Math.floor(Math.random() * 8999) + 100;
         document.getElementById('ducr_ducr').value = '8GB123456' + Math.floor(Math.random() * 899999 + 100000) + '-101SHIP1';
+        document.getElementById('submit').click()
+    }
+}
+
+function isEntryIntoDeclarantsRecords(){
+    if (currentPageIs("/customs-declare-exports/declaration/entry-into-declarants-records")) {
+        document.getElementById('answer_no').checked = 'checked';
+        document.getElementById('submit').click();
+    }
+}
+
+function personPresentingGoodsDetails(){
+    if (currentPageIs("/customs-declare-exports/declaration/person-presenting-goods")) {
+        document.getElementById('eori').value = 'GB614299894872549';
         document.getElementById('submit').click()
     }
 }
@@ -983,6 +997,8 @@ function completeJourney() {
     consignmentRefereences();
 
     // parties
+    isEntryIntoDeclarantsRecords();
+    personPresentingGoodsDetails();
     declarantDetails();
     declarantExporterDetails();
     exporterDetails();
@@ -1028,7 +1044,7 @@ function completeJourney() {
     additionalInformation();
     addDocuments();
 
-    // transport
+    // transportg
     warehouseIdentification();
     supervisingCustomsOffice();
     inlandTransportDetails();
