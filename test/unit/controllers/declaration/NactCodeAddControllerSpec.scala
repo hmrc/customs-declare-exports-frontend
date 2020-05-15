@@ -112,7 +112,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
         "user adds invalid code" in {
           withNewCaching(request.cacheModel)
 
-          val requestBody = Seq(NactCodeFirst.hasNactCodeKey -> "Yes", NactCodeFirst.nactCodeKey -> "invalidCode")
+          val requestBody = Seq(NactCodeFirst.hasNactCodeKey -> "Yes", NactCode.nactCodeKey -> "invalidCode")
           val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
@@ -124,7 +124,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
           val item = anItem(withNactCodes(nactCode))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-          val requestBody = Seq(NactCodeFirst.hasNactCodeKey -> "Yes", NactCodeFirst.nactCodeKey -> "VATR")
+          val requestBody = Seq(NactCodeFirst.hasNactCodeKey -> "Yes", NactCode.nactCodeKey -> "VATR")
           val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
@@ -136,7 +136,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
           val item = anItem(withNactCodes(nactCodes))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-          val requestBody = Seq(NactCodeFirst.hasNactCodeKey -> "Yes", NactCodeFirst.nactCodeKey -> "VATR")
+          val requestBody = Seq(NactCodeFirst.hasNactCodeKey -> "Yes", NactCode.nactCodeKey -> "VATR")
           val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
@@ -148,7 +148,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
           val item = anItem()
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-          val requestBody = Seq(NactCodeFirst.hasNactCodeKey -> "Yes", NactCodeFirst.nactCodeKey -> "VATR")
+          val requestBody = Seq(NactCodeFirst.hasNactCodeKey -> "Yes", NactCode.nactCodeKey -> "VATR")
           val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
@@ -223,7 +223,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
           val item = anItem()
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-          val requestBody = Seq(NactCodeFirst.hasNactCodeKey -> "Yes", NactCodeFirst.nactCodeKey -> "VATR")
+          val requestBody = Seq(NactCodeFirst.hasNactCodeKey -> "Yes", NactCode.nactCodeKey -> "VATR")
           val result = controller.submitForm(Mode.Normal, item.id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe SEE_OTHER

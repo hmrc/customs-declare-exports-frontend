@@ -19,7 +19,6 @@ import forms.DeclarationPage
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import services.NationalAdditionalCode
 import utils.validators.forms.FieldValidator._
 
 case class NactCode(nactCode: String)
@@ -29,6 +28,7 @@ object NactCode extends DeclarationPage {
   implicit val format = Json.format[NactCode]
 
   val nactCodeKey = "nactCode"
+  val nactCodeLength = 4
   val nactCodeLimit = 99
 
   val mapping =
@@ -36,7 +36,7 @@ object NactCode extends DeclarationPage {
       nactCodeKey ->
         text()
           .verifying("declaration.nationalAdditionalCode.error.empty", nonEmpty)
-          .verifying("declaration.nationalAdditionalCode.error.invalid", isEmpty or isContainedIn(NationalAdditionalCode.all.map(_.value)))
+          .verifying("declaration.nationalAdditionalCode.error.invalid", isEmpty or (hasSpecificLength(nactCodeLength) and isAlphanumeric))
     )(NactCode.apply)(NactCode.unapply)
 
   def form(): Form[NactCode] = Form(mapping)

@@ -30,7 +30,7 @@ class NactCodeSpec extends WordSpec with MustMatchers {
 
     "return form with errors" when {
       "provided with invalid code" in {
-        val form = NactCode.form.bind(formData(Some("ABCD")))
+        val form = NactCode.form.bind(formData(Some("invalid")))
 
         form.errors mustBe Seq(FormError(nactCodeKey, "declaration.nationalAdditionalCode.error.invalid"))
       }
