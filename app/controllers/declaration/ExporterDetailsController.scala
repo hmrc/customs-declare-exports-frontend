@@ -20,7 +20,6 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.ExporterDetails
 import javax.inject.Inject
-import models.DeclarationType.CLEARANCE
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.Form
@@ -73,5 +72,5 @@ class ExporterDetailsController @Inject()(
     })
 
   private def form()(implicit request: JourneyRequest[AnyContent]): Form[ExporterDetails] =
-    ExporterDetails.form(request.declarationType)
+    ExporterDetails.form(request.declarationType, Some(request.cacheModel))
 }
