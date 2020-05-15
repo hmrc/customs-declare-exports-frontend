@@ -31,6 +31,8 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Inje
   private val exampleAddress = Address("fullName", "addressLine", "townOrCity", "postCode", "GB")
   private val exampleAddressContents = "fullName addressLine townOrCity postCode GB"
   private val data = aDeclaration(
+    withEntryIntoDeclarantsRecords("Yes"),
+    withPersonPresentingGoodsDetails(Some(Eori(exampleEori))),
     withDeclarantIsExporter("No"),
     withIsExs(IsExs("No")),
     withExporterDetails(Some(Eori(exampleEori)), Some(exampleAddress)),
@@ -175,51 +177,49 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Inje
         addressRow must haveSummaryActionsText("site.change declaration.summary.parties.carrier.address.change")
         addressRow must haveSummaryActionsHref(controllers.declaration.routes.CarrierDetailsController.displayPage(Mode.Change))
       }
+
+      "does not contain exporter when section not answered" in {
+        val view = section(Mode.Normal, aDeclarationAfter(data, withoutExporterDetails()))(messages, journeyRequest())
+
+        view.getElementsByClass("exporter-eori-row") mustBe empty
+        view.getElementsByClass("exporter-address-row") mustBe empty
+      }
+
+      "does not contain consignee when section not answered" in {
+        val view = section(Mode.Normal, aDeclarationAfter(data, withoutConsigneeDetails()))(messages, journeyRequest())
+
+        view.getElementsByClass("consignee-eori-row") mustBe empty
+        view.getElementsByClass("consignee-address-row") mustBe empty
+      }
+
+      "does not contain declarant when section not answered" in {
+        val view = section(Mode.Normal, aDeclarationAfter(data, withoutDeclarantDetails()))(messages, journeyRequest())
+
+        view.getElementsByClass("declarant-eori-row") mustBe empty
+        view.getElementsByClass("declarant-address-row") mustBe empty
+      }
+
+      "does not contain representative when section not answered" in {
+        val view = section(Mode.Normal, aDeclarationAfter(data, withoutRepresentativeDetails()))(messages, journeyRequest())
+
+        view.getElementsByClass("representative-eori-row") mustBe empty
+        view.getElementsByClass("representative-address-row") mustBe empty
+      }
+
+      "does not contain carrier details when section not answered" in {
+        val view = section(Mode.Normal, aDeclarationAfter(data, withoutCarrierDetails()))(messages, journeyRequest())
+
+        view.getElementsByClass("carrier-eori-row") mustBe empty
+        view.getElementsByClass("carrier-address-row") mustBe empty
+      }
+
+      "does not contain anything when there are no parties" in {
+        val view = section(Mode.Normal, aDeclaration())(messages, journeyRequest())
+
+        view.getAllElements.text() must be(empty)
+      }
     }
-  }
 
-  "does not contain exporter when section not answered" in {
-    val view = section(Mode.Normal, aDeclarationAfter(data, withoutExporterDetails()))(messages, journeyRequest())
-
-    view.getElementsByClass("exporter-eori-row") mustBe empty
-    view.getElementsByClass("exporter-address-row") mustBe empty
-  }
-
-  "does not contain consignee when section not answered" in {
-    val view = section(Mode.Normal, aDeclarationAfter(data, withoutConsigneeDetails()))(messages, journeyRequest())
-
-    view.getElementsByClass("consignee-eori-row") mustBe empty
-    view.getElementsByClass("consignee-address-row") mustBe empty
-  }
-
-  "does not contain declarant when section not answered" in {
-    val view = section(Mode.Normal, aDeclarationAfter(data, withoutDeclarantDetails()))(messages, journeyRequest())
-
-    view.getElementsByClass("declarant-eori-row") mustBe empty
-    view.getElementsByClass("declarant-address-row") mustBe empty
-  }
-
-  "does not contain representative when section not answered" in {
-    val view = section(Mode.Normal, aDeclarationAfter(data, withoutRepresentativeDetails()))(messages, journeyRequest())
-
-    view.getElementsByClass("representative-eori-row") mustBe empty
-    view.getElementsByClass("representative-address-row") mustBe empty
-  }
-
-  "does not contain carrier details when section not answered" in {
-    val view = section(Mode.Normal, aDeclarationAfter(data, withoutCarrierDetails()))(messages, journeyRequest())
-
-    view.getElementsByClass("carrier-eori-row") mustBe empty
-    view.getElementsByClass("carrier-address-row") mustBe empty
-  }
-
-  "does not contain anything when there are no parties" in {
-    val view = section(Mode.Normal, aDeclaration())(messages, journeyRequest())
-
-    view.getAllElements.text() must be(empty)
-  }
-
-  "Parties section" must {
     onClearance { implicit request =>
       val view = section(Mode.Change, data)(messages, request)
       "contains 'Is Exs' section with change button" in {
@@ -230,6 +230,28 @@ class PartiesSectionViewSpec extends UnitViewSpec with ExportsTestData with Inje
         isExsRow must haveSummaryValue(messages("No"))
         isExsRow must haveSummaryActionsText("site.change declaration.summary.parties.exs.change")
         isExsRow must haveSummaryActionsHref(controllers.declaration.routes.IsExsController.displayPage(Mode.Change))
+      }
+
+      "contains 'Is this EIDR' section with change button" in {
+
+        val isEidrRow = view.getElementsByClass("is-entry-into-declarants-records-row")
+
+        isEidrRow must haveSummaryKey(messages("declaration.summary.parties.eidr"))
+        isEidrRow must haveSummaryValue(messages("declaration.summary.parties.eidr.yes"))
+        isEidrRow must haveSummaryActionsText("site.change declaration.summary.parties.eidr.change")
+        isEidrRow must haveSummaryActionsHref(controllers.declaration.routes.EntryIntoDeclarantsRecordsController.displayPage(Mode.Change))
+      }
+
+      "contains 'Person Presenting the Goods' section with change button" in {
+
+        val personPresentingGoodsRow = view.getElementsByClass("person-presenting-goods-row")
+
+        personPresentingGoodsRow must haveSummaryKey(messages("declaration.summary.parties.personPresentingGoods"))
+        personPresentingGoodsRow must haveSummaryValue(exampleEori)
+        personPresentingGoodsRow must haveSummaryActionsText("site.change declaration.summary.parties.personPresentingGoods.change")
+        personPresentingGoodsRow must haveSummaryActionsHref(
+          controllers.declaration.routes.PersonPresentingGoodsDetailsController.displayPage(Mode.Change)
+        )
       }
     }
   }
