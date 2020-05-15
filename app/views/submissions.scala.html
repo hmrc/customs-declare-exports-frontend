@@ -114,7 +114,7 @@ linkButton: linkButton
                                 tabTable(
                                     "rejected",
                                     "submissions.tab.rejected.title",
-                                    SubmissionDisplayHelper.filterSubmissions(submissions, notification => SubmissionStatus.rejectedStatuses.contains(notification.status))
+                                    SubmissionDisplayHelper.filterSubmissions(submissions, _.headOption.map(_.status).exists(SubmissionStatus.rejectedStatuses.contains))
                                 )
                             )
                         )
@@ -127,7 +127,7 @@ linkButton: linkButton
                                 tabTable(
                                     "action",
                                     "submissions.tab.action.title",
-                                    SubmissionDisplayHelper.filterSubmissions(submissions, notification => SubmissionStatus.actionRequiredStatuses.contains(notification.status))
+                                    SubmissionDisplayHelper.filterSubmissions(submissions, _.headOption.map(_.status).exists(SubmissionStatus.actionRequiredStatuses.contains))
                                 )
                             )
                         )
@@ -140,7 +140,7 @@ linkButton: linkButton
                                 tabTable(
                                     "other",
                                     "submissions.tab.other.title",
-                                    SubmissionDisplayHelper.filterSubmissions(submissions, notification => SubmissionStatus.otherStatuses.contains(notification.status))
+                                    SubmissionDisplayHelper.filterSubmissions(submissions, notifications => notifications.isEmpty || notifications.headOption.map(_.status).exists(SubmissionStatus.otherStatuses.contains))
                                 )
                             )
                         )
