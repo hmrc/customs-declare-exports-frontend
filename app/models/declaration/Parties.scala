@@ -17,8 +17,8 @@
 package models.declaration
 
 import forms.common.YesNoAnswer
+import forms.declaration._
 import forms.declaration.consignor.ConsignorDetails
-import forms.declaration.{CarrierDetails, ConsigneeDetails, DeclarantDetails, DeclarantIsExporter, ExporterDetails, PersonPresentingGoodsDetails, _}
 import models.ExportsDeclaration
 import play.api.libs.json.Json
 

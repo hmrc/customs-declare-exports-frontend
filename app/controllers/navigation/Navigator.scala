@@ -327,7 +327,7 @@ object Navigator {
 
   private def representativeAgentClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.isExs) {
-      if (cacheModel.isExs && cacheModel.parties.consignorDetails.flatMap(_.details.address).isDefined)
+      if (cacheModel.parties.consignorDetails.flatMap(_.details.address).isDefined)
         controllers.declaration.routes.ConsignorDetailsController.displayPage(mode)
       else
         controllers.declaration.routes.ConsignorEoriNumberController.displayPage(mode)
