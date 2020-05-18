@@ -144,7 +144,7 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
           val result = controller.submitItemType(Mode.Normal, itemId)(postRequest(badData))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationController
+          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController
             .displayPage(Mode.Normal, itemId)
           verify(mockItemTypePage, times(0)).apply(any(), any(), any())(any(), any())
 

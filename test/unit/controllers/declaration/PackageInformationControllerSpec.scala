@@ -163,7 +163,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
           val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, itemId)
         }
 
         "user clicked continue with item in a cache" in new SetUp {
@@ -191,7 +191,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
           val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, itemId)
         }
 
         "user clicked continue with item in a cache" in new SetUp {
@@ -219,7 +219,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
           val result = controller.submitForm(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(body: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, itemId)
+          thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, itemId)
         }
 
         "user clicked continue with item in a cache" in new SetUp {

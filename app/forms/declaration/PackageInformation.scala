@@ -37,7 +37,7 @@ case class PackageInformation(typesOfPackages: Option[String], numberOfPackages:
 
 object PackageInformation extends DeclarationPage {
 
-  def fromJsonString(value: String): Option[PackageInformation] = Json.fromJson(Json.parse(value)).asOpt
+  def fromJsonString(value: String): PackageInformation = Json.fromJson(Json.parse(value)).get
 
   implicit val format = Json.format[PackageInformation]
 

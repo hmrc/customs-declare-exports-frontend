@@ -296,9 +296,18 @@ POST        /items/:itemId/statistical-value                   controllers.decla
 
 # Package Information
 
-GET         /items/:itemId/package-information                 controllers.declaration.PackageInformationController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+GET         /items/:itemId/package-information                 controllers.declaration.PackageInformationAddController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
 
-POST        /items/:itemId/package-information                 controllers.declaration.PackageInformationController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+POST        /items/:itemId/package-information                 controllers.declaration.PackageInformationAddController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+GET         /items/:itemId/packages-list                       controllers.declaration.PackageInformationSummaryController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+POST        /items/:itemId/packages-list                       controllers.declaration.PackageInformationSummaryController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId)
+
+GET         /items/:itemId/package-information/:code/remove    controllers.declaration.PackageInformationRemoveController.displayPage(mode: models.Mode ?= models.Mode.Normal, itemId, code)
+
+POST        /items/:itemId/package-information/:code/remove    controllers.declaration.PackageInformationRemoveController.submitForm(mode: models.Mode ?= models.Mode.Normal, itemId, code)
+
 
 
 # Commodity Measure Information

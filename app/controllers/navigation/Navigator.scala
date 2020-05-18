@@ -190,7 +190,7 @@ object Navigator {
   }
   val simplifiedItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
     case PackageInformation    => controllers.declaration.routes.NactCodeSummaryController.displayPage
-    case AdditionalInformation => controllers.declaration.routes.PackageInformationController.displayPage
+    case AdditionalInformation => controllers.declaration.routes.PackageInformationSummaryController.displayPage
     case CusCode               => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
     case NactCode              => controllers.declaration.routes.NactCodeSummaryController.displayPage
     case NactCodeFirst         => controllers.declaration.routes.TaricCodeSummaryController.displayPage
@@ -224,7 +224,7 @@ object Navigator {
 
   val occasionalItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
     case PackageInformation    => controllers.declaration.routes.NactCodeSummaryController.displayPage
-    case AdditionalInformation => controllers.declaration.routes.PackageInformationController.displayPage
+    case AdditionalInformation => controllers.declaration.routes.PackageInformationSummaryController.displayPage
     case CusCode               => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
     case NactCode              => controllers.declaration.routes.NactCodeSummaryController.displayPage
     case NactCodeFirst         => controllers.declaration.routes.TaricCodeSummaryController.displayPage
@@ -258,7 +258,7 @@ object Navigator {
     case TaricCode                 => controllers.declaration.routes.TaricCodeSummaryController.displayPage
     case TaricCodeFirst            => controllers.declaration.routes.CusCodeController.displayPage
     case StatisticalValue          => controllers.declaration.routes.NactCodeSummaryController.displayPage
-    case CommodityMeasure          => controllers.declaration.routes.PackageInformationController.displayPage
+    case CommodityMeasure          => controllers.declaration.routes.PackageInformationSummaryController.displayPage
     case DocumentsProduced         => controllers.declaration.routes.AdditionalInformationController.displayPage
   }
 

@@ -18,5 +18,5 @@ package services.model
 
 case class PackageType(code: String, description: String) {
 
-  def asText(): String = s"$description - $code"
+  def asText(): String = s"$description ($code)"
 }

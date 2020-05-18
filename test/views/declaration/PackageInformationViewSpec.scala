@@ -34,7 +34,7 @@ import views.tags.ViewTest
 class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[package_information]
-  private val packageInformation = PackageInformation(Some("typesOfPackages"), Some(10), Some("packs"))
+  private val packageInformation = PackageInformation(Some("1A"), Some(10), Some("packs"))
   private val form: Form[PackageInformation] = PackageInformation.form(STANDARD)
 
   private def createView(
@@ -237,4 +237,8 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
       view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(3)").text() mustBe "Shipping Mark"
     }
   }
+}
+
+object PackageInformationViewSpec {
+  val packageInformation: PackageInformation = PackageInformation(Some("1A"), Some(1), Some("Marks"))
 }

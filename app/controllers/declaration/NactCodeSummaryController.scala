@@ -76,6 +76,6 @@ object NactCodeSummaryController {
       case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD =>
         controllers.declaration.routes.StatisticalValueController.displayPage(_, itemId)
       case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
-        controllers.declaration.routes.PackageInformationController.displayPage(_, itemId)
+        controllers.declaration.routes.PackageInformationSummaryController.displayPage(_, itemId)
     }
 }

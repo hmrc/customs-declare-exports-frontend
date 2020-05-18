@@ -38,7 +38,7 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
 
       row must haveSummaryActionsText("site.change declaration.summary.items.item.packageInformation.changeAll")
 
-      row must haveSummaryActionsHref(controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, "itemId"))
+      row must haveSummaryActionsHref(controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, "itemId"))
     }
 
     "display package information section with multiple package information and change buttons" in {
@@ -55,19 +55,19 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
       table.getElementsByClass("govuk-table__header").get(2).text() mustBe messages("declaration.summary.items.item.packageInformation.markings")
 
       val row1 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(0)
-      row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe "Open-ended box and pallet - PB"
+      row1.getElementsByClass("govuk-table__cell").get(0).text() mustBe "Open-ended box and pallet (PB)"
       row1.getElementsByClass("govuk-table__cell").get(1).text() mustBe "123"
       row1.getElementsByClass("govuk-table__cell").get(2).text() mustBe "first-marks"
       val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(3).getElementsByTag("a").first()
-      row1ChangeLink must haveHref(controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, "itemId"))
+      row1ChangeLink must haveHref(controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, "itemId"))
       row1ChangeLink.text() mustBe "site.change " + messages("declaration.summary.items.item.packageInformation.change", "PB", "first-marks", 1)
 
       val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
-      row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe "Drum, plastic, non-removable head - QF"
+      row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe "Drum, plastic, non-removable head (QF)"
       row2.getElementsByClass("govuk-table__cell").get(1).text() mustBe "321"
       row2.getElementsByClass("govuk-table__cell").get(2).text() mustBe "second-marks"
       val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(3).getElementsByTag("a").first()
-      row2ChangeLink must haveHref(controllers.declaration.routes.PackageInformationController.displayPage(Mode.Normal, "itemId"))
+      row2ChangeLink must haveHref(controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, "itemId"))
       row2ChangeLink.text() mustBe "site.change " + messages("declaration.summary.items.item.packageInformation.change", "QF", "second-marks", 1)
     }
   }

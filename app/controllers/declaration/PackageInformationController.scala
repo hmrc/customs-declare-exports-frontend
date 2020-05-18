@@ -68,10 +68,10 @@ class PackageInformationController @Inject()(
   private def removeItem(mode: Mode, itemId: String, values: Seq[String], boundForm: Form[PackageInformation], items: Seq[PackageInformation])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] = {
-    val itemToRemove = PackageInformation.fromJsonString(values.head)
-    val updatedCache = remove(items, itemToRemove.contains(_: PackageInformation))
+    val itemToRemove = ??? ///PackageInformation.fromJsonString(values.head)
+    val updatedCache = ??? //remove(items, itemToRemove.contains(_: PackageInformation))
     updateExportsCache(itemId, updatedCache)
-      .map(_ => navigator.continueTo(mode, routes.PackageInformationController.displayPage(_, itemId)))
+      .map(_ => navigator.continueTo(mode, routes.PackageInformationAddController.displayPage(_, itemId)))
   }
 
   private def saveAndContinue(mode: Mode, itemId: String, boundForm: Form[PackageInformation], cachedData: Seq[PackageInformation])(
@@ -110,6 +110,6 @@ class PackageInformationController @Inject()(
         formWithErrors => Future.successful(BadRequest(packageInformationPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
           updateExportsCache(itemId, updatedCache)
-            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.PackageInformationController.displayPage(_, itemId)))
+            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.PackageInformationAddController.displayPage(_, itemId)))
       )
 }
