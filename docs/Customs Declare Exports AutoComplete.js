@@ -710,16 +710,14 @@ function statisticalValue(){
 
 function packageInformation(){
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/package-information')) {
-        if (document.getElementsByClassName('govuk-button--secondary').length > 1) {
-            console.log("More than one secondary buttons");
-            document.getElementById('submit').click()
-        }
-        else {
-            selectFromAutoPredict(document.getElementById('typesOfPackages-container'), "XD");
-            document.getElementById('numberOfPackages').value ='10';
-            document.getElementById('shippingMarks').value = 'Shipping description';
-            document.getElementById('add').click();
-        }
+        selectFromAutoPredict(document.getElementById('typesOfPackages-container'), "XD");
+        document.getElementById('numberOfPackages').value ='10';
+        document.getElementById('shippingMarks').value = 'Shipping description';
+        document.getElementById('submit').click();
+    }
+    if (currentPageIs('/customs-declare-exports/declaration/items/.*/packages-list')) {
+        document.getElementById('code_no').checked = 'checked';
+        document.getElementById('submit').click();
     }
 }
 

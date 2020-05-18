@@ -85,7 +85,7 @@
     title = Title("declaration.packageInformation.remove.title", "supplementary.items"),
     backButton = Some(BackButton(messages("site.back"), controllers.declaration.routes.PackageInformationSummaryController.displayPage(mode, itemId)))) {
 
-    @formHelper(action = PackageInformationRemoveController.submitForm(mode, itemId, info.toJson.toString()), 'autoComplete -> "off") {
+    @formHelper(action = PackageInformationRemoveController.submitForm(mode, itemId, info.id), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("supplementary.items"))

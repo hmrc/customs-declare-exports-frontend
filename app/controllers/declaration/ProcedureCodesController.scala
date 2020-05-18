@@ -27,7 +27,7 @@ import javax.inject.Inject
 import models.declaration.ProcedureCodesData
 import models.declaration.ProcedureCodesData._
 import models.requests.JourneyRequest
-import models.{ExportsDeclaration, Mode}
+import models.{DeclarationType, ExportsDeclaration, Mode}
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -126,15 +126,25 @@ class ProcedureCodesController @Inject()(
   private def updateCache(itemId: String, updatedProcedureCodes: ProcedureCodesData)(
     implicit r: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] = {
+
+    def clearDataForProcedureCode(code: String, itemId: String, model: ExportsDeclaration) = {
+      var result = model
+      if (!ProcedureCodesData.osrProcedureCodes.contains(code)) {
+        result = result.updatedItem(itemId, item => item.copy(fiscalInformation = None, additionalFiscalReferencesData = None))
+      }
+      if (r.declarationType == DeclarationType.CLEARANCE && ProcedureCodesData.exportInventoryCleansingRecordProcedureCodes.contains(code)) {
+        result = result.updatedItem(itemId, item => item.copy(packageInformation = None))
+      }
+
+      result
+    }
+
     def updatedModel(model: ExportsDeclaration): ExportsDeclaration =
       updatedProcedureCodes.procedureCode match {
-        case Some(code) if ProcedureCodesData.osrProcedureCodes.contains(code) =>
-          model.updatedItem(itemId, item => item.copy(procedureCodes = Some(updatedProcedureCodes)))
+        case Some(code) =>
+          clearDataForProcedureCode(code, itemId, model).updatedItem(itemId, item => item.copy(procedureCodes = Some(updatedProcedureCodes)))
         case _ =>
-          model.updatedItem(
-            itemId,
-            item => item.copy(procedureCodes = Some(updatedProcedureCodes), fiscalInformation = None, additionalFiscalReferencesData = None)
-          )
+          model.updatedItem(itemId, item => item.copy(procedureCodes = Some(updatedProcedureCodes)))
       }
 
     updateExportsDeclarationSyncDirect(updatedModel(_))

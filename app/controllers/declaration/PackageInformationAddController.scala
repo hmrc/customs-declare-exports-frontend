@@ -20,9 +20,10 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper
 import forms.declaration.PackageInformation
+import forms.declaration.PackageInformation.form
 import javax.inject.Inject
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -49,25 +50,10 @@ class PackageInformationAddController @Inject()(
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit authRequest =>
     val boundForm = form().bindFromRequest()
-    authRequest.cacheModel.itemBy(itemId).flatMap(_.packageInformation) match {
-      case Some(items) if items.nonEmpty => saveNext(mode, itemId, boundForm, items)
-      case _                             => saveFirst(mode, itemId, boundForm)
-    }
+    saveInformation(mode, itemId, boundForm, authRequest.cacheModel.itemBy(itemId).flatMap(_.packageInformation).getOrElse(Seq.empty))
   }
 
-  private def saveFirst(mode: Mode, itemId: String, boundForm: Form[PackageInformation])(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] =
-    MultipleItemsHelper
-      .saveAndContinue(boundForm, Seq.empty, isMandatory(request), PackageInformation.limit)
-      .fold(
-        formWithErrors => Future.successful(BadRequest(packageInformationPage(mode, itemId, formWithErrors, Seq.empty))),
-        updatedCache =>
-          updateExportsCache(itemId, updatedCache)
-            .map(_ => navigator.continueTo(mode, nextPage(itemId, boundForm.value)))
-      )
-
-  private def saveNext(mode: Mode, itemId: String, boundForm: Form[PackageInformation], cachedData: Seq[PackageInformation])(
+  private def saveInformation(mode: Mode, itemId: String, boundForm: Form[PackageInformation], cachedData: Seq[PackageInformation])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     MultipleItemsHelper
@@ -76,21 +62,12 @@ class PackageInformationAddController @Inject()(
         formWithErrors => Future.successful(BadRequest(packageInformationPage(mode, itemId, formWithErrors, cachedData))),
         updatedCache =>
           updateExportsCache(itemId, updatedCache)
-            .map(_ => navigator.continueTo(mode, nextPage(itemId, boundForm.value)))
+            .map(_ => navigator.continueTo(mode, controllers.declaration.routes.PackageInformationSummaryController.displayPage(_, itemId)))
       )
 
-  private def form()(implicit request: JourneyRequest[_]): Form[PackageInformation] = PackageInformation.form(request.declarationType)
-
-  private def isMandatory(journeyRequest: JourneyRequest[_]): Boolean = journeyRequest.declarationType != DeclarationType.CLEARANCE
-
   private def updateExportsCache(itemId: String, updatedCache: Seq[PackageInformation])(
-    implicit r: JourneyRequest[AnyContent]
+    implicit request: JourneyRequest[AnyContent]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(model => model.updatedItem(itemId, _.copy(packageInformation = Some(updatedCache.toList))))
 
-  private def nextPage(itemId: String, submittedPackageInformation: Option[PackageInformation])(implicit request: JourneyRequest[_]): Mode => Call =
-    if (submittedPackageInformation.exists(_.nonEmpty))
-      controllers.declaration.routes.PackageInformationSummaryController.displayPage(_, itemId)
-    else
-      PackageInformationSummaryController.nextPage(itemId)
 }

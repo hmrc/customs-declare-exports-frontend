@@ -86,7 +86,7 @@
              content = HtmlContent(link(
                  messages("site.remove"),
                  Some(messages("declaration.packageInformation.remove.hint", item.typesOfPackages.getOrElse(""), item.shippingMarks.getOrElse(""))),
-                 routes.PackageInformationRemoveController.displayPage(mode, itemId, item.toJson.toString()))),
+                 routes.PackageInformationRemoveController.displayPage(mode, itemId, item.id))),
              classes = "govuk-table__cell--numeric",
              attributes = Map("id" -> s"package-table-row$index-remove_button")
           )

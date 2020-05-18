@@ -32,6 +32,7 @@ object ProcedureCodesData {
   val formId = "ProcedureCodesData"
 
   val osrProcedureCodes = Set("1042")
+  val exportInventoryCleansingRecordProcedureCodes = Set("0019")
 
   val limitOfCodes = 99
 }

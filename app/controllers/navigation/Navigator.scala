@@ -98,6 +98,7 @@ object Navigator {
     case CusCode               => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
     case NactCode              => controllers.declaration.routes.NactCodeSummaryController.displayPage
     case NactCodeFirst         => controllers.declaration.routes.TaricCodeSummaryController.displayPage
+    case CommodityMeasure      => controllers.declaration.routes.PackageInformationSummaryController.displayPage
     case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
 
@@ -161,6 +162,7 @@ object Navigator {
     case CusCode               => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
     case NactCode              => controllers.declaration.routes.NactCodeSummaryController.displayPage
     case NactCodeFirst         => controllers.declaration.routes.TaricCodeSummaryController.displayPage
+    case CommodityMeasure      => controllers.declaration.routes.PackageInformationSummaryController.displayPage
     case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
   }
 
@@ -194,6 +196,7 @@ object Navigator {
     case CusCode               => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
     case NactCode              => controllers.declaration.routes.NactCodeSummaryController.displayPage
     case NactCodeFirst         => controllers.declaration.routes.TaricCodeSummaryController.displayPage
+    case CommodityMeasure      => controllers.declaration.routes.PackageInformationSummaryController.displayPage
     case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
   }
 
@@ -228,6 +231,7 @@ object Navigator {
     case CusCode               => controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage
     case NactCode              => controllers.declaration.routes.NactCodeSummaryController.displayPage
     case NactCodeFirst         => controllers.declaration.routes.TaricCodeSummaryController.displayPage
+    case CommodityMeasure      => controllers.declaration.routes.PackageInformationSummaryController.displayPage
     case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
   }
 
@@ -258,19 +262,24 @@ object Navigator {
     case TaricCode                 => controllers.declaration.routes.TaricCodeSummaryController.displayPage
     case TaricCodeFirst            => controllers.declaration.routes.CusCodeController.displayPage
     case StatisticalValue          => controllers.declaration.routes.NactCodeSummaryController.displayPage
-    case CommodityMeasure          => controllers.declaration.routes.PackageInformationSummaryController.displayPage
     case DocumentsProduced         => controllers.declaration.routes.AdditionalInformationController.displayPage
   }
 
   val commonCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = Map.empty
 
+  val commonCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
+
   val standardCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
     case CarrierDetails => carrierDetailsPreviousPage
   }
 
+  val standardCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
+
   val supplementaryCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
     case ConsigneeDetails => consigneeDetailsSupplementaryPreviousPage
   }
+
+  val supplementaryCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
 
   private def consigneeDetailsSupplementaryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.isDeclarantExporter)
@@ -282,9 +291,13 @@ object Navigator {
     case CarrierDetails => carrierDetailsPreviousPage
   }
 
+  val simplifiedCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
+
   val occasionalCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
     case CarrierDetails => carrierDetailsPreviousPage
   }
+
+  val occasionalCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
 
   val clearanceCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
     case ExporterDetails     => exporterDetailsClearancePreviousPage
@@ -292,6 +305,16 @@ object Navigator {
     case ConsigneeDetails    => consigneeDetailsClearancePreviousPage
     case RepresentativeAgent => representativeAgentClearancePreviousPage
   }
+
+  val clearanceCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
+    case CommodityMeasure => commodityMeasureClearancePreviousPage
+  }
+
+  private def commodityMeasureClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
+    if (cacheModel.itemBy(itemId).exists(_.isExportInventoryCleansingRecord))
+      controllers.declaration.routes.CommodityDetailsController.displayPage(mode, itemId)
+    else
+      controllers.declaration.routes.PackageInformationSummaryController.displayPage(mode, itemId)
 
   private def exporterDetailsClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.isEntryIntoDeclarantsRecords)
@@ -366,12 +389,15 @@ object Navigator {
       case Mode.Draft                                       => controllers.declaration.routes.SummaryController.displayPage(Mode.Draft)
       case _ =>
         val specific = request.declarationType match {
-          case STANDARD      => standardItemPage
-          case SUPPLEMENTARY => supplementaryItemPage
-          case SIMPLIFIED    => simplifiedItemPage
-          case OCCASIONAL    => occasionalItemPage
-          case CLEARANCE     => clearanceItemPage
+          case STANDARD      => standardCacheItemDependent.orElse(standardItemPage)
+          case SUPPLEMENTARY => supplementaryCacheItemDependent.orElse(supplementaryItemPage)
+          case SIMPLIFIED    => simplifiedCacheItemDependent.orElse(simplifiedItemPage)
+          case OCCASIONAL    => occasionalCacheItemDependent.orElse(occasionalItemPage)
+          case CLEARANCE     => clearanceCacheItemDependent.orElse(clearanceItemPage)
         }
-        commonItem.orElse(specific)(page)(mode, itemId.id)
+        commonCacheItemDependent.orElse(commonItem).orElse(specific)(page) match {
+          case mapping: ((Mode, String) => Call)                     => mapping(mode, itemId.id)
+          case mapping: ((ExportsDeclaration, Mode, String) => Call) => mapping(request.cacheModel, mode, itemId.id)
+        }
     }
 }

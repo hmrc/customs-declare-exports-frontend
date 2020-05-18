@@ -44,15 +44,9 @@ class CommodityMeasureController @Inject()(
   private def form()(implicit request: JourneyRequest[_]) = CommodityMeasure.form(request.declarationType)
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val item = request.cacheModel.itemBy(itemId)
-    val packageInformation = item.map(_.packageInformation)
-    val commodityMeasure = item.flatMap(_.commodityMeasure)
-
-    (packageInformation, commodityMeasure) match {
-      case (Some(p), Some(data)) if p.nonEmpty => Ok(commodityMeasurePage(mode, itemId, form().fill(data)))
-      case (Some(p), _) if p.nonEmpty          => Ok(commodityMeasurePage(mode, itemId, form()))
-      case _ =>
-        BadRequest(commodityMeasurePage(mode, itemId, form().withGlobalError("supplementary.commodityMeasure.global.addOne")))
+    request.cacheModel.itemBy(itemId).flatMap(_.commodityMeasure) match {
+      case Some(data) => Ok(commodityMeasurePage(mode, itemId, form().fill(data)))
+      case _          => Ok(commodityMeasurePage(mode, itemId, form()))
     }
   }
 

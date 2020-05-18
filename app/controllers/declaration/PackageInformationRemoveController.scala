@@ -21,7 +21,6 @@ import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.{form, YesNoAnswers}
 import forms.declaration.PackageInformation
-import forms.declaration.PackageInformation.fromJsonString
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -44,19 +43,20 @@ class PackageInformationRemoveController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage(mode: Mode, itemId: String, json: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(packageTypeRemove(mode, itemId, fromJsonString(json), YesNoAnswer.form()))
+  def displayPage(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    Ok(packageTypeRemove(mode, itemId, PackageInformation.fromId(id), YesNoAnswer.form()))
   }
 
-  def submitForm(mode: Mode, itemId: String, json: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(packageTypeRemove(mode, itemId, fromJsonString(json), formWithErrors))),
+        (formWithErrors: Form[YesNoAnswer]) =>
+          Future.successful(BadRequest(packageTypeRemove(mode, itemId, PackageInformation.fromId(id), formWithErrors))),
         formData => {
           formData.answer match {
             case YesNoAnswers.yes =>
-              updateExportsCache(itemId, fromJsonString(json))
+              updateExportsCache(itemId, PackageInformation.fromId(id))
                 .map(_ => navigator.continueTo(mode, routes.PackageInformationSummaryController.displayPage(_, itemId)))
             case YesNoAnswers.no =>
               Future.successful(navigator.continueTo(Mode.Normal, routes.PackageInformationSummaryController.displayPage(_, itemId)))

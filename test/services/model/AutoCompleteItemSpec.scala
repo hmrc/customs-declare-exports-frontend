@@ -35,7 +35,7 @@ class AutoCompleteItemSpec extends UnitSpec {
     }
 
     "map from Package Type" in {
-      AutoCompleteItem.fromPackageType(List(PackageType("code", "description"))) mustBe List(AutoCompleteItem("description - code", "code"))
+      AutoCompleteItem.fromPackageType(List(PackageType("code", "description"))) mustBe List(AutoCompleteItem("description (code)", "code"))
     }
 
     "map from Office Of Exit" in {
