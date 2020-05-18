@@ -16,7 +16,7 @@
 
 package models.declaration.notifications
 
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 import models.declaration.submissions.SubmissionStatus
 import models.declaration.submissions.SubmissionStatus.SubmissionStatus
@@ -25,7 +25,7 @@ import play.api.libs.json.Json
 case class Notification(
   actionId: String,
   mrn: String,
-  dateTimeIssued: LocalDateTime,
+  dateTimeIssued: ZonedDateTime,
   status: SubmissionStatus,
   errors: Seq[NotificationError],
   payload: String

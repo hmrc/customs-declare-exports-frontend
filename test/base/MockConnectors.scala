@@ -16,7 +16,7 @@
 
 package base
 
-import java.time.LocalDateTime
+import java.time.{ZoneOffset, ZonedDateTime}
 import java.util.UUID
 
 import connectors.CustomsDeclareExportsConnector
@@ -29,7 +29,6 @@ import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.when
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.stubbing.{Answer, OngoingStubbing}
-import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -53,7 +52,9 @@ trait MockConnectors extends MockitoSugar {
 
   def listOfNotifications(): OngoingStubbing[Future[Seq[Notification]]] =
     when(mockCustomsDeclareExportsConnector.fetchNotifications()(any(), any()))
-      .thenReturn(Future.successful(Seq(Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.UNKNOWN, Seq.empty, "payload"))))
+      .thenReturn(
+        Future.successful(Seq(Notification("actionId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.UNKNOWN, Seq.empty, "payload")))
+      )
 
   def listOfSubmissions(): OngoingStubbing[Future[Seq[Submission]]] =
     when(mockCustomsDeclareExportsConnector.fetchSubmissions()(any(), any()))
@@ -66,7 +67,7 @@ trait MockConnectors extends MockitoSugar {
               lrn = "lrn",
               mrn = None,
               ducr = None,
-              actions = Seq(Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = LocalDateTime.now()))
+              actions = Seq(Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = ZonedDateTime.now(ZoneOffset.UTC)))
             )
           )
         )

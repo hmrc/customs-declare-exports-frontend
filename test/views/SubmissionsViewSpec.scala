@@ -16,7 +16,7 @@
 
 package views
 
-import java.time.LocalDateTime
+import java.time.{LocalDateTime, ZoneId, ZoneOffset, ZonedDateTime}
 
 import base.Injector
 import controllers.routes
@@ -38,6 +38,7 @@ import views.tags.ViewTest
 @ViewTest
 class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
+  private val zone: ZoneId = ZoneId.of("Europe/London")
   private val page = instanceOf[submissions]
   private def createView(data: Seq[(Submission, Seq[Notification])] = Seq.empty, messages: Messages = stubMessages()): Html =
     page(data)(request, messages)
@@ -71,9 +72,11 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
     }
 
     "display page submissions" when {
-      val actionSubmission = Action(requestType = SubmissionRequest, id = "conv-id", requestTimestamp = LocalDateTime.of(2019, 1, 1, 0, 0, 0))
+      val actionSubmission =
+        Action(requestType = SubmissionRequest, id = "conv-id", requestTimestamp = ZonedDateTime.of(LocalDateTime.of(2019, 1, 1, 0, 0, 0), zone))
 
-      val actionCancellation = Action(requestType = CancellationRequest, id = "conv-id", requestTimestamp = LocalDateTime.of(2021, 1, 1, 0, 0, 0))
+      val actionCancellation =
+        Action(requestType = CancellationRequest, id = "conv-id", requestTimestamp = ZonedDateTime.of(LocalDateTime.of(2021, 1, 1, 0, 0, 0), zone))
 
       def submissionWithDucr(ducr: String = "ducr") =
         Submission(uuid = "id", eori = "eori", lrn = "lrn", mrn = Some("mrn"), ducr = Some(ducr), actions = Seq(actionSubmission, actionCancellation))
@@ -83,7 +86,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
       val acceptedNotification = Notification(
         actionId = "action-id",
         mrn = "mrn",
-        dateTimeIssued = LocalDateTime.of(2020, 1, 1, 0, 0, 0),
+        dateTimeIssued = ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 0, 0, 0), zone),
         status = SubmissionStatus.ACCEPTED,
         errors = Seq.empty,
         payload = "payload"
@@ -92,7 +95,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
       val rejectedNotification = Notification(
         actionId = "actionId",
         mrn = "mrn",
-        dateTimeIssued = LocalDateTime.now(),
+        dateTimeIssued = ZonedDateTime.now(ZoneOffset.UTC),
         status = SubmissionStatus.REJECTED,
         errors = Seq.empty,
         payload = ""
@@ -101,7 +104,7 @@ class SubmissionsViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
       val actionNotification = Notification(
         actionId = "actionId",
         mrn = "mrn",
-        dateTimeIssued = LocalDateTime.now(),
+        dateTimeIssued = ZonedDateTime.now(ZoneOffset.UTC),
         status = SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED,
         errors = Seq.empty,
         payload = ""

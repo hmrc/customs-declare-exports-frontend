@@ -72,7 +72,7 @@ linkButton: linkButton
                 ),
                 TableRow(
                     content = Text(
-                        submission.actions.find(_.requestType == SubmissionRequest).map(_.requestTimestamp).map(ViewDates.submissionDateTimeFormatter.withZone(ZoneId.systemDefault()).format(_)).getOrElse("")
+                        submission.actions.find(_.requestType == SubmissionRequest).map(_.requestTimestamp).map(ViewDates.submissionDateTimeFormatter.withZone(ZoneId.of("Europe/London")).format(_)).getOrElse("")
                     ),
                     attributes = Map("id" -> s"submission-tab-$id-row$index-dateAndTime")
                 ),

@@ -16,15 +16,18 @@
 
 package models.declaration.notifications
 
-import java.time.LocalDateTime
+import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
 
 import models.declaration.submissions.SubmissionStatus
 import org.scalatest.{MustMatchers, WordSpec}
 
 class NotificationSpec extends WordSpec with MustMatchers {
-  val earlierDate = LocalDateTime.of(2019, 6, 10, 10, 10)
-  val laterDate = LocalDateTime.of(2019, 6, 15, 10, 10)
-  val latestDate = LocalDateTime.of(2019, 6, 20, 10, 10)
+
+  private val zone: ZoneId = ZoneId.of("Europe/London")
+  private val earlierDate = ZonedDateTime.of(LocalDateTime.of(2019, 6, 10, 10, 10), zone)
+  private val laterDate = ZonedDateTime.of(LocalDateTime.of(2019, 6, 15, 10, 10), zone)
+  private val latestDate = ZonedDateTime.of(LocalDateTime.of(2019, 6, 20, 10, 10), zone)
+
   val firstNotification = Notification("convId", "mrn", earlierDate, SubmissionStatus.UNKNOWN, Seq.empty, "payload")
   val secondNotification = Notification("convId", "mrn", laterDate, SubmissionStatus.UNKNOWN, Seq.empty, "payload")
   val thirdNotification = Notification("convId", "mrn", latestDate, SubmissionStatus.UNKNOWN, Seq.empty, "payload")

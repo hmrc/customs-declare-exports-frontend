@@ -16,7 +16,7 @@
 
 package connectors
 
-import java.time.{Instant, LocalDateTime}
+import java.time.{Instant, ZoneOffset, ZonedDateTime}
 import java.util.UUID
 
 import base.TestHelper._
@@ -47,7 +47,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with B
   private val action = Action(UUID.randomUUID().toString, SubmissionRequest)
   private val submission = Submission(id, "eori", "lrn", Some("mrn"), None, Seq(action))
   private val notification =
-    Notification("action-id", "mrn", LocalDateTime.now, SubmissionStatus.UNKNOWN, Seq.empty, "payload")
+    Notification("action-id", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.UNKNOWN, Seq.empty, "payload")
   private val connector = app.injector.instanceOf[CustomsDeclareExportsConnector]
 
   implicit val defaultPatience: PatienceConfig =
@@ -117,7 +117,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with B
            |  "actions" : [{
            |      "id" : "${UUID.randomUUID().toString}",
            |      "requestType" : "SubmissionRequest",
-           |      "requestTimestamp" : "${Instant.now().toString}"
+           |      "requestTimestamp" : "${ZonedDateTime.now(ZoneOffset.UTC).toString}"
            |   }]
           |}
         """.stripMargin

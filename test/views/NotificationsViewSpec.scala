@@ -16,14 +16,14 @@
 
 package views
 
-import java.time.LocalDateTime
+import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
 import java.util.UUID
 
 import controllers.routes
 import models.declaration.notifications.Notification
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.SubmissionStatus.SubmissionStatus
-import models.declaration.submissions.{Action, RequestType, Submission, SubmissionStatus}
+import models.declaration.submissions.{Action, Submission, SubmissionStatus}
 import org.jsoup.nodes.Document
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -36,8 +36,9 @@ class NotificationsViewSpec extends UnitViewSpec with Stubs {
   private val page = new submission_notifications(mainTemplate)
   private val actions = Action(UUID.randomUUID().toString, SubmissionRequest)
   private val submission = Submission("id", "eori", "lrn", None, None, Seq(actions))
+
   private def notification(status: SubmissionStatus = SubmissionStatus.ACCEPTED) =
-    Notification("conv-id", "mrn", LocalDateTime.of(2019, 1, 1, 0, 0), status, Seq.empty, "payload")
+    Notification("conv-id", "mrn", ZonedDateTime.of(LocalDateTime.of(2019, 1, 1, 0, 0), ZoneId.of("Europe/London")), status, Seq.empty, "payload")
 
   private def createView(submission: Submission, notifications: Seq[Notification]): Document =
     page(submission, notifications)
