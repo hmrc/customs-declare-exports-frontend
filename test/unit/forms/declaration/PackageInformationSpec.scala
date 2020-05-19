@@ -37,7 +37,7 @@ class PackageInformationSpec extends UnitViewSpec {
     }
 
     "has correct type of package text" in {
-      val model = PackageInformation(Some("PK"), Some(10), Some("marks"))
+      val model = PackageInformation("id", Some("PK"), Some(10), Some("marks"))
 
       model.typesOfPackagesText mustBe Some("Package (PK)")
     }

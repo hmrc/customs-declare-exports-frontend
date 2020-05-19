@@ -43,7 +43,10 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
 
     "display package information section with multiple package information and change buttons" in {
 
-      val data = Seq(PackageInformation(Some("PB"), Some(123), Some("first-marks")), PackageInformation(Some("QF"), Some(321), Some("second-marks")))
+      val data = Seq(
+        PackageInformation("ID1", Some("PB"), Some(123), Some("first-marks")),
+        PackageInformation("ID2", Some("QF"), Some(321), Some("second-marks"))
+      )
 
       val view = packageSection(Mode.Normal, "itemId", 1, data)(messages, journeyRequest())
       val table = view.getElementById("package-information-1-table")

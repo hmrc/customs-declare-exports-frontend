@@ -110,7 +110,7 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData wi
   "PackageInformation Add View for invalid input" should {
     onEveryDeclarationJourney() { implicit request =>
       "display error if nothing is entered" in {
-        val view = createView(Some(form.fillAndValidate(PackageInformation(None, None, None))))
+        val view = createView(Some(form.fillAndValidate(PackageInformation("id", None, None, None))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#typesOfPackages")
@@ -123,7 +123,7 @@ class PackageInformationAddViewSpec extends UnitViewSpec with ExportsTestData wi
       }
 
       "display error if incorrect PackageInformation is entered" in {
-        val view = createView(Some(form.fillAndValidate(PackageInformation(Some("invalid"), Some(1), Some("wrong!")))))
+        val view = createView(Some(form.fillAndValidate(PackageInformation("id", Some("invalid"), Some(1), Some("wrong!")))))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#typesOfPackages")

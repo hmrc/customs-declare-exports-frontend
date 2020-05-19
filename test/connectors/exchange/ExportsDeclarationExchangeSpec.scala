@@ -257,6 +257,7 @@ object ExportsDeclarationExchangeSpec {
       |      "nactCodes": [],
       |      "packageInformation": [
       |        {
+      |          "id": "3131231",
       |          "typesOfPackages": "PK",
       |          "numberOfPackages": 10,
       |          "shippingMarks": "RICH123"

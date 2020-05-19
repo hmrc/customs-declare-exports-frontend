@@ -89,7 +89,7 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
               procedureCodes = Some(ProcedureCodesData(Some("procedure-code1"), Seq.empty)),
               statisticalValue = Some(StatisticalValue("")),
               commodityDetails = Some(CommodityDetails(Some("item-type1"), Some(""))),
-              packageInformation = Some(List(PackageInformation(None, Some(1), None)))
+              packageInformation = Some(List(PackageInformation("pk1", None, Some(1), None)))
             ),
             ExportItem(
               "id2",
@@ -97,7 +97,7 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
               procedureCodes = Some(ProcedureCodesData(Some("procedure-code2"), Seq.empty)),
               statisticalValue = Some(StatisticalValue("")),
               commodityDetails = Some(CommodityDetails(Some("item-type2"), Some(""))),
-              packageInformation = Some(List(PackageInformation(None, Some(2), None)))
+              packageInformation = Some(List(PackageInformation("pk2", None, Some(2), None)))
             )
           )
         )
@@ -139,7 +139,8 @@ class ItemSummaryViewSpec extends UnitViewSpec with ExportsTestData with Stubs w
               procedureCodes = Some(ProcedureCodesData(Some("procedure-code1"), Seq.empty)),
               statisticalValue = Some(StatisticalValue("")),
               commodityDetails = Some(CommodityDetails(Some("item-type1"), Some(""))),
-              packageInformation = Some(List(PackageInformation(None, Some(1), None), PackageInformation(None, None, Some("shipping-marks"))))
+              packageInformation =
+                Some(List(PackageInformation("pk1", None, Some(1), None), PackageInformation("pk2", None, None, Some("shipping-marks"))))
             )
           )
         )

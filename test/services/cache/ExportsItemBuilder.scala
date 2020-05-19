@@ -18,7 +18,6 @@ package services.cache
 
 import java.util.UUID
 
-import forms.common.YesNoAnswer
 import forms.declaration._
 import forms.declaration.additionaldocuments.DocumentsProduced
 import models.declaration._
@@ -103,7 +102,12 @@ trait ExportsItemBuilder {
     cache =>
       cache.copy(
         packageInformation = Some(
-          cache.packageInformation.getOrElse(List.empty) :+ PackageInformation(Some(typesOfPackages), Some(numberOfPackages), Some(shippingMarks))
+          cache.packageInformation.getOrElse(List.empty) :+ PackageInformation(
+            UUID.randomUUID().toString,
+            Some(typesOfPackages),
+            Some(numberOfPackages),
+            Some(shippingMarks)
+          )
         )
     )
 

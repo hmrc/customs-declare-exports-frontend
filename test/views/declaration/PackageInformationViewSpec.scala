@@ -36,7 +36,7 @@ import views.tags.ViewTest
 class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
   private val page = instanceOf[package_information]
-  private val packageInformation = PackageInformation(Some("1A"), Some(10), Some("packs"))
+  private val packageInformation = PackageInformation("ID", Some("1A"), Some(10), Some("packs"))
 
   private def createView(
     mode: Mode = Mode.Normal,
@@ -114,7 +114,7 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
     onEveryDeclarationJourney() { implicit request =>
       "display one row with data in table" in {
 
-        val view = createView(packages = Seq(PackageInformation(Some("PA"), Some(100), Some("Shipping Mark"))))
+        val view = createView(packages = Seq(PackageInformation("ID", Some("PA"), Some(100), Some("Shipping Mark"))))
 
         // check table header
         view.select("table>thead>tr>th:nth-child(1)").text() mustBe "declaration.packageInformation.table.heading.typesOfPackages"
@@ -132,8 +132,10 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
       "display two rows with data in table" in {
 
         val view = createView(
-          packages =
-            Seq(PackageInformation(Some("PA"), Some(100), Some("Shipping Mark")), PackageInformation(Some("PB"), Some(101), Some("Shipping Mark")))
+          packages = Seq(
+            PackageInformation("ID1", Some("PA"), Some(100), Some("Shipping Mark")),
+            PackageInformation("ID2", Some("PB"), Some(101), Some("Shipping Mark"))
+          )
         )
 
         // check table header
@@ -157,5 +159,5 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
 }
 
 object PackageInformationViewSpec {
-  val packageInformation: PackageInformation = PackageInformation(Some("1A"), Some(1), Some("Marks"))
+  val packageInformation: PackageInformation = PackageInformation("ID", Some("1A"), Some(1), Some("Marks"))
 }

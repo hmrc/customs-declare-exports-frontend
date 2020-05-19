@@ -132,7 +132,10 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, item.id)
 
-          theCacheModelUpdated.itemBy(item.id).flatMap(_.packageInformation) mustBe Some(List(PackageInformation(Some("AE"), Some(1), Some("1234"))))
+          val savedPackage = theCacheModelUpdated.itemBy(item.id).flatMap(_.packageInformation).map(_.head)
+          savedPackage.flatMap(_.typesOfPackages) mustBe Some("AE")
+          savedPackage.flatMap(_.numberOfPackages) mustBe Some(1)
+          savedPackage.flatMap(_.shippingMarks) mustBe Some("1234")
         }
 
       }

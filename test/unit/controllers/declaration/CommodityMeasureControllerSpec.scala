@@ -45,7 +45,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
     authorizedUser()
 
     val item =
-      ExportItem("itemId", packageInformation = Some(List(PackageInformation(Some("123"), Some(123), Some("123")))))
+      ExportItem("itemId", packageInformation = Some(List(PackageInformation("id", Some("123"), Some(123), Some("123")))))
     val cachedData = aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item))
 
     withNewCaching(cachedData)

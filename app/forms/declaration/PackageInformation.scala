@@ -16,6 +16,8 @@
 
 package forms.declaration
 
+import java.util.UUID
+
 import forms.DeclarationPage
 import play.api.data.Forms.{number, optional, text}
 import play.api.data.{Form, Forms}
@@ -23,27 +25,26 @@ import play.api.libs.json.Json
 import services.PackageTypes
 import utils.validators.forms.FieldValidator._
 
-case class PackageInformation(typesOfPackages: Option[String], numberOfPackages: Option[Int], shippingMarks: Option[String]) {
+case class PackageInformation(id: String, typesOfPackages: Option[String], numberOfPackages: Option[Int], shippingMarks: Option[String]) {
 
-  def id: String = s"${typesOfPackages.getOrElse("_")}.${numberOfPackages.getOrElse("_")}.${shippingMarks.getOrElse("_")}"
+  // overriding equals and hashcode so that we can test for duplicate entries while ignoring the id
+  override def equals(obj: Any): Boolean = obj match {
+    case PackageInformation(_, `typesOfPackages`, `numberOfPackages`, `shippingMarks`) => true
+    case _                                                                             => false
+  }
+  override def hashCode(): Int = (typesOfPackages, numberOfPackages, shippingMarks).##
 
   def isEmpty: Boolean = typesOfPackages.isEmpty && numberOfPackages.isEmpty && shippingMarks.isEmpty
 
   def nonEmpty: Boolean = !isEmpty
 
   def typesOfPackagesText: Option[String] = typesOfPackages.map(types => PackageTypes.findByCode(types).asText())
+
 }
 
 object PackageInformation extends DeclarationPage {
 
-  def fromId(value: String): PackageInformation = {
-    def someString(value: String): Option[String] = if (value == "_") None else Some(value)
-    def someInt(value: String): Option[Int] = if (value == "_") None else Some(value.toInt)
-    value.split("\\.") match {
-      case Array(t, n, m) => PackageInformation(someString(t), someInt(n), someString(m))
-      case _              => PackageInformation(None, None, None)
-    }
-  }
+  import scala.util.Random
 
   implicit val format = Json.format[PackageInformation]
 
@@ -52,6 +53,14 @@ object PackageInformation extends DeclarationPage {
 
   private val NumberOfPackagesLimitLower = 0
   private val NumberOfPackagesLimitUpper = 99999
+
+  private def generateId: String = Random.alphanumeric.take(8).mkString.toLowerCase
+
+  def form2Data(typesOfPackages: Option[String], numberOfPackages: Option[Int], shippingMarks: Option[String]): PackageInformation =
+    new PackageInformation(generateId, typesOfPackages, numberOfPackages, shippingMarks)
+
+  def data2Form(data: PackageInformation): Option[(Option[String], Option[Int], Option[String])] =
+    Some((data.typesOfPackages, data.numberOfPackages, data.shippingMarks))
 
   val mapping = Forms
     .mapping(
@@ -68,7 +77,7 @@ object PackageInformation extends DeclarationPage {
           .verifying("declaration.packageInformation.shippingMarks.characterError", isEmpty or isAlphanumericWithAllowedSpecialCharacters)
           .verifying("declaration.packageInformation.shippingMarks.lengthError", isEmpty or noLongerThan(42))
       ).verifying("declaration.packageInformation.shippingMarks.empty", isPresent)
-    )(PackageInformation.apply)(PackageInformation.unapply)
+    )(form2Data)(data2Form)
 
   def form(): Form[PackageInformation] = Form(mapping)
 

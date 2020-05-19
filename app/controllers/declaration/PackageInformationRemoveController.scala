@@ -44,19 +44,20 @@ class PackageInformationRemoveController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(packageTypeRemove(mode, itemId, PackageInformation.fromId(id), YesNoAnswer.form()))
+    Ok(packageTypeRemove(mode, itemId, packageInformation(id, itemId), YesNoAnswer.form()))
   }
 
   def submitForm(mode: Mode, itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    val packageInformationToRemove = packageInformation(id, itemId)
     form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[YesNoAnswer]) =>
-          Future.successful(BadRequest(packageTypeRemove(mode, itemId, PackageInformation.fromId(id), formWithErrors))),
+          Future.successful(BadRequest(packageTypeRemove(mode, itemId, packageInformationToRemove, formWithErrors))),
         formData => {
           formData.answer match {
             case YesNoAnswers.yes =>
-              updateExportsCache(itemId, PackageInformation.fromId(id))
+              updateExportsCache(itemId, packageInformationToRemove)
                 .map(_ => navigator.continueTo(mode, routes.PackageInformationSummaryController.displayPage(_, itemId)))
             case YesNoAnswers.no =>
               Future.successful(navigator.continueTo(Mode.Normal, routes.PackageInformationSummaryController.displayPage(_, itemId)))
@@ -64,6 +65,9 @@ class PackageInformationRemoveController @Inject()(
         }
       )
   }
+
+  private def packageInformation(id: String, itemId: String)(implicit request: JourneyRequest[_]): PackageInformation =
+    request.cacheModel.itemBy(itemId).flatMap(_.packageInformation).flatMap(_.find(_.id == id)).getOrElse(PackageInformation(id, None, None, None))
 
   private def updateExportsCache(itemId: String, itemToRemove: PackageInformation)(
     implicit request: JourneyRequest[AnyContent]

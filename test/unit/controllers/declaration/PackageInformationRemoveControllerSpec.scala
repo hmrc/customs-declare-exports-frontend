@@ -63,6 +63,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
     verify(mockRemovePage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
 
   val item = anItem()
+  val id = "pkgId"
 
   "PackageInformation Remove Controller" must {
 
@@ -72,12 +73,12 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
 
           withNewCaching(request.cacheModel)
 
-          val result = controller.displayPage(Mode.Normal, item.id, "AB.1.SHIP")(getRequest())
+          val result = controller.displayPage(Mode.Normal, item.id, id)(getRequest())
 
           status(result) mustBe OK
           verifyRemovePageInvoked()
 
-          thePackageInformation mustBe PackageInformation(Some("AB"), Some(1), Some("SHIP"))
+          thePackageInformation mustBe PackageInformation(id, None, None, None)
         }
 
       }
@@ -87,7 +88,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
           withNewCaching(request.cacheModel)
 
           val requestBody = Seq("yesNo" -> "invalid")
-          val result = controller.submitForm(Mode.Normal, item.id, "AB.1.SHIP")(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(Mode.Normal, item.id, id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           status(result) mustBe BAD_REQUEST
           verifyRemovePageInvoked()
@@ -96,12 +97,12 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
       }
       "return 303 (SEE_OTHER)" when {
         "user submits 'Yes' answer" in {
-          val packageInformation = PackageInformation(Some("AB"), Some(1), Some("SHIP"))
+          val packageInformation = PackageInformation(id, Some("AB"), Some(1), Some("SHIP"))
           val item = anItem(withPackageInformation(packageInformation))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "Yes")
-          val result = controller.submitForm(Mode.Normal, item.id, "AB.1.SHIP")(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(Mode.Normal, item.id, id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, item.id)
@@ -110,12 +111,12 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with OptionV
         }
 
         "user submits 'No' answer" in {
-          val packageInformation = PackageInformation(Some("AB"), Some(1), Some("SHIP"))
+          val packageInformation = PackageInformation(id, Some("AB"), Some(1), Some("SHIP"))
           val item = anItem(withPackageInformation(packageInformation))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
           val requestBody = Seq("yesNo" -> "No")
-          val result = controller.submitForm(Mode.Normal, item.id, "AB.1.SHIP")(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.submitForm(Mode.Normal, item.id, id)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, item.id)
