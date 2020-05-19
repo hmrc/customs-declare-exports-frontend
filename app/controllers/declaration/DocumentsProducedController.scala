@@ -21,8 +21,7 @@ import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.remove
 import controllers.util._
 import forms.declaration.additionaldocuments.DocumentsProduced.{form, globalErrors}
-import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
-import handlers.ErrorHandler
+import forms.declaration.additionaldocuments.DocumentsProduced
 import javax.inject.Inject
 import models.declaration.DocumentsProducedData
 import models.declaration.DocumentsProducedData.maxNumberOfItems
@@ -41,7 +40,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class DocumentsProducedController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
@@ -50,9 +48,17 @@ class DocumentsProducedController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val fieldName = request.flash.get("fieldName")
+    val errorMessage = request.flash.get("errorMessage")
+
+    val errors = (fieldName, errorMessage) match {
+      case (nameOpt, Some(messageKey)) => Seq(FormError(nameOpt.getOrElse(""), messageKey))
+      case _                           => Seq.empty
+    }
+
     request.cacheModel.itemBy(itemId).flatMap(_.documentsProducedData).map(_.documents) match {
-      case Some(data) => Ok(documentProducedPage(mode, itemId, form(), data))
-      case _          => Ok(documentProducedPage(mode, itemId, form(), Seq()))
+      case Some(data) => Ok(documentProducedPage(mode, itemId, form().copy(errors = errors), data))
+      case _          => Ok(documentProducedPage(mode, itemId, form().copy(errors = errors), Seq()))
     }
   }
 
