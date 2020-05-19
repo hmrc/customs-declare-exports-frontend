@@ -262,12 +262,13 @@ object Navigator {
     case TaricCode                 => controllers.declaration.routes.TaricCodeSummaryController.displayPage
     case TaricCodeFirst            => controllers.declaration.routes.CusCodeController.displayPage
     case StatisticalValue          => controllers.declaration.routes.NactCodeSummaryController.displayPage
-    case DocumentsProduced         => controllers.declaration.routes.AdditionalInformationController.displayPage
   }
 
   val commonCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = Map.empty
 
-  val commonCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
+  val commonCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
+    case DocumentsProduced => documentsProducedPreviousPage
+  }
 
   val standardCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
     case CarrierDetails => carrierDetailsPreviousPage
@@ -280,12 +281,6 @@ object Navigator {
   }
 
   val supplementaryCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = Map.empty
-
-  private def consigneeDetailsSupplementaryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
-    if (cacheModel.isDeclarantExporter)
-      controllers.declaration.routes.DeclarantExporterController.displayPage(mode)
-    else
-      controllers.declaration.routes.RepresentativeStatusController.displayPage(mode)
 
   val simplifiedCacheDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode) => Call] = {
     case CarrierDetails => carrierDetailsPreviousPage
@@ -310,11 +305,23 @@ object Navigator {
     case CommodityMeasure => commodityMeasureClearancePreviousPage
   }
 
+  private def consigneeDetailsSupplementaryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
+    if (cacheModel.isDeclarantExporter)
+      controllers.declaration.routes.DeclarantExporterController.displayPage(mode)
+    else
+      controllers.declaration.routes.RepresentativeStatusController.displayPage(mode)
+
   private def commodityMeasureClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
     if (cacheModel.itemBy(itemId).exists(_.isExportInventoryCleansingRecord))
       controllers.declaration.routes.CommodityDetailsController.displayPage(mode, itemId)
     else
       controllers.declaration.routes.PackageInformationSummaryController.displayPage(mode, itemId)
+
+  private def documentsProducedPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
+    if (cacheModel.itemBy(itemId).flatMap(_.additionalInformation).exists(_.items.nonEmpty))
+      controllers.declaration.routes.AdditionalInformationController.displayPage(mode, itemId)
+    else
+      controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(mode, itemId)
 
   private def exporterDetailsClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
     if (cacheModel.isEntryIntoDeclarantsRecords)
