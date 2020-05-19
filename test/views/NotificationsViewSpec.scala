@@ -37,23 +37,43 @@ class NotificationsViewSpec extends UnitViewSpec with Stubs {
   private val actions = Action(UUID.randomUUID().toString, SubmissionRequest)
   private val submission = Submission("id", "eori", "lrn", None, None, Seq(actions))
 
-  private def notification(status: SubmissionStatus = SubmissionStatus.ACCEPTED) =
-    Notification("conv-id", "mrn", ZonedDateTime.of(LocalDateTime.of(2019, 1, 1, 0, 0), ZoneId.of("Europe/London")), status, Seq.empty, "payload")
+  private def notification(
+    status: SubmissionStatus = SubmissionStatus.ACCEPTED,
+    timestamp: ZonedDateTime = ZonedDateTime.of(LocalDateTime.of(2019, 1, 1, 0, 0), ZoneId.of("UTC"))
+  ) =
+    Notification("conv-id", "mrn", timestamp, status, Seq.empty, "payload")
 
   private def createView(submission: Submission, notifications: Seq[Notification]): Document =
     page(submission, notifications)
 
   "View" should {
     "render notification" when {
-      "status Accepted" in {
-        val view = createView(submission, Seq(notification(SubmissionStatus.ACCEPTED)))
+      "status Accepted before BST" in {
+        val view = createView(
+          submission,
+          Seq(notification(SubmissionStatus.ACCEPTED, ZonedDateTime.of(LocalDateTime.of(2019, 2, 1, 12, 0), ZoneId.of("UTC"))))
+        )
+        val rows = view.select("tbody tr")
+        rows must haveSize(1)
+
+        view must containElementWithID("submission_notifications-table-row0")
+        view.getElementById("submission_notifications-table-row0-status") must containText("Accepted")
+        view.getElementById("submission_notifications-table-row0-date") must containText("2019-02-01 12:00")
+        view mustNot containElementWithID("submission_notifications-table-row0-amend_link")
+      }
+
+      "status Accepted during BST" in {
+        val view = createView(
+          submission,
+          Seq(notification(SubmissionStatus.ACCEPTED, ZonedDateTime.of(LocalDateTime.of(2019, 5, 1, 12, 0), ZoneId.of("UTC"))))
+        )
 
         val rows = view.select("tbody tr")
         rows must haveSize(1)
 
         view must containElementWithID("submission_notifications-table-row0")
         view.getElementById("submission_notifications-table-row0-status") must containText("Accepted")
-        view.getElementById("submission_notifications-table-row0-date") must containText("2019-01-01 00:00")
+        view.getElementById("submission_notifications-table-row0-date") must containText("2019-05-01 13:00")
         view mustNot containElementWithID("submission_notifications-table-row0-amend_link")
       }
 

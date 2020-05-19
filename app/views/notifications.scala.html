@@ -17,6 +17,7 @@
 @import java.time.format.DateTimeFormatter
 
 @import models.declaration.notifications.Notification
+@import java.time.ZoneId
 @import views.Title
 
 @this(main_template: views.html.main_template)
@@ -43,7 +44,9 @@
                     <td class="table-cell">@eori</td>
                     <td class="table-cell">@notification.actionId</td>
                     <td class="table-cell">@notification.displayStatus</td>
-                    <td class="table-cell">@DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(notification.dateTimeIssued)</td>
+                    <td class="table-cell">
+                        @DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(notification.dateTimeIssuedInUK)
+                    </td>
                 </tr>
             }
         </table>

@@ -222,8 +222,8 @@ object SubmissionDisplayHelperSpec {
   private def randomResponseFunctionCode: String = functionCodesRandomised.next()
 
   val dateTimeIssued: ZonedDateTime = ZonedDateTime.now(ZoneOffset.UTC)
-  val dateTimeIssued_2: ZonedDateTime = dateTimeIssued.plus(3, MINUTES);
-  val dateTimeIssued_3: ZonedDateTime = dateTimeIssued_2.plus(3, MINUTES);
+  val dateTimeIssued_2: ZonedDateTime = dateTimeIssued.plus(3, MINUTES)
+  val dateTimeIssued_3: ZonedDateTime = dateTimeIssued_2.plus(3, MINUTES)
   val functionCode: String = randomResponseFunctionCode
   val functionCode_2: String = randomResponseFunctionCode
   val functionCode_3: String = randomResponseFunctionCode

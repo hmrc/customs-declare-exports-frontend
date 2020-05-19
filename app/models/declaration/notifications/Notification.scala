@@ -16,7 +16,7 @@
 
 package models.declaration.notifications
 
-import java.time.ZonedDateTime
+import java.time.{ZoneId, ZonedDateTime}
 
 import models.declaration.submissions.SubmissionStatus
 import models.declaration.submissions.SubmissionStatus.SubmissionStatus
@@ -38,6 +38,7 @@ case class Notification(
 
   val displayStatus = SubmissionStatus.format(status)
   val isStatusRejected: Boolean = status == SubmissionStatus.REJECTED
+  val dateTimeIssuedInUK: ZonedDateTime = dateTimeIssued.withZoneSameInstant(ZoneId.of("Europe/London"))
 }
 
 object Notification {
