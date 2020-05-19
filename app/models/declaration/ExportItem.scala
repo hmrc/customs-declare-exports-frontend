@@ -54,7 +54,7 @@ case class ExportItem(
   def isExportInventoryCleansingRecord: Boolean =
     procedureCodes
       .flatMap(_.procedureCode)
-      .exists(code => ProcedureCodesData.exportInventoryCleansingRecordProcedureCodes.contains(code))
+      .exists(code => ProcedureCodesData.eicrProcedureCodes.contains(code))
 
   private def isProcedureCodesAndFiscalInformationComplete = {
 

@@ -128,15 +128,17 @@ class ProcedureCodesController @Inject()(
   ): Future[Option[ExportsDeclaration]] = {
 
     def clearDataForProcedureCode(code: String, itemId: String, model: ExportsDeclaration) = {
-      var result = model
-      if (!ProcedureCodesData.osrProcedureCodes.contains(code)) {
-        result = result.updatedItem(itemId, item => item.copy(fiscalInformation = None, additionalFiscalReferencesData = None))
-      }
-      if (r.declarationType == DeclarationType.CLEARANCE && ProcedureCodesData.exportInventoryCleansingRecordProcedureCodes.contains(code)) {
-        result = result.updatedItem(itemId, item => item.copy(packageInformation = None))
-      }
+      val step1Model =
+        if (!ProcedureCodesData.osrProcedureCodes.contains(code))
+          model.updatedItem(itemId, item => item.copy(fiscalInformation = None, additionalFiscalReferencesData = None))
+        else model
 
-      result
+      val step2Model =
+        if (r.isType(DeclarationType.CLEARANCE) && ProcedureCodesData.eicrProcedureCodes.contains(code))
+          step1Model.updatedItem(itemId, item => item.copy(packageInformation = None))
+        else step1Model
+
+      step2Model
     }
 
     def updatedModel(model: ExportsDeclaration): ExportsDeclaration =
