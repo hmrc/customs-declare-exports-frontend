@@ -16,8 +16,6 @@
 
 package forms.declaration
 
-import java.util.UUID
-
 import forms.DeclarationPage
 import play.api.data.Forms.{number, optional, text}
 import play.api.data.{Form, Forms}
@@ -43,6 +41,7 @@ object PackageInformation extends DeclarationPage {
     def someInt(value: String): Option[Int] = if (value == "_") None else Some(value.toInt)
     value.split("\\.") match {
       case Array(t, n, m) => PackageInformation(someString(t), someInt(n), someString(m))
+      case _              => PackageInformation(None, None, None)
     }
   }
 

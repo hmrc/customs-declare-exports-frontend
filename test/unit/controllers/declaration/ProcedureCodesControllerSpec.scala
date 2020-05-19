@@ -18,7 +18,7 @@ package unit.controllers.declaration
 
 import controllers.declaration.ProcedureCodesController
 import controllers.util.Remove
-import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation, PackageInformation, ProcedureCodes}
+import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation, ProcedureCodes}
 import models.declaration.ProcedureCodesData.limitOfCodes
 import models.declaration.{ExportItem, ProcedureCodesData}
 import models.{DeclarationType, Mode}
@@ -306,7 +306,13 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
         withNewCaching(
           aDeclaration(
             withType(DeclarationType.CLEARANCE),
-            withItem(anItem(withItemId(itemId), withPackageInformation(PackageInformationViewSpec.packageInformation)))
+            withItem(
+              anItem(
+                withItemId(itemId),
+                withFiscalInformation(FiscalInformation("No")),
+                withPackageInformation(PackageInformationViewSpec.packageInformation)
+              )
+            )
           )
         )
 
@@ -323,6 +329,7 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
 
         val updatedItem = theCacheModelUpdated.itemBy(itemId)
         updatedItem.flatMap(_.packageInformation) mustBe None
+        updatedItem.flatMap(_.fiscalInformation) mustBe None
       }
 
       "user save correct data without new item" in {
