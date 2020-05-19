@@ -16,13 +16,13 @@
 
 package unit.services.model
 
-import java.time.LocalDateTime
+import java.time.{Instant, ZoneOffset, ZonedDateTime}
 
 import forms.declaration.Seal
 import models.declaration.Container
-import models.{Pointer, PointerSection, PointerSectionType}
 import models.declaration.notifications.{Notification, NotificationError}
 import models.declaration.submissions.SubmissionStatus
+import models.{Pointer, PointerSection, PointerSectionType}
 import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito.given
 import play.api.i18n.Messages
@@ -98,7 +98,7 @@ class RejectionReasonSpec extends UnitSpec with ExportsTestData {
 
     "map to Rejected Reason" when {
       val acceptedNotification =
-        Notification("convId", "mrn", LocalDateTime.now(), SubmissionStatus.ACCEPTED, Seq.empty, "")
+        Notification("convId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.ACCEPTED, Seq.empty, "")
 
       "list is empty" in {
         fromNotifications(Seq.empty)(messages) mustBe Seq.empty
@@ -114,7 +114,7 @@ class RejectionReasonSpec extends UnitSpec with ExportsTestData {
           given(messages.isDefinedAt("field.x.$.z")).willReturn(true)
           val error = NotificationError("CDS12016", Some(Pointer("x.#0.z")), None)
           val notification =
-            Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, Seq(error), "")
+            Notification("actionId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.REJECTED, Seq(error), "")
 
           fromNotifications(Seq(notification))(messages) mustBe Seq(
             RejectionReason(
@@ -131,7 +131,7 @@ class RejectionReasonSpec extends UnitSpec with ExportsTestData {
           given(messages.isDefinedAt(anyString())).willReturn(false)
           val error = NotificationError("CDS12016", Some(Pointer("x.#0.z")), None)
           val notification =
-            Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, Seq(error), "")
+            Notification("actionId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.REJECTED, Seq(error), "")
 
           fromNotifications(Seq(notification))(messages) mustBe Seq(
             RejectionReason(
@@ -147,7 +147,7 @@ class RejectionReasonSpec extends UnitSpec with ExportsTestData {
         "pointer is empty" in {
           val error = NotificationError("CDS12016", None, None)
           val notification =
-            Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.REJECTED, Seq(error), "")
+            Notification("actionId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.REJECTED, Seq(error), "")
 
           fromNotifications(Seq(notification))(messages) mustBe Seq(
             RejectionReason(

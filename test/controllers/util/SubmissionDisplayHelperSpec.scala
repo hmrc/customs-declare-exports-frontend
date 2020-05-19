@@ -16,7 +16,8 @@
 
 package controllers.util
 
-import java.time.LocalDateTime
+import java.time.{Instant, ZoneOffset, ZonedDateTime}
+import java.time.temporal.ChronoUnit.{DAYS, HOURS, MINUTES}
 import java.util.UUID
 
 import base.TestHelper.createRandomAlphanumericString
@@ -207,10 +208,10 @@ object SubmissionDisplayHelperSpec {
   val conversationId_3: String = "b1c09f1b-7c94-4e90-b754-7c5c71c55e23"
 
   lazy val action = Action(requestType = SubmissionRequest, id = conversationId)
-  lazy val action_2 = Action(requestType = SubmissionRequest, id = conversationId_2, requestTimestamp = action.requestTimestamp.plusDays(2))
-  lazy val action_3 = Action(requestType = SubmissionRequest, id = conversationId_2, requestTimestamp = action.requestTimestamp.minusDays(2))
+  lazy val action_2 = Action(requestType = SubmissionRequest, id = conversationId_2, requestTimestamp = action.requestTimestamp.plus(2, DAYS))
+  lazy val action_3 = Action(requestType = SubmissionRequest, id = conversationId_2, requestTimestamp = action.requestTimestamp.minus(2, DAYS))
   lazy val actionCancellation =
-    Action(requestType = CancellationRequest, id = conversationId, requestTimestamp = action.requestTimestamp.plusHours(3))
+    Action(requestType = CancellationRequest, id = conversationId, requestTimestamp = action.requestTimestamp.plus(3, HOURS))
 
   lazy val submission: Submission =
     Submission(uuid = uuid, eori = eori, lrn = lrn, mrn = Some(mrn), ducr = Some(ducr), actions = Seq(action))
@@ -224,11 +225,12 @@ object SubmissionDisplayHelperSpec {
   private lazy val functionCodes: Seq[String] =
     Seq("01", "02", "03", "05", "06", "07", "08", "09", "10", "11", "16", "17", "18")
   private lazy val functionCodesRandomised: Iterator[String] = Random.shuffle(functionCodes).toIterator
+
   private def randomResponseFunctionCode: String = functionCodesRandomised.next()
 
-  val dateTimeIssued: LocalDateTime = LocalDateTime.now()
-  val dateTimeIssued_2: LocalDateTime = dateTimeIssued.plusMinutes(3)
-  val dateTimeIssued_3: LocalDateTime = dateTimeIssued_2.plusMinutes(3)
+  val dateTimeIssued: ZonedDateTime = ZonedDateTime.now(ZoneOffset.UTC)
+  val dateTimeIssued_2: ZonedDateTime = dateTimeIssued.plus(3, MINUTES)
+  val dateTimeIssued_3: ZonedDateTime = dateTimeIssued_2.plus(3, MINUTES)
   val functionCode: String = randomResponseFunctionCode
   val functionCode_2: String = randomResponseFunctionCode
   val functionCode_3: String = randomResponseFunctionCode

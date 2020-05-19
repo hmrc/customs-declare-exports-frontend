@@ -16,7 +16,7 @@
 
 package unit.controllers
 
-import java.time.LocalDateTime
+import java.time.{Instant, ZoneOffset, ZonedDateTime}
 import java.util.UUID
 
 import controllers.NotificationsController
@@ -36,14 +36,14 @@ import scala.concurrent.Future.successful
 class NotificationControllerSpec extends ControllerSpec {
 
   private val notification =
-    Notification("actionId", "mrn", LocalDateTime.now(), SubmissionStatus.UNKNOWN, Seq.empty, "payload")
+    Notification("actionId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.UNKNOWN, Seq.empty, "payload")
   private val submission = Submission(
     uuid = UUID.randomUUID().toString,
     eori = "eori",
     lrn = "lrn",
     mrn = None,
     ducr = None,
-    actions = Seq(Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = LocalDateTime.now()))
+    actions = Seq(Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = ZonedDateTime.now(ZoneOffset.UTC)))
   )
 
   trait SetUp {

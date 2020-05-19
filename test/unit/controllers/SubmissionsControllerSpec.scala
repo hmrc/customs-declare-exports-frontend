@@ -16,7 +16,7 @@
 
 package unit.controllers
 
-import java.time.{Instant, LocalDate, LocalDateTime}
+import java.time.{Instant, LocalDate, ZoneOffset, ZonedDateTime}
 import java.util.UUID
 
 import akka.util.Timeout
@@ -43,14 +43,14 @@ import scala.concurrent.duration._
 class SubmissionsControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
   private val notification =
-    Notification("conversationID", "mrn", LocalDateTime.now(), SubmissionStatus.UNKNOWN, Seq.empty, "payload")
+    Notification("conversationID", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.UNKNOWN, Seq.empty, "payload")
   private val submission = Submission(
     uuid = UUID.randomUUID().toString,
     eori = "eori",
     lrn = "lrn",
     mrn = None,
     ducr = None,
-    actions = Seq(Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = LocalDateTime.now()))
+    actions = Seq(Action(requestType = SubmissionRequest, id = "conversationID", requestTimestamp = ZonedDateTime.now(ZoneOffset.UTC)))
   )
   val submissionsPage = mock[submissions]
   val declarationInformationPage = mock[declaration_information]

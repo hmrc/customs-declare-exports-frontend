@@ -23,13 +23,11 @@ import controllers.routes
 import forms.Choice.AllowedChoiceValues.ContinueDec
 import forms.declaration.ConsignmentReferences
 import forms.{Choice, Ducr, Lrn}
-import helpers.views.declaration.CommonMessages
 import models.{DeclarationStatus, ExportsDeclaration, Page, Paginated}
 import org.jsoup.nodes.Element
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import play.twirl.api.Html
-import unit.tools.Stubs
 import views.declaration.spec.{UnitViewSpec, ViewMatchers}
 import views.html.saved_declarations
 import views.tags.ViewTest
@@ -80,13 +78,30 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector with ViewMatc
       view.getElementsByClass("ceds-pagination") mustNot be(empty)
     }
 
-    "display declarations" in {
+    "display created declarations before BST" in {
       val view = createView(declarations = Seq(decWithoutDucr), total = 1)
 
       numberOfTableRows(view) mustBe 1
 
       tableCell(view)(1, 0).text() mustBe messages("saved.declarations.noDucr")
       tableCell(view)(1, 1).text() mustBe "1 January 2019 at 09:45"
+      tableCell(view)(1, 2).text() mustBe messages("site.remove")
+
+      view.getElementsByClass("ceds-pagination") mustNot be(empty)
+    }
+
+    "display created declarations after BST" in {
+      val decWithoutDucrAfterBST = ExportsTestData.aDeclaration(
+        withStatus(DeclarationStatus.DRAFT),
+        withUpdateTime(LocalDateTime.of(2019, 5, 1, 9, 45, 0).toInstant(ZoneOffset.UTC))
+      )
+
+      val view = createView(declarations = Seq(decWithoutDucrAfterBST), total = 1)
+
+      numberOfTableRows(view) mustBe 1
+
+      tableCell(view)(1, 0).text() mustBe messages("saved.declarations.noDucr")
+      tableCell(view)(1, 1).text() mustBe "1 May 2019 at 10:45"
       tableCell(view)(1, 2).text() mustBe messages("site.remove")
 
       view.getElementsByClass("ceds-pagination") mustNot be(empty)

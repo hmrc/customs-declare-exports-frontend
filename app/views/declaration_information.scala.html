@@ -23,6 +23,7 @@
 @import views.BackButton
 @import views.Title
 @import views.ViewDates
+@import java.time.ZoneId
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -107,7 +108,7 @@
                                 attributes = Map("id" -> s"notification_status_$index")
                             ),
                             TableRow(
-                                content = HtmlContent(ViewDates.submissionDateTimeFormatter.format(notification.dateTimeIssued)),
+                                content = HtmlContent(ViewDates.submissionDateTimeFormatter.format(notification.dateTimeIssuedInUK)),
                                 attributes = Map("id" -> s"notification_date_time_$index")
                             ),
                             TableRow(

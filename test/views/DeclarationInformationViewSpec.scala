@@ -16,7 +16,7 @@
 
 package views
 
-import java.time.LocalDateTime
+import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
 
 import base.Injector
 import com.typesafe.config.{Config, ConfigFactory}
@@ -25,7 +25,6 @@ import models.declaration.notifications.Notification
 import models.declaration.submissions.{Submission, SubmissionStatus}
 import play.api.Configuration
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, GovukTable}
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import views.declaration.spec.UnitViewSpec
 import views.html.components.gds.gdsMainTemplate
 import views.html.declaration_information
@@ -63,10 +62,11 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
 
   private val submission: Submission = submission()
 
+  private val zone: ZoneId = ZoneId.of("Europe/London")
   private val notification = Notification(
     actionId = "action-id",
     mrn = "mrn",
-    dateTimeIssued = LocalDateTime.of(2020, 1, 1, 0, 0, 0),
+    dateTimeIssued = ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 0, 0, 0), zone),
     status = SubmissionStatus.ACCEPTED,
     errors = Seq.empty,
     payload = "payload"
@@ -75,7 +75,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
   private val rejectedNotification = Notification(
     actionId = "actionId",
     mrn = "mrn",
-    dateTimeIssued = LocalDateTime.of(2020, 2, 2, 10, 0, 0),
+    dateTimeIssued = ZonedDateTime.of(LocalDateTime.of(2020, 2, 2, 10, 0, 0), zone),
     status = SubmissionStatus.REJECTED,
     errors = Seq.empty,
     payload = ""
@@ -84,7 +84,7 @@ class DeclarationInformationViewSpec extends UnitViewSpec with Injector {
   private val additionalDocumentsNotification = Notification(
     actionId = "actionId",
     mrn = "mrn",
-    dateTimeIssued = LocalDateTime.of(2019, 3, 3, 10, 0, 0),
+    dateTimeIssued = ZonedDateTime.of(LocalDateTime.of(2019, 3, 3, 10, 0, 0), zone),
     status = SubmissionStatus.ADDITIONAL_DOCUMENTS_REQUIRED,
     errors = Seq.empty,
     payload = ""
