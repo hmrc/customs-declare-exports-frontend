@@ -22,10 +22,10 @@ import forms.DeclarationPage
 import forms.declaration.RepresentativeStatus.form
 import forms.declaration.{RepresentativeEntity, RepresentativeStatus}
 import javax.inject.Inject
-import models.DeclarationType.DeclarationType
+import models.DeclarationType._
 import models.declaration.RepresentativeDetails
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -57,16 +57,24 @@ class RepresentativeStatusController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[RepresentativeStatus]) => Future.successful(BadRequest(representativeStatusPage(mode, navigationForm, formWithErrors))),
-        validRepresentativeDetails => updateCache(validRepresentativeDetails).map(_ => navigator.continueTo(mode, nextPage(request.declarationType)))
+        validRepresentativeDetails =>
+          updateCache(validRepresentativeDetails).map { updatedCache =>
+            navigator.continueTo(mode, nextPage(request.declarationType, updatedCache))
+        }
       )
   }
 
-  private def nextPage(declarationType: DeclarationType): Mode => Call =
+  private def nextPage(declarationType: DeclarationType, cacheModel: Option[ExportsDeclaration]): Mode => Call =
     declarationType match {
-      case DeclarationType.SUPPLEMENTARY =>
+      case SUPPLEMENTARY =>
         controllers.declaration.routes.ConsigneeDetailsController.displayPage
-      case DeclarationType.STANDARD | DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
+      case STANDARD | SIMPLIFIED | OCCASIONAL =>
         controllers.declaration.routes.CarrierDetailsController.displayPage
+      case CLEARANCE =>
+        if (cacheModel.exists(_.isNotExs))
+          controllers.declaration.routes.ConsigneeDetailsController.displayPage
+        else
+          controllers.declaration.routes.CarrierDetailsController.displayPage
     }
 
   private def navigationForm()(implicit request: JourneyRequest[AnyContent]): DeclarationPage =
