@@ -38,7 +38,7 @@ object WarehouseIdentification extends DeclarationPage {
   private def form2Model: (String, Option[String]) => WarehouseIdentification = {
     case (inWarehouse, warehouseId) =>
       inWarehouse match {
-        case yes => WarehouseIdentification(warehouseId)
+        case yes => WarehouseIdentification(warehouseId.map(_.toUpperCase))
         case no  => WarehouseIdentification(None)
       }
   }
@@ -61,7 +61,7 @@ object WarehouseIdentification extends DeclarationPage {
           yes,
           text().verifying(
             "declaration.warehouse.identification.identificationNumber.error",
-            startsWith(validWarehouseTypes) and noShorterThan(2) and noLongerThan(36) and isAlphanumeric
+            startsWithIgnoreCase(validWarehouseTypes) and noShorterThan(2) and noLongerThan(36) and isAlphanumeric
           )
         )
     )(form2Model)(model2Form)

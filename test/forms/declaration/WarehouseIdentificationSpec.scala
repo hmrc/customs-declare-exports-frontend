@@ -71,6 +71,15 @@ class WarehouseIdentificationSpec extends UnitSpec with LightFormMatchers {
       form().bind(correctWarehouseDetails) mustBe errorless
     }
 
+    "validate lowercase ware house type and number" in {
+      val id = "r" + warehouseId.toLowerCase
+      val correctWarehouseDetails = formData(YesNoAnswers.yes, id)
+
+      val boundForm = form().bind(correctWarehouseDetails)
+      boundForm mustBe errorless
+      boundForm.value.flatMap(_.identificationNumber) mustBe Some(id.toUpperCase)
+    }
+
     "validate max length" in {
       val correctWarehouseDetails = formData(YesNoAnswers.yes, warehouseTypeCode + createRandomAlphanumericString(35))
 
