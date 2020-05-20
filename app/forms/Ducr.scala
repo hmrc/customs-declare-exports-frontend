@@ -26,10 +26,12 @@ case class Ducr(ducr: String)
 object Ducr {
   implicit val format = Json.format[Ducr]
 
-  private val ducrFormat = """^[0-9][A-Z][A-Z][0-9A-Z\(\)\-/]{6,32}"""
+  private val ducrFormat = """^[0-9][A-Za-z][A-Za-z][0-9A-Za-z\(\)\-/]{6,32}"""
+
+  def form2Data(ducr: String): Ducr = new Ducr(ducr.toUpperCase)
 
   val ducrMapping =
-    mapping("ducr" -> text().verifying(pattern(ducrFormat.r, error = "error.ducr")))(Ducr.apply)(Ducr.unapply)
+    mapping("ducr" -> text().verifying(pattern(ducrFormat.r, error = "error.ducr")))(form2Data)(Ducr.unapply)
 
   val id = "DUCR"
 

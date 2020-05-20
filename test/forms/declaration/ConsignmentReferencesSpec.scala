@@ -17,10 +17,59 @@
 package forms.declaration
 
 import forms.{Ducr, Lrn}
+import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
+
+class ConsignmentReferencesSpec extends WordSpec with MustMatchers {
+
+  import ConsignmentReferencesSpec._
+
+  "ConsignmentReferences mapping used for binding data" should {
+
+    "return form with errors" when {
+
+      "provided with empty input" in {
+
+        val form = ConsignmentReferences.form().bind(emptyJSON)
+
+        form.hasErrors mustBe true
+        form.errors.length must equal(2)
+        form.errors(0).message must equal("error.required")
+        form.errors(1).message must equal("error.required")
+      }
+
+      "provided with invalid input" in {
+
+        val form = ConsignmentReferences.form().bind(correctConsignmentReferencesNoDucrJSON)
+
+        form.hasErrors mustBe true
+        form.errors.length must equal(1)
+        form.errors.head.message must equal("error.ducr")
+      }
+
+      "provided with valid input" in {
+
+        val form = ConsignmentReferences.form().bind(correctConsignmentReferencesJSON)
+
+        form.hasErrors mustBe false
+      }
+
+      "provided with valid input lowercase input" in {
+
+        val form = ConsignmentReferences.form().bind(correctConsignmentReferencesLowercaseDucrJSON)
+
+        form.hasErrors mustBe false
+        form.value.map(_.ducr.ducr) mustBe Some(exemplaryDucr)
+      }
+    }
+  }
+
+}
 
 object ConsignmentReferencesSpec {
   val exemplaryDucr = "8GB123456789012-1234567890QWERTYUIO"
+
+  val emptyJSON: JsValue = JsObject(Map("" -> JsString("")))
 
   val correctConsignmentReferences = ConsignmentReferences(ducr = Ducr(ducr = exemplaryDucr), lrn = Lrn("123LRN"))
   val correctConsignmentReferencesNoDucr = ConsignmentReferences(ducr = Ducr(""), lrn = Lrn("123LRN"))
@@ -28,6 +77,9 @@ object ConsignmentReferencesSpec {
 
   val correctConsignmentReferencesJSON: JsValue = JsObject(
     Map("ducr" -> JsObject(Map("ducr" -> JsString(exemplaryDucr))), "lrn" -> JsString("123LRN"))
+  )
+  val correctConsignmentReferencesLowercaseDucrJSON: JsValue = JsObject(
+    Map("ducr" -> JsObject(Map("ducr" -> JsString(exemplaryDucr.toLowerCase))), "lrn" -> JsString("123LRN"))
   )
   val correctConsignmentReferencesNoDucrJSON: JsValue = JsObject(Map("ducr" -> JsObject(Map("ducr" -> JsString(""))), "lrn" -> JsString("123LRN")))
   val emptyConsignmentReferencesJSON: JsValue = JsObject(Map("ducr" -> JsObject(Map("ducr" -> JsString(""))), "lrn" -> JsString("")))
