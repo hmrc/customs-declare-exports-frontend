@@ -17,14 +17,14 @@
 package forms.declaration.consignor
 
 import forms.DeclarationPage
-import forms.Mapping.optionalRadio
-import forms.common.Eori
+import forms.Mapping.requiredRadio
+import forms.common.{Eori, YesNoAnswer}
 import forms.common.YesNoAnswer.YesNoAnswers
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
-case class ConsignorEoriNumber(eori: Option[Eori], hasEori: Option[String])
+case class ConsignorEoriNumber(eori: Option[Eori], hasEori: String)
 
 object ConsignorEoriNumber extends DeclarationPage {
   implicit val format: OFormat[ConsignorEoriNumber] = Json.format[ConsignorEoriNumber]
@@ -36,15 +36,14 @@ object ConsignorEoriNumber extends DeclarationPage {
 
   val mapping: Mapping[ConsignorEoriNumber] = Forms.mapping(
     eori -> mandatoryIfEqual(hasEori, YesNoAnswers.yes, Eori.mapping("declaration")),
-    hasEori -> optionalRadio("declaration.consignorEori.hasEori.empty", Seq(YesNoAnswers.yes, YesNoAnswers.no))
-      .transform[Option[String]](choice => Option(choice), choice => choice.getOrElse(""))
+    hasEori -> requiredRadio("declaration.consignorEori.hasEori.empty", YesNoAnswer.allowedValues)
   )(ConsignorEoriNumber.apply)(ConsignorEoriNumber.unapply)
 
   def form(): Form[ConsignorEoriNumber] = Form(ConsignorEoriNumber.mapping)
 
   def apply(consignorDetails: ConsignorDetails): ConsignorEoriNumber =
     consignorDetails.details.eori match {
-      case Some(eori) => ConsignorEoriNumber(Some(eori), Some(YesNoAnswers.yes))
-      case _          => ConsignorEoriNumber(None, Some(YesNoAnswers.no))
+      case Some(eori) => ConsignorEoriNumber(Some(eori), YesNoAnswers.yes)
+      case _          => ConsignorEoriNumber(None, YesNoAnswers.no)
     }
 }

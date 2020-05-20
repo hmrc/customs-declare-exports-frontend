@@ -46,7 +46,7 @@ class ConsignorEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with
     val view = createView()
     onJourney(DeclarationType.CLEARANCE) { implicit request =>
       "display answer input" in {
-        val consignorEoriNumber = ConsignorEoriNumber.form().fill(ConsignorEoriNumber(Some(Eori("GB123456789")), Some(YesNoAnswers.yes)))
+        val consignorEoriNumber = ConsignorEoriNumber.form().fill(ConsignorEoriNumber(Some(Eori("GB123456789")), YesNoAnswers.yes))
         val view = createView(form = consignorEoriNumber)
 
         view
@@ -97,7 +97,7 @@ class ConsignorEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with
 
       "handle invalid input" should {
         "display errors when all inputs are incorrect" in {
-          val data = ConsignorEoriNumber(Some(Eori("123456789")), Some(YesNoAnswers.yes))
+          val data = ConsignorEoriNumber(Some(Eori("123456789")), YesNoAnswers.yes)
           val form = ConsignorEoriNumber.form().fillAndValidate(data)
           val view = createView(form = form)
 
@@ -107,7 +107,7 @@ class ConsignorEoriNumberViewSpec extends UnitViewSpec with ExportsTestData with
         }
 
         "display errors when eori contains special characters" in {
-          val data = ConsignorEoriNumber(eori = Some(Eori("12#$%^78")), hasEori = Some(YesNoAnswers.yes))
+          val data = ConsignorEoriNumber(eori = Some(Eori("12#$%^78")), hasEori = YesNoAnswers.yes)
           val form = ConsignorEoriNumber.form().fillAndValidate(data)
           val view = createView(form = form)
 
