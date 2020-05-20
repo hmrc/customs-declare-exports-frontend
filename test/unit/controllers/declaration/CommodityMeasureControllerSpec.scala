@@ -45,7 +45,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
     authorizedUser()
 
     val item =
-      ExportItem("itemId", packageInformation = Some(List(PackageInformation(Some("123"), Some(123), Some("123")))))
+      ExportItem("itemId", packageInformation = Some(List(PackageInformation("id", Some("123"), Some(123), Some("123")))))
     val cachedData = aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item))
 
     withNewCaching(cachedData)
@@ -77,15 +77,6 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
     }
 
     "return 400 (BAD_REQUEST)" when {
-
-      "display page method is invoked and commodity package information cache is empty" in new SetUp {
-        val noPackageCache = aDeclaration(withType(DeclarationType.SUPPLEMENTARY))
-        withNewCaching(noPackageCache)
-
-        val result = controller.displayPage(Mode.Normal, "itemId")(getRequest())
-
-        status(result) must be(BAD_REQUEST)
-      }
 
       "form is incorrect" in new SetUp {
 

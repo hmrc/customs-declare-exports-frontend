@@ -34,7 +34,7 @@
   @changeLink(
         messages("site.change"),
         Some(messages("declaration.summary.items.item.packageInformation.change", information.typesOfPackagesText, information.shippingMarks, itemNo)),
-        controllers.declaration.routes.PackageInformationController.displayPage(mode, itemId)
+        controllers.declaration.routes.PackageInformationSummaryController.displayPage(mode, itemId)
     )
 }
 
@@ -83,7 +83,7 @@
             actions = Some(Actions(
                 items = Seq(
                     ActionItem(
-                        href = controllers.declaration.routes.PackageInformationController.displayPage(mode, itemId).url,
+                        href = controllers.declaration.routes.PackageInformationSummaryController.displayPage(mode, itemId).url,
                         content = Text(messages("site.change")),
                         visuallyHiddenText = Some(messages("declaration.summary.items.item.packageInformation.changeAll", itemNo))
                     )

@@ -18,7 +18,7 @@ package unit.controllers.declaration
 
 import controllers.declaration.ProcedureCodesController
 import controllers.util.Remove
-import forms.declaration.ProcedureCodes
+import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation, ProcedureCodes}
 import models.declaration.ProcedureCodesData.limitOfCodes
 import models.declaration.{ExportItem, ProcedureCodesData}
 import models.{DeclarationType, Mode}
@@ -31,6 +31,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
+import views.declaration.PackageInformationViewSpec
 import views.html.declaration.procedure_codes
 
 class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks with OptionValues {
@@ -247,7 +248,18 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
 
       "user save correct data with non-'1042' procedure code" in {
 
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(anItem(withItemId(itemId)))))
+        withNewCaching(
+          aDeclaration(
+            withType(DeclarationType.SUPPLEMENTARY),
+            withItem(
+              anItem(
+                withItemId(itemId),
+                withFiscalInformation(FiscalInformation("Yes")),
+                withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12"))))
+              )
+            )
+          )
+        )
 
         val correctForm =
           Seq(("procedureCode", "1234"), ("additionalProcedureCode", "321"), saveAndContinueActionUrlEncoded)
@@ -259,6 +271,65 @@ class ProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks
           .displayPage(Mode.Normal, "itemId12345")
 
         verify(mockProcedureCodesPage, times(0)).apply(any(), any(), any(), any())(any(), any())
+
+        val updatedItem = theCacheModelUpdated.itemBy(itemId)
+        updatedItem.flatMap(_.fiscalInformation) mustBe None
+        updatedItem.flatMap(_.additionalInformation) mustBe None
+      }
+
+      "user save correct data with '0019' procedure code on standard journey" in {
+
+        withNewCaching(
+          aDeclaration(
+            withType(DeclarationType.SUPPLEMENTARY),
+            withItem(anItem(withItemId(itemId), withPackageInformation(PackageInformationViewSpec.packageInformation)))
+          )
+        )
+
+        val correctForm =
+          Seq(("procedureCode", "0019"), ("additionalProcedureCode", "321"), saveAndContinueActionUrlEncoded)
+
+        val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.CommodityDetailsController
+          .displayPage(Mode.Normal, "itemId12345")
+
+        verify(mockProcedureCodesPage, times(0)).apply(any(), any(), any(), any())(any(), any())
+
+        val updatedItem = theCacheModelUpdated.itemBy(itemId)
+        updatedItem.flatMap(_.packageInformation) mustBe Some(Seq(PackageInformationViewSpec.packageInformation))
+      }
+
+      "user save correct data with '0019' procedure code on clearance journey" in {
+
+        withNewCaching(
+          aDeclaration(
+            withType(DeclarationType.CLEARANCE),
+            withItem(
+              anItem(
+                withItemId(itemId),
+                withFiscalInformation(FiscalInformation("No")),
+                withPackageInformation(PackageInformationViewSpec.packageInformation)
+              )
+            )
+          )
+        )
+
+        val correctForm =
+          Seq(("procedureCode", "0019"), ("additionalProcedureCode", "321"), saveAndContinueActionUrlEncoded)
+
+        val result = controller.submitProcedureCodes(Mode.Normal, itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.CommodityDetailsController
+          .displayPage(Mode.Normal, "itemId12345")
+
+        verify(mockProcedureCodesPage, times(0)).apply(any(), any(), any(), any())(any(), any())
+
+        val updatedItem = theCacheModelUpdated.itemBy(itemId)
+        updatedItem.flatMap(_.packageInformation) mustBe None
+        updatedItem.flatMap(_.fiscalInformation) mustBe None
       }
 
       "user save correct data without new item" in {

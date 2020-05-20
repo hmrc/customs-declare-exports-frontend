@@ -31,7 +31,11 @@ object ProcedureCodesData {
 
   val formId = "ProcedureCodesData"
 
+  // Onward Supply Relief
   val osrProcedureCodes = Set("1042")
+
+  // Export Inventory Cleansing Record
+  val eicrProcedureCodes = Set("0019")
 
   val limitOfCodes = 99
 }

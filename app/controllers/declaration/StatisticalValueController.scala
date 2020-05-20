@@ -61,7 +61,7 @@ class StatisticalValueController @Inject()(
         validForm =>
           updateExportsCache(itemId, validForm).map { _ =>
             navigator
-              .continueTo(mode, controllers.declaration.routes.PackageInformationController.displayPage(_, itemId))
+              .continueTo(mode, controllers.declaration.routes.PackageInformationSummaryController.displayPage(_, itemId))
         }
       )
   }

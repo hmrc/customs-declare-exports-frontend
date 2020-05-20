@@ -20,9 +20,8 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.remove
 import controllers.util._
+import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.additionaldocuments.DocumentsProduced.{form, globalErrors}
-import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
-import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.DocumentsProducedData
 import models.declaration.DocumentsProducedData.maxNumberOfItems
@@ -41,7 +40,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class DocumentsProducedController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,

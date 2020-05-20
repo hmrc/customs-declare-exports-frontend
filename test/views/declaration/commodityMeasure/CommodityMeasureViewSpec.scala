@@ -17,6 +17,7 @@
 package views.declaration.commodityMeasure
 
 import base.Injector
+import controllers.declaration.routes
 import forms.declaration.CommodityMeasure
 import helpers.views.declaration.CommonMessages
 import models.DeclarationType._
@@ -98,7 +99,7 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
         val backButton = createView().getElementById("back-link")
 
         backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") must endWith(s"/items/$itemId/package-information")
+        backButton.attr("href") mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, itemId).url
       }
 
       "display 'Save and continue' button on page" in {

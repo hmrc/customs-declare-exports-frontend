@@ -18,15 +18,11 @@ package unit.forms.declaration
 
 import base.TestHelper
 import forms.declaration.PackageInformation
-import forms.declaration.PackageInformation.{mappingAllFieldsMandatory, mappingAllFieldsOptional}
-import models.DeclarationType._
-import play.api.data.Form
 import views.declaration.spec.UnitViewSpec
 
 class PackageInformationSpec extends UnitViewSpec {
 
-  private def formAllFieldsMandatory = Form(mappingAllFieldsMandatory)
-  private def formAllFieldsOptional = Form(mappingAllFieldsOptional)
+  private def formAllFieldsMandatory = PackageInformation.form()
 
   "Package Information" should {
 
@@ -41,29 +37,19 @@ class PackageInformationSpec extends UnitViewSpec {
     }
 
     "has correct type of package text" in {
-      val model = PackageInformation(Some("PK"), Some(10), Some("marks"))
+      val model = PackageInformation("id", Some("PK"), Some(10), Some("marks"))
 
-      model.typesOfPackagesText mustBe Some("Package - PK")
+      model.typesOfPackagesText mustBe Some("Package (PK)")
     }
   }
 
   "Package Information form" when {
 
-    onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
+    onEveryDeclarationJourney() { request =>
       "return form with mappingAllFieldsMandatory" in {
 
-        val form = PackageInformation.form(request.declarationType)
-
-        form.mapping mustBe PackageInformation.mappingAllFieldsMandatory
-      }
-    }
-
-    onClearance { request =>
-      "return form with mappingAllFieldsOptional" in {
-
-        val form = PackageInformation.form(request.declarationType)
-
-        form.mapping mustBe PackageInformation.mappingAllFieldsOptional
+        val form = PackageInformation.form()
+        form.mapping mustBe PackageInformation.mapping
       }
     }
 
@@ -152,155 +138,6 @@ class PackageInformationSpec extends UnitViewSpec {
         val incorrectForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "100000", "shippingMarks" -> "correct")
 
         val result = formAllFieldsMandatory.bind(incorrectForm)
-
-        val errorMessages = result.errors.map(_.message)
-        errorMessages mustBe List("declaration.packageInformation.numberOfPackages.error")
-      }
-    }
-  }
-
-  "Package Information form with mappingAllFieldsOptional" should {
-
-    "have no errors" when {
-
-      "correct data is provided" in {
-
-        val correctForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "123", "shippingMarks" -> "correct")
-
-        val result = formAllFieldsOptional.bind(correctForm)
-
-        result.errors must be(empty)
-      }
-
-      "number of packages is 0" in {
-
-        val correctForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "0", "shippingMarks" -> "correct")
-
-        val result = formAllFieldsOptional.bind(correctForm)
-
-        result.errors must be(empty)
-      }
-
-      "number of packages is 99999" in {
-
-        val correctForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "99999", "shippingMarks" -> "correct")
-
-        val result = formAllFieldsOptional.bind(correctForm)
-
-        result.errors must be(empty)
-      }
-
-      "one field is empty" when {
-
-        "it is typesOfPackages" in {
-
-          val correctForm = Map("typesOfPackages" -> "", "numberOfPackages" -> "123", "shippingMarks" -> "correct")
-
-          val result = formAllFieldsOptional.bind(correctForm)
-
-          result.errors must be(empty)
-        }
-
-        "it is numberOfPackages" in {
-
-          val correctForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "", "shippingMarks" -> "correct")
-
-          val result = formAllFieldsOptional.bind(correctForm)
-
-          result.errors must be(empty)
-        }
-
-        "it is shippingMarks" in {
-
-          val correctForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "123", "shippingMarks" -> "")
-
-          val result = formAllFieldsOptional.bind(correctForm)
-
-          result.errors must be(empty)
-        }
-      }
-
-      "only a single field is provided" when {
-
-        "it is typesOfPackages" in {
-
-          val correctForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "", "shippingMarks" -> "")
-
-          val result = formAllFieldsOptional.bind(correctForm)
-
-          result.errors must be(empty)
-        }
-
-        "it is numberOfPackages" in {
-
-          val correctForm = Map("typesOfPackages" -> "", "numberOfPackages" -> "123", "shippingMarks" -> "")
-
-          val result = formAllFieldsOptional.bind(correctForm)
-
-          result.errors must be(empty)
-        }
-
-        "it is shippingMarks" in {
-
-          val correctForm = Map("typesOfPackages" -> "", "numberOfPackages" -> "", "shippingMarks" -> "correct")
-
-          val result = formAllFieldsOptional.bind(correctForm)
-
-          result.errors must be(empty)
-        }
-      }
-    }
-
-    "have errors" when {
-
-      "inputs are incorrect" in {
-
-        val incorrectForm = Map(
-          "typesOfPackages" -> "incorrect Type",
-          "numberOfPackages" -> "1000000",
-          "shippingMarks" -> TestHelper.createRandomAlphanumericString(43)
-        )
-
-        val result = formAllFieldsOptional.bind(incorrectForm)
-
-        val errorKeys = result.errors.map(_.key)
-        val errorMessages = result.errors.map(_.message)
-
-        errorKeys must be(List("typesOfPackages", "numberOfPackages", "shippingMarks"))
-        errorMessages must be(
-          List(
-            "declaration.packageInformation.typesOfPackages.error",
-            "declaration.packageInformation.numberOfPackages.error",
-            "declaration.packageInformation.shippingMarks.lengthError"
-          )
-        )
-      }
-
-      "all inputs are empty" in {
-
-        val incorrectForm = Map("typesOfPackages" -> "", "numberOfPackages" -> "", "shippingMarks" -> "")
-
-        val result = formAllFieldsOptional.bind(incorrectForm)
-
-        val errorMessages = result.errors.map(_.message)
-        errorMessages must be(List("declaration.packageInformation.empty"))
-      }
-
-      "number of packages is -1" in {
-
-        val incorrectForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "-1", "shippingMarks" -> "correct")
-
-        val result = formAllFieldsOptional.bind(incorrectForm)
-
-        val errorMessages = result.errors.map(_.message)
-        errorMessages mustBe List("declaration.packageInformation.numberOfPackages.error")
-      }
-
-      "number of packages is 100000" in {
-
-        val incorrectForm = Map("typesOfPackages" -> "ID", "numberOfPackages" -> "100000", "shippingMarks" -> "correct")
-
-        val result = formAllFieldsOptional.bind(incorrectForm)
 
         val errorMessages = result.errors.map(_.message)
         errorMessages mustBe List("declaration.packageInformation.numberOfPackages.error")

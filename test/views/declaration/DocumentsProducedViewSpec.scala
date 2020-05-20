@@ -141,12 +141,12 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
         view.getElementById(s"${documentWriteOffKey}_$documentQuantityKey").attr("value") mustBe empty
       }
 
-      "display 'Back' button that links to 'Additional Information' page" in {
+      "display 'Back' button that links to 'Additional Information Required' page when no additional info present" in {
 
         val backButton = view.getElementById("back-link")
 
         backButton.text() mustBe messagesKey(backCaption)
-        backButton must haveHref(routes.AdditionalInformationController.displayPage(mode, itemId))
+        backButton must haveHref(routes.AdditionalInformationRequiredController.displayPage(mode, itemId))
       }
 
       "display both 'Add' and 'Save and continue' button on page" in {
@@ -160,6 +160,21 @@ class DocumentsProducedViewSpec extends UnitViewSpec with CommonMessages with St
         saveAndReturnButton.text() mustBe messagesKey(saveAndReturnCaption)
         saveAndReturnButton must haveAttribute("name", SaveAndReturn.toString)
       }
+    }
+  }
+
+  "Documents Produced View on empty page with cached Additional Information" should {
+    onEveryDeclarationJourney(withItem(anItem(withItemId(itemId), withAdditionalInformation("1234", "Description")))) { implicit request =>
+      val view = createView()
+
+      "display 'Back' button that links to 'Additional Information' page when additional info present" in {
+
+        val backButton = view.getElementById("back-link")
+
+        backButton.text() mustBe messagesKey(backCaption)
+        backButton must haveHref(routes.AdditionalInformationController.displayPage(mode, itemId))
+      }
+
     }
   }
 

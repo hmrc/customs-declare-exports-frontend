@@ -25,7 +25,7 @@ class PackageTypesSpec extends UnitSpec {
 
     "have correct method asText" in {
 
-      PackageType("code", "description").asText() mustBe "description - code"
+      PackageType("code", "description").asText() mustBe "description (code)"
     }
   }
 

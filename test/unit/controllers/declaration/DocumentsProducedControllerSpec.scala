@@ -36,7 +36,6 @@ class DocumentsProducedControllerSpec extends ControllerSpec with ErrorHandlerMo
   val controller = new DocumentsProducedController(
     mockAuthAction,
     mockJourneyAction,
-    mockErrorHandler,
     mockExportsCacheService,
     navigator,
     stubMessagesControllerComponents(),
