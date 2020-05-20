@@ -96,7 +96,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
         checkViewInteractions()
 
         theResponseForm.value.value.eori mustBe None
-        theResponseForm.value.value.hasEori mustBe Some(YesNoAnswers.no)
+        theResponseForm.value.value.hasEori mustBe YesNoAnswers.no
       }
 
       "display page method is invoked and cache contains Consignor Eori details" in {
@@ -111,7 +111,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
         checkViewInteractions()
 
         theResponseForm.value.value.eori mustBe Some(Eori(eori))
-        theResponseForm.value.value.hasEori mustBe Some(hasEori)
+        theResponseForm.value.value.hasEori mustBe hasEori
       }
 
       "display page method is invoked and cache contains no Consignor data" in {
@@ -145,7 +145,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
 
         withNewCaching(request.cacheModel)
 
-        val incorrectForm = Json.toJson(ConsignorEoriNumber(eori = Some(Eori("!@#$")), hasEori = Some(YesNoAnswers.yes)))
+        val incorrectForm = Json.toJson(ConsignorEoriNumber(eori = Some(Eori("!@#$")), hasEori = YesNoAnswers.yes))
 
         val result = controller.submit(Mode.Normal)(postRequest(incorrectForm))
 
@@ -157,9 +157,21 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
 
         withNewCaching(request.cacheModel)
 
-        val incorrectForm = Json.toJson(ConsignorEoriNumber(eori = None, hasEori = Some(YesNoAnswers.yes)))
+        val incorrectForm = Json.toJson(ConsignorEoriNumber(eori = None, hasEori = YesNoAnswers.yes))
 
         val result = controller.submit(Mode.Normal)(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+        checkViewInteractions()
+      }
+
+      "no choice is selected and no cached ConsignorDetails exist" in {
+
+        withNewCaching(request.cacheModel)
+
+        val correctForm = Json.toJson(ConsignorEoriNumber(eori = None, hasEori = ""))
+
+        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
 
         status(result) mustBe BAD_REQUEST
         checkViewInteractions()
@@ -169,11 +181,11 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
 
   "should return a 303 (SEE_OTHER)" when {
     onJourney(DeclarationType.CLEARANCE) { request =>
-      "no choice is selected and no cached ConsignorDetails exist" in {
+      "'No' is selected" in {
 
         withNewCaching(request.cacheModel)
 
-        val correctForm = Json.toJson(ConsignorEoriNumber(eori = None, hasEori = None))
+        val correctForm = Json.toJson(ConsignorEoriNumber(eori = None, YesNoAnswers.no))
 
         val result = controller.submit(Mode.Normal)(postRequest(correctForm))
 
@@ -183,108 +195,12 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
         theCacheModelUpdated.parties.consignorDetails must be(Some(ConsignorDetails(EntityDetails(None, None))))
       }
 
-      "no choice is selected and a cached Consignor Address Details exist" in {
-
-        val address = Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom"))
-
-        withNewCaching(aDeclarationAfter(request.cacheModel, withConsignorDetails(None, address)))
-
-        val correctForm = Json.toJson(ConsignorEoriNumber(eori = None, hasEori = None))
-
-        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ConsignorDetailsController.displayPage()
-        checkViewInteractions(0)
-        theCacheModelUpdated.parties.consignorDetails must be(Some(ConsignorDetails(EntityDetails(None, address))))
-      }
-
-      "'No' is selected and no cached ConsignorDetails exist" in {
-
-        withNewCaching(request.cacheModel)
-
-        val correctForm = Json.toJson(ConsignorEoriNumber(eori = None, Some(YesNoAnswers.no)))
-
-        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ConsignorDetailsController.displayPage()
-        checkViewInteractions(0)
-        theCacheModelUpdated.parties.consignorDetails must be(Some(ConsignorDetails(EntityDetails(None, None))))
-      }
-
-      "'No' is selected and cached Consignor Address Details exist" in {
-
-        val address = Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom"))
-
-        withNewCaching(aDeclarationAfter(request.cacheModel, withConsignorDetails(None, address)))
-
-        val correctForm = Json.toJson(ConsignorEoriNumber(eori = None, hasEori = Some(YesNoAnswers.no)))
-
-        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ConsignorDetailsController.displayPage()
-        checkViewInteractions(0)
-        theCacheModelUpdated.parties.consignorDetails must be(Some(ConsignorDetails(EntityDetails(None, address))))
-      }
-
-      "'No' is selected and cached Consignor EORI Details exist" in {
-
-        val eori = Some(Eori("GB123456789000"))
-
-        withNewCaching(aDeclarationAfter(request.cacheModel, withConsignorDetails(eori, None)))
-
-        val correctForm = Json.toJson(ConsignorEoriNumber(eori = eori, hasEori = Some(YesNoAnswers.no)))
-
-        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.ConsignorDetailsController.displayPage()
-        checkViewInteractions(0)
-        theCacheModelUpdated.parties.consignorDetails must be(Some(ConsignorDetails(EntityDetails(None, None))))
-      }
-
-      "'Yes' is selected and no cached ConsignorDetails exist" in {
+      "'Yes' is selected" in {
 
         withNewCaching(request.cacheModel)
 
         val eoriInput = Some(Eori("GB123456789000"))
-        val correctForm = Json.toJson(ConsignorEoriNumber(eori = eoriInput, Some(YesNoAnswers.yes)))
-
-        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeAgentController.displayPage()
-        checkViewInteractions(0)
-        theCacheModelUpdated.parties.consignorDetails must be(Some(ConsignorDetails(EntityDetails(eoriInput, None))))
-      }
-
-      "'Yes' is selected and cached Consignor Address Details exist" in {
-
-        val addressCached = Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom"))
-
-        withNewCaching(aDeclarationAfter(request.cacheModel, withConsignorDetails(None, addressCached)))
-
-        val eoriInput = Some(Eori("GB123456789000"))
-        val correctForm = Json.toJson(ConsignorEoriNumber(eori = eoriInput, hasEori = Some(YesNoAnswers.yes)))
-
-        val result = controller.submit(Mode.Normal)(postRequest(correctForm))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeAgentController.displayPage()
-        checkViewInteractions(0)
-        theCacheModelUpdated.parties.consignorDetails must be(Some(ConsignorDetails(EntityDetails(eoriInput, None))))
-      }
-
-      "'Yes' is selected and cached Consignor EORI Details exist" in {
-
-        val eoriCached = Some(Eori("GB123456789000"))
-        val eoriInput = Some(Eori("GB123456789000"))
-
-        withNewCaching(aDeclarationAfter(request.cacheModel, withConsignorDetails(eoriCached, None)))
-
-        val correctForm = Json.toJson(ConsignorEoriNumber(eori = eoriInput, hasEori = Some(YesNoAnswers.yes)))
+        val correctForm = Json.toJson(ConsignorEoriNumber(eori = eoriInput, YesNoAnswers.yes))
 
         val result = controller.submit(Mode.Normal)(postRequest(correctForm))
 
@@ -302,7 +218,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
 
         withNewCaching(aDeclarationAfter(request.cacheModel, withConsignorDetails(eoriCached, None)))
 
-        val correctForm = Json.toJson(ConsignorEoriNumber(eori = eoriInput, hasEori = Some(YesNoAnswers.yes)))
+        val correctForm = Json.toJson(ConsignorEoriNumber(eori = eoriInput, hasEori = YesNoAnswers.yes))
 
         val result = controller.submit(Mode.Normal)(postRequest(correctForm))
 
