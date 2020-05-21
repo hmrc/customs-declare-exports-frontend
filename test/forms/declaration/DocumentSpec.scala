@@ -41,7 +41,7 @@ class DocumentSpec extends WordSpec with MustMatchers {
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
-        form.errors.head.message must equal("supplementary.previousDocuments.documentCategory.error.incorrect")
+        form.errors.head.message must equal("declaration.previousDocuments.documentCategory.error.incorrect")
       }
     }
 

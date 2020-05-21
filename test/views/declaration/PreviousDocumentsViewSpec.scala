@@ -51,21 +51,21 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
 
     "have proper messages for labels" in {
       val messages = instanceOf[MessagesApi].preferred(journeyRequest())
-      messages must haveTranslationFor("supplementary.previousDocuments.documentCategory.label")
-      messages must haveTranslationFor("supplementary.previousDocuments.documentType.label")
-      messages must haveTranslationFor("supplementary.previousDocuments.documentReference.label")
-      messages must haveTranslationFor("supplementary.previousDocuments.goodsItemIdentifier.label")
-      messages must haveTranslationFor("supplementary.previousDocuments.X")
-      messages must haveTranslationFor("supplementary.previousDocuments.Y")
-      messages must haveTranslationFor("supplementary.previousDocuments.Z")
+      messages must haveTranslationFor("declaration.previousDocuments.documentCategory.label")
+      messages must haveTranslationFor("declaration.previousDocuments.documentType.label")
+      messages must haveTranslationFor("declaration.previousDocuments.documentReference.label")
+      messages must haveTranslationFor("declaration.previousDocuments.goodsItemIdentifier.label")
+      messages must haveTranslationFor("declaration.previousDocuments.X")
+      messages must haveTranslationFor("declaration.previousDocuments.Y")
+      messages must haveTranslationFor("declaration.previousDocuments.Z")
       messages must haveTranslationFor("site.remove")
       messages must haveTranslationFor("supplementary.consignmentReferences.heading")
-      messages must haveTranslationFor("supplementary.previousDocuments.documentType")
-      messages must haveTranslationFor("supplementary.previousDocuments.documentReference")
-      messages must haveTranslationFor("supplementary.previousDocuments.goodsItemIdentifier")
-      messages must haveTranslationFor("supplementary.previousDocuments.goodsItemIdentifier.hint")
-      messages must haveTranslationFor("supplementary.previousDocuments.goodsItemIdentifier.error")
-      messages must haveTranslationFor("supplementary.previousDocuments.documentCategory.label")
+      messages must haveTranslationFor("declaration.previousDocuments.documentType")
+      messages must haveTranslationFor("declaration.previousDocuments.documentReference")
+      messages must haveTranslationFor("declaration.previousDocuments.goodsItemIdentifier")
+      messages must haveTranslationFor("declaration.previousDocuments.goodsItemIdentifier.hint")
+      messages must haveTranslationFor("declaration.previousDocuments.goodsItemIdentifier.error")
+      messages must haveTranslationFor("declaration.previousDocuments.documentCategory.label")
     }
 
     "display same page title as header" in {
@@ -82,27 +82,27 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
       val view = createView(form = Document.form.fill(Document("", "", "", Some(""))))
 
       view.getElementById("temporary-storage") mustNot beSelected
-      view.getElementsByAttributeValue("for", "temporary-storage").text() mustBe messages("supplementary.previousDocuments.X")
+      view.getElementsByAttributeValue("for", "temporary-storage").text() mustBe messages("declaration.previousDocuments.X")
 
       view.getElementById("simplified-declaration") mustNot beSelected
-      view.getElementsByAttributeValue("for", "simplified-declaration").text() mustBe messages("supplementary.previousDocuments.Y")
+      view.getElementsByAttributeValue("for", "simplified-declaration").text() mustBe messages("declaration.previousDocuments.Y")
 
       view.getElementById("related-document") mustNot beSelected
-      view.getElementsByAttributeValue("for", "related-document").text() mustBe messages("supplementary.previousDocuments.Z")
+      view.getElementsByAttributeValue("for", "related-document").text() mustBe messages("declaration.previousDocuments.Z")
     }
 
     "display empty input with label for Previous document code" in {
-      view.getElementsByAttributeValue("for", "documentType").text() must be("supplementary.previousDocuments.documentType")
+      view.getElementsByAttributeValue("for", "documentType").text() must be("declaration.previousDocuments.documentType")
       view.getElementById("documentType").attr("value") mustBe empty
     }
 
     "display empty input with label for Previous DUCR or MUCR" in {
-      view.getElementsByAttributeValue("for", "documentReference").text() must be("supplementary.previousDocuments.documentReference")
+      view.getElementsByAttributeValue("for", "documentReference").text() must be("declaration.previousDocuments.documentReference")
       view.getElementById("documentReference").attr("value") mustBe empty
     }
 
     "display empty input with label for Previous Goods Identifier" in {
-      view.getElementsByAttributeValue("for", "goodsItemIdentifier").text() must be("supplementary.previousDocuments.goodsItemIdentifier")
+      view.getElementsByAttributeValue("for", "goodsItemIdentifier").text() must be("declaration.previousDocuments.goodsItemIdentifier")
       view.getElementById("goodsItemIdentifier").attr("value") mustBe empty
     }
 
@@ -143,7 +143,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
 
     "display both 'Add' and 'Save and continue' button on page" in {
       val addButton = view.getElementById("add")
-      addButton.text() must be("site.addsupplementary.previousDocuments.add.hint")
+      addButton.text() must be("site.adddeclaration.previousDocuments.add.hint")
 
       val saveButton = view.getElementById("submit")
       saveButton.text() must be("site.save_and_continue")
@@ -230,19 +230,19 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
       val view = createView(Mode.Normal, form, prevDocuments)
 
       // table header
-      view.select("table>thead>tr>th:nth-child(1)").text() must be("supplementary.previousDocuments.documentCategory.label")
-      view.select("table>thead>tr>th:nth-child(2)").text() must be("supplementary.previousDocuments.documentType.label")
-      view.select("table>thead>tr>th:nth-child(3)").text() must be("supplementary.previousDocuments.documentReference.label")
-      view.select("table>thead>tr>th:nth-child(4)").text() must be("supplementary.previousDocuments.goodsItemIdentifier.label")
+      view.select("table>thead>tr>th:nth-child(1)").text() must be("declaration.previousDocuments.documentCategory.label")
+      view.select("table>thead>tr>th:nth-child(2)").text() must be("declaration.previousDocuments.documentType.label")
+      view.select("table>thead>tr>th:nth-child(3)").text() must be("declaration.previousDocuments.documentReference.label")
+      view.select("table>thead>tr>th:nth-child(4)").text() must be("declaration.previousDocuments.goodsItemIdentifier.label")
       // remove button column
       view.select("form>table>thead>tr>td").text() must be("")
 
       // row
-      view.select("table>tbody>tr>td:nth-child(1)").text() must be("supplementary.previousDocuments.X")
+      view.select("table>tbody>tr>td:nth-child(1)").text() must be("declaration.previousDocuments.X")
       view.select("table>tbody>tr>td:nth-child(2)").text() must be("1")
       view.select("table>tbody>tr>td:nth-child(3)").text() must be("A")
       view.select("table>tbody>tr>td:nth-child(4)").text() must be("1")
-      view.select("table>tbody>tr>td:nth-child(5)>button").text() must be("site.removesupplementary.previousDocuments.remove.hint")
+      view.select("table>tbody>tr>td:nth-child(5)>button").text() must be("site.removedeclaration.previousDocuments.remove.hint")
     }
   }
 }

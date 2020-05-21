@@ -52,7 +52,7 @@
 
 @pageHint = {
     <span class="govuk-hint">
-    @messages("supplementary.previousDocuments.hint")
+    @messages("declaration.previousDocuments.hint")
     </span>
 }
 
@@ -62,7 +62,7 @@
             rows = documents.zipWithIndex.map { case (document, index) =>
                 Seq(
                     TableRow(
-                        content = Text(messages("supplementary.previousDocuments." + document.documentCategory))
+                        content = Text(messages("declaration.previousDocuments." + document.documentCategory))
                     ),
                     TableRow(
                         content = Text(document.documentType)
@@ -76,8 +76,8 @@
                     TableRow(
                         content = HtmlContent(removeButton(
                             value = Some(document.toJson.toString)
-                            , hiddenLabel = Some(messages("supplementary.previousDocuments.remove.hint",
-                                messages("supplementary.previousDocuments." + document.documentCategory),
+                            , hiddenLabel = Some(messages("declaration.previousDocuments.remove.hint",
+                                messages("declaration.previousDocuments." + document.documentCategory),
                                 document.documentType,
                                 document.documentReference)))),
                         classes = "govuk-table__cell--numeric"
@@ -86,16 +86,16 @@
             },
             head = Some(List(
                 HeadCell(
-                    content = Text(messages("supplementary.previousDocuments.documentCategory.label"))
+                    content = Text(messages("declaration.previousDocuments.documentCategory.label"))
                 ),
                 HeadCell(
-                    content = Text(messages("supplementary.previousDocuments.documentType.label"))
+                    content = Text(messages("declaration.previousDocuments.documentType.label"))
                 ),
                 HeadCell(
-                    content = Text(messages("supplementary.previousDocuments.documentReference.label"))
+                    content = Text(messages("declaration.previousDocuments.documentReference.label"))
                 ),
                 HeadCell(
-                    content = Text(messages("supplementary.previousDocuments.goodsItemIdentifier.label"))
+                    content = Text(messages("declaration.previousDocuments.goodsItemIdentifier.label"))
                 ),
                 HeadCell()
             ))
@@ -113,19 +113,19 @@
             RadioItem(
                 id = Some("temporary-storage"),
                 value = Some(TemporaryStorage),
-                content = Text(messages("supplementary.previousDocuments.X")),
+                content = Text(messages("declaration.previousDocuments.X")),
                 checked = form("documentCategory").value.contains(TemporaryStorage)
             ),
             RadioItem(
                 id = Some("simplified-declaration"),
                 value = Some(SimplifiedDeclaration),
-                content = Text(messages("supplementary.previousDocuments.Y")),
+                content = Text(messages("declaration.previousDocuments.Y")),
                 checked = form("documentCategory").value.contains(SimplifiedDeclaration)
             ),
             RadioItem(
                 id = Some("related-document"),
                 value = Some(RelatedDocument),
-                content = Text(messages("supplementary.previousDocuments.Z")),
+                content = Text(messages("declaration.previousDocuments.Z")),
                 checked = form("documentCategory").value.contains(RelatedDocument)
             )
         ),
@@ -136,10 +136,10 @@
 @documentType = {
     @components.fields.field_accessible_autocomplete(
         field = form("documentType"),
-        label = messages("supplementary.previousDocuments.documentType"),
+        label = messages("declaration.previousDocuments.documentType"),
         labelClass = Some("govuk-label--m"),
         hintText = None,
-        emptySelectValue = messages("supplementary.previousDocuments.documentType.empty"),
+        emptySelectValue = messages("declaration.previousDocuments.documentType.empty"),
         items = AutoCompleteItem.fromDocumentType(DocumentType.allDocuments)
     )
 }
@@ -147,21 +147,21 @@
 @documentReference = {
     @exportsInputText(
         field = form("documentReference"),
-        labelKey = "supplementary.previousDocuments.documentReference",
-        hintKey = Some("supplementary.previousDocuments.documentReference.hint")
+        labelKey = "declaration.previousDocuments.documentReference",
+        hintKey = Some("declaration.previousDocuments.documentReference.hint")
     )
 }
 
 @goodsItemIdentifier = {
     @exportsInputText(
         field = form("goodsItemIdentifier"),
-        labelKey = "supplementary.previousDocuments.goodsItemIdentifier",
-        hintKey = Some("supplementary.previousDocuments.goodsItemIdentifier.hint")
+        labelKey = "declaration.previousDocuments.goodsItemIdentifier",
+        hintKey = Some("declaration.previousDocuments.goodsItemIdentifier.hint")
     )
 }
 
 @govukLayout(
-    title = Title("supplementary.previousDocuments.title", "supplementary.consignmentReferences.heading"),
+    title = Title("declaration.previousDocuments.title", "supplementary.consignmentReferences.heading"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(navigationForm, mode)))
 ) {
 
@@ -173,7 +173,7 @@
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(
-                content = Text(messages("supplementary.previousDocuments.title")),
+                content = Text(messages("declaration.previousDocuments.title")),
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
@@ -185,7 +185,7 @@
                 documentReference,
                 goodsItemIdentifier,
                 tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
-                addButton(label = "site.add", hiddenLabel = Some(messages("supplementary.previousDocuments.add.hint"))),
+                addButton(label = "site.add", hiddenLabel = Some(messages("declaration.previousDocuments.add.hint"))),
                 saveButtons()
             ))
         ))
