@@ -45,5 +45,5 @@
     label = buildLabel,
     hint = hintKey.map(key => Hint(content = Text(messages(key)))),
     errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message)))),
-    classes = defaultInputClasses + inputClasses.map(clazz => s" $clazz").getOrElse("")
+    classes = inputClasses.map(clazz => s" $clazz").getOrElse(defaultInputClasses)
 ))
