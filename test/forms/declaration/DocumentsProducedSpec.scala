@@ -21,8 +21,8 @@ import forms.common.Date._
 import forms.common.DateSpec.{correctDate, correctDateJSON, incorrectDate}
 import forms.declaration.additionaldocuments.DocumentWriteOff._
 import forms.declaration.additionaldocuments.DocumentWriteOffSpec._
-import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
 import forms.declaration.additionaldocuments.DocumentsProduced._
+import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString, JsValue, Json}
@@ -101,14 +101,6 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
         "contains digits" in {
 
           val input = JsObject(Map(documentStatusKey -> JsString("A4")))
-          val expectedErrors = Seq(FormError(documentStatusKey, "declaration.addDocument.documentStatus.error"))
-
-          testFailedValidationErrors(input, expectedErrors)
-        }
-
-        "contains lower case letters" in {
-
-          val input = JsObject(Map(documentStatusKey -> JsString("Ab")))
           val expectedErrors = Seq(FormError(documentStatusKey, "declaration.addDocument.documentStatus.error"))
 
           testFailedValidationErrors(input, expectedErrors)
@@ -216,6 +208,28 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
 
         form.errors mustBe empty
       }
+    }
+
+    "convert input to upper case" when {
+
+      "provided with document type code in lower case" in {
+
+        val input = JsObject(Map(documentTypeCodeKey -> JsString("ab12")))
+        val form = DocumentsProduced.form.bind(input)
+
+        form.errors mustBe empty
+        form.value.flatMap(_.documentTypeCode) must be(Some("AB12"))
+      }
+
+      "provided with document status in lower case" in {
+
+        val input = JsObject(Map(documentStatusKey -> JsString("Ab")))
+        val form = DocumentsProduced.form.bind(input)
+
+        form.errors mustBe empty
+        form.value.flatMap(_.documentStatus) must be(Some("AB"))
+      }
+
     }
   }
 }

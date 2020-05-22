@@ -65,7 +65,7 @@ object DocumentsProduced extends DeclarationPage {
         text()
           .verifying("declaration.addDocument.documentIdentifier.error", nonEmpty and isAlphanumericWithAllowedSpecialCharacters and noLongerThan(35))
       ),
-      documentStatusKey -> optional(text().verifying("declaration.addDocument.documentStatus.error", noLongerThan(2) and isAllCapitalLetter)),
+      documentStatusKey -> optional(text().verifying("declaration.addDocument.documentStatus.error", noLongerThan(2) and isAlphabetic)),
       documentStatusReasonKey -> optional(
         text().verifying("declaration.addDocument.documentStatusReason.error", noLongerThan(35) and isAlphanumeric)
       ),
@@ -75,7 +75,26 @@ object DocumentsProduced extends DeclarationPage {
       ),
       dateOfValidityKey -> optional(Date.mapping),
       documentWriteOffKey -> optional(DocumentWriteOff.mapping)
-    )(DocumentsProduced.apply)(DocumentsProduced.unapply)
+    )(form2data)(DocumentsProduced.unapply)
+
+  private def form2data(
+    documentTypeCode: Option[String],
+    documentIdentifier: Option[String],
+    documentStatus: Option[String],
+    documentStatusReason: Option[String],
+    issuingAuthorityName: Option[String],
+    dateOfValidity: Option[Date],
+    documentWriteOff: Option[DocumentWriteOff]
+  ): DocumentsProduced =
+    new DocumentsProduced(
+      documentTypeCode.map(_.toUpperCase),
+      documentIdentifier,
+      documentStatus.map(_.toUpperCase),
+      documentStatusReason,
+      issuingAuthorityName,
+      dateOfValidity,
+      documentWriteOff
+    )
 
   def form(): Form[DocumentsProduced] = Form(mapping)
 
