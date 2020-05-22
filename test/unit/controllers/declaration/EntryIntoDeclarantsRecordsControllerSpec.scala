@@ -17,9 +17,9 @@
 package unit.controllers.declaration
 
 import controllers.declaration.EntryIntoDeclarantsRecordsController
-import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.EntryIntoDeclarantsRecords
+import forms.common.{Eori, YesNoAnswer}
+import forms.declaration.{EntryIntoDeclarantsRecords, PersonPresentingGoodsDetails}
 import models.DeclarationType._
 import models.{ExportsDeclaration, Mode}
 import org.mockito.ArgumentCaptor
@@ -163,6 +163,20 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
       }
 
       "provided with 'Yes' answer" should {
+
+        "update Cache with PersonPresentingGoodsDetails left unchanged" in {
+
+          val cachedParties = request.cacheModel.parties.copy(personPresentingGoodsDetails = Some(PersonPresentingGoodsDetails(Eori("GB1234567890"))))
+          withNewCaching(request.cacheModel.copy(parties = cachedParties))
+          val correctForm = Json.toJson(Map(EntryIntoDeclarantsRecords.fieldName -> YesNoAnswers.yes))
+
+          controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
+
+          val modelPassedToCache = theModelPassedToCacheUpdate
+          modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe Some(YesNoAnswer(YesNoAnswers.yes))
+          modelPassedToCache.parties.personPresentingGoodsDetails mustBe Some(PersonPresentingGoodsDetails(Eori("GB1234567890")))
+        }
+
         "redirect to Person Presenting the Goods page" in {
 
           withNewCaching(request.cacheModel)
@@ -175,6 +189,20 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
       }
 
       "provided with 'No' answer" should {
+
+        "update Cache with PersonPresentingGoodsDetails set to None" in {
+
+          val cachedParties = request.cacheModel.parties.copy(personPresentingGoodsDetails = Some(PersonPresentingGoodsDetails(Eori("GB1234567890"))))
+          withNewCaching(request.cacheModel.copy(parties = cachedParties))
+          val correctForm = Json.toJson(Map(EntryIntoDeclarantsRecords.fieldName -> YesNoAnswers.no))
+
+          controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
+
+          val modelPassedToCache = theModelPassedToCacheUpdate
+          modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe Some(YesNoAnswer(YesNoAnswers.no))
+          modelPassedToCache.parties.personPresentingGoodsDetails mustBe None
+        }
+
         "redirect to Declarant Details page" in {
 
           withNewCaching(request.cacheModel)
