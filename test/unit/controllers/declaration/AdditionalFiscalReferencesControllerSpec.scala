@@ -18,12 +18,14 @@ package unit.controllers.declaration
 
 import controllers.declaration.{routes, AdditionalFiscalReferencesController}
 import controllers.util.Remove
-import forms.Choice
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import models.declaration.ExportItem
 import models.{DeclarationType, ExportsDeclaration, Mode}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.mvc.Result
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import unit.mock.{ErrorHandlerMocks, ItemActionMocks}
 import views.html.declaration.additional_fiscal_references
@@ -34,7 +36,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
 
   trait SetUp {
 
-    val additionalFiscalReferencesPage = new additional_fiscal_references(mainTemplate)
+    val additionalFiscalReferencesPage = mock[additional_fiscal_references]
 
     val controller = new AdditionalFiscalReferencesController(
       mockItemAction,
@@ -48,6 +50,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
     setupErrorHandler()
     authorizedUser()
 
+    when(additionalFiscalReferencesPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   "Additional fiscal references controller" should {

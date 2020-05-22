@@ -41,83 +41,112 @@
 @import views.Title
 @import controllers.navigation.{Navigator, ItemId}
 @import models.requests.JourneyRequest
+@import controllers.declaration.routes._
+@import controllers.navigation.Navigator
+@import forms.DeclarationPage
+@import forms.declaration.Document
+@import forms.declaration.Document.AllowedValues._
+@import models.requests.JourneyRequest
+@import services.DocumentType
+@import services.view.AutoCompleteItem
+@import views.components.gds.Styles._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.html.components.gds._
+@import play.twirl.api.HtmlFormat
+@import scala.collection.immutable
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukFieldset: GovukFieldset,
+        govukButton: GovukButton,
+        govukTable : GovukTable,
+        govukRadios: GovukRadios,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        pageTitle: pageTitle,
+        exportsInputText: exportsInputText,
+        tariffDetails: tariffDetails,
+        addButton: addButton,
+        saveButtons: saveButtons,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, itemId:String, form: Form[AdditionalFiscalReference], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
 
+@removeButton(value: String) = {
+    <button class="govuk-button govuk-button--secondary govuk-!-margin-0" type="submit" formmethod="post" formaction="@routes.AdditionalFiscalReferencesController.removeReference(mode, itemId, value)">
+        <span aria-hidden="true">@messages("site.remove")</span>
+        <span class="govuk-visually-hidden">@{messages("declaration.additionalFiscalReferences.remove.hint", value)}</span>
+    </button>
+}
+
 @referenceTable = {
-    @if(additionalReferences.nonEmpty){
-        <div class="field-group mb-2">
-            <table id="removable_elements">
-
-                <thead>
-                    <tr>
-                        <th id="@messages("declaration.additionalFiscalReferences.numbers.header")-heading" colspan="2">@messages("declaration.additionalFiscalReferences.numbers.header")</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                @for((elem, index) <- additionalReferences.map(_.asString).zipWithIndex) {
-                    <tr id="removable_elements__row@index">
-                        <td id="removable_elements-row@index-label">@{elem}</td>
-                        <td id="removable_elements-row@index-remove_button">
-                            <button class="remove button--secondary" type="submit" formmethod="post" formaction="@routes.AdditionalFiscalReferencesController.removeReference(mode, itemId, elem)">
-                                <span aria-hidden="true">@messages("site.remove")</span>
-                                <span class="visuallyhidden">@{messages("declaration.additionalFiscalReferences.remove.hint", elem)}</span>
-                            </button>
-                        </td>
-                    </tr>
-                }
-                </tbody>
-            </table>
-        </div>
+    @if(additionalReferences.nonEmpty) {
+        @govukTable(Table(
+            rows = additionalReferences.zipWithIndex.map { case (reference, index) =>
+                Seq(
+                    TableRow(
+                        content = Text(reference.asString)
+                    ),
+                    TableRow(
+                        content = HtmlContent(removeButton(reference.asString))
+                    )
+                )
+            },
+            head = Some(List(
+                HeadCell(
+                    content = Text(messages("declaration.additionalFiscalReferences.numbers.header")),
+                    colspan = Some(2)
+                )
+            ))
+        ))
     }
 }
 
-@tariffBody = { @Html(messages("declaration.type.fiscalInformationSummaryText", components.details_content_link())) }
-
-@main_template(
-    title = Title("declaration.additionalFiscalReferences.title", "declaration.fiscalInformation.header")
-) {
-
-    @components.back_link(Navigator.backLink(AdditionalFiscalReference, mode, ItemId(itemId)), mode)
-
-    @components.error_summary(form.errors)
-
-    @components.heading(
-        title = messages("declaration.additionalFiscalReferences.title"),
-        sectionHeader = messages("declaration.fiscalInformation.header")
+@inputFields = {
+    @components.fields.field_accessible_autocomplete(
+        field = form("country"),
+        label = messages("declaration.additionalFiscalReferences.country"),
+        labelClass = Some("govuk-label--m"),
+        hintText = None,
+        emptySelectValue = messages("declaration.additionalFiscalReferences.country.empty"),
+        items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
     )
 
-    @helper.form(routes.AdditionalFiscalReferencesController.saveReferences(mode, itemId), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+    @exportsInputText(
+        field = form("reference"),
+        labelKey = "declaration.additionalFiscalReferences.reference"
+    )
+}
+@tariffBody = { @Html(messages("declaration.type.fiscalInformationSummaryText", components.details_content_link())) }
 
-        @referenceTable
+@govukLayout(
+    title = Title("declaration.additionalFiscalReferences.title", "declaration.fiscalInformation.header"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(AdditionalFiscalReference, mode, ItemId(itemId))))
+    ) {
 
-        <div id="country-of-dispatch-field">
-            @components.fields.field_autocomplete(
-                form("country"),
-                messages("declaration.additionalFiscalReferences.country"),
-                Some("form-label-bold"),
-                None,
-                messages("declaration.additionalFiscalReferences.country.empty"),
-                AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
-            )
-        </div>
+    @formHelper(action = routes.AdditionalFiscalReferencesController.saveReferences(mode, itemId), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-        @components.fields.field_text(
-            field = form("reference"),
-            label = Some(messages("declaration.additionalFiscalReferences.reference")),
-            hint = None,
-            labelClass = Some("bold-small")
-        )
+        @sectionHeader(messages("declaration.fiscalInformation.header"))
 
-        @components.details(messages("site.details.summary_text_this")){
-            @tariffBody
-        }
 
-        @components.add_save_button(addHint = "declaration.additionalFiscalReferences.add.hint")
-        @components.buttons.save_and_return_later_button()
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.additionalFiscalReferences.title")),
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+                referenceTable,
+                inputFields,
+                tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+                addButton(label = "site.add", hiddenLabel = Some(messages("declaration.additionalFiscalReferences.add.hint"))),
+                saveButtons()
+            ))
+        ))
+
     }
+
 }
