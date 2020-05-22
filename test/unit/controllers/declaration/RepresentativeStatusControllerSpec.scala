@@ -17,8 +17,10 @@
 package unit.controllers.declaration
 
 import controllers.declaration.RepresentativeStatusController
-import forms.declaration.RepresentativeStatus
-import models.{DeclarationType, Mode}
+import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.{IsExs, RepresentativeStatus}
+import models.DeclarationType._
+import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -110,7 +112,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
       }
     }
 
-    onJourney(DeclarationType.SUPPLEMENTARY) { request =>
+    onJourney(SUPPLEMENTARY) { request =>
       "return 303 (SEE_OTHER) and redirect to consignee page" in {
 
         withNewCaching(request.cacheModel)
@@ -126,7 +128,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
       }
     }
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL, DeclarationType.CLEARANCE) { request =>
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { request =>
       "return 303 (SEE_OTHER) and redirect to carrier details page" in {
 
         withNewCaching(request.cacheModel)
@@ -139,6 +141,42 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
         thePageNavigatedTo mustBe controllers.declaration.routes.CarrierDetailsController.displayPage()
 
         verifyPage(0)
+      }
+    }
+
+    onClearance { request =>
+      "when user answered 'Yes' to the question of whether this is an EXS" should {
+        "return 303 (SEE_OTHER) and redirect to carrier details page" in {
+
+          val cachedParties = request.cacheModel.parties.copy(isExs = Some(IsExs(YesNoAnswers.yes)))
+          withNewCaching(request.cacheModel.copy(parties = cachedParties))
+
+          val correctForm = Json.toJson(RepresentativeStatus(Some(statusCode)))
+
+          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.CarrierDetailsController.displayPage()
+
+          verifyPage(0)
+        }
+      }
+
+      "when user answered 'No' to the question of whether this is an EXS" should {
+        "return 303 (SEE_OTHER) and redirect to consignee page" in {
+
+          val cachedParties = request.cacheModel.parties.copy(isExs = Some(IsExs(YesNoAnswers.no)))
+          withNewCaching(request.cacheModel.copy(parties = cachedParties))
+
+          val correctForm = Json.toJson(RepresentativeStatus(Some(statusCode)))
+
+          val result = controller.submitForm(Mode.Normal)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.ConsigneeDetailsController.displayPage()
+
+          verifyPage(0)
+        }
       }
     }
   }
