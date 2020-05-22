@@ -19,109 +19,178 @@
 @import forms.DeclarationPage
 @import forms.declaration.Document
 @import forms.declaration.Document.AllowedValues._
-@import uk.gov.hmrc.play.views.html._
-@import views.components.inputs.RadioOption
 @import models.requests.JourneyRequest
 @import services.DocumentType
 @import services.view.AutoCompleteItem
-@import views.Title
-@import views.components.fields.LabelledValue
+@import views.components.gds.Styles._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.{BackButton, Title}
+@import views.html.components.gds._
+@import play.twirl.api.HtmlFormat
+@import scala.collection.immutable
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukFieldset: GovukFieldset,
+        govukButton: GovukButton,
+        govukTable : GovukTable,
+        govukRadios: GovukRadios,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        pageTitle: pageTitle,
+        exportsInputText: exportsInputText,
+        tariffDetails: tariffDetails,
+        addButton: addButton,
+        removeButton: removeButton,
+        saveButtons: saveButtons,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @(mode: Mode, navigationForm: DeclarationPage, form: Form[Document], documents: Seq[Document])(implicit request: JourneyRequest[_], messages: Messages)
 
 @tariffBody = { @Html(messages("declaration.type.previousDocumentsSummaryText", components.details_content_link())) }
 
-@main_template(
-    title = Title("supplementary.previousDocuments.title", "supplementary.consignmentReferences.heading")
+@pageHint = {
+    <span class="govuk-hint">
+    @messages("declaration.previousDocuments.hint")
+    </span>
+}
+
+@documentsTable = {
+    @if(documents.nonEmpty) {
+        @govukTable(Table(
+            rows = documents.zipWithIndex.map { case (document, index) =>
+                Seq(
+                    TableRow(
+                        content = Text(messages("declaration.previousDocuments." + document.documentCategory))
+                    ),
+                    TableRow(
+                        content = Text(document.documentType)
+                    ),
+                    TableRow(
+                        content = Text(document.documentReference)
+                    ),
+                    TableRow(
+                        content = Text(document.goodsItemIdentifier.getOrElse(""))
+                    ),
+                    TableRow(
+                        content = HtmlContent(removeButton(
+                            value = Some(document.toJson.toString)
+                            , hiddenLabel = Some(messages("declaration.previousDocuments.remove.hint",
+                                messages("declaration.previousDocuments." + document.documentCategory),
+                                document.documentType,
+                                document.documentReference)))),
+                        classes = "govuk-table__cell--numeric"
+                    )
+                )
+            },
+            head = Some(List(
+                HeadCell(
+                    content = Text(messages("declaration.previousDocuments.documentCategory.label"))
+                ),
+                HeadCell(
+                    content = Text(messages("declaration.previousDocuments.documentType.label"))
+                ),
+                HeadCell(
+                    content = Text(messages("declaration.previousDocuments.documentReference.label"))
+                ),
+                HeadCell(
+                    content = Text(messages("declaration.previousDocuments.goodsItemIdentifier.label"))
+                ),
+                HeadCell()
+            ))
+        ))
+    }
+}
+
+@documentCategory = {
+    @govukRadios(Radios(
+        name = "documentCategory",
+        fieldset = Some(Fieldset(
+            legend = None
+        )),
+        items = Seq(
+            RadioItem(
+                id = Some("temporary-storage"),
+                value = Some(TemporaryStorage),
+                content = Text(messages("declaration.previousDocuments.X")),
+                checked = form("documentCategory").value.contains(TemporaryStorage)
+            ),
+            RadioItem(
+                id = Some("simplified-declaration"),
+                value = Some(SimplifiedDeclaration),
+                content = Text(messages("declaration.previousDocuments.Y")),
+                checked = form("documentCategory").value.contains(SimplifiedDeclaration)
+            ),
+            RadioItem(
+                id = Some("related-document"),
+                value = Some(RelatedDocument),
+                content = Text(messages("declaration.previousDocuments.Z")),
+                checked = form("documentCategory").value.contains(RelatedDocument)
+            )
+        ),
+        errorMessage = form("documentCategory").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+    ))
+}
+
+@documentType = {
+    @components.fields.field_accessible_autocomplete(
+        field = form("documentType"),
+        label = messages("declaration.previousDocuments.documentType"),
+        labelClass = Some("govuk-label--m"),
+        hintText = None,
+        emptySelectValue = messages("declaration.previousDocuments.documentType.empty"),
+        items = AutoCompleteItem.fromDocumentType(DocumentType.allDocuments)
+    )
+}
+
+@documentReference = {
+    @exportsInputText(
+        field = form("documentReference"),
+        labelKey = "declaration.previousDocuments.documentReference",
+        hintKey = Some("declaration.previousDocuments.documentReference.hint")
+    )
+}
+
+@goodsItemIdentifier = {
+    @exportsInputText(
+        field = form("goodsItemIdentifier"),
+        labelKey = "declaration.previousDocuments.goodsItemIdentifier",
+        hintKey = Some("declaration.previousDocuments.goodsItemIdentifier.hint"),
+        inputClasses = Some("govuk-input--width-2")
+    )
+}
+
+@govukLayout(
+    title = Title("declaration.previousDocuments.title", "supplementary.consignmentReferences.heading"),
+    backButton = Some(BackButton(messages("site.back"), Navigator.backLink(navigationForm, mode)))
 ) {
 
-    @components.back_link(Navigator.backLink(navigationForm, mode))
+    @formHelper(action = PreviousDocumentsController.savePreviousDocuments(mode), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-    @components.error_summary(form.errors)
+        @sectionHeader(messages("supplementary.consignmentReferences.heading"))
 
-    @components.heading(
-        sectionHeader = messages("supplementary.consignmentReferences.heading"),
-        title = messages("supplementary.previousDocuments.title"),
-        hint = messages("supplementary.previousDocuments.hint")
-    )
 
-    @helper.form(PreviousDocumentsController.savePreviousDocuments(mode), 'autoComplete -> "off") {
-        @helper.CSRF.formField
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.previousDocuments.title")),
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(immutable.Seq(
+                pageHint,
+                documentsTable,
+                documentCategory,
+                documentType,
+                documentReference,
+                goodsItemIdentifier,
+                tariffDetails(messages("site.details.summary_text_this"), HtmlContent(tariffBody)),
+                addButton(label = "site.add", hiddenLabel = Some(messages("declaration.previousDocuments.add.hint"))),
+                saveButtons()
+            ))
+        ))
 
-        @if(documents.nonEmpty){
-            <table class="form-group">
-                <caption>@messages("supplementary.previousDocuments")</caption>
-                <thead>
-                    <tr>
-                        <th scope="col">@messages("supplementary.previousDocuments.documentCategory.label")</th>
-                        <th scope="col">@messages("supplementary.previousDocuments.documentType.label")</th>
-                        <th scope="col">@messages("supplementary.previousDocuments.documentReference.label")</th>
-                        <th scope="col">@messages("supplementary.previousDocuments.goodsItemIdentifier.label")</th>
-                        <td></td>
-                    </tr>
-                </thead>
-                <tbody>
-                @documents.zipWithIndex.map { case (document, index) =>
-                <tr>
-                    <th scope="row">@messages("supplementary.previousDocuments." + document.documentCategory)</th>
-                    <td>@document.documentType</td>
-                    <td>@document.documentReference</td>
-                    <td>@document.goodsItemIdentifier.getOrElse("")</td>
-                    <td>
-                        @components.buttons.remove_button(element = LabelledValue(document.toJson),
-                            hint=messages("supplementary.previousDocuments.remove.hint",
-                                messages("supplementary.previousDocuments." + document.documentCategory),
-                                document.documentType,
-                                document.documentReference))
-                </button>
-                </td>
-                </tr>
-                }
-                </tbody>
-            </table>
-        }
-
-        @components.fields.field_radio(
-            field = form("documentCategory"),
-            legend = messages(""),
-            inputs = Seq(
-                RadioOption("Temporary storage", TemporaryStorage, messages("supplementary.previousDocuments.X")),
-                RadioOption("Simplified declaration", SimplifiedDeclaration, messages("supplementary.previousDocuments.Y")),
-                RadioOption("Related document", RelatedDocument, messages("supplementary.previousDocuments.Z"))
-            )
-        )
-
-        <div id="document-type-field">
-            @components.fields.field_autocomplete(
-                form("documentType"),
-                "supplementary.previousDocuments.documentType",
-                Some("form-label-bold"),
-                None,
-                messages("supplementary.previousDocuments.documentType.empty"),
-                AutoCompleteItem.fromDocumentType(DocumentType.allDocuments)
-            )
-        </div>
-
-        @components.fields.field_text(
-            field = form("documentReference"),
-            label = Some(messages("supplementary.previousDocuments.documentReference")),
-            hint = Some(messages("supplementary.previousDocuments.documentReference.hint")),
-            labelClass = Some("bold-small")
-        )
-
-        @components.fields.field_text(
-            field = form("goodsItemIdentifier"),
-            label = Some(messages("supplementary.previousDocuments.goodsItemIdentifier")),
-            hint = Some(messages("supplementary.previousDocuments.goodsItemIdentifier.hint")),
-            labelClass = Some("bold-small")
-        )
-
-        @components.details(messages("site.details.summary_text_this")){
-          @tariffBody
-        }
-        @components.add_save_button(addHint = "supplementary.previousDocuments.add.hint")
-        @components.buttons.save_and_return_later_button()
     }
+
 }

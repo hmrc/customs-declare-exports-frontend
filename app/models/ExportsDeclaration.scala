@@ -124,6 +124,7 @@ case class ExportsDeclaration(
   }
 
   def isExs: Boolean = parties.isExs.exists(_.isExs == YesNoAnswers.yes)
+  def isNotExs: Boolean = !isExs
 
   def isEntryIntoDeclarantsRecords: Boolean = parties.isEntryIntoDeclarantsRecords.exists(_.answer == YesNoAnswers.yes)
   def isNotEntryIntoDeclarantsRecords: Boolean = !isEntryIntoDeclarantsRecords
