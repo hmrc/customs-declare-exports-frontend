@@ -34,7 +34,7 @@ import views.tags.ViewTest
 @ViewTest
 class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with Stubs with Injector {
 
-  private val page = new previous_documents(mainTemplate)
+  private val page = instanceOf[previous_documents]
   private val form: Form[Document] = Document.form()
   private def createView(
     mode: Mode = Mode.Normal,
@@ -51,21 +51,21 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
 
     "have proper messages for labels" in {
       val messages = instanceOf[MessagesApi].preferred(journeyRequest())
-      messages must haveTranslationFor("supplementary.previousDocuments.documentCategory.label")
-      messages must haveTranslationFor("supplementary.previousDocuments.documentType.label")
-      messages must haveTranslationFor("supplementary.previousDocuments.documentReference.label")
-      messages must haveTranslationFor("supplementary.previousDocuments.goodsItemIdentifier.label")
-      messages must haveTranslationFor("supplementary.previousDocuments.X")
-      messages must haveTranslationFor("supplementary.previousDocuments.Y")
-      messages must haveTranslationFor("supplementary.previousDocuments.Z")
+      messages must haveTranslationFor("declaration.previousDocuments.documentCategory.label")
+      messages must haveTranslationFor("declaration.previousDocuments.documentType.label")
+      messages must haveTranslationFor("declaration.previousDocuments.documentReference.label")
+      messages must haveTranslationFor("declaration.previousDocuments.goodsItemIdentifier.label")
+      messages must haveTranslationFor("declaration.previousDocuments.X")
+      messages must haveTranslationFor("declaration.previousDocuments.Y")
+      messages must haveTranslationFor("declaration.previousDocuments.Z")
       messages must haveTranslationFor("site.remove")
       messages must haveTranslationFor("supplementary.consignmentReferences.heading")
-      messages must haveTranslationFor("supplementary.previousDocuments.documentType")
-      messages must haveTranslationFor("supplementary.previousDocuments.documentReference")
-      messages must haveTranslationFor("supplementary.previousDocuments.goodsItemIdentifier")
-      messages must haveTranslationFor("supplementary.previousDocuments.goodsItemIdentifier.hint")
-      messages must haveTranslationFor("supplementary.previousDocuments.goodsItemIdentifier.error")
-      messages must haveTranslationFor("supplementary.previousDocuments.documentCategory.label")
+      messages must haveTranslationFor("declaration.previousDocuments.documentType")
+      messages must haveTranslationFor("declaration.previousDocuments.documentReference")
+      messages must haveTranslationFor("declaration.previousDocuments.goodsItemIdentifier")
+      messages must haveTranslationFor("declaration.previousDocuments.goodsItemIdentifier.hint")
+      messages must haveTranslationFor("declaration.previousDocuments.goodsItemIdentifier.error")
+      messages must haveTranslationFor("declaration.previousDocuments.documentCategory.label")
     }
 
     "display same page title as header" in {
@@ -81,34 +81,28 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
 
       val view = createView(form = Document.form.fill(Document("", "", "", Some(""))))
 
-      val optionOne = view.getElementById("Temporary storage")
-      optionOne.attr("checked") mustBe empty
+      view.getElementById("temporary-storage") mustNot beSelected
+      view.getElementsByAttributeValue("for", "temporary-storage").text() mustBe messages("declaration.previousDocuments.X")
 
-      view.getElementById("Temporary storage-label").text() must be("supplementary.previousDocuments.X")
+      view.getElementById("simplified-declaration") mustNot beSelected
+      view.getElementsByAttributeValue("for", "simplified-declaration").text() mustBe messages("declaration.previousDocuments.Y")
 
-      val optionTwo = view.getElementById("Simplified declaration")
-      optionTwo.attr("checked") mustBe empty
-
-      view.getElementById("Simplified declaration-label").text() must be("supplementary.previousDocuments.Y")
-
-      val optionThree = view.getElementById("Related document")
-      optionThree.attr("checked") mustBe empty
-
-      view.getElementById("Related document-label").text() must be("supplementary.previousDocuments.Z")
+      view.getElementById("related-document") mustNot beSelected
+      view.getElementsByAttributeValue("for", "related-document").text() mustBe messages("declaration.previousDocuments.Z")
     }
 
     "display empty input with label for Previous document code" in {
-      view.getElementById("documentType-label").text() must be("supplementary.previousDocuments.documentType")
+      view.getElementsByAttributeValue("for", "documentType").text() must be("declaration.previousDocuments.documentType")
       view.getElementById("documentType").attr("value") mustBe empty
     }
 
     "display empty input with label for Previous DUCR or MUCR" in {
-      view.getElementById("documentReference-label").text() must be("supplementary.previousDocuments.documentReference")
+      view.getElementsByAttributeValue("for", "documentReference").text() must be("declaration.previousDocuments.documentReference")
       view.getElementById("documentReference").attr("value") mustBe empty
     }
 
     "display empty input with label for Previous Goods Identifier" in {
-      view.getElementById("goodsItemIdentifier-label").text() must be("supplementary.previousDocuments.goodsItemIdentifier")
+      view.getElementsByAttributeValue("for", "goodsItemIdentifier").text() must be("declaration.previousDocuments.goodsItemIdentifier")
       view.getElementById("goodsItemIdentifier").attr("value") mustBe empty
     }
 
@@ -149,7 +143,7 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
 
     "display both 'Add' and 'Save and continue' button on page" in {
       val addButton = view.getElementById("add")
-      addButton.text() must be("site.add supplementary.previousDocuments.add.hint")
+      addButton.text() must be("site.adddeclaration.previousDocuments.add.hint")
 
       val saveButton = view.getElementById("submit")
       saveButton.text() must be("site.save_and_continue")
@@ -167,42 +161,27 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
 
       val view = createView(form = Document.form.fill(Document("X", "", "", Some(""))))
 
-      val optionOne = view.getElementById("Temporary storage")
-      optionOne.attr("checked") must be("checked")
-
-      val optionTwo = view.getElementById("Simplified declaration")
-      optionTwo.attr("checked") mustBe empty
-
-      val optionThree = view.getElementById("Related document")
-      optionThree.attr("checked") mustBe empty
+      view.getElementById("temporary-storage") must beSelected
+      view.getElementById("simplified-declaration") mustNot beSelected
+      view.getElementById("related-document") mustNot beSelected
     }
 
     "display selected second radio button - Simplified Declaration (Y)" in {
 
       val view = createView(form = Document.form.fill(Document("Y", "", "", Some(""))))
 
-      val optionOne = view.getElementById("Temporary storage")
-      optionOne.attr("checked") mustBe empty
-
-      val optionTwo = view.getElementById("Simplified declaration")
-      optionTwo.attr("checked") must be("checked")
-
-      val optionThree = view.getElementById("Related document")
-      optionThree.attr("checked") mustBe empty
+      view.getElementById("temporary-storage") mustNot beSelected
+      view.getElementById("simplified-declaration") must beSelected
+      view.getElementById("related-document") mustNot beSelected
     }
 
     "display selected third radio button - Previous Documents (Z)" in {
 
       val view = createView(form = Document.form.fill(Document("Z", "", "", Some(""))))
 
-      val optionOne = view.getElementById("Temporary storage")
-      optionOne.attr("checked") mustBe empty
-
-      val optionTwo = view.getElementById("Simplified declaration")
-      optionTwo.attr("checked") mustBe empty
-
-      val optionThree = view.getElementById("Related document")
-      optionThree.attr("checked") must be("checked")
+      view.getElementById("temporary-storage") mustNot beSelected
+      view.getElementById("simplified-declaration") mustNot beSelected
+      view.getElementById("related-document") must beSelected
     }
 
     "display data in Document type input" in {
@@ -236,14 +215,9 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
 
       val view = createView(form = Document.form.fill(Document("X", "Test", "Test", Some("Test"))))
 
-      val optionOne = view.getElementById("Temporary storage")
-      optionOne.attr("checked") must be("checked")
-
-      val optionTwo = view.getElementById("Simplified declaration")
-      optionTwo.attr("checked") mustBe empty
-
-      val optionThree = view.getElementById("Related document")
-      optionThree.attr("checked") mustBe empty
+      view.getElementById("temporary-storage") must beSelected
+      view.getElementById("simplified-declaration") mustNot beSelected
+      view.getElementById("related-document") mustNot beSelected
 
       view.getElementById("documentType").attr("value") must be("Test")
       view.getElementById("documentReference").attr("value") must be("Test")
@@ -256,20 +230,19 @@ class PreviousDocumentsViewSpec extends UnitViewSpec with ExportsTestData with S
       val view = createView(Mode.Normal, form, prevDocuments)
 
       // table header
-      view.select("form>table>caption").text() must be("supplementary.previousDocuments")
-      view.select("form>table>thead>tr>th:nth-child(1)").text() must be("supplementary.previousDocuments.documentCategory.label")
-      view.select("form>table>thead>tr>th:nth-child(2)").text() must be("supplementary.previousDocuments.documentType.label")
-      view.select("form>table>thead>tr>th:nth-child(3)").text() must be("supplementary.previousDocuments.documentReference.label")
-      view.select("form>table>thead>tr>th:nth-child(4)").text() must be("supplementary.previousDocuments.goodsItemIdentifier.label")
+      view.select("table>thead>tr>th:nth-child(1)").text() must be("declaration.previousDocuments.documentCategory.label")
+      view.select("table>thead>tr>th:nth-child(2)").text() must be("declaration.previousDocuments.documentType.label")
+      view.select("table>thead>tr>th:nth-child(3)").text() must be("declaration.previousDocuments.documentReference.label")
+      view.select("table>thead>tr>th:nth-child(4)").text() must be("declaration.previousDocuments.goodsItemIdentifier.label")
       // remove button column
       view.select("form>table>thead>tr>td").text() must be("")
 
       // row
-      view.select("form>table>tbody>tr>th:nth-child(1)").text() must be("supplementary.previousDocuments.X")
-      view.select("form>table>tbody>tr>td:nth-child(2)").text() must be("1")
-      view.select("form>table>tbody>tr>td:nth-child(3)").text() must be("A")
-      view.select("form>table>tbody>tr>td:nth-child(4)").text() must be("1")
-      view.select("form>table>tbody>tr>td:nth-child(5)>button").text() must be("site.remove supplementary.previousDocuments.remove.hint")
+      view.select("table>tbody>tr>td:nth-child(1)").text() must be("declaration.previousDocuments.X")
+      view.select("table>tbody>tr>td:nth-child(2)").text() must be("1")
+      view.select("table>tbody>tr>td:nth-child(3)").text() must be("A")
+      view.select("table>tbody>tr>td:nth-child(4)").text() must be("1")
+      view.select("table>tbody>tr>td:nth-child(5)>button").text() must be("site.removedeclaration.previousDocuments.remove.hint")
     }
   }
 }

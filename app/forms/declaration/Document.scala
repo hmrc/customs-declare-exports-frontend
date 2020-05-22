@@ -38,18 +38,18 @@ object Document extends DeclarationPage {
 
   val mapping = Forms.mapping(
     "documentCategory" -> text()
-      .verifying("supplementary.previousDocuments.documentCategory.error.empty", nonEmpty)
-      .verifying("supplementary.previousDocuments.documentCategory.error.incorrect", isEmpty or isContainedIn(correctDocumentCategories)),
+      .verifying("declaration.previousDocuments.documentCategory.error.empty", nonEmpty)
+      .verifying("declaration.previousDocuments.documentCategory.error.incorrect", isEmpty or isContainedIn(correctDocumentCategories)),
     "documentType" -> text()
-      .verifying("supplementary.previousDocuments.documentType.empty", nonEmpty)
-      .verifying("supplementary.previousDocuments.documentType.error", isEmpty or isContainedIn(DocumentType.allDocuments.map(_.code))),
+      .verifying("declaration.previousDocuments.documentType.empty", nonEmpty)
+      .verifying("declaration.previousDocuments.documentType.error", isEmpty or isContainedIn(DocumentType.allDocuments.map(_.code))),
     "documentReference" -> text()
-      .verifying("supplementary.previousDocuments.documentReference.empty", nonEmpty)
+      .verifying("declaration.previousDocuments.documentReference.empty", nonEmpty)
       .verifying(
-        "supplementary.previousDocuments.documentReference.error",
+        "declaration.previousDocuments.documentReference.error",
         isEmpty or (isAlphanumericWithSpecialCharacters(Set('-', '/', ':')) and noLongerThan(35))
       ),
-    "goodsItemIdentifier" -> optional(text().verifying("supplementary.previousDocuments.goodsItemIdentifier.error", isNumeric and noLongerThan(3)))
+    "goodsItemIdentifier" -> optional(text().verifying("declaration.previousDocuments.goodsItemIdentifier.error", isNumeric and noLongerThan(3)))
   )(Document.apply)(Document.unapply)
 
   def form(): Form[Document] = Form(mapping)

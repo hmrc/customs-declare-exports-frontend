@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.50
+// @version      1.52
 // @description  decs supported: (Std-Frontier A), (Occ-Frontier B), (Smp-Frontier C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Frontier J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -575,16 +575,16 @@ function previousDocuments(){
             case 'Z':
                 break;
             case 'J':
-                selectRadioOption(document.getElementById("documentCategory"), 1);
+                selectRadioOptionFromInputs(document.getElementsByName("documentCategory"), 1);
                 selectFromAutoPredict(document.getElementById('documentType-container'), "IF3");
                 document.getElementById('documentReference').value ='101SHIP2';
                 break;
             default:
-                selectRadioOption(document.getElementById("documentCategory"), 1);
+                selectRadioOptionFromInputs(document.getElementsByName("documentCategory"), 1);
                 selectFromAutoPredict(document.getElementById('documentType-container'), "DCS");
                 document.getElementById('documentReference').value ='9GB123456782317-BH1433A61';
         }
-        document.getElementsByClassName('button')[0].click()
+        document.getElementById('submit').click()
     }
 }
 
@@ -760,6 +760,11 @@ function commodityMeasurments(){
 }
 
 function additionalInformation(){
+    if (currentPageIs('/customs-declare-exports/declaration/items/.*/additional-information-required')) {
+        document.getElementById('required_Yes').checked = 'checked';
+        document.getElementById('submit').click()
+    }
+
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/additional-information')) {
         switch(getDeclaration()){
             case 'C':
