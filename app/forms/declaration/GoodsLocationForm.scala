@@ -44,7 +44,7 @@ object GoodsLocationForm extends DeclarationPage {
     * Country is in two first characters in Location Code
     */
   private val validateCountry: String => Boolean = (input: String) => {
-    val countryCode = input.take(2)
+    val countryCode = input.take(2).toUpperCase
     allCountries.exists(_.countryCode == countryCode)
   }
 
@@ -54,7 +54,7 @@ object GoodsLocationForm extends DeclarationPage {
   private val validateLocationType: String => Boolean = (input: String) => {
     val correctLocationType: Set[String] = Set("A", "B", "C", "D")
     val predicate = isContainedIn(correctLocationType)
-    input.drop(2).headOption.map(_.toString).exists(predicate)
+    input.drop(2).toUpperCase.headOption.map(_.toString).exists(predicate)
   }
 
   /**
@@ -63,7 +63,7 @@ object GoodsLocationForm extends DeclarationPage {
   private val validateQualifierCode: String => Boolean = (input: String) => {
     val correctQualifierCode: Set[String] = Set("U", "Y")
     val predicate = isContainedIn(correctQualifierCode)
-    input.drop(3).headOption.map(_.toString).exists(predicate)
+    input.drop(3).toUpperCase.headOption.map(_.toString).exists(predicate)
   }
 
   val mapping = Forms.mapping(
@@ -75,7 +75,9 @@ object GoodsLocationForm extends DeclarationPage {
           validateCountry and validateLocationType and validateQualifierCode and noShorterThan(10) and noLongerThan(17)
         )
       )
-  )(GoodsLocationForm.apply)(GoodsLocationForm.unapply)
+  )(form2Data)(GoodsLocationForm.unapply)
+
+  private def form2Data(code: String): GoodsLocationForm = GoodsLocationForm(code.toUpperCase)
 
   def form(): Form[GoodsLocationForm] = Form(mapping)
 }
