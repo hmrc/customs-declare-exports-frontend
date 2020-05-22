@@ -87,10 +87,12 @@
             rows = additionalReferences.zipWithIndex.map { case (reference, index) =>
                 Seq(
                     TableRow(
-                        content = Text(reference.asString)
+                        content = Text(reference.asString),
+                        attributes = Map("id" -> s"removable_elements-row$index-label")
                     ),
                     TableRow(
-                        content = HtmlContent(removeButton(reference.asString))
+                        content = HtmlContent(removeButton(reference.asString)),
+                        attributes = Map("id" -> s"removable_elements-row$index-remove_button")
                     )
                 )
             },
@@ -99,7 +101,8 @@
                     content = Text(messages("declaration.additionalFiscalReferences.numbers.header")),
                     colspan = Some(2)
                 )
-            ))
+            )),
+            attributes = Map("id" -> "removable_elements")
         ))
     }
 }
