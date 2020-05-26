@@ -86,7 +86,7 @@
             radioOption("europeanVesselIDNumber", EuropeanVesselIDNumber),
             radioOption("nameOfInlandWaterwayVessel", NameOfInlandWaterwayVessel)
         ),
-        errorMessage = form("meansOfTransportOnDepartureType").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        errorMessage = form("borderTransportType").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
     ))
 }
 
