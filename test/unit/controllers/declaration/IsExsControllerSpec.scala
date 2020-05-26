@@ -17,17 +17,22 @@
 package unit.controllers.declaration
 
 import controllers.declaration.IsExsController
-import forms.declaration.IsExs
-import models.{DeclarationType, Mode}
+import forms.common.Eori
+import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.consignor.ConsignorDetails
+import forms.declaration.{EntityDetails, IsExs}
+import models.{DeclarationType, ExportsDeclaration, Mode}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalatest.concurrent.ScalaFutures
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.declaration.is_exs
 
-class IsExsControllerSpec extends ControllerSpec {
+class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
 
   private val isExsPage = mock[is_exs]
 
@@ -47,7 +52,13 @@ class IsExsControllerSpec extends ControllerSpec {
     super.afterEach()
   }
 
-  "IsExsController" should {
+  private def theModelPassedToCacheUpdate: ExportsDeclaration = {
+    val modelCaptor = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
+    verify(mockExportsCacheService).update(modelCaptor.capture())(any())
+    modelCaptor.getValue
+  }
+
+  "IsExsController on displayPage" should {
 
     "return 200 (OK)" when {
 
@@ -69,10 +80,13 @@ class IsExsControllerSpec extends ControllerSpec {
         status(result) mustBe OK
       }
     }
+  }
 
-    "return 400 (BAD_REQUEST)" when {
+  "IsExsController on submit" when {
 
-      "answer is missing" in {
+    "answer is missing" should {
+
+      "return 400 (BAD_REQUEST)" in {
 
         withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE), withDeclarantIsExporter()))
 
@@ -84,13 +98,12 @@ class IsExsControllerSpec extends ControllerSpec {
       }
     }
 
-    "return 303 (SEE_OTHER) and redirect to Consignor Eori page" when {
-
-      "answer is Yes" in {
+    "answer is Yes" should {
+      "return 303 (SEE_OTHER) and redirect to Consignor Eori page" in {
 
         withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE)))
 
-        val correctForm = Json.toJson(IsExs("Yes"))
+        val correctForm = Json.toJson(IsExs(YesNoAnswers.yes))
 
         val result = controller.submit(Mode.Normal)(postRequest(correctForm))
 
@@ -100,13 +113,34 @@ class IsExsControllerSpec extends ControllerSpec {
       }
     }
 
-    "return 303 (SEE_OTHER) and redirect to Representative Agent page" when {
+    "answer is No" should {
+      "remove Carrier and Consignor Details from cache" in {
 
-      "answer is No and declarant is not an exporter" in {
+        withNewCaching(
+          aDeclaration(
+            withType(DeclarationType.CLEARANCE),
+            withCarrierDetails(eori = Some(Eori("GB1234567890"))),
+            withConsignorDetails(ConsignorDetails(EntityDetails(Some(Eori("GB111222333")), None)))
+          )
+        )
+
+        val correctForm = Json.toJson(IsExs(YesNoAnswers.no))
+
+        controller.submit(Mode.Normal)(postRequest(correctForm)).futureValue
+
+        val modelPassedToCache = theModelPassedToCacheUpdate
+        modelPassedToCache.parties.isExs mustBe Some(IsExs(YesNoAnswers.no))
+        modelPassedToCache.parties.carrierDetails mustBe None
+        modelPassedToCache.parties.consignorDetails mustBe None
+      }
+    }
+
+    "answer is No and declarant is not an exporter" should {
+      "return 303 (SEE_OTHER) and redirect to Representative Agent page" in {
 
         withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE), withDeclarantIsExporter("No")))
 
-        val correctForm = Json.toJson(IsExs("No"))
+        val correctForm = Json.toJson(IsExs(YesNoAnswers.no))
 
         val result = controller.submit(Mode.Normal)(postRequest(correctForm))
 
@@ -116,13 +150,12 @@ class IsExsControllerSpec extends ControllerSpec {
       }
     }
 
-    "return 303 (SEE_OTHER) and redirect to Consignee Details page" when {
-
-      "answer is No and declarant is an exporter" in {
+    "answer is No and declarant is an exporter" should {
+      "return 303 (SEE_OTHER) and redirect to Consignee Details page" in {
 
         withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE), withDeclarantIsExporter()))
 
-        val correctForm = Json.toJson(IsExs("No"))
+        val correctForm = Json.toJson(IsExs(YesNoAnswers.no))
 
         val result = controller.submit(Mode.Normal)(postRequest(correctForm))
 
@@ -131,5 +164,6 @@ class IsExsControllerSpec extends ControllerSpec {
           .displayPage(Mode.Normal)
       }
     }
+
   }
 }

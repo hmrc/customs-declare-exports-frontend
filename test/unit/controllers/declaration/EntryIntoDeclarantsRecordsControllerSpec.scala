@@ -58,13 +58,13 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
     super.afterEach()
   }
 
-  def theFormPassedToView: Form[YesNoAnswer] = {
+  private def theFormPassedToView: Form[YesNoAnswer] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
     verify(page).apply(any(), formCaptor.capture())(any(), any())
     formCaptor.getValue
   }
 
-  def theModelPassedToCacheUpdate: ExportsDeclaration = {
+  private def theModelPassedToCacheUpdate: ExportsDeclaration = {
     val modelCaptor = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
     verify(mockExportsCacheService).update(modelCaptor.capture())(any())
     modelCaptor.getValue

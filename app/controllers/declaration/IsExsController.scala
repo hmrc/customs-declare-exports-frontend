@@ -22,10 +22,9 @@ import forms.DeclarationPage
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.{ExporterDetails, IsExs}
 import javax.inject.Inject
-import models.DeclarationType.CLEARANCE
-import models.DeclarationType.DeclarationType
-import models.{ExportsDeclaration, Mode}
+import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -66,10 +65,14 @@ class IsExsController @Inject()(
     if (request.cacheModel.isDeclarantExporter) ExporterDetails else IsExs
 
   private def updateCache(answer: IsExs)(implicit request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
-    updateExportsDeclarationSyncDirect(model => {
-      val updatedParties = model.parties.copy(isExs = Some(answer))
+    updateExportsDeclarationSyncDirect { model =>
+      val updatedParties = answer.isExs match {
+        case YesNoAnswers.yes => model.parties.copy(isExs = Some(answer))
+        case YesNoAnswers.no  => model.parties.copy(isExs = Some(answer), carrierDetails = None, consignorDetails = None)
+      }
+
       model.copy(parties = updatedParties)
-    })
+    }
 
   private def nextPage(isExs: IsExs)(implicit request: JourneyRequest[_]): Mode => Call =
     isExs.isExs match {
