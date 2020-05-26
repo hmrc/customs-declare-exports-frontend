@@ -60,13 +60,13 @@ class EntryIntoDeclarantsRecordsController @Inject()(
   }
 
   private def updateCache(validData: YesNoAnswer)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
-    validData.answer match {
-      case YesNoAnswers.yes =>
-        updateExportsDeclarationSyncDirect(model => model.copy(parties = model.parties.copy(isEntryIntoDeclarantsRecords = Some(validData))))
-      case YesNoAnswers.no =>
-        updateExportsDeclarationSyncDirect(
-          model => model.copy(parties = model.parties.copy(isEntryIntoDeclarantsRecords = Some(validData), personPresentingGoodsDetails = None))
-        )
+    updateExportsDeclarationSyncDirect { model =>
+      val updatedParties = validData.answer match {
+        case YesNoAnswers.yes => model.parties.copy(isEntryIntoDeclarantsRecords = Some(validData))
+        case YesNoAnswers.no  => model.parties.copy(isEntryIntoDeclarantsRecords = Some(validData), personPresentingGoodsDetails = None)
+      }
+
+      model.copy(parties = updatedParties)
     }
 
   private def nextPage(answer: YesNoAnswer): Mode => Call =
