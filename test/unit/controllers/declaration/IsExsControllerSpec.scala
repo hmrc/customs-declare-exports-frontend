@@ -17,8 +17,8 @@
 package unit.controllers.declaration
 
 import controllers.declaration.IsExsController
-import forms.common.Eori
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.common.{Address, Eori}
 import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.{EntityDetails, IsExs}
 import models.{DeclarationType, ExportsDeclaration, Mode}
@@ -119,8 +119,22 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
         withNewCaching(
           aDeclaration(
             withType(DeclarationType.CLEARANCE),
-            withCarrierDetails(eori = Some(Eori("GB1234567890"))),
-            withConsignorDetails(ConsignorDetails(EntityDetails(Some(Eori("GB111222333")), None)))
+            withCarrierDetails(
+              eori = Some(Eori("GB1234567890")),
+              address = Some(
+                Address(fullName = "Full Name", addressLine = "Address Line", townOrCity = "Town or City", postCode = "AB12 3CD", country = "UK")
+              )
+            ),
+            withConsignorDetails(
+              ConsignorDetails(
+                EntityDetails(
+                  Some(Eori("GB111222333")),
+                  address = Some(
+                    Address(fullName = "Full Name", addressLine = "Address Line", townOrCity = "Town or City", postCode = "AB12 3CD", country = "UK")
+                  )
+                )
+              )
+            )
           )
         )
 
