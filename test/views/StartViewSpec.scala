@@ -51,8 +51,6 @@ class StartViewSpec extends UnitViewSpec with Stubs {
       messages must haveTranslationFor("startPage.useThisServiceTo.listItem.2")
       messages must haveTranslationFor("startPage.useThisServiceTo.listItem.3")
       messages must haveTranslationFor("startPage.useThisServiceTo.listItem.4")
-      messages must haveTranslationFor("startPage.useThisServiceTo.notice")
-      messages must haveTranslationFor("startPage.useThisServiceTo.notice.link")
       messages must haveTranslationFor("startPage.beforeYouStart.header")
       messages must haveTranslationFor("startPage.beforeYouStart.line.1")
       messages must haveTranslationFor("startPage.beforeYouStart.line.2")
@@ -119,15 +117,6 @@ class StartViewSpec extends UnitViewSpec with Stubs {
       view.getElementById("use-this-service-to-list").child(1).text() mustBe "startPage.useThisServiceTo.listItem.2"
       view.getElementById("use-this-service-to-list").child(2).text() mustBe "startPage.useThisServiceTo.listItem.3"
       view.getElementById("use-this-service-to-list").child(3).text() mustBe "startPage.useThisServiceTo.listItem.4"
-    }
-
-    "display notice in 'Use this service to' section" in {
-      view.getElementById("use-this-service-to-notice").text() must include("startPage.useThisServiceTo.notice")
-      view.getElementById("use-this-service-to-notice").text() must include("startPage.useThisServiceTo.notice.link")
-    }
-
-    "contain link to Customs Declarations Guidance in 'Use this service to' notice" in {
-      view.getElementById("use-this-service-to-notice").child(0) must haveHref(appConfig.customsDeclarationsGoodsTakenOutOfEuUrl)
     }
 
     "display 'Before you start' section" in {
