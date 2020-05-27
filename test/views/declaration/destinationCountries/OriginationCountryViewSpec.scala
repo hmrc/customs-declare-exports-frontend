@@ -46,7 +46,6 @@ class OriginationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
       val messages = realMessagesApi.preferred(request)
       messages must haveTranslationFor("declaration.originationCountry.title")
       messages must haveTranslationFor("declaration.originationCountry.heading")
-      messages must haveTranslationFor("declaration.originationCountry.question")
       messages must haveTranslationFor("declaration.originationCountry.empty")
       messages must haveTranslationFor("declaration.originationCountry.error")
     }
@@ -57,7 +56,7 @@ class OriginationCountryViewSpec extends UnitViewSpec with Stubs with ExportsTes
 
       s"display page question for ${request.declarationType}" in {
 
-        view(request).getElementsByClass("govuk-fieldset__legend").text() mustBe messages("declaration.originationCountry.question")
+        view(request).getElementsByClass("govuk-fieldset__legend").text() mustBe messages("declaration.originationCountry.title")
       }
 
       s"display page heading for ${request.declarationType}" in {
