@@ -22,8 +22,8 @@ import forms.declaration.RoutingQuestionYesNo._
 import forms.declaration.countries.Countries
 import forms.declaration.countries.Countries.{FirstRoutingCountryPage, NextRoutingCountryPage}
 import javax.inject.Inject
-import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.Countries.findByCode
@@ -49,7 +49,7 @@ class RoutingCountriesController @Inject()(
       navigator.continueTo(mode, routes.RoutingCountriesSummaryController.displayPage)
     } else {
       val destinationCountryCode = request.cacheModel.locations.destinationCountry.flatMap(_.code)
-      val destinationCountryName = destinationCountryCode.map(findByCode(_)).map(_.countryName).getOrElse("")
+      val destinationCountryName = destinationCountryCode.map(findByCode(_)).map(_.asString()).getOrElse("")
 
       request.cacheModel.locations.hasRoutingCountries match {
         case Some(answer) => Ok(routingQuestionPage(mode, form().fill(answer), destinationCountryName))

@@ -40,7 +40,6 @@ class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with Export
       val messages = realMessagesApi.preferred(request)
       messages must haveTranslationFor("declaration.routingQuestion.title")
       messages must haveTranslationFor("declaration.routingQuestion.heading")
-      messages must haveTranslationFor("declaration.routingQuestion.question")
       messages must haveTranslationFor("declaration.routingQuestion.empty")
       messages must haveTranslationFor("declaration.routingQuestion.error")
       messages must haveTranslationFor("site.details.summary_text_this")
@@ -53,7 +52,7 @@ class RoutingCountryQuestionViewSpec extends UnitViewSpec with Stubs with Export
 
     "have page question" in {
 
-      view.getElementsByClass("govuk-fieldset__heading").text() mustBe messages("declaration.routingQuestion.question")
+      view.getElementsByClass("govuk-fieldset__heading").text() mustBe messages("declaration.routingQuestion.title")
     }
 
     "have Yes/No answers" in {
