@@ -240,7 +240,7 @@ startPage.problemsWithServiceNotice.link = problems with this service.
 startPage.buttonName = Start now
 startPage.afterDeclaringGoods.header = Arriving and departing goods
 startPage.afterDeclaringGoods.line.1 = If you’re a loader, you’ll need to use our service to
-startPage.afterDeclaringGoods.line.1.link = Tell HMRC when goods you’re exporting arrive at or leave the UK port
+startPage.afterDeclaringGoods.line.1.link = tell HMRC when goods you’re exporting arrive at or leave the UK port
 
 sessionTimout.title = For your security, we signed you out
 sessionTimout.paragraph.saved = We saved your answers.
