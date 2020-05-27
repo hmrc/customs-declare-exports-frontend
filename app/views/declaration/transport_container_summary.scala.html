@@ -64,12 +64,12 @@
                         attributes = Map("id" -> s"containers-row$index-seals")
                     ),
                     TableRow(
-                        content = HtmlContent(changeLink(messages("site.remove"), Some(messages("declaration.transportInformation.containers.remove.hint", container.id)), TransportContainerController.submitContainerRemove(mode, container.id))),
-                        attributes = Map("id" -> s"containers-row$index-remove_button")
-                    ),
-                    TableRow(
                         content = HtmlContent(changeLink(messages("declaration.transportInformation.containers.change"), Some(messages("declaration.transportInformation.containers.change.hint", container.id)),SealController.displaySealSummary(mode, container.id))),
                         attributes = Map("id" -> s"containers-row$index-change_button")
+                    ),
+                    TableRow(
+                        content = HtmlContent(changeLink(messages("site.remove"), Some(messages("declaration.transportInformation.containers.remove.hint", container.id)), TransportContainerController.submitContainerRemove(mode, container.id))),
+                        attributes = Map("id" -> s"containers-row$index-remove_button")
                     )
                 )
             },
