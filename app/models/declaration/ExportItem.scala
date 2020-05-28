@@ -51,10 +51,10 @@ case class ExportItem(
       isProcedureCodesAndFiscalInformationComplete && packageInformation.nonEmpty
     case DeclarationType.CLEARANCE =>
       isProcedureCodesAndFiscalInformationComplete &&
-        isProcedureCodesAndExportInventoryCleansingRecord
+        isProcedureCodesAndExportInventoryCleansingRecordComplete
   }
 
-  private def isProcedureCodesAndExportInventoryCleansingRecord =
+  private def isProcedureCodesAndExportInventoryCleansingRecordComplete =
     if (isExportInventoryCleansingRecord) packageInformation.isEmpty else packageInformation.nonEmpty
 
   def isExportInventoryCleansingRecord: Boolean =
