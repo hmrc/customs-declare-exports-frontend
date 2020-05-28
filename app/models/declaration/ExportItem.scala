@@ -55,7 +55,7 @@ case class ExportItem(
   }
 
   private def isProcedureCodesAndExportInventoryCleansingRecord =
-    if (isExportInventoryCleansingRecord) packageInformation.nonEmpty else packageInformation.isEmpty
+    if (isExportInventoryCleansingRecord) packageInformation.isEmpty else packageInformation.nonEmpty
 
   def isExportInventoryCleansingRecord: Boolean =
     procedureCodes
