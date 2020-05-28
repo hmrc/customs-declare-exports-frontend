@@ -28,6 +28,8 @@
         govukLayout: gdsMainTemplate,
         govukPanel : GovukPanel,
         govukButton: GovukButton,
+        govukInsetText : GovukInsetText,
+        link: link,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
@@ -36,6 +38,12 @@
 @titleKey = @{ s"declaration.confirmation.${flash.get(FlashKeys.decType).getOrElse("default").toLowerCase}.title" }
 @viewDeclarationsLink = {<a id="submissions-link" href="@routes.SubmissionsController.displayListOfSubmissions()">@messages("declaration.confirmation.info.link")</a>}
 @lrnMessage(lrn: String) = {<div class="font-large">@messages("declaration.confirmation.lrn")</div> <div id="lrn-number" class="font-large bold">@lrn</div>}
+@decisionLink(decId: String) = {<a id="decision-link" href="@routes.SubmissionsController.displayDeclarationWithNotifications(decId)">@messages("declaration.confirmation.decision.link")</a>}
+@decisionContent(decId: String) = {
+    @Html(messages("declaration.confirmation.decision.paragraph1"))
+    <br>
+    @Html(messages("declaration.confirmation.decision.paragraph2", decisionLink(decId)))
+}
 
 @govukLayout(title = Title(titleKey)) {
 
@@ -44,13 +52,18 @@
         content = HtmlContent(flash.get(FlashKeys.lrn).map(lrn => lrnMessage(lrn)).getOrElse(HtmlFormat.empty))
     ))
 
-    <p class="govuk-body">
+    @flash.get(FlashKeys.decId).map{decId =>
+        @govukInsetText(InsetText(
+            attributes = Map("id" -> "decision"),
+            content = HtmlContent(decisionContent(decId))
+        ))
+    }
+
+    <p class="govuk-body" id="view-declarations">
         @Html(messages("declaration.confirmation.info", viewDeclarationsLink))
     </p>
 
-    @govukButton(Button(
-        href = Some(routes.ChoiceController.displayPage().url),
-        content = Text(messages("declaration.confirmation.submitAnotherDeclaration"
-        ))
-    ))
+    <p class="govuk-body" id="back-to-start">
+        @link(messages("declaration.confirmation.submitAnotherDeclaration"), None, routes.ChoiceController.displayPage())
+    </p>
 }

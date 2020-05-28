@@ -1296,11 +1296,15 @@ declaration.confirmation.default.title = Declaration has been submitted
 declaration.confirmation.standard.title = Standard declaration has been submitted
 declaration.confirmation.supplementary.title = Supplementary declaration has been submitted
 declaration.confirmation.simplified.title = Simplified declaration has been submitted
-declaration.confirmation.occasional.title = Occasional simplified declaration has been submitted
+declaration.confirmation.occasional.title = Simplified declaration for occasional use has been submitted
 declaration.confirmation.clearance.title = Customs clearance request has been submitted
-declaration.confirmation.lrn = The LRN is
-declaration.confirmation.info = To view the status of this and any other declarations, visit {0}.
-declaration.confirmation.info.link = view declarations
+declaration.confirmation.lrn = Your LRN is
+declaration.confirmation.decision.paragraph1 = It might take a few minutes before a decision is made.
+declaration.confirmation.decision.paragraph2 = Go to the {0} to check the status.
+declaration.confirmation.decision.link = declaration’s timeline
+
+declaration.confirmation.info = Any other previously submitted declarations can be found in {0}.
+declaration.confirmation.info.link = your declarations
 declaration.confirmation.submitAnotherDeclaration = Back to start
 
 confirmation.draft.title=Your declaration has been saved
