@@ -150,6 +150,42 @@ class ExportItemSpec extends UnitSpec with ExportsItemBuilder {
           completedItem.isCompleted(DeclarationType.SIMPLIFIED) mustBe true
         }
       }
+
+      "on Clearance journey" when {
+
+        "item is not completed" in {
+
+          val notCompletedItem = anItem(withItemId("id"))
+
+          notCompletedItem.isCompleted(DeclarationType.CLEARANCE) mustBe false
+        }
+
+        "item contains '0019' procedure code but no package references" in {
+
+          val notCompletedItem = anItem(withItemId("id"), withProcedureCodes(Some("0019")))
+
+          notCompletedItem.isCompleted(DeclarationType.CLEARANCE) mustBe false
+        }
+
+        "item contains '0019' procedure code and package references" in {
+
+          val completedItem = anItem(withItemId("id"), withProcedureCodes(Some("0019")), withPackageInformation())
+
+          completedItem.isCompleted(DeclarationType.CLEARANCE) mustBe true
+        }
+
+        "item is completed without package information for 1042 procedure code" in {
+
+          val completedItem = anItem(
+            withItemId("id"),
+            withProcedureCodes(Some("1042")),
+            withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
+            withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12"))))
+          )
+
+          completedItem.isCompleted(DeclarationType.CLEARANCE) mustBe true
+        }
+      }
     }
   }
 }

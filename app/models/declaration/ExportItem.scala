@@ -47,9 +47,15 @@ case class ExportItem(
     case DeclarationType.STANDARD | DeclarationType.SUPPLEMENTARY =>
       isProcedureCodesAndFiscalInformationComplete && statisticalValue.isDefined &&
         packageInformation.nonEmpty && commodityMeasure.isDefined
-    case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL | DeclarationType.CLEARANCE =>
+    case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL =>
       isProcedureCodesAndFiscalInformationComplete && packageInformation.nonEmpty
+    case DeclarationType.CLEARANCE =>
+      isProcedureCodesAndFiscalInformationComplete &&
+        isProcedureCodesAndExportInventoryCleansingRecord
   }
+
+  private def isProcedureCodesAndExportInventoryCleansingRecord =
+    if (isExportInventoryCleansingRecord) packageInformation.nonEmpty else packageInformation.isEmpty
 
   def isExportInventoryCleansingRecord: Boolean =
     procedureCodes
