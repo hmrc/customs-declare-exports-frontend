@@ -176,10 +176,7 @@ class ExportItemSpec extends UnitSpec with ExportsItemBuilder {
 
         "item is completed without package information for 0019 procedure code" in {
 
-          val completedItem = anItem(
-            withItemId("id"),
-            withProcedureCodes(Some("0019"))
-          )
+          val completedItem = anItem(withItemId("id"), withProcedureCodes(Some("0019")))
 
           completedItem.isCompleted(DeclarationType.CLEARANCE) mustBe true
         }
