@@ -23,6 +23,7 @@
 @import views.{BackButton, Title}
 @import views.components.gds.Styles._
 @import views.html.components.gds._
+@import config.AppConfig
 
 @this(
 govukLayout: gdsMainTemplate,
@@ -33,10 +34,13 @@ exportsInputText: exportsInputText,
 govukDetails : GovukDetails,
 saveButtons: saveButtons,
 tariffDetails: tariffDetails,
+appConfig: AppConfig,
 formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @(mode: Mode, itemId: String, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
+
+@tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.additionalInformationRequired.hint.link")</a>}
 
 @govukLayout(
     title = Title("declaration.additionalInformationRequired.title"),
@@ -57,7 +61,7 @@ formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
             ))
         )),
             hint = Some(Hint(
-            content = Text(messages("declaration.additionalInformationRequired.hint"))
+            content = HtmlContent(Html(messages("declaration.additionalInformationRequired.hint", tradeTariffLink)))
             )),
             items = Seq(
                 RadioItem(

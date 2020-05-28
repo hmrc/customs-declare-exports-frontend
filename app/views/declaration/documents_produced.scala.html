@@ -21,6 +21,7 @@
 @import forms.declaration.additionaldocuments.DocumentsProduced
 @import forms.declaration.additionaldocuments.DocumentsProduced._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import config.AppConfig
 @import views.{BackButton, Title}
 @import views.html.components.gds._
 @import views.components.gds.Styles._
@@ -40,9 +41,13 @@
         exportsDateInput: exportsDateInput,
         tariffDetails: tariffDetails,
         saveButtons: saveButtons,
+        appConfig: AppConfig,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(mode: Mode, itemId: String, form: Form[DocumentsProduced], documents: Seq[DocumentsProduced])(implicit request: JourneyRequest[_], messages: Messages)
+
+@tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.addDocument.hint.traderTariff.link")</a>}
+@fourDigitCodeLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.addDocument.hint.fourDigitCode.link")</a>}
 
 @tariffBodyDesc = { @Html(messages("declaration.type.consignmentTariffText", components.details_content_link())) }
 
@@ -144,6 +149,12 @@
       </div>
 }
 
+@pageHint = {
+    <span class="govuk-hint">
+        @Html(messages("declaration.addDocument.hint", tradeTariffLink, fourDigitCodeLink))
+    </span>
+}
+
 @govukLayout(
     title = Title("declaration.addDocument.title", "supplementary.summary.yourReferences.header"),
     backButton = Some(BackButton(messages("site.back"), Navigator.backLink(DocumentsProduced, mode, ItemId(itemId))))) {
@@ -161,6 +172,7 @@
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(immutable.Seq(
+                pageHint,
                 documentsTable,
                 exportsInputText(
                     field = form(documentTypeCodeKey),
