@@ -1302,7 +1302,6 @@ declaration.confirmation.lrn = Your LRN is
 declaration.confirmation.decision.paragraph1 = It might take a few minutes before a decision is made.
 declaration.confirmation.decision.paragraph2 = Go to the {0} to check the status.
 declaration.confirmation.decision.link = declaration’s timeline
-
 declaration.confirmation.info = Any other previously submitted declarations can be found in {0}.
 declaration.confirmation.info.link = your declarations
 declaration.confirmation.submitAnotherDeclaration = Back to start
