@@ -18,6 +18,7 @@ package views.declaration
 
 import java.time.{LocalDateTime, ZoneOffset}
 
+import base.Injector
 import helpers.views.declaration.CommonMessages
 import models.responses.FlashKeys
 import play.api.mvc.Flash
@@ -28,9 +29,9 @@ import views.html.declaration.draft_confirmation_page
 import views.tags.ViewTest
 
 @ViewTest
-class DraftConfirmationViewSpec extends UnitViewSpec with CommonMessages with Stubs {
+class DraftConfirmationViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
 
-  private val page = new draft_confirmation_page(mainTemplate)
+  private val page = instanceOf[draft_confirmation_page]
   private val realMessages = validatedMessages
   private def createView(flash: (String, String)*): Html = page()(request, Flash(Map(flash: _*)), realMessages)
 
@@ -39,11 +40,11 @@ class DraftConfirmationViewSpec extends UnitViewSpec with CommonMessages with St
       "present in flash" in {
         val date = LocalDateTime.of(2019, 1, 1, 1, 1).toInstant(ZoneOffset.UTC)
         val view = createView(FlashKeys.expiryDate -> date.toEpochMilli.toString)
-        view.getElementById("draft_confirmation-expiry") must containText("1 Jan 2019")
+        view.getElementById("draft_confirmation-expiry") must containText("1 January 2019")
       }
 
       "missing from flash" in {
-        createView().getElementById("draft_confirmation-expiry") must containText("-")
+        createView().getElementById("draft_confirmation-expiry") mustBe (null)
       }
     }
 
@@ -57,9 +58,9 @@ class DraftConfirmationViewSpec extends UnitViewSpec with CommonMessages with St
       link must haveHref(controllers.routes.ChoiceController.displayPage().url)
     }
 
-    "render start again button" in {
-      val button = createView().getElementsByClass("button").first()
-      button must haveHref(controllers.routes.ChoiceController.displayPage().url)
+    "render back to GOV.UK" in {
+      val button = createView().getElementById("govuk-link")
+      button must haveHref("https://www.gov.uk")
     }
   }
 }

@@ -49,6 +49,7 @@ session_expired.guidance = The details you have given have been deleted because 
 site.back = Back
 site.backToSelectionPage = Back to selection page
 site.backToDeclarations = Back to your declarations
+site.backToGovUk = Back to GOV.UK
 site.continue = Continue
 site.delete = Remove
 site.link.delete = Delete
@@ -245,7 +246,6 @@ startPage.afterDeclaringGoods.line.1.link = tell HMRC when goods you’re export
 sessionTimout.title = For your security, we signed you out
 sessionTimout.paragraph.saved = We saved your answers.
 sessionTimout.signin.button = Sign in
-sessionTimout.back.button = Back to GOV.UK
 
 timeoutDialog.title = Your session will timeout soon
 timeoutDialog.message = For your security, we will sign you out in
@@ -1306,13 +1306,12 @@ declaration.confirmation.info = Any other previously submitted declarations can 
 declaration.confirmation.info.link = your declarations
 declaration.confirmation.submitAnotherDeclaration = Create a new declaration
 
-confirmation.draft.title=Your declaration has been saved
-confirmation.draft.info=Your information is held until
-confirmation.draft.nextHeading=What you can do next
-confirmation.draft.nextText1=You can
-confirmation.draft.nextContinueLink=continue a saved declaration
-confirmation.draft.nextText2=or you can
-confirmation.draft.nextStartFreshLink=start a new one.
+confirmation.draft.title = Your declaration has been saved
+confirmation.draft.info = Your information is held until
+confirmation.draft.nextHeading = What you can do next
+confirmation.draft.nextText = You can {0} or you can {1}. 
+confirmation.draft.nextContinueLink = continue a saved declaration
+confirmation.draft.nextStartFreshLink = start a new one
 
 legal.declaration.heading=Now submit your declaration
 legal.declaration.info=Before you proceed, ensure that you have fully reviewed the information you have provided above and ensure that it is correct.

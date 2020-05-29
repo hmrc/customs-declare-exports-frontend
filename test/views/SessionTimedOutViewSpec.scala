@@ -17,7 +17,6 @@
 package views
 
 import base.Injector
-import controllers.declaration.routes
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import services.cache.ExportsTestData
@@ -40,7 +39,6 @@ class SessionTimedOutViewSpec extends UnitViewSpec with ExportsTestData with Stu
       messages must haveTranslationFor("sessionTimout.title")
       messages must haveTranslationFor("sessionTimout.paragraph.saved")
       messages must haveTranslationFor("sessionTimout.signin.button")
-      messages must haveTranslationFor("sessionTimout.back.button")
     }
 
     val view = createView()
@@ -56,9 +54,9 @@ class SessionTimedOutViewSpec extends UnitViewSpec with ExportsTestData with Stu
     }
 
     "display back to gov.uk link" in {
-      val link = view.getElementsByClass("govuk-link").first()
-      link.text() mustBe messages("sessionTimout.back.button")
-      link.attr("href") mustBe "https://www.gov.uk/"
+      val link = view.getElementById("govuk-link")
+      link.text() mustBe messages("site.backToGovUk")
+      link.attr("href") mustBe "https://www.gov.uk"
     }
   }
 
