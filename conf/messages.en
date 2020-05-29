@@ -1304,7 +1304,7 @@ declaration.confirmation.decision.paragraph2 = Go to the {0} to check the status
 declaration.confirmation.decision.link = declaration’s timeline
 declaration.confirmation.info = Any other previously submitted declarations can be found in {0}.
 declaration.confirmation.info.link = your declarations
-declaration.confirmation.submitAnotherDeclaration = Back to start
+declaration.confirmation.submitAnotherDeclaration = Create a new declaration
 
 confirmation.draft.title=Your declaration has been saved
 confirmation.draft.info=Your information is held until

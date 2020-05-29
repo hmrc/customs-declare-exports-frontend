@@ -40,7 +40,7 @@ class SubmissionConfirmationPageViewSpec extends UnitViewSpec with ExportsTestDa
 
   private def getHighlightBox(view: Document) = view.getElementsByClass("govuk-panel govuk-panel--confirmation").first()
 
-  private def getDecisionLink(view: Document) = view.getElementById("decision").getElementsByTag("a").first()
+  private def getDecisionLink(view: Document) = view.getElementById("decision-link")
 
   "Confirmation Page View on empty page" should {
     val view = createView(withoutFlash)
@@ -57,9 +57,9 @@ class SubmissionConfirmationPageViewSpec extends UnitViewSpec with ExportsTestDa
     }
 
     "render start again link" in {
-      val button = view.getElementById("back-to-start").getElementsByTag("a").first()
+      val button = view.getElementById("back-to-start-link")
       button must haveHref(controllers.routes.ChoiceController.displayPage().url)
-      button must containText("Back to start")
+      button must containText("Create a new declaration")
     }
   }
 
