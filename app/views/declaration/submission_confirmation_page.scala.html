@@ -28,14 +28,26 @@
         govukLayout: gdsMainTemplate,
         govukPanel : GovukPanel,
         govukButton: GovukButton,
+        govukInsetText : GovukInsetText,
+        link: link,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
 )
 
 @()(implicit request: Request[_], flash: Flash, messages: Messages)
 
 @titleKey = @{ s"declaration.confirmation.${flash.get(FlashKeys.decType).getOrElse("default").toLowerCase}.title" }
-@viewDeclarationsLink = {<a id="submissions-link" href="@routes.SubmissionsController.displayListOfSubmissions()">@messages("declaration.confirmation.info.link")</a>}
+
 @lrnMessage(lrn: String) = {<div class="font-large">@messages("declaration.confirmation.lrn")</div> <div id="lrn-number" class="font-large bold">@lrn</div>}
+
+@decisionContent(decId: String) = {
+    @Html(messages("declaration.confirmation.decision.paragraph1"))
+    <br>
+    @Html(messages("declaration.confirmation.decision.paragraph2", link(
+        id = Some("decision-link"),
+        text = messages("declaration.confirmation.decision.link"),
+        call = routes.SubmissionsController.displayDeclarationWithNotifications(decId)
+    )))
+}
 
 @govukLayout(title = Title(titleKey)) {
 
@@ -44,13 +56,24 @@
         content = HtmlContent(flash.get(FlashKeys.lrn).map(lrn => lrnMessage(lrn)).getOrElse(HtmlFormat.empty))
     ))
 
+    @flash.get(FlashKeys.decId).map{decId =>
+        @govukInsetText(InsetText(
+            content = HtmlContent(decisionContent(decId))
+        ))
+    }
+
     <p class="govuk-body">
-        @Html(messages("declaration.confirmation.info", viewDeclarationsLink))
+        @Html(messages("declaration.confirmation.info", link(
+            id = Some("submissions-link"),
+            text = messages("declaration.confirmation.info.link"),
+            call = routes.SubmissionsController.displayListOfSubmissions()
+        )))
     </p>
 
-    @govukButton(Button(
-        href = Some(routes.ChoiceController.displayPage().url),
-        content = Text(messages("declaration.confirmation.submitAnotherDeclaration"
-        ))
-    ))
+    <p class="govuk-body">
+        @link(
+            id = Some("back-to-start-link"),
+            text = messages("declaration.confirmation.submitAnotherDeclaration"),
+            call = routes.ChoiceController.displayPage())
+    </p>
 }

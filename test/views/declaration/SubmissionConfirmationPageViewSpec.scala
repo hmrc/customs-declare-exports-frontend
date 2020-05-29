@@ -33,11 +33,14 @@ class SubmissionConfirmationPageViewSpec extends UnitViewSpec with ExportsTestDa
   private val page = instanceOf[submission_confirmation_page]
   private val realMessages = validatedMessages
   private val withoutFlash = new Flash(Map.empty)
-  private def withFlash(devType: DeclarationType) = new Flash(Map(FlashKeys.lrn -> "some-lrn", FlashKeys.decType -> devType.toString))
+  private def withFlash(devType: DeclarationType, lrn: String, decId: String) =
+    new Flash(Map(FlashKeys.decId -> decId, FlashKeys.lrn -> lrn, FlashKeys.decType -> devType.toString))
   private def createView(flash: Flash): Document =
     page()(journeyRequest(), flash, realMessages)
 
   private def getHighlightBox(view: Document) = view.getElementsByClass("govuk-panel govuk-panel--confirmation").first()
+
+  private def getDecisionLink(view: Document) = view.getElementById("decision-link")
 
   "Confirmation Page View on empty page" should {
     val view = createView(withoutFlash)
@@ -53,48 +56,53 @@ class SubmissionConfirmationPageViewSpec extends UnitViewSpec with ExportsTestDa
       declarationInfo must haveHref(controllers.routes.SubmissionsController.displayListOfSubmissions())
     }
 
-    "render start again button" in {
-      val button = view.getElementsByClass("govuk-button").first()
+    "render start again link" in {
+      val button = view.getElementById("back-to-start-link")
       button must haveHref(controllers.routes.ChoiceController.displayPage().url)
-      button must containText("Back to start")
+      button must containText("Create a new declaration")
     }
   }
 
   "Confirmation Page View when filled" should {
 
     "display header with declaration type Standard and LRN" in {
-      val view = createView(withFlash(DeclarationType.STANDARD))
+      val view = createView(withFlash(DeclarationType.STANDARD, "lrn1", "dec1"))
       val highlightBox = getHighlightBox(view)
       highlightBox must containText("Standard declaration has been submitted")
-      highlightBox must containText("The LRN is some-lrn")
+      highlightBox must containText("Your LRN is lrn1")
+      getDecisionLink(view) must haveHref(controllers.routes.SubmissionsController.displayDeclarationWithNotifications("dec1").url)
     }
 
     "display header with declaration type Simplified and LRN" in {
-      val view = createView(withFlash(DeclarationType.SIMPLIFIED))
+      val view = createView(withFlash(DeclarationType.SIMPLIFIED, "lrn2", "dec2"))
       val highlightBox = getHighlightBox(view)
       highlightBox must containText("Simplified declaration has been submitted")
-      highlightBox must containText("The LRN is some-lrn")
+      highlightBox must containText("Your LRN is lrn2")
+      getDecisionLink(view) must haveHref(controllers.routes.SubmissionsController.displayDeclarationWithNotifications("dec2").url)
     }
 
     "display header with declaration type Supplementary and LRN" in {
-      val view = createView(withFlash(DeclarationType.SUPPLEMENTARY))
+      val view = createView(withFlash(DeclarationType.SUPPLEMENTARY, "lrn3", "dec3"))
       val highlightBox = getHighlightBox(view)
       highlightBox must containText("Supplementary declaration has been submitted")
-      highlightBox must containText("The LRN is some-lrn")
+      highlightBox must containText("Your LRN is lrn3")
+      getDecisionLink(view) must haveHref(controllers.routes.SubmissionsController.displayDeclarationWithNotifications("dec3").url)
     }
 
     "display header with declaration type Occasional and LRN" in {
-      val view = createView(withFlash(DeclarationType.OCCASIONAL))
+      val view = createView(withFlash(DeclarationType.OCCASIONAL, "lrn4", "dec4"))
       val highlightBox = getHighlightBox(view)
-      highlightBox must containText("Occasional simplified declaration has been submitted")
-      highlightBox must containText("The LRN is some-lrn")
+      highlightBox must containText("Simplified declaration for occasional use has been submitted")
+      highlightBox must containText("Your LRN is lrn4")
+      getDecisionLink(view) must haveHref(controllers.routes.SubmissionsController.displayDeclarationWithNotifications("dec4").url)
     }
 
     "display header with declaration type Clearance and LRN" in {
-      val view = createView(withFlash(DeclarationType.CLEARANCE))
+      val view = createView(withFlash(DeclarationType.CLEARANCE, "lrn5", "dec5"))
       val highlightBox = getHighlightBox(view)
       highlightBox must containText("Customs clearance request has been submitted")
-      highlightBox must containText("The LRN is some-lrn")
+      highlightBox must containText("Your LRN is lrn5")
+      getDecisionLink(view) must haveHref(controllers.routes.SubmissionsController.displayDeclarationWithNotifications("dec5").url)
     }
   }
 }

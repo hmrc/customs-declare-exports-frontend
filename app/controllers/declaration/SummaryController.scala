@@ -77,7 +77,9 @@ class SummaryController @Inject()(
           submissionService.submit(request.eori, request.cacheModel, legalDeclaration).map {
             case Some(lrn) =>
               Redirect(controllers.declaration.routes.ConfirmationController.displaySubmissionConfirmation())
-                .flashing(Flash(Map(FlashKeys.lrn -> lrn, FlashKeys.decType -> request.declarationType.toString())))
+                .flashing(
+                  Flash(Map(FlashKeys.lrn -> lrn, FlashKeys.decId -> request.cacheModel.id, FlashKeys.decType -> request.declarationType.toString()))
+                )
                 .removingFromSession(ExportsSessionKeys.declarationId)
             case _ => handleError(s"Error from Customs Declarations API")
           }
