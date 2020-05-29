@@ -17,17 +17,22 @@
 package unit.controllers
 
 import controllers.UnauthorisedController
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
 import views.html.unauthorised
 
 class UnauthorisedControllerSpec extends ControllerSpec {
 
   trait SetUp {
-    val unauthorisedPage = new unauthorised(mainTemplate)
+    val unauthorisedPage = mock[unauthorised]
 
     val controller =
       new UnauthorisedController(stubMessagesControllerComponents(), unauthorisedPage)(ec)
+
+    when(unauthorisedPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   "Unauthorised controller" should {

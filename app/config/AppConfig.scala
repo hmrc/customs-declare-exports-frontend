@@ -19,15 +19,12 @@ package config
 import java.util.Base64
 
 import com.google.inject.{Inject, Singleton}
-import features.Feature.Feature
-import features.FeatureStatus.FeatureStatus
-import features.{Feature, FeatureStatus}
 import forms.Choice
 import javax.inject.Named
 import models.DeclarationType
 import play.api.i18n.Lang
 import play.api.mvc.Call
-import play.api.{Configuration, Environment, Logger}
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.duration.FiniteDuration
@@ -61,6 +58,10 @@ class AppConfig @Inject()(
   lazy val tradeTariffUrl = loadConfig("urls.tradeTariff")
   lazy val classificationHelpUrl = loadConfig("urls.classificationHelp")
   lazy val ecicsToolUrl = loadConfig("urls.ecicsTool")
+
+  lazy val eoriService = loadConfig("urls.eoriService")
+  lazy val cdsRegister = loadConfig("urls.cdsRegister")
+  lazy val cdsCheckStatus = loadConfig("urls.cdsCheckStatus")
 
   lazy val customsDeclareExports = servicesConfig.baseUrl("customs-declare-exports")
 
