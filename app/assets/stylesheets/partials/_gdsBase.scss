@@ -23,3 +23,14 @@ a list within the table cell.
 .govuk-table__cell ol {
   list-style-type: none;
 }
+
+
+/*
+====================================
+In same pages we wrap all the input fields inside a fieldset, this means that the bottom margin of the H1 is not applied
+to these pages. This is to ensure the margin-bottom stays consistent across pages.
+====================================
+*/
+.govuk-fieldset__legend {
+  margin-bottom: 30px;
+}

@@ -25,6 +25,7 @@
 @import views.components.gds.Styles._
 @import play.twirl.api.HtmlFormat
 @import scala.collection.immutable
+@import config.AppConfig
 
 @this(govukLayout: gdsMainTemplate,
         govukFieldset: GovukFieldset,
@@ -37,9 +38,12 @@
         exportsInputTextArea: exportsInputTextArea,
         tariffDetails: tariffDetails,
         saveButtons: saveButtons,
+        appConfig: AppConfig,
         formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 
 @(mode: Mode, itemId: String, form: Form[AdditionalInformation], items: Seq[AdditionalInformation])(implicit request: JourneyRequest[_], messages: Messages)
+
+@tradeTariffLink = {<a target="_blank" href=@appConfig.tradeTariffUrl>@messages("declaration.additionalInformationRequired.hint.link")</a>}
 
 @tariffBody = { @Html(messages("declaration.type.additionalActorsSummaryText", components.details_content_link())) }
 
@@ -97,7 +101,9 @@
                 exportsInputText(
                     field = form("code"),
                     labelKey = "declaration.additionalInformation.code",
-                    inputClasses = Some("govuk-input--width-20")
+                    inputClasses = Some("govuk-input--width-20"),
+                    hintKey = Some("declaration.additionalInformation.code.hint"),
+                    hintKeyLinks = Seq(tradeTariffLink)
                 ),
                 exportsInputTextArea(
                     field = form("description"),

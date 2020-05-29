@@ -24,6 +24,7 @@
         labelKey: String,
         labelArg: String = "",
         hintKey: Option[String] = None,
+        hintKeyLinks: Seq[Html] = Seq.empty,
         isPageHeading: Boolean = false,
         headingClasses: String = gdsPageLabel,
         labelClasses: String = "govuk-label--m",
@@ -43,7 +44,7 @@
     name = field.name,
     value = field.value,
     label = buildLabel,
-    hint = hintKey.map(key => Hint(content = Text(messages(key)))),
+    hint = hintKey.map(key => Hint(content = HtmlContent(Html(messages(key, hintKeyLinks:_*))))),
     errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message)))),
     classes = inputClasses.map(clazz => s" $clazz").getOrElse(defaultInputClasses)
 ))
