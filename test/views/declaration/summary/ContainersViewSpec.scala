@@ -68,7 +68,7 @@ class ContainersViewSpec extends UnitViewSpec with ExportsTestData with Injector
 
       val row1ChangeLink = row1.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
       row1ChangeLink must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Change))
-      row1ChangeLink.text() mustBe "site.change" + messages("declaration.summary.container.change", 0)
+      row1ChangeLink.text() mustBe messages("site.change") + messages("declaration.summary.container.change", 0)
 
       val row2 = table.getElementsByClass("govuk-table__body").first().getElementsByClass("govuk-table__row").get(1)
       row2.getElementsByClass("govuk-table__cell").get(0).text() mustBe messages(secondContainerID)
@@ -76,7 +76,7 @@ class ContainersViewSpec extends UnitViewSpec with ExportsTestData with Injector
 
       val row2ChangeLink = row2.getElementsByClass("govuk-table__cell").get(2).getElementsByTag("a").first()
       row2ChangeLink must haveHref(controllers.declaration.routes.TransportContainerController.displayContainerSummary(Mode.Change))
-      row2ChangeLink.text() mustBe "site.change" + messages("declaration.summary.container.change", 1)
+      row2ChangeLink.text() mustBe messages("site.change") + messages("declaration.summary.container.change", 1)
     }
   }
 }
