@@ -59,10 +59,6 @@ class AppConfig @Inject()(
   lazy val classificationHelpUrl = loadConfig("urls.classificationHelp")
   lazy val ecicsToolUrl = loadConfig("urls.ecicsTool")
 
-  lazy val eoriService = loadConfig("urls.eoriService")
-  lazy val cdsRegister = loadConfig("urls.cdsRegister")
-  lazy val cdsCheckStatus = loadConfig("urls.cdsCheckStatus")
-
   lazy val customsDeclareExports = servicesConfig.baseUrl("customs-declare-exports")
 
   lazy val declarations = servicesConfig.getConfString(

@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
+@import config.ExternalServicesConfig
 @import views.Title
 @import views.html.components.gds._
 
@@ -23,7 +23,7 @@
         pageTitle: pageTitle,
         paragraphBody: paragraphBody,
         link: link,
-        appConfig: AppConfig
+        config: ExternalServicesConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
@@ -37,7 +37,7 @@
         link(
             id = Some("get_eori_link"),
             text = messages("unauthorised.how.paragraph1.link"),
-            call = Call("GET", appConfig.eoriService),
+            call = Call("GET", config.eoriService),
             target = "_blank"
         )
     ))
@@ -48,7 +48,7 @@
         link(
             id = Some("access_cds_link"),
             text = messages("unauthorised.how.paragraph2.link"),
-            call = Call("GET", appConfig.cdsRegister),
+            call = Call("GET", config.cdsRegister),
             target = "_blank"
         )
     ))
@@ -69,7 +69,7 @@
         link(
             id = Some("check_cds_status_link"),
             text = messages("unauthorised.applied.paragraph1.link"),
-            call = Call("GET", appConfig.cdsCheckStatus),
+            call = Call("GET", config.cdsCheckStatus),
             target = "_blank"
         )
     ))
