@@ -18,40 +18,57 @@
 @import views.ViewDates
 @import models.responses.FlashKeys
 @import views.Title
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds._
+@import play.twirl.api.HtmlFormat
 
-@this(main_template: views.html.main_template)
+@this(
+        govukLayout: gdsMainTemplate,
+        govukPanel : GovukPanel,
+        govukButton: GovukButton,
+        govukInsetText : GovukInsetText,
+        link: link,
+        govUkLink: govUkLink,
+        formHelper: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF
+)
 
 @()(implicit request: Request[_], flash: Flash, messages: Messages)
 
-@main_template(
-    title = Title("confirmation.draft.title")
-) {
-
-    <div class="govuk-box-highlight">
-        <h1 class="heading-xlarge">
-            @messages("confirmation.draft.title")
-        </h1>
-        <p class="font-large">
-         @messages("confirmation.draft.info")
-        </p>
-        <p id="draft_confirmation-expiry" class="font-large">
-        @{
-            flash.get(FlashKeys.expiryDate)
-                .map(e => Instant.ofEpochMilli(e.toLong).atOffset(ZoneOffset.UTC))
-                .map(ViewDates.formatDate)
-                .getOrElse("-")
-         }
-         </p>
+@expiresMessage(date: String) = {
+    <div id="draft_confirmation-expiry" class="govuk-panel__body">
+        @messages("confirmation.draft.info")<br>
+        @ViewDates.formatDate(Instant.ofEpochMilli(date.toLong).atOffset(ZoneOffset.UTC))
     </div>
+}
 
-    <h1 class="heading-medium">@messages("confirmation.draft.nextHeading")</h1>
+@whatNext = {
+    <h2 class="govuk-heading-m">@messages("confirmation.draft.nextHeading")</h2>
 
-    <span>
-        @messages("confirmation.draft.nextText1")
-        <a id="draft_confirmation-continue_dec_link" href="@routes.SavedDeclarationsController.displayDeclarations()">@messages("confirmation.draft.nextContinueLink")</a>
-        @messages("confirmation.draft.nextText2")
-        <a id="draft_confirmation-create_dec_link" href="@routes.ChoiceController.displayPage()">@messages("confirmation.draft.nextStartFreshLink")</a>
-    </span>
+    <p class="govuk-body">
+    @Html(messages(
+        "confirmation.draft.nextText",
+        link(
+            id = Some("draft_confirmation-continue_dec_link"),
+            text = messages("confirmation.draft.nextContinueLink"),
+            call = routes.SavedDeclarationsController.displayDeclarations()
+        ),
+        link(
+            id = Some("draft_confirmation-create_dec_link"),
+            text = messages("confirmation.draft.nextStartFreshLink"),
+            call = routes.ChoiceController.displayPage()
+        )
+    ))
+    </p>
+}
 
-    @components.button_link(messageKey = "declaration.confirmation.submitAnotherDeclaration", href = routes.ChoiceController.displayPage().url)
+@govukLayout(title = Title("confirmation.draft.title")) {
+
+    @govukPanel(Panel(
+        title = Text(messages("confirmation.draft.title")),
+        content = HtmlContent(flash.get(FlashKeys.expiryDate).map(expires => expiresMessage(expires)).getOrElse(HtmlFormat.empty))
+    ))
+
+    @whatNext
+
+    @govUkLink()
 }

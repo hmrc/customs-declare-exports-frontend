@@ -14,27 +14,16 @@
  * limitations under the License.
  *@
 
-@import views.Title
-@import views.html.components.gds._
+@import config.AppConfig
 
-@this(
-        govukLayout: gdsMainTemplate,
-        pageTitle: pageTitle,
-        paragraphBody: paragraphBody,
-        linkButton: linkButton,
-        govUkLink: govUkLink
-)
+@this(link: link, appConfig: AppConfig)
 
-@()(implicit request: Request[_], messages: Messages)
+@(id: String = "govuk-link", textKey: String = "site.backToGovUk")(implicit messages: Messages)
 
-@govukLayout(
-   title = Title("sessionTimout.title")) {
-
-  @pageTitle(messages("sessionTimout.title"))
-
-  @paragraphBody(messages("sessionTimout.paragraph.saved"))
-
-  @linkButton(messages("sessionTimout.signin.button"), controllers.routes.StartController.displayStartPage())
-
-  @govUkLink()
-}
+<p class="govuk-body">
+  @link(
+   id = Some(id),
+   text = messages(textKey),
+   call = Call("GET", appConfig.govUkUrl)
+  )
+</p>

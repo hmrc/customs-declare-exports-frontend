@@ -26,7 +26,7 @@ object ViewDates {
   val submissionDateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM uuu 'at' HH:mm").withZone(ZoneId.of("Europe/London"))
   val dateAtTimeFormatter: DateTimeFormatter =
     DateTimeFormatter.ofPattern("d MMM uuu 'at' HH:mm").withZone(ZoneId.of("Europe/London"))
-  val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMM uuu").withZone(ZoneId.of("Europe/London"))
+  val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM uuu").withZone(ZoneId.of("Europe/London"))
 
   def format(temporal: TemporalAccessor): String = formatter.format(temporal)
   def formatDateTimeFullMonth(temporal: TemporalAccessor): String = submissionDateTimeFormatter.format(temporal)

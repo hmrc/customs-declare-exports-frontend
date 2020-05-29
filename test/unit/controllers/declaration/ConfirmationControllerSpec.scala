@@ -57,7 +57,9 @@ class ConfirmationControllerSpec extends ControllerSpec with Injector {
       val result: Future[Result] = controller.displayDraftConfirmation()(request)
 
       status(result) must be(OK)
-      viewOf(result) must be(draftConfirmationPage()(request, Flash(), stubMessagesControllerComponents().messagesApi.preferred(request)))
+      viewOf(result) must be(
+        draftConfirmationPage()(getAuthenticatedRequest(), Flash(), stubMessagesControllerComponents().messagesApi.preferred(request))
+      )
     }
   }
 }
