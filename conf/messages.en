@@ -78,7 +78,17 @@ site.details.summary_text_these = For more information about these
 
 general.inquiries.help.link = General enquires help
 
-unauthorised.heading = You can’t access this service with this account
+unauthorised.heading = To continue, you need to get access to Customs Declaration Services (CDS)
+unauthorised.how.heading = How to get access to CDS
+unauthorised.how.paragraph1 = You’ll need an {0}.
+unauthorised.how.paragraph1.link = Economic Operator and Registration Identification (EORI) number (opens in a new window or tab)
+unauthorised.how.paragraph2 = If you already have an EORI number, you can {0}.
+unauthorised.how.paragraph2.link = get access to CDS (opens in a new window or tab)
+unauthorised.how.paragraph3  = It can take up to one hour for HMRC to process your application.
+unauthorised.applied.heading = If you’ve already applied to get access to CDS
+unauthorised.applied.paragraph1 = You can {0}.
+unauthorised.applied.paragraph1.link = check the status of your application (opens in a new window or tab)
+
 
 dateTime.date.error.format = Incorrect date format
 dateTime.date.error.outOfRange = Date range needs to be 2000-01-01 to 2099-12-31
