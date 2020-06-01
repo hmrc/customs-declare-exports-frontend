@@ -20,11 +20,10 @@ import controllers.declaration.IsExsController
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
 import forms.declaration.consignor.ConsignorDetails
-import forms.declaration.{EntityDetails, IsExs}
-import models.{DeclarationType, ExportsDeclaration, Mode}
-import org.mockito.ArgumentCaptor
+import forms.declaration.{EntityDetails, IsExs, UNDangerousGoodsCode}
+import models.{DeclarationType, Mode}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -50,12 +49,6 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
     reset(isExsPage)
 
     super.afterEach()
-  }
-
-  private def theModelPassedToCacheUpdate: ExportsDeclaration = {
-    val modelCaptor = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
-    verify(mockExportsCacheService).update(modelCaptor.capture())(any())
-    modelCaptor.getValue
   }
 
   "IsExsController on displayPage" should {
@@ -114,7 +107,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
     }
 
     "answer is No" should {
-      "remove Carrier and Consignor Details from cache" in {
+      "remove Carrier and Consignor Details from Parties and UN Code from Items in cache" in {
 
         withNewCaching(
           aDeclaration(
@@ -134,7 +127,8 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
                   )
                 )
               )
-            )
+            ),
+            withItem(anItem(withUNDangerousGoodsCode(UNDangerousGoodsCode(Some("1234")))))
           )
         )
 
@@ -142,10 +136,25 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
 
         controller.submit(Mode.Normal)(postRequest(correctForm)).futureValue
 
-        val modelPassedToCache = theModelPassedToCacheUpdate
+        val modelPassedToCache = theCacheModelUpdated
         modelPassedToCache.parties.isExs mustBe Some(IsExs(YesNoAnswers.no))
         modelPassedToCache.parties.carrierDetails mustBe None
         modelPassedToCache.parties.consignorDetails mustBe None
+        modelPassedToCache.items.head.dangerousGoodsCode mustBe None
+      }
+    }
+
+    "answer is Yes" should {
+      "add default UN Code answer to existing Items in cache" in {
+
+        withNewCaching(aDeclaration(withType(DeclarationType.CLEARANCE), withItems(anItem())))
+
+        val correctForm = Json.toJson(IsExs(YesNoAnswers.yes))
+
+        controller.submit(Mode.Normal)(postRequest(correctForm)).futureValue
+
+        val modelPassedToCache = theCacheModelUpdated
+        modelPassedToCache.items.map(_.dangerousGoodsCode) mustBe Seq(Some(UNDangerousGoodsCode(None)))
       }
     }
 

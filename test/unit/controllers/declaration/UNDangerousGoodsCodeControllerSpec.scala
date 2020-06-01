@@ -19,8 +19,8 @@ package unit.controllers.declaration
 import controllers.declaration.UNDangerousGoodsCodeController
 import forms.declaration.UNDangerousGoodsCode
 import forms.declaration.UNDangerousGoodsCode.{dangerousGoodsCodeKey, hasDangerousGoodsCodeKey}
-import models.DeclarationType.DeclarationType
-import models.{DeclarationType, Mode}
+import models.DeclarationType._
+import models.Mode
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -49,7 +49,7 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aDeclaration(withType(DeclarationType.STANDARD)))
+    withNewCaching(aDeclaration(withType(STANDARD)))
     when(mockPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -111,11 +111,24 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
 
     "return 303 (SEE_OTHER)" when {
 
-      val cusCodePage: Call = controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, itemId)
-
-      def controllerRedirectsToNextPage(decType: DeclarationType, call: Call = cusCodePage): Unit =
+      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { request =>
         "accept submission and redirect" in {
-          withNewCaching(aDeclaration(withType(decType)))
+          withNewCaching(aDeclaration(withType(request.declarationType)))
+          val correctForm = formData("1234")
+
+          val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.CusCodeController.displayPage(Mode.Normal, itemId)
+          verify(mockPage, times(0)).apply(any(), any(), any())(any(), any())
+        }
+
+      }
+
+      onJourney(CLEARANCE) { request =>
+        def controllerRedirectsToNextPageForProcedureCode(procedureCode: String, call: Call) = {
+
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId), withProcedureCodes(Some(procedureCode))))))
           val correctForm = formData("1234")
 
           val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
@@ -125,9 +138,19 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
           verify(mockPage, times(0)).apply(any(), any(), any())(any(), any())
         }
 
-      for (decType <- DeclarationType.values) {
-        s"we are on $decType journey" should {
-          behave like controllerRedirectsToNextPage(decType)
+        "accept submission and redirect for procedure code 0019" in {
+
+          controllerRedirectsToNextPageForProcedureCode(
+            "0019",
+            controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, itemId)
+          )
+        }
+
+        "accept submission and redirect for procedure code 1234" in {
+          controllerRedirectsToNextPageForProcedureCode(
+            "1234",
+            controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, itemId)
+          )
         }
       }
     }

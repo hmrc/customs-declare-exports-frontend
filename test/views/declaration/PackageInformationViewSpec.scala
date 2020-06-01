@@ -18,13 +18,14 @@ package views.declaration
 
 import base.Injector
 import forms.common.YesNoAnswer
-import forms.declaration.PackageInformation
+import forms.declaration.{IsExs, PackageInformation}
 import models.DeclarationType._
 import models.Mode
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
+import play.api.mvc.Call
 import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestData
 import unit.tools.Stubs
@@ -75,10 +76,20 @@ class PackageInformationViewSpec extends UnitViewSpec with ExportsTestData with 
     }
 
     onJourney(CLEARANCE) { implicit request =>
-      "display back link" in {
-        val view = createView()
+      def viewHasBackLinkForExsStatus(exsStatus: String, call: Call) = {
+        val requestWithCache =
+          journeyRequest(aDeclarationAfter(request.cacheModel, withIsExs(IsExs(exsStatus))))
+        val view = createView()(requestWithCache)
         view must containElementWithID("back-link")
-        view.getElementById("back-link") must haveHref(controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, "itemId"))
+        view.getElementById("back-link") must haveHref(call)
+      }
+
+      "display back link when Is EXS is 'Yes'" in {
+        viewHasBackLinkForExsStatus("Yes", controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, "itemId"))
+      }
+
+      "display back link when Is EXS is 'No'" in {
+        viewHasBackLinkForExsStatus("No", controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, "itemId"))
       }
     }
   }

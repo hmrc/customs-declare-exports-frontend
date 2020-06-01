@@ -59,7 +59,7 @@ class CommodityDetailsController @Inject()(
   }
 
   private def redirectToNextPage(mode: Mode, itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
-    if (request.isType(DeclarationType.CLEARANCE)) {
+    if (request.isType(DeclarationType.CLEARANCE) && request.cacheModel.isNotExs) {
       if (request.cacheModel.itemBy(itemId).exists(_.isExportInventoryCleansingRecord))
         navigator.continueTo(mode, controllers.declaration.routes.CommodityMeasureController.displayPage(_, itemId))
       else
