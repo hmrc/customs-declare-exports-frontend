@@ -202,6 +202,28 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
       }
+
+      "user is during error fixing and the naswer is yes" in {
+
+        withNewCaching(aDeclaration(withDestinationCountry()))
+
+        val correctForm = JsObject(Seq("answer" -> JsString("Yes")))
+
+        val result = controller.submitRoutingAnswer(Mode.ErrorFix)(postRequest(correctForm))
+
+        redirectLocation(result).get mustBe controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(Mode.ErrorFix).url
+      }
+
+      "user submitted correct routing country during error fixing" in {
+
+        withNewCaching(aDeclaration(withRoutingQuestion()))
+
+        val correctForm = JsObject(Seq("countryCode" -> JsString("GB")))
+
+        val result = controller.submitRoutingCountry(Mode.ErrorFix)(postRequest(correctForm))
+
+        redirectLocation(result).get mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(Mode.ErrorFix).url
+      }
     }
   }
 }
