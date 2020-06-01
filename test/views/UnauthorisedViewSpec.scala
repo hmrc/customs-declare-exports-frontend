@@ -17,8 +17,6 @@
 package views
 
 import base.Injector
-import config.AppConfig
-import org.mockito.Mockito.when
 import play.twirl.api.Html
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -27,14 +25,6 @@ import views.tags.ViewTest
 
 @ViewTest
 class UnauthorisedViewSpec extends UnitViewSpec with Stubs with Injector {
-
-  private val appConfig = mock[AppConfig]
-  when(appConfig.customsDeclarationsGoodsTakenOutOfEuUrl)
-    .thenReturn("appConfig.customsDeclarationsGoodsTakenOutOfEuUrl")
-  when(appConfig.commodityCodesUrl).thenReturn("appConfig.commodityCodesUrl")
-  when(appConfig.relevantLicensesUrl).thenReturn("appConfig.relevantLicensesUrl")
-  when(appConfig.serviceAvailabilityUrl).thenReturn("appConfig.serviceAvailabilityUrl")
-  when(appConfig.customsMovementsFrontendUrl).thenReturn("appConfig.customsMovementsFrontendUrl")
 
   private val unauthorisedPage = instanceOf[unauthorised]
   private val realMessages = realMessagesApi.preferred(request)
