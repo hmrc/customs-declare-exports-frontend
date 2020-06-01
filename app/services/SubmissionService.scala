@@ -17,9 +17,7 @@
 package services
 
 import com.google.inject.Inject
-import config.AppConfig
 import connectors.CustomsDeclareExportsConnector
-import forms.Choice
 import forms.declaration.LegalDeclaration
 import javax.inject.Singleton
 import metrics.ExportsMetrics
@@ -34,12 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 @Singleton
-class SubmissionService @Inject()(
-  appConfig: AppConfig,
-  exportsConnector: CustomsDeclareExportsConnector,
-  auditService: AuditService,
-  exportsMetrics: ExportsMetrics
-) {
+class SubmissionService @Inject()(exportsConnector: CustomsDeclareExportsConnector, auditService: AuditService, exportsMetrics: ExportsMetrics) {
 
   private val logger = Logger(this.getClass)
 

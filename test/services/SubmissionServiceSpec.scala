@@ -18,7 +18,6 @@ package services
 
 import base.{Injector, MockConnectors, MockExportCacheService}
 import com.kenshoo.play.metrics.Metrics
-import config.AppConfig
 import connectors.CustomsDeclareExportsConnector
 import forms.declaration.LegalDeclaration
 import metrics.{ExportsMetrics, MetricIdentifiers}
@@ -41,7 +40,6 @@ class SubmissionServiceSpec
 
   private val auditService = mock[AuditService]
   private val connector = mock[CustomsDeclareExportsConnector]
-  private val appConfig = instanceOf[AppConfig]
   private val exportMetrics = instanceOf[ExportsMetrics]
   private val hc: HeaderCarrier = mock[HeaderCarrier]
   private val legal = LegalDeclaration("Name", "Role", "email@test.com", confirmation = true)
@@ -56,7 +54,7 @@ class SubmissionServiceSpec
     EventData.confirmed.toString -> legal.confirmation.toString,
     EventData.submissionResult.toString -> "Success"
   )
-  private val submissionService = new SubmissionService(appConfig, connector, auditService, exportMetrics)
+  private val submissionService = new SubmissionService(connector, auditService, exportMetrics)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

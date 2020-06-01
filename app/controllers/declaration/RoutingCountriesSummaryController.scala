@@ -22,6 +22,7 @@ import forms.declaration.RoutingQuestionYesNo
 import forms.declaration.countries.{Countries, Country}
 import forms.declaration.countries.Countries.{FirstRoutingCountryPage, NextRoutingCountryPage}
 import javax.inject.Inject
+import models.Mode.ErrorFix
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
@@ -70,10 +71,10 @@ class RoutingCountriesSummaryController @Inject()(
   }
 
   private def redirectFromSummaryPage(mode: Mode, answer: Boolean)(implicit request: JourneyRequest[AnyContent]): Result =
-    if (answer) {
-      navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry)
-    } else {
-      navigator.continueTo(mode, controllers.declaration.routes.LocationController.displayPage)
+    mode match {
+      case ErrorFix if answer => Redirect(controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(mode))
+      case _ if answer        => navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry)
+      case _                  => navigator.continueTo(mode, controllers.declaration.routes.LocationController.displayPage)
     }
 
   def displayRemoveCountryPage(mode: Mode, countryCode: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
@@ -93,13 +94,17 @@ class RoutingCountriesSummaryController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(removeRoutingCountryPage(mode, formWithErrors, country))),
         validAnswer =>
-          if (validAnswer) {
-            removeCountry(Country(Some(countryCode))).map { _ =>
-              navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
-            }
-          } else Future.successful(navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage))
+          if (validAnswer) removeCountry(Country(Some(countryCode))).map(_ => removeRedirect(mode))
+          else Future.successful(removeRedirect(mode))
       )
   }
+
+  private def removeRedirect(mode: Mode)(implicit request: JourneyRequest[AnyContent]): Result =
+    if (mode == ErrorFix) {
+      Redirect(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(mode))
+    } else {
+      navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
+    }
 
   private def removeCountry(country: Country)(implicit request: JourneyRequest[AnyContent]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect(_.removeCountryOfRouting(country))
@@ -112,6 +117,7 @@ class RoutingCountriesSummaryController @Inject()(
     val page = if (countryIndex > 0) NextRoutingCountryPage else FirstRoutingCountryPage
 
     if (isCountryPresentedInCache) Ok(changeRoutingCountryPage(mode, Countries.form(page).fill(Country(Some(countryCode))), page, countryCode))
+    else if (mode == ErrorFix) Redirect(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(mode))
     else navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
   }
 
@@ -131,7 +137,11 @@ class RoutingCountriesSummaryController @Inject()(
           val updatedCountries = cachedCountries.updated(countryIndex, validCountry)
 
           updateExportsDeclarationSyncDirect(_.updateCountriesOfRouting(updatedCountries)).map { _ =>
-            navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
+            if (mode == ErrorFix) {
+              Redirect(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(mode))
+            } else {
+              navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
+            }
           }
         }
       )

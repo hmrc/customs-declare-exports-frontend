@@ -170,6 +170,17 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
       }
+
+      "user removed country during error fixing" in {
+
+        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withRoutingCountries(Seq(Country(Some("PL")), Country(Some("GB"))))))
+
+        val correctForm = JsObject(Seq("answer" -> JsString("Yes")))
+
+        val result = controller.submitRemoveCountry(Mode.ErrorFix, "PL")(postRequest(correctForm))
+
+        redirectLocation(result).get mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(Mode.ErrorFix).url
+      }
     }
 
     "return 303 (SEE_OTHER) for change country" when {
@@ -193,6 +204,17 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
         val result = controller.submitChangeCountry(Mode.Normal, "PL")(postRequest(correctForm))
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
+      }
+
+      "user submit changed country during error fixing" in {
+
+        withNewCaching(aDeclaration(withRoutingCountries(Seq(Country(Some("PL"))))))
+
+        val correctForm = JsObject(Seq("countryCode" -> JsString("GB")))
+
+        val result = controller.submitChangeCountry(Mode.ErrorFix, "PL")(postRequest(correctForm))
+
+        redirectLocation(result).get mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(Mode.ErrorFix).url
       }
     }
 
@@ -250,6 +272,20 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry()
+      }
+    }
+
+    "return 303 (SEE_OTHER) and redirect to Routing Countries page with ErrorFix mode" when {
+
+      "form is correct, answer is Yes and mode is ErrorFix" in {
+
+        withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withRoutingCountries()))
+
+        val correctAnswer = JsObject(Seq("answer" -> JsString("Yes")))
+
+        val result = controller.submit(Mode.ErrorFix)(postRequest(correctAnswer))
+
+        redirectLocation(result).get mustBe controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(Mode.ErrorFix).url
       }
     }
 

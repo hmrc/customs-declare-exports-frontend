@@ -22,6 +22,7 @@ import forms.declaration.RoutingQuestionYesNo._
 import forms.declaration.countries.Countries
 import forms.declaration.countries.Countries.{FirstRoutingCountryPage, NextRoutingCountryPage}
 import javax.inject.Inject
+import models.Mode.ErrorFix
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
@@ -78,10 +79,10 @@ class RoutingCountriesController @Inject()(
     }
 
   private def redirectFromRoutingAnswer(mode: Mode, answer: Boolean)(implicit request: JourneyRequest[AnyContent]): Result =
-    if (answer) {
-      navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry)
-    } else {
-      navigator.continueTo(mode, controllers.declaration.routes.LocationController.displayPage)
+    mode match {
+      case ErrorFix if answer => Redirect(controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(mode))
+      case _ if answer        => navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry)
+      case _                  => navigator.continueTo(mode, controllers.declaration.routes.LocationController.displayPage)
     }
 
   def displayRoutingCountry(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
@@ -90,7 +91,8 @@ class RoutingCountriesController @Inject()(
 
     routingAnswer match {
       case Some(answer) if answer => Ok(countryOfRoutingPage(mode, Countries.form(page), page))
-      case _                      => navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(_, fastForward = false))
+      case _ =>
+        navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(_, fastForward = false))
     }
   }
 
@@ -108,7 +110,11 @@ class RoutingCountriesController @Inject()(
           val newRoutingCountries = request.cacheModel.locations.routingCountries :+ validCountry
 
           updateExportsDeclarationSyncDirect(_.updateCountriesOfRouting(newRoutingCountries)).map { _ =>
-            navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
+            if (mode == ErrorFix) {
+              Redirect(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(mode))
+            } else {
+              navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
+            }
           }
         }
       )

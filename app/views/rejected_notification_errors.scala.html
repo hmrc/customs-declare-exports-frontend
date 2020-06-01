@@ -39,7 +39,7 @@
 }
 
 @errorChangeAction(error: RejectionReason) = @{
-  if(changeErrorLinkConfig.isEnabled && error.url.isDefined) {
+  if(changeErrorLinkConfig.isEnabled && error.url.isDefined && error.url.get.nonEmpty) {
     val urlToPageWithError = RejectionReason.url(error.url.get, declaration, error.pointer)
     val url = routes.SubmissionsController.amendErrors(declaration.id, urlToPageWithError).url
 
