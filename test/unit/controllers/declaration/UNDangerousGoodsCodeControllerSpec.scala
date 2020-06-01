@@ -126,7 +126,7 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
       }
 
       onJourney(CLEARANCE) { request =>
-        def controllerRedirectsToNextPageForProcedureCode(procedureCode: String, call: Call) = {
+        def controllerRedirectsToNextPageForProcedureCode(procedureCode: String, expectedCall: Call) = {
 
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId), withProcedureCodes(Some(procedureCode))))))
           val correctForm = formData("1234")
@@ -134,7 +134,7 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
           val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe call
+          thePageNavigatedTo mustBe expectedCall
           verify(mockPage, times(0)).apply(any(), any(), any())(any(), any())
         }
 

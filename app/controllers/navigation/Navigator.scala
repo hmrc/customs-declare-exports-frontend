@@ -129,7 +129,6 @@ object Navigator {
   }
 
   val clearanceItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
-    case PackageInformation    => controllers.declaration.routes.CommodityDetailsController.displayPage
     case AdditionalInformation => controllers.declaration.routes.CommodityMeasureController.displayPage
     case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }

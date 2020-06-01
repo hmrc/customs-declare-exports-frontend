@@ -139,7 +139,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
     }
 
     onJourney(CLEARANCE) { request =>
-      def controllerRedirectsToNextPageForProcedureCodeAndExsStatus(procedureCode: String, exsStatus: String, call: Call) = {
+      def controllerRedirectsToNextPageForProcedureCodeAndExsStatus(procedureCode: String, exsStatus: String, expectedCall: Call) = {
 
         withNewCaching(
           aDeclarationAfter(
@@ -153,7 +153,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe call
+        thePageNavigatedTo mustBe expectedCall
       }
 
       "return 303 (SEE_OTHER) and redirects when Exs No and Procedure Code 1234" in {
