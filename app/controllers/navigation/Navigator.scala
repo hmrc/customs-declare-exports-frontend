@@ -40,12 +40,12 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
 
-  def continueTo(mode: Mode, factory: Mode => Call)(implicit req: JourneyRequest[AnyContent], hc: HeaderCarrier): Result =
+  def continueTo(mode: Mode, factory: Mode => Call, isErrorFixInProgress: Boolean = false)(
+    implicit req: JourneyRequest[AnyContent],
+    hc: HeaderCarrier
+  ): Result =
     (mode, FormAction.bindFromRequest) match {
-      case (ErrorFix, Add) | (ErrorFix, Remove(_)) => Results.Redirect(factory(mode))
-      case (ErrorFix, _) if (req.sourceDecId.isDefined) =>
-        Results.Redirect(controllers.routes.RejectedNotificationsController.displayPage(req.sourceDecId.get))
-      case (ErrorFix, _) => Results.Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
+      case (ErrorFix, formAction) => handleErrorFixMode(factory, formAction, isErrorFixInProgress)
       case (_, SaveAndReturn) =>
         auditService.auditAllPagesUserInput(AuditTypes.SaveAndReturnSubmission, req.cacheModel)
         goToDraftConfirmation()
@@ -61,6 +61,15 @@ class Navigator @Inject()(appConfig: AppConfig, auditService: AuditService) {
       .removingFromSession(ExportsSessionKeys.declarationId)
   }
 
+  private def handleErrorFixMode(factory: Mode => Call, formAction: FormAction, isErrorFixInProgress: Boolean)(
+    implicit req: JourneyRequest[AnyContent]
+  ): Result =
+    formAction match {
+      case Add | Remove(_)                  => Results.Redirect(factory(ErrorFix))
+      case _ if isErrorFixInProgress        => Results.Redirect(factory(ErrorFix))
+      case _ if (req.sourceDecId.isDefined) => Results.Redirect(controllers.routes.RejectedNotificationsController.displayPage(req.sourceDecId.get))
+      case _                                => Results.Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
+    }
 }
 
 case class ItemId(id: String)

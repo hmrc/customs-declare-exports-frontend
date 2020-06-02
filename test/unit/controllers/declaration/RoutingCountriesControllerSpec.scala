@@ -211,7 +211,8 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
         val result = controller.submitRoutingAnswer(Mode.ErrorFix)(postRequest(correctForm))
 
-        redirectLocation(result).get mustBe controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(Mode.ErrorFix).url
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(Mode.ErrorFix)
       }
 
       "user submitted correct routing country during error fixing" in {
@@ -222,7 +223,8 @@ class RoutingCountriesControllerSpec extends ControllerSpec {
 
         val result = controller.submitRoutingCountry(Mode.ErrorFix)(postRequest(correctForm))
 
-        redirectLocation(result).get mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(Mode.ErrorFix).url
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(Mode.ErrorFix)
       }
     }
   }
