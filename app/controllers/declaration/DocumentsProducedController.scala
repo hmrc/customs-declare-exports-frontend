@@ -48,9 +48,11 @@ class DocumentsProducedController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    def formWithSubmissionErrors = form().copy(errors = request.submissionErrors)
+
     request.cacheModel.itemBy(itemId).flatMap(_.documentsProducedData).map(_.documents) match {
-      case Some(data) => Ok(documentProducedPage(mode, itemId, form(), data))
-      case _          => Ok(documentProducedPage(mode, itemId, form(), Seq()))
+      case Some(data) => Ok(documentProducedPage(mode, itemId, formWithSubmissionErrors, data))
+      case _          => Ok(documentProducedPage(mode, itemId, formWithSubmissionErrors, Seq()))
     }
   }
 

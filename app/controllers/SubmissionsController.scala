@@ -21,11 +21,12 @@ import connectors.exchange.ExportsDeclarationExchange
 import controllers.actions.AuthAction
 import controllers.util.SubmissionDisplayHelper
 import javax.inject.Inject
-import models.{ExportsDeclaration, Mode}
 import models.Mode.ErrorFix
 import models.requests.{AuthenticatedRequest, ExportsSessionKeys}
+import models.responses.FlashKeys.errorMessage
+import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.{declaration_information, submissions}
 
@@ -73,9 +74,10 @@ class SubmissionsController @Inject()(
     }
   }
 
-  def amendErrors(id: String, redirectUrl: String): Action[AnyContent] = authenticate.async { implicit request =>
+  def amendErrors(id: String, redirectUrl: String, pattern: String, messageKey: String): Action[AnyContent] = authenticate.async { implicit request =>
     val redirectUrlWithMode = redirectUrl + ErrorFix.queryParameter
-    val redirect = Redirect(redirectUrlWithMode)
+    val flashData = Map(errorMessage -> messageKey)
+    val redirect = Redirect(redirectUrlWithMode).flashing(Flash(flashData))
 
     val actualDeclaration: Future[Option[ExportsDeclaration]] = request.declarationId.map { decId =>
       customsDeclareExportsConnector.findDeclaration(decId)
