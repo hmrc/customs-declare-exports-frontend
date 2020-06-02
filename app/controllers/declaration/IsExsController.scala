@@ -20,9 +20,10 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.DeclarationPage
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.{ExporterDetails, IsExs}
+import forms.declaration.{ExporterDetails, IsExs, UNDangerousGoodsCode}
 import javax.inject.Inject
 import models.DeclarationType.{CLEARANCE, DeclarationType}
+import models.declaration.{ExportItem, Parties}
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
@@ -66,12 +67,17 @@ class IsExsController @Inject()(
 
   private def updateCache(answer: IsExs)(implicit request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>
-      val updatedParties = answer.isExs match {
+      val updatedParties: Parties = answer.isExs match {
         case YesNoAnswers.yes => model.parties.copy(isExs = Some(answer))
         case YesNoAnswers.no  => model.parties.copy(isExs = Some(answer), carrierDetails = None, consignorDetails = None)
       }
 
-      model.copy(parties = updatedParties)
+      val updatedItems: Seq[ExportItem] = answer.isExs match {
+        case YesNoAnswers.yes => model.items.map(_.copy(dangerousGoodsCode = Some(UNDangerousGoodsCode(None))))
+        case YesNoAnswers.no  => model.items.map(_.copy(dangerousGoodsCode = None))
+      }
+
+      model.copy(parties = updatedParties, items = updatedItems)
     }
 
   private def nextPage(isExs: IsExs)(implicit request: JourneyRequest[_]): Mode => Call =

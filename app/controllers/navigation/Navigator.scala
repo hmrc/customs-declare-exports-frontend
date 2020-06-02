@@ -129,7 +129,6 @@ object Navigator {
   }
 
   val clearanceItemPage: PartialFunction[DeclarationPage, (Mode, String) => Call] = {
-    case PackageInformation    => controllers.declaration.routes.CommodityDetailsController.displayPage
     case AdditionalInformation => controllers.declaration.routes.CommodityMeasureController.displayPage
     case page                  => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }
@@ -302,7 +301,8 @@ object Navigator {
   }
 
   val clearanceCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, Mode, String) => Call] = {
-    case CommodityMeasure => commodityMeasureClearancePreviousPage
+    case CommodityMeasure   => commodityMeasureClearancePreviousPage
+    case PackageInformation => packageInformationClearancePreviousPage
   }
 
   private def consigneeDetailsSupplementaryPreviousPage(cacheModel: ExportsDeclaration, mode: Mode): Call =
@@ -313,9 +313,18 @@ object Navigator {
 
   private def commodityMeasureClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
     if (cacheModel.itemBy(itemId).exists(_.isExportInventoryCleansingRecord))
-      controllers.declaration.routes.CommodityDetailsController.displayPage(mode, itemId)
+      if (cacheModel.isExs)
+        controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(mode, itemId)
+      else
+        controllers.declaration.routes.CommodityDetailsController.displayPage(mode, itemId)
     else
       controllers.declaration.routes.PackageInformationSummaryController.displayPage(mode, itemId)
+
+  private def packageInformationClearancePreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
+    if (cacheModel.isExs)
+      controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(mode, itemId)
+    else
+      controllers.declaration.routes.CommodityDetailsController.displayPage(mode, itemId)
 
   private def documentsProducedPreviousPage(cacheModel: ExportsDeclaration, mode: Mode, itemId: String): Call =
     if (cacheModel.itemBy(itemId).flatMap(_.additionalInformation).exists(_.items.nonEmpty))

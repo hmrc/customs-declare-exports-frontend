@@ -17,7 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.CommodityDetailsController
-import forms.declaration.CommodityDetails
+import forms.declaration.{CommodityDetails, IsExs}
 import models.DeclarationType._
 import models.Mode
 import org.mockito.ArgumentCaptor
@@ -26,6 +26,7 @@ import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.Call
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import unit.base.ControllerSpec
@@ -138,15 +139,48 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
     }
 
     onJourney(CLEARANCE) { request =>
-      "return 303 (SEE_OTHER) and redirect to UN Dangerous Goods Code page" in {
+      def controllerRedirectsToNextPageForProcedureCodeAndExsStatus(procedureCode: String, exsStatus: String, expectedCall: Call) = {
 
-        withNewCaching(request.cacheModel)
+        withNewCaching(
+          aDeclarationAfter(
+            request.cacheModel,
+            withIsExs(IsExs(exsStatus)),
+            withItem(anItem(withItemId(itemId), withProcedureCodes(Some(procedureCode))))
+          )
+        )
         val correctForm = Json.toJson(CommodityDetails(Some("12345678"), Some("Description")))
 
         val result = controller.submitForm(Mode.Normal, itemId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, itemId)
+        thePageNavigatedTo mustBe expectedCall
+      }
+
+      "return 303 (SEE_OTHER) and redirects when Exs No and Procedure Code 1234" in {
+
+        controllerRedirectsToNextPageForProcedureCodeAndExsStatus(
+          "1234",
+          "No",
+          controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, itemId)
+        )
+      }
+
+      "return 303 (SEE_OTHER) and redirects when Exs No and Procedure Code 0019" in {
+
+        controllerRedirectsToNextPageForProcedureCodeAndExsStatus(
+          "0019",
+          "No",
+          controllers.declaration.routes.CommodityMeasureController.displayPage(Mode.Normal, itemId)
+        )
+      }
+
+      "return 303 (SEE_OTHER) and redirects when Exs Yes" in {
+
+        controllerRedirectsToNextPageForProcedureCodeAndExsStatus(
+          "0000",
+          "Yes",
+          controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
+        )
       }
     }
   }

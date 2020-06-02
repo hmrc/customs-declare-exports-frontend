@@ -17,16 +17,15 @@
 package views.declaration.commodityMeasure
 
 import base.Injector
-import controllers.declaration.routes
-import forms.declaration.CommodityMeasure
+import forms.declaration.{CommodityMeasure, IsExs}
 import helpers.views.declaration.CommonMessages
 import models.DeclarationType._
 import models.Mode
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
+import play.api.mvc.Call
 import unit.tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.declaration.commodityMeasure.commodity_measure
@@ -92,14 +91,6 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
         view.getElementsByAttributeValue("for", "grossMass").text() mustBe messages("declaration.commodityMeasure.grossMass")
         view.getElementById("grossMass-hint").text() mustBe messages("declaration.commodityMeasure.grossMass.hint")
         view.getElementById("grossMass").attr("value") mustBe empty
-      }
-
-      "display 'Back' button that links to 'Package Information' page" in {
-
-        val backButton = createView().getElementById("back-link")
-
-        backButton.text() mustBe messages(backCaption)
-        backButton.attr("href") mustBe controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, itemId).url
       }
 
       "display 'Save and continue' button on page" in {
@@ -289,6 +280,68 @@ class CommodityMeasureViewSpec extends UnitViewSpec with CommonMessages with Stu
         view.getElementById("supplementaryUnits") mustBe (null)
         view.getElementById("netMass").attr("value") mustBe "123"
         view.getElementById("grossMass").attr("value") mustBe "123"
+      }
+    }
+  }
+
+  "Commodity Measure back links" should {
+
+    onEveryDeclarationJourney() { implicit request =>
+      "display 'Back' button that links to 'Package Information' page" in {
+
+        val backButton = createView().getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton must haveHref(controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, itemId).url)
+      }
+    }
+
+    onClearance { implicit request =>
+      def viewHasBackLinkForProcedureCodeAndExsStatus(procedureCode: String, exsStatus: String, call: Call) = {
+        val requestWithCache =
+          journeyRequest(
+            aDeclarationAfter(
+              request.cacheModel,
+              withIsExs(IsExs(exsStatus)),
+              withItem(anItem(withItemId(itemId), withProcedureCodes(Some(procedureCode))))
+            )
+          )
+
+        val backButton = createView()(requestWithCache).getElementById("back-link")
+
+        backButton.text() mustBe messages(backCaption)
+        backButton must haveHref(call.url)
+      }
+
+      "display 'Back' button that links to 'Commodity Details' " when {
+        "procedure code was '0019' and is EXS was 'No" in {
+
+          viewHasBackLinkForProcedureCodeAndExsStatus(
+            "0019",
+            "No",
+            controllers.declaration.routes.CommodityDetailsController.displayPage(Mode.Normal, itemId)
+          )
+        }
+      }
+      "display 'Back' button that links to 'UN Dangerous Goods Code' " when {
+        "procedure code was '0019' and is EXS was 'Yes" in {
+
+          viewHasBackLinkForProcedureCodeAndExsStatus(
+            "0019",
+            "Yes",
+            controllers.declaration.routes.UNDangerousGoodsCodeController.displayPage(Mode.Normal, itemId)
+          )
+        }
+      }
+      "display 'Back' button that links to 'Package Information' " when {
+        "procedure code was '1234'" in {
+
+          viewHasBackLinkForProcedureCodeAndExsStatus(
+            "1234",
+            "ANY",
+            controllers.declaration.routes.PackageInformationSummaryController.displayPage(Mode.Normal, itemId)
+          )
+        }
       }
     }
   }
