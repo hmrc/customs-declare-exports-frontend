@@ -16,8 +16,10 @@
 
 package unit.services.model
 
-import java.time.{Instant, ZoneOffset, ZonedDateTime}
+import java.time.{ZoneOffset, ZonedDateTime}
 
+import base.Injector
+import config.AppConfig
 import forms.declaration.Seal
 import models.declaration.Container
 import models.declaration.notifications.{Notification, NotificationError}
@@ -27,13 +29,14 @@ import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito.given
 import play.api.i18n.Messages
 import services.cache.ExportsTestData
-import services.model.RejectionReason
+import services.model.{RejectionReason, RejectionReasons}
 import unit.base.UnitSpec
 
-class RejectionReasonSpec extends UnitSpec with ExportsTestData {
+class RejectionReasonSpec extends UnitSpec with ExportsTestData with Injector {
 
-  import services.model.RejectionReason._
   private val messages = mock[Messages]
+  private val config: AppConfig = instanceOf[AppConfig]
+  private val reasons = new RejectionReasons(config)
 
   "Apply" should {
 
@@ -44,8 +47,11 @@ class RejectionReasonSpec extends UnitSpec with ExportsTestData {
       val exportsErrorDescription = "Improved Error description"
       val url = "/url"
       val error = List(errorCode, cdsErrorDescription, exportsErrorDescription, url)
+      val pageError = "page error"
+      val pageErrors = Map(errorCode -> pageError)
 
-      RejectionReason.apply(error) mustBe RejectionReason(errorCode, cdsErrorDescription, exportsErrorDescription, Some(url), None)
+      RejectionReason.apply(error, true, pageErrors) mustBe RejectionReason(errorCode, exportsErrorDescription, Some(url), Some(pageError), None)
+      RejectionReason.apply(error, false, pageErrors) mustBe RejectionReason(errorCode, cdsErrorDescription, Some(url), Some(pageError), None)
     }
 
     "create correct error from a single description" in {
@@ -54,12 +60,12 @@ class RejectionReasonSpec extends UnitSpec with ExportsTestData {
       val cdsErrorDescription = "Error description"
       val error = List(errorCode, cdsErrorDescription, "", "")
 
-      RejectionReason.apply(error) mustBe RejectionReason(errorCode, cdsErrorDescription, cdsErrorDescription, None, None)
+      RejectionReason.apply(error, true, Map.empty) mustBe RejectionReason(errorCode, cdsErrorDescription, None, None, None)
     }
 
     "throw an exception when input is incorrect" in {
 
-      intercept[IllegalArgumentException](RejectionReason.apply(List.empty))
+      intercept[IllegalArgumentException](RejectionReason.apply(List.empty, true, Map.empty))
     }
   }
 
@@ -67,30 +73,28 @@ class RejectionReasonSpec extends UnitSpec with ExportsTestData {
 
     "have 199 errors" in {
 
-      allRejectionReasons.length mustBe 199
+      reasons.allRejectionReasons.length mustBe 199
     }
 
     "contain code for every error" in {
 
-      allRejectionReasons.filter(_.code.isEmpty) mustBe empty
+      reasons.allRejectionReasons.filter(_.code.isEmpty) mustBe empty
     }
 
-    "contain cds description for every error" in {
+    "contain summary error description for every error" in {
 
-      allRejectionReasons.filter(_.cdsDescription.isEmpty) mustBe empty
+      reasons.allRejectionReasons.filter(_.summaryErrorMessage.isEmpty) mustBe empty
     }
 
-    "contain exports description for every error" in {
-
-      allRejectionReasons.filter(_.exportsDescription.isEmpty) mustBe empty
-    }
   }
 
   "DMS error with code CDS40045" should {
 
     "have the correct url" in {
 
-      allRejectionReasons.find(_.code == "CDS40045").flatMap(_.url) mustBe Some("/customs-declare-exports/declaration/items/ITEM_ID/add-document")
+      reasons.allRejectionReasons.find(_.code == "CDS40045").flatMap(_.url) mustBe Some(
+        "/customs-declare-exports/declaration/items/ITEM_ID/add-document"
+      )
     }
   }
 
@@ -101,11 +105,11 @@ class RejectionReasonSpec extends UnitSpec with ExportsTestData {
         Notification("convId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.ACCEPTED, Seq.empty, "")
 
       "list is empty" in {
-        fromNotifications(Seq.empty)(messages) mustBe Seq.empty
+        reasons.fromNotifications(Seq.empty)(messages) mustBe Seq.empty
       }
 
       "list doesn't contain rejected notification" in {
-        fromNotifications(Seq(acceptedNotification))(messages) mustBe Seq.empty
+        reasons.fromNotifications(Seq(acceptedNotification))(messages) mustBe Seq.empty
       }
 
       "list contains rejected notification" when {
@@ -116,12 +120,12 @@ class RejectionReasonSpec extends UnitSpec with ExportsTestData {
           val notification =
             Notification("actionId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.REJECTED, Seq(error), "")
 
-          fromNotifications(Seq(notification))(messages) mustBe Seq(
+          reasons.fromNotifications(Seq(notification))(messages) mustBe Seq(
             RejectionReason(
               "CDS12016",
               "Date Error: The acceptance date must not be in the future and must not be more than 180 days in the past",
-              "The acceptance date cannot be more than 180 days in the past",
               None,
+              Some("Date Error: The acceptance date must not be in the future and must not be more than 180 days in the past"),
               Some(Pointer("x.#0.z"))
             )
           )
@@ -133,12 +137,12 @@ class RejectionReasonSpec extends UnitSpec with ExportsTestData {
           val notification =
             Notification("actionId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.REJECTED, Seq(error), "")
 
-          fromNotifications(Seq(notification))(messages) mustBe Seq(
+          reasons.fromNotifications(Seq(notification))(messages) mustBe Seq(
             RejectionReason(
               "CDS12016",
               "Date Error: The acceptance date must not be in the future and must not be more than 180 days in the past",
-              "The acceptance date cannot be more than 180 days in the past",
               None,
+              Some("Date Error: The acceptance date must not be in the future and must not be more than 180 days in the past"),
               None
             )
           )
@@ -149,12 +153,12 @@ class RejectionReasonSpec extends UnitSpec with ExportsTestData {
           val notification =
             Notification("actionId", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.REJECTED, Seq(error), "")
 
-          fromNotifications(Seq(notification))(messages) mustBe Seq(
+          reasons.fromNotifications(Seq(notification))(messages) mustBe Seq(
             RejectionReason(
               "CDS12016",
               "Date Error: The acceptance date must not be in the future and must not be more than 180 days in the past",
-              "The acceptance date cannot be more than 180 days in the past",
               None,
+              Some("Date Error: The acceptance date must not be in the future and must not be more than 180 days in the past"),
               None
             )
           )

@@ -49,9 +49,10 @@ class TotalNumberOfItemsController @Inject()(
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+    val formWithSubmissionErrors = form().copy(errors = request.submissionErrors)
     request.cacheModel.totalNumberOfItems match {
-      case Some(data) => Ok(totalNumberOfItemsPage(mode, navigationForm, form().fill(data)))
-      case _          => Ok(totalNumberOfItemsPage(mode, navigationForm, form()))
+      case Some(data) => Ok(totalNumberOfItemsPage(mode, navigationForm, formWithSubmissionErrors.fill(data)))
+      case _          => Ok(totalNumberOfItemsPage(mode, navigationForm, formWithSubmissionErrors))
     }
   }
 

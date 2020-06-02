@@ -46,9 +46,10 @@ class RepresentativeStatusController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    def formWithSubmissionErrors = form().copy(errors = request.submissionErrors)
     request.cacheModel.parties.representativeDetails.map(_.statusCode) match {
-      case Some(data) => Ok(representativeStatusPage(mode, navigationForm, form().fill(RepresentativeStatus(data))))
-      case _          => Ok(representativeStatusPage(mode, navigationForm, form()))
+      case Some(data) => Ok(representativeStatusPage(mode, navigationForm, formWithSubmissionErrors.fill(RepresentativeStatus(data))))
+      case _          => Ok(representativeStatusPage(mode, navigationForm, formWithSubmissionErrors))
     }
   }
 

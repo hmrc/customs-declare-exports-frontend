@@ -66,13 +66,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
 
     "must contain notifications" when {
       val reason =
-        RejectionReason(
-          "rejectionCode",
-          "cdsRejectionDescription",
-          "exportsRejectionDescription",
-          None,
-          Some(Pointer("declaration.consignmentReferences.lrn"))
-        )
+        RejectionReason("rejectionCode", "rejectionDescription", None, None, Some(Pointer("declaration.consignmentReferences.lrn")))
 
       "fully populated and we are using the exports error descriptions" in {
         val doc: Document = view(Seq(reason))
@@ -88,8 +82,8 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
       "pointer " in {
         val reason = RejectionReason(
           "rejectionCode",
-          "cdsRejectionDescription",
-          "exportsRejectionDescription",
+          "rejectionDescription",
+          None,
           None,
           Some(Pointer("declaration.goodsShipment.governmentAgencyGoodsItem.#0.additionalDocument.#1.id"))
         )
@@ -119,19 +113,18 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestDa
 
         val expectedUrl = s"/customs-declare-exports/declaration/items/$itemId/add-document"
 
-        val reason = RejectionReason(
-          "CDS40045",
-          "cdsRejectionDescription",
-          "exportsRejectionDescription",
-          Some(expectedUrl),
-          Some(Pointer("declaration.items.#1.documentProduced.#1.documentStatus"))
-        )
+        val pointerPattern = "declaration.items.#1.documentProduced.#1.documentStatus"
+        val urlPattern = "declaration.items.$.documentProduced.$.documentStatus"
+
+        val reason = RejectionReason("CDS40045", "rejectionDescription", Some(expectedUrl), Some("page-error-message"), Some(Pointer(pointerPattern)))
 
         val view: Document = page(declaration, Seq(reason))(request, messages)
 
         val changeLink = view.getElementsByClass("govuk-link").first()
 
-        changeLink must haveHref(controllers.routes.SubmissionsController.amendErrors(declaration.id, reason.url.get).url)
+        changeLink must haveHref(
+          controllers.routes.SubmissionsController.amendErrors(declaration.id, reason.url.get, urlPattern, "page-error-message").url
+        )
       }
     }
   }
