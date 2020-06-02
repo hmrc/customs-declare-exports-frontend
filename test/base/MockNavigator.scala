@@ -18,8 +18,9 @@ package base
 
 import controllers.navigation.Navigator
 import models.Mode
+import models.Mode.ErrorFix
 import models.requests.JourneyRequest
-import org.mockito.ArgumentMatchers._
+import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.BDDMockito._
 import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.{BeforeAndAfterEach, Suite}
@@ -36,14 +37,17 @@ trait MockNavigator extends MockitoSugar with BeforeAndAfterEach { self: Mockito
   protected val hc: HeaderCarrier = HeaderCarrier()
 
   override protected def beforeEach(): Unit = {
-    given(navigator.continueTo(any[Mode], any[Mode => Call]())(any[JourneyRequest[AnyContent]], any())).willReturn(aRedirectToTheNextPage)
+    given(navigator.continueTo(any[Mode], any[Mode => Call](), any[Boolean])(any[JourneyRequest[AnyContent]], any()))
+      .willReturn(aRedirectToTheNextPage)
     given(aRedirectToTheNextPage.header).willReturn(ResponseHeader(Status.SEE_OTHER))
   }
 
   protected def thePageNavigatedTo: Call = {
     val captor: ArgumentCaptor[Mode => Call] = ArgumentCaptor.forClass(classOf[Mode => Call])
-    Mockito.verify(navigator).continueTo(any(), captor.capture())(any(), any())
-    captor.getValue.apply(Mode.Normal)
+    val errorFixCaptor: ArgumentCaptor[Boolean] = ArgumentCaptor.forClass(classOf[Boolean])
+    Mockito.verify(navigator).continueTo(any(), captor.capture(), errorFixCaptor.capture())(any(), any())
+    val call = captor.getValue
+    if (errorFixCaptor.getValue) call.apply(Mode.ErrorFix) else call.apply(Mode.Normal)
   }
 
   override protected def afterEach(): Unit = {

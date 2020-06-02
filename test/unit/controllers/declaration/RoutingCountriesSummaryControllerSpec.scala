@@ -179,7 +179,8 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
 
         val result = controller.submitRemoveCountry(Mode.ErrorFix, "PL")(postRequest(correctForm))
 
-        redirectLocation(result).get mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(Mode.ErrorFix).url
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(Mode.ErrorFix)
       }
     }
 
@@ -202,6 +203,7 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
         val correctForm = JsObject(Seq("countryCode" -> JsString("GB")))
 
         val result = controller.submitChangeCountry(Mode.Normal, "PL")(postRequest(correctForm))
+
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage()
       }
@@ -214,7 +216,8 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
 
         val result = controller.submitChangeCountry(Mode.ErrorFix, "PL")(postRequest(correctForm))
 
-        redirectLocation(result).get mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(Mode.ErrorFix).url
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(Mode.ErrorFix)
       }
     }
 
@@ -285,7 +288,8 @@ class RoutingCountriesSummaryControllerSpec extends ControllerSpec {
 
         val result = controller.submit(Mode.ErrorFix)(postRequest(correctAnswer))
 
-        redirectLocation(result).get mustBe controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(Mode.ErrorFix).url
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(Mode.ErrorFix)
       }
     }
 

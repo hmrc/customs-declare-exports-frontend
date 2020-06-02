@@ -79,11 +79,10 @@ class RoutingCountriesController @Inject()(
     }
 
   private def redirectFromRoutingAnswer(mode: Mode, answer: Boolean)(implicit request: JourneyRequest[AnyContent]): Result =
-    mode match {
-      case ErrorFix if answer => Redirect(controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry(mode))
-      case _ if answer        => navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry)
-      case _                  => navigator.continueTo(mode, controllers.declaration.routes.LocationController.displayPage)
-    }
+    if (answer)
+      navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesController.displayRoutingCountry, mode.isErrorFix)
+    else
+      navigator.continueTo(mode, controllers.declaration.routes.LocationController.displayPage)
 
   def displayRoutingCountry(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val routingAnswer = request.cacheModel.locations.hasRoutingCountries
@@ -110,11 +109,7 @@ class RoutingCountriesController @Inject()(
           val newRoutingCountries = request.cacheModel.locations.routingCountries :+ validCountry
 
           updateExportsDeclarationSyncDirect(_.updateCountriesOfRouting(newRoutingCountries)).map { _ =>
-            if (mode == ErrorFix) {
-              Redirect(controllers.declaration.routes.RoutingCountriesSummaryController.displayPage(mode))
-            } else {
-              navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage)
-            }
+            navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesSummaryController.displayPage, mode.isErrorFix)
           }
         }
       )

@@ -168,7 +168,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
 
           controller.submitForm(Mode.Normal)(postRequest(correctForm)).futureValue
 
-          verify(navigator).continueTo(any(), any())(any(), any())
+          verify(navigator).continueTo(any(), any(), any())(any(), any())
         }
       }
 

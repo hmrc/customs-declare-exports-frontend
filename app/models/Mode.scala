@@ -16,12 +16,15 @@
 
 package models
 
+import models.Mode.ErrorFix
 import play.api.mvc.{JavascriptLiteral, QueryStringBindable}
 
 sealed trait Mode {
   val name: String
 
   def next: Mode
+
+  val isErrorFix: Boolean = this == ErrorFix
 }
 object Mode {
 
