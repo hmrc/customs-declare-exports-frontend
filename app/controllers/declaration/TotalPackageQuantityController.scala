@@ -45,8 +45,8 @@ class TotalPackageQuantityController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] = (authorize andThen journey(validTypes)) { implicit request =>
     val form = TotalPackageQuantity.form(request.declarationType).withSubmissionErrors()
-    val datax = request.cacheModel.totalPackageQuantity.fold(form)(form.fill)
-    Ok(totalPackageQuantity(mode, datax))
+    val data = request.cacheModel.totalPackageQuantity.fold(form)(form.fill)
+    Ok(totalPackageQuantity(mode, data))
   }
 
   def saveTotalPackageQuantity(mode: Mode): Action[AnyContent] = (authorize andThen journey(validTypes)).async { implicit request =>

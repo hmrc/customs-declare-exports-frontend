@@ -33,10 +33,8 @@ object RejectionReason {
   implicit val format: OFormat[RejectionReason] = Json.format[RejectionReason]
   private val logger = Logger(this.getClass)
 
-  def extractErrorDescription(useImprovedErrorMessage: Boolean, cdsDescription: String, exportsDescription: String): String = {
-    val useDescription = if (useImprovedErrorMessage) exportsDescription else cdsDescription
-    if (useDescription.isEmpty) cdsDescription else useDescription
-  }
+  def extractErrorDescription(useImprovedErrorMessage: Boolean, cdsDescription: String, exportsDescription: String): String =
+    if (useImprovedErrorMessage && exportsDescription.nonEmpty) exportsDescription else cdsDescription
 
   private def applyErrorUrl(url: String): Option[String] = if (url.isEmpty) None else Some(url)
 
