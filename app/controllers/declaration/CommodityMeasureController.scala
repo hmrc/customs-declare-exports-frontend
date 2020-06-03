@@ -39,9 +39,9 @@ class CommodityMeasureController @Inject()(
   mcc: MessagesControllerComponents,
   commodityMeasurePage: commodity_measure
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
-  private def form()(implicit request: JourneyRequest[_]) = CommodityMeasure.form(request.declarationType)
+  private def form()(implicit request: JourneyRequest[_]) = CommodityMeasure.form(request.declarationType).withSubmissionErrors()
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.commodityMeasure) match {

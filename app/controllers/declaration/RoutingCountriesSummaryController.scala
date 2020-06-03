@@ -19,8 +19,8 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.RoutingQuestionYesNo
-import forms.declaration.countries.{Countries, Country}
 import forms.declaration.countries.Countries.{FirstRoutingCountryPage, NextRoutingCountryPage}
+import forms.declaration.countries.{Countries, Country}
 import javax.inject.Inject
 import models.Mode.ErrorFix
 import models.requests.JourneyRequest
@@ -44,14 +44,14 @@ class RoutingCountriesSummaryController @Inject()(
   removeRoutingCountryPage: remove_routing_country,
   changeRoutingCountryPage: change_routing_country
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val countryCodes = request.cacheModel.locations.routingCountries.flatMap(_.code)
     val countries = findByCodes(countryCodes)
 
     if (countries.nonEmpty) {
-      Ok(routingCountriesSummaryPage(mode, RoutingQuestionYesNo.form(), countries))
+      Ok(routingCountriesSummaryPage(mode, RoutingQuestionYesNo.form().withSubmissionErrors(), countries))
     } else {
       navigator.continueTo(mode, controllers.declaration.routes.RoutingCountriesController.displayRoutingQuestion(_))
     }

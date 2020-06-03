@@ -21,8 +21,8 @@ import controllers.navigation.Navigator
 import forms.declaration.NatureOfTransaction
 import forms.declaration.NatureOfTransaction._
 import javax.inject.Inject
-import models.{ExportsDeclaration, Mode}
 import models.requests.JourneyRequest
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -40,12 +40,14 @@ class NatureOfTransactionController @Inject()(
   natureOfTransactionPage: nature_of_transaction,
   override val exportsCacheService: ExportsCacheService
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = form().withSubmissionErrors()
     request.cacheModel.natureOfTransaction match {
-      case Some(data) => Ok(natureOfTransactionPage(mode, form().fill(data)))
-      case _          => Ok(natureOfTransactionPage(mode, form()))
+      case Some(data) =>
+        Ok(natureOfTransactionPage(mode, frm.fill(data)))
+      case _ => Ok(natureOfTransactionPage(mode, frm))
     }
   }
 

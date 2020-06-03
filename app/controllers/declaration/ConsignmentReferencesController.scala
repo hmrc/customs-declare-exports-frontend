@@ -40,13 +40,13 @@ class ConsignmentReferencesController @Inject()(
   mcc: MessagesControllerComponents,
   consignmentReferencesPage: consignment_references
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    def formWithSubmissionErrors = form().copy(errors = request.submissionErrors)
+    val frm = form().withSubmissionErrors()
     request.cacheModel.consignmentReferences match {
-      case Some(data) => Ok(consignmentReferencesPage(mode, formWithSubmissionErrors.fill(data)))
-      case _          => Ok(consignmentReferencesPage(mode, formWithSubmissionErrors))
+      case Some(data) => Ok(consignmentReferencesPage(mode, frm.fill(data)))
+      case _          => Ok(consignmentReferencesPage(mode, frm))
     }
   }
 

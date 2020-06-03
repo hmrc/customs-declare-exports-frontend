@@ -39,7 +39,7 @@ class DepartureTransportController @Inject()(
   mcc: MessagesControllerComponents,
   departureTransportPage: departure_transport
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   private def form()(implicit request: JourneyRequest[_]) = DepartureTransport.form(request.declarationType)
 
@@ -47,10 +47,11 @@ class DepartureTransportController @Inject()(
 
   def displayPage(mode: Mode): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)) { implicit request =>
+      val frm = form().withSubmissionErrors()
       val transport = request.cacheModel.transport
       val formData = DepartureTransport(transport.meansOfTransportOnDepartureType, transport.meansOfTransportOnDepartureIDNumber)
 
-      Ok(departureTransportPage(mode, form().fill(formData)))
+      Ok(departureTransportPage(mode, frm.fill(formData)))
     }
 
   def submitForm(mode: Mode): Action[AnyContent] =

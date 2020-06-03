@@ -42,12 +42,12 @@ class TaricCodeAddController @Inject()(
   taricCodeAddFirstPage: taric_code_add_first,
   taricCodeAdd: taric_code_add
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.taricCodes) match {
-      case Some(taricCodes) if taricCodes.nonEmpty => Ok(taricCodeAdd(mode, itemId, TaricCode.form()))
-      case _                                       => Ok(taricCodeAddFirstPage(mode, itemId, TaricCodeFirst.form()))
+      case Some(taricCodes) if taricCodes.nonEmpty => Ok(taricCodeAdd(mode, itemId, TaricCode.form().withSubmissionErrors()))
+      case _                                       => Ok(taricCodeAddFirstPage(mode, itemId, TaricCodeFirst.form().withSubmissionErrors()))
     }
   }
 

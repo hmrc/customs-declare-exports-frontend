@@ -41,12 +41,13 @@ class DeclarantDetailsController @Inject()(
   mcc: MessagesControllerComponents,
   declarantDetailsPage: declarant_details
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = form().withSubmissionErrors()
     request.cacheModel.parties.declarantDetails match {
-      case Some(_) => Ok(declarantDetailsPage(mode, form().fill(DeclarantEoriConfirmation(YesNoAnswers.yes))))
-      case _       => Ok(declarantDetailsPage(mode, form()))
+      case Some(_) => Ok(declarantDetailsPage(mode, frm.fill(DeclarantEoriConfirmation(YesNoAnswers.yes))))
+      case _       => Ok(declarantDetailsPage(mode, frm))
     }
   }
 

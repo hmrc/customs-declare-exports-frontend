@@ -42,13 +42,13 @@ class RepresentativeEntityController @Inject()(
   mcc: MessagesControllerComponents,
   representativeEntityPage: representative_details_entity
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    def formWithSubmissionErrors = form().copy(errors = request.submissionErrors)
+    val frm = form().withSubmissionErrors()
     request.cacheModel.parties.representativeDetails.flatMap(_.details) match {
-      case Some(data) => Ok(representativeEntityPage(mode, formWithSubmissionErrors.fill(RepresentativeEntity(data))))
-      case _          => Ok(representativeEntityPage(mode, formWithSubmissionErrors))
+      case Some(data) => Ok(representativeEntityPage(mode, frm.fill(RepresentativeEntity(data))))
+      case _          => Ok(representativeEntityPage(mode, frm))
     }
   }
 

@@ -18,8 +18,8 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitOutsideUK}
 import forms.declaration.officeOfExit.OfficeOfExitOutsideUK.form
+import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitOutsideUK}
 import javax.inject.Inject
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
@@ -41,12 +41,13 @@ class OfficeOfExitOutsideUkController @Inject()(
   officeOfExitOutsideUkPage: office_of_exit_outside_uk,
   override val exportsCacheService: ExportsCacheService
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = form().withSubmissionErrors()
     request.cacheModel.locations.officeOfExit match {
-      case Some(data) => Ok(officeOfExitOutsideUkPage(mode, form().fill(OfficeOfExitOutsideUK(data))))
-      case _          => Ok(officeOfExitOutsideUkPage(mode, form()))
+      case Some(data) => Ok(officeOfExitOutsideUkPage(mode, frm.fill(OfficeOfExitOutsideUK(data))))
+      case _          => Ok(officeOfExitOutsideUkPage(mode, frm))
     }
   }
 

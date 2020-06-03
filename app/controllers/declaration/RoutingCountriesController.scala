@@ -43,7 +43,7 @@ class RoutingCountriesController @Inject()(
   routingQuestionPage: routing_country_question,
   countryOfRoutingPage: country_of_routing
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayRoutingQuestion(mode: Mode, fastForward: Boolean): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (fastForward && request.cacheModel.containRoutingCountries()) {
@@ -52,9 +52,10 @@ class RoutingCountriesController @Inject()(
       val destinationCountryCode = request.cacheModel.locations.destinationCountry.flatMap(_.code)
       val destinationCountryName = destinationCountryCode.map(findByCode(_)).map(_.asString()).getOrElse("")
 
+      val frm = form().withSubmissionErrors()
       request.cacheModel.locations.hasRoutingCountries match {
-        case Some(answer) => Ok(routingQuestionPage(mode, form().fill(answer), destinationCountryName))
-        case None         => Ok(routingQuestionPage(mode, form(), destinationCountryName))
+        case Some(answer) => Ok(routingQuestionPage(mode, frm.fill(answer), destinationCountryName))
+        case None         => Ok(routingQuestionPage(mode, frm, destinationCountryName))
       }
     }
   }

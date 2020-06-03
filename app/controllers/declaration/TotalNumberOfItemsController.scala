@@ -21,7 +21,7 @@ import controllers.navigation.Navigator
 import forms.DeclarationPage
 import forms.declaration.TotalNumberOfItems
 import forms.declaration.officeOfExit.AllowedUKOfficeOfExitAnswers.{no, yes}
-import forms.declaration.officeOfExit.{AllowedUKOfficeOfExitAnswers, OfficeOfExitInsideUK, OfficeOfExitOutsideUK}
+import forms.declaration.officeOfExit.OfficeOfExitOutsideUK
 import javax.inject.Inject
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
@@ -43,16 +43,16 @@ class TotalNumberOfItemsController @Inject()(
   totalNumberOfItemsPage: total_number_of_items,
   override val exportsCacheService: ExportsCacheService
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
   import forms.declaration.TotalNumberOfItems._
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    val formWithSubmissionErrors = form().copy(errors = request.submissionErrors)
+    val frm = form().withSubmissionErrors()
     request.cacheModel.totalNumberOfItems match {
-      case Some(data) => Ok(totalNumberOfItemsPage(mode, navigationForm, formWithSubmissionErrors.fill(data)))
-      case _          => Ok(totalNumberOfItemsPage(mode, navigationForm, formWithSubmissionErrors))
+      case Some(data) => Ok(totalNumberOfItemsPage(mode, navigationForm, frm.fill(data)))
+      case _          => Ok(totalNumberOfItemsPage(mode, navigationForm, frm))
     }
   }
 

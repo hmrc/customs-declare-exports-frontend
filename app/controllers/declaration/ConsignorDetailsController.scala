@@ -39,14 +39,15 @@ class ConsignorDetailsController @Inject()(
   mcc: MessagesControllerComponents,
   consignorDetailsPage: consignor_details
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   val validJourneys = Seq(DeclarationType.CLEARANCE)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
+    val frm = ConsignorDetails.form().withSubmissionErrors()
     request.cacheModel.parties.consignorDetails match {
-      case Some(data) => Ok(consignorDetailsPage(mode, ConsignorDetails.form().fill(data)))
-      case _          => Ok(consignorDetailsPage(mode, ConsignorDetails.form()))
+      case Some(data) => Ok(consignorDetailsPage(mode, frm.fill(data)))
+      case _          => Ok(consignorDetailsPage(mode, frm))
     }
   }
 

@@ -38,13 +38,14 @@ class LocationController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
   import forms.declaration.GoodsLocationForm._
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = form().withSubmissionErrors()
     request.cacheModel.locations.goodsLocation match {
-      case Some(data) => Ok(goodsLocationPage(mode, form().fill(data.toForm)))
-      case _          => Ok(goodsLocationPage(mode, form()))
+      case Some(data) => Ok(goodsLocationPage(mode, frm.fill(data.toForm)))
+      case _          => Ok(goodsLocationPage(mode, frm))
     }
   }
 

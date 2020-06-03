@@ -38,14 +38,15 @@ class WarehouseIdentificationController @Inject()(
   mcc: MessagesControllerComponents,
   warehouseIdentificationPage: warehouse_identification
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   import forms.declaration.WarehouseIdentification._
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = form().withSubmissionErrors()
     request.cacheModel.locations.warehouseIdentification match {
-      case Some(data) => Ok(warehouseIdentificationPage(mode, form().fill(data)))
-      case _          => Ok(warehouseIdentificationPage(mode, form()))
+      case Some(data) => Ok(warehouseIdentificationPage(mode, frm.fill(data)))
+      case _          => Ok(warehouseIdentificationPage(mode, frm))
     }
   }
 

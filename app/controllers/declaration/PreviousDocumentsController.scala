@@ -47,12 +47,13 @@ class PreviousDocumentsController @Inject()(
   previousDocumentsPage: previous_documents,
   override val exportsCacheService: ExportsCacheService
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = form().withSubmissionErrors()
     request.cacheModel.previousDocuments match {
-      case Some(data) => Ok(previousDocumentsPage(mode, navigationForm(request.declarationType), form(), data.documents))
-      case _          => Ok(previousDocumentsPage(mode, navigationForm(request.declarationType), form(), Seq.empty))
+      case Some(data) => Ok(previousDocumentsPage(mode, navigationForm(request.declarationType), frm, data.documents))
+      case _          => Ok(previousDocumentsPage(mode, navigationForm(request.declarationType), frm, Seq.empty))
     }
   }
 
@@ -93,6 +94,7 @@ class PreviousDocumentsController @Inject()(
     }
   }
 
+  // TODO - get rid of this method in favour of Navigator backlink
   private def navigationForm(declarationType: DeclarationType)(implicit request: JourneyRequest[AnyContent]): DeclarationPage =
     declarationType match {
       case DeclarationType.SUPPLEMENTARY | DeclarationType.STANDARD => Document

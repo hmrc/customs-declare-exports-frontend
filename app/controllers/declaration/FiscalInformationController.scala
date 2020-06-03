@@ -41,7 +41,7 @@ class FiscalInformationController @Inject()(
   mcc: MessagesControllerComponents,
   fiscalInformationPage: fiscal_information
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String, fastForward: Boolean): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     def cacheContainsFiscalReferenceData = request.cacheModel.itemBy(itemId).exists(_.additionalFiscalReferencesData.exists(_.references.nonEmpty))
@@ -57,9 +57,10 @@ class FiscalInformationController @Inject()(
     } else if (fastForward && cacheItemIneligibleForOSR) {
       navigator.continueTo(mode, routes.ProcedureCodesController.displayPage(_, itemId))
     } else {
+      val frm = form().withSubmissionErrors()
       request.cacheModel.itemBy(itemId).flatMap(_.fiscalInformation) match {
-        case Some(fiscalInformation) => Ok(fiscalInformationPage(mode, itemId, form().fill(fiscalInformation)))
-        case _                       => Ok(fiscalInformationPage(mode, itemId, form()))
+        case Some(fiscalInformation) => Ok(fiscalInformationPage(mode, itemId, frm.fill(fiscalInformation)))
+        case _                       => Ok(fiscalInformationPage(mode, itemId, frm))
       }
     }
   }

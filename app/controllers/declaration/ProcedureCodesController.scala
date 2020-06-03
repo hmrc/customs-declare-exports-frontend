@@ -47,16 +47,17 @@ class ProcedureCodesController @Inject()(
   mcc: MessagesControllerComponents,
   procedureCodesPage: procedure_codes
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = form().withSubmissionErrors()
     request.cacheModel.itemBy(itemId) match {
       case Some(exportItem) =>
-        exportItem.procedureCodes.fold(Ok(procedureCodesPage(mode, itemId, form(), Seq()))) { procedureCodesData =>
-          Ok(procedureCodesPage(mode, itemId, form().fill(procedureCodesData.toProcedureCode()), procedureCodesData.additionalProcedureCodes))
+        exportItem.procedureCodes.fold(Ok(procedureCodesPage(mode, itemId, frm, Seq()))) { procedureCodesData =>
+          Ok(procedureCodesPage(mode, itemId, frm.fill(procedureCodesData.toProcedureCode()), procedureCodesData.additionalProcedureCodes))
 
         }
-      case None => Ok(procedureCodesPage(mode, itemId, form(), Seq()))
+      case None => Ok(procedureCodesPage(mode, itemId, frm, Seq()))
     }
   }
 

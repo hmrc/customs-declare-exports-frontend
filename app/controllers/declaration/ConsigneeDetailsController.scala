@@ -18,13 +18,10 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.DeclarationPage
-import forms.declaration.consignor.ConsignorEoriNumber
-import forms.declaration.{ConsigneeDetails, ExporterDetails}
+import forms.declaration.ConsigneeDetails
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
-import models.DeclarationType.{CLEARANCE, SUPPLEMENTARY}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -45,12 +42,13 @@ class ConsigneeDetailsController @Inject()(
   mcc: MessagesControllerComponents,
   consigneeDetailsPage: consignee_details
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = ConsigneeDetails.form().withSubmissionErrors()
     request.cacheModel.parties.consigneeDetails match {
-      case Some(data) => Ok(consigneeDetailsPage(mode, ConsigneeDetails.form().fill(data)))
-      case _          => Ok(consigneeDetailsPage(mode, ConsigneeDetails.form()))
+      case Some(data) => Ok(consigneeDetailsPage(mode, frm.fill(data)))
+      case _          => Ok(consigneeDetailsPage(mode, frm))
     }
   }
 

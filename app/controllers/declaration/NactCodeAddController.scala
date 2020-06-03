@@ -42,7 +42,7 @@ class NactCodeAddController @Inject()(
   nactCodeAddFirstPage: nact_code_add_first,
   nactCodeAdd: nact_code_add
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   import NactCodeSummaryController._
 
@@ -50,8 +50,8 @@ class NactCodeAddController @Inject()(
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.nactCodes) match {
-      case Some(nactCode) if nactCode.nonEmpty => Ok(nactCodeAdd(mode, itemId, NactCode.form()))
-      case _                                   => Ok(nactCodeAddFirstPage(mode, itemId, NactCodeFirst.form()))
+      case Some(nactCode) if nactCode.nonEmpty => Ok(nactCodeAdd(mode, itemId, NactCode.form().withSubmissionErrors()))
+      case _                                   => Ok(nactCodeAddFirstPage(mode, itemId, NactCodeFirst.form().withSubmissionErrors()))
     }
   }
 

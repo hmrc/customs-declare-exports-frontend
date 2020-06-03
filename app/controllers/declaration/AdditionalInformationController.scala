@@ -45,14 +45,15 @@ class AdditionalInformationController @Inject()(
   mcc: MessagesControllerComponents,
   additionalInformationPage: additional_information
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   val elementLimit = 99
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = form().withSubmissionErrors()
     request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation) match {
-      case Some(data) => Ok(additionalInformationPage(mode, itemId, form(), data.items))
-      case _          => Ok(additionalInformationPage(mode, itemId, form(), Seq()))
+      case Some(data) => Ok(additionalInformationPage(mode, itemId, frm, data.items))
+      case _          => Ok(additionalInformationPage(mode, itemId, frm, Seq()))
     }
   }
 

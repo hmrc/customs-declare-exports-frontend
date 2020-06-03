@@ -43,13 +43,13 @@ class RepresentativeStatusController @Inject()(
   mcc: MessagesControllerComponents,
   representativeStatusPage: representative_details_status
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    def formWithSubmissionErrors = form().copy(errors = request.submissionErrors)
+    val frm = form().withSubmissionErrors()
     request.cacheModel.parties.representativeDetails.map(_.statusCode) match {
-      case Some(data) => Ok(representativeStatusPage(mode, navigationForm, formWithSubmissionErrors.fill(RepresentativeStatus(data))))
-      case _          => Ok(representativeStatusPage(mode, navigationForm, formWithSubmissionErrors))
+      case Some(data) => Ok(representativeStatusPage(mode, navigationForm, frm.fill(RepresentativeStatus(data))))
+      case _          => Ok(representativeStatusPage(mode, navigationForm, frm))
     }
   }
 

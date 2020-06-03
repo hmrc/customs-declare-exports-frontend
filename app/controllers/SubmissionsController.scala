@@ -23,10 +23,11 @@ import controllers.util.SubmissionDisplayHelper
 import javax.inject.Inject
 import models.Mode.ErrorFix
 import models.requests.{AuthenticatedRequest, ExportsSessionKeys}
-import models.responses.FlashKeys.errorMessage
+import models.responses.FlashKeys
 import models.{ExportsDeclaration, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import services.model.FieldNamePointer
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.{declaration_information, submissions}
 
@@ -76,7 +77,13 @@ class SubmissionsController @Inject()(
 
   def amendErrors(id: String, redirectUrl: String, pattern: String, messageKey: String): Action[AnyContent] = authenticate.async { implicit request =>
     val redirectUrlWithMode = redirectUrl + ErrorFix.queryParameter
-    val flashData = Map(errorMessage -> messageKey)
+    val fieldName = FieldNamePointer.getFieldName(pattern)
+    val flashData = fieldName match {
+      case Some(name) if messageKey.nonEmpty => Map(FlashKeys.fieldName -> name, FlashKeys.errorMessage -> messageKey)
+      case Some(name)                        => Map(FlashKeys.fieldName -> name)
+      case None if messageKey.nonEmpty       => Map(FlashKeys.errorMessage -> messageKey)
+      case _                                 => Map.empty[String, String]
+    }
     val redirect = Redirect(redirectUrlWithMode).flashing(Flash(flashData))
 
     val actualDeclaration: Future[Option[ExportsDeclaration]] = request.declarationId.map { decId =>

@@ -41,13 +41,13 @@ class PackageInformationSummaryController @Inject()(
   mcc: MessagesControllerComponents,
   packageInformationPage: package_information
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   import PackageInformationSummaryController._
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.packageInformation) match {
-      case Some(items) if items.nonEmpty => Ok(packageInformationPage(mode, itemId, YesNoAnswer.form(), items))
+      case Some(items) if items.nonEmpty => Ok(packageInformationPage(mode, itemId, YesNoAnswer.form().withSubmissionErrors(), items))
       case _                             => navigator.continueTo(mode, routes.PackageInformationAddController.displayPage(_, itemId))
     }
   }

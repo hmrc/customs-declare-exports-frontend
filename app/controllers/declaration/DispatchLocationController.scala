@@ -40,12 +40,13 @@ class DispatchLocationController @Inject()(
   mcc: MessagesControllerComponents,
   dispatchLocationPage: dispatch_location
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = DispatchLocation.form().withSubmissionErrors()
     request.cacheModel.dispatchLocation match {
-      case Some(data) => Ok(dispatchLocationPage(mode, DispatchLocation.form().fill(data)))
-      case _          => Ok(dispatchLocationPage(mode, DispatchLocation.form()))
+      case Some(data) => Ok(dispatchLocationPage(mode, frm.fill(data)))
+      case _          => Ok(dispatchLocationPage(mode, frm))
     }
   }
 

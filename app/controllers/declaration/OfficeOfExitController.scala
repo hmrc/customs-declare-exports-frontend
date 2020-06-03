@@ -41,12 +41,14 @@ class OfficeOfExitController @Inject()(
   officeOfExitPage: office_of_exit,
   override val exportsCacheService: ExportsCacheService
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = form().withSubmissionErrors()
     request.cacheModel.locations.officeOfExit match {
-      case Some(data) => Ok(officeOfExitPage(mode, form().fill(OfficeOfExitInsideUK(data))))
-      case _          => Ok(officeOfExitPage(mode, form()))
+      case Some(data) =>
+        Ok(officeOfExitPage(mode, frm.fill(OfficeOfExitInsideUK(data))))
+      case _ => Ok(officeOfExitPage(mode, frm))
     }
   }
 

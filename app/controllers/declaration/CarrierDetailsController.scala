@@ -18,13 +18,11 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.DeclarationPage
-import forms.declaration.consignor.ConsignorDetails
-import forms.declaration.{CarrierDetails, ExporterDetails, RepresentativeAgent}
+import forms.declaration.CarrierDetails
 import javax.inject.Inject
 import models.DeclarationType._
+import models.Mode
 import models.requests.JourneyRequest
-import models.{DeclarationType, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -42,7 +40,7 @@ class CarrierDetailsController @Inject()(
   mcc: MessagesControllerComponents,
   carrierDetailsPage: carrier_details
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   private val validTypes = Seq(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE)
 
@@ -54,7 +52,7 @@ class CarrierDetailsController @Inject()(
       }
     }
 
-  private def form()(implicit request: JourneyRequest[_]) = CarrierDetails.form(request.declarationType)
+  private def form()(implicit request: JourneyRequest[_]) = CarrierDetails.form(request.declarationType).withSubmissionErrors()
 
   def saveAddress(mode: Mode): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)).async { implicit request =>

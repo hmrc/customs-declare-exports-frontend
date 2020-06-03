@@ -41,14 +41,15 @@ class IsExsController @Inject()(
   mcc: MessagesControllerComponents,
   isExsPage: is_exs
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   private val allowedJourney: DeclarationType = CLEARANCE
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(allowedJourney)) { implicit request =>
+    val frm = IsExs.form.withSubmissionErrors()
     request.cacheModel.parties.isExs match {
-      case Some(data) => Ok(isExsPage(mode, navigationPage, IsExs.form.fill(data)))
-      case _          => Ok(isExsPage(mode, navigationPage, IsExs.form))
+      case Some(data) => Ok(isExsPage(mode, navigationPage, frm.fill(data)))
+      case _          => Ok(isExsPage(mode, navigationPage, frm))
     }
   }
 

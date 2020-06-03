@@ -21,7 +21,7 @@ import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import javax.inject.Inject
-import models.{DeclarationType, Mode}
+import models.Mode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -39,11 +39,11 @@ class TaricCodeSummaryController @Inject()(
   mcc: MessagesControllerComponents,
   taricCodesPage: taric_codes
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.taricCodes) match {
-      case Some(taricCodes) if taricCodes.nonEmpty => Ok(taricCodesPage(mode, itemId, YesNoAnswer.form(), taricCodes))
+      case Some(taricCodes) if taricCodes.nonEmpty => Ok(taricCodesPage(mode, itemId, YesNoAnswer.form().withSubmissionErrors(), taricCodes))
       case _                                       => navigator.continueTo(mode, routes.TaricCodeAddController.displayPage(_, itemId))
     }
   }

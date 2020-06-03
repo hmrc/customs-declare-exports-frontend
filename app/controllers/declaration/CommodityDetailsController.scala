@@ -40,12 +40,13 @@ class CommodityDetailsController @Inject()(
   mcc: MessagesControllerComponents,
   commodityDetailsPage: commodity_details
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = form(request.declarationType).withSubmissionErrors()
     request.cacheModel.itemBy(itemId).flatMap(_.commodityDetails) match {
-      case Some(commodityDetails) => Ok(commodityDetailsPage(mode, itemId, form(request.declarationType).fill(commodityDetails)))
-      case _                      => Ok(commodityDetailsPage(mode, itemId, form(request.declarationType)))
+      case Some(commodityDetails) => Ok(commodityDetailsPage(mode, itemId, frm.fill(commodityDetails)))
+      case _                      => Ok(commodityDetailsPage(mode, itemId, frm))
     }
   }
 
