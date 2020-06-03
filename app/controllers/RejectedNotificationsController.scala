@@ -21,7 +21,7 @@ import controllers.actions.AuthAction
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.model.RejectionReason
+import services.model.RejectionReasons
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.rejected_notification_errors
 
@@ -32,6 +32,7 @@ class RejectedNotificationsController @Inject()(
   authenticate: AuthAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
+  rejectedReasons: RejectionReasons,
   rejectedNotificationPage: rejected_notification_errors
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
@@ -40,7 +41,7 @@ class RejectedNotificationsController @Inject()(
     customsDeclareExportsConnector.findDeclaration(id).flatMap {
       case Some(declaration) =>
         customsDeclareExportsConnector.findNotifications(id).map { notifications =>
-          Ok(rejectedNotificationPage(declaration, RejectionReason.fromNotifications(notifications)))
+          Ok(rejectedNotificationPage(declaration, rejectedReasons.fromNotifications(notifications)))
         }
       case None => Future.successful(Redirect(routes.SubmissionsController.displayListOfSubmissions()))
     }

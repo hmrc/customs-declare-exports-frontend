@@ -87,6 +87,14 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
 
         theResponseForm.value.value.natureType mustBe natureType
       }
+
+      "with submission errors" in {
+
+        val result = controller.displayPage(Mode.Normal)(getRequestWithSubmissionErrors)
+        status(result) mustBe OK
+
+        theResponseForm.errors mustBe Seq(submissionFormError)
+      }
     }
 
     "return 400 (BAD_REQUEST)" when {

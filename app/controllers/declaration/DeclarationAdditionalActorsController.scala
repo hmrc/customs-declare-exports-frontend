@@ -47,16 +47,17 @@ class DeclarationAdditionalActorsController @Inject()(
   mcc: MessagesControllerComponents,
   declarationAdditionalActorsPage: declaration_additional_actors
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   val validTypes =
     Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+    val frm = form().withSubmissionErrors()
     request.cacheModel.parties.declarationAdditionalActorsData match {
       case Some(data) =>
-        Ok(declarationAdditionalActorsPage(mode, form().fill(DeclarationAdditionalActors(None, Some(NoneOfTheAbove.value))), data.actors))
-      case _ => Ok(declarationAdditionalActorsPage(mode, form(), Seq()))
+        Ok(declarationAdditionalActorsPage(mode, frm.fill(DeclarationAdditionalActors(None, Some(NoneOfTheAbove.value))), data.actors))
+      case _ => Ok(declarationAdditionalActorsPage(mode, frm, Seq()))
     }
   }
 

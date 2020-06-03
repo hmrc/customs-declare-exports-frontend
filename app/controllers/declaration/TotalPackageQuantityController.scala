@@ -39,12 +39,12 @@ class TotalPackageQuantityController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   totalPackageQuantity: total_package_quantity
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
-  def displayPage(mode: Mode) = (authorize andThen journey(validTypes)) { implicit request =>
-    val form = TotalPackageQuantity.form(request.declarationType)
+  def displayPage(mode: Mode): Action[AnyContent] = (authorize andThen journey(validTypes)) { implicit request =>
+    val form = TotalPackageQuantity.form(request.declarationType).withSubmissionErrors()
     val data = request.cacheModel.totalPackageQuantity.fold(form)(form.fill)
     Ok(totalPackageQuantity(mode, data))
   }

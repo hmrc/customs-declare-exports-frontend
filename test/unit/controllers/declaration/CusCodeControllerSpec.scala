@@ -88,6 +88,16 @@ class CusCodeControllerSpec extends ControllerSpec {
 
           theResponseForm.value mustBe Some(cusCode)
         }
+
+        "with submission errors" in {
+
+          withNewCaching(request.cacheModel)
+
+          val result = controller.displayPage(Mode.Normal, itemId)(getRequestWithSubmissionErrors)
+          status(result) mustBe OK
+
+          theResponseForm.errors mustBe Seq(submissionFormError)
+        }
       }
 
       "return 400 (BAD_REQUEST)" when {

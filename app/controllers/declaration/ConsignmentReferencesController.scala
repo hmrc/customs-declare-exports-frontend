@@ -19,6 +19,7 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.ConsignmentReferences
+import forms.declaration.ConsignmentReferences.form
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
@@ -39,18 +40,18 @@ class ConsignmentReferencesController @Inject()(
   mcc: MessagesControllerComponents,
   consignmentReferencesPage: consignment_references
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = form().withSubmissionErrors()
     request.cacheModel.consignmentReferences match {
-      case Some(data) => Ok(consignmentReferencesPage(mode, ConsignmentReferences.form().fill(data)))
-      case _          => Ok(consignmentReferencesPage(mode, ConsignmentReferences.form()))
+      case Some(data) => Ok(consignmentReferencesPage(mode, frm.fill(data)))
+      case _          => Ok(consignmentReferencesPage(mode, frm))
     }
   }
 
   def submitConsignmentReferences(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    ConsignmentReferences
-      .form()
+    form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ConsignmentReferences]) => Future.successful(BadRequest(consignmentReferencesPage(mode, formWithErrors))),

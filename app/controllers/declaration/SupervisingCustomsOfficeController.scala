@@ -39,14 +39,15 @@ class SupervisingCustomsOfficeController @Inject()(
   mcc: MessagesControllerComponents,
   supervisingCustomsOfficePage: supervising_customs_office
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   import forms.declaration.SupervisingCustomsOffice._
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = form().withSubmissionErrors()
     request.cacheModel.locations.supervisingCustomsOffice match {
-      case Some(data) => Ok(supervisingCustomsOfficePage(mode, form().fill(data)))
-      case _          => Ok(supervisingCustomsOfficePage(mode, form()))
+      case Some(data) => Ok(supervisingCustomsOfficePage(mode, frm.fill(data)))
+      case _          => Ok(supervisingCustomsOfficePage(mode, frm))
     }
   }
 

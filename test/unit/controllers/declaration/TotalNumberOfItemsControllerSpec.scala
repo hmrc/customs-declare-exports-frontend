@@ -87,6 +87,16 @@ class TotalNumberOfItemsControllerSpec extends ControllerSpec with OptionValues 
         theResponseForm(mockTotalNumberOfItemsPage).value mustNot be(empty)
       }
 
+      "with submission errors" in {
+
+        withNewCaching(request.cacheModel)
+
+        val result = controller.displayPage(Mode.Normal)(getRequestWithSubmissionErrors)
+        status(result) mustBe OK
+
+        theResponseForm(mockTotalNumberOfItemsPage).errors mustBe Seq(submissionFormError)
+      }
+
       "return 400 (BAD_REQUEST) when form is incorrect" in {
         withNewCaching(request.cacheModel)
         val incorrectForm = Json.toJson(TotalNumberOfItems(Some("abc"), None))

@@ -39,13 +39,13 @@ class AdditionalDeclarationTypeController @Inject()(
   mcc: MessagesControllerComponents,
   declarationTypePage: declaration_type
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val decType = extractFormType(request)
+    val form = extractFormType(request).form().withSubmissionErrors()
     request.cacheModel.additionalDeclarationType match {
-      case Some(data) => Ok(declarationTypePage(mode, decType.form().fill(data)))
-      case _          => Ok(declarationTypePage(mode, decType.form()))
+      case Some(data) => Ok(declarationTypePage(mode, form.fill(data)))
+      case _          => Ok(declarationTypePage(mode, form))
     }
   }
 

@@ -125,6 +125,16 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
 
         theResponseForm.value mustBe None
       }
+
+      "with submission errors" in {
+
+        withNewCaching(request.cacheModel)
+
+        val result = controller.displayPage(Mode.Normal)(getRequestWithSubmissionErrors)
+        status(result) mustBe OK
+
+        theResponseForm.errors mustBe Seq(submissionFormError)
+      }
     }
 
     onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL, SIMPLIFIED) { request =>

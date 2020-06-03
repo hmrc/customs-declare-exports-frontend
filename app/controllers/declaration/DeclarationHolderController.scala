@@ -46,14 +46,15 @@ class DeclarationHolderController @Inject()(
   mcc: MessagesControllerComponents,
   declarationHolderPage: declaration_holder
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   import forms.declaration.DeclarationHolder.form
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = form().withSubmissionErrors()
     request.cacheModel.parties.declarationHoldersData match {
-      case Some(data) => Ok(declarationHolderPage(mode, form(), data.holders))
-      case _          => Ok(declarationHolderPage(mode, form(), Seq()))
+      case Some(data) => Ok(declarationHolderPage(mode, frm, data.holders))
+      case _          => Ok(declarationHolderPage(mode, frm, Seq()))
     }
   }
 

@@ -84,6 +84,15 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
           details.eori mustBe defined
           details.address mustBe defined
         }
+        "with submission errors" in {
+
+          withNewCaching(request.cacheModel)
+
+          val result = controller.displayPage(Mode.Normal)(getRequestWithSubmissionErrors)
+          status(result) mustBe OK
+
+          theResponseForm.errors mustBe Seq(submissionFormError)
+        }
       }
       "return 400 bad request" when {
         "form contains errors" in {

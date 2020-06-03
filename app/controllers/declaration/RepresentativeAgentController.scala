@@ -18,12 +18,9 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
-import forms.DeclarationPage
 import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
-import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
-import forms.declaration.{ExporterDetails, RepresentativeAgent}
+import forms.declaration.RepresentativeAgent
 import javax.inject.Inject
-import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.declaration.RepresentativeDetails
 import models.requests.JourneyRequest
 import models.{ExportsDeclaration, Mode}
@@ -44,12 +41,13 @@ class RepresentativeAgentController @Inject()(
   mcc: MessagesControllerComponents,
   representativeAgentPage: representative_details_agent
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = RepresentativeAgent.form().withSubmissionErrors()
     request.cacheModel.parties.representativeDetails.flatMap(_.representingOtherAgent) match {
-      case Some(data) => Ok(representativeAgentPage(mode, RepresentativeAgent.form().fill(RepresentativeAgent(data))))
-      case _          => Ok(representativeAgentPage(mode, RepresentativeAgent.form()))
+      case Some(data) => Ok(representativeAgentPage(mode, frm.fill(RepresentativeAgent(data))))
+      case _          => Ok(representativeAgentPage(mode, frm))
     }
   }
 

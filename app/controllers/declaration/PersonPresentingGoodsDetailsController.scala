@@ -40,12 +40,13 @@ class PersonPresentingGoodsDetailsController @Inject()(
   mcc: MessagesControllerComponents,
   personPresentingGoodsDetailsPage: person_presenting_goods_details
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(CLEARANCE)) { implicit request =>
+    val frm = form()
     request.cacheModel.parties.personPresentingGoodsDetails match {
-      case Some(data) => Ok(personPresentingGoodsDetailsPage(mode, form().fill(data)))
-      case _          => Ok(personPresentingGoodsDetailsPage(mode, form()))
+      case Some(data) => Ok(personPresentingGoodsDetailsPage(mode, frm.fill(data)))
+      case _          => Ok(personPresentingGoodsDetailsPage(mode, frm))
     }
   }
 

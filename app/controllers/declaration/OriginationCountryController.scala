@@ -39,16 +39,16 @@ class OriginationCountryController @Inject()(
   mcc: MessagesControllerComponents,
   originationCountryPage: origination_country
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    val form = request.cacheModel.locations.originationCountry match {
+    val form = (request.cacheModel.locations.originationCountry match {
       case Some(originateCountry) =>
         Countries.form(OriginationCountryPage).fill(originateCountry)
       case None => Countries.form(OriginationCountryPage)
-    }
+    }).withSubmissionErrors()
 
     Ok(originationCountryPage(mode, form))
   }

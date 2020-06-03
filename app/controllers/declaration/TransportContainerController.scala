@@ -49,13 +49,13 @@ class TransportContainerController @Inject()(
   summaryPage: transport_container_summary,
   removePage: transport_container_remove
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayAddContainer(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (request.cacheModel.hasContainers) {
-      Ok(addPage(mode, ContainerAdd.form()))
+      Ok(addPage(mode, ContainerAdd.form().withSubmissionErrors()))
     } else {
-      Ok(addFirstPage(mode, ContainerFirst.form()))
+      Ok(addFirstPage(mode, ContainerFirst.form().withSubmissionErrors()))
     }
   }
 
@@ -76,7 +76,7 @@ class TransportContainerController @Inject()(
 
   def displayContainerSummary(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.containers match {
-      case containers if containers.nonEmpty => Ok(summaryPage(mode, YesNoAnswer.form(), containers))
+      case containers if containers.nonEmpty => Ok(summaryPage(mode, YesNoAnswer.form().withSubmissionErrors(), containers))
       case _ =>
         navigator.continueTo(mode, routes.TransportContainerController.displayAddContainer)
     }

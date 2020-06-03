@@ -22,7 +22,7 @@ GET         /submissions/:id/information                   controllers.Submissio
 
 GET         /submissions/:id                               controllers.SubmissionsController.amend(id: String)
 
-GET         /submissions/:id/:url                          controllers.SubmissionsController.amendErrors(id: String, url: String)
+GET         /submissions/:id/:url/:pattern/:messageKey     controllers.SubmissionsController.amendErrors(id: String, url: String, pattern: String, messageKey: String)
 
 # Cancel declaration
 

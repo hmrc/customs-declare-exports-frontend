@@ -40,14 +40,14 @@ class DestinationCountryController @Inject()(
   mcc: MessagesControllerComponents,
   destinationCountryPage: destination_country
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val form = request.cacheModel.locations.destinationCountry match {
+    val form = (request.cacheModel.locations.destinationCountry match {
       case Some(destinationCountry) =>
         Countries.form(DestinationCountryPage).fill(destinationCountry)
       case None => Countries.form(DestinationCountryPage)
-    }
+    }).withSubmissionErrors()
 
     Ok(destinationCountryPage(mode, form))
   }

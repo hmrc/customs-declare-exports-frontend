@@ -42,14 +42,15 @@ class StatisticalValueController @Inject()(
   mcc: MessagesControllerComponents,
   itemTypePage: statistical_value
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   val validTypes = Seq(DeclarationType.SUPPLEMENTARY, DeclarationType.STANDARD)
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+    val frm = StatisticalValue.form().withSubmissionErrors()
     request.cacheModel.itemBy(itemId).flatMap(_.statisticalValue) match {
-      case Some(itemType) => Ok(itemTypePage(mode, itemId, StatisticalValue.form.fill(itemType)))
-      case _              => Ok(itemTypePage(mode, itemId, StatisticalValue.form))
+      case Some(itemType) => Ok(itemTypePage(mode, itemId, frm.fill(itemType)))
+      case _              => Ok(itemTypePage(mode, itemId, frm))
     }
   }
 

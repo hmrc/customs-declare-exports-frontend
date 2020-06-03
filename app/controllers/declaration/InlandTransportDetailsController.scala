@@ -39,16 +39,17 @@ class InlandTransportDetailsController @Inject()(
   mcc: MessagesControllerComponents,
   inlandTransportDetailsPage: inland_transport_details
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   import forms.declaration.InlandModeOfTransportCode._
 
   val validJourneys = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
+    val frm = form().withSubmissionErrors()
     request.cacheModel.locations.inlandModeOfTransportCode match {
-      case Some(data) => Ok(inlandTransportDetailsPage(mode, form().fill(data)))
-      case _          => Ok(inlandTransportDetailsPage(mode, form()))
+      case Some(data) => Ok(inlandTransportDetailsPage(mode, frm.fill(data)))
+      case _          => Ok(inlandTransportDetailsPage(mode, frm))
     }
   }
 

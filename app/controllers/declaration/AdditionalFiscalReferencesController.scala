@@ -43,11 +43,12 @@ class AdditionalFiscalReferencesController @Inject()(
   mcc: MessagesControllerComponents,
   additionalFiscalReferencesPage: additional_fiscal_references
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = itemAction(itemId) { implicit request =>
-    request.item.additionalFiscalReferencesData.fold(Ok(additionalFiscalReferencesPage(mode, itemId, form()))) { data =>
-      Ok(additionalFiscalReferencesPage(mode, itemId, form(), data.references))
+    val frm = form().withSubmissionErrors()
+    request.item.additionalFiscalReferencesData.fold(Ok(additionalFiscalReferencesPage(mode, itemId, frm))) { data =>
+      Ok(additionalFiscalReferencesPage(mode, itemId, frm, data.references))
     }
   }
 

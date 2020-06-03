@@ -48,10 +48,10 @@ class SealController @Inject()(
   removePage: seal_remove,
   summaryPage: seal_summary
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayAddSeal(mode: Mode, containerId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(addPage(mode, Seal.form(), containerId))
+    Ok(addPage(mode, Seal.form().withSubmissionErrors(), containerId))
   }
 
   def submitAddSeal(mode: Mode, containerId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -70,7 +70,7 @@ class SealController @Inject()(
   }
 
   def displaySealSummary(mode: Mode, containerId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(summaryPage(mode, YesNoAnswer.form(), containerId, seals(containerId)))
+    Ok(summaryPage(mode, YesNoAnswer.form().withSubmissionErrors(), containerId, seals(containerId)))
   }
 
   def submitSummaryAction(mode: Mode, containerId: String): Action[AnyContent] =

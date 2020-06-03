@@ -21,6 +21,8 @@ import config.AppConfig
 import controllers.util.{Add, AddField, SaveAndContinue}
 import models.ExportsDeclaration
 import models.requests.{ExportsSessionKeys, JourneyRequest}
+import models.responses.FlashKeys
+import play.api.data.FormError
 import play.api.libs.json.JsValue
 import play.api.mvc._
 import play.api.test.Helpers.contentAsString
@@ -72,5 +74,15 @@ trait ControllerSpec
     FakeRequest("DELETE", "")
       .withSession(ExportsSessionKeys.declarationId -> "declaration-id")
       .withJsonBody(body)
+      .withCSRFToken
+
+  private val submissionField = "some-fieldName"
+  private val submissionError = "some error"
+  protected val submissionFormError = FormError(submissionField, submissionError)
+
+  protected def getRequestWithSubmissionErrors: Request[AnyContentAsEmpty.type] =
+    FakeRequest("GET", "")
+      .withFlash((FlashKeys.fieldName, submissionField), (FlashKeys.errorMessage, submissionError))
+      .withSession((ExportsSessionKeys.declarationId -> "declaration-id"))
       .withCSRFToken
 }

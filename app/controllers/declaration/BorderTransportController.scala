@@ -40,7 +40,7 @@ class BorderTransportController @Inject()(
   mcc: MessagesControllerComponents,
   borderTransport: border_transport
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
 
@@ -54,9 +54,10 @@ class BorderTransportController @Inject()(
       case (Some(meansType), Some(meansId), meansNationality) => Some(BorderTransport(meansNationality, meansType, meansId))
       case _                                                  => None
     }
+    val frm = form().withSubmissionErrors()
     borderTransportData match {
-      case Some(data) => Ok(borderTransport(mode, form().fill(data)))
-      case _          => Ok(borderTransport(mode, form()))
+      case Some(data) => Ok(borderTransport(mode, frm.fill(data)))
+      case _          => Ok(borderTransport(mode, frm))
     }
   }
 

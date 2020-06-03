@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package models.responses
+package controllers.declaration
 
-object FlashKeys {
-  val lrn: String = "LRN"
-  val decId: String = "DecId"
-  val decType: String = "DecType"
-  val expiryDate: String = "ExpiryDate"
-  val errorMessage: String = "ErrorMessage"
-  val fieldName: String = "FieldName"
+import models.requests.JourneyRequest
+import play.api.data.Form
+
+trait SubmissionErrors {
+
+  class SubmissionForm[A](form: Form[A]) {
+    def withSubmissionErrors()(implicit request: JourneyRequest[_]): Form[A] = form.copy(errors = request.submissionErrors)
+  }
+
+  implicit def formToForm[A](form: Form[A]): SubmissionForm[A] = new SubmissionForm[A](form)
 }

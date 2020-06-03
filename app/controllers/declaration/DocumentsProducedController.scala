@@ -45,12 +45,13 @@ class DocumentsProducedController @Inject()(
   mcc: MessagesControllerComponents,
   documentProducedPage: documents_produced
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = form().withSubmissionErrors()
     request.cacheModel.itemBy(itemId).flatMap(_.documentsProducedData).map(_.documents) match {
-      case Some(data) => Ok(documentProducedPage(mode, itemId, form(), data))
-      case _          => Ok(documentProducedPage(mode, itemId, form(), Seq()))
+      case Some(data) => Ok(documentProducedPage(mode, itemId, frm, data))
+      case _          => Ok(documentProducedPage(mode, itemId, frm, Seq()))
     }
   }
 

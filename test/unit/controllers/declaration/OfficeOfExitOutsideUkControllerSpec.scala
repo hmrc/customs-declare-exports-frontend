@@ -89,6 +89,16 @@ class OfficeOfExitOutsideUkControllerSpec extends ControllerSpec with OptionValu
 
         theResponseForm.value.value.officeId mustBe officeId
       }
+
+      "with submission errors" in {
+
+        withNewCaching(request.cacheModel)
+
+        val result = controller.displayPage(Mode.Normal)(getRequestWithSubmissionErrors)
+        status(result) mustBe OK
+
+        theResponseForm.errors mustBe Seq(submissionFormError)
+      }
     }
   }
 

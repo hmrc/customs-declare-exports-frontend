@@ -21,7 +21,6 @@ import controllers.navigation.Navigator
 import controllers.util.MultipleItemsHelper.remove
 import controllers.util._
 import forms.declaration.AdditionalInformation
-import forms.declaration.AdditionalInformation.form
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.AdditionalInformationData
@@ -45,19 +44,20 @@ class AdditionalInformationController @Inject()(
   mcc: MessagesControllerComponents,
   additionalInformationPage: additional_information
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   val elementLimit = 99
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val form = AdditionalInformation.form().withSubmissionErrors()
     request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation) match {
-      case Some(data) => Ok(additionalInformationPage(mode, itemId, form(), data.items))
-      case _          => Ok(additionalInformationPage(mode, itemId, form(), Seq()))
+      case Some(data) => Ok(additionalInformationPage(mode, itemId, form, data.items))
+      case _          => Ok(additionalInformationPage(mode, itemId, form, Seq()))
     }
   }
 
   def saveAdditionalInfo(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = form().bindFromRequest()
+    val boundForm = AdditionalInformation.form().bindFromRequest()
     val actionTypeOpt = FormAction.bindFromRequest()
 
     val cache = request.cacheModel

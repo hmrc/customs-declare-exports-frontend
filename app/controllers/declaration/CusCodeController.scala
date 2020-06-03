@@ -24,7 +24,6 @@ import javax.inject.Inject
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
-import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
@@ -41,14 +40,15 @@ class CusCodeController @Inject()(
   mcc: MessagesControllerComponents,
   cusCodePage: cus_code
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+    val frm = form().withSubmissionErrors()
     request.cacheModel.itemBy(itemId).flatMap(_.cusCode) match {
-      case Some(cusCode) => Ok(cusCodePage(mode, itemId, form.fill(cusCode)))
-      case _             => Ok(cusCodePage(mode, itemId, form))
+      case Some(cusCode) => Ok(cusCodePage(mode, itemId, frm.fill(cusCode)))
+      case _             => Ok(cusCodePage(mode, itemId, frm))
     }
   }
 

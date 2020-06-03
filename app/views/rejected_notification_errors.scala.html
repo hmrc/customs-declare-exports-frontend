@@ -34,14 +34,16 @@
 @(declaration: ExportsDeclaration, errors: Seq[RejectionReason])(implicit request: Request[_], messages: Messages)
 
 @errorDesciption(error: RejectionReason) = @{
-  val description = if(appConfig.isUsingImprovedErrorMessages) error.exportsDescription else error.cdsDescription
+  val description = error.summaryErrorMessage
   if(description.endsWith(".")) description else s"$description."
 }
 
 @errorChangeAction(error: RejectionReason) = @{
-  if(changeErrorLinkConfig.isEnabled && error.url.isDefined && error.url.get.nonEmpty) {
+  if(changeErrorLinkConfig.isEnabled && error.url.exists(_.nonEmpty)) {
     val urlToPageWithError = RejectionReason.url(error.url.get, declaration, error.pointer)
-    val url = routes.SubmissionsController.amendErrors(declaration.id, urlToPageWithError).url
+    val errorPattern = error.pointer.map(_.pattern).getOrElse("")
+    val errorMessage = error.pageErrorMessage.getOrElse("")
+    val url = routes.SubmissionsController.amendErrors(declaration.id, urlToPageWithError, errorPattern, errorMessage).url
 
     val action = ActionItem(
       href = url,

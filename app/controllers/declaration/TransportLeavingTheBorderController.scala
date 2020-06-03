@@ -22,7 +22,7 @@ import forms.declaration.TransportLeavingTheBorder
 import javax.inject.Inject
 import models.{DeclarationType, Mode}
 import play.api.i18n.I18nSupport
-import play.api.mvc.MessagesControllerComponents
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.transport_leaving_the_border
@@ -37,19 +37,19 @@ class TransportLeavingTheBorderController @Inject()(
   mcc: MessagesControllerComponents,
   transportAtBorder: transport_leaving_the_border
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.CLEARANCE)
 
-  def displayPage(mode: Mode) = (authenticate andThen journeyType(validTypes)) { implicit request =>
-    val form = TransportLeavingTheBorder.form(request.declarationType)
+  def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+    val form = TransportLeavingTheBorder.form(request.declarationType).withSubmissionErrors()
     request.cacheModel.transport.borderModeOfTransportCode match {
       case Some(data) => Ok(transportAtBorder(form.fill(data), mode))
       case _          => Ok(transportAtBorder(form, mode))
     }
   }
 
-  def submitForm(mode: Mode) = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+  def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     TransportLeavingTheBorder
       .form(request.declarationType)
       .bindFromRequest()

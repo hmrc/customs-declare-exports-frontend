@@ -39,12 +39,13 @@ class DeclarantExporterController @Inject()(
   mcc: MessagesControllerComponents,
   declarantExporterPage: declarant_exporter
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = form().withSubmissionErrors()
     request.cacheModel.parties.declarantIsExporter match {
-      case Some(data) => Ok(declarantExporterPage(mode, form().fill(data)))
-      case _          => Ok(declarantExporterPage(mode, form()))
+      case Some(data) => Ok(declarantExporterPage(mode, frm.fill(data)))
+      case _          => Ok(declarantExporterPage(mode, frm))
     }
   }
 

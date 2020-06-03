@@ -227,7 +227,7 @@ class SubmissionsControllerSpec extends ControllerSpec with BeforeAndAfterEach {
         when(mockCustomsDeclareExportsConnector.createDeclaration(any[ExportsDeclarationExchange])(any(), any()))
           .thenReturn(Future.successful(newDeclaration))
 
-        val result = controller.amendErrors("id", redirectUrl)(getRequest(None))
+        val result = controller.amendErrors("id", redirectUrl, "pattern", "message")(getRequest(None))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get mustBe redirectUrl + "?mode=Error-Fix"
@@ -252,7 +252,7 @@ class SubmissionsControllerSpec extends ControllerSpec with BeforeAndAfterEach {
         when(mockCustomsDeclareExportsConnector.findDeclaration(refEq(decId))(any(), any()))
           .thenReturn(Future.successful(Some(declaration)))
 
-        val result = controller.amendErrors(sourceId, redirectUrl)(getRequest(Some(decId)))
+        val result = controller.amendErrors(sourceId, redirectUrl, "pattern", "message")(getRequest(Some(decId)))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get mustBe redirectUrl + "?mode=Error-Fix"
@@ -276,7 +276,7 @@ class SubmissionsControllerSpec extends ControllerSpec with BeforeAndAfterEach {
         when(mockCustomsDeclareExportsConnector.createDeclaration(any[ExportsDeclarationExchange])(any(), any()))
           .thenReturn(Future.successful(newDeclaration))
 
-        val result = controller.amendErrors(rejDecId, redirectUrl)(getRequest(Some(actualDecId)))
+        val result = controller.amendErrors(rejDecId, redirectUrl, "pattern", "message")(getRequest(Some(actualDecId)))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get mustBe redirectUrl + "?mode=Error-Fix"
@@ -298,7 +298,7 @@ class SubmissionsControllerSpec extends ControllerSpec with BeforeAndAfterEach {
         when(mockCustomsDeclareExportsConnector.findDeclaration(refEq(sourceId))(any(), any()))
           .thenReturn(Future.successful(None))
 
-        val result = controller.amendErrors(sourceId, "redirectUrl")(getRequest(None))
+        val result = controller.amendErrors(sourceId, "redirectUrl", "pattern", "message")(getRequest(None))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.SubmissionsController.displayListOfSubmissions().url)

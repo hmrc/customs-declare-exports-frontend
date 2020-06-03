@@ -41,11 +41,11 @@ class PackageInformationAddController @Inject()(
   mcc: MessagesControllerComponents,
   packageInformationPage: package_information_add
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val items = request.cacheModel.itemBy(itemId).flatMap(_.packageInformation).getOrElse(List.empty)
-    Ok(packageInformationPage(mode, itemId, form(), items))
+    Ok(packageInformationPage(mode, itemId, form().withSubmissionErrors(), items))
   }
 
   def submitForm(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit authRequest =>

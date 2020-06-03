@@ -40,12 +40,13 @@ class UNDangerousGoodsCodeController @Inject()(
   mcc: MessagesControllerComponents,
   unDangerousGoodsCodePage: un_dangerous_goods_code
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode, itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = form().withSubmissionErrors()
     request.cacheModel.itemBy(itemId).flatMap(_.dangerousGoodsCode) match {
-      case Some(dangerousGoodsCode) => Ok(unDangerousGoodsCodePage(mode, itemId, form.fill(dangerousGoodsCode)))
-      case _                        => Ok(unDangerousGoodsCodePage(mode, itemId, form))
+      case Some(dangerousGoodsCode) => Ok(unDangerousGoodsCodePage(mode, itemId, frm.fill(dangerousGoodsCode)))
+      case _                        => Ok(unDangerousGoodsCodePage(mode, itemId, frm))
     }
   }
 

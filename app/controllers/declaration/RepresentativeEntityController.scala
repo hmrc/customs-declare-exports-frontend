@@ -19,11 +19,12 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.RepresentativeEntity
+import forms.declaration.RepresentativeEntity.form
 import javax.inject.Inject
 import models.DeclarationType.DeclarationType
 import models.declaration.RepresentativeDetails
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration, Mode}
+import models.{ExportsDeclaration, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -41,18 +42,18 @@ class RepresentativeEntityController @Inject()(
   mcc: MessagesControllerComponents,
   representativeEntityPage: representative_details_entity
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   def displayPage(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val frm = form().withSubmissionErrors()
     request.cacheModel.parties.representativeDetails.flatMap(_.details) match {
-      case Some(data) => Ok(representativeEntityPage(mode, RepresentativeEntity.form().fill(RepresentativeEntity(data))))
-      case _          => Ok(representativeEntityPage(mode, RepresentativeEntity.form()))
+      case Some(data) => Ok(representativeEntityPage(mode, frm.fill(RepresentativeEntity(data))))
+      case _          => Ok(representativeEntityPage(mode, frm))
     }
   }
 
   def submitForm(mode: Mode): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    RepresentativeEntity
-      .form()
+    form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[RepresentativeEntity]) => Future.successful(BadRequest(representativeEntityPage(mode, formWithErrors))),

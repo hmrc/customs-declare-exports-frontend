@@ -24,6 +24,7 @@ import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import services.model.RejectionReasons
 import unit.base.ControllerSpec
 import views.html.rejected_notification_errors
 
@@ -32,11 +33,13 @@ import scala.concurrent.ExecutionContext.global
 class RejectedNotificationsControllerSpec extends ControllerSpec with OptionValues {
 
   private val mockRejectedNotificationPage = mock[rejected_notification_errors]
+  private val mockRejectedReasons = mock[RejectionReasons]
 
   private val controller = new RejectedNotificationsController(
     mockAuthAction,
     mockCustomsDeclareExportsConnector,
     stubMessagesControllerComponents(),
+    mockRejectedReasons,
     mockRejectedNotificationPage
   )(global)
 

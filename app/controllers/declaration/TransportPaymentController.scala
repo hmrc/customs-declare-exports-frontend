@@ -18,8 +18,8 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
+import forms.declaration.TransportPayment
 import forms.declaration.TransportPayment._
-import forms.declaration.{BorderTransport, TransportPayment}
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration, Mode}
@@ -39,15 +39,16 @@ class TransportPaymentController @Inject()(
   mcc: MessagesControllerComponents,
   transportPayment: transport_payment
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors {
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL, DeclarationType.CLEARANCE)
 
   def displayPage(mode: Mode): Action[AnyContent] =
     (authenticate andThen journeyType(validTypes)) { implicit request =>
+      val frm = form().withSubmissionErrors()
       request.cacheModel.transport.transportPayment match {
-        case Some(data) => Ok(transportPayment(mode, form().fill(data)))
-        case _          => Ok(transportPayment(mode, form()))
+        case Some(data) => Ok(transportPayment(mode, frm.fill(data)))
+        case _          => Ok(transportPayment(mode, frm))
       }
     }
 
